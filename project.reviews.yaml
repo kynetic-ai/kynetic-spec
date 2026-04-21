@@ -161190,6 +161190,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T12:18:31.998Z
+      - _ulid: 01KPR07G0AD0S3VT56QVD0WSMG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPR07EYK99HHB36KMC0QZ62W
+        timestamp: 2026-04-21T12:28:49.034Z
     examined_commit: bf321c0b40c7a606da6c665ae15d89955dd3629d
     external_links: []
     lifecycle_state: open
@@ -161199,8 +161206,27 @@ reviews:
       content_hash: ""
       ref: "@01KPPN4435PYT5BK4VFXTPR1F3"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPR07EYK99HHB36KMC0QZ62W
+        anchor:
+          type: code
+          commit: bf321c0b40c7a606da6c665ae15d89955dd3629d
+          line_end: 27
+          line_start: 15
+          path: docs/troubleshooting/upgrade-pre-plan-state.md
+          side: head
+        entries:
+          - _ulid: 01KPR07EYKQGVY8P202HZZ9ZT7
+            author: Jacob Chapel
+            body: "This recovery procedure points readers to , but the codebase treats legacy
+              scaffold/version-skew problems as an  flow, with  only as a lower-level fallback. That
+              means a reader following this article can run the wrong command for the documented
+              symptom and still miss the upgrade scaffolding they need. Evidence:  guides missing
+              project config, version skew, and legacy task-storage cases to , and  defines upgrade
+              as the command that brings a project to the installed kspec version."
+            created_at: 2026-04-21T12:28:47.955Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T12:18:09.924Z
-    updated_at: 2026-04-21T12:18:30.975Z
+    updated_at: 2026-04-21T12:28:47.955Z
     notes: []
