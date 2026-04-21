@@ -55728,11 +55728,11 @@ workspaces:
     canonical_branch: dispatch/task/task-docs-rendering/01kppn42
     canonical_branch_head: 498c3bfcac17469de57268f0f62fc08fca80ee33
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-21T04:29:47.793Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-21T04:29:49.927Z
     health:
       status: healthy
       issues: []
@@ -55746,7 +55746,7 @@ workspaces:
       target_branch: dev
       target_commit: 9d65ad244237659c2a29a45679392595ae0135ee
       updated_at: 2026-04-21T04:29:47.793Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KPPN42CDKS6A6951ZATDPKXP"
     task_slug: task-docs-rendering
@@ -55755,7 +55755,7 @@ workspaces:
       last_active_at: 2026-04-21T04:15:33.826Z
       last_reconciled_at: 2026-04-21T04:29:47.793Z
       created_at: 2026-04-21T00:10:39.606Z
-      updated_at: 2026-04-21T04:29:47.793Z
+      updated_at: 2026-04-21T04:29:49.927Z
     workspace_id: dispatch-workspace-01KPPN42CDKS6A6951ZATDPKXP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
