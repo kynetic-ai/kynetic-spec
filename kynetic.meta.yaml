@@ -15336,6 +15336,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T04:31:29.633Z
+  - _ulid: 01KPQ6EK4Z607QRD3S9AETD0SQ
+    type: friction
+    content: Review-thread creation via `kspec review comment --body` is brittle when the body contains
+      backticks or markdown-style inline code. In this session the first attempt to record blockers
+      was mangled by shell interpolation and had to be retried. A safer file-based body input or
+      stdin mode for review comments/replies would reduce review friction and avoid corrupted review
+      records.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T04:58:18.655Z
+  - _ulid: 01KPQ6EKCYGZVM15XS219K7D3R
+    type: success
+    content: Comparing `kspec validate` on the review snapshot against the integration base worked well
+      during review. It distinguished a pre-existing validation failure from regressions introduced
+      by the task and kept the review focused on actual branch-specific issues.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T04:58:18.911Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
