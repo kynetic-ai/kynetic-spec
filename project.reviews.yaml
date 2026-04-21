@@ -156831,6 +156831,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T05:42:31.078Z
+      - _ulid: 01KPQ963ECX5DA77QR539JNS9W
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPQ9628G0NGD2ZXA34SZATEE
+        timestamp: 2026-04-21T05:46:06.156Z
     examined_commit: b9b3da5ae7273a4973fd8589f5b69f2c172d9dd6
     external_links: []
     lifecycle_state: open
@@ -156840,8 +156847,35 @@ reviews:
       content_hash: ""
       ref: "@01KPPN44C9V8R8S9GB3M2YZ02B"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPQ9628G0NGD2ZXA34SZATEE
+        entries:
+          - _ulid: 01KPQ9628HG8QMRHA8QD31W6TV
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: packages/web-ui/vite-plugin-docs.ts,
+              packages/web-ui/src/lib/utils/docs-markdown.ts, packages/web-ui/src/lib/docs.ts,
+              packages/web-ui/src/routes/docs/[...slug]/+page.svelte,
+              packages/web-ui/src/routes/docs/+page.svelte, packages/web-ui/vite.config.ts,
+              tests/web-ui-docs-rendering.test.ts.
+
+              Commands run: git diff --stat, git diff --name-only, git diff, kspec task get, kspec
+              item get, kspec review for-task, kspec review get, kspec validate, rg -n "AC:
+              @docs-release-notes-availability|AC: @trait-" tests/, npm test.
+
+              Claims verified: release notes are bundled from the canonical top-level
+              RELEASE_NOTES.md via vite-plugin-docs and served through the existing /docs/[...slug]
+              route; version headings now slug to v<major>-<minor>-<patch>; the fix-cycle adds
+              real-path wiring tests against the repository build inputs.
+
+              Categories searched: correctness, AC coverage, integration wiring, edge cases (missing
+              RELEASE_NOTES.md fallback, duplicate headings/version anchors), test quality. No
+              task-specific findings.
+            created_at: 2026-04-21T05:46:04.945Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-21T05:42:11.414Z
-    updated_at: 2026-04-21T05:42:29.617Z
+    updated_at: 2026-04-21T05:46:04.945Z
     notes: []
