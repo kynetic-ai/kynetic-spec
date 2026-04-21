@@ -15356,6 +15356,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T04:58:18.911Z
+  - _ulid: 01KPQ8AEQJVRQ2AF3JN74BV1BQ
+    type: friction
+    content: Docs section landing-page AC coverage can pass without verifying actual child-page links.
+      In this review cycle, the section-structure test only asserted that rendered HTML contained a
+      paragraph, so four section index pages shipped without the required stub child-page list and
+      review had to catch it manually.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T05:31:00.211Z
+  - _ulid: 01KPQ8AEZNDET1JXVT636EZYEV
+    type: success
+    content: "The kspec review/task integration worked cleanly in a detached reviewer snapshot: creating
+      a fresh review, adding an anchored blocker, and submitting request_changes automatically
+      closed the review and transitioned the task to needs_work with the new review_ref linked."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T05:31:00.469Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
