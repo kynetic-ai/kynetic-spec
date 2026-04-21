@@ -29122,9 +29122,20 @@ runs:
     completed_at: 2026-04-21T05:24:40.945Z
   - _ulid: 01KPQ885A0BY8AYRTMFZXG6XKR
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T05:29:45.024Z
+        completed_at: 2026-04-21T05:31:13.369Z
+        notes: "Friction: docs section landing-page AC coverage was too weak. The test asserted only
+          paragraph presence, so missing child-page stub lists on four section indexes were not
+          caught until review."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T05:31:13.369Z
+        completed_at: 2026-04-21T05:31:13.369Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T05:29:45.024Z
