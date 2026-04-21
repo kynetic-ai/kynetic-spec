@@ -160209,6 +160209,12 @@ reviews:
         payload:
           thread_ulid: 01KPQT06GT68B8HJ9N1YHB8JQ4
         timestamp: 2026-04-21T11:06:49.612Z
+      - _ulid: 01KPQVHMH8BN6VA5ZDY90JRWH1
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQT039RGR3YZ97X25VC3FDW
+        timestamp: 2026-04-21T11:06:58.472Z
     examined_commit: fb6fc21cee4d59dfaf14316a6d2062f48a4f8999
     external_links: []
     lifecycle_state: closed
@@ -160243,6 +160249,8 @@ reviews:
               to run kspec task get @task-ref to find the correct integration branch for the task."
             created_at: 2026-04-21T11:06:43.065Z
         kind: blocker
+        resolved_at: 2026-04-21T11:06:57.429Z
+        resolved_by: "@claude"
       - _ulid: 01KPQT06GT68B8HJ9N1YHB8JQ4
         anchor:
           type: code
@@ -160299,7 +160307,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T10:40:40.630Z
     created_at: 2026-04-21T10:27:34.035Z
-    updated_at: 2026-04-21T11:06:48.562Z
+    updated_at: 2026-04-21T11:06:57.429Z
     notes: []
   - _ulid: 01KPQTWMV05CSV5VC9CGGQ8JPM
     slugs: []
