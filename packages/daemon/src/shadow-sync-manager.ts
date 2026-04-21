@@ -12,6 +12,7 @@ export {
   shadowSyncSchedulers,
   startShadowSyncForProject,
   stopShadowSyncForProject,
+  stopAllShadowSync,
   createShadowSyncOnPullHandler,
 } from "../../../src/daemon/shadow-sync-manager.js";
 

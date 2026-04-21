@@ -157,3 +157,27 @@ export function stopShadowSyncForProject(projectPath: string): void {
     shadowSyncSchedulers.delete(projectPath);
   }
 }
+
+/**
+ * Stop all shadow sync schedulers and cancel all in-flight starts.
+ *
+ * Unlike iterating shadowSyncSchedulers directly, this also cancels starts
+ * that are still suspended in loadProjectConfig() — those have no map entry
+ * yet but would install a scheduler when they resume.  By marking every
+ * in-flight project in cancelledStarts before stopping installed schedulers,
+ * we guarantee no new schedulers appear after this function returns.
+ *
+ * AC: @config-shadow ac-17 — background pulls stop for all projects before shutdown
+ */
+export function stopAllShadowSync(): void {
+  // 1. Cancel every in-flight start so suspended doStart() calls bail out.
+  for (const projectPath of inFlightStarts.keys()) {
+    cancelledStarts.add(projectPath);
+  }
+
+  // 2. Stop all installed schedulers.
+  for (const scheduler of shadowSyncSchedulers.values()) {
+    scheduler.stop();
+  }
+  shadowSyncSchedulers.clear();
+}

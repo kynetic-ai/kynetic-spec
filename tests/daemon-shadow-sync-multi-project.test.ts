@@ -29,6 +29,7 @@ vi.mock("../src/parser/config.js", () => ({
 import {
   startShadowSyncForProject,
   stopShadowSyncForProject,
+  stopAllShadowSync,
   shadowSyncSchedulers,
   createShadowSyncOnPullHandler,
   type ShadowPullReloadableCache,
@@ -296,7 +297,7 @@ describe("Multi-project shadow sync", () => {
 
   describe("Shutdown — stop all schedulers", () => {
     // AC: @config-shadow ac-17
-    it("should stop all shadow sync schedulers when iterating the map", async () => {
+    it("should stop all shadow sync schedulers via stopAllShadowSync", async () => {
       setupConfigMock({ syncInterval: 60, hasRemote: true });
       const pubsub = mockPubsub();
       const getCache = mockGetEntityCache();
@@ -305,14 +306,53 @@ describe("Multi-project shadow sync", () => {
       await startShadowSyncForProject(projectB, pubsub, getCache);
       expect(shadowSyncSchedulers.size).toBe(2);
 
-      // Simulate the shutdown handler pattern from server.ts
-      for (const scheduler of shadowSyncSchedulers.values()) {
-        scheduler.stop();
-      }
-      shadowSyncSchedulers.clear();
+      stopAllShadowSync();
 
       expect(shadowSyncSchedulers.size).toBe(0);
       expect(stopSpy).toHaveBeenCalledTimes(2);
+    });
+
+    // AC: @config-shadow ac-17 — in-flight start during shutdown must not install a scheduler
+    it("should cancel an in-flight start so no scheduler leaks after shutdown", async () => {
+      // Reproduces the register-while-shutting-down race:
+      // 1. start(A) begins, suspended on loadProjectConfig (no map entry yet)
+      // 2. stopAllShadowSync() runs — must cancel the in-flight start
+      // 3. loadProjectConfig resolves — doStart must see the cancellation and bail
+
+      let resolveConfig!: () => void;
+      const configGate = new Promise<void>((r) => { resolveConfig = r; });
+
+      mockedLoadProjectConfig.mockImplementation(async () => {
+        await configGate;
+        return {
+          config: {
+            shadow: {
+              branch: "kspec-meta",
+              directory: ".kspec",
+              sync_interval: 60,
+              remote: { value: "origin", type: "named" as const },
+            },
+          },
+          configPath: "/fake/kspec.config.yaml",
+        } as never;
+      });
+
+      const pubsub = mockPubsub();
+      const getCache = mockGetEntityCache();
+
+      // 1. Start without awaiting — fires loadProjectConfig which is now suspended
+      const startPromise = startShadowSyncForProject(projectA, pubsub, getCache);
+
+      // 2. Shutdown while start is in-flight — must cancel it
+      stopAllShadowSync();
+
+      // 3. Let loadProjectConfig resolve — doStart should see the cancellation
+      resolveConfig();
+      await startPromise;
+
+      // No scheduler should have been installed after shutdown
+      expect(shadowSyncSchedulers.has(projectA)).toBe(false);
+      expect(startSpy).not.toHaveBeenCalled();
     });
   });
 

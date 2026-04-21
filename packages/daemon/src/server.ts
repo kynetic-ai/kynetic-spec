@@ -46,9 +46,9 @@ import { createReviewsRoutes } from "./routes/reviews.js";
 import { SessionSyncScheduler } from "./session-sync.js";
 import { WatcherHealthMonitor } from "./watcher-health-monitor.js";
 import {
-  shadowSyncSchedulers,
   startShadowSyncForProject,
   stopShadowSyncForProject,
+  stopAllShadowSync,
   createShadowSyncOnPullHandler,
 } from "./shadow-sync-manager.js";
 
@@ -819,10 +819,9 @@ export async function createServer(options: ServerOptions) {
       heartbeatManager.stop();
 
       // AC: @config-shadow ac-17 - Stop all shadow sync schedulers
-      for (const scheduler of shadowSyncSchedulers.values()) {
-        scheduler.stop();
-      }
-      shadowSyncSchedulers.clear();
+      // Uses stopAllShadowSync() instead of iterating the map directly so that
+      // in-flight starts (suspended in loadProjectConfig) are also cancelled.
+      stopAllShadowSync();
 
       watcherHealthMonitor?.stop();
 
