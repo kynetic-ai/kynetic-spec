@@ -43,9 +43,14 @@ import { createAggregationRoutes } from "./routes/aggregation.js";
 import { createRefsRoutes } from "./routes/refs.js";
 import { createDiffRoutes } from "./routes/diff.js";
 import { createReviewsRoutes } from "./routes/reviews.js";
-import { ShadowSyncScheduler } from "./shadow-sync.js";
 import { SessionSyncScheduler } from "./session-sync.js";
 import { WatcherHealthMonitor } from "./watcher-health-monitor.js";
+import {
+  startShadowSyncForProject,
+  stopShadowSyncForProject,
+  stopAllShadowSync,
+  createShadowSyncOnPullHandler,
+} from "./shadow-sync-manager.js";
 
 export type DaemonRuntime = "bun" | "node";
 
@@ -55,10 +60,6 @@ export interface ServerOptions {
   runtime: DaemonRuntime;
   kspecDir?: string; // Path to .kspec directory (default: .kspec in cwd)
   webUiDir?: string; // Path to web UI build directory (default: auto-detect)
-}
-
-interface ShadowPullReloadableCache {
-  refreshMetaShadowInfo(): Promise<void>;
 }
 
 type ManagedServer = {
@@ -194,25 +195,11 @@ export function resolveWebUiPath(webUiDir?: string): string | null {
   return null;
 }
 
-export function createShadowSyncOnPullHandler(
-  startupProjectPath: string | undefined,
-  getEntityCache: (projectPath: string) => ShadowPullReloadableCache | undefined,
-): () => Promise<void> {
-  return async () => {
-    if (!startupProjectPath) return;
-    const cache = getEntityCache(startupProjectPath);
-    if (!cache) return;
-    console.log("[daemon] Shadow sync pulled data — refreshing shadow status");
-    await cache.refreshMetaShadowInfo();
-  };
-}
-
 // WebSocket pub/sub and heartbeat managers
 let pubsubManager: PubSubManager;
 let heartbeatManager: HeartbeatManager;
 let wsHandler: WebSocketHandler;
 let _projectManager: import("./project-context.js").ProjectContextManager | undefined;
-let shadowSyncScheduler: ShadowSyncScheduler | undefined;
 let watcherHealthMonitor: WatcherHealthMonitor | undefined;
 const sessionSyncSchedulers: Map<string, SessionSyncScheduler> = new Map();
 
@@ -399,8 +386,10 @@ export async function createServer(options: ServerOptions) {
   const entityCacheModule = await import("./entity-cache.js");
 
   // Shared callback for all registration paths (middleware, projects API, WebSocket)
+  // AC: @config-shadow ac-14 — shadow sync starts for projects registered after startup
   const onProjectRegistered = async (projectPath: string) => {
     await startSessionSyncForProject(projectPath, pubsubManager);
+    await startShadowSyncForProject(projectPath, pubsubManager, entityCacheModule.getEntityCache);
     // AC: @daemon-entity-cache ac-load-on-register — create cache and start progressive loading
     // AC: @daemon-entity-cache ac-domain-ready-event — wire domain-ready transitions to WebSocket broadcast
     const entityCache = entityCacheModule.registerEntityCache(
@@ -755,8 +744,10 @@ export async function createServer(options: ServerOptions) {
 
   // AC: @daemon-entity-cache ac-unregister-cleanup — dispose cache on any unregister path
   // (including watcher permanent failure, not just API-driven unregister)
+  // AC: @config-shadow ac-15 — stop shadow sync when project is removed
   projectContextManager.setUnregisterCallback((projectPath) => {
     stopSessionSyncForProject(projectPath);
+    stopShadowSyncForProject(projectPath);
     entityCacheModule.unregisterEntityCache(projectPath);
   });
 
@@ -788,33 +779,15 @@ export async function createServer(options: ServerOptions) {
   });
   watcherHealthMonitor.start();
 
-  // AC: @config-shadow ac-12 - Start periodic shadow sync if remote tracking configured
+  // AC: @config-shadow ac-12, ac-13 - Start periodic shadow sync if remote tracking configured
+  // Shadow sync now uses the same per-project helper as onProjectRegistered
   if (startupProjectPath) {
     try {
-      const { loadProjectConfig } = await import("../parser/config.js");
-      const { config } = await loadProjectConfig(startupProjectPath);
-      const syncInterval = config.shadow.sync_interval;
-      const worktreeDir = join(startupProjectPath, config.shadow.directory);
-
-      if (syncInterval > 0) {
-        shadowSyncScheduler = new ShadowSyncScheduler({
-          worktreeDir,
-          intervalSeconds: syncInterval,
-          shadowOptions: {
-            branchName: config.shadow.branch,
-            directory: config.shadow.directory,
-            remote: config.shadow.remote?.value,
-            remoteType: config.shadow.remote?.type,
-          },
-          pubsub: pubsubManager,
-          // AC: @daemon-meta-subdomain ac-shadow-on-schedule — refresh shadow status only; file content changes are handled by the watcher independently
-          onPull: createShadowSyncOnPullHandler(
-            startupProjectPath,
-            entityCacheModule.getEntityCache,
-          ),
-        });
-        shadowSyncScheduler.start();
-      }
+      await startShadowSyncForProject(
+        startupProjectPath,
+        pubsubManager,
+        entityCacheModule.getEntityCache,
+      );
     } catch (error) {
       console.error("[daemon] Failed to initialize shadow sync scheduler:", error);
     }
@@ -845,8 +818,11 @@ export async function createServer(options: ServerOptions) {
       // Stop heartbeat monitoring
       heartbeatManager.stop();
 
-      // AC: @config-shadow ac-12 - Stop shadow sync scheduler
-      shadowSyncScheduler?.stop();
+      // AC: @config-shadow ac-17 - Stop all shadow sync schedulers
+      // Uses stopAllShadowSync() instead of iterating the map directly so that
+      // in-flight starts (suspended in loadProjectConfig) are also cancelled.
+      stopAllShadowSync();
+
       watcherHealthMonitor?.stop();
 
       // AC: @session-branch-worktree ac-sync - Stop all session sync schedulers
