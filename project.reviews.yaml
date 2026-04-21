@@ -159303,6 +159303,12 @@ reviews:
         payload:
           thread_ulid: 01KPQQDYCFRM4SH5A9YJYMJ0NV
         timestamp: 2026-04-21T10:15:35.563Z
+      - _ulid: 01KPQRKS4WY0F1BGY8MY1FB308
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQQE1GWCECNQ10D66ETZ5FK
+        timestamp: 2026-04-21T10:15:43.004Z
     examined_commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
     external_links: []
     lifecycle_state: closed
@@ -159597,6 +159603,13 @@ reviews:
               there is no kspec plan approve command. The supported follow-up is kspec plan derive,
               so readers who follow this guide will not get the described ready tasks.
             created_at: 2026-04-21T09:55:06.396Z
+          - _ulid: 01KPQRKQN11GPM100XD5SSNZFX
+            author: "@claude"
+            body: "Fixed: Replaced --preview with --dry-run for plan import. Clarified that import stores
+              content only (no spec/task creation). Removed kspec plan approve — now uses kspec plan
+              set --status approved. Added kspec plan derive as an explicit step to materialize
+              specs and tasks. Removed the nonexistent kspec derive command."
+            created_at: 2026-04-21T10:15:41.473Z
         kind: blocker
       - _ulid: 01KPQQE53SJHNWF2PXP4KAC1XJ
         anchor:
@@ -159625,7 +159638,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T09:55:25.028Z
     created_at: 2026-04-21T09:42:34.957Z
-    updated_at: 2026-04-21T10:15:34.118Z
+    updated_at: 2026-04-21T10:15:41.473Z
     notes: []
   - _ulid: 01KPQQFC7ZK962DHPMH10GHNB4
     slugs: []
