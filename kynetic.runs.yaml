@@ -30261,7 +30261,7 @@ runs:
     started_at: 2026-04-21T10:25:08.812Z
   - _ulid: 01KPQT2W8Z276J1S3R3C8JKMER
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30275,7 +30275,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T10:42:33.800Z
-        completed_at: 2026-04-21T10:42:33.800Z
+        completed_at: 2026-04-21T10:42:44.459Z
+        notes: "Friction points: the docs guide tests validate markdown structure and required sections, but
+          they do not verify that example commands match the live CLI surface. That allowed invalid
+          commands and a hardcoded integration branch assumption to survive until manual review.
+          Shell-quoting rich review-comment bodies was also awkward during this session, but that
+          friction is already tracked as @01KN818C so it is not new."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T10:42:44.459Z
+        completed_at: 2026-04-21T10:42:44.459Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T10:41:26.303Z
