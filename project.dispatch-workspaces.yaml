@@ -55934,12 +55934,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-21T07:33:19.973Z
+      updated_at: 2026-04-21T07:33:28.209Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T07:33:19.973Z
+      updated_at: 2026-04-21T07:33:28.209Z
     integration:
       status: pending
       detail: null
@@ -55947,26 +55947,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9336acd81a8e97f655a484bf98104089cde47c9f
-      updated_at: 2026-04-21T07:33:19.973Z
-    lifecycle_state: ready
+      updated_at: 2026-04-21T07:33:28.209Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KPPN42NCR77J23TWYP63VXDH"
     task_slug: task-docs-section-scaffolding
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T07:18:45.398Z
-      last_reconciled_at: 2026-04-21T07:33:19.973Z
+      last_reconciled_at: 2026-04-21T07:33:28.209Z
       created_at: 2026-04-21T04:30:00.199Z
-      updated_at: 2026-04-21T07:33:19.973Z
+      updated_at: 2026-04-21T07:33:28.209Z
     workspace_id: dispatch-workspace-01KPPN42NCR77J23TWYP63VXDH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 0fa290b38afb74ee97b38d019e58c5402d0126c8
+        last_seen_at: 2026-04-21T07:33:28.209Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-section-scaffolding-01kppn42-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-docs-section-scaffolding/01kppn42
-        head: 1f63c6cdb975401087f3e06c710f57e7993d872d
-        last_seen_at: 2026-04-21T07:18:41.445Z
+        head: 0fa290b38afb74ee97b38d019e58c5402d0126c8
+        last_seen_at: 2026-04-21T07:33:28.209Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-section-scaffolding-01kppn42
   - active_role: null
     base_branch_point: 9336acd81a8e97f655a484bf98104089cde47c9f
