@@ -15686,6 +15686,15 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-21T10:11:30.076Z
+  - _ulid: 01KPQREAE7E8PH1T9FTHDGT95Q
+    type: friction
+    content: In dispatch worktrees, kspec may not be on PATH — agent had to fall back to npm exec kspec
+      -- mid-session. This is a recurring pattern that could be addressed by the bootstrap or
+      workspace preparation step ensuring PATH includes the project bin.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T10:12:44.103Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
