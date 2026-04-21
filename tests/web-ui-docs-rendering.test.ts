@@ -1695,3 +1695,207 @@ describe("guides section content", () => {
     }
   });
 });
+
+// ─── Troubleshooting Section Content ─────────────────────────────────────────
+
+describe("troubleshooting section content", () => {
+  let docsPlugin: typeof import("../packages/web-ui/vite-plugin-docs")["docsPlugin"];
+  let renderDocsMarkdown: typeof import("../packages/web-ui/src/lib/utils/docs-markdown")["renderDocsMarkdown"];
+  let manifest: { entries: Array<{ slug: string; title: string; content: string; path: string }> };
+
+  beforeAll(async () => {
+    const pluginMod = await import("../packages/web-ui/vite-plugin-docs");
+    docsPlugin = pluginMod.docsPlugin;
+    const mdMod = await import("../packages/web-ui/src/lib/utils/docs-markdown");
+    renderDocsMarkdown = mdMod.renderDocsMarkdown;
+
+    const docsDir = join(__dirname, "..", "docs");
+    const plugin = docsPlugin(docsDir, {
+      exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
+    });
+    const load = plugin.load as (id: string) => string | undefined;
+    const result = load("\0virtual:docs")!;
+    manifest = JSON.parse(result.slice("export default ".length, -1));
+  });
+
+  function getEntry(slug: string) {
+    return manifest.entries.find((e) => e.slug === slug);
+  }
+
+  // The seven required troubleshooting entries
+  const TROUBLESHOOTING_PAGES = [
+    "troubleshooting/shadow-branch-out-of-sync",
+    "troubleshooting/shadow-branch-worktree-broken",
+    "troubleshooting/daemon-port-in-use",
+    "troubleshooting/cannot-run-from-inside-kspec",
+    "troubleshooting/upgrade-pre-plan-state",
+    "troubleshooting/dispatch-refuses-to-assign",
+    "troubleshooting/review-blocking-merge",
+  ];
+
+  // AC: @docs-troubleshooting-section ac-1
+  describe("entries are titled by the symptom the reader observes", () => {
+    it("all seven troubleshooting pages exist in the manifest", () => {
+      for (const slug of TROUBLESHOOTING_PAGES) {
+        const entry = getEntry(slug);
+        expect(entry, `page ${slug} should exist`).toBeDefined();
+      }
+    });
+
+    // AC: @docs-troubleshooting-section ac-1
+    it("landing page links to all seven troubleshooting entries", () => {
+      const indexEntry = getEntry("troubleshooting")!;
+      const expectedLinks = [
+        "./shadow-branch-out-of-sync.md",
+        "./shadow-branch-worktree-broken.md",
+        "./daemon-port-in-use.md",
+        "./cannot-run-from-inside-kspec.md",
+        "./upgrade-pre-plan-state.md",
+        "./dispatch-refuses-to-assign.md",
+        "./review-blocking-merge.md",
+      ];
+
+      for (const link of expectedLinks) {
+        expect(indexEntry.content, `index should link to ${link}`).toContain(link);
+      }
+    });
+
+    // AC: @docs-troubleshooting-section ac-1
+    it("each entry title describes the symptom, not the internal cause", () => {
+      for (const slug of TROUBLESHOOTING_PAGES) {
+        const entry = getEntry(slug)!;
+        // Titles should describe what the reader sees — they should NOT be
+        // internal cause names like "Worktree Disconnection" or "EADDRINUSE"
+        // Instead they should be phrased as observable symptoms
+        const title = entry.title;
+        expect(title).not.toMatch(/EADDRINUSE|worktree disconnection|stale lock/i);
+        // Title should be a meaningful description (at least 3 words)
+        expect(title.split(/\s+/).length, `title "${title}" should be descriptive`).toBeGreaterThanOrEqual(3);
+      }
+    });
+
+    // AC: @docs-troubleshooting-section ac-1
+    it("each entry opens with the symptom the reader observes", () => {
+      for (const slug of TROUBLESHOOTING_PAGES) {
+        const entry = getEntry(slug)!;
+        // First paragraph after the H1 should describe what the reader sees
+        // (not jump straight into the fix). Look for symptom-indicating language.
+        const lines = entry.content.split("\n");
+        // Skip the H1 and any blank lines, get the first paragraph
+        const firstParagraphLines: string[] = [];
+        let foundH1 = false;
+        let foundParagraph = false;
+        for (const line of lines) {
+          if (!foundH1) {
+            if (line.startsWith("# ")) foundH1 = true;
+            continue;
+          }
+          if (!foundParagraph) {
+            if (line.trim() === "") continue;
+            foundParagraph = true;
+          }
+          if (foundParagraph) {
+            if (line.trim() === "") break;
+            firstParagraphLines.push(line);
+          }
+        }
+        const firstParagraph = firstParagraphLines.join(" ");
+        // The opening should describe what the reader observes — look for
+        // symptom/observation language patterns
+        expect(
+          firstParagraph,
+          `${slug} opening should describe the symptom`,
+        ).toMatch(/you (see|run|get|notice|encounter|observe|try)|error|message|output|appear|show|report|fail|refus/i);
+      }
+    });
+  });
+
+  // AC: @docs-troubleshooting-section ac-2
+  describe("each entry has the full recovery structure", () => {
+    for (const slug of TROUBLESHOOTING_PAGES) {
+      const pageName = slug.split("/")[1];
+
+      // AC: @docs-troubleshooting-section ac-2
+      it(`${pageName} explains what the symptom means`, () => {
+        const entry = getEntry(slug)!;
+        const rendered = renderDocsMarkdown(entry.content);
+        // Each entry should have a section explaining the cause/meaning
+        expect(rendered.html).toMatch(/<h2[^>]*>.*?(What This Means|What It Means|Why This Happens|What Happened)\b/i);
+      });
+
+      // AC: @docs-troubleshooting-section ac-2
+      it(`${pageName} states the recovery procedure`, () => {
+        const entry = getEntry(slug)!;
+        const rendered = renderDocsMarkdown(entry.content);
+        // Each entry should have a recovery/fix section
+        expect(rendered.html).toMatch(/<h2[^>]*>.*?(How to Fix|How to Recover|Recovery|Fix It|Resolution)\b/i);
+      });
+
+      // AC: @docs-troubleshooting-section ac-2
+      it(`${pageName} names the commands to run`, () => {
+        const entry = getEntry(slug)!;
+        const rendered = renderDocsMarkdown(entry.content);
+        // Each entry should contain at least one code block with a command
+        expect(rendered.html, `${pageName} should contain a code block`).toContain("<pre><code");
+        // The content should reference at least one kspec or system command
+        expect(entry.content).toMatch(/kspec\s+\w+|lsof|kill|git\s+\w+/);
+      });
+
+      // AC: @docs-troubleshooting-section ac-2
+      it(`${pageName} describes what a healthy outcome looks like`, () => {
+        const entry = getEntry(slug)!;
+        const rendered = renderDocsMarkdown(entry.content);
+        // Each entry should have a section describing the expected healthy state
+        expect(rendered.html).toMatch(/<h2[^>]*>.*?(Healthy Outcome|What Success Looks Like|Expected Result|When It.s Fixed|Verification)\b/i);
+      });
+    }
+  });
+
+  // AC: @docs-troubleshooting-section ac-3
+  describe("entries link to Concepts pages instead of re-explaining primitives", () => {
+    // AC: @docs-troubleshooting-section ac-3
+    it("shadow branch entries link to the shadow branch concept page", () => {
+      const syncEntry = getEntry("troubleshooting/shadow-branch-out-of-sync")!;
+      expect(syncEntry.content).toContain("../concepts/the-shadow-branch.md");
+
+      const brokenEntry = getEntry("troubleshooting/shadow-branch-worktree-broken")!;
+      expect(brokenEntry.content).toContain("../concepts/the-shadow-branch.md");
+    });
+
+    // AC: @docs-troubleshooting-section ac-3
+    it("daemon port entry links to the web UI and daemon concept page", () => {
+      const entry = getEntry("troubleshooting/daemon-port-in-use")!;
+      expect(entry.content).toContain("../concepts/web-ui-and-daemon.md");
+    });
+
+    // AC: @docs-troubleshooting-section ac-3
+    it("dispatch entry links to the agents and dispatch concept page", () => {
+      const entry = getEntry("troubleshooting/dispatch-refuses-to-assign")!;
+      expect(entry.content).toContain("../concepts/agents-and-dispatch.md");
+    });
+
+    // AC: @docs-troubleshooting-section ac-3
+    it("review entry links to the reviews concept page", () => {
+      const entry = getEntry("troubleshooting/review-blocking-merge")!;
+      expect(entry.content).toContain("../concepts/reviews.md");
+    });
+
+    // AC: @docs-troubleshooting-section ac-3
+    it("all concept cross-links resolve to real manifest entries", () => {
+      const allSlugs = new Set(manifest.entries.map((e) => e.slug));
+      const conceptLinkPattern = /\(\.\.\/concepts\/(.+?)\.md\)/g;
+
+      for (const slug of TROUBLESHOOTING_PAGES) {
+        const entry = getEntry(slug)!;
+        let match;
+        while ((match = conceptLinkPattern.exec(entry.content)) !== null) {
+          const linkedSlug = `concepts/${match[1]}`;
+          expect(
+            allSlugs.has(linkedSlug),
+            `${slug} links to ../concepts/${match[1]}.md but slug "${linkedSlug}" is not in the manifest`,
+          ).toBe(true);
+        }
+      }
+    });
+  });
+});
