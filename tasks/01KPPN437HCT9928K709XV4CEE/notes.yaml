@@ -1,1 +1,39 @@
-notes: []
+notes:
+  - _ulid: 01KPQHJGFZPERYFMJFE2VG7B02
+    content: >-
+      Approach: Author six Getting Started pages as standalone markdown files in
+      docs/getting-started/.
+
+      Pages in order: overview.md, installation.md, initializing-a-project.md,
+      connecting-your-agent.md, your-first-action.md, where-to-go-next.md.
+
+      Each page ends with a next link (relative .md) to the following page. Last page
+      (where-to-go-next) has no next link.
+
+      The existing tutorial.md will remain as a supplementary page.
+
+      Update index.md to link all pages in reading order.
+
+
+      Key decisions:
+
+      - Installation: Node >=20, npm install -g @kynetic-ai/spec, verify with kspec --version
+
+      - Initializing: Cover kspec init, kspec setup, explain shadow branch (.kspec/ dir, kspec-meta
+      branch), shadow status/repair, DO NOT edit by hand
+
+      - Connecting Agent: Cover Claude Code (primary supported agent), kspec setup --agent
+      claude-code
+
+      - First Action: Walk through creating a spec item, deriving a task, starting it — mirror the
+      existing tutorial pattern but simplified
+
+      - Where to Go Next: Point to Guides (starting-a-new-project, directing-your-agent) and
+      Concepts (shadow-branch, what-kspec-is)
+
+
+      Test plan: 3 ACs. ac-1 = pages cover all required stages with executable commands. ac-2 = all
+      non-last pages end with next links. ac-3 = initializing page covers shadow branch specifics.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T08:12:41.344Z
