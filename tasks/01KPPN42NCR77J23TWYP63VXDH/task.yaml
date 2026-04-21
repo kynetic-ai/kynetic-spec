@@ -21,7 +21,7 @@ description: |
 spec_ref: "@docs-section-taxonomy"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-docs-rendering"
@@ -35,8 +35,8 @@ review_ref: "@01KPQ9P5Y39S7HAXNHQKZ4HCD9"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-docs-section-scaffolding/01kppn42
-  captured_at: 2026-04-21T05:52:37.699Z
-  commit: 3e06f6eb4960c9a82efec0c0f1df9eefc8d9ea2f
+  captured_at: 2026-04-21T06:54:13.792Z
+  commit: 1f63c6cdb975401087f3e06c710f57e7993d872d
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-docs-section-scaffolding/01kppn42
@@ -226,8 +226,35 @@ history:
         previous: 2026-04-21T05:52:34.321Z
     command: task-start
     timestamp: 2026-04-21T06:54:10.370Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-docs-section-scaffolding/01kppn42
+          captured_at: 2026-04-21T06:54:13.792Z
+          commit: 1f63c6cdb975401087f3e06c710f57e7993d872d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-docs-section-scaffolding/01kppn42
+        previous:
+          review_url: null
+          branch: dispatch/task/task-docs-section-scaffolding/01kppn42
+          captured_at: 2026-04-21T05:52:37.699Z
+          commit: 3e06f6eb4960c9a82efec0c0f1df9eefc8d9ea2f
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-docs-section-scaffolding/01kppn42
+      submitted_at:
+        new: 2026-04-21T06:54:13.798Z
+        previous: 2026-04-21T05:52:37.703Z
+    command: task-submit
+    timestamp: 2026-04-21T06:54:13.798Z
 created_at: 2026-04-20T23:55:28.300Z
 started_at: 2026-04-21T06:54:10.370Z
-submitted_at: 2026-04-21T05:52:37.703Z
+submitted_at: 2026-04-21T06:54:13.798Z
 todos: []
 automation: eligible
