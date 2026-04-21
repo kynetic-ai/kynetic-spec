@@ -158761,6 +158761,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-21T09:18:00.271Z
+      - _ulid: 01KPQNAS2PB4FAGRP0SNJS7S70
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQNAQW8WN72HN5CCDRK5T1B
+        timestamp: 2026-04-21T09:18:22.294Z
     examined_commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
     external_links: []
     lifecycle_state: open
@@ -158909,7 +158916,25 @@ reviews:
               the box.
             created_at: 2026-04-21T09:17:54.697Z
         kind: blocker
+      - _ulid: 01KPQNAQW8WN72HN5CCDRK5T1B
+        anchor:
+          type: code
+          commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
+          line_end: 31
+          line_start: 31
+          path: docs/concepts/specs-tasks-plans-inbox.md
+          side: head
+        entries:
+          - _ulid: 01KPQNAQW90FHARWV0FZTG7MC8
+            author: Jacob Chapel
+            body: The Plans section presents draft, approved, active, completed as the lifecycle, but the
+              current schema and CLI also expose rejected as a real plan status. Because this page
+              is positioned as the durable mental model for plans, omitting a current terminal state
+              makes the description inaccurate for users trying to understand how plans behave
+              today.
+            created_at: 2026-04-21T09:18:21.065Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:16:51.337Z
-    updated_at: 2026-04-21T09:17:59.128Z
+    updated_at: 2026-04-21T09:18:21.065Z
     notes: []
