@@ -29080,7 +29080,7 @@ runs:
     completed_at: 2026-04-21T05:21:34.682Z
   - _ulid: 01KPQ7WACT6PRMA9YBM6C26JB2
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -29093,7 +29093,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T05:23:40.134Z
-        completed_at: 2026-04-21T05:23:40.134Z
+        completed_at: 2026-04-21T05:24:12.586Z
+        notes: "Searched existing observations (12+), inbox (254 items), and specific terms. Session was a
+          clean fix cycle with two specific blockers. No high-confidence systemic friction
+          identified — both issues were one-off implementation bugs (shallow relative links after
+          file move, missing index slug normalization). The fix cycle workflow worked smoothly: read
+          review threads, understand both blockers, fix in single pass, test, commit,
+          reply/resolve/resubmit. The needs_work->start->submit state transition is by design."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T05:24:12.586Z
+        completed_at: 2026-04-21T05:24:12.586Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T05:23:17.018Z
