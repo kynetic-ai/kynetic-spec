@@ -28,3 +28,31 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T08:18:46.999Z
+  - _ulid: 01KPQKAQ9820CYEER0ZAZFVE2A
+    content: >-
+      Fix cycle 1: addressed all 4 blocker threads and 1 nit from review @01KPQHCA.
+
+
+      Changes:
+
+      1. Removed dead child-page links from guides/index.md (7 links), concepts/index.md (8 links),
+      troubleshooting/index.md (7 links), and release-notes/index.md (1 link). These sections have
+      no child pages yet, so linking to nonexistent .md files produced dead links in the docs UI.
+
+      2. Replaced the 4 per-section 'stub child pages' tests with a single 'every child-page link
+      resolves to a real manifest entry' test that extracts markdown links from each landing page
+      and verifies each linked slug exists in the docs manifest. This prevents the dead-link class
+      of regression.
+
+      3. Removed the assertion that all sections must have child-page links — per
+      @docs-section-taxonomy ac-2, the precondition is 'Given: A section has at least one page', so
+      empty sections don't need links.
+
+      4. Retained the getting-started test since it has real child content (tutorial.md).
+
+
+      Full test suite passes: 8157 tests passed (5 skipped, 0 failures). All review threads
+      resolved.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T08:43:23.304Z
