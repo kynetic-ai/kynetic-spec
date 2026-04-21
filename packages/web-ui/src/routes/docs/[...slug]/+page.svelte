@@ -34,6 +34,15 @@
 		return slug ? getDocsSectionEntries(slug) : [];
 	});
 
+	let articleEl: HTMLElement | undefined = $state();
+
+	$effect(() => {
+		if (!articleEl) return;
+		const el = articleEl;
+		el.addEventListener('click', handleDocLinkClick);
+		return () => el.removeEventListener('click', handleDocLinkClick);
+	});
+
 	function handleDocLinkClick(event: MouseEvent) {
 		const target = event.target as HTMLElement;
 		const anchor = target.closest('a');
@@ -104,13 +113,7 @@
 	<!-- Main content -->
 	<div class="flex-1 min-w-0">
 		{#if entry}
-			<article
-				class="prose prose-sm dark:prose-invert max-w-none"
-				role="button"
-				tabindex="-1"
-				onclick={handleDocLinkClick}
-				onkeydown={() => {}}
-			>
+			<article bind:this={articleEl} class="prose prose-sm dark:prose-invert max-w-none">
 				{@html rendered.html}
 			</article>
 		{:else}
