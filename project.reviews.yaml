@@ -157271,6 +157271,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T06:56:21.939Z
+      - _ulid: 01KPQDRJ11VN94FBYX19MDMR3R
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQDRH1WQ34B51D4VEKW1KZP
+        timestamp: 2026-04-21T07:06:05.218Z
     examined_commit: 1f63c6cdb975401087f3e06c710f57e7993d872d
     external_links: []
     lifecycle_state: open
@@ -157280,8 +157287,30 @@ reviews:
       content_hash: ""
       ref: "@01KPPN42NCR77J23TWYP63VXDH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPQDRH1WQ34B51D4VEKW1KZP
+        anchor:
+          type: code
+          commit: 1f63c6cdb975401087f3e06c710f57e7993d872d
+          line_end: 51
+          line_start: 25
+          path: packages/web-ui/src/lib/utils/docs-utils.ts
+          side: head
+        entries:
+          - _ulid: 01KPQDRH1WFMFZ0FC4T6TC5BQD
+            author: Jacob Chapel
+            body: "Section membership is now derived from entry.path, but the synthetic changelog entry still
+              uses path 'RELEASE_NOTES.md'. Reproduced with a node check: groupDocsSections(...)
+              produces a sixth top-level 'Docs' section containing release-notes/changelog, and
+              filterSectionEntries(..., 'release-notes/changelog') omits the changelog page from the
+              Release Notes sidebar entirely. That violates @docs-section-taxonomy ac-1 and
+              regresses sidebar navigation on the changelog page. Please classify this synthetic
+              entry under the release-notes section (for example by using slug-based section
+              detection for non-index entries or by giving the synthetic entry a section-qualified
+              path)."
+            created_at: 2026-04-21T07:06:04.220Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T06:56:03.550Z
-    updated_at: 2026-04-21T06:56:20.900Z
+    updated_at: 2026-04-21T07:06:04.220Z
     notes: []
