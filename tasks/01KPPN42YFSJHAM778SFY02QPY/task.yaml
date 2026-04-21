@@ -19,7 +19,7 @@ description: |
 spec_ref: "@docs-reachability"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-docs-section-scaffolding"
@@ -29,6 +29,14 @@ tags:
   - docs
   - web-ui
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-docs-nav-integration/01kppn42
+  captured_at: 2026-04-21T08:07:55.546Z
+  commit: 020246046a960c53dccad0f689bb5f9260bcc649
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KPQGFFZCAKFTMPMD6XY0V1PG
 history:
   - author: "@claude"
@@ -51,7 +59,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-21T07:54:17.916Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-docs-nav-integration/01kppn42
+          captured_at: 2026-04-21T08:07:55.546Z
+          commit: 020246046a960c53dccad0f689bb5f9260bcc649
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-21T08:07:55.548Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-21T08:07:55.548Z
 created_at: 2026-04-20T23:55:28.591Z
 started_at: 2026-04-21T07:54:17.916Z
+submitted_at: 2026-04-21T08:07:55.548Z
 todos: []
 automation: eligible
