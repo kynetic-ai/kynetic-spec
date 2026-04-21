@@ -29665,7 +29665,7 @@ runs:
     completed_at: 2026-04-21T08:21:19.634Z
   - _ulid: 01KPQK8M1P26T5SX9JD1CBTRXD
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29687,7 +29687,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-21T08:43:32.324Z
-        completed_at: 2026-04-21T08:43:32.324Z
+        completed_at: 2026-04-21T08:43:33.250Z
+        notes: "Friction points: immediately after recording request_changes, the human-readable  output
+          still showed  even though  reported  and the activity log showed the transition. That
+          creates reviewer uncertainty at the exact point the workflow is trying to confirm state.
+          Secondary note: a backtick-heavy review-comment payload caused shell interpolation, but
+          existing project guidance already says to use file-based payloads or quoted heredocs for
+          this case, so that is not new tracking."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-21T08:43:33.250Z
+        completed_at: 2026-04-21T08:43:33.250Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T08:42:14.454Z
