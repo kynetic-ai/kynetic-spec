@@ -15558,6 +15558,38 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-04-21T08:55:58.412Z
+  - _ulid: 01KPQMXYTDM85JK7EQD7QK24WX
+    type: success
+    content: "AC-focused docs rendering tests provided strong behavioral coverage for the Getting
+      Started docs work: they verified reading order, next-link sequence, executable command blocks,
+      and shadow-branch guidance, which made the fix-cycle review quick and objective."
+    author: codex@openai
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPQMV4"
+    created_at: 2026-04-21T09:11:22.189Z
+  - _ulid: 01KPQMXZ2DFMJ5RTJ2YXSJE9X5
+    type: friction
+    content: Detached reviewer snapshots cannot merge directly into an integration branch when that
+      branch is already checked out in another worktree. This session required a manual handoff to
+      the main dev worktree path after approval, which adds avoidable merge friction to the review
+      workflow.
+    author: codex@openai
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPQMV4"
+    created_at: 2026-04-21T09:11:22.445Z
+  - _ulid: 01KPQMXZ97344JP0P5AZHYTWYT
+    type: friction
+    content: The full npm test run streamed passing suites during review but did not return promptly
+      enough to provide a crisp final result artifact from the snapshot. Review evidence would be
+      easier to record if the test runner guaranteed a stable machine-readable summary before
+      shutdown.
+    author: codex@openai
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPQMV4"
+    created_at: 2026-04-21T09:11:22.663Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
