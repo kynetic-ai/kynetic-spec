@@ -30664,7 +30664,7 @@ runs:
     completed_at: 2026-04-21T13:03:37.504Z
   - _ulid: 01KPR2ZX6JWG9DAWM3NT7SDDPR
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -30677,7 +30677,25 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T13:17:56.729Z
-        completed_at: 2026-04-21T13:17:56.729Z
+        completed_at: 2026-04-21T13:18:34.595Z
+        notes: >-
+          Searched observations (large list), inbox (257 items), and kspec search for relevant
+          terms. Baseline established. Two potential friction points identified from session:
+
+
+          1. needs_work → submit requires intermediate start transition: Task in needs_work state
+          cannot directly submit — must transition to in_progress first. This is by design (state
+          machine), but the task-work skill fix cycle section says 'Re-submit — kspec task submit
+          @ref' without mentioning the intermediate step. Searched: no existing tracking found.
+
+
+          2. Docs content review cycles catching invalid CLI commands: The review correctly caught
+          that kspec review refresh doesn't work for task-subject reviews. This is a success pattern
+          — the review system caught a real user-facing error in documentation before publication.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T13:18:34.595Z
+        completed_at: 2026-04-21T13:18:34.595Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T13:17:06.131Z
