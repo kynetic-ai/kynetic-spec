@@ -154265,6 +154265,12 @@ reviews:
         payload:
           thread_ulid: 01KPPV9G2P89BXTFK3DAF65BT3
         timestamp: 2026-04-21T02:08:04.105Z
+      - _ulid: 01KPPWQ10B8TZ5T719K03DN69S
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPPV9KC5RBH9VV0387TZE27K
+        timestamp: 2026-04-21T02:08:09.227Z
     examined_commit: 2cfc5b801c74967628413dbf069a6bbf46c8ee26
     external_links: []
     lifecycle_state: closed
@@ -154334,6 +154340,8 @@ reviews:
               'Supports' since the actual AC coverage is now at the E2E level."
             created_at: 2026-04-21T02:07:54.850Z
         kind: blocker
+        resolved_at: 2026-04-21T02:08:08.197Z
+        resolved_by: "@claude"
       - _ulid: 01KPPV9PSXQ72T5V344695450P
         entries:
           - _ulid: 01KPPV9PSXWCXCVW6VPA5MEYF5
@@ -154362,5 +154370,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T01:47:06.960Z
     created_at: 2026-04-21T01:22:20.376Z
-    updated_at: 2026-04-21T02:08:03.089Z
+    updated_at: 2026-04-21T02:08:08.197Z
     notes: []
