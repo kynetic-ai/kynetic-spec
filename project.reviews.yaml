@@ -154412,6 +154412,16 @@ reviews:
         runner: kspec
         created_at: 2026-04-21T02:22:59.292Z
         completed_at: 2026-04-21T02:22:59.292Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Focused docs E2E passed: 6/6 tests."
+        name: npm run test:e2e -- tests/e2e/docs.spec.ts
+        required: true
+        runner: playwright
+        created_at: 2026-04-21T02:23:02.679Z
+        completed_at: 2026-04-21T02:23:02.679Z
     events:
       - _ulid: 01KPPWX92QNK2MMXNYHGEE5PAY
         actor: Jacob Chapel
@@ -154447,6 +154457,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-21T02:23:00.473Z
+      - _ulid: 01KPPXJAPW7QYZ9CNT5MNY7DQY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run test:e2e -- tests/e2e/docs.spec.ts
+        timestamp: 2026-04-21T02:23:03.900Z
     examined_commit: e8ab506968146ff436879a0cf79c3190095ebffa
     external_links: []
     lifecycle_state: open
@@ -154459,5 +154476,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T02:11:34.103Z
-    updated_at: 2026-04-21T02:22:59.292Z
+    updated_at: 2026-04-21T02:23:02.679Z
     notes: []
