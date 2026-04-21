@@ -70,12 +70,20 @@ export async function startShadowSyncForProject(
   }
 
   // Serialize concurrent starts for the same project (ac-16).
-  // If another call is already in flight, await its completion rather than
-  // racing through the async config load and creating a duplicate scheduler.
+  // If another call is already in flight, await its completion and then
+  // re-check whether a scheduler was installed.  If the first start was
+  // cancelled by a racing stop (start→stop→re-start), it will have bailed
+  // out without creating a scheduler — so we must fall through and retry
+  // rather than returning blindly.  (ac-14/ac-16: re-register after cancel)
   const existing = inFlightStarts.get(projectPath);
   if (existing) {
     await existing;
-    return;
+    // If the awaited start successfully installed a scheduler, we're done.
+    if (shadowSyncSchedulers.has(projectPath)) {
+      return;
+    }
+    // Otherwise fall through to attempt our own start — the first start may
+    // have been cancelled by an intervening stop.
   }
 
   const doStart = async (): Promise<void> => {

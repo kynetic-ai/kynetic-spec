@@ -241,6 +241,57 @@ describe("Multi-project shadow sync", () => {
       expect(shadowSyncSchedulers.has(projectA)).toBe(false);
       expect(startSpy).not.toHaveBeenCalled();
     });
+
+    // AC: @config-shadow ac-14, ac-16 — re-register after cancel must install a scheduler
+    it("should install a scheduler when start→stop→re-start races (re-register after cancel)", async () => {
+      // This reproduces the exact race from review cycle 5:
+      // 1. start(A) begins, suspended on loadProjectConfig
+      // 2. stop(A) cancels the in-flight start
+      // 3. start(A) again (re-registration) — must NOT silently drop
+      //
+      // Without the fix, the second start awaits the first (cancelled) promise
+      // and returns without retrying, leaving no scheduler installed.
+
+      let resolveConfig!: () => void;
+      const configGate = new Promise<void>((r) => { resolveConfig = r; });
+
+      mockedLoadProjectConfig.mockImplementation(async () => {
+        await configGate;
+        return {
+          config: {
+            shadow: {
+              branch: "kspec-meta",
+              directory: ".kspec",
+              sync_interval: 60,
+              remote: { value: "origin", type: "named" as const },
+            },
+          },
+          configPath: "/fake/kspec.config.yaml",
+        } as never;
+      });
+
+      const pubsub = mockPubsub();
+      const getCache = mockGetEntityCache();
+
+      // 1. First start — suspended on configGate
+      const start1 = startShadowSyncForProject(projectA, pubsub, getCache);
+
+      // 2. Stop while first start is in-flight — marks cancellation
+      stopShadowSyncForProject(projectA);
+
+      // 3. Re-register: second start before first resolves
+      const start2 = startShadowSyncForProject(projectA, pubsub, getCache);
+
+      // 4. Release the config gate — first start bails (cancelled),
+      //    second start should retry and install a scheduler
+      resolveConfig();
+      await start1;
+      await start2;
+
+      // The re-registered project MUST have a running scheduler
+      expect(shadowSyncSchedulers.has(projectA)).toBe(true);
+      expect(startSpy).toHaveBeenCalled();
+    });
   });
 
   describe("Shutdown — stop all schedulers", () => {
