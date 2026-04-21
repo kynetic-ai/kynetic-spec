@@ -154152,6 +154152,18 @@ reviews:
         runner: npm
         created_at: 2026-04-21T01:43:27.695Z
         completed_at: 2026-04-21T01:43:27.695Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repository-wide validation still fails on pre-existing meta/schema issues (e.g.
+          .kspec/modules/meta.yaml trait shape) and broad alignment/completeness warnings unrelated
+          to this docs diff; no new docs-specific validation error was isolated from this snapshot.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T01:43:31.138Z
+        completed_at: 2026-04-21T01:43:31.138Z
     events:
       - _ulid: 01KPPT34JRTNY9MCFGQYBM4235
         actor: Jacob Chapel
@@ -154194,6 +154206,13 @@ reviews:
           status: pass
           name: npm run build
         timestamp: 2026-04-21T01:43:28.902Z
+      - _ulid: 01KPPV9YRMBV32KTNPRDPQ0DSB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-21T01:43:32.372Z
     examined_commit: 2cfc5b801c74967628413dbf069a6bbf46c8ee26
     external_links: []
     lifecycle_state: open
@@ -154263,5 +154282,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-21T01:22:20.376Z
-    updated_at: 2026-04-21T01:43:27.695Z
+    updated_at: 2026-04-21T01:43:31.138Z
     notes: []
