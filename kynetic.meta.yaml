@@ -15222,6 +15222,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T01:20:56.661Z
+  - _ulid: 01KPPVM9H71NHEACFPGBGMD315
+    type: friction
+    content: Review triage can be misled by cached npm test results that report a failure until a real
+      fresh rerun is forced. In this session, a cached skill-rendering failure disappeared on npm
+      test -- --fresh, so regression classification required extra work. Treat cached failures as
+      provisional in review guidance or tooling until a fresh rerun confirms them.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPPVHK"
+    created_at: 2026-04-21T01:49:11.079Z
+  - _ulid: 01KPPVM9VDMNT642Z4XWTP26RA
+    type: success
+    content: Checking AC coverage at the rendered behavior layer, not only helper/unit tests, prevented
+      an incorrect approval in this docs review. The route-level acceptance criterion was only
+      covered by a helper test, and reading the page behavior alongside the test annotations
+      surfaced the mismatch quickly.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPPVHK"
+    created_at: 2026-04-21T01:49:11.405Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
