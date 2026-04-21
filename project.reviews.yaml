@@ -154231,9 +154231,25 @@ reviews:
           status: pass
           name: npm test (fresh)
         timestamp: 2026-04-21T01:46:54.942Z
+      - _ulid: 01KPPVGGAGMA4EK2ZA15M431JF
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-21T01:47:06.960Z
+      - _ulid: 01KPPVGGAGXDCVN5SZ16BZ7HZJ
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-21T01:47:06.960Z
     examined_commit: 2cfc5b801c74967628413dbf069a6bbf46c8ee26
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -154298,7 +154314,14 @@ reviews:
               searched: correctness, tests, edge cases, error handling, integration."
             created_at: 2026-04-21T01:43:24.221Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-21T01:47:06.960Z
     created_at: 2026-04-21T01:22:20.376Z
-    updated_at: 2026-04-21T01:46:53.886Z
+    updated_at: 2026-04-21T01:47:06.960Z
     notes: []
