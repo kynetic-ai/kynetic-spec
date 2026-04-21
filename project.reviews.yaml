@@ -154389,6 +154389,17 @@ reviews:
         runner: npm
         created_at: 2026-04-21T02:22:52.413Z
         completed_at: 2026-04-21T02:22:52.413Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed on reviewed snapshot: 8083 passed, 5 skipped. Test runner repaired missing
+          dist/web-ui/index.html by rebuilding first."
+        name: npm test
+        required: true
+        runner: test-runner
+        created_at: 2026-04-21T02:22:55.905Z
+        completed_at: 2026-04-21T02:22:55.905Z
     events:
       - _ulid: 01KPPWX92QNK2MMXNYHGEE5PAY
         actor: Jacob Chapel
@@ -154410,6 +154421,13 @@ reviews:
           status: pass
           name: npm run build
         timestamp: 2026-04-21T02:22:53.588Z
+      - _ulid: 01KPPXJ4211TVWFA2DNQCV16ZY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-21T02:22:57.090Z
     examined_commit: e8ab506968146ff436879a0cf79c3190095ebffa
     external_links: []
     lifecycle_state: open
@@ -154422,5 +154440,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T02:11:34.103Z
-    updated_at: 2026-04-21T02:22:52.413Z
+    updated_at: 2026-04-21T02:22:55.905Z
     notes: []
