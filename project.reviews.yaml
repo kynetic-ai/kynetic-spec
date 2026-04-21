@@ -159228,6 +159228,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQQCYJH4NFCK5X4YCYJ56FQ
         timestamp: 2026-04-21T09:54:31.743Z
+      - _ulid: 01KPQQD30VQS2F6Z0Y1JZ50014
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQQD1VE62Q8P41TTJ6W9Q6Y
+        timestamp: 2026-04-21T09:54:35.164Z
     examined_commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
     external_links: []
     lifecycle_state: open
@@ -159255,7 +159262,24 @@ reviews:
               usable as documented.
             created_at: 2026-04-21T09:54:30.609Z
         kind: blocker
+      - _ulid: 01KPQQD1VE62Q8P41TTJ6W9Q6Y
+        anchor:
+          type: code
+          commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
+          line_end: 125
+          line_start: 53
+          path: docs/guides/importing-and-approving-a-plan.md
+          side: head
+        entries:
+          - _ulid: 01KPQQD1VFXJ2AR6E67HM3R0G7
+            author: Jacob Chapel
+            body: The plan workflow here does not match the shipped CLI.  uses , not ; import stores plan
+              content only instead of creating specs/tasks; and there is no  command. The supported
+              follow-up is , so readers who follow this guide will not get the described ready
+              tasks.
+            created_at: 2026-04-21T09:54:33.967Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:42:34.957Z
-    updated_at: 2026-04-21T09:54:30.609Z
+    updated_at: 2026-04-21T09:54:33.967Z
     notes: []
