@@ -156841,6 +156841,17 @@ reviews:
         runner: kspec
         created_at: 2026-04-21T05:46:12.296Z
         completed_at: 2026-04-21T05:46:12.296Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full suite executed in this snapshot with passing output across the repo, including
+          tests/web-ui-docs-rendering.test.ts (62 tests passing).
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-21T05:46:16.092Z
+        completed_at: 2026-04-21T05:46:16.092Z
     events:
       - _ulid: 01KPQ8YY6P6M7AQ6DY33JWR3GN
         actor: Jacob Chapel
@@ -156876,6 +156887,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-21T05:46:13.566Z
+      - _ulid: 01KPQ96EG3DGVHE16W2BC8PTC2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-21T05:46:17.476Z
     examined_commit: b9b3da5ae7273a4973fd8589f5b69f2c172d9dd6
     external_links: []
     lifecycle_state: open
@@ -156915,5 +156933,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-21T05:42:11.414Z
-    updated_at: 2026-04-21T05:46:12.296Z
+    updated_at: 2026-04-21T05:46:16.092Z
     notes: []
