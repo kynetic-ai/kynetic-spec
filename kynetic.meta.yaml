@@ -15480,6 +15480,26 @@ observations:
     resolved: false
     workflow_ref: "@01KPQG0Z"
     created_at: 2026-04-21T07:46:55.547Z
+  - _ulid: 01KPQGF4WKXEJDY4GRAM13Z09R
+    type: friction
+    content: In fix cycles, kspec task submit requires in_progress state but the task is in needs_work.
+      Worker must run kspec task start before kspec task submit every fix cycle — an extra ceremony
+      step. Consider allowing submit directly from needs_work, or having submit auto-transition
+      through start when the source state is needs_work.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T07:53:22.579Z
+  - _ulid: 01KPQGF56PVKYVP37PT994HSX5
+    type: success
+    content: Cache invalidation via delete (fall-through to disk) is a reliable pattern for keeping
+      synchronous fast-path methods consistent without requiring async reload. Used in
+      applyTaskMutation for historyDetails — minimal change, correct behavior, no signature changes
+      needed.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T07:53:22.902Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
