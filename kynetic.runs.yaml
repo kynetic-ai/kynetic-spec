@@ -29665,7 +29665,7 @@ runs:
     completed_at: 2026-04-21T08:21:19.634Z
   - _ulid: 01KPQK8M1P26T5SX9JD1CBTRXD
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29704,7 +29704,16 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-04-21T08:43:34.198Z
-        completed_at: 2026-04-21T08:43:34.198Z
+        completed_at: 2026-04-21T08:43:35.176Z
+        notes: "Proposed improvement: investigate why  text output can lag behind the underlying task state
+          right after a review verdict transition while  is already correct. Scope appears
+          small-to-medium: reproduce around review-driven state transitions, identify whether the
+          issue is caching or formatter data flow, and make the human-readable view reflect the same
+          current state as JSON."
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-21T08:43:35.176Z
+        completed_at: 2026-04-21T08:43:35.176Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T08:42:14.454Z
