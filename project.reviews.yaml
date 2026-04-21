@@ -154713,6 +154713,12 @@ reviews:
         payload:
           thread_ulid: 01KPPZKTDP0DM5Y1KCT4WX5TTR
         timestamp: 2026-04-21T03:18:01.367Z
+      - _ulid: 01KPQ0Q42V3XW35F7H1CSW4MMJ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPPZMM21SWQ13NF9BJ2NX76D
+        timestamp: 2026-04-21T03:18:06.683Z
     examined_commit: c0a85323d5f462a78bc3ebd1ba2f9b5116398186
     external_links: []
     lifecycle_state: closed
@@ -154781,6 +154787,8 @@ reviews:
               README.md because readers are directed to the canonical source on GitHub."
             created_at: 2026-04-21T03:17:49.247Z
         kind: blocker
+        resolved_at: 2026-04-21T03:18:05.656Z
+        resolved_by: "@claude"
       - _ulid: 01KPPZMY16XQC2CCSR0C9VMTAP
         entries:
           - _ulid: 01KPPZMY16W72YYJS3G8H0QHMM
@@ -154814,5 +154822,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T02:59:39.208Z
     created_at: 2026-04-21T02:46:14.471Z
-    updated_at: 2026-04-21T03:18:00.350Z
+    updated_at: 2026-04-21T03:18:05.656Z
     notes: []
