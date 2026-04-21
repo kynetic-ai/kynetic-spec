@@ -153750,6 +153750,18 @@ reviews:
         runner: test.cjs
         created_at: 2026-04-21T00:36:53.511Z
         completed_at: 2026-04-21T00:36:53.511Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation currently fails in this snapshot due to pre-existing meta/schema issues
+          unrelated to the docs rendering change: .kspec/modules/meta.yaml modules[0].traits[0]
+          expected string but received object, plus existing orphan/coverage warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T00:36:56.925Z
+        completed_at: 2026-04-21T00:36:56.925Z
     events:
       - _ulid: 01KPPQBF2QGT71RFR8KDPEK75Z
         actor: Jacob Chapel
@@ -153792,6 +153804,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T00:36:54.671Z
+      - _ulid: 01KPPQG25VNS1BN5FSH05S03YG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-21T00:36:58.171Z
     examined_commit: ca0646762730b23edeb709229513354dae9acf45
     external_links: []
     lifecycle_state: open
@@ -153861,5 +153880,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T00:34:27.544Z
-    updated_at: 2026-04-21T00:36:53.511Z
+    updated_at: 2026-04-21T00:36:56.925Z
     notes: []
