@@ -155063,6 +155063,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T03:45:14.038Z
+      - _ulid: 01KPQ2RJYKYZJGSQ3EH2DSQ7YR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQ2RHY773VCM11NJ1G9XJXX
+        timestamp: 2026-04-21T03:53:51.827Z
     examined_commit: 765071be773d1738dbd5b14ec2c05e76954c2c98
     external_links: []
     lifecycle_state: open
@@ -155072,8 +155079,27 @@ reviews:
       content_hash: ""
       ref: "@01KPPN42CDKS6A6951ZATDPKXP"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPQ2RHY773VCM11NJ1G9XJXX
+        anchor:
+          type: code
+          commit: 765071be773d1738dbd5b14ec2c05e76954c2c98
+          line_end: 59
+          line_start: 54
+          path: packages/web-ui/src/routes/docs/[...slug]/+page.svelte
+          side: head
+        entries:
+          - _ulid: 01KPQ2RHY7B2QR8MN1E60MZ6YD
+            author: Jacob Chapel
+            body: "Clicking a heading anchor never updates the URL fragment because this handler calls
+              preventDefault() and only scrolls the target into view. I confirmed it with a targeted
+              Playwright check against /docs/getting-started: after clicking the first <h2> anchor,
+              the page URL stayed at /docs/getting-started with no #... suffix. That breaks
+              @docs-navigation-shape ac-2's 'click a heading' path because the resulting direct link
+              is not reflected in the address bar for copying/sharing."
+            created_at: 2026-04-21T03:53:50.791Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T03:44:52.806Z
-    updated_at: 2026-04-21T03:45:12.667Z
+    updated_at: 2026-04-21T03:53:50.791Z
     notes: []
