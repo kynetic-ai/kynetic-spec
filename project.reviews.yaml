@@ -153734,3 +153734,29 @@ reviews:
     created_at: 2026-04-21T00:11:13.490Z
     updated_at: 2026-04-21T00:33:14.618Z
     notes: []
+  - _ulid: 01KPPQBF2RRZYEYZP9F4EB9PSM
+    slugs: []
+    title: Review task-docs-rendering
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KPPQBF2QGT71RFR8KDPEK75Z
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-21T00:34:27.543Z
+    examined_commit: ca0646762730b23edeb709229513354dae9acf45
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KPPN42CDKS6A6951ZATDPKXP"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-21T00:34:27.544Z
+    updated_at: null
+    notes: []
