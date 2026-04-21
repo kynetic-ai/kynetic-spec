@@ -162114,6 +162114,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T21:45:29.423Z
+      - _ulid: 01KPS0671FYMBQJ6NBK09VGAKC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPS065SF44MWX018CSD8X6KK
+        timestamp: 2026-04-21T21:47:21.519Z
     examined_commit: eb78b5cd75d4836765997092e16a0ba688d7229c
     external_links: []
     lifecycle_state: open
@@ -162123,8 +162130,20 @@ reviews:
       content_hash: ""
       ref: "@01KPRZ17RC7NPM3BSCAZX3ZJ0C"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPS065SF44MWX018CSD8X6KK
+        entries:
+          - _ulid: 01KPS065SF69MPMBSTAMH58J1G
+            author: Jacob Chapel
+            body: |-
+              Evidence log:
+              Files read: src/cli/commands/serve.ts, src/agent-runtime/bootstrap.ts, tests/dispatch-runtime-bootstrap-contract.test.ts, tests/cli-no-daemon.test.ts
+              Commands run: git diff --unified=80 base...head; kspec task get @01KPRZ17RC7NPM3BSCAZX3ZJ0C; kspec item get @dispatch-runtime-bootstrap-contract; kspec validate; rg -n "AC: @dispatch-runtime-bootstrap-contract|AC: @trait-" tests; rg -n "DAEMON_RUNTIME_ENV_KEYS" .; rg -n "DAEMON_RUNTIME_ENV_KEYS|DAEMON_RUNTIME_MODE_ENV_KEYS|KSPEC_NO_DAEMON|buildDaemonChildEnv|buildBootstrapStepEnv" src tests; npm test
+              Claims verified: old constant name removed repo-wide; shared constant narrowed to runtime-mode keys only; KSPEC_NO_DAEMON stripping remains local to daemon child env builder and covered by existing behavioral tests; ac-12 regression test now iterates the narrowed runtime-mode key list
+              Categories searched: correctness, edge cases, error handling, test quality, integration. No branch-introduced issues found.
+            created_at: 2026-04-21T21:47:20.240Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-21T21:44:47.361Z
-    updated_at: 2026-04-21T21:45:28.167Z
+    updated_at: 2026-04-21T21:47:20.240Z
     notes: []
