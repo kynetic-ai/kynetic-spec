@@ -28362,7 +28362,7 @@ runs:
     completed_at: 2026-04-21T00:40:09.471Z
   - _ulid: 01KPPRC1D8J2ZHS20SHDHKG6B5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -28373,7 +28373,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T00:53:16.961Z
-        completed_at: 2026-04-21T00:53:16.961Z
+        completed_at: 2026-04-21T00:53:24.449Z
+        notes: Identified 1 friction (layered concurrency races across 6 fix cycles — suggests global
+          shutdown flag pattern for future async managers) and 1 success (composable cancelledStarts
+          mechanism made the final fix clean). Both searched against existing items — no duplicates
+          found.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T00:53:24.449Z
+        completed_at: 2026-04-21T00:53:24.449Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T00:52:14.888Z
