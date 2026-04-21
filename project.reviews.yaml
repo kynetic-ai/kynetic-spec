@@ -154400,6 +154400,18 @@ reviews:
         runner: test-runner
         created_at: 2026-04-21T02:22:55.905Z
         completed_at: 2026-04-21T02:22:55.905Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Fails due to pre-existing repository-wide schema/completeness issues outside this task
+          (e.g. .kspec/modules/meta.yaml traits shape, orphaned skill directory, many unrelated AC
+          coverage warnings).
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T02:22:59.292Z
+        completed_at: 2026-04-21T02:22:59.292Z
     events:
       - _ulid: 01KPPWX92QNK2MMXNYHGEE5PAY
         actor: Jacob Chapel
@@ -154428,6 +154440,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T02:22:57.090Z
+      - _ulid: 01KPPXJ7BRGJ23JFFT86KN9MKN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-21T02:23:00.473Z
     examined_commit: e8ab506968146ff436879a0cf79c3190095ebffa
     external_links: []
     lifecycle_state: open
@@ -154440,5 +154459,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T02:11:34.103Z
-    updated_at: 2026-04-21T02:22:55.905Z
+    updated_at: 2026-04-21T02:22:59.292Z
     notes: []
