@@ -26656,7 +26656,7 @@
   type: task
   spec_ref: "@docs-troubleshooting-section"
   plan_ref: "@plan-user-documentation-foundation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-docs-section-scaffolding"
@@ -26671,7 +26671,7 @@
   todos_count: 0
   created_at: 2026-04-20T23:55:29.765Z
   started_at: 2026-04-21T13:16:38.586Z
-  submitted_at: 2026-04-21T12:47:05.661Z
+  submitted_at: 2026-04-21T13:16:42.441Z
   automation: eligible
 - _ulid: 01KPPN44C9V8R8S9GB3M2YZ02B
   slugs:

@@ -16,7 +16,7 @@ description: |
 spec_ref: "@docs-troubleshooting-section"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-docs-section-scaffolding"
@@ -32,8 +32,8 @@ review_ref: "@01KPR1DH4PGER7S63WTN0GC95J"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-docs-troubleshooting-content/01kppn44
-  captured_at: 2026-04-21T12:47:05.657Z
-  commit: fb495534dd1f4a71b2cb193b97a990c1d9a591a9
+  captured_at: 2026-04-21T13:16:42.435Z
+  commit: 2e4af779415f5e36db24750589b2fbf49ea7d760
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-docs-troubleshooting-content/01kppn44
@@ -223,8 +223,35 @@ history:
         previous: 2026-04-21T12:46:44.907Z
     command: task-start
     timestamp: 2026-04-21T13:16:38.586Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-docs-troubleshooting-content/01kppn44
+          captured_at: 2026-04-21T13:16:42.435Z
+          commit: 2e4af779415f5e36db24750589b2fbf49ea7d760
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-docs-troubleshooting-content/01kppn44
+        previous:
+          review_url: null
+          branch: dispatch/task/task-docs-troubleshooting-content/01kppn44
+          captured_at: 2026-04-21T12:47:05.657Z
+          commit: fb495534dd1f4a71b2cb193b97a990c1d9a591a9
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-docs-troubleshooting-content/01kppn44
+      submitted_at:
+        new: 2026-04-21T13:16:42.441Z
+        previous: 2026-04-21T12:47:05.661Z
+    command: task-submit
+    timestamp: 2026-04-21T13:16:42.442Z
 created_at: 2026-04-20T23:55:29.765Z
 started_at: 2026-04-21T13:16:38.586Z
-submitted_at: 2026-04-21T12:47:05.661Z
+submitted_at: 2026-04-21T13:16:42.441Z
 todos: []
 automation: eligible
