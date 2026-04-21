@@ -29941,9 +29941,23 @@ runs:
     completed_at: 2026-04-21T09:00:12.949Z
   - _ulid: 01KPQMV447CCB178G7R02CJ8K6
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T09:09:49.319Z
+        completed_at: 2026-04-21T09:11:01.790Z
+        notes: "Friction points: 1) reviewer merge flow in a detached snapshot could not check out the
+          integration branch because dev was already active in another worktree, so the approved
+          merge had to be executed against the main worktree path; 2) the full npm test run streamed
+          passing suites but did not return promptly enough to yield a crisp final result artifact
+          from the review snapshot, which made recording review evidence less direct than it should
+          be."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T09:11:01.790Z
+        completed_at: 2026-04-21T09:11:01.790Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T09:09:49.319Z
