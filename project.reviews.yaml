@@ -154512,6 +154512,12 @@ reviews:
         payload:
           thread_ulid: 01KPPXJV6TSRG480GZ6S6XG6FN
         timestamp: 2026-04-21T02:42:11.069Z
+      - _ulid: 01KPPYNFY63ETQTBA7MQ8C7JT4
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPPXJYJF58RQM43P5XTS9YPF
+        timestamp: 2026-04-21T02:42:16.135Z
     examined_commit: e8ab506968146ff436879a0cf79c3190095ebffa
     external_links: []
     lifecycle_state: closed
@@ -154584,6 +154590,8 @@ reviews:
               blocker thread fix.
             created_at: 2026-04-21T02:42:00.721Z
         kind: nit
+        resolved_at: 2026-04-21T02:42:15.162Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -154593,5 +154601,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T02:23:37.316Z
     created_at: 2026-04-21T02:11:34.103Z
-    updated_at: 2026-04-21T02:42:10.080Z
+    updated_at: 2026-04-21T02:42:15.162Z
     notes: []
