@@ -16,8 +16,10 @@ description: |
 spec_ref: "@docs-troubleshooting-section"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev in commit a2b75192c. Added the troubleshooting section seed entries and
+  preserved the concurrently added guides docs rendering coverage during merge conflict resolution.
 depends_on:
   - "@task-docs-section-scaffolding"
   - "@task-docs-concepts-content"
@@ -257,8 +259,23 @@ history:
         previous: "@01KPR1DH4PGER7S63WTN0GC95J"
     command: review-link
     timestamp: 2026-04-21T13:28:05.114Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev in commit a2b75192c. Added the troubleshooting section seed entries and preserved
+          the concurrently added guides docs rendering coverage during merge conflict resolution.
+        previous: null
+      completed_at:
+        new: 2026-04-21T13:31:45.255Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-21T13:31:45.267Z
 created_at: 2026-04-20T23:55:29.765Z
 started_at: 2026-04-21T13:16:38.586Z
 submitted_at: 2026-04-21T13:16:42.441Z
+completed_at: 2026-04-21T13:31:45.255Z
 todos: []
 automation: eligible
