@@ -26538,7 +26538,7 @@
   type: task
   spec_ref: "@docs-section-taxonomy"
   plan_ref: "@plan-user-documentation-foundation"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-docs-rendering"
@@ -26550,7 +26550,7 @@
   notes_count: 6
   todos_count: 0
   created_at: 2026-04-20T23:55:28.300Z
-  started_at: 2026-04-21T05:22:47.530Z
+  started_at: 2026-04-21T05:52:34.321Z
   submitted_at: 2026-04-21T05:22:50.971Z
   automation: eligible
 - _ulid: 01KPPN42YFSJHAM778SFY02QPY
