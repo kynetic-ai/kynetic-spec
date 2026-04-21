@@ -56253,11 +56253,11 @@ workspaces:
     canonical_branch: dispatch/task/task-docs-release-notes-rendering/01kppn44
     canonical_branch_head: b9b3da5ae7273a4973fd8589f5b69f2c172d9dd6
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-21T05:47:48.290Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-21T05:47:50.859Z
     health:
       status: healthy
       issues: []
@@ -56271,7 +56271,7 @@ workspaces:
       target_branch: dev
       target_commit: 9336acd81a8e97f655a484bf98104089cde47c9f
       updated_at: 2026-04-21T05:47:48.290Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KPPN44C9V8R8S9GB3M2YZ02B"
     task_slug: task-docs-release-notes-rendering
@@ -56280,7 +56280,7 @@ workspaces:
       last_active_at: 2026-04-21T05:39:32.037Z
       last_reconciled_at: 2026-04-21T05:47:48.290Z
       created_at: 2026-04-21T04:48:29.358Z
-      updated_at: 2026-04-21T05:47:48.290Z
+      updated_at: 2026-04-21T05:47:50.859Z
     workspace_id: dispatch-workspace-01KPPN44C9V8R8S9GB3M2YZ02B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
