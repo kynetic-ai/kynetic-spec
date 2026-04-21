@@ -30001,7 +30001,7 @@ runs:
     completed_at: 2026-04-21T09:11:34.257Z
   - _ulid: 01KPQNF9EJQN87DRH5FHFFESP4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30017,7 +30017,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T09:21:27.385Z
-        completed_at: 2026-04-21T09:21:27.385Z
+        completed_at: 2026-04-21T09:21:46.255Z
+        notes: "High-confidence findings after duplicate check: no new success worth capturing because the
+          strongest success from this session (review/task integration in detached snapshots) is
+          already tracked. One possible friction is that review-thread/check creation through
+          shell-invoked CLI commands is brittle when the evidence text includes backticks or
+          command-like strings; in this session, shell expansion corrupted initial review comments
+          and check evidence, forcing a rerun with file-backed payloads. This is concrete and
+          repeatable for agent-driven review workflows, but I am checking existing tracking before
+          capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T09:21:46.255Z
+        completed_at: 2026-04-21T09:21:46.255Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T09:20:50.130Z
