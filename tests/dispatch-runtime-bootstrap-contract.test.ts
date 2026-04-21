@@ -10,6 +10,7 @@ import {
   ensureWorkspaceBootstrap,
   DispatchBootstrapError,
 } from "../src/agent-runtime/bootstrap.js";
+import { DAEMON_RUNTIME_ENV_KEYS } from "../src/cli/commands/serve.js";
 import {
   provisionDispatchWorkspace,
   purgeDispatchWorkspaceRecord,
@@ -112,191 +113,6 @@ function makeAgent(overrides?: Partial<Agent>): Agent {
 
 async function readJson<T>(filePath: string): Promise<T> {
   return JSON.parse(await readTestOutput(filePath)) as T;
-}
-
-async function setupLocalFileDependencyProject(dir: string): Promise<void> {
-  const dependencyDir = path.join(dir, "deps", "local-dep");
-  await fs.mkdir(dependencyDir, { recursive: true });
-  await fs.writeFile(
-    path.join(dependencyDir, "package.json"),
-    JSON.stringify(
-      {
-        name: "local-dep",
-        version: "1.0.0",
-        main: "index.js",
-      },
-      null,
-      2,
-    ),
-    "utf-8",
-  );
-  await fs.writeFile(path.join(dependencyDir, "index.js"), "module.exports = 'ok';\n", "utf-8");
-  await fs.writeFile(
-    path.join(dir, "package.json"),
-    JSON.stringify(
-      {
-        name: "dispatch-bootstrap-fixture",
-        private: true,
-        version: "1.0.0",
-        dependencies: {
-          "local-dep": "file:./deps/local-dep",
-        },
-      },
-      null,
-      2,
-    ),
-    "utf-8",
-  );
-  execSync("npm install --package-lock-only", {
-    cwd: dir,
-    stdio: "pipe",
-    encoding: "utf-8",
-  });
-  git(
-    dir,
-    "add package.json package-lock.json deps/local-dep/package.json deps/local-dep/index.js",
-  );
-  git(dir, 'commit -m "fixture: add local dependency bootstrap project"');
-}
-
-async function writeInstalledPackage(
-  nodeModulesRoot: string,
-  packageName: string,
-  mainFile = "index.js",
-): Promise<void> {
-  const packageDir = path.join(nodeModulesRoot, ...packageName.split("/"));
-  await fs.mkdir(packageDir, { recursive: true });
-  await fs.writeFile(
-    path.join(packageDir, "package.json"),
-    JSON.stringify(
-      {
-        name: packageName,
-        version: "1.0.0",
-        main: mainFile,
-      },
-      null,
-      2,
-    ),
-    "utf-8",
-  );
-  await fs.writeFile(path.join(packageDir, mainFile), "module.exports = 'ok';\n", "utf-8");
-}
-
-async function setupBuildableProjectFixture(dir: string): Promise<void> {
-  await setupProject(dir, {
-    dispatchConfig: ["dispatch:", "  base_branch: agent-dev"].join("\n"),
-  });
-  await fs.writeFile(
-    path.join(dir, "package.json"),
-    JSON.stringify(
-      {
-        name: "dispatch-bootstrap-build-fixture",
-        private: true,
-        version: "1.0.0",
-        dependencies: {
-          "local-dep": "file:./deps/local-dep",
-        },
-        scripts: {
-          build: "node build-fixture.cjs",
-        },
-      },
-      null,
-      2,
-    ),
-    "utf-8",
-  );
-  await fs.writeFile(path.join(dir, "package-lock.json"), "{}\n", "utf-8");
-  await fs.mkdir(path.join(dir, "deps", "local-dep"), { recursive: true });
-  await fs.writeFile(
-    path.join(dir, "deps", "local-dep", "package.json"),
-    JSON.stringify(
-      {
-        name: "local-dep",
-        version: "1.0.0",
-        main: "index.js",
-      },
-      null,
-      2,
-    ),
-    "utf-8",
-  );
-  await fs.writeFile(
-    path.join(dir, "deps", "local-dep", "index.js"),
-    "module.exports = 'ok';\n",
-    "utf-8",
-  );
-  execSync("npm install --package-lock-only", {
-    cwd: dir,
-    stdio: "pipe",
-    encoding: "utf-8",
-  });
-
-  for (const relativePath of [
-    "src/cli/commands/plan-import.ts",
-    "packages/shared/src/index.ts",
-    "packages/daemon/src/index.ts",
-    "packages/web-ui/src/app.html",
-    "packages/web-ui/static/favicon.png",
-    "tsconfig.json",
-    "packages/shared/package.json",
-    "packages/daemon/package.json",
-    "packages/web-ui/package.json",
-    "packages/web-ui/vite.config.ts",
-    "packages/web-ui/svelte.config.js",
-  ]) {
-    await fs.mkdir(path.dirname(path.join(dir, relativePath)), { recursive: true });
-    await fs.writeFile(path.join(dir, relativePath), "// fixture\n", "utf-8");
-  }
-
-  await fs.writeFile(
-    path.join(dir, "build-fixture.cjs"),
-    [
-      "const fs = require('node:fs');",
-      "const path = require('node:path');",
-      "const artifacts = [",
-      "  'dist/cli/index.js',",
-      "  'packages/shared/dist/index.js',",
-      "  'dist/web-ui/index.html',",
-      "  'packages/web-ui/.svelte-kit/output/server/manifest-full.js',",
-      "  'dist/daemon/index.js',",
-      "  'dist/daemon/entity-cache.js',",
-      "];",
-      "for (const artifact of artifacts) {",
-      "  const fullPath = path.join(process.cwd(), artifact);",
-      "  fs.mkdirSync(path.dirname(fullPath), { recursive: true });",
-      "  fs.writeFileSync(fullPath, `built ${artifact}\\n`);",
-      "}",
-      "",
-    ].join("\n"),
-    "utf-8",
-  );
-
-  git(
-    dir,
-    [
-      "add",
-      "package.json",
-      "package-lock.json",
-      "build-fixture.cjs",
-      "deps/local-dep/package.json",
-      "deps/local-dep/index.js",
-      "tsconfig.json",
-      "kynetic.yaml",
-      "kynetic.meta.yaml",
-      "project.tasks.yaml",
-      "src/cli/commands/plan-import.ts",
-      "packages/shared/src/index.ts",
-      "packages/daemon/src/index.ts",
-      "packages/web-ui/src/app.html",
-      "packages/web-ui/static/favicon.png",
-      "packages/shared/package.json",
-      "packages/daemon/package.json",
-      "packages/web-ui/package.json",
-      "packages/web-ui/vite.config.ts",
-      "packages/web-ui/svelte.config.js",
-    ].join(" "),
-  );
-  git(dir, 'commit -m "fixture: add build bootstrap project"');
 }
 
 async function readWorkspaceRecord(
@@ -1078,355 +894,6 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
     } satisfies Partial<DispatchWorkspaceError>);
   });
 
-  it(
-    "repairs missing direct dependencies before reusing a previously successful bootstrap",
-    { timeout: 30_000 },
-    async () => {
-      await seedRepo(tempDir);
-      await setupLocalFileDependencyProject(tempDir);
-      await fs.writeFile(
-        path.join(tempDir, "kspec.config.yaml"),
-        ["dispatch:", "  base_branch: agent-dev"].join("\n"),
-        "utf-8",
-      );
-
-      const taskRef = `@${testUlid("TASK", 30)}`;
-      let workspace = await provisionDispatchWorkspace({
-        projectDir: tempDir,
-        taskRef,
-        task: { title: "Dependency Repair Bootstrap", slugs: ["dependency-repair-bootstrap"] },
-      });
-
-      await ensureWorkspaceBootstrap({
-        projectDir: tempDir,
-        workspaceDir: workspace.cwd,
-        metadataPath: workspace.metadataPath,
-        metadata: workspace.metadata,
-        role: "worker",
-        agent: makeAgent(),
-        env: {},
-      });
-      await expect(
-        fs.stat(path.join(workspace.cwd, "node_modules", "local-dep")),
-      ).resolves.toBeTruthy();
-
-      await fs.rm(path.join(workspace.cwd, "node_modules"), { recursive: true, force: true });
-
-      workspace = await provisionDispatchWorkspace({
-        projectDir: tempDir,
-        taskRef,
-        task: { title: "Dependency Repair Bootstrap", slugs: ["dependency-repair-bootstrap"] },
-      });
-      const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
-      const repaired = await ensureWorkspaceBootstrap({
-        projectDir: tempDir,
-        workspaceDir: workspace.cwd,
-        metadataPath: workspace.metadataPath,
-        metadata: {
-          ...workspace.metadata,
-          bootstrap: record.bootstrap,
-          bootstrapState: record.bootstrap,
-        },
-        role: "worker",
-        agent: makeAgent(),
-        env: {},
-      });
-
-      expect(repaired.reused).toBe(false);
-      expect(repaired.ranSteps).toBe(true);
-      expect(repaired.metadata.bootstrap.invalidationReasons).toContain(
-        "workspace-dependencies-missing",
-      );
-      expect(
-        repaired.metadata.bootstrap.steps.some(
-          (step) => step.name === "install-workspace-dependencies",
-        ),
-      ).toBe(true);
-      await expect(
-        fs.stat(path.join(workspace.cwd, "node_modules", "local-dep")),
-      ).resolves.toBeTruthy();
-
-      workspace = await provisionDispatchWorkspace({
-        projectDir: tempDir,
-        taskRef,
-        task: { title: "Dependency Repair Bootstrap", slugs: ["dependency-repair-bootstrap"] },
-      });
-      const postRepairRecord = await readWorkspaceRecord(workspace.metadataPath, taskRef);
-      const reusedAfterRepair = await ensureWorkspaceBootstrap({
-        projectDir: tempDir,
-        workspaceDir: workspace.cwd,
-        metadataPath: workspace.metadataPath,
-        metadata: {
-          ...workspace.metadata,
-          bootstrap: postRepairRecord.bootstrap,
-          bootstrapState: postRepairRecord.bootstrap,
-        },
-        role: "worker",
-        agent: makeAgent(),
-        env: {},
-      });
-
-      expect(reusedAfterRepair.reused).toBe(true);
-      expect(reusedAfterRepair.ranSteps).toBe(false);
-      expect(reusedAfterRepair.metadata.bootstrap.invalidationReasons).toEqual([]);
-    },
-  );
-
-  it("reuses bootstrap when workspace dependencies resolve from the project root install", async () => {
-    await seedRepo(tempDir);
-    await setupProject(tempDir, {
-      dispatchConfig: ["dispatch:", "  base_branch: agent-dev"].join("\n"),
-    });
-    await fs.writeFile(
-      path.join(tempDir, "package.json"),
-      JSON.stringify(
-        {
-          name: "dispatch-bootstrap-hoisted-fixture",
-          private: true,
-          version: "1.0.0",
-          dependencies: {
-            "local-dep": "1.0.0",
-          },
-        },
-        null,
-        2,
-      ),
-      "utf-8",
-    );
-    await fs.writeFile(path.join(tempDir, "package-lock.json"), "{}\n", "utf-8");
-    await writeInstalledPackage(path.join(tempDir, "node_modules"), "local-dep");
-    git(
-      tempDir,
-      "add package.json package-lock.json kynetic.yaml kynetic.meta.yaml project.tasks.yaml",
-    );
-    git(tempDir, 'commit -m "fixture: add hoisted dependency bootstrap project"');
-
-    const taskRef = `@${testUlid("TASK", 38)}`;
-    const workspace = await provisionDispatchWorkspace({
-      projectDir: tempDir,
-      taskRef,
-      task: { title: "Hoisted Dependency Bootstrap", slugs: ["hoisted-dependency-bootstrap"] },
-    });
-
-    const initial = await ensureWorkspaceBootstrap({
-      projectDir: tempDir,
-      workspaceDir: workspace.cwd,
-      metadataPath: workspace.metadataPath,
-      metadata: workspace.metadata,
-      role: "worker",
-      agent: makeAgent(),
-      env: {},
-    });
-
-    expect(initial.ranSteps).toBe(false);
-
-    const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
-    const reused = await ensureWorkspaceBootstrap({
-      projectDir: tempDir,
-      workspaceDir: workspace.cwd,
-      metadataPath: workspace.metadataPath,
-      metadata: {
-        ...workspace.metadata,
-        bootstrap: record.bootstrap,
-        bootstrapState: record.bootstrap,
-      },
-      role: "worker",
-      agent: makeAgent(),
-      env: {},
-    });
-
-    expect(reused.reused).toBe(true);
-    expect(reused.ranSteps).toBe(false);
-    expect(reused.metadata.bootstrap.invalidationReasons).toEqual([]);
-  });
-
-  it("does not reuse bootstrap from installs found only above the project root", async () => {
-    const outerInstallRoot = tempDir;
-    const projectDir = path.join(tempDir, "project");
-    await fs.mkdir(projectDir, { recursive: true });
-    await seedRepo(projectDir);
-    await setupProject(projectDir, {
-      dispatchConfig: ["dispatch:", "  base_branch: agent-dev"].join("\n"),
-    });
-    await setupLocalFileDependencyProject(projectDir);
-    await writeInstalledPackage(path.join(outerInstallRoot, "node_modules"), "local-dep");
-
-    const taskRef = `@${testUlid("TASK", 38)}`;
-    const workspace = await provisionDispatchWorkspace({
-      projectDir,
-      taskRef,
-      task: { title: "Boundary Dependency Bootstrap", slugs: ["boundary-dependency-bootstrap"] },
-    });
-
-    const initial = await ensureWorkspaceBootstrap({
-      projectDir,
-      workspaceDir: workspace.cwd,
-      metadataPath: workspace.metadataPath,
-      metadata: workspace.metadata,
-      role: "worker",
-      agent: makeAgent(),
-      env: {},
-    });
-
-    expect(initial.ranSteps).toBe(true);
-    expect(initial.metadata.bootstrap.invalidationReasons).toContain(
-      "workspace-dependencies-missing",
-    );
-    await expect(
-      fs.stat(path.join(workspace.cwd, "node_modules", "local-dep")),
-    ).resolves.toBeTruthy();
-  });
-
-  it(
-    "repairs missing build artifacts before reusing a previously successful bootstrap",
-    { timeout: 30_000 },
-    async () => {
-      await seedRepo(tempDir);
-      await setupBuildableProjectFixture(tempDir);
-
-      const taskRef = `@${testUlid("TASK", 39)}`;
-      let workspace = await provisionDispatchWorkspace({
-        projectDir: tempDir,
-        taskRef,
-        task: { title: "Build Repair Bootstrap", slugs: ["build-repair-bootstrap"] },
-      });
-
-      await ensureWorkspaceBootstrap({
-        projectDir: tempDir,
-        workspaceDir: workspace.cwd,
-        metadataPath: workspace.metadataPath,
-        metadata: workspace.metadata,
-        role: "worker",
-        agent: makeAgent(),
-        env: {},
-      });
-      await expect(
-        fs.stat(path.join(workspace.cwd, "dist", "cli", "index.js")),
-      ).resolves.toBeTruthy();
-
-      await fs.rm(path.join(workspace.cwd, "dist"), { recursive: true, force: true });
-      await fs.rm(path.join(workspace.cwd, "packages", "shared", "dist"), {
-        recursive: true,
-        force: true,
-      });
-      await fs.rm(path.join(workspace.cwd, "packages", "web-ui", ".svelte-kit"), {
-        recursive: true,
-        force: true,
-      });
-
-      workspace = await provisionDispatchWorkspace({
-        projectDir: tempDir,
-        taskRef,
-        task: { title: "Build Repair Bootstrap", slugs: ["build-repair-bootstrap"] },
-      });
-      const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
-      const repaired = await ensureWorkspaceBootstrap({
-        projectDir: tempDir,
-        workspaceDir: workspace.cwd,
-        metadataPath: workspace.metadataPath,
-        metadata: {
-          ...workspace.metadata,
-          bootstrap: record.bootstrap,
-          bootstrapState: record.bootstrap,
-        },
-        role: "worker",
-        agent: makeAgent(),
-        env: {},
-      });
-
-      expect(repaired.reused).toBe(false);
-      expect(repaired.ranSteps).toBe(true);
-      expect(repaired.metadata.bootstrap.invalidationReasons).toContain("workspace-build-missing");
-      expect(
-        repaired.metadata.bootstrap.steps.some((step) => step.name === "build-workspace-artifacts"),
-      ).toBe(true);
-      await expect(
-        fs.stat(path.join(workspace.cwd, "dist", "web-ui", "index.html")),
-      ).resolves.toBeTruthy();
-
-      workspace = await provisionDispatchWorkspace({
-        projectDir: tempDir,
-        taskRef,
-        task: { title: "Build Repair Bootstrap", slugs: ["build-repair-bootstrap"] },
-      });
-      const postRepairRecord = await readWorkspaceRecord(workspace.metadataPath, taskRef);
-      const reusedAfterRepair = await ensureWorkspaceBootstrap({
-        projectDir: tempDir,
-        workspaceDir: workspace.cwd,
-        metadataPath: workspace.metadataPath,
-        metadata: {
-          ...workspace.metadata,
-          bootstrap: postRepairRecord.bootstrap,
-          bootstrapState: postRepairRecord.bootstrap,
-        },
-        role: "worker",
-        agent: makeAgent(),
-        env: {},
-      });
-
-      expect(reusedAfterRepair.reused).toBe(true);
-      expect(reusedAfterRepair.ranSteps).toBe(false);
-      expect(reusedAfterRepair.metadata.bootstrap.invalidationReasons).toEqual([]);
-    },
-  );
-
-  it(
-    "reruns bootstrap when tracked source inputs are newer than workspace build artifacts",
-    { timeout: 30_000 },
-    async () => {
-      await seedRepo(tempDir);
-      await setupBuildableProjectFixture(tempDir);
-
-      const taskRef = `@${testUlid("TASK", 40)}`;
-      let workspace = await provisionDispatchWorkspace({
-        projectDir: tempDir,
-        taskRef,
-        task: { title: "Build Stale Bootstrap", slugs: ["build-stale-bootstrap"] },
-      });
-
-      await ensureWorkspaceBootstrap({
-        projectDir: tempDir,
-        workspaceDir: workspace.cwd,
-        metadataPath: workspace.metadataPath,
-        metadata: workspace.metadata,
-        role: "worker",
-        agent: makeAgent(),
-        env: {},
-      });
-
-      const staleSource = path.join(workspace.cwd, "src", "cli", "commands", "plan-import.ts");
-      const future = new Date(Date.now() + 5_000);
-      await fs.utimes(staleSource, future, future);
-
-      workspace = await provisionDispatchWorkspace({
-        projectDir: tempDir,
-        taskRef,
-        task: { title: "Build Stale Bootstrap", slugs: ["build-stale-bootstrap"] },
-      });
-      const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
-      const repaired = await ensureWorkspaceBootstrap({
-        projectDir: tempDir,
-        workspaceDir: workspace.cwd,
-        metadataPath: workspace.metadataPath,
-        metadata: {
-          ...workspace.metadata,
-          bootstrap: record.bootstrap,
-          bootstrapState: record.bootstrap,
-        },
-        role: "worker",
-        agent: makeAgent(),
-        env: {},
-      });
-
-      expect(repaired.reused).toBe(false);
-      expect(repaired.ranSteps).toBe(true);
-      expect(repaired.metadata.bootstrap.invalidationReasons).toContain("workspace-build-missing");
-      expect(
-        repaired.metadata.bootstrap.steps.some((step) => step.name === "build-workspace-artifacts"),
-      ).toBe(true);
-    },
-  );
-
   // AC: @dispatch-runtime-bootstrap-contract ac-6
   // AC: @trait-error-guidance ac-1
   // AC: @trait-error-guidance ac-2
@@ -1636,5 +1103,192 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
     expect(calls.some((call) => call.args[0] === "task" && call.args[1] === "block")).toBe(true);
 
     await engine.stop();
+  });
+
+  // AC: @dispatch-runtime-bootstrap-contract ac-11
+  it("runs the declared command string without modification or addition by the dispatcher", async () => {
+    await seedRepo(tempDir);
+    const captureFile = path.join(tempDir, "bootstrap-fidelity-capture.txt");
+    const declaredCommand = `printf '%s' "EXACT_COMMAND_STRING" > ${JSON.stringify(captureFile)}`;
+    await setupProject(tempDir, {
+      dispatchConfig: [
+        "dispatch:",
+        "  base_branch: agent-dev",
+        "  bootstrap:",
+        "    steps:",
+        `      - run: ${declaredCommand}`,
+      ].join("\n"),
+    });
+
+    const taskRef = `@${testUlid("TASK", 41)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Command Fidelity Test", slugs: ["command-fidelity-test"] },
+    });
+
+    const result = await ensureWorkspaceBootstrap({
+      projectDir: tempDir,
+      workspaceDir: workspace.cwd,
+      metadataPath: workspace.metadataPath,
+      metadata: workspace.metadata,
+      role: "worker",
+      agent: makeAgent(),
+      env: {},
+    });
+
+    // Verify the command produced the expected output (proves it executed)
+    await expect(readTestOutput(captureFile)).resolves.toBe("EXACT_COMMAND_STRING");
+    // Verify the metadata recorded exactly the declared command — no prefix/suffix added
+    expect(result.metadata.bootstrap.steps).toHaveLength(1);
+    expect(result.metadata.bootstrap.steps[0].run).toBe(declaredCommand);
+  });
+
+  // AC: @dispatch-runtime-bootstrap-contract ac-11
+  it("produces zero spawns when no bootstrap steps are configured even for a Node-like workspace", async () => {
+    await seedRepo(tempDir);
+    await setupProject(tempDir, {
+      dispatchConfig: ["dispatch:", "  base_branch: agent-dev"].join("\n"),
+    });
+
+    const taskRef = `@${testUlid("TASK", 42)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "No Steps Zero Spawns", slugs: ["no-steps-zero-spawns"] },
+    });
+
+    // Seed the workspace with Node project markers (package.json + lockfile).
+    // If implicit bootstrap inference for package-based projects were
+    // reintroduced, this workspace would trigger synthetic install/build
+    // steps. With the inference removed, zero spawns must still result.
+    await fs.writeFile(
+      path.join(workspace.cwd, "package.json"),
+      JSON.stringify({ name: "test-project", version: "1.0.0", scripts: { build: "echo ok" } }),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(workspace.cwd, "package-lock.json"),
+      JSON.stringify({ name: "test-project", lockfileVersion: 3, packages: {} }),
+      "utf-8",
+    );
+
+    const result = await ensureWorkspaceBootstrap({
+      projectDir: tempDir,
+      workspaceDir: workspace.cwd,
+      metadataPath: workspace.metadataPath,
+      metadata: workspace.metadata,
+      role: "worker",
+      agent: makeAgent(),
+      env: {},
+    });
+
+    expect(result.ranSteps).toBe(false);
+    expect(result.metadata.bootstrap.steps).toEqual([]);
+  });
+
+  // AC: @dispatch-runtime-bootstrap-contract ac-12
+  it("strips daemon runtime mode env vars from bootstrap step subprocess environment", async () => {
+    await seedRepo(tempDir);
+    await setupProject(tempDir, {
+      dispatchConfig: [
+        "dispatch:",
+        "  base_branch: agent-dev",
+        "  bootstrap:",
+        "    steps:",
+        "      - run: mkdir -p .dispatch-cache && env > .dispatch-cache/env-dump.txt",
+      ].join("\n"),
+    });
+
+    const taskRef = `@${testUlid("TASK", 43)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Env Isolation Test", slugs: ["env-isolation-test"] },
+    });
+
+    // Set all daemon runtime env keys on the current process to simulate
+    // the daemon environment leaking into the dispatcher
+    const savedEnv: Record<string, string | undefined> = {};
+    for (const key of DAEMON_RUNTIME_ENV_KEYS) {
+      savedEnv[key] = process.env[key];
+      process.env[key] = "test-sentinel-value";
+    }
+
+    try {
+      await ensureWorkspaceBootstrap({
+        projectDir: tempDir,
+        workspaceDir: workspace.cwd,
+        metadataPath: workspace.metadataPath,
+        metadata: workspace.metadata,
+        role: "worker",
+        agent: makeAgent(),
+        env: {},
+      });
+
+      const envDump = await readTestOutput(
+        path.join(workspace.cwd, ".dispatch-cache", "env-dump.txt"),
+      );
+      const envLines = new Map(
+        envDump
+          .split("\n")
+          .filter((line) => line.includes("="))
+          .map((line) => {
+            const eqIndex = line.indexOf("=");
+            return [line.slice(0, eqIndex), line.slice(eqIndex + 1)] as [string, string];
+          }),
+      );
+
+      for (const key of DAEMON_RUNTIME_ENV_KEYS) {
+        expect(envLines.has(key)).toBe(false);
+      }
+    } finally {
+      for (const key of DAEMON_RUNTIME_ENV_KEYS) {
+        if (savedEnv[key] === undefined) {
+          delete process.env[key];
+        } else {
+          process.env[key] = savedEnv[key];
+        }
+      }
+    }
+  });
+
+  // AC: @dispatch-runtime-bootstrap-contract ac-13
+  it("preserves the declared order of bootstrap step commands", async () => {
+    await seedRepo(tempDir);
+    const orderFile = path.join(tempDir, "bootstrap-order.txt");
+    await setupProject(tempDir, {
+      dispatchConfig: [
+        "dispatch:",
+        "  base_branch: agent-dev",
+        "  bootstrap:",
+        "    steps:",
+        `      - run: printf S1 >> ${JSON.stringify(orderFile)}`,
+        "        name: step-1",
+        `      - run: printf S2 >> ${JSON.stringify(orderFile)}`,
+        "        name: step-2",
+        `      - run: printf S3 >> ${JSON.stringify(orderFile)}`,
+        "        name: step-3",
+      ].join("\n"),
+    });
+
+    const taskRef = `@${testUlid("TASK", 44)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Step Order Test", slugs: ["step-order-test"] },
+    });
+
+    await ensureWorkspaceBootstrap({
+      projectDir: tempDir,
+      workspaceDir: workspace.cwd,
+      metadataPath: workspace.metadataPath,
+      metadata: workspace.metadata,
+      role: "worker",
+      agent: makeAgent(),
+      env: {},
+    });
+
+    await expect(readTestOutput(orderFile)).resolves.toBe("S1S2S3");
   });
 });

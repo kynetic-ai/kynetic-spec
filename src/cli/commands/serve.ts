@@ -135,6 +135,14 @@ export function getDaemonRuntimeCommand(runtime: DaemonRuntime): string {
   return runtime;
 }
 
+/**
+ * Environment variable names that `buildDaemonChildEnv` strips or overrides
+ * to configure the daemon's own runtime mode. These must NOT leak into
+ * bootstrap step subprocesses — the bootstrap env isolation boundary uses
+ * this same list so additions stay in sync automatically.
+ */
+export const DAEMON_RUNTIME_ENV_KEYS = ["KSPEC_NO_DAEMON", "BUN_ENV", "NODE_ENV"] as const;
+
 export function buildDaemonChildEnv(
   runtime: DaemonRuntime,
   baseEnv: NodeJS.ProcessEnv = process.env,

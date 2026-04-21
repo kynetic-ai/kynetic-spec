@@ -1,6 +1,18 @@
 dispatch:
   publication_mode: manual_merge
   base_branch: dev
+  bootstrap:
+    steps:
+      - run: npm ci --ignore-scripts=false
+        name: install-workspace-dependencies
+        idempotent: true
+        allow_tracked_changes: false
+        reviewer_rerun_allowed: true
+      - run: npm run build
+        name: build-workspace-artifacts
+        idempotent: true
+        allow_tracked_changes: false
+        reviewer_rerun_allowed: true
 daemon:
   runtime: node
 agent:
