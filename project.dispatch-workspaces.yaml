@@ -58446,7 +58446,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T10:24:53.970Z
+      updated_at: 2026-04-21T10:26:49.054Z
     integration:
       status: merged
       detail: integration:merged
@@ -58455,25 +58455,20 @@ workspaces:
       target_branch: dev
       target_commit: 5bb723c5fcc22435d779a9b683e0ae81b62b344a
       updated_at: 2026-04-21T10:24:53.970Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KPPN44YXNT6N46A2NSJPBBY7"
     task_slug: task-docs-readme-trim
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T10:12:15.396Z
-      last_reconciled_at: 2026-04-21T10:26:45.183Z
+      last_reconciled_at: 2026-04-21T10:26:49.054Z
       created_at: 2026-04-21T09:55:21.037Z
-      updated_at: 2026-04-21T10:26:45.183Z
+      updated_at: 2026-04-21T10:26:49.054Z
     workspace_id: dispatch-workspace-01KPPN44YXNT6N46A2NSJPBBY7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: ef9d43cce751c314c66c88c12480e29e299d06da
-        last_seen_at: 2026-04-21T10:11:50.279Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-readme-trim-01kppn44-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-docs-readme-trim/01kppn44
