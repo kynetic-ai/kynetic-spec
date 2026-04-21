@@ -157635,6 +157635,25 @@ reviews:
         runner: npm
         created_at: 2026-04-21T07:44:03.467Z
         completed_at: 2026-04-21T07:44:03.467Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: docs/* section index pages, packages/web-ui/src/lib/docs.ts,
+          packages/web-ui/src/lib/utils/docs-markdown.ts,
+          packages/web-ui/src/lib/utils/docs-utils.ts, packages/web-ui/src/routes/docs/+page.svelte,
+          packages/web-ui/vite-plugin-docs.ts, packages/web-ui/vite.config.ts,
+          tests/web-ui-docs-rendering.test.ts. Commands run: kspec task get, kspec item get, kspec
+          review get/for-task, git diff/stat/log, rg for AC annotations, kspec validate, npm test,
+          manifest/grouping node probes, docs tree listing. Claims verified: canonical section
+          order, section landing-page slugs, release-notes synthetic entry grouping, exclusion of
+          contributor-only docs, AC annotation presence. Categories searched: correctness, edge
+          cases, test quality, integration, routing/publication behavior. Findings: none."
+        name: review-evidence
+        required: false
+        runner: review
+        created_at: 2026-04-21T07:44:07.751Z
+        completed_at: 2026-04-21T07:44:07.751Z
     events:
       - _ulid: 01KPQFCH6WXZGCQCSPT9K8H3CM
         actor: Jacob Chapel
@@ -157663,6 +157682,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T07:44:04.966Z
+      - _ulid: 01KPQFY8GVN6WW2PS29JEH0ZKP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-21T07:44:09.244Z
     examined_commit: 0fa290b38afb74ee97b38d019e58c5402d0126c8
     external_links: []
     lifecycle_state: open
@@ -157675,5 +157701,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T07:34:28.317Z
-    updated_at: 2026-04-21T07:44:03.467Z
+    updated_at: 2026-04-21T07:44:07.751Z
     notes: []
