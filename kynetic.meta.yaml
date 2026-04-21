@@ -15275,6 +15275,16 @@ observations:
     resolved: false
     workflow_ref: "@01KPPXN2"
     created_at: 2026-04-21T02:25:29.029Z
+  - _ulid: 01KPPZRDQ6ZRPSGF2WREEN8KQM
+    type: success
+    content: Diff-first review plus independent verification with full npm test, targeted docs E2E, and
+      built-artifact checks caught a real user-facing docs regression that passing tests alone
+      missed. This is a strong review pattern for web UI changes that bundle static content.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-21T03:01:20.742Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
