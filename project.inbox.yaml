@@ -2876,3 +2876,16 @@ inbox:
       - cache
     added_by: Jacob Chapel
     created_at: 2026-04-21T06:14:47.306Z
+  - _ulid: 01KPQWGH1PKG802JT4ZWPJSP0T
+    text: "Strengthen docs rendering coverage so guide tests verify that each documented command points
+      to the matching --help entry, not just that --help appears somewhere on the page. The current
+      guides test suite let docs/guides/authoring-and-completing-a-task.md pair kspec derive with
+      kspec task add --help, so AC-3 drift escaped until manual review. Candidate scope: extend
+      tests/web-ui-docs-rendering.test.ts to associate command examples with nearby help references,
+      or add a docs-specific assertion helper for command/help pairing."
+    tags:
+      - reflection
+      - docs
+      - testing
+    added_by: Jacob Chapel
+    created_at: 2026-04-21T11:23:50.710Z
