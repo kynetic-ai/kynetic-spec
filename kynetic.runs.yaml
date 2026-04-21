@@ -30109,7 +30109,7 @@ runs:
     completed_at: 2026-04-21T09:43:05.222Z
   - _ulid: 01KPQQH0SY92GN699F5XRQBS6R
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30130,7 +30130,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-21T09:57:51.460Z
-        completed_at: 2026-04-21T09:57:51.460Z
+        completed_at: 2026-04-21T09:57:52.580Z
+        notes: "Friction: the docs tests in this change validated page structure but not whether documented
+          kspec commands actually exist, so multiple incorrect command names survived until live CLI
+          review. A smaller tooling friction also appeared when shell-passed review comment payloads
+          contained command-like text, producing malformed duplicate threads before cleanup."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-21T09:57:52.580Z
+        completed_at: 2026-04-21T09:57:52.580Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T09:56:43.966Z
