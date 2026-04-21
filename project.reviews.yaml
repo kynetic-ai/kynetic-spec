@@ -158705,6 +158705,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQN9GAQGKE9886829XXDZ02
         timestamp: 2026-04-21T09:17:41.634Z
+      - _ulid: 01KPQN9MGMR2TTY3XVPRD2DX33
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQN9KD6AEJWZZWSFMP4VVM6
+        timestamp: 2026-04-21T09:17:44.852Z
     examined_commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
     external_links: []
     lifecycle_state: open
@@ -158732,7 +158739,25 @@ reviews:
               trying to understand how plans behave today.
             created_at: 2026-04-21T09:17:40.567Z
         kind: blocker
+      - _ulid: 01KPQN9KD6AEJWZZWSFMP4VVM6
+        anchor:
+          type: code
+          commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
+          line_end: 20
+          line_start: 20
+          path: docs/concepts/agents-and-dispatch.md
+          side: head
+        entries:
+          - _ulid: 01KPQN9KD6GVFGFTKC4QDZSBR4
+            author: Jacob Chapel
+            body: This page currently tells readers that kspec ships with only two built-in agent definitions,
+              but the default scaffold now creates four (, , , and ). That makes the Concepts
+              section factually wrong for a freshly initialized project and will mislead readers
+              about what   cd /home/chapel/Projects/kynetic-spec-dispatch && kspec setup gives them
+              out of the box.
+            created_at: 2026-04-21T09:17:43.718Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:16:51.337Z
-    updated_at: 2026-04-21T09:17:40.567Z
+    updated_at: 2026-04-21T09:17:43.718Z
     notes: []
