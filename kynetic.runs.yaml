@@ -29445,7 +29445,7 @@ runs:
     completed_at: 2026-04-21T07:18:22.591Z
   - _ulid: 01KPQF9AVSYFTM6FN2EXK5JRYR
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29480,7 +29480,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-21T07:33:50.189Z
-        completed_at: 2026-04-21T07:33:50.189Z
+        completed_at: 2026-04-21T07:34:03.114Z
+        notes: "Potential improvement: add a small reviewer-guidance note or workflow branch for task
+          reviews with no spec_ref so reviewers can switch explicitly from AC-coverage checks to
+          behavior/diff/reproduction-driven checks. Scope: small documentation/workflow adjustment.
+          Confidence: moderate, because the friction appeared in this review but I have only one
+          fresh example and the existing skills already allow manual adaptation."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-21T07:34:03.114Z
+        completed_at: 2026-04-21T07:34:03.114Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T07:32:43.513Z
