@@ -160569,6 +160569,12 @@ reviews:
         payload:
           thread_ulid: 01KPQWAJ5J87ASYJQ7MPFTYEGH
         timestamp: 2026-04-21T11:50:06.639Z
+      - _ulid: 01KPQY0T5RN92HWEXZ967G10TT
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQWBMA18CJK281NMYJKQBAH
+        timestamp: 2026-04-21T11:50:12.920Z
     examined_commit: 75957850232c7c98368ca335b3153531a766f794
     external_links: []
     lifecycle_state: closed
@@ -160717,6 +160723,11 @@ reviews:
                 --title <title>  Override task title (default: 'Implement: {spec title}')
                 -h, --help       display help for command. Those are different workflows, so a reader looking for derive flags is sent to the wrong command. That breaks @docs-guides-section ac-3 for this guide's task-creation path.
             created_at: 2026-04-21T11:21:10.209Z
+          - _ulid: 01KPQY0S0HKHNMQ4EN0TWTJN53
+            author: "@claude"
+            body: "Fixed: same issue as the other blocker — the help pointer on line 32 now reads kspec derive
+              --help, matching the kspec derive command documented in the step above."
+            created_at: 2026-04-21T11:50:11.728Z
         kind: blocker
       - _ulid: 01KPQWBX6DZJNG1CA79KHW7BNR
         anchor:
@@ -160745,5 +160756,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T11:21:29.840Z
     created_at: 2026-04-21T11:09:39.874Z
-    updated_at: 2026-04-21T11:50:05.458Z
+    updated_at: 2026-04-21T11:50:11.728Z
     notes: []
