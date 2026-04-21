@@ -32,3 +32,31 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-21T06:12:31.123Z
+  - _ulid: 01KPQBPZSEPNBEPX05S22WD3NY
+    content: >-
+      Implementation complete. Added applyTaskMutation() to ProjectEntityCache which atomically
+      updates both the index tier (TaskSummary with status field) and the detail tier (full
+      LoadedTask) in response to mutations.
+
+
+      Changes:
+
+      - src/parser/task-data-manager.ts: Added applyTaskMutation to TaskReadCache interface
+      (optional, backwards-compatible). mutateTask(), mutateTasks(), and createTask() now call
+      cache.applyTaskMutation() after successful writes, immediately propagating the result to the
+      entity cache.
+
+      - src/daemon/entity-cache.ts: Implemented applyTaskMutation() on ProjectEntityCache. Updates
+      both index and detail tiers atomically. No-op when tasks domain is not ready.
+
+      - tests/task-data-manager.test.ts: 4 new tests verifying cache propagation for mutateTask,
+      mutateTasks, createTask, and no-op when cache context is absent.
+
+      - tests/daemon-entity-cache.test.ts: 3 new tests verifying applyTaskMutation updates
+      index+detail, adds new tasks, and is a no-op when domain is not ready.
+
+
+      All 8136 tests pass (2219 suites). No regressions.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T06:30:16.622Z
