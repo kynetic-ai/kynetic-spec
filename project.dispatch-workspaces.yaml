@@ -55934,12 +55934,17 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-21T06:30:59.750Z
+      updated_at: 2026-04-21T06:31:48.877Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T06:31:03.763Z
+      status: stale
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-section-scaffolding-01kppn42"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-04-21T06:31:48.877Z
     integration:
       status: pending
       detail: null
@@ -55947,17 +55952,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9336acd81a8e97f655a484bf98104089cde47c9f
-      updated_at: 2026-04-21T06:30:59.750Z
-    lifecycle_state: active
+      updated_at: 2026-04-21T06:31:48.877Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KPPN42NCR77J23TWYP63VXDH"
     task_slug: task-docs-section-scaffolding
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T06:31:03.763Z
-      last_reconciled_at: 2026-04-21T06:31:03.763Z
+      last_reconciled_at: 2026-04-21T06:31:48.877Z
       created_at: 2026-04-21T04:30:00.199Z
-      updated_at: 2026-04-21T06:31:03.763Z
+      updated_at: 2026-04-21T06:31:48.877Z
     workspace_id: dispatch-workspace-01KPPN42NCR77J23TWYP63VXDH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
