@@ -16,7 +16,10 @@ import { Elysia } from "elysia";
 import { createTempDir, cleanupTempDir, initGitRepo, testUlid, seedSplitTask } from "./helpers/cli";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
 import { createReviewsRoutes } from "../dist/daemon/routes/reviews.js";
+import { createTasksRoutes } from "../dist/daemon/routes/tasks.js";
 import { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
+import type { RouteEntityCache, EntityCacheAccessor } from "../dist/daemon/routes/entity-cache-types.js";
+import { initContext, resolveTaskDataManager, type LoadedTask, type TaskSummary } from "../dist/parser/index.js";
 // Register split backend in the dist module space (routes use dist, not src)
 import { ensureSplitBackendRegistered } from "../dist/parser/split-backend.js";
 ensureSplitBackendRegistered();
@@ -665,6 +668,309 @@ describe("Review Lifecycle API", () => {
     expect(response.status).toBe(404);
     const body = await response.json();
     expect(body.error).toBe("not_found");
+  });
+});
+
+// Task: @01KPQ7RDHXBRGDZSDFF0XG13RT
+// Integration test: verify that after a review verdict transitions a task,
+// an immediate task read through the same cache-backed surface sees the new state.
+describe("Review Verdict Task Consistency", () => {
+  // Dedicated ULIDs for this describe block to avoid collisions
+  const CONSIST_REVIEW_ULID = testUlid("CVRD", 1);
+  const CONSIST_TASK_ULID = testUlid("CVTK", 2);
+
+  let tempDir: string;
+  let app: Elysia;
+  let pubsub: PubSubManager;
+
+  /**
+   * Build a mock RouteEntityCache whose writeThrough("tasks", { ulid })
+   * reloads the specified task from disk and updates the in-memory tiers —
+   * matching the real ProjectEntityCache behavior that makes subsequent
+   * reads immediately consistent.
+   */
+  function createConsistencyCache(
+    initialTaskIndex: TaskSummary[],
+    initialTaskDetails: Map<string, LoadedTask>,
+  ): RouteEntityCache {
+    const taskIndex = [...initialTaskIndex];
+    const taskDetails = new Map(initialTaskDetails);
+
+    return {
+      getDomainState: (domain: string) =>
+        domain === "tasks" || domain === "reviews" ? "ready" : "unloaded",
+      getTaskIndex: () => taskIndex,
+      getTaskDetail: (ulid: string) => taskDetails.get(ulid) ?? null,
+      getTaskHistory: () => null,
+      setTaskDetail: (ulid, task) => taskDetails.set(ulid, task as LoadedTask),
+      getAllTaskDetails: () => Array.from(taskDetails.values()),
+      getItemIndex: () => null,
+      getItemDetail: () => null,
+      setItemDetail: () => {},
+      getAllItemDetails: () => null,
+      getSessionIndex: () => null,
+      getSessionLiveEventCount: () => undefined,
+      getSessionDetail: () => null,
+      setSessionDetail: () => {},
+      getPlansIndex: () => null,
+      getPlanDetail: () => null,
+      setPlanDetail: () => {},
+      getInboxIndex: () => null,
+      getTriageIndex: () => null,
+      getTriageDetail: () => null,
+      setTriageDetail: () => {},
+      getReviewsIndex: () => null,
+      getReviewDetail: () => null,
+      setReviewDetail: () => {},
+      getMetaIndex: () => null,
+      getMetaDetail: () => null,
+      setMetaDetail: () => {},
+      getShadowInfo: () => null,
+      getProjectConfig: () => null,
+      getSessionContext: () => null,
+      writeThrough: async (domain: string, hint?: { ulid?: string }) => {
+        if (domain === "tasks" && hint?.ulid) {
+          // Reload the task from disk — mirrors real ProjectEntityCache behavior
+          const ctx = await initContext(tempDir, { syncMode: "skip" });
+          const loaded = await resolveTaskDataManager(ctx).getTask(ctx, hint.ulid);
+          // Update detail tier
+          taskDetails.set(loaded._ulid, loaded);
+          // Update index tier: rebuild summary from loaded task
+          const existingIdx = taskIndex.findIndex((t) => t._ulid === loaded._ulid);
+          const summary: TaskSummary = {
+            _ulid: loaded._ulid,
+            slugs: loaded.slugs,
+            title: loaded.title,
+            type: (loaded.type as TaskSummary["type"]) || "task",
+            status: loaded.status,
+            priority: loaded.priority,
+            spec_ref: loaded.spec_ref,
+            depends_on: loaded.depends_on,
+            blocked_by: loaded.blocked_by || [],
+            tags: loaded.tags,
+            automation: loaded.automation,
+            review_ref: loaded.review_ref ?? undefined,
+            session_id: loaded.session_id,
+            plan_ref: loaded.plan_ref,
+            notes_count: loaded.notes?.length || 0,
+            todos_count: loaded.todos?.length || 0,
+            created_at: loaded.created_at,
+            started_at: loaded.started_at,
+            completed_at: loaded.completed_at,
+            cancelled_at: loaded.cancelled_at,
+          };
+          if (existingIdx >= 0) {
+            taskIndex[existingIdx] = summary;
+          } else {
+            taskIndex.push(summary);
+          }
+        }
+        // For other domains, no-op (we only need tasks consistency for this test)
+      },
+      markWriteThrough: () => {},
+      getCacheDiagnostics: () => ({
+        projectPath: tempDir,
+        domains: {},
+      }),
+    } as RouteEntityCache;
+  }
+
+  function setupConsistencyFixtures() {
+    mkdirSync(path.join(tempDir, ".kspec"), { recursive: true });
+    mkdirSync(path.join(tempDir, "modules"), { recursive: true });
+
+    writeFileSync(
+      path.join(tempDir, "kynetic.yaml"),
+      `kynetic: "1.1"
+task_storage:
+  format: split
+project:
+  name: Consistency Test
+  version: "0.1.0"
+  status: draft
+includes:
+  - modules/test.yaml
+`,
+    );
+
+    writeFileSync(
+      path.join(tempDir, "modules", "test.yaml"),
+      `features:
+  - _ulid: "${testUlid("CVSP", 1)}"
+    slugs:
+      - consist-feature
+    title: "Consistency Feature"
+    type: feature
+    description: "Test feature for consistency"
+    created: "2026-01-01T00:00:00Z"
+`,
+    );
+
+    // Task in pending_review with review_ref pointing to the open review
+    seedSplitTask(tempDir, {
+      _ulid: CONSIST_TASK_ULID,
+      slugs: ["consist-task"],
+      title: "Consistency Test Task",
+      description: "Task for testing verdict-then-read consistency",
+      status: "pending_review",
+      priority: 2,
+      spec_ref: "@consist-feature",
+      review_ref: `@${CONSIST_REVIEW_ULID}`,
+      depends_on: [],
+      blocked_by: [],
+      tags: [],
+      notes: [],
+      todos: [],
+      created_at: "2026-01-01T00:00:00Z",
+      started_at: "2026-01-01T00:00:00Z",
+    });
+
+    // Review in open state, linked to the task
+    writeFileSync(
+      path.join(tempDir, "project.reviews.yaml"),
+      `kynetic_reviews: "1.0"
+reviews:
+  - _ulid: "${CONSIST_REVIEW_ULID}"
+    slugs:
+      - consist-review
+    title: "Consistency test review"
+    lifecycle_state: open
+    author: "@test"
+    subject:
+      type: task
+      ref: "@consist-task"
+      shadow_commit: "abc123"
+      content_hash: "hash1"
+    verdicts: []
+    checks: []
+    threads: []
+    events: []
+    related_refs: []
+    created_at: "2026-01-01T00:00:00Z"
+    updated_at: "2026-01-01T00:00:00Z"
+`,
+    );
+
+    execSync('git add -A && git commit -m "consistency test setup"', {
+      cwd: tempDir,
+      stdio: "pipe",
+    });
+  }
+
+  function makeConsistencyRequest(method: string, urlPath: string, body?: unknown) {
+    const url = `http://localhost${urlPath}`;
+    const opts: RequestInit = {
+      method,
+      headers: {
+        Host: "localhost",
+        "X-Kspec-Dir": tempDir,
+        "Content-Type": "application/json",
+      },
+    };
+    if (body) {
+      opts.body = JSON.stringify(body);
+    }
+    return app.handle(new Request(url, opts));
+  }
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-verdict-consistency-");
+    initGitRepo(tempDir);
+    setupConsistencyFixtures();
+
+    pubsub = new PubSubManager();
+    const { middleware } = projectContextMiddleware();
+
+    // Seed the cache with the task in pending_review state
+    const initialSummary: TaskSummary = {
+      _ulid: CONSIST_TASK_ULID,
+      slugs: ["consist-task"],
+      title: "Consistency Test Task",
+      type: "task",
+      status: "pending_review",
+      priority: 2,
+      spec_ref: "@consist-feature",
+      depends_on: [],
+      blocked_by: [],
+      tags: [],
+      notes_count: 0,
+      todos_count: 0,
+      created_at: "2026-01-01T00:00:00Z",
+      started_at: "2026-01-01T00:00:00Z",
+    };
+
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const fullTask = await resolveTaskDataManager(ctx).getTask(ctx, CONSIST_TASK_ULID);
+    const initialDetails = new Map<string, LoadedTask>();
+    initialDetails.set(CONSIST_TASK_ULID, fullTask);
+
+    const cache = createConsistencyCache([initialSummary], initialDetails);
+    const getEntityCache: EntityCacheAccessor = () => cache;
+
+    app = new Elysia()
+      .use(middleware)
+      .use(createReviewsRoutes({ pubsub, getEntityCache }))
+      .use(createTasksRoutes({ pubsub, getEntityCache }));
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it("should return needs_work on immediate task read after request_changes verdict", async () => {
+    // Step 1: Submit request_changes verdict — this triggers task transition
+    const verdictResponse = await makeConsistencyRequest(
+      "POST",
+      `/api/reviews/${CONSIST_REVIEW_ULID}/verdicts`,
+      {
+        decision: "request_changes",
+        reviewer: "test@example.com",
+      },
+    );
+
+    expect(verdictResponse.status).toBe(200);
+    const verdictBody = await verdictResponse.json();
+    expect(verdictBody.disposition).toBe("changes_requested");
+
+    // Step 2: Immediately read the task through the cache-backed GET endpoint
+    const taskResponse = await makeConsistencyRequest(
+      "GET",
+      `/api/tasks/${CONSIST_TASK_ULID}`,
+    );
+
+    expect(taskResponse.status).toBe(200);
+    const taskBody = await taskResponse.json();
+
+    // The regression: without proper cache consistency, this would return
+    // "pending_review" (stale) instead of "needs_work" (fresh).
+    expect(taskBody.data.status).toBe("needs_work");
+  });
+
+  it("should return pending_review on immediate task read after approve verdict (no task transition)", async () => {
+    // Approve verdict does NOT transition the task — verify the cache
+    // still serves the original state correctly.
+    const verdictResponse = await makeConsistencyRequest(
+      "POST",
+      `/api/reviews/${CONSIST_REVIEW_ULID}/verdicts`,
+      {
+        decision: "approve",
+        reviewer: "test@example.com",
+      },
+    );
+
+    expect(verdictResponse.status).toBe(200);
+    const verdictBody = await verdictResponse.json();
+    expect(verdictBody.disposition).toBe("approved");
+
+    // Task should still be in pending_review — approve doesn't transition it
+    const taskResponse = await makeConsistencyRequest(
+      "GET",
+      `/api/tasks/${CONSIST_TASK_ULID}`,
+    );
+
+    expect(taskResponse.status).toBe(200);
+    const taskBody = await taskResponse.json();
+    expect(taskBody.data.status).toBe("pending_review");
   });
 });
 
