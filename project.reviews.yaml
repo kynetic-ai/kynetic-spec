@@ -158225,6 +158225,12 @@ reviews:
         payload:
           thread_ulid: 01KPQK549BM9RM7B67Q1878V0W
         timestamp: 2026-04-21T08:41:31.226Z
+      - _ulid: 01KPQK7EWD7DDCQJPRH7SEEZ35
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQK549BM9RM7B67Q1878V0W
+        timestamp: 2026-04-21T08:41:36.397Z
     examined_commit: ffbf4c6cf9b9708303cfe4c45b0d864ceac72945
     external_links: []
     lifecycle_state: closed
@@ -158259,6 +158265,8 @@ reviews:
               accidentally during command interpolation and omits the command names.
             created_at: 2026-04-21T08:41:30.186Z
         kind: blocker
+        resolved_at: 2026-04-21T08:41:35.427Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KPQK5XVHK6RFHFBB741HRAA4
         anchor:
           type: code
@@ -158288,5 +158296,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T08:40:58.156Z
     created_at: 2026-04-21T08:28:59.334Z
-    updated_at: 2026-04-21T08:41:30.186Z
+    updated_at: 2026-04-21T08:41:35.427Z
     notes: []
