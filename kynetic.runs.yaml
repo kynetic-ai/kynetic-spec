@@ -28304,7 +28304,7 @@ runs:
     completed_at: 2026-04-21T00:35:42.196Z
   - _ulid: 01KPPQKEKP8DK1MAPSKA0GWF82
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28335,7 +28335,15 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-21T00:39:49.662Z
-        completed_at: 2026-04-21T00:39:49.662Z
+        completed_at: 2026-04-21T00:39:50.578Z
+        notes: "Friction points: recording review findings with  is brittle when the body contains backticks
+          or shell metacharacters, because normal shell quoting breaks easily and forces a retry
+          with heredoc-safe quoting. A smaller ergonomics issue is that  requires an explicit run
+          ref, which interrupted the flow until the started run id was reused."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-21T00:39:50.578Z
+        completed_at: 2026-04-21T00:39:50.578Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T00:38:49.206Z
