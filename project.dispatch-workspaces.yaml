@@ -55443,7 +55443,7 @@ workspaces:
         head: dcb59f5c91804d45c41685236758c9df7bc235fd
         last_seen_at: 2026-04-21T00:52:14.979Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/extend-daemon-background-shadow-sync-to-all-registered-projects-01kpp7xf
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 9d65ad244237659c2a29a45679392595ae0135ee
     bootstrap:
       status: succeeded
@@ -55737,7 +55737,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T03:43:53.216Z
+      updated_at: 2026-04-21T03:44:23.661Z
     integration:
       status: pending
       detail: null
@@ -55752,10 +55752,10 @@ workspaces:
     task_slug: task-docs-rendering
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-21T03:37:49.058Z
-      last_reconciled_at: 2026-04-21T03:43:53.216Z
+      last_active_at: 2026-04-21T03:44:23.661Z
+      last_reconciled_at: 2026-04-21T03:44:23.661Z
       created_at: 2026-04-21T00:10:39.606Z
-      updated_at: 2026-04-21T03:44:19.205Z
+      updated_at: 2026-04-21T03:44:23.661Z
     workspace_id: dispatch-workspace-01KPPN42CDKS6A6951ZATDPKXP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
