@@ -156638,6 +156638,19 @@ reviews:
         runner: kspec
         created_at: 2026-04-21T05:26:56.649Z
         completed_at: 2026-04-21T05:26:56.649Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran the full suite in this snapshot; task-specific tests passed, including
+          tests/web-ui-docs-rendering.test.ts. A second concurrent npm test invocation produced
+          test-runner interference in the shared workspace, but isolated rerun of
+          tests/test-runner.test.ts passes, so no task regression was confirmed.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-21T05:28:50.828Z
+        completed_at: 2026-04-21T05:28:50.828Z
     events:
       - _ulid: 01KPQ80K23BH0YTTT4MV1Y3XWN
         actor: Jacob Chapel
@@ -156666,6 +156679,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-21T05:26:58.466Z
+      - _ulid: 01KPQ86J2W2QCTH95NKEH3DF73
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-21T05:28:52.572Z
     examined_commit: d5a234bdd2f3544b229648b31e8c65da0d474ca1
     external_links: []
     lifecycle_state: open
@@ -156699,5 +156719,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T05:25:36.964Z
-    updated_at: 2026-04-21T05:26:56.649Z
+    updated_at: 2026-04-21T05:28:50.828Z
     notes: []
