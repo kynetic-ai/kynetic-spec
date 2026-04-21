@@ -30,6 +30,7 @@ tags:
   - content
   - getting-started
 vcs_refs: []
+review_ref: "@01KPQJGBJ6GKWSZADR2C2Z37RZ"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-docs-getting-started-content/01kppn43
@@ -80,6 +81,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-21T08:26:34.251Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KPQJGBJ6GKWSZADR2C2Z37RZ"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-21T08:29:02.496Z
 created_at: 2026-04-20T23:55:28.881Z
 started_at: 2026-04-21T08:10:07.682Z
 submitted_at: 2026-04-21T08:26:34.251Z
