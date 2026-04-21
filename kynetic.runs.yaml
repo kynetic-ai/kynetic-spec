@@ -28204,7 +28204,7 @@ runs:
     started_at: 2026-04-20T23:54:56.493Z
   - _ulid: 01KPPNB9TDA8M2KCTBH1WF3KT2
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -28225,7 +28225,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-21T03:16:28.903Z
-        completed_at: 2026-04-21T03:16:28.903Z
+        completed_at: 2026-04-21T03:16:31.980Z
+        notes: "Coverage check done: existing inbox @01KKT8W6 (plan lint) partially covers; no existing
+          coverage for decision-task anti-pattern, AC verifiability as docs-specific pattern, or
+          exemplar-in-skill idea. @kspec-writing-specs skill already covers AC verifiability — my
+          failure was application."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-21T03:16:31.980Z
+        completed_at: 2026-04-21T03:16:31.980Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-20T23:59:25.005Z
