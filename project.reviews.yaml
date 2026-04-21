@@ -157106,7 +157106,18 @@ reviews:
     slugs: []
     title: Review make-task-reads-immediately-consistent-after-review-verdict-transitions
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 2219/2219 suites passed; 8136/8141 tests passed, 5 skipped, 0 failed. Executed from the
+          detached review snapshot on 2026-04-20/21.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-21T06:43:17.248Z
+        completed_at: 2026-04-21T06:43:17.248Z
     events:
       - _ulid: 01KPQBTNCMNKD523XM6N93SJWK
         actor: Jacob Chapel
@@ -157121,6 +157132,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T06:32:39.527Z
+      - _ulid: 01KPQCEV4A06A76C11XPPTK37W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-21T06:43:18.283Z
     examined_commit: 18e0da8abf85d37b2848252fcf45386e96d64941
     external_links: []
     lifecycle_state: open
@@ -157133,5 +157151,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T06:32:17.044Z
-    updated_at: 2026-04-21T06:32:38.321Z
+    updated_at: 2026-04-21T06:43:17.248Z
     notes: []
