@@ -2194,6 +2194,9 @@ modules:
           enumerations of every command flag or schema field are
           explicitly absent and are left for a follow-up plan to
           produce from canonical sources.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
