@@ -26515,7 +26515,7 @@
   type: task
   spec_ref: "@docs-reachability"
   plan_ref: "@plan-user-documentation-foundation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -26528,7 +26528,7 @@
   todos_count: 0
   created_at: 2026-04-20T23:55:28.013Z
   started_at: 2026-04-21T03:18:36.297Z
-  submitted_at: 2026-04-21T02:42:53.435Z
+  submitted_at: 2026-04-21T03:18:39.868Z
   automation: eligible
 - _ulid: 01KPPN42NCR77J23TWYP63VXDH
   slugs:
