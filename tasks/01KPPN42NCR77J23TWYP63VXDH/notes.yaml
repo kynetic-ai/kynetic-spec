@@ -127,3 +127,22 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T06:12:37.042Z
+  - _ulid: 01KPQD27EMX27E8B4TDKRFW4DN
+    content: >-
+      Fix cycle 3: resolved merge conflicts with dev.
+
+
+      1. Rebased onto origin/dev — resolved conflicts in vite-plugin-docs.ts (both releaseNotesPath
+      and exclude options now coexist) and vite.config.ts (both options passed to docsPlugin).
+
+
+      2. Fixed slug collision: docs/release-notes/index.md produces slug 'release-notes' after
+      /index normalization, which collided with the synthetic RELEASE_NOTES.md entry using the same
+      slug. Changed the synthetic entry slug to 'release-notes/changelog' — this aligns with the
+      section landing page's child-page link to ./changelog.md. Updated all related tests.
+
+
+      All 8148 tests pass (2222 suites). Re-verified both ACs against implementation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T06:53:53.493Z
