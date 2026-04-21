@@ -29904,7 +29904,7 @@ runs:
     completed_at: 2026-04-21T08:56:14.799Z
   - _ulid: 01KPQM6GQZCZ84CRW9FDYMP0W0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -29918,7 +29918,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T08:59:32.763Z
-        completed_at: 2026-04-21T08:59:32.763Z
+        completed_at: 2026-04-21T08:59:55.814Z
+        notes: "No high-confidence friction or success patterns to capture. Session was a clean fix cycle:
+          one specific, actionable blocker → single-pass fix → resubmit. The only minor friction
+          (needs_work → submit state transition) is already documented in the task-work skill and
+          was a one-off learning moment. No duplicates found in existing observations or inbox."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T08:59:55.814Z
+        completed_at: 2026-04-21T08:59:55.814Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T08:58:34.112Z
