@@ -46,3 +46,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T11:56:02.611Z
+  - _ulid: 01KPQZFVJZASHZNE4FR18HKMD9
+    content: "Fix cycle 1: Addressed blocker in daemon-port-in-use.md. The recovery procedure
+      unconditionally advised kspec serve stop/start, which is unsafe under dispatch (daemon is host
+      process). Split the How to Fix It section into dispatch-safe (warns against stop/restart,
+      advises block+escalate) and non-dispatch (retains original procedure) subsections. Added
+      cross-link to agents-and-dispatch concept page. All 8253 tests pass, 0 failures. Re-verified
+      all 3 ACs against the updated entry."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T12:15:54.463Z
