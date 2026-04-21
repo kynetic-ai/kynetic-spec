@@ -28204,7 +28204,7 @@ runs:
     started_at: 2026-04-20T23:54:56.493Z
   - _ulid: 01KPPNB9TDA8M2KCTBH1WF3KT2
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -28218,7 +28218,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T03:16:12.254Z
-        completed_at: 2026-04-21T03:16:12.254Z
+        completed_at: 2026-04-21T03:16:28.903Z
+        notes: "Friction captured: decision-task anti-pattern, plan quality calibration first-draft
+          failures, AC verifiability misses, format details forgotten (yaml code block +
+          derive_from_specs), over-rigid application of spec abstraction rule."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T03:16:28.903Z
+        completed_at: 2026-04-21T03:16:28.903Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-20T23:59:25.005Z
