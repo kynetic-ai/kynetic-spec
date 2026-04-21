@@ -158824,6 +158824,12 @@ reviews:
         payload:
           thread_ulid: 01KPQN9SZ2J9NS67A117GHRZXW
         timestamp: 2026-04-21T09:19:24.920Z
+      - _ulid: 01KPQNCSQH65A57W0Q7A1FT0K7
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQN9GAQGKE9886829XXDZ02
+        timestamp: 2026-04-21T09:19:28.497Z
     examined_commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
     external_links: []
     lifecycle_state: open
@@ -158850,6 +158856,10 @@ reviews:
               plans, omitting a current terminal state makes the description inaccurate for users
               trying to understand how plans behave today.
             created_at: 2026-04-21T09:17:40.567Z
+          - _ulid: 01KPQNCRGEHN9XFZ3T7SNGMWNH
+            author: Jacob Chapel
+            body: Superseded by corrected blocker thread 01KPQNAQW8WN72HN5CCDRK5T1B with the intended wording.
+            created_at: 2026-04-21T09:19:27.246Z
         kind: blocker
       - _ulid: 01KPQN9KD6AEJWZZWSFMP4VVM6
         anchor:
@@ -159031,5 +159041,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:16:51.337Z
-    updated_at: 2026-04-21T09:19:23.638Z
+    updated_at: 2026-04-21T09:19:27.246Z
     notes: []
