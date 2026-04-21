@@ -51,11 +51,14 @@
 		const href = anchor.getAttribute('href');
 		if (!href) return;
 
-		// Handle anchor links (scroll to heading)
+		// Handle anchor links (scroll to heading and update URL hash)
 		if (href.startsWith('#')) {
 			event.preventDefault();
 			const el = document.getElementById(href.slice(1));
-			if (el) el.scrollIntoView({ behavior: 'smooth' });
+			if (el) {
+				el.scrollIntoView({ behavior: 'smooth' });
+				history.replaceState(null, '', href);
+			}
 			return;
 		}
 

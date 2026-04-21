@@ -179,6 +179,35 @@ test.describe("Docs", () => {
     }
   });
 
+  // AC: @docs-navigation-shape ac-2 — Clicking a heading anchor updates the URL hash
+  test("clicking a heading anchor updates the URL fragment for a copyable direct link", async ({
+    page,
+    daemon: _daemon,
+  }) => {
+    await page.goto("/docs/getting-started");
+
+    // Find the first heading anchor in the article
+    const article = page.locator("article");
+    await expect(article).toBeVisible();
+
+    // Headings in the rendered markdown have id attributes; TOC links point to them
+    const docsSidebar = page.locator("nav").filter({ hasText: "Pages" });
+    const tocLinks = docsSidebar.locator("ul").nth(1).locator("a");
+    const tocCount = await tocLinks.count();
+    expect(tocCount).toBeGreaterThan(0);
+
+    // Get the first TOC link's href (e.g., "#some-heading")
+    const firstTocHref = await tocLinks.first().getAttribute("href");
+    expect(firstTocHref).toBeTruthy();
+    expect(firstTocHref).toMatch(/^#/);
+
+    // Click the TOC link
+    await tocLinks.first().click();
+
+    // URL should now include the fragment
+    await expect(page).toHaveURL(new RegExp(`/docs/getting-started${firstTocHref!.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`));
+  });
+
   test("navigating between docs pages via sidebar uses client-side routing", async ({
     page,
     daemon: _daemon,
