@@ -46,3 +46,54 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-21T00:15:16.845Z
+  - _ulid: 01KPPQ7M65V7031RF88HWJ5NZW
+    content: >-
+      Implementation complete. Summary of changes:
+
+
+      Files created:
+
+      - packages/web-ui/vite-plugin-docs.ts — Vite plugin that scans docs/ at build time, produces
+      virtual:docs manifest
+
+      - packages/web-ui/src/lib/docs.ts — Module interface for accessing bundled docs content
+
+      - packages/web-ui/src/lib/utils/docs-markdown.ts — Docs-specific marked renderer with anchored
+      headings + TOC extraction
+
+      - packages/web-ui/src/routes/docs/+page.svelte — Landing page listing all docs grouped by
+      section
+
+      - packages/web-ui/src/routes/docs/[...slug]/+page.svelte — Catch-all route rendering
+      individual doc pages with sidebar nav and TOC
+
+      - tests/web-ui-docs-rendering.test.ts — 34 tests covering plugin, renderer, route structure,
+      nav integration, and sanitizer
+
+
+      Files modified:
+
+      - packages/web-ui/vite.config.ts — Added docsPlugin and server.fs.allow for docs/
+
+      - packages/web-ui/src/lib/components/Sidebar.svelte — Added 'Docs' entry (BookOpen icon) in
+      Help group
+
+      - packages/web-ui/src/lib/components/MobileNav.svelte — Added 'Docs' entry to mobile nav
+
+      - packages/web-ui/src/lib/utils/sanitize.ts — Added 'id' to ALLOWED_ATTR for heading anchors
+
+
+      AC coverage:
+
+      - @docs-reachability ac-2: Content bundled at build time via virtual module, renders without
+      network requests
+
+      - @docs-reachability ac-3: Static SPA pages, no daemon or SSR required
+
+      - @docs-navigation-shape ac-2: Heading IDs + anchor links with stable direct links
+
+
+      Full test suite: 8081 passed, 5 skipped, 0 failures. Build succeeds.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T00:32:21.701Z
