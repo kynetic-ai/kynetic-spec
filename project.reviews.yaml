@@ -157899,6 +157899,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQHW293AK1VVK90829GSP2H
         timestamp: 2026-04-21T08:17:55.697Z
+      - _ulid: 01KPQHW6YSGYNP23X3G0ZXQAM9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQHW5RKB01DG4X05PW080KM
+        timestamp: 2026-04-21T08:17:59.257Z
     examined_commit: 020246046a960c53dccad0f689bb5f9260bcc649
     external_links: []
     lifecycle_state: open
@@ -157926,7 +157933,24 @@ reviews:
               docs surface for readers who enter through this section."
             created_at: 2026-04-21T08:17:54.467Z
         kind: blocker
+      - _ulid: 01KPQHW5RKB01DG4X05PW080KM
+        anchor:
+          type: code
+          commit: 020246046a960c53dccad0f689bb5f9260bcc649
+          line_end: 11
+          line_start: 5
+          path: docs/troubleshooting/index.md
+          side: head
+        entries:
+          - _ulid: 01KPQHW5RKN61RSQBFR59D0JH3
+            author: Jacob Chapel
+            body: The Troubleshooting landing page also lists only nonexistent child pages. As shipped, the
+              section sidebar can route readers into this index, but every recovery article link on
+              the page resolves to missing docs content. This leaves the section unusable until the
+              linked pages exist.
+            created_at: 2026-04-21T08:17:58.035Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T08:09:18.583Z
-    updated_at: 2026-04-21T08:17:54.467Z
+    updated_at: 2026-04-21T08:17:58.035Z
     notes: []
