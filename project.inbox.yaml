@@ -2889,3 +2889,27 @@ inbox:
       - testing
     added_by: Jacob Chapel
     created_at: 2026-04-21T11:23:50.710Z
+  - _ulid: 01KPS6QFDNK06G4TAAR44VTMEJ
+    text: "AC-style convention needs three more facets beyond the existing 'no compound conditions' rule
+      (see related inbox item about compound conditions interpretation): (1) Standalone — each AC
+      must stand alone with no cross-references to other ACs in the same or other specs; a future
+      reader of any AC should be able to understand its contract without following links. (2)
+      Timeless — AC text must not contain implementation-specific identifiers (file paths, env var
+      names, function names, library names, version numbers) because those rot as code evolves; such
+      identifiers belong in task bodies and test fixtures, not in the spec contract. (3) Abstract
+      class terms — when an AC governs a set of values (e.g. runtime mode configuration env
+      variables), the AC names the class behaviorally ('runtime mode configuration values') rather
+      than enumerating concrete members ('NODE_ENV, BUN_ENV'); the concrete list lives in test
+      fixtures so adding a new class member does not require amending the AC. Surfaced 2026-04-21
+      during authoring of three new ACs on @dispatch-runtime-bootstrap-contract, where the user had
+      to correct compound/cross-referencing/named-variable drafts across four revision cycles. Scope
+      when triaged: codify these rules in the spec-authoring convention text so they are
+      discoverable to authors and reviewers. Consider whether existing specs need a retroactive
+      audit or whether going-forward-only is acceptable."
+    tags:
+      - spec
+      - convention
+      - ac-style
+      - design
+    added_by: "@claude"
+    created_at: 2026-04-21T23:41:38.613Z
