@@ -8,20 +8,11 @@
  * when offline.
  */
 
-export interface DocsEntry {
-	/** URL-safe slug derived from the file path (without .md extension) */
-	slug: string;
-	/** Human-readable title extracted from the first H1, or derived from filename */
-	title: string;
-	/** Raw markdown source */
-	content: string;
-	/** Original relative path from docs/ (e.g. "getting-started.md") */
-	path: string;
-}
+export type { DocsEntry, DocsManifest } from './docs-types';
+export { filterSectionEntries, resolveDocsLink } from './utils/docs-utils';
 
-export interface DocsManifest {
-	entries: DocsEntry[];
-}
+import type { DocsManifest, DocsEntry } from './docs-types';
+import { filterSectionEntries } from './utils/docs-utils';
 
 // Import the build-time generated manifest
 // @ts-expect-error — virtual module provided by vite-plugin-docs
@@ -49,4 +40,11 @@ export function getDocsLandingEntry(): DocsEntry | undefined {
  */
 export function getDocsEntries(): DocsEntry[] {
 	return docsManifest.entries;
+}
+
+/**
+ * Get entries in the same section as the given slug.
+ */
+export function getDocsSectionEntries(slug: string): DocsEntry[] {
+	return filterSectionEntries(docsManifest.entries, slug);
 }

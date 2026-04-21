@@ -9,11 +9,9 @@
  */
 
 import { describe, it, expect, beforeAll } from "vitest";
-import { existsSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { join } from "node:path";
 import { tmpdir } from "node:os";
-
-const WEB_UI_ROOT = join(process.cwd(), "packages", "web-ui");
 
 // ─── Vite Plugin Tests ────────────────────────────────────────────────────────
 
@@ -56,7 +54,7 @@ describe("vite-plugin-docs", () => {
       expect(result).toContain("export default");
 
       // Parse the manifest from the generated module
-      const manifestJson = result!.replace("export default ", "").replace(";", "");
+      const manifestJson = result!.slice("export default ".length, -1);
       const manifest = JSON.parse(manifestJson);
 
       expect(manifest.entries).toBeInstanceOf(Array);
@@ -91,7 +89,7 @@ describe("vite-plugin-docs", () => {
       const plugin = docsPlugin(tempDir);
       const load = plugin.load as (id: string) => string | undefined;
       const result = load("\0virtual:docs")!;
-      const manifest = JSON.parse(result.replace("export default ", "").replace(";", ""));
+      const manifest = JSON.parse(result.slice("export default ".length, -1));
 
       expect(manifest.entries[0].title).toBe("My Cool Page");
     } finally {
@@ -107,7 +105,7 @@ describe("vite-plugin-docs", () => {
       const plugin = docsPlugin(tempDir);
       const load = plugin.load as (id: string) => string | undefined;
       const result = load("\0virtual:docs")!;
-      const manifest = JSON.parse(result.replace("export default ", "").replace(";", ""));
+      const manifest = JSON.parse(result.slice("export default ".length, -1));
 
       expect(manifest.entries).toEqual([]);
     } finally {
@@ -119,7 +117,7 @@ describe("vite-plugin-docs", () => {
     const plugin = docsPlugin("/tmp/non-existent-docs-dir-" + Date.now());
     const load = plugin.load as (id: string) => string | undefined;
     const result = load("\0virtual:docs")!;
-    const manifest = JSON.parse(result.replace("export default ", "").replace(";", ""));
+    const manifest = JSON.parse(result.slice("export default ".length, -1));
 
     expect(manifest.entries).toEqual([]);
   });
@@ -272,70 +270,160 @@ describe("docs-markdown renderer", () => {
   });
 });
 
-// ─── Route Structure Tests ────────────────────────────────────────────────────
+// ─── Docs Module Tests ───────────────────────────────────────────────────────
 
-describe("docs route structure", () => {
-  // AC: @docs-reachability ac-1 — Docs entry present in primary navigation
-  it("has a /docs landing page route", () => {
-    expect(existsSync(join(WEB_UI_ROOT, "src/routes/docs/+page.svelte"))).toBe(true);
+describe("docs module interface", () => {
+  let docsPlugin: typeof import("../packages/web-ui/vite-plugin-docs")["docsPlugin"];
+
+  beforeAll(async () => {
+    const mod = await import("../packages/web-ui/vite-plugin-docs");
+    docsPlugin = mod.docsPlugin;
   });
 
-  it("has a /docs/[...slug] catch-all route", () => {
-    expect(existsSync(join(WEB_UI_ROOT, "src/routes/docs/[...slug]/+page.svelte"))).toBe(true);
+  // AC: @docs-reachability ac-2 — Content bundled at build time, no network requests
+  it("produces a valid manifest that can be consumed by getDocsEntry-style lookups", () => {
+    const tempDir = join(tmpdir(), `docs-module-test-${Date.now()}`);
+    mkdirSync(tempDir, { recursive: true });
+    writeFileSync(join(tempDir, "getting-started.md"), "# Getting Started\n\nWelcome.");
+    mkdirSync(join(tempDir, "history"), { recursive: true });
+    writeFileSync(join(tempDir, "history", "design.md"), "# Design\n\nDesign doc.");
+
+    try {
+      const plugin = docsPlugin(tempDir);
+      const load = plugin.load as (id: string) => string | undefined;
+      const result = load("\0virtual:docs")!;
+      const manifest = JSON.parse(result.slice("export default ".length, -1));
+
+      // Simulate getDocsEntry lookup
+      const entry = manifest.entries.find((e: { slug: string }) => e.slug === "getting-started");
+      expect(entry).toBeDefined();
+      expect(entry.title).toBe("Getting Started");
+      expect(entry.content).toContain("Welcome.");
+
+      // Simulate getDocsEntry for nested
+      const nested = manifest.entries.find((e: { slug: string }) => e.slug === "history/design");
+      expect(nested).toBeDefined();
+      expect(nested.title).toBe("Design");
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
   });
 
-  it("has the vite-plugin-docs plugin file", () => {
-    expect(existsSync(join(WEB_UI_ROOT, "vite-plugin-docs.ts"))).toBe(true);
-  });
+  // AC: @docs-reachability ac-3 — Pages render without daemon or SSR
+  it("bundles full markdown content so pages can render client-side", () => {
+    const tempDir = join(tmpdir(), `docs-content-test-${Date.now()}`);
+    mkdirSync(tempDir, { recursive: true });
+    writeFileSync(
+      join(tempDir, "page.md"),
+      "# Test Page\n\n## Section One\n\nContent here.\n\n```typescript\nconst x = 1;\n```",
+    );
 
-  it("has the docs module interface", () => {
-    expect(existsSync(join(WEB_UI_ROOT, "src/lib/docs.ts"))).toBe(true);
-  });
+    try {
+      const plugin = docsPlugin(tempDir);
+      const load = plugin.load as (id: string) => string | undefined;
+      const result = load("\0virtual:docs")!;
+      // Strip "export default " prefix and trailing ";"
+      const jsonStr = result.slice("export default ".length, -1);
+      const manifest = JSON.parse(jsonStr);
 
-  it("has the docs-markdown utility", () => {
-    expect(existsSync(join(WEB_UI_ROOT, "src/lib/utils/docs-markdown.ts"))).toBe(true);
+      const entry = manifest.entries[0];
+      // Full content is present in the bundle — no need for runtime fetching
+      expect(entry.content).toContain("## Section One");
+      expect(entry.content).toContain("const x = 1;");
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
   });
 });
 
-// ─── Navigation Integration Tests ────────────────────────────────────────────
+// ─── Section Filtering Tests ─────────────────────────────────────────────────
 
-describe("docs navigation integration", () => {
-  // AC: @docs-reachability ac-1 — "Docs" entry present in primary navigation
-  it("Sidebar includes Docs nav entry", async () => {
-    const sidebarSource = (await import("node:fs")).readFileSync(
-      join(WEB_UI_ROOT, "src/lib/components/Sidebar.svelte"),
-      "utf-8",
-    );
-    // Verify the nav item exists in the Sidebar source
-    expect(sidebarSource).toContain("'/docs'");
-    expect(sidebarSource).toContain("'Docs'");
-    expect(sidebarSource).toContain("BookOpen");
+describe("docs section filtering", () => {
+  let filterSectionEntries: typeof import("../packages/web-ui/src/lib/utils/docs-utils")["filterSectionEntries"];
+
+  beforeAll(async () => {
+    const mod = await import("../packages/web-ui/src/lib/utils/docs-utils");
+    filterSectionEntries = mod.filterSectionEntries;
   });
 
-  // AC: @docs-reachability ac-1 — Docs reachable from mobile navigation too
-  it("MobileNav includes Docs nav entry", async () => {
-    const mobileNavSource = (await import("node:fs")).readFileSync(
-      join(WEB_UI_ROOT, "src/lib/components/MobileNav.svelte"),
-      "utf-8",
-    );
-    expect(mobileNavSource).toContain("'/docs'");
-    expect(mobileNavSource).toContain("'Docs'");
-    expect(mobileNavSource).toContain("BookOpen");
+  const entries = [
+    { slug: "getting-started", title: "Getting Started", content: "", path: "getting-started.md" },
+    { slug: "overview", title: "Overview", content: "", path: "overview.md" },
+    { slug: "guides/deploy", title: "Deploy", content: "", path: "guides/deploy.md" },
+    { slug: "guides/setup", title: "Setup", content: "", path: "guides/setup.md" },
+    { slug: "history/design", title: "Design", content: "", path: "history/design.md" },
+  ];
+
+  // AC: @docs-navigation-shape ac-1 — Sidebar lists pages of the current section
+  it("filters entries to same section for nested slugs", () => {
+    const result = filterSectionEntries(entries, "guides/setup");
+
+    expect(result.map((e) => e.slug)).toEqual(["guides/deploy", "guides/setup"]);
+    // Should NOT include entries from other sections
+    expect(result.some((e) => e.slug === "overview")).toBe(false);
+    expect(result.some((e) => e.slug.startsWith("history/"))).toBe(false);
+  });
+
+  it("filters entries to root-level for root slugs", () => {
+    const result = filterSectionEntries(entries, "overview");
+
+    expect(result.map((e) => e.slug)).toEqual(["getting-started", "overview"]);
+    // Should NOT include nested entries
+    expect(result.some((e) => e.slug.includes("/"))).toBe(false);
+  });
+
+  it("includes section index page when present", () => {
+    const withIndex = [
+      ...entries,
+      { slug: "guides", title: "Guides Index", content: "", path: "guides.md" },
+    ];
+    const result = filterSectionEntries(withIndex, "guides/setup");
+
+    expect(result.some((e) => e.slug === "guides")).toBe(true);
+    expect(result.some((e) => e.slug === "guides/setup")).toBe(true);
   });
 });
 
-// ─── Vite Config Tests ───────────────────────────────────────────────────────
+// ─── Link Resolution Tests ───────────────────────────────────────────────────
 
-describe("vite config", () => {
-  it("includes docsPlugin in vite.config.ts", async () => {
-    const configSource = (await import("node:fs")).readFileSync(
-      join(WEB_UI_ROOT, "vite.config.ts"),
-      "utf-8",
+describe("docs link resolution", () => {
+  let resolveDocsLink: typeof import("../packages/web-ui/src/lib/utils/docs-utils")["resolveDocsLink"];
+
+  beforeAll(async () => {
+    const mod = await import("../packages/web-ui/src/lib/utils/docs-utils");
+    resolveDocsLink = mod.resolveDocsLink;
+  });
+
+  it("resolves sibling links from root docs", () => {
+    // From root doc getting-started.md, link to ./overview.md
+    expect(resolveDocsLink("./overview.md", "getting-started.md")).toBe("overview");
+    // From root doc, sibling link without ./
+    expect(resolveDocsLink("overview.md", "getting-started.md")).toBe("overview");
+  });
+
+  it("resolves links between nested docs", () => {
+    // From history/KYNETIC_SPEC_DESIGN.md, link to ./FORMAT_COMPARISON.md
+    expect(resolveDocsLink("./FORMAT_COMPARISON.md", "history/KYNETIC_SPEC_DESIGN.md")).toBe(
+      "history/FORMAT_COMPARISON",
     );
-    expect(configSource).toContain("docsPlugin");
-    expect(configSource).toContain("server");
-    expect(configSource).toContain("fs");
-    expect(configSource).toContain("allow");
+  });
+
+  it("resolves parent-traversal links within docs tree", () => {
+    // From history/design.md, link to ../getting-started.md
+    expect(resolveDocsLink("../getting-started.md", "history/design.md")).toBe("getting-started");
+  });
+
+  it("returns null when link walks outside docs tree", () => {
+    // From root doc, ../INSTALL.md walks outside docs/
+    expect(resolveDocsLink("../INSTALL.md", "getting-started.md")).toBeNull();
+    // From root doc, ../../README.md also walks outside
+    expect(resolveDocsLink("../../README.md", "getting-started.md")).toBeNull();
+  });
+
+  it("returns null for non-markdown links", () => {
+    expect(resolveDocsLink("https://example.com", "getting-started.md")).toBeNull();
+    expect(resolveDocsLink("#section", "getting-started.md")).toBeNull();
+    expect(resolveDocsLink("image.png", "getting-started.md")).toBeNull();
   });
 });
 

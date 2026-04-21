@@ -7,7 +7,7 @@
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
 	import { goto } from '$app/navigation';
-	import { getDocsEntry, getDocsEntries, type DocsEntry } from '$lib/docs';
+	import { getDocsEntry, getDocsSectionEntries, resolveDocsLink } from '$lib/docs';
 	import { renderDocsMarkdown, type TocEntry } from '$lib/utils/docs-markdown';
 
 	let entry = $derived.by(() => {
@@ -20,8 +20,11 @@
 		return renderDocsMarkdown(entry.content);
 	});
 
-	// Sidebar entries for navigation within docs
-	const allEntries = getDocsEntries();
+	// AC: @docs-navigation-shape ac-1 — Sidebar lists pages of the current section
+	let sectionEntries = $derived.by(() => {
+		const slug = $page.params.slug;
+		return slug ? getDocsSectionEntries(slug) : [];
+	});
 
 	function handleDocLinkClick(event: MouseEvent) {
 		const target = event.target as HTMLElement;
@@ -42,8 +45,11 @@
 		// Handle relative doc links (client-side navigation)
 		if (!href.startsWith('http') && !href.startsWith('//') && href.endsWith('.md')) {
 			event.preventDefault();
-			const docSlug = href.replace(/\.md$/, '').replace(/^\.?\/?/, '');
-			goto(`${base}/docs/${docSlug}`);
+			const currentPath = entry?.path ?? '';
+			const resolved = resolveDocsLink(href, currentPath);
+			if (resolved !== null) {
+				goto(`${base}/docs/${resolved}`);
+			}
 		}
 	}
 </script>
@@ -53,7 +59,7 @@
 	<nav class="hidden lg:block w-56 shrink-0 sticky top-4 self-start max-h-[calc(100vh-6rem)] overflow-y-auto">
 		<h3 class="text-sm font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Pages</h3>
 		<ul class="space-y-1">
-			{#each allEntries as navEntry}
+			{#each sectionEntries as navEntry}
 				<li>
 					<a
 						href="{base}/docs/{navEntry.slug}"
