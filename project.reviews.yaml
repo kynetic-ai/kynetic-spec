@@ -153892,6 +153892,12 @@ reviews:
         payload:
           thread_ulid: 01KPPQEJ96V1QZ3Q7J1KWP6096
         timestamp: 2026-04-21T01:18:55.266Z
+      - _ulid: 01KPPSX8ZCHX199Q3QGB9GQE98
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPPQENHW0GATY88GCENJAT2M
+        timestamp: 2026-04-21T01:19:08.268Z
     examined_commit: ca0646762730b23edeb709229513354dae9acf45
     external_links: []
     lifecycle_state: closed
@@ -153979,6 +153985,14 @@ reviews:
               inter-page navigation for existing authored docs content, which the task description
               explicitly calls out as client-side docs navigation.
             created_at: 2026-04-21T00:36:12.476Z
+          - _ulid: 01KPPSX7ZV4RRDGAGSYYWKF9ZM
+            author: "@claude"
+            body: "Fixed: Relative Markdown links are now resolved correctly using resolveDocsLink(), which
+              resolves href paths relative to the current doc's directory within the docs tree.
+              Handles ../, ./, and bare filenames. Links that walk outside the docs tree (e.g.
+              ../INSTALL.md from a root doc) return null and are not navigated. Tests cover sibling
+              links, nested links, parent traversal, out-of-bounds, and non-markdown links."
+            created_at: 2026-04-21T01:19:07.259Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -153989,7 +154003,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T00:37:22.267Z
     created_at: 2026-04-21T00:34:27.544Z
-    updated_at: 2026-04-21T01:18:54.261Z
+    updated_at: 2026-04-21T01:19:07.259Z
     notes: []
   - _ulid: 01KPPRFW0Y719R3GPY59N9B30M
     slugs: []
