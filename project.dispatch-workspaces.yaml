@@ -55120,7 +55120,7 @@ workspaces:
         head: 3bdfa87e044930b300fe4b063e7ca1ab76416d2c
         last_seen_at: 2026-04-18T18:27:23.919Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-delete-command-01kpemev
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 9d65ad244237659c2a29a45679392595ae0135ee
     bootstrap:
       status: succeeded
@@ -55414,7 +55414,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T00:10:12.577Z
+      updated_at: 2026-04-21T00:10:35.220Z
     integration:
       status: pending
       detail: null
@@ -55429,10 +55429,10 @@ workspaces:
     task_slug: extend-daemon-background-shadow-sync-to-all-registered-projects
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-20T23:56:36.265Z
-      last_reconciled_at: 2026-04-21T00:10:12.577Z
+      last_active_at: 2026-04-21T00:10:35.220Z
+      last_reconciled_at: 2026-04-21T00:10:35.220Z
       created_at: 2026-04-20T20:06:13.111Z
-      updated_at: 2026-04-21T00:10:31.747Z
+      updated_at: 2026-04-21T00:10:35.220Z
     workspace_id: dispatch-workspace-01KPP7XFJ7Z1MG2NQAXMWZTA6W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
