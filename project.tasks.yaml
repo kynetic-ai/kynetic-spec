@@ -26726,7 +26726,7 @@
   type: task
   spec_ref: "@readme-landing-page"
   plan_ref: "@plan-user-documentation-foundation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-docs-getting-started-content"
@@ -26738,6 +26738,7 @@
   todos_count: 0
   created_at: 2026-04-20T23:55:30.653Z
   started_at: 2026-04-21T09:56:28.097Z
+  submitted_at: 2026-04-21T10:11:05.741Z
   automation: eligible
 - _ulid: 01KPQ7RDHXBRGDZSDFF0XG13RT
   slugs: []
