@@ -29247,7 +29247,7 @@ runs:
     completed_at: 2026-04-21T06:14:30.569Z
   - _ulid: 01KPQCGQ2V81MTXYEB226EGVS7
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29332,7 +29332,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-21T06:45:31.936Z
-        completed_at: 2026-04-21T06:45:31.936Z
+        completed_at: 2026-04-21T06:45:50.567Z
+        notes: "Coverage check: the workflow introspection friction is already tracked by @01KKBD55
+          (workflow introspection / current-step visibility). The validation-noise problem is
+          partially covered by @task-plan-completeness-warning-debt-reduction, which targets
+          completeness warning debt that currently reduces review signal. I did not find a separate
+          project-wide tracking item for the narrower command-boundary regression-test gap; that
+          issue is already captured directly in review @01KPQBTN for the active task fix cycle."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-21T06:45:50.567Z
+        completed_at: 2026-04-21T06:45:50.567Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T06:44:19.675Z
