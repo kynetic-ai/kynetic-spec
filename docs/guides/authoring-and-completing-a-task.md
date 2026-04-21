@@ -29,7 +29,7 @@ This creates a task linked to the spec's acceptance criteria. Check the task det
 kspec task get @task-your-spec
 ```
 
-For all task creation options, run `kspec task add --help`.
+For all derivation options, run `kspec derive --help`.
 
 ### 2. Start the task
 
