@@ -157389,6 +157389,12 @@ reviews:
         payload:
           thread_ulid: 01KPQDRH1WQ34B51D4VEKW1KZP
         timestamp: 2026-04-21T07:32:26.140Z
+      - _ulid: 01KPQF9226JD7RYGANKWC6GHBC
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQDRH1WQ34B51D4VEKW1KZP
+        timestamp: 2026-04-21T07:32:34.502Z
     examined_commit: 1f63c6cdb975401087f3e06c710f57e7993d872d
     external_links: []
     lifecycle_state: closed
@@ -157431,6 +157437,8 @@ reviews:
               changelog when filtering for release-notes/changelog. All 8150 tests pass."
             created_at: 2026-04-21T07:32:25.043Z
         kind: blocker
+        resolved_at: 2026-04-21T07:32:33.472Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -157440,7 +157448,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T07:06:26.300Z
     created_at: 2026-04-21T06:56:03.550Z
-    updated_at: 2026-04-21T07:32:25.043Z
+    updated_at: 2026-04-21T07:32:33.472Z
     notes: []
   - _ulid: 01KPQEJ9986HT6F0VY3KY99G47
     slugs: []
