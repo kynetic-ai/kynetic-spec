@@ -160894,6 +160894,23 @@ reviews:
         runner: npm
         created_at: 2026-04-21T11:55:43.000Z
         completed_at: 2026-04-21T11:55:43.000Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: docs/troubleshooting/index.md; the seven troubleshooting entries;
+          tests/web-ui-docs-rendering.test.ts; docs/concepts/web-ui-and-daemon.md;
+          docs/concepts/agents-and-dispatch.md; AGENTS.md; kspec-agents.md. Commands run: git diff
+          stat/name-only/full diff; node dist/cli/index.js task get; item get; review for-task;
+          validate; npm test; rg for AC annotations and dispatch daemon guidance; nl -ba on the
+          flagged file. Claims verified: troubleshooting pages exist and are covered by AC-annotated
+          docs rendering tests; the daemon article contradicts dispatch daemon guidance. Categories
+          searched: correctness, AC coverage, integration, test quality, repo validation state."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-21T11:55:46.690Z
+        completed_at: 2026-04-21T11:55:46.690Z
     events:
       - _ulid: 01KPQY8V76W5P2XYK7JPRBCJTH
         actor: Jacob Chapel
@@ -160936,6 +160953,13 @@ reviews:
           status: pass
           name: docs-rendering-test
         timestamp: 2026-04-21T11:55:44.252Z
+      - _ulid: 01KPQYB1DFP1NG23P9MTPC63XR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-21T11:55:48.015Z
     examined_commit: 10920edde46aec1b8ad86b90177e07fea0ef00fb
     external_links: []
     lifecycle_state: open
@@ -160968,5 +160992,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T11:54:36.135Z
-    updated_at: 2026-04-21T11:55:43.000Z
+    updated_at: 2026-04-21T11:55:46.690Z
     notes: []
