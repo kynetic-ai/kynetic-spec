@@ -15317,6 +15317,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T03:37:19.201Z
+  - _ulid: 01KPQ405WT2X223W4D634373AK
+    type: success
+    content: "Fix cycle 7 on task-docs-rendering was clean: single blocker (heading anchor hash not
+      updating), one-line fix + E2E test, full suite pass, resubmitted in one pass. The existing E2E
+      test patterns made adding the new test frictionless."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T04:15:29.178Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
