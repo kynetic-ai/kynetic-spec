@@ -153762,6 +153762,17 @@ reviews:
         runner: kspec
         created_at: 2026-04-21T00:36:56.925Z
         completed_at: 2026-04-21T00:36:56.925Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Build completed successfully. New docs route introduced a Svelte accessibility warning at
+          packages/web-ui/src/routes/docs/[...slug]/+page.svelte:91, but the build itself passed.
+        name: npm run build
+        required: true
+        runner: npm
+        created_at: 2026-04-21T00:37:00.482Z
+        completed_at: 2026-04-21T00:37:00.482Z
     events:
       - _ulid: 01KPPQBF2QGT71RFR8KDPEK75Z
         actor: Jacob Chapel
@@ -153811,6 +153822,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-21T00:36:58.171Z
+      - _ulid: 01KPPQG5MJ642Z7BY545FB6D2Z
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run build
+        timestamp: 2026-04-21T00:37:01.714Z
     examined_commit: ca0646762730b23edeb709229513354dae9acf45
     external_links: []
     lifecycle_state: open
@@ -153880,5 +153898,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T00:34:27.544Z
-    updated_at: 2026-04-21T00:36:56.925Z
+    updated_at: 2026-04-21T00:37:00.482Z
     notes: []
