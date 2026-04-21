@@ -58,3 +58,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T10:40:42.644Z
+  - _ulid: 01KPQVJBANGR5E6F8VRDNM5RFB
+    content: "Fix cycle 2: addressed both review blocker threads. (1) reviewing-an-agents-work.md:
+      replaced hardcoded origin/dev with <integration-branch> placeholder and added instruction to
+      check the actual integration branch via kspec task get. (2) starting-a-new-project.md:
+      replaced nonexistent kspec item add --type module with kspec module add, the actual CLI
+      command for module creation, plus added --help reference per AC-3. Also re-verified all 3 ACs
+      against implementation. All tests pass (8220 passed, 5 skipped)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T11:07:21.813Z
