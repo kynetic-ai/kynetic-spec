@@ -162141,9 +162141,25 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-21T21:55:04.277Z
+      - _ulid: 01KPS0ME1T0G3WXAND71G93Z32
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-21T21:55:07.451Z
+      - _ulid: 01KPS0ME1VPNWH0CVN6KJ9MMJF
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-21T21:55:07.451Z
     examined_commit: eb78b5cd75d4836765997092e16a0ba688d7229c
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -162163,7 +162179,14 @@ reviews:
               Categories searched: correctness, edge cases, error handling, test quality, integration. No branch-introduced issues found.
             created_at: 2026-04-21T21:47:20.240Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-21T21:55:07.450Z
     created_at: 2026-04-21T21:44:47.361Z
-    updated_at: 2026-04-21T21:55:03.153Z
+    updated_at: 2026-04-21T21:55:07.451Z
     notes: []
