@@ -21,7 +21,7 @@ description: |
 spec_ref: "@docs-section-taxonomy"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-docs-rendering"
@@ -31,6 +31,14 @@ tags:
   - docs
   - content
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-docs-section-scaffolding/01kppn42
+  captured_at: 2026-04-21T04:47:27.711Z
+  commit: e84d2e6c24c173fcc9d4cfec78dd7aa5b486d598
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KPQ4VD45ARG47BGFZXAND6Y7
 history:
   - author: "@claude"
@@ -53,7 +61,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-21T04:30:55.280Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-docs-section-scaffolding/01kppn42
+          captured_at: 2026-04-21T04:47:27.711Z
+          commit: e84d2e6c24c173fcc9d4cfec78dd7aa5b486d598
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-21T04:47:27.713Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-21T04:47:27.713Z
 created_at: 2026-04-20T23:55:28.300Z
 started_at: 2026-04-21T04:30:55.280Z
+submitted_at: 2026-04-21T04:47:27.713Z
 todos: []
 automation: eligible
