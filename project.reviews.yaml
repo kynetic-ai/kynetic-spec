@@ -154911,6 +154911,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQ1NGMBJAGV3K96QPKQ9W4F
         timestamp: 2026-04-21T03:34:43.618Z
+      - _ulid: 01KPQ1P0XEX5EHVG458B3YZEFS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPQ1NZYE4HAESDEWJPZ9KGAB
+        timestamp: 2026-04-21T03:34:59.246Z
     examined_commit: bcb8e71562126b0b6adf00e60db288c5f76aa493
     external_links: []
     lifecycle_state: open
@@ -154941,7 +154948,46 @@ reviews:
               another non-semantic event target instead of changing the article semantics.
             created_at: 2026-04-21T03:34:42.572Z
         kind: blocker
+      - _ulid: 01KPQ1NZYE4HAESDEWJPZ9KGAB
+        entries:
+          - _ulid: 01KPQ1NZYE9P59WW4E2HQG1SK7
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: packages/web-ui/src/routes/docs/[...slug]/+page.svelte,
+              packages/web-ui/src/routes/docs/+page.svelte, packages/web-ui/src/lib/docs.ts,
+              packages/web-ui/src/lib/utils/docs-markdown.ts,
+              packages/web-ui/src/lib/utils/docs-utils.ts,
+              packages/web-ui/src/lib/components/Sidebar.svelte,
+              packages/web-ui/src/lib/components/MobileNav.svelte,
+              packages/web-ui/vite-plugin-docs.ts, packages/web-ui/vite.config.ts,
+              packages/daemon/src/server.ts, tests/web-ui-docs-rendering.test.ts,
+              tests/e2e/docs.spec.ts, docs/getting-started.md.
+
+              Commands run: kspec task get @01KPPN42CDKS6A6951ZATDPKXP; kspec item get
+              @docs-reachability; kspec item get @docs-navigation-shape; kspec review for-task
+              @01KPPN42CDKS6A6951ZATDPKXP; kspec validate; rg for AC annotations and markdown links;
+              git diff against dev and previous review commit; npm test; npm test -- --run
+              tests/upgrade-command.test.ts -t "detects review-plan skill in directory-based layout
+              for version inference"; npm test -- --run tests/web-ui-docs-rendering.test.ts; npm run
+              test:e2e -- tests/e2e/docs.spec.ts; npm run build:e2e.
+
+              Claims verified: docs routes render and navigate in browser (Playwright 8/8 pass);
+              docs unit coverage passes (52/52); daemon SPA routes include /docs and /docs/*;
+              previous out-of-tree link handling fix is present in renderer.
+
+              Categories searched: correctness, edge cases around markdown link resolution, error
+              handling for missing/out-of-tree links, test quality/AC coverage, integration/build
+              output. Findings: 1 blocker on incorrect article semantics causing a new build-time
+              a11y warning.
+
+              Note on npm test: the initial full-suite run reported one unrelated upgrade-command
+              failure caused by stale dist artifacts in this workspace; after build refresh, the
+              previously failing targeted test passed.
+            created_at: 2026-04-21T03:34:58.254Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-21T03:20:19.292Z
-    updated_at: 2026-04-21T03:34:42.572Z
+    updated_at: 2026-04-21T03:34:58.254Z
     notes: []
