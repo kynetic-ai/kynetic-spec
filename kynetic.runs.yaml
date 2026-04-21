@@ -29247,7 +29247,7 @@ runs:
     completed_at: 2026-04-21T06:14:30.569Z
   - _ulid: 01KPQCGQ2V81MTXYEB226EGVS7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29261,7 +29261,78 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T06:45:10.426Z
-        completed_at: 2026-04-21T06:45:10.426Z
+        completed_at: 2026-04-21T06:45:31.936Z
+        notes: >-
+          Friction points: repo-wide ✗ Validation failed
+
+          ────────────────────────────────────────
+
+          Files checked: 10
+
+          Items checked: 600
+
+          Tasks checked: 0
+
+          Meta: 12 agents, 11 workflows, 11 conventions
+
+
+          Schema errors: 1
+            ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+              Expected string, received object
+          References: OK
+
+
+          Reference warnings: 1
+            ⚠ @skills
+              Orphaned skill directory 'skills' has no corresponding meta entry
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+          Alignment warnings: 35
+            Orphaned specs (no tasks): 33
+              ○ Test Trait
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ... and 30 more
+            Status mismatches: 2
+              ! Task Set Batch Support
+                Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+              ! Concurrent Read Command Execution
+                Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+          Alignment stats: 434/600 specs have tasks, 432 aligned
+
+
+          Completeness warnings: 498
+            Missing acceptance criteria: 1
+              ○ @01KJN1WT - Test Trait
+            Missing own AC coverage: 242
+              ! @docs-search - Docs Search
+                Uncovered: ac-1, ac-2, ac-3
+              ! @docs-getting-started-section - Getting Started Section
+                Uncovered: ac-1, ac-2, ac-3
+              ! @docs-concepts-section - Concepts Section
+                Uncovered: ac-1, ac-2, ac-3
+              ... and 239 more
+            Invalid AC annotations: 255
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/make-task-reads-immediately-consistent-after-review-verdict-transitions-01kpq7rd-review/tests/agent-detection.test.ts:43
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/make-task-reads-immediately-consistent-after-review-verdict-transitions-01kpq7rd-review/tests/agent-detection.test.ts:61
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/make-task-reads-immediately-consistent-after-review-verdict-transitions-01kpq7rd-review/tests/agent-detection.test.ts:75
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/make-task-reads-immediately-consistent-after-review-verdict-transitions-01kpq7rd-review/tests/agent-detection.test.ts:88
+              ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/make-task-reads-immediately-consistent-after-review-verdict-transitions-01kpq7rd-review/tests/agent-dispatch-engine.test.ts:4965
+              ... and 250 more
+          Skills: OK (10 files checked) failures make targeted review validation low-signal because
+          unrelated schema/completeness problems drown out task-local evidence. A smaller CLI
+          ergonomics issue also surfaced:  required an explicit run ref even immediately after
+          starting a workflow, which adds avoidable lookup churn.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T06:45:31.936Z
+        completed_at: 2026-04-21T06:45:31.936Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T06:44:19.675Z
