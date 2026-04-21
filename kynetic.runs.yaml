@@ -29940,7 +29940,7 @@ runs:
     started_at: 2026-04-21T08:58:34.112Z
     completed_at: 2026-04-21T09:00:12.949Z
   - _ulid: 01KPQMV447CCB178G7R02CJ8K6
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -29990,7 +29990,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-21T09:11:22.713Z
-        completed_at: 2026-04-21T09:11:22.713Z
+        completed_at: 2026-04-21T09:11:34.257Z
+        notes: "Captured three observations linked to this run: one success pattern on AC-focused docs
+          rendering tests, one friction on detached review snapshots needing manual merge handoff
+          when the integration branch is active in another worktree, and one friction on long npm
+          test runs not yielding a crisp final result artifact for review evidence."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T09:09:49.319Z
+    completed_at: 2026-04-21T09:11:34.257Z
