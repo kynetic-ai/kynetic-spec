@@ -60546,34 +60546,34 @@ workspaces:
     canonical_branch: dispatch/task/task-narrow-dispatcher-runtime-mode-env-isolation/01kprz17
     canonical_branch_head: eb78b5cd75d4836765997092e16a0ba688d7229c
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-04-21T21:43:28.883Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-04-21T21:57:04.857Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T21:44:15.189Z
+      updated_at: 2026-04-21T21:57:04.857Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c44f02d25346c627d747e12f6b641aeb12c9b692
-      updated_at: 2026-04-21T21:43:28.883Z
-    lifecycle_state: integrating
+      updated_at: 2026-04-21T21:57:04.857Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KPRZ17RC7NPM3BSCAZX3ZJ0C"
     task_slug: task-narrow-dispatcher-runtime-mode-env-isolation
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T21:44:15.189Z
-      last_reconciled_at: 2026-04-21T21:44:15.189Z
+      last_reconciled_at: 2026-04-21T21:57:04.857Z
       created_at: 2026-04-21T21:28:12.545Z
-      updated_at: 2026-04-21T21:44:15.189Z
+      updated_at: 2026-04-21T21:57:04.857Z
     workspace_id: dispatch-workspace-01KPRZ17RC7NPM3BSCAZX3ZJ0C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
