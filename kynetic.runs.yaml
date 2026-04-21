@@ -30781,9 +30781,22 @@ runs:
     completed_at: 2026-04-21T13:34:03.072Z
   - _ulid: 01KPR5PKTF4K0Z0HTJ1A9TXR3Z
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T14:04:27.344Z
+        completed_at: 2026-04-21T14:04:52.525Z
+        notes: "What worked well: 1) The vite-plugin-docs virtual module architecture made the indexing
+          approach obvious — mirror the same collection logic in the build script. 2) Pagefind's
+          Node.js addCustomRecord API perfectly solved the SPA limitation (no pre-rendered HTML to
+          crawl). 3) Existing web-ui-docs-rendering.test.ts provided a clear template for behavioral
+          test structure."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T14:04:52.525Z
+        completed_at: 2026-04-21T14:04:52.525Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T14:04:27.344Z
