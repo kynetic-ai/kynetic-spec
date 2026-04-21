@@ -159297,6 +159297,12 @@ reviews:
         payload:
           thread_ulid: 01KPQQDB68R1036C9QBRQQGHAK
         timestamp: 2026-04-21T09:56:06.240Z
+      - _ulid: 01KPQRKHWBHN9N0ZBRS5MX1XAY
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQQDYCFRM4SH5A9YJYMJ0NV
+        timestamp: 2026-04-21T10:15:35.563Z
     examined_commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
     external_links: []
     lifecycle_state: closed
@@ -159568,6 +159574,12 @@ reviews:
               verdict. Following these steps from the published guide fails immediately, so the
               review workflow is not usable as documented.
             created_at: 2026-04-21T09:55:03.184Z
+          - _ulid: 01KPQRKGF609ZPGAS3WC0JB806
+            author: "@claude"
+            body: "Fixed: Replaced kspec review create with review add --subject-type task --subject-ref, kspec
+              review thread with review comment --kind --body, and kspec review submit with review
+              verdict --decision. All commands now match the shipped CLI."
+            created_at: 2026-04-21T10:15:34.118Z
         kind: blocker
       - _ulid: 01KPQQE1GWCECNQ10D66ETZ5FK
         anchor:
@@ -159613,7 +159625,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T09:55:25.028Z
     created_at: 2026-04-21T09:42:34.957Z
-    updated_at: 2026-04-21T09:56:05.041Z
+    updated_at: 2026-04-21T10:15:34.118Z
     notes: []
   - _ulid: 01KPQQFC7ZK962DHPMH10GHNB4
     slugs: []
