@@ -1130,6 +1130,10 @@ describe("section landing page structure", () => {
       // Landing page should have a non-empty paragraph (the purpose summary)
       const rendered = renderDocsMarkdown(indexEntry.content);
       expect(rendered.html).toContain("<p>");
+
+      // Landing page should contain at least one markdown link to a child page
+      const mdLinkPattern = /\[.+?\]\(\.\/.+?\.md\)/;
+      expect(indexEntry.content, `${dir} landing page should link to at least one child page`).toMatch(mdLinkPattern);
     }
   });
 
@@ -1150,5 +1154,76 @@ describe("section landing page structure", () => {
 
     // Should link to child pages (at minimum the tutorial)
     expect(indexEntry.content).toContain("./tutorial.md");
+  });
+
+  // AC: @docs-section-taxonomy ac-2
+  it("guides landing page lists stub child pages", () => {
+    const docsDir = join(__dirname, "..", "docs");
+    const plugin = docsPlugin(docsDir, {
+      exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
+    });
+    const load = plugin.load as (id: string) => string | undefined;
+    const result = load("\0virtual:docs")!;
+    const manifest = JSON.parse(result.slice("export default ".length, -1));
+
+    const indexEntry = manifest.entries.find(
+      (e: { slug: string }) => e.slug === "guides",
+    );
+    expect(indexEntry).toBeDefined();
+    expect(indexEntry.content).toContain("./starting-a-new-project.md");
+    expect(indexEntry.content).toContain("./directing-your-agent.md");
+  });
+
+  // AC: @docs-section-taxonomy ac-2
+  it("concepts landing page lists stub child pages", () => {
+    const docsDir = join(__dirname, "..", "docs");
+    const plugin = docsPlugin(docsDir, {
+      exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
+    });
+    const load = plugin.load as (id: string) => string | undefined;
+    const result = load("\0virtual:docs")!;
+    const manifest = JSON.parse(result.slice("export default ".length, -1));
+
+    const indexEntry = manifest.entries.find(
+      (e: { slug: string }) => e.slug === "concepts",
+    );
+    expect(indexEntry).toBeDefined();
+    expect(indexEntry.content).toContain("./what-kspec-is.md");
+    expect(indexEntry.content).toContain("./shadow-branch.md");
+  });
+
+  // AC: @docs-section-taxonomy ac-2
+  it("troubleshooting landing page lists stub child pages", () => {
+    const docsDir = join(__dirname, "..", "docs");
+    const plugin = docsPlugin(docsDir, {
+      exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
+    });
+    const load = plugin.load as (id: string) => string | undefined;
+    const result = load("\0virtual:docs")!;
+    const manifest = JSON.parse(result.slice("export default ".length, -1));
+
+    const indexEntry = manifest.entries.find(
+      (e: { slug: string }) => e.slug === "troubleshooting",
+    );
+    expect(indexEntry).toBeDefined();
+    expect(indexEntry.content).toContain("./shadow-out-of-sync.md");
+    expect(indexEntry.content).toContain("./daemon-port-in-use.md");
+  });
+
+  // AC: @docs-section-taxonomy ac-2
+  it("release-notes landing page lists stub child pages", () => {
+    const docsDir = join(__dirname, "..", "docs");
+    const plugin = docsPlugin(docsDir, {
+      exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
+    });
+    const load = plugin.load as (id: string) => string | undefined;
+    const result = load("\0virtual:docs")!;
+    const manifest = JSON.parse(result.slice("export default ".length, -1));
+
+    const indexEntry = manifest.entries.find(
+      (e: { slug: string }) => e.slug === "release-notes",
+    );
+    expect(indexEntry).toBeDefined();
+    expect(indexEntry.content).toContain("./changelog.md");
   });
 });
