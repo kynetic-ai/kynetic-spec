@@ -155918,6 +155918,12 @@ reviews:
         payload:
           thread_ulid: 01KPQ2RHY773VCM11NJ1G9XJXX
         timestamp: 2026-04-21T04:14:07.883Z
+      - _ulid: 01KPQ3XVRE4G4WSA246QZ2KBVT
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQ2RNSB47FJFVANY320CF30
+        timestamp: 2026-04-21T04:14:13.262Z
     examined_commit: 765071be773d1738dbd5b14ec2c05e76954c2c98
     external_links: []
     lifecycle_state: closed
@@ -155981,6 +155987,8 @@ reviews:
               address bar for sharing/copying."
             created_at: 2026-04-21T04:13:57.823Z
         kind: blocker
+        resolved_at: 2026-04-21T04:14:12.271Z
+        resolved_by: "@claude"
       - _ulid: 01KPQ2T9NW0ZXXSGSQB0HSYE6A
         entries:
           - _ulid: 01KPQ2T9NWDDJGWDZMF4Z6T4D4
@@ -156025,5 +156033,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T03:58:40.372Z
     created_at: 2026-04-21T03:44:52.806Z
-    updated_at: 2026-04-21T04:14:06.871Z
+    updated_at: 2026-04-21T04:14:12.271Z
     notes: []
