@@ -28557,9 +28557,23 @@ runs:
     completed_at: 2026-04-21T02:25:55.122Z
   - _ulid: 01KPPYQHRCKCYN5GE0W603ZVWM
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T02:43:23.532Z
+        completed_at: 2026-04-21T02:44:18.955Z
+        notes: "Session: fix cycle 3 for task-docs-rendering. Identified one blocker (dead clicks on
+          out-of-tree .md links). Fix was minimal and targeted. What worked: defense-in-depth
+          approach (click handler + render-time rewriting). Minor friction: original implementation
+          didn't test with actual docs content containing out-of-tree links, but this is a general
+          testing discipline issue, not systemic. No new items to capture — below high-confidence
+          threshold for loop mode."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T02:44:18.955Z
+        completed_at: 2026-04-21T02:44:18.955Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T02:43:23.532Z
