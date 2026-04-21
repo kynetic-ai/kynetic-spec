@@ -161979,6 +161979,17 @@ reviews:
         runner: npm
         created_at: 2026-04-21T20:22:38.076Z
         completed_at: 2026-04-21T20:22:38.076Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repo-wide pre-existing validation failure: .kspec/modules/meta.yaml trait schema error
+          plus existing completeness/alignment warnings; no failures in this task's changed files."
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T20:22:41.351Z
+        completed_at: 2026-04-21T20:22:41.351Z
     events:
       - _ulid: 01KPRTQN0WPMY3G6GCHKS6E979
         actor: Jacob Chapel
@@ -162000,6 +162011,13 @@ reviews:
           status: pass
           name: dispatch-runtime-bootstrap-contract
         timestamp: 2026-04-21T20:22:39.231Z
+      - _ulid: 01KPRVB72FWAKZPSKTWR4AEBZV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec-validate
+        timestamp: 2026-04-21T20:22:42.511Z
     examined_commit: f4ac3f45469b0984242c6736b7eda70919d56fb5
     external_links: []
     lifecycle_state: open
@@ -162012,5 +162030,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T20:12:01.436Z
-    updated_at: 2026-04-21T20:22:38.076Z
+    updated_at: 2026-04-21T20:22:41.351Z
     notes: []
