@@ -30781,7 +30781,7 @@ runs:
     completed_at: 2026-04-21T13:34:03.072Z
   - _ulid: 01KPR5PKTF4K0Z0HTJ1A9TXR3Z
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -30796,7 +30796,34 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T14:04:52.525Z
-        completed_at: 2026-04-21T14:04:52.525Z
+        completed_at: 2026-04-21T14:05:26.167Z
+        notes: >-
+          Friction points identified (high confidence, systemic):
+
+          1) npm workspace + pagefind: 'npm install' silently skips pagefind devDependency in
+          monorepo workspaces. Required 'npm install --include=dev' to resolve. This is a
+          Node.js/npm workspace gotcha — pagefind uses optional platform-specific binaries and npm's
+          workspace hoisting silently drops them. Systemic: any future optional-dep package will hit
+          this.
+
+          2) Testing Pagefind Node.js API search: The Pagefind Node.js API only supports indexing
+          (createIndex, addCustomRecord, writeFiles) — there is no search() method on the Node API.
+          Search only works via the browser JS API. This meant search behavior tests could not be
+          written as Node.js unit tests; only index structure tests were possible. The actual search
+          behavior requires E2E testing.
+
+          3) Subprocess module resolution: Helper scripts written to /tmp/ cannot resolve pagefind
+          because Node resolves modules from the script's directory. Had to write helper scripts
+          into the project root directory instead. This is a recurring pattern for tests that need
+          to spawn subprocesses using ESM-only packages.
+
+
+          Successes: The virtual module pattern in vite-plugin-docs made the indexing approach
+          obvious and the build pipeline integration clean.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T14:05:26.167Z
+        completed_at: 2026-04-21T14:05:26.167Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T14:04:27.344Z
