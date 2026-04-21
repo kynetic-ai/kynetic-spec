@@ -16,7 +16,7 @@ description: |
 spec_ref: "@docs-troubleshooting-section"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-docs-section-scaffolding"
@@ -37,7 +37,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KPQVNR20YVPJHW4VTWY3D1C8
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -86,6 +86,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-21T11:54:39.310Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KPQVNR20YVPJHW4VTWY3D1C8
+    command: review-verdict-needs-work
+    timestamp: 2026-04-21T11:56:02.611Z
 created_at: 2026-04-20T23:55:29.765Z
 started_at: 2026-04-21T11:09:46.213Z
 submitted_at: 2026-04-21T11:47:13.746Z
