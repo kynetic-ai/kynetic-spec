@@ -59377,7 +59377,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T23:50:02.122Z
+      updated_at: 2026-04-21T23:50:04.565Z
     integration:
       status: pending
       detail: null
@@ -59386,25 +59386,20 @@ workspaces:
       target_branch: dev
       target_commit: a2b75192c83a79bc86f3d60d7759f2f6f95f510b
       updated_at: 2026-04-21T23:50:02.122Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KPPN44NG07GJCSG9RMPSQ45W"
     task_slug: task-docs-search
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T23:40:54.072Z
-      last_reconciled_at: 2026-04-21T23:50:02.122Z
+      last_reconciled_at: 2026-04-21T23:50:04.565Z
       created_at: 2026-04-21T13:32:09.579Z
-      updated_at: 2026-04-21T23:50:02.122Z
+      updated_at: 2026-04-21T23:50:04.565Z
     workspace_id: dispatch-workspace-01KPPN44NG07GJCSG9RMPSQ45W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: ffccaaeb0d1ed717e535dc84fd5b49bdfba0b12d
-        last_seen_at: 2026-04-21T23:40:26.254Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-search-01kppn44-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-docs-search/01kppn44
