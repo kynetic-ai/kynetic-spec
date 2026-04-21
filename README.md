@@ -6,92 +6,28 @@ It gives you a durable spec tree, linked implementation tasks, and a shadow-bran
 
 > Early-stage software: expect rough edges and command/API changes while the workflow stabilizes.
 
-## Why teams use it
-
-- Define features and requirements before implementation.
-- Derive tasks directly from specs instead of duplicating intent in tickets.
-- Keep spec and task state in a separate `kspec-meta` branch via the `.kspec/` worktree.
-- Give human and AI contributors the same project context through `kspec session start` and generated agent instructions.
-
-## Quick start
-
-Install `kspec`:
+## Install
 
 ```bash
 npm install -g @kynetic-ai/spec
 ```
 
-Or run it without a global install:
+See [Installation](docs/getting-started/installation.md) for prerequisites and verification steps.
+
+## First steps
 
 ```bash
-npx @kynetic-ai/spec --help
+kspec init            # create project manifest + shadow worktree
+kspec setup           # configure agent environment
+kspec session start   # view active work and project context
 ```
 
-Initialize a project:
+The [Getting Started](docs/getting-started/index.md) walkthrough covers the full path from install to your first completed task.
 
-```bash
-kspec init
-kspec setup
-kspec session start
-```
+## Documentation
 
-That three-command sequence is the common starting point across real kspec projects:
-
-1. `kspec init` creates the project manifest plus the `.kspec/` shadow worktree.
-2. `kspec setup` configures agent authoring and local runtime integration.
-3. `kspec session start` shows active work, ready tasks, and pending project context.
-
-For install details, cloning existing kspec projects, and troubleshooting, see [INSTALL.md](INSTALL.md).
-
-## The spec-first loop
-
-The core workflow is short:
-
-```bash
-# 1. Define what should exist
-kspec item add --under @main --title "Contributing guide" --type feature --slug contributing-guide
-kspec item ac add @contributing-guide \
-  --given "a new contributor opens the repository" \
-  --when "they look for project workflow guidance" \
-  --then "they can follow a documented path to set up, make changes, and submit work"
-
-# 2. Derive implementation work from the spec
-kspec derive @contributing-guide
-
-# 3. Start and track execution
-kspec task start @task-contributing-guide
-kspec task note @task-contributing-guide "Drafting CONTRIBUTING.md and linking it from README."
-
-# 4. Submit after code/docs + PR are ready
-kspec task submit @task-contributing-guide
-
-# 5. Complete after merge
-kspec task complete @task-contributing-guide --reason "Merged in PR #123."
-```
-
-For the full walkthrough from install to first completed task, see [docs/getting-started.md](docs/getting-started.md).
-
-## How it works
-
-### Specs stay separate from product code
-
-By default, `kspec` stores specs, tasks, plans, and workflow state inside `.kspec/`, which is a git worktree backed by an orphan `kspec-meta` branch. Your source branch stays focused on code. Your planning state remains versioned and auditable.
-
-### Tasks stay linked to intent
-
-When you run `kspec derive @spec-ref`, the resulting task keeps a `spec_ref` back to the originating item. Reviews can validate the implementation against acceptance criteria instead of relying on a loosely-related ticket title.
-
-### Agents get the same context humans do
-
-`kspec setup` and `kspec agents generate` produce project-scoped instructions and skills so agents can follow the same conventions, workflows, and task lifecycle you use manually.
-
-## Where to go next
-
-- [docs/getting-started.md](docs/getting-started.md): first-project tutorial for humans and agents
-- [INSTALL.md](INSTALL.md): installation, setup modes, and troubleshooting
-- [AGENTS.md](AGENTS.md): project instructions for agent contributors
-- [docs/history/KYNETIC_SPEC_DESIGN.md](docs/history/KYNETIC_SPEC_DESIGN.md): design rationale and architecture history
-
-## Developing kspec itself
-
-This repository is the source for the `@kynetic-ai/spec` npm package. If you want to work on `kspec` rather than adopt it in another repo, use the contributor/development setup in [INSTALL.md](INSTALL.md#from-source) and the project workflow in [AGENTS.md](AGENTS.md).
+- [Getting Started](docs/getting-started/index.md) — install, initialize, and complete the spec-first loop
+- [Concepts](docs/concepts/index.md) — mental models for how kspec works
+- [Guides](docs/guides/index.md) — step-by-step procedures for common workflows
+- [Troubleshooting](docs/troubleshooting/index.md) — solutions for common issues
+- [INSTALL.md](INSTALL.md) — detailed installation and setup modes
