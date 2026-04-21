@@ -157208,6 +157208,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T06:43:38.058Z
+      - _ulid: 01KPQEA8MJCX1YEX6ZX7H6SAHN
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQCEX23F5DS61PZ22RST1XT
+        timestamp: 2026-04-21T07:15:45.426Z
     examined_commit: 18e0da8abf85d37b2848252fcf45386e96d64941
     external_links: []
     lifecycle_state: closed
@@ -157240,6 +157246,16 @@ reviews:
               verdict flow and then immediately reads the task through the same cache-backed
               surface.
             created_at: 2026-04-21T06:43:20.259Z
+          - _ulid: 01KPQEA7NCGVAJ2V0QE5ZF7ZXF
+            author: "@claude"
+            body: "Fixed: Added an end-to-end integration test in daemon-review-verdicts-api.test.ts that
+              exercises the actual regression path. The test wires both createReviewsRoutes and
+              createTasksRoutes into the same Elysia app with a shared mock RouteEntityCache whose
+              writeThrough reloads tasks from disk (matching real ProjectEntityCache behavior). It
+              submits a request_changes verdict via POST, then immediately reads the task via
+              cache-backed GET and asserts status is needs_work. Also added a control test
+              confirming approve verdicts leave the task in pending_review. All 8138 tests pass."
+            created_at: 2026-04-21T07:15:44.428Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -157250,7 +157266,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T06:43:38.057Z
     created_at: 2026-04-21T06:32:17.044Z
-    updated_at: 2026-04-21T06:43:38.058Z
+    updated_at: 2026-04-21T07:15:44.428Z
     notes: []
   - _ulid: 01KPQD66EY9P03554V6TXB2QT0
     slugs: []
