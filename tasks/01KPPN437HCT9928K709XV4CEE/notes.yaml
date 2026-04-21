@@ -84,3 +84,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T08:41:00.148Z
+  - _ulid: 01KPQM56PRD5EHFQVXCW8E4RNW
+    content: "Fix cycle 1: addressed review blocker. Replaced `git checkout -b` with `kspec task branch
+      @ref` in your-first-action.md (lines 70-76) and tutorial.md (line 106). Added a brief
+      explanation of what kspec task branch does for the Getting Started audience. Re-verified all
+      three ACs against the full implementation — all still satisfied. All 8178 tests pass (2227
+      suites)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T08:57:51.064Z
