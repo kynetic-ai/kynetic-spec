@@ -157789,6 +157789,18 @@ reviews:
         runner: codex
         created_at: 2026-04-21T08:04:46.331Z
         completed_at: 2026-04-21T08:04:46.331Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Pre-existing repo-wide validation issues unrelated to this task: meta schema error at
+          .kspec/modules/meta.yaml plus existing alignment/completeness warnings. No task-specific
+          regression observed in changed files."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T08:04:49.456Z
+        completed_at: 2026-04-21T08:04:49.456Z
     events:
       - _ulid: 01KPQGFTEWDQN7BW2HMFK48KT8
         actor: Jacob Chapel
@@ -157817,6 +157829,13 @@ reviews:
           status: pass
           name: manual review
         timestamp: 2026-04-21T08:04:47.441Z
+      - _ulid: 01KPQH44RKQB3AF1E63GCQ8T75
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-21T08:04:50.579Z
     examined_commit: cd6316cb1358077ccf0680678b5659913b6d6a60
     external_links: []
     lifecycle_state: open
@@ -157829,5 +157848,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T07:53:44.669Z
-    updated_at: 2026-04-21T08:04:46.331Z
+    updated_at: 2026-04-21T08:04:49.456Z
     notes: []
