@@ -223,7 +223,7 @@ description: >-
 spec_ref: "@dispatch-runtime-bootstrap-contract"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -233,6 +233,14 @@ tags:
   - bootstrap
   - infra
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-dispatch-bootstrap-project-agnostic-and-env-isolation/01kprqrn
+  captured_at: 2026-04-21T19:41:54.469Z
+  commit: 17a78d69b4d5e18ce8d6d8c01a3eccf0dcdb0cc4
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KPRQV7E5H6SQK8HD4GPY85KB
 history:
   - author: "@claude"
@@ -248,7 +256,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-21T19:22:03.727Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-dispatch-bootstrap-project-agnostic-and-env-isolation/01kprqrn
+          captured_at: 2026-04-21T19:41:54.469Z
+          commit: 17a78d69b4d5e18ce8d6d8c01a3eccf0dcdb0cc4
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-21T19:41:54.473Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-21T19:41:54.474Z
 created_at: 2026-04-21T19:20:09.091Z
 started_at: 2026-04-21T19:22:03.726Z
+submitted_at: 2026-04-21T19:41:54.473Z
 todos: []
 automation: eligible
