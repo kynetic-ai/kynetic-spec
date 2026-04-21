@@ -119,3 +119,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T06:12:35.834Z
+  - _ulid: 01KPQAPN1JAPRR6Q062TDBJNEG
+    content: "[FIX_CYCLE: 3] Review findings: Manual merge into dev conflicted in
+      packages/web-ui/vite-plugin-docs.ts, packages/web-ui/vite.config.ts, and
+      tests/web-ui-docs-rendering.test.ts. Merge was aborted; worker must rebase/resolve on
+      dispatch/task/task-docs-section-scaffolding/01kppn42."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-21T06:12:37.042Z
