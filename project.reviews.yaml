@@ -153760,6 +153760,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPPQEF0TM3GD33E83K3A9MNG
         timestamp: 2026-04-21T00:36:06.939Z
+      - _ulid: 01KPPQEKDR4ZKBTZMBPFT2D6KE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPPQEJ96V1QZ3Q7J1KWP6096
+        timestamp: 2026-04-21T00:36:10.296Z
     examined_commit: ca0646762730b23edeb709229513354dae9acf45
     external_links: []
     lifecycle_state: open
@@ -153791,7 +153798,25 @@ reviews:
               coverage."
             created_at: 2026-04-21T00:36:05.786Z
         kind: blocker
+      - _ulid: 01KPPQEJ96V1QZ3Q7J1KWP6096
+        anchor:
+          type: code
+          commit: ca0646762730b23edeb709229513354dae9acf45
+          line_end: 24
+          line_start: 23
+          path: packages/web-ui/src/routes/docs/[...slug]/+page.svelte
+          side: head
+        entries:
+          - _ulid: 01KPPQEJ96K2D6JTCZFSTYXMMV
+            author: Jacob Chapel
+            body: The docs page sidebar renders every docs entry, not the current section's pages required by
+              @docs-navigation-shape ac-1. The implementation binds  and iterates that list directly
+              for the sidebar, so a page under  will still show unrelated root pages like  instead
+              of only pages from . That mismatches the spec's page-shape contract and makes section
+              navigation noisier as the docs set grows.
+            created_at: 2026-04-21T00:36:09.127Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T00:34:27.544Z
-    updated_at: 2026-04-21T00:36:05.786Z
+    updated_at: 2026-04-21T00:36:09.127Z
     notes: []
