@@ -57825,7 +57825,7 @@ workspaces:
         head: 2c69987b95ba31993bfdbb5504564313d685aaa3
         last_seen_at: 2026-04-21T10:54:16.239Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-concepts-content-01kppn43
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 5bb723c5fcc22435d779a9b683e0ae81b62b344a
     bootstrap:
       status: succeeded
@@ -58135,9 +58135,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T12:02:45.019Z
-      last_reconciled_at: 2026-04-21T12:15:56.578Z
+      last_reconciled_at: 2026-04-21T12:17:39.744Z
       created_at: 2026-04-21T09:13:34.196Z
-      updated_at: 2026-04-21T12:16:00.869Z
+      updated_at: 2026-04-21T12:17:39.744Z
     workspace_id: dispatch-workspace-01KPPN43TRBTZC712K4JV1VSZB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
