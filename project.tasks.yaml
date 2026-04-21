@@ -26854,7 +26854,7 @@
     implementation with bootstrap contract ac-12 scope)
   type: task
   spec_ref: "@dispatch-runtime-bootstrap-contract"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 3
@@ -26866,4 +26866,5 @@
   todos_count: 0
   created_at: 2026-04-21T21:27:09.836Z
   started_at: 2026-04-21T21:29:26.808Z
+  submitted_at: 2026-04-21T21:42:52.614Z
   automation: eligible
