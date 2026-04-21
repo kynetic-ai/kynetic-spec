@@ -21,7 +21,7 @@ description: |
 spec_ref: "@docs-section-taxonomy"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-docs-rendering"
@@ -40,7 +40,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KPQ6XKNMF41J88KS4JJBNHD9
 history:
   - author: "@claude"
     changes:
@@ -99,8 +99,21 @@ history:
         previous: 01KPQ4VD45ARG47BGFZXAND6Y7
     command: review-verdict-needs-work
     timestamp: 2026-04-21T04:56:58.799Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KPQ6XKNMF41J88KS4JJBNHD9
+        previous: null
+      started_at:
+        new: 2026-04-21T05:22:47.530Z
+        previous: 2026-04-21T04:30:55.280Z
+    command: task-start
+    timestamp: 2026-04-21T05:22:47.530Z
 created_at: 2026-04-20T23:55:28.300Z
-started_at: 2026-04-21T04:30:55.280Z
+started_at: 2026-04-21T05:22:47.530Z
 submitted_at: 2026-04-21T04:47:27.713Z
 todos: []
 automation: eligible
