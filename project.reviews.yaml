@@ -157551,6 +157551,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T07:31:59.910Z
+      - _ulid: 01KPQGBBS6WM7S9HBD3N8WZ9VB
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQF7C38Y5YX295NWTR459X7
+        timestamp: 2026-04-21T07:51:18.567Z
     examined_commit: d73e82876ce1e09e6033de3bc12b018dcbb5def4
     external_links: []
     lifecycle_state: closed
@@ -157579,6 +157585,15 @@ reviews:
               now runs for every cached task mutation, it introduces a stale-history regression for
               daemon/command contexts that already warmed task history.
             created_at: 2026-04-21T07:31:39.240Z
+          - _ulid: 01KPQGBAT61TYBDS0FTJT7PMJB
+            author: "@claude"
+            body: "Fixed: applyTaskMutation() now deletes the historyDetails entry for the mutated task
+              (this.tasks.historyDetails.delete(ulid)), so getTaskHistory() and
+              loadTaskWithHistory() return null and fall through to disk where the freshly-written
+              history entry is picked up. Added a unit test that verifies history is invalidated
+              (returns null) after applyTaskMutation while index and detail tiers remain updated.
+              All 8139 tests pass."
+            created_at: 2026-04-21T07:51:17.574Z
         kind: blocker
       - _ulid: 01KPQF7EZ2DWD36N05KC21C775
         entries:
@@ -157604,7 +157619,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T07:31:59.910Z
     created_at: 2026-04-21T07:20:08.231Z
-    updated_at: 2026-04-21T07:31:59.910Z
+    updated_at: 2026-04-21T07:51:17.574Z
     notes: []
   - _ulid: 01KPQFCH6XR5PFNYW9EP1SAB4Z
     slugs: []
