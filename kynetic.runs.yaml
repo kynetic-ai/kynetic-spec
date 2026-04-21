@@ -29507,7 +29507,7 @@ runs:
     completed_at: 2026-04-21T07:34:24.727Z
   - _ulid: 01KPQG0Z7ZDYFASYTMQRGX0B5B
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29521,7 +29521,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T07:46:17.983Z
-        completed_at: 2026-04-21T07:46:17.983Z
+        completed_at: 2026-04-21T07:46:18.935Z
+        notes: "What worked well: direct manifest and grouping probes against the docs virtual module made
+          the review fast and concrete. Checking groupDocsSections/filterSectionEntries with a real
+          built manifest caught section-classification behavior without needing browser-level
+          repro."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T07:46:18.935Z
+        completed_at: 2026-04-21T07:46:18.935Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T07:45:38.047Z
