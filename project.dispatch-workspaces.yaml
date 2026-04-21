@@ -56740,7 +56740,7 @@ workspaces:
         head: cd6316cb1358077ccf0680678b5659913b6d6a60
         last_seen_at: 2026-04-21T07:52:44.586Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/make-task-reads-immediately-consistent-after-review-verdict-transitions-01kpq7rd
-  - active_role: null
+  - active_role: worker
     base_branch_point: 020246046a960c53dccad0f689bb5f9260bcc649
     bootstrap:
       status: succeeded
@@ -57031,7 +57031,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T07:53:12.924Z
+      updated_at: 2026-04-21T07:53:34.350Z
     integration:
       status: pending
       detail: null
@@ -57040,16 +57040,16 @@ workspaces:
       target_branch: dev
       target_commit: 020246046a960c53dccad0f689bb5f9260bcc649
       updated_at: 2026-04-21T07:53:12.924Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KPPN42YFSJHAM778SFY02QPY"
     task_slug: task-docs-nav-integration
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-21T07:53:12.924Z
+      last_active_at: 2026-04-21T07:53:34.350Z
+      last_reconciled_at: 2026-04-21T07:53:34.350Z
       created_at: 2026-04-21T07:53:12.924Z
-      updated_at: 2026-04-21T07:53:32.449Z
+      updated_at: 2026-04-21T07:53:34.350Z
     workspace_id: dispatch-workspace-01KPPN42YFSJHAM778SFY02QPY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
