@@ -30109,9 +30109,20 @@ runs:
     completed_at: 2026-04-21T09:43:05.222Z
   - _ulid: 01KPQQH0SY92GN699F5XRQBS6R
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T09:56:43.966Z
+        completed_at: 2026-04-21T09:57:38.509Z
+        notes: "Worked well: verifying guide claims against the live CLI immediately exposed factual docs
+          drift, and the full npm test run confirmed the review findings were content correctness
+          issues rather than a broad branch regression."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T09:57:38.509Z
+        completed_at: 2026-04-21T09:57:38.509Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T09:56:43.966Z
