@@ -160065,6 +160065,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQT039RGR3YZ97X25VC3FDW
         timestamp: 2026-04-21T10:39:56.359Z
+      - _ulid: 01KPQT07K79TPRMCDNFWN7YPVN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQT06GT68B8HJ9N1YHB8JQ4
+        timestamp: 2026-04-21T10:39:59.591Z
     examined_commit: fb6fc21cee4d59dfaf14316a6d2062f48a4f8999
     external_links: []
     lifecycle_state: open
@@ -160094,7 +160101,24 @@ reviews:
               or repository.
             created_at: 2026-04-21T10:39:55.192Z
         kind: blocker
+      - _ulid: 01KPQT06GT68B8HJ9N1YHB8JQ4
+        anchor:
+          type: code
+          commit: fb6fc21cee4d59dfaf14316a6d2062f48a4f8999
+          line_end: 59
+          line_start: 57
+          path: docs/guides/starting-a-new-project.md
+          side: head
+        entries:
+          - _ulid: 01KPQT06GTCX5JMB0W0FYC37QF
+            author: Jacob Chapel
+            body: The module-creation example is not runnable as written.  fails because  requires a parent or ,
+              and module creation is exposed via  instead. Readers following this guide will hit an
+              immediate CLI error instead of creating the additional modules this step promises.
+              Update the guide to use the supported module command surface.
+            created_at: 2026-04-21T10:39:58.490Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T10:27:34.035Z
-    updated_at: 2026-04-21T10:39:55.192Z
+    updated_at: 2026-04-21T10:39:58.490Z
     notes: []
