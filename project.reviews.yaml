@@ -153753,6 +153753,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T00:34:55.256Z
+      - _ulid: 01KPPQEG4V51RP5JQW1NERAA13
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPPQEF0TM3GD33E83K3A9MNG
+        timestamp: 2026-04-21T00:36:06.939Z
     examined_commit: ca0646762730b23edeb709229513354dae9acf45
     external_links: []
     lifecycle_state: open
@@ -153762,8 +153769,29 @@ reviews:
       content_hash: ""
       ref: "@01KPPN42CDKS6A6951ZATDPKXP"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPPQEF0TM3GD33E83K3A9MNG
+        anchor:
+          type: code
+          commit: ca0646762730b23edeb709229513354dae9acf45
+          line_end: 339
+          line_start: 280
+          path: tests/web-ui-docs-rendering.test.ts
+          side: head
+        entries:
+          - _ulid: 01KPPQEF0TBS8NZ0M8BQJATSN7
+            author: Jacob Chapel
+            body: "Several new tests in tests/web-ui-docs-rendering.test.ts validate docs reachability by
+              reading source files and asserting on strings or file existence instead of exercising
+              the web UI behavior. Examples include existsSync checks for route files at lines
+              280-296, readFileSync against Sidebar.svelte and MobileNav.svelte at lines 305-319,
+              and a readFileSync assertion against vite.config.ts at lines 331-339. This is a
+              MUST-FIX in this repo: these tests would still pass if navigation/rendering were
+              broken as long as the strings stayed in the source, so they do not provide valid AC
+              coverage."
+            created_at: 2026-04-21T00:36:05.786Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T00:34:27.544Z
-    updated_at: 2026-04-21T00:34:54.078Z
+    updated_at: 2026-04-21T00:36:05.786Z
     notes: []
