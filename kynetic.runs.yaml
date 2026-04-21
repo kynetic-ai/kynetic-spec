@@ -28815,7 +28815,7 @@ runs:
     completed_at: 2026-04-21T04:01:24.656Z
   - _ulid: 01KPQ4T2VFN63QND7A2XCJK3PC
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28843,7 +28843,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-21T04:30:48.361Z
-        completed_at: 2026-04-21T04:30:48.361Z
+        completed_at: 2026-04-21T04:31:04.191Z
+        notes: "Coverage check: the detached-review-snapshot merge/worktree limitation is already tracked by
+          observations @01KMW7GK, @01KN44CR, @01KN5AJG, and @01KNBSYDN, so no new capture is needed
+          there. I did not find existing tracking for review-time handling of repo-wide pre-existing
+          kspec validate failures or for clearer reviewer workflow around recording non-blocking
+          validate failures on otherwise clean branches. The unsupported targeted test invocation
+          issue appears incidental and not worth capture."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-21T04:31:04.191Z
+        completed_at: 2026-04-21T04:31:04.191Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T04:29:38.031Z
