@@ -161537,9 +161537,25 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-04-21T13:00:08.140Z
+      - _ulid: 01KPR214KWPXG8XXK55XF2SAJC
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-21T13:00:17.916Z
+      - _ulid: 01KPR214KWQFNZ7ZHJWW61QSHC
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-21T13:00:17.916Z
     examined_commit: fb495534dd1f4a71b2cb193b97a990c1d9a591a9
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -161584,7 +161600,14 @@ reviews:
               another error instead of a working recovery path."
             created_at: 2026-04-21T12:59:39.046Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-21T13:00:17.916Z
     created_at: 2026-04-21T12:49:35.382Z
-    updated_at: 2026-04-21T13:00:06.996Z
+    updated_at: 2026-04-21T13:00:17.916Z
     notes: []
