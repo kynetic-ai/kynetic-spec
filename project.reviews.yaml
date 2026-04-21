@@ -156203,6 +156203,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T04:49:38.976Z
+      - _ulid: 01KPQ6A4QY6JXZDAF3GQ0PNFDX
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQ6A3RF5QBGJZ3M2PR4CZ7Y
+        timestamp: 2026-04-21T04:55:52.830Z
     examined_commit: e84d2e6c24c173fcc9d4cfec78dd7aa5b486d598
     external_links: []
     lifecycle_state: open
@@ -156212,8 +156219,26 @@ reviews:
       content_hash: ""
       ref: "@01KPPN42NCR77J23TWYP63VXDH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPQ6A3RF5QBGJZ3M2PR4CZ7Y
+        anchor:
+          type: code
+          commit: e84d2e6c24c173fcc9d4cfec78dd7aa5b486d598
+          line_end: 22
+          line_start: 22
+          path: docs/getting-started/tutorial.md
+          side: head
+        entries:
+          - _ulid: 01KPQ6A3RFGJQRMP6B1ZAQVQ93
+            author: Jacob Chapel
+            body: Moving the tutorial into docs/getting-started/ left its repo-root markdown links one level too
+              shallow.  at line 22 and  at line 145 now render to  and  instead of the repo-root
+              files, so both links 404 in the published docs. I confirmed this with , which
+              currently emits GitHub blob URLs under  for both targets. These need to be updated
+              to  and  before this page is publishable.
+            created_at: 2026-04-21T04:55:51.823Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T04:49:05.066Z
-    updated_at: 2026-04-21T04:49:37.746Z
+    updated_at: 2026-04-21T04:55:51.823Z
     notes: []
