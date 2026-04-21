@@ -223,8 +223,12 @@ description: >-
 spec_ref: "@dispatch-runtime-bootstrap-contract"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged
+  dispatch/task/task-dispatch-bootstrap-project-agnostic-and-env-isolation/01kprqrn into dev after
+  approved review @01KPRTQN0W9KXZQBJ5E3JQV2PC. Verified AC-11/12/13 coverage, targeted bootstrap
+  contract tests, and full npm test pass (2243 suites, 8297 tests passed, 5 skipped).
 depends_on: []
 context: []
 priority: 2
@@ -341,8 +345,25 @@ history:
         previous: "@01KPRS5MQA9DC7336R1DQBDAR3"
     command: review-link
     timestamp: 2026-04-21T20:12:04.534Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged dispatch/task/task-dispatch-bootstrap-project-agnostic-and-env-isolation/01kprqrn into
+          dev after approved review @01KPRTQN0W9KXZQBJ5E3JQV2PC. Verified AC-11/12/13 coverage,
+          targeted bootstrap contract tests, and full npm test pass (2243 suites, 8297 tests passed,
+          5 skipped).
+        previous: null
+      completed_at:
+        new: 2026-04-21T20:23:46.264Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-21T20:23:46.274Z
 created_at: 2026-04-21T19:20:09.091Z
 started_at: 2026-04-21T20:10:22.568Z
 submitted_at: 2026-04-21T20:10:26.151Z
+completed_at: 2026-04-21T20:23:46.264Z
 todos: []
 automation: eligible
