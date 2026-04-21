@@ -37,3 +37,45 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-21T08:12:41.344Z
+  - _ulid: 01KPQJBNXM8QE4YS8623W30MJP
+    content: >-
+      Implementation complete. Created six Getting Started pages:
+
+      1. overview.md — what kspec is and who it is for
+
+      2. installation.md — npm install, Node >=20, verify with --version and --help
+
+      3. initializing-a-project.md — kspec init, setup, shadow branch (kspec-meta), .kspec/
+      directory, shadow status/repair, do-not-edit-by-hand warning
+
+      4. connecting-your-agent.md — Claude Code primary, cline/cursor/windsurf alternatives, verify
+      via agent commands
+
+      5. your-first-action.md — full spec-to-task cycle: item add, ac add, derive, task start,
+      implement, commit with trailers, submit, complete
+
+      6. where-to-go-next.md — pointers to Guides and Concepts sections, useful commands,
+      troubleshooting
+
+
+      Updated index.md to list all six pages plus tutorial in reading order. Each non-last page ends
+      with a **Next:** link to the following page.
+
+
+      AC coverage (17 new tests, all passing):
+
+      - ac-1: All six pages exist, contain executable commands in code blocks. Installation shows
+      npm install. Initializing shows init/setup/session. Connecting covers agent families. First
+      Action shows item add/derive/task start/submit.
+
+      - ac-2: Each non-last page links to the next page via relative .md link. Links verified in
+      reading order. Last page has no Next marker. Landing page links all six pages in order.
+
+      - ac-3: Initializing page names kspec-meta branch, .kspec/ directory, kspec shadow status,
+      kspec shadow repair, and instructs not to manually edit.
+
+
+      All 8178 tests pass (2227 suites).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T08:26:26.101Z
