@@ -153965,6 +153965,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T00:54:54.007Z
+      - _ulid: 01KPPRHVQXDNEHYCEQW1MHN62K
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPPRHTJZ0XP079AC3W7DAPPX
+        timestamp: 2026-04-21T00:55:25.693Z
     examined_commit: dcb59f5c91804d45c41685236758c9df7bc235fd
     external_links: []
     lifecycle_state: open
@@ -153974,8 +153981,34 @@ reviews:
       content_hash: ""
       ref: "@01KPP7XFJ7Z1MG2NQAXMWZTA6W"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPPRHTJZ0XP079AC3W7DAPPX
+        entries:
+          - _ulid: 01KPPRHTJZ13KNAS5JS23A9G4A
+            author: Jacob Chapel
+            body: >-
+              Files read: packages/daemon/src/server.ts, src/daemon/shadow-sync-manager.ts,
+              packages/daemon/src/routes/projects.ts,
+              packages/daemon/src/middleware/project-context.ts,
+              packages/daemon/src/websocket/project-resolution.ts,
+              packages/daemon/src/project-context.ts, src/parser/shadow-sync-scheduler.ts,
+              tests/daemon-shadow-sync-multi-project.test.ts, tests/daemon-read-path.test.ts
+
+              Commands run: kspec task get @01KPP7XFJ7Z1MG2NQAXMWZTA6W; kspec review for-task
+              @01KPP7XFJ7Z1MG2NQAXMWZTA6W; kspec item get @config-shadow; kspec validate; git diff
+              9d65ad244237659c2a29a45679392595ae0135ee...dcb59f5c91804d45c41685236758c9df7bc235fd;
+              rg -n "AC: @config-shadow|AC: @trait-error-guidance" tests; npm test -- --fresh; npm
+              run build:daemon
+
+              Claims verified: multi-project registration paths start background shadow sync;
+              unregister/shutdown paths stop or cancel schedulers; per-project onPull refresh
+              targets the correct cache; daemon package build still resolves the new manager module.
+
+              Categories searched: correctness, edge cases/races, error handling, test quality,
+              integration. No blocking findings.
+            created_at: 2026-04-21T00:55:24.511Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-21T00:54:20.446Z
-    updated_at: 2026-04-21T00:54:52.809Z
+    updated_at: 2026-04-21T00:55:24.511Z
     notes: []
