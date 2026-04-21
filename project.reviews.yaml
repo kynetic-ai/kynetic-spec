@@ -154155,6 +154155,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T01:22:32.883Z
+      - _ulid: 01KPPV9H73X9P280VG44M6JQH0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPPV9G2P89BXTFK3DAF65BT3
+        timestamp: 2026-04-21T01:43:18.500Z
     examined_commit: 2cfc5b801c74967628413dbf069a6bbf46c8ee26
     external_links: []
     lifecycle_state: open
@@ -154164,8 +154171,26 @@ reviews:
       content_hash: ""
       ref: "@01KPPN42CDKS6A6951ZATDPKXP"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPPV9G2P89BXTFK3DAF65BT3
+        anchor:
+          type: code
+          commit: 2cfc5b801c74967628413dbf069a6bbf46c8ee26
+          line_end: 105
+          line_start: 102
+          path: packages/web-ui/src/lib/components/Sidebar.svelte
+          side: head
+        entries:
+          - _ulid: 01KPPV9G2PQ68NNZNF4DFWJPZ1
+            author: Jacob Chapel
+            body: The branch now adds a Docs entry to primary navigation in both shell nav components, but there
+              is still no behavioral test coverage for @docs-reachability ac-1.  returns no matches,
+              so this reachability path can regress without any test failing. Add at least one test
+              that exercises the rendered navigation and proves a reader can discover and follow the
+              Docs entry.
+            created_at: 2026-04-21T01:43:17.334Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T01:22:20.376Z
-    updated_at: 2026-04-21T01:22:31.696Z
+    updated_at: 2026-04-21T01:43:17.334Z
     notes: []
