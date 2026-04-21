@@ -159641,6 +159641,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQR67X0AX4JR5K65F3RH7RV
         timestamp: 2026-04-21T10:08:20.416Z
+      - _ulid: 01KPQR6BWN2NT2WAQGYV8BFN2D
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQR6AT43C1F3EGTXEGANZM3
+        timestamp: 2026-04-21T10:08:23.445Z
     examined_commit: 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533
     external_links: []
     lifecycle_state: open
@@ -159670,7 +159677,25 @@ reviews:
               that the new Concepts pages satisfy ac-1 through ac-3.'
             created_at: 2026-04-21T10:08:19.360Z
         kind: blocker
+      - _ulid: 01KPQR6AT43C1F3EGTXEGANZM3
+        anchor:
+          type: code
+          commit: 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533
+          line_end: 40
+          line_start: 40
+          path: docs/concepts/agents-and-dispatch.md
+          side: head
+        entries:
+          - _ulid: 01KPQR6AT4MBQ38N7APRXPTS6R
+            author: Jacob Chapel
+            body: "This sentence exposes the internal task metadata value `automation: eligible`.
+              @docs-concepts-section ac-2 asks for durable conceptual explanations without
+              enumerating schema fields, and this field name is an implementation detail that can be
+              described in plain language instead (for example, 'tasks must be marked as eligible
+              for automation')."
+            created_at: 2026-04-21T10:08:22.340Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:55:50.143Z
-    updated_at: 2026-04-21T10:08:19.360Z
+    updated_at: 2026-04-21T10:08:22.340Z
     notes: []
