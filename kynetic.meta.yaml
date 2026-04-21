@@ -15178,6 +15178,17 @@ observations:
     resolved: false
     workflow_ref: "@01KPPQAJ"
     created_at: 2026-04-21T00:35:41.182Z
+  - _ulid: 01KPPRDE1SG7C3CFQNXSG5ABK5
+    type: friction
+    content: Shadow sync manager required 6 fix cycles due to layered concurrency races (idempotency,
+      concurrent starts, stop-during-start, shutdown-during-start). Each cycle exposed one new edge
+      case. Future async manager patterns should consider a global shutdown flag checked at every
+      await point, rather than building up per-operation cancellation sets incrementally across
+      review cycles.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T00:53:00.601Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
