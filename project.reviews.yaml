@@ -159655,6 +159655,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQR6DQBYER4FEE2ZC93V5Q0
         timestamp: 2026-04-21T10:08:26.453Z
+      - _ulid: 01KPQR6HV6MR0QEY6PZX8EFB0K
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQR6GSJDP3QRYG7WPSQ4RCG
+        timestamp: 2026-04-21T10:08:29.542Z
     examined_commit: 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533
     external_links: []
     lifecycle_state: open
@@ -159720,7 +159727,24 @@ reviews:
               not yet aligned with the spec's durability requirement."
             created_at: 2026-04-21T10:08:25.323Z
         kind: blocker
+      - _ulid: 01KPQR6GSJDP3QRYG7WPSQ4RCG
+        anchor:
+          type: code
+          commit: 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533
+          line_end: 23
+          line_start: 23
+          path: docs/concepts/specs-tasks-plans-inbox.md
+          side: head
+        entries:
+          - _ulid: 01KPQR6GSJ1BP280FR3R6RCB9D
+            author: Jacob Chapel
+            body: This page still names a raw schema field (`spec_ref`) even though @docs-concepts-section ac-2
+              requires Concepts pages to explain the model without enumerating schema fields. The
+              reader-facing explanation works without that internal field name, so keeping it here
+              makes the content less durable than the spec requires.
+            created_at: 2026-04-21T10:08:28.466Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:55:50.143Z
-    updated_at: 2026-04-21T10:08:25.323Z
+    updated_at: 2026-04-21T10:08:28.466Z
     notes: []
