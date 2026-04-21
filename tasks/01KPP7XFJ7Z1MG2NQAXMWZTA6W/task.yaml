@@ -66,7 +66,7 @@ description: >-
 spec_ref: "@config-shadow"
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -86,7 +86,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/extend-daemon-background-shadow-sync-to-all-registered-projects/01kpp7xf
-session_id: null
+session_id: 01KPPN648AJ2WMR81FDRY9KCKE
 history:
   - author: "@claude"
     changes:
@@ -366,8 +366,21 @@ history:
         previous: 01KPPFW3YP85RR2EJV27PMK599
     command: review-verdict-needs-work
     timestamp: 2026-04-20T23:54:09.083Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KPPN648AJ2WMR81FDRY9KCKE
+        previous: null
+      started_at:
+        new: 2026-04-21T00:09:33.282Z
+        previous: 2026-04-20T22:39:02.002Z
+    command: task-start
+    timestamp: 2026-04-21T00:09:33.282Z
 created_at: 2026-04-20T20:04:40.647Z
-started_at: 2026-04-20T22:39:02.002Z
+started_at: 2026-04-21T00:09:33.282Z
 submitted_at: 2026-04-20T22:39:05.541Z
 todos: []
 automation: eligible
