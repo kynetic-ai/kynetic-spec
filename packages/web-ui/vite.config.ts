@@ -4,11 +4,13 @@ import { defineConfig } from "vite";
 import { docsPlugin } from "./vite-plugin-docs";
 
 const docsDir = resolve(__dirname, "../../docs");
+const releaseNotesPath = resolve(__dirname, "../../RELEASE_NOTES.md");
 
 export default defineConfig({
   plugins: [
     docsPlugin(docsDir, {
       repoUrl: "https://github.com/lepahc/kynetic-spec/blob/main",
+      releaseNotesPath,
     }),
     sveltekit(),
   ],

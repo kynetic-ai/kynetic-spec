@@ -81,6 +81,8 @@ function collectMarkdownFiles(
 export interface DocsPluginOptions {
   /** GitHub blob URL prefix for out-of-tree markdown links (e.g. "https://github.com/org/repo/blob/main") */
   repoUrl?: string;
+  /** Path to RELEASE_NOTES.md to bundle alongside docs entries */
+  releaseNotesPath?: string;
 }
 
 export function docsPlugin(docsDir: string, options?: DocsPluginOptions): Plugin {
@@ -110,14 +112,35 @@ export function docsPlugin(docsDir: string, options?: DocsPluginOptions): Plugin
         })
         .sort((a, b) => a.slug.localeCompare(b.slug));
 
+      // Bundle RELEASE_NOTES.md as a synthetic docs entry so it appears
+      // in the manifest alongside regular docs pages — no second copy of
+      // the file, just a single build-time read of the canonical source.
+      if (options?.releaseNotesPath) {
+        try {
+          const rnContent = readFileSync(options.releaseNotesPath, "utf-8");
+          entries.push({
+            slug: "release-notes",
+            title: extractTitle(rnContent, "RELEASE_NOTES.md"),
+            content: rnContent,
+            path: "RELEASE_NOTES.md",
+          });
+        } catch {
+          // RELEASE_NOTES.md is optional — silently skip if absent
+        }
+      }
+
       const manifest = { entries, repoUrl: options?.repoUrl ?? null };
 
       return `export default ${JSON.stringify(manifest)};`;
     },
 
     handleHotUpdate({ file, server }) {
-      // If a docs .md file changes during dev, invalidate the virtual module
-      if (file.startsWith(docsDir) && file.endsWith(".md")) {
+      // If a docs .md file or the release notes file changes, invalidate the virtual module
+      const isDocsFile = file.startsWith(docsDir) && file.endsWith(".md");
+      const isReleaseNotes =
+        options?.releaseNotesPath && file === options.releaseNotesPath;
+
+      if (isDocsFile || isReleaseNotes) {
         const mod = server.moduleGraph.getModuleById(
           RESOLVED_VIRTUAL_MODULE_ID,
         );

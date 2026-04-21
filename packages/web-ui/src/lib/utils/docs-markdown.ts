@@ -26,6 +26,7 @@ export function slugifyHeading(text: string): string {
 		.toLowerCase()
 		.replace(/<[^>]*>/g, "") // strip HTML tags
 		.replace(/&[^;]+;/g, "") // strip HTML entities
+		.replace(/\./g, "-") // dots to hyphens (version anchors: v0.13.0 → v0-13-0)
 		.replace(/[^\w\s-]/g, "") // remove non-word chars (except spaces and hyphens)
 		.replace(/\s+/g, "-") // spaces to hyphens
 		.replace(/-+/g, "-") // collapse multiple hyphens
