@@ -158337,6 +158337,12 @@ reviews:
         payload:
           thread_ulid: 01KPQK5XVHK6RFHFBB741HRAA4
         timestamp: 2026-04-21T08:57:33.135Z
+      - _ulid: 01KPQM4X2XMZNP1SBT0V7EJWKV
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQK5XVHK6RFHFBB741HRAA4
+        timestamp: 2026-04-21T08:57:41.214Z
     examined_commit: ffbf4c6cf9b9708303cfe4c45b0d864ceac72945
     external_links: []
     lifecycle_state: closed
@@ -158399,6 +158405,8 @@ reviews:
               the command does. Also fixed the same pattern in tutorial.md for consistency."
             created_at: 2026-04-21T08:57:32.099Z
         kind: blocker
+        resolved_at: 2026-04-21T08:57:40.166Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -158408,7 +158416,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T08:40:58.156Z
     created_at: 2026-04-21T08:28:59.334Z
-    updated_at: 2026-04-21T08:57:32.099Z
+    updated_at: 2026-04-21T08:57:40.166Z
     notes: []
   - _ulid: 01KPQKENTV5699CWAAZFYKGHWF
     slugs: []
