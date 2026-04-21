@@ -26,6 +26,7 @@ tags:
   - content
   - guides
 vcs_refs: []
+review_ref: "@01KPQPQ3PD27DNKY1ZA91RQSPS"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-docs-guides-content/01kppn43
@@ -76,6 +77,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-21T09:40:36.643Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KPQPQ3PD27DNKY1ZA91RQSPS"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-21T09:42:38.127Z
 created_at: 2026-04-20T23:55:29.496Z
 started_at: 2026-04-21T09:15:04.917Z
 submitted_at: 2026-04-21T09:40:36.643Z
