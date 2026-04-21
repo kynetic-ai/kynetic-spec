@@ -25,3 +25,27 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-21T21:30:23.531Z
+  - _ulid: 01KPRZXSAQMKQ4SQ2SDEP0HMKN
+    content: >-
+      Implementation complete. Changes across 3 files:
+
+
+      1. serve.ts: Renamed DAEMON_RUNTIME_ENV_KEYS -> DAEMON_RUNTIME_MODE_ENV_KEYS, narrowed from
+      [KSPEC_NO_DAEMON, BUN_ENV, NODE_ENV] to [BUN_ENV, NODE_ENV]. Added comprehensive doc comment
+      citing consumers, spec AC, and consolidation warning. Added inline comment on
+      buildDaemonChildEnv's KSPEC_NO_DAEMON destructure explaining why it's kept local.
+
+
+      2. bootstrap.ts: Updated import to DAEMON_RUNTIME_MODE_ENV_KEYS. Updated doc comment on
+      buildBootstrapStepEnv to reference the renamed constant and ac-12.
+
+
+      3. dispatch-runtime-bootstrap-contract.test.ts: Updated import and all 3 usage sites to
+      DAEMON_RUNTIME_MODE_ENV_KEYS. Test now iterates over only the 2 runtime-mode keys, correctly
+      aligned with ac-12 scope.
+
+
+      No old constant references remain. All 8297 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T21:42:45.335Z
