@@ -161034,6 +161034,19 @@ reviews:
         runner: npm
         created_at: 2026-04-21T12:12:27.729Z
         completed_at: 2026-04-21T12:12:27.729Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repository-wide pre-existing validation failures unrelated to this docs task: schema
+          error in .kspec/modules/meta.yaml (modules[0].traits.0 expected string, received object)
+          plus broad completeness/alignment warnings elsewhere. No task-local validation regression
+          identified."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T12:12:35.862Z
+        completed_at: 2026-04-21T12:12:35.862Z
     events:
       - _ulid: 01KPQYRG7PPYCRTGRYAX468PXD
         actor: Jacob Chapel
@@ -161078,6 +161091,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T12:12:32.243Z
+      - _ulid: 01KPQZ9TP2593V2QAJ846ZBPEN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-21T12:12:36.931Z
     examined_commit: 752f032c1aaf6a6e951cab29e38afa67bd6c0d1a
     external_links: []
     lifecycle_state: closed
@@ -161127,5 +161147,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T12:12:32.242Z
     created_at: 2026-04-21T12:03:09.174Z
-    updated_at: 2026-04-21T12:12:32.243Z
+    updated_at: 2026-04-21T12:12:35.862Z
     notes: []
