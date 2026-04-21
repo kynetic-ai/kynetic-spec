@@ -161343,6 +161343,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T12:29:14.104Z
+      - _ulid: 01KPR171Q2PC5VNRKSER5SWB7M
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPR07EYK99HHB36KMC0QZ62W
+        timestamp: 2026-04-21T12:46:02.978Z
     examined_commit: bf321c0b40c7a606da6c665ae15d89955dd3629d
     external_links: []
     lifecycle_state: closed
@@ -161371,6 +161377,14 @@ reviews:
               project config, version skew, and legacy task-storage cases to , and  defines upgrade
               as the command that brings a project to the installed kspec version."
             created_at: 2026-04-21T12:28:47.955Z
+          - _ulid: 01KPR170EZXFNKT0AZK2ZT6AKA
+            author: "@claude"
+            body: "Fixed: Replaced kspec setup with kspec upgrade as the primary recovery command. The entry now
+              correctly directs readers to kspec upgrade (the single-command version alignment
+              flow), with kspec upgrade --dry-run for preview. kspec setup --force is mentioned as a
+              lower-level fallback for targeted re-scaffolding. Also fixed the Verification section
+              to say 'After running the upgrade' instead of 'After running setup'."
+            created_at: 2026-04-21T12:46:01.695Z
         kind: blocker
       - _ulid: 01KPR07N4X4Z3EDXV4JWZVT64Z
         anchor:
@@ -161399,5 +161413,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T12:29:14.103Z
     created_at: 2026-04-21T12:18:09.924Z
-    updated_at: 2026-04-21T12:29:14.104Z
+    updated_at: 2026-04-21T12:46:01.695Z
     notes: []
