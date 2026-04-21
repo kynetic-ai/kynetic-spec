@@ -28700,7 +28700,7 @@ runs:
     completed_at: 2026-04-21T03:01:34.840Z
   - _ulid: 01KPQ1QEYYFHTYQKM6XCFB2JSF
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28730,7 +28730,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-21T03:36:55.660Z
-        completed_at: 2026-04-21T03:36:55.660Z
+        completed_at: 2026-04-21T03:37:05.593Z
+        notes: "Proposed improvement: capture a review/process observation that new Svelte accessibility
+          warnings in touched files should be treated as first-class review evidence, even when
+          focused unit and E2E tests pass. What it would do: push reviewers and future gate design
+          to include build-output warning inspection for changed UI files. How it helps: catches
+          semantic/accessibility regressions that behavioral tests may miss. Scope: small as an
+          observation/process rule; medium if later enforced automatically."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-21T03:37:05.593Z
+        completed_at: 2026-04-21T03:37:05.593Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T03:35:46.398Z
