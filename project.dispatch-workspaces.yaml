@@ -56711,7 +56711,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T07:34:38.966Z
+      updated_at: 2026-04-21T07:34:40.774Z
     integration:
       status: pending
       detail: null
@@ -56720,25 +56720,20 @@ workspaces:
       target_branch: dev
       target_commit: a1fdd98a5197f3e792f8a2896bc20881c044d964
       updated_at: 2026-04-21T07:34:38.966Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KPQ7RDHXBRGDZSDFF0XG13RT"
     task_slug: make-task-reads-immediately-consistent-after-review-verdict-transitions
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T07:19:19.054Z
-      last_reconciled_at: 2026-04-21T07:34:38.966Z
+      last_reconciled_at: 2026-04-21T07:34:40.774Z
       created_at: 2026-04-21T05:53:39.864Z
-      updated_at: 2026-04-21T07:34:38.966Z
+      updated_at: 2026-04-21T07:34:40.774Z
     workspace_id: dispatch-workspace-01KPQ7RDHXBRGDZSDFF0XG13RT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: d73e82876ce1e09e6033de3bc12b018dcbb5def4
-        last_seen_at: 2026-04-21T07:18:55.363Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/make-task-reads-immediately-consistent-after-review-verdict-transitions-01kpq7rd-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/make-task-reads-immediately-consistent-after-review-verdict-transitions/01kpq7rd
