@@ -1,0 +1,189 @@
+_ulid: 01KPS7HJYRRHQ7SECQXBH19N4G
+slugs:
+  - task-gitignore-cover-file-lock-directory-suffix
+title: Gitignore entries miss the .lock/ directory suffix created by acquireFileLock, so dispatch
+  mutation locks appear as untracked content while held
+type: bug
+description: >-
+  What:
+
+  The kspec file-lock library (`src/parser/file-lock.ts`, function `acquireFileLock` at line 92)
+  implements an advisory lock by creating a directory at `${filePath}.lock/` via `fs.mkdir` and
+  releasing it via `fs.rm`. The `.lock` suffix is an internal convention of the library; every
+  caller passes a base path.
+
+
+  The gitignore writer at `src/parser/gitignore.ts` (function `buildKspecGitignoreEntries` at line
+  28) emits gitignore entries that include the dispatch shadow mutation lock base path
+  (`.kspec-dispatch-shadow-mutation`) but does not emit any pattern that covers the
+  `.kspec-dispatch-shadow-mutation.lock/` directory that `acquireFileLock` actually creates at
+  runtime. While the lock is held, the lock directory appears as untracked content at the project
+  root and surfaces in tooling that inspects git status (for example, a session-end checkpoint
+  warning).
+
+
+  The same structural gap applies to any other caller of `acquireFileLock` whose lock base path is
+  at the project root or in a location not covered by a broader gitignore rule. Audit (see step 3)
+  shows that in the current codebase only the dispatch shadow mutation lock is at project root;
+  every other caller locks files inside `.kspec/`, which is already covered by a broader rule.
+
+
+  Why:
+
+  This violates an existing acceptance criterion. `@complete-auto-gitignore`
+  ac-no-untracked-after-common-commands states: "Given a fresh project is initialized, when a
+  representative set of commands that create transient state has been run and git status is
+  inspected, then no kspec-created directory appears as untracked content." Running dispatch
+  acquires the shadow mutation lock, which produces a transient untracked `.lock/` directory — a
+  direct AC violation. The directory is short-lived, so the bug is easy to miss but noisy when it
+  surfaces.
+
+
+  How (implementation sketch — adjust after reading current code at
+  `/home/chapel/Projects/kynetic-spec-dispatch`):
+
+
+  Primary files expected to change:
+
+  - `src/parser/file-lock.ts` — owns the `.lock/` suffix convention.
+
+  - `src/parser/gitignore.ts` — builds the gitignore entry list.
+
+  - `tests/` — add regression tests annotated against the governing AC.
+
+
+  Steps:
+
+
+  1. In `src/parser/file-lock.ts`, export a small helper that maps a lock base path to its lock
+  directory path (currently `${filePath}.lock`). Suggested name: `getLockDirPath(filePath: string):
+  string` returning the raw filesystem path (no trailing slash). Refactor `acquireFileLock` to
+  construct its lock directory via this helper so the `.lock` suffix convention has a single
+  documented source of truth.
+
+     The helper returns a plain filesystem path string. Gitignore pattern formatting (appending a trailing slash to scope the entry to a directory) is the responsibility of the gitignore builder, not this helper. This keeps the file-lock module single-purpose.
+
+  2. In `src/parser/gitignore.ts`, import the helper from step 1. For each existing gitignore entry
+  that corresponds to a lock base path passed to `acquireFileLock` at runtime, emit both the base
+  path entry AND the lock directory entry. Compose the lock directory entry via the helper and
+  append a trailing slash at the builder site (consistent with how the builder already formats
+  shadow-dir, sessions-worktree-dir, and worktree-root entries).
+
+     In the current codebase, the one lock base path that requires this treatment is `.kspec-dispatch-shadow-mutation`. After this change, the managed block will contain both `.kspec-dispatch-shadow-mutation` and `.kspec-dispatch-shadow-mutation.lock/`.
+
+  3. Confirm the audit of `acquireFileLock` call sites rather than re-doing it. The pre-seeded
+  enumeration from a reviewer grep is:
+
+     - Lock base paths at project root (need both base + lock-dir gitignore entries):
+       * `src/cli/index.ts:101` — resolved via `KSPEC_SHADOW_MUTATION_LOCK_FILE` env; base path `.kspec-dispatch-shadow-mutation`.
+       * `src/agent-runtime/workspace.ts:1681` (inside `withDispatchShadowMutationLock`) — via `getDispatchShadowMutationLockPath()` at `src/agent-runtime/workspace.ts:152`; base path `.kspec-dispatch-shadow-mutation`.
+       Both resolve to the same base path. One gitignore addition covers both.
+
+     - Lock base paths inside `.kspec/` (already covered by existing `.kspec/` entry in gitignore, no new entry needed):
+       * `src/parser/plans.ts`
+       * `src/parser/yaml.ts`
+       * `src/parser/reviews.ts`
+       * `src/parser/meta.ts`
+       * `src/parser/dispatch-workspaces.ts`
+       (Plus any other caller discovered during implementation — if any caller has a base path not covered by either case above, add the same base + lock-dir pattern.)
+
+     Record the confirmed enumeration in task notes so future callers of `acquireFileLock` can follow the same rule.
+
+  4. Verify that `needsKspecGitignoreUpdate` in `src/parser/gitignore.ts` correctly reports that the
+  managed block needs an update when the new lock-directory entry is absent. The function delegates
+  to `updateManagedBlock`, which compares existing block contents against the current
+  `buildKspecGitignoreEntries` output — so the new entry will be detected automatically once the
+  builder returns it. Confirm via the upgrade self-heal test in step 5b.
+
+     Known pre-existing limitation (do not attempt to fix in this task): when a `.gitignore` exists without a managed block and `--force` is not set, `needsKspecGitignoreUpdate` returns false per `@trait-idempotent-file-scaffold ac-existing-file-preserved-without-force`. Users who never adopted the managed block will not auto-heal via `kspec upgrade`. This is unchanged by this fix.
+
+  5. Add regression tests annotated against `@complete-auto-gitignore
+  ac-no-untracked-after-common-commands`:
+
+     (a) Lock-held git-status test: initialize a fresh project (use `setupTempFixtures()` and `initGitRepo()` per the test helpers table in AGENTS.md), acquire the dispatch shadow mutation lock via `acquireFileLock` from `src/parser/file-lock.ts` against the appropriate base path, run `git status --porcelain` via the existing test-runner shell helper, assert that `.kspec-dispatch-shadow-mutation.lock/` does not appear in the status output, release the lock in a `finally` block.
+
+     (b) Upgrade self-heal test: initialize a fresh project so it has a managed block containing the current entries, manually strip the lock-directory entry from the managed block on disk, call `ensureKspecGitignore` against the project root, assert that the lock-directory entry is re-added inside the managed block.
+
+  6. Optional snapshot test: `buildKspecGitignoreEntries()` returns an exact ordered list of
+  entries. A snapshot assertion guards against accidental removal or reordering in future edits.
+  Include if it fits the project's testing style; otherwise skip.
+
+
+  7. Update any other tests that iterate over or hardcode the exact gitignore entry list.
+
+
+  Acceptance:
+
+  - `buildKspecGitignoreEntries` returns entries that cover both the base path and the
+  lock-directory path for every `acquireFileLock` caller whose base path is at the project root or
+  otherwise not covered by a broader ignored directory. In the current codebase, this means the
+  managed block gains `.kspec-dispatch-shadow-mutation.lock/`.
+
+  - The lock directory path is composed via a single helper exported from `src/parser/file-lock.ts`.
+  The `.lock` suffix is not hand-written in the gitignore module.
+
+  - `acquireFileLock` constructs its lock directory via the same helper, so the suffix convention
+  has one source of truth.
+
+  - Task notes record the confirmed enumeration of `acquireFileLock` call sites and whether each
+  site's base path needs new gitignore coverage.
+
+  - Regression test (5a) passes: holding the dispatch shadow mutation lock does not produce
+  untracked content.
+
+  - Regression test (5b) passes: `ensureKspecGitignore` self-heals a managed block that is missing
+  the lock-directory entry.
+
+  - Existing tests continue to pass; any iterating over the exact entry list are updated
+  accordingly.
+
+
+  Interactions and non-issues (stated explicitly so a reviewer does not need to re-research):
+
+  - No spec amendment. `@complete-auto-gitignore ac-no-untracked-after-common-commands` already
+  covers this behavior; this task brings the implementation into compliance.
+
+  - The companion AC `ac-all-transient-paths-present` lists example transient paths (shadow
+  worktrees, worktree pools, session storage, inbox scratch, plan drafts) but does not mention lock
+  directories. The enumeration is illustrative, not exhaustive; no AC amendment is proposed. Flag
+  during review if a stricter reading is preferred.
+
+  - No change to file-lock semantics. The helper exposes an existing convention; it does not alter
+  how locking works.
+
+  - No change to managed-block format or the `@trait-idempotent-file-scaffold` behavior of the
+  gitignore writer.
+
+  - The `kspec upgrade` flow picks up the new entry automatically via `needsKspecGitignoreUpdate` →
+  `updateManagedBlock`, which consume the same builder output. Fixing the builder fixes all three
+  writers (init, setup, upgrade) that route through `ensureKspecGitignore`.
+
+
+  Out of scope:
+
+  - Changing the `.lock` suffix to anything else.
+
+  - Migrating from directory-based advisory locks to a different locking mechanism.
+
+  - Retroactively editing existing users' `.gitignore` outside the managed block.
+
+  - Fixing the pre-existing no-managed-block no-force limitation in `needsKspecGitignoreUpdate`.
+
+  - Session-end hooks, checkpoint logic, or any behavior outside the gitignore writer and file-lock
+  helper.
+spec_ref: "@complete-auto-gitignore"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - infra
+  - gitignore
+  - dispatch
+vcs_refs: []
+created_at: 2026-04-21T23:55:54.200Z
+todos: []
+automation: eligible

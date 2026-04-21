@@ -26817,3 +26817,22 @@
   submitted_at: 2026-04-21T21:42:52.614Z
   completed_at: 2026-04-21T21:56:08.974Z
   automation: eligible
+- _ulid: 01KPS7HJYRRHQ7SECQXBH19N4G
+  slugs:
+    - task-gitignore-cover-file-lock-directory-suffix
+  title: Gitignore entries miss the .lock/ directory suffix created by acquireFileLock, so dispatch
+    mutation locks appear as untracked content while held
+  type: bug
+  spec_ref: "@complete-auto-gitignore"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - infra
+    - gitignore
+    - dispatch
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-21T23:55:54.200Z
+  automation: eligible

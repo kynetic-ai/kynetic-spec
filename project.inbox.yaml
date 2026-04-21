@@ -2913,3 +2913,21 @@ inbox:
       - design
     added_by: "@claude"
     created_at: 2026-04-21T23:41:38.613Z
+  - _ulid: 01KPS7HK9BHHFBNQM9ZK4WQ6E2
+    text: "Gitignore backup files are not themselves gitignored. `ensureKspecGitignore` in
+      `src/parser/gitignore.ts` creates a `.gitignore.backup-<timestamp>` sibling file when invoked
+      with `--force` over an existing `.gitignore` that has no managed block (per
+      `@trait-idempotent-file-scaffold ac-force-backs-up-before-overwrite`). The backup file sits at
+      the project root and is not covered by the managed block the writer itself creates, so if ever
+      written it would appear as untracked content and could slip into a commit. Likely not
+      triggered in common flows but violates `@complete-auto-gitignore
+      ac-no-untracked-after-common-commands` under the force path. Fix scope: either extend
+      `buildKspecGitignoreEntries` to emit a `.gitignore.backup-*` pattern, or have the backup
+      writer place the backup inside an already-ignored directory (e.g. `.kspec/backups/`). Surfaced
+      2026-04-21 during review of the `.lock/` gitignore fix task."
+    tags:
+      - infra
+      - gitignore
+      - spec
+    added_by: "@claude"
+    created_at: 2026-04-21T23:55:54.540Z
