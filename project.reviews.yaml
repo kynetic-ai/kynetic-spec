@@ -159680,6 +159680,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T10:08:50.716Z
+      - _ulid: 01KPQR79KG5RFHD9AXAB2AFRQG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPQR78GR0CK03R30W6JR1E0X
+        timestamp: 2026-04-21T10:08:53.872Z
     examined_commit: 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533
     external_links: []
     lifecycle_state: open
@@ -159762,7 +159769,34 @@ reviews:
               makes the content less durable than the spec requires.
             created_at: 2026-04-21T10:08:28.466Z
         kind: blocker
+      - _ulid: 01KPQR78GR0CK03R30W6JR1E0X
+        entries:
+          - _ulid: 01KPQR78GR2J8A6W4TXTWDQSN0
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: docs/concepts/index.md, docs/concepts/what-kspec-is.md,
+              docs/concepts/working-with-an-agent.md, docs/concepts/specs-tasks-plans-inbox.md,
+              docs/concepts/the-shadow-branch.md, docs/concepts/traits.md, docs/concepts/reviews.md,
+              docs/concepts/agents-and-dispatch.md, docs/concepts/web-ui-and-daemon.md,
+              docs/getting-started/*.md (adjacent context), tests/web-ui-docs-rendering.test.ts,
+              src/cli/help/content.ts.
+
+              Commands run: npm exec -- kspec task get @01KPPN43G7T5FSMEF1YPWS0CPX, npm exec --
+              kspec item get @docs-concepts-section, npm exec -- kspec review for-task
+              @01KPPN43G7T5FSMEF1YPWS0CPX, git diff/stat/log vs dev, rg for AC annotations, kspec
+              validate on snapshot and base dev, npm test.
+
+              Claims verified: prior fix-cycle claims about rejected plans / built-in agent count /
+              session-start wording were checked against the updated docs and adjacent code/tests;
+              npm test pass verified independently.
+
+              Categories searched: correctness, spec alignment, AC coverage, test quality,
+              integration, factual accuracy against adjacent code/docs.
+            created_at: 2026-04-21T10:08:52.760Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-21T09:55:50.143Z
-    updated_at: 2026-04-21T10:08:49.616Z
+    updated_at: 2026-04-21T10:08:52.760Z
     notes: []
