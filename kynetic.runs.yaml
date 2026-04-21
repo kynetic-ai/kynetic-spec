@@ -29158,7 +29158,7 @@ runs:
     completed_at: 2026-04-21T05:31:16.406Z
   - _ulid: 01KPQ99NSCE6R86TCZMH628T4H
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29171,7 +29171,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T05:49:21.278Z
-        completed_at: 2026-04-21T05:49:21.278Z
+        completed_at: 2026-04-21T05:49:22.237Z
+        notes: "Friction points: the detached reviewer snapshot could not checkout integration branch dev
+          because that branch was already active in the primary worktree. The merge instructions
+          required an extra manual adaptation using git -C on the primary worktree."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T05:49:22.237Z
+        completed_at: 2026-04-21T05:49:22.237Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T05:48:03.244Z
