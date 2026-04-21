@@ -160297,6 +160297,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T10:55:53.355Z
+      - _ulid: 01KPQVG3CGF0AQDG1VC94R378W
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPQVG2AT22G0BS5VS0B56DDX
+        timestamp: 2026-04-21T11:06:08.144Z
     examined_commit: 2c69987b95ba31993bfdbb5504564313d685aaa3
     external_links: []
     lifecycle_state: open
@@ -160306,8 +160313,42 @@ reviews:
       content_hash: ""
       ref: "@01KPPN43G7T5FSMEF1YPWS0CPX"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPQVG2AT22G0BS5VS0B56DDX
+        entries:
+          - _ulid: 01KPQVG2AT9XWR608SPH8Y9KQP
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: docs/concepts/index.md, docs/concepts/what-kspec-is.md,
+              docs/concepts/working-with-an-agent.md, docs/concepts/specs-tasks-plans-inbox.md,
+              docs/concepts/the-shadow-branch.md, docs/concepts/traits.md, docs/concepts/reviews.md,
+              docs/concepts/agents-and-dispatch.md, docs/concepts/web-ui-and-daemon.md,
+              docs/getting-started/index.md, docs/getting-started/overview.md,
+              docs/getting-started/installation.md, docs/getting-started/initializing-a-project.md,
+              docs/getting-started/connecting-your-agent.md,
+              docs/getting-started/your-first-action.md, docs/getting-started/where-to-go-next.md,
+              tests/web-ui-docs-rendering.test.ts.
+
+              Commands run: git diff --stat/name-only, git diff against dev base, git log
+              base..HEAD, node dist/cli/index.js task get, node dist/cli/index.js item get
+              @docs-concepts-section, node dist/cli/index.js validate, rg for AC annotations, git
+              diff --check, npm test.
+
+              Claims verified: all eight Concepts pages are present and linked; each page follows
+              what/why/how-in-use structure; Specs/Tasks/Plans/Inbox includes decision rules for all
+              four kinds; new AC coverage exists in tests/web-ui-docs-rendering.test.ts; full test
+              suite passed with 2231/2231 suites and 8206 tests passing.
+
+              Categories searched: correctness (no issues), edge cases/durability of prose against
+              release-specific schema leakage (no issues), error handling/check gates (validate
+              failure is pre-existing and outside branch diff), test quality (added AC coverage is
+              behavioral for docs manifest/rendering, no source scanning of implementation code),
+              integration (docs manifest/rendering path passes in full suite).
+            created_at: 2026-04-21T11:06:07.066Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-21T10:55:30.656Z
-    updated_at: 2026-04-21T10:55:52.081Z
+    updated_at: 2026-04-21T11:06:07.066Z
     notes: []
