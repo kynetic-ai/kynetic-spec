@@ -28249,9 +28249,21 @@ runs:
     completed_at: 2026-04-21T00:11:35.000Z
   - _ulid: 01KPPQAJ4VYJE01RBZWP09GJQC
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T00:33:57.916Z
+        completed_at: 2026-04-21T00:35:09.289Z
+        notes: "Friction point: shutdown coverage for async start/stop logic is easy to overestimate. The
+          branch had green targeted tests, green daemon build, and two green full-suite runs, but
+          the shutdown test only drained the current scheduler map and missed an in-flight start
+          that could install after shutdown began."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T00:35:09.289Z
+        completed_at: 2026-04-21T00:35:09.289Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T00:33:57.916Z
