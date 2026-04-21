@@ -26824,3 +26824,22 @@
   submitted_at: 2026-04-21T07:52:09.805Z
   completed_at: 2026-04-21T08:06:04.654Z
   automation: eligible
+- _ulid: 01KPRQRNM3T4WA8NYES8KACZWD
+  slugs:
+    - task-dispatch-bootstrap-project-agnostic-and-env-isolation
+  title: Remove project-specific inference from dispatch bootstrap; prevent dispatcher runtime
+    environment from leaking into bootstrap step subprocesses
+  type: task
+  spec_ref: "@dispatch-runtime-bootstrap-contract"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - dispatch
+    - bootstrap
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-21T19:20:09.091Z
+  automation: eligible

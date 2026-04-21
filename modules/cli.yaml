@@ -8183,6 +8183,22 @@ features:
             then: The dispatcher marks the workspace unhealthy or blocks the task with actionable task-linked
               diagnostics instead of delivering a broken environment to the agent
             when: The invocation cannot be prepared safely
+          - given: The dispatcher executes bootstrap steps for a workspace
+            id: ac-11
+            then: The subprocess runs the command string as declared in the dispatcher's bootstrap configuration
+              or the agent's bootstrap configuration, with no modification or addition to the
+              command by the dispatcher
+            when: The dispatcher spawns a subprocess for a bootstrap step
+          - given: The dispatcher's own process environment contains values that configure the runtime mode of
+              the dispatcher itself or of language runtimes the dispatcher invokes
+            id: ac-12
+            then: Those runtime mode configuration values are absent from the subprocess environment the
+              dispatcher assembles for the step
+            when: The dispatcher assembles the subprocess environment for a bootstrap step
+          - given: The bootstrap configuration declares multiple step commands in a specific order
+            id: ac-13
+            then: The spawned subprocesses appear in the same relative order as the declared step commands
+            when: The dispatcher spawns any of those step commands
         tags: []
         created: 2026-03-12T02:33:44.269Z
         notes: []

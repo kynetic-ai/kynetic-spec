@@ -1,0 +1,238 @@
+_ulid: 01KPRQRNM3T4WA8NYES8KACZWD
+slugs:
+  - task-dispatch-bootstrap-project-agnostic-and-env-isolation
+title: Remove project-specific inference from dispatch bootstrap; prevent dispatcher runtime
+  environment from leaking into bootstrap step subprocesses
+type: task
+description: >-
+  What:
+
+  The dispatch bootstrap phase currently does two kinds of work that were never intended to be part
+  of the general dispatch contract and that originate in one particular project's self-hosted use of
+  dispatch.
+
+
+  (1) When the dispatcher prepares a workspace for bootstrap, it inspects the workspace for a
+  specific set of files (a node package manifest and lockfile, a node build script, a fixed list of
+  directory paths and artifact output paths) and auto-prepends synthetic bootstrap steps to run a
+  package-manager install command and a build command when those files are present. The specific
+  tooling, commands, and paths match one particular project's TypeScript monorepo layout. Any
+  project that uses the dispatcher either gets these synthetic steps implicitly (even if they never
+  configured them) or gets nothing useful from the inspection (if the project is in a different
+  ecosystem).
+
+
+  (2) The kspec serve command deliberately sets a runtime-mode environment value on the daemon it
+  launches so the daemon itself runs under a production runtime configuration. The dispatch
+  bootstrap phase spawns step subprocesses whose environment is a wholesale spread of the
+  dispatcher's own process environment. As a result, that runtime-mode value flows into every
+  bootstrap step subprocess, even though it was set for the daemon and was never intended to
+  influence step behavior. Package managers that honor the variable for dependency pruning (for
+  example, npm treating production mode as omit-dev) produce partial installs; build tools that
+  branch on it produce mismatched builds. The resulting failures surface as module-not-found errors
+  in steps that run after the install, which makes the root cause (a dispatcher-introduced env
+  value) hard to discover.
+
+
+  The combined effect of (1) and (2) was observed as a concrete failure: a reviewer workspace's
+  bootstrap reported a successful install and then a following step failed because a declared
+  devDependency had been silently pruned. The install step was synthetic (dispatcher-authored, item
+  1) and the pruning env value was dispatcher-introduced (item 2) — two leaks compounding.
+
+
+  Why:
+
+  The dispatch runtime bootstrap contract is meant to be a general mechanism that any kspec project
+  can rely on. Baking one project's build layout, tooling, and artifact paths into the dispatcher
+  means: other projects cannot trust the contract without reading the implementation; the self-host
+  project itself cannot evolve its layout without also changing dispatcher code; operators who
+  launch the dispatcher under different runtime conditions observe different bootstrap behavior than
+  they configured, with no diagnostic connecting the cause to the effect.
+
+
+  Analogous precedent for the env scope already exists in the codebase: the agent invocation
+  lifecycle contract requires the agent spawner to strip specific host-introduced variables that
+  would interfere with agent startup, on the principle that variables set for one layer should not
+  silently flow to another. The bootstrap step boundary is structurally the same case.
+
+
+  Reproducer A (configured-only behavior):
+
+  1. Start the kspec daemon on a codebase that contains a node package manifest and lockfile in its
+  workspace root.
+
+  2. Leave the codebase's dispatch configuration empty — declare no bootstrap steps.
+
+  3. Prepare a task workspace and have the dispatcher run the bootstrap phase.
+
+  4. Observe that the dispatcher spawns no subprocess commands against the workspace and reports
+  bootstrap success.
+
+
+  Reproducer B (runtime-mode env isolation):
+
+  1. In the same setup, configure a bootstrap step whose command records its subprocess environment
+  to a file in the workspace.
+
+  2. Before starting the daemon, arrange for a runtime-mode env value to be set in the daemon's own
+  process environment (the serve command does this automatically).
+
+  3. Run the bootstrap phase.
+
+  4. Observe that the runtime-mode value is absent from the recorded subprocess environment.
+
+
+  How (implementation sketch — adjust after reading the contract ACs):
+
+
+  Primary files expected to change:
+
+  - src/agent-runtime/bootstrap.ts — bootstrap module. The step execution site that spreads
+  process.env into child env is in the runShell function around line 88.
+
+  - src/cli/commands/serve.ts — the buildDaemonChildEnv function sets the runtime-mode variables on
+  the daemon child env. This function is the source of the leaking values and is correct for its own
+  purpose. Do not change it. The fix belongs at the bootstrap step execution boundary, not at the
+  daemon launch.
+
+
+  Steps:
+
+  1. Three new atomic ACs have been added to @dispatch-runtime-bootstrap-contract covering: (a)
+  bootstrap subprocess command fidelity (no dispatcher modification or addition to declared
+  commands); (b) dispatcher runtime mode configuration values are absent from bootstrap step
+  subprocess environment; (c) declared step order is preserved. All three are origin- and
+  implementation-agnostic in their wording. Implement to satisfy them.
+
+
+  2. Remove all project-specific inference from the dispatcher's bootstrap module:
+
+  - Remove the hardcoded build artifact path list.
+
+  - Remove the hardcoded build input path list.
+
+  - Remove the function that auto-generates a package-manager install step when a workspace manifest
+  and lockfile are detected.
+
+  - Remove the function that auto-generates a build step when a build script is declared.
+
+  - Remove the reachable helpers that exist only to support the above (the workspace-dependency
+  health check, the manifest-walking dependency resolver, the search-root helper, the build-input
+  mtime walker, the build-output artifact check). These become unreachable once the two implicit
+  step functions are removed. Expect the removal to be on the order of 150 lines.
+
+  - Remove the corresponding invalidation-reason strings from state and metadata. The enumerated
+  invalidation signals named in the existing contract (canonical-branch-head change,
+  bootstrap-config change, prior bootstrap failure) are unchanged.
+
+
+  3. Update the bootstrap step execution path so the subprocess environment it spawns each step
+  under has the runtime-mode configuration values removed from the inherited environment, before
+  merging the step-intended variables (role marker, source marker, step name). Do not otherwise
+  modify the inherited environment. Do not touch env that the step's own command sets within itself.
+  The concrete variables to exclude are those the dispatcher sets on its own process at daemon
+  launch for runtime configuration — in the current codebase, those applied by buildDaemonChildEnv
+  in src/cli/commands/serve.ts. The isolation logic should source its list from the same place the
+  dispatcher sets them, so additions stay in sync automatically — do not maintain a second hardcoded
+  list at the bootstrap boundary.
+
+
+  4. Migrate this self-host project's previously-implicit provisioning into its own kspec config:
+  define the install and build commands as explicit bootstrap steps in this project's dispatch
+  configuration, with whatever invocation form is needed to produce a correct
+  development-environment install. This migration is a configuration change for this project only
+  and has no impact on the dispatcher's contract beyond what the code removal in (2) already
+  produced. The kspec configuration surface is implementation detail, not spec surface.
+
+
+  5. Add regression tests annotated against each new AC:
+
+  (a) AC a (command fidelity): configured bootstrap step with command string S; assert the spawned
+  subprocess's argv matches S without dispatcher modification; also assert a workspace with no
+  configured steps produces zero spawns.
+
+  (b) AC b (runtime mode env isolation): for each environment value the dispatcher sets on its own
+  process to configure its own runtime (enumerated from the daemon-launch env assembly), set that
+  value on the dispatcher process, run a configured bootstrap step that records its subprocess
+  environment, and assert the value is absent.
+
+  (c) AC c (order preserved): configured steps in order [S1, S2, S3]; assert spawn order is S1, S2,
+  S3.
+
+
+  6. Update or remove any existing tests and fixtures that asserted on the implicit step generation,
+  the hardcoded path lists, or the health-check functions being removed.
+
+
+  7. Regenerate agent instruction artifacts if any referenced the implicit behavior.
+
+
+  Transition behavior (expected, not a required action):
+
+  - Existing workspaces with cached bootstrap state from before the change will auto-invalidate via
+  the existing bootstrap-config-changed signal once this project's kspec configuration gains the new
+  explicit steps, because the configuration hash is computed over configured steps only. No manual
+  metadata reset is required.
+
+  - After this change, manual deletion of a workspace's node_modules or build output between
+  invocations is no longer detected by the dispatcher. Reuse proceeds on the existing
+  no-invalidation-signal rule. Operators are responsible for workspace cleanliness between
+  invocations; this is a narrowing of dispatcher scope and is within the existing bootstrap
+  contract.
+
+
+  Acceptance:
+
+  - The three new ACs on @dispatch-runtime-bootstrap-contract are annotated by passing behavioral
+  tests.
+
+  - Dispatcher bootstrap module contains no project-specific layout, artifact paths, source paths,
+  tooling names, or package-manager command strings.
+
+  - This self-host project's provisioning continues to work via its own configured bootstrap steps,
+  producing an install that matches the declared dependency set regardless of the daemon's runtime
+  environment.
+
+  - Bootstrap state metadata contains no invalidation-reason strings tied to the removed implicit
+  behavior.
+
+
+  Interactions and non-issues (stated explicitly so a reviewer does not need to re-research):
+
+  - The existing tracked-source-mutation opt-in rule on the bootstrap contract is not relaxed by
+  this change.
+
+  - The dispatch workspace registry does not record env-derived or tooling-derived fields and does
+  not require a schema change.
+
+  - No change is made to the agent invocation lifecycle contract or its env-stripping behavior. The
+  bootstrap env isolation is a separate boundary with the same pattern.
+
+
+  Out of scope:
+
+  - Any language-specific or package-manager-specific logic inside the dispatcher. If a concrete
+  project needs one, it defines the step in its own config.
+
+  - Broader env sandboxing beyond the runtime-mode class named in the new ACs. PATH, TMPDIR, locale,
+  authentication env, and other operational environment are not in scope.
+
+  - Changes to the kspec configuration surface itself. The self-host project's configured-step
+  migration is an implementation detail of this project's configuration, not a change to the
+  dispatcher contract.
+spec_ref: "@dispatch-runtime-bootstrap-contract"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - dispatch
+  - bootstrap
+  - infra
+vcs_refs: []
+created_at: 2026-04-21T19:20:09.091Z
+todos: []
+automation: eligible
