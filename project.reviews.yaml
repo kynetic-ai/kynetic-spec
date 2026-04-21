@@ -159291,6 +159291,12 @@ reviews:
         payload:
           thread_ulid: 01KPQQD1VE62Q8P41TTJ6W9Q6Y
         timestamp: 2026-04-21T09:56:02.927Z
+      - _ulid: 01KPQQFVYZTB83YNXVCPCK6KB7
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQQDB68R1036C9QBRQQGHAK
+        timestamp: 2026-04-21T09:56:06.240Z
     examined_commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
     external_links: []
     lifecycle_state: closed
@@ -159544,6 +159550,8 @@ reviews:
               changed 1 package in 174ms instead can leave the project only partially upgraded.
             created_at: 2026-04-21T09:54:43.529Z
         kind: blocker
+        resolved_at: 2026-04-21T09:56:05.041Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KPQQDYCFRM4SH5A9YJYMJ0NV
         anchor:
           type: code
@@ -159605,7 +159613,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T09:55:25.028Z
     created_at: 2026-04-21T09:42:34.957Z
-    updated_at: 2026-04-21T09:56:01.812Z
+    updated_at: 2026-04-21T09:56:05.041Z
     notes: []
   - _ulid: 01KPQQFC7ZK962DHPMH10GHNB4
     slugs: []
