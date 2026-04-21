@@ -155070,6 +155070,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQ2RHY773VCM11NJ1G9XJXX
         timestamp: 2026-04-21T03:53:51.827Z
+      - _ulid: 01KPQ2RPVZ2H2F8T5TT7SE3AYX
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQ2RNSB47FJFVANY320CF30
+        timestamp: 2026-04-21T03:53:55.839Z
     examined_commit: 765071be773d1738dbd5b14ec2c05e76954c2c98
     external_links: []
     lifecycle_state: open
@@ -155099,7 +155106,26 @@ reviews:
               is not reflected in the address bar for copying/sharing."
             created_at: 2026-04-21T03:53:50.791Z
         kind: blocker
+      - _ulid: 01KPQ2RNSB47FJFVANY320CF30
+        anchor:
+          type: code
+          commit: 765071be773d1738dbd5b14ec2c05e76954c2c98
+          line_end: 58
+          line_start: 54
+          path: packages/web-ui/src/routes/docs/[...slug]/+page.svelte
+          side: head
+        entries:
+          - _ulid: 01KPQ2RNSCT2X9SCFGJ1QD7AEV
+            author: Jacob Chapel
+            body: "Clicking a heading anchor never updates the URL fragment because this handler prevents the
+              browser's default hash navigation and only calls scrollIntoView(). That breaks
+              @docs-navigation-shape ac-2's click path: a targeted Playwright check on
+              /docs/getting-started kept the URL at /docs/getting-started after clicking the first
+              heading anchor instead of appending #... , so the clicked section is not exposed as a
+              copyable direct link."
+            created_at: 2026-04-21T03:53:54.732Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T03:44:52.806Z
-    updated_at: 2026-04-21T03:53:50.791Z
+    updated_at: 2026-04-21T03:53:54.732Z
     notes: []
