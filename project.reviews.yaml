@@ -159221,6 +159221,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T09:54:28.499Z
+      - _ulid: 01KPQQCZNZ57T3W14BT0SKQCJ1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQQCYJH4NFCK5X4YCYJ56FQ
+        timestamp: 2026-04-21T09:54:31.743Z
     examined_commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
     external_links: []
     lifecycle_state: open
@@ -159230,8 +159237,25 @@ reviews:
       content_hash: ""
       ref: "@01KPPN43TRBTZC712K4JV1VSZB"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPQQCYJH4NFCK5X4YCYJ56FQ
+        anchor:
+          type: code
+          commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
+          line_end: 95
+          line_start: 42
+          path: docs/guides/reviewing-an-agents-work.md
+          side: head
+        entries:
+          - _ulid: 01KPQQCYJHBCSBT4V2S7MQXVDB
+            author: Jacob Chapel
+            body: This guide tells readers to run , , and , but the actual CLI only exposes no packages found
+              for add, no packages found for comment, and no packages found for verdict. Following
+              these steps from the published guide fails immediately, so the review workflow is not
+              usable as documented.
+            created_at: 2026-04-21T09:54:30.609Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:42:34.957Z
-    updated_at: 2026-04-21T09:54:27.383Z
+    updated_at: 2026-04-21T09:54:30.609Z
     notes: []
