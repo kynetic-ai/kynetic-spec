@@ -1233,3 +1233,180 @@ describe("section landing page structure", () => {
     expect(indexEntry.content).toContain("./tutorial.md");
   });
 });
+
+// ─── Getting Started Section Content ─────────────��────────────────────────────
+
+describe("getting started section content", () => {
+  let docsPlugin: typeof import("../packages/web-ui/vite-plugin-docs")["docsPlugin"];
+  let renderDocsMarkdown: typeof import("../packages/web-ui/src/lib/utils/docs-markdown")["renderDocsMarkdown"];
+  let manifest: { entries: Array<{ slug: string; title: string; content: string; path: string }> };
+
+  beforeAll(async () => {
+    const pluginMod = await import("../packages/web-ui/vite-plugin-docs");
+    docsPlugin = pluginMod.docsPlugin;
+    const mdMod = await import("../packages/web-ui/src/lib/utils/docs-markdown");
+    renderDocsMarkdown = mdMod.renderDocsMarkdown;
+
+    const docsDir = join(__dirname, "..", "docs");
+    const plugin = docsPlugin(docsDir, {
+      exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
+    });
+    const load = plugin.load as (id: string) => string | undefined;
+    const result = load("\0virtual:docs")!;
+    manifest = JSON.parse(result.slice("export default ".length, -1));
+  });
+
+  function getEntry(slug: string) {
+    return manifest.entries.find((e) => e.slug === slug);
+  }
+
+  // The six required Getting Started pages in reading order
+  const GETTING_STARTED_PAGES = [
+    "getting-started/overview",
+    "getting-started/installation",
+    "getting-started/initializing-a-project",
+    "getting-started/connecting-your-agent",
+    "getting-started/your-first-action",
+    "getting-started/where-to-go-next",
+  ];
+
+  // AC: @docs-getting-started-section ac-1
+  describe("pages cover all required stages with executable commands", () => {
+    it("all six Getting Started pages exist in the manifest", () => {
+      for (const slug of GETTING_STARTED_PAGES) {
+        const entry = getEntry(slug);
+        expect(entry, `page ${slug} should exist`).toBeDefined();
+      }
+    });
+
+    // AC: @docs-getting-started-section ac-1
+    it("installation page shows how to install kspec", () => {
+      const entry = getEntry("getting-started/installation")!;
+      expect(entry.content).toContain("npm install -g @kynetic-ai/spec");
+      expect(entry.content).toContain("kspec --version");
+    });
+
+    // AC: @docs-getting-started-section ac-1
+    it("initializing page shows init and setup commands", () => {
+      const entry = getEntry("getting-started/initializing-a-project")!;
+      expect(entry.content).toContain("kspec init");
+      expect(entry.content).toContain("kspec setup");
+      expect(entry.content).toContain("kspec session start");
+    });
+
+    // AC: @docs-getting-started-section ac-1
+    it("connecting-your-agent page covers agent integration", () => {
+      const entry = getEntry("getting-started/connecting-your-agent")!;
+      // Must cover at least one agent family
+      expect(entry.content).toMatch(/claude|cline|cursor|windsurf/i);
+      // Must show how to confirm the connection works
+      expect(entry.content).toMatch(/verify|confirm/i);
+    });
+
+    // AC: @docs-getting-started-section ac-1
+    it("your-first-action page includes at least one authoring action", () => {
+      const entry = getEntry("getting-started/your-first-action")!;
+      // Must show creating a spec item
+      expect(entry.content).toContain("kspec item add");
+      // Must show deriving a task
+      expect(entry.content).toContain("kspec derive");
+      // Must show task lifecycle
+      expect(entry.content).toContain("kspec task start");
+      expect(entry.content).toContain("kspec task submit");
+    });
+
+    // AC: @docs-getting-started-section ac-1
+    it("each page contains at least one code block with an executable command", () => {
+      for (const slug of GETTING_STARTED_PAGES) {
+        const entry = getEntry(slug)!;
+        const rendered = renderDocsMarkdown(entry.content);
+        // Each page should have at least one code block
+        expect(rendered.html, `${slug} should contain a code block`).toContain("<pre><code");
+      }
+    });
+  });
+
+  // AC: @docs-getting-started-section ac-2
+  describe("pages end with next links in reading order", () => {
+    // All pages except the last must end with a "next" link
+    const pagesWithNextLinks = GETTING_STARTED_PAGES.slice(0, -1);
+
+    for (let i = 0; i < pagesWithNextLinks.length; i++) {
+      const currentSlug = pagesWithNextLinks[i];
+      const nextSlug = GETTING_STARTED_PAGES[i + 1];
+      const nextFilename = nextSlug.split("/")[1] + ".md";
+
+      // AC: @docs-getting-started-section ac-2
+      it(`${currentSlug.split("/")[1]} links to ${nextSlug.split("/")[1]}`, () => {
+        const entry = getEntry(currentSlug)!;
+        // The next link should be a relative .md link to the following page
+        expect(entry.content).toContain(`./${nextFilename}`);
+      });
+    }
+
+    // AC: @docs-getting-started-section ac-2
+    it("the last page (where-to-go-next) does not have a next link marker", () => {
+      const entry = getEntry("getting-started/where-to-go-next")!;
+      // Should not contain a "Next:" marker pointing to another getting-started page
+      expect(entry.content).not.toMatch(/\*\*Next:\*\*/);
+    });
+  });
+
+  // AC: @docs-getting-started-section ac-3
+  describe("initializing a project page covers shadow branch", () => {
+    // AC: @docs-getting-started-section ac-3
+    it("names the shadow branch (kspec-meta)", () => {
+      const entry = getEntry("getting-started/initializing-a-project")!;
+      expect(entry.content).toContain("kspec-meta");
+    });
+
+    // AC: @docs-getting-started-section ac-3
+    it("identifies the shadow directory (.kspec/)", () => {
+      const entry = getEntry("getting-started/initializing-a-project")!;
+      expect(entry.content).toContain(".kspec/");
+    });
+
+    // AC: @docs-getting-started-section ac-3
+    it("names the health-check command (kspec shadow status)", () => {
+      const entry = getEntry("getting-started/initializing-a-project")!;
+      expect(entry.content).toContain("kspec shadow status");
+    });
+
+    // AC: @docs-getting-started-section ac-3
+    it("names the repair command (kspec shadow repair)", () => {
+      const entry = getEntry("getting-started/initializing-a-project")!;
+      expect(entry.content).toContain("kspec shadow repair");
+    });
+
+    // AC: @docs-getting-started-section ac-3
+    it("instructs the reader not to edit shadow state by hand", () => {
+      const entry = getEntry("getting-started/initializing-a-project")!;
+      const rendered = renderDocsMarkdown(entry.content);
+      // Must contain a clear instruction not to manually edit .kspec/ files
+      expect(rendered.html).toMatch(/never\s+manual|do\s+not\s+edit|not\s+edit.*by\s+hand|not\s+.*manually\s+edit/i);
+    });
+  });
+
+  // AC: @docs-getting-started-section ac-2
+  it("landing page links to all six pages in reading order", () => {
+    const indexEntry = getEntry("getting-started")!;
+    const expectedLinks = [
+      "./overview.md",
+      "./installation.md",
+      "./initializing-a-project.md",
+      "./connecting-your-agent.md",
+      "./your-first-action.md",
+      "./where-to-go-next.md",
+    ];
+
+    for (const link of expectedLinks) {
+      expect(indexEntry.content, `index should link to ${link}`).toContain(link);
+    }
+
+    // Verify the links appear in reading order
+    const positions = expectedLinks.map((link) => indexEntry.content.indexOf(link));
+    for (let i = 1; i < positions.length; i++) {
+      expect(positions[i], `${expectedLinks[i]} should appear after ${expectedLinks[i - 1]}`).toBeGreaterThan(positions[i - 1]);
+    }
+  });
+});
