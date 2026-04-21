@@ -26,3 +26,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-21T09:58:21.499Z
+  - _ulid: 01KPQRB48S224C2H6CHX19D4NC
+    content: "Completed README trim. Removed 5 sections (Why teams use it, The spec-first loop, How it
+      works with 3 subsections, Where to go next, Developing kspec itself) and replaced with concise
+      landing page: overview paragraph, Install section, First steps section with 3 commands, and
+      Documentation section with 5 cross-links. All links resolve to existing files. Tests added in
+      tests/docs-readme-structure.test.ts covering both ACs (10 tests). Full test suite passes (8185
+      tests)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T10:10:59.482Z
