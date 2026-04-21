@@ -28396,7 +28396,7 @@ runs:
     started_at: 2026-04-21T00:52:14.888Z
     completed_at: 2026-04-21T00:53:40.041Z
   - _ulid: 01KPPRRBMXVVV8TZW37A7NZE65
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -28444,7 +28444,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-21T01:00:45.580Z
-        completed_at: 2026-04-21T01:00:45.580Z
+        completed_at: 2026-04-21T01:01:01.841Z
+        notes: "Captured one friction observation: @01KPPRVW. Did not duplicate workflow introspection work
+          because @01KKBD55 already tracks it. Did not capture review-time validate noise because
+          scope was too broad for a high-confidence session reflection item."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T00:58:58.590Z
+    completed_at: 2026-04-21T01:01:01.841Z
