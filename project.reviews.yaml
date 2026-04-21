@@ -161448,7 +161448,19 @@ reviews:
     slugs: []
     title: Review task-docs-troubleshooting-content (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: node dist/cli/index.js validate fails repo-wide on pre-existing meta/spec issues unrelated
+          to this diff, including .kspec/modules/meta.yaml schema error (modules[0].traits.0
+          expected string, received object).
+        name: validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T13:00:00.737Z
+        completed_at: 2026-04-21T13:00:00.737Z
     events:
       - _ulid: 01KPR1DH4PX7CN675915MVX7HP
         actor: Jacob Chapel
@@ -161477,6 +161489,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPR1ZYN63DXXTD1VSFT4E9Y3
         timestamp: 2026-04-21T12:59:40.113Z
+      - _ulid: 01KPR20MVSWMKPMC77BXZ3YK39
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: validate
+        timestamp: 2026-04-21T13:00:01.785Z
     examined_commit: fb495534dd1f4a71b2cb193b97a990c1d9a591a9
     external_links: []
     lifecycle_state: open
@@ -161526,5 +161545,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T12:49:35.382Z
-    updated_at: 2026-04-21T12:59:39.046Z
+    updated_at: 2026-04-21T13:00:00.737Z
     notes: []
