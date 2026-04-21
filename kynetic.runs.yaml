@@ -29904,9 +29904,21 @@ runs:
     completed_at: 2026-04-21T08:56:14.799Z
   - _ulid: 01KPQM6GQZCZ84CRW9FDYMP0W0
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T08:58:34.112Z
+        completed_at: 2026-04-21T08:59:32.763Z
+        notes: "Session: fix cycle on task-docs-getting-started-content. One blocker addressed (git checkout
+          -b → kspec task branch). What worked: review thread was clear and actionable, fix was
+          single-pass. No significant friction — minor stumble on needs_work→submit state transition
+          but error message was clear and task-work skill documents the correct flow."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T08:59:32.763Z
+        completed_at: 2026-04-21T08:59:32.763Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T08:58:34.112Z
