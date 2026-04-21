@@ -709,7 +709,7 @@ describe("release notes rendering", () => {
 
   // AC: @docs-release-notes-availability ac-2 — Content from canonical source, no duplication
   describe("canonical source bundling", () => {
-    it("bundles RELEASE_NOTES.md as a docs entry with slug 'release-notes'", () => {
+    it("bundles RELEASE_NOTES.md as a docs entry with slug 'release-notes/changelog'", () => {
       const tempDocsDir = join(tmpdir(), `docs-rn-bundle-${Date.now()}`);
       const tempRnPath = join(tmpdir(), `RELEASE_NOTES-${Date.now()}.md`);
 
@@ -726,8 +726,8 @@ describe("release notes rendering", () => {
         const result = load("\0virtual:docs")!;
         const manifest = JSON.parse(result.slice("export default ".length, -1));
 
-        // Release notes entry is present
-        const rnEntry = manifest.entries.find((e: { slug: string }) => e.slug === "release-notes");
+        // Release notes entry is present under the release-notes section
+        const rnEntry = manifest.entries.find((e: { slug: string }) => e.slug === "release-notes/changelog");
         expect(rnEntry).toBeDefined();
         expect(rnEntry.title).toBe("kspec Release Notes");
         expect(rnEntry.path).toBe("RELEASE_NOTES.md");
@@ -790,7 +790,7 @@ describe("release notes rendering", () => {
           (e: { content: string }) => e.content.includes("Release Notes"),
         );
         expect(releaseEntries).toHaveLength(1);
-        expect(releaseEntries[0].slug).toBe("release-notes");
+        expect(releaseEntries[0].slug).toBe("release-notes/changelog");
       } finally {
         rmSync(tempDocsDir, { recursive: true, force: true });
         rmSync(tempRnPath, { force: true });
@@ -810,8 +810,8 @@ describe("release notes rendering", () => {
         const result = load("\0virtual:docs")!;
         const manifest = JSON.parse(result.slice("export default ".length, -1));
 
-        // No release notes entry when file is missing
-        const rnEntry = manifest.entries.find((e: { slug: string }) => e.slug === "release-notes");
+        // No release notes changelog entry when file is missing
+        const rnEntry = manifest.entries.find((e: { slug: string }) => e.slug === "release-notes/changelog");
         expect(rnEntry).toBeUndefined();
         // Other docs still work
         expect(manifest.entries).toHaveLength(1);
@@ -829,17 +829,20 @@ describe("release notes rendering", () => {
     const realDocsDir = resolve(repoRoot, "docs");
     const realReleaseNotesPath = resolve(repoRoot, "RELEASE_NOTES.md");
 
-    it("produces a release-notes manifest entry from the canonical RELEASE_NOTES.md", () => {
-      const plugin = docsPlugin(realDocsDir, { releaseNotesPath: realReleaseNotesPath });
+    it("produces a release-notes/changelog manifest entry from the canonical RELEASE_NOTES.md", () => {
+      const plugin = docsPlugin(realDocsDir, {
+        releaseNotesPath: realReleaseNotesPath,
+        exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
+      });
       const load = plugin.load as (id: string) => string | undefined;
       const result = load("\0virtual:docs")!;
       const manifest = JSON.parse(result.slice("export default ".length, -1));
 
       const rnEntry = manifest.entries.find(
-        (e: { slug: string }) => e.slug === "release-notes",
+        (e: { slug: string }) => e.slug === "release-notes/changelog",
       );
       expect(rnEntry).toBeDefined();
-      expect(rnEntry.slug).toBe("release-notes");
+      expect(rnEntry.slug).toBe("release-notes/changelog");
       expect(rnEntry.path).toBe("RELEASE_NOTES.md");
 
       // Content matches the canonical source file byte-for-byte
@@ -873,14 +876,17 @@ describe("release notes rendering", () => {
       expect(tocVersions.length).toBe(versions.length);
     });
 
-    it("includes exactly one release-notes entry — no duplication", () => {
-      const plugin = docsPlugin(realDocsDir, { releaseNotesPath: realReleaseNotesPath });
+    it("includes exactly one changelog entry — no duplication", () => {
+      const plugin = docsPlugin(realDocsDir, {
+        releaseNotesPath: realReleaseNotesPath,
+        exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
+      });
       const load = plugin.load as (id: string) => string | undefined;
       const result = load("\0virtual:docs")!;
       const manifest = JSON.parse(result.slice("export default ".length, -1));
 
       const releaseEntries = manifest.entries.filter(
-        (e: { slug: string }) => e.slug === "release-notes",
+        (e: { slug: string }) => e.slug === "release-notes/changelog",
       );
       expect(releaseEntries).toHaveLength(1);
     });
