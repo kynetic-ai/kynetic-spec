@@ -159249,6 +159249,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQQDYCFRM4SH5A9YJYMJ0NV
         timestamp: 2026-04-21T09:55:04.243Z
+      - _ulid: 01KPQQE2SDC1T944APFR6X4CF3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQQE1GWCECNQ10D66ETZ5FK
+        timestamp: 2026-04-21T09:55:07.693Z
     examined_commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
     external_links: []
     lifecycle_state: open
@@ -159515,7 +159522,24 @@ reviews:
               review workflow is not usable as documented.
             created_at: 2026-04-21T09:55:03.184Z
         kind: blocker
+      - _ulid: 01KPQQE1GWCECNQ10D66ETZ5FK
+        anchor:
+          type: code
+          commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
+          line_end: 125
+          line_start: 53
+          path: docs/guides/importing-and-approving-a-plan.md
+          side: head
+        entries:
+          - _ulid: 01KPQQE1GWZEMJXZH9N4V72WC3
+            author: Jacob Chapel
+            body: The plan workflow here does not match the shipped CLI. kspec plan import uses --dry-run, not
+              --preview; import stores plan content only instead of creating specs and tasks; and
+              there is no kspec plan approve command. The supported follow-up is kspec plan derive,
+              so readers who follow this guide will not get the described ready tasks.
+            created_at: 2026-04-21T09:55:06.396Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:42:34.957Z
-    updated_at: 2026-04-21T09:55:03.184Z
+    updated_at: 2026-04-21T09:55:06.396Z
     notes: []
