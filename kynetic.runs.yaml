@@ -29786,7 +29786,7 @@ runs:
     completed_at: 2026-04-21T08:45:49.004Z
   - _ulid: 01KPQKZE30HRE7XRDEX605NV2M
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29807,7 +29807,78 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-21T08:55:31.218Z
-        completed_at: 2026-04-21T08:55:31.218Z
+        completed_at: 2026-04-21T08:55:35.816Z
+        notes: >-
+          Friction points: the documented merge flow assumes , but in a detached review worktree the
+          integration branch may already be checked out in another worktree, causing git to reject
+          the checkout. Review evidence also required extra triage because ✗ Validation failed
+
+          ────────────────────────────────────────
+
+          Files checked: 10
+
+          Items checked: 600
+
+          Tasks checked: 0
+
+          Meta: 12 agents, 11 workflows, 11 conventions
+
+
+          Schema errors: 1
+            ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+              Expected string, received object
+          References: OK
+
+
+          Reference warnings: 1
+            ⚠ @skills
+              Orphaned skill directory 'skills' has no corresponding meta entry
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+          Alignment warnings: 35
+            Orphaned specs (no tasks): 33
+              ○ Test Trait
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ... and 30 more
+            Status mismatches: 2
+              ! Task Set Batch Support
+                Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+              ! Concurrent Read Command Execution
+                Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+          Alignment stats: 434/600 specs have tasks, 432 aligned
+
+
+          Completeness warnings: 497
+            Missing acceptance criteria: 1
+              ○ @01KJN1WT - Test Trait
+            Missing own AC coverage: 241
+              ! @docs-search - Docs Search
+                Uncovered: ac-1, ac-2, ac-3
+              ! @docs-getting-started-section - Getting Started Section
+                Uncovered: ac-1, ac-2, ac-3
+              ! @docs-concepts-section - Concepts Section
+                Uncovered: ac-1, ac-2, ac-3
+              ... and 238 more
+            Invalid AC annotations: 255
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-nav-integration-01kppn42-review/tests/agent-detection.test.ts:43
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-nav-integration-01kppn42-review/tests/agent-detection.test.ts:61
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-nav-integration-01kppn42-review/tests/agent-detection.test.ts:75
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-nav-integration-01kppn42-review/tests/agent-detection.test.ts:88
+              ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-nav-integration-01kppn42-review/tests/agent-dispatch-engine.test.ts:4965
+              ... and 250 more
+          Skills: OK (10 files checked) failed on unrelated shadow-metadata state in the snapshot
+          rather than branch changes.
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-21T08:55:35.816Z
+        completed_at: 2026-04-21T08:55:35.816Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T08:54:42.017Z
