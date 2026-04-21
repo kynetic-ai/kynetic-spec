@@ -21,6 +21,7 @@ tags:
   - state-consistency
   - automation
 vcs_refs: []
+review_ref: "@01KPQBTNCMA9XENXZYZHAE682Q"
 submission_linkage:
   review_url: null
   branch: dispatch/task/make-task-reads-immediately-consistent-after-review-verdict-transitions/01kpq7rd
@@ -64,6 +65,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-21T06:30:24.602Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KPQBTNCMA9XENXZYZHAE682Q"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-21T06:32:20.102Z
 created_at: 2026-04-21T05:21:09.181Z
 started_at: 2026-04-21T05:54:33.297Z
 submitted_at: 2026-04-21T06:30:24.602Z

@@ -157102,3 +157102,29 @@ reviews:
     created_at: 2026-04-21T05:54:52.995Z
     updated_at: 2026-04-21T06:11:42.048Z
     notes: []
+  - _ulid: 01KPQBTNCMA9XENXZYZHAE682Q
+    slugs: []
+    title: Review make-task-reads-immediately-consistent-after-review-verdict-transitions
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KPQBTNCMNKD523XM6N93SJWK
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-21T06:32:17.044Z
+    examined_commit: 18e0da8abf85d37b2848252fcf45386e96d64941
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KPQ7RDHXBRGDZSDFF0XG13RT"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-21T06:32:17.044Z
+    updated_at: null
+    notes: []
