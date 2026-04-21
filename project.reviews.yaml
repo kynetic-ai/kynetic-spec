@@ -156050,6 +156050,17 @@ reviews:
         runner: test.cjs
         created_at: 2026-04-21T04:28:04.461Z
         completed_at: 2026-04-21T04:28:04.461Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Pre-existing repo-wide validation issues unrelated to this task: meta schema error in
+          .kspec/modules/meta.yaml plus existing completeness/alignment warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T04:28:07.363Z
+        completed_at: 2026-04-21T04:28:07.363Z
     events:
       - _ulid: 01KPQ41YRCH0JJW5CGTM4N5XGV
         actor: Jacob Chapel
@@ -156071,6 +156082,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T04:28:05.445Z
+      - _ulid: 01KPQ4QBBKM6GCMSTG7CQA9FYX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-21T04:28:08.435Z
     examined_commit: 498c3bfcac17469de57268f0f62fc08fca80ee33
     external_links: []
     lifecycle_state: open
@@ -156083,5 +156101,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T04:16:27.404Z
-    updated_at: 2026-04-21T04:28:04.461Z
+    updated_at: 2026-04-21T04:28:07.363Z
     notes: []
