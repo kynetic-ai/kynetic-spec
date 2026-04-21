@@ -30618,7 +30618,7 @@ runs:
     completed_at: 2026-04-21T12:31:53.168Z
   - _ulid: 01KPR24YN5HC8SB40VPDXBFKAH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30632,7 +30632,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T13:02:47.161Z
-        completed_at: 2026-04-21T13:02:47.161Z
+        completed_at: 2026-04-21T13:02:59.123Z
+        notes: "High-confidence findings after the baseline searches: Success: direct CLI verification
+          against the built binary is an effective review pattern for troubleshooting docs, because
+          it validates that recovery commands still match real behavior. Friction: the current docs
+          rendering tests for troubleshooting content verify structure, links, and headings, but
+          they do not validate that named recovery commands are actually valid in the documented
+          context. This let an invalid stale-task-review recovery command survive multiple fix
+          cycles until manual CLI verification caught it. Search coverage check: no matching inbox,
+          task, or observation explicitly tracked this docs-command-validity gap."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T13:02:59.123Z
+        completed_at: 2026-04-21T13:02:59.123Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T13:02:22.885Z
