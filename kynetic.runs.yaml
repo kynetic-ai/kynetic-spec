@@ -30482,7 +30482,7 @@ runs:
     completed_at: 2026-04-21T11:49:19.289Z
   - _ulid: 01KPQYCSZ1SGKK222A8VQ0E64G
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30518,10 +30518,17 @@ runs:
           tracked in existing observations. A second friction was shell quoting when recording
           review checks with rich evidence strings; that was avoidable and not strong enough to
           capture as systemic debt."
-      - status: completed
+      - status: skipped
         step_index: 4
         started_at: 2026-04-21T11:57:50.078Z
-        completed_at: 2026-04-21T11:57:50.078Z
+        completed_at: 2026-04-21T11:58:06.618Z
+        notes: No captures created. Reflection found one already-tracked systemic friction and one
+          task-local documentation issue already recorded in review 01KPQY8V770PC1VRNF8ES1B1EF, so
+          adding new inbox items or observations would duplicate existing tracking.
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-21T11:58:06.618Z
+        completed_at: 2026-04-21T11:58:06.618Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T11:56:45.921Z
