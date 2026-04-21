@@ -223,7 +223,7 @@ description: >-
 spec_ref: "@dispatch-runtime-bootstrap-contract"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -233,6 +233,22 @@ tags:
   - bootstrap
   - infra
 vcs_refs: []
+session_id: 01KPRQV7E5H6SQK8HD4GPY85KB
+history:
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KPRQV7E5H6SQK8HD4GPY85KB
+        previous: null
+      started_at:
+        new: 2026-04-21T19:22:03.726Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-21T19:22:03.727Z
 created_at: 2026-04-21T19:20:09.091Z
+started_at: 2026-04-21T19:22:03.726Z
 todos: []
 automation: eligible
