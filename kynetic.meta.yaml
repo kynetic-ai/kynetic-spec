@@ -15836,6 +15836,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T13:34:02.765Z
+  - _ulid: 01KPR5SK9385MNJE5MY3JEQD8M
+    type: friction
+    content: npm workspace hoisting silently drops devDependencies with optional platform-specific
+      binaries (e.g. pagefind). 'npm install' succeeds but the package is missing from node_modules.
+      Requires 'npm install --include=dev' to force installation. Affects any ESM-only package that
+      uses optional deps for native binaries in a monorepo workspace.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T14:06:05.091Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
