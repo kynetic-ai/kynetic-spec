@@ -18,8 +18,10 @@ description: |
 spec_ref: "@docs-concepts-section"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 6bbae3739. Added the eight Concepts pages, linked the Concepts
+  index, and landed behavioral AC coverage in tests/web-ui-docs-rendering.test.ts.
 depends_on:
   - "@task-docs-section-scaffolding"
 context: []
@@ -201,8 +203,23 @@ history:
         previous: "@01KPQQFC7ZK962DHPMH10GHNB4"
     command: review-link
     timestamp: 2026-04-21T10:55:33.725Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 6bbae3739. Added the eight Concepts pages, linked the Concepts index, and
+          landed behavioral AC coverage in tests/web-ui-docs-rendering.test.ts.
+        previous: null
+      completed_at:
+        new: 2026-04-21T11:07:42.536Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-21T11:07:42.546Z
 created_at: 2026-04-20T23:55:29.159Z
 started_at: 2026-04-21T10:53:24.960Z
 submitted_at: 2026-04-21T10:53:28.677Z
+completed_at: 2026-04-21T11:07:42.536Z
 todos: []
 automation: eligible
