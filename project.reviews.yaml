@@ -160282,7 +160282,18 @@ reviews:
     slugs: []
     title: Review task-docs-concepts-content (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Pre-existing repo validation failure outside branch diff: .kspec/modules/meta.yaml
+          modules[0].traits[0] expected string, received object. Branch touches docs/tests only."
+        name: kspec validate
+        required: false
+        runner: dist/cli/index.js validate
+        created_at: 2026-04-21T11:06:10.199Z
+        completed_at: 2026-04-21T11:06:10.199Z
     events:
       - _ulid: 01KPQTWMV06HYZQ6429WP34W97
         actor: Jacob Chapel
@@ -160304,6 +160315,13 @@ reviews:
           kind: nit
           thread_ulid: 01KPQVG2AT22G0BS5VS0B56DDX
         timestamp: 2026-04-21T11:06:08.144Z
+      - _ulid: 01KPQVG6MKQ707A8NSN9YN8VVS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-21T11:06:11.475Z
     examined_commit: 2c69987b95ba31993bfdbb5504564313d685aaa3
     external_links: []
     lifecycle_state: open
@@ -160350,5 +160368,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-21T10:55:30.656Z
-    updated_at: 2026-04-21T11:06:07.066Z
+    updated_at: 2026-04-21T11:06:10.199Z
     notes: []
