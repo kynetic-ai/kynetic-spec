@@ -20,7 +20,15 @@ First, check whether a kspec daemon is already running:
 kspec serve status
 ```
 
-If a daemon is already running and healthy, you may not need to start another one. If you need to restart it, stop the existing one first:
+If a daemon is already running and healthy, you may not need to start another one — another session may already be using it.
+
+### If you are running inside a dispatch session
+
+When the [dispatch engine](../concepts/agents-and-dispatch.md) is active, the daemon is the host process. **Do not run `kspec serve stop` or `kspec serve restart`** — doing so kills the dispatch engine and terminates the agent. If you hit a port conflict during dispatch, it means a daemon is already serving your project. Confirm with `kspec serve status` and use the running instance. If the port is held by a different process, block the task and escalate — the conflict must be resolved outside the dispatch session.
+
+### If you are running outside dispatch
+
+Stop the existing daemon and start a fresh one:
 
 ```bash
 kspec serve stop
