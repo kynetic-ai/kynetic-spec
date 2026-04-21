@@ -2531,6 +2531,9 @@ modules:
           goal is accomplished. The section may grow additional
           guides as kspec evolves without breaking this contract,
           provided the workflows above remain covered.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
