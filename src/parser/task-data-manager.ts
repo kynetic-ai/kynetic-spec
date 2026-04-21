@@ -318,6 +318,12 @@ interface TaskReadCache {
   getTaskHistory(ulid: string): HistoryEntry[] | null;
   setTaskDetail(ulid: string, task: LoadedTask): void;
   getAllTaskDetails(): LoadedTask[] | null;
+  /**
+   * Apply a task mutation to the cache immediately — updates both the
+   * index entry and the detail tier so subsequent reads see the new state
+   * without waiting for a full domain reload.
+   */
+  applyTaskMutation?(ulid: string, task: LoadedTask): void;
 }
 
 function isTaskReadCache(cache: unknown): cache is TaskReadCache {
@@ -771,13 +777,19 @@ export class TaskDataManager {
       );
     }
 
-    return this.withWriteBuffer(ctx, commitOpts, async () => {
+    const result = await this.withWriteBuffer(ctx, commitOpts, async () => {
       // Delegate _sourceFile ownership to the backend — the backend decides
       // where the task lives based on its storage format.
       // AC: @task-data-manager ac-1 — callers don't know about storage format
       // AC: @task-data-manager ac-8 — split backend owns its own metadata
       return this.backend.createTask(ctx, newTask);
     });
+
+    // Propagate new task to entity cache immediately.
+    const cache = getReadyTaskCache();
+    cache?.applyTaskMutation?.(result._ulid, result);
+
+    return result;
   }
 
   /**
@@ -816,18 +828,27 @@ export class TaskDataManager {
     // AC: @task-data-manager ac-9 — same-task mutations serialize through flush
     const releaseTaskLock = await this.taskMutex.acquire(task._ulid);
     try {
-      return await this.withWriteBuffer(ctx, commitOpts, async () => {
+      const result = await this.withWriteBuffer(ctx, commitOpts, async () => {
         return this.backend.mutateTask(
           ctx,
           task,
           async (latestTask) => {
-            const result = await mutate(latestTask);
-            validateMutationOutput(result, latestTask._ulid);
-            return result;
+            const mutated = await mutate(latestTask);
+            validateMutationOutput(mutated, latestTask._ulid);
+            return mutated;
           },
           metadata,
         );
       });
+
+      // Immediately propagate the mutation to the entity cache so subsequent
+      // reads (even within the same request or the very next command) see the
+      // updated state without waiting for the post-command writeThrough or
+      // the file-watcher's debounced invalidation.
+      const cache = getReadyTaskCache();
+      cache?.applyTaskMutation?.(result._ulid, result);
+
+      return result;
     } finally {
       releaseTaskLock();
     }
@@ -876,20 +897,30 @@ export class TaskDataManager {
         releases.push(await this.taskMutex.acquire(ulid));
       }
 
-      return await this.withWriteBuffer(ctx, commitOpts, async () => {
+      const results = await this.withWriteBuffer(ctx, commitOpts, async () => {
         return this.backend.mutateTasks(
           ctx,
           tasks,
           async (latestTasks) => {
-            const results = await mutate(latestTasks);
-            for (let i = 0; i < results.length; i++) {
-              validateMutationOutput(results[i], latestTasks[i]?._ulid);
+            const mutated = await mutate(latestTasks);
+            for (let i = 0; i < mutated.length; i++) {
+              validateMutationOutput(mutated[i], latestTasks[i]?._ulid);
             }
-            return results;
+            return mutated;
           },
           metadata,
         );
       });
+
+      // Propagate all mutations to the entity cache immediately.
+      const cache = getReadyTaskCache();
+      if (cache?.applyTaskMutation) {
+        for (const task of results) {
+          cache.applyTaskMutation(task._ulid, task);
+        }
+      }
+
+      return results;
     } finally {
       for (const release of releases) {
         release();

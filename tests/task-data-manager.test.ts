@@ -839,6 +839,174 @@ describe("TaskDataManager", () => {
         registerBackend(splitBackend);
       }
     });
+
+    it("calls applyTaskMutation on the cache after mutateTask completes", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-pending");
+      const applyTaskMutation = vi.fn();
+
+      const mutatedTask = {
+        ...fixtureTask,
+        status: "in_progress" as const,
+      };
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => [toSummary(fixtureTask)]),
+        loadAllTasks: vi.fn(async () => [fixtureTask]),
+        getTask: vi.fn(async () => fixtureTask),
+        createTask: vi.fn(async (_ctx, task) => ({
+          ...task,
+          _sourceFile: `/mock/${task._ulid}.yaml`,
+        })),
+        mutateTask: vi.fn(async (_ctx, _task, mutate) => {
+          const result = await mutate(fixtureTask);
+          return { ...result, _sourceFile: fixtureTask._sourceFile };
+        }),
+        mutateTasks: vi.fn(async (_ctx, tasks) => tasks),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        await runWithEntityCache(
+          () =>
+            manager.mutateTask(ctx, fixtureTask._ulid, () => mutatedTask),
+          () => ({
+            getDomainState: () => "ready",
+            getTaskIndex: () => [toSummary(fixtureTask)],
+            getTaskDetail: () => fixtureTask,
+            getTaskHistory: () => [],
+            setTaskDetail: vi.fn(),
+            getAllTaskDetails: () => [fixtureTask],
+            applyTaskMutation,
+          }),
+          tempDir,
+        );
+
+        expect(applyTaskMutation).toHaveBeenCalledOnce();
+        expect(applyTaskMutation).toHaveBeenCalledWith(
+          fixtureTask._ulid,
+          expect.objectContaining({ status: "in_progress" }),
+        );
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
+    it("does not call applyTaskMutation when no cache context exists", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const fixtureTask = await loadFixtureTask(ctx, "@test-task-pending");
+
+      // Without runWithEntityCache, no cache context exists
+      const result = await manager.mutateTask(
+        ctx,
+        fixtureTask._ulid,
+        (task) => ({ ...task, priority: 1 }),
+      );
+
+      // Should succeed without errors — no cache to update
+      expect(result.priority).toBe(1);
+    });
+
+    it("calls applyTaskMutation for each task in mutateTasks", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const task1 = await loadFixtureTask(ctx, "@test-task-pending");
+      const task2 = await loadFixtureTask(ctx, "@test-task-secondary");
+      const applyTaskMutation = vi.fn();
+
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        listTasks: vi.fn(async () => [toSummary(task1), toSummary(task2)]),
+        loadAllTasks: vi.fn(async () => [task1, task2]),
+        getTask: vi.fn(async (_ctx, ref) =>
+          ref === task1._ulid ? task1 : task2,
+        ),
+        createTask: vi.fn(async (_ctx, task) => ({
+          ...task,
+          _sourceFile: `/mock/${task._ulid}.yaml`,
+        })),
+        mutateTask: vi.fn(async (_ctx, task) => task),
+        mutateTasks: vi.fn(async (_ctx, tasks, mutate) => {
+          const results = await mutate(tasks);
+          return results.map((r, i) => ({
+            ...r,
+            _sourceFile: tasks[i]._sourceFile,
+          }));
+        }),
+        deleteTask: vi.fn(async () => {}),
+        rebuildIndex: vi.fn(async () => ({ count: 0 })),
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        manager = new TaskDataManager("split");
+
+        await runWithEntityCache(
+          () =>
+            manager.mutateTasks(
+              ctx,
+              [task1._ulid, task2._ulid],
+              (tasks) =>
+                tasks.map((t) => ({ ...t, priority: 1 })),
+            ),
+          () => ({
+            getDomainState: () => "ready",
+            getTaskIndex: () => [toSummary(task1), toSummary(task2)],
+            getTaskDetail: (ulid: string) =>
+              ulid === task1._ulid ? task1 : task2,
+            getTaskHistory: () => [],
+            setTaskDetail: vi.fn(),
+            getAllTaskDetails: () => [task1, task2],
+            applyTaskMutation,
+          }),
+          tempDir,
+        );
+
+        expect(applyTaskMutation).toHaveBeenCalledTimes(2);
+      } finally {
+        unregisterBackend("split");
+        registerBackend(splitBackend);
+      }
+    });
+
+    it("calls applyTaskMutation after createTask completes", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      const applyTaskMutation = vi.fn();
+
+      const result = await runWithEntityCache(
+        () =>
+          manager.createTask(ctx, {
+            title: "New Task",
+            type: "task",
+          }),
+        () => ({
+          getDomainState: () => "ready",
+          getTaskIndex: () => [],
+          getTaskDetail: () => null,
+          getTaskHistory: () => [],
+          setTaskDetail: vi.fn(),
+          getAllTaskDetails: () => [],
+          applyTaskMutation,
+        }),
+        tempDir,
+      );
+
+      expect(result._ulid).toBeDefined();
+      expect(applyTaskMutation).toHaveBeenCalledOnce();
+      expect(applyTaskMutation).toHaveBeenCalledWith(
+        result._ulid,
+        expect.objectContaining({ title: "New Task" }),
+      );
+    });
   });
 
   // AC: @task-data-manager ac-4
