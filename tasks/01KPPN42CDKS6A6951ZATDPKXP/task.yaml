@@ -27,7 +27,7 @@ description: |
 spec_ref: "@docs-reachability"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -46,7 +46,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-docs-rendering/01kppn42
-session_id: 01KPPXR7YW4KHEPK0KRBSS0NP1
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -266,6 +266,16 @@ history:
         previous: "@01KPPWX92QFTTP54MQG6Z10NZ1"
     command: review-link
     timestamp: 2026-04-21T02:46:17.618Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KPPXR7YW4KHEPK0KRBSS0NP1
+    command: review-verdict-needs-work
+    timestamp: 2026-04-21T02:59:41.294Z
 created_at: 2026-04-20T23:55:28.013Z
 started_at: 2026-04-21T02:42:50.256Z
 submitted_at: 2026-04-21T02:42:53.435Z
