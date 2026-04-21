@@ -159648,6 +159648,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQR6AT43C1F3EGTXEGANZM3
         timestamp: 2026-04-21T10:08:23.445Z
+      - _ulid: 01KPQR6ETNDX2W5PFPZEETN5N9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQR6DQBYER4FEE2ZC93V5Q0
+        timestamp: 2026-04-21T10:08:26.453Z
     examined_commit: 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533
     external_links: []
     lifecycle_state: open
@@ -159695,7 +159702,25 @@ reviews:
               for automation')."
             created_at: 2026-04-21T10:08:22.340Z
         kind: blocker
+      - _ulid: 01KPQR6DQBYER4FEE2ZC93V5Q0
+        anchor:
+          type: code
+          commit: 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533
+          line_end: 20
+          line_start: 13
+          path: docs/concepts/traits.md
+          side: head
+        entries:
+          - _ulid: 01KPQR6DQB4FDMN67JC4ASNEMS
+            author: Jacob Chapel
+            body: "The Traits page currently slips into implementation surface area that ac-2 explicitly says to
+              avoid: it names the schema field `type: trait`, shows the `traits: [...]` metadata
+              shape, and uses `--json` flag examples. Those details are exactly the kind of
+              command/schema enumeration this Concepts section was supposed to avoid, so the page is
+              not yet aligned with the spec's durability requirement."
+            created_at: 2026-04-21T10:08:25.323Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:55:50.143Z
-    updated_at: 2026-04-21T10:08:22.340Z
+    updated_at: 2026-04-21T10:08:25.323Z
     notes: []
