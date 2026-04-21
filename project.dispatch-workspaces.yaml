@@ -56412,7 +56412,7 @@ workspaces:
         head: b9b3da5ae7273a4973fd8589f5b69f2c172d9dd6
         last_seen_at: 2026-04-21T05:39:07.625Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-release-notes-rendering-01kppn44
-  - active_role: worker
+  - active_role: null
     base_branch_point: a1fdd98a5197f3e792f8a2896bc20881c044d964
     bootstrap:
       status: succeeded
@@ -56580,12 +56580,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-21T07:51:52.211Z
+      updated_at: 2026-04-21T07:52:36.222Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T07:51:52.211Z
+      updated_at: 2026-04-21T07:52:36.222Z
     integration:
       status: pending
       detail: null
@@ -56593,17 +56593,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a1fdd98a5197f3e792f8a2896bc20881c044d964
-      updated_at: 2026-04-21T07:51:52.211Z
-    lifecycle_state: active
+      updated_at: 2026-04-21T07:52:36.222Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KPQ7RDHXBRGDZSDFF0XG13RT"
     task_slug: make-task-reads-immediately-consistent-after-review-verdict-transitions
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T07:35:00.539Z
-      last_reconciled_at: 2026-04-21T07:51:52.211Z
+      last_reconciled_at: 2026-04-21T07:52:36.222Z
       created_at: 2026-04-21T05:53:39.864Z
-      updated_at: 2026-04-21T07:51:52.211Z
+      updated_at: 2026-04-21T07:52:36.222Z
     workspace_id: dispatch-workspace-01KPQ7RDHXBRGDZSDFF0XG13RT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
