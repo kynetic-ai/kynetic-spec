@@ -56697,11 +56697,11 @@ workspaces:
     canonical_branch: dispatch/task/make-task-reads-immediately-consistent-after-review-verdict-transitions/01kpq7rd
     canonical_branch_head: cd6316cb1358077ccf0680678b5659913b6d6a60
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-21T08:06:50.022Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-21T08:06:52.146Z
     health:
       status: healthy
       issues: []
@@ -56715,7 +56715,7 @@ workspaces:
       target_branch: dev
       target_commit: a1fdd98a5197f3e792f8a2896bc20881c044d964
       updated_at: 2026-04-21T08:06:50.022Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KPQ7RDHXBRGDZSDFF0XG13RT"
     task_slug: make-task-reads-immediately-consistent-after-review-verdict-transitions
@@ -56724,7 +56724,7 @@ workspaces:
       last_active_at: 2026-04-21T07:53:08.403Z
       last_reconciled_at: 2026-04-21T08:06:50.022Z
       created_at: 2026-04-21T05:53:39.864Z
-      updated_at: 2026-04-21T08:06:50.022Z
+      updated_at: 2026-04-21T08:06:52.146Z
     workspace_id: dispatch-workspace-01KPQ7RDHXBRGDZSDFF0XG13RT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
