@@ -103,7 +103,7 @@ Move the task into active work:
 
 ```bash
 kspec task start @task-contributing-guide
-git checkout -b docs/contributing-guide
+kspec task branch @task-contributing-guide
 ```
 
 Add a note before or during the work so the task history explains what happened:

@@ -70,8 +70,10 @@ kspec task start @task-contributing-guide
 Create a branch for the work:
 
 ```bash
-git checkout -b docs/contributing-guide
+kspec task branch @task-contributing-guide
 ```
+
+This creates (or resumes) a deterministic branch named after the task, which reviewers and automated agents can find consistently. You do not need to invent a branch name yourself.
 
 Add a note explaining your approach:
 
