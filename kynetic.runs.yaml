@@ -29507,9 +29507,21 @@ runs:
     completed_at: 2026-04-21T07:34:24.727Z
   - _ulid: 01KPQG0Z7ZDYFASYTMQRGX0B5B
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T07:45:38.047Z
+        completed_at: 2026-04-21T07:46:17.983Z
+        notes: "Friction points: reviewer merge flow in a detached review worktree still breaks when the
+          integration branch is checked out in another worktree. git checkout dev failed with
+          'already used by worktree', so the merge required switching to a detached dev commit and
+          manually advancing refs/heads/dev with git update-ref after the merge."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T07:46:17.983Z
+        completed_at: 2026-04-21T07:46:17.983Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T07:45:38.047Z
