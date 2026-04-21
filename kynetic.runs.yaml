@@ -28248,7 +28248,7 @@ runs:
     started_at: 2026-04-21T00:10:06.620Z
     completed_at: 2026-04-21T00:11:35.000Z
   - _ulid: 01KPPQAJ4VYJE01RBZWP09GJQC
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -28293,7 +28293,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-21T00:35:27.940Z
-        completed_at: 2026-04-21T00:35:27.940Z
+        completed_at: 2026-04-21T00:35:42.196Z
+        notes: "Captured one friction observation: shutdown-path tests for async schedulers/registries need
+          explicit in-flight-start coverage. No additional items captured because the rest of the
+          session-specific issues were already represented by the review record and task state
+          transition."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T00:33:57.916Z
+    completed_at: 2026-04-21T00:35:42.196Z
