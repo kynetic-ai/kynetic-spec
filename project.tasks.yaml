@@ -26847,3 +26847,22 @@
   submitted_at: 2026-04-21T20:10:26.151Z
   completed_at: 2026-04-21T20:23:46.264Z
   automation: eligible
+- _ulid: 01KPRZ17RC7NPM3BSCAZX3ZJ0C
+  slugs:
+    - task-narrow-dispatcher-runtime-mode-env-isolation
+  title: Narrow dispatcher runtime-mode env isolation set to runtime-mode keys only (align
+    implementation with bootstrap contract ac-12 scope)
+  type: task
+  spec_ref: "@dispatch-runtime-bootstrap-contract"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - dispatch
+    - bootstrap
+    - cleanup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-21T21:27:09.836Z
+  automation: eligible

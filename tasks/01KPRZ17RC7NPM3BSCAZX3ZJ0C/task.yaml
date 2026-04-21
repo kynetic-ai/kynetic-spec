@@ -1,0 +1,191 @@
+_ulid: 01KPRZ17RC7NPM3BSCAZX3ZJ0C
+slugs:
+  - task-narrow-dispatcher-runtime-mode-env-isolation
+title: Narrow dispatcher runtime-mode env isolation set to runtime-mode keys only (align
+  implementation with bootstrap contract ac-12 scope)
+type: task
+description: >-
+  What:
+
+  The dispatcher exports an environment-variable-name constant DAEMON_RUNTIME_ENV_KEYS from the
+  serve command source. It lists three keys. The same constant is used at two different code
+  boundaries:
+
+
+  - At the CLI-to-daemon boundary, the daemon-child-env builder function destructures all three keys
+  from the inherited environment to strip them from the daemon child env, then conditionally
+  re-injects one of the runtime-mode selector keys with a production value based on the configured
+  runtime.
+
+
+  - At the daemon-to-bootstrap-step boundary, the bootstrap step subprocess-env builder function
+  imports the constant and removes every listed key from process.env when assembling each bootstrap
+  step subprocess environment.
+
+
+  One of the three keys is a CLI-only control flag: the daemon-child-env builder strips it on spawn
+  but never re-injects it, so the daemon process never has it. Stripping it again at the bootstrap
+  step boundary is currently a no-op.
+
+
+  The dispatch runtime bootstrap contract acceptance criterion that governs the bootstrap step
+  isolation scopes the behavior to runtime mode configuration values. A CLI-only control flag is not
+  a runtime-mode value. The implementation therefore overshoots the acceptance criterion's scope by
+  continuing to include the CLI-only flag in the constant that both boundaries share.
+
+
+  Why:
+
+  Reason one — align implementation to the spec acceptance criterion. ac-12 on
+  @dispatch-runtime-bootstrap-contract is explicit that the isolation covers only runtime-mode
+  configuration. The implementation reading more broadly invites confusion for future readers and
+  tests.
+
+
+  Reason two — prevent silent regression of the original bug class. The current constant's name and
+  placement suggest "everything the daemon spawn wrangles." A future developer adding a new CLI-only
+  control flag to that constant (because that is the naming signal) would unintentionally also have
+  that flag stripped from every bootstrap step subprocess. If a step shells out to a nested CLI
+  invocation that needs to observe the flag, the nested invocation would silently not see it.
+  Narrowing the shared export to runtime-mode keys, and leaving CLI-only stripping as a local
+  concern of the daemon-child-env builder, eliminates that drift vector.
+
+
+  How (implementation sketch — adjust after reading current code):
+
+
+  Primary files expected to change:
+
+  - src/cli/commands/serve.ts — houses the current exported constant and the daemon-child-env
+  builder function.
+
+  - src/agent-runtime/bootstrap.ts — imports the current constant in the bootstrap step
+  subprocess-env builder.
+
+  - tests/dispatch-runtime-bootstrap-contract.test.ts — contains the ac-12 regression test that
+  iterates over the current constant.
+
+
+  Steps:
+
+
+  1. Rename the exported constant in the serve command source from DAEMON_RUNTIME_ENV_KEYS to
+  DAEMON_RUNTIME_MODE_ENV_KEYS. Narrow its contents from three keys to the two runtime-mode selector
+  keys (the Node.js and Bun runtime-mode selectors). This constant is the source of truth for
+  runtime-mode keys shared across the daemon-spawn and bootstrap-step boundaries.
+
+
+  2. Leave the daemon-child-env builder function's inline destructure of all three keys unchanged.
+  It continues to strip the CLI-only control flag locally and the two runtime-mode selectors. After
+  the change, this inline destructure is the sole stripper of the CLI-only control flag. Do not
+  factor the CLI-only control flag out into a second shared constant — it is a single-caller concern
+  and a shared export would re-introduce the problem this task is solving.
+
+
+  3. Update the bootstrap step subprocess-env builder in the dispatcher bootstrap module to import
+  the renamed constant. No other logic change to that function.
+
+
+  4. Add doc comments that carry the maintainability intent of the split so a future reader
+  understands why the two concerns are kept separate. Three comment sites:
+
+
+  (a) On the renamed exported constant: state that it enumerates runtime-mode selector environment
+  variables the dispatcher injects on its own process for language-runtime configuration; name the
+  two consumers of the constant (the daemon-child-env builder at daemon spawn, and the bootstrap
+  step subprocess-env builder for each bootstrap step); cite the spec acceptance criterion this
+  constant supports (@dispatch-runtime-bootstrap-contract ac-12, which requires these values be
+  absent from bootstrap step subprocess environments); explicitly warn that adding a
+  non-runtime-mode variable to this constant would cause that variable to be stripped from every
+  bootstrap step subprocess, potentially breaking bootstrap steps that shell out to nested CLI calls
+  expecting to observe it.
+
+
+  (b) On the daemon-child-env builder's inline destructure of the CLI-only control flag: state that
+  this stripping is intentionally local to the daemon-spawn boundary; state why the variable does
+  not belong in the runtime-mode constant (it is a CLI-only control flag, never re-injected on the
+  daemon, and not a runtime-mode value); cite the relevant spec acceptance criterion if one exists
+  (search for an AC governing CLI-to-daemon environment hygiene or daemon-launch behavior — if none
+  exists, say so and leave the justification textual); explicitly warn that consolidating this
+  inline strip into the shared runtime-mode constant would silently re-broaden the bootstrap step
+  env strip set and reintroduce the drift this split prevents.
+
+
+  (c) On the bootstrap step subprocess-env builder function: state that it strips only values the
+  dispatcher injects for its own runtime mode; reference the renamed constant as the source of
+  truth; cite ac-12.
+
+
+  5. Update the ac-12 regression test to iterate over the renamed narrower constant. The assertion
+  (each runtime-mode key set on the dispatcher process is absent from a configured bootstrap step's
+  subprocess environment) remains; only the iteration source changes.
+
+
+  6. Search the repository for any remaining references to the old constant name (source, tests,
+  documentation). Update or delete each. Fail the task if any reference is missed.
+
+
+  Acceptance:
+
+  - The renamed exported constant exists and contains exactly the two runtime-mode selector keys.
+
+  - The old constant name no longer appears anywhere in the codebase.
+
+  - The daemon-child-env builder's behavior is unchanged: it strips the same three keys as before
+  and re-injects the correct runtime-mode selector with a production value based on the configured
+  runtime.
+
+  - The bootstrap step subprocess-env builder strips only the two runtime-mode selector keys from
+  process.env when assembling step subprocess environments.
+
+  - The ac-12 regression test iterates over the renamed narrower constant and passes.
+
+  - Doc comments exist at the three sites named in step 4, each describing intent, cited spec
+  acceptance criterion (or stating textually that none exists), and explicit warnings against
+  consolidation.
+
+
+  Interactions and non-issues:
+
+  - No spec amendment. This task aligns the implementation with the existing ac-12 scope; no
+  acceptance criteria are added or changed on @dispatch-runtime-bootstrap-contract.
+
+  - No change to daemon launch behavior or observable dispatcher operation from outside the
+  boundary.
+
+  - No change to bootstrap execution semantics. The originally-fixed devDependency-pruning failure
+  remains fixed: the runtime-mode selector keys continue to be stripped from bootstrap step
+  subprocess environments.
+
+
+  Out of scope:
+
+  - Adding a second shared exported constant for CLI-only control flags.
+
+  - Adding new runtime-mode keys to the constant.
+
+  - Any change to bootstrap contract acceptance criteria.
+
+  - Adding new unit tests. Maintainability is carried by the doc comments in step 4; no white-box
+  pinning test is introduced.
+
+  - Parametrizing the ac-12 regression test over the node vs. bun runtime paths. The bootstrap step
+  env stripping is unconditional with respect to daemon runtime.
+
+  - Changes to the kspec configuration surface or any project's configured bootstrap steps.
+spec_ref: "@dispatch-runtime-bootstrap-contract"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - dispatch
+  - bootstrap
+  - cleanup
+vcs_refs: []
+created_at: 2026-04-21T21:27:09.836Z
+todos: []
+automation: eligible
