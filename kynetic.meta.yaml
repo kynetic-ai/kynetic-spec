@@ -15541,8 +15541,11 @@ observations:
       should document a supported detached-checkout/update-ref path or provide a helper command for
       this case.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing detached-review merge friction observations @01KPQHA6 and
+      @01KPPRVW; keeping the earlier tracking rather than adding another copy.
+    resolved: true
+    resolved_at: 2026-04-21T08:57:10.418Z
+    resolved_by: Jacob Chapel
     workflow_ref: "@session-reflect"
     created_at: 2026-04-21T08:55:58.156Z
   - _ulid: 01KPQM1RPCFXXJCGZNPXXZXQQX
