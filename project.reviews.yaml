@@ -157906,6 +157906,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQHW5RKB01DG4X05PW080KM
         timestamp: 2026-04-21T08:17:59.257Z
+      - _ulid: 01KPQHWABKS97XNRZPPSP8DX66
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQHW94GE1GM91TKX260FDED
+        timestamp: 2026-04-21T08:18:02.739Z
     examined_commit: 020246046a960c53dccad0f689bb5f9260bcc649
     external_links: []
     lifecycle_state: open
@@ -157950,7 +157957,25 @@ reviews:
               linked pages exist.
             created_at: 2026-04-21T08:17:58.035Z
         kind: blocker
+      - _ulid: 01KPQHW94GE1GM91TKX260FDED
+        anchor:
+          type: code
+          commit: 020246046a960c53dccad0f689bb5f9260bcc649
+          line_end: 1254
+          line_start: 1152
+          path: tests/web-ui-docs-rendering.test.ts
+          side: head
+        entries:
+          - _ulid: 01KPQHW94G4K2PPH4WXJ1CY5XG
+            author: Jacob Chapel
+            body: The new section-landing tests only assert that markdown link strings are present, and two of
+              them explicitly describe the targets as 'stub child pages'. Because they never verify
+              that each linked slug resolves to a real bundled docs entry, the suite passed while
+              the UI shipped dead links for Guides, Concepts, and Troubleshooting. Strengthen these
+              tests so they fail when a landing page points at a missing document.
+            created_at: 2026-04-21T08:18:01.488Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T08:09:18.583Z
-    updated_at: 2026-04-21T08:17:58.035Z
+    updated_at: 2026-04-21T08:18:01.488Z
     notes: []
