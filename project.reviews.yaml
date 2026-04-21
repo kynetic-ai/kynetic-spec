@@ -160872,6 +160872,17 @@ reviews:
         runner: kspec
         created_at: 2026-04-21T11:55:17.482Z
         completed_at: 2026-04-21T11:55:17.482Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: " passed, including the 37 troubleshooting assertions and 166 total assertions in that
+          suite."
+        name: docs-rendering-test
+        required: true
+        runner: npm
+        created_at: 2026-04-21T11:55:21.261Z
+        completed_at: 2026-04-21T11:55:21.261Z
     events:
       - _ulid: 01KPQY8V76W5P2XYK7JPRBCJTH
         actor: Jacob Chapel
@@ -160900,6 +160911,13 @@ reviews:
           status: fail
           name: validate
         timestamp: 2026-04-21T11:55:18.755Z
+      - _ulid: 01KPQYA8H4SN6578E0BFRXDE7P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: docs-rendering-test
+        timestamp: 2026-04-21T11:55:22.532Z
     examined_commit: 10920edde46aec1b8ad86b90177e07fea0ef00fb
     external_links: []
     lifecycle_state: open
@@ -160932,5 +160950,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T11:54:36.135Z
-    updated_at: 2026-04-21T11:55:17.482Z
+    updated_at: 2026-04-21T11:55:21.261Z
     notes: []
