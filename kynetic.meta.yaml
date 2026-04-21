@@ -15244,6 +15244,25 @@ observations:
     resolved: false
     workflow_ref: "@01KPPVHK"
     created_at: 2026-04-21T01:49:11.405Z
+  - _ulid: 01KPPWTK7SPVW8G3S0ATFXSE47
+    type: friction
+    content: Daemon SPA route allowlist is fragile — every new SvelteKit route requires manually adding
+      to the spaRoutes array in packages/daemon/src/server.ts. This has caused silent 404s at least
+      twice (01KM6BGY and docs rendering). A wildcard fallback or auto-generated route list from
+      SvelteKit would prevent this class of bug.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T02:10:06.201Z
+  - _ulid: 01KPPWTKF2QYCB1RGD6QKBVZKE
+    type: success
+    content: E2E test screenshots provided immediate diagnosis of the SPA route bug — the raw NOT_FOUND
+      text (vs SvelteKit 404 page) was the key signal that the daemon was rejecting the route before
+      SvelteKit could handle it.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T02:10:06.434Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
