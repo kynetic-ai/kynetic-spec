@@ -161470,6 +161470,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPR1ZK6N0V3P72HJZF1M60WB
         timestamp: 2026-04-21T12:59:28.359Z
+      - _ulid: 01KPR1ZZPHHN8DANTWEPQS4T2Q
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPR1ZYN63DXXTD1VSFT4E9Y3
+        timestamp: 2026-04-21T12:59:40.113Z
     examined_commit: fb495534dd1f4a71b2cb193b97a990c1d9a591a9
     external_links: []
     lifecycle_state: open
@@ -161498,7 +161505,26 @@ reviews:
               instead of a workable recovery path."
             created_at: 2026-04-21T12:59:27.317Z
         kind: blocker
+      - _ulid: 01KPR1ZYN63DXXTD1VSFT4E9Y3
+        anchor:
+          type: code
+          commit: fb495534dd1f4a71b2cb193b97a990c1d9a591a9
+          line_end: 40
+          line_start: 34
+          path: docs/troubleshooting/review-blocking-merge.md
+          side: head
+        entries:
+          - _ulid: 01KPR1ZYN6JNZ21F82DXKKKTCM
+            author: Jacob Chapel
+            body: "The stale-review recovery step points task readers to review refresh, but task reviews do not
+              support refresh. I verified this against the current task review: node
+              dist/cli/index.js review refresh @01KPR1DH --head deadbeef exits with 'Refresh is only
+              supported for code subjects (current: task)'. Because pending_review tasks are
+              reviewed with task-subject reviews, following this article leaves the reader with
+              another error instead of a working recovery path."
+            created_at: 2026-04-21T12:59:39.046Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T12:49:35.382Z
-    updated_at: 2026-04-21T12:59:27.317Z
+    updated_at: 2026-04-21T12:59:39.046Z
     notes: []
