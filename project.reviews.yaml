@@ -154719,6 +154719,12 @@ reviews:
         payload:
           thread_ulid: 01KPPZMM21SWQ13NF9BJ2NX76D
         timestamp: 2026-04-21T03:18:06.683Z
+      - _ulid: 01KPQ0Q93SWJ9JEXHK3C3YKB7G
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPPZMY16XQC2CCSR0C9VMTAP
+        timestamp: 2026-04-21T03:18:11.833Z
     examined_commit: c0a85323d5f462a78bc3ebd1ba2f9b5116398186
     external_links: []
     lifecycle_state: closed
@@ -154813,6 +154819,8 @@ reviews:
               markdown link resolution, daemon/static integration, and test quality."
             created_at: 2026-04-21T02:59:26.374Z
         kind: nit
+        resolved_at: 2026-04-21T03:18:10.834Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -154822,5 +154830,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T02:59:39.208Z
     created_at: 2026-04-21T02:46:14.471Z
-    updated_at: 2026-04-21T03:18:05.656Z
+    updated_at: 2026-04-21T03:18:10.834Z
     notes: []
