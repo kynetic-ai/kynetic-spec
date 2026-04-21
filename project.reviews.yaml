@@ -160527,6 +160527,13 @@ reviews:
           kind: nit
           thread_ulid: 01KPQWARDNAAHDFQZMY9G36XBW
         timestamp: 2026-04-21T11:20:42.767Z
+      - _ulid: 01KPQWBNBA7VH8TBHG3RNMH2NM
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQWBMA18CJK281NMYJKQBAH
+        timestamp: 2026-04-21T11:21:11.274Z
     examined_commit: 75957850232c7c98368ca335b3153531a766f794
     external_links: []
     lifecycle_state: open
@@ -160612,7 +160619,62 @@ reviews:
               quality."
             created_at: 2026-04-21T11:20:41.653Z
         kind: nit
+      - _ulid: 01KPQWBMA18CJK281NMYJKQBAH
+        anchor:
+          type: code
+          commit: 75957850232c7c98368ca335b3153531a766f794
+          line_end: 32
+          line_start: 20
+          path: docs/guides/authoring-and-completing-a-task.md
+          side: head
+        entries:
+          - _ulid: 01KPQWBMA16QXZ6S0QETSFB17E
+            author: Jacob Chapel
+            body: >-
+              This step documents task creation via the  command, but the help pointer underneath
+              sends readers to Usage: kspec task add [options]
+
+
+              Create a new task
+
+
+              Options:
+                --title <title>              Task title
+                --description <description>  Task description
+                --type <type>                Task type (epic, task, bug, spike, infra)
+                                             (default: "task")
+                --spec-ref <ref>             Reference to spec item
+                --meta-ref <ref>             Reference to meta item (workflow, agent, or
+                                             convention)
+                --plan-ref <ref>             Reference to plan this task is derived from
+                --priority <n>               Priority (1-5 or P1-P5) (default: "3")
+                --slug <slug>                Human-friendly slug
+                --tag <tag...>               Tags
+                --depends-on <refs...>       Set task dependencies
+                --automation <status>        Automation eligibility (eligible, needs_review,
+                                             manual_only)
+                -h, --help                   display help for command
+
+              Examples:
+                $ kspec task add --title "Implement feature" --spec-ref @feature-spec
+                $ kspec task add --title "Fix bug" --type bug --priority 1
+                $ kspec task add --title "Multi-tag task" --tag cli urgent instead of Usage: kspec derive [options] [ref]
+
+              Create task(s) from spec item(s)
+
+
+              Options:
+                --all            Derive tasks for all spec items without linked tasks
+                --flat           Only derive for the specified item, not children (default:
+                                 recursive)
+                --force          Create task even if one already exists for the spec
+                --dry-run        Show what would be created without making changes
+                --priority <n>   Set priority for created task(s) (1-5)
+                --title <title>  Override task title (default: 'Implement: {spec title}')
+                -h, --help       display help for command. Those are different workflows, so a reader looking for derive flags is sent to the wrong command. That breaks @docs-guides-section ac-3 for this guide's task-creation path.
+            created_at: 2026-04-21T11:21:10.209Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T11:09:39.874Z
-    updated_at: 2026-04-21T11:20:41.653Z
+    updated_at: 2026-04-21T11:21:10.209Z
     notes: []
