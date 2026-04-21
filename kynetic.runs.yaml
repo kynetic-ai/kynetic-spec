@@ -30892,7 +30892,7 @@ runs:
     completed_at: 2026-04-21T19:52:01.385Z
   - _ulid: 01KPRVE2JVXXECX6KQRPZ1F66K
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30923,7 +30923,15 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-21T20:25:34.385Z
-        completed_at: 2026-04-21T20:25:34.385Z
+        completed_at: 2026-04-21T20:25:35.362Z
+        notes: "Coverage check: searched for , which matched existing task
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run, so no duplicate capture
+          there. Searched for worktree/merge-review phrasing (, , ) and found no existing item
+          covering the integration-branch checkout conflict in detached review snapshots."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-21T20:25:35.362Z
+        completed_at: 2026-04-21T20:25:35.362Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T20:24:16.219Z
