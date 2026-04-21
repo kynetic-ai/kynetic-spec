@@ -159327,6 +159327,12 @@ reviews:
         payload:
           thread_ulid: 01KPQQE1GWCECNQ10D66ETZ5FK
         timestamp: 2026-04-21T10:16:08.350Z
+      - _ulid: 01KPQRMS45KWSE5P757EPJP4FY
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQQE53SJHNWF2PXP4KAC1XJ
+        timestamp: 2026-04-21T10:16:15.749Z
     examined_commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
     external_links: []
     lifecycle_state: closed
@@ -159659,6 +159665,8 @@ reviews:
               performs all project-level migration."
             created_at: 2026-04-21T10:15:48.831Z
         kind: blocker
+        resolved_at: 2026-04-21T10:16:14.203Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -159668,7 +159676,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T09:55:25.028Z
     created_at: 2026-04-21T09:42:34.957Z
-    updated_at: 2026-04-21T10:16:06.807Z
+    updated_at: 2026-04-21T10:16:14.203Z
     notes: []
   - _ulid: 01KPQQFC7ZK962DHPMH10GHNB4
     slugs: []
