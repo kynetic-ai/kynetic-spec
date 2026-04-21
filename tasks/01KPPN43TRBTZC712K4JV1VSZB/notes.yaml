@@ -73,3 +73,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T11:21:31.858Z
+  - _ulid: 01KPQYN6R9W3R4W81PR1VYF23V
+    content: "Fix cycle 3: addressed all 3 blocker threads (same root cause).
+      authoring-and-completing-a-task.md line 32 had kspec task add --help but the step above uses
+      kspec derive — changed to kspec derive --help so the help pointer matches the documented
+      command. Also re-verified all other guides' help pointers against AC-3; all correct. All tests
+      pass (8220 passed, 5 skipped)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T12:01:21.161Z
