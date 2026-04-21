@@ -17,7 +17,7 @@ An agent in kspec is a definition that describes an AI participant's capabilitie
 - **Dispatch rules** — which events trigger this agent. For example, a worker agent might respond to `task.ready` and `task.needs_work` events, while a reviewer agent responds to `task.pending_review`.
 - **Budget and concurrency limits** — how many turns an agent can take and how many tasks it can handle at once.
 
-kspec ships with two built-in agent definitions: a task worker that handles implementation and a PR reviewer that handles review and merge. Projects can customize these or define additional agents.
+kspec ships with four built-in agent definitions: a task worker that handles implementation, a PR reviewer that handles review and merge, a primary dev for general-purpose development work, and a plan reviewer that evaluates plans. Projects can customize these or define additional agents.
 
 ## How Dispatch Works
 

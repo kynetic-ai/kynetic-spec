@@ -28,7 +28,7 @@ Tasks are where execution happens. They accumulate notes about decisions and dis
 
 A plan coordinates **a group of specs and tasks that need to ship together**. When a feature is big enough to span multiple specs, a plan captures the design and tracks which specs and tasks have been derived from it.
 
-Plans have their own lifecycle: draft, approved, active, completed. You approve a plan before deriving work from it, which prevents wasted effort on designs that haven't been agreed on.
+Plans have their own lifecycle: draft, approved, active, completed, and rejected. You approve a plan before deriving work from it, which prevents wasted effort on designs that haven't been agreed on. A plan that doesn't survive review ends up rejected — a terminal state that keeps the decision visible rather than silently deleting the proposal.
 
 ### Inbox
 
@@ -54,7 +54,7 @@ Add it to the **inbox**. Don't interrupt your current task to scope it out. Tria
 
 ## How They Surface in Use
 
-When you run `kspec session start`, you see all four kinds in context: active tasks, pending specs, open plans, and inbox items awaiting triage. The CLI commands for each kind follow predictable patterns — `kspec item` for specs, `kspec task` for tasks, `kspec plan` for plans, and `kspec inbox` for the inbox.
+When you run `kspec session start`, you see active tasks and inbox items awaiting triage. The CLI commands for each kind follow predictable patterns — `kspec item` for specs, `kspec task` for tasks, `kspec plan` for plans, and `kspec inbox` for the inbox.
 
 During a review, the reviewer checks the task's implementation against the spec's acceptance criteria. The plan, if one exists, provides the broader design context. And if someone spots something that doesn't fit any current spec, it goes into the inbox rather than getting lost in a commit message.
 
