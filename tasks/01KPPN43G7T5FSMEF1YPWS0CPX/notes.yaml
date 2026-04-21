@@ -36,3 +36,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T10:09:13.773Z
+  - _ulid: 01KPQTPY0ZD4YWJZJ21AEHP0Z5
+    content: "Fix cycle 2: addressed all 4 blocker threads and 1 nit. (1) Added behavioral test suite
+      with AC annotations for @docs-concepts-section ac-1 through ac-3 — 18 tests covering page
+      presence, landing page links, Why/How section structure, schema field absence, and decision
+      rules. (2) Removed automation: eligible from agents-and-dispatch.md. (3) Removed type: trait,
+      traits: [...], and --json flag from traits.md. (4) Removed spec_ref from
+      specs-tasks-plans-inbox.md. All 8206 tests pass. Re-verified all ACs against updated content."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T10:52:23.455Z
