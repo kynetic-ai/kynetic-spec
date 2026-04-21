@@ -42,7 +42,12 @@ function extractTitle(content: string, filename: string): string {
  * "history/KYNETIC_SPEC_DESIGN.md" → "history/KYNETIC_SPEC_DESIGN"
  */
 function pathToSlug(relativePath: string): string {
-  return relativePath.replace(/\.md$/i, "");
+  const slug = relativePath.replace(/\.md$/i, "");
+  // Normalize section index pages: "getting-started/index" → "getting-started"
+  if (slug.endsWith("/index")) {
+    return slug.slice(0, -"/index".length);
+  }
+  return slug;
 }
 
 /**

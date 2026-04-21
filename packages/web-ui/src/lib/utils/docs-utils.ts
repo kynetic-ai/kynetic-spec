@@ -18,19 +18,37 @@ export const DOCS_SECTION_ORDER = [
 ] as const;
 
 /**
+ * Determine the section key for an entry. Uses path to detect section
+ * landing pages whose slug has been normalized (e.g. slug "getting-started"
+ * with path "getting-started/index.md" belongs to the "getting-started" section).
+ */
+function sectionKeyOf(entry: DocsEntry): string | null {
+	const slashIdx = entry.path.indexOf('/');
+	if (slashIdx === -1) return null; // root-level entry
+	return entry.path.slice(0, slashIdx);
+}
+
+/**
  * Get entries in the same section as the given slug.
- * A "section" is the top-level directory segment. Root pages (no slash)
- * belong to the root section and are returned when the slug is also at root.
+ * A "section" is the top-level directory segment. Section landing pages
+ * (normalized from dir/index.md to bare dir slug) are included in their section.
  */
 export function filterSectionEntries(entries: DocsEntry[], slug: string): DocsEntry[] {
 	const slashIdx = slug.indexOf('/');
+	let section: string;
 	if (slashIdx === -1) {
-		// Root page — return all root-level entries (no slash in slug)
-		return entries.filter((e) => !e.slug.includes('/'));
+		// Could be a section landing page (normalized index) or a root page.
+		// Check if any entries have paths under this slug as a directory.
+		const hasChildren = entries.some((e) => e.path.startsWith(slug + '/'));
+		if (!hasChildren) {
+			// True root page — return all root-level entries
+			return entries.filter((e) => sectionKeyOf(e) === null);
+		}
+		section = slug;
+	} else {
+		section = slug.slice(0, slashIdx);
 	}
-	// Nested page — return all entries in the same top-level directory
-	const section = slug.slice(0, slashIdx);
-	return entries.filter((e) => e.slug.startsWith(section + '/') || e.slug === section);
+	return entries.filter((e) => sectionKeyOf(e) === section);
 }
 
 /**
@@ -64,9 +82,14 @@ export function resolveDocsLink(href: string, currentDocPath: string): string | 
 		}
 	}
 
-	// Convert the resolved path to a slug (strip .md)
+	// Convert the resolved path to a slug (strip .md, normalize index)
 	const resolvedPath = resolved.join('/');
-	return resolvedPath.replace(/\.md$/i, '');
+	const slug = resolvedPath.replace(/\.md$/i, '');
+	// Normalize index pages: "getting-started/index" → "getting-started"
+	if (slug.endsWith('/index')) {
+		return slug.slice(0, -'/index'.length);
+	}
+	return slug;
 }
 
 /**
@@ -124,13 +147,12 @@ export function groupDocsSections(entries: DocsEntry[]): DocsSection[] {
 	const dirGroups = new Map<string, DocsEntry[]>();
 
 	for (const entry of entries) {
-		const slashIdx = entry.slug.indexOf('/');
-		if (slashIdx === -1) {
+		const section = sectionKeyOf(entry);
+		if (section === null) {
 			rootEntries.push(entry);
 		} else {
-			const dir = entry.slug.slice(0, slashIdx);
-			if (!dirGroups.has(dir)) dirGroups.set(dir, []);
-			dirGroups.get(dir)!.push(entry);
+			if (!dirGroups.has(section)) dirGroups.set(section, []);
+			dirGroups.get(section)!.push(entry);
 		}
 	}
 

@@ -79,6 +79,39 @@ describe("vite-plugin-docs", () => {
     }
   });
 
+  it("normalizes section index.md slugs to bare section names", () => {
+    const tempDir = join(tmpdir(), `docs-plugin-index-norm-${Date.now()}`);
+    mkdirSync(join(tempDir, "getting-started"), { recursive: true });
+    mkdirSync(join(tempDir, "guides"), { recursive: true });
+
+    writeFileSync(join(tempDir, "getting-started", "index.md"), "# Getting Started\n\nWelcome.");
+    writeFileSync(join(tempDir, "getting-started", "tutorial.md"), "# Tutorial\n\nLearn here.");
+    writeFileSync(join(tempDir, "guides", "index.md"), "# Guides\n\nAll guides.");
+
+    try {
+      const plugin = docsPlugin(tempDir);
+      const load = plugin.load as (id: string) => string | undefined;
+      const result = load("\0virtual:docs")!;
+      const manifest = JSON.parse(result.slice("export default ".length, -1));
+      const slugs = manifest.entries.map((e: { slug: string }) => e.slug);
+
+      // index.md files are normalized to the bare section slug
+      expect(slugs).toContain("getting-started");
+      expect(slugs).toContain("guides");
+      expect(slugs).not.toContain("getting-started/index");
+      expect(slugs).not.toContain("guides/index");
+
+      // Non-index files retain their slug
+      expect(slugs).toContain("getting-started/tutorial");
+
+      // Path still reflects the original file
+      const gsEntry = manifest.entries.find((e: { slug: string }) => e.slug === "getting-started");
+      expect(gsEntry.path).toBe("getting-started/index.md");
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   it("humanizes filename when no H1 heading exists", () => {
     const tempDir = join(tmpdir(), `docs-plugin-no-h1-${Date.now()}`);
     mkdirSync(tempDir, { recursive: true });
@@ -486,15 +519,29 @@ describe("docs section filtering", () => {
     expect(result.some((e) => e.slug.includes("/"))).toBe(false);
   });
 
-  it("includes section index page when present", () => {
+  it("includes normalized section landing page when present", () => {
     const withIndex = [
       ...entries,
-      { slug: "guides", title: "Guides Index", content: "", path: "guides.md" },
+      { slug: "guides", title: "Guides Index", content: "", path: "guides/index.md" },
     ];
     const result = filterSectionEntries(withIndex, "guides/setup");
 
     expect(result.some((e) => e.slug === "guides")).toBe(true);
     expect(result.some((e) => e.slug === "guides/setup")).toBe(true);
+  });
+
+  it("returns section entries when slug is a normalized landing page", () => {
+    const withIndex = [
+      ...entries,
+      { slug: "guides", title: "Guides Index", content: "", path: "guides/index.md" },
+    ];
+    const result = filterSectionEntries(withIndex, "guides");
+
+    expect(result.some((e) => e.slug === "guides")).toBe(true);
+    expect(result.some((e) => e.slug === "guides/deploy")).toBe(true);
+    expect(result.some((e) => e.slug === "guides/setup")).toBe(true);
+    // Should NOT include entries from other sections
+    expect(result.some((e) => e.slug === "overview")).toBe(false);
   });
 });
 
@@ -536,6 +583,13 @@ describe("docs link resolution", () => {
     expect(resolveDocsLink("../../README.md", "getting-started.md")).toBeNull();
   });
 
+  it("normalizes index.md links to bare section slug", () => {
+    // From getting-started/tutorial.md, link to ./index.md resolves to "getting-started"
+    expect(resolveDocsLink("./index.md", "getting-started/tutorial.md")).toBe("getting-started");
+    // From guides/deploy.md, link to ../getting-started/index.md
+    expect(resolveDocsLink("../getting-started/index.md", "guides/deploy.md")).toBe("getting-started");
+  });
+
   it("returns null for non-markdown links", () => {
     expect(resolveDocsLink("https://example.com", "getting-started.md")).toBeNull();
     expect(resolveDocsLink("#section", "getting-started.md")).toBeNull();
@@ -555,6 +609,11 @@ describe("docs link resolution", () => {
     it("resolves ../../README.md from nested doc to README.md", () => {
       // docs/guides/setup.md links to ../../README.md => README.md at repo root
       expect(resolveOutOfTreeHref("../../README.md", "guides/setup.md")).toBe("README.md");
+    });
+
+    it("resolves ../../INSTALL.md from nested tutorial to INSTALL.md", () => {
+      // docs/getting-started/tutorial.md links to ../../INSTALL.md => INSTALL.md at repo root
+      expect(resolveOutOfTreeHref("../../INSTALL.md", "getting-started/tutorial.md")).toBe("INSTALL.md");
     });
 
     it("resolves sibling link within docs tree to docs/<file>", () => {
@@ -867,12 +926,12 @@ describe("docs section ordering (groupDocsSections)", () => {
   });
 
   const sectionEntries = [
-    { slug: "concepts/index", title: "Concepts", content: "", path: "concepts/index.md" },
-    { slug: "getting-started/index", title: "Getting Started", content: "", path: "getting-started/index.md" },
+    { slug: "concepts", title: "Concepts", content: "", path: "concepts/index.md" },
+    { slug: "getting-started", title: "Getting Started", content: "", path: "getting-started/index.md" },
     { slug: "getting-started/tutorial", title: "Tutorial", content: "", path: "getting-started/tutorial.md" },
-    { slug: "guides/index", title: "Guides", content: "", path: "guides/index.md" },
-    { slug: "release-notes/index", title: "Release Notes", content: "", path: "release-notes/index.md" },
-    { slug: "troubleshooting/index", title: "Troubleshooting", content: "", path: "troubleshooting/index.md" },
+    { slug: "guides", title: "Guides", content: "", path: "guides/index.md" },
+    { slug: "release-notes", title: "Release Notes", content: "", path: "release-notes/index.md" },
+    { slug: "troubleshooting", title: "Troubleshooting", content: "", path: "troubleshooting/index.md" },
   ];
 
   // AC: @docs-section-taxonomy ac-1
@@ -919,7 +978,7 @@ describe("docs section ordering (groupDocsSections)", () => {
   it("places unknown directory sections after known sections but before root", () => {
     const withUnknown = [
       ...sectionEntries,
-      { slug: "api-reference/index", title: "API Ref", content: "", path: "api-reference/index.md" },
+      { slug: "api-reference", title: "API Ref", content: "", path: "api-reference/index.md" },
       { slug: "standalone", title: "Standalone", content: "", path: "standalone.md" },
     ];
     const sections = groupDocsSections(withUnknown);
@@ -943,7 +1002,7 @@ describe("docs section ordering (groupDocsSections)", () => {
 
     expect(gettingStarted).toBeDefined();
     expect(gettingStarted!.entries.map((e) => e.slug)).toEqual([
-      "getting-started/index",
+      "getting-started",
       "getting-started/tutorial",
     ]);
   });
@@ -1061,9 +1120,9 @@ describe("section landing page structure", () => {
 
     for (const dir of sectionDirs) {
       const indexEntry = manifest.entries.find(
-        (e: { slug: string }) => e.slug === `${dir}/index`,
+        (e: { slug: string }) => e.slug === dir,
       );
-      expect(indexEntry, `${dir}/index.md should exist`).toBeDefined();
+      expect(indexEntry, `${dir} landing page should exist`).toBeDefined();
 
       // Landing page should have an H1 title
       expect(indexEntry.content).toMatch(/^# .+$/m);
@@ -1085,7 +1144,7 @@ describe("section landing page structure", () => {
     const manifest = JSON.parse(result.slice("export default ".length, -1));
 
     const indexEntry = manifest.entries.find(
-      (e: { slug: string }) => e.slug === "getting-started/index",
+      (e: { slug: string }) => e.slug === "getting-started",
     );
     expect(indexEntry).toBeDefined();
 
