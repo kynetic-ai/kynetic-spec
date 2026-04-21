@@ -30481,7 +30481,7 @@ runs:
     started_at: 2026-04-21T11:47:48.837Z
     completed_at: 2026-04-21T11:49:19.289Z
   - _ulid: 01KPQYCSZ1SGKK222A8VQ0E64G
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -30525,10 +30525,15 @@ runs:
         notes: No captures created. Reflection found one already-tracked systemic friction and one
           task-local documentation issue already recorded in review 01KPQY8V770PC1VRNF8ES1B1EF, so
           adding new inbox items or observations would duplicate existing tracking.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-04-21T11:58:06.618Z
-        completed_at: 2026-04-21T11:58:06.618Z
+        completed_at: 2026-04-21T11:58:07.740Z
+        notes: No new improvement candidates remained after coverage check. Existing observation coverage
+          already tracks the detached-review-snapshot CLI/path friction, and the docs mismatch was
+          handled as a concrete review blocker in the current task rather than a separate reflection
+          item.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T11:56:45.921Z
+    completed_at: 2026-04-21T11:58:07.740Z
