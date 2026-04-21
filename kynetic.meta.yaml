@@ -15199,6 +15199,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T00:53:08.894Z
+  - _ulid: 01KPPRVW9T80DFTB9VXRB6RK89
+    type: friction
+    content: Detached review worktrees cannot complete the manual merge flow when the integration branch
+      is already checked out in another worktree. This session had to fall back to 'git -C
+      /home/chapel/Projects/kynetic-spec-dispatch checkout dev && git -C
+      /home/chapel/Projects/kynetic-spec-dispatch merge --no-ff ...'. Merge tooling should detect
+      the active worktree for the target branch and execute there automatically.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPPRRB"
+    created_at: 2026-04-21T01:00:53.946Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
