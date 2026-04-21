@@ -28304,9 +28304,20 @@ runs:
     completed_at: 2026-04-21T00:35:42.196Z
   - _ulid: 01KPPQKEKP8DK1MAPSKA0GWF82
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T00:38:49.206Z
+        completed_at: 2026-04-21T00:39:17.057Z
+        notes: "What worked well: the review workflow forced code-first inspection, anchored blocker
+          threads, and explicit check recording. Running build plus direct inspection of the docs
+          corpus quickly surfaced concrete regressions instead of speculative findings."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T00:39:17.057Z
+        completed_at: 2026-04-21T00:39:17.057Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T00:38:49.206Z
