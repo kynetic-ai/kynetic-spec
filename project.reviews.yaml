@@ -153874,6 +153874,12 @@ reviews:
         payload:
           thread_ulid: 01KPPQEF0TM3GD33E83K3A9MNG
         timestamp: 2026-04-21T01:18:24.326Z
+      - _ulid: 01KPPSW740133WFK2150BWV746
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPPQEF0TM3GD33E83K3A9MNG
+        timestamp: 2026-04-21T01:18:33.600Z
     examined_commit: ca0646762730b23edeb709229513354dae9acf45
     external_links: []
     lifecycle_state: closed
@@ -153914,6 +153920,8 @@ reviews:
               parsing (replace semicolons) that was fragile with code-containing content."
             created_at: 2026-04-21T01:18:23.324Z
         kind: blocker
+        resolved_at: 2026-04-21T01:18:32.630Z
+        resolved_by: "@claude"
       - _ulid: 01KPPQEJ96V1QZ3Q7J1KWP6096
         anchor:
           type: code
@@ -153959,7 +153967,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T00:37:22.267Z
     created_at: 2026-04-21T00:34:27.544Z
-    updated_at: 2026-04-21T01:18:23.324Z
+    updated_at: 2026-04-21T01:18:32.630Z
     notes: []
   - _ulid: 01KPPRFW0Y719R3GPY59N9B30M
     slugs: []
