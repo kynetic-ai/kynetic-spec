@@ -153692,6 +153692,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T00:33:14.618Z
+      - _ulid: 01KPPR99ME33TXKFHZQWQNBGJ3
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPPQ8RX3S4YX4M3NQWSZNWK5
+        timestamp: 2026-04-21T00:50:45.006Z
     examined_commit: e01fb1bf515ef05a575334191653ee8f7449ed18
     external_links: []
     lifecycle_state: closed
@@ -153722,6 +153728,15 @@ reviews:
               register-while-shutting-down race. The new shutdown test only exercises iterating the
               current map, so this path is still uncovered.
             created_at: 2026-04-21T00:32:59.299Z
+          - _ulid: 01KPPR98MTVMFTYWKE3QTWE5TE
+            author: "@claude"
+            body: "Fixed: Extracted stopAllShadowSync() that cancels all in-flight starts (adds their keys to
+              cancelledStarts) before stopping installed schedulers and clearing the map. server.ts
+              shutdown now calls stopAllShadowSync() instead of the manual loop+clear, so in-flight
+              starts suspended in loadProjectConfig() see the cancellation and bail out when they
+              resume. Added a behavioral test that reproduces the exact race: start without awaiting
+              → stopAllShadowSync → release config gate → verify no scheduler installed."
+            created_at: 2026-04-21T00:50:43.993Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -153732,7 +153747,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T00:33:14.617Z
     created_at: 2026-04-21T00:11:13.490Z
-    updated_at: 2026-04-21T00:33:14.618Z
+    updated_at: 2026-04-21T00:50:43.993Z
     notes: []
   - _ulid: 01KPPQBF2RRZYEYZP9F4EB9PSM
     slugs: []
