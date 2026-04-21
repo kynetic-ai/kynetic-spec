@@ -15,7 +15,7 @@ description: |
 spec_ref: "@docs-guides-section"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-docs-section-scaffolding"
@@ -35,7 +35,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-docs-guides-content/01kppn43
-session_id: null
+session_id: 01KPQTT7NXV4T1JF0F6Y3SC4DW
 history:
   - author: "@claude"
     changes:
@@ -151,8 +151,21 @@ history:
         previous: 01KPQRCHFEYPS474SNFV50NEQK
     command: review-verdict-needs-work
     timestamp: 2026-04-21T10:40:42.644Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KPQTT7NXV4T1JF0F6Y3SC4DW
+        previous: null
+      started_at:
+        new: 2026-04-21T11:07:37.422Z
+        previous: 2026-04-21T10:25:32.137Z
+    command: task-start
+    timestamp: 2026-04-21T11:07:37.422Z
 created_at: 2026-04-20T23:55:29.496Z
-started_at: 2026-04-21T10:25:32.137Z
+started_at: 2026-04-21T11:07:37.422Z
 submitted_at: 2026-04-21T10:25:36.063Z
 todos: []
 automation: eligible
