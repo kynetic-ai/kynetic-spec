@@ -29445,7 +29445,7 @@ runs:
     completed_at: 2026-04-21T07:18:22.591Z
   - _ulid: 01KPQF9AVSYFTM6FN2EXK5JRYR
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29470,7 +29470,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-21T07:33:36.092Z
-        completed_at: 2026-04-21T07:33:36.092Z
+        completed_at: 2026-04-21T07:33:50.189Z
+        notes: "Coverage check: shell-sensitive review comment bodies are already well tracked by existing
+          observations including @01KMNQ20, @01KMWP14, @01KN5KJV, @01KN6CGA, @01KPQ6EK4, and
+          @01KNPC03, so no duplicate capture is warranted. Workflow discoverability is partially
+          covered by @01KN8WQ4. I found no existing tracking for the narrower reviewer friction
+          where a task has no spec_ref and the default AC-oriented checklist has to be adapted
+          manually."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-21T07:33:50.189Z
+        completed_at: 2026-04-21T07:33:50.189Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T07:32:43.513Z
