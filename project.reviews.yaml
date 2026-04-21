@@ -159170,7 +159170,19 @@ reviews:
     slugs: []
     title: Review task-docs-guides-content
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation fails in unchanged project metadata outside this diff:
+          .kspec/modules/meta.yaml has a schema error and there is an orphaned skill directory; the
+          reviewed branch only changes docs/ and tests/."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T09:54:24.353Z
+        completed_at: 2026-04-21T09:54:24.353Z
     events:
       - _ulid: 01KPQPQ3PCC31Z3DSGJYY92R3P
         actor: Jacob Chapel
@@ -159185,6 +159197,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T09:42:52.992Z
+      - _ulid: 01KPQQCSF3W78CNZ4QZWYEHJCA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-21T09:54:25.380Z
     examined_commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
     external_links: []
     lifecycle_state: open
@@ -159197,5 +159216,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T09:42:34.957Z
-    updated_at: 2026-04-21T09:42:51.835Z
+    updated_at: 2026-04-21T09:54:24.353Z
     notes: []
