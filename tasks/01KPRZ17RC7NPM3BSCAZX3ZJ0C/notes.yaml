@@ -1,1 +1,27 @@
-notes: []
+notes:
+  - _ulid: 01KPRZ74XB15J1N8FN7A0BTQ4G
+    content: >-
+      Approach: The current DAEMON_RUNTIME_ENV_KEYS contains 3 keys: KSPEC_NO_DAEMON, BUN_ENV,
+      NODE_ENV. KSPEC_NO_DAEMON is a CLI-only control flag that the daemon-child-env builder strips
+      locally (via destructure) but never re-injects. It doesn't belong in the shared constant that
+      both daemon-spawn and bootstrap-step boundaries use.
+
+
+      Plan:
+
+      1. Rename DAEMON_RUNTIME_ENV_KEYS -> DAEMON_RUNTIME_MODE_ENV_KEYS with only [BUN_ENV,
+      NODE_ENV]
+
+      2. Keep buildDaemonChildEnv destructure of all 3 keys unchanged (KSPEC_NO_DAEMON stripped
+      locally)
+
+      3. Update bootstrap.ts import to use new constant name
+
+      4. Add doc comments at 3 sites per task spec
+
+      5. Update ac-12 test to iterate over renamed constant
+
+      6. Verify no remaining references to old name
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T21:30:23.531Z
