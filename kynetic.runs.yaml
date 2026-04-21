@@ -28453,7 +28453,7 @@ runs:
     started_at: 2026-04-21T00:58:58.590Z
     completed_at: 2026-04-21T01:01:01.841Z
   - _ulid: 01KPPVHK659HNTCXB6X63N2NAW
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -28504,7 +28504,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-21T01:48:58.265Z
-        completed_at: 2026-04-21T01:48:58.265Z
+        completed_at: 2026-04-21T01:49:11.663Z
+        notes: "Captured two observations. Friction: cached npm test failures should be treated as
+          provisional in review until a fresh rerun confirms them. Success: verifying AC coverage at
+          the rendered behavior layer caught a real helper-vs-route mismatch and prevented an
+          incorrect approval."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T01:47:42.661Z
+    completed_at: 2026-04-21T01:49:11.664Z
