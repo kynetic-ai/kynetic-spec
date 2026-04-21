@@ -15406,6 +15406,16 @@ observations:
     resolved: false
     workflow_ref: "@01KPQ99N"
     created_at: 2026-04-21T05:49:49.211Z
+  - _ulid: 01KPQBTA0QJH102VEYVNKZ1EHT
+    type: success
+    content: Placing cache mutation propagation at the TaskDataManager layer (applyTaskMutation) rather
+      than individual CLI handlers or daemon routes ensures ALL task mutations get immediate cache
+      consistency — single architectural chokepoint covers verdict transitions, task
+      start/submit/complete, and batch operations.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T06:32:05.399Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
