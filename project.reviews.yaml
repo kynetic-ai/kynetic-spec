@@ -156998,6 +156998,18 @@ reviews:
         runner: npm
         created_at: 2026-04-21T06:11:23.265Z
         completed_at: 2026-04-21T06:11:23.265Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repo-level validation fails on unchanged shadow metadata: .kspec/modules/meta.yaml
+          modules[0].traits.0 expected string received object. Branch diff contains no .kspec
+          changes, so this is pre-existing and not introduced by @01KPPN42NCR77J23TWYP63VXDH."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T06:11:26.417Z
+        completed_at: 2026-04-21T06:11:26.417Z
     events:
       - _ulid: 01KPQ9P5Y2V6D5YRBGV3NW639A
         actor: Jacob Chapel
@@ -157019,6 +157031,13 @@ reviews:
           status: pass
           name: docs rendering tests
         timestamp: 2026-04-21T06:11:24.288Z
+      - _ulid: 01KPQAMH4XXH68N9NCMATVT4MS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-21T06:11:27.517Z
     examined_commit: 3e06f6eb4960c9a82efec0c0f1df9eefc8d9ea2f
     external_links: []
     lifecycle_state: open
@@ -157031,5 +157050,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T05:54:52.995Z
-    updated_at: 2026-04-21T06:11:23.265Z
+    updated_at: 2026-04-21T06:11:26.417Z
     notes: []
