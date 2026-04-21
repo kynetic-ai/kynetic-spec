@@ -21,3 +21,25 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-21T04:52:22.265Z
+  - _ulid: 01KPQ6VZ1HAMA0QMCBRRPDD9PG
+    content: >-
+      Implementation complete. Summary:
+
+      - Extended vite-plugin-docs with releaseNotesPath option that bundles RELEASE_NOTES.md as a
+      synthetic docs entry (slug: 'release-notes')
+
+      - Fixed slugifyHeading to convert dots to hyphens (v0.13.0 → v0-13-0 anchors)
+
+      - Updated vite.config.ts to pass the release notes path
+
+      - No dedicated route needed — existing [...slug] catch-all renders it at /docs/release-notes
+
+      - TOC sidebar provides version index with clickable anchors
+
+      - 8 new tests covering both ACs: version anchor format, canonical source bundling, no
+      duplication, graceful fallback
+
+      - Full test suite passes (8126 tests, 0 failures)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T05:05:36.817Z
