@@ -15416,6 +15416,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T06:32:05.399Z
+  - _ulid: 01KPQD4VCQ9XTGBYBV9V70TCN6
+    type: success
+    content: "Rebase-then-fix workflow for merge conflicts worked cleanly: rebasing onto dev surfaced
+      conflicts in vite-plugin-docs.ts and vite.config.ts that were straightforward additive merges
+      (both sides added new options). Tests immediately caught the slug collision from the
+      integration, enabling a targeted fix."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T06:55:19.447Z
+  - _ulid: 01KPQD4VM2QX749Y4VTSJQTJY5
+    type: friction
+    content: 'Cross-task synthetic slug collision: the docs-rendering task added a synthetic
+      release-notes entry at slug "release-notes", while the docs-scaffolding task added
+      docs/release-notes/index.md which normalizes to the same slug. Neither task could anticipate
+      this. The collision was only discoverable at merge time. Consider adding a uniqueness check in
+      the vite plugin for slug collisions.'
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T06:55:19.682Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
