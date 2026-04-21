@@ -161667,6 +161667,22 @@ reviews:
         runner: kspec validate
         created_at: 2026-04-21T13:28:26.218Z
         completed_at: 2026-04-21T13:28:26.218Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: docs/troubleshooting/*.md, docs/troubleshooting/index.md,
+          tests/web-ui-docs-rendering.test.ts, package.json, relevant help/tests. Commands run: git
+          diff/stat, task get, review for-task/get, item get, validate, rg for AC annotations and
+          command surfaces, CLI --help lookups, npm test. Claims verified:
+          task-submit/review-refresh semantics, setup --force availability, dispatch watch/status
+          availability, init idempotent behavior. Categories searched: correctness, edge cases,
+          error handling, test quality, integration. Findings: none."
+        name: review-evidence
+        required: false
+        runner: manual-review
+        created_at: 2026-04-21T13:28:29.398Z
+        completed_at: 2026-04-21T13:28:29.398Z
     events:
       - _ulid: 01KPR3KXJ7ME8S8JGGGRXBQ26Q
         actor: codex
@@ -161688,6 +161704,13 @@ reviews:
           status: fail
           name: validate
         timestamp: 2026-04-21T13:28:27.333Z
+      - _ulid: 01KPR3MSMKRWVXKNK8RBYJJ78Y
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-21T13:28:30.611Z
     examined_commit: 2e4af779415f5e36db24750589b2fbf49ea7d760
     external_links: []
     lifecycle_state: open
@@ -161700,5 +161723,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T13:28:01.863Z
-    updated_at: 2026-04-21T13:28:26.218Z
+    updated_at: 2026-04-21T13:28:29.398Z
     notes: []
