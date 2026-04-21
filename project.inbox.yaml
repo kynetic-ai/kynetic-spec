@@ -2831,3 +2831,27 @@ inbox:
       - cli
     added_by: Jacob Chapel
     created_at: 2026-04-21T00:40:09.862Z
+  - _ulid: 01KPQ0GPM07W1VS8A6WS0XSCMG
+    text: "Plan writing skill should codify the decision-task anti-pattern: never draft tasks that
+      'evaluate and choose' something. The plan IS the decision artifact; tasks implement decisions,
+      never make them. A task description containing 'evaluate', 'choose between', or 'decide X' is
+      a smell — that design work belongs in Implementation Notes. Add this as an explicit
+      anti-pattern rule in the plan-writing/spec-plan-design skill, with a before/after example."
+    tags:
+      - skill
+      - plan
+      - anti-pattern
+    added_by: "@claude"
+    created_at: 2026-04-21T03:14:36.288Z
+  - _ulid: 01KPQ0GPPP0G8JD0ZK68FXAHNG
+    text: Reference-quality example plans in skill folder. Plan-writing currently leans on the user
+      naming exemplars ad-hoc (@plan-dispatch-event-system-expansion,
+      @plan-task-storage-split-per-task-directory-architecture). Including 1-2 curated exemplar
+      plans (or direct links to them) in the spec-plan-design / plan skill folder would give authors
+      a concrete quality bar to match without the user having to point them at examples each time.
+    tags:
+      - skill
+      - plan
+      - docs
+    added_by: "@claude"
+    created_at: 2026-04-21T03:14:36.374Z
