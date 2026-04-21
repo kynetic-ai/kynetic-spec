@@ -28454,7 +28454,7 @@ runs:
     completed_at: 2026-04-21T01:01:01.841Z
   - _ulid: 01KPPVHK659HNTCXB6X63N2NAW
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28488,7 +28488,15 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-21T01:48:56.341Z
-        completed_at: 2026-04-21T01:48:56.341Z
+        completed_at: 2026-04-21T01:48:57.336Z
+        notes: "Discussion outcome: both items are high-confidence and session-specific. The cached-test
+          item is worth capturing as friction because it affected regression classification during
+          review. The behavior-layer AC check is worth capturing as a success pattern because it
+          directly prevented an incorrect approval."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-21T01:48:57.336Z
+        completed_at: 2026-04-21T01:48:57.336Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T01:47:42.661Z
