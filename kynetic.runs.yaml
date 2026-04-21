@@ -30949,9 +30949,21 @@ runs:
     completed_at: 2026-04-21T20:26:06.799Z
   - _ulid: 01KPS0Q9ZH8SMHCPGQDT05DD0W
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T21:56:41.585Z
+        completed_at: 2026-04-21T21:57:14.975Z
+        notes: "What worked well: the review record + check + verdict flow cleanly gated the merge and gave
+          durable evidence. Friction: a detached reviewer snapshot cannot check out the integration
+          branch when that branch is already active in another worktree, so completing the required
+          manual merge needed a temporary dev-based branch/worktree indirection."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T21:57:14.975Z
+        completed_at: 2026-04-21T21:57:14.975Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T21:56:41.585Z
