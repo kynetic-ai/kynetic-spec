@@ -212,3 +212,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T03:58:42.515Z
+  - _ulid: 01KPQ3Y672WXBNZS3SWZZ167HY
+    content: "Fix cycle 7: Addressed both blocker threads about heading anchor clicks not updating the
+      URL hash fragment. Root cause: the click handler called preventDefault() and scrollIntoView()
+      but never updated the URL. Fix: added history.replaceState(null, '', href) after
+      scrollIntoView() to reflect the anchor in the address bar without creating extra history
+      entries. Added E2E test that clicks a TOC link and asserts the URL contains the expected
+      #fragment. All 8099 vitest tests pass, all 9 E2E tests pass (including the new heading hash
+      test), build succeeds. Re-verified all ACs against implementation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T04:14:23.970Z
