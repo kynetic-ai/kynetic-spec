@@ -153868,6 +153868,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T00:37:22.268Z
+      - _ulid: 01KPPSVY26G99HPJG529TZMMXS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPPQEF0TM3GD33E83K3A9MNG
+        timestamp: 2026-04-21T01:18:24.326Z
     examined_commit: ca0646762730b23edeb709229513354dae9acf45
     external_links: []
     lifecycle_state: closed
@@ -153898,6 +153904,15 @@ reviews:
               broken as long as the strings stayed in the source, so they do not provide valid AC
               coverage."
             created_at: 2026-04-21T00:36:05.786Z
+          - _ulid: 01KPPSVX2XW2947WCEN753BK91
+            author: "@claude"
+            body: "Fixed: Replaced all source-scanning tests (existsSync, readFileSync assertions at lines
+              280-339) with behavioral tests. Route structure/nav integration tests are now replaced
+              by: (1) docs module interface tests that exercise the actual plugin pipeline
+              end-to-end, (2) section filtering tests that call filterSectionEntries directly, (3)
+              link resolution tests that call resolveDocsLink directly. Also fixed the naive JSON
+              parsing (replace semicolons) that was fragile with code-containing content."
+            created_at: 2026-04-21T01:18:23.324Z
         kind: blocker
       - _ulid: 01KPPQEJ96V1QZ3Q7J1KWP6096
         anchor:
@@ -153944,7 +153959,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T00:37:22.267Z
     created_at: 2026-04-21T00:34:27.544Z
-    updated_at: 2026-04-21T00:37:22.268Z
+    updated_at: 2026-04-21T01:18:23.324Z
     notes: []
   - _ulid: 01KPPRFW0Y719R3GPY59N9B30M
     slugs: []
