@@ -31,13 +31,13 @@ kspec review reply @review-ref --thread <thread-id> --body "Fixed: description o
 kspec review resolve @review-ref --thread <thread-id>
 ```
 
-If the disposition is stale because of new commits, the task may need to be resubmitted for a new review round:
+If the disposition is stale because new commits were pushed after the verdict, refresh the review's comparison context so the reviewer can re-evaluate against the current code:
 
 ```bash
-kspec task submit @your-task
+kspec review refresh @review-ref --head <new-commit-hash>
 ```
 
-This creates a fresh review cycle against the current code, and a reviewer can issue a new verdict.
+This updates the review's subject to point at the new commits, creating a `subject_refreshed` event. The reviewer can then inspect the updated diff and issue a new verdict on the same review record.
 
 ## Verification
 

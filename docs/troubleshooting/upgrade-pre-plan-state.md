@@ -12,26 +12,34 @@ This does not mean your existing data is corrupted. Your specs, tasks, and other
 
 ## How to Fix It
 
-Run the setup command, which brings your project configuration up to date with the installed version:
+Run the upgrade command, which brings your project from any previously-supported version up to the currently installed version:
 
 ```bash
-kspec setup
+kspec upgrade
 ```
 
-This command is idempotent — it creates missing configuration without overwriting your existing data. It ensures all expected metadata files, agent definitions, and directory structures are in place.
+This command runs a multi-step pipeline that migrates legacy task storage, backfills missing configuration files, re-renders skills and agent instructions, and records the new version. It is idempotent — running it again when already current is a no-op.
 
-If `kspec setup` reports that it cannot complete because the shadow branch needs initialization:
+Preview what will change before applying:
+
+```bash
+kspec upgrade --dry-run
+```
+
+If `kspec upgrade` reports that the shadow branch itself needs initialization (for instance, when a project predates shadow branch support):
 
 ```bash
 kspec init
-kspec setup
+kspec upgrade
 ```
 
-Running `kspec init` on an already-initialized project detects the existing shadow branch and preserves it. It only creates what's missing.
+Running `kspec init` on an already-initialized project detects the existing shadow branch and preserves it. It only creates what's missing. The subsequent `kspec upgrade` then applies any remaining version-specific migrations.
+
+For cases where only specific scaffolding files are missing and you want to skip the full migration pipeline, `kspec setup --force` is a lower-level fallback that re-scaffolds project configuration, skills, and agent instructions without running task-storage migrations or recording a version baseline.
 
 ## Verification
 
-After running setup, confirm everything is in order:
+After running the upgrade, confirm everything is in order:
 
 ```bash
 kspec shadow status
