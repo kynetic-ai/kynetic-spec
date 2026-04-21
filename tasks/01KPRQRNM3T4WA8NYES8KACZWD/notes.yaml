@@ -1,1 +1,30 @@
-notes: []
+notes:
+  - _ulid: 01KPRR18W3S91VDA11YHWMCRVK
+    content: >-
+      Approach: 
+
+      1. Remove all project-specific inference from bootstrap.ts (~150 lines): BUILD_ARTIFACTS,
+      BUILD_INPUT_PATHS, DependencyHealth, BuildHealth interfaces, implicitDependencyStep,
+      implicitBuildStep, checkWorkspaceDependencies, checkWorkspaceBuild,
+      canResolveWorkspaceDependency, dependencySearchRoot, collectDirectDependencies,
+      readPackageJson, pathExists, newestPathMtime, newestBuildInput, and
+      setupBuildableProjectFixture helpers.
+
+      2. In runShell, strip runtime-mode env vars (NODE_ENV, BUN_ENV, KSPEC_NO_DAEMON) from
+      process.env before spreading. Source the list from buildDaemonChildEnv in serve.ts to keep in
+      sync — extract constant DAEMON_RUNTIME_ENV_KEYS.
+
+      3. Remove dependencyInvalidationReason/buildInvalidationReason from computeInvalidationReasons
+      and ensureWorkspaceBootstrap.
+
+      4. Add explicit bootstrap steps to kspec.config.yaml for this project: npm ci and npm run
+      build.
+
+      5. Write new tests for AC-11 (command fidelity), AC-12 (runtime mode env isolation), AC-13
+      (step order preservation).
+
+      6. Update/remove tests that asserted on implicit step generation, hoisted dependencies, build
+      artifact invalidation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T19:24:50.947Z
