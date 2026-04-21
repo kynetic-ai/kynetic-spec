@@ -157383,6 +157383,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T07:06:26.301Z
+      - _ulid: 01KPQF8SWWQ53EJNS2VA79DNCX
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQDRH1WQ34B51D4VEKW1KZP
+        timestamp: 2026-04-21T07:32:26.140Z
     examined_commit: 1f63c6cdb975401087f3e06c710f57e7993d872d
     external_links: []
     lifecycle_state: closed
@@ -157414,6 +157420,16 @@ reviews:
               detection for non-index entries or by giving the synthetic entry a section-qualified
               path)."
             created_at: 2026-04-21T07:06:04.220Z
+          - _ulid: 01KPQF8RTKR434YR9NAT3381WK
+            author: "@claude"
+            body: "Fixed: Changed the synthetic changelog entry path from 'RELEASE_NOTES.md' to
+              'release-notes/RELEASE_NOTES.md' in vite-plugin-docs.ts. This makes sectionKeyOf()
+              return 'release-notes' instead of null, so groupDocsSections() correctly classifies it
+              under the Release Notes section. Added two regression tests: one verifying
+              groupDocsSections produces exactly five sections (no sixth 'Docs' section) with the
+              changelog inside release-notes, and one verifying filterSectionEntries includes the
+              changelog when filtering for release-notes/changelog. All 8150 tests pass."
+            created_at: 2026-04-21T07:32:25.043Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -157424,7 +157440,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T07:06:26.300Z
     created_at: 2026-04-21T06:56:03.550Z
-    updated_at: 2026-04-21T07:06:26.301Z
+    updated_at: 2026-04-21T07:32:25.043Z
     notes: []
   - _ulid: 01KPQEJ9986HT6F0VY3KY99G47
     slugs: []
