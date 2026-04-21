@@ -159315,6 +159315,12 @@ reviews:
         payload:
           thread_ulid: 01KPQQE53SJHNWF2PXP4KAC1XJ
         timestamp: 2026-04-21T10:15:50.298Z
+      - _ulid: 01KPQRMAWB8T76MARGNBMFRTP0
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQQDYCFRM4SH5A9YJYMJ0NV
+        timestamp: 2026-04-21T10:16:01.163Z
     examined_commit: 4a5cf26e2eb17f36de729c6d75b7dfe35a2eb764
     external_links: []
     lifecycle_state: closed
@@ -159593,6 +159599,8 @@ reviews:
               verdict --decision. All commands now match the shipped CLI."
             created_at: 2026-04-21T10:15:34.118Z
         kind: blocker
+        resolved_at: 2026-04-21T10:15:59.644Z
+        resolved_by: "@claude"
       - _ulid: 01KPQQE1GWCECNQ10D66ETZ5FK
         anchor:
           type: code
@@ -159652,7 +159660,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T09:55:25.028Z
     created_at: 2026-04-21T09:42:34.957Z
-    updated_at: 2026-04-21T10:15:48.831Z
+    updated_at: 2026-04-21T10:15:59.644Z
     notes: []
   - _ulid: 01KPQQFC7ZK962DHPMH10GHNB4
     slugs: []
