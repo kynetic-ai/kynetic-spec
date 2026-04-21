@@ -162274,6 +162274,13 @@ reviews:
           status: skipped
           name: npm test
         timestamp: 2026-04-21T23:47:28.514Z
+      - _ulid: 01KPS72870PWWX8GXVH1ENQMGA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPS7274A08Q07B030HRMKF0A
+        timestamp: 2026-04-21T23:47:31.681Z
     examined_commit: ffccaaeb0d1ed717e535dc84fd5b49bdfba0b12d
     external_links: []
     lifecycle_state: open
@@ -162301,7 +162308,25 @@ reviews:
               entry point at all.
             created_at: 2026-04-21T23:47:21.198Z
         kind: blocker
+      - _ulid: 01KPS7274A08Q07B030HRMKF0A
+        anchor:
+          type: code
+          commit: ffccaaeb0d1ed717e535dc84fd5b49bdfba0b12d
+          line_end: 389
+          line_start: 271
+          path: tests/web-ui-docs-search.test.ts
+          side: head
+        entries:
+          - _ulid: 01KPS7274A56PY1MWS0F0XV2CD
+            author: Jacob Chapel
+            body: "Most of the new AC coverage here is source-scanning: these tests read package.json, workflow
+              YAML, and Svelte source files and assert on string literals instead of exercising the
+              built search behavior. That violates the project review gate against source-scanning
+              tests and does not prove ac-1/ac-2/ac-3, because the assertions can keep passing even
+              if docs search stops working at runtime."
+            created_at: 2026-04-21T23:47:30.570Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T23:41:29.698Z
-    updated_at: 2026-04-21T23:47:27.421Z
+    updated_at: 2026-04-21T23:47:30.570Z
     notes: []
