@@ -52,6 +52,7 @@ const ALLOWED_ATTR = [
   "disabled",
   "type",
   "start",
+  "id",
   "aria-label",
   "aria-hidden",
   "role",

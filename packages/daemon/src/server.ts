@@ -690,6 +690,8 @@ export async function createServer(options: ServerOptions) {
       "/reviews/*",
       "/settings",
       "/automation",
+      "/docs",
+      "/docs/*",
     ];
     for (const route of spaRoutes) {
       app.get(
