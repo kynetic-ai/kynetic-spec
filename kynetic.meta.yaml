@@ -15788,6 +15788,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T12:31:40.185Z
+  - _ulid: 01KPR1BC4A0TQGTVV0VRYB198P
+    type: friction
+    content: kspec review get truncates thread bodies in default output. Agents in fix cycles must use
+      --json and parse manually to read full review feedback. A --verbose or --full flag would
+      surface complete thread content directly.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T12:48:24.714Z
+  - _ulid: 01KPR1BCBTT4DCPG53SQZAHKKE
+    type: success
+    content: Parallel explore agents for codebase research (e.g., two agents investigating different
+      subsystems simultaneously) significantly accelerated fix cycle turnaround for docs
+      troubleshooting task.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T12:48:24.954Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
