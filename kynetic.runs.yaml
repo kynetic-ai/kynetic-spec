@@ -30206,7 +30206,7 @@ runs:
     completed_at: 2026-04-21T10:11:31.914Z
   - _ulid: 01KPQS51PCA30W8NCF73A42ZB6
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30241,7 +30241,21 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-21T10:26:08.759Z
-        completed_at: 2026-04-21T10:26:08.759Z
+        completed_at: 2026-04-21T10:26:30.758Z
+        notes: "Existing coverage check: no direct matches found for missing kspec PATH in reviewer
+          snapshots, merge flows opening an interactive editor, or pre-existing validate noise
+          during review. One search hit was the task just completed; otherwise these look untracked.
+          Proposed improvements: 1) ensure dispatch reviewer/worker snapshots expose a stable kspec
+          executable on PATH or via a helper wrapper so workflow commands do not need node
+          dist/cli/index.js (medium); 2) make manual-merge flows use a non-interactive merge commit
+          path so reviewers do not drop into an editor when accepting the default merge message
+          (small); 3) improve validate/review ergonomics around known pre-existing shadow metadata
+          failures so reviewers can distinguish branch regressions from baseline repo issues more
+          directly (medium to large)."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-21T10:26:30.758Z
+        completed_at: 2026-04-21T10:26:30.758Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T10:25:08.812Z
