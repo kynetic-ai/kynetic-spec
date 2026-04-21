@@ -55443,7 +55443,7 @@ workspaces:
         head: dcb59f5c91804d45c41685236758c9df7bc235fd
         last_seen_at: 2026-04-21T00:52:14.979Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/extend-daemon-background-shadow-sync-to-all-registered-projects-01kpp7xf
-  - active_role: worker
+  - active_role: null
     base_branch_point: 9d65ad244237659c2a29a45679392595ae0135ee
     bootstrap:
       status: succeeded
@@ -55608,12 +55608,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-21T02:41:44.698Z
+      updated_at: 2026-04-21T02:44:55.729Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T02:41:44.698Z
+      updated_at: 2026-04-21T02:44:55.729Z
     integration:
       status: pending
       detail: null
@@ -55621,17 +55621,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9d65ad244237659c2a29a45679392595ae0135ee
-      updated_at: 2026-04-21T02:41:44.698Z
-    lifecycle_state: active
+      updated_at: 2026-04-21T02:44:55.729Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KPPN42CDKS6A6951ZATDPKXP"
     task_slug: task-docs-rendering
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T02:26:18.465Z
-      last_reconciled_at: 2026-04-21T02:41:44.698Z
+      last_reconciled_at: 2026-04-21T02:44:55.729Z
       created_at: 2026-04-21T00:10:39.606Z
-      updated_at: 2026-04-21T02:41:44.698Z
+      updated_at: 2026-04-21T02:44:55.729Z
     workspace_id: dispatch-workspace-01KPPN42CDKS6A6951ZATDPKXP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
