@@ -29507,7 +29507,7 @@ runs:
     completed_at: 2026-04-21T07:34:24.727Z
   - _ulid: 01KPQG0Z7ZDYFASYTMQRGX0B5B
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29538,7 +29538,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-21T07:46:38.414Z
-        completed_at: 2026-04-21T07:46:38.414Z
+        completed_at: 2026-04-21T07:46:39.423Z
+        notes: "Proposed improvements: (1) medium-scope workflow/tooling improvement for reviewer merge in
+          detached worktrees, so approved review snapshots can merge to the integration branch
+          without manual detached-head plus update-ref mechanics when that branch is checked out
+          elsewhere; (2) success pattern worth repeating: direct virtual-manifest probes for docs
+          reviews give fast behavioral verification of section ordering, exclusions, and synthetic
+          entry grouping without over-relying on UI-level inspection."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-21T07:46:39.423Z
+        completed_at: 2026-04-21T07:46:39.423Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T07:45:38.047Z
