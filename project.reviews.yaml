@@ -161175,7 +161175,24 @@ reviews:
     slugs: []
     title: Review task-docs-troubleshooting-content (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: docs/troubleshooting/*.md,
+          docs/concepts/{reviews,agents-and-dispatch,web-ui-and-daemon}.md,
+          tests/web-ui-docs-rendering.test.ts, src/parser/doctor.ts, src/cli/commands/task.ts.
+          Commands run: git diff/stat, item/task/review lookups, rg for AC annotations and command
+          references, help for agent/serve/task/review/upgrade, validate, npm test. Claims verified:
+          prior daemon dispatch blocker fixed; documented commands exist; full test suite passes.
+          Categories searched: correctness, workflow/state-machine accuracy, command validity, AC
+          coverage/tests, integration with review/upgrade flows."
+        name: review-evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-21T12:28:51.113Z
+        completed_at: 2026-04-21T12:28:51.113Z
     events:
       - _ulid: 01KPQZKZW4P01MHYQKHRX21CYJ
         actor: Jacob Chapel
@@ -161197,6 +161214,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPR07EYK99HHB36KMC0QZ62W
         timestamp: 2026-04-21T12:28:49.034Z
+      - _ulid: 01KPR07K5P9DTQ0BE6N5VJRNXZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-21T12:28:52.278Z
     examined_commit: bf321c0b40c7a606da6c665ae15d89955dd3629d
     external_links: []
     lifecycle_state: open
@@ -161228,5 +161252,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T12:18:09.924Z
-    updated_at: 2026-04-21T12:28:47.955Z
+    updated_at: 2026-04-21T12:28:51.113Z
     notes: []
