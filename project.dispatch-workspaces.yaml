@@ -59806,7 +59806,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T19:52:17.933Z
+      updated_at: 2026-04-21T19:52:19.934Z
     integration:
       status: pending
       detail: null
@@ -59815,25 +59815,20 @@ workspaces:
       target_branch: dev
       target_commit: a2b75192c83a79bc86f3d60d7759f2f6f95f510b
       updated_at: 2026-04-21T19:52:17.933Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KPRQRNM3T4WA8NYES8KACZWD"
     task_slug: task-dispatch-bootstrap-project-agnostic-and-env-isolation
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T19:43:40.810Z
-      last_reconciled_at: 2026-04-21T19:52:17.933Z
+      last_reconciled_at: 2026-04-21T19:52:19.934Z
       created_at: 2026-04-21T19:21:10.693Z
-      updated_at: 2026-04-21T19:52:17.933Z
+      updated_at: 2026-04-21T19:52:19.934Z
     workspace_id: dispatch-workspace-01KPRQRNM3T4WA8NYES8KACZWD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 17a78d69b4d5e18ce8d6d8c01a3eccf0dcdb0cc4
-        last_seen_at: 2026-04-21T19:43:16.712Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-bootstrap-project-agnostic-and-env-isolation-01kprqrn-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-dispatch-bootstrap-project-agnostic-and-env-isolation/01kprqrn
