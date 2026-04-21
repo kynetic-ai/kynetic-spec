@@ -40,12 +40,12 @@ Read every acceptance criterion carefully. These are the objective measures you 
 Start the review by creating a review record:
 
 ```bash
-kspec review create @task-some-feature
+kspec review add --subject-type task --subject-ref @task-some-feature
 ```
 
 This creates a review linked to the task and returns a review reference you will use for threads.
 
-For all review options, run `kspec review create --help`.
+For all review options, run `kspec review add --help`.
 
 ### 4. Examine the implementation
 
@@ -64,37 +64,37 @@ For each acceptance criterion, verify:
 
 ### 5. Add review threads
 
-For each finding, add a thread to the review. Threads have a severity:
+For each finding, add a comment thread to the review. Threads have a kind:
 
 ```bash
-kspec review thread @review-ref \
-  --severity blocker \
+kspec review comment @review-ref \
+  --kind blocker \
   --body "AC-2 has no test coverage. The spec requires validation of expired tokens, but no test exercises this path."
 ```
 
-Severity levels:
+Thread kinds:
 
 - **blocker** — Must be fixed before approval. Missing AC coverage, broken behavior, or security issues.
 - **question** — Needs clarification. The reviewer is unsure whether the approach is correct.
 - **nit** — Minor style or preference issue. Non-blocking.
 
-For the full set of thread options, run `kspec review thread --help`.
+For the full set of comment options, run `kspec review comment --help`.
 
 ### 6. Submit your verdict
 
 After examining all ACs and adding threads, submit your verdict:
 
 ```bash
-kspec review submit @review-ref --verdict approved
+kspec review verdict @review-ref --decision approve
 ```
 
 Or if changes are needed:
 
 ```bash
-kspec review submit @review-ref --verdict needs_work
+kspec review verdict @review-ref --decision request_changes
 ```
 
-A `needs_work` verdict moves the task back so the agent can address your feedback. The agent reads your review threads and works through them in a fix cycle.
+A `request_changes` verdict moves the task back so the agent can address your feedback. The agent reads your review threads and works through them in a fix cycle.
 
 ### 7. Verify the fix cycle
 

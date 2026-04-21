@@ -29,29 +29,33 @@ Or view the release notes in the docs if you have the web UI running. Look for b
 
 ### 3. Install the new version
 
-Upgrade via npm:
+Install the new package version via npm:
 
 ```bash
 npm install -g @kynetic-ai/spec@latest
 ```
 
-Verify the upgrade:
+Verify the package updated:
 
 ```bash
 kspec --version
 ```
 
-The version should match the latest release.
+### 4. Run the upgrade
 
-### 4. Regenerate agent instructions
-
-New versions may include updated skills, conventions, or workflow templates. Regenerate your agent instructions:
+The `kspec upgrade` command performs all project migration work in one step — task storage migration, skill re-rendering, agent instruction regeneration, gitignore repair, and release-note surfacing:
 
 ```bash
-kspec setup
+kspec upgrade
 ```
 
-This updates `kspec-agents.md`, `AGENTS.md`, and the rendered skill files in `.agents/skills/`. Your agent will read the updated instructions on its next session.
+Review the output carefully. It lists each migration step, what changed, and any manual follow-ups. Preview what would happen without applying changes:
+
+```bash
+kspec upgrade --dry-run
+```
+
+For all upgrade options, run `kspec upgrade --help`.
 
 ### 5. Check project health
 
@@ -81,7 +85,7 @@ For all shadow branch commands, run `kspec shadow --help`.
 
 ### 7. Commit updated files
 
-If `kspec setup` regenerated instruction files, commit them:
+If the upgrade regenerated instruction files, commit them:
 
 ```bash
 git add AGENTS.md kspec-agents.md .agents/

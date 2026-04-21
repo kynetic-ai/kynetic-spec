@@ -50,13 +50,13 @@ Each spec defines what to build with acceptance criteria. Each task references t
 
 ### 2. Preview the import
 
-Before importing, preview what kspec will create:
+Before importing, preview what kspec will store:
 
 ```bash
-kspec plan import plans/my-feature.md --preview
+kspec plan import plans/my-feature.md --dry-run
 ```
 
-The preview shows the specs and tasks that will be created without making any changes. Review the output to confirm the structure matches your intent.
+The preview shows the plan record that would be created without saving anything. Review the output to confirm the structure matches your intent.
 
 For all import options, run `kspec plan import --help`.
 
@@ -68,7 +68,7 @@ When satisfied with the preview, import for real:
 kspec plan import plans/my-feature.md
 ```
 
-kspec creates the plan record and all its specs and tasks on the shadow branch. You can inspect the result:
+kspec stores the plan document content on the shadow branch. Importing does not create specs or tasks — that happens in the derive step. Inspect the result:
 
 ```bash
 kspec plan get @plan-my-feature
@@ -76,37 +76,41 @@ kspec plan get @plan-my-feature
 
 ### 4. Iterate with additions
 
-If you need to add more specs or tasks to an existing plan, use the `--into` flag:
+If you need to update a plan with revised content, use the `--into` flag:
 
 ```bash
-kspec plan import plans/additional-specs.md --into @plan-my-feature
+kspec plan import plans/revised-feature.md --into @plan-my-feature --reason "Addressed review feedback"
 ```
 
-This appends to the existing plan rather than creating a new one.
+This updates the existing plan's stored content rather than creating a new one.
 
 ### 5. Approve the plan
 
-Approving a plan signals that its specs and tasks are ready for work:
+Approving a plan signals that its content is ready for derivation:
 
 ```bash
-kspec plan approve @plan-my-feature
+kspec plan set @plan-my-feature --status approved
 ```
 
-After approval, tasks derived from the plan appear in the ready queue:
+### 6. Derive specs and tasks
+
+Derive materializes the stored plan content into specs and tasks:
+
+```bash
+kspec plan derive @plan-my-feature
+```
+
+Preview what will be created before committing:
+
+```bash
+kspec plan derive @plan-my-feature --dry-run
+```
+
+After derivation, tasks appear in the ready queue:
 
 ```bash
 kspec tasks ready
 ```
-
-### 6. Derive tasks from specs
-
-If your plan defined specs without tasks, you can derive tasks from any spec:
-
-```bash
-kspec derive @feature-name
-```
-
-This creates a task linked to the spec's acceptance criteria.
 
 ## Verification
 
@@ -116,7 +120,7 @@ Run the following to confirm your plan is imported and approved:
 kspec plan get @plan-my-feature
 ```
 
-The output should show `Status: active` and list the derived specs and tasks. Then verify tasks are ready:
+The output should show `Status: approved` and list the derived specs and tasks. Then verify tasks are ready:
 
 ```bash
 kspec tasks ready
