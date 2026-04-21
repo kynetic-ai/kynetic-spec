@@ -158736,6 +158736,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQN9SZ2J9NS67A117GHRZXW
         timestamp: 2026-04-21T09:17:51.611Z
+      - _ulid: 01KPQN9ZAB7QMYMSA73E774560
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQN9Y49ECYG82D7GXVNSND6
+        timestamp: 2026-04-21T09:17:55.915Z
     examined_commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
     external_links: []
     lifecycle_state: open
@@ -158866,7 +158873,25 @@ reviews:
                 kspec triage inbox  # triage untriaged inbox items shows , but the current command output only surfaces task and inbox context; it does not list specs or plans. Readers who follow this page will look for UI that is not there, so the Concepts section ends up documenting a workflow surface that does not exist in the product.
             created_at: 2026-04-21T09:17:50.434Z
         kind: blocker
+      - _ulid: 01KPQN9Y49ECYG82D7GXVNSND6
+        anchor:
+          type: code
+          commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
+          line_end: 20
+          line_start: 20
+          path: docs/concepts/agents-and-dispatch.md
+          side: head
+        entries:
+          - _ulid: 01KPQN9Y49F6WEAY3MKVQ27K5V
+            author: Jacob Chapel
+            body: This page currently tells readers that kspec ships with only two built-in agent definitions,
+              but the default scaffold now creates four (task-worker, pr-reviewer, primary-dev, and
+              plan-reviewer). That makes the Concepts section factually wrong for a freshly
+              initialized project and will mislead readers about what kspec setup gives them out of
+              the box.
+            created_at: 2026-04-21T09:17:54.697Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:16:51.337Z
-    updated_at: 2026-04-21T09:17:50.434Z
+    updated_at: 2026-04-21T09:17:54.697Z
     notes: []
