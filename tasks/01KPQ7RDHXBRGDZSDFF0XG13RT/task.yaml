@@ -11,8 +11,11 @@ description: After `kspec review verdict --decision request_changes` auto-transi
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev after approved cycle 3 review. Task mutations now update task cache
+  immediately, invalidate stale task history, and the daemon regression test covers immediate
+  request_changes -> task read consistency.
 depends_on: []
 context: []
 priority: 2
@@ -186,8 +189,24 @@ history:
         previous: "@01KPQEJ9986HT6F0VY3KY99G47"
     command: review-link
     timestamp: 2026-04-21T07:53:47.886Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev after approved cycle 3 review. Task mutations now update task cache immediately,
+          invalidate stale task history, and the daemon regression test covers immediate
+          request_changes -> task read consistency.
+        previous: null
+      completed_at:
+        new: 2026-04-21T08:06:04.654Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-21T08:06:04.665Z
 created_at: 2026-04-21T05:21:09.181Z
 started_at: 2026-04-21T07:51:58.856Z
 submitted_at: 2026-04-21T07:52:09.805Z
+completed_at: 2026-04-21T08:06:04.654Z
 todos: []
 automation: eligible
