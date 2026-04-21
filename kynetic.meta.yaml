@@ -15695,6 +15695,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T10:12:44.103Z
+  - _ulid: 01KPQS89G3R6DH83P5048YKZZM
+    type: friction
+    content: "Agents authoring documentation guides fabricated CLI commands (review create, review
+      thread, review submit, plan approve, derive) that do not exist in the shipped CLI. The fix
+      cycle caught this, but the pattern suggests docs-authoring tasks need a convention: verify
+      every kspec command reference via --help before committing. Could be enforced by a test that
+      extracts bash code blocks from guide pages and validates each kspec subcommand against the CLI
+      help tree."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T10:26:55.107Z
+  - _ulid: 01KPQS89S6701J4WP7R7S9BEB0
+    type: success
+    content: "Fix cycle for docs-guides-content was efficient: review JSON gave full thread context, CLI
+      --help verification caught all discrepancies, and structural AC tests
+      (goal/prereqs/steps/verification/--help) passed without modification because they test
+      document structure rather than specific command names."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T10:26:55.398Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
