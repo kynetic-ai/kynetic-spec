@@ -1,1 +1,36 @@
-notes: []
+notes:
+  - _ulid: 01KPQN7P5ATQ77KPWZNYF9AVC1
+    content: >-
+      Approach: Author seven guide pages per the spec's required workflows. Each guide follows the
+      same pattern established by Getting Started: goal statement, prerequisites, sequential steps
+      with kspec commands, verification section. Commands reference 'kspec <cmd> --help' rather than
+      transcribing flags (AC-3). Landing page updated to link all seven guides.
+
+
+      Guide files:
+
+      1. starting-a-new-project.md
+
+      2. directing-your-agent.md
+
+      3. importing-and-approving-a-plan.md
+
+      4. authoring-and-completing-a-task.md
+
+      5. reviewing-an-agents-work.md
+
+      6. upgrading-kspec.md
+
+      7. recovering-from-shadow-branch-issues.md
+
+
+      Test plan: 3 ACs × tests each:
+
+      - AC-1: Landing page links all seven guides, all resolve to real manifest entries
+
+      - AC-2: Each guide has goal, prerequisites, sequential steps, verification
+
+      - AC-3: Guides reference --help instead of transcribing flags inline
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T09:16:41.002Z
