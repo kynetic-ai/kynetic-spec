@@ -29080,9 +29080,20 @@ runs:
     completed_at: 2026-04-21T05:21:34.682Z
   - _ulid: 01KPQ7WACT6PRMA9YBM6C26JB2
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T05:23:17.018Z
+        completed_at: 2026-04-21T05:23:40.134Z
+        notes: "Session work: Fix cycle on task-docs-section-scaffolding. Addressed two review blockers: (1)
+          broken relative links in tutorial.md after file move, (2) section index slug
+          normalization. Both issues were in the vite-plugin-docs pipeline and docs-utils."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T05:23:40.134Z
+        completed_at: 2026-04-21T05:23:40.134Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T05:23:17.018Z
