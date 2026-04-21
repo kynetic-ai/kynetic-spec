@@ -39,3 +39,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T09:55:27.026Z
+  - _ulid: 01KPQS5BQ25A474WS47BHSP2B1
+    content: "Fix cycle 1: addressed all 3 review blocker threads. (1) reviewing-an-agents-work.md:
+      replaced nonexistent review create/thread/submit with the actual CLI commands review
+      add/comment/verdict, verified against kspec help review. (2)
+      importing-and-approving-a-plan.md: replaced --preview with --dry-run, removed nonexistent
+      kspec plan approve (now uses kspec plan set --status approved), clarified that import stores
+      content only, added kspec plan derive as explicit derivation step, removed nonexistent kspec
+      derive command. (3) upgrading-kspec.md: replaced manual npm install + kspec setup with kspec
+      upgrade as the primary migration step, which handles task storage migration, skill
+      re-rendering, agent instruction regeneration, and gitignore repair in one command. All tests
+      pass (including web-ui-docs-rendering.test.ts with 143 tests covering all guide ACs)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T10:25:19.074Z
