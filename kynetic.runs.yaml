@@ -30846,7 +30846,7 @@ runs:
     started_at: 2026-04-21T14:04:27.344Z
     completed_at: 2026-04-21T14:06:13.405Z
   - _ulid: 01KPRSH2BJ0ZP3DC3NM7JFGS58
-    status: active
+    status: completed
     current_step: 4
     initiated_by: Jacob Chapel
     step_results:
@@ -30889,3 +30889,4 @@ runs:
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T19:50:57.138Z
+    completed_at: 2026-04-21T19:52:01.385Z
