@@ -15590,6 +15590,16 @@ observations:
     resolved: false
     workflow_ref: "@01KPQMV4"
     created_at: 2026-04-21T09:11:22.663Z
+  - _ulid: 01KPQN2VPMQ39FP2Y49S48NQP6
+    type: success
+    content: "Parallel Explore agents are effective for multi-domain research tasks. Launching 4 agents
+      simultaneously (one per subsystem) gathered comprehensive context for 8 concept pages in ~90
+      seconds. Pattern: when a task requires understanding 4+ distinct areas of the codebase, launch
+      parallel Explore agents with focused questions rather than sequential exploration."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T09:14:02.836Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
