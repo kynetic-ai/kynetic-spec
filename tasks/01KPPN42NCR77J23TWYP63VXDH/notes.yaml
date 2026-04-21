@@ -1,1 +1,31 @@
-notes: []
+notes:
+  - _ulid: 01KPQ52BRRK7DVTAVZ5B1DYYJH
+    content: >-
+      Approach: 
+
+      1. Create five section directories under docs/: getting-started/, guides/, concepts/,
+      troubleshooting/, release-notes/
+
+      2. Each gets an index.md landing page with: H1 title, purpose paragraph, stub child-page list
+      with links
+
+      3. Add exclude option to vite-plugin-docs to filter out docs/history/ and contributor-only
+      files (agents-eval-scenarios.md, prime-mock.md)
+
+      4. Update docs landing page (+page.svelte) to show sections in the specified order (Getting
+      Started, Guides, Concepts, Troubleshooting, Release Notes)
+
+      5. Tests: vite plugin exclude filtering, section landing page structure, navigation ordering
+
+
+      Edge cases: index.md files in subdirectories become section landing pages (slug:
+      getting-started/index -> getting-started/index). Need to verify routing handles this.
+      Alternative: could use getting-started.md at root level but subdirectory/index.md aligns with
+      section structure.
+
+
+      Test plan: ac-1 = verify five sections appear in correct order in the plugin output; ac-2 =
+      verify each landing page has purpose paragraph and child page links.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T04:34:09.304Z
