@@ -161472,6 +161472,22 @@ reviews:
         runner: npm
         created_at: 2026-04-21T13:00:03.727Z
         completed_at: 2026-04-21T13:00:03.727Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: docs/troubleshooting/*.md, docs/troubleshooting/index.md,
+          tests/web-ui-docs-rendering.test.ts, docs/concepts/reviews.md, tests/review-cli.test.ts,
+          tests/review-per-cycle-lifecycle.test.ts, tests/review-verdicts-resolution.test.ts.
+          Commands run: git diff/stat/name-only against dev...fb495534, node dist/cli/index.js task
+          get/review for-task/item get/validate/review get/review refresh, rg AC annotations, npm
+          test. Claims verified: full suite passes; refresh is code-subject-only and rejects task
+          reviews. Categories searched: correctness, test quality, spec alignment, command validity,
+          integration."
+        name: review-evidence
+        required: false
+        created_at: 2026-04-21T13:00:06.996Z
+        completed_at: 2026-04-21T13:00:06.996Z
     events:
       - _ulid: 01KPR1DH4PX7CN675915MVX7HP
         actor: Jacob Chapel
@@ -161514,6 +161530,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T13:00:04.916Z
+      - _ulid: 01KPR20V2BY3H90XA7E86J2KKW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-21T13:00:08.140Z
     examined_commit: fb495534dd1f4a71b2cb193b97a990c1d9a591a9
     external_links: []
     lifecycle_state: open
@@ -161563,5 +161586,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T12:49:35.382Z
-    updated_at: 2026-04-21T13:00:03.727Z
+    updated_at: 2026-04-21T13:00:06.996Z
     notes: []
