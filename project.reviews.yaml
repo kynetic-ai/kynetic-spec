@@ -161553,6 +161553,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T13:00:17.916Z
+      - _ulid: 01KPR227P8PF80QWD66QAEJKAC
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPR1ZK6N0V3P72HJZF1M60WB
+        timestamp: 2026-04-21T13:00:53.832Z
     examined_commit: fb495534dd1f4a71b2cb193b97a990c1d9a591a9
     external_links: []
     lifecycle_state: closed
@@ -161580,6 +161586,11 @@ reviews:
               task-subject reviews, following this article leaves the reader with another error
               instead of a workable recovery path."
             created_at: 2026-04-21T12:59:27.317Z
+          - _ulid: 01KPR226NCMVFTAXCXMQ62HK6P
+            author: Jacob Chapel
+            body: Superseded by duplicate thread 01KPR1ZYN63DXXTD1VSFT4E9Y3 with the full command text
+              preserved.
+            created_at: 2026-04-21T13:00:52.779Z
         kind: blocker
       - _ulid: 01KPR1ZYN63DXXTD1VSFT4E9Y3
         anchor:
@@ -161609,5 +161620,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T13:00:17.916Z
     created_at: 2026-04-21T12:49:35.382Z
-    updated_at: 2026-04-21T13:00:17.916Z
+    updated_at: 2026-04-21T13:00:52.779Z
     notes: []
