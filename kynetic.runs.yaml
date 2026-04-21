@@ -28212,7 +28212,7 @@ runs:
     started_at: 2026-04-20T23:59:25.005Z
   - _ulid: 01KPPNYWCWW52AEEZGJVST7S1R
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -28225,7 +28225,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T00:11:05.537Z
-        completed_at: 2026-04-21T00:11:05.537Z
+        completed_at: 2026-04-21T00:11:18.625Z
+        notes: "One high-confidence friction point identified and already captured as observation 01KPPP0D:
+          async resource lifecycle implementations need upfront enumeration of all
+          start/stop/re-start orderings. No other systemic patterns — the rest of the session was
+          smooth execution."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T00:11:18.625Z
+        completed_at: 2026-04-21T00:11:18.625Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T00:10:06.620Z
