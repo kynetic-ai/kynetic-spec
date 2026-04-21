@@ -313,6 +313,92 @@ describe("ProjectEntityCache", () => {
       expect(detail!.title).toBe("Full Detail");
     });
 
+    it("should update both index and detail tiers via applyTaskMutation", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      // Verify initial state
+      const initialIndex = cache.getTaskIndex();
+      const initialEntry = initialIndex?.find((t) => t._ulid === "01TASKA0000000000000000000");
+      expect(initialEntry).toBeDefined();
+      expect(initialEntry!.status).toBe("pending");
+
+      // Apply a mutation that changes the task status
+      const mutatedTask = {
+        _ulid: "01TASKA0000000000000000000",
+        slugs: initialEntry!.slugs,
+        title: initialEntry!.title,
+        type: initialEntry!.type,
+        status: "in_progress",
+        priority: initialEntry!.priority,
+        tags: initialEntry!.tags,
+        notes: [],
+        _sourceFile: "/mock/task.yaml",
+      } as any;
+
+      cache.applyTaskMutation("01TASKA0000000000000000000", mutatedTask);
+
+      // Verify index tier is updated
+      const updatedIndex = cache.getTaskIndex();
+      const updatedEntry = updatedIndex?.find((t) => t._ulid === "01TASKA0000000000000000000");
+      expect(updatedEntry).toBeDefined();
+      expect(updatedEntry!.status).toBe("in_progress");
+
+      // Verify detail tier is updated
+      const updatedDetail = cache.getTaskDetail("01TASKA0000000000000000000");
+      expect(updatedDetail).not.toBeNull();
+      expect(updatedDetail!.status).toBe("in_progress");
+    });
+
+    it("should add new task to index via applyTaskMutation", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      const initialCount = cache.getTaskIndex()?.length ?? 0;
+
+      // Apply mutation for a task not yet in the index
+      const newTask = {
+        _ulid: "01NEWTA0000000000000000000",
+        slugs: ["new-task"],
+        title: "New Task",
+        type: "task",
+        status: "pending",
+        priority: 3,
+        tags: [],
+        notes: [],
+        _sourceFile: "/mock/new-task.yaml",
+      } as any;
+
+      cache.applyTaskMutation("01NEWTA0000000000000000000", newTask);
+
+      // Verify new task appears in both tiers
+      const updatedIndex = cache.getTaskIndex();
+      expect(updatedIndex?.length).toBe(initialCount + 1);
+      const newEntry = updatedIndex?.find((t) => t._ulid === "01NEWTA0000000000000000000");
+      expect(newEntry).toBeDefined();
+      expect(newEntry!.title).toBe("New Task");
+
+      const detail = cache.getTaskDetail("01NEWTA0000000000000000000");
+      expect(detail).not.toBeNull();
+    });
+
+    it("should not update when tasks domain is not ready", () => {
+      // Cache not loaded — domain state is "unloaded"
+      const cache = new ProjectEntityCache(projectA);
+
+      const task = {
+        _ulid: "01TASKA0000000000000000000",
+        title: "Test",
+        status: "in_progress",
+      } as any;
+
+      // Should silently do nothing (no error)
+      cache.applyTaskMutation("01TASKA0000000000000000000", task);
+
+      // Index should still be null (not ready)
+      expect(cache.getTaskIndex()).toBeNull();
+    });
+
     it("should return null for uncached session detail", async () => {
       const cache = new ProjectEntityCache(projectA);
       const detail = cache.getSessionDetail("nonexistent-session");
