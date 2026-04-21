@@ -157256,7 +157256,19 @@ reviews:
     slugs: []
     title: Review task-docs-section-scaffolding (cycle 4)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Pre-existing workspace validation failures unrelated to this task: schema error in
+          .kspec/modules/meta.yaml (modules[0].traits.0 expected string, received object), plus
+          existing alignment/completeness warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T07:06:07.177Z
+        completed_at: 2026-04-21T07:06:07.177Z
     events:
       - _ulid: 01KPQD66EX17WZFYY4E2Y42YAQ
         actor: Jacob Chapel
@@ -157278,6 +157290,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQDRH1WQ34B51D4VEKW1KZP
         timestamp: 2026-04-21T07:06:05.218Z
+      - _ulid: 01KPQDRN59YC8KJECTGTFHABXV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-21T07:06:08.426Z
     examined_commit: 1f63c6cdb975401087f3e06c710f57e7993d872d
     external_links: []
     lifecycle_state: open
@@ -157312,5 +157331,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T06:56:03.550Z
-    updated_at: 2026-04-21T07:06:04.220Z
+    updated_at: 2026-04-21T07:06:07.177Z
     notes: []
