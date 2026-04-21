@@ -197,3 +197,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T03:35:12.601Z
+  - _ulid: 01KPQ22C7BC5FK8AXV5B2E2RDH
+    content: 'Fix cycle 6: Addressed blocker about role="button" on the docs <article> element. The
+      article had role="button", tabindex=-1, and a no-op onkeydown solely for delegated click
+      handling — this made the entire docs body announce as a button to assistive tech. Replaced
+      with imperative addEventListener via bind:this + $effect, keeping the article semantically
+      clean with no lint suppressions. Build confirms no a11y warnings on docs pages. All 52 unit
+      tests and 8 E2E tests pass.'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T03:41:44.043Z
