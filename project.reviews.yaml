@@ -156382,6 +156382,12 @@ reviews:
         payload:
           thread_ulid: 01KPQ6A3RF5QBGJZ3M2PR4CZ7Y
         timestamp: 2026-04-21T05:21:57.352Z
+      - _ulid: 01KPQ7T1TWQ98J73BT2TDCJDXP
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQ6A9KSPB844VM7TDCWJXWH
+        timestamp: 2026-04-21T05:22:02.717Z
     examined_commit: e84d2e6c24c173fcc9d4cfec78dd7aa5b486d598
     external_links: []
     lifecycle_state: closed
@@ -156449,6 +156455,15 @@ reviews:
               section landing page. The section index pages need slug normalization or equivalent
               route handling."
             created_at: 2026-04-21T04:56:43.976Z
+          - _ulid: 01KPQ7T0TSZ9Y9ZJ0YVZX6EJVT
+            author: "@claude"
+            body: "Fixed: Added index slug normalization in three places: (1) pathToSlug in vite-plugin-docs
+              strips /index suffix so section landing pages get bare slugs like getting-started
+              instead of getting-started/index; (2) resolveDocsLink normalizes resolved slugs the
+              same way; (3) groupDocsSections and filterSectionEntries now use entry.path (via
+              sectionKeyOf helper) to determine section membership, so normalized landing pages are
+              correctly grouped with their section children."
+            created_at: 2026-04-21T05:22:01.689Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -156459,7 +156474,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T04:56:56.495Z
     created_at: 2026-04-21T04:49:05.066Z
-    updated_at: 2026-04-21T05:21:56.372Z
+    updated_at: 2026-04-21T05:22:01.689Z
     notes: []
   - _ulid: 01KPQ6ZMKCXV554CQA8K2VNXCN
     slugs: []
