@@ -154672,6 +154672,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPPZMM21SWQ13NF9BJ2NX76D
         timestamp: 2026-04-21T02:59:17.238Z
+      - _ulid: 01KPPZMZ2SJ9YAP21KV1WRJ0SH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPPZMY16XQC2CCSR0C9VMTAP
+        timestamp: 2026-04-21T02:59:27.450Z
     examined_commit: c0a85323d5f462a78bc3ebd1ba2f9b5116398186
     external_links: []
     lifecycle_state: open
@@ -154722,7 +154729,31 @@ reviews:
               deterministically navigate readers to 404s instead of valid content.
             created_at: 2026-04-21T02:59:16.161Z
         kind: blocker
+      - _ulid: 01KPPZMY16XQC2CCSR0C9VMTAP
+        entries:
+          - _ulid: 01KPPZMY16W72YYJS3G8H0QHMM
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: packages/web-ui/src/lib/components/Sidebar.svelte,
+              packages/web-ui/src/lib/components/MobileNav.svelte, packages/web-ui/src/lib/docs.ts,
+              packages/web-ui/src/lib/utils/docs-markdown.ts,
+              packages/web-ui/src/lib/utils/docs-utils.ts,
+              packages/web-ui/src/routes/docs/+page.svelte,
+              packages/web-ui/src/routes/docs/[...slug]/+page.svelte,
+              packages/web-ui/vite-plugin-docs.ts, packages/web-ui/vite.config.ts,
+              packages/daemon/src/server.ts, docs/getting-started.md,
+              tests/web-ui-docs-rendering.test.ts, tests/e2e/docs.spec.ts, package.json. Commands
+              run: kspec task get @01KPPN42CDKS6A6951ZATDPKXP; kspec item get @docs-reachability;
+              kspec item get @docs-navigation-shape; git diff --stat 9d65ad2442...c0a85323d5; git
+              diff --name-only 9d65ad2442...c0a85323d5; git diff 9d65ad2442...c0a85323d5 -- changed
+              files; kspec validate; rg for AC annotations; npm test; npm run test:e2e --
+              tests/e2e/docs.spec.ts; rg for markdown link patterns; test -f
+              dist/web-ui/INSTALL.md/AGENTS.md/README.md. Claims verified: worker claim that full
+              suite passes, verified by npm test; worker claim that docs E2E passes, verified by
+              targeted Playwright run. Categories searched: correctness, AC coverage, edge cases in
+              markdown link resolution, daemon/static integration, and test quality."
+            created_at: 2026-04-21T02:59:26.374Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-21T02:46:14.471Z
-    updated_at: 2026-04-21T02:59:16.161Z
+    updated_at: 2026-04-21T02:59:26.374Z
     notes: []
