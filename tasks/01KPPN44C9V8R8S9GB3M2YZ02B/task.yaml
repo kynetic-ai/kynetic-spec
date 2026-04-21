@@ -18,7 +18,7 @@ description: |
 spec_ref: "@docs-release-notes-availability"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-docs-rendering"
@@ -38,7 +38,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KPQ7WKH0VGRJZPKVQNFC0YHH
 history:
   - author: "@claude"
     changes:
@@ -97,8 +97,21 @@ history:
         previous: 01KPQ5X8N24PCH2V657EFX7QKX
     command: review-verdict-needs-work
     timestamp: 2026-04-21T05:19:06.858Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KPQ7WKH0VGRJZPKVQNFC0YHH
+        previous: null
+      started_at:
+        new: 2026-04-21T05:38:16.528Z
+        previous: 2026-04-21T04:49:23.095Z
+    command: task-start
+    timestamp: 2026-04-21T05:38:16.529Z
 created_at: 2026-04-20T23:55:30.057Z
-started_at: 2026-04-21T04:49:23.095Z
+started_at: 2026-04-21T05:38:16.528Z
 submitted_at: 2026-04-21T05:05:44.416Z
 todos: []
 automation: eligible
