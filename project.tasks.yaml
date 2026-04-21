@@ -26660,7 +26660,7 @@
   type: task
   spec_ref: "@docs-release-notes-availability"
   plan_ref: "@plan-user-documentation-foundation"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-docs-rendering"
@@ -26675,6 +26675,7 @@
   created_at: 2026-04-20T23:55:30.057Z
   started_at: 2026-04-21T05:38:16.528Z
   submitted_at: 2026-04-21T05:38:19.936Z
+  completed_at: 2026-04-21T05:47:24.118Z
   automation: eligible
 - _ulid: 01KPPN44NG07GJCSG9RMPSQ45W
   slugs:

@@ -18,8 +18,11 @@ description: |
 spec_ref: "@docs-release-notes-availability"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KPQ8YY and merged
+  dispatch/task/task-docs-release-notes-rendering/01kppn44 into dev. Release notes now render from
+  canonical RELEASE_NOTES.md with stable version anchors and real wiring coverage.
 depends_on:
   - "@task-docs-rendering"
 context: []
@@ -144,8 +147,25 @@ history:
         previous: "@01KPQ6ZMKCXV554CQA8K2VNXCN"
     command: review-link
     timestamp: 2026-04-21T05:42:16.186Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KPQ8YY and merged
+          dispatch/task/task-docs-release-notes-rendering/01kppn44 into dev. Release notes now
+          render from canonical RELEASE_NOTES.md with stable version anchors and real wiring
+          coverage.
+        previous: null
+      completed_at:
+        new: 2026-04-21T05:47:24.118Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-21T05:47:24.127Z
 created_at: 2026-04-20T23:55:30.057Z
 started_at: 2026-04-21T05:38:16.528Z
 submitted_at: 2026-04-21T05:38:19.936Z
+completed_at: 2026-04-21T05:47:24.118Z
 todos: []
 automation: eligible
