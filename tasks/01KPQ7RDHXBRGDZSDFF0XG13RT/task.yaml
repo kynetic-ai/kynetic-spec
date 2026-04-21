@@ -11,7 +11,7 @@ description: After `kspec review verdict --decision request_changes` auto-transi
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -25,8 +25,8 @@ review_ref: "@01KPQEJ9986HT6F0VY3KY99G47"
 submission_linkage:
   review_url: null
   branch: dispatch/task/make-task-reads-immediately-consistent-after-review-verdict-transitions/01kpq7rd
-  captured_at: 2026-04-21T07:16:25.425Z
-  commit: d73e82876ce1e09e6033de3bc12b018dcbb5def4
+  captured_at: 2026-04-21T07:52:09.800Z
+  commit: cd6316cb1358077ccf0680678b5659913b6d6a60
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/make-task-reads-immediately-consistent-after-review-verdict-transitions/01kpq7rd
@@ -152,8 +152,35 @@ history:
         previous: 2026-04-21T07:16:18.163Z
     command: task-start
     timestamp: 2026-04-21T07:51:58.856Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/make-task-reads-immediately-consistent-after-review-verdict-transitions/01kpq7rd
+          captured_at: 2026-04-21T07:52:09.800Z
+          commit: cd6316cb1358077ccf0680678b5659913b6d6a60
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/make-task-reads-immediately-consistent-after-review-verdict-transitions/01kpq7rd
+        previous:
+          review_url: null
+          branch: dispatch/task/make-task-reads-immediately-consistent-after-review-verdict-transitions/01kpq7rd
+          captured_at: 2026-04-21T07:16:25.425Z
+          commit: d73e82876ce1e09e6033de3bc12b018dcbb5def4
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/make-task-reads-immediately-consistent-after-review-verdict-transitions/01kpq7rd
+      submitted_at:
+        new: 2026-04-21T07:52:09.805Z
+        previous: 2026-04-21T07:16:25.429Z
+    command: task-submit
+    timestamp: 2026-04-21T07:52:09.805Z
 created_at: 2026-04-21T05:21:09.181Z
 started_at: 2026-04-21T07:51:58.856Z
-submitted_at: 2026-04-21T07:16:25.429Z
+submitted_at: 2026-04-21T07:52:09.805Z
 todos: []
 automation: eligible
