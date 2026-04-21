@@ -10,7 +10,7 @@ import {
   ensureWorkspaceBootstrap,
   DispatchBootstrapError,
 } from "../src/agent-runtime/bootstrap.js";
-import { DAEMON_RUNTIME_ENV_KEYS } from "../src/cli/commands/serve.js";
+import { DAEMON_RUNTIME_MODE_ENV_KEYS } from "../src/cli/commands/serve.js";
 import {
   provisionDispatchWorkspace,
   purgeDispatchWorkspaceRecord,
@@ -1210,7 +1210,7 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
     // Set all daemon runtime env keys on the current process to simulate
     // the daemon environment leaking into the dispatcher
     const savedEnv: Record<string, string | undefined> = {};
-    for (const key of DAEMON_RUNTIME_ENV_KEYS) {
+    for (const key of DAEMON_RUNTIME_MODE_ENV_KEYS) {
       savedEnv[key] = process.env[key];
       process.env[key] = "test-sentinel-value";
     }
@@ -1239,11 +1239,11 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
           }),
       );
 
-      for (const key of DAEMON_RUNTIME_ENV_KEYS) {
+      for (const key of DAEMON_RUNTIME_MODE_ENV_KEYS) {
         expect(envLines.has(key)).toBe(false);
       }
     } finally {
-      for (const key of DAEMON_RUNTIME_ENV_KEYS) {
+      for (const key of DAEMON_RUNTIME_MODE_ENV_KEYS) {
         if (savedEnv[key] === undefined) {
           delete process.env[key];
         } else {

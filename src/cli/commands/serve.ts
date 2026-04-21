@@ -136,17 +136,37 @@ export function getDaemonRuntimeCommand(runtime: DaemonRuntime): string {
 }
 
 /**
- * Environment variable names that `buildDaemonChildEnv` strips or overrides
- * to configure the daemon's own runtime mode. These must NOT leak into
- * bootstrap step subprocesses — the bootstrap env isolation boundary uses
- * this same list so additions stay in sync automatically.
+ * Runtime-mode selector environment variables the dispatcher injects on its
+ * own process for language-runtime configuration.
+ *
+ * Consumers:
+ *  - `buildDaemonChildEnv` (daemon spawn boundary): strips these from the
+ *    inherited env and re-injects the appropriate one with a production value.
+ *  - `buildBootstrapStepEnv` (bootstrap step boundary): strips these from
+ *    process.env so they are absent from bootstrap step subprocess environments.
+ *
+ * Spec: @dispatch-runtime-bootstrap-contract ac-12 requires these values be
+ * absent from bootstrap step subprocess environments.
+ *
+ * WARNING: Adding a non-runtime-mode variable to this constant would cause
+ * that variable to be stripped from every bootstrap step subprocess,
+ * potentially breaking bootstrap steps that shell out to nested CLI calls
+ * expecting to observe it. CLI-only control flags (e.g. KSPEC_NO_DAEMON)
+ * must be stripped locally at their specific boundary, not added here.
  */
-export const DAEMON_RUNTIME_ENV_KEYS = ["KSPEC_NO_DAEMON", "BUN_ENV", "NODE_ENV"] as const;
+export const DAEMON_RUNTIME_MODE_ENV_KEYS = ["BUN_ENV", "NODE_ENV"] as const;
 
 export function buildDaemonChildEnv(
   runtime: DaemonRuntime,
   baseEnv: NodeJS.ProcessEnv = process.env,
 ): NodeJS.ProcessEnv {
+  // KSPEC_NO_DAEMON is a CLI-only control flag stripped here at the
+  // daemon-spawn boundary. It is never re-injected on the daemon process
+  // and is not a runtime-mode value, so it does not belong in
+  // DAEMON_RUNTIME_MODE_ENV_KEYS. Consolidating this inline strip into
+  // the shared runtime-mode constant would silently re-broaden the
+  // bootstrap step env strip set (via buildBootstrapStepEnv) and
+  // reintroduce the drift this split prevents.
   const {
     KSPEC_NO_DAEMON: _kspecNoDaemon,
     BUN_ENV: _bunEnv,
