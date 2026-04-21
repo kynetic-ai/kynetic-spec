@@ -158568,6 +158568,25 @@ reviews:
         runner: npm
         created_at: 2026-04-21T09:07:51.814Z
         completed_at: 2026-04-21T09:07:51.814Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: docs/getting-started/*.md, docs/guides/index.md, docs/concepts/index.md,
+          tests/web-ui-docs-rendering.test.ts. Commands run: git diff/stat/log, kspec task get,
+          kspec item get, kspec review get, kspec validate on head and base, rg AC annotations, npm
+          test, npm test -- tests/web-ui-docs-rendering.test.ts, kspec --help, kspec task branch
+          --help, kspec doctor --help. Claims verified: previous blocker fixed by replacing git
+          branch creation guidance with kspec task branch in
+          docs/getting-started/your-first-action.md and tutorial.md; command references exist in CLI
+          help; new pages satisfy AC coverage tests. Categories searched: correctness, spec
+          alignment, command accuracy, test quality, integration, edge cases around reading order
+          and next links."
+        name: evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-04-21T09:07:57.236Z
+        completed_at: 2026-04-21T09:07:57.236Z
     events:
       - _ulid: 01KPQMNFHCGQ67QCNRZXKB9965
         actor: Jacob Chapel
@@ -158596,6 +158615,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T09:07:53.706Z
+      - _ulid: 01KPQMQRE6FHCPFD6QC3YR05Q0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: evidence log
+        timestamp: 2026-04-21T09:07:59.046Z
     examined_commit: 26a2c1d83d9fe4ed39751239fb63ee8a0ecc20cc
     external_links: []
     lifecycle_state: open
@@ -158608,5 +158634,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T09:06:44.396Z
-    updated_at: 2026-04-21T09:07:51.814Z
+    updated_at: 2026-04-21T09:07:57.236Z
     notes: []
