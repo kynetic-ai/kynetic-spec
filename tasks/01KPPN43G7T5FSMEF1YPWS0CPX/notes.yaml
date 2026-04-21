@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KPQME8S0NGRK3A7XA7995Y9Y
+    content: "Approach: Writing 8 concept pages per spec @docs-concepts-section. Each page follows the
+      shape: what it is, why it exists, how it surfaces in use. No command flags or schema fields
+      per AC-2. The Specs/Tasks/Plans/Inbox page will include a decision rule per kind per AC-3.
+      Will update the landing page index to link all 8 pages per AC-1. Test plan: behavioral tests
+      verifying landing page links resolve and page structure meets AC requirements."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T09:02:48.096Z
