@@ -2639,6 +2639,9 @@ modules:
           source of truth already consumed by the CLI's release-notes
           command, so authoring release notes remains one action and
           the docs cannot drift from what the CLI shows.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
