@@ -29722,9 +29722,17 @@ runs:
     completed_at: 2026-04-21T08:43:51.164Z
   - _ulid: 01KPQKC131MDGJMDZGRBXYARMT
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T08:44:06.113Z
+        completed_at: 2026-04-21T08:44:31.838Z
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T08:44:31.838Z
+        completed_at: 2026-04-21T08:44:31.838Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T08:44:06.113Z
