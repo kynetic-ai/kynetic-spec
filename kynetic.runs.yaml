@@ -29941,7 +29941,7 @@ runs:
     completed_at: 2026-04-21T09:00:12.949Z
   - _ulid: 01KPQMV447CCB178G7R02CJ8K6
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29967,7 +29967,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-21T09:11:02.752Z
-        completed_at: 2026-04-21T09:11:02.752Z
+        completed_at: 2026-04-21T09:11:03.718Z
+        notes: "Worked well: AC-focused docs rendering tests made the review efficient; they verified page
+          existence, reading order, next links, and shadow-branch guidance without source-scanning.
+          The prior blocker was also easy to re-check because the docs now point readers to kspec
+          task branch instead of ad-hoc git branch creation."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-21T09:11:03.718Z
+        completed_at: 2026-04-21T09:11:03.718Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T09:09:49.319Z
