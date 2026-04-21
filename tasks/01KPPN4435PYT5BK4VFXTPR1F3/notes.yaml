@@ -34,3 +34,10 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-21T11:12:03.434Z
+  - _ulid: 01KPQXV2ZH96Q65R3SA9RMD34N
+    content: "Work complete. Authored 7 troubleshooting entries plus updated landing page. All 37 new
+      tests pass (ac-1: symptom-titled entries, ac-2: full recovery structure, ac-3: concept
+      cross-links). Full test suite: 2238 suites, 8253 tests passing, 0 failures."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T11:47:05.330Z
