@@ -71,3 +71,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T19:50:27.159Z
+  - _ulid: 01KPRTM76PPJ7M1ZXJDGRBEBBG
+    content: "Fix cycle 1: addressed all review threads. Blocker — AC-11 regression gap: (1) zero-spawns
+      test now seeds workspace with package.json + package-lock.json so it exercises the
+      Node-project regression case — if implicit inference were reintroduced, this test fails; (2)
+      command-fidelity test now asserts metadata records exactly 1 step with the verbatim declared
+      command string, proving no dispatcher prefix/suffix. Nit (evidence log) acknowledged. Full
+      test suite: 8297 passed, 5 skipped, 0 failed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T20:10:08.982Z
