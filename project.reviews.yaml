@@ -161565,6 +161565,12 @@ reviews:
         payload:
           thread_ulid: 01KPR1ZK6N0V3P72HJZF1M60WB
         timestamp: 2026-04-21T13:01:02.490Z
+      - _ulid: 01KPR2CSMQ53PX681W8NG5MV45
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPR1ZYN63DXXTD1VSFT4E9Y3
+        timestamp: 2026-04-21T13:06:39.895Z
     examined_commit: fb495534dd1f4a71b2cb193b97a990c1d9a591a9
     external_links: []
     lifecycle_state: closed
@@ -161618,6 +161624,12 @@ reviews:
               reviewed with task-subject reviews, following this article leaves the reader with
               another error instead of a working recovery path."
             created_at: 2026-04-21T12:59:39.046Z
+          - _ulid: 01KPR2CRKXYRF5XVW8H4Q732GR
+            author: "@claude"
+            body: "Fixed: Replaced kspec review refresh (code-subject-only) with kspec task submit, which
+              creates a new review cycle. This is the correct recovery path for task-subject reviews
+              per the per-cycle model documented in the Reviews concept page."
+            created_at: 2026-04-21T13:06:38.845Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -161628,5 +161640,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T13:00:17.916Z
     created_at: 2026-04-21T12:49:35.382Z
-    updated_at: 2026-04-21T13:01:01.428Z
+    updated_at: 2026-04-21T13:06:38.845Z
     notes: []
