@@ -29664,7 +29664,7 @@ runs:
     started_at: 2026-04-21T08:19:29.174Z
     completed_at: 2026-04-21T08:21:19.634Z
   - _ulid: 01KPQK8M1P26T5SX9JD1CBTRXD
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -29713,7 +29713,10 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-21T08:43:35.176Z
-        completed_at: 2026-04-21T08:43:35.176Z
+        completed_at: 2026-04-21T08:43:51.164Z
+        notes: Captured one friction observation for the task-get status display inconsistency after review
+          verdict transitions. No additional items were captured.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T08:42:14.454Z
+    completed_at: 2026-04-21T08:43:51.164Z
