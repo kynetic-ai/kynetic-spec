@@ -29023,7 +29023,7 @@ runs:
     completed_at: 2026-04-21T05:07:32.349Z
   - _ulid: 01KPQ7NR5R177MDVET98JNTC3P
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29063,7 +29063,13 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-04-21T05:21:32.750Z
-        completed_at: 2026-04-21T05:21:32.750Z
+        completed_at: 2026-04-21T05:21:33.709Z
+        notes: "Captured 1 follow-up task: @01KPQ7RD for stale post-verdict task state reads. No additional
+          capture for validate noise because related work already exists. Reflection complete."
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-21T05:21:33.709Z
+        completed_at: 2026-04-21T05:21:33.709Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T05:19:41.752Z
