@@ -29722,7 +29722,7 @@ runs:
     completed_at: 2026-04-21T08:43:51.164Z
   - _ulid: 01KPQKC131MDGJMDZGRBXYARMT
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -29732,7 +29732,31 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T08:44:31.838Z
-        completed_at: 2026-04-21T08:44:31.838Z
+        completed_at: 2026-04-21T08:44:58.641Z
+        notes: >-
+          Session: fix cycle for task-docs-nav-integration. Addressed 4 blocker threads about dead
+          links in section landing pages and weak tests. 
+
+
+          High-confidence observations from this session:
+
+
+          FRICTION 1: Landing pages were created with links to planned-but-not-yet-written child
+          pages. This is a recurring pattern — the section scaffolding task created stub index pages
+          with aspirational links. The prior worker accepted these without checking whether the
+          targets existed, and the tests only verified the link text was present, not that the
+          targets resolved. Already partially tracked by observation 01KPQJDV (testing through vite
+          plugin is the right approach). The new link-resolution test addresses this going forward.
+
+
+          SUCCESS 1: The new 'every child-page link resolves to a real manifest entry' test pattern
+          is a durable guard against dead-link regressions. It extracts links from landing page
+          markdown and verifies each linked slug exists in the docs manifest. This catches the exact
+          class of bug the review found. Already committed.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T08:44:58.641Z
+        completed_at: 2026-04-21T08:44:58.641Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T08:44:06.113Z
