@@ -26727,7 +26727,7 @@
   slugs: []
   title: Make task reads immediately consistent after review verdict transitions
   type: bug
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 2
@@ -26736,7 +26736,7 @@
     - state-consistency
     - automation
   review_ref: "@01KPQEJ9986HT6F0VY3KY99G47"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-04-21T05:21:09.181Z
   started_at: 2026-04-21T07:16:18.163Z
