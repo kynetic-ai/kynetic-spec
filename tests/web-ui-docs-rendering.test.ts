@@ -9,8 +9,8 @@
  */
 
 import { describe, it, expect, beforeAll } from "vitest";
-import { mkdirSync, writeFileSync, rmSync } from "node:fs";
-import { join } from "node:path";
+import { mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
+import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 
 // ─── Vite Plugin Tests ────────────────────────────────────────────────────────
@@ -157,7 +157,7 @@ describe("docs-markdown renderer", () => {
     it("handles headings with special characters", () => {
       const result = renderDocsMarkdown("## What's New? (v2.0)");
 
-      expect(result.html).toContain('id="whats-new-v20"');
+      expect(result.html).toContain('id="whats-new-v2-0"');
     });
 
     it("handles headings with inline code", () => {
@@ -357,6 +357,13 @@ describe("docs-markdown renderer", () => {
 
     it("strips special characters", () => {
       expect(slugifyHeading("What's New? (v2)")).toBe("whats-new-v2");
+    });
+
+    // AC: @docs-release-notes-availability ac-1 — version anchors of the form v<major>-<minor>-<patch>
+    it("converts dots to hyphens for version-style headings", () => {
+      expect(slugifyHeading("v0.13.0")).toBe("v0-13-0");
+      expect(slugifyHeading("v0.1.0")).toBe("v0-1-0");
+      expect(slugifyHeading("v1.2.3")).toBe("v1-2-3");
     });
 
     it("collapses multiple hyphens", () => {
@@ -563,6 +570,260 @@ describe("docs link resolution", () => {
     it("returns null when traversal goes above repo root", () => {
       // docs/getting-started.md links to ../../.. — too many levels
       expect(resolveOutOfTreeHref("../../../above-root.md", "getting-started.md")).toBeNull();
+    });
+  });
+});
+
+// ─── Release Notes Rendering Tests ──────────────────────────────────────────
+
+describe("release notes rendering", () => {
+  let docsPlugin: typeof import("../packages/web-ui/vite-plugin-docs")["docsPlugin"];
+  let renderDocsMarkdown: typeof import("../packages/web-ui/src/lib/utils/docs-markdown")["renderDocsMarkdown"];
+
+  beforeAll(async () => {
+    const pluginMod = await import("../packages/web-ui/vite-plugin-docs");
+    docsPlugin = pluginMod.docsPlugin;
+    const mdMod = await import("../packages/web-ui/src/lib/utils/docs-markdown");
+    renderDocsMarkdown = mdMod.renderDocsMarkdown;
+  });
+
+  // AC: @docs-release-notes-availability ac-1 — Release notes page with version anchors
+  describe("version anchors and navigation", () => {
+    it("renders version headings as anchored links of the form v<major>-<minor>-<patch>", () => {
+      const content = [
+        "# kspec Release Notes",
+        "",
+        "## Unreleased",
+        "",
+        "Staged changes.",
+        "",
+        "## v0.13.0",
+        "",
+        "Major release.",
+        "",
+        "## v0.12.0",
+        "",
+        "Feature release.",
+      ].join("\n");
+
+      const { html, toc } = renderDocsMarkdown(content);
+
+      // Version headings produce anchors of the form v<major>-<minor>-<patch>
+      expect(html).toContain('id="v0-13-0"');
+      expect(html).toContain('href="#v0-13-0"');
+      expect(html).toContain('id="v0-12-0"');
+      expect(html).toContain('href="#v0-12-0"');
+      expect(html).toContain('id="unreleased"');
+
+      // TOC contains version entries that serve as an index of versions
+      const versionTocEntries = toc.filter((e) => /^v\d/.test(e.text) || e.text === "Unreleased");
+      expect(versionTocEntries.length).toBeGreaterThanOrEqual(3);
+      expect(versionTocEntries.map((e) => e.text)).toContain("v0.13.0");
+      expect(versionTocEntries.map((e) => e.text)).toContain("v0.12.0");
+    });
+
+    it("produces direct-linkable version anchors for every version in the file", () => {
+      const content = [
+        "# Release Notes",
+        "",
+        "## v1.0.0",
+        "",
+        "First stable.",
+        "",
+        "## v0.9.0",
+        "",
+        "Pre-release.",
+        "",
+        "## v0.1.0",
+        "",
+        "Initial.",
+      ].join("\n");
+
+      const { html } = renderDocsMarkdown(content);
+
+      // Each version has a clickable anchor element
+      expect(html).toContain('<a class="anchor" href="#v1-0-0"');
+      expect(html).toContain('<a class="anchor" href="#v0-9-0"');
+      expect(html).toContain('<a class="anchor" href="#v0-1-0"');
+    });
+  });
+
+  // AC: @docs-release-notes-availability ac-2 — Content from canonical source, no duplication
+  describe("canonical source bundling", () => {
+    it("bundles RELEASE_NOTES.md as a docs entry with slug 'release-notes'", () => {
+      const tempDocsDir = join(tmpdir(), `docs-rn-bundle-${Date.now()}`);
+      const tempRnPath = join(tmpdir(), `RELEASE_NOTES-${Date.now()}.md`);
+
+      mkdirSync(tempDocsDir, { recursive: true });
+      writeFileSync(join(tempDocsDir, "getting-started.md"), "# Getting Started\n\nWelcome.");
+      writeFileSync(
+        tempRnPath,
+        "# kspec Release Notes\n\n## v0.2.0\n\nSecond.\n\n## v0.1.0\n\nFirst.",
+      );
+
+      try {
+        const plugin = docsPlugin(tempDocsDir, { releaseNotesPath: tempRnPath });
+        const load = plugin.load as (id: string) => string | undefined;
+        const result = load("\0virtual:docs")!;
+        const manifest = JSON.parse(result.slice("export default ".length, -1));
+
+        // Release notes entry is present
+        const rnEntry = manifest.entries.find((e: { slug: string }) => e.slug === "release-notes");
+        expect(rnEntry).toBeDefined();
+        expect(rnEntry.title).toBe("kspec Release Notes");
+        expect(rnEntry.path).toBe("RELEASE_NOTES.md");
+
+        // Content is the canonical source (not a copy or transformation)
+        expect(rnEntry.content).toContain("## v0.2.0");
+        expect(rnEntry.content).toContain("## v0.1.0");
+        expect(rnEntry.content).toContain("Second.");
+        expect(rnEntry.content).toContain("First.");
+      } finally {
+        rmSync(tempDocsDir, { recursive: true, force: true });
+        rmSync(tempRnPath, { force: true });
+      }
+    });
+
+    it("renders content equivalent to the canonical source file", () => {
+      const canonicalSource = [
+        "# kspec Release Notes",
+        "",
+        "## v0.3.0",
+        "",
+        "### Features",
+        "",
+        "- Feature A",
+        "- Feature B",
+        "",
+        "## v0.2.0",
+        "",
+        "### Bug Fixes",
+        "",
+        "- Fix C",
+      ].join("\n");
+
+      const { html } = renderDocsMarkdown(canonicalSource);
+
+      // Rendered output contains all content from the source
+      expect(html).toContain("Feature A");
+      expect(html).toContain("Feature B");
+      expect(html).toContain("Fix C");
+      expect(html).toContain("v0.3.0");
+      expect(html).toContain("v0.2.0");
+    });
+
+    it("does not create a second copy — only one entry with release notes content", () => {
+      const tempDocsDir = join(tmpdir(), `docs-rn-nodup-${Date.now()}`);
+      const tempRnPath = join(tmpdir(), `RELEASE_NOTES-nodup-${Date.now()}.md`);
+
+      mkdirSync(tempDocsDir, { recursive: true });
+      writeFileSync(join(tempDocsDir, "overview.md"), "# Overview\n\nDocs overview.");
+      writeFileSync(tempRnPath, "# kspec Release Notes\n\n## v0.1.0\n\nInitial.");
+
+      try {
+        const plugin = docsPlugin(tempDocsDir, { releaseNotesPath: tempRnPath });
+        const load = plugin.load as (id: string) => string | undefined;
+        const result = load("\0virtual:docs")!;
+        const manifest = JSON.parse(result.slice("export default ".length, -1));
+
+        // Exactly one entry contains release notes content
+        const releaseEntries = manifest.entries.filter(
+          (e: { content: string }) => e.content.includes("Release Notes"),
+        );
+        expect(releaseEntries).toHaveLength(1);
+        expect(releaseEntries[0].slug).toBe("release-notes");
+      } finally {
+        rmSync(tempDocsDir, { recursive: true, force: true });
+        rmSync(tempRnPath, { force: true });
+      }
+    });
+
+    it("skips gracefully when RELEASE_NOTES.md does not exist", () => {
+      const tempDocsDir = join(tmpdir(), `docs-rn-missing-${Date.now()}`);
+      mkdirSync(tempDocsDir, { recursive: true });
+      writeFileSync(join(tempDocsDir, "page.md"), "# Page\n\nContent.");
+
+      try {
+        const plugin = docsPlugin(tempDocsDir, {
+          releaseNotesPath: "/tmp/nonexistent-release-notes-" + Date.now() + ".md",
+        });
+        const load = plugin.load as (id: string) => string | undefined;
+        const result = load("\0virtual:docs")!;
+        const manifest = JSON.parse(result.slice("export default ".length, -1));
+
+        // No release notes entry when file is missing
+        const rnEntry = manifest.entries.find((e: { slug: string }) => e.slug === "release-notes");
+        expect(rnEntry).toBeUndefined();
+        // Other docs still work
+        expect(manifest.entries).toHaveLength(1);
+      } finally {
+        rmSync(tempDocsDir, { recursive: true, force: true });
+      }
+    });
+  });
+
+  // AC: @docs-release-notes-availability ac-1, ac-2 — Real build wiring integration
+  describe("real vite config wiring", () => {
+    // These paths mirror packages/web-ui/vite.config.ts — the test fails if
+    // the config ever stops pointing at the canonical RELEASE_NOTES.md.
+    const repoRoot = resolve(__dirname, "..");
+    const realDocsDir = resolve(repoRoot, "docs");
+    const realReleaseNotesPath = resolve(repoRoot, "RELEASE_NOTES.md");
+
+    it("produces a release-notes manifest entry from the canonical RELEASE_NOTES.md", () => {
+      const plugin = docsPlugin(realDocsDir, { releaseNotesPath: realReleaseNotesPath });
+      const load = plugin.load as (id: string) => string | undefined;
+      const result = load("\0virtual:docs")!;
+      const manifest = JSON.parse(result.slice("export default ".length, -1));
+
+      const rnEntry = manifest.entries.find(
+        (e: { slug: string }) => e.slug === "release-notes",
+      );
+      expect(rnEntry).toBeDefined();
+      expect(rnEntry.slug).toBe("release-notes");
+      expect(rnEntry.path).toBe("RELEASE_NOTES.md");
+
+      // Content matches the canonical source file byte-for-byte
+      const canonicalContent = readFileSync(realReleaseNotesPath, "utf-8");
+      expect(rnEntry.content).toBe(canonicalContent);
+    });
+
+    it("renders the canonical release notes with working version anchors", () => {
+      const canonicalContent = readFileSync(realReleaseNotesPath, "utf-8");
+      const { html, toc } = renderDocsMarkdown(canonicalContent);
+
+      // The real RELEASE_NOTES.md contains versioned headings — verify anchors
+      const versionPattern = /## v(\d+)\.(\d+)\.(\d+)/g;
+      const versions: string[] = [];
+      let match;
+      while ((match = versionPattern.exec(canonicalContent)) !== null) {
+        versions.push(`v${match[1]}-${match[2]}-${match[3]}`);
+      }
+
+      // There must be at least one released version
+      expect(versions.length).toBeGreaterThan(0);
+
+      // Each version heading produces a clickable anchor
+      for (const anchor of versions) {
+        expect(html).toContain(`id="${anchor}"`);
+        expect(html).toContain(`href="#${anchor}"`);
+      }
+
+      // TOC includes version entries for navigation
+      const tocVersions = toc.filter((e) => /^v\d/.test(e.text));
+      expect(tocVersions.length).toBe(versions.length);
+    });
+
+    it("includes exactly one release-notes entry — no duplication", () => {
+      const plugin = docsPlugin(realDocsDir, { releaseNotesPath: realReleaseNotesPath });
+      const load = plugin.load as (id: string) => string | undefined;
+      const result = load("\0virtual:docs")!;
+      const manifest = JSON.parse(result.slice("export default ".length, -1));
+
+      const releaseEntries = manifest.entries.filter(
+        (e: { slug: string }) => e.slug === "release-notes",
+      );
+      expect(releaseEntries).toHaveLength(1);
     });
   });
 });
