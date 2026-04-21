@@ -15156,6 +15156,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T00:10:57.249Z
+  - _ulid: 01KPPQ9HRXGGCENNCY8RYV5GRF
+    type: success
+    content: "Vite virtual module pattern (virtual: prefix + resolveId/load hooks) works well for
+      build-time content bundling in the web UI. Used for docs rendering — scans filesystem at build
+      time, emits JS module with all content embedded. Clean separation: plugin handles I/O,
+      SvelteKit routes consume the virtual import. Pattern is reusable for other build-time bundled
+      content."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T00:33:24.765Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
