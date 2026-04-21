@@ -27,7 +27,7 @@ description: |
 spec_ref: "@docs-reachability"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -41,8 +41,8 @@ review_ref: "@01KPQ0V5JWDFM3MKA0EBES9N13"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-docs-rendering/01kppn42
-  captured_at: 2026-04-21T03:18:39.862Z
-  commit: bcb8e71562126b0b6adf00e60db288c5f76aa493
+  captured_at: 2026-04-21T03:42:01.412Z
+  commit: 765071be773d1738dbd5b14ec2c05e76954c2c98
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-docs-rendering/01kppn42
@@ -346,8 +346,35 @@ history:
         previous: 2026-04-21T03:18:36.297Z
     command: task-start
     timestamp: 2026-04-21T03:41:57.450Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-docs-rendering/01kppn42
+          captured_at: 2026-04-21T03:42:01.412Z
+          commit: 765071be773d1738dbd5b14ec2c05e76954c2c98
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-docs-rendering/01kppn42
+        previous:
+          review_url: null
+          branch: dispatch/task/task-docs-rendering/01kppn42
+          captured_at: 2026-04-21T03:18:39.862Z
+          commit: bcb8e71562126b0b6adf00e60db288c5f76aa493
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-docs-rendering/01kppn42
+      submitted_at:
+        new: 2026-04-21T03:42:01.427Z
+        previous: 2026-04-21T03:18:39.868Z
+    command: task-submit
+    timestamp: 2026-04-21T03:42:01.429Z
 created_at: 2026-04-20T23:55:28.013Z
 started_at: 2026-04-21T03:41:57.450Z
-submitted_at: 2026-04-21T03:18:39.868Z
+submitted_at: 2026-04-21T03:42:01.427Z
 todos: []
 automation: eligible
