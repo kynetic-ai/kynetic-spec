@@ -28249,7 +28249,7 @@ runs:
     completed_at: 2026-04-21T00:11:35.000Z
   - _ulid: 01KPPQAJ4VYJE01RBZWP09GJQC
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28277,7 +28277,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-21T00:35:11.582Z
-        completed_at: 2026-04-21T00:35:11.582Z
+        completed_at: 2026-04-21T00:35:19.639Z
+        notes: "Proposed improvement: add a reusable shutdown-race test pattern for async
+          registries/schedulers that can have in-flight starts. It should explicitly cover 'shutdown
+          begins while start is awaiting async setup' and assert that no instance installs
+          afterward. Scope: small to medium, likely helper/test-pattern work rather than product
+          behavior."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-21T00:35:19.639Z
+        completed_at: 2026-04-21T00:35:19.639Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T00:33:57.916Z
