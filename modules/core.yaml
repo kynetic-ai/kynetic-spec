@@ -2285,6 +2285,9 @@ modules:
           project can read docs without internet access, and a
           reader on the public deployment sees the same content
           without any server-side help.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
