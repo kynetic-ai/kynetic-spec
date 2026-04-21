@@ -6,6 +6,18 @@
 import type { DocsEntry } from '../docs-types';
 
 /**
+ * Canonical order of docs sections as defined by @docs-section-taxonomy.
+ * Sections not in this list are appended alphabetically after the known sections.
+ */
+export const DOCS_SECTION_ORDER = [
+	'getting-started',
+	'guides',
+	'concepts',
+	'troubleshooting',
+	'release-notes',
+] as const;
+
+/**
  * Get entries in the same section as the given slug.
  * A "section" is the top-level directory segment. Root pages (no slash)
  * belong to the root section and are returned when the slug is also at root.
@@ -91,4 +103,77 @@ export function resolveOutOfTreeHref(href: string, currentDocPath: string): stri
 	}
 
 	return resolved.join('/');
+}
+
+export interface DocsSection {
+	/** Directory name (e.g. "getting-started") used as the section key */
+	key: string;
+	/** Human-readable label (e.g. "Getting Started") */
+	label: string;
+	/** Entries in this section, preserving their original sort order */
+	entries: DocsEntry[];
+}
+
+/**
+ * Group docs entries into ordered sections following DOCS_SECTION_ORDER.
+ * Root-level entries (no directory) are returned as a "root" section.
+ * Unknown sections are appended alphabetically after the known sections.
+ */
+export function groupDocsSections(entries: DocsEntry[]): DocsSection[] {
+	const rootEntries: DocsEntry[] = [];
+	const dirGroups = new Map<string, DocsEntry[]>();
+
+	for (const entry of entries) {
+		const slashIdx = entry.slug.indexOf('/');
+		if (slashIdx === -1) {
+			rootEntries.push(entry);
+		} else {
+			const dir = entry.slug.slice(0, slashIdx);
+			if (!dirGroups.has(dir)) dirGroups.set(dir, []);
+			dirGroups.get(dir)!.push(entry);
+		}
+	}
+
+	const sections: DocsSection[] = [];
+
+	// Add known sections in canonical order
+	for (const key of DOCS_SECTION_ORDER) {
+		const sectionEntries = dirGroups.get(key);
+		if (sectionEntries && sectionEntries.length > 0) {
+			sections.push({
+				key,
+				label: humanizeDir(key),
+				entries: sectionEntries,
+			});
+			dirGroups.delete(key);
+		}
+	}
+
+	// Add any remaining unknown sections alphabetically
+	const remaining = [...dirGroups.entries()].sort(([a], [b]) => a.localeCompare(b));
+	for (const [key, sectionEntries] of remaining) {
+		sections.push({
+			key,
+			label: humanizeDir(key),
+			entries: sectionEntries,
+		});
+	}
+
+	// Root-level entries go last (these are standalone pages not in any section)
+	if (rootEntries.length > 0) {
+		sections.push({
+			key: '',
+			label: 'Docs',
+			entries: rootEntries,
+		});
+	}
+
+	return sections;
+}
+
+function humanizeDir(dir: string): string {
+	return dir
+		.split('-')
+		.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+		.join(' ');
 }

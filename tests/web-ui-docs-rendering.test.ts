@@ -853,3 +853,243 @@ describe("sanitizer allows heading anchors", () => {
     expect(result).toContain('id="intro"');
   });
 });
+
+// ─── Section Scaffolding Tests (@docs-section-taxonomy) ─────────────────────
+
+describe("docs section ordering (groupDocsSections)", () => {
+  let groupDocsSections: typeof import("../packages/web-ui/src/lib/utils/docs-utils")["groupDocsSections"];
+  let DOCS_SECTION_ORDER: typeof import("../packages/web-ui/src/lib/utils/docs-utils")["DOCS_SECTION_ORDER"];
+
+  beforeAll(async () => {
+    const mod = await import("../packages/web-ui/src/lib/utils/docs-utils");
+    groupDocsSections = mod.groupDocsSections;
+    DOCS_SECTION_ORDER = mod.DOCS_SECTION_ORDER;
+  });
+
+  const sectionEntries = [
+    { slug: "concepts/index", title: "Concepts", content: "", path: "concepts/index.md" },
+    { slug: "getting-started/index", title: "Getting Started", content: "", path: "getting-started/index.md" },
+    { slug: "getting-started/tutorial", title: "Tutorial", content: "", path: "getting-started/tutorial.md" },
+    { slug: "guides/index", title: "Guides", content: "", path: "guides/index.md" },
+    { slug: "release-notes/index", title: "Release Notes", content: "", path: "release-notes/index.md" },
+    { slug: "troubleshooting/index", title: "Troubleshooting", content: "", path: "troubleshooting/index.md" },
+  ];
+
+  // AC: @docs-section-taxonomy ac-1
+  it("returns the five sections in canonical order: Getting Started, Guides, Concepts, Troubleshooting, Release Notes", () => {
+    const sections = groupDocsSections(sectionEntries);
+    const sectionKeys = sections.map((s) => s.key);
+
+    expect(sectionKeys).toEqual([
+      "getting-started",
+      "guides",
+      "concepts",
+      "troubleshooting",
+      "release-notes",
+    ]);
+  });
+
+  // AC: @docs-section-taxonomy ac-1
+  it("produces human-readable labels for each section", () => {
+    const sections = groupDocsSections(sectionEntries);
+    const labels = sections.map((s) => s.label);
+
+    expect(labels).toEqual([
+      "Getting Started",
+      "Guides",
+      "Concepts",
+      "Troubleshooting",
+      "Release Notes",
+    ]);
+  });
+
+  it("places root-level entries after known sections", () => {
+    const withRoot = [
+      ...sectionEntries,
+      { slug: "standalone-page", title: "Standalone", content: "", path: "standalone-page.md" },
+    ];
+    const sections = groupDocsSections(withRoot);
+    const lastSection = sections[sections.length - 1];
+
+    expect(lastSection.key).toBe("");
+    expect(lastSection.label).toBe("Docs");
+    expect(lastSection.entries[0].slug).toBe("standalone-page");
+  });
+
+  it("places unknown directory sections after known sections but before root", () => {
+    const withUnknown = [
+      ...sectionEntries,
+      { slug: "api-reference/index", title: "API Ref", content: "", path: "api-reference/index.md" },
+      { slug: "standalone", title: "Standalone", content: "", path: "standalone.md" },
+    ];
+    const sections = groupDocsSections(withUnknown);
+    const keys = sections.map((s) => s.key);
+
+    // Known sections first, then unknown alphabetically, then root
+    expect(keys).toEqual([
+      "getting-started",
+      "guides",
+      "concepts",
+      "troubleshooting",
+      "release-notes",
+      "api-reference",
+      "", // root
+    ]);
+  });
+
+  it("groups entries within each section correctly", () => {
+    const sections = groupDocsSections(sectionEntries);
+    const gettingStarted = sections.find((s) => s.key === "getting-started");
+
+    expect(gettingStarted).toBeDefined();
+    expect(gettingStarted!.entries.map((e) => e.slug)).toEqual([
+      "getting-started/index",
+      "getting-started/tutorial",
+    ]);
+  });
+
+  it("DOCS_SECTION_ORDER contains exactly the five canonical sections", () => {
+    expect([...DOCS_SECTION_ORDER]).toEqual([
+      "getting-started",
+      "guides",
+      "concepts",
+      "troubleshooting",
+      "release-notes",
+    ]);
+  });
+});
+
+describe("docs plugin exclude option", () => {
+  let docsPlugin: typeof import("../packages/web-ui/vite-plugin-docs")["docsPlugin"];
+
+  beforeAll(async () => {
+    const mod = await import("../packages/web-ui/vite-plugin-docs");
+    docsPlugin = mod.docsPlugin;
+  });
+
+  it("excludes files matching directory prefixes", () => {
+    const tempDir = join(tmpdir(), `docs-exclude-dir-${Date.now()}`);
+    mkdirSync(join(tempDir, "history"), { recursive: true });
+    mkdirSync(join(tempDir, "guides"), { recursive: true });
+    writeFileSync(join(tempDir, "index.md"), "# Home");
+    writeFileSync(join(tempDir, "history", "design.md"), "# Design");
+    writeFileSync(join(tempDir, "guides", "setup.md"), "# Setup");
+
+    try {
+      const plugin = docsPlugin(tempDir, { exclude: ["history"] });
+      const load = plugin.load as (id: string) => string | undefined;
+      const result = load("\0virtual:docs")!;
+      const manifest = JSON.parse(result.slice("export default ".length, -1));
+      const slugs = manifest.entries.map((e: { slug: string }) => e.slug);
+
+      expect(slugs).toContain("index");
+      expect(slugs).toContain("guides/setup");
+      expect(slugs).not.toContain("history/design");
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it("excludes individual files by relative path", () => {
+    const tempDir = join(tmpdir(), `docs-exclude-file-${Date.now()}`);
+    mkdirSync(tempDir, { recursive: true });
+    writeFileSync(join(tempDir, "index.md"), "# Home");
+    writeFileSync(join(tempDir, "internal-notes.md"), "# Internal");
+    writeFileSync(join(tempDir, "guide.md"), "# Guide");
+
+    try {
+      const plugin = docsPlugin(tempDir, { exclude: ["internal-notes.md"] });
+      const load = plugin.load as (id: string) => string | undefined;
+      const result = load("\0virtual:docs")!;
+      const manifest = JSON.parse(result.slice("export default ".length, -1));
+      const slugs = manifest.entries.map((e: { slug: string }) => e.slug);
+
+      expect(slugs).toContain("index");
+      expect(slugs).toContain("guide");
+      expect(slugs).not.toContain("internal-notes");
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it("applies multiple exclude patterns simultaneously", () => {
+    const tempDir = join(tmpdir(), `docs-exclude-multi-${Date.now()}`);
+    mkdirSync(join(tempDir, "history"), { recursive: true });
+    mkdirSync(join(tempDir, "guides"), { recursive: true });
+    writeFileSync(join(tempDir, "index.md"), "# Home");
+    writeFileSync(join(tempDir, "internal.md"), "# Internal");
+    writeFileSync(join(tempDir, "history", "old.md"), "# Old");
+    writeFileSync(join(tempDir, "guides", "setup.md"), "# Setup");
+
+    try {
+      const plugin = docsPlugin(tempDir, { exclude: ["history", "internal.md"] });
+      const load = plugin.load as (id: string) => string | undefined;
+      const result = load("\0virtual:docs")!;
+      const manifest = JSON.parse(result.slice("export default ".length, -1));
+      const slugs = manifest.entries.map((e: { slug: string }) => e.slug);
+
+      expect(slugs).toEqual(["guides/setup", "index"]);
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+});
+
+// AC: @docs-section-taxonomy ac-2
+describe("section landing page structure", () => {
+  let docsPlugin: typeof import("../packages/web-ui/vite-plugin-docs")["docsPlugin"];
+  let renderDocsMarkdown: typeof import("../packages/web-ui/src/lib/utils/docs-markdown")["renderDocsMarkdown"];
+
+  beforeAll(async () => {
+    const pluginMod = await import("../packages/web-ui/vite-plugin-docs");
+    docsPlugin = pluginMod.docsPlugin;
+    const mdMod = await import("../packages/web-ui/src/lib/utils/docs-markdown");
+    renderDocsMarkdown = mdMod.renderDocsMarkdown;
+  });
+
+  // AC: @docs-section-taxonomy ac-2
+  it("each section landing page has a purpose paragraph and links to child pages", () => {
+    const docsDir = join(__dirname, "..", "docs");
+    const plugin = docsPlugin(docsDir, {
+      exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
+    });
+    const load = plugin.load as (id: string) => string | undefined;
+    const result = load("\0virtual:docs")!;
+    const manifest = JSON.parse(result.slice("export default ".length, -1));
+
+    const sectionDirs = ["getting-started", "guides", "concepts", "troubleshooting", "release-notes"];
+
+    for (const dir of sectionDirs) {
+      const indexEntry = manifest.entries.find(
+        (e: { slug: string }) => e.slug === `${dir}/index`,
+      );
+      expect(indexEntry, `${dir}/index.md should exist`).toBeDefined();
+
+      // Landing page should have an H1 title
+      expect(indexEntry.content).toMatch(/^# .+$/m);
+
+      // Landing page should have a non-empty paragraph (the purpose summary)
+      const rendered = renderDocsMarkdown(indexEntry.content);
+      expect(rendered.html).toContain("<p>");
+    }
+  });
+
+  // AC: @docs-section-taxonomy ac-2
+  it("getting-started landing page links to its child pages in reading order", () => {
+    const docsDir = join(__dirname, "..", "docs");
+    const plugin = docsPlugin(docsDir, {
+      exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
+    });
+    const load = plugin.load as (id: string) => string | undefined;
+    const result = load("\0virtual:docs")!;
+    const manifest = JSON.parse(result.slice("export default ".length, -1));
+
+    const indexEntry = manifest.entries.find(
+      (e: { slug: string }) => e.slug === "getting-started/index",
+    );
+    expect(indexEntry).toBeDefined();
+
+    // Should link to child pages (at minimum the tutorial)
+    expect(indexEntry.content).toContain("./tutorial.md");
+  });
+});

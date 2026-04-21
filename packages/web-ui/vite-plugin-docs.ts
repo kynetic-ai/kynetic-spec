@@ -83,6 +83,8 @@ export interface DocsPluginOptions {
   repoUrl?: string;
   /** Path to RELEASE_NOTES.md to bundle alongside docs entries */
   releaseNotesPath?: string;
+  /** Glob-style directory or file prefixes to exclude from the manifest (matched against relative paths) */
+  exclude?: string[];
 }
 
 export function docsPlugin(docsDir: string, options?: DocsPluginOptions): Plugin {
@@ -98,7 +100,15 @@ export function docsPlugin(docsDir: string, options?: DocsPluginOptions): Plugin
     load(id: string) {
       if (id !== RESOLVED_VIRTUAL_MODULE_ID) return;
 
-      const files = collectMarkdownFiles(docsDir, docsDir);
+      const excludes = options?.exclude ?? [];
+      const files = collectMarkdownFiles(docsDir, docsDir).filter(
+        ({ relativePath }) =>
+          !excludes.some(
+            (pattern) =>
+              relativePath === pattern ||
+              relativePath.startsWith(pattern + "/"),
+          ),
+      );
 
       const entries: DocsEntry[] = files
         .map(({ relativePath, absolutePath }) => {
