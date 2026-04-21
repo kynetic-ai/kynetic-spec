@@ -158415,6 +158415,18 @@ reviews:
         runner: npm
         created_at: 2026-04-21T08:52:31.521Z
         completed_at: 2026-04-21T08:52:31.521Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Pre-existing repository validation failure in detached shadow metadata:
+          .kspec/modules/meta.yaml schema error ('Expected string, received object') plus unrelated
+          repo-wide completeness/alignment warnings. This branch does not modify .kspec state."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T08:52:38.920Z
+        completed_at: 2026-04-21T08:52:38.920Z
     events:
       - _ulid: 01KPQKENTTR3K1G3AQQXKXE4EA
         actor: Jacob Chapel
@@ -158443,6 +158455,13 @@ reviews:
           kind: nit
           thread_ulid: 01KPQKVJ7CHC7SMRDMWE3PJASM
         timestamp: 2026-04-21T08:52:36.456Z
+      - _ulid: 01KPQKVQ2VMXP7RRK7A5H66QHX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-21T08:52:40.156Z
     examined_commit: 5b98cb504d0afde9078274d35d1c4c6d20ef19c7
     external_links: []
     lifecycle_state: open
@@ -158476,5 +158495,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-21T08:45:32.891Z
-    updated_at: 2026-04-21T08:52:35.180Z
+    updated_at: 2026-04-21T08:52:38.920Z
     notes: []
