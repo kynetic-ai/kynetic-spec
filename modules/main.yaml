@@ -1,0 +1,12 @@
+_ulid: 01KPQQD7D9699RHY3593221X1B
+slugs:
+  - main
+title: "Kynetic Spec - Main Module"
+type: module
+status:
+  maturity: draft
+  implementation: not_started
+description: |
+  Default module for Kynetic Spec. Add your spec items here.
+
+items: []

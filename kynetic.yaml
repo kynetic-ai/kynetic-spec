@@ -722,6 +722,7 @@ traits:
     tags: []
     created: 2026-03-20T15:52:01.244Z
     notes: []
+default_module: 01KPQQD7D9699RHY3593221X1B
 includes:
   - modules/core.yaml
   - modules/schema.yaml
@@ -730,6 +731,7 @@ includes:
   - modules/meta.yaml
   - modules/shadow.yaml
   - modules/web-ui.yaml
+  - modules/main.yaml
 kynetic: "1.1"
 project:
   status: draft
