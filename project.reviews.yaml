@@ -161650,3 +161650,29 @@ reviews:
     created_at: 2026-04-21T12:49:35.382Z
     updated_at: 2026-04-21T13:06:49.802Z
     notes: []
+  - _ulid: 01KPR3KXJ7XK96RXV9DJW9WVYQ
+    slugs: []
+    title: Review task-docs-troubleshooting-content (cycle 4)
+    author: codex
+    checks: []
+    events:
+      - _ulid: 01KPR3KXJ7ME8S8JGGGRXBQ26Q
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-21T13:28:01.863Z
+    examined_commit: 2e4af779415f5e36db24750589b2fbf49ea7d760
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KPPN4435PYT5BK4VFXTPR1F3"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-21T13:28:01.863Z
+    updated_at: null
+    notes: []
