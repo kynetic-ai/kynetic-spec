@@ -157610,7 +157610,19 @@ reviews:
     slugs: []
     title: Review task-docs-section-scaffolding (cycle 5)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Pre-existing validation failures unrelated to this task: .kspec/modules/meta.yaml schema
+          error, orphaned skill directory warning, and broad repo-level completeness/alignment
+          warnings. No task-specific validation regression observed."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T07:43:59.236Z
+        completed_at: 2026-04-21T07:43:59.236Z
     events:
       - _ulid: 01KPQFCH6WXZGCQCSPT9K8H3CM
         actor: Jacob Chapel
@@ -157625,6 +157637,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T07:34:51.528Z
+      - _ulid: 01KPQFY060B505153SZ3K77YP7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-21T07:44:00.704Z
     examined_commit: 0fa290b38afb74ee97b38d019e58c5402d0126c8
     external_links: []
     lifecycle_state: open
@@ -157637,5 +157656,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T07:34:28.317Z
-    updated_at: 2026-04-21T07:34:50.287Z
+    updated_at: 2026-04-21T07:43:59.236Z
     notes: []
