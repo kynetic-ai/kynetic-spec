@@ -26515,7 +26515,7 @@
   type: task
   spec_ref: "@docs-reachability"
   plan_ref: "@plan-user-documentation-foundation"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -26527,7 +26527,7 @@
   notes_count: 6
   todos_count: 0
   created_at: 2026-04-20T23:55:28.013Z
-  started_at: 2026-04-21T00:53:44.137Z
+  started_at: 2026-04-21T02:08:45.644Z
   submitted_at: 2026-04-21T01:19:44.088Z
   automation: eligible
 - _ulid: 01KPPN42NCR77J23TWYP63VXDH
