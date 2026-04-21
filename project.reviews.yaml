@@ -158556,6 +158556,18 @@ reviews:
         runner: npm
         created_at: 2026-04-21T09:07:45.333Z
         completed_at: 2026-04-21T09:07:45.333Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran full npm test from this review snapshot. Streamed output showed passing suites across
+          the repository, including the updated docs rendering suite. No failing suite or test was
+          observed during the run.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-21T09:07:51.814Z
+        completed_at: 2026-04-21T09:07:51.814Z
     events:
       - _ulid: 01KPQMNFHCGQ67QCNRZXKB9965
         actor: Jacob Chapel
@@ -158577,6 +158589,13 @@ reviews:
           status: pass
           name: docs rendering tests
         timestamp: 2026-04-21T09:07:47.147Z
+      - _ulid: 01KPQMQK79X7JPVGWGPJCNNPNZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-21T09:07:53.706Z
     examined_commit: 26a2c1d83d9fe4ed39751239fb63ee8a0ecc20cc
     external_links: []
     lifecycle_state: open
@@ -158589,5 +158608,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T09:06:44.396Z
-    updated_at: 2026-04-21T09:07:45.333Z
+    updated_at: 2026-04-21T09:07:51.814Z
     notes: []
