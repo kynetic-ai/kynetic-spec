@@ -158836,6 +158836,12 @@ reviews:
         payload:
           thread_ulid: 01KPQN9KD6AEJWZZWSFMP4VVM6
         timestamp: 2026-04-21T09:19:32.146Z
+      - _ulid: 01KPQND9GYDVJCGNHNJ3MGCPKS
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQN9KD6AEJWZZWSFMP4VVM6
+        timestamp: 2026-04-21T09:19:44.670Z
     examined_commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
     external_links: []
     lifecycle_state: open
@@ -158889,6 +158895,8 @@ reviews:
             body: Superseded by corrected blocker thread 01KPQN9Y49ECYG82D7GXVNSND6 with the intended wording.
             created_at: 2026-04-21T09:19:30.842Z
         kind: blocker
+        resolved_at: 2026-04-21T09:19:43.479Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KPQN9SZ2J9NS67A117GHRZXW
         anchor:
           type: code
@@ -159051,5 +159059,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:16:51.337Z
-    updated_at: 2026-04-21T09:19:30.842Z
+    updated_at: 2026-04-21T09:19:43.479Z
     notes: []
