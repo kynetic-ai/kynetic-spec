@@ -223,7 +223,7 @@ description: >-
 spec_ref: "@dispatch-runtime-bootstrap-contract"
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -242,7 +242,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KPRSKZP4AFHXJ7R48C8YQRWK
 history:
   - author: "@claude"
     changes:
@@ -294,8 +294,21 @@ history:
         previous: 01KPRQV7E5H6SQK8HD4GPY85KB
     command: review-verdict-needs-work
     timestamp: 2026-04-21T19:50:27.159Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KPRSKZP4AFHXJ7R48C8YQRWK
+        previous: null
+      started_at:
+        new: 2026-04-21T20:10:22.568Z
+        previous: 2026-04-21T19:22:03.726Z
+    command: task-start
+    timestamp: 2026-04-21T20:10:22.569Z
 created_at: 2026-04-21T19:20:09.091Z
-started_at: 2026-04-21T19:22:03.726Z
+started_at: 2026-04-21T20:10:22.568Z
 submitted_at: 2026-04-21T19:41:54.473Z
 todos: []
 automation: eligible

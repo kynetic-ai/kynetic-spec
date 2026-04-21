@@ -26831,7 +26831,7 @@
     environment from leaking into bootstrap step subprocesses
   type: task
   spec_ref: "@dispatch-runtime-bootstrap-contract"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -26843,6 +26843,6 @@
   notes_count: 4
   todos_count: 0
   created_at: 2026-04-21T19:20:09.091Z
-  started_at: 2026-04-21T19:22:03.726Z
+  started_at: 2026-04-21T20:10:22.568Z
   submitted_at: 2026-04-21T19:41:54.473Z
   automation: eligible
