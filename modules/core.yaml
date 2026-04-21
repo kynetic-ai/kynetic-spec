@@ -2237,6 +2237,9 @@ modules:
           on the public deployment and in the locally-served UI,
           runs entirely in the reader's browser, and requires no
           external service.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
