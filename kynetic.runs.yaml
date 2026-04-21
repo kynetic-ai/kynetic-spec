@@ -29246,7 +29246,7 @@ runs:
     started_at: 2026-04-21T06:13:10.125Z
     completed_at: 2026-04-21T06:14:30.569Z
   - _ulid: 01KPQCGQ2V81MTXYEB226EGVS7
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -29356,7 +29356,14 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-21T06:46:08.756Z
-        completed_at: 2026-04-21T06:46:08.756Z
+        completed_at: 2026-04-21T06:46:09.874Z
+        notes: "Proposed improvements: no new capture from this session. The workflow-show ergonomics issue
+          is already tracked by @01KKBD55. The broader validation-noise problem is already at least
+          partially tracked by @task-plan-completeness-warning-debt-reduction. The remaining gap I
+          found is task-local: add an end-to-end regression test for no packages found for verdict
+          followed immediately by , but that belongs in the active fix cycle for @01KPQ7RD rather
+          than as a new reflection item."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T06:44:19.675Z
+    completed_at: 2026-04-21T06:46:09.874Z
