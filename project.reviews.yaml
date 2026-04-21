@@ -154665,6 +154665,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-21T02:59:03.208Z
+      - _ulid: 01KPPZMN3PHPSQ5HG24Q1DPSPW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPPZMM21SWQ13NF9BJ2NX76D
+        timestamp: 2026-04-21T02:59:17.238Z
     examined_commit: c0a85323d5f462a78bc3ebd1ba2f9b5116398186
     external_links: []
     lifecycle_state: open
@@ -154695,7 +154702,27 @@ reviews:
               content.
             created_at: 2026-04-21T02:58:49.910Z
         kind: blocker
+      - _ulid: 01KPPZMM21SWQ13NF9BJ2NX76D
+        anchor:
+          type: code
+          commit: c0a85323d5f462a78bc3ebd1ba2f9b5116398186
+          line_end: 120
+          line_start: 114
+          path: packages/web-ui/src/lib/utils/docs-markdown.ts
+          side: head
+        entries:
+          - _ulid: 01KPPZMM210ZRAKDSVB7YESNA2
+            author: Jacob Chapel
+            body: Out-of-tree markdown links are still broken at runtime. This renderer explicitly leaves any
+              .md link that is outside the bundled docs tree unchanged, but docs/getting-started.md
+              contains ../INSTALL.md and ../AGENTS.md links. In the built UI those files are absent
+              (dist/web-ui/INSTALL.md, dist/web-ui/AGENTS.md, and dist/web-ui/README.md are all
+              missing), and the daemon static asset path returns 404 when a requested asset does not
+              exist. The result is that the docs surface now exposes clickable links that
+              deterministically navigate readers to 404s instead of valid content.
+            created_at: 2026-04-21T02:59:16.161Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T02:46:14.471Z
-    updated_at: 2026-04-21T02:59:02.137Z
+    updated_at: 2026-04-21T02:59:16.161Z
     notes: []
