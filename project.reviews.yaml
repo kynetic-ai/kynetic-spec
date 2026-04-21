@@ -158683,7 +158683,17 @@ reviews:
     slugs: []
     title: Review task-docs-concepts-content
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full suite passed in reviewer snapshot on 2026-04-21.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-21T09:17:46.972Z
+        completed_at: 2026-04-21T09:17:46.972Z
     events:
       - _ulid: 01KPQN8088H5RAMFKSW6MVEXNR
         actor: Jacob Chapel
@@ -158712,6 +158722,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQN9KD6AEJWZZWSFMP4VVM6
         timestamp: 2026-04-21T09:17:44.852Z
+      - _ulid: 01KPQN9QSHVRGZP2W6A6RGTKBM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-21T09:17:48.209Z
     examined_commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
     external_links: []
     lifecycle_state: open
@@ -158759,5 +158776,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:16:51.337Z
-    updated_at: 2026-04-21T09:17:43.718Z
+    updated_at: 2026-04-21T09:17:46.972Z
     notes: []
