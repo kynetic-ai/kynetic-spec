@@ -28815,7 +28815,7 @@ runs:
     completed_at: 2026-04-21T04:01:24.656Z
   - _ulid: 01KPQ4T2VFN63QND7A2XCJK3PC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28830,7 +28830,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T04:30:23.644Z
-        completed_at: 2026-04-21T04:30:23.644Z
+        completed_at: 2026-04-21T04:30:48.361Z
+        notes: "Friction points: 1) Detached reviewer snapshots cannot switch to the integration branch for
+          the final merge, so the merge had to be executed from the canonical dev worktree after
+          review approval. This friction is already tracked in existing observations and did not
+          need new capture. 2) kspec validate reported repo-wide pre-existing schema/completeness
+          failures unrelated to the reviewed branch, which required manual reviewer classification
+          and a non-required failing check to avoid blocking a clean task. 3) The condensed test
+          runner output for an unsupported targeted invocation was not useful until re-run with a
+          supported command, which made verification slightly noisier but did not block the
+          session."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T04:30:48.361Z
+        completed_at: 2026-04-21T04:30:48.361Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T04:29:38.031Z
