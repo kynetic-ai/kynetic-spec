@@ -49,12 +49,14 @@ For all review options, run `kspec review add --help`.
 
 ### 4. Examine the implementation
 
-Review the code changes the agent produced. Check the branch:
+Review the code changes the agent produced. Compare against the integration branch the task targets (for example, `dev` or `main`):
 
 ```bash
-git log --oneline origin/dev..HEAD
-git diff origin/dev
+git log --oneline origin/<integration-branch>..HEAD
+git diff origin/<integration-branch>
 ```
+
+Replace `<integration-branch>` with the branch you merge work into — run `kspec task get @task-ref` and check the submission linkage to confirm.
 
 For each acceptance criterion, verify:
 

@@ -55,9 +55,11 @@ kspec item list --type module
 If your project has distinct domains (for example, a CLI and a web UI), consider creating additional modules:
 
 ```bash
-kspec item add --type module --title "Web UI" --slug web-ui
-kspec item add --type module --title "CLI" --slug cli
+kspec module add --title "Web UI" --slug web-ui
+kspec module add --title "CLI" --slug cli
 ```
+
+For the full set of module options, run `kspec module add --help`.
 
 Modules are organizational — they group related specs. You can restructure them later without losing spec or task data.
 
