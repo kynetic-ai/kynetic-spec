@@ -130,8 +130,8 @@ export function docsPlugin(docsDir: string, options?: DocsPluginOptions): Plugin
       // Bundle RELEASE_NOTES.md as a synthetic docs entry so it appears
       // in the manifest alongside regular docs pages — no second copy of
       // the file, just a single build-time read of the canonical source.
-      // Placed under release-notes/changelog to coexist with the section
-      // landing page at release-notes/index.md.
+      // Slug and path place it under release-notes/ so section grouping
+      // classifies it with the Release Notes section landing page.
       if (options?.releaseNotesPath) {
         try {
           const rnContent = readFileSync(options.releaseNotesPath, "utf-8");
@@ -139,7 +139,7 @@ export function docsPlugin(docsDir: string, options?: DocsPluginOptions): Plugin
             slug: "release-notes/changelog",
             title: extractTitle(rnContent, "RELEASE_NOTES.md"),
             content: rnContent,
-            path: "RELEASE_NOTES.md",
+            path: "release-notes/RELEASE_NOTES.md",
           });
         } catch {
           // RELEASE_NOTES.md is optional — silently skip if absent

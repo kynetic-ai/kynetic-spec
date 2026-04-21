@@ -543,6 +543,19 @@ describe("docs section filtering", () => {
     // Should NOT include entries from other sections
     expect(result.some((e) => e.slug === "overview")).toBe(false);
   });
+
+  it("includes synthetic changelog in release-notes section entries", () => {
+    const withReleaseNotes = [
+      { slug: "release-notes", title: "Release Notes", content: "", path: "release-notes/index.md" },
+      { slug: "release-notes/changelog", title: "Changelog", content: "", path: "release-notes/RELEASE_NOTES.md" },
+      { slug: "overview", title: "Overview", content: "", path: "overview.md" },
+    ];
+    const result = filterSectionEntries(withReleaseNotes, "release-notes/changelog");
+
+    expect(result.some((e) => e.slug === "release-notes")).toBe(true);
+    expect(result.some((e) => e.slug === "release-notes/changelog")).toBe(true);
+    expect(result.some((e) => e.slug === "overview")).toBe(false);
+  });
 });
 
 // ─── Link Resolution Tests ───────────────────────────────────────────────────
@@ -730,7 +743,7 @@ describe("release notes rendering", () => {
         const rnEntry = manifest.entries.find((e: { slug: string }) => e.slug === "release-notes/changelog");
         expect(rnEntry).toBeDefined();
         expect(rnEntry.title).toBe("kspec Release Notes");
-        expect(rnEntry.path).toBe("RELEASE_NOTES.md");
+        expect(rnEntry.path).toBe("release-notes/RELEASE_NOTES.md");
 
         // Content is the canonical source (not a copy or transformation)
         expect(rnEntry.content).toContain("## v0.2.0");
@@ -843,7 +856,7 @@ describe("release notes rendering", () => {
       );
       expect(rnEntry).toBeDefined();
       expect(rnEntry.slug).toBe("release-notes/changelog");
-      expect(rnEntry.path).toBe("RELEASE_NOTES.md");
+      expect(rnEntry.path).toBe("release-notes/RELEASE_NOTES.md");
 
       // Content matches the canonical source file byte-for-byte
       const canonicalContent = readFileSync(realReleaseNotesPath, "utf-8");
@@ -1011,6 +1024,30 @@ describe("docs section ordering (groupDocsSections)", () => {
       "getting-started",
       "getting-started/tutorial",
     ]);
+  });
+
+  // AC: @docs-section-taxonomy ac-1 — synthetic changelog classified under release-notes, not a sixth section
+  it("classifies synthetic changelog entry under the release-notes section", () => {
+    const withChangelog = [
+      ...sectionEntries,
+      { slug: "release-notes/changelog", title: "Changelog", content: "", path: "release-notes/RELEASE_NOTES.md" },
+    ];
+    const sections = groupDocsSections(withChangelog);
+    const sectionKeys = sections.map((s) => s.key);
+
+    // Must still be exactly five sections — no sixth "Docs" section
+    expect(sectionKeys).toEqual([
+      "getting-started",
+      "guides",
+      "concepts",
+      "troubleshooting",
+      "release-notes",
+    ]);
+
+    // Changelog is inside the release-notes section
+    const releaseNotes = sections.find((s) => s.key === "release-notes");
+    expect(releaseNotes).toBeDefined();
+    expect(releaseNotes!.entries.some((e) => e.slug === "release-notes/changelog")).toBe(true);
   });
 
   it("DOCS_SECTION_ORDER contains exactly the five canonical sections", () => {
