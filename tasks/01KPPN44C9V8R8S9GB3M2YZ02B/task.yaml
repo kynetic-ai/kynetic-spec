@@ -29,6 +29,7 @@ tags:
   - web-ui
   - release-notes
 vcs_refs: []
+review_ref: "@01KPQ6ZMKCXV554CQA8K2VNXCN"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-docs-release-notes-rendering/01kppn44
@@ -79,6 +80,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-21T05:05:44.417Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KPQ6ZMKCXV554CQA8K2VNXCN"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-21T05:07:40.304Z
 created_at: 2026-04-20T23:55:30.057Z
 started_at: 2026-04-21T04:49:23.095Z
 submitted_at: 2026-04-21T05:05:44.416Z
