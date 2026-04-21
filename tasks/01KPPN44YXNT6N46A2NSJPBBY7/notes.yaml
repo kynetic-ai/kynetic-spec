@@ -1,1 +1,28 @@
-notes: []
+notes:
+  - _ulid: 01KPQQM01VH7BWX93YHT5K3DCH
+    content: >-
+      Approach: Trim README to concise landing page per @readme-landing-page spec.
+
+
+      Current README has ~98 lines with embedded explanations (spec-first loop, how it works) that
+      belong in docs.
+
+
+      Plan:
+
+      1. Keep: h1 + overview paragraph, install section, first-steps (init/setup/session),
+      cross-links
+
+      2. Remove: 'Why teams use it' (concept explanation), 'The spec-first loop' (guide content),
+      'How it works' (concept explanations), 'Developing kspec itself' (contributor guide)
+
+      3. Cross-links must reach: docs/getting-started/, docs/concepts/, docs/guides/ in one click
+      (ac-2)
+
+      4. Add test in tests/docs-readme-structure.test.ts to verify structure and links
+
+      5. Link targets: docs/getting-started/index.md, docs/concepts/index.md, docs/guides/index.md,
+      docs/troubleshooting/index.md, INSTALL.md
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T09:58:21.499Z
