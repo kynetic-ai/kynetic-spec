@@ -162018,6 +162018,13 @@ reviews:
           status: fail
           name: kspec-validate
         timestamp: 2026-04-21T20:22:42.511Z
+      - _ulid: 01KPRVBY4HF6DRV8EH6E85Y08M
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPRVBX1NCBHDVFVE15WADXYA
+        timestamp: 2026-04-21T20:23:06.129Z
     examined_commit: f4ac3f45469b0984242c6736b7eda70919d56fb5
     external_links: []
     lifecycle_state: open
@@ -162027,8 +162034,23 @@ reviews:
       content_hash: ""
       ref: "@01KPRQRNM3T4WA8NYES8KACZWD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPRVBX1NCBHDVFVE15WADXYA
+        entries:
+          - _ulid: 01KPRVBX1PSCFXAATRTGPMRKBC
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/agent-runtime/bootstrap.ts, src/cli/commands/serve.ts,
+              tests/dispatch-runtime-bootstrap-contract.test.ts, kspec.config.yaml. Commands run:
+              kspec task get, kspec item get @dispatch-runtime-bootstrap-contract, kspec review get
+              prior cycle, git diff/stat/check, rg AC annotations, kspec validate, npm test --
+              dispatch-runtime-bootstrap-contract, npm test. Claims verified: prior AC-11 blocker
+              fix by reading the updated zero-spawns and command-fidelity assertions and running the
+              contract tests; config-based bootstrap migration by reading kspec.config.yaml.
+              Categories searched: correctness, edge cases, test quality, integration, error
+              handling."
+            created_at: 2026-04-21T20:23:05.014Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-21T20:12:01.436Z
-    updated_at: 2026-04-21T20:22:41.351Z
+    updated_at: 2026-04-21T20:23:05.014Z
     notes: []
