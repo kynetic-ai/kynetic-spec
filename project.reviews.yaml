@@ -161838,9 +161838,25 @@ reviews:
           status: pass
           name: dispatch-runtime-bootstrap-contract
         timestamp: 2026-04-21T19:50:22.035Z
+      - _ulid: 01KPRSG35PY2TAN5HPMFQEQ8FQ
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-21T19:50:25.206Z
+      - _ulid: 01KPRSG35PDS5V2B642JZSHW6H
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-21T19:50:25.206Z
     examined_commit: 17a78d69b4d5e18ce8d6d8c01a3eccf0dcdb0cc4
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -161893,7 +161909,14 @@ reviews:
               integration (config migration plus shared env-key source checked).'
             created_at: 2026-04-21T19:50:14.591Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-21T19:50:25.206Z
     created_at: 2026-04-21T19:44:42.730Z
-    updated_at: 2026-04-21T19:50:20.875Z
+    updated_at: 2026-04-21T19:50:25.206Z
     notes: []

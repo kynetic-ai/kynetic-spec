@@ -223,7 +223,7 @@ description: >-
 spec_ref: "@dispatch-runtime-bootstrap-contract"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -242,7 +242,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KPRQV7E5H6SQK8HD4GPY85KB
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -284,6 +284,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-21T19:44:46.687Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KPRQV7E5H6SQK8HD4GPY85KB
+    command: review-verdict-needs-work
+    timestamp: 2026-04-21T19:50:27.159Z
 created_at: 2026-04-21T19:20:09.091Z
 started_at: 2026-04-21T19:22:03.726Z
 submitted_at: 2026-04-21T19:41:54.473Z
