@@ -223,7 +223,7 @@ description: >-
 spec_ref: "@dispatch-runtime-bootstrap-contract"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -237,11 +237,11 @@ review_ref: "@01KPRS5MQA9DC7336R1DQBDAR3"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-dispatch-bootstrap-project-agnostic-and-env-isolation/01kprqrn
-  captured_at: 2026-04-21T19:41:54.469Z
-  commit: 17a78d69b4d5e18ce8d6d8c01a3eccf0dcdb0cc4
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-04-21T20:10:26.146Z
+  commit: f4ac3f45469b0984242c6736b7eda70919d56fb5
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-dispatch-bootstrap-project-agnostic-and-env-isolation/01kprqrn
 session_id: 01KPRSKZP4AFHXJ7R48C8YQRWK
 history:
   - author: "@claude"
@@ -307,8 +307,35 @@ history:
         previous: 2026-04-21T19:22:03.726Z
     command: task-start
     timestamp: 2026-04-21T20:10:22.569Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-dispatch-bootstrap-project-agnostic-and-env-isolation/01kprqrn
+          captured_at: 2026-04-21T20:10:26.146Z
+          commit: f4ac3f45469b0984242c6736b7eda70919d56fb5
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-dispatch-bootstrap-project-agnostic-and-env-isolation/01kprqrn
+        previous:
+          review_url: null
+          branch: dispatch/task/task-dispatch-bootstrap-project-agnostic-and-env-isolation/01kprqrn
+          captured_at: 2026-04-21T19:41:54.469Z
+          commit: 17a78d69b4d5e18ce8d6d8c01a3eccf0dcdb0cc4
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-04-21T20:10:26.151Z
+        previous: 2026-04-21T19:41:54.473Z
+    command: task-submit
+    timestamp: 2026-04-21T20:10:26.152Z
 created_at: 2026-04-21T19:20:09.091Z
 started_at: 2026-04-21T20:10:22.568Z
-submitted_at: 2026-04-21T19:41:54.473Z
+submitted_at: 2026-04-21T20:10:26.151Z
 todos: []
 automation: eligible
