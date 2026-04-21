@@ -55968,7 +55968,7 @@ workspaces:
         head: d5a234bdd2f3544b229648b31e8c65da0d474ca1
         last_seen_at: 2026-04-21T05:39:00.012Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-section-scaffolding-01kppn42
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 9336acd81a8e97f655a484bf98104089cde47c9f
     bootstrap:
       status: succeeded
@@ -56262,7 +56262,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T05:39:07.625Z
+      updated_at: 2026-04-21T05:39:32.037Z
     integration:
       status: pending
       detail: null
@@ -56277,10 +56277,10 @@ workspaces:
     task_slug: task-docs-release-notes-rendering
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-21T05:23:27.214Z
-      last_reconciled_at: 2026-04-21T05:39:07.625Z
+      last_active_at: 2026-04-21T05:39:32.037Z
+      last_reconciled_at: 2026-04-21T05:39:32.037Z
       created_at: 2026-04-21T04:48:29.358Z
-      updated_at: 2026-04-21T05:39:28.350Z
+      updated_at: 2026-04-21T05:39:32.037Z
     workspace_id: dispatch-workspace-01KPPN44C9V8R8S9GB3M2YZ02B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
