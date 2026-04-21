@@ -29369,9 +29369,20 @@ runs:
     completed_at: 2026-04-21T06:46:09.874Z
   - _ulid: 01KPQDTJGQHMZV1C6RZRP75WDV
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T07:07:11.255Z
+        completed_at: 2026-04-21T07:08:10.870Z
+        notes: "What worked well: the review used executable repros against pure docs utilities
+          (groupDocsSections/filterSectionEntries) before relying on the full UI, which exposed the
+          regression quickly even though npm test was green."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T07:08:10.870Z
+        completed_at: 2026-04-21T07:08:10.870Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T07:07:11.255Z
