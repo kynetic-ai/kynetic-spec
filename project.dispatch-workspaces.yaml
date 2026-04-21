@@ -56060,7 +56060,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T07:45:49.765Z
+      updated_at: 2026-04-21T07:47:45.188Z
     integration:
       status: merged
       detail: integration:merged
@@ -56069,25 +56069,20 @@ workspaces:
       target_branch: dev
       target_commit: 9336acd81a8e97f655a484bf98104089cde47c9f
       updated_at: 2026-04-21T07:45:49.765Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KPPN42NCR77J23TWYP63VXDH"
     task_slug: task-docs-section-scaffolding
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T07:33:52.779Z
-      last_reconciled_at: 2026-04-21T07:47:43.319Z
+      last_reconciled_at: 2026-04-21T07:47:45.188Z
       created_at: 2026-04-21T04:30:00.199Z
-      updated_at: 2026-04-21T07:47:43.319Z
+      updated_at: 2026-04-21T07:47:45.188Z
     workspace_id: dispatch-workspace-01KPPN42NCR77J23TWYP63VXDH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 0fa290b38afb74ee97b38d019e58c5402d0126c8
-        last_seen_at: 2026-04-21T07:33:28.209Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-section-scaffolding-01kppn42-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-docs-section-scaffolding/01kppn42
