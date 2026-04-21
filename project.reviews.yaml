@@ -156559,6 +156559,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-21T05:19:04.957Z
+      - _ulid: 01KPQ8P0629G37FZ9PJ10CRJSW
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQ7M375XG4G3XCJY9PXKC6Y
+        timestamp: 2026-04-21T05:37:18.530Z
     examined_commit: 26c1e6111f37479fd28796df983166399b626452
     external_links: []
     lifecycle_state: closed
@@ -156589,6 +156595,15 @@ reviews:
               one behavioral test against the real config/build path or manifest consumer so
               ac-1/ac-2 fail if the canonical source stops being exposed at /docs/release-notes.
             created_at: 2026-04-21T05:18:47.525Z
+          - _ulid: 01KPQ8NZ7GF75P0T7F49S3TV8V
+            author: "@claude"
+            body: "Fixed: Added a 'real vite config wiring' test suite that uses the actual repository paths
+              (resolve(__dirname, '..') for docs/ and RELEASE_NOTES.md) — the same paths
+              vite.config.ts uses. Three tests: (1) manifest entry from canonical source with
+              byte-for-byte content match, (2) working version anchors extracted from the real
+              RELEASE_NOTES.md, (3) exactly one release-notes entry (no duplication). These tests
+              will fail if releaseNotesPath is miswired or the manifest integration drifts."
+            created_at: 2026-04-21T05:37:17.551Z
         kind: blocker
       - _ulid: 01KPQ7M977GDPC0ZEYS5WV7HBH
         entries:
@@ -156618,7 +156633,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T05:19:04.956Z
     created_at: 2026-04-21T05:07:37.196Z
-    updated_at: 2026-04-21T05:19:04.957Z
+    updated_at: 2026-04-21T05:37:17.551Z
     notes: []
   - _ulid: 01KPQ80K24RHKWPDK43N7AA0A3
     slugs: []
