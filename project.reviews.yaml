@@ -160982,6 +160982,12 @@ reviews:
         payload:
           thread_ulid: 01KPQYA0117HQ57NRNJE51GZE2
         timestamp: 2026-04-21T12:15:32.637Z
+      - _ulid: 01KPQZFFZWXWCYWRR3ETGPJD81
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQYA0117HQ57NRNJE51GZE2
+        timestamp: 2026-04-21T12:15:42.588Z
     examined_commit: 10920edde46aec1b8ad86b90177e07fea0ef00fb
     external_links: []
     lifecycle_state: closed
@@ -161020,6 +161026,8 @@ reviews:
               concept page for context."
             created_at: 2026-04-21T12:15:31.569Z
         kind: blocker
+        resolved_at: 2026-04-21T12:15:41.559Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -161029,7 +161037,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T11:56:00.027Z
     created_at: 2026-04-21T11:54:36.135Z
-    updated_at: 2026-04-21T12:15:31.569Z
+    updated_at: 2026-04-21T12:15:41.559Z
     notes: []
   - _ulid: 01KPQYRG7PTDF4KHQQP8EJSWGT
     slugs: []
