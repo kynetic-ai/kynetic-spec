@@ -157214,6 +157214,12 @@ reviews:
         payload:
           thread_ulid: 01KPQCEX23F5DS61PZ22RST1XT
         timestamp: 2026-04-21T07:15:45.426Z
+      - _ulid: 01KPQEAHDT3G4VVHZYKR3ZTCAY
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPQCEX23F5DS61PZ22RST1XT
+        timestamp: 2026-04-21T07:15:54.426Z
     examined_commit: 18e0da8abf85d37b2848252fcf45386e96d64941
     external_links: []
     lifecycle_state: closed
@@ -157257,6 +157263,8 @@ reviews:
               confirming approve verdicts leave the task in pending_review. All 8138 tests pass."
             created_at: 2026-04-21T07:15:44.428Z
         kind: blocker
+        resolved_at: 2026-04-21T07:15:53.341Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -157266,7 +157274,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T06:43:38.057Z
     created_at: 2026-04-21T06:32:17.044Z
-    updated_at: 2026-04-21T07:15:44.428Z
+    updated_at: 2026-04-21T07:15:53.341Z
     notes: []
   - _ulid: 01KPQD66EY9P03554V6TXB2QT0
     slugs: []
