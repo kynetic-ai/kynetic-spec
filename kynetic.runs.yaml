@@ -28397,7 +28397,7 @@ runs:
     completed_at: 2026-04-21T00:53:40.041Z
   - _ulid: 01KPPRRBMXVVV8TZW37A7NZE65
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28410,7 +28410,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T00:59:49.441Z
-        completed_at: 2026-04-21T00:59:49.441Z
+        completed_at: 2026-04-21T01:00:09.211Z
+        notes: "Friction points: (1) detached review worktrees cannot directly checkout the integration
+          branch when that branch is already active in another worktree, so manual merge required a
+          git -C fallback into the primary worktree; (2) workflow inspection needed the run ref
+          explicitly, though a related introspection improvement already exists; (3) kspec validate
+          emitted broad repo-wide noise during task review, which required manual task-specific
+          filtering."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T01:00:09.211Z
+        completed_at: 2026-04-21T01:00:09.211Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T00:58:58.590Z
