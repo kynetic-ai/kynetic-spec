@@ -28700,7 +28700,7 @@ runs:
     completed_at: 2026-04-21T03:01:34.840Z
   - _ulid: 01KPQ1QEYYFHTYQKM6XCFB2JSF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28713,7 +28713,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T03:36:46.875Z
-        completed_at: 2026-04-21T03:36:46.875Z
+        completed_at: 2026-04-21T03:36:54.743Z
+        notes: "Friction points: (1) the initial full npm test report included an unrelated stale-dist
+          failure, which slowed regression triage, but existing observations already cover that
+          pattern so it should not be duplicated here; (2) the changed docs route introduced a
+          Svelte accessibility warning that escaped both the focused docs unit suite and the passing
+          docs E2E suite, so build output had to serve as the final detector."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T03:36:54.743Z
+        completed_at: 2026-04-21T03:36:54.743Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T03:35:46.398Z
