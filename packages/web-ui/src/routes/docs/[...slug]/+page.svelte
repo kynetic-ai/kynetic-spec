@@ -7,8 +7,10 @@
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
 	import { goto } from '$app/navigation';
-	import { getDocsEntry, getDocsSectionEntries, resolveDocsLink } from '$lib/docs';
+	import { getDocsEntry, getDocsEntries, getDocsSectionEntries, resolveDocsLink } from '$lib/docs';
 	import { renderDocsMarkdown, type TocEntry } from '$lib/utils/docs-markdown';
+
+	const knownSlugs = new Set(getDocsEntries().map((e) => e.slug));
 
 	let entry = $derived.by(() => {
 		const slug = $page.params.slug;
@@ -17,7 +19,11 @@
 
 	let rendered = $derived.by(() => {
 		if (!entry) return { html: '', toc: [] as TocEntry[] };
-		return renderDocsMarkdown(entry.content);
+		return renderDocsMarkdown(entry.content, {
+			currentDocPath: entry.path,
+			knownSlugs,
+			basePath: base,
+		});
 	});
 
 	// AC: @docs-navigation-shape ac-1 — Sidebar lists pages of the current section
@@ -44,12 +50,14 @@
 
 		// Handle relative doc links (client-side navigation)
 		if (!href.startsWith('http') && !href.startsWith('//') && href.endsWith('.md')) {
-			event.preventDefault();
 			const currentPath = entry?.path ?? '';
 			const resolved = resolveDocsLink(href, currentPath);
 			if (resolved !== null) {
+				event.preventDefault();
 				goto(`${base}/docs/${resolved}`);
 			}
+			// If resolved is null, the link points outside the docs tree.
+			// Let the browser follow it naturally.
 		}
 	}
 </script>

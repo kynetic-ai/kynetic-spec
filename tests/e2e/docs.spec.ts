@@ -135,6 +135,47 @@ test.describe("Docs", () => {
     expect(linkCount).toBeGreaterThan(0);
   });
 
+  test("in-tree .md links are rewritten to SPA routes", async ({
+    page,
+    daemon: _daemon,
+  }) => {
+    await page.goto("/docs/getting-started");
+
+    // The getting-started doc may contain links to other bundled docs
+    // Check that any .md links pointing to bundled entries have been rewritten to /docs/ routes
+    const article = page.locator("article");
+    await expect(article).toBeVisible();
+
+    // All rewritten in-tree links should point to /docs/ routes, not .md files
+    const docsLinks = article.locator('a[href*="/docs/"]');
+    const count = await docsLinks.count();
+    for (let i = 0; i < count; i++) {
+      const href = await docsLinks.nth(i).getAttribute("href");
+      expect(href).not.toContain(".md");
+    }
+  });
+
+  test("out-of-tree .md links are not intercepted as dead clicks", async ({
+    page,
+    daemon: _daemon,
+  }) => {
+    await page.goto("/docs/getting-started");
+
+    const article = page.locator("article");
+    await expect(article).toBeVisible();
+
+    // The getting-started.md references ../INSTALL.md which is outside the docs tree.
+    // These links should NOT be dead clicks — they should have their original href preserved.
+    const installLink = article.locator('a', { hasText: 'INSTALL.md' });
+    const installLinkCount = await installLink.count();
+    if (installLinkCount > 0) {
+      const href = await installLink.first().getAttribute("href");
+      // The link should still have the original ../INSTALL.md href (not rewritten, not empty)
+      expect(href).toBeTruthy();
+      expect(href).toContain("INSTALL.md");
+    }
+  });
+
   test("navigating between docs pages via sidebar uses client-side routing", async ({
     page,
     daemon: _daemon,

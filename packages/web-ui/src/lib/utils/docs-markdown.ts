@@ -8,6 +8,7 @@
 import { Marked } from "marked";
 import { highlightCode, INLINE_CODE_CLASS_NAMES, normalizeLanguage } from "./highlight";
 import { isExternalHref, sanitizeHtml } from "./sanitize";
+import { resolveDocsLink } from "./docs-utils";
 
 export interface TocEntry {
 	id: string;
@@ -43,11 +44,24 @@ function escapeInlineCode(value: string): string {
 	return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 }
 
+export interface DocsLinkContext {
+	/** Relative path of the current doc from the docs root (e.g. "getting-started.md") */
+	currentDocPath: string;
+	/** Set of known slugs in the docs manifest */
+	knownSlugs: ReadonlySet<string>;
+	/** Base path for SPA routes (e.g. "" or "/kynetic-spec") */
+	basePath: string;
+}
+
 /**
  * Render docs markdown with anchored headings.
  * Returns both the rendered HTML and a table-of-contents structure.
+ *
+ * When `linkContext` is provided, relative `.md` links that resolve to bundled
+ * docs entries are rewritten to their SPA routes at render time, so they work
+ * correctly without relying on the click interceptor.
  */
-export function renderDocsMarkdown(content: string): { html: string; toc: TocEntry[] } {
+export function renderDocsMarkdown(content: string, linkContext?: DocsLinkContext): { html: string; toc: TocEntry[] } {
 	if (!content) return { html: "", toc: [] };
 
 	const toc: TocEntry[] = [];
@@ -95,13 +109,24 @@ export function renderDocsMarkdown(content: string): { html: string; toc: TocEnt
 			},
 			link({ href, title, tokens }) {
 				const linkText = this.parser.parseInline(tokens);
-				const attributes = [`href="${escapeHtmlAttribute(href)}"`];
+				let resolvedHref = href;
+
+				// Rewrite relative .md links that point to bundled docs entries
+				if (linkContext && !href.startsWith("http") && !href.startsWith("//") && href.endsWith(".md")) {
+					const slug = resolveDocsLink(href, linkContext.currentDocPath);
+					if (slug !== null && linkContext.knownSlugs.has(slug)) {
+						resolvedHref = `${linkContext.basePath}/docs/${slug}`;
+					}
+					// Out-of-tree or unbundled links are left as-is
+				}
+
+				const attributes = [`href="${escapeHtmlAttribute(resolvedHref)}"`];
 
 				if (title) {
 					attributes.push(`title="${escapeHtmlAttribute(title)}"`);
 				}
 
-				if (isExternalHref(href)) {
+				if (isExternalHref(resolvedHref)) {
 					attributes.push('target="_blank"', 'rel="noopener noreferrer"');
 				}
 

@@ -239,6 +239,73 @@ describe("docs-markdown renderer", () => {
     });
   });
 
+  describe("link rewriting with linkContext", () => {
+    const linkContext = {
+      currentDocPath: "getting-started.md",
+      knownSlugs: new Set(["getting-started", "overview", "history/KYNETIC_SPEC_DESIGN"]),
+      basePath: "",
+    };
+
+    it("rewrites in-tree .md links to SPA routes", () => {
+      const md = "[Overview](./overview.md)";
+      const result = renderDocsMarkdown(md, linkContext);
+
+      expect(result.html).toContain('href="/docs/overview"');
+      expect(result.html).not.toContain("overview.md");
+    });
+
+    it("leaves out-of-tree .md links unchanged", () => {
+      const md = "[Install](../INSTALL.md)";
+      const result = renderDocsMarkdown(md, linkContext);
+
+      // Out-of-tree links should keep their original href
+      expect(result.html).toContain('href="../INSTALL.md"');
+    });
+
+    it("leaves .md links to unbundled entries unchanged", () => {
+      const md = "[Missing](./nonexistent.md)";
+      const result = renderDocsMarkdown(md, linkContext);
+
+      // The slug resolves in-tree but doesn't exist in knownSlugs
+      expect(result.html).toContain('href="./nonexistent.md"');
+    });
+
+    it("rewrites nested doc links correctly", () => {
+      const nestedContext = {
+        currentDocPath: "history/KYNETIC_SPEC_DESIGN.md",
+        knownSlugs: new Set(["getting-started", "overview", "history/KYNETIC_SPEC_DESIGN"]),
+        basePath: "",
+      };
+      const md = "[Getting Started](../getting-started.md)";
+      const result = renderDocsMarkdown(md, nestedContext);
+
+      expect(result.html).toContain('href="/docs/getting-started"');
+    });
+
+    it("applies basePath prefix to rewritten links", () => {
+      const contextWithBase = { ...linkContext, basePath: "/kynetic-spec" };
+      const md = "[Overview](./overview.md)";
+      const result = renderDocsMarkdown(md, contextWithBase);
+
+      expect(result.html).toContain('href="/kynetic-spec/docs/overview"');
+    });
+
+    it("does not rewrite external links", () => {
+      const md = "[Ext](https://example.com/file.md)";
+      const result = renderDocsMarkdown(md, linkContext);
+
+      expect(result.html).toContain('href="https://example.com/file.md"');
+    });
+
+    it("works without linkContext (backward compatible)", () => {
+      const md = "[Link](./overview.md)";
+      const result = renderDocsMarkdown(md);
+
+      // Without context, .md links are left as-is
+      expect(result.html).toContain('href="./overview.md"');
+    });
+  });
+
   describe("slugifyHeading", () => {
     it("lowercases text", () => {
       expect(slugifyHeading("Hello World")).toBe("hello-world");
