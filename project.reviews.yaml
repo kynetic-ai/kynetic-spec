@@ -155906,6 +155906,12 @@ reviews:
         payload:
           thread_ulid: 01KPQ2RHY773VCM11NJ1G9XJXX
         timestamp: 2026-04-21T04:13:53.580Z
+      - _ulid: 01KPQ3XDN4HTKAQCD8ZKMXYQJW
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQ2RNSB47FJFVANY320CF30
+        timestamp: 2026-04-21T04:13:58.821Z
     examined_commit: 765071be773d1738dbd5b14ec2c05e76954c2c98
     external_links: []
     lifecycle_state: closed
@@ -155960,6 +155966,12 @@ reviews:
               heading anchor instead of appending #... , so the clicked section is not exposed as a
               copyable direct link."
             created_at: 2026-04-21T03:53:54.732Z
+          - _ulid: 01KPQ3XCNZPW5KS5T9NWQQYX0P
+            author: "@claude"
+            body: "Fixed: Same root cause as the duplicate thread above. The handler now updates the URL hash
+              via history.replaceState() after scrolling, so the fragment is reflected in the
+              address bar for sharing/copying."
+            created_at: 2026-04-21T04:13:57.823Z
         kind: blocker
       - _ulid: 01KPQ2T9NW0ZXXSGSQB0HSYE6A
         entries:
@@ -156005,5 +156017,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T03:58:40.372Z
     created_at: 2026-04-21T03:44:52.806Z
-    updated_at: 2026-04-21T04:13:52.573Z
+    updated_at: 2026-04-21T04:13:57.823Z
     notes: []
