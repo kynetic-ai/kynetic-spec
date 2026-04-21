@@ -154140,7 +154140,18 @@ reviews:
     slugs: []
     title: Review task-docs-rendering (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Build passed for tsc, shared, daemon, web-ui, and plugin targets. Only non-blocking Svelte
+          accessibility warnings were reported.
+        name: npm run build
+        required: true
+        runner: npm
+        created_at: 2026-04-21T01:43:27.695Z
+        completed_at: 2026-04-21T01:43:27.695Z
     events:
       - _ulid: 01KPPT34JRTNY9MCFGQYBM4235
         actor: Jacob Chapel
@@ -154176,6 +154187,13 @@ reviews:
           kind: nit
           thread_ulid: 01KPPV9PSXQ72T5V344695450P
         timestamp: 2026-04-21T01:43:25.428Z
+      - _ulid: 01KPPV9VC6EW0YNY8055CQM85M
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run build
+        timestamp: 2026-04-21T01:43:28.902Z
     examined_commit: 2cfc5b801c74967628413dbf069a6bbf46c8ee26
     external_links: []
     lifecycle_state: open
@@ -154245,5 +154263,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-21T01:22:20.376Z
-    updated_at: 2026-04-21T01:43:24.221Z
+    updated_at: 2026-04-21T01:43:27.695Z
     notes: []
