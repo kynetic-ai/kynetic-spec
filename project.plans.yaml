@@ -35463,7 +35463,7 @@ plans:
       but not on incremental updates. Phase 6 (write-through alignment)
 
       depends on the incremental paths existing.
-    status: active
+    status: completed
     approved_at: 2026-04-04T23:34:16.951Z
     branch: plan/plan-granular-cache-invalidation/01kndbmk
     derived_specs:
@@ -35545,6 +35545,12 @@ plans:
           depends on the incremental paths existing.
         author: "@claude"
         created_at: 2026-04-04T23:34:29.136Z
+      - _ulid: 01KPPNFPK0Y17690Q0D397ESW8
+        content: All 9 derived tasks completed across 6 phases. Derived specs @daemon-incremental-cache and
+          @daemon-meta-subdomain in place; ac-context-reuse added to @daemon-entity-cache. Marking
+          plan completed.
+        author: "@claude"
+        created_at: 2026-04-21T00:01:49.152Z
   - _ulid: 01KNDGVZXGCWZBEPF2XY6EP2W5
     slugs:
       - plan-configurable-daemon-runtime
