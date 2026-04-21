@@ -153565,3 +153565,29 @@ reviews:
     created_at: 2026-04-20T23:48:55.099Z
     updated_at: 2026-04-20T23:49:45.878Z
     notes: []
+  - _ulid: 01KPPP0XPJ7AS5R0K9ASXC4C9D
+    slugs: []
+    title: Review extend daemon background shadow sync to all registered projects (cycle 6)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KPPP0XPJMB1ZT14WBH1SK3CG
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-21T00:11:13.490Z
+    examined_commit: e01fb1bf515ef05a575334191653ee8f7449ed18
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KPP7XFJ7Z1MG2NQAXMWZTA6W"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-21T00:11:13.490Z
+    updated_at: null
+    notes: []
