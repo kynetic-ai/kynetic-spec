@@ -78,7 +78,12 @@ function collectMarkdownFiles(
   return results;
 }
 
-export function docsPlugin(docsDir: string): Plugin {
+export interface DocsPluginOptions {
+  /** GitHub blob URL prefix for out-of-tree markdown links (e.g. "https://github.com/org/repo/blob/main") */
+  repoUrl?: string;
+}
+
+export function docsPlugin(docsDir: string, options?: DocsPluginOptions): Plugin {
   return {
     name: "vite-plugin-docs",
 
@@ -105,7 +110,7 @@ export function docsPlugin(docsDir: string): Plugin {
         })
         .sort((a, b) => a.slug.localeCompare(b.slug));
 
-      const manifest = { entries };
+      const manifest = { entries, repoUrl: options?.repoUrl ?? null };
 
       return `export default ${JSON.stringify(manifest)};`;
     },

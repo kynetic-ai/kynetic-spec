@@ -48,3 +48,10 @@ export function getDocsEntries(): DocsEntry[] {
 export function getDocsSectionEntries(slug: string): DocsEntry[] {
 	return filterSectionEntries(docsManifest.entries, slug);
 }
+
+/**
+ * Get the configured repo URL for out-of-tree link resolution, or null.
+ */
+export function getDocsRepoUrl(): string | null {
+	return docsManifest.repoUrl;
+}

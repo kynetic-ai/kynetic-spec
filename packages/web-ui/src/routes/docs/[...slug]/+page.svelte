@@ -7,10 +7,11 @@
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
 	import { goto } from '$app/navigation';
-	import { getDocsEntry, getDocsEntries, getDocsSectionEntries, resolveDocsLink } from '$lib/docs';
+	import { getDocsEntry, getDocsEntries, getDocsSectionEntries, getDocsRepoUrl, resolveDocsLink } from '$lib/docs';
 	import { renderDocsMarkdown, type TocEntry } from '$lib/utils/docs-markdown';
 
 	const knownSlugs = new Set(getDocsEntries().map((e) => e.slug));
+	const repoUrl = getDocsRepoUrl();
 
 	let entry = $derived.by(() => {
 		const slug = $page.params.slug;
@@ -23,6 +24,7 @@
 			currentDocPath: entry.path,
 			knownSlugs,
 			basePath: base,
+			repoUrl: repoUrl ?? undefined,
 		});
 	});
 

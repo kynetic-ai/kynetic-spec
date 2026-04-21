@@ -8,7 +8,7 @@
 import { Marked } from "marked";
 import { highlightCode, INLINE_CODE_CLASS_NAMES, normalizeLanguage } from "./highlight";
 import { isExternalHref, sanitizeHtml } from "./sanitize";
-import { resolveDocsLink } from "./docs-utils";
+import { resolveDocsLink, resolveOutOfTreeHref } from "./docs-utils";
 
 export interface TocEntry {
 	id: string;
@@ -51,6 +51,8 @@ export interface DocsLinkContext {
 	knownSlugs: ReadonlySet<string>;
 	/** Base path for SPA routes (e.g. "" or "/kynetic-spec") */
 	basePath: string;
+	/** GitHub repository blob URL for out-of-tree links (e.g. "https://github.com/org/repo/blob/main") */
+	repoUrl?: string;
 }
 
 /**
@@ -116,8 +118,14 @@ export function renderDocsMarkdown(content: string, linkContext?: DocsLinkContex
 					const slug = resolveDocsLink(href, linkContext.currentDocPath);
 					if (slug !== null && linkContext.knownSlugs.has(slug)) {
 						resolvedHref = `${linkContext.basePath}/docs/${slug}`;
+					} else if (linkContext.repoUrl) {
+						// Out-of-tree or unbundled .md links: rewrite to GitHub blob URL
+						// so readers land on the actual file instead of a 404
+						const repoPath = resolveOutOfTreeHref(href, linkContext.currentDocPath);
+						if (repoPath !== null) {
+							resolvedHref = `${linkContext.repoUrl}/${repoPath}`;
+						}
 					}
-					// Out-of-tree or unbundled links are left as-is
 				}
 
 				const attributes = [`href="${escapeHtmlAttribute(resolvedHref)}"`];

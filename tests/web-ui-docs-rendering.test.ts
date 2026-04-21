@@ -240,10 +240,12 @@ describe("docs-markdown renderer", () => {
   });
 
   describe("link rewriting with linkContext", () => {
+    const repoUrl = "https://github.com/lepahc/kynetic-spec/blob/main";
     const linkContext = {
       currentDocPath: "getting-started.md",
       knownSlugs: new Set(["getting-started", "overview", "history/KYNETIC_SPEC_DESIGN"]),
       basePath: "",
+      repoUrl,
     };
 
     it("rewrites in-tree .md links to SPA routes", () => {
@@ -254,20 +256,48 @@ describe("docs-markdown renderer", () => {
       expect(result.html).not.toContain("overview.md");
     });
 
-    it("leaves out-of-tree .md links unchanged", () => {
+    it("rewrites out-of-tree .md links to GitHub blob URLs", () => {
       const md = "[Install](../INSTALL.md)";
       const result = renderDocsMarkdown(md, linkContext);
 
-      // Out-of-tree links should keep their original href
+      // Out-of-tree links should be rewritten to the GitHub blob URL
+      expect(result.html).toContain(`href="${repoUrl}/INSTALL.md"`);
+      expect(result.html).not.toContain('href="../INSTALL.md"');
+    });
+
+    it("rewrites out-of-tree .md links from nested docs to GitHub blob URLs", () => {
+      const nestedContext = {
+        currentDocPath: "guides/setup.md",
+        knownSlugs: new Set(["guides/setup"]),
+        basePath: "",
+        repoUrl,
+      };
+      // ../../README.md from docs/guides/setup.md -> README.md at repo root
+      const md = "[README](../../README.md)";
+      const result = renderDocsMarkdown(md, nestedContext);
+
+      expect(result.html).toContain(`href="${repoUrl}/README.md"`);
+    });
+
+    it("leaves out-of-tree .md links unchanged when repoUrl not provided", () => {
+      const contextNoRepo = {
+        currentDocPath: "getting-started.md",
+        knownSlugs: new Set(["getting-started", "overview"]),
+        basePath: "",
+      };
+      const md = "[Install](../INSTALL.md)";
+      const result = renderDocsMarkdown(md, contextNoRepo);
+
+      // Without repoUrl, out-of-tree links are left as-is (graceful fallback)
       expect(result.html).toContain('href="../INSTALL.md"');
     });
 
-    it("leaves .md links to unbundled entries unchanged", () => {
+    it("rewrites unbundled in-tree .md links to GitHub blob URLs", () => {
       const md = "[Missing](./nonexistent.md)";
       const result = renderDocsMarkdown(md, linkContext);
 
-      // The slug resolves in-tree but doesn't exist in knownSlugs
-      expect(result.html).toContain('href="./nonexistent.md"');
+      // The slug resolves in-tree but doesn't exist in knownSlugs — rewrite to GitHub
+      expect(result.html).toContain(`href="${repoUrl}/docs/nonexistent.md"`);
     });
 
     it("rewrites nested doc links correctly", () => {
@@ -275,6 +305,7 @@ describe("docs-markdown renderer", () => {
         currentDocPath: "history/KYNETIC_SPEC_DESIGN.md",
         knownSlugs: new Set(["getting-started", "overview", "history/KYNETIC_SPEC_DESIGN"]),
         basePath: "",
+        repoUrl,
       };
       const md = "[Getting Started](../getting-started.md)";
       const result = renderDocsMarkdown(md, nestedContext);
@@ -295,6 +326,15 @@ describe("docs-markdown renderer", () => {
       const result = renderDocsMarkdown(md, linkContext);
 
       expect(result.html).toContain('href="https://example.com/file.md"');
+    });
+
+    it("marks out-of-tree rewritten links as external", () => {
+      const md = "[Install](../INSTALL.md)";
+      const result = renderDocsMarkdown(md, linkContext);
+
+      // GitHub URLs are external — should have target="_blank" and rel="noopener noreferrer"
+      expect(result.html).toContain('target="_blank"');
+      expect(result.html).toContain('rel="noopener noreferrer"');
     });
 
     it("works without linkContext (backward compatible)", () => {
@@ -455,10 +495,12 @@ describe("docs section filtering", () => {
 
 describe("docs link resolution", () => {
   let resolveDocsLink: typeof import("../packages/web-ui/src/lib/utils/docs-utils")["resolveDocsLink"];
+  let resolveOutOfTreeHref: typeof import("../packages/web-ui/src/lib/utils/docs-utils")["resolveOutOfTreeHref"];
 
   beforeAll(async () => {
     const mod = await import("../packages/web-ui/src/lib/utils/docs-utils");
     resolveDocsLink = mod.resolveDocsLink;
+    resolveOutOfTreeHref = mod.resolveOutOfTreeHref;
   });
 
   it("resolves sibling links from root docs", () => {
@@ -491,6 +533,37 @@ describe("docs link resolution", () => {
     expect(resolveDocsLink("https://example.com", "getting-started.md")).toBeNull();
     expect(resolveDocsLink("#section", "getting-started.md")).toBeNull();
     expect(resolveDocsLink("image.png", "getting-started.md")).toBeNull();
+  });
+
+  describe("resolveOutOfTreeHref", () => {
+    it("resolves ../INSTALL.md from root doc to INSTALL.md", () => {
+      // docs/getting-started.md links to ../INSTALL.md => INSTALL.md at repo root
+      expect(resolveOutOfTreeHref("../INSTALL.md", "getting-started.md")).toBe("INSTALL.md");
+    });
+
+    it("resolves ../AGENTS.md from root doc to AGENTS.md", () => {
+      expect(resolveOutOfTreeHref("../AGENTS.md", "getting-started.md")).toBe("AGENTS.md");
+    });
+
+    it("resolves ../../README.md from nested doc to README.md", () => {
+      // docs/guides/setup.md links to ../../README.md => README.md at repo root
+      expect(resolveOutOfTreeHref("../../README.md", "guides/setup.md")).toBe("README.md");
+    });
+
+    it("resolves sibling link within docs tree to docs/<file>", () => {
+      // docs/getting-started.md links to ./overview.md => docs/overview.md
+      expect(resolveOutOfTreeHref("./overview.md", "getting-started.md")).toBe("docs/overview.md");
+    });
+
+    it("returns null for non-markdown links", () => {
+      expect(resolveOutOfTreeHref("image.png", "getting-started.md")).toBeNull();
+      expect(resolveOutOfTreeHref("#section", "getting-started.md")).toBeNull();
+    });
+
+    it("returns null when traversal goes above repo root", () => {
+      // docs/getting-started.md links to ../../.. — too many levels
+      expect(resolveOutOfTreeHref("../../../above-root.md", "getting-started.md")).toBeNull();
+    });
   });
 });
 

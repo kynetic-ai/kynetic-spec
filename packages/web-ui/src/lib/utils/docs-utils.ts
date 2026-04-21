@@ -56,3 +56,39 @@ export function resolveDocsLink(href: string, currentDocPath: string): string | 
 	const resolvedPath = resolved.join('/');
 	return resolvedPath.replace(/\.md$/i, '');
 }
+
+/**
+ * Resolve a relative `.md` link from a doc page to its repo-root-relative path.
+ * This handles links that escape the docs tree (e.g. `../INSTALL.md` from a
+ * root-level doc) by computing where they point relative to the repository root.
+ *
+ * The docs directory is assumed to be at `docs/` in the repo root, so the
+ * current doc's full repo path is `docs/<currentDocPath>`.
+ *
+ * Returns the repo-root-relative path (e.g. "INSTALL.md"), or null if the link
+ * is not a `.md` link or resolves to an invalid path (too many `..` traversals).
+ */
+export function resolveOutOfTreeHref(href: string, currentDocPath: string): string | null {
+	if (!href.endsWith('.md')) return null;
+
+	// The current doc's directory relative to the repo root is docs/<dir>
+	const slashIdx = currentDocPath.lastIndexOf('/');
+	const currentDir = slashIdx === -1 ? '' : currentDocPath.slice(0, slashIdx);
+
+	// Build the full path from repo root: ["docs", ...currentDir segments]
+	const baseParts = ['docs', ...(currentDir ? currentDir.split('/') : [])];
+	const hrefParts = href.split('/');
+
+	const resolved: string[] = [...baseParts];
+	for (const part of hrefParts) {
+		if (part === '.' || part === '') continue;
+		if (part === '..') {
+			if (resolved.length === 0) return null; // walked above repo root
+			resolved.pop();
+		} else {
+			resolved.push(part);
+		}
+	}
+
+	return resolved.join('/');
+}

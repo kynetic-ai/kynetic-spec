@@ -11,4 +11,6 @@ export interface DocsEntry {
 
 export interface DocsManifest {
 	entries: DocsEntry[];
+	/** GitHub blob URL prefix for out-of-tree markdown links, or null if not configured */
+	repoUrl: string | null;
 }

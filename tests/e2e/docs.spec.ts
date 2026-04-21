@@ -155,7 +155,7 @@ test.describe("Docs", () => {
     }
   });
 
-  test("out-of-tree .md links are not intercepted as dead clicks", async ({
+  test("out-of-tree .md links are rewritten to GitHub blob URLs", async ({
     page,
     daemon: _daemon,
   }) => {
@@ -165,14 +165,17 @@ test.describe("Docs", () => {
     await expect(article).toBeVisible();
 
     // The getting-started.md references ../INSTALL.md which is outside the docs tree.
-    // These links should NOT be dead clicks — they should have their original href preserved.
+    // These links should be rewritten to GitHub blob URLs so they don't 404.
     const installLink = article.locator('a', { hasText: 'INSTALL.md' });
     const installLinkCount = await installLink.count();
     if (installLinkCount > 0) {
       const href = await installLink.first().getAttribute("href");
-      // The link should still have the original ../INSTALL.md href (not rewritten, not empty)
       expect(href).toBeTruthy();
+      expect(href).toContain("github.com");
       expect(href).toContain("INSTALL.md");
+      // Should be an external link (target="_blank")
+      const target = await installLink.first().getAttribute("target");
+      expect(target).toBe("_blank");
     }
   });
 
