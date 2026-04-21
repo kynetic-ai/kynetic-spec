@@ -2596,7 +2596,7 @@ modules:
           explained rather than re-explaining the primitive inline.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
