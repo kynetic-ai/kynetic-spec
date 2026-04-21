@@ -157486,6 +157486,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQF7C38Y5YX295NWTR459X7
         timestamp: 2026-04-21T07:31:40.230Z
+      - _ulid: 01KPQF7FZSKQQN3YJE9V3A8BP6
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPQF7EZ2DWD36N05KC21C775
+        timestamp: 2026-04-21T07:31:43.225Z
     examined_commit: d73e82876ce1e09e6033de3bc12b018dcbb5def4
     external_links: []
     lifecycle_state: open
@@ -157515,7 +157522,22 @@ reviews:
               daemon/command contexts that already warmed task history.
             created_at: 2026-04-21T07:31:39.240Z
         kind: blocker
+      - _ulid: 01KPQF7EZ2DWD36N05KC21C775
+        entries:
+          - _ulid: 01KPQF7EZ3EDXJE0KS0G3NMC8D
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/parser/task-data-manager.ts, src/daemon/entity-cache.ts,
+              tests/task-data-manager.test.ts, tests/daemon-entity-cache.test.ts,
+              tests/daemon-review-verdicts-api.test.ts, tests/per-task-files.test.ts. Commands run:
+              git diff vs dev base, kspec task get, kspec review get/for-task, kspec validate, rg AC
+              annotations, npm test, and a tsx reproduction that mutated a cached task then read
+              history immediately. Claims verified: request_changes immediate task-read path covered
+              by new integration test; full suite still passes; cached history remains stale after
+              mutateTask. Categories searched: correctness, edge cases, test quality, integration,
+              error handling."
+            created_at: 2026-04-21T07:31:42.179Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-21T07:20:08.231Z
-    updated_at: 2026-04-21T07:31:39.240Z
+    updated_at: 2026-04-21T07:31:42.179Z
     notes: []
