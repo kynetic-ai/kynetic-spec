@@ -157772,6 +157772,23 @@ reviews:
         runner: npm
         created_at: 2026-04-21T08:04:43.290Z
         completed_at: 2026-04-21T08:04:43.290Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/parser/task-data-manager.ts, src/daemon/entity-cache.ts,
+          src/cli/commands/review.ts, packages/daemon/src/routes/reviews.ts,
+          tests/task-data-manager.test.ts, tests/daemon-entity-cache.test.ts,
+          tests/daemon-review-verdicts-api.test.ts. Commands run: git diff/stat, rg searches, kspec
+          task get, kspec review get/for-task, kspec validate, npm test. Claims verified:
+          request_changes path writes transitioned task state through cache-backed immediate reads;
+          applyTaskMutation now invalidates stale task history. Categories searched: correctness,
+          edge cases, error handling, test quality, integration."
+        name: manual review
+        required: false
+        runner: codex
+        created_at: 2026-04-21T08:04:46.331Z
+        completed_at: 2026-04-21T08:04:46.331Z
     events:
       - _ulid: 01KPQGFTEWDQN7BW2HMFK48KT8
         actor: Jacob Chapel
@@ -157793,6 +157810,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T08:04:44.332Z
+      - _ulid: 01KPQH41PH5BE5P1QWQ0ZSC98Y
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: manual review
+        timestamp: 2026-04-21T08:04:47.441Z
     examined_commit: cd6316cb1358077ccf0680678b5659913b6d6a60
     external_links: []
     lifecycle_state: open
@@ -157805,5 +157829,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T07:53:44.669Z
-    updated_at: 2026-04-21T08:04:43.290Z
+    updated_at: 2026-04-21T08:04:46.331Z
     notes: []
