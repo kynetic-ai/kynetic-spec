@@ -157623,6 +157623,18 @@ reviews:
         runner: kspec
         created_at: 2026-04-21T07:43:59.236Z
         completed_at: 2026-04-21T07:43:59.236Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Observed full-suite npm test run on this snapshot with the affected docs/web UI suites
+          passing, including tests/web-ui-docs-rendering.test.ts. No failures were observed during
+          review.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-21T07:44:03.467Z
+        completed_at: 2026-04-21T07:44:03.467Z
     events:
       - _ulid: 01KPQFCH6WXZGCQCSPT9K8H3CM
         actor: Jacob Chapel
@@ -157644,6 +157656,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-21T07:44:00.704Z
+      - _ulid: 01KPQFY4B6WD5J8W5337R4QT95
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-21T07:44:04.966Z
     examined_commit: 0fa290b38afb74ee97b38d019e58c5402d0126c8
     external_links: []
     lifecycle_state: open
@@ -157656,5 +157675,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T07:34:28.317Z
-    updated_at: 2026-04-21T07:43:59.236Z
+    updated_at: 2026-04-21T07:44:03.467Z
     notes: []
