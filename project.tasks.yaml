@@ -26632,7 +26632,7 @@
   type: task
   spec_ref: "@docs-guides-section"
   plan_ref: "@plan-user-documentation-foundation"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-docs-section-scaffolding"
@@ -26647,6 +26647,7 @@
   created_at: 2026-04-20T23:55:29.496Z
   started_at: 2026-04-21T12:01:34.434Z
   submitted_at: 2026-04-21T12:01:38.059Z
+  completed_at: 2026-04-21T12:15:21.225Z
   automation: eligible
 - _ulid: 01KPPN4435PYT5BK4VFXTPR1F3
   slugs:

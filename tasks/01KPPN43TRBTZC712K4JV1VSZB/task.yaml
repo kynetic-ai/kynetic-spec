@@ -15,8 +15,10 @@ description: |
 spec_ref: "@docs-guides-section"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 4fc81c076. Added the seven required Guides pages, linked them from
+  docs/guides/index.md, and added docs rendering coverage for the Guides section.
 depends_on:
   - "@task-docs-section-scaffolding"
 context: []
@@ -255,8 +257,23 @@ history:
         previous: "@01KPQVPJ52Q92VMTDNC06XKB11"
     command: review-link
     timestamp: 2026-04-21T12:03:12.107Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 4fc81c076. Added the seven required Guides pages, linked them from
+          docs/guides/index.md, and added docs rendering coverage for the Guides section.
+        previous: null
+      completed_at:
+        new: 2026-04-21T12:15:21.225Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-21T12:15:21.237Z
 created_at: 2026-04-20T23:55:29.496Z
 started_at: 2026-04-21T12:01:34.434Z
 submitted_at: 2026-04-21T12:01:38.059Z
+completed_at: 2026-04-21T12:15:21.225Z
 todos: []
 automation: eligible
