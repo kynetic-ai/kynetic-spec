@@ -158544,7 +158544,18 @@ reviews:
     slugs: []
     title: Review task-docs-getting-started-content (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm test -- tests/web-ui-docs-rendering.test.ts. Result: 24 suites passed, 101 tests
+          passed, duration 533ms."
+        name: docs rendering tests
+        required: true
+        runner: npm
+        created_at: 2026-04-21T09:07:45.333Z
+        completed_at: 2026-04-21T09:07:45.333Z
     events:
       - _ulid: 01KPQMNFHCGQ67QCNRZXKB9965
         actor: Jacob Chapel
@@ -158559,6 +158570,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-21T09:07:02.108Z
+      - _ulid: 01KPQMQCTBZJ7QVCH2AW58VSB3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: docs rendering tests
+        timestamp: 2026-04-21T09:07:47.147Z
     examined_commit: 26a2c1d83d9fe4ed39751239fb63ee8a0ecc20cc
     external_links: []
     lifecycle_state: open
@@ -158571,5 +158589,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T09:06:44.396Z
-    updated_at: 2026-04-21T09:07:00.876Z
+    updated_at: 2026-04-21T09:07:45.333Z
     notes: []
