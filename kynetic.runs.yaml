@@ -29564,7 +29564,7 @@ runs:
     completed_at: 2026-04-21T07:47:23.664Z
   - _ulid: 01KPQH7C3APMEW6W4QTDQGX6ZN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29579,7 +29579,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T08:07:26.195Z
-        completed_at: 2026-04-21T08:07:26.195Z
+        completed_at: 2026-04-21T08:07:35.577Z
+        notes: "Friction points: Reviewer snapshots cannot directly  when  is already active in another
+          worktree. The merge instructions say to merge locally from the review workspace, but in
+          practice the reviewer had to discover and use  against the existing dev worktree. That is
+          repeatable dispatch friction, not just a one-off typo."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T08:07:35.577Z
+        completed_at: 2026-04-21T08:07:35.577Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T08:06:36.394Z
