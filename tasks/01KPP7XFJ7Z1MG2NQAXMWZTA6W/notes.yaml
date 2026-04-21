@@ -170,3 +170,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-20T23:54:09.083Z
+  - _ulid: 01KPPNXBF5ZCM46N33WN065M5V
+    content: "Fix cycle 5: addressed re-register race blocker. The second start after a cancelled
+      in-flight start now checks whether a scheduler was installed (via shadowSyncSchedulers.has())
+      instead of returning unconditionally. If the first start was cancelled by a racing stop, the
+      second start falls through and performs its own start. Added behavioral test reproducing the
+      exact start→stop→re-start race. Full test suite passes (8066 tests, 0 failures). Re-verified
+      all ACs (ac-13 through ac-17)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T00:09:16.518Z
