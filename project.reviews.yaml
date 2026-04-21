@@ -156354,6 +156354,12 @@ reviews:
         payload:
           thread_ulid: 01KPQ6A3RF5QBGJZ3M2PR4CZ7Y
         timestamp: 2026-04-21T04:56:39.578Z
+      - _ulid: 01KPQ6BQVK0PPWF11G41KS64EN
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQ6A9KSPB844VM7TDCWJXWH
+        timestamp: 2026-04-21T04:56:45.171Z
     examined_commit: e84d2e6c24c173fcc9d4cfec78dd7aa5b486d598
     external_links: []
     lifecycle_state: open
@@ -156407,8 +156413,16 @@ reviews:
               contains  and , with no bare  slug. Either normalize  to the parent slug or add
               equivalent route resolution before this scaffolding ships.
             created_at: 2026-04-21T04:55:57.818Z
+          - _ulid: 01KPQ6BPP8BDY6AK3W0JRVKX42
+            author: Jacob Chapel
+            body: "Clarification: the manifest currently generates slugs getting-started/index and
+              getting-started/tutorial, but no bare getting-started slug. Because the docs page
+              route only does an exact slug lookup, /docs/getting-started does not resolve to the
+              section landing page. The section index pages need slug normalization or equivalent
+              route handling."
+            created_at: 2026-04-21T04:56:43.976Z
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T04:49:05.066Z
-    updated_at: 2026-04-21T04:56:38.426Z
+    updated_at: 2026-04-21T04:56:43.976Z
     notes: []
