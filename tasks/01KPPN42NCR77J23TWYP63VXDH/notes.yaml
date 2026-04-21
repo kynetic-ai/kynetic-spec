@@ -63,3 +63,25 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T04:56:58.799Z
+  - _ulid: 01KPQ7TVDSAZ5Q67EJDJSRFEPM
+    content: >-
+      Fix cycle 1: addressed both review blockers.
+
+
+      1. Tutorial relative links: Updated ../INSTALL.md and ../AGENTS.md to ../../INSTALL.md and
+      ../../AGENTS.md in docs/getting-started/tutorial.md. The file was moved one level deeper into
+      the getting-started/ directory, so it needs two levels of traversal to reach repo root.
+
+
+      2. Section index slug normalization: Added /index suffix stripping to pathToSlug
+      (vite-plugin-docs), resolveDocsLink (docs-utils), and updated
+      groupDocsSections/filterSectionEntries to use path-based section detection via sectionKeyOf
+      helper. This ensures section landing pages (getting-started/index.md) produce bare slugs
+      (getting-started) that match the route URL, while still being correctly grouped with their
+      section's child pages.
+
+
+      All 8134 tests pass. Re-verified both ACs against implementation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T05:22:28.921Z
