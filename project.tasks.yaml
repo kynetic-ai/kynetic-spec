@@ -26491,7 +26491,7 @@
   title: Extend daemon background shadow sync to all registered projects
   type: task
   spec_ref: "@config-shadow"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 3
@@ -26506,6 +26506,7 @@
   created_at: 2026-04-20T20:04:40.647Z
   started_at: 2026-04-21T00:51:24.385Z
   submitted_at: 2026-04-21T00:51:27.984Z
+  completed_at: 2026-04-21T00:58:31.451Z
   automation: eligible
 - _ulid: 01KPPN42CDKS6A6951ZATDPKXP
   slugs:
