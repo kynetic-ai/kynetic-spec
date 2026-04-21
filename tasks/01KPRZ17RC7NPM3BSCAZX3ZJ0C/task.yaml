@@ -176,8 +176,13 @@ description: >-
 spec_ref: "@dispatch-runtime-bootstrap-contract"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KPS01G and merged
+  dispatch/task/task-narrow-dispatcher-runtime-mode-env-isolation/01kprz17 into dev at
+  85b5efd6df9e0f3858a5fa5f627d8239f5ab70af. Verified full npm test pass (2243/2243 suites, 8297
+  passed, 5 skipped). Change narrows the shared runtime-mode env constant to NODE_ENV/BUN_ENV only
+  while keeping KSPEC_NO_DAEMON stripping local to daemon spawn.
 depends_on: []
 context: []
 priority: 3
@@ -237,8 +242,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-21T21:44:50.507Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KPS01G and merged
+          dispatch/task/task-narrow-dispatcher-runtime-mode-env-isolation/01kprz17 into dev at
+          85b5efd6df9e0f3858a5fa5f627d8239f5ab70af. Verified full npm test pass (2243/2243 suites,
+          8297 passed, 5 skipped). Change narrows the shared runtime-mode env constant to
+          NODE_ENV/BUN_ENV only while keeping KSPEC_NO_DAEMON stripping local to daemon spawn.
+        previous: null
+      completed_at:
+        new: 2026-04-21T21:56:08.974Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-21T21:56:08.982Z
 created_at: 2026-04-21T21:27:09.836Z
 started_at: 2026-04-21T21:29:26.808Z
 submitted_at: 2026-04-21T21:42:52.614Z
+completed_at: 2026-04-21T21:56:08.974Z
 todos: []
 automation: eligible
