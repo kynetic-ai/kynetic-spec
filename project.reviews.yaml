@@ -156277,6 +156277,28 @@ reviews:
         runner: kspec
         created_at: 2026-04-21T04:56:06.079Z
         completed_at: 2026-04-21T04:56:06.079Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: docs/getting-started/tutorial.md;
+          docs/{getting-started,guides,concepts,troubleshooting,release-notes}/index.md;
+          packages/web-ui/src/routes/docs/+page.svelte;
+          packages/web-ui/src/routes/docs/[...slug]/+page.svelte;
+          packages/web-ui/src/lib/{docs.ts,utils/docs-utils.ts,utils/docs-markdown.ts};
+          packages/web-ui/{vite-plugin-docs.ts,vite.config.ts}; tests/web-ui-docs-rendering.test.ts;
+          tests/e2e/docs.spec.ts. Commands run: git diff/stat/name-only vs base; kspec task get;
+          kspec item get; kspec validate on head and base; rg for AC annotations and docs helpers;
+          npm test; npx tsx checks for rendered INSTALL/AGENTS links; manifest slug inspection via
+          docsPlugin. Claims verified: rendered out-of-tree links from tutorial now point under
+          /docs/; generated docs manifest contains section/index slugs but no bare section slug.
+          Categories searched: correctness, routing, docs-link resolution, test coverage,
+          integration."
+        name: review evidence
+        required: false
+        runner: manual
+        created_at: 2026-04-21T04:56:11.395Z
+        completed_at: 2026-04-21T04:56:11.395Z
     events:
       - _ulid: 01KPQ5XPHA9SYGE2RBF46MKCJD
         actor: Jacob Chapel
@@ -156319,6 +156341,13 @@ reviews:
           status: skipped
           name: kspec validate (base comparison)
         timestamp: 2026-04-21T04:56:07.170Z
+      - _ulid: 01KPQ6AQYQC8QKDNKJG51A8Y52
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-21T04:56:12.503Z
     examined_commit: e84d2e6c24c173fcc9d4cfec78dd7aa5b486d598
     external_links: []
     lifecycle_state: open
@@ -156368,5 +156397,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T04:49:05.066Z
-    updated_at: 2026-04-21T04:56:06.079Z
+    updated_at: 2026-04-21T04:56:11.395Z
     notes: []
