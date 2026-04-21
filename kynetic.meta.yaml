@@ -15766,6 +15766,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T11:08:51.463Z
+  - _ulid: 01KPQYQSCYJ56HSXFR8XBWES2K
+    type: success
+    content: "Fix cycle 3 on docs-guides-content resolved cleanly in one pass: all 3 blocker threads
+      shared a single root cause (--help pointer mismatch). Re-verifying all guides against AC-3
+      after fixing the flagged file confirmed no other issues — defensive full-scope check prevented
+      potential cycle 4."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T12:02:45.790Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
