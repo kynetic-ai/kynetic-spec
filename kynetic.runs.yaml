@@ -30892,7 +30892,7 @@ runs:
     completed_at: 2026-04-21T19:52:01.385Z
   - _ulid: 01KPRVE2JVXXECX6KQRPZ1F66K
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30906,7 +30906,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T20:25:32.402Z
-        completed_at: 2026-04-21T20:25:32.402Z
+        completed_at: 2026-04-21T20:25:33.377Z
+        notes: "Proposed improvement: capture a friction observation to tighten the merge/reviewer guidance
+          for detached review snapshots. Scope is small: document that  can fail when that branch is
+          already used by another worktree, and either teach the merge skill to merge via the
+          existing main worktree () or give an equivalent dispatch-safe instruction."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T20:25:33.377Z
+        completed_at: 2026-04-21T20:25:33.377Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T20:24:16.219Z
