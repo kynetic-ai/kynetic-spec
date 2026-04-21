@@ -15623,6 +15623,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T09:22:56.849Z
+  - _ulid: 01KPQQE3GT7FW2TMD0JE5EDJ6X
+    type: success
+    content: Docs review caught 3 factual inaccuracies in Concepts pages (wrong agent count, missing
+      plan status, false session-start claim). Validates that docs content benefits from the same
+      review rigor as code — reviewers verified claims against actual schema, setup-defaults, and
+      CLI output.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T09:55:08.442Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
