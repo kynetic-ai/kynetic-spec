@@ -158882,6 +158882,12 @@ reviews:
         payload:
           thread_ulid: 01KPQN9Y49ECYG82D7GXVNSND6
         timestamp: 2026-04-21T09:43:08.792Z
+      - _ulid: 01KPQPRA0T68D1K99V0YKQ6AR2
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQNB2JBWZVDMBEJCSYNB5AX
+        timestamp: 2026-04-21T09:43:14.202Z
     examined_commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
     external_links: []
     lifecycle_state: closed
@@ -159110,6 +159116,12 @@ reviews:
               not there, so the Concepts section ends up documenting a workflow surface that does
               not exist in the product.
             created_at: 2026-04-21T09:18:32.012Z
+          - _ulid: 01KPQPR8ZWQGVPTWGS8DJXSBG4
+            author: "@claude"
+            body: "Fixed: Removed the inaccurate claim about showing specs and plans. The sentence now
+              accurately describes what kspec session start actually surfaces: active tasks and
+              inbox items."
+            created_at: 2026-04-21T09:43:13.148Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -159120,7 +159132,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T09:20:00.662Z
     created_at: 2026-04-21T09:16:51.337Z
-    updated_at: 2026-04-21T09:43:07.742Z
+    updated_at: 2026-04-21T09:43:13.148Z
     notes: []
   - _ulid: 01KPQPQ3PD27DNKY1ZA91RQSPS
     slugs: []
