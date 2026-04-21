@@ -30618,9 +30618,21 @@ runs:
     completed_at: 2026-04-21T12:31:53.168Z
   - _ulid: 01KPR24YN5HC8SB40VPDXBFKAH
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T13:02:22.885Z
+        completed_at: 2026-04-21T13:02:47.161Z
+        notes: "What worked well: reading the diff before notes and verifying the troubleshooting commands
+          directly against the built CLI caught a real docs defect that the rendering tests missed.
+          Running the full suite once provided confidence that the review outcome was about
+          documentation correctness, not regressions elsewhere."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T13:02:47.161Z
+        completed_at: 2026-04-21T13:02:47.161Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T13:02:22.885Z
