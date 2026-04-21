@@ -157139,6 +157139,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T06:43:18.283Z
+      - _ulid: 01KPQCEY526QAYK1N4E3CCM0NX
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQCEX23F5DS61PZ22RST1XT
+        timestamp: 2026-04-21T06:43:21.378Z
     examined_commit: 18e0da8abf85d37b2848252fcf45386e96d64941
     external_links: []
     lifecycle_state: open
@@ -157148,8 +157155,31 @@ reviews:
       content_hash: ""
       ref: "@01KPQ7RDHXBRGDZSDFF0XG13RT"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPQCEX23F5DS61PZ22RST1XT
+        anchor:
+          type: code
+          commit: 18e0da8abf85d37b2848252fcf45386e96d64941
+          line_end: 1008
+          line_start: 843
+          path: tests/task-data-manager.test.ts
+          side: head
+        entries:
+          - _ulid: 01KPQCEX23RNQHS2969P1H8Z6Y
+            author: Jacob Chapel
+            body: The added coverage only verifies that TaskDataManager calls applyTaskMutation() and that
+              ProjectEntityCache mutates its in-memory tiers in isolation; it never executes the
+              actual regression path in src/cli/commands/review.ts where no packages found for
+              verdict transitions the task and a subsequent  must immediately observe the new state.
+              Because these tests stop at a mocked cache callback, they would still pass if the
+              verdict command stopped running under a cache-backed context or if the end-to-end
+              command pair still surfaced stale task reads. This task is specifically about
+              immediate post-verdict consistency, so it needs an integration test that runs the
+              verdict flow and then immediately reads the task through the same cache-backed
+              surface.
+            created_at: 2026-04-21T06:43:20.259Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T06:32:17.044Z
-    updated_at: 2026-04-21T06:43:17.248Z
+    updated_at: 2026-04-21T06:43:20.259Z
     notes: []
