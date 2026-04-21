@@ -158196,6 +158196,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-04-21T08:40:44.118Z
+      - _ulid: 01KPQK5YZCB9BTY8CD1P1GW03Y
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPQK5XVHK6RFHFBB741HRAA4
+        timestamp: 2026-04-21T08:40:47.340Z
     examined_commit: ffbf4c6cf9b9708303cfe4c45b0d864ceac72945
     external_links: []
     lifecycle_state: open
@@ -158225,7 +158232,27 @@ reviews:
               instructions and can break task/review continuity.
             created_at: 2026-04-21T08:40:20.012Z
         kind: blocker
+      - _ulid: 01KPQK5XVHK6RFHFBB741HRAA4
+        anchor:
+          type: code
+          commit: ffbf4c6cf9b9708303cfe4c45b0d864ceac72945
+          line_end: 73
+          line_start: 70
+          path: docs/getting-started/your-first-action.md
+          side: head
+        entries:
+          - _ulid: 01KPQK5XVHQ5EAK62E0CQ16WFD
+            author: Jacob Chapel
+            body: The first-action walkthrough tells readers to create a plain git branch with `git checkout -b
+              docs/contributing-guide`, but this project's documented task workflow requires `kspec
+              task branch @ref` for task work. That command exists specifically to create or resume
+              the deterministic dispatch-compatible branch reviewers and fix-cycle agents rely on.
+              Publishing the Getting Started guide with the raw `git checkout -b` flow teaches new
+              users a branch workflow that conflicts with the generated agent instructions and can
+              break task/review continuity.
+            created_at: 2026-04-21T08:40:46.193Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T08:28:59.334Z
-    updated_at: 2026-04-21T08:40:43.052Z
+    updated_at: 2026-04-21T08:40:46.193Z
     notes: []
