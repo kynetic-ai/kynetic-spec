@@ -55414,7 +55414,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T00:58:43.659Z
+      updated_at: 2026-04-21T01:01:18.348Z
     integration:
       status: merged
       detail: integration:merged
@@ -55423,25 +55423,20 @@ workspaces:
       target_branch: dev
       target_commit: 9d65ad244237659c2a29a45679392595ae0135ee
       updated_at: 2026-04-21T00:58:43.659Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KPP7XFJ7Z1MG2NQAXMWZTA6W"
     task_slug: extend-daemon-background-shadow-sync-to-all-registered-projects
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T00:52:40.177Z
-      last_reconciled_at: 2026-04-21T01:01:16.266Z
+      last_reconciled_at: 2026-04-21T01:01:18.348Z
       created_at: 2026-04-20T20:06:13.111Z
-      updated_at: 2026-04-21T01:01:16.266Z
+      updated_at: 2026-04-21T01:01:18.348Z
     workspace_id: dispatch-workspace-01KPP7XFJ7Z1MG2NQAXMWZTA6W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: dcb59f5c91804d45c41685236758c9df7bc235fd
-        last_seen_at: 2026-04-21T00:52:14.979Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/extend-daemon-background-shadow-sync-to-all-registered-projects-01kpp7xf-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/extend-daemon-background-shadow-sync-to-all-registered-projects/01kpp7xf
