@@ -29023,7 +29023,7 @@ runs:
     completed_at: 2026-04-21T05:07:32.349Z
   - _ulid: 01KPQ7NR5R177MDVET98JNTC3P
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29036,7 +29036,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T05:21:07.846Z
-        completed_at: 2026-04-21T05:21:07.846Z
+        completed_at: 2026-04-21T05:21:18.780Z
+        notes: "Friction: immediately after recording the review verdict, the first `kspec task get` still
+          showed pending_review even though the verdict output reported that the task had
+          transitioned to needs_work. A second read later returned the correct state, so there
+          appears to be a short consistency gap after review-driven transitions. Repo-wide `kspec
+          validate` noise also reduced its value as a task-review check, but a related
+          baseline/noise task already exists so I am not duplicating that here."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T05:21:18.780Z
+        completed_at: 2026-04-21T05:21:18.780Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T05:19:41.752Z
