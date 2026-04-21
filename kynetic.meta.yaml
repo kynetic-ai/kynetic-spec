@@ -15469,6 +15469,17 @@ observations:
     resolved: false
     workflow_ref: "@01KPQG0Z"
     created_at: 2026-04-21T07:46:55.211Z
+  - _ulid: 01KPQG3AXVYTM0C1J34GBR18X2
+    type: success
+    content: For docs reviews, probing the built virtual manifest directly gave fast, high-confidence
+      verification of section order, exclusions, and synthetic entry grouping. This was a more
+      reliable first check than starting from UI inspection alone and should be repeated for similar
+      docs-surface reviews.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPQG0Z"
+    created_at: 2026-04-21T07:46:55.547Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
