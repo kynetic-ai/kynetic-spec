@@ -28454,9 +28454,22 @@ runs:
     completed_at: 2026-04-21T01:01:01.841Z
   - _ulid: 01KPPVHK659HNTCXB6X63N2NAW
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T01:47:42.661Z
+        completed_at: 2026-04-21T01:48:35.241Z
+        notes: "What worked well: the review flow stayed disciplined around spec-level verification instead
+          of stopping at prior-worker claims. Running a fresh full-suite rerun after the cached npm
+          test failure separated cache noise from real regressions, and reading the routed docs page
+          plus helper tests side by side made it straightforward to spot AC coverage at the wrong
+          abstraction layer."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T01:48:35.241Z
+        completed_at: 2026-04-21T01:48:35.241Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T01:47:42.661Z
