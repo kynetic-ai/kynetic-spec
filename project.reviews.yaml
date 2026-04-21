@@ -155884,9 +155884,25 @@ reviews:
           kind: nit
           thread_ulid: 01KPQ2T9NW0ZXXSGSQB0HSYE6A
         timestamp: 2026-04-21T03:54:49.221Z
+      - _ulid: 01KPQ31CQM9ZH041TFKV2J3XVD
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-21T03:58:40.372Z
+      - _ulid: 01KPQ31CQMF4H238QF6T6DZKGZ
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-21T03:58:40.373Z
     examined_commit: 765071be773d1738dbd5b14ec2c05e76954c2c98
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -155967,7 +155983,14 @@ reviews:
               bundled manifest wiring).
             created_at: 2026-04-21T03:54:47.868Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-21T03:58:40.372Z
     created_at: 2026-04-21T03:44:52.806Z
-    updated_at: 2026-04-21T03:54:47.868Z
+    updated_at: 2026-04-21T03:58:40.372Z
     notes: []
