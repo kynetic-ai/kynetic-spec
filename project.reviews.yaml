@@ -158876,6 +158876,12 @@ reviews:
         payload:
           thread_ulid: 01KPQNAQW8WN72HN5CCDRK5T1B
         timestamp: 2026-04-21T09:43:03.227Z
+      - _ulid: 01KPQPR4QRYDMQF5HM00Z3SW6G
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQN9Y49ECYG82D7GXVNSND6
+        timestamp: 2026-04-21T09:43:08.792Z
     examined_commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
     external_links: []
     lifecycle_state: closed
@@ -159041,6 +159047,11 @@ reviews:
               initialized project and will mislead readers about what kspec setup gives them out of
               the box.
             created_at: 2026-04-21T09:17:54.697Z
+          - _ulid: 01KPQPR3PYPY8DZK8X6CSVGARM
+            author: "@claude"
+            body: "Fixed: Updated to list all four built-in agent definitions (task-worker, pr-reviewer,
+              primary-dev, plan-reviewer) matching what kspec setup actually scaffolds."
+            created_at: 2026-04-21T09:43:07.742Z
         kind: blocker
       - _ulid: 01KPQNAQW8WN72HN5CCDRK5T1B
         anchor:
@@ -159109,7 +159120,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T09:20:00.662Z
     created_at: 2026-04-21T09:16:51.337Z
-    updated_at: 2026-04-21T09:43:02.176Z
+    updated_at: 2026-04-21T09:43:07.742Z
     notes: []
   - _ulid: 01KPQPQ3PD27DNKY1ZA91RQSPS
     slugs: []
