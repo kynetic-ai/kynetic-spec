@@ -4,7 +4,7 @@ import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
 import { loadProjectConfig } from "../parser/config.js";
-import { DAEMON_RUNTIME_ENV_KEYS } from "../cli/commands/serve.js";
+import { DAEMON_RUNTIME_MODE_ENV_KEYS } from "../cli/commands/serve.js";
 import type { Agent } from "../schema/meta.js";
 import type {
   DispatchWorkspaceBootstrapRoleState,
@@ -52,16 +52,17 @@ export class DispatchBootstrapError extends Error {
 /**
  * Build a clean subprocess environment for bootstrap steps.
  *
- * Strips daemon runtime-mode configuration values (sourced from
- * DAEMON_RUNTIME_ENV_KEYS) from the inherited process environment so
- * they do not leak into bootstrap step subprocesses, then merges the
- * step-intended variables on top.
+ * Strips only values the dispatcher injects for its own runtime mode
+ * (sourced from DAEMON_RUNTIME_MODE_ENV_KEYS) from the inherited process
+ * environment so they do not leak into bootstrap step subprocesses, then
+ * merges the step-intended variables on top.
  *
- * AC: @dispatch-runtime-bootstrap-contract ac-12
+ * DAEMON_RUNTIME_MODE_ENV_KEYS is the source of truth for which keys to
+ * strip. See @dispatch-runtime-bootstrap-contract ac-12.
  */
 function buildBootstrapStepEnv(stepEnv: Record<string, string>): Record<string, string> {
   const stripped: Record<string, string> = {};
-  const excludeSet = new Set<string>(DAEMON_RUNTIME_ENV_KEYS);
+  const excludeSet = new Set<string>(DAEMON_RUNTIME_MODE_ENV_KEYS);
   for (const [key, value] of Object.entries(process.env)) {
     if (value !== undefined && !excludeSet.has(key)) {
       stripped[key] = value;
