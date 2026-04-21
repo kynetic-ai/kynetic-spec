@@ -19,7 +19,7 @@ description: |
 spec_ref: "@docs-getting-started-section"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-docs-section-scaffolding"
@@ -30,6 +30,7 @@ tags:
   - content
   - getting-started
 vcs_refs: []
+session_id: 01KPQHCHF1HFBP5P1EMRCBG6A4
 history:
   - author: "@claude"
     changes:
@@ -38,6 +39,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-20T23:55:46.410Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KPQHCHF1HFBP5P1EMRCBG6A4
+        previous: null
+      started_at:
+        new: 2026-04-21T08:10:07.682Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-21T08:10:07.682Z
 created_at: 2026-04-20T23:55:28.881Z
+started_at: 2026-04-21T08:10:07.682Z
 todos: []
 automation: eligible

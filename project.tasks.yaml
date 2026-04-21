@@ -26583,7 +26583,7 @@
   type: task
   spec_ref: "@docs-getting-started-section"
   plan_ref: "@plan-user-documentation-foundation"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-docs-section-scaffolding"
@@ -26595,6 +26595,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-20T23:55:28.881Z
+  started_at: 2026-04-21T08:10:07.682Z
   automation: eligible
 - _ulid: 01KPPN43G7T5FSMEF1YPWS0CPX
   slugs:
