@@ -153738,7 +153738,18 @@ reviews:
     slugs: []
     title: Review task-docs-rendering
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full suite passed in review workspace via npm test -- --fresh; final summary pending
+          capture but no failures observed during run.
+        name: npm test
+        required: true
+        runner: test.cjs
+        created_at: 2026-04-21T00:36:53.511Z
+        completed_at: 2026-04-21T00:36:53.511Z
     events:
       - _ulid: 01KPPQBF2QGT71RFR8KDPEK75Z
         actor: Jacob Chapel
@@ -153774,6 +153785,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPPQENHW0GATY88GCENJAT2M
         timestamp: 2026-04-21T00:36:13.670Z
+      - _ulid: 01KPPQFYRFV30XXPZAJVRVAQXZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-21T00:36:54.671Z
     examined_commit: ca0646762730b23edeb709229513354dae9acf45
     external_links: []
     lifecycle_state: open
@@ -153843,5 +153861,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T00:34:27.544Z
-    updated_at: 2026-04-21T00:36:12.476Z
+    updated_at: 2026-04-21T00:36:53.511Z
     notes: []
