@@ -31,7 +31,7 @@ tags:
   - docs
   - content
 vcs_refs: []
-review_ref: "@01KPQ9P5Y39S7HAXNHQKZ4HCD9"
+review_ref: "@01KPQD66EY9P03554V6TXB2QT0"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-docs-section-scaffolding/01kppn42
@@ -253,6 +253,13 @@ history:
         previous: 2026-04-21T05:52:37.703Z
     command: task-submit
     timestamp: 2026-04-21T06:54:13.798Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KPQD66EY9P03554V6TXB2QT0"
+        previous: "@01KPQ9P5Y39S7HAXNHQKZ4HCD9"
+    command: review-link
+    timestamp: 2026-04-21T06:56:06.707Z
 created_at: 2026-04-20T23:55:28.300Z
 started_at: 2026-04-21T06:54:10.370Z
 submitted_at: 2026-04-21T06:54:13.798Z
