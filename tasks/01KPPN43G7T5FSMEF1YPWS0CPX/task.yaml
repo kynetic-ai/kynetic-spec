@@ -18,7 +18,7 @@ description: |
 spec_ref: "@docs-concepts-section"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-docs-section-scaffolding"
@@ -29,6 +29,7 @@ tags:
   - content
   - concepts
 vcs_refs: []
+session_id: 01KPQM87G734Y15K9KVT5MY36B
 history:
   - author: "@claude"
     changes:
@@ -37,6 +38,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-20T23:55:47.277Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KPQM87G734Y15K9KVT5MY36B
+        previous: null
+      started_at:
+        new: 2026-04-21T09:00:26.126Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-21T09:00:26.126Z
 created_at: 2026-04-20T23:55:29.159Z
+started_at: 2026-04-21T09:00:26.126Z
 todos: []
 automation: eligible
