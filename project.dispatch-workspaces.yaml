@@ -58876,11 +58876,11 @@ workspaces:
     canonical_branch: dispatch/task/task-docs-troubleshooting-content/01kppn44
     canonical_branch_head: 2e4af779415f5e36db24750589b2fbf49ea7d760
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-21T13:31:57.409Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-21T13:31:59.405Z
     health:
       status: healthy
       issues: []
@@ -58894,7 +58894,7 @@ workspaces:
       target_branch: dev
       target_commit: 6bbae3739e42b338c0c9d63c6bf98593adf1a93d
       updated_at: 2026-04-21T13:31:57.409Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KPPN4435PYT5BK4VFXTPR1F3"
     task_slug: task-docs-troubleshooting-content
@@ -58903,7 +58903,7 @@ workspaces:
       last_active_at: 2026-04-21T13:19:50.969Z
       last_reconciled_at: 2026-04-21T13:31:57.409Z
       created_at: 2026-04-21T11:08:51.077Z
-      updated_at: 2026-04-21T13:31:57.409Z
+      updated_at: 2026-04-21T13:31:59.405Z
     workspace_id: dispatch-workspace-01KPPN4435PYT5BK4VFXTPR1F3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
