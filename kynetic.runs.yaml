@@ -30109,7 +30109,7 @@ runs:
     completed_at: 2026-04-21T09:43:05.222Z
   - _ulid: 01KPQQH0SY92GN699F5XRQBS6R
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30138,7 +30138,15 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-21T09:57:52.580Z
-        completed_at: 2026-04-21T09:57:52.580Z
+        completed_at: 2026-04-21T09:57:53.690Z
+        notes: "Proposed improvements: 1) add a docs-focused verification layer that checks referenced kspec
+          commands or help paths, not just markdown structure; 2) tighten tooling or guidance for
+          shell-unsafe payloads when creating review comments so command text in the body cannot
+          corrupt the recorded thread."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-21T09:57:53.690Z
+        completed_at: 2026-04-21T09:57:53.690Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T09:56:43.966Z
