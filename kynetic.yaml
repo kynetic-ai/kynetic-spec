@@ -730,7 +730,7 @@ includes:
   - modules/meta.yaml
   - modules/shadow.yaml
   - modules/web-ui.yaml
-kynetic: "1.0"
+kynetic: "1.1"
 project:
   status: draft
   name: Kynetic Spec

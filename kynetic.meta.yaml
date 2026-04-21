@@ -15650,7 +15650,7 @@ skills:
       - claude-code
       - codex
       - droid
-    version: 0.12.0
+    version: 0.13.0
   - _ulid: 01KJ51ST2KVBW4GRDRCH1JFM7Z
     description: Triage inbox items systematically. Records decisions with audit trail, then executes
       actions. Supports inbox, observations, and automation eligibility triage.
@@ -15666,7 +15666,7 @@ skills:
       - claude-code
       - codex
       - droid
-    version: 0.12.0
+    version: 0.13.0
   - _ulid: 01KJ5262GTNAS1ZN9FR4RA68BV
     description: Structured reflection at the end of work sessions. Identifies learnings, friction
       points, and improvements for system evolution.
@@ -15682,7 +15682,7 @@ skills:
       - claude-code
       - codex
       - droid
-    version: 0.12.0
+    version: 0.13.0
   - _ulid: 01KJ542FH6F5XDFRR8ARNC4RHW
     description: Process inbox items using the record-act pattern. Categorize, promote to spec/task,
       merge duplicates, defer, or delete stale items with full audit trail.
@@ -15698,7 +15698,7 @@ skills:
       - claude-code
       - codex
       - droid
-    version: 0.12.0
+    version: 0.13.0
   - _ulid: 01KJ542FJZZ4G9V3354MR2EX5N
     description: Assess and prepare tasks for automation eligibility. Verify spec coverage, acceptance
       criteria, and task readiness for automated agents.
@@ -15714,7 +15714,7 @@ skills:
       - claude-code
       - codex
       - droid
-    version: 0.12.0
+    version: 0.13.0
   - _ulid: 01KJ558NBQW0EPYRPVM3EH3E7W
     description: Create and maintain specification items — modules, features, requirements, acceptance
       criteria, and traits. The source of truth for what to build.
@@ -15730,7 +15730,7 @@ skills:
       - claude-code
       - codex
       - droid
-    version: 0.12.0
+    version: 0.13.0
   - _ulid: 01KJ55J4TWZ9PVWXMJRBKX2EDD
     description: Translate approved plans into specs and tasks. Import structured documents or create
       incrementally. Plans persist as durable artifacts with audit trail.
@@ -15746,7 +15746,7 @@ skills:
       - claude-code
       - codex
       - droid
-    version: 0.12.0
+    version: 0.13.0
   - _ulid: 01KJ55V684QCECG344ZT3S9XWJ
     description: Structured task lifecycle — start, work, note, submit, complete. AC annotations, fix
       cycle handling via review records, scope management, and quality checks.
@@ -15762,7 +15762,7 @@ skills:
       - claude-code
       - codex
       - droid
-    version: 0.12.0
+    version: 0.13.0
   - _ulid: 01KJ563B0CPE4C736W32ATNT8F
     description: Formalize repeatable patterns into trackable kspec workflows. Design steps, choose
       triggers, create loop variants, and integrate with skills.
@@ -15778,7 +15778,7 @@ skills:
       - claude-code
       - codex
       - droid
-    version: 0.12.0
+    version: 0.13.0
   - _ulid: 01KJ56BGT4K5WERA39VA18K1CA
     description: How to review work and use kspec review records. Covers both reviewer and worker
       perspectives — creating reviews, structuring findings, AC coverage verification, review
@@ -15795,7 +15795,7 @@ skills:
       - claude-code
       - codex
       - droid
-    version: 0.12.0
+    version: 0.13.0
   - _ulid: 01KJEYPTZQY0M295EE80VMTHWM
     description: Comprehensive codebase audit for release readiness. Parallel exploration of docs, code,
       config, tests, and specs to identify cruft, then interactive triage with clear action options.
@@ -15889,7 +15889,7 @@ skills:
       - claude-code
       - codex
       - droid
-    version: 0.12.0
+    version: 0.13.0
   - _ulid: 01KJGHJ26TQ80PXZYX3FSMSSAC
     description: Capture and act on systemic patterns — friction, successes, questions, and ideas. The
       feedback loop that drives process improvement.
@@ -15975,7 +15975,7 @@ skills:
       - claude-code
       - codex
       - droid
-    version: 0.12.0
+    version: 0.13.0
   - _ulid: 01KMBK6F7WKY0NMZXCARPNAWWP
     description: Review a plan document for quality, completeness, and readiness. Checks spec quality,
       task standalone-ness, dependency ordering, and alignment with existing specs.
@@ -15991,7 +15991,7 @@ skills:
       - claude-code
       - codex
       - droid
-    version: 0.12.0
+    version: 0.13.0
   - _ulid: 01KMECA91QR3H5HJJHW0B4F5R4
     description: Pencil MCP reference and canvas conventions for designing kynetic-spec web UI
     origin: project
