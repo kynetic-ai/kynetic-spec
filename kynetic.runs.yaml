@@ -28958,7 +28958,7 @@ runs:
     completed_at: 2026-04-21T04:58:26.634Z
   - _ulid: 01KPQ6X9V49J1XGEJPY15Z4E2B
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -28975,7 +28975,29 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T05:06:45.966Z
-        completed_at: 2026-04-21T05:06:45.966Z
+        completed_at: 2026-04-21T05:07:13.784Z
+        notes: >-
+          High-confidence observations from this session:
+
+
+          SUCCESS (high confidence): The vite-plugin-docs extensibility pattern worked extremely
+          well. Adding a new content source (RELEASE_NOTES.md) required only: (1) a new option on
+          DocsPluginOptions, (2) an append to the entries array, (3) HMR handler extension. The
+          existing [...slug] route and renderDocsMarkdown pipeline needed zero changes. This
+          validates the earlier architectural decision to use a single virtual module manifest.
+
+
+          ALREADY TRACKED: Observation @01KPPQ9H covers the Vite virtual module pattern. Observation
+          @01KPPT0J covers docs rendering fix cycle cleanness.
+
+
+          NO NEW FRICTION: This task completed smoothly in a single pass. The only non-obvious part
+          was that slugifyHeading strips dots (producing v0130 instead of v0-13-0), but this was
+          caught during planning before writing any code.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T05:07:13.784Z
+        completed_at: 2026-04-21T05:07:13.784Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T05:06:20.644Z
