@@ -17,3 +17,24 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-21T13:36:26.067Z
+  - _ulid: 01KPR5NGYZD3TVX0VVFJ1AAARG
+    content: >-
+      Implementation complete. Added Pagefind-based docs search with:
+
+      1. Post-build indexing script (scripts/build-docs-search.cjs) - scans docs dir, strips
+      markdown to plain text, feeds into Pagefind Node.js API, writes self-contained search index to
+      packages/web-ui/build/pagefind/
+
+      2. DocsSearch.svelte component - search input in docs sidebar and landing page, lazily loads
+      Pagefind client on first focus, debounced search, SPA navigation via goto()
+
+      3. Build pipeline integration - build:docs-search chained into build:web-ui, both GH Pages
+      workflows updated with BASE_PATH
+
+      4. 20 tests covering all 3 ACs - index structure, base path handling, build pipeline wiring,
+      component integration, real project indexing
+
+      All 8318 tests pass (0 failures, 5 skipped).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T14:03:51.647Z
