@@ -153669,6 +153669,13 @@ reviews:
           status: pass
           name: evidence log
         timestamp: 2026-04-21T00:32:57.314Z
+      - _ulid: 01KPPQ8SWXAGV99M9CV72G8YT7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPPQ8RX3S4YX4M3NQWSZNWK5
+        timestamp: 2026-04-21T00:33:00.317Z
     examined_commit: e01fb1bf515ef05a575334191653ee8f7449ed18
     external_links: []
     lifecycle_state: open
@@ -153678,8 +153685,29 @@ reviews:
       content_hash: ""
       ref: "@01KPP7XFJ7Z1MG2NQAXMWZTA6W"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPPQ8RX3S4YX4M3NQWSZNWK5
+        anchor:
+          type: code
+          commit: e01fb1bf515ef05a575334191653ee8f7449ed18
+          line_end: 825
+          line_start: 821
+          path: packages/daemon/src/server.ts
+          side: head
+        entries:
+          - _ulid: 01KPPQ8RX38RS0SFM15ZP52XE5
+            author: Jacob Chapel
+            body: Shutdown still misses in-flight shadow-sync starts. In server shutdown we only stop schedulers
+              already present in `shadowSyncSchedulers`, but `startShadowSyncForProject()` can still
+              be suspended in `loadProjectConfig()` with no map entry yet. Because shutdown never
+              marks those in-flight starts cancelled, that promise can resume after SIGTERM and run
+              `scheduler.start()`/`shadowSyncSchedulers.set()`, recreating background pulls after
+              the shutdown pass. This violates @config-shadow ac-17 under a
+              register-while-shutting-down race. The new shutdown test only exercises iterating the
+              current map, so this path is still uncovered.
+            created_at: 2026-04-21T00:32:59.299Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T00:11:13.490Z
-    updated_at: 2026-04-21T00:32:56.326Z
+    updated_at: 2026-04-21T00:32:59.299Z
     notes: []
