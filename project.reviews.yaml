@@ -162099,7 +162099,20 @@ reviews:
     slugs: []
     title: Review @01KPRZ17RC7NPM3BSCAZX3ZJ0C
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Pre-existing repo baseline failure unrelated to this branch: 1 schema error in
+          .kspec/modules/meta.yaml (modules[0].traits.0 expected string, received object), plus
+          existing alignment/completeness warnings. No branch-specific validate regression found in
+          reviewed files."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T21:55:03.153Z
+        completed_at: 2026-04-21T21:55:03.153Z
     events:
       - _ulid: 01KPS01GG147RY627GWEH2DTYM
         actor: Jacob Chapel
@@ -162121,6 +162134,13 @@ reviews:
           kind: nit
           thread_ulid: 01KPS065SF44MWX018CSD8X6KK
         timestamp: 2026-04-21T21:47:21.519Z
+      - _ulid: 01KPS0MAYN7H76BGA7QZ7FCT7B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-21T21:55:04.277Z
     examined_commit: eb78b5cd75d4836765997092e16a0ba688d7229c
     external_links: []
     lifecycle_state: open
@@ -162145,5 +162165,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-21T21:44:47.361Z
-    updated_at: 2026-04-21T21:47:20.240Z
+    updated_at: 2026-04-21T21:55:03.153Z
     notes: []
