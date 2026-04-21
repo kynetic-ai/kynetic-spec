@@ -59353,12 +59353,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-21T14:08:00.521Z
+      updated_at: 2026-04-21T23:40:26.254Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T14:08:00.521Z
+      updated_at: 2026-04-21T23:40:26.254Z
     integration:
       status: pending
       detail: null
@@ -59366,17 +59366,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a2b75192c83a79bc86f3d60d7759f2f6f95f510b
-      updated_at: 2026-04-21T14:08:00.521Z
-    lifecycle_state: ready
+      updated_at: 2026-04-21T23:40:26.254Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KPPN44NG07GJCSG9RMPSQ45W"
     task_slug: task-docs-search
     timestamps:
       closed_at: null
       last_active_at: 2026-04-21T13:32:30.979Z
-      last_reconciled_at: 2026-04-21T14:08:00.521Z
+      last_reconciled_at: 2026-04-21T23:40:26.254Z
       created_at: 2026-04-21T13:32:09.579Z
-      updated_at: 2026-04-21T14:08:00.521Z
+      updated_at: 2026-04-21T23:40:26.254Z
     workspace_id: dispatch-workspace-01KPPN44NG07GJCSG9RMPSQ45W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -59384,13 +59384,13 @@ workspaces:
         branch_mode: detached
         branch_ref: null
         head: ffccaaeb0d1ed717e535dc84fd5b49bdfba0b12d
-        last_seen_at: 2026-04-21T14:06:32.414Z
+        last_seen_at: 2026-04-21T23:40:26.254Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-search-01kppn44-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-docs-search/01kppn44
         head: ffccaaeb0d1ed717e535dc84fd5b49bdfba0b12d
-        last_seen_at: 2026-04-21T14:06:32.414Z
+        last_seen_at: 2026-04-21T23:40:26.254Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-search-01kppn44
   - active_role: null
     base_branch_point: a2b75192c83a79bc86f3d60d7759f2f6f95f510b
