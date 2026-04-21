@@ -1,1 +1,34 @@
-notes: []
+notes:
+  - _ulid: 01KPQAPF8KAWVY8P49NABSM8X8
+    content: >-
+      Approach: After thorough investigation of the review verdict -> task state propagation flow,
+      identified that post-verdict task reads can be stale because:
+
+
+      1. The CLI review verdict handler (review.ts) mutates task state via mutateTask() which writes
+      to disk, but the daemon entity cache is only updated post-command via the generic writeThrough
+      in command.ts. If the writeThrough silently fails (non-fatal catch), the cache remains stale.
+
+
+      2. The daemon REST API route (reviews.ts) does per-ULID writeThrough for transitioned tasks,
+      which is more targeted but relies on the incremental update path.
+
+
+      3. The core issue: mutateTask() does NOT notify the entity cache about the state change. The
+      notification depends entirely on the post-command writeThrough or file watcher (debounced
+      100ms).
+
+
+      Fix approach: Add inline entity cache write-through within the review verdict handler itself
+      for transitioned task ULIDs, ensuring the cache is updated atomically with the mutation - not
+      deferred to post-command hooks. This makes the verdict handler self-contained for cache
+      consistency.
+
+
+      Edge cases: concurrent commands, write-through failures, entity cache context availability.
+
+      Test plan: 8 ACs to verify, integration tests using daemon command API with mock cache, plus
+      CLI-level tests for the direct path.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T06:12:31.123Z
