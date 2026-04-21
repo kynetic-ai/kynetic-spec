@@ -30261,7 +30261,7 @@ runs:
     started_at: 2026-04-21T10:25:08.812Z
   - _ulid: 01KPQT2W8Z276J1S3R3C8JKMER
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30284,7 +30284,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-21T10:42:44.459Z
-        completed_at: 2026-04-21T10:42:44.459Z
+        completed_at: 2026-04-21T10:42:59.125Z
+        notes: "Proposed improvement: add coverage for documentation command examples so guide pages are
+          checked against the actual CLI surface, or otherwise add a test/review mechanism that
+          fails when docs reference unsupported commands or assume a fixed integration branch.
+          Scope: medium. Benefit: catches user-facing docs drift before review and reduces purely
+          manual command verification."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-21T10:42:59.125Z
+        completed_at: 2026-04-21T10:42:59.125Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T10:41:26.303Z
