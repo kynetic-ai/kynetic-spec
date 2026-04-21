@@ -30206,7 +30206,7 @@ runs:
     completed_at: 2026-04-21T10:11:31.914Z
   - _ulid: 01KPQS51PCA30W8NCF73A42ZB6
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30220,7 +30220,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T10:25:41.340Z
-        completed_at: 2026-04-21T10:25:41.340Z
+        completed_at: 2026-04-21T10:25:53.064Z
+        notes: "Friction points: 1) the reviewer snapshot did not have  on PATH, so every workflow command
+          had to be rerouted through ; 2)  failed for unrelated pre-existing shadow metadata, which
+          adds noise during review because the deterministic validation gate cannot be used as a
+          branch-specific signal; 3) the manual merge opened an interactive editor for the merge
+          commit message, which is awkward in automated review/merge flows and required terminal
+          interaction just to accept the default message."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T10:25:53.064Z
+        completed_at: 2026-04-21T10:25:53.064Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T10:25:08.812Z
