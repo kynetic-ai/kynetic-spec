@@ -2855,3 +2855,24 @@ inbox:
       - docs
     added_by: "@claude"
     created_at: 2026-04-21T03:14:36.374Z
+  - _ulid: 01KPQATM5TA69TAMYBNGNB6665
+    text: Improve the approved-merge workflow for detached review snapshots that cannot check out the
+      integration branch because the target branch is already active in another worktree. The merge
+      tooling or docs should support performing the required merge from the primary integration
+      worktree instead of failing at git checkout.
+    tags:
+      - reflection
+      - workflow
+      - git
+    added_by: Jacob Chapel
+    created_at: 2026-04-21T06:14:47.226Z
+  - _ulid: 01KPQATM8AYHPE2H488DCZFBYG
+    text: Stabilize tests/test-runner.test.ts so nested runner invocations do not read stale shared
+      _default cache results from earlier failed runs. Review-time reruns can currently fail
+      spuriously because the assertion sees cached failed output instead of a fresh passing summary.
+    tags:
+      - reflection
+      - tests
+      - cache
+    added_by: Jacob Chapel
+    created_at: 2026-04-21T06:14:47.306Z
