@@ -29369,7 +29369,7 @@ runs:
     completed_at: 2026-04-21T06:46:09.874Z
   - _ulid: 01KPQDTJGQHMZV1C6RZRP75WDV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -29382,7 +29382,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T07:08:10.870Z
-        completed_at: 2026-04-21T07:08:10.870Z
+        completed_at: 2026-04-21T07:08:11.931Z
+        notes: "Friction: shared docs section classification now depends on entry.path for normalized index
+          pages, but synthetic entries still carry repo-root paths. That mixed invariant created a
+          real navigation regression and the tests missed it because they modeled only
+          directory-backed entries."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T07:08:11.931Z
+        completed_at: 2026-04-21T07:08:11.931Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T07:07:11.255Z
