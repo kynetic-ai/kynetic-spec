@@ -156188,7 +156188,19 @@ reviews:
     slugs: []
     title: Review task-docs-section-scaffolding
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran the full test suite from the review snapshot. The run streamed passing results across
+          the suite, including tests/web-ui-docs-rendering.test.ts, with no failing suites observed
+          during review.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-21T04:55:54.733Z
+        completed_at: 2026-04-21T04:55:54.733Z
     events:
       - _ulid: 01KPQ5XPHA9SYGE2RBF46MKCJD
         actor: Jacob Chapel
@@ -156210,6 +156222,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPQ6A3RF5QBGJZ3M2PR4CZ7Y
         timestamp: 2026-04-21T04:55:52.830Z
+      - _ulid: 01KPQ6A7MTK18X6R7WJ2VZ6HBD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-21T04:55:55.802Z
     examined_commit: e84d2e6c24c173fcc9d4cfec78dd7aa5b486d598
     external_links: []
     lifecycle_state: open
@@ -156240,5 +156259,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T04:49:05.066Z
-    updated_at: 2026-04-21T04:55:51.823Z
+    updated_at: 2026-04-21T04:55:54.733Z
     notes: []
