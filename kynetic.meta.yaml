@@ -15806,6 +15806,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T12:48:24.954Z
+  - _ulid: 01KPR33DH22YGA735BB76GM23P
+    type: success
+    content: Review system (codex reviewer) validated CLI command correctness in documentation before
+      publication. During troubleshooting docs review, reviewer tested kspec review refresh against
+      a task-subject review and confirmed it rejects with 'Refresh is only supported for code
+      subjects.' This caught a broken recovery procedure that would have left readers with another
+      error instead of a fix. The review-as-verification pattern for docs content is effective at
+      catching commands that don't match the system's actual behavior.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T13:19:01.154Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
