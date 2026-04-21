@@ -15611,6 +15611,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T09:22:44.251Z
+  - _ulid: 01KPQNK56HPPPY6NH493HMMK1S
+    type: friction
+    content: Review-thread and review-check payloads are brittle when passed through shell-quoted CLI
+      invocations. In this session, initial kspec review comment and kspec review check commands had
+      their bodies/evidence corrupted by shell expansion when the text contained command-like
+      strings, and the review had to be cleaned up with corrected file-backed payloads. This is a
+      repeatable agent workflow hazard for review automation and reinforces the need for safer
+      payload-input patterns on review commands.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T09:22:56.849Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
