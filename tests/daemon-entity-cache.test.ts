@@ -382,6 +382,41 @@ describe("ProjectEntityCache", () => {
       expect(detail).not.toBeNull();
     });
 
+    it("should invalidate cached history via applyTaskMutation", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("tasks");
+
+      // After loadDomain, history should be populated (even if empty array)
+      const historyBefore = cache.getTaskHistory("01TASKA0000000000000000000");
+      expect(historyBefore).not.toBeNull();
+
+      // Apply a mutation that changes the task status
+      const initialIndex = cache.getTaskIndex();
+      const initialEntry = initialIndex?.find((t) => t._ulid === "01TASKA0000000000000000000");
+      const mutatedTask = {
+        _ulid: "01TASKA0000000000000000000",
+        slugs: initialEntry!.slugs,
+        title: initialEntry!.title,
+        type: initialEntry!.type,
+        status: "in_progress",
+        priority: initialEntry!.priority,
+        tags: initialEntry!.tags,
+        notes: [],
+        _sourceFile: "/mock/task.yaml",
+      } as any;
+
+      cache.applyTaskMutation("01TASKA0000000000000000000", mutatedTask);
+
+      // History should be invalidated (null) so next read falls through to disk
+      const historyAfter = cache.getTaskHistory("01TASKA0000000000000000000");
+      expect(historyAfter).toBeNull();
+
+      // But detail and index tiers should still be updated
+      const updatedDetail = cache.getTaskDetail("01TASKA0000000000000000000");
+      expect(updatedDetail).not.toBeNull();
+      expect(updatedDetail!.status).toBe("in_progress");
+    });
+
     it("should not update when tasks domain is not ready", () => {
       // Cache not loaded — domain state is "unloaded"
       const cache = new ProjectEntityCache(projectA);

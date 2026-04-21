@@ -721,6 +721,12 @@ export class ProjectEntityCache {
 
     // Update detail tier
     this.tasks.details.set(ulid, task);
+
+    // Invalidate history tier so subsequent reads fall through to disk
+    // and pick up the freshly-written history entry from the mutation.
+    // Without this, getTaskHistory() / loadTaskWithHistory() would return
+    // stale cached history that predates the mutation.
+    this.tasks.historyDetails.delete(ulid);
   }
 
   /**
