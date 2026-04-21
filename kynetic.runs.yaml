@@ -28596,7 +28596,7 @@ runs:
     completed_at: 2026-04-21T02:44:42.321Z
   - _ulid: 01KPPZPCADAW5SF7H1887995KF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -28611,7 +28611,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-21T03:00:51.647Z
-        completed_at: 2026-04-21T03:00:51.647Z
+        completed_at: 2026-04-21T03:00:58.752Z
+        notes: "Friction points: The docs rendering tests passed while repository-authored links in bundled
+          docs still produced 404s, because out-of-tree markdown links were deliberately left
+          untouched and there was no behavioral check that those preserved links still resolved in
+          the built app. Also, workflow inspection was less smooth than expected because workflow
+          show requires an explicit run ref even when only one run is active."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-21T03:00:58.752Z
+        completed_at: 2026-04-21T03:00:58.752Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T03:00:13.773Z
