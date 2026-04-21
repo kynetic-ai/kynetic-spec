@@ -30892,7 +30892,7 @@ runs:
     completed_at: 2026-04-21T19:52:01.385Z
   - _ulid: 01KPRVE2JVXXECX6KQRPZ1F66K
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30914,7 +30914,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-21T20:25:33.377Z
-        completed_at: 2026-04-21T20:25:33.377Z
+        completed_at: 2026-04-21T20:25:34.385Z
+        notes: "Friction points: full npm test appeared to hang after green suite output, requiring extra
+          waiting to confirm completion; that friction is already tracked separately. A second
+          friction surfaced during merge: the merge skill says to checkout the integration branch,
+          but in this detached review snapshot  failed because  was already attached to the main
+          worktree, so the merge had to be executed with  instead."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-21T20:25:34.385Z
+        completed_at: 2026-04-21T20:25:34.385Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T20:24:16.219Z
