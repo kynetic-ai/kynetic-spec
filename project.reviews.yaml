@@ -158587,6 +158587,19 @@ reviews:
         runner: reviewer
         created_at: 2026-04-21T09:07:57.236Z
         completed_at: 2026-04-21T09:07:57.236Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec validate on head and on base dev commit
+          4520787d7cfd3a7aadaa938f229c65b5f771d646. Both report the same pre-existing meta schema
+          error in .kspec/modules/meta.yaml plus existing coverage warnings, so this task did not
+          introduce a validation regression.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T09:08:02.474Z
+        completed_at: 2026-04-21T09:08:02.474Z
     events:
       - _ulid: 01KPQMNFHCGQ67QCNRZXKB9965
         actor: Jacob Chapel
@@ -158622,6 +158635,13 @@ reviews:
           status: pass
           name: evidence log
         timestamp: 2026-04-21T09:07:59.046Z
+      - _ulid: 01KPQMQXHRKGYBMHRJ8X8FKQQZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-21T09:08:04.280Z
     examined_commit: 26a2c1d83d9fe4ed39751239fb63ee8a0ecc20cc
     external_links: []
     lifecycle_state: open
@@ -158634,5 +158654,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-21T09:06:44.396Z
-    updated_at: 2026-04-21T09:07:57.236Z
+    updated_at: 2026-04-21T09:08:02.474Z
     notes: []
