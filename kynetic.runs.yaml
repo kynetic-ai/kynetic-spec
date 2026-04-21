@@ -28756,7 +28756,7 @@ runs:
     started_at: 2026-04-21T03:35:46.398Z
     completed_at: 2026-04-21T03:37:20.090Z
   - _ulid: 01KPQ330JHWJ37VXM8KZP4HB0G
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -28805,7 +28805,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-21T04:01:15.908Z
-        completed_at: 2026-04-21T04:01:15.908Z
+        completed_at: 2026-04-21T04:01:24.656Z
+        notes: "Capture: no new items recorded. This session produced one concrete blocker for the docs
+          review, but the broader process learnings were already tracked by existing observations
+          (@01KNA4979, @01KFCXYZ, @01KMWJ4XB). Avoided duplicating reflection output."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T03:59:33.457Z
+    completed_at: 2026-04-21T04:01:24.656Z
