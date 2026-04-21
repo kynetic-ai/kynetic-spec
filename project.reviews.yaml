@@ -161771,7 +161771,20 @@ reviews:
     slugs: []
     title: Review task-dispatch-bootstrap-project-agnostic-and-env-isolation
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate fails on repository-wide pre-existing issues outside this diff, including
+          /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml schema error
+          (modules[0].traits.0 expected string, received object) and existing AC coverage/reference
+          warnings.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-21T19:50:17.719Z
+        completed_at: 2026-04-21T19:50:17.719Z
     events:
       - _ulid: 01KPRS5MQAJ3B4MPGF5WEP8EDT
         actor: Jacob Chapel
@@ -161800,6 +161813,13 @@ reviews:
           kind: nit
           thread_ulid: 01KPRSFRSZFHPRQYXBE0HN4NNY
         timestamp: 2026-04-21T19:50:15.672Z
+      - _ulid: 01KPRSFWYDR4H0FZBPJJQ032HB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec-validate
+        timestamp: 2026-04-21T19:50:18.829Z
     examined_commit: 17a78d69b4d5e18ce8d6d8c01a3eccf0dcdb0cc4
     external_links: []
     lifecycle_state: open
@@ -161857,5 +161877,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-21T19:44:42.730Z
-    updated_at: 2026-04-21T19:50:14.591Z
+    updated_at: 2026-04-21T19:50:17.719Z
     notes: []
