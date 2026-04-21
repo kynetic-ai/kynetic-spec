@@ -30001,9 +30001,23 @@ runs:
     completed_at: 2026-04-21T09:11:34.257Z
   - _ulid: 01KPQNF9EJQN87DRH5FHFFESP4
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T09:20:50.130Z
+        completed_at: 2026-04-21T09:21:27.385Z
+        notes: "What worked well: the review/task integration remains strong in detached snapshots. Creating
+          a fresh review, anchoring blockers, and submitting a verdict cleanly auto-closed the
+          review and moved the task from pending_review to needs_work without manual state repair.
+          Verification also stayed objective because npm test passed in the snapshot and the
+          blockers were tied to concrete current-product mismatches rather than subjective doc
+          style."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T09:21:27.385Z
+        completed_at: 2026-04-21T09:21:27.385Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-21T09:20:50.130Z
