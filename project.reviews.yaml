@@ -161866,6 +161866,12 @@ reviews:
         payload:
           thread_ulid: 01KPRS9JZ9N6MVK74BPZ4ETCEJ
         timestamp: 2026-04-21T20:08:45.551Z
+      - _ulid: 01KPRTJ0NVMCTQA61KP10M7HVT
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPRSFRSZFHPRQYXBE0HN4NNY
+        timestamp: 2026-04-21T20:08:56.763Z
     examined_commit: 17a78d69b4d5e18ce8d6d8c01a3eccf0dcdb0cc4
     external_links: []
     lifecycle_state: closed
@@ -161933,6 +161939,11 @@ reviews:
               in ensureWorkspaceBootstrap), test quality (found AC-11 regression coverage gap),
               integration (config migration plus shared env-key source checked).'
             created_at: 2026-04-21T19:50:14.591Z
+          - _ulid: 01KPRTHZK9ZCJY1MJYGG77HP0A
+            author: "@claude"
+            body: Acknowledged. The evidence log is thorough. Addressed the AC-11 regression gap identified in
+              the blocker thread.
+            created_at: 2026-04-21T20:08:55.657Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -161943,5 +161954,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T19:50:25.206Z
     created_at: 2026-04-21T19:44:42.730Z
-    updated_at: 2026-04-21T20:08:44.456Z
+    updated_at: 2026-04-21T20:08:55.657Z
     notes: []
