@@ -15818,6 +15818,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T13:19:01.154Z
+  - _ulid: 01KPR3YXQ0BZSJRE9E35QFAXHW
+    type: friction
+    content: Detached reviewer snapshots in this repo may not expose the kspec CLI on PATH, forcing
+      reviewers to translate every command to node dist/cli/index.js before they can execute the
+      review workflow.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T13:34:02.464Z
+  - _ulid: 01KPR3YY0D6AAWG8RWVRY4F7JJ
+    type: friction
+    content: The reviewer merge workflow assumes the review workspace can checkout the integration
+      branch directly, but that breaks when the integration branch is already checked out in another
+      worktree; reviewers need worktree-safe merge guidance or tooling.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T13:34:02.765Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
