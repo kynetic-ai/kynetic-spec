@@ -15879,6 +15879,17 @@ observations:
     resolved: false
     workflow_ref: "@01KPRVE2"
     created_at: 2026-04-21T20:26:05.862Z
+  - _ulid: 01KPS00C5DZ7XWQT24GZ8HP3JB
+    type: success
+    content: Clean single-pass execution of a rename-and-narrow refactoring task
+      (task-narrow-dispatcher-runtime-mode-env-isolation). Detailed task description with exact file
+      paths, constant names, and doc comment content enabled direct implementation with zero
+      ambiguity. 3 files changed, all 8297 tests passed on first run, no regressions. Confirms the
+      pattern tracked in existing observations about detailed task descriptions.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-21T21:44:10.157Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
