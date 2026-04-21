@@ -30321,9 +30321,21 @@ runs:
     completed_at: 2026-04-21T10:43:20.075Z
   - _ulid: 01KPQVKSS55NEF4KEHCZRYEH8A
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-21T11:08:09.381Z
+        completed_at: 2026-04-21T11:09:37.488Z
+        notes: "Worked well: (1) AC-focused docs rendering tests made the Concepts review objective and fast
+          once coverage was added. (2) Verifying docs claims against the live CLI and full npm test
+          run gave high-confidence approval evidence. (3) The review/task integration plus manual
+          merge path still let the task move from pending_review to merged+completed in one pass."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-21T11:09:37.488Z
+        completed_at: 2026-04-21T11:09:37.488Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T11:08:09.381Z
