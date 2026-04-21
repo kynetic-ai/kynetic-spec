@@ -30482,7 +30482,7 @@ runs:
     completed_at: 2026-04-21T11:49:19.289Z
   - _ulid: 01KPQYCSZ1SGKK222A8VQ0E64G
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -30505,7 +30505,14 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-21T11:57:47.836Z
-        completed_at: 2026-04-21T11:57:47.836Z
+        completed_at: 2026-04-21T11:57:48.943Z
+        notes: "Proposed improvements: no new reflection item proposed. Existing observation coverage
+          already captures the detached-snapshot CLI friction, and the documentation mismatch should
+          be handled in the current task fix cycle rather than promoted as separate systemic work."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-21T11:57:48.943Z
+        completed_at: 2026-04-21T11:57:48.943Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-21T11:56:45.921Z
