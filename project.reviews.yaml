@@ -154464,6 +154464,13 @@ reviews:
           status: pass
           name: npm run test:e2e -- tests/e2e/docs.spec.ts
         timestamp: 2026-04-21T02:23:03.900Z
+      - _ulid: 01KPPXJWD6DNG6YBASJXMG3EBK
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPPXJV6TSRG480GZ6S6XG6FN
+        timestamp: 2026-04-21T02:23:22.022Z
     examined_commit: e8ab506968146ff436879a0cf79c3190095ebffa
     external_links: []
     lifecycle_state: open
@@ -154473,8 +154480,27 @@ reviews:
       content_hash: ""
       ref: "@01KPPN42CDKS6A6951ZATDPKXP"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPPXJV6TSRG480GZ6S6XG6FN
+        anchor:
+          type: code
+          commit: e8ab506968146ff436879a0cf79c3190095ebffa
+          line_end: 52
+          line_start: 46
+          path: packages/web-ui/src/routes/docs/[...slug]/+page.svelte
+          side: head
+        entries:
+          - _ulid: 01KPPXJV6TYC71D1ZMX00QHC0V
+            author: Jacob Chapel
+            body: "This click handler unconditionally prevents the browser from following any relative .md link,
+              then silently does nothing when resolveDocsLink() returns null. That breaks real links
+              in shipped docs content: docs/getting-started.md links to ../INSTALL.md and
+              ../AGENTS.md, and a direct runtime check on this snapshot returns null for both
+              targets. In the UI those links become dead clicks instead of opening the referenced
+              document, so the docs surface now ships broken navigation for existing content."
+            created_at: 2026-04-21T02:23:20.794Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-21T02:11:34.103Z
-    updated_at: 2026-04-21T02:23:02.679Z
+    updated_at: 2026-04-21T02:23:20.794Z
     notes: []
