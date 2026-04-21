@@ -18,7 +18,7 @@ description: |
 spec_ref: "@docs-release-notes-availability"
 plan_ref: "@plan-user-documentation-foundation"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-docs-rendering"
@@ -33,11 +33,11 @@ review_ref: "@01KPQ6ZMKCXV554CQA8K2VNXCN"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-docs-release-notes-rendering/01kppn44
-  captured_at: 2026-04-21T05:05:44.414Z
-  commit: 26c1e6111f37479fd28796df983166399b626452
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-04-21T05:38:19.932Z
+  commit: b9b3da5ae7273a4973fd8589f5b69f2c172d9dd6
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-docs-release-notes-rendering/01kppn44
 session_id: 01KPQ7WKH0VGRJZPKVQNFC0YHH
 history:
   - author: "@claude"
@@ -110,8 +110,35 @@ history:
         previous: 2026-04-21T04:49:23.095Z
     command: task-start
     timestamp: 2026-04-21T05:38:16.529Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-docs-release-notes-rendering/01kppn44
+          captured_at: 2026-04-21T05:38:19.932Z
+          commit: b9b3da5ae7273a4973fd8589f5b69f2c172d9dd6
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-docs-release-notes-rendering/01kppn44
+        previous:
+          review_url: null
+          branch: dispatch/task/task-docs-release-notes-rendering/01kppn44
+          captured_at: 2026-04-21T05:05:44.414Z
+          commit: 26c1e6111f37479fd28796df983166399b626452
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-04-21T05:38:19.936Z
+        previous: 2026-04-21T05:05:44.416Z
+    command: task-submit
+    timestamp: 2026-04-21T05:38:19.936Z
 created_at: 2026-04-20T23:55:30.057Z
 started_at: 2026-04-21T05:38:16.528Z
-submitted_at: 2026-04-21T05:05:44.416Z
+submitted_at: 2026-04-21T05:38:19.936Z
 todos: []
 automation: eligible
