@@ -8,3 +8,11 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-21T09:02:48.096Z
+  - _ulid: 01KPQMZANATZFBZQNB2QAGESP4
+    content: Completed authoring all 8 concept pages. Each follows the what/why/how-it-surfaces shape
+      per AC-2. The Specs Tasks Plans and Inbox page includes decision rules per kind (AC-3).
+      Landing page updated with links to all 8 pages (AC-1). All 8157 tests pass across 3 shards. No
+      command flags or schema fields enumerated in any page — content stays durable across releases.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T09:12:07.082Z
