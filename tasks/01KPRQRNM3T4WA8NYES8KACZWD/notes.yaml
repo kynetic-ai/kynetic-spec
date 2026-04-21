@@ -28,3 +28,41 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-21T19:24:50.947Z
+  - _ulid: 01KPRS09KJY0QBV2M723514BJJ
+    content: >-
+      Implementation complete. Summary of changes:
+
+
+      1. bootstrap.ts: Removed ~150 lines of project-specific code: BUILD_ARTIFACTS,
+      BUILD_INPUT_PATHS constants, DependencyHealth/BuildHealth interfaces, implicitDependencyStep,
+      implicitBuildStep, checkWorkspaceDependencies, checkWorkspaceBuild,
+      canResolveWorkspaceDependency, dependencySearchRoot, collectDirectDependencies,
+      readPackageJson, pathExists, newestPathMtime, newestBuildInput functions. Removed
+      dependencyInvalidationReason/buildInvalidationReason from computeInvalidationReasons. Removed
+      implicit step prepending from ensureWorkspaceBootstrap.
+
+
+      2. bootstrap.ts: Added buildBootstrapStepEnv() that strips DAEMON_RUNTIME_ENV_KEYS from
+      process.env before building subprocess environment. Used in runShell instead of raw
+      process.env spread.
+
+
+      3. serve.ts: Exported DAEMON_RUNTIME_ENV_KEYS constant listing the env vars
+      buildDaemonChildEnv strips/overrides (KSPEC_NO_DAEMON, BUN_ENV, NODE_ENV). Bootstrap env
+      isolation imports this same list.
+
+
+      4. kspec.config.yaml: Added explicit bootstrap steps (npm ci and npm run build) to this
+      project's dispatch config.
+
+
+      5. Tests: Added 4 new tests for AC-11 (command fidelity + zero spawns with no config), AC-12
+      (runtime mode env isolation), AC-13 (step order). Removed 5 tests and 3 helper functions that
+      tested implicit dependency/build behavior. Net: -621 lines removed, stable at 20 tests in the
+      file.
+
+
+      Full test suite: 8297 passed, 5 skipped, 0 failed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T19:41:47.506Z
