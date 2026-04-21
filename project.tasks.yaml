@@ -26632,7 +26632,7 @@
   type: task
   spec_ref: "@docs-guides-section"
   plan_ref: "@plan-user-documentation-foundation"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-docs-section-scaffolding"
@@ -26642,7 +26642,7 @@
     - content
     - guides
   review_ref: "@01KPQVPJ52Q92VMTDNC06XKB11"
-  notes_count: 5
+  notes_count: 6
   todos_count: 0
   created_at: 2026-04-20T23:55:29.496Z
   started_at: 2026-04-21T11:07:37.422Z
