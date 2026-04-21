@@ -1410,3 +1410,141 @@ describe("getting started section content", () => {
     }
   });
 });
+
+// ─── Concepts Section Content ────────────────────────────────────────────────
+
+describe("concepts section content", () => {
+  let docsPlugin: typeof import("../packages/web-ui/vite-plugin-docs")["docsPlugin"];
+  let renderDocsMarkdown: typeof import("../packages/web-ui/src/lib/utils/docs-markdown")["renderDocsMarkdown"];
+  let manifest: { entries: Array<{ slug: string; title: string; content: string; path: string }> };
+
+  beforeAll(async () => {
+    const pluginMod = await import("../packages/web-ui/vite-plugin-docs");
+    docsPlugin = pluginMod.docsPlugin;
+    const mdMod = await import("../packages/web-ui/src/lib/utils/docs-markdown");
+    renderDocsMarkdown = mdMod.renderDocsMarkdown;
+
+    const docsDir = join(__dirname, "..", "docs");
+    const plugin = docsPlugin(docsDir, {
+      exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
+    });
+    const load = plugin.load as (id: string) => string | undefined;
+    const result = load("\0virtual:docs")!;
+    manifest = JSON.parse(result.slice("export default ".length, -1));
+  });
+
+  function getEntry(slug: string) {
+    return manifest.entries.find((e) => e.slug === slug);
+  }
+
+  // The eight required Concepts pages
+  const CONCEPTS_PAGES = [
+    "concepts/what-kspec-is",
+    "concepts/working-with-an-agent",
+    "concepts/specs-tasks-plans-inbox",
+    "concepts/the-shadow-branch",
+    "concepts/traits",
+    "concepts/reviews",
+    "concepts/agents-and-dispatch",
+    "concepts/web-ui-and-daemon",
+  ];
+
+  // AC: @docs-concepts-section ac-1
+  describe("concept pages are present and linked from the landing page", () => {
+    it("all eight Concepts pages exist in the manifest", () => {
+      for (const slug of CONCEPTS_PAGES) {
+        const entry = getEntry(slug);
+        expect(entry, `page ${slug} should exist`).toBeDefined();
+      }
+    });
+
+    // AC: @docs-concepts-section ac-1
+    it("landing page links to all eight concept pages", () => {
+      const indexEntry = getEntry("concepts")!;
+      const expectedLinks = [
+        "./what-kspec-is.md",
+        "./working-with-an-agent.md",
+        "./specs-tasks-plans-inbox.md",
+        "./the-shadow-branch.md",
+        "./traits.md",
+        "./reviews.md",
+        "./agents-and-dispatch.md",
+        "./web-ui-and-daemon.md",
+      ];
+
+      for (const link of expectedLinks) {
+        expect(indexEntry.content, `index should link to ${link}`).toContain(link);
+      }
+    });
+  });
+
+  // AC: @docs-concepts-section ac-2
+  describe("each page explains what, why, and how without schema fields or command flags", () => {
+    for (const slug of CONCEPTS_PAGES) {
+      const pageName = slug.split("/")[1];
+
+      // AC: @docs-concepts-section ac-2
+      it(`${pageName} has a "Why" section`, () => {
+        const entry = getEntry(slug)!;
+        const rendered = renderDocsMarkdown(entry.content);
+        // Each page must have an h2 heading explaining why the concept exists
+        // Rendered headings include an anchor tag before the text
+        expect(rendered.html).toMatch(/<h2[^>]*>.*?Why\b/i);
+      });
+
+      // AC: @docs-concepts-section ac-2
+      it(`${pageName} has a "How" or "surface in use" section`, () => {
+        const entry = getEntry(slug)!;
+        const rendered = renderDocsMarkdown(entry.content);
+        // Each page must have an h2 heading explaining how the concept surfaces in use
+        expect(rendered.html).toMatch(/<h2[^>]*>.*?How\b/i);
+      });
+
+      // AC: @docs-concepts-section ac-2
+      it(`${pageName} does not enumerate schema fields that change per release`, () => {
+        const entry = getEntry(slug)!;
+        // Schema field patterns: backtick-wrapped snake_case identifiers (spec_ref, plan_ref, etc.)
+        // and backtick-wrapped key: value metadata patterns (type: trait, automation: eligible)
+        const schemaFieldPattern = /`[a-z]+_[a-z]+`|`type:\s*\w+`|`automation:\s*\w+`|`traits:\s*\[/;
+        expect(entry.content).not.toMatch(schemaFieldPattern);
+      });
+    }
+  });
+
+  // AC: @docs-concepts-section ac-3
+  describe("specs-tasks-plans-inbox page provides decision rules", () => {
+    // AC: @docs-concepts-section ac-3
+    it("contains a decision rule section", () => {
+      const entry = getEntry("concepts/specs-tasks-plans-inbox")!;
+      expect(entry.content).toMatch(/how to decide|decision/i);
+    });
+
+    // AC: @docs-concepts-section ac-3
+    it("provides a decision rule for specs", () => {
+      const entry = getEntry("concepts/specs-tasks-plans-inbox")!;
+      // The decision section should guide the reader to create a spec for behavior changes
+      expect(entry.content).toMatch(/spec.*acceptance criteria|behavior change.*spec/i);
+    });
+
+    // AC: @docs-concepts-section ac-3
+    it("provides a decision rule for tasks", () => {
+      const entry = getEntry("concepts/specs-tasks-plans-inbox")!;
+      // The decision section should guide the reader to create a task for internal work
+      expect(entry.content).toMatch(/task.*directly|infrastructure.*task/i);
+    });
+
+    // AC: @docs-concepts-section ac-3
+    it("provides a decision rule for plans", () => {
+      const entry = getEntry("concepts/specs-tasks-plans-inbox")!;
+      // The decision section should guide the reader to create a plan for large efforts
+      expect(entry.content).toMatch(/plan.*first|large.*plan|spanning.*specs/i);
+    });
+
+    // AC: @docs-concepts-section ac-3
+    it("provides a decision rule for inbox items", () => {
+      const entry = getEntry("concepts/specs-tasks-plans-inbox")!;
+      // The decision section should guide the reader to use inbox for vague/incomplete items
+      expect(entry.content).toMatch(/inbox.*vague|incomplete.*inbox|triage/i);
+    });
+  });
+});

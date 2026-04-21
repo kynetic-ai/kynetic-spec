@@ -24,7 +24,7 @@ kspec ships with four built-in agent definitions: a task worker that handles imp
 The dispatch engine is a loop that watches for events and matches them to agents:
 
 1. **An event occurs** — a task becomes ready, a submission arrives for review, or a fix cycle returns a task to the worker.
-2. **The engine checks dispatch rules** — each agent's rules specify which events it handles and any filters (like requiring the `automation: eligible` flag on tasks).
+2. **The engine checks dispatch rules** — each agent's rules specify which events it handles and any filters (like requiring a task to be marked eligible for automation).
 3. **A matching agent is invoked** — the engine spawns the agent in an isolated workspace with the task context.
 4. **The agent works** — it follows the task lifecycle: reads the spec, implements, tests, notes, and submits.
 5. **The cycle continues** — the submitted task triggers a review event, which the reviewer agent picks up.
@@ -37,7 +37,7 @@ Dispatch automates the routing, not the judgment. Agents can be blocked just lik
 
 When an agent blocks a task, it records a reason and checks whether other eligible tasks are available. If none are, the agent stops and the dispatch engine waits for the situation to change.
 
-Tasks must be explicitly marked as `automation: eligible` to be picked up by dispatch. This is a deliberate gate — not every task should be automated, and the decision to automate is a human one.
+Tasks must be explicitly marked as eligible for automation to be picked up by dispatch. This is a deliberate gate — not every task should be automated, and the decision to automate is a human one.
 
 ## How Agents and Dispatch Surface in Use
 

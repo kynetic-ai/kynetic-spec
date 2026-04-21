@@ -20,7 +20,7 @@ Specs don't describe how to implement something. They describe the outcome. A sp
 
 ### Tasks
 
-A task tracks **the work of building something**. It points to a spec (via `spec_ref`) and carries its own lifecycle: pending, in progress, under review, completed.
+A task tracks **the work of building something**. It points back to a spec and carries its own lifecycle: pending, in progress, under review, completed.
 
 Tasks are where execution happens. They accumulate notes about decisions and discoveries, link to branches and commits, and eventually get reviewed against the spec's acceptance criteria. A task doesn't duplicate the spec — it references it.
 

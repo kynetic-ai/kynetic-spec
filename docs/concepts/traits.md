@@ -4,20 +4,20 @@ Traits are reusable acceptance criteria that apply across multiple specs. Instea
 
 ## Why They Exist
 
-Some requirements cut across features. "All CLI commands with structured output support a `--json` flag" is not specific to any one command — it applies to every command that produces structured output. Without traits, you'd either duplicate that criterion in dozens of specs or leave it implicit and hope reviewers remember to check it.
+Some requirements cut across features. "All CLI commands with structured output support a machine-readable format" is not specific to any one command — it applies to every command that produces structured output. Without traits, you'd either duplicate that criterion in dozens of specs or leave it implicit and hope reviewers remember to check it.
 
 Traits make cross-cutting requirements explicit and auditable. When a spec declares that it implements a trait, it inherits the trait's acceptance criteria. Those inherited criteria show up during review and validation, so nothing gets overlooked.
 
 ## What a Trait Is
 
-A trait is a spec item with `type: trait`. Like other spec items, it carries a title, description, and acceptance criteria. The difference is in how it's used: traits aren't implemented directly. Instead, other spec items declare that they implement the trait.
+A trait is a special kind of spec item. Like other spec items, it carries a title, description, and acceptance criteria. The difference is in how it's used: traits aren't implemented directly. Instead, other spec items declare that they implement the trait.
 
-For example, a `json-output` trait might define:
+For example, a trait for machine-readable output might define:
 
-- Given a command produces output, when the `--json` flag is passed, then the output is valid JSON.
-- Given the `--json` flag is passed, when the command encounters an error, then the error is also returned as JSON.
+- Given a command produces output, when the user requests machine-readable format, then the output is valid structured data.
+- Given the user requests machine-readable format, when the command encounters an error, then the error is also returned as structured data.
 
-Any spec that declares `traits: [@json-output]` automatically inherits these criteria. The spec's own acceptance criteria and the trait's criteria are both required for the implementation to be considered complete.
+Any spec that declares it implements this trait automatically inherits these criteria. The spec's own acceptance criteria and the trait's criteria are both required for the implementation to be considered complete.
 
 ## How Traits Compose
 
