@@ -162,3 +162,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T02:23:39.229Z
+  - _ulid: 01KPPYNVYVE8ZNQ1Y0KEAQEYYT
+    content: "Fix cycle 3: Addressed the blocker — broken out-of-tree .md links (e.g. ../INSTALL.md from
+      getting-started.md). Root cause: event.preventDefault() was called unconditionally before
+      checking resolveDocsLink() result. Two fixes: (1) click handler now only prevents default when
+      resolution succeeds, (2) added render-time link rewriting in the markdown renderer that
+      rewrites in-tree .md links to SPA routes using the docs manifest. Out-of-tree links are left
+      as-is for browser handling. Added 7 unit tests for DocsLinkContext link rewriting + 2 E2E
+      tests. All 8090 vitest tests pass, all 8 E2E tests pass, build succeeds. Re-verified all ACs."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T02:42:28.443Z
