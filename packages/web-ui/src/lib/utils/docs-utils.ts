@@ -6,19 +6,49 @@
 import type { DocsEntry } from '../docs-types';
 
 /**
+ * Canonical order of docs sections as defined by @docs-section-taxonomy.
+ * Sections not in this list are appended alphabetically after the known sections.
+ */
+export const DOCS_SECTION_ORDER = [
+	'getting-started',
+	'guides',
+	'concepts',
+	'troubleshooting',
+	'release-notes',
+] as const;
+
+/**
+ * Determine the section key for an entry. Uses path to detect section
+ * landing pages whose slug has been normalized (e.g. slug "getting-started"
+ * with path "getting-started/index.md" belongs to the "getting-started" section).
+ */
+function sectionKeyOf(entry: DocsEntry): string | null {
+	const slashIdx = entry.path.indexOf('/');
+	if (slashIdx === -1) return null; // root-level entry
+	return entry.path.slice(0, slashIdx);
+}
+
+/**
  * Get entries in the same section as the given slug.
- * A "section" is the top-level directory segment. Root pages (no slash)
- * belong to the root section and are returned when the slug is also at root.
+ * A "section" is the top-level directory segment. Section landing pages
+ * (normalized from dir/index.md to bare dir slug) are included in their section.
  */
 export function filterSectionEntries(entries: DocsEntry[], slug: string): DocsEntry[] {
 	const slashIdx = slug.indexOf('/');
+	let section: string;
 	if (slashIdx === -1) {
-		// Root page — return all root-level entries (no slash in slug)
-		return entries.filter((e) => !e.slug.includes('/'));
+		// Could be a section landing page (normalized index) or a root page.
+		// Check if any entries have paths under this slug as a directory.
+		const hasChildren = entries.some((e) => e.path.startsWith(slug + '/'));
+		if (!hasChildren) {
+			// True root page — return all root-level entries
+			return entries.filter((e) => sectionKeyOf(e) === null);
+		}
+		section = slug;
+	} else {
+		section = slug.slice(0, slashIdx);
 	}
-	// Nested page — return all entries in the same top-level directory
-	const section = slug.slice(0, slashIdx);
-	return entries.filter((e) => e.slug.startsWith(section + '/') || e.slug === section);
+	return entries.filter((e) => sectionKeyOf(e) === section);
 }
 
 /**
@@ -52,9 +82,14 @@ export function resolveDocsLink(href: string, currentDocPath: string): string | 
 		}
 	}
 
-	// Convert the resolved path to a slug (strip .md)
+	// Convert the resolved path to a slug (strip .md, normalize index)
 	const resolvedPath = resolved.join('/');
-	return resolvedPath.replace(/\.md$/i, '');
+	const slug = resolvedPath.replace(/\.md$/i, '');
+	// Normalize index pages: "getting-started/index" → "getting-started"
+	if (slug.endsWith('/index')) {
+		return slug.slice(0, -'/index'.length);
+	}
+	return slug;
 }
 
 /**
@@ -91,4 +126,76 @@ export function resolveOutOfTreeHref(href: string, currentDocPath: string): stri
 	}
 
 	return resolved.join('/');
+}
+
+export interface DocsSection {
+	/** Directory name (e.g. "getting-started") used as the section key */
+	key: string;
+	/** Human-readable label (e.g. "Getting Started") */
+	label: string;
+	/** Entries in this section, preserving their original sort order */
+	entries: DocsEntry[];
+}
+
+/**
+ * Group docs entries into ordered sections following DOCS_SECTION_ORDER.
+ * Root-level entries (no directory) are returned as a "root" section.
+ * Unknown sections are appended alphabetically after the known sections.
+ */
+export function groupDocsSections(entries: DocsEntry[]): DocsSection[] {
+	const rootEntries: DocsEntry[] = [];
+	const dirGroups = new Map<string, DocsEntry[]>();
+
+	for (const entry of entries) {
+		const section = sectionKeyOf(entry);
+		if (section === null) {
+			rootEntries.push(entry);
+		} else {
+			if (!dirGroups.has(section)) dirGroups.set(section, []);
+			dirGroups.get(section)!.push(entry);
+		}
+	}
+
+	const sections: DocsSection[] = [];
+
+	// Add known sections in canonical order
+	for (const key of DOCS_SECTION_ORDER) {
+		const sectionEntries = dirGroups.get(key);
+		if (sectionEntries && sectionEntries.length > 0) {
+			sections.push({
+				key,
+				label: humanizeDir(key),
+				entries: sectionEntries,
+			});
+			dirGroups.delete(key);
+		}
+	}
+
+	// Add any remaining unknown sections alphabetically
+	const remaining = [...dirGroups.entries()].sort(([a], [b]) => a.localeCompare(b));
+	for (const [key, sectionEntries] of remaining) {
+		sections.push({
+			key,
+			label: humanizeDir(key),
+			entries: sectionEntries,
+		});
+	}
+
+	// Root-level entries go last (these are standalone pages not in any section)
+	if (rootEntries.length > 0) {
+		sections.push({
+			key: '',
+			label: 'Docs',
+			entries: rootEntries,
+		});
+	}
+
+	return sections;
+}
+
+function humanizeDir(dir: string): string {
+	return dir
+		.split('-')
+		.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+		.join(' ');
 }

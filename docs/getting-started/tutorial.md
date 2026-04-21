@@ -19,7 +19,7 @@ The example uses a documentation deliverable so you can try the whole flow in al
 - `gh` installed if you want to open a pull request from the command line
 - [Bun](https://bun.sh) installed if you plan to use the web dashboard (`kspec serve`)
 
-If you need install variants, cloned-project setup, or troubleshooting, read [INSTALL.md](../INSTALL.md) first.
+If you need install variants, cloned-project setup, or troubleshooting, read [INSTALL.md](../../INSTALL.md) first.
 
 ## 1. Install and initialize
 
@@ -142,7 +142,7 @@ git diff --stat
 
 For deeper command references while you work, use the generated skills and agent instructions rather than duplicating everything into your own notes:
 
-- [AGENTS.md](../AGENTS.md)
+- [AGENTS.md](../../AGENTS.md)
 - `.agents/skills/` after `kspec setup`
 
 ## 6. Commit with task and spec trailers

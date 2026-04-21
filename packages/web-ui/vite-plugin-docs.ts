@@ -42,7 +42,12 @@ function extractTitle(content: string, filename: string): string {
  * "history/KYNETIC_SPEC_DESIGN.md" → "history/KYNETIC_SPEC_DESIGN"
  */
 function pathToSlug(relativePath: string): string {
-  return relativePath.replace(/\.md$/i, "");
+  const slug = relativePath.replace(/\.md$/i, "");
+  // Normalize section index pages: "getting-started/index" → "getting-started"
+  if (slug.endsWith("/index")) {
+    return slug.slice(0, -"/index".length);
+  }
+  return slug;
 }
 
 /**
@@ -83,6 +88,8 @@ export interface DocsPluginOptions {
   repoUrl?: string;
   /** Path to RELEASE_NOTES.md to bundle alongside docs entries */
   releaseNotesPath?: string;
+  /** Glob-style directory or file prefixes to exclude from the manifest (matched against relative paths) */
+  exclude?: string[];
 }
 
 export function docsPlugin(docsDir: string, options?: DocsPluginOptions): Plugin {
@@ -98,7 +105,15 @@ export function docsPlugin(docsDir: string, options?: DocsPluginOptions): Plugin
     load(id: string) {
       if (id !== RESOLVED_VIRTUAL_MODULE_ID) return;
 
-      const files = collectMarkdownFiles(docsDir, docsDir);
+      const excludes = options?.exclude ?? [];
+      const files = collectMarkdownFiles(docsDir, docsDir).filter(
+        ({ relativePath }) =>
+          !excludes.some(
+            (pattern) =>
+              relativePath === pattern ||
+              relativePath.startsWith(pattern + "/"),
+          ),
+      );
 
       const entries: DocsEntry[] = files
         .map(({ relativePath, absolutePath }) => {
@@ -115,14 +130,16 @@ export function docsPlugin(docsDir: string, options?: DocsPluginOptions): Plugin
       // Bundle RELEASE_NOTES.md as a synthetic docs entry so it appears
       // in the manifest alongside regular docs pages — no second copy of
       // the file, just a single build-time read of the canonical source.
+      // Slug and path place it under release-notes/ so section grouping
+      // classifies it with the Release Notes section landing page.
       if (options?.releaseNotesPath) {
         try {
           const rnContent = readFileSync(options.releaseNotesPath, "utf-8");
           entries.push({
-            slug: "release-notes",
+            slug: "release-notes/changelog",
             title: extractTitle(rnContent, "RELEASE_NOTES.md"),
             content: rnContent,
-            path: "RELEASE_NOTES.md",
+            path: "release-notes/RELEASE_NOTES.md",
           });
         } catch {
           // RELEASE_NOTES.md is optional — silently skip if absent

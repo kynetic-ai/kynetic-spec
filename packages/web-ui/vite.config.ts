@@ -11,6 +11,7 @@ export default defineConfig({
     docsPlugin(docsDir, {
       repoUrl: "https://github.com/lepahc/kynetic-spec/blob/main",
       releaseNotesPath,
+      exclude: ["history", "agents-eval-scenarios.md", "prime-mock.md"],
     }),
     sveltekit(),
   ],

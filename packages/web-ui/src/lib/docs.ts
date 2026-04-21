@@ -9,7 +9,8 @@
  */
 
 export type { DocsEntry, DocsManifest } from './docs-types';
-export { filterSectionEntries, resolveDocsLink } from './utils/docs-utils';
+export { filterSectionEntries, resolveDocsLink, groupDocsSections, DOCS_SECTION_ORDER } from './utils/docs-utils';
+export type { DocsSection } from './utils/docs-utils';
 
 import type { DocsManifest, DocsEntry } from './docs-types';
 import { filterSectionEntries } from './utils/docs-utils';
