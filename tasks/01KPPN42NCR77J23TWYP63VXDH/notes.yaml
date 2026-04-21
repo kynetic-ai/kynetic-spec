@@ -90,3 +90,24 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-21T05:29:08.999Z
+  - _ulid: 01KPQ9HKF7GK06ZATKCP4CZD52
+    content: >-
+      Fix cycle 2: addressed the blocker about missing child-page lists.
+
+
+      1. Content: Replaced italic placeholder text ('coming soon') in Guides, Concepts,
+      Troubleshooting, and Release Notes index.md with explicit stub child-page lists. Each list
+      item is a markdown link to a planned child page with a brief description, derived from the
+      plan's spec descriptions for each section.
+
+
+      2. Tests: Strengthened the existing AC test to verify every section landing page contains at
+      least one markdown link (./filename.md pattern). Added four dedicated per-section tests that
+      verify specific child page links exist (e.g., guides links to starting-a-new-project.md,
+      concepts links to what-kspec-is.md, etc.).
+
+
+      All 8138 tests pass. Re-verified both ACs against implementation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-21T05:52:23.015Z
