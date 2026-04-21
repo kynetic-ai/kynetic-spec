@@ -157192,9 +157192,25 @@ reviews:
           status: pass
           name: manual review
         timestamp: 2026-04-21T06:43:27.818Z
+      - _ulid: 01KPQCFEE9RY8AW0TEVKX9YEDS
+        actor: jacob.chapel@gmail.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-21T06:43:38.058Z
+      - _ulid: 01KPQCFEEA260MPT07NGDKY877
+        actor: jacob.chapel@gmail.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-21T06:43:38.058Z
     examined_commit: 18e0da8abf85d37b2848252fcf45386e96d64941
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -157225,7 +157241,14 @@ reviews:
               surface.
             created_at: 2026-04-21T06:43:20.259Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: jacob.chapel@gmail.com
+        role: reviewer
+        created_at: 2026-04-21T06:43:38.057Z
     created_at: 2026-04-21T06:32:17.044Z
-    updated_at: 2026-04-21T06:43:26.716Z
+    updated_at: 2026-04-21T06:43:38.058Z
     notes: []
