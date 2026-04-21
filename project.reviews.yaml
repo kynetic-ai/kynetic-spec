@@ -162226,6 +162226,19 @@ reviews:
         runner: kspec
         created_at: 2026-04-21T23:47:24.279Z
         completed_at: 2026-04-21T23:47:24.279Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Started the full npm test suite. The run produced passing output for the changed suite
+          (tests/web-ui-docs-search.test.ts) and broad repo coverage with no failures observed
+          before the runner stopped emitting output, so I did not treat the suite state as a clean
+          passing gate for this review.
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-04-21T23:47:27.421Z
+        completed_at: 2026-04-21T23:47:27.421Z
     events:
       - _ulid: 01KPS6Q6Q1NT7A8SAC54GMEXCA
         actor: Jacob Chapel
@@ -162254,6 +162267,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-04-21T23:47:25.385Z
+      - _ulid: 01KPS72541RW00YZVVVA2WP920
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: npm test
+        timestamp: 2026-04-21T23:47:28.514Z
     examined_commit: ffccaaeb0d1ed717e535dc84fd5b49bdfba0b12d
     external_links: []
     lifecycle_state: open
@@ -162283,5 +162303,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T23:41:29.698Z
-    updated_at: 2026-04-21T23:47:24.279Z
+    updated_at: 2026-04-21T23:47:27.421Z
     notes: []
