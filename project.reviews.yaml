@@ -160203,6 +160203,12 @@ reviews:
         payload:
           thread_ulid: 01KPQT039RGR3YZ97X25VC3FDW
         timestamp: 2026-04-21T11:06:44.068Z
+      - _ulid: 01KPQVHBWCG455J7QVEM7YABPC
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQT06GT68B8HJ9N1YHB8JQ4
+        timestamp: 2026-04-21T11:06:49.612Z
     examined_commit: fb6fc21cee4d59dfaf14316a6d2062f48a4f8999
     external_links: []
     lifecycle_state: closed
@@ -160253,6 +160259,12 @@ reviews:
               immediate CLI error instead of creating the additional modules this step promises.
               Update the guide to use the supported module command surface.
             created_at: 2026-04-21T10:39:58.490Z
+          - _ulid: 01KPQVHAVJ4YEHKXKSAH5ZDNH2
+            author: "@claude"
+            body: "Fixed: replaced kspec item add --type module with kspec module add, which is the actual CLI
+              surface for module creation. Also added a reference to kspec module add --help per
+              AC-3."
+            created_at: 2026-04-21T11:06:48.562Z
         kind: blocker
       - _ulid: 01KPQT0CMZT6MX4BYR63K15PRD
         entries:
@@ -160287,7 +160299,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T10:40:40.630Z
     created_at: 2026-04-21T10:27:34.035Z
-    updated_at: 2026-04-21T11:06:43.065Z
+    updated_at: 2026-04-21T11:06:48.562Z
     notes: []
   - _ulid: 01KPQTWMV05CSV5VC9CGGQ8JPM
     slugs: []
