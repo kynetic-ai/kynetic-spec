@@ -15717,6 +15717,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-21T10:26:55.398Z
+  - _ulid: 01KPQT69NWRTS4K9J24WEH1296
+    type: success
+    content: Reviewing documentation changes against live CLI help and direct command execution caught
+      user-facing command drift that the structural docs tests missed. This review pattern is
+      effective for command-heavy docs because it distinguishes markdown shape from command
+      correctness.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPQT2W"
+    created_at: 2026-04-21T10:43:18.332Z
+  - _ulid: 01KPQT69ZCF1AMBZJQSEPA5XYZ
+    type: friction
+    content: The current docs guide coverage checks markdown structure but not whether documented
+      commands and branch assumptions match the live CLI surface. This let invalid commands and a
+      hardcoded integration-branch assumption survive until manual review.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPQT2W"
+    created_at: 2026-04-21T10:43:18.636Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
