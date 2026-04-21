@@ -158436,6 +158436,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-21T08:52:32.773Z
+      - _ulid: 01KPQKVKF8WRCSKP7X3MKMQZNG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KPQKVJ7CHC7SMRDMWE3PJASM
+        timestamp: 2026-04-21T08:52:36.456Z
     examined_commit: 5b98cb504d0afde9078274d35d1c4c6d20ef19c7
     external_links: []
     lifecycle_state: open
@@ -158445,8 +158452,29 @@ reviews:
       content_hash: ""
       ref: "@01KPPN42YFSJHAM778SFY02QPY"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPQKVJ7CHC7SMRDMWE3PJASM
+        entries:
+          - _ulid: 01KPQKVJ7CTB1E899102K27KK4
+            author: Jacob Chapel
+            body: "Evidence log: Files read: docs/guides/index.md, docs/concepts/index.md,
+              docs/troubleshooting/index.md, docs/release-notes/index.md,
+              tests/web-ui-docs-rendering.test.ts, src/daemon/entity-cache.ts,
+              src/parser/task-data-manager.ts, tests/daemon-review-verdicts-api.test.ts,
+              tests/task-data-manager.test.ts, tests/daemon-entity-cache.test.ts,
+              packages/daemon/src/routes/reviews.ts, packages/daemon/src/routes/tasks.ts. Commands
+              run: kspec task get @01KPPN42YFSJHAM778SFY02QPY, kspec item get @docs-reachability,
+              kspec item get @docs-navigation-shape, kspec item get @docs-section-taxonomy, kspec
+              review get @01KPQHCAFQVKD5R1M6EJ09808M, git diff/stat/show against dev and reviewed
+              head, rg AC annotations, kspec validate, npm test. Claims verified: dead child-page
+              links removed from empty sections; landing-page link coverage now resolves against the
+              docs manifest; immediate task reads after review verdict transitions are covered
+              against the cache-backed API path. Categories searched: correctness, edge cases, error
+              handling, test quality, integration; no branch-introduced blockers found in this
+              cycle."
+            created_at: 2026-04-21T08:52:35.180Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-21T08:45:32.891Z
-    updated_at: 2026-04-21T08:52:31.521Z
+    updated_at: 2026-04-21T08:52:35.180Z
     notes: []
