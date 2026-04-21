@@ -158830,6 +158830,12 @@ reviews:
         payload:
           thread_ulid: 01KPQN9GAQGKE9886829XXDZ02
         timestamp: 2026-04-21T09:19:28.497Z
+      - _ulid: 01KPQNCX9HQQ8JM3EJ451YWYQH
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPQN9KD6AEJWZZWSFMP4VVM6
+        timestamp: 2026-04-21T09:19:32.146Z
     examined_commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
     external_links: []
     lifecycle_state: open
@@ -158878,6 +158884,10 @@ reviews:
               about what   cd /home/chapel/Projects/kynetic-spec-dispatch && kspec setup gives them
               out of the box.
             created_at: 2026-04-21T09:17:43.718Z
+          - _ulid: 01KPQNCW0T1NT1PSTR99Y2TCMY
+            author: Jacob Chapel
+            body: Superseded by corrected blocker thread 01KPQN9Y49ECYG82D7GXVNSND6 with the intended wording.
+            created_at: 2026-04-21T09:19:30.842Z
         kind: blocker
       - _ulid: 01KPQN9SZ2J9NS67A117GHRZXW
         anchor:
@@ -159041,5 +159051,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-21T09:16:51.337Z
-    updated_at: 2026-04-21T09:19:27.246Z
+    updated_at: 2026-04-21T09:19:30.842Z
     notes: []
