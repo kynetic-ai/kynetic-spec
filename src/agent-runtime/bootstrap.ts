@@ -1,11 +1,10 @@
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
 import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
 import { loadProjectConfig } from "../parser/config.js";
+import { DAEMON_RUNTIME_ENV_KEYS } from "../cli/commands/serve.js";
 import type { Agent } from "../schema/meta.js";
 import type {
   DispatchWorkspaceBootstrapRoleState,
@@ -50,40 +49,26 @@ export class DispatchBootstrapError extends Error {
   }
 }
 
-interface DependencyHealth {
-  ok: boolean;
-  reason: string | null;
-  missingPackages: string[];
+/**
+ * Build a clean subprocess environment for bootstrap steps.
+ *
+ * Strips daemon runtime-mode configuration values (sourced from
+ * DAEMON_RUNTIME_ENV_KEYS) from the inherited process environment so
+ * they do not leak into bootstrap step subprocesses, then merges the
+ * step-intended variables on top.
+ *
+ * AC: @dispatch-runtime-bootstrap-contract ac-12
+ */
+function buildBootstrapStepEnv(stepEnv: Record<string, string>): Record<string, string> {
+  const stripped: Record<string, string> = {};
+  const excludeSet = new Set<string>(DAEMON_RUNTIME_ENV_KEYS);
+  for (const [key, value] of Object.entries(process.env)) {
+    if (value !== undefined && !excludeSet.has(key)) {
+      stripped[key] = value;
+    }
+  }
+  return { ...stripped, ...stepEnv };
 }
-
-interface BuildHealth {
-  ok: boolean;
-  reason: string | null;
-}
-
-const BUILD_ARTIFACTS = [
-  "dist/cli/index.js",
-  "packages/shared/dist/index.js",
-  "dist/web-ui/index.html",
-  "packages/web-ui/.svelte-kit/output/server/manifest-full.js",
-  "dist/daemon/index.js",
-  "dist/daemon/entity-cache.js",
-] as const;
-
-const BUILD_INPUT_PATHS = [
-  "src",
-  "packages/shared/src",
-  "packages/daemon/src",
-  "packages/web-ui/src",
-  "packages/web-ui/static",
-  "package.json",
-  "tsconfig.json",
-  "packages/shared/package.json",
-  "packages/daemon/package.json",
-  "packages/web-ui/package.json",
-  "packages/web-ui/vite.config.ts",
-  "packages/web-ui/svelte.config.js",
-] as const;
 
 async function runShell(
   cwd: string,
@@ -93,10 +78,7 @@ async function runShell(
   try {
     const result = await execFileAsync("bash", ["-lc", command], {
       cwd,
-      env: {
-        ...process.env,
-        ...env,
-      },
+      env: buildBootstrapStepEnv(env),
       encoding: "utf-8",
     });
     return {
@@ -150,242 +132,6 @@ function hashConfig(steps: DispatchBootstrapStep[]): string {
     .digest("hex");
 }
 
-function collectDirectDependencies(packageJson: Record<string, unknown>): string[] {
-  const names = new Set<string>();
-  for (const sectionName of ["dependencies", "devDependencies", "optionalDependencies"]) {
-    const section = packageJson[sectionName];
-    if (!section || typeof section !== "object") {
-      continue;
-    }
-    for (const name of Object.keys(section as Record<string, unknown>)) {
-      names.add(name);
-    }
-  }
-  return [...names].toSorted();
-}
-
-function dependencySearchRoot(workspaceDir: string): string {
-  const normalizedWorkspaceDir = path.resolve(workspaceDir);
-  const worktreeSegment = `${path.sep}.kspec-worktrees${path.sep}`;
-  const markerIndex = normalizedWorkspaceDir.lastIndexOf(worktreeSegment);
-  if (markerIndex === -1) {
-    return normalizedWorkspaceDir;
-  }
-  return normalizedWorkspaceDir.slice(0, markerIndex);
-}
-
-async function checkWorkspaceDependencies(workspaceDir: string): Promise<DependencyHealth> {
-  const packageJsonPath = path.join(workspaceDir, "package.json");
-  const lockfilePath = path.join(workspaceDir, "package-lock.json");
-  const nodeModulesDir = path.join(workspaceDir, "node_modules");
-
-  const [packageJsonExists, lockfileExists] = await Promise.all([
-    fs.access(packageJsonPath).then(
-      () => true,
-      () => false,
-    ),
-    fs.access(lockfilePath).then(
-      () => true,
-      () => false,
-    ),
-  ]);
-
-  if (!packageJsonExists || !lockfileExists) {
-    return { ok: true, reason: null, missingPackages: [] };
-  }
-
-  let packageJson: Record<string, unknown>;
-  try {
-    packageJson = JSON.parse(await fs.readFile(packageJsonPath, "utf-8")) as Record<
-      string,
-      unknown
-    >;
-  } catch {
-    return { ok: true, reason: null, missingPackages: [] };
-  }
-
-  const nodeModulesExists = await fs.access(nodeModulesDir).then(
-    () => true,
-    () => false,
-  );
-  const dependencyNames = collectDirectDependencies(packageJson);
-  const searchRoot = dependencySearchRoot(workspaceDir);
-  const ancestorResults = await Promise.all(
-    dependencyNames.map((packageName) =>
-      canResolveWorkspaceDependency(workspaceDir, searchRoot, packageName),
-    ),
-  );
-
-  if (!nodeModulesExists && !ancestorResults.some(Boolean)) {
-    return {
-      ok: false,
-      reason: "node_modules/ not found",
-      missingPackages: dependencyNames,
-    };
-  }
-
-  const missingPackages = dependencyNames.filter((_, i) => !ancestorResults[i]);
-
-  if (missingPackages.length > 0) {
-    return {
-      ok: false,
-      reason: `node_modules missing direct dependencies: ${missingPackages.slice(0, 3).join(", ")}`,
-      missingPackages,
-    };
-  }
-
-  return { ok: true, reason: null, missingPackages: [] };
-}
-
-async function canResolveWorkspaceDependency(
-  workspaceDir: string,
-  searchRoot: string,
-  packageName: string,
-): Promise<boolean> {
-  let currentDir = path.resolve(workspaceDir);
-  for (;;) {
-    const installPath = path.join(currentDir, "node_modules", ...packageName.split("/"));
-    if (
-      await fs.access(installPath).then(
-        () => true,
-        () => false,
-      )
-    ) {
-      return true;
-    }
-    if (currentDir === searchRoot) {
-      return false;
-    }
-    const parentDir = path.dirname(currentDir);
-    currentDir = parentDir;
-  }
-}
-
-async function implicitDependencyStep(workspaceDir: string): Promise<DispatchBootstrapStep | null> {
-  const dependencyHealth = await checkWorkspaceDependencies(workspaceDir);
-  if (dependencyHealth.ok) {
-    return null;
-  }
-
-  return {
-    source: "dispatch",
-    name: "install-workspace-dependencies",
-    run: "npm ci",
-    idempotent: true,
-    allowTrackedChanges: false,
-    reviewerRerunAllowed: true,
-  };
-}
-
-async function readPackageJson(workspaceDir: string): Promise<Record<string, unknown> | null> {
-  const packageJsonPath = path.join(workspaceDir, "package.json");
-  try {
-    return JSON.parse(await fs.readFile(packageJsonPath, "utf-8")) as Record<string, unknown>;
-  } catch {
-    return null;
-  }
-}
-
-async function pathExists(targetPath: string): Promise<boolean> {
-  return fs.access(targetPath).then(
-    () => true,
-    () => false,
-  );
-}
-
-async function newestPathMtime(
-  fullPath: string,
-  relativePath: string,
-): Promise<{ relativePath: string; mtimeMs: number } | null> {
-  let stat;
-  try {
-    stat = await fs.stat(fullPath);
-  } catch {
-    return null;
-  }
-
-  if (!stat.isDirectory()) {
-    return { relativePath, mtimeMs: stat.mtimeMs };
-  }
-
-  let newest = { relativePath, mtimeMs: stat.mtimeMs };
-  const entries = await fs.readdir(fullPath, { withFileTypes: true });
-  for (const entry of entries) {
-    const childFullPath = path.join(fullPath, entry.name);
-    const childRelativePath = path.join(relativePath, entry.name);
-    const candidate = await newestPathMtime(childFullPath, childRelativePath);
-    if (candidate && candidate.mtimeMs > newest.mtimeMs) {
-      newest = candidate;
-    }
-  }
-  return newest;
-}
-
-async function newestBuildInput(
-  workspaceDir: string,
-): Promise<{ relativePath: string; mtimeMs: number } | null> {
-  let newest: { relativePath: string; mtimeMs: number } | null = null;
-  for (const relativePath of BUILD_INPUT_PATHS) {
-    const fullPath = path.join(workspaceDir, relativePath);
-    const candidate = await newestPathMtime(fullPath, relativePath);
-    if (!candidate) {
-      continue;
-    }
-    if (!newest || candidate.mtimeMs > newest.mtimeMs) {
-      newest = candidate;
-    }
-  }
-  return newest;
-}
-
-async function checkWorkspaceBuild(workspaceDir: string): Promise<BuildHealth> {
-  const packageJson = await readPackageJson(workspaceDir);
-  const scripts = packageJson?.scripts;
-  const hasBuildScript =
-    scripts &&
-    typeof scripts === "object" &&
-    typeof (scripts as Record<string, unknown>).build === "string";
-  if (!hasBuildScript) {
-    return { ok: true, reason: null };
-  }
-
-  for (const artifact of BUILD_ARTIFACTS) {
-    if (!(await pathExists(path.join(workspaceDir, artifact)))) {
-      return { ok: false, reason: `${artifact} not found` };
-    }
-  }
-
-  const artifactStats = await Promise.all(
-    BUILD_ARTIFACTS.map((artifact) => fs.stat(path.join(workspaceDir, artifact))),
-  );
-  const oldestArtifactMtime = Math.min(...artifactStats.map((stat) => stat.mtimeMs));
-  const newestInput = await newestBuildInput(workspaceDir);
-  if (newestInput && newestInput.mtimeMs > oldestArtifactMtime) {
-    return {
-      ok: false,
-      reason: `${newestInput.relativePath} is newer than build artifacts`,
-    };
-  }
-
-  return { ok: true, reason: null };
-}
-
-async function implicitBuildStep(workspaceDir: string): Promise<DispatchBootstrapStep | null> {
-  const buildHealth = await checkWorkspaceBuild(workspaceDir);
-  if (buildHealth.ok) {
-    return null;
-  }
-
-  return {
-    source: "dispatch",
-    name: "build-workspace-artifacts",
-    run: "npm run build",
-    idempotent: true,
-    allowTrackedChanges: false,
-    reviewerRerunAllowed: true,
-  };
-}
-
 function resolveBootstrapSteps(
   agent: Agent,
   dispatchSteps: Array<{
@@ -426,8 +172,6 @@ function computeInvalidationReasons(
   state: DispatchWorkspaceBootstrapRoleState,
   canonicalBranchHead: string,
   configHash: string,
-  dependencyInvalidationReason: string | null,
-  buildInvalidationReason: string | null,
 ): string[] {
   const reasons: string[] = [];
   if (state.status === "failed") {
@@ -438,12 +182,6 @@ function computeInvalidationReasons(
   }
   if (state.canonicalBranchHead && state.canonicalBranchHead !== canonicalBranchHead) {
     reasons.push("canonical-branch-head-changed");
-  }
-  if (dependencyInvalidationReason) {
-    reasons.push(dependencyInvalidationReason);
-  }
-  if (buildInvalidationReason) {
-    reasons.push(buildInvalidationReason);
   }
   return reasons;
 }
@@ -485,35 +223,22 @@ export async function ensureWorkspaceBootstrap(
   const { projectDir, workspaceDir, metadataPath, role, agent, env } = options;
   const { config } = await loadProjectConfig(projectDir, projectDir);
   const steps = resolveBootstrapSteps(agent, config.dispatch.bootstrap.steps);
-  const dependencyStep = await implicitDependencyStep(workspaceDir);
-  const buildStep = await implicitBuildStep(workspaceDir);
-  const effectiveSteps = [
-    ...(dependencyStep ? [dependencyStep] : []),
-    ...(buildStep ? [buildStep] : []),
-    ...steps,
-  ];
-  const roleSteps = effectiveSteps.filter((step) => stepAppliesToRole(step, role));
+  const roleSteps = steps.filter((step) => stepAppliesToRole(step, role));
   const configHash = hashConfig(steps);
   const metadata: DispatchWorkspaceMetadata = structuredClone(options.metadata);
   metadata.bootstrap = normalizeDispatchBootstrapState(metadata.bootstrap);
   metadata.bootstrapState = metadata.bootstrap;
   const workerState = metadata.bootstrap.roleStates.worker;
   const reviewerState = metadata.bootstrap.roleStates.reviewer;
-  const dependencyInvalidationReason = dependencyStep ? "workspace-dependencies-missing" : null;
-  const buildInvalidationReason = buildStep ? "workspace-build-missing" : null;
   const workerInvalidationReasons = computeInvalidationReasons(
     workerState,
     metadata.canonicalBranchHead,
     configHash,
-    dependencyInvalidationReason,
-    buildInvalidationReason,
   );
   const reviewerInvalidationReasons = computeInvalidationReasons(
     reviewerState,
     metadata.canonicalBranchHead,
     configHash,
-    dependencyInvalidationReason,
-    buildInvalidationReason,
   );
   const workerBootstrapSucceeded =
     workerState.status === "succeeded" && workerInvalidationReasons.length === 0;
