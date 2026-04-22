@@ -1,0 +1,55 @@
+_ulid: 01KPVJ8QQCMFRJ3WZSRWHJ4N1Q
+slugs:
+  - task-portable-skill-supporting-file-references
+title: Implement portable skill supporting-file reference resolution
+type: task
+description: |
+  Implement the portable reference rewrite path for skill supporting files
+  across skill rendering and adapter prompt injection.
+
+  Why: A script-backed merge helper is only usable if skill-authored content
+  can point at the right rendered script path for whichever platform or
+  adapter is consuming the skill. Today only {skill:...} alias references
+  are rewritten; supporting-file paths are not.
+
+  What:
+  - Define one portable supporting-file reference form for skill-authored
+    markdown and copied markdown supporting files.
+  - Extend the existing skill reference rewrite pipeline so render-time
+    markdown output and prompt-injected skill content both rewrite that
+    form to the active platform or adapter path.
+  - Add validation that rejects unresolved supporting-file references and
+    any reference that escapes the skill's own directory tree.
+  - Preserve existing {skill:...} alias rewriting behavior.
+
+  How: Reuse the current skill render and prompt rewrite infrastructure
+  instead of creating a parallel substitution system. Keep the reference
+  rewrite deterministic from the source skill id, supporting directory,
+  and active render root so helper links remain stable across rerenders.
+
+  Testing:
+  - Render-time coverage for at least codex and claude-code outputs.
+  - Prompt-build coverage proving adapter-injected skill content gets the
+    same resolved supporting-file path.
+  - Validation coverage for missing targets and boundary-escape attempts.
+
+  Covers:
+  - @portable-skill-supporting-file-references ac-rendered-supporting-link-resolution
+  - @portable-skill-supporting-file-references ac-prompt-supporting-link-resolution
+  - @portable-skill-supporting-file-references ac-missing-supporting-target-rejected
+  - @portable-skill-supporting-file-references ac-supporting-reference-boundary
+spec_ref: "@portable-skill-supporting-file-references"
+plan_ref: "@plan-portable-skill-file-references-and-detached-review"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - skills
+  - rendering
+  - prompts
+vcs_refs: []
+created_at: 2026-04-22T21:41:47.372Z
+todos: []

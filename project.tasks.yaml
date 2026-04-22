@@ -26841,3 +26841,60 @@
   submitted_at: 2026-04-22T00:27:46.533Z
   completed_at: 2026-04-22T00:40:53.590Z
   automation: eligible
+- _ulid: 01KPVJ8QQCMFRJ3WZSRWHJ4N1Q
+  slugs:
+    - task-portable-skill-supporting-file-references
+  title: Implement portable skill supporting-file reference resolution
+  type: task
+  spec_ref: "@portable-skill-supporting-file-references"
+  plan_ref: "@plan-portable-skill-file-references-and-detached-review"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - skills
+    - rendering
+    - prompts
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-22T21:41:47.372Z
+- _ulid: 01KPVJ8R0W6TEXXZ7FY2EGZRNN
+  slugs:
+    - task-detached-reviewer-merge-helper
+  title: Implement detached reviewer merge helper mechanics
+  type: task
+  spec_ref: "@detached-reviewer-merge-helper"
+  plan_ref: "@plan-portable-skill-file-references-and-detached-review"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - dispatch
+    - review
+    - merge
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-22T21:41:47.676Z
+- _ulid: 01KPVJ8RA8P0TGB5KQEZ70M39K
+  slugs:
+    - task-detached-reviewer-merge-guidance
+  title: Wire reviewer guidance and merge skill usage to the detached merge helper
+  type: task
+  spec_ref: "@detached-reviewer-merge-helper"
+  plan_ref: "@plan-portable-skill-file-references-and-detached-review"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-portable-skill-supporting-file-references"
+    - "@task-detached-reviewer-merge-helper"
+  priority: 1
+  tags:
+    - dispatch
+    - review
+    - skills
+    - docs
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-22T21:41:47.976Z

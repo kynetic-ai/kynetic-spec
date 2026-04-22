@@ -6977,6 +6977,66 @@ modules:
         tags: []
         created: 2026-04-11T09:39:24.316Z
         notes: []
+      - _ulid: 01KPVJ8QH0B387CJ1ZHBGRAEFR
+        slugs:
+          - portable-skill-supporting-file-references
+        title: Portable Skill Supporting File References
+        type: requirement
+        description: |
+          Skill-authored content can reference supporting files that live beside a
+          skill, such as scripts, reference documents, assets, and legacy docs,
+          using one portable authoring form. Rendered skill output and adapter
+          prompt delivery both resolve that portable form to the platform-specific,
+          project-root-relative path of the rendered supporting file copy for the
+          active skill runtime.
+
+          The contract covers both direct skill markdown and markdown files copied
+          from the skill's supporting directories. It rejects missing or out-of-
+          boundary references so agents do not receive broken helper links.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A skill markdown file or copied markdown supporting file contains a
+              portable reference to a supporting file within the same skill
+            id: ac-rendered-supporting-link-resolution
+            then: |
+              The rendered content points to the platform-specific, project-root-
+              relative path of that rendered supporting file copy
+            when: |
+              The skill is rendered for a specific platform
+          - given: |
+              An agent definition injects a skill whose markdown contains a portable
+              supporting-file reference
+            id: ac-prompt-supporting-link-resolution
+            then: |
+              The prompt contains the adapter-appropriate, project-root-relative
+              path for that supporting file instead of the unresolved portable form
+            when: |
+              The invocation prompt is built for a specific adapter
+          - given: |
+              A portable supporting-file reference points to a file that does not
+              exist in the source skill
+            id: ac-missing-supporting-target-rejected
+            then: |
+              The operation fails with explicit guidance naming the unresolved file
+              reference instead of silently producing a broken path
+            when: |
+              The skill is validated, rendered, or injected into a prompt
+          - given: |
+              A portable supporting-file reference attempts to escape the skill's
+              own directory tree
+            id: ac-supporting-reference-boundary
+            then: |
+              The operation is rejected and no escaped path is emitted
+            when: |
+              The skill is validated, rendered, or injected into a prompt
+        tags: []
+        created: 2026-04-22T21:41:47.168Z
+        notes: []
     created: 2026-02-15T00:39:20.586Z
     notes: []
 requirements:

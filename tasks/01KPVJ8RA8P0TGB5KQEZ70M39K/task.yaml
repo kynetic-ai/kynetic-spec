@@ -1,0 +1,54 @@
+_ulid: 01KPVJ8RA8P0TGB5KQEZ70M39K
+slugs:
+  - task-detached-reviewer-merge-guidance
+title: Wire reviewer guidance and merge skill usage to the detached merge helper
+type: task
+description: |
+  Update reviewer-facing guidance so manual_merge reviewer sessions use the
+  supported helper path consistently.
+
+  Why: Even with a good helper script, agents will continue inventing git
+  workarounds unless reviewer prompts, merge-skill instructions, and default
+  reviewer descriptions all converge on the same supported path.
+
+  What:
+  - Update manual_merge reviewer publication guidance in dispatch prompt
+    construction to direct reviewers to the supported helper path.
+  - Update the merge skill source to explain detached reviewer context,
+    helper invocation, no-op handling, dirty-target refusal, and conflict
+    escalation.
+  - Update shipped docs and default reviewer descriptions that currently say
+    reviewers perform local merge without qualifying the detached workspace
+    model.
+  - Regenerate rendered skill output and agent instructions.
+
+  How: Use the new portable supporting-file reference mechanism for the
+  helper path so the merge skill stays portable across codex and
+  claude-code render roots.
+
+  Testing:
+  - Prompt-generation coverage for manual_merge reviewer guidance.
+  - Rendered merge skill output contains the supported helper path for each
+    platform.
+  - Docs/default-agent assertions cover the updated reviewer wording.
+
+  Covers:
+  - @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance
+spec_ref: "@detached-reviewer-merge-helper"
+plan_ref: "@plan-portable-skill-file-references-and-detached-review"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-portable-skill-supporting-file-references"
+  - "@task-detached-reviewer-merge-helper"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - review
+  - skills
+  - docs
+vcs_refs: []
+created_at: 2026-04-22T21:41:47.976Z
+todos: []

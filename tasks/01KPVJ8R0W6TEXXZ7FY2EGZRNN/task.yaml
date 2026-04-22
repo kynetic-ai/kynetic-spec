@@ -1,0 +1,57 @@
+_ulid: 01KPVJ8R0W6TEXXZ7FY2EGZRNN
+slugs:
+  - task-detached-reviewer-merge-helper
+title: Implement detached reviewer merge helper mechanics
+type: task
+description: |
+  Add the supported detached-review merge helper as a merge-skill script and
+  implement the standard clean merge mechanics it relies on.
+
+  Why: Reviewers are intentionally placed in detached snapshots, but current
+  manual_merge guidance still leaves them improvising merge choreography when
+  the integration branch is already occupied elsewhere. The helper needs to
+  encode the one sanctioned path.
+
+  What:
+  - Add a merge helper script under the merge skill's supporting files.
+  - Define the helper's required dispatch environment contract using the
+    existing dispatch metadata environment variables.
+  - Implement the clean merge path for a detached reviewer snapshot,
+    including occupied-target detection, no-op merge detection, successful
+    target ref advancement, and post-merge occupied-worktree refresh.
+  - Refuse to proceed when the occupied target worktree has tracked
+    modifications or staged drift.
+  - Ensure merge conflicts stop without advancing the integration target ref.
+
+  How: Keep the reviewer as merge owner, but make the helper responsible for
+  the git mechanics and post-merge integrity checks. Do not rely on manual
+  `git update-ref` use outside the helper.
+
+  Testing:
+  - Detached reviewer merge into an occupied clean integration target.
+  - Already-integrated no-op merge.
+  - Dirty occupied integration target refusal.
+  - Conflict exit with unchanged target ref.
+  - Post-success verification that the occupied integration worktree's files
+    and index match the new integration target tip.
+
+  Covers:
+  - @detached-reviewer-merge-helper ac-occupied-target-clean-refresh
+  - @detached-reviewer-merge-helper ac-helper-no-op-merge
+  - @detached-reviewer-merge-helper ac-helper-refuses-dirty-target
+  - @detached-reviewer-merge-helper ac-helper-safe-conflict-exit
+spec_ref: "@detached-reviewer-merge-helper"
+plan_ref: "@plan-portable-skill-file-references-and-detached-review"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - review
+  - merge
+vcs_refs: []
+created_at: 2026-04-22T21:41:47.676Z
+todos: []

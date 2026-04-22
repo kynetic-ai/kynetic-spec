@@ -40450,10 +40450,15 @@ plans:
       - Successful detached-review merges must leave any occupied integration target
         worktree aligned with the new target tip. Avoiding stale checked-out target
         state is the load-bearing regression guard for this plan.
-    status: approved
+    status: active
     approved_at: 2026-04-22T21:41:32.755Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@portable-skill-supporting-file-references"
+      - "@detached-reviewer-merge-helper"
+    derived_tasks:
+      - "@task-portable-skill-supporting-file-references"
+      - "@task-detached-reviewer-merge-helper"
+      - "@task-detached-reviewer-merge-guidance"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/portable-skill-file-references-and-detached-reviewer-merge.md
     created_at: 2026-04-22T09:12:01.609Z
@@ -40464,3 +40469,45 @@ plans:
           portable-reference dependency to the guidance task"
         author: Jacob Chapel
         created_at: 2026-04-22T09:17:16.926Z
+      - _ulid: 01KPVJ8RN64Q20WDED3XEKG6DP
+        content: |-
+          This plan intentionally couples two changes that would be awkward to ship
+          separately:
+
+          1. A detached-reviewer merge helper only becomes durable if the merge skill can
+             reference its script path portably across rendered skill roots and prompt
+             injection.
+          2. Portable supporting-file references are highest-value when exercised by a
+             real, user-facing workflow immediately; the detached-reviewer merge helper is
+             that workflow.
+
+          ### Dependency order
+          - Task 1 establishes the portable supporting-file reference contract and its
+            validation boundary.
+          - Task 2 adds the helper script and the merge mechanics it needs; it is kept
+            independent from Task 1 so the helper's git behavior can be implemented and
+            reviewed on its own.
+          - Task 3 depends on both earlier tasks, updates every reviewer-facing
+            instruction surface to use the helper path, and regenerates rendered output.
+
+          ### Scope boundaries
+          - Keep reviewer-owned merging; do not redesign publication ownership.
+          - Do not add a brand-new dispatch publication mode.
+          - Do not broaden the helper into a generic human-facing merge CLI yet; this is
+            specifically the detached reviewer manual_merge path.
+          - Do not weaken existing shared-checkout safety checks. The helper should reuse
+            or align with those protections, not bypass them.
+
+          ### Key design constraints
+          - Supporting-file reference rewriting must work in both rendered skill files and
+            prompt-injected skill content, because dispatch invocations build prompts from
+            source skill content while agents often act on rendered files inside the
+            workspace.
+          - Missing or escaping supporting-file references should fail deterministically;
+            broken links are worse than explicit validation failures because they defer the
+            problem to runtime agent improvisation.
+          - Successful detached-review merges must leave any occupied integration target
+            worktree aligned with the new target tip. Avoiding stale checked-out target
+            state is the load-bearing regression guard for this plan.
+        author: Jacob Chapel
+        created_at: 2026-04-22T21:41:48.326Z

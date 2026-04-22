@@ -8971,6 +8971,80 @@ features:
                 when: |
                   Workspace state is updated
             tags: []
+            features:
+              - _ulid: 01KPVJ8QKJ2PSYNEW62FEN5ZGP
+                slugs:
+                  - detached-reviewer-merge-helper
+                title: Detached Reviewer Merge Helper
+                type: feature
+                description: |
+                  In manual_merge publication mode, reviewers working from detached review
+                  snapshots have one supported merge helper path for completing review after
+                  approval. The helper is distributed with the merge skill, is invokable
+                  from the detached review workspace, and performs the standard clean merge
+                  mechanics without requiring the reviewer to rediscover ad hoc git
+                  workarounds.
+
+                  The helper keeps the integration branch authoritative while preventing the
+                  stale checked-out integration worktree state that occurs when the branch
+                  ref advances without the occupied worktree being refreshed.
+                depends_on: []
+                implements: []
+                relates_to: []
+                tests: []
+                traits: []
+                acceptance_criteria:
+                  - given: |
+                      A reviewer invocation is prepared in manual_merge publication mode
+                    id: ac-helper-path-in-reviewer-guidance
+                    then: |
+                      The reviewer is directed to a single supported merge helper path and
+                      is not instructed to check out the integration branch manually inside
+                      the detached snapshot
+                    when: |
+                      Reviewer workflow guidance is rendered for a detached review snapshot
+                  - given: |
+                      The integration target branch is already checked out in another clean
+                      worktree and the reviewer helper performs a successful merge
+                    id: ac-occupied-target-clean-refresh
+                    then: |
+                      The integration target ref advances to the merged commit and the
+                      occupied target worktree is refreshed so its files and index match the
+                      new target tip
+                    when: |
+                      The helper completes
+                  - given: |
+                      The reviewed canonical branch head is already integrated at the
+                      integration target tip
+                    id: ac-helper-no-op-merge
+                    then: |
+                      The helper reports a no-op merge outcome and exits successfully
+                      without moving refs or dirtying any worktree
+                    when: |
+                      The reviewer runs the supported merge helper
+                  - given: |
+                      The integration target branch is checked out in another worktree that
+                      contains tracked modifications or staged drift
+                    id: ac-helper-refuses-dirty-target
+                    then: |
+                      The helper refuses to advance the integration target and returns
+                      explicit recovery guidance instead of overwriting the occupied
+                      worktree state
+                    when: |
+                      The reviewer runs the supported merge helper
+                  - given: |
+                      The supported merge helper encounters merge conflicts while preparing
+                      the reviewed change for integration
+                    id: ac-helper-safe-conflict-exit
+                    then: |
+                      The integration target ref remains unchanged and the reviewer receives
+                      explicit conflict-handling guidance without leaving the occupied
+                      integration worktree in an ambiguous state
+                    when: |
+                      The helper stops
+                tags: []
+                created: 2026-04-22T21:41:47.251Z
+                notes: []
             created: 2026-03-12T02:33:44.096Z
             notes: []
           - _ulid: 01KKJYD3SRSC971JQPVSG48VQ0
