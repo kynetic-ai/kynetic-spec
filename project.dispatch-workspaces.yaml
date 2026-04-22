@@ -60626,7 +60626,7 @@ workspaces:
         head: eb78b5cd75d4836765997092e16a0ba688d7229c
         last_seen_at: 2026-04-21T21:43:28.883Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-narrow-dispatcher-runtime-mode-env-isolation-01kprz17
-  - active_role: null
+  - active_role: worker
     base_branch_point: 85b5efd6df9e0f3858a5fa5f627d8239f5ab70af
     bootstrap:
       status: succeeded
@@ -60956,7 +60956,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-22T00:11:14.639Z
+      updated_at: 2026-04-22T00:11:39.834Z
     integration:
       status: pending
       detail: null
@@ -60965,16 +60965,16 @@ workspaces:
       target_branch: dev
       target_commit: 85b5efd6df9e0f3858a5fa5f627d8239f5ab70af
       updated_at: 2026-04-22T00:11:14.639Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KPS7HJYRRHQ7SECQXBH19N4G"
     task_slug: task-gitignore-cover-file-lock-directory-suffix
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-22T00:11:14.639Z
+      last_active_at: 2026-04-22T00:11:39.834Z
+      last_reconciled_at: 2026-04-22T00:11:39.834Z
       created_at: 2026-04-22T00:11:14.639Z
-      updated_at: 2026-04-22T00:11:38.118Z
+      updated_at: 2026-04-22T00:11:39.834Z
     workspace_id: dispatch-workspace-01KPS7HJYRRHQ7SECQXBH19N4G
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
