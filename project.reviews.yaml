@@ -162700,6 +162700,17 @@ reviews:
         required: true
         created_at: 2026-04-22T09:15:01.242Z
         completed_at: 2026-04-22T09:15:01.242Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@task-detached-reviewer-merge-guidance claims to cover helper runtime behaviors (no-op
+          merge, dirty-target refusal, conflict-safe exit) even though its scope is prompt/skill/doc
+          wiring. Coverage ownership is not crisp or reviewable."
+        name: Task coverage mapping
+        required: true
+        created_at: 2026-04-22T09:15:01.301Z
+        completed_at: 2026-04-22T09:15:01.301Z
     events:
       - _ulid: 01KPT7G16EAW8TKTZRVTRAZJY4
         actor: Jacob Chapel
@@ -162742,6 +162753,13 @@ reviews:
           status: fail
           name: Dependency ordering
         timestamp: 2026-04-22T09:15:03.838Z
+      - _ulid: 01KPT7HFX17PN9F77HH4S49XWA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Task coverage mapping
+        timestamp: 2026-04-22T09:15:05.505Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -162789,5 +162807,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-22T09:14:17.679Z
-    updated_at: 2026-04-22T09:15:01.242Z
+    updated_at: 2026-04-22T09:15:01.301Z
     notes: []
