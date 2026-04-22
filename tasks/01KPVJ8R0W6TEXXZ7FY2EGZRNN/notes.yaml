@@ -113,3 +113,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-22T23:35:10.300Z
+  - _ulid: 01KPVSRW1CWDHG32QKQTGJSZEM
+    content: "Fix cycle 3: addressed the distribution blocker. The previous fix moved the script to
+      templates/skills/merge/scripts/ (correct source location), but never ran the install-core +
+      render pipeline to propagate the script to the rendered output directories that agent runtimes
+      actually consume. Fix: ran `kspec skill install-core` from dev source to install the template
+      into .kspec/skills/merge/scripts/, then `kspec skill render` to produce
+      .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh and
+      .factory/skills/kspec-merge/scripts/detached-reviewer-merge.sh. Both files committed with
+      executable permissions. All 8323 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-22T23:52:56.108Z
