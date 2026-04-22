@@ -162871,6 +162871,19 @@ reviews:
         required: true
         created_at: 2026-04-22T09:19:12.619Z
         completed_at: 2026-04-22T09:19:12.619Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The new specs remain additive to existing coverage: @supporting-files-convention covers
+          supporting-directory copying, while this plan adds a new portable reference rewrite
+          contract for markdown/prompt content; @detached-reviewer-merge-helper extends manual_merge
+          reviewer guidance under @dispatch-branch-integration-contract rather than duplicating
+          integration-target metadata or publication-mode behavior."
+        name: Spec neighborhood alignment
+        required: true
+        created_at: 2026-04-22T09:19:12.625Z
+        completed_at: 2026-04-22T09:19:12.625Z
     events:
       - _ulid: 01KPT7RHHNTYC1ENTAWXEC20N7
         actor: Jacob Chapel
@@ -162892,6 +162905,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-22T09:19:15.301Z
+      - _ulid: 01KPT7S5E7QD55XCTWQ6HTH8GF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec neighborhood alignment
+        timestamp: 2026-04-22T09:19:16.935Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -162904,5 +162924,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-22T09:18:56.565Z
-    updated_at: 2026-04-22T09:19:12.639Z
+    updated_at: 2026-04-22T09:19:12.625Z
     notes: []
