@@ -15956,6 +15956,17 @@ observations:
     resolved: false
     workflow_ref: "@01KPVNEM"
     created_at: 2026-04-22T22:38:40.798Z
+  - _ulid: 01KPVPPBY8S2FBPNFPPDRX4685
+    type: success
+    content: "Fix cycle turnaround: both review blockers (over-broad dirty gate using porcelain instead
+      of diff --quiet, and merging live branch tip instead of pinned canonical head) were addressed
+      in a single focused commit with 3 new tests. Full suite clean. The spec-literal reading
+      guidance in work-gates step 5 is validated — the issue was not reading the AC narrowly enough
+      during initial implementation, and the reviewer correctly flagged the divergence."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-22T22:59:08.360Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
