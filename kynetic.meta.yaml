@@ -15922,6 +15922,19 @@ observations:
     resolved: false
     workflow_ref: "@01KPVMN1"
     created_at: 2026-04-22T22:26:14.314Z
+  - _ulid: 01KPVN306R289BX3TK62TFGY70
+    type: friction
+    content: "buildTestSubprocessEnv() strips only a hardcoded subset of KSPEC_DISPATCH_* vars
+      (KSPEC_DISPATCH_CANONICAL_HEAD, KSPEC_SESSION_ID, etc). Tests that exercise dispatch
+      environment contracts must manually strip remaining KSPEC_DISPATCH_* vars to prevent parent
+      dispatch context from leaking. Hit directly in detached-reviewer-merge tests where
+      KSPEC_DISPATCH_CANONICAL_BRANCH and KSPEC_DISPATCH_MERGE_TARGET leaked from the parent
+      process. Fix: either expand the hardcoded list in DISPATCH_ENV_VARS (tests/helpers/cli.ts) to
+      include all KSPEC_DISPATCH_* vars, or use a wildcard strip pattern."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-22T22:31:05.176Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
