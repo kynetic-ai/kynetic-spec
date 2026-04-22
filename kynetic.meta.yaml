@@ -15980,6 +15980,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-22T23:07:57.044Z
+  - _ulid: 01KPVR1W77KHX5T62JDJ727YP5
+    type: friction
+    content: Skill template supporting directories (references/, scripts/, assets/, docs/) are defined
+      in code (SUPPORTING_DIRS constants) but not surfaced in agent-facing guidance. Worker placed a
+      helper script in files/ which is not distributed. The CLAUDE.md skill source-of-truth section
+      mentions templates/skills/ and .kspec/skills/ but not which subdirectories are valid. A
+      one-line convention rule or CLAUDE.md note would prevent this class of review round-trip.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-22T23:22:54.056Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
