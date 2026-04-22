@@ -31275,7 +31275,7 @@ runs:
     completed_at: 2026-04-22T22:08:26.935Z
   - _ulid: 01KPVMN192VXD4X7X0QJ99DVN1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31288,7 +31288,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-22T22:25:31.438Z
-        completed_at: 2026-04-22T22:25:31.438Z
+        completed_at: 2026-04-22T22:25:32.741Z
+        notes: "Coverage check: searched for existing tracking of the detached-reviewer merge/worktree
+          limitation and of awaiter-style long test delegation; found no matches. Searches run:
+          'reviewer merge helper worktree', 'worktree branch already used by worktree', 'detached
+          reviewer snapshot merge dev worktree', 'fatal dev is already used by worktree', 'git
+          update-ref refs/heads/dev', 'awaiter full test suite', 'review evidence log'."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-22T22:25:32.741Z
+        completed_at: 2026-04-22T22:25:32.741Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-22T22:23:27.522Z
