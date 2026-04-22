@@ -61454,12 +61454,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-22T22:07:01.577Z
+      updated_at: 2026-04-22T22:07:08.342Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-22T22:07:01.577Z
+      updated_at: 2026-04-22T22:07:08.342Z
     integration:
       status: pending
       detail: null
@@ -61467,24 +61467,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1493cd19353d11d85540adaf7b160c8f599e9c86
-      updated_at: 2026-04-22T22:07:01.577Z
-    lifecycle_state: ready
+      updated_at: 2026-04-22T22:07:08.342Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KPVJ8QQCMFRJ3WZSRWHJ4N1Q"
     task_slug: task-portable-skill-supporting-file-references
     timestamps:
       closed_at: null
       last_active_at: 2026-04-22T21:45:32.938Z
-      last_reconciled_at: 2026-04-22T22:07:01.577Z
+      last_reconciled_at: 2026-04-22T22:07:08.342Z
       created_at: 2026-04-22T21:45:03.447Z
-      updated_at: 2026-04-22T22:07:01.577Z
+      updated_at: 2026-04-22T22:07:08.342Z
     workspace_id: dispatch-workspace-01KPVJ8QQCMFRJ3WZSRWHJ4N1Q
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 2aa7097541700f5ce18e7907d4e7775a31c537ef
+        last_seen_at: 2026-04-22T22:07:08.342Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-portable-skill-supporting-file-references-01kpvj8q-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-portable-skill-supporting-file-references/01kpvj8q
-        head: 1493cd19353d11d85540adaf7b160c8f599e9c86
-        last_seen_at: 2026-04-22T21:45:03.447Z
+        head: 2aa7097541700f5ce18e7907d4e7775a31c537ef
+        last_seen_at: 2026-04-22T22:07:08.342Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-portable-skill-supporting-file-references-01kpvj8q
