@@ -162683,6 +162683,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-22T09:14:17.678Z
+      - _ulid: 01KPT7GTCH4KQ4P0A5SQDTJ1KY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPT7GSBE3EXSNA2261YBMBKP
+        timestamp: 2026-04-22T09:14:43.473Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -162692,8 +162699,25 @@ reviews:
       content_hash: ""
       ref: "@plan-portable-skill-file-references-and-detached-review"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPT7GSBE3EXSNA2261YBMBKP
+        anchor:
+          type: structured
+          ref: "@task-detached-reviewer-merge-guidance"
+        entries:
+          - _ulid: 01KPT7GSBENSP68CRFPG8VTAFY
+            author: Jacob Chapel
+            body: "This task's scope is guidance/docs/rendered-skill wiring, but its Covers block claims runtime
+              helper behaviors (no-op merge, dirty-target refusal, conflict-safe exit) that are
+              actually implemented and behaviorally verified in
+              @task-detached-reviewer-merge-helper. That makes task ownership non-standalone and
+              reviewability ambiguous: a reviewer cannot tell which task is responsible for proving
+              those helper mechanics. Narrow this task's coverage to
+              ac-helper-path-in-reviewer-guidance and keep the runtime merge mechanics ACs owned by
+              the helper-mechanics task."
+            created_at: 2026-04-22T09:14:42.415Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-22T09:14:17.679Z
-    updated_at: null
+    updated_at: 2026-04-22T09:14:42.415Z
     notes: []
