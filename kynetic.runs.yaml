@@ -31134,7 +31134,7 @@ runs:
     completed_at: 2026-04-22T00:10:22.877Z
   - _ulid: 01KPS9WMX5ACCEW7205VD5V0ZY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31149,7 +31149,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-22T00:37:15.367Z
-        completed_at: 2026-04-22T00:37:15.367Z
+        completed_at: 2026-04-22T00:37:50.572Z
+        notes: "High-confidence session findings: (1) friction: detached reviewer snapshots still hit merge
+          friction when the integration branch is already checked out in another worktree; observed
+          again when git checkout dev failed with 'already used by worktree'. Existing coverage
+          already present in observations such as @01KPA1JD, @01KPQATM5, and @01KPARF06, so no new
+          capture. (2) friction: repo-wide kspec validate debt still reduces review signal; observed
+          again when validate failed on unchanged .kspec state. Existing coverage already present in
+          inbox @01KPAM5ST and @01KPA69P, so no new capture. (3) success: direct verification of
+          built docs-search assets plus full npm test/build reruns made the review decision robust,
+          but similar docs-review success patterns are already captured in recent observations, so
+          no new capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-22T00:37:50.572Z
+        completed_at: 2026-04-22T00:37:50.572Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-22T00:36:53.797Z
