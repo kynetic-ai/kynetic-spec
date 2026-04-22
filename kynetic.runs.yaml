@@ -31312,7 +31312,7 @@ runs:
     completed_at: 2026-04-22T22:26:13.776Z
   - _ulid: 01KPVN02CGMRBB6SNPNA431E2V
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -31349,7 +31349,24 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-22T22:30:39.817Z
-        completed_at: 2026-04-22T22:30:39.817Z
+        completed_at: 2026-04-22T22:30:53.845Z
+        notes: >-
+          Decision matrix evaluation:
+
+
+          1. FRICTION (buildTestSubprocessEnv KSPEC_DISPATCH_* gap):
+             - Searched: 'subprocess env', 'buildTestSubprocessEnv', 'dispatch env' — no existing observation or inbox item covers this specific gap
+             - Testing convention rules mention buildTestSubprocessEnv but don't flag the incomplete KSPEC_DISPATCH_* stripping
+             - UNIQUE + HIGH CONFIDENCE -> CAPTURE as friction observation
+
+          2. SUCCESS (plan-to-task pipeline):
+             - General pattern, already well-established in existing success observations
+             - Not adding unique insight beyond existing entries
+             - SKIP — not novel enough to capture
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-22T22:30:53.845Z
+        completed_at: 2026-04-22T22:30:53.845Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-22T22:29:29.104Z
