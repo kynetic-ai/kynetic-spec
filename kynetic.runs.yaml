@@ -31240,7 +31240,7 @@ runs:
     completed_at: 2026-04-22T00:43:12.139Z
   - _ulid: 01KPVKQCAZ9ZDVPAZBXP5B3ANN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -31252,7 +31252,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-22T22:07:37.320Z
-        completed_at: 2026-04-22T22:07:37.320Z
+        completed_at: 2026-04-22T22:08:11.646Z
+        notes: "No high-confidence friction. One success: the {skill:...} token architecture in
+          skill-render.ts has clean extension points (transformBody, transformSupportingFileContent,
+          BaseRenderConfig) that made adding {supporting:...} straightforward without modifying
+          existing function signatures. Already tracked implicitly by the spec and plan structure."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-22T22:08:11.646Z
+        completed_at: 2026-04-22T22:08:11.646Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-22T22:07:15.808Z
