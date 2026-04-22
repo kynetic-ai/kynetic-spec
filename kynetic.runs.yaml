@@ -31458,7 +31458,7 @@ runs:
     completed_at: 2026-04-22T23:07:57.920Z
   - _ulid: 01KPVRSSEDEDRE9JK8PTNXDT0T
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31473,7 +31473,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-22T23:36:36.838Z
-        completed_at: 2026-04-22T23:36:36.838Z
+        completed_at: 2026-04-22T23:36:43.929Z
+        notes: "Friction points: 1) it is easy to validate a skill helper only at the source-tree level and
+          miss whether the rendered runtime payload actually contains it; I had to manually compare
+          templates/skills/merge against .agents/skills/kspec-merge to prove the distribution gap.
+          2) kspec validate remains low-signal in review sessions because unrelated repo-level
+          schema/alignment/coverage failures drown out task-specific checks, so reviewers must
+          manually separate pre-existing noise from real regressions."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-22T23:36:43.929Z
+        completed_at: 2026-04-22T23:36:43.929Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-22T23:35:57.645Z
