@@ -40450,8 +40450,8 @@ plans:
       - Successful detached-review merges must leave any occupied integration target
         worktree aligned with the new target tip. Avoiding stale checked-out target
         state is the load-bearing regression guard for this plan.
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-04-22T21:41:32.755Z
     derived_specs: []
     derived_tasks: []
     module_ref: null
