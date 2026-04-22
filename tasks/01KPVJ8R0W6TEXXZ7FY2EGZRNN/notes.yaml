@@ -1,1 +1,44 @@
-notes: []
+notes:
+  - _ulid: 01KPVM174YYVNTZJCDJBP8E798
+    content: >-
+      Approach: Implement merge helper as a bash script at
+      templates/skills/merge/files/detached-reviewer-merge.sh.
+
+
+      Architecture:
+
+      - Script reads dispatch env vars: KSPEC_DISPATCH_CANONICAL_BRANCH,
+      KSPEC_DISPATCH_MERGE_TARGET, KSPEC_DISPATCH_CANONICAL_HEAD, KSPEC_DISPATCH_WORKTREE_ROOT
+
+      - Uses git worktree list to find the occupied worktree for the integration target
+
+      - Performs merge via git -C <occupied-worktree> merge --no-ff <canonical-branch>
+
+      - This works because all worktrees share the same git repo
+
+
+      Flow:
+
+      1. Validate required env vars
+
+      2. Find occupied worktree for integration target via git worktree list --porcelain
+
+      3. Check if canonical head is already ancestor of integration target → no-op
+
+      4. Check if occupied worktree has dirty state (tracked modifications or staged drift) → refuse
+      with guidance
+
+      5. Run git -C <occupied-worktree> merge --no-ff <canonical-branch> -m <message>
+
+      6. On conflict: abort merge, report conflict guidance, exit non-zero
+
+      7. On success: verify the occupied worktree matches the new tip
+
+
+      Tests: E2E style using temp git repos with multiple worktrees.
+
+      4 ACs to cover: occupied-target-clean-refresh, helper-no-op-merge,
+      helper-refuses-dirty-target, helper-safe-conflict-exit.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-22T22:12:38.174Z
