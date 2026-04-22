@@ -162852,3 +162852,30 @@ reviews:
     created_at: 2026-04-22T09:14:17.679Z
     updated_at: 2026-04-22T09:15:15.636Z
     notes: []
+  - _ulid: 01KPT7RHHNR05B655W4Y00CF4H
+    slugs: []
+    title: "Plan re-review: Portable Skill File References and Detached Reviewer Merge Foundation (cycle
+      2)"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KPT7RHHNTYC1ENTAWXEC20N7
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-22T09:18:56.565Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-portable-skill-file-references-and-detached-review"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-22T09:18:56.565Z
+    updated_at: null
+    notes: []
