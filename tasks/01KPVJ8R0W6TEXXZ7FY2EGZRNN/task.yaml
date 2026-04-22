@@ -43,7 +43,7 @@ description: |
 spec_ref: "@detached-reviewer-merge-helper"
 plan_ref: "@plan-portable-skill-file-references-and-detached-review"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -57,11 +57,11 @@ review_ref: "@01KPVN1ZNM8QJTBT7EKRP99WGD"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-detached-reviewer-merge-helper/01kpvj8r
-  captured_at: 2026-04-22T22:28:58.005Z
-  commit: 8f0a82799dd28d92fb1e39a74a56e7bb8d8f69e6
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-04-22T22:57:13.649Z
+  commit: 4519aed5454861a7dae6a2e4beeb4d27a0bb3f9b
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-detached-reviewer-merge-helper/01kpvj8r
 session_id: 01KPVNJMJES6DSM7T99YENEVJB
 history:
   - author: Jacob Chapel
@@ -134,8 +134,35 @@ history:
         previous: 2026-04-22T22:08:49.479Z
     command: task-start
     timestamp: 2026-04-22T22:57:00.579Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-detached-reviewer-merge-helper/01kpvj8r
+          captured_at: 2026-04-22T22:57:13.649Z
+          commit: 4519aed5454861a7dae6a2e4beeb4d27a0bb3f9b
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-detached-reviewer-merge-helper/01kpvj8r
+        previous:
+          review_url: null
+          branch: dispatch/task/task-detached-reviewer-merge-helper/01kpvj8r
+          captured_at: 2026-04-22T22:28:58.005Z
+          commit: 8f0a82799dd28d92fb1e39a74a56e7bb8d8f69e6
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-04-22T22:57:13.656Z
+        previous: 2026-04-22T22:28:58.008Z
+    command: task-submit
+    timestamp: 2026-04-22T22:57:13.657Z
 created_at: 2026-04-22T21:41:47.676Z
 started_at: 2026-04-22T22:57:00.578Z
-submitted_at: 2026-04-22T22:28:58.008Z
+submitted_at: 2026-04-22T22:57:13.656Z
 todos: []
 automation: eligible
