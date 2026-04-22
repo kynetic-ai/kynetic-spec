@@ -15967,6 +15967,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-22T22:59:08.360Z
+  - _ulid: 01KPVQ6G7M1QAVKNT6TNZ4SGH3
+    type: friction
+    content: "Skill helper payloads can be added under unsupported directories such as files/ and still
+      pass tests when those tests execute templates/skills source paths directly. Existing skill
+      distribution paths only ship references/, scripts/, assets/, and docs/, so source-tree tests
+      can miss a real delivery gap. Reflection from review of @task-detached-reviewer-merge-helper:
+      either extend the supported supporting-directory contract/renderers/build-plugin to include
+      helper payloads explicitly, or require helper assets to live in an already-supported directory
+      and add tests that exercise the shipped/rendered path."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-22T23:07:57.044Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
