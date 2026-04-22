@@ -163598,6 +163598,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-22T23:35:08.387Z
+      - _ulid: 01KPVSR9EZFZTHZR34FW0H25BB
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPVRQGZXYNM5XN1RYJ5C64WK
+        timestamp: 2026-04-22T23:52:37.087Z
     examined_commit: 83ffd1ed7f14c6fe94a7c1feebce1e36ee4542ae
     external_links: []
     lifecycle_state: closed
@@ -163626,6 +163632,17 @@ reviews:
               reviewer workspace. That means the task has fixed the source location without actually
               shipping the helper to the runtime this feature targets.
             created_at: 2026-04-22T23:34:43.453Z
+          - _ulid: 01KPVSR8EA43QTJYTPZ1D3T4V4
+            author: "@claude"
+            body: "Fixed: Ran `kspec skill install-core` from dev source to install the template's scripts/
+              directory into .kspec/skills/merge/, then `kspec skill render` to regenerate the
+              rendered output. Both .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh
+              and .factory/skills/kspec-merge/scripts/detached-reviewer-merge.sh are now committed
+              with executable permissions. The root cause was that the previous fix cycles moved the
+              script to the correct template location (templates/skills/merge/scripts/) but never
+              re-ran the install+render pipeline to propagate the script through .kspec/skills/ →
+              .agents/skills/."
+            created_at: 2026-04-22T23:52:36.042Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -163636,5 +163653,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-22T23:35:08.386Z
     created_at: 2026-04-22T23:23:25.042Z
-    updated_at: 2026-04-22T23:35:08.387Z
+    updated_at: 2026-04-22T23:52:36.042Z
     notes: []
