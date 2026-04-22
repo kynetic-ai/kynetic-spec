@@ -162697,9 +162697,16 @@ reviews:
           kind: blocker
           thread_ulid: 01KPT7GSDTYJ9EAZNNYHF74KWF
         timestamp: 2026-04-22T09:14:45.116Z
+      - _ulid: 01KPT7GXM46XM2NT66APD1MWTK
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-22T09:14:46.788Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: plan
@@ -162744,5 +162751,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-22T09:14:17.679Z
-    updated_at: 2026-04-22T09:14:42.490Z
+    updated_at: 2026-04-22T09:14:42.521Z
     notes: []
