@@ -1,1 +1,21 @@
-notes: []
+notes:
+  - _ulid: 01KPS8GDGHK9GMYYSPDBC6KHRS
+    content: >-
+      Approach: 
+
+      1. Export getLockDirPath(filePath) from src/parser/file-lock.ts, refactor acquireFileLock to
+      use it (single source of truth for .lock suffix)
+
+      2. Import getLockDirPath in src/parser/gitignore.ts, add .kspec-dispatch-shadow-mutation.lock/
+      entry via the helper
+
+      3. Add regression tests: (a) lock-held git-status test, (b) upgrade self-heal test
+
+      4. Update existing tests that hardcode the exact entry list
+
+
+      Confirmed call-site audit: only .kspec-dispatch-shadow-mutation is at project root. All other
+      acquireFileLock callers lock inside .kspec/ (already covered).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-22T00:12:44.433Z
