@@ -6993,6 +6993,9 @@ modules:
           The contract covers both direct skill markdown and markdown files copied
           from the skill's supporting directories. It rejects missing or out-of-
           boundary references so agents do not receive broken helper links.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
