@@ -48,3 +48,33 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-22T21:49:49.547Z
+  - _ulid: 01KPVKNRCY0W9TPV3273R7BP1F
+    content: >-
+      Implementation complete. Summary:
+
+
+      1. Reference form: {supporting:<relative-path>} tokens in skill markdown and supporting
+      markdown files
+
+      2. Render-time resolution: All three platform renderers (claude-code, codex, droid) resolve
+      tokens to platform-specific paths (e.g., .claude/skills/<id>/<path>,
+      .agents/skills/<subdir>/<path>, .factory/skills/<subdir>/<path>)
+
+      3. Prompt-time resolution: buildPromptWithSkills resolves per-skill before combining, so each
+      skill's references resolve relative to its own directory
+
+      4. Validation: validateSupportingFileReference rejects absolute paths and ../ boundary
+      escapes; collectSkillFiles builds a file set for missing-target detection;
+      SupportingFileReferenceError provides structured error with skill ID and ref path
+
+      5. Design decisions: Kept supporting-file resolution as a separate function chain alongside
+      existing {skill:...} resolution rather than modifying the existing function signatures. This
+      preserves backward compatibility. Resolution is deterministic from skill ID, origin, platform,
+      and output directory.
+
+
+      All 4 ACs covered with 36 new tests (unit + integration). Full test suite passes (8349 tests,
+      0 regressions).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-22T22:06:22.622Z
