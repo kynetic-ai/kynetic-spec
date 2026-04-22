@@ -31312,7 +31312,7 @@ runs:
     completed_at: 2026-04-22T22:26:13.776Z
   - _ulid: 01KPVN02CGMRBB6SNPNA431E2V
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -31325,7 +31325,31 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-22T22:29:56.355Z
-        completed_at: 2026-04-22T22:29:56.355Z
+        completed_at: 2026-04-22T22:30:39.817Z
+        notes: >-
+          Searched existing observations, inbox, and tasks. Baseline established.
+
+
+          High-confidence findings:
+
+
+          1. FRICTION: buildTestSubprocessEnv does not strip all KSPEC_DISPATCH_* vars — only a
+          hardcoded subset (KSPEC_DISPATCH_CANONICAL_HEAD, plus KSPEC_SESSION_ID etc). Tests that
+          need a clean dispatch env must manually strip remaining KSPEC_DISPATCH_* vars. I hit this
+          directly: my env contract tests failed because KSPEC_DISPATCH_CANONICAL_BRANCH leaked from
+          the parent dispatch process into the test subprocess. This is systemic — any new test
+          exercising dispatch env vars will hit the same issue. Already partially tracked in testing
+          convention rules but the specific KSPEC_DISPATCH_* gap is not.
+
+
+          2. SUCCESS: The plan-to-task-to-implementation pipeline worked cleanly for this task. Plan
+          provided clear scope boundaries, spec ACs were well-defined and testable, and the dispatch
+          workspace setup put me on the right branch with all context needed. Zero friction in the
+          task lifecycle mechanics themselves.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-22T22:30:39.817Z
+        completed_at: 2026-04-22T22:30:39.817Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-22T22:29:29.104Z
