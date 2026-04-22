@@ -26878,6 +26878,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-22T21:41:47.676Z
+  automation: eligible
 - _ulid: 01KPVJ8RA8P0TGB5KQEZ70M39K
   slugs:
     - task-detached-reviewer-merge-guidance
