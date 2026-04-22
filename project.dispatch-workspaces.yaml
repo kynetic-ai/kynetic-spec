@@ -61634,7 +61634,7 @@ workspaces:
         head: 2aa7097541700f5ce18e7907d4e7775a31c537ef
         last_seen_at: 2026-04-22T22:07:08.342Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-portable-skill-supporting-file-references-01kpvj8q
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 1493cd19353d11d85540adaf7b160c8f599e9c86
     bootstrap:
       status: succeeded
@@ -62119,7 +62119,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-22T23:54:40.842Z
+      updated_at: 2026-04-22T23:55:08.744Z
     integration:
       status: pending
       detail: null
@@ -62134,10 +62134,10 @@ workspaces:
     task_slug: task-detached-reviewer-merge-helper
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-22T23:37:58.576Z
-      last_reconciled_at: 2026-04-22T23:54:40.842Z
+      last_active_at: 2026-04-22T23:55:08.744Z
+      last_reconciled_at: 2026-04-22T23:55:08.744Z
       created_at: 2026-04-22T22:07:44.467Z
-      updated_at: 2026-04-22T23:55:05.004Z
+      updated_at: 2026-04-22T23:55:08.744Z
     workspace_id: dispatch-workspace-01KPVJ8R0W6TEXXZ7FY2EGZRNN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
