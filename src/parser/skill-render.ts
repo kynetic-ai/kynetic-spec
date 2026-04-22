@@ -305,6 +305,148 @@ export function getClaudeCodeSkillSubdir(skill: LoadedSkill): string {
 
 const SKILL_REFERENCE_TOKEN_RE = /\{skill:([a-z0-9][a-z0-9-]*)\}/g;
 
+// AC: @portable-skill-supporting-file-references ac-rendered-supporting-link-resolution
+// AC: @portable-skill-supporting-file-references ac-prompt-supporting-link-resolution
+const SUPPORTING_FILE_REFERENCE_RE = /\{supporting:([^}]+)\}/g;
+
+/**
+ * Validate a supporting-file reference path.
+ * Rejects absolute paths and path traversal attempts.
+ *
+ * AC: @portable-skill-supporting-file-references ac-supporting-reference-boundary
+ */
+export function validateSupportingFileReference(refPath: string): {
+  valid: boolean;
+  error?: string;
+} {
+  // Reject absolute paths
+  if (path.isAbsolute(refPath)) {
+    return {
+      valid: false,
+      error: `Supporting-file reference "${refPath}" uses an absolute path; only relative paths within the skill directory are allowed`,
+    };
+  }
+
+  // Normalize and check for boundary escape
+  const normalized = path.normalize(refPath);
+  if (normalized.startsWith("..") || normalized.startsWith(path.sep + "..")) {
+    return {
+      valid: false,
+      error: `Supporting-file reference "${refPath}" escapes the skill directory boundary`,
+    };
+  }
+
+  return { valid: true };
+}
+
+/**
+ * Resolve a single supporting-file reference to a platform-specific path.
+ * Returns the project-root-relative path for the rendered supporting file copy.
+ *
+ * AC: @portable-skill-supporting-file-references ac-rendered-supporting-link-resolution
+ */
+export function resolveSupportingFilePath(
+  refPath: string,
+  skillId: string,
+  platform: string,
+  origin?: LoadedSkill["origin"],
+  outputDir?: string,
+): string {
+  const defaultOutput = outputDir ?? getPlatformDefaultOutputDir(platform);
+  const subdir = getSkillSubdir(skillId, origin, platform);
+  return path.posix.join(defaultOutput, subdir, refPath);
+}
+
+/**
+ * Error thrown when a supporting-file reference cannot be resolved.
+ *
+ * AC: @portable-skill-supporting-file-references ac-missing-supporting-target-rejected
+ * AC: @portable-skill-supporting-file-references ac-supporting-reference-boundary
+ */
+export class SupportingFileReferenceError extends Error {
+  constructor(
+    public readonly skillId: string,
+    public readonly refPath: string,
+    message: string,
+  ) {
+    super(message);
+    this.name = "SupportingFileReferenceError";
+  }
+}
+
+/**
+ * Resolve all supporting-file reference tokens in text for a target platform.
+ * Token syntax: {supporting:<relative-path>}
+ *
+ * Validates that each referenced file exists in the source skill directory and
+ * does not escape the skill's directory boundary.
+ *
+ * AC: @portable-skill-supporting-file-references ac-rendered-supporting-link-resolution
+ * AC: @portable-skill-supporting-file-references ac-missing-supporting-target-rejected
+ * AC: @portable-skill-supporting-file-references ac-supporting-reference-boundary
+ */
+export function resolveSupportingFileReferences(
+  body: string,
+  skillId: string,
+  platform: string,
+  origin?: LoadedSkill["origin"],
+  sourceSkillDir?: string,
+  existingFiles?: Set<string>,
+  outputDir?: string,
+): string {
+  return body.replace(SUPPORTING_FILE_REFERENCE_RE, (match, refPath: string) => {
+    // Validate the reference path
+    const validation = validateSupportingFileReference(refPath);
+    if (!validation.valid) {
+      throw new SupportingFileReferenceError(skillId, refPath, validation.error!);
+    }
+
+    // If we have a set of known files, validate the target exists
+    if (existingFiles) {
+      const normalizedRef = path.normalize(refPath).replaceAll(path.sep, "/");
+      if (!existingFiles.has(normalizedRef)) {
+        throw new SupportingFileReferenceError(
+          skillId,
+          refPath,
+          `Supporting-file reference "${refPath}" in skill "${skillId}" points to a file that does not exist in the skill's directory`,
+        );
+      }
+    }
+
+    return resolveSupportingFilePath(refPath, skillId, platform, origin, outputDir);
+  });
+}
+
+/**
+ * Collect all files in a skill's source directory (relative paths).
+ * Used for validating supporting-file references.
+ */
+export async function collectSkillFiles(skillDir: string): Promise<Set<string>> {
+  const files = new Set<string>();
+
+  async function walk(dir: string, prefix: string): Promise<void> {
+    let names: string[];
+    try {
+      names = await fs.readdir(dir);
+    } catch {
+      return;
+    }
+    for (const name of names) {
+      const fullPath = path.join(dir, name);
+      const relativePath = prefix ? `${prefix}/${name}` : name;
+      const stat = await fs.stat(fullPath);
+      if (stat.isDirectory()) {
+        await walk(fullPath, relativePath);
+      } else {
+        files.add(relativePath);
+      }
+    }
+  }
+
+  await walk(skillDir, "");
+  return files;
+}
+
 /**
  * Build a map of skill id -> origin for reference token resolution.
  */
@@ -1232,6 +1374,12 @@ export const claudeCodeRenderer: PlatformRenderer = {
 
     const skillOrigins = await loadSkillOrigins(ctx);
 
+    // AC: @portable-skill-supporting-file-references ac-rendered-supporting-link-resolution
+    // Collect source files for supporting-file reference validation
+    const sourceSkillDir = path.join(ctx.specDir, "skills", skill.id);
+    const existingFiles = await collectSkillFiles(sourceSkillDir);
+    const outputDir = options.outputDir || this.defaultOutputDir;
+
     // Project/local skills render to .claude/skills/
     const result = await renderSkillBase(
       ctx,
@@ -1241,10 +1389,40 @@ export const claudeCodeRenderer: PlatformRenderer = {
       {
         platform: this.platform,
         generateFrontmatter,
-        transformBody: (body, loadedSkill) =>
-          resolveSkillReferenceTokens(body, this.platform, loadedSkill, skillOrigins),
-        transformSupportingFileContent: (_relativePath, content, loadedSkill) =>
-          resolveSkillReferenceTokens(content, this.platform, loadedSkill, skillOrigins),
+        transformBody: (body, loadedSkill) => {
+          const skillResolved = resolveSkillReferenceTokens(
+            body,
+            this.platform,
+            loadedSkill,
+            skillOrigins,
+          );
+          return resolveSupportingFileReferences(
+            skillResolved,
+            loadedSkill.id,
+            this.platform,
+            loadedSkill.origin,
+            sourceSkillDir,
+            existingFiles,
+            outputDir,
+          );
+        },
+        transformSupportingFileContent: (_relativePath, content, loadedSkill) => {
+          const skillResolved = resolveSkillReferenceTokens(
+            content,
+            this.platform,
+            loadedSkill,
+            skillOrigins,
+          );
+          return resolveSupportingFileReferences(
+            skillResolved,
+            loadedSkill.id,
+            this.platform,
+            loadedSkill.origin,
+            sourceSkillDir,
+            existingFiles,
+            outputDir,
+          );
+        },
         writeLegacyHash: true,
       },
       this.defaultOutputDir,
@@ -1375,6 +1553,12 @@ export const codexRenderer: PlatformRenderer = {
 
     const codexSubdir = getSkillSubdir(skill.id, skill.origin, "codex");
 
+    // AC: @portable-skill-supporting-file-references ac-rendered-supporting-link-resolution
+    // Collect source files for supporting-file reference validation
+    const sourceSkillDir = path.join(ctx.specDir, "skills", skill.id);
+    const existingFiles = await collectSkillFiles(sourceSkillDir);
+    const outputDir = options.outputDir || this.defaultOutputDir;
+
     return renderSkillBase(
       ctx,
       projectRoot,
@@ -1383,7 +1567,7 @@ export const codexRenderer: PlatformRenderer = {
       {
         platform: this.platform,
         generateFrontmatter: generateCodexFrontmatter,
-        // Resolve portable {skill:<id>} tokens for all skills.
+        // Resolve portable {skill:<id>} and {supporting:<path>} tokens for all skills.
         // Keep legacy /kspec:* rewrite only for core skills for backward compatibility.
         transformBody: (body, loadedSkill) => {
           const tokenResolved = resolveSkillReferenceTokens(
@@ -1392,10 +1576,19 @@ export const codexRenderer: PlatformRenderer = {
             loadedSkill,
             skillOrigins,
           );
+          const supportingResolved = resolveSupportingFileReferences(
+            tokenResolved,
+            loadedSkill.id,
+            this.platform,
+            loadedSkill.origin,
+            sourceSkillDir,
+            existingFiles,
+            outputDir,
+          );
           if (loadedSkill.origin === "core") {
-            return transformLegacyCodexCoreReferences(tokenResolved);
+            return transformLegacyCodexCoreReferences(supportingResolved);
           }
-          return tokenResolved;
+          return supportingResolved;
         },
         transformSupportingFileContent: (_relativePath, content, loadedSkill) => {
           const tokenResolved = resolveSkillReferenceTokens(
@@ -1404,10 +1597,19 @@ export const codexRenderer: PlatformRenderer = {
             loadedSkill,
             skillOrigins,
           );
+          const supportingResolved = resolveSupportingFileReferences(
+            tokenResolved,
+            loadedSkill.id,
+            this.platform,
+            loadedSkill.origin,
+            sourceSkillDir,
+            existingFiles,
+            outputDir,
+          );
           if (loadedSkill.origin === "core") {
-            return transformLegacyCodexCoreReferences(tokenResolved);
+            return transformLegacyCodexCoreReferences(supportingResolved);
           }
-          return tokenResolved;
+          return supportingResolved;
         },
 
         // AC: @skill-drift-detection-improvements ac-1 - Include sidecar in hash
@@ -1524,6 +1726,11 @@ export const droidRenderer: PlatformRenderer = {
     const skillOrigins = await loadSkillOrigins(ctx);
     const droidSubdir = getSkillSubdir(skill.id, skill.origin, "droid");
 
+    // AC: @portable-skill-supporting-file-references ac-rendered-supporting-link-resolution
+    const sourceSkillDir = path.join(ctx.specDir, "skills", skill.id);
+    const existingFiles = await collectSkillFiles(sourceSkillDir);
+    const outputDir = options.outputDir || this.defaultOutputDir;
+
     return renderSkillBase(
       ctx,
       projectRoot,
@@ -1532,10 +1739,40 @@ export const droidRenderer: PlatformRenderer = {
       {
         platform: this.platform,
         generateFrontmatter: generateDroidFrontmatter,
-        transformBody: (body, loadedSkill) =>
-          resolveSkillReferenceTokens(body, this.platform, loadedSkill, skillOrigins),
-        transformSupportingFileContent: (_relativePath, content, loadedSkill) =>
-          resolveSkillReferenceTokens(content, this.platform, loadedSkill, skillOrigins),
+        transformBody: (body, loadedSkill) => {
+          const skillResolved = resolveSkillReferenceTokens(
+            body,
+            this.platform,
+            loadedSkill,
+            skillOrigins,
+          );
+          return resolveSupportingFileReferences(
+            skillResolved,
+            loadedSkill.id,
+            this.platform,
+            loadedSkill.origin,
+            sourceSkillDir,
+            existingFiles,
+            outputDir,
+          );
+        },
+        transformSupportingFileContent: (_relativePath, content, loadedSkill) => {
+          const skillResolved = resolveSkillReferenceTokens(
+            content,
+            this.platform,
+            loadedSkill,
+            skillOrigins,
+          );
+          return resolveSupportingFileReferences(
+            skillResolved,
+            loadedSkill.id,
+            this.platform,
+            loadedSkill.origin,
+            sourceSkillDir,
+            existingFiles,
+            outputDir,
+          );
+        },
       },
       this.defaultOutputDir,
       droidSubdir,
