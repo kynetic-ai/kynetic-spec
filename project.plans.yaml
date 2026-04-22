@@ -40331,8 +40331,6 @@ plans:
         priority: 1
         tags: [dispatch, review, merge]
         spec_ref: "@detached-reviewer-merge-helper"
-        depends_on:
-          - "@task-portable-skill-supporting-file-references"
         description: |
           Add the supported detached-review merge helper as a merge-skill script and
           implement the standard clean merge mechanics it relies on.
@@ -40377,6 +40375,7 @@ plans:
         tags: [dispatch, review, skills, docs]
         spec_ref: "@detached-reviewer-merge-helper"
         depends_on:
+          - "@task-portable-skill-supporting-file-references"
           - "@task-detached-reviewer-merge-helper"
         description: |
           Update reviewer-facing guidance so manual_merge reviewer sessions use the
@@ -40409,9 +40408,6 @@ plans:
 
           Covers:
           - @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance
-          - @detached-reviewer-merge-helper ac-helper-no-op-merge
-          - @detached-reviewer-merge-helper ac-helper-refuses-dirty-target
-          - @detached-reviewer-merge-helper ac-helper-safe-conflict-exit
       ```
 
       ## Implementation Notes
@@ -40429,9 +40425,11 @@ plans:
       ### Dependency order
       - Task 1 establishes the portable supporting-file reference contract and its
         validation boundary.
-      - Task 2 adds the helper script and the merge mechanics it needs.
-      - Task 3 updates every reviewer-facing instruction surface to use the helper
-        path and regenerates rendered output.
+      - Task 2 adds the helper script and the merge mechanics it needs; it is kept
+        independent from Task 1 so the helper's git behavior can be implemented and
+        reviewed on its own.
+      - Task 3 depends on both earlier tasks, updates every reviewer-facing
+        instruction surface to use the helper path, and regenerates rendered output.
 
       ### Scope boundaries
       - Keep reviewer-owned merging; do not redesign publication ownership.
@@ -40454,11 +40452,15 @@ plans:
         state is the load-bearing regression guard for this plan.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/portable-skill-file-references-and-detached-reviewer-merge.md
     created_at: 2026-04-22T09:12:01.609Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KPT7NG7X12F39QYWY2Q71YRG
+        content: "Address cycle 1 review: narrow guidance task Covers to reviewer guidance only and move
+          portable-reference dependency to the guidance task"
+        author: Jacob Chapel
+        created_at: 2026-04-22T09:17:16.926Z
