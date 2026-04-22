@@ -41,7 +41,7 @@ description: |
 spec_ref: "@portable-skill-supporting-file-references"
 plan_ref: "@plan-portable-skill-file-references-and-detached-review"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -51,6 +51,14 @@ tags:
   - rendering
   - prompts
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-portable-skill-supporting-file-references/01kpvj8q
+  captured_at: 2026-04-22T22:06:28.928Z
+  commit: 2aa7097541700f5ce18e7907d4e7775a31c537ef
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KPVJFKF2M1BQ60Z2EC7AB11P
 history:
   - author: Jacob Chapel
@@ -73,7 +81,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-22T21:46:09.772Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-portable-skill-supporting-file-references/01kpvj8q
+          captured_at: 2026-04-22T22:06:28.928Z
+          commit: 2aa7097541700f5ce18e7907d4e7775a31c537ef
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-22T22:06:28.931Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-22T22:06:28.931Z
 created_at: 2026-04-22T21:41:47.372Z
 started_at: 2026-04-22T21:46:09.772Z
+submitted_at: 2026-04-22T22:06:28.931Z
 todos: []
 automation: eligible
