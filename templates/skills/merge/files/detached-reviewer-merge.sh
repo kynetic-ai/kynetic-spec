@@ -8,6 +8,7 @@
 # Required dispatch environment variables:
 #   KSPEC_DISPATCH_CANONICAL_BRANCH  — the task branch to merge
 #   KSPEC_DISPATCH_MERGE_TARGET      — the integration branch name (e.g. "dev")
+#   KSPEC_DISPATCH_CANONICAL_HEAD    — the reviewed commit SHA to merge (pinned at snapshot time)
 #
 # Exit codes:
 #   0  — merge succeeded (or no-op: already integrated)
@@ -29,15 +30,37 @@ if [ -z "${KSPEC_DISPATCH_MERGE_TARGET:-}" ]; then
   exit 1
 fi
 
+if [ -z "${KSPEC_DISPATCH_CANONICAL_HEAD:-}" ]; then
+  echo "error: KSPEC_DISPATCH_CANONICAL_HEAD is not set." >&2
+  echo "This script must be run from a dispatch reviewer invocation." >&2
+  exit 1
+fi
+
 CANONICAL_BRANCH="$KSPEC_DISPATCH_CANONICAL_BRANCH"
 MERGE_TARGET="$KSPEC_DISPATCH_MERGE_TARGET"
 
-# --- Resolve the canonical branch head ---------------------------------------
+# --- Verify the pinned canonical head ----------------------------------------
 
-CANONICAL_HEAD=$(git rev-parse --verify "refs/heads/$CANONICAL_BRANCH" 2>/dev/null) || {
+CANONICAL_HEAD="$KSPEC_DISPATCH_CANONICAL_HEAD"
+
+# Verify the pinned commit exists in the repository
+git cat-file -t "$CANONICAL_HEAD" >/dev/null 2>&1 || {
+  echo "error: pinned canonical head '$CANONICAL_HEAD' does not exist in the repository." >&2
+  exit 1
+}
+
+# Verify the pinned commit matches the current branch tip (detect drift)
+BRANCH_TIP=$(git rev-parse --verify "refs/heads/$CANONICAL_BRANCH" 2>/dev/null) || {
   echo "error: canonical branch '$CANONICAL_BRANCH' does not exist." >&2
   exit 1
 }
+
+if [ "$CANONICAL_HEAD" != "$BRANCH_TIP" ]; then
+  echo "warning: canonical branch '$CANONICAL_BRANCH' has advanced past the reviewed commit." >&2
+  echo "  reviewed commit: $CANONICAL_HEAD" >&2
+  echo "  current tip:     $BRANCH_TIP" >&2
+  echo "Merging the reviewed commit as pinned." >&2
+fi
 
 # --- Resolve the integration target ref --------------------------------------
 
@@ -90,18 +113,31 @@ if [ -z "$OCCUPIED_WORKTREE" ]; then
 fi
 
 # --- Dirty-target check: refuse if occupied worktree has modifications -------
+# Only check for tracked modifications and staged drift per the spec.
+# Untracked files are harmless and should not block the merge.
 
-PORCELAIN_STATUS=$(git -C "$OCCUPIED_WORKTREE" status --porcelain 2>/dev/null) || {
-  echo "error: could not check status of occupied worktree at '$OCCUPIED_WORKTREE'." >&2
-  exit 1
-}
+HAS_TRACKED_MODS=0
+HAS_STAGED_DRIFT=0
+DIRTY_DETAILS=""
 
-if [ -n "$PORCELAIN_STATUS" ]; then
+# Check for unstaged tracked modifications (modified/deleted working tree files)
+if ! git -C "$OCCUPIED_WORKTREE" diff --quiet 2>/dev/null; then
+  HAS_TRACKED_MODS=1
+  DIRTY_DETAILS+="Tracked modifications:"$'\n'
+  DIRTY_DETAILS+="$(git -C "$OCCUPIED_WORKTREE" diff --name-status 2>/dev/null)"$'\n'
+fi
+
+# Check for staged drift (changes in the index not yet committed)
+if ! git -C "$OCCUPIED_WORKTREE" diff --cached --quiet 2>/dev/null; then
+  HAS_STAGED_DRIFT=1
+  DIRTY_DETAILS+="Staged drift:"$'\n'
+  DIRTY_DETAILS+="$(git -C "$OCCUPIED_WORKTREE" diff --cached --name-status 2>/dev/null)"$'\n'
+fi
+
+if [ "$HAS_TRACKED_MODS" -eq 1 ] || [ "$HAS_STAGED_DRIFT" -eq 1 ]; then
   echo "error: integration target worktree at '$OCCUPIED_WORKTREE' has uncommitted changes." >&2
   echo "" >&2
-  echo "Dirty files:" >&2
-  echo "$PORCELAIN_STATUS" >&2
-  echo "" >&2
+  echo "$DIRTY_DETAILS" >&2
   echo "Recovery:" >&2
   echo "  1. Save or stash changes in the target worktree:" >&2
   echo "       cd $OCCUPIED_WORKTREE && git stash" >&2
@@ -115,7 +151,7 @@ fi
 
 MERGE_MSG="Merge branch '$CANONICAL_BRANCH' into $MERGE_TARGET"
 
-if ! MERGE_OUTPUT=$(git -C "$OCCUPIED_WORKTREE" merge --no-ff "$CANONICAL_BRANCH" -m "$MERGE_MSG" 2>&1); then
+if ! MERGE_OUTPUT=$(git -C "$OCCUPIED_WORKTREE" merge --no-ff "$CANONICAL_HEAD" -m "$MERGE_MSG" 2>&1); then
   # Merge failed — check if it's a conflict
   if git -C "$OCCUPIED_WORKTREE" diff --name-only --diff-filter=U 2>/dev/null | head -1 | grep -q .; then
     # Merge conflict — abort to restore clean state

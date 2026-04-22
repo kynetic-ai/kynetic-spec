@@ -6,7 +6,7 @@
  * branch into the occupied integration target.
  */
 
-import { execSync } from "node:child_process";
+import { execSync, spawnSync } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -33,6 +33,8 @@ interface MergeTestEnv {
   reviewerWorktreeDir: string;
   /** The canonical (task) branch name */
   canonicalBranch: string;
+  /** The pinned canonical head commit SHA (reviewed snapshot) */
+  canonicalHead: string;
   /** The integration target branch name */
   mergeTarget: string;
 }
@@ -72,6 +74,13 @@ async function setupMergeTestEnv(): Promise<MergeTestEnv> {
     stdio: "pipe",
   });
 
+  // Capture the canonical head (the reviewed commit) before switching branches
+  const canonicalHead = execSync(`git rev-parse HEAD`, {
+    cwd: projectDir,
+    encoding: "utf-8",
+    stdio: ["pipe", "pipe", "pipe"],
+  }).trim();
+
   // Switch back to main so worktrees can be created
   execSync("git checkout main", { cwd: projectDir, stdio: "pipe" });
 
@@ -97,6 +106,7 @@ async function setupMergeTestEnv(): Promise<MergeTestEnv> {
     integrationWorktreeDir,
     reviewerWorktreeDir,
     canonicalBranch,
+    canonicalHead,
     mergeTarget: "dev",
   };
 }
@@ -123,26 +133,17 @@ function runMergeHelper(
   cwd: string,
   env: Record<string, string>,
 ): { stdout: string; stderr: string; exitCode: number } {
-  try {
-    const result = execSync(`bash "${SCRIPT_PATH}"`, {
-      cwd,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "pipe"],
-      env: buildMergeHelperEnv(env),
-    });
-    return { stdout: result, stderr: "", exitCode: 0 };
-  } catch (error: unknown) {
-    const e = error as {
-      stdout?: string;
-      stderr?: string;
-      status?: number;
-    };
-    return {
-      stdout: e.stdout ?? "",
-      stderr: e.stderr ?? "",
-      exitCode: e.status ?? 1,
-    };
-  }
+  const result = spawnSync("bash", [SCRIPT_PATH], {
+    cwd,
+    encoding: "utf-8",
+    stdio: ["pipe", "pipe", "pipe"],
+    env: buildMergeHelperEnv(env),
+  });
+  return {
+    stdout: result.stdout ?? "",
+    stderr: result.stderr ?? "",
+    exitCode: result.status ?? 1,
+  };
 }
 
 afterEach(async () => {
@@ -199,6 +200,7 @@ describe("detached-reviewer-merge helper", () => {
       // Run the merge helper from the reviewer worktree
       const result = runMergeHelper(env.reviewerWorktreeDir, {
         KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
         KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
       });
 
@@ -252,6 +254,56 @@ describe("detached-reviewer-merge helper", () => {
     });
   });
 
+  // AC: @detached-reviewer-merge-helper ac-occupied-target-clean-refresh
+  describe("canonical head pinning", () => {
+    it("merges the pinned reviewed commit, not the advanced branch tip", async () => {
+      const env = await setupMergeTestEnv();
+
+      // Advance the canonical branch PAST the reviewed commit
+      execSync(`git checkout "${env.canonicalBranch}"`, {
+        cwd: env.projectDir,
+        stdio: "pipe",
+      });
+      await fs.writeFile(
+        path.join(env.projectDir, "unreviewed.txt"),
+        "unreviewed content\n",
+      );
+      execSync("git add unreviewed.txt", { cwd: env.projectDir, stdio: "pipe" });
+      execSync('git commit -m "feat: unreviewed change"', {
+        cwd: env.projectDir,
+        stdio: "pipe",
+      });
+      execSync("git checkout main", { cwd: env.projectDir, stdio: "pipe" });
+
+      // Run the merge helper with the original pinned canonical head
+      const result = runMergeHelper(env.reviewerWorktreeDir, {
+        KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
+        KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
+      });
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain("success: merged");
+
+      // The reviewed feature file should be present
+      const content = await fs.readFile(
+        path.join(env.integrationWorktreeDir, "feature.txt"),
+        "utf-8",
+      );
+      expect(content).toBe("feature content\n");
+
+      // The unreviewed file should NOT be present — we merged the pinned commit, not the tip
+      const unreviewedExists = await fs
+        .access(path.join(env.integrationWorktreeDir, "unreviewed.txt"))
+        .then(() => true)
+        .catch(() => false);
+      expect(unreviewedExists).toBe(false);
+
+      // The warning about drift should appear on stderr
+      expect(result.stderr).toContain("advanced past the reviewed commit");
+    });
+  });
+
   // AC: @detached-reviewer-merge-helper ac-helper-no-op-merge
   describe("no-op merge", () => {
     it("reports no-op when canonical head is already integrated", async () => {
@@ -272,6 +324,7 @@ describe("detached-reviewer-merge helper", () => {
       // Now run the helper — should be a no-op
       const result = runMergeHelper(env.reviewerWorktreeDir, {
         KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
         KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
       });
 
@@ -330,6 +383,7 @@ describe("detached-reviewer-merge helper", () => {
 
       const result = runMergeHelper(env.reviewerWorktreeDir, {
         KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
         KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
       });
 
@@ -367,6 +421,7 @@ describe("detached-reviewer-merge helper", () => {
 
       const result = runMergeHelper(env.reviewerWorktreeDir, {
         KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
         KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
       });
 
@@ -380,6 +435,34 @@ describe("detached-reviewer-merge helper", () => {
         stdio: ["pipe", "pipe", "pipe"],
       }).trim();
       expect(targetHeadAfter).toBe(targetHeadBefore);
+    });
+
+    // AC: @detached-reviewer-merge-helper ac-helper-refuses-dirty-target
+    it("allows merge when occupied integration worktree has only untracked files", async () => {
+      const env = await setupMergeTestEnv();
+
+      // Create an untracked file in the integration worktree (no git add)
+      await fs.writeFile(
+        path.join(env.integrationWorktreeDir, "scratch.tmp"),
+        "untracked scratch file\n",
+      );
+
+      // The merge should succeed — untracked files are not tracked modifications or staged drift
+      const result = runMergeHelper(env.reviewerWorktreeDir, {
+        KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
+        KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
+      });
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain("success: merged");
+
+      // The feature file should be present after merge
+      const content = await fs.readFile(
+        path.join(env.integrationWorktreeDir, "feature.txt"),
+        "utf-8",
+      );
+      expect(content).toBe("feature content\n");
     });
   });
 
@@ -410,6 +493,7 @@ describe("detached-reviewer-merge helper", () => {
 
       const result = runMergeHelper(env.reviewerWorktreeDir, {
         KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
         KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
       });
 
@@ -453,10 +537,23 @@ describe("detached-reviewer-merge helper", () => {
 
       const result = runMergeHelper(env.reviewerWorktreeDir, {
         KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
       });
 
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toContain("KSPEC_DISPATCH_MERGE_TARGET");
+    });
+
+    it("fails when KSPEC_DISPATCH_CANONICAL_HEAD is not set", async () => {
+      const env = await setupMergeTestEnv();
+
+      const result = runMergeHelper(env.reviewerWorktreeDir, {
+        KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
+      });
+
+      expect(result.exitCode).toBe(1);
+      expect(result.stderr).toContain("KSPEC_DISPATCH_CANONICAL_HEAD");
     });
   });
 });
