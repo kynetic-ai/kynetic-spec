@@ -9,6 +9,7 @@
 	import { goto } from '$app/navigation';
 	import { getDocsEntry, getDocsEntries, getDocsSectionEntries, getDocsRepoUrl, resolveDocsLink } from '$lib/docs';
 	import { renderDocsMarkdown, type TocEntry } from '$lib/utils/docs-markdown';
+	import DocsSearch from '$lib/components/DocsSearch.svelte';
 
 	const knownSlugs = new Set(getDocsEntries().map((e) => e.slug));
 	const repoUrl = getDocsRepoUrl();
@@ -79,6 +80,10 @@
 <div class="flex gap-8 max-w-6xl mx-auto">
 	<!-- Docs sidebar navigation -->
 	<nav class="hidden lg:block w-56 shrink-0 sticky top-4 self-start max-h-[calc(100vh-6rem)] overflow-y-auto">
+		<!-- AC: @docs-search ac-1 — Search input on docs pages -->
+		<div class="mb-4">
+			<DocsSearch />
+		</div>
 		<h3 class="text-sm font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Pages</h3>
 		<ul class="space-y-1">
 			{#each sectionEntries as navEntry}
@@ -116,6 +121,10 @@
 	<!-- Main content -->
 	<div class="flex-1 min-w-0">
 		{#if entry}
+			<!-- AC: @docs-search ac-1 — Search input visible on mobile detail pages -->
+			<div class="lg:hidden mb-4">
+				<DocsSearch />
+			</div>
 			<article bind:this={articleEl} class="prose prose-sm dark:prose-invert max-w-none">
 				{@html rendered.html}
 			</article>

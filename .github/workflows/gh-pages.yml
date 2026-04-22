@@ -71,6 +71,12 @@ jobs:
           BASE_PATH: /${{ github.event.repository.name }}
           VITE_STATIC_MODE: "true"
 
+      # AC: @docs-search ac-3 - Build search index with same base path as public deployment
+      - name: Build docs search index
+        run: npm run build:docs-search
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}
+
       - name: Copy SPA assets
         run: cp -r packages/web-ui/build/* gh-pages-output/
 
