@@ -16,6 +16,19 @@ const DEFAULT_TIMEOUT_MS = 5000;
 const RETRY_INTERVAL_MS = 50;
 const DEFAULT_MAX_HOLD_MS = 30_000;
 
+/** The suffix appended by acquireFileLock to create the lock directory. */
+const LOCK_DIR_SUFFIX = ".lock";
+
+/**
+ * Return the filesystem path of the lock directory that acquireFileLock
+ * creates for a given base path. Single source of truth for the suffix
+ * convention so callers (e.g. the gitignore builder) can predict the
+ * directory name without hard-coding the suffix.
+ */
+export function getLockDirPath(filePath: string): string {
+  return `${filePath}${LOCK_DIR_SUFFIX}`;
+}
+
 /**
  * Information about how a lock was acquired, particularly whether
  * it was force-reclaimed from a holder that exceeded the max hold duration.
@@ -89,7 +102,7 @@ export async function acquireFileLock(
   const timeoutMs = opts.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const maxHoldMs = resolveMaxHoldMs(opts.maxHoldMs);
 
-  const lockDir = `${filePath}.lock`;
+  const lockDir = getLockDirPath(filePath);
   const pidFile = path.join(lockDir, "pid");
   const deadline = timeoutMs === 0 || timeoutMs === Infinity ? Infinity : Date.now() + timeoutMs;
   const ownershipMarker = `${process.pid}\n${Date.now()}\n${randomUUID()}`;

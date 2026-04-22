@@ -11,6 +11,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
+import { getLockDirPath } from "./file-lock.js";
 import { SHADOW_WORKTREE_DIR, SESSIONS_WORKTREE_DIR, TRANSIENT_PLANS_DIR } from "./shadow.js";
 
 // ── Sentinel markers ──────────────────────────────────────────────
@@ -35,7 +36,11 @@ export function buildKspecGitignoreEntries(shadowDir?: string, worktreeRoot?: st
   if (!path.isAbsolute(wtRoot)) {
     entries.push(`${wtRoot}/`);
   }
-  entries.push(".kspec-dispatch-workspace.json", ".kspec-dispatch-shadow-mutation");
+  const shadowMutationLockBase = ".kspec-dispatch-shadow-mutation";
+  entries.push(".kspec-dispatch-workspace.json", shadowMutationLockBase);
+  // Cover the .lock/ directory that acquireFileLock creates at runtime.
+  // The path is derived via getLockDirPath so the suffix has one source of truth.
+  entries.push(`${getLockDirPath(shadowMutationLockBase)}/`);
   return entries;
 }
 
