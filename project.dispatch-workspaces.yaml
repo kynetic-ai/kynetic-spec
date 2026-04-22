@@ -61085,11 +61085,11 @@ workspaces:
     canonical_branch: dispatch/task/task-gitignore-cover-file-lock-directory-suffix/01kps7hj
     canonical_branch_head: 89cc1b568b3ffe6476ded87150d3e48eac80302c
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-22T00:41:33.191Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-22T00:41:35.255Z
     health:
       status: healthy
       issues: []
@@ -61103,7 +61103,7 @@ workspaces:
       target_branch: dev
       target_commit: 85b5efd6df9e0f3858a5fa5f627d8239f5ab70af
       updated_at: 2026-04-22T00:41:33.191Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KPS7HJYRRHQ7SECQXBH19N4G"
     task_slug: task-gitignore-cover-file-lock-directory-suffix
@@ -61112,7 +61112,7 @@ workspaces:
       last_active_at: 2026-04-22T00:28:51.863Z
       last_reconciled_at: 2026-04-22T00:41:33.191Z
       created_at: 2026-04-22T00:11:14.639Z
-      updated_at: 2026-04-22T00:41:33.191Z
+      updated_at: 2026-04-22T00:41:35.255Z
     workspace_id: dispatch-workspace-01KPS7HJYRRHQ7SECQXBH19N4G
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
