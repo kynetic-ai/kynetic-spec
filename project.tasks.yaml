@@ -26824,7 +26824,7 @@
     mutation locks appear as untracked content while held
   type: bug
   spec_ref: "@complete-auto-gitignore"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 3
@@ -26835,4 +26835,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-21T23:55:54.200Z
+  started_at: 2026-04-22T00:12:02.347Z
   automation: eligible
