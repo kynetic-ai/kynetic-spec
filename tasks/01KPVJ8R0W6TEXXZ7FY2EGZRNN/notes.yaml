@@ -72,3 +72,25 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-22T22:36:44.085Z
+  - _ulid: 01KPVPHYJJ41PEMMFW97F5ZF79
+    content: >-
+      Fix cycle 1: addressed both review blockers.
+
+
+      1. Dirty-target gate (blocker): Changed from git status --porcelain to git diff --quiet + git
+      diff --cached --quiet. Now only tracked modifications and staged drift block the merge;
+      untracked files are correctly ignored. Added test proving untracked files don't block.
+
+
+      2. Canonical head pinning (blocker): Added KSPEC_DISPATCH_CANONICAL_HEAD as a required env
+      var. The helper now merges exactly the pinned reviewed commit instead of resolving the live
+      branch tip. If the branch has advanced, a warning is emitted but only the reviewed commit is
+      merged. Added test proving unreviewed commits after snapshot are excluded.
+
+
+      Also switched runMergeHelper from execSync to spawnSync to properly capture stderr on success
+      paths. Added 3 new tests (untracked-files-allowed, branch-drift pinning, missing
+      CANONICAL_HEAD env var). Full test suite: 8323 passed, 5 skipped, 0 failed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-22T22:56:43.602Z
