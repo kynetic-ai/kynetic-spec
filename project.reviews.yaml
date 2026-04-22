@@ -162560,6 +162560,17 @@ reviews:
         runner: test-runner
         created_at: 2026-04-22T00:39:46.789Z
         completed_at: 2026-04-22T00:39:46.789Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation fails on unrelated baseline repo/meta issues outside this diff, including
+          .kspec/modules/meta.yaml schema error and longstanding completeness warnings.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-22T00:39:49.807Z
+        completed_at: 2026-04-22T00:39:49.807Z
     events:
       - _ulid: 01KPS9EWA6E7YG7Y0SP5NP9BYC
         actor: Jacob Chapel
@@ -162581,6 +162592,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-22T00:39:47.864Z
+      - _ulid: 01KPSA21VNYFE65E4HE1JXF3FT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-22T00:39:50.902Z
     examined_commit: 89cc1b568b3ffe6476ded87150d3e48eac80302c
     external_links: []
     lifecycle_state: open
@@ -162593,5 +162611,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-22T00:29:22.630Z
-    updated_at: 2026-04-22T00:39:46.789Z
+    updated_at: 2026-04-22T00:39:49.807Z
     notes: []
