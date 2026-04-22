@@ -163014,7 +163014,27 @@ reviews:
     slugs: []
     title: Review portable skill supporting-file references
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/agent-runtime/prompts.ts, src/parser/skill-render.ts,
+          tests/supporting-file-references.test.ts, tests/portable-skill-references.test.ts,
+          src/agent-runtime/dispatch.ts, src/parser/meta.ts. Commands run: git diff/stat/name-only
+          against dev base; kspec task get; kspec item get; kspec review for-task; grep/rg for AC
+          annotations and runtime call sites; kspec validate; npm test -- --run
+          tests/supporting-file-references.test.ts; npm test -- --run
+          tests/portable-skill-references.test.ts tests/agent-invocation-lifecycle.test.ts; npm
+          test. Claims verified: supporting-file references resolve in render and prompt paths,
+          existing portable skill-reference prompt behavior remains intact, full suite passes on
+          reviewed head. Categories searched: correctness, edge cases, error handling, test quality,
+          integration; no branch-introduced findings."
+        name: review-evidence
+        required: false
+        runner: manual
+        created_at: 2026-04-22T22:21:36.912Z
+        completed_at: 2026-04-22T22:21:36.912Z
     events:
       - _ulid: 01KPVKSC017XHSR742EKWZSNKE
         actor: Jacob Chapel
@@ -163029,6 +163049,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-22T22:08:40.466Z
+      - _ulid: 01KPVMHPE9GHYHEADRQMJABHZ1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-04-22T22:21:38.122Z
     examined_commit: 2aa7097541700f5ce18e7907d4e7775a31c537ef
     external_links: []
     lifecycle_state: open
@@ -163041,5 +163068,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-22T22:08:20.994Z
-    updated_at: 2026-04-22T22:08:39.354Z
+    updated_at: 2026-04-22T22:21:36.912Z
     notes: []
