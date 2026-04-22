@@ -162711,6 +162711,19 @@ reviews:
         required: true
         created_at: 2026-04-22T09:15:01.301Z
         completed_at: 2026-04-22T09:15:01.301Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Portable Skill Supporting File References is additive to existing
+          @supporting-files-convention and @portable-skill-references coverage rather than a
+          duplicate: existing specs cover supporting-directory copying and {skill:...} alias
+          rewriting, while this plan adds a new contract for referencing copied supporting files
+          from markdown and prompt-injected skill content."
+        name: Spec neighborhood alignment
+        required: true
+        created_at: 2026-04-22T09:15:01.303Z
+        completed_at: 2026-04-22T09:15:01.303Z
     events:
       - _ulid: 01KPT7G16EAW8TKTZRVTRAZJY4
         actor: Jacob Chapel
@@ -162760,6 +162773,13 @@ reviews:
           status: fail
           name: Task coverage mapping
         timestamp: 2026-04-22T09:15:05.505Z
+      - _ulid: 01KPT7HHGMS2CZTDG73NT8M5VY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec neighborhood alignment
+        timestamp: 2026-04-22T09:15:07.157Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -162807,5 +162827,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-22T09:14:17.679Z
-    updated_at: 2026-04-22T09:15:01.301Z
+    updated_at: 2026-04-22T09:15:01.303Z
     notes: []
