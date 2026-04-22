@@ -1,1 +1,50 @@
-notes: []
+notes:
+  - _ulid: 01KPVJQEKB6BRENXXY0T2HCGW9
+    content: >-
+      Approach: Extend the existing {skill:...} reference rewrite pipeline with a new portable
+      supporting-file reference token.
+
+
+      Reference form: {supporting:<relative-path>} where relative-path is relative to the skill's
+      own directory (e.g., {supporting:scripts/merge-helper.sh}).
+
+
+      Key design decisions:
+
+      1. New regex alongside SKILL_REFERENCE_TOKEN_RE: SUPPORTING_FILE_REFERENCE_RE matching
+      {supporting:<path>}
+
+      2. Resolution: At render time, rewrite to the platform-specific project-root-relative path of
+      the rendered supporting file copy. E.g., for claude-code:
+      .claude/skills/<skill-id>/scripts/merge-helper.sh; for codex:
+      .agents/skills/<skill-subdir>/scripts/merge-helper.sh
+
+      3. Validation: Before rewriting, validate that the referenced file actually exists in the
+      source skill's directory tree. Reject missing files with explicit error. Reject path traversal
+      attempts (../ or absolute paths).
+
+      4. Integration points:
+         - transformBody in each renderer's config (renders skill SKILL.md body)
+         - transformSupportingFileContent in each renderer's config (renders supporting markdown files)
+         - rewriteSkillReferencesForAdapter in prompts.ts (adapter prompt injection)
+      5. Both render-time and prompt-time resolution share the same core resolution function.
+
+
+      Edge cases:
+
+      - Path with ../ segments → rejected
+
+      - Absolute paths → rejected
+
+      - Missing supporting file → explicit error naming the file
+
+      - Nested supporting file paths (scripts/subdir/file.sh) → resolved correctly
+
+      - Non-markdown supporting files referenced from markdown → resolved
+
+
+      Test plan: 4 ACs × 1+ test each, covering claude-code and codex platforms for render-time and
+      prompt-time.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-22T21:49:49.547Z
