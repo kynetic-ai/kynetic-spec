@@ -99,3 +99,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-22T23:05:52.660Z
+  - _ulid: 01KPVQZC48C5B5YEP6S8RWDYXE
+    content: "Fix cycle 2: addressed the distribution blocker. The helper script was under
+      templates/skills/merge/files/, but the skill render pipeline (SUPPORTING_DIRS) only copies
+      references/, scripts/, assets/, and docs/ — files/ is not a supported distribution directory.
+      Moved the script to templates/skills/merge/scripts/ which is the correct location for
+      executable skill helpers. Updated test SCRIPT_PATH reference. All 8323 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-22T23:21:32.040Z
