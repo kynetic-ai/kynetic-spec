@@ -2870,7 +2870,7 @@ features:
           content after an init on a clean repository.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
