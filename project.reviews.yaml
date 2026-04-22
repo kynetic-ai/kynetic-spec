@@ -163156,6 +163156,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPVNB2D3ERS1V4FSMW2JDRBD
         timestamp: 2026-04-22T22:35:30.767Z
+      - _ulid: 01KPVNB77JA1WRHJFXGW49S1ZX
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPVNB5YRTKMSVNYQEXQWP15B
+        timestamp: 2026-04-22T22:35:34.514Z
     examined_commit: 8f0a82799dd28d92fb1e39a74a56e7bb8d8f69e6
     external_links: []
     lifecycle_state: open
@@ -163185,7 +163192,29 @@ reviews:
               and violates the advertised recovery contract."
             created_at: 2026-04-22T22:35:29.571Z
         kind: blocker
+      - _ulid: 01KPVNB5YRTKMSVNYQEXQWP15B
+        anchor:
+          type: code
+          commit: 8f0a82799dd28d92fb1e39a74a56e7bb8d8f69e6
+          line_end: 38
+          line_start: 37
+          path: templates/skills/merge/files/detached-reviewer-merge.sh
+          side: head
+        entries:
+          - _ulid: 01KPVNB5YR36JXXHCK0THQ4S91
+            author: Jacob Chapel
+            body: The helper resolves the merge input from
+              refs/heads/dispatch/task/task-detached-reviewer-merge-helper/01kpvj8r at runtime
+              instead of pinning to the reviewed snapshot commit. In a detached review flow that
+              lets the canonical branch move after the snapshot is cut, so approval of commit
+              8f0a827 could merge later unreviewed commits. I reproduced this by detaching a
+              reviewer worktree at one commit, advancing the task branch with another commit, then
+              running the helper; the integration worktree received the later unreviewed file. The
+              helper needs to require and verify the recorded canonical head and merge exactly that
+              reviewed commit.
+            created_at: 2026-04-22T22:35:33.208Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-22T22:30:31.860Z
-    updated_at: 2026-04-22T22:35:29.571Z
+    updated_at: 2026-04-22T22:35:33.208Z
     notes: []
