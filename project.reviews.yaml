@@ -163439,6 +163439,12 @@ reviews:
         payload:
           thread_ulid: 01KPVQ265EB0SAP8GMRG76NNQ2
         timestamp: 2026-04-22T23:21:14.836Z
+      - _ulid: 01KPVQZ35G7K82GP3QDYPKHT5Z
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPVQ265EB0SAP8GMRG76NNQ2
+        timestamp: 2026-04-22T23:21:22.864Z
     examined_commit: 4519aed5454861a7dae6a2e4beeb4d27a0bb3f9b
     external_links: []
     lifecycle_state: closed
@@ -163476,6 +163482,8 @@ reviews:
               scripts. Updated the test path reference accordingly."
             created_at: 2026-04-22T23:21:13.765Z
         kind: blocker
+        resolved_at: 2026-04-22T23:21:21.789Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -163485,5 +163493,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-22T23:05:50.765Z
     created_at: 2026-04-22T22:59:35.974Z
-    updated_at: 2026-04-22T23:21:13.765Z
+    updated_at: 2026-04-22T23:21:21.789Z
     notes: []
