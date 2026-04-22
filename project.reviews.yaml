@@ -162690,6 +162690,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPT7GSBE3EXSNA2261YBMBKP
         timestamp: 2026-04-22T09:14:43.473Z
+      - _ulid: 01KPT7GVZWWYAHZVEAEQRS8HBB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPT7GSDTYJ9EAZNNYHF74KWF
+        timestamp: 2026-04-22T09:14:45.116Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -162717,7 +162724,25 @@ reviews:
               the helper-mechanics task."
             created_at: 2026-04-22T09:14:42.415Z
         kind: blocker
+      - _ulid: 01KPT7GSDTYJ9EAZNNYHF74KWF
+        anchor:
+          type: structured
+          section: dependencies
+        entries:
+          - _ulid: 01KPT7GSDTTPKYV16C7TEEXE7G
+            author: Jacob Chapel
+            body: The dependency graph is over-constrained and hides the real prerequisite edge.
+              @task-detached-reviewer-merge-helper does not appear to need portable supporting-file
+              reference rewriting in order to implement and test the helper script's merge
+              mechanics; existing supporting-file copying already exists. The portable-reference
+              work is needed when reviewer guidance/rendered skill content must point at that helper
+              path, which is @task-detached-reviewer-merge-guidance's concern. Remove the task-2 ->
+              task-1 dependency unless the mechanics task truly cannot proceed without it, and if
+              you decouple them, make @task-detached-reviewer-merge-guidance depend directly on both
+              prerequisites.
+            created_at: 2026-04-22T09:14:42.490Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-22T09:14:17.679Z
-    updated_at: 2026-04-22T09:14:42.415Z
+    updated_at: 2026-04-22T09:14:42.490Z
     notes: []
