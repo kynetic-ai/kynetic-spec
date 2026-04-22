@@ -162780,9 +162780,25 @@ reviews:
           status: pass
           name: Spec neighborhood alignment
         timestamp: 2026-04-22T09:15:07.157Z
+      - _ulid: 01KPT7HSSKYRBXDHJHJV4WYZT2
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-22T09:15:15.636Z
+      - _ulid: 01KPT7HSSM5D1YSZPEB88KQJVH
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-22T09:15:15.636Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -162825,7 +162841,14 @@ reviews:
               prerequisites.
             created_at: 2026-04-22T09:14:42.490Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-22T09:15:15.635Z
     created_at: 2026-04-22T09:14:17.679Z
-    updated_at: 2026-04-22T09:15:01.303Z
+    updated_at: 2026-04-22T09:15:15.636Z
     notes: []
