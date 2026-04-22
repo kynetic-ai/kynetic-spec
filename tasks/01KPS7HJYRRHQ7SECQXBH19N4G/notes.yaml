@@ -19,3 +19,34 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-22T00:12:44.433Z
+  - _ulid: 01KPS9BR85QCQABR358XM003NM
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. src/parser/file-lock.ts: Exported getLockDirPath(filePath) helper, refactored
+      acquireFileLock to use it. The .lock suffix convention now has a single source of truth.
+
+
+      2. src/parser/gitignore.ts: Imported getLockDirPath, added
+      .kspec-dispatch-shadow-mutation.lock/ to buildKspecGitignoreEntries. Entry is composed via the
+      helper, not hard-coded.
+
+
+      3. tests/gitignore-managed-block.test.ts:
+         - Lock-held git-status test (AC: ac-no-untracked-after-common-commands): acquires the lock, verifies the lock dir exists, checks git status shows no untracked .lock entries
+         - Self-heal test (AC: ac-no-untracked-after-common-commands): strips lock-dir entry from managed block, calls ensureKspecGitignore, verifies entry is re-added
+         - getLockDirPath unit tests: verifies suffix, verifies consistency with acquireFileLock
+         - Updated existing no-untracked test to also simulate the .lock/ directory
+         - Fixed idempotency test: changed from substring split to line-level matching (split was counting .kspec-dispatch-shadow-mutation as appearing in .kspec-dispatch-shadow-mutation.lock/)
+         - Added .lock/ entry assertion to absolute-path override test
+
+      Confirmed call-site audit: only .kspec-dispatch-shadow-mutation is at project root. All other
+      acquireFileLock callers lock inside .kspec/ which is already covered by broader gitignore
+      rule.
+
+
+      All 8301 tests pass (0 failures, 5 skipped).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-22T00:27:40.165Z
