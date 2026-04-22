@@ -162425,6 +162425,18 @@ reviews:
         runner: npm run build
         created_at: 2026-04-22T00:34:25.291Z
         completed_at: 2026-04-22T00:34:25.291Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repository-wide pre-existing validation failures remain outside this diff (.kspec
+          unchanged in this snapshot). Current output includes schema error in
+          .kspec/modules/meta.yaml plus existing alignment/completeness warnings.
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-04-22T00:34:28.346Z
+        completed_at: 2026-04-22T00:34:28.346Z
     events:
       - _ulid: 01KPS8EJCV7JSMJHVEGV2ZMN8F
         actor: Jacob Chapel
@@ -162460,6 +162472,13 @@ reviews:
           status: pass
           name: npm run build
         timestamp: 2026-04-22T00:34:26.376Z
+      - _ulid: 01KPS9R7X9DG5FQH21PRRCMH7H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-22T00:34:29.417Z
     examined_commit: ccec52b87165ce6cf8cf1c7a7167a504da33b33d
     external_links: []
     lifecycle_state: open
@@ -162500,7 +162519,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-22T00:11:43.900Z
-    updated_at: 2026-04-22T00:34:25.291Z
+    updated_at: 2026-04-22T00:34:28.346Z
     notes: []
   - _ulid: 01KPS9EWA6ANH9NDX7WBXE2CRY
     slugs: []
