@@ -31417,7 +31417,7 @@ runs:
     completed_at: 2026-04-22T22:38:41.097Z
   - _ulid: 01KPVQ3YXJC2AG4G6DSD2GD1JS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31431,7 +31431,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-22T23:06:55.929Z
-        completed_at: 2026-04-22T23:06:55.929Z
+        completed_at: 2026-04-22T23:07:32.985Z
+        notes: "High-confidence friction identified: skill helper payloads can be added under an unsupported
+          files/ directory and still pass tests because tests may execute templates/skills source
+          paths directly. Existing coverage found: @supporting-files-convention defines only
+          references/scripts/assets/docs, and existing inbox items track the detached-review merge
+          need itself, but I found no tracked item for this narrower distribution-gap pattern. No
+          separate success item rises above the loop-mode confidence bar."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-22T23:07:32.985Z
+        completed_at: 2026-04-22T23:07:32.985Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-22T23:06:33.779Z
