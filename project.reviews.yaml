@@ -162857,7 +162857,20 @@ reviews:
     title: "Plan re-review: Portable Skill File References and Detached Reviewer Merge Foundation (cycle
       2)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Both specs describe observable outcomes: rendered/prompt-delivered helper paths,
+          deterministic rejection of broken or escaping references, reviewer guidance pointing at
+          one supported helper path, and merge helper outcomes for clean refresh, no-op,
+          dirty-target refusal, and conflict-safe exit. No new blocker-level implementation leakage
+          remains in the ACs."
+        name: Behavioral spec language
+        required: true
+        created_at: 2026-04-22T09:19:12.619Z
+        completed_at: 2026-04-22T09:19:12.619Z
     events:
       - _ulid: 01KPT7RHHNTYC1ENTAWXEC20N7
         actor: Jacob Chapel
@@ -162865,6 +162878,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-22T09:18:56.565Z
+      - _ulid: 01KPT7S28SF4KSMPAZR9QRT9M6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Behavioral spec language
+        timestamp: 2026-04-22T09:19:13.689Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -162877,5 +162897,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-22T09:18:56.565Z
-    updated_at: null
+    updated_at: 2026-04-22T09:19:12.619Z
     notes: []
