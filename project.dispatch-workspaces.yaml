@@ -62119,7 +62119,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-22T23:08:18.825Z
+      updated_at: 2026-04-22T23:08:21.349Z
     integration:
       status: pending
       detail: null
@@ -62128,25 +62128,20 @@ workspaces:
       target_branch: dev
       target_commit: 1493cd19353d11d85540adaf7b160c8f599e9c86
       updated_at: 2026-04-22T23:08:18.825Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KPVJ8R0W6TEXXZ7FY2EGZRNN"
     task_slug: task-detached-reviewer-merge-helper
     timestamps:
       closed_at: null
       last_active_at: 2026-04-22T22:58:50.841Z
-      last_reconciled_at: 2026-04-22T23:08:18.825Z
+      last_reconciled_at: 2026-04-22T23:08:21.349Z
       created_at: 2026-04-22T22:07:44.467Z
-      updated_at: 2026-04-22T23:08:18.825Z
+      updated_at: 2026-04-22T23:08:21.349Z
     workspace_id: dispatch-workspace-01KPVJ8R0W6TEXXZ7FY2EGZRNN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 4519aed5454861a7dae6a2e4beeb4d27a0bb3f9b
-        last_seen_at: 2026-04-22T22:58:13.716Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-detached-reviewer-merge-helper-01kpvj8r-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-detached-reviewer-merge-helper/01kpvj8r
