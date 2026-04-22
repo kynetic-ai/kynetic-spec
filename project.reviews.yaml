@@ -162675,7 +162675,19 @@ reviews:
     slugs: []
     title: "Plan review: Portable Skill File References and Detached Reviewer Merge Foundation"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The portable supporting-file spec is mostly behavioral and user-observable: it specifies
+          resolved paths, rejection of missing targets, and boundary enforcement without prescribing
+          file names or parser internals. The task includes implementation guidance, but that is
+          appropriate at task level rather than a spec-language blocker."
+        name: Behavioral spec language
+        required: true
+        created_at: 2026-04-22T09:15:01.170Z
+        completed_at: 2026-04-22T09:15:01.170Z
     events:
       - _ulid: 01KPT7G16EAW8TKTZRVTRAZJY4
         actor: Jacob Chapel
@@ -162704,6 +162716,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-22T09:14:46.788Z
+      - _ulid: 01KPT7HCPXVGEB8X7BT8Z4BNNY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Behavioral spec language
+        timestamp: 2026-04-22T09:15:02.237Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -162751,5 +162770,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-22T09:14:17.679Z
-    updated_at: 2026-04-22T09:14:42.521Z
+    updated_at: 2026-04-22T09:15:01.170Z
     notes: []
