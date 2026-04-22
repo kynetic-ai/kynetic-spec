@@ -60951,12 +60951,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-22T00:28:15.810Z
+      updated_at: 2026-04-22T00:28:23.953Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-22T00:28:15.810Z
+      updated_at: 2026-04-22T00:28:23.953Z
     integration:
       status: pending
       detail: null
@@ -60964,24 +60964,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 85b5efd6df9e0f3858a5fa5f627d8239f5ab70af
-      updated_at: 2026-04-22T00:28:15.810Z
-    lifecycle_state: ready
+      updated_at: 2026-04-22T00:28:23.953Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KPS7HJYRRHQ7SECQXBH19N4G"
     task_slug: task-gitignore-cover-file-lock-directory-suffix
     timestamps:
       closed_at: null
       last_active_at: 2026-04-22T00:11:39.834Z
-      last_reconciled_at: 2026-04-22T00:28:15.810Z
+      last_reconciled_at: 2026-04-22T00:28:23.953Z
       created_at: 2026-04-22T00:11:14.639Z
-      updated_at: 2026-04-22T00:28:15.810Z
+      updated_at: 2026-04-22T00:28:23.953Z
     workspace_id: dispatch-workspace-01KPS7HJYRRHQ7SECQXBH19N4G
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 89cc1b568b3ffe6476ded87150d3e48eac80302c
+        last_seen_at: 2026-04-22T00:28:23.953Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-gitignore-cover-file-lock-directory-suffix-01kps7hj-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-gitignore-cover-file-lock-directory-suffix/01kps7hj
-        head: 85b5efd6df9e0f3858a5fa5f627d8239f5ab70af
-        last_seen_at: 2026-04-22T00:11:14.639Z
+        head: 89cc1b568b3ffe6476ded87150d3e48eac80302c
+        last_seen_at: 2026-04-22T00:28:23.953Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-gitignore-cover-file-lock-directory-suffix-01kps7hj
