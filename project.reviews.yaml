@@ -163410,6 +163410,13 @@ reviews:
           status: pass
           name: detached-reviewer-merge tests
         timestamp: 2026-04-22T23:05:33.470Z
+      - _ulid: 01KPVQ2775NKR2J9W079XEBX8N
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPVQ265EB0SAP8GMRG76NNQ2
+        timestamp: 2026-04-22T23:05:36.741Z
     examined_commit: 4519aed5454861a7dae6a2e4beeb4d27a0bb3f9b
     external_links: []
     lifecycle_state: open
@@ -163419,8 +163426,27 @@ reviews:
       content_hash: ""
       ref: "@01KPVJ8R0W6TEXXZ7FY2EGZRNN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPVQ265EB0SAP8GMRG76NNQ2
+        anchor:
+          type: code
+          commit: 4519aed5454861a7dae6a2e4beeb4d27a0bb3f9b
+          line_end: 1
+          line_start: 1
+          path: templates/skills/merge/files/detached-reviewer-merge.sh
+          side: head
+        entries:
+          - _ulid: 01KPVQ265F0PNNG0PRJABH9CW1
+            author: Jacob Chapel
+            body: The helper is added under templates/skills/merge/files/, but the shipping/render pipelines do
+              not copy a files/ directory. Both scripts/build-plugin.cjs and
+              src/parser/skill-render.ts only propagate docs/, references/, scripts/, and assets/,
+              so this script never reaches the distributed merge skill even though the new tests
+              call it directly from the source tree. That means the feature's supported helper path
+              still won't exist for real reviewers outside this repo checkout.
+            created_at: 2026-04-22T23:05:35.663Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-22T22:59:35.974Z
-    updated_at: 2026-04-22T23:05:32.334Z
+    updated_at: 2026-04-22T23:05:35.663Z
     notes: []
