@@ -31181,7 +31181,7 @@ runs:
     started_at: 2026-04-22T00:36:53.797Z
     completed_at: 2026-04-22T00:37:52.522Z
   - _ulid: 01KPSA4TANBE234021G89YF6EJ
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -31231,7 +31231,10 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-22T00:43:03.466Z
-        completed_at: 2026-04-22T00:43:03.466Z
+        completed_at: 2026-04-22T00:43:12.139Z
+        notes: "Capture complete: created friction observation @01KPSA6Q for the detached-review
+          manual-merge worktree collision. No additional items were captured from this session."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-22T00:41:21.493Z
+    completed_at: 2026-04-22T00:43:12.139Z
