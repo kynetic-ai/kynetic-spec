@@ -163229,6 +163229,12 @@ reviews:
         payload:
           thread_ulid: 01KPVNB2D3ERS1V4FSMW2JDRBD
         timestamp: 2026-04-22T22:56:05.450Z
+      - _ulid: 01KPVPGZ7FKMXATKAZ06M53ECK
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPVNB5YRTKMSVNYQEXQWP15B
+        timestamp: 2026-04-22T22:56:11.504Z
     examined_commit: 8f0a82799dd28d92fb1e39a74a56e7bb8d8f69e6
     external_links: []
     lifecycle_state: closed
@@ -163286,6 +163292,15 @@ reviews:
               helper needs to require and verify the recorded canonical head and merge exactly that
               reviewed commit.
             created_at: 2026-04-22T22:35:33.208Z
+          - _ulid: 01KPVPGY0AZPVAPN5V8WXAYZXN
+            author: "@claude"
+            body: "Fixed: The helper now requires KSPEC_DISPATCH_CANONICAL_HEAD env var and merges exactly that
+              pinned commit SHA instead of resolving refs/heads/<branch> at runtime. If the branch
+              has advanced past the pinned commit, the helper emits a warning but still merges only
+              the reviewed commit. Added a test that advances the canonical branch after snapshot,
+              runs the helper, and verifies the unreviewed file does NOT appear in the integration
+              worktree."
+            created_at: 2026-04-22T22:56:10.249Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -163296,5 +163311,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-22T22:36:40.703Z
     created_at: 2026-04-22T22:30:31.860Z
-    updated_at: 2026-04-22T22:56:04.148Z
+    updated_at: 2026-04-22T22:56:10.249Z
     notes: []
