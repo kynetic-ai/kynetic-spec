@@ -162688,6 +162688,18 @@ reviews:
         required: true
         created_at: 2026-04-22T09:15:01.170Z
         completed_at: 2026-04-22T09:15:01.170Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The plan serializes @task-detached-reviewer-merge-helper behind portable reference
+          rewriting even though the helper mechanics appear independently executable with existing
+          supporting-file copying. The real consumer of task 1 is the guidance/wiring task, which
+          should depend directly on both prerequisites if task 2 is decoupled.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-22T09:15:01.242Z
+        completed_at: 2026-04-22T09:15:01.242Z
     events:
       - _ulid: 01KPT7G16EAW8TKTZRVTRAZJY4
         actor: Jacob Chapel
@@ -162723,6 +162735,13 @@ reviews:
           status: pass
           name: Behavioral spec language
         timestamp: 2026-04-22T09:15:02.237Z
+      - _ulid: 01KPT7HE8YVNQ9H1AR4J2H26V6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Dependency ordering
+        timestamp: 2026-04-22T09:15:03.838Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -162770,5 +162789,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-22T09:14:17.679Z
-    updated_at: 2026-04-22T09:15:01.170Z
+    updated_at: 2026-04-22T09:15:01.242Z
     notes: []
