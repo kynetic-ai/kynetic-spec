@@ -26871,7 +26871,7 @@
   type: task
   spec_ref: "@detached-reviewer-merge-helper"
   plan_ref: "@plan-portable-skill-file-references-and-detached-review"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 1
@@ -26880,7 +26880,7 @@
     - review
     - merge
   review_ref: "@01KPVPQ6X61AX1467DHPZ02SE1"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-04-22T21:41:47.676Z
   started_at: 2026-04-22T22:57:00.578Z
