@@ -163499,7 +163499,18 @@ reviews:
     slugs: []
     title: Review detached reviewer merge helper mechanics (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 2259/2259 suites passed; 8323 passed, 5 skipped, 0 failed. Verified in detached review
+          snapshot.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-22T23:34:46.511Z
+        completed_at: 2026-04-22T23:34:46.511Z
     events:
       - _ulid: 01KPVR2TFJT8CFDD9X235NTZRT
         actor: Jacob Chapel
@@ -163521,6 +163532,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPVRQGZXYNM5XN1RYJ5C64WK
         timestamp: 2026-04-22T23:34:44.510Z
+      - _ulid: 01KPVRQN3SNH8PV57YC23SNVHE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-22T23:34:47.673Z
     examined_commit: 83ffd1ed7f14c6fe94a7c1feebce1e36ee4542ae
     external_links: []
     lifecycle_state: open
@@ -163552,5 +163570,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-22T23:23:25.042Z
-    updated_at: 2026-04-22T23:34:43.453Z
+    updated_at: 2026-04-22T23:34:46.511Z
     notes: []
