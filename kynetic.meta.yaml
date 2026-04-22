@@ -15991,6 +15991,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-22T23:22:54.056Z
+  - _ulid: 01KPVSXNEX62H5NAWRZZVYXKSS
+    type: success
+    content: "Skill distribution debugging: when a helper script exists in
+      templates/skills/<id>/scripts/ but not in .agents/skills/kspec-<id>/scripts/, trace the
+      three-stage pipeline: (1) template source in templates/skills/, (2) installed copy in
+      .kspec/skills/ via install-core, (3) rendered output in .agents/skills/ via skill render. In
+      dev worktrees, use 'npm run dev -- skill install-core' instead of the global kspec binary,
+      since only the worktree source has uncommitted template changes."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-22T23:55:33.213Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
