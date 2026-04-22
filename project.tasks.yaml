@@ -26848,7 +26848,7 @@
   type: task
   spec_ref: "@portable-skill-supporting-file-references"
   plan_ref: "@plan-portable-skill-file-references-and-detached-review"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -26859,6 +26859,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-22T21:41:47.372Z
+  started_at: 2026-04-22T21:46:09.772Z
   automation: eligible
 - _ulid: 01KPVJ8R0W6TEXXZ7FY2EGZRNN
   slugs:
