@@ -163604,6 +163604,12 @@ reviews:
         payload:
           thread_ulid: 01KPVRQGZXYNM5XN1RYJ5C64WK
         timestamp: 2026-04-22T23:52:37.087Z
+      - _ulid: 01KPVSRHTR9KTMMJ3N2QG81D9D
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPVRQGZXYNM5XN1RYJ5C64WK
+        timestamp: 2026-04-22T23:52:45.656Z
     examined_commit: 83ffd1ed7f14c6fe94a7c1feebce1e36ee4542ae
     external_links: []
     lifecycle_state: closed
@@ -163644,6 +163650,8 @@ reviews:
               .agents/skills/."
             created_at: 2026-04-22T23:52:36.042Z
         kind: blocker
+        resolved_at: 2026-04-22T23:52:44.608Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -163653,5 +163661,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-22T23:35:08.386Z
     created_at: 2026-04-22T23:23:25.042Z
-    updated_at: 2026-04-22T23:52:36.042Z
+    updated_at: 2026-04-22T23:52:44.608Z
     notes: []
