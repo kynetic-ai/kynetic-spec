@@ -60621,7 +60621,7 @@ workspaces:
         head: eb78b5cd75d4836765997092e16a0ba688d7229c
         last_seen_at: 2026-04-21T21:43:28.883Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-narrow-dispatcher-runtime-mode-env-isolation-01kprz17
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 85b5efd6df9e0f3858a5fa5f627d8239f5ab70af
     bootstrap:
       status: succeeded
@@ -61110,9 +61110,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-22T00:28:51.863Z
-      last_reconciled_at: 2026-04-22T00:41:33.191Z
+      last_reconciled_at: 2026-04-22T00:43:26.847Z
       created_at: 2026-04-22T00:11:14.639Z
-      updated_at: 2026-04-22T00:41:35.255Z
+      updated_at: 2026-04-22T00:43:26.847Z
     workspace_id: dispatch-workspace-01KPS7HJYRRHQ7SECQXBH19N4G
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
