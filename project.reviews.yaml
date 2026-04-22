@@ -163147,6 +163147,24 @@ reviews:
         runner: kspec
         created_at: 2026-04-22T22:35:39.224Z
         completed_at: 2026-04-22T22:35:39.224Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: templates/skills/merge/files/detached-reviewer-merge.sh,
+          tests/detached-reviewer-merge.test.ts, templates/skills/merge/SKILL.md,
+          .agents/skills/kspec-merge/SKILL.md. Commands run: kspec task get, kspec item get, kspec
+          review for-task, git diff, rg AC scans, kspec validate, npm test, two temp-repo
+          reproductions for branch-advance and untracked-file behavior. Claims verified: helper
+          currently merges the live branch tip rather than the reviewed snapshot commit; helper
+          rejects untracked files even though the AC only calls out tracked modifications or staged
+          drift. Categories searched: correctness, edge cases, error handling, test quality,
+          integration."
+        name: review evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-04-22T22:36:46.247Z
+        completed_at: 2026-04-22T22:36:46.247Z
     events:
       - _ulid: 01KPVN1ZNMMH9FNE46P3BT6ZMS
         actor: Jacob Chapel
@@ -163198,6 +163216,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-22T22:36:40.704Z
+      - _ulid: 01KPVNDEN9ES8Y8F204C3KVC38
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-22T22:36:47.657Z
     examined_commit: 8f0a82799dd28d92fb1e39a74a56e7bb8d8f69e6
     external_links: []
     lifecycle_state: closed
@@ -163258,5 +163283,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-22T22:36:40.703Z
     created_at: 2026-04-22T22:30:31.860Z
-    updated_at: 2026-04-22T22:36:40.704Z
+    updated_at: 2026-04-22T22:36:46.247Z
     notes: []
