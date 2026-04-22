@@ -31182,7 +31182,7 @@ runs:
     completed_at: 2026-04-22T00:37:52.522Z
   - _ulid: 01KPSA4TANBE234021G89YF6EJ
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31214,7 +31214,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-22T00:42:48.035Z
-        completed_at: 2026-04-22T00:42:48.035Z
+        completed_at: 2026-04-22T00:42:54.228Z
+        notes: "Proposed improvement: add a first-class merge path for detached reviewer snapshots that can
+          complete the approved manual merge without requiring a raw git -C workaround when the
+          integration branch is already checked out elsewhere. Scope looks small-to-medium: either
+          let kspec merge target an existing worktree safely, or document/automate the handoff from
+          reviewer snapshot to integration worktree."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-22T00:42:54.228Z
+        completed_at: 2026-04-22T00:42:54.228Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-22T00:41:21.493Z
