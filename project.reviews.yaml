@@ -162884,6 +162884,19 @@ reviews:
         required: true
         created_at: 2026-04-22T09:19:12.625Z
         completed_at: 2026-04-22T09:19:12.625Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Coverage ownership is now crisp. @task-portable-skill-supporting-file-references owns all
+          four portable-reference ACs. @task-detached-reviewer-merge-helper owns the four runtime
+          helper mechanics ACs. @task-detached-reviewer-merge-guidance now claims only
+          @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance, matching its
+          prompt/docs/rendered-skill scope.
+        name: Task coverage mapping
+        required: true
+        created_at: 2026-04-22T09:19:32.124Z
+        completed_at: 2026-04-22T09:19:32.124Z
     events:
       - _ulid: 01KPT7RHHNTYC1ENTAWXEC20N7
         actor: Jacob Chapel
@@ -162912,6 +162925,13 @@ reviews:
           status: pass
           name: Spec neighborhood alignment
         timestamp: 2026-04-22T09:19:16.935Z
+      - _ulid: 01KPT7SNA5NE0PXMBB99VV459D
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task coverage mapping
+        timestamp: 2026-04-22T09:19:33.189Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -162924,5 +162944,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-22T09:18:56.565Z
-    updated_at: 2026-04-22T09:19:12.625Z
+    updated_at: 2026-04-22T09:19:32.124Z
     notes: []
