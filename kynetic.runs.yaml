@@ -31182,7 +31182,7 @@ runs:
     completed_at: 2026-04-22T00:37:52.522Z
   - _ulid: 01KPSA4TANBE234021G89YF6EJ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31196,7 +31196,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-22T00:42:35.141Z
-        completed_at: 2026-04-22T00:42:35.141Z
+        completed_at: 2026-04-22T00:42:42.022Z
+        notes: "Friction points: the detached reviewer snapshot could not check out dev because that branch
+          was already attached to the main project worktree, so the final merge had to be executed
+          with git -C against the main worktree path. kspec validate also produced unrelated
+          baseline meta/completeness failures, which required manual classification during review
+          instead of a cleaner task-scoped validation signal."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-22T00:42:42.022Z
+        completed_at: 2026-04-22T00:42:42.022Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-22T00:41:21.493Z
