@@ -184,6 +184,7 @@ tags:
   - gitignore
   - dispatch
 vcs_refs: []
+review_ref: "@01KPS9EWA6ANH9NDX7WBXE2CRY"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-gitignore-cover-file-lock-directory-suffix/01kps7hj
@@ -227,6 +228,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-22T00:27:46.533Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KPS9EWA6ANH9NDX7WBXE2CRY"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-22T00:29:25.658Z
 created_at: 2026-04-21T23:55:54.200Z
 started_at: 2026-04-22T00:12:02.347Z
 submitted_at: 2026-04-22T00:27:46.533Z

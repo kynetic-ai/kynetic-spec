@@ -162431,3 +162431,29 @@ reviews:
     created_at: 2026-04-22T00:11:43.900Z
     updated_at: 2026-04-22T00:12:04.794Z
     notes: []
+  - _ulid: 01KPS9EWA6ANH9NDX7WBXE2CRY
+    slugs: []
+    title: Review task-gitignore-cover-file-lock-directory-suffix
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KPS9EWA6E7YG7Y0SP5NP9BYC
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-22T00:29:22.630Z
+    examined_commit: 89cc1b568b3ffe6476ded87150d3e48eac80302c
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KPS7HJYRRHQ7SECQXBH19N4G"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-22T00:29:22.630Z
+    updated_at: null
+    notes: []
