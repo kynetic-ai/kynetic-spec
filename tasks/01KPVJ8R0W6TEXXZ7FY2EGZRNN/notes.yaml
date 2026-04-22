@@ -42,3 +42,28 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-22T22:12:38.174Z
+  - _ulid: 01KPVMYXAMG7TPDNRCJN6JSG3P
+    content: >-
+      Implementation complete. Created:
+
+
+      1. templates/skills/merge/files/detached-reviewer-merge.sh — Bash merge helper script that:
+         - Validates KSPEC_DISPATCH_CANONICAL_BRANCH and KSPEC_DISPATCH_MERGE_TARGET env vars
+         - Detects no-op (canonical already ancestor of target) and exits 0 cleanly
+         - Locates occupied worktree for integration target via git worktree list --porcelain
+         - Refuses merge if occupied worktree has dirty state (tracked mods or staged drift) with recovery guidance
+         - Performs git merge --no-ff in the occupied worktree (single merge site means worktree is auto-refreshed)
+         - On conflict: aborts merge, reports conflict guidance, exits 1 with unchanged target ref
+         - Post-merge: verifies target ref advanced and worktree index is clean
+
+      2. tests/detached-reviewer-merge.test.ts — 7 E2E tests covering all 4 in-scope ACs:
+         - ac-occupied-target-clean-refresh: merge succeeds, ref advances, files appear in occupied worktree
+         - ac-helper-no-op-merge: pre-merged canonical detected, no ref movement, clean exit
+         - ac-helper-refuses-dirty-target: tracked modifications and staged drift both blocked with guidance
+         - ac-helper-safe-conflict-exit: conflict aborted, ref unchanged, clean worktree state restored
+         - Plus 2 env contract tests (missing vars)
+
+      Full test suite: 8320 passed, 5 skipped, 0 failed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-22T22:28:51.156Z
