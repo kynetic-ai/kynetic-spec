@@ -162315,6 +162315,12 @@ reviews:
         payload:
           thread_ulid: 01KPS71XZE1ATQZ8K4BPPN1GRJ
         timestamp: 2026-04-22T00:08:03.331Z
+      - _ulid: 01KPS880B6TK8Y4GRPEE3YJPCN
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPS7274A08Q07B030HRMKF0A
+        timestamp: 2026-04-22T00:08:08.806Z
     examined_commit: ffccaaeb0d1ed717e535dc84fd5b49bdfba0b12d
     external_links: []
     lifecycle_state: closed
@@ -162379,6 +162385,8 @@ reviews:
               content is absent from output). All 8309 tests pass."
             created_at: 2026-04-22T00:07:53.081Z
         kind: blocker
+        resolved_at: 2026-04-22T00:08:07.737Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -162388,5 +162396,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-21T23:47:45.944Z
     created_at: 2026-04-21T23:41:29.698Z
-    updated_at: 2026-04-22T00:08:02.274Z
+    updated_at: 2026-04-22T00:08:07.737Z
     notes: []
