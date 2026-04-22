@@ -15900,6 +15900,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-22T00:28:49.251Z
+  - _ulid: 01KPSA6Q79PZAE5K2XN0QFYNNE
+    type: friction
+    content: Detached review snapshots can approve cleanly, but the manual merge step becomes awkward
+      when the integration branch is already checked out in another worktree. This session had to
+      merge into /home/chapel/Projects/kynetic-spec-dispatch via git -C after git checkout dev
+      failed in the reviewer snapshot with 'already used by worktree'. A first-class kspec merge
+      path for detached reviewer snapshots would remove that workaround.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-22T00:42:23.849Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
