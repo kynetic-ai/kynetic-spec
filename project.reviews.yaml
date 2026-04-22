@@ -163235,6 +163235,12 @@ reviews:
         payload:
           thread_ulid: 01KPVNB5YRTKMSVNYQEXQWP15B
         timestamp: 2026-04-22T22:56:11.504Z
+      - _ulid: 01KPVPH93Q4P0QM6MZ2ASHGMME
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPVNB2D3ERS1V4FSMW2JDRBD
+        timestamp: 2026-04-22T22:56:21.624Z
     examined_commit: 8f0a82799dd28d92fb1e39a74a56e7bb8d8f69e6
     external_links: []
     lifecycle_state: closed
@@ -163271,6 +163277,8 @@ reviews:
               worktree and verifies the merge proceeds successfully."
             created_at: 2026-04-22T22:56:04.148Z
         kind: blocker
+        resolved_at: 2026-04-22T22:56:20.223Z
+        resolved_by: "@claude"
       - _ulid: 01KPVNB5YRTKMSVNYQEXQWP15B
         anchor:
           type: code
@@ -163311,5 +163319,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-22T22:36:40.703Z
     created_at: 2026-04-22T22:30:31.860Z
-    updated_at: 2026-04-22T22:56:10.249Z
+    updated_at: 2026-04-22T22:56:20.223Z
     notes: []
