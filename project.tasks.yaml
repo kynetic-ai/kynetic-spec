@@ -26870,7 +26870,7 @@
   type: task
   spec_ref: "@detached-reviewer-merge-helper"
   plan_ref: "@plan-portable-skill-file-references-and-detached-review"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -26881,6 +26881,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-22T21:41:47.676Z
+  started_at: 2026-04-22T22:08:49.479Z
   automation: eligible
 - _ulid: 01KPVJ8RA8P0TGB5KQEZ70M39K
   slugs:
