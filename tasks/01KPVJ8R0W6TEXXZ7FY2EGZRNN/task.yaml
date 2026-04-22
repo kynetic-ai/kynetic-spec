@@ -43,7 +43,7 @@ description: |
 spec_ref: "@detached-reviewer-merge-helper"
 plan_ref: "@plan-portable-skill-file-references-and-detached-review"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -62,7 +62,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KPVNJMJES6DSM7T99YENEVJB
 history:
   - author: Jacob Chapel
     changes:
@@ -121,8 +121,21 @@ history:
         previous: 01KPVKSA162M1MQ25K39XE3W8H
     command: review-verdict-needs-work
     timestamp: 2026-04-22T22:36:44.085Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KPVNJMJES6DSM7T99YENEVJB
+        previous: null
+      started_at:
+        new: 2026-04-22T22:57:00.578Z
+        previous: 2026-04-22T22:08:49.479Z
+    command: task-start
+    timestamp: 2026-04-22T22:57:00.579Z
 created_at: 2026-04-22T21:41:47.676Z
-started_at: 2026-04-22T22:08:49.479Z
+started_at: 2026-04-22T22:57:00.578Z
 submitted_at: 2026-04-22T22:28:58.008Z
 todos: []
 automation: eligible
