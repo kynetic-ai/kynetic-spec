@@ -6995,7 +6995,7 @@ modules:
           boundary references so agents do not receive broken helper links.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
