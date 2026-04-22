@@ -121,6 +121,10 @@
 	<!-- Main content -->
 	<div class="flex-1 min-w-0">
 		{#if entry}
+			<!-- AC: @docs-search ac-1 — Search input visible on mobile detail pages -->
+			<div class="lg:hidden mb-4">
+				<DocsSearch />
+			</div>
 			<article bind:this={articleEl} class="prose prose-sm dark:prose-invert max-w-none">
 				{@html rendered.html}
 			</article>

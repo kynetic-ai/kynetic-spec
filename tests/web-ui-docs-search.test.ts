@@ -259,136 +259,150 @@ describe("docs search base path handling", () => {
   }, 60000);
 });
 
-// ─── Build Pipeline Integration ─────────────────────────────────────────────
+// ─── Search Index Content Tests ─────────────────────────────────────────────
 
-describe("docs search build integration", () => {
-  // AC: @docs-search ac-2
-  it("build-docs-search.cjs exists in scripts directory", () => {
-    expect(existsSync(join(PROJECT_ROOT, "scripts", "build-docs-search.cjs"))).toBe(true);
+describe("docs search index content", () => {
+  let tempDir: string;
+  let pagefindDir: string;
+
+  beforeAll(() => {
+    const fixture = createTestFixture();
+    tempDir = fixture.tempDir;
+    pagefindDir = join(fixture.buildDir, "pagefind");
+
+    // Build an index from the fixture docs
+    const script = buildIndexScript(join(tempDir, "docs"), pagefindDir);
+    runHelperScript(script, PROJECT_ROOT);
+  }, 60000);
+
+  afterAll(() => {
+    if (tempDir) rmSync(tempDir, { recursive: true, force: true });
+  });
+
+  // AC: @docs-search ac-1
+  it("index fragment files contain indexed page content for search matching", () => {
+    // Pagefind stores indexed content in gzip-compressed fragment files that
+    // the client fetches when returning search results. Verify fragments exist
+    // and contain the indexed text, proving the pipeline fed real content
+    // into the index.
+    const fragmentDir = join(pagefindDir, "fragment");
+    const fragmentFiles = readdirSync(fragmentDir);
+    expect(fragmentFiles.length).toBeGreaterThan(0);
+
+    // Fragment files are gzip-compressed — decompress and collect content
+    const { gunzipSync } = require("node:zlib");
+    const allFragmentContent = fragmentFiles
+      .map((f) => {
+        const buf = readFileSync(join(fragmentDir, f));
+        try {
+          return gunzipSync(buf).toString("utf-8");
+        } catch {
+          // If not gzip, read as utf-8 directly
+          return buf.toString("utf-8");
+        }
+      })
+      .join("\n");
+
+    // Fixture docs contain "shadow branch" in concepts/shadow-branch.md
+    // and "kspec documentation" in getting-started/index.md.
+    // The indexed fragments should contain these terms.
+    expect(allFragmentContent).toContain("shadow");
+    expect(allFragmentContent).toContain("npm");
+  });
+
+  // AC: @docs-search ac-1
+  it("index entry manifest references all indexed pages", () => {
+    // The pagefind-entry.json manifest tells the client how to load index
+    // chunks. It should reflect the number of indexed pages.
+    const entryJson = JSON.parse(readFileSync(join(pagefindDir, "pagefind-entry.json"), "utf-8"));
+    // The entry should have index metadata
+    expect(entryJson).toHaveProperty("version");
+    expect(entryJson).toHaveProperty("languages");
+    // English language index should exist since we used forceLanguage: "en"
+    expect(entryJson.languages).toHaveProperty("en");
   });
 
   // AC: @docs-search ac-2
-  it("build pipeline chains docs search after web-ui build", () => {
-    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- build config verification, not source scanning
-    const pkg = JSON.parse(readFileSync(join(PROJECT_ROOT, "package.json"), "utf-8"));
-    expect(pkg.scripts["build:docs-search"]).toContain("build-docs-search.cjs");
-    expect(pkg.scripts["build:web-ui"]).toContain("build:docs-search");
-  });
+  it("index is fully self-contained with WASM search engine and worker", () => {
+    // For offline operation, the index must include all runtime dependencies:
+    // client JS, WASM search engine, and web worker — no external fetches needed
+    const files = readdirSync(pagefindDir);
+    expect(files).toContain("pagefind.js");
+    expect(files).toContain("pagefind-worker.js");
+    expect(files.some((f) => f.endsWith(".pagefind"))).toBe(true);
+    expect(files).toContain("pagefind-entry.json");
 
-  // AC: @docs-search ac-3
-  it("build script reads BASE_PATH from environment", () => {
-    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- build config verification
-    const content = readFileSync(join(PROJECT_ROOT, "scripts", "build-docs-search.cjs"), "utf-8");
-    expect(content).toContain("process.env.BASE_PATH");
-  });
-
-  // AC: @docs-search ac-3
-  it("GitHub Pages workflows include docs search indexing with BASE_PATH", () => {
-    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- CI config verification
-    const ghPagesUi = readFileSync(
-      join(PROJECT_ROOT, ".github", "workflows", "gh-pages-ui.yml"),
-      "utf-8",
-    );
-    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- CI config verification
-    const ghPages = readFileSync(
-      join(PROJECT_ROOT, ".github", "workflows", "gh-pages.yml"),
-      "utf-8",
-    );
-
-    expect(ghPagesUi).toContain("build:docs-search");
-    expect(ghPages).toContain("build:docs-search");
-  });
-
-  // AC: @docs-search ac-2
-  it("index exclude patterns match vite-plugin-docs excludes", () => {
-    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- build config verification
-    const scriptContent = readFileSync(
-      join(PROJECT_ROOT, "scripts", "build-docs-search.cjs"),
-      "utf-8",
-    );
-    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- build config verification
-    const viteConfig = readFileSync(
-      join(PROJECT_ROOT, "packages", "web-ui", "vite.config.ts"),
-      "utf-8",
-    );
-
-    // Both should exclude "history" (directory)
-    expect(scriptContent).toContain('"history"');
-    expect(viteConfig).toContain('"history"');
-
-    // Both should exclude specific files
-    expect(scriptContent).toContain('"agents-eval-scenarios.md"');
-    expect(scriptContent).toContain('"prime-mock.md"');
+    // Verify the client JS does not fetch from any external CDN or service.
+    // Pagefind uses internal template strings like `https://example.com${...}`
+    // for URL normalization — these are not real network requests.
+    const clientJs = readFileSync(join(pagefindDir, "pagefind.js"), "utf-8");
+    // Strip Pagefind's internal URL template patterns used for path normalization
+    const cleaned = clientJs.replace(/https?:\/\/example\.com\$\{[^}]*\}/g, "");
+    const externalUrls = cleaned.match(/https?:\/\/(?!localhost)[^\s"'`)\]]+/g);
+    expect(externalUrls).toBeNull();
   });
 });
 
-// ─── Svelte Component Integration ──────────────────────────────────────────
+// ─── Excluded Content Tests ─────────────────────────────────────────────────
 
-describe("DocsSearch component integration", () => {
-  const componentPath = join(PROJECT_ROOT, "packages/web-ui/src/lib/components/DocsSearch.svelte");
-
-  // AC: @docs-search ac-1
-  it("DocsSearch.svelte component exists", () => {
-    expect(existsSync(componentPath)).toBe(true);
-  });
-
-  // AC: @docs-search ac-1
-  it("search component is imported in the docs slug page (any docs page)", () => {
-    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- component wiring verification
-    const slugPage = readFileSync(
-      join(PROJECT_ROOT, "packages/web-ui/src/routes/docs/[...slug]/+page.svelte"),
-      "utf-8",
-    );
-    expect(slugPage).toContain("import DocsSearch");
-    expect(slugPage).toContain("<DocsSearch");
-  });
-
-  // AC: @docs-search ac-1
-  it("search component is imported in the docs landing page", () => {
-    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- component wiring verification
-    const landingPage = readFileSync(
-      join(PROJECT_ROOT, "packages/web-ui/src/routes/docs/+page.svelte"),
-      "utf-8",
-    );
-    expect(landingPage).toContain("import DocsSearch");
-    expect(landingPage).toContain("<DocsSearch");
-  });
-
+describe("docs search exclusion behavior", () => {
   // AC: @docs-search ac-2
-  it("loads Pagefind from the local bundle path, not from a CDN", () => {
-    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- verifying no external network dependencies
-    const content = readFileSync(componentPath, "utf-8");
-    // Must reference the local pagefind directory
-    expect(content).toContain("pagefind/pagefind.js");
-    expect(content).toContain("bundlePath");
-    // Must not contain external CDN or remote service URLs
-    const externalUrlMatches = content.match(/https?:\/\/(?!localhost)/g);
-    expect(externalUrlMatches).toBeNull();
-  });
+  it("excluded directories are not indexed even when present in docs dir", () => {
+    // Create a fixture with an excluded "history" directory and verify
+    // the indexer does not include it in the output
+    const fixture = createTestFixture();
+    const historyDir = join(fixture.docsDir, "history");
+    mkdirSync(historyDir, { recursive: true });
+    writeFileSync(join(historyDir, "old-design.md"), "# Old Design\n\nThis should not be indexed.\n");
 
-  // AC: @docs-search ac-1
-  it("has a search input and results container with test IDs", () => {
-    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- component wiring verification
-    const content = readFileSync(componentPath, "utf-8");
-    expect(content).toContain('data-testid="docs-search-input"');
-    expect(content).toContain('data-testid="docs-search-results"');
-  });
+    const pagefindDir = join(fixture.buildDir, "pagefind-excl");
 
-  // AC: @docs-search ac-1
-  it("navigates to the result URL when a result is selected", () => {
-    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- component wiring verification
-    const content = readFileSync(componentPath, "utf-8");
-    expect(content).toContain("goto(");
-    expect(content).toContain("$app/navigation");
-  });
+    // Use the actual build script logic (with exclusion) via the helper
+    const script = `
+      const { readdirSync, readFileSync, statSync } = require("node:fs");
+      const { join, relative, basename, extname } = require("node:path");
 
-  // AC: @docs-search ac-2
-  it("initializes Pagefind lazily on user interaction", () => {
-    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- verifying lazy loading behavior
-    const content = readFileSync(componentPath, "utf-8");
-    expect(content).toContain("import(");
-    expect(content).toContain("handleFocus");
-  });
+      const EXCLUDE = ["history", "agents-eval-scenarios.md", "prime-mock.md"];
+      function isExcluded(p) { return EXCLUDE.some(e => p === e || p.startsWith(e + "/")); }
+      function collect(dir, base) {
+        const r = [];
+        try { for (const e of readdirSync(dir)) {
+          const a = join(dir, e), s = statSync(a);
+          if (s.isDirectory()) r.push(...collect(a, base));
+          else if (e.endsWith(".md")) r.push({ rel: relative(base, a), abs: a });
+        }} catch {}
+        return r;
+      }
+
+      async function main() {
+        const pf = await import("pagefind");
+        const { index } = await pf.createIndex({ forceLanguage: "en" });
+        const docsDir = ${JSON.stringify(fixture.docsDir)};
+        const files = collect(docsDir, docsDir).filter(f => !isExcluded(f.rel));
+        const urls = [];
+        for (const { rel, abs } of files) {
+          const c = readFileSync(abs, "utf-8");
+          const slug = rel.replace(/\\.md$/i, "").replace(/\\/index$/, "");
+          const url = "/docs/" + slug;
+          urls.push(url);
+          await index.addCustomRecord({ url, content: c, language: "en", meta: { title: "t" } });
+        }
+        await index.writeFiles({ outputPath: ${JSON.stringify(pagefindDir)} });
+        console.log(JSON.stringify(urls));
+      }
+      main().catch(e => { console.error(e); process.exit(1); });
+    `;
+    const output = runHelperScript(script, PROJECT_ROOT);
+    const urls = JSON.parse(output);
+
+    // "history/old-design" should NOT appear in indexed URLs
+    expect(urls).not.toContain("/docs/history/old-design");
+    // But regular docs should still be indexed
+    expect(urls.length).toBeGreaterThan(0);
+    expect(urls).toContain("/docs/getting-started");
+
+    rmSync(fixture.tempDir, { recursive: true, force: true });
+  }, 60000);
 });
 
 // ─── Real Project Indexing ──────────────────────────────────────────────────

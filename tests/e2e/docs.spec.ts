@@ -31,10 +31,7 @@ test.describe("Docs", () => {
   });
 
   // AC: @docs-reachability ac-1 — Docs entry visible on mobile navigation
-  test("mobile nav shows Docs entry that navigates to docs", async ({
-    page,
-    daemon: _daemon,
-  }) => {
+  test("mobile nav shows Docs entry that navigates to docs", async ({ page, daemon: _daemon }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto("/");
 
@@ -90,10 +87,7 @@ test.describe("Docs", () => {
   });
 
   // AC: @docs-navigation-shape ac-1 — Non-current pages in sidebar are NOT highlighted
-  test("non-current docs page links are not highlighted", async ({
-    page,
-    daemon: _daemon,
-  }) => {
+  test("non-current docs page links are not highlighted", async ({ page, daemon: _daemon }) => {
     await page.goto("/docs/getting-started");
 
     const docsSidebar = page.locator("nav").filter({ hasText: "Pages" });
@@ -112,8 +106,7 @@ test.describe("Docs", () => {
           // Non-current page links should not have the active highlight
           // Check for exact "bg-accent" token (not "hover:bg-accent/50")
           const classes = await link.getAttribute("class");
-          const hasActiveHighlight =
-            classes?.split(/\s+/).some((c) => c === "bg-accent") ?? false;
+          const hasActiveHighlight = classes?.split(/\s+/).some((c) => c === "bg-accent") ?? false;
           expect(hasActiveHighlight).toBe(false);
         }
       }
@@ -135,10 +128,7 @@ test.describe("Docs", () => {
     expect(linkCount).toBeGreaterThan(0);
   });
 
-  test("in-tree .md links are rewritten to SPA routes", async ({
-    page,
-    daemon: _daemon,
-  }) => {
+  test("in-tree .md links are rewritten to SPA routes", async ({ page, daemon: _daemon }) => {
     await page.goto("/docs/getting-started");
 
     // The getting-started doc may contain links to other bundled docs
@@ -166,7 +156,7 @@ test.describe("Docs", () => {
 
     // The getting-started.md references ../INSTALL.md which is outside the docs tree.
     // These links should be rewritten to GitHub blob URLs so they don't 404.
-    const installLink = article.locator('a', { hasText: 'INSTALL.md' });
+    const installLink = article.locator("a", { hasText: "INSTALL.md" });
     const installLinkCount = await installLink.count();
     if (installLinkCount > 0) {
       const href = await installLink.first().getAttribute("href");
@@ -205,7 +195,44 @@ test.describe("Docs", () => {
     await tocLinks.first().click();
 
     // URL should now include the fragment
-    await expect(page).toHaveURL(new RegExp(`/docs/getting-started${firstTocHref!.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`));
+    await expect(page).toHaveURL(
+      new RegExp(`/docs/getting-started${firstTocHref!.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`),
+    );
+  });
+
+  // AC: @docs-search ac-1 — Search input is accessible on any docs page (including mobile)
+  test("docs detail page shows search input on mobile viewport", async ({
+    page,
+    daemon: _daemon,
+  }) => {
+    // Set mobile viewport (below lg breakpoint)
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto("/docs/getting-started");
+
+    // On mobile, the sidebar is hidden but a mobile search input should be visible
+    const searchInput = page.getByTestId("docs-search-input");
+    await expect(searchInput).toBeVisible();
+  });
+
+  // AC: @docs-search ac-1 — Search input is accessible on any docs page (desktop)
+  test("docs detail page shows search input in sidebar on desktop viewport", async ({
+    page,
+    daemon: _daemon,
+  }) => {
+    await page.goto("/docs/getting-started");
+
+    // On desktop, the sidebar search input should be visible
+    const docsSidebar = page.locator("nav").filter({ hasText: "Pages" });
+    const searchInput = docsSidebar.getByTestId("docs-search-input");
+    await expect(searchInput).toBeVisible();
+  });
+
+  // AC: @docs-search ac-1 — Search input is present on docs landing page
+  test("docs landing page shows search input", async ({ page, daemon: _daemon }) => {
+    await page.goto("/docs");
+
+    const searchInput = page.getByTestId("docs-search-input");
+    await expect(searchInput).toBeVisible();
   });
 
   test("navigating between docs pages via sidebar uses client-side routing", async ({
