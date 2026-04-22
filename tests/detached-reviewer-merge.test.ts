@@ -18,7 +18,7 @@ const SCRIPT_PATH = path.resolve(
   "templates",
   "skills",
   "merge",
-  "files",
+  "scripts",
   "detached-reviewer-merge.sh",
 );
 
