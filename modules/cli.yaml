@@ -8988,6 +8988,9 @@ features:
                   The helper keeps the integration branch authoritative while preventing the
                   stale checked-out integration worktree state that occurs when the branch
                   ref advances without the occupied worktree being refreshed.
+                status:
+                  maturity: draft
+                  implementation: in_progress
                 depends_on: []
                 implements: []
                 relates_to: []
