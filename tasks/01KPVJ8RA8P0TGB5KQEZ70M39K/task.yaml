@@ -37,7 +37,7 @@ description: |
 spec_ref: "@detached-reviewer-merge-helper"
 plan_ref: "@plan-portable-skill-file-references-and-detached-review"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-portable-skill-supporting-file-references"
@@ -54,8 +54,8 @@ review_ref: "@01KPVXJN7XQNCNZBQNADSF25NM"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-detached-reviewer-merge-guidance/01kpvj8r
-  captured_at: 2026-04-23T00:58:06.708Z
-  commit: 8c85629b7b29c40857750c5b999a43a31bed7e4d
+  captured_at: 2026-04-23T01:26:33.365Z
+  commit: 6938917bc654e9b29aaa9dfe781c62dafa18531d
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-detached-reviewer-merge-guidance/01kpvj8r
@@ -131,8 +131,35 @@ history:
         previous: 2026-04-23T00:08:06.852Z
     command: task-start
     timestamp: 2026-04-23T01:26:29.796Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-detached-reviewer-merge-guidance/01kpvj8r
+          captured_at: 2026-04-23T01:26:33.365Z
+          commit: 6938917bc654e9b29aaa9dfe781c62dafa18531d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-detached-reviewer-merge-guidance/01kpvj8r
+        previous:
+          review_url: null
+          branch: dispatch/task/task-detached-reviewer-merge-guidance/01kpvj8r
+          captured_at: 2026-04-23T00:58:06.708Z
+          commit: 8c85629b7b29c40857750c5b999a43a31bed7e4d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-detached-reviewer-merge-guidance/01kpvj8r
+      submitted_at:
+        new: 2026-04-23T01:26:33.369Z
+        previous: 2026-04-23T00:58:06.711Z
+    command: task-submit
+    timestamp: 2026-04-23T01:26:33.369Z
 created_at: 2026-04-22T21:41:47.976Z
 started_at: 2026-04-23T01:26:29.796Z
-submitted_at: 2026-04-23T00:58:06.711Z
+submitted_at: 2026-04-23T01:26:33.369Z
 todos: []
 automation: eligible
