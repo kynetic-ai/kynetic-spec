@@ -31657,7 +31657,7 @@ runs:
     completed_at: 2026-04-23T01:42:27.031Z
   - _ulid: 01KPWDTPQG6MDB5DM9VQAB269E
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31694,7 +31694,14 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-04-23T05:44:39.836Z
-        completed_at: 2026-04-23T05:44:39.836Z
+        completed_at: 2026-04-23T05:44:57.554Z
+        notes: "Capture: recorded friction observation @01KPWDWX for the session-reflect doc/CLI mismatch
+          around 'kspec workflow show' requiring a run ref. No additional captures were warranted
+          from this session."
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-23T05:44:57.554Z
+        completed_at: 2026-04-23T05:44:57.554Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-23T05:43:27.728Z
