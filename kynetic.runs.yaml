@@ -31509,7 +31509,7 @@ runs:
     started_at: 2026-04-22T23:35:57.645Z
   - _ulid: 01KPVTHMJBWWAXAFR0Z6RGJCM8
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31539,7 +31539,15 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-23T00:07:36.122Z
-        completed_at: 2026-04-23T00:07:36.122Z
+        completed_at: 2026-04-23T00:07:52.123Z
+        notes: "Proposed improvement: add a scoped review validation path that can target the reviewed refs
+          or changed files instead of the full repository. This would preserve validation as a
+          review gate while removing unrelated noise; rough scope is medium because it likely
+          touches validation selection and review workflow guidance."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-23T00:07:52.123Z
+        completed_at: 2026-04-23T00:07:52.123Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-23T00:06:27.659Z
