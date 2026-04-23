@@ -163867,9 +163867,25 @@ reviews:
           kind: nit
           thread_ulid: 01KPVY6F27803QNRQ0GXR8T3NT
         timestamp: 2026-04-23T01:10:16.885Z
+      - _ulid: 01KPVY6ZP9EKTV82YN9QCNCP0K
+        actor: Jacob Chapel
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-23T01:10:32.905Z
+      - _ulid: 01KPVY6ZPAC174XBRG2SY6P5SD
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-23T01:10:32.906Z
     examined_commit: 8c85629b7b29c40857750c5b999a43a31bed7e4d
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -163915,7 +163931,14 @@ reviews:
               coverage test in tests/supporting-file-references.test.ts."
             created_at: 2026-04-23T01:10:15.880Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: Jacob Chapel
+        role: reviewer
+        created_at: 2026-04-23T01:10:32.905Z
     created_at: 2026-04-23T00:59:26.845Z
-    updated_at: 2026-04-23T01:10:15.880Z
+    updated_at: 2026-04-23T01:10:32.906Z
     notes: []
