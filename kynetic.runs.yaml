@@ -31657,7 +31657,7 @@ runs:
     completed_at: 2026-04-23T01:42:27.031Z
   - _ulid: 01KPWDTPQG6MDB5DM9VQAB269E
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31670,7 +31670,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-23T05:44:22.535Z
-        completed_at: 2026-04-23T05:44:22.535Z
+        completed_at: 2026-04-23T05:44:23.491Z
+        notes: "Worked well: the detached-review flow was cohesive end-to-end. The review record,
+          targeted/full test runs, approval gate, detached-reviewer merge helper, and task
+          completion all executed cleanly from the reviewer snapshot without manual git
+          choreography."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-23T05:44:23.491Z
+        completed_at: 2026-04-23T05:44:23.491Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-23T05:43:27.728Z
