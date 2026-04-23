@@ -103,3 +103,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-23T01:10:34.831Z
+  - _ulid: 01KPVZ3KKW19VQYHQXEN30EF3X
+    content: "Fix cycle 1: Addressed all review threads. Replaced the source-scanning test (blocker) at
+      supporting-file-references.test.ts:764-783 — it was reading templates/skills/merge/SKILL.md
+      directly and asserting on literal strings, violating the behavioral-tests-only rule. New test
+      copies the shipped merge skill into a temp project, renders through buildPromptWithSkills, and
+      asserts on rendered output: detached context present, helper path resolved (not portable
+      form), no positive checkout instructions. Re-verified all AC coverage for
+      ac-helper-path-in-reviewer-guidance — 4 behavioral tests across 3 test files. All 8362 tests
+      pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-23T01:26:10.812Z
