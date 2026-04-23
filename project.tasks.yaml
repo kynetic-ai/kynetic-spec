@@ -26913,3 +26913,24 @@
   submitted_at: 2026-04-23T01:26:33.369Z
   completed_at: 2026-04-23T01:40:23.129Z
   automation: eligible
+- _ulid: 01KPWBHMSFK1XB6CZ1Z90FMB0H
+  slugs:
+    - task-align-detached-reviewer-conflict-guidance
+  title: Align detached reviewer conflict guidance to the single supported merge path
+  type: task
+  spec_ref: "@detached-reviewer-merge-helper"
+  plan_ref: "@plan-portable-skill-file-references-and-detached-review"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-detached-reviewer-merge-helper"
+  priority: 2
+  tags:
+    - dispatch
+    - review
+    - merge
+    - docs
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-23T05:03:33.678Z
+  automation: eligible

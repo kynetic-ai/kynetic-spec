@@ -1,0 +1,107 @@
+_ulid: 01KPWBHMSFK1XB6CZ1Z90FMB0H
+slugs:
+  - task-align-detached-reviewer-conflict-guidance
+title: Align detached reviewer conflict guidance to the single supported merge path
+type: task
+description: >
+  Remove the remaining contradiction in detached-review conflict guidance so
+
+  every reviewer-facing surface describes the same supported path.
+
+
+  Why: The detached reviewer merge helper was introduced so reviewers in
+
+  manual_merge publication mode would have one sanctioned merge path instead
+
+  of improvising git choreography in a detached snapshot. The current helper
+
+  conflict message still says simple/textual conflicts may be resolved inline
+
+  and re-run, while the dispatch reviewer prompt and the merge skill say
+
+  detached reviewers must not resolve conflicts inside the snapshot and must
+
+  send the task back through needs_work. Leaving both messages in place
+
+  recreates the ambiguity this feature was meant to remove.
+
+
+  What:
+
+  - Update the conflict-path stderr in
+
+  templates/skills/merge/scripts/detached-reviewer-merge.sh so any merge
+    conflict instructs the reviewer to stop, leave the target unchanged, and
+    return the task via needs_work with conflict details.
+  - Audit the existing detached-review policy text in these surfaces and
+    adjust wording only where needed so every reviewer-facing surface enforces
+    the same rule: detached reviewers do not resolve conflicts inside the
+    snapshot and must return the task via needs_work.
+    * templates/skills/merge/SKILL.md
+    * src/agent-runtime/dispatch.ts
+  - Preserve the helper’s mechanics: merge abort on conflict, unchanged target
+    ref, and restoration of the occupied integration worktree to its pre-merge
+    state. This task changes guidance language, not merge behavior.
+  - If files under templates/skills/merge/ change, regenerate the checked-in
+    skill artifacts so shipped runtime assets stay in sync:
+    * run `kspec skill install-core`
+    * then run `kspec skill render`
+    * verify the affected outputs under `.agents/skills/kspec-merge/` and
+      `.factory/skills/kspec-merge/`
+
+  How: Treat the current detached-review policy as the source of truth:
+
+  detached reviewer snapshots never resolve merge conflicts inline. The
+
+  helper’s conflict message should mirror the dispatch prompt and merge skill
+
+  by telling reviewers to record the conflict and send the task back through
+
+  needs_work. Keep the message explicit about what remains safe after the
+
+  abort — target ref unchanged and occupied worktree restored — so reviewers
+
+  know they can exit without cleanup. Do not broaden this task into merge
+
+  behavior changes or publication ownership changes.
+
+
+  Testing:
+
+  - Extend tests/detached-reviewer-merge.test.ts so the conflict path asserts:
+    * stderr does not instruct inline/simple/textual conflict resolution
+    * stderr does instruct returning the task via needs_work
+    * stderr still states the target ref was not advanced
+    * stderr still states the occupied worktree was restored
+  - Verify the manual_merge reviewer prompt behavior still matches the same
+    policy in tests/agent-dispatch-engine.test.ts.
+  - If merge-skill source wording changes, update or extend the rendered-skill
+    behavioral coverage in tests/supporting-file-references.test.ts so the
+    detached reviewer section continues to resolve the helper path and does not
+    reintroduce contradictory checkout/conflict instructions.
+  - Run the targeted tests with the repo’s standard runner:
+    `npm test -- --run tests/detached-reviewer-merge.test.ts tests/agent-dispatch-engine.test.ts tests/supporting-file-references.test.ts`
+
+  Covers:
+
+  - @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance
+
+  - @detached-reviewer-merge-helper ac-helper-safe-conflict-exit
+spec_ref: "@detached-reviewer-merge-helper"
+meta_ref: null
+plan_ref: "@plan-portable-skill-file-references-and-detached-review"
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-detached-reviewer-merge-helper"
+context: []
+priority: 2
+tags:
+  - dispatch
+  - review
+  - merge
+  - docs
+vcs_refs: []
+created_at: 2026-04-23T05:03:33.678Z
+todos: []
+automation: eligible
