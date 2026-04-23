@@ -163889,6 +163889,12 @@ reviews:
         payload:
           thread_ulid: 01KPVY65XJ2P8RSS0QHHDK1Y1F
         timestamp: 2026-04-23T01:25:30.522Z
+      - _ulid: 01KPVZ2N1MNB5HT135EE0QX2ZE
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KPVY65XJ2P8RSS0QHHDK1Y1F
+        timestamp: 2026-04-23T01:25:39.508Z
     examined_commit: 8c85629b7b29c40857750c5b999a43a31bed7e4d
     external_links: []
     lifecycle_state: closed
@@ -163926,6 +163932,8 @@ reviews:
               the source template file directly. All 8362 tests pass."
             created_at: 2026-04-23T01:25:29.471Z
         kind: blocker
+        resolved_at: 2026-04-23T01:25:38.494Z
+        resolved_by: "@claude"
       - _ulid: 01KPVY6F27803QNRQ0GXR8T3NT
         entries:
           - _ulid: 01KPVY6F27XKZ3ES7XT6VFX0ZD
@@ -163954,5 +163962,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-23T01:10:32.905Z
     created_at: 2026-04-23T00:59:26.845Z
-    updated_at: 2026-04-23T01:25:29.471Z
+    updated_at: 2026-04-23T01:25:38.494Z
     notes: []
