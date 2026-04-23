@@ -62624,11 +62624,11 @@ workspaces:
     canonical_branch: dispatch/task/task-detached-reviewer-merge-guidance/01kpvj8r
     canonical_branch_head: 6938917bc654e9b29aaa9dfe781c62dafa18531d
     cleanup:
-      status: blocked
+      status: completed
       detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
       reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-04-23T01:42:56.285Z
+      updated_at: 2026-04-23T01:43:00.658Z
     health:
       status: healthy
       issues: []
@@ -62642,16 +62642,16 @@ workspaces:
       target_branch: dev
       target_commit: 41bfcae807377b69c5ecaf2907d10603e614f21d
       updated_at: 2026-04-23T01:42:56.285Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KPVJ8RA8P0TGB5KQEZ70M39K"
     task_slug: task-detached-reviewer-merge-guidance
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-23T01:43:00.658Z
       last_active_at: 2026-04-23T01:27:31.731Z
       last_reconciled_at: 2026-04-23T01:42:56.285Z
       created_at: 2026-04-23T00:07:04.784Z
-      updated_at: 2026-04-23T01:42:56.285Z
+      updated_at: 2026-04-23T01:43:00.658Z
     workspace_id: dispatch-workspace-01KPVJ8RA8P0TGB5KQEZ70M39K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
