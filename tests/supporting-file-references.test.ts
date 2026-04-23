@@ -762,20 +762,52 @@ describe("Prompt-time supporting-file reference resolution", () => {
   });
 
   // AC: @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance
-  it("merge skill source uses portable supporting-file reference for detached reviewer helper", async () => {
-    // Read the shipped merge skill source to verify it contains the portable reference
-    const mergeSkillSource = path.join(__dirname, "..", "templates", "skills", "merge", "SKILL.md");
-    const sourceContent = await readTestOutput(mergeSkillSource);
+  it("rendered merge skill output contains detached reviewer guidance with resolved helper path", async () => {
+    // Copy the shipped merge skill into a temp project and render through buildPromptWithSkills
+    // to verify behavioral output rather than inspecting source text.
+    const tempDir = await createTempDir("kspec-merge-detached-guidance-");
+    tempDirs.push(tempDir);
 
-    // Must reference the helper script via portable form
-    expect(sourceContent).toContain("{supporting:scripts/detached-reviewer-merge.sh}");
-    // Must describe detached reviewer context
-    expect(sourceContent).toContain("Detached Reviewer Context");
-    // The detached section must not INSTRUCT reviewers to git checkout (positive instruction).
-    // Negative instructions ("Do NOT git checkout") are expected and fine.
-    const detachedSection = sourceContent.split("## Detached Reviewer Context")[1]?.split("## Merge Process")[0] || "";
-    // Verify detached section does NOT contain a positive "git checkout" instruction
-    // (i.e., a line starting with "git checkout" as a command, not in a "Do not" context)
+    await fs.writeFile(
+      path.join(tempDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1.0", project: { name: "Merge Guidance Test" } }),
+    );
+    await fs.writeFile(
+      path.join(tempDir, "kynetic.meta.yaml"),
+      YAML.stringify({
+        kynetic_meta: "1.0",
+        skills: [
+          {
+            _ulid: testUlid("SKIL", 20),
+            id: "merge",
+            name: "Merge",
+            description: "Merge skill",
+            origin: "project",
+          },
+        ],
+      }),
+    );
+
+    // Copy shipped merge skill source and supporting files into temp project
+    const shippedSkillDir = path.join(__dirname, "..", "templates", "skills", "merge");
+    const targetSkillDir = path.join(tempDir, "skills", "merge");
+    await fs.cp(shippedSkillDir, targetSkillDir, { recursive: true });
+
+    // Render through the prompt pipeline — this exercises the actual render behavior
+    const renderedPrompt = await buildPromptWithSkills({
+      basePrompt: "Base",
+      skillIds: ["merge"],
+      specDir: tempDir,
+      adapterId: "claude-code-acp",
+    });
+
+    // Rendered output must contain detached reviewer context
+    expect(renderedPrompt).toContain("Detached Reviewer Context");
+    // Rendered output must contain resolved helper path (not the portable {supporting:} form)
+    expect(renderedPrompt).toContain("scripts/detached-reviewer-merge.sh");
+    expect(renderedPrompt).not.toContain("{supporting:");
+    // The detached section must not contain positive git checkout instructions
+    const detachedSection = renderedPrompt.split("Detached Reviewer Context")[1]?.split("## Merge Process")[0] || "";
     const lines = detachedSection.split("\n");
     const positiveCheckoutInstructions = lines.filter(
       (line) => line.trim().startsWith("git checkout") && !line.toLowerCase().includes("do not") && !line.toLowerCase().includes("do **not**"),
