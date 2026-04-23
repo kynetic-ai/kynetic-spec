@@ -8990,7 +8990,7 @@ features:
                   ref advances without the occupied worktree being refreshed.
                 status:
                   maturity: draft
-                  implementation: in_progress
+                  implementation: implemented
                 depends_on: []
                 implements: []
                 relates_to: []
