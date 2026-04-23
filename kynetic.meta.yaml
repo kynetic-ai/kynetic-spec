@@ -16024,6 +16024,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-23T00:59:33.986Z
+  - _ulid: 01KPVZ6KEGVVRXQ06ZA2QSRJ1F
+    type: success
+    content: "Behavioral test pattern for shipped skill content: copy templates/skills/<id>/ into a temp
+      project via fs.cp, render through buildPromptWithSkills, and assert on rendered output. Avoids
+      source-scanning while still testing that shipped skill source produces correct behavioral
+      output. First used in supporting-file-references.test.ts for merge skill detached reviewer
+      guidance."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-23T01:27:48.944Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
