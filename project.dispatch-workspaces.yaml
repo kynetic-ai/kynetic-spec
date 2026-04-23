@@ -62662,7 +62662,7 @@ workspaces:
         head: 6938917bc654e9b29aaa9dfe781c62dafa18531d
         last_seen_at: 2026-04-23T01:27:04.186Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-detached-reviewer-merge-guidance-01kpvj8r
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 676cffcbc5b545a4fb2173dfd30f270933f6a072
     bootstrap:
       status: succeeded
@@ -63155,9 +63155,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-23T05:30:56.246Z
-      last_reconciled_at: 2026-04-23T05:43:10.412Z
+      last_reconciled_at: 2026-04-23T05:45:09.820Z
       created_at: 2026-04-23T05:05:20.294Z
-      updated_at: 2026-04-23T05:43:13.013Z
+      updated_at: 2026-04-23T05:45:09.820Z
     workspace_id: dispatch-workspace-01KPWBHMSFK1XB6CZ1Z90FMB0H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
