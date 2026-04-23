@@ -16014,6 +16014,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-04-23T00:07:51.187Z
+  - _ulid: 01KPVXJW72MD5N6SQT1J8YPPT1
+    type: success
+    content: "Inheriting well-structured uncommitted changes from a failed prior invocation worked
+      smoothly: full diff review, AC verification, test run, commit, and submit completed in a
+      single pass. The key enabler was that the prior agent's changes were coherent and complete —
+      only the commit/submit step was missing."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-23T00:59:33.986Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
