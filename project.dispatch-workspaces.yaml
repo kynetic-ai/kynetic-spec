@@ -62148,7 +62148,7 @@ workspaces:
         head: df97fc50fae53d632df4d8c425d69e8f6e8b9fb8
         last_seen_at: 2026-04-22T23:54:40.842Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-detached-reviewer-merge-helper-01kpvj8r
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 41bfcae807377b69c5ecaf2907d10603e614f21d
     bootstrap:
       status: succeeded
@@ -62630,7 +62630,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-23T00:58:37.064Z
+      updated_at: 2026-04-23T00:59:04.861Z
     integration:
       status: pending
       detail: null
@@ -62645,10 +62645,10 @@ workspaces:
     task_slug: task-detached-reviewer-merge-guidance
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-23T00:46:42.560Z
-      last_reconciled_at: 2026-04-23T00:58:37.064Z
+      last_active_at: 2026-04-23T00:59:04.861Z
+      last_reconciled_at: 2026-04-23T00:59:04.861Z
       created_at: 2026-04-23T00:07:04.784Z
-      updated_at: 2026-04-23T00:59:01.181Z
+      updated_at: 2026-04-23T00:59:04.861Z
     workspace_id: dispatch-workspace-01KPVJ8RA8P0TGB5KQEZ70M39K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
