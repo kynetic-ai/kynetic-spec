@@ -163801,7 +163801,19 @@ reviews:
     slugs: []
     title: Review @01KPVJ8RA8P0TGB5KQEZ70M39K
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repository validation reports pre-existing global schema/completeness issues outside the
+          touched files, including a schema error under .kspec/modules/meta.yaml plus legacy
+          coverage warnings. The submitted diff does not modify .kspec state.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-23T01:10:09.598Z
+        completed_at: 2026-04-23T01:10:09.598Z
     events:
       - _ulid: 01KPVXJN7XHGVSDSMBG7NNFE5Y
         actor: Jacob Chapel
@@ -163823,6 +163835,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KPVY65XJ2P8RSS0QHHDK1Y1F
         timestamp: 2026-04-23T01:10:07.579Z
+      - _ulid: 01KPVY6A2AR56K2C1MPSX7A138
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-23T01:10:10.762Z
     examined_commit: 8c85629b7b29c40857750c5b999a43a31bed7e4d
     external_links: []
     lifecycle_state: open
@@ -163854,5 +163873,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-23T00:59:26.845Z
-    updated_at: 2026-04-23T01:10:06.515Z
+    updated_at: 2026-04-23T01:10:09.598Z
     notes: []
