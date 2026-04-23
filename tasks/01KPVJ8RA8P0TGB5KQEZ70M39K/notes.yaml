@@ -1,1 +1,49 @@
-notes: []
+notes:
+  - _ulid: 01KPVTV12MJZWXPE83WMJFZ7TN
+    content: >-
+      Approach: Wire reviewer guidance and merge skill to the detached merge helper.
+
+
+      Changes planned:
+
+      1. dispatch.ts buildPublicationInstructions() — Replace manual_merge reviewer guidance (lines
+      312-316) to direct reviewers to the supported merge helper script via
+      {supporting:scripts/detached-reviewer-merge.sh} instead of telling them to merge manually.
+      Remove instruction to 'check out the integration branch manually'.
+
+
+      2. templates/skills/merge/SKILL.md — Add a 'Detached Reviewer Context' section explaining:
+         - Reviewers work in a detached snapshot, not on the integration branch
+         - The one supported merge path: run the helper script via {supporting:scripts/detached-reviewer-merge.sh}
+         - No-op handling (already integrated → clean exit)
+         - Dirty-target refusal (recovery guidance)
+         - Conflict escalation (abort, report, needs_work)
+         - Remove/qualify the 'git checkout <integration-branch>' instructions that don't apply in detached context
+
+      3. setup-defaults.ts — Update pr-reviewer description to qualify the detached workspace model
+
+
+      4. templates/agents-sections/06-agent-dispatch-mode.md — Update reviewer merge references to
+      mention the supported helper path
+
+
+      5. docs/ — Update prime-mock.md and agents-eval-scenarios.md references
+
+
+      6. Regenerate rendered skill output (kspec skill render) and agent instructions (kspec agents
+      generate)
+
+
+      Test plan:
+
+      - AC: ac-helper-path-in-reviewer-guidance — Test that manual_merge reviewer dispatch prompt
+      contains the helper script path and does NOT contain 'checkout' instruction for integration
+      branch
+
+      - Rendered merge skill output test: verify {supporting:} references are resolved to
+      platform-specific paths
+
+      - Default agent description test: verify updated pr-reviewer wording
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-23T00:11:35.380Z
