@@ -52,3 +52,49 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-23T00:46:27.555Z
+  - _ulid: 01KPVXG0AQP7QTXM6J925C2ERC
+    content: >-
+      Implementation complete. Wired reviewer guidance to detached merge helper across all surfaces:
+
+
+      1. dispatch.ts buildPublicationInstructions() — manual_merge reviewer guidance now directs to
+      {supporting:scripts/detached-reviewer-merge.sh}, explicitly states 'detached snapshot'
+      context, and prohibits manual git checkout of integration branch.
+
+
+      2. templates/skills/merge/SKILL.md — Added 'Detached Reviewer Context' section with helper
+      invocation, outcome table (success/no-op/dirty-target/conflict), and 'What NOT to Do'
+      guidance. Original merge process section renamed to 'Merge Process (Non-Dispatch)' with
+      context qualifier.
+
+
+      3. setup-defaults.ts — pr-reviewer description updated to mention detached snapshot and
+      supported merge helper.
+
+
+      4. templates/agents-sections/06-agent-dispatch-mode.md — All reviewer merge references
+      updated: dispatch loop step 5, trigger table, no-PR guidance.
+
+
+      5. docs/ — agents-eval-scenarios.md and prime-mock.md updated from 'local merge' to 'supported
+      merge helper'.
+
+
+      6. Regenerated .agents/skills/, .factory/skills/, and kspec-agents.md.
+
+
+      Tests: 3 new test cases covering AC ac-helper-path-in-reviewer-guidance:
+
+      - Dispatch engine prompt contains helper path and 'detached snapshot', does NOT contain 'git
+      checkout'
+
+      - Setup defaults pr-reviewer description mentions detached snapshot and merge helper
+
+      - Supporting-file reference tests: merge skill source uses portable {supporting:} form,
+      rendered output resolves per-platform paths
+
+
+      All 8362 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-23T00:57:59.895Z
