@@ -62984,18 +62984,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-align-detached-reviewer-conflict-guidance/01kpwbhm
-    canonical_branch_head: 676cffcbc5b545a4fb2173dfd30f270933f6a072
+    canonical_branch_head: 778a628e40b17f04ed7a044538c2c4200f5403fe
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-23T05:05:20.294Z
+      updated_at: 2026-04-23T05:29:10.840Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-23T05:05:47.492Z
+      updated_at: 2026-04-23T05:29:10.840Z
     integration:
       status: pending
       detail: null
@@ -63003,7 +63003,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 676cffcbc5b545a4fb2173dfd30f270933f6a072
-      updated_at: 2026-04-23T05:05:20.294Z
+      updated_at: 2026-04-23T05:29:10.840Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KPWBHMSFK1XB6CZ1Z90FMB0H"
@@ -63011,9 +63011,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-23T05:05:47.492Z
-      last_reconciled_at: 2026-04-23T05:05:47.492Z
+      last_reconciled_at: 2026-04-23T05:29:10.840Z
       created_at: 2026-04-23T05:05:20.294Z
-      updated_at: 2026-04-23T05:05:47.492Z
+      updated_at: 2026-04-23T05:29:10.840Z
     workspace_id: dispatch-workspace-01KPWBHMSFK1XB6CZ1Z90FMB0H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
