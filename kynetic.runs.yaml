@@ -31605,7 +31605,7 @@ runs:
     completed_at: 2026-04-23T01:12:13.380Z
   - _ulid: 01KPVZYEQTTYY25HJ2G97CHDTG
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31640,7 +31640,14 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-04-23T01:42:04.487Z
-        completed_at: 2026-04-23T01:42:04.487Z
+        completed_at: 2026-04-23T01:42:11.470Z
+        notes: "Discussion decision: one high-confidence friction item is worth capturing as an observation.
+          Prompt-overflow friction is already tracked, and the helper-path success is already
+          embodied in the completed spec/task, so no additional captures are needed."
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-23T01:42:11.470Z
+        completed_at: 2026-04-23T01:42:11.470Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-23T01:40:50.554Z
