@@ -163816,6 +163816,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-23T00:59:46.394Z
+      - _ulid: 01KPVY66YV194JW7QXYFV0E2HF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KPVY65XJ2P8RSS0QHHDK1Y1F
+        timestamp: 2026-04-23T01:10:07.579Z
     examined_commit: 8c85629b7b29c40857750c5b999a43a31bed7e4d
     external_links: []
     lifecycle_state: open
@@ -163825,8 +163832,27 @@ reviews:
       content_hash: ""
       ref: "@01KPVJ8RA8P0TGB5KQEZ70M39K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KPVY65XJ2P8RSS0QHHDK1Y1F
+        anchor:
+          type: code
+          commit: 8c85629b7b29c40857750c5b999a43a31bed7e4d
+          line_end: 783
+          line_start: 765
+          path: tests/supporting-file-references.test.ts
+          side: head
+        entries:
+          - _ulid: 01KPVY65XK4TNR49Y30SF49W5E
+            author: Jacob Chapel
+            body: "This AC-annotated test is a source-scanning check: it reads templates/skills/merge/SKILL.md
+              and asserts on literal strings instead of exercising prompt/render behavior. That
+              violates the repo rule that tests must prove behavior rather than inspect
+              implementation text, so it creates invalid coverage for
+              @detached-reviewer-merge-helper. Keep the behavioral rendered-output coverage and
+              replace this with a behavior-level assertion if an extra check is still needed."
+            created_at: 2026-04-23T01:10:06.515Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-23T00:59:26.845Z
-    updated_at: 2026-04-23T00:59:45.292Z
+    updated_at: 2026-04-23T01:10:06.515Z
     notes: []
