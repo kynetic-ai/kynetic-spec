@@ -26920,7 +26920,7 @@
   type: task
   spec_ref: "@detached-reviewer-merge-helper"
   plan_ref: "@plan-portable-skill-file-references-and-detached-review"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-detached-reviewer-merge-helper"
@@ -26933,4 +26933,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-23T05:03:33.678Z
+  started_at: 2026-04-23T05:06:19.582Z
   automation: eligible
