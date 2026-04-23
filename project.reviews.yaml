@@ -163689,6 +163689,25 @@ reviews:
         runner: npm
         created_at: 2026-04-22T23:58:19.169Z
         completed_at: 2026-04-22T23:58:19.169Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: AGENTS.md, kspec-agents.md,
+          templates/skills/merge/scripts/detached-reviewer-merge.sh,
+          tests/detached-reviewer-merge.test.ts, .agents/skills/kspec-merge/SKILL.md,
+          templates/skills/plan/SKILL.md. Commands run: git diff/stat/log/worktree list, kspec task
+          get, kspec item get, kspec review for-task/get, grep AC annotations, kspec validate, npm
+          test, rendered-file diff/ls, root dev status. Claims verified: helper script is rendered
+          into .agents/.factory with executable mode and identical contents; detached merge behavior
+          is covered by dedicated tests; full test suite stayed green during review. Categories
+          searched: correctness, edge cases, error handling, test quality, integration; no
+          task-specific blockers found."
+        name: review evidence
+        required: false
+        runner: codex
+        created_at: 2026-04-23T00:01:15.191Z
+        completed_at: 2026-04-23T00:01:15.191Z
     events:
       - _ulid: 01KPVSY2SZB856Z043Z3HTR2H8
         actor: Jacob Chapel
@@ -163717,6 +163736,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-22T23:58:20.423Z
+      - _ulid: 01KPVT84EYMWTQM78PX837N70Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-23T00:01:16.254Z
     examined_commit: df97fc50fae53d632df4d8c425d69e8f6e8b9fb8
     external_links: []
     lifecycle_state: open
@@ -163729,5 +163755,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-22T23:55:46.880Z
-    updated_at: 2026-04-22T23:58:19.169Z
+    updated_at: 2026-04-23T00:01:15.191Z
     notes: []
