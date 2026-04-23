@@ -163883,6 +163883,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-23T01:10:32.906Z
+      - _ulid: 01KPVZ2C8TK9K97VXDFXEJ99CF
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KPVY65XJ2P8RSS0QHHDK1Y1F
+        timestamp: 2026-04-23T01:25:30.522Z
     examined_commit: 8c85629b7b29c40857750c5b999a43a31bed7e4d
     external_links: []
     lifecycle_state: closed
@@ -163911,6 +163917,14 @@ reviews:
               @detached-reviewer-merge-helper. Keep the behavioral rendered-output coverage and
               replace this with a behavior-level assertion if an extra check is still needed."
             created_at: 2026-04-23T01:10:06.515Z
+          - _ulid: 01KPVZ2B7ZMKDKP9E9Q7YJM68F
+            author: "@claude"
+            body: "Fixed: Replaced the source-scanning test with a behavioral test that copies the shipped merge
+              skill into a temp project and renders it through buildPromptWithSkills. The new test
+              exercises the render pipeline and asserts on output behavior (detached context
+              present, helper path resolved, no positive checkout instructions) instead of reading
+              the source template file directly. All 8362 tests pass."
+            created_at: 2026-04-23T01:25:29.471Z
         kind: blocker
       - _ulid: 01KPVY6F27803QNRQ0GXR8T3NT
         entries:
@@ -163940,5 +163954,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-23T01:10:32.905Z
     created_at: 2026-04-23T00:59:26.845Z
-    updated_at: 2026-04-23T01:10:32.906Z
+    updated_at: 2026-04-23T01:25:29.471Z
     notes: []
