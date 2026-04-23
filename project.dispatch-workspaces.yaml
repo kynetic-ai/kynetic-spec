@@ -62990,12 +62990,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-23T05:30:20.373Z
+      updated_at: 2026-04-23T05:30:27.500Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-23T05:30:20.373Z
+      updated_at: 2026-04-23T05:30:27.500Z
     integration:
       status: pending
       detail: null
@@ -63003,24 +63003,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 676cffcbc5b545a4fb2173dfd30f270933f6a072
-      updated_at: 2026-04-23T05:30:20.373Z
-    lifecycle_state: ready
+      updated_at: 2026-04-23T05:30:27.500Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KPWBHMSFK1XB6CZ1Z90FMB0H"
     task_slug: task-align-detached-reviewer-conflict-guidance
     timestamps:
       closed_at: null
       last_active_at: 2026-04-23T05:05:47.492Z
-      last_reconciled_at: 2026-04-23T05:30:20.373Z
+      last_reconciled_at: 2026-04-23T05:30:27.500Z
       created_at: 2026-04-23T05:05:20.294Z
-      updated_at: 2026-04-23T05:30:20.373Z
+      updated_at: 2026-04-23T05:30:27.500Z
     workspace_id: dispatch-workspace-01KPWBHMSFK1XB6CZ1Z90FMB0H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 778a628e40b17f04ed7a044538c2c4200f5403fe
+        last_seen_at: 2026-04-23T05:30:27.500Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-detached-reviewer-conflict-guidance-01kpwbhm-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-align-detached-reviewer-conflict-guidance/01kpwbhm
-        head: 676cffcbc5b545a4fb2173dfd30f270933f6a072
-        last_seen_at: 2026-04-23T05:05:20.294Z
+        head: 778a628e40b17f04ed7a044538c2c4200f5403fe
+        last_seen_at: 2026-04-23T05:30:27.500Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-detached-reviewer-conflict-guidance-01kpwbhm
