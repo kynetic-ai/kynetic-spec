@@ -102,6 +102,7 @@ tags:
   - merge
   - docs
 vcs_refs: []
+review_ref: "@01KPWD52EF1WZFAN3GK78MQ6KP"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-align-detached-reviewer-conflict-guidance/01kpwbhm
@@ -145,6 +146,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-23T05:28:35.661Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KPWD52EF1WZFAN3GK78MQ6KP"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-23T05:31:41.897Z
 created_at: 2026-04-23T05:03:33.678Z
 started_at: 2026-04-23T05:06:19.582Z
 submitted_at: 2026-04-23T05:28:35.660Z

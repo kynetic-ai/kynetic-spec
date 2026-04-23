@@ -164108,3 +164108,29 @@ reviews:
     created_at: 2026-04-23T01:28:06.155Z
     updated_at: 2026-04-23T01:40:08.119Z
     notes: []
+  - _ulid: 01KPWD52EF1WZFAN3GK78MQ6KP
+    slugs: []
+    title: Review task-align-detached-reviewer-conflict-guidance
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KPWD52EEYY3C676D9GDTM1FX
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-23T05:31:38.831Z
+    examined_commit: 778a628e40b17f04ed7a044538c2c4200f5403fe
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KPWBHMSFK1XB6CZ1Z90FMB0H"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-23T05:31:38.831Z
+    updated_at: null
+    notes: []
