@@ -164123,6 +164123,17 @@ reviews:
         runner: test.cjs
         created_at: 2026-04-23T05:42:29.604Z
         completed_at: 2026-04-23T05:42:29.604Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: tests/detached-reviewer-merge.test.ts, tests/agent-dispatch-engine.test.ts, and
+          tests/supporting-file-references.test.ts all passed (174/174).
+        name: targeted detached-reviewer coverage
+        required: false
+        runner: test.cjs
+        created_at: 2026-04-23T05:42:40.332Z
+        completed_at: 2026-04-23T05:42:40.332Z
     events:
       - _ulid: 01KPWD52EEYY3C676D9GDTM1FX
         actor: Jacob Chapel
@@ -164167,6 +164178,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-23T05:42:36.348Z
+      - _ulid: 01KPWDS9M87A3PPD5TKFW0ZP9E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted detached-reviewer coverage
+        timestamp: 2026-04-23T05:42:41.544Z
     examined_commit: 778a628e40b17f04ed7a044538c2c4200f5403fe
     external_links: []
     lifecycle_state: closed
@@ -164214,5 +164232,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-23T05:42:36.347Z
     created_at: 2026-04-23T05:31:38.831Z
-    updated_at: 2026-04-23T05:42:36.348Z
+    updated_at: 2026-04-23T05:42:40.332Z
     notes: []
