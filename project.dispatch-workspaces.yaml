@@ -62479,12 +62479,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-23T00:58:31.251Z
+      updated_at: 2026-04-23T00:58:37.064Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-23T00:58:31.251Z
+      updated_at: 2026-04-23T00:58:37.064Z
     integration:
       status: pending
       detail: null
@@ -62492,24 +62492,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 41bfcae807377b69c5ecaf2907d10603e614f21d
-      updated_at: 2026-04-23T00:58:31.251Z
-    lifecycle_state: ready
+      updated_at: 2026-04-23T00:58:37.064Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KPVJ8RA8P0TGB5KQEZ70M39K"
     task_slug: task-detached-reviewer-merge-guidance
     timestamps:
       closed_at: null
       last_active_at: 2026-04-23T00:46:42.560Z
-      last_reconciled_at: 2026-04-23T00:58:31.251Z
+      last_reconciled_at: 2026-04-23T00:58:37.064Z
       created_at: 2026-04-23T00:07:04.784Z
-      updated_at: 2026-04-23T00:58:31.251Z
+      updated_at: 2026-04-23T00:58:37.064Z
     workspace_id: dispatch-workspace-01KPVJ8RA8P0TGB5KQEZ70M39K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 8c85629b7b29c40857750c5b999a43a31bed7e4d
+        last_seen_at: 2026-04-23T00:58:37.064Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-detached-reviewer-merge-guidance-01kpvj8r-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-detached-reviewer-merge-guidance/01kpvj8r
-        head: 41bfcae807377b69c5ecaf2907d10603e614f21d
-        last_seen_at: 2026-04-23T00:46:38.518Z
+        head: 8c85629b7b29c40857750c5b999a43a31bed7e4d
+        last_seen_at: 2026-04-23T00:58:37.064Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-detached-reviewer-merge-guidance-01kpvj8r
