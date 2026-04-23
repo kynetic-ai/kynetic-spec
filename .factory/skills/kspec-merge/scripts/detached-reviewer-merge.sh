@@ -165,10 +165,10 @@ if ! MERGE_OUTPUT=$(git -C "$OCCUPIED_WORKTREE" merge --no-ff "$CANONICAL_HEAD" 
     echo "The integration target ref has NOT been advanced." >&2
     echo "The occupied worktree at '$OCCUPIED_WORKTREE' has been restored to its pre-merge state." >&2
     echo "" >&2
-    echo "Conflict handling:" >&2
-    echo "  - If the conflict is simple/textual: resolve inline and re-run." >&2
-    echo "  - If the conflict is semantic/complex: submit a MUST-FIX review" >&2
-    echo "    finding describing the conflict and send back to the worker via needs_work." >&2
+    echo "Next step:" >&2
+    echo "  Move the task to needs_work with a note describing the conflicting files" >&2
+    echo "  and what both sides changed. Do not attempt to resolve merge conflicts" >&2
+    echo "  inside the detached snapshot." >&2
     exit 1
   else
     # Non-conflict merge failure
