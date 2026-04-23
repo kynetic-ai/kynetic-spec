@@ -16076,6 +16076,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-23T05:30:06.287Z
+  - _ulid: 01KPWDWXK003P1DBR5WE0HEPT7
+    type: friction
+    content: The session-reflect guidance documents 'kspec workflow show' without a run ref, but the CLI
+      currently requires a run ref and errors with 'missing required argument "run-ref"'. Align the
+      docs or make the CLI default to the single active run so the documented reflection flow works
+      as written.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KPWDTP"
+    created_at: 2026-04-23T05:44:40.288Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
