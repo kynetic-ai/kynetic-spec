@@ -31605,9 +31605,20 @@ runs:
     completed_at: 2026-04-23T01:12:13.380Z
   - _ulid: 01KPVZYEQTTYY25HJ2G97CHDTG
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-23T01:40:50.554Z
+        completed_at: 2026-04-23T01:41:43.080Z
+        notes: "What worked well: reviewer guidance, merge skill instructions, and the detached merge helper
+          now converge on one supported path. The review+merge flow stayed deterministic once the
+          source-scanning test was replaced with behavioral prompt-pipeline coverage."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-23T01:41:43.080Z
+        completed_at: 2026-04-23T01:41:43.080Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-23T01:40:50.554Z
