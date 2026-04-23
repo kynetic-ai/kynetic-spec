@@ -31605,7 +31605,7 @@ runs:
     completed_at: 2026-04-23T01:12:13.380Z
   - _ulid: 01KPVZYEQTTYY25HJ2G97CHDTG
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31625,7 +31625,14 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-23T01:41:44.072Z
-        completed_at: 2026-04-23T01:41:44.072Z
+        completed_at: 2026-04-23T01:41:45.074Z
+        notes: "Friction points: kspec validate in the detached review snapshot reports unrelated
+          schema/completeness problems from project/spec metadata, so review records need a manual
+          optional-failure note instead of a clean validation gate."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-23T01:41:45.074Z
+        completed_at: 2026-04-23T01:41:45.074Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-23T01:40:50.554Z
