@@ -3193,7 +3193,8 @@ describe("Dispatch role workflow entrypoints", () => {
   });
 
   // AC: @dispatch-role-workflow-entry-contract ac-3
-  it("renders manual merge reviewer guidance with explicit conflict escalation", async () => {
+  // AC: @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance
+  it("renders manual merge reviewer guidance directing to supported merge helper", async () => {
     const agent = makeTestAgent({
       id: "reviewer",
       adapter: "claude-agent-acp",
@@ -3266,8 +3267,13 @@ describe("Dispatch role workflow entrypoints", () => {
       expect(invocation.prompt).toContain("Workflow entrypoint: `/pr-review`");
       expect(invocation.prompt).not.toContain("{skill:pr-review}");
       expect(invocation.prompt).toContain("Publication mode: `manual_merge`");
-      expect(invocation.prompt).toContain("git merge --abort");
+      // AC: @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance
+      // Reviewer is directed to the supported merge helper, not manual git merge
+      expect(invocation.prompt).toContain("detached-reviewer-merge.sh");
       expect(invocation.prompt).toContain("needs_work");
+      // Must NOT instruct reviewer to checkout integration branch manually
+      expect(invocation.prompt).not.toContain("git checkout");
+      expect(invocation.prompt).toContain("detached snapshot");
       expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("manual_merge");
     } finally {
       await engine.stop();

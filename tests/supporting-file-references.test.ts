@@ -761,6 +761,129 @@ describe("Prompt-time supporting-file reference resolution", () => {
     ).rejects.toThrow(SupportingFileReferenceError);
   });
 
+  // AC: @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance
+  it("rendered merge skill output contains detached reviewer guidance with resolved helper path", async () => {
+    // Copy the shipped merge skill into a temp project and render through buildPromptWithSkills
+    // to verify behavioral output rather than inspecting source text.
+    const tempDir = await createTempDir("kspec-merge-detached-guidance-");
+    tempDirs.push(tempDir);
+
+    await fs.writeFile(
+      path.join(tempDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1.0", project: { name: "Merge Guidance Test" } }),
+    );
+    await fs.writeFile(
+      path.join(tempDir, "kynetic.meta.yaml"),
+      YAML.stringify({
+        kynetic_meta: "1.0",
+        skills: [
+          {
+            _ulid: testUlid("SKIL", 20),
+            id: "merge",
+            name: "Merge",
+            description: "Merge skill",
+            origin: "project",
+          },
+        ],
+      }),
+    );
+
+    // Copy shipped merge skill source and supporting files into temp project
+    const shippedSkillDir = path.join(__dirname, "..", "templates", "skills", "merge");
+    const targetSkillDir = path.join(tempDir, "skills", "merge");
+    await fs.cp(shippedSkillDir, targetSkillDir, { recursive: true });
+
+    // Render through the prompt pipeline — this exercises the actual render behavior
+    const renderedPrompt = await buildPromptWithSkills({
+      basePrompt: "Base",
+      skillIds: ["merge"],
+      specDir: tempDir,
+      adapterId: "claude-code-acp",
+    });
+
+    // Rendered output must contain detached reviewer context
+    expect(renderedPrompt).toContain("Detached Reviewer Context");
+    // Rendered output must contain resolved helper path (not the portable {supporting:} form)
+    expect(renderedPrompt).toContain("scripts/detached-reviewer-merge.sh");
+    expect(renderedPrompt).not.toContain("{supporting:");
+    // The detached section must not contain positive git checkout instructions
+    const detachedSection = renderedPrompt.split("Detached Reviewer Context")[1]?.split("## Merge Process")[0] || "";
+    const lines = detachedSection.split("\n");
+    const positiveCheckoutInstructions = lines.filter(
+      (line) => line.trim().startsWith("git checkout") && !line.toLowerCase().includes("do not") && !line.toLowerCase().includes("do **not**"),
+    );
+    expect(positiveCheckoutInstructions).toHaveLength(0);
+  });
+
+  // AC: @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance
+  it("rendered merge skill output resolves helper path for each platform", async () => {
+    // Set up project with merge skill that mirrors the shipped source
+    const tempDir = await createTempDir("kspec-merge-render-");
+    tempDirs.push(tempDir);
+
+    await fs.writeFile(
+      path.join(tempDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1.0", project: { name: "Merge Render Test" } }),
+    );
+    await fs.writeFile(
+      path.join(tempDir, "kynetic.meta.yaml"),
+      YAML.stringify({
+        kynetic_meta: "1.0",
+        skills: [
+          {
+            _ulid: testUlid("SKIL", 10),
+            id: "merge",
+            name: "Merge",
+            description: "Merge skill",
+            origin: "project",
+          },
+        ],
+      }),
+    );
+
+    const skillDir = path.join(tempDir, "skills", "merge");
+    const scriptsDir = path.join(skillDir, "scripts");
+    await fs.mkdir(scriptsDir, { recursive: true });
+    await fs.writeFile(
+      path.join(scriptsDir, "detached-reviewer-merge.sh"),
+      "#!/bin/bash\necho merge-helper",
+    );
+    await fs.writeFile(
+      path.join(skillDir, "SKILL.md"),
+      "# Merge\n\nRun `bash {supporting:scripts/detached-reviewer-merge.sh}`\n",
+    );
+
+    // Claude Code
+    const claudePrompt = await buildPromptWithSkills({
+      basePrompt: "Base",
+      skillIds: ["merge"],
+      specDir: tempDir,
+      adapterId: "claude-code-acp",
+    });
+    expect(claudePrompt).toContain(".claude/skills/merge/scripts/detached-reviewer-merge.sh");
+    expect(claudePrompt).not.toContain("{supporting:");
+
+    // Codex
+    const codexPrompt = await buildPromptWithSkills({
+      basePrompt: "Base",
+      skillIds: ["merge"],
+      specDir: tempDir,
+      adapterId: "codex-acp",
+    });
+    expect(codexPrompt).toContain(".agents/skills/merge/scripts/detached-reviewer-merge.sh");
+    expect(codexPrompt).not.toContain("{supporting:");
+
+    // Droid
+    const droidPrompt = await buildPromptWithSkills({
+      basePrompt: "Base",
+      skillIds: ["merge"],
+      specDir: tempDir,
+      adapterId: "droid-acp",
+    });
+    expect(droidPrompt).toContain(".factory/skills/merge/scripts/detached-reviewer-merge.sh");
+    expect(droidPrompt).not.toContain("{supporting:");
+  });
+
   // AC: @portable-skill-supporting-file-references ac-prompt-supporting-link-resolution
   it("resolves both {skill:...} and {supporting:...} references in prompt", async () => {
     const tempDir = await createProjectWithSkill();

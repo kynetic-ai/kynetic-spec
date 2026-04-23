@@ -23,7 +23,7 @@ kspec agent dispatch stop
 `kspec setup` ensures default worker/reviewer agent definitions exist in `kynetic.meta.yaml`:
 
 - `task-worker` — handles automation-eligible `task.ready`, `task.in_progress`, and `task.needs_work`
-- `pr-reviewer` — handles `task.pending_review` (review and local merge)
+- `pr-reviewer` — handles `task.pending_review` (review from detached snapshot, merge via supported helper)
 
 Inspect current definitions with:
 
@@ -38,7 +38,7 @@ kspec agent list
 | `task.ready`          | `task-worker`   | Worker picks up newly ready automation-eligible tasks  |
 | `task.in_progress`    | `task-worker`   | Worker can continue existing automation-eligible tasks |
 | `task.needs_work`     | `task-worker`   | Fix-cycle tasks return to worker                       |
-| `task.pending_review` | `pr-reviewer`   | Review and local merge in separate invocation          |
+| `task.pending_review` | `pr-reviewer`   | Review from detached snapshot, merge via helper         |
 
 ### One-Shot Invocation
 
@@ -65,12 +65,13 @@ for each dispatched invocation:
        dispatch-compatible branch (dispatch/task/<slug>/<short-id>)
   3. Agent submits task (kspec task submit @ref) when work is complete
   4. Agent stops responding (turn complete)
-  5. Reviewer agent picks up pending_review tasks: creates kspec review,
-     investigates, submits verdict, merges locally if approved
+  5. Reviewer agent picks up pending_review tasks in a detached snapshot:
+     creates kspec review, investigates, submits verdict, merges via
+     the supported merge helper if approved (see /kspec:merge)
   6. Continue
 ```
 
-**Do NOT create GitHub PRs for dispatched work.** Agent work is reviewed via kspec review records and merged locally to the integration branch. GitHub PRs are a human-directed activity for merging feature groups into main.
+**Do NOT create GitHub PRs for dispatched work.** Agent work is reviewed via kspec review records and merged to the integration branch using the supported merge helper. GitHub PRs are a human-directed activity for merging feature groups into main.
 
 **When you stop responding, the dispatch engine continues automatically.** Do NOT call `kspec agent end-loop` after submitting a task.
 
