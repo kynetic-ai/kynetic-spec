@@ -164112,7 +164112,17 @@ reviews:
     slugs: []
     title: Review task-align-detached-reviewer-conflict-guidance
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 8362 passed, 5 skipped, 0 failed."
+        name: npm test
+        required: true
+        runner: test.cjs
+        created_at: 2026-04-23T05:42:29.604Z
+        completed_at: 2026-04-23T05:42:29.604Z
     events:
       - _ulid: 01KPWD52EEYY3C676D9GDTM1FX
         actor: Jacob Chapel
@@ -164134,6 +164144,13 @@ reviews:
           kind: nit
           thread_ulid: 01KPWDRXZ3HBJFGR6YE9RW2RV1
         timestamp: 2026-04-23T05:42:30.803Z
+      - _ulid: 01KPWDS0ZZY5DV2VGNH9GHQ6SY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-23T05:42:32.703Z
     examined_commit: 778a628e40b17f04ed7a044538c2c4200f5403fe
     external_links: []
     lifecycle_state: open
@@ -164174,5 +164191,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-23T05:31:38.831Z
-    updated_at: 2026-04-23T05:42:29.603Z
+    updated_at: 2026-04-23T05:42:29.604Z
     notes: []
