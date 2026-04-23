@@ -31509,7 +31509,7 @@ runs:
     started_at: 2026-04-22T23:35:57.645Z
   - _ulid: 01KPVTHMJBWWAXAFR0Z6RGJCM8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31523,7 +31523,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-23T00:07:23.217Z
-        completed_at: 2026-04-23T00:07:23.217Z
+        completed_at: 2026-04-23T00:07:24.261Z
+        notes: "What worked well: the detached reviewer merge flow was concrete and repeatable once the
+          helper existed. Review evidence stayed strong because the helper source, rendered outputs,
+          and dedicated behavioral tests could all be verified independently, and the final merge
+          used the same shipped helper path instead of ad hoc git steps."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-23T00:07:24.261Z
+        completed_at: 2026-04-23T00:07:24.261Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-23T00:06:27.659Z
