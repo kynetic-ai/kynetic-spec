@@ -311,8 +311,11 @@ function buildPublicationInstructions(
   if (metadata.publicationMode === "manual_merge") {
     if (role === "reviewer") {
       lines.push(
-        `If review is clean, merge \`${metadata.canonicalBranch}\` back into \`${metadata.mergeTargetBranch}\` manually against the recorded base branch.`,
-        `If conflicts appear, stop, run \`git merge --abort\`, and move the task to \`needs_work\` or \`blocked\` with a note describing the conflict. Do not guess at conflict resolution.`,
+        `You are reviewing from a detached snapshot — you are NOT on the integration branch.`,
+        `If review is clean, run the supported merge helper to integrate: \`bash {supporting:scripts/detached-reviewer-merge.sh}\``,
+        `Do NOT check out \`${metadata.mergeTargetBranch}\` or run manual git merge commands inside this snapshot.`,
+        `The helper handles no-op detection, dirty-target refusal, conflict abort, and occupied-worktree refresh automatically.`,
+        `If the helper reports a conflict, move the task to \`needs_work\` with a note describing the conflict. Do not attempt manual conflict resolution in the detached snapshot.`,
       );
     } else {
       lines.push(

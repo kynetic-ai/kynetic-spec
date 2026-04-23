@@ -129,7 +129,7 @@ const DEFAULT_AGENTS: DefaultAgentDef[] = [
     id: "pr-reviewer",
     name: "PR Reviewer",
     description:
-      "Automated code reviewer. Reviews pending_review tasks and merges when quality gates pass.",
+      "Automated code reviewer. Reviews pending_review tasks from a detached snapshot and merges via the supported merge helper when quality gates pass.",
     capabilities: ["review"],
     tools: ["kspec", "git", "gh"],
     dispatch: [{ on: "task.pending_review" }],

@@ -202,6 +202,21 @@ describe("kspec setup default agents and conventions — first run", () => {
     expect(desc).toContain("kspec agent adapters");
   });
 
+  // AC: @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance
+  it("pr-reviewer description mentions detached snapshot and supported merge helper", async () => {
+    await kspec("setup --no-hooks --skip-skills", tempDir);
+
+    const meta = await readMeta(tempDir);
+    const reviewer = (meta.agents || []).find((a) => a.id === "pr-reviewer");
+    expect(reviewer).toBeDefined();
+
+    const desc = reviewer!.description || "";
+    // Must mention detached snapshot context
+    expect(desc).toContain("detached snapshot");
+    // Must reference the supported merge helper
+    expect(desc).toContain("merge helper");
+  });
+
   // AC: @default-project-agents-and-conventions ac-all-defaults-write-authorized
   it("every default agent has auto_approve set to true (unconditional write authorization)", async () => {
     await kspec("setup --no-hooks --skip-skills", tempDir);
