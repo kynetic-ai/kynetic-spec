@@ -499,8 +499,16 @@ describe("detached-reviewer-merge helper", () => {
 
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toContain("merge conflict");
+      // AC: target ref was not advanced
       expect(result.stderr).toContain("NOT been advanced");
-      expect(result.stderr).toContain("Conflict handling");
+      // AC: occupied worktree was restored
+      expect(result.stderr).toContain("restored to its pre-merge state");
+      // AC: instructs returning the task via needs_work
+      expect(result.stderr).toContain("needs_work");
+      // AC: does NOT instruct inline/simple/textual conflict resolution
+      expect(result.stderr).not.toContain("resolve inline");
+      expect(result.stderr).not.toContain("simple/textual");
+      expect(result.stderr).not.toContain("re-run");
 
       // Verify the target ref did NOT move
       const targetHeadAfter = execSync("git rev-parse HEAD", {
