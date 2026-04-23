@@ -31563,9 +31563,21 @@ runs:
     completed_at: 2026-04-23T00:08:03.644Z
   - _ulid: 01KPVY894GGR552PNH3PBR9N5M
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-23T01:11:15.344Z
+        completed_at: 2026-04-23T01:12:00.557Z
+        notes: "What worked well: the review flow stayed high-signal because diff-first inspection plus
+          targeted prompt/render tests made the real issue obvious without needing to trust the
+          worker summary. Delegating the long npm test run to an awaiter preserved the required
+          full-suite verification without blocking the rest of the review."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-23T01:12:00.557Z
+        completed_at: 2026-04-23T01:12:00.557Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-23T01:11:15.344Z
