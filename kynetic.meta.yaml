@@ -16046,6 +16046,36 @@ observations:
     resolved: false
     workflow_ref: "@01KPVZYE"
     created_at: 2026-04-23T01:42:19.641Z
+  - _ulid: 01KPWD27MEXJH66N6P7C91H9C3
+    type: friction
+    content: kspec skill render --force regressed .agents/skills/kspec-merge/SKILL.md by overwriting the
+      committed version with stale content. The render pipeline for the self-hosting project reads
+      from .kspec/skills/ (which does not exist for core skills in this context) or falls back to
+      the plugin, rather than reading from templates/. Supporting file changes in templates/ are not
+      propagated to rendered outputs by the standard install-core + render flow.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-23T05:30:05.838Z
+  - _ulid: 01KPWD27W5HQKJP3P95C2GWZVS
+    type: friction
+    content: Skill render hash computation (renderSkillBase in skill-render.ts) only includes SKILL.md
+      content — supporting directories (scripts/, docs/, etc.) are not part of the hash. Changes to
+      supporting files are invisible to drift detection and --force, causing stale rendered copies
+      to persist silently.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-23T05:30:06.085Z
+  - _ulid: 01KPWD282FP6SRWV6MVTKQXCWQ
+    type: success
+    content: Task scope was well-defined with precise contradiction identification. Auditing existing
+      surfaces (SKILL.md, dispatch.ts) before changing them confirmed they already enforced the
+      correct policy, preventing unnecessary changes.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-23T05:30:06.287Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
