@@ -31604,7 +31604,7 @@ runs:
     started_at: 2026-04-23T01:11:15.344Z
     completed_at: 2026-04-23T01:12:13.380Z
   - _ulid: 01KPVZYEQTTYY25HJ2G97CHDTG
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -31647,7 +31647,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-23T01:42:11.470Z
-        completed_at: 2026-04-23T01:42:11.470Z
+        completed_at: 2026-04-23T01:42:27.031Z
+        notes: "Captured 1 new observation: @01KPW015 for detached-review validation noise. No duplicate
+          capture for prompt-overflow friction because it is already tracked, and no additional
+          success capture was needed."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-23T01:40:50.554Z
+    completed_at: 2026-04-23T01:42:27.031Z
