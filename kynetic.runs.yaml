@@ -31657,9 +31657,20 @@ runs:
     completed_at: 2026-04-23T01:42:27.031Z
   - _ulid: 01KPWDTPQG6MDB5DM9VQAB269E
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-23T05:43:27.728Z
+        completed_at: 2026-04-23T05:44:22.535Z
+        notes: "Friction: the session-reflect skill documents 'kspec workflow show' without a run ref, but
+          the current CLI requires a run ref and errors with 'missing required argument
+          \"run-ref\"'. That creates avoidable command failure in the reflection flow."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-23T05:44:22.535Z
+        completed_at: 2026-04-23T05:44:22.535Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-23T05:43:27.728Z
