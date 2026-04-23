@@ -30,3 +30,12 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-23T05:08:14.351Z
+  - _ulid: 01KPWCZ8YTPZ6WZ546P2RCSFAN
+    content: Completed. Changed the merge helper script conflict stderr from offering inline resolution
+      to directing reviewers to move the task to needs_work. Audited SKILL.md and dispatch.ts — both
+      already enforced the correct policy, no changes needed. Extended conflict exit test with 6 new
+      assertions (3 negative for old guidance, 3 positive for new guidance). All 8362 tests pass.
+      Committed as 778a628e4.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-23T05:28:28.890Z
