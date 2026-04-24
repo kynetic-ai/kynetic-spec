@@ -164482,7 +164482,19 @@ reviews:
     slugs: []
     title: "Plan review: Spec Catalog Health and Validation Trust (cycle 2)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified cycle-1 items: no automation/manual_only task metadata remains; seed/charter
+          references are context-only; @coverage-annotation-scope-boundaries split skipped
+          annotation behavior into separate credit/debt ACs; final gate is P2 with coherent
+          dependencies; repair-wave support line names concrete AC taxonomy."
+        name: Prior cycle blockers
+        required: true
+        created_at: 2026-04-24T19:29:00.218Z
+        completed_at: 2026-04-24T19:29:00.218Z
     events:
       - _ulid: 01KQ0FAKTGY9NSPSXYX0N6J9M7
         actor: Jacob Chapel
@@ -164497,6 +164509,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-24T19:26:51.945Z
+      - _ulid: 01KQ0FF2GKAX9EPKH5ZMT8770D
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Prior cycle blockers
+        timestamp: 2026-04-24T19:29:01.460Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -164509,5 +164528,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-24T19:26:35.345Z
-    updated_at: 2026-04-24T19:26:50.589Z
+    updated_at: 2026-04-24T19:29:00.218Z
     notes: []
