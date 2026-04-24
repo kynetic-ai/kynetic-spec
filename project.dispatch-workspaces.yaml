@@ -9435,11 +9435,11 @@ workspaces:
     canonical_branch: dispatch/task/task-repair-broken-spec-refs/01kq0jdh
     canonical_branch_head: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-24T23:20:04.229Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-24T23:20:05.153Z
     health:
       status: healthy
       issues: []
@@ -9453,7 +9453,7 @@ workspaces:
       target_branch: dev
       target_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
       updated_at: 2026-04-24T23:20:04.229Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQ0JDHZQ4H04WBFWE7WMR6GV"
     task_slug: task-repair-broken-spec-refs
@@ -9462,7 +9462,7 @@ workspaces:
       last_active_at: 2026-04-24T23:03:58.533Z
       last_reconciled_at: 2026-04-24T23:20:04.229Z
       created_at: 2026-04-24T21:16:09.503Z
-      updated_at: 2026-04-24T23:20:04.229Z
+      updated_at: 2026-04-24T23:20:05.153Z
     workspace_id: dispatch-workspace-01KQ0JDHZQ4H04WBFWE7WMR6GV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
