@@ -165120,6 +165120,18 @@ reviews:
         runner: kspec
         created_at: 2026-04-24T22:00:32.433Z
         completed_at: 2026-04-24T22:00:32.433Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full kspec validate still exits 4 due pre-existing .kspec/modules/meta.yaml
+          modules.0.traits.0 object for @trait-idempotent-file-scaffold. Verified same malformed
+          entry existed before Delete Item @01KJN1WT commit; existing inbox 01KPAM5ST tracks it.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-24T22:00:35.605Z
+        completed_at: 2026-04-24T22:00:35.605Z
     events:
       - _ulid: 01KQ0QHVQHXC6A3D07NBYWN35F
         actor: Jacob Chapel
@@ -165141,6 +165153,13 @@ reviews:
           status: pass
           name: kspec validate --refs --warnings-ok
         timestamp: 2026-04-24T22:00:33.507Z
+      - _ulid: 01KQ0R4MNFQXNASC1CQBF7VA5B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-24T22:00:36.784Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
     lifecycle_state: open
@@ -165153,5 +165172,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-24T21:50:21.425Z
-    updated_at: 2026-04-24T22:00:32.433Z
+    updated_at: 2026-04-24T22:00:35.605Z
     notes: []
