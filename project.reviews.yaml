@@ -165274,6 +165274,23 @@ reviews:
         runner: rg
         created_at: 2026-04-24T22:52:52.614Z
         completed_at: 2026-04-24T22:52:52.614Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/parser/validate.ts, src/parser/task-data-manager.ts,
+          src/parser/split-backend.ts, src/parser/refs.ts, tests/validate-task-data-source.test.ts,
+          tests/automation-eligibility.test.ts, tests/helpers/cli.ts. Claims verified: validation
+          now loads tasks through TaskDataManager for split projects; malformed per-task files are
+          covered by a separate schema pass; broad catch still falls back after split TDM errors.
+          Categories searched: correctness, task-storage edge cases, schema-error handling,
+          reference validation, test quality, source-scanning tests, integration with
+          TaskDataManager."
+        name: review evidence
+        required: false
+        runner: manual
+        created_at: 2026-04-24T22:52:56.338Z
+        completed_at: 2026-04-24T22:52:56.338Z
     events:
       - _ulid: 01KQ0TT8MJ9PRXYV0DP3AMARGN
         actor: Jacob Chapel
@@ -165302,6 +165319,13 @@ reviews:
           status: pass
           name: AC annotation search
         timestamp: 2026-04-24T22:52:53.864Z
+      - _ulid: 01KQ0V4FYYYZT445ZX8G8ZQS7V
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-24T22:52:57.694Z
     examined_commit: 87c41864b7e745a0f83189eefe2d53b95c2af5ec
     external_links: []
     lifecycle_state: open
@@ -165339,5 +165363,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T22:47:22.514Z
-    updated_at: 2026-04-24T22:52:52.614Z
+    updated_at: 2026-04-24T22:52:56.338Z
     notes: []
