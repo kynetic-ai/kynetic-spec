@@ -31926,7 +31926,7 @@ runs:
     started_at: 2026-04-24T22:05:40.724Z
     completed_at: 2026-04-24T22:07:38.347Z
   - _ulid: 01KQ0VG73FWZDPGVFPQ7AYHR0N
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -31972,10 +31972,13 @@ runs:
         notes: Skipped discussion because there are no new proposed captures. Existing coverage was found
           for validation baseline debt and test suite duration, and duplicate capture would add
           noise.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-04-24T23:00:39.212Z
-        completed_at: 2026-04-24T23:00:39.212Z
+        completed_at: 2026-04-24T23:00:47.099Z
+        notes: No items captured. Reflection found no untracked high-confidence friction or approved
+          improvements; existing tracking covers the observed process issues.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T22:59:21.839Z
+    completed_at: 2026-04-24T23:00:47.099Z
