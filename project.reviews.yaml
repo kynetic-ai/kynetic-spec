@@ -165834,6 +165834,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-24T23:34:44.945Z
+      - _ulid: 01KQ0YPNEAXTJ6T4NYVNFTWRA6
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQ0XEDARS6FZP17J1PE9G9EJ
+        timestamp: 2026-04-24T23:55:18.859Z
     examined_commit: 2525fa93d58103ccf02f77efbcd4140c542d491a
     external_links: []
     lifecycle_state: closed
@@ -165866,6 +165872,16 @@ reviews:
               Narrow the fallback to the known legacy-project condition and surface other
               TaskDataManager errors as validation findings."
             created_at: 2026-04-24T23:33:19.833Z
+          - _ulid: 01KQ0YPMBT3Z0SZH5897AEQWX6
+            author: "@claude"
+            body: "Fixed: replaced the error-based fallback with an explicit manifest condition check. The
+              legacy fallback now only activates when the manifest declares kynetic < 1.1 without
+              split storage (the same condition resolveTaskDataManager() checks internally). All
+              other errors — including backend registration failures and loadAllTasks() errors — are
+              surfaced as validation findings. Added a regression test that reproduces the exact
+              reviewer scenario: a split-format project with unmigrated data in project.tasks.yaml
+              triggers an error through --refs validation instead of silently reporting 0 tasks."
+            created_at: 2026-04-24T23:55:17.754Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -165876,7 +165892,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-24T23:34:44.945Z
     created_at: 2026-04-24T23:21:04.564Z
-    updated_at: 2026-04-24T23:34:44.945Z
+    updated_at: 2026-04-24T23:55:17.754Z
     notes: []
   - _ulid: 01KQ0XYS1Z17JSEN65JP58CPK6
     slugs: []
