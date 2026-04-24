@@ -164836,9 +164836,25 @@ reviews:
           status: pass
           name: baseline validation reruns
         timestamp: 2026-04-24T21:14:30.700Z
+      - _ulid: 01KQ0NGPBBF27HC1FGXJMC699T
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-24T21:14:45.996Z
+      - _ulid: 01KQ0NGPBCRZ3QG0WD152XBFEM
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-24T21:14:45.996Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -164865,7 +164881,14 @@ reviews:
               validation behavior, regression tests, branch diff/integration state."
             created_at: 2026-04-24T21:14:22.642Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-24T21:14:45.995Z
     created_at: 2026-04-24T20:52:45.820Z
-    updated_at: 2026-04-24T21:14:29.472Z
+    updated_at: 2026-04-24T21:14:45.996Z
     notes: []
