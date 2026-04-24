@@ -31804,7 +31804,7 @@ runs:
     started_at: 2026-04-24T21:32:25.367Z
     completed_at: 2026-04-24T21:34:35.285Z
   - _ulid: 01KQ0QFMKVEYY598MCMD23PT7X
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -31857,10 +31857,13 @@ runs:
         completed_at: 2026-04-24T21:51:56.588Z
         notes: "Skipped discussion: no untracked improvement proposals were identified, so there is nothing
           requiring user approval."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-04-24T21:51:56.588Z
-        completed_at: 2026-04-24T21:51:56.588Z
+        completed_at: 2026-04-24T21:52:04.045Z
+        notes: No capture performed. Existing tracking covers the observed friction, and adding duplicate
+          inbox/observation items would add noise rather than useful signal.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T21:49:08.603Z
+    completed_at: 2026-04-24T21:52:04.045Z
