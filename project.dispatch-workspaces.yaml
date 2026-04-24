@@ -8924,11 +8924,11 @@ workspaces:
     canonical_branch: dispatch/task/task-catalog-health-baseline/01kq0jdh
     canonical_branch_head: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-24T21:16:00.639Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-24T21:16:01.247Z
     health:
       status: healthy
       issues: []
@@ -8942,7 +8942,7 @@ workspaces:
       target_branch: dev
       target_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
       updated_at: 2026-04-24T21:16:00.639Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQ0JDHKHCBEZ7QN7ZZVF9ZVN"
     task_slug: task-catalog-health-baseline
@@ -8951,7 +8951,7 @@ workspaces:
       last_active_at: 2026-04-24T20:51:16.288Z
       last_reconciled_at: 2026-04-24T21:16:00.639Z
       created_at: 2026-04-24T20:40:29.974Z
-      updated_at: 2026-04-24T21:16:00.639Z
+      updated_at: 2026-04-24T21:16:01.247Z
     workspace_id: dispatch-workspace-01KQ0JDHKHCBEZ7QN7ZZVF9ZVN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
