@@ -165000,6 +165000,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-04-24T21:47:32.370Z
+      - _ulid: 01KQ0QDN2YZ77XX2GEYN6N5R6F
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQ0QDM05X48HY6TK44VF94YT
+        timestamp: 2026-04-24T21:48:03.550Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
     lifecycle_state: open
@@ -165050,7 +165057,27 @@ reviews:
               ac-7 alone is not an adequate owner for the full task.'
             created_at: 2026-04-24T21:39:17.063Z
         kind: blocker
+      - _ulid: 01KQ0QDM05X48HY6TK44VF94YT
+        entries:
+          - _ulid: 01KQ0QDM06CHK5ZRTWBAJ07Q9P
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: kspec-agents.md, review-gates skill, task records for
+              @task-repair-broken-spec-refs, @task-recursive-derive,
+              @remove-shadowautocommit-from-session-operations,
+              @implement-session-branch-worktree-mode, @01KKBBS7, specs @validation,
+              @ref-validation, @session-events, @derive-command, @task-derivation, @derive-commands,
+              src/parser/session-branch.ts, tests/session-branch-worktree.test.ts,
+              tests/integration.test.ts, src/cli/commands/derive.ts. Commands run: kspec task get,
+              kspec item get, kspec search, rg old refs/AC annotations, kspec validate, kspec
+              validate --refs --warnings-ok, npm test twice after npm ci attempts. Claims verified:
+              reference-only validation passes, but @cmd-derive and @session-branch-worktree still
+              have live AC annotations while no matching specs exist; @session-events ac-7 is
+              narrower than the completed session branch worktree task. Categories searched:
+              correctness, spec alignment, AC coverage/annotation integrity, test gate, task-record
+              decisions."
+            created_at: 2026-04-24T21:48:02.438Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-24T21:33:29.361Z
-    updated_at: 2026-04-24T21:47:31.255Z
+    updated_at: 2026-04-24T21:48:02.438Z
     notes: []
