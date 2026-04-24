@@ -62,6 +62,7 @@ tags:
   - tasks
   - parser
 vcs_refs: []
+review_ref: "@01KQ0TT8MJ0SSEMGKK2CD9WVFE"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-validation-task-data-manager-read-path/01kq0jdj
@@ -112,6 +113,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-24T22:45:17.889Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQ0TT8MJ0SSEMGKK2CD9WVFE"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-24T22:47:25.580Z
 created_at: 2026-04-24T20:20:38.263Z
 started_at: 2026-04-24T21:49:57.876Z
 submitted_at: 2026-04-24T22:45:17.889Z
