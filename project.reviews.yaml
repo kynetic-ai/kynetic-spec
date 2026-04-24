@@ -165291,6 +165291,20 @@ reviews:
         runner: manual
         created_at: 2026-04-24T22:52:56.338Z
         completed_at: 2026-04-24T22:52:56.338Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran kspec validate. It failed on pre-existing catalog/meta issues outside this branch:
+          .kspec/modules/meta.yaml modules[0].traits.0 expected string/object mismatch; one orphaned
+          skill directory warning; existing alignment/completeness warnings. Changed files are
+          src/parser/validate.ts, tests/automation-eligibility.test.ts,
+          tests/validate-task-data-source.test.ts."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-24T22:53:00.224Z
+        completed_at: 2026-04-24T22:53:00.224Z
     events:
       - _ulid: 01KQ0TT8MJ9PRXYV0DP3AMARGN
         actor: Jacob Chapel
@@ -165326,6 +165340,13 @@ reviews:
           status: pass
           name: review evidence
         timestamp: 2026-04-24T22:52:57.694Z
+      - _ulid: 01KQ0V4KQ0DTKF04MYDMW3X311
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-24T22:53:01.536Z
     examined_commit: 87c41864b7e745a0f83189eefe2d53b95c2af5ec
     external_links: []
     lifecycle_state: open
@@ -165363,5 +165384,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T22:47:22.514Z
-    updated_at: 2026-04-24T22:52:56.338Z
+    updated_at: 2026-04-24T22:53:00.224Z
     notes: []
