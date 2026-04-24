@@ -31805,9 +31805,24 @@ runs:
     completed_at: 2026-04-24T21:34:35.285Z
   - _ulid: 01KQ0QFMKVEYY598MCMD23PT7X
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-24T21:49:08.603Z
+        completed_at: 2026-04-24T21:50:20.079Z
+        notes: "What worked well: The existing review record kept findings durable even after earlier
+          reviewer invocation failures. Reading review JSON exposed full blocker text without
+          truncation. Combining kspec task/item lookups with rg over live AC annotations made it
+          straightforward to verify that reference-only validation passing was not enough: old spec
+          refs still appeared in code/tests, and current specs were too narrow for some completed
+          work. Delegating long test gates to awaiter agents kept the review moving while
+          dependency/test setup ran."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-24T21:50:20.079Z
+        completed_at: 2026-04-24T21:50:20.079Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T21:49:08.603Z
