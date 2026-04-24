@@ -57,6 +57,7 @@ tags:
   - refs
   - spec-hygiene
 vcs_refs: []
+review_ref: "@01KQ0PJZCH78WBN9PN2CS9S5CA"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-repair-broken-spec-refs/01kq0jdh
@@ -107,6 +108,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-24T21:31:59.720Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQ0PJZCH78WBN9PN2CS9S5CA"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-24T21:33:32.568Z
 created_at: 2026-04-24T20:20:37.495Z
 started_at: 2026-04-24T21:17:01.532Z
 submitted_at: 2026-04-24T21:31:59.720Z
