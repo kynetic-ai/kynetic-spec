@@ -28,3 +28,41 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-24T23:25:30.622Z
+  - _ulid: 01KQ0XSXK5J4R1GTTYTM4GVWEN
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. Added InvalidAnnotationSubtype union type (unresolved_target, non_spec_target,
+      missing_ac_id, blanket_ref) to CompletenessWarning.subtype in src/parser/validate.ts
+
+      2. Each validateACAnnotations warning now carries the appropriate subtype for
+      machine-distinguishable categorization
+
+      3. Message prefixes tightened: 'Unresolved target:', 'Invalid coverage target:', 'Blanket
+      ref:', 'Missing AC:' — makes scanning output easier
+
+      4. CLI output (formatCompletenessWarnings) groups by subtype with per-category counts and
+      truncation
+
+      5. Tests updated with subtype assertions and AC annotations for all 5 spec ACs
+
+
+      AC coverage:
+
+      - ac-unresolved-target-reported: 2 integration tests + 1 unit test
+
+      - ac-non-spec-target-reported: 2 integration tests + 2 unit tests  
+
+      - ac-missing-ac-id-reported: 2 integration tests + 1 unit test
+
+      - ac-blanket-ref-does-not-cover: 1 integration test (verifies warning + coverage withheld)
+
+      - ac-valid-annotation-covers-target: 1 integration test (verifies no invalid warning +
+      coverage credited)
+
+
+      Full suite: 2269 suites, 8362 tests pass, 0 failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-24T23:39:36.933Z
