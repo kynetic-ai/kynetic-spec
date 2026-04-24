@@ -787,6 +787,9 @@ features:
               or trait acceptance criterion that exists. Invalid annotations are
               reported as repairable completeness findings and do not provide
               coverage credit.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
