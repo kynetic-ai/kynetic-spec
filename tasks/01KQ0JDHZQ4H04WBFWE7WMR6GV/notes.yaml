@@ -24,3 +24,35 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-24T21:19:48.843Z
+  - _ulid: 01KQ0PG12RQGWZB19VN6B2BDY1
+    content: >-
+      Repairs complete. Summary of changes:
+
+
+      1. @task-recursive-derive (spec_ref @cmd-derive): Already repaired — spec_ref was cleared to
+      null on 3/24/2026 by previous work. No action needed.
+
+
+      2. @remove-shadowautocommit-from-session-operations (spec_ref @session-remove-shadow-commits):
+      Retargeted to @session-events. The old spec was renamed/merged; the behavior (no shadow
+      auto-commit in local storage mode) is covered by @session-events ac-7.
+
+
+      3. @implement-session-branch-worktree-mode (spec_ref @session-branch-worktree): Retargeted to
+      @session-events. The session branch worktree lifecycle commits are covered by @session-events
+      ac-7.
+
+
+      4. @01KKBBS7 (spec_ref @session-branch-worktree): Cleared to null. Cancelled task — work never
+      done, original spec never existed as a standalone item.
+
+
+      Validation: kspec validate --refs --warnings-ok passes clean. Note: Tasks checked: 0 persists
+      (tracked by @task-validation-task-data-manager-read-path), but task records themselves are
+      verified repaired via kspec task get --json.
+
+
+      Tests: Full suite passes — 8362 tests, 0 failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-24T21:31:52.792Z
