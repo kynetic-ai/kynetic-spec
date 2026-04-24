@@ -165204,9 +165204,25 @@ reviews:
           kind: nit
           thread_ulid: 01KQ0RBH5AKSW0XWCHD2YWB0VJ
         timestamp: 2026-04-24T22:04:23.874Z
+      - _ulid: 01KQ0RBW9KNGNZFBGT6FJZAWWD
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-24T22:04:33.971Z
+      - _ulid: 01KQ0RBW9KPCG363P1KHK8TVA6
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-24T22:04:33.971Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -165229,7 +165245,14 @@ reviews:
               validation behavior, test quality, integration."
             created_at: 2026-04-24T22:04:22.570Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-24T22:04:33.970Z
     created_at: 2026-04-24T21:50:21.425Z
-    updated_at: 2026-04-24T22:04:22.570Z
+    updated_at: 2026-04-24T22:04:33.971Z
     notes: []
