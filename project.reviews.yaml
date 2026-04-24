@@ -164911,6 +164911,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-24T21:33:47.606Z
+      - _ulid: 01KQ0PXFT8M005EEXDQ93KTJE9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ0PXE3XCA5X05MY203ZAZAY
+        timestamp: 2026-04-24T21:39:13.864Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
     lifecycle_state: open
@@ -164920,8 +164927,28 @@ reviews:
       content_hash: ""
       ref: "@01KQ0JDHZQ4H04WBFWE7WMR6GV"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQ0PXE3XCA5X05MY203ZAZAY
+        anchor:
+          type: structured
+          field: spec_ref
+          ref: "@task-recursive-derive"
+          section: task_records
+        entries:
+          - _ulid: 01KQ0PXE3ZE88ECSTDYYMRZZGK
+            author: Jacob Chapel
+            body: 'MUST-FIX: @task-recursive-derive was left with spec_ref null as "already repaired", but it is
+              a completed implementation task for current derive behavior, not
+              historical/process-only work. Evidence: kspec search shows current derive specs exist
+              but @cmd-derive does not; src/cli/commands/derive.ts still contains @cmd-derive
+              annotations at lines 267 and 296, and tests/integration.test.ts lines 1123-1233 cover
+              recursive derive, --flat, dependency, JSON, and error behavior under @cmd-derive ACs.
+              The task requires retargeting to an adequate current owner or recreating a behavioral
+              spec when current behavior has no adequate owner, not leaving the implementation task
+              unowned.'
+            created_at: 2026-04-24T21:39:12.127Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-24T21:33:29.361Z
-    updated_at: 2026-04-24T21:33:46.493Z
+    updated_at: 2026-04-24T21:39:12.127Z
     notes: []
