@@ -31869,7 +31869,7 @@ runs:
     completed_at: 2026-04-24T21:52:04.045Z
   - _ulid: 01KQ0RDXFMP262CVNEB6QNV1XX
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31901,7 +31901,15 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-24T22:07:00.010Z
-        completed_at: 2026-04-24T22:07:00.010Z
+        completed_at: 2026-04-24T22:07:09.332Z
+        notes: "Proposed improvement: Align session-reflect workflow/skill guidance with the actual workflow
+          CLI behavior around workflow show. Either document that workflow show needs a run ref, or
+          make workflow show infer the only active run like workflow next help suggests for
+          run-ref-optional commands. Scope: small docs/CLI polish."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-24T22:07:09.332Z
+        completed_at: 2026-04-24T22:07:09.332Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T22:05:40.724Z
