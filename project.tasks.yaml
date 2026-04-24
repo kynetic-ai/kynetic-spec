@@ -464,6 +464,7 @@
     - task-recursive-derive
   title: Implement recursive derive with auto-dependencies
   type: task
+  spec_ref: "@derive-commands"
   status: completed
   blocked_by: []
   depends_on: []
@@ -15116,7 +15117,7 @@
     - implement-session-branch-worktree-mode
   title: Implement session branch worktree mode
   type: task
-  spec_ref: "@session-events"
+  spec_ref: "@session-branch-worktree"
   plan_ref: "@plan-session-storage-separation"
   status: completed
   blocked_by: []

@@ -3,7 +3,7 @@ slugs:
   - implement-session-branch-worktree-mode
 title: Implement session branch worktree mode
 type: task
-spec_ref: "@session-events"
+spec_ref: "@session-branch-worktree"
 plan_ref: "@plan-session-storage-separation"
 status: completed
 blocked_by: []
@@ -34,6 +34,13 @@ history:
         previous: "@session-branch-worktree"
     command: task-set
     timestamp: 2026-04-24T21:20:14.956Z
+  - author: "@claude"
+    changes:
+      spec_ref:
+        new: "@session-branch-worktree"
+        previous: "@session-events"
+    command: task-set
+    timestamp: 2026-04-24T22:51:37.368Z
 created_at: 2026-03-08T22:46:17.451Z
 started_at: 2026-03-09T07:05:55.760Z
 submitted_at: 2026-03-09T07:06:34.113Z

@@ -3,7 +3,7 @@ slugs:
   - task-recursive-derive
 title: Implement recursive derive with auto-dependencies
 type: task
-spec_ref: null
+spec_ref: "@derive-commands"
 status: completed
 blocked_by: []
 closed_reason: Implemented recursive derive with auto-dependencies. Added --flat option, auto
@@ -23,6 +23,13 @@ history:
         previous: "@cmd-derive"
     command: item-delete-ref-cleanup
     timestamp: 2026-03-25T05:57:02.232Z
+  - author: "@claude"
+    changes:
+      spec_ref:
+        new: "@derive-commands"
+        previous: null
+    command: task-set
+    timestamp: 2026-04-24T22:51:36.266Z
 created_at: 2026-01-15T22:25:38.929Z
 started_at: 2026-01-17T00:37:34.086Z
 completed_at: 2026-01-17T00:48:16.767Z

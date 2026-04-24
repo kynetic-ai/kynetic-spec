@@ -1234,6 +1234,53 @@ features:
         notes: []
     created: 2026-01-23T01:25:01.370Z
     notes: []
+  - _ulid: 01KQ0V1EZ74MT74G01VVTVBSKW
+    slugs:
+      - session-branch-worktree
+    title: Session Branch Worktree
+    type: feature
+    description: Git worktree-based session storage on an orphan branch (kspec-sessions). When
+      sessions.storage is 'branch', sessions are persisted in a dedicated worktree at
+      .kspec-sessions/ with init, status, repair, sync, and lifecycle commit operations.
+    status:
+      maturity: draft
+      implementation: implemented
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: sessions.storage is configured as 'branch'
+        id: ac-init
+        then: a git worktree on the orphan branch kspec-sessions is created at .kspec-sessions/ with an
+          initial commit
+        when: kspec setup or initializeSessionBranch is called
+      - given: the session branch worktree may or may not exist
+        id: ac-status
+        then: returns the worktree health including whether the branch exists, the worktree is attached, and
+          the directory is present
+        when: getSessionBranchStatus is called or kspec shadow status reports session branch health
+      - given: the session branch worktree is in a broken state (missing directory, detached worktree, or
+          orphan branch gone)
+        id: ac-repair
+        then: the worktree is re-created or re-attached so that session storage is functional again
+        when: repairSessionBranch is called or kspec shadow repair runs
+      - given: session branch storage mode is active
+        id: ac-commit-boundaries
+        then: accumulated session changes are committed to the session branch with a descriptive commit
+          message
+        when: a session lifecycle boundary is reached (create, close, compact, stale cleanup)
+      - given: session branch is configured with a remote tracking branch
+        id: ac-sync
+        then: local session branch changes are pushed to and pulled from the configured remote
+        when: sync is triggered (periodic scheduler or explicit pull)
+    tags:
+      - shadow
+      - sessions
+      - infra
+    created: 2026-04-24T22:51:18.375Z
+    notes: []
 requirements:
   - _ulid: 01KKB938JSR6M7ZBN3NHR6ABRS
     slugs:
