@@ -32107,7 +32107,7 @@ runs:
     started_at: 2026-04-24T23:35:44.389Z
     completed_at: 2026-04-24T23:37:53.072Z
   - _ulid: 01KQ0YQN2QYHSZBSXJDW3HZ1ZY
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -32169,10 +32169,15 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-24T23:57:34.204Z
-        completed_at: 2026-04-24T23:57:34.204Z
+        completed_at: 2026-04-24T23:57:55.987Z
+        notes: Captured inbox item @01KQ0YV4 for validation API type-contract drift. Did not capture
+          detached reviewer merge helper success because it is already represented by implemented
+          specs/tasks. Did not duplicate review CLI evidence/body friction because existing
+          observation @01KMP87Q3 covers that pattern.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T23:55:51.255Z
+    completed_at: 2026-04-24T23:57:55.987Z
   - _ulid: 01KQ0YRXEM5S89HAY7BNVQAK0Y
     status: active
     current_step: 3
