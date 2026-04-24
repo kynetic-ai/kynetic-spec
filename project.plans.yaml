@@ -42441,12 +42441,22 @@ plans:
 
           How:
           Use kspec CLI lookups and validation commands. Do not manually edit
-          .kspec YAML. Store the baseline in task notes or a small ignored
-          working file referenced from the task note.
+          .kspec YAML. Write the baseline report to this root checkout's ignored
+          plan workspace at:
+
+          plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md
+
+          This file is intentionally not committed and may not be present in
+          derived task workspaces. It is an ephemeral coordination artifact for
+          this plan's task sequence. After writing it, add a task note to this
+          task with the artifact path, timestamp, git revision, commands run,
+          and a short summary of the major finding categories.
 
           Testing:
-          This task is discovery only. Verification is that the note includes
-          command output summaries and exact refs for follow-up tasks.
+          This task is discovery only. Verification is that the ignored baseline
+          artifact exists in the root checkout and the task note records command
+          output summaries, exact refs for follow-up tasks, and the artifact
+          path that downstream tasks are allowed to read.
 
           Covers: planning/discovery for @validation-task-data-source,
           @ac-annotation-integrity-reporting, and
@@ -42464,6 +42474,17 @@ plans:
 
           Why: Downstream cleanup cannot trust reference validation while the
           project has known unresolved task spec refs.
+
+          Baseline input:
+          This task depends on @task-catalog-health-baseline. Before changing
+          refs, read the ephemeral baseline artifact written by that task at
+          plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md.
+          That ignored root-checkout file is allowed input for this task even
+          though it is not committed or synced into task workspaces. Use it only
+          as starting-state evidence and before/after comparison data. If the
+          artifact is missing, stale, or inaccessible, rerun the baseline
+          commands listed in @task-catalog-health-baseline and add a task note
+          with the regenerated results before proceeding.
 
           What:
           - Inspect each task identified by the baseline for:
@@ -42502,6 +42523,18 @@ plans:
           test-only fixture data. It lacks ACs and creates completeness debt
           that does not represent product behavior.
 
+          Baseline input:
+          This task depends on @task-catalog-health-baseline. Before changing
+          trait/catalog records, read the ephemeral baseline artifact written by
+          that task at
+          plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md.
+          That ignored root-checkout file is allowed input for this task even
+          though it is not committed or synced into task workspaces. Use it only
+          as starting-state evidence and before/after comparison data. If the
+          artifact is missing, stale, or inaccessible, rerun the baseline
+          commands listed in @task-catalog-health-baseline and add a task note
+          with the regenerated results before proceeding.
+
           What:
           - Inspect @01KJN1WT / Test Trait and any references to it.
           - Confirm whether it is only fixture/test machinery.
@@ -42538,6 +42571,18 @@ plans:
           Why: The validation trust baseline depends on validation seeing the
           same tasks and task fields that CLI, API, dispatch, and other
           consumers see.
+
+          Baseline input:
+          This task depends on @task-catalog-health-baseline. Before changing
+          validation behavior, read the ephemeral baseline artifact written by
+          that task at
+          plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md.
+          That ignored root-checkout file is allowed input for this task even
+          though it is not committed or synced into task workspaces. Use it only
+          as starting-state evidence and before/after comparison data. If the
+          artifact is missing, stale, or inaccessible, rerun the baseline
+          commands listed in @task-catalog-health-baseline and add a task note
+          with the regenerated results before proceeding.
 
           What:
           - Inspect src/parser/validate.ts around the current task loading path.
@@ -42579,6 +42624,18 @@ plans:
           noisy. Workers need findings that identify exactly what to repair and
           must not receive coverage credit for bad targets.
 
+          Baseline input:
+          This task depends on @task-catalog-health-baseline. Before changing AC
+          annotation reporting, read the ephemeral baseline artifact written by
+          that task at
+          plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md.
+          That ignored root-checkout file is allowed input for this task even
+          though it is not committed or synced into task workspaces. Use it only
+          as starting-state evidence and before/after comparison data. If the
+          artifact is missing, stale, or inaccessible, rerun the baseline
+          commands listed in @task-catalog-health-baseline and add a task note
+          with the regenerated results before proceeding.
+
           What:
           - Audit validateACAnnotations and related coverage-scan behavior.
           - Ensure unresolved targets, non-spec/trait targets, missing AC ids,
@@ -42618,6 +42675,18 @@ plans:
           look like AC annotations. Completeness validation should only treat
           annotations in configured, non-excluded coverage paths as coverage or
           invalid-annotation debt.
+
+          Baseline input:
+          This task depends on @task-ac-annotation-integrity-reporting, which in
+          turn depends on @task-catalog-health-baseline. Before changing scan
+          boundaries, read the ephemeral baseline artifact at
+          plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md
+          if it exists. That ignored root-checkout file is allowed input for
+          this task even though it is not committed or synced into task
+          workspaces. Use it only as starting-state evidence and before/after
+          comparison data. If the artifact is missing, stale, or inaccessible,
+          rerun the baseline commands listed in @task-catalog-health-baseline
+          and add a task note with the regenerated results before proceeding.
 
           What:
           - Inspect kspec.config.yaml coverage.scan_paths and
@@ -42660,6 +42729,20 @@ plans:
           Why: The plan should reduce immediate annotation noise without trying
           to solve the entire long-tail completeness backlog that later cleanup
           plans will handle.
+
+          Baseline input:
+          This task has indirect baseline dependency through its prerequisite
+          tasks. Before selecting repair candidates, read the ephemeral baseline
+          artifact at
+          plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md
+          if it exists. That ignored root-checkout file is allowed input for
+          this task even though it is not committed or synced into task
+          workspaces. Use the original baseline only as starting-state evidence;
+          select repairs from the current validation output after the reporting
+          and scan-boundary tasks have run. If the artifact is missing, stale,
+          or inaccessible, rerun the baseline commands listed in
+          @task-catalog-health-baseline and add a task note with the regenerated
+          results before proceeding.
 
           What:
           - Export current invalid_ac_annotation findings from
@@ -42705,6 +42788,16 @@ plans:
           validation baseline and future cleanup work can trust the remaining
           findings.
 
+          Baseline input:
+          Before final comparison, read the ephemeral baseline artifact at
+          plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md.
+          That ignored root-checkout file is allowed input for this task even
+          though it is not committed or synced into task workspaces. Use it as
+          the before-state for this plan's final before/after summary. If the
+          artifact is missing, stale, or inaccessible, rerun the baseline
+          commands listed in @task-catalog-health-baseline and explain in the
+          final task note that the before-state was regenerated.
+
           What:
           - Run:
             - kspec validate --refs --warnings-ok
@@ -42739,6 +42832,19 @@ plans:
       `@cruft-01-spec-catalog-health-seed` under the program charter
       `@cruft-cleanup-program-charter`. Those records are context only; this
       plan must stand on its own for workers and reviewers.
+
+      Ephemeral baseline coordination:
+
+      - `@task-catalog-health-baseline` writes this plan's before-state report
+        to the root checkout's ignored plan workspace at
+        `plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md`.
+      - The baseline report is not a repo deliverable and should not be
+        committed. It exists only while this plan's tasks are being executed.
+      - Downstream tasks are explicitly allowed to read that root-checkout file
+        even when their derived task workspace does not contain the gitignored
+        `plans/` directory. If the file is unavailable, the task should rerun
+        the baseline commands recorded in `@task-catalog-health-baseline` and
+        note the regenerated before-state before making scope decisions.
 
       Current baseline at plan drafting time:
 
@@ -42775,7 +42881,8 @@ plans:
 
       Dependency ordering:
 
-      1. Capture baseline first.
+      1. Capture baseline first and write the ignored root-checkout baseline
+         artifact for downstream comparison.
       2. Repair broken refs and Test Trait independently after baseline.
       3. Tighten validation read/reporting behavior before mass annotation
          repair.
@@ -42812,3 +42919,9 @@ plans:
           derivation/review."
         author: Jacob Chapel
         created_at: 2026-04-24T19:33:46.332Z
+      - _ulid: 01KQ0HE33M6N1GB7VP7VEHY56C
+        content: "Clarify ephemeral baseline coordination: baseline task writes ignored root plans artifact,
+          downstream tasks may read it, and missing/stale/inaccessible artifact falls back to
+          rerunning baseline commands"
+        author: Jacob Chapel
+        created_at: 2026-04-24T20:03:26.452Z
