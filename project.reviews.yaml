@@ -164238,7 +164238,53 @@ reviews:
     slugs: []
     title: "Plan review: Spec Catalog Health and Validation Trust"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/spec-catalog-health-validation-trust.md --dry-run accepted the
+          document and stored full content. Import creates no specs/tasks by design.
+        name: Plan import dry-run
+        required: true
+        runner: kspec plan import --dry-run
+        created_at: 2026-04-24T19:18:36.684Z
+        completed_at: 2026-04-24T19:18:36.684Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Parent refs @validation, @spec-completeness, and @coverage-scan-config resolve. Existing
+          @test-annotation-sweep overlaps with blanket annotation semantics, but the new spec is
+          narrower reporting behavior.
+        name: Spec neighborhood review
+        required: true
+        runner: kspec item get/search
+        created_at: 2026-04-24T19:18:39.867Z
+        completed_at: 2026-04-24T19:18:39.867Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "src/parser/plan-document.ts PlanTaskSchema does not include automation, and
+          src/cli/commands/plan.ts buildTaskPlans does not write automation. The plan relies on
+          automation: manual_only for every task."
+        name: Derive metadata support
+        required: true
+        runner: source review
+        created_at: 2026-04-24T19:18:43.013Z
+        completed_at: 2026-04-24T19:18:43.013Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Command currently reports the expected four hard reference errors: @cmd-derive,
+          @session-remove-shadow-commits, and @session-branch-worktree twice."
+        name: Current validation baseline spot-check
+        required: true
+        runner: kspec validate --refs --warnings-ok -v
+        created_at: 2026-04-24T19:18:46.178Z
+        completed_at: 2026-04-24T19:18:46.178Z
     events:
       - _ulid: 01KQ0ERKXP5ED1RKBRYFGQ0BEC
         actor: Jacob Chapel
@@ -164246,17 +164292,189 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-24T19:16:45.622Z
+      - _ulid: 01KQ0EVF51N324KM8BA5WJ95WB
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-24T19:18:19.041Z
+      - _ulid: 01KQ0EVJ77A64K18FF2EH0XZNH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ0EVH15A0WVZFHCNHPH1N8B
+        timestamp: 2026-04-24T19:18:22.183Z
+      - _ulid: 01KQ0EVNA2EC056VJVV5F3TS86
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ0EVM35TQFCMVZD9R8Z7GS0
+        timestamp: 2026-04-24T19:18:25.346Z
+      - _ulid: 01KQ0EVRD9AHSR4HWQV65DHHXK
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ0EVQ65H55E8CCWF0EKA5D5
+        timestamp: 2026-04-24T19:18:28.521Z
+      - _ulid: 01KQ0EVVG1EDG8N992BR9VWXZC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KQ0EVTBFKFP8MGFEXGR26BQR
+        timestamp: 2026-04-24T19:18:31.681Z
+      - _ulid: 01KQ0EVYG9J74FMXCREWNQS9GM
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KQ0EVXBS78CMQ3244F5NFDGS
+        timestamp: 2026-04-24T19:18:34.761Z
+      - _ulid: 01KQ0EW1M5GM7BAMJ9FZRQ9XB0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import dry-run
+        timestamp: 2026-04-24T19:18:37.957Z
+      - _ulid: 01KQ0EW4P7EGA650HCP57XJNVG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec neighborhood review
+        timestamp: 2026-04-24T19:18:41.095Z
+      - _ulid: 01KQ0EW7SANNC5DNDNFRQQZP09
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Derive metadata support
+        timestamp: 2026-04-24T19:18:44.266Z
+      - _ulid: 01KQ0EWAVA8FH4PNM2EJ377KG2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Current validation baseline spot-check
+        timestamp: 2026-04-24T19:18:47.403Z
+      - _ulid: 01KQ0EWDX6G1CBAQF6GSCB8DYP
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-24T19:18:50.534Z
+      - _ulid: 01KQ0EWDX6D4Y119F7B3CXTD29
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-24T19:18:50.534Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@plan-spec-catalog-health-and-validation-trust"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KQ0EVH15A0WVZFHCNHPH1N8B
+        anchor:
+          type: structured
+          field: automation
+          ref: "@plan-spec-catalog-health-and-validation-trust"
+          section: tasks
+        entries:
+          - _ulid: 01KQ0EVH15A99NF8G0C5C8D404
+            author: Jacob Chapel
+            body: "The task YAML relies on automation: manual_only, and the implementation notes say all tasks
+              are marked manual_only, but plan derive does not support that field for manual tasks.
+              PlanTaskSchema only accepts title, slug, priority, description, tags, spec_ref, and
+              depends_on, and buildTaskPlans does not pass automation into created tasks. The
+              derived tasks would be unassessed, so the plan metadata promise is not derivable. Fix
+              by adding supported derive behavior before approval, or remove the unsupported field
+              and add an explicit post-derive batch/update step that sets manual_only."
+            created_at: 2026-04-24T19:18:20.965Z
+        kind: blocker
+      - _ulid: 01KQ0EVM35TQFCMVZD9R8Z7GS0
+        anchor:
+          type: structured
+          ref: "@task-validation-trust-final-gate"
+          section: description
+        entries:
+          - _ulid: 01KQ0EVM35JJFA94JMRZZSS2V5
+            author: Jacob Chapel
+            body: "The final task makes seed and conversion-task linkage part of the implementation work: it
+              requires notes on @cruft-01-spec-catalog-health-seed and
+              @task-convert-cruft-01-spec-catalog-health-plan. Those are planning artifacts, not
+              validation-trust behavior, and they make the derived task depend on background context
+              instead of standing alone. Remove this linkage from the derived implementation task;
+              perform any historical cross-linking outside the standalone plan or as a separate
+              non-derived administrative step."
+            created_at: 2026-04-24T19:18:24.101Z
+        kind: blocker
+      - _ulid: 01KQ0EVQ65H55E8CCWF0EKA5D5
+        anchor:
+          type: structured
+          field: ac-skipped-annotations-no-debt
+          ref: "@coverage-annotation-scope-boundaries"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQ0EVQ65HVRNXHZ4BQKP6FAT
+            author: Jacob Chapel
+            body: "This AC has a compound Then: skipped annotation-like text must produce neither coverage
+              credit nor invalid annotation findings. Those are two independently testable outcomes
+              and the review objective requires no compound Then clauses. Split this into separate
+              ACs, then update the task Covers line so both new AC ids are explicitly covered."
+            created_at: 2026-04-24T19:18:27.269Z
+        kind: blocker
+      - _ulid: 01KQ0EVTBFKFP8MGFEXGR26BQR
+        anchor:
+          type: structured
+          ref: "@task-validation-trust-final-gate"
+          section: dependencies
+        entries:
+          - _ulid: 01KQ0EVTBFZ7GDSY7WJ38P0XRF
+            author: Jacob Chapel
+            body: The final gate is priority 1 but depends on @task-ac-annotation-repair-wave-one, which is
+              priority 2 and depends on other priority 2 work. The dependency order is acyclic, but
+              the priority ordering is inconsistent with execution order. Either lower the final
+              gate priority or raise the prerequisite validation-trust tasks so P1 work does not
+              depend on P2 work.
+            created_at: 2026-04-24T19:18:30.511Z
+        kind: question
+      - _ulid: 01KQ0EVXBS78CMQ3244F5NFDGS
+        anchor:
+          type: structured
+          ref: "@task-ac-annotation-repair-wave-one"
+          section: tasks
+        entries:
+          - _ulid: 01KQ0EVXBSP5H2MJHFQJG9VF7G
+            author: Jacob Chapel
+            body: The Covers line says this task supports @ac-annotation-integrity-reporting but does not name
+              concrete AC ids. If this is not intended to implement an AC, change the label to
+              Supports. If it is part of AC fulfillment, list the exact AC ids so coverage review
+              can map every plan AC to concrete work.
+            created_at: 2026-04-24T19:18:33.593Z
+        kind: question
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-24T19:18:50.534Z
     created_at: 2026-04-24T19:16:45.622Z
-    updated_at: null
+    updated_at: 2026-04-24T19:18:50.534Z
     notes: []
