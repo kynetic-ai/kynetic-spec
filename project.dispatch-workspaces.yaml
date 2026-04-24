@@ -9984,7 +9984,7 @@ workspaces:
         head: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
         last_seen_at: 2026-04-24T21:48:32.894Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remove-live-test-trait-01kq0jdj
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     bootstrap:
       status: succeeded
@@ -10464,12 +10464,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-24T23:20:00.955Z
+      updated_at: 2026-04-24T23:38:17.644Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-24T23:20:27.819Z
+      updated_at: 2026-04-24T23:38:17.644Z
     integration:
       status: pending
       detail: null
@@ -10477,7 +10477,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
-      updated_at: 2026-04-24T23:20:00.955Z
+      updated_at: 2026-04-24T23:38:17.644Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KQ0JDJQQY4HTX1P4JD4K11PA"
@@ -10485,9 +10485,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-24T23:20:27.819Z
-      last_reconciled_at: 2026-04-24T23:20:27.819Z
+      last_reconciled_at: 2026-04-24T23:38:17.644Z
       created_at: 2026-04-24T21:49:05.430Z
-      updated_at: 2026-04-24T23:20:27.819Z
+      updated_at: 2026-04-24T23:38:17.644Z
     workspace_id: dispatch-workspace-01KQ0JDJQQY4HTX1P4JD4K11PA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
