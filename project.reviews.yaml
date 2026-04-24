@@ -165132,6 +165132,18 @@ reviews:
         runner: kspec
         created_at: 2026-04-24T22:00:35.605Z
         completed_at: 2026-04-24T22:00:35.605Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran kspec validate --completeness/-v. Exit 6 from pre-existing completeness warnings
+          only: 493 warnings total, down from baseline 494; no missing_acceptance_criteria/Test
+          Trait/@01KJN1WT matches remained."
+        name: kspec validate --completeness
+        required: true
+        runner: kspec
+        created_at: 2026-04-24T22:00:38.937Z
+        completed_at: 2026-04-24T22:00:38.937Z
     events:
       - _ulid: 01KQ0QHVQHXC6A3D07NBYWN35F
         actor: Jacob Chapel
@@ -165160,6 +165172,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-24T22:00:36.784Z
+      - _ulid: 01KQ0R4QVK2DWD6Q1X8CHXET8Y
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --completeness
+        timestamp: 2026-04-24T22:00:40.051Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
     lifecycle_state: open
@@ -165172,5 +165191,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-24T21:50:21.425Z
-    updated_at: 2026-04-24T22:00:35.605Z
+    updated_at: 2026-04-24T22:00:38.937Z
     notes: []
