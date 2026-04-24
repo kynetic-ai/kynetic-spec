@@ -164506,6 +164506,17 @@ reviews:
         required: true
         created_at: 2026-04-24T19:29:00.228Z
         completed_at: 2026-04-24T19:29:00.228Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Each new spec AC is claimed by a concrete task Covers line. Discovery/repair/final-gate
+          tasks are standalone, dependencies are acyclic, and P2 final gate depends only on
+          prerequisite P1/P2 work through coherent chains.
+        name: Task coverage and ordering
+        required: true
+        created_at: 2026-04-24T19:29:00.271Z
+        completed_at: 2026-04-24T19:29:00.271Z
     events:
       - _ulid: 01KQ0FAKTGY9NSPSXYX0N6J9M7
         actor: Jacob Chapel
@@ -164534,6 +164545,13 @@ reviews:
           status: pass
           name: Spec neighborhood and refs
         timestamp: 2026-04-24T19:29:03.343Z
+      - _ulid: 01KQ0FF688TH5C2W14XBF23T5Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task coverage and ordering
+        timestamp: 2026-04-24T19:29:05.288Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -164546,5 +164564,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-24T19:26:35.345Z
-    updated_at: 2026-04-24T19:29:00.228Z
+    updated_at: 2026-04-24T19:29:00.271Z
     notes: []
