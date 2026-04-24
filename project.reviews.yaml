@@ -164611,7 +164611,60 @@ reviews:
     slugs: []
     title: "Plan review: Spec Catalog Health and Validation Trust (cycle 3)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Read prior approved review @01KQ0FAKTH1FV6YG97H56R426D and the new plan note describing
+          ephemeral baseline coordination.
+        name: Prior review and update context
+        required: true
+        created_at: 2026-04-24T20:07:13.518Z
+        completed_at: 2026-04-24T20:07:13.518Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/spec-catalog-health-validation-trust.md --dry-run parsed the
+          updated plan document without changing state.
+        name: Plan parser/import
+        required: true
+        created_at: 2026-04-24T20:07:16.787Z
+        completed_at: 2026-04-24T20:07:16.787Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Checked @validation, @spec-completeness, @coverage-scan-config plus related specs
+          @test-annotation-sweep, @trait-validation, @ref-validation, and @spec-completeness-policy.
+          New specs remain behavioral/timeless and do not conflict with existing owners.
+        name: Spec neighborhood and language
+        required: true
+        created_at: 2026-04-24T20:07:20.013Z
+        completed_at: 2026-04-24T20:07:20.013Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All new spec ACs are claimed by concrete implementation tasks; task descriptions include
+          what/why/how/testing; dependency chain starts with baseline and has no priority inversion
+          or hidden seed/charter dependency.
+        name: Task standalone coverage and ordering
+        required: true
+        created_at: 2026-04-24T20:07:23.221Z
+        completed_at: 2026-04-24T20:07:23.221Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Confirmed .gitignore ignores plans/. Baseline path is root-relative under
+          plans/cruft-baselines/, downstream tasks may use it only as before-state evidence, and
+          each has fallback instructions to rerun baseline commands if missing/stale/inaccessible.
+        name: Ephemeral baseline artifact safety
+        required: true
+        created_at: 2026-04-24T20:07:26.480Z
+        completed_at: 2026-04-24T20:07:26.480Z
     events:
       - _ulid: 01KQ0HKVBVMKE2A1V1F89QB9VW
         actor: Jacob Chapel
@@ -164619,9 +164672,67 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-24T20:06:35.131Z
+      - _ulid: 01KQ0HMYW24GAQMJYSYECA0B9M
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-24T20:07:11.490Z
+      - _ulid: 01KQ0HN243R2P23C0349MVEMS1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Prior review and update context
+        timestamp: 2026-04-24T20:07:14.819Z
+      - _ulid: 01KQ0HN59A09W4T7TZ0C7H1FBY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan parser/import
+        timestamp: 2026-04-24T20:07:18.059Z
+      - _ulid: 01KQ0HN8E48D4WG911QY2B7E3P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec neighborhood and language
+        timestamp: 2026-04-24T20:07:21.284Z
+      - _ulid: 01KQ0HNBKGNW65N7Z6FJKEDSDV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone coverage and ordering
+        timestamp: 2026-04-24T20:07:24.528Z
+      - _ulid: 01KQ0HNENB1DG1SPTTC2BBDJPR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Ephemeral baseline artifact safety
+        timestamp: 2026-04-24T20:07:27.659Z
+      - _ulid: 01KQ0HNHSVKE2YMKKTM2059SQC
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-24T20:07:30.875Z
+      - _ulid: 01KQ0HNHSVJ5P6VCNA21MY7M4E
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-24T20:07:30.875Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -164629,7 +164740,14 @@ reviews:
       ref: "@plan-spec-catalog-health-and-validation-trust"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-24T20:07:30.875Z
     created_at: 2026-04-24T20:06:35.131Z
-    updated_at: null
+    updated_at: 2026-04-24T20:07:30.875Z
     notes: []
