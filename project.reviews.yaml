@@ -165709,6 +165709,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-24T23:21:15.744Z
+      - _ulid: 01KQ0XEEBZVFR8C8YBJ8YGB6XQ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ0XEDARS6FZP17J1PE9G9EJ
+        timestamp: 2026-04-24T23:33:20.895Z
     examined_commit: 2525fa93d58103ccf02f77efbcd4140c542d491a
     external_links: []
     lifecycle_state: open
@@ -165718,8 +165725,31 @@ reviews:
       content_hash: ""
       ref: "@01KQ0JDJQQY4HTX1P4JD4K11PA"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQ0XEDARS6FZP17J1PE9G9EJ
+        anchor:
+          type: code
+          commit: 2525fa93d58103ccf02f77efbcd4140c542d491a
+          line_end: 2310
+          line_start: 2305
+          path: src/parser/validate.ts
+          side: head
+        entries:
+          - _ulid: 01KQ0XEDARYV25SJXYB34S6VP9
+            author: Jacob Chapel
+            body: "MUST-FIX: The resolver failure path catches every error from resolveTaskDataManager(), not
+              just the intended legacy kynetic<1.1 migration case. That means validation can
+              silently abandon the canonical task data source when the task data manager is broken.
+              I reproduced this in the source CLI: npm run dev -- task list --json reports
+              TaskDataManagerError: No storage backend registered for format split, but npm run dev
+              -- validate --refs --json exits successfully with tasksChecked: 0 and no ref errors.
+              This violates @validation-task-data-source because validation is no longer using the
+              same task model as normal consumers and can recreate the hidden-task baseline failure.
+              Narrow the fallback to the known legacy-project condition and surface other
+              TaskDataManager errors as validation findings."
+            created_at: 2026-04-24T23:33:19.833Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-24T23:21:04.564Z
-    updated_at: 2026-04-24T23:21:14.593Z
+    updated_at: 2026-04-24T23:33:19.833Z
     notes: []
