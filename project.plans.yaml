@@ -42894,8 +42894,8 @@ plans:
       current plan derivation does not preserve automation metadata from plan
       YAML. Set automation status explicitly after derivation according to the
       approved execution strategy.
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-04-24T20:18:41.079Z
     derived_specs: []
     derived_tasks: []
     module_ref: null
