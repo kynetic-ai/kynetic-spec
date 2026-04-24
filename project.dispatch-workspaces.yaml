@@ -10823,18 +10823,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-ac-annotation-integrity-reporting/01kq0jdk
-    canonical_branch_head: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
+    canonical_branch_head: 0dd8bca6567e320c7861b5213bf35cfe6f6c0354
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-24T23:20:30.854Z
+      updated_at: 2026-04-24T23:40:01.941Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-24T23:20:54.958Z
+      updated_at: 2026-04-24T23:40:01.941Z
     integration:
       status: pending
       detail: null
@@ -10842,7 +10842,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
-      updated_at: 2026-04-24T23:20:30.854Z
+      updated_at: 2026-04-24T23:40:01.941Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQ0JDK3ATZENMNT3TQADSTQB"
@@ -10850,9 +10850,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-24T23:20:54.958Z
-      last_reconciled_at: 2026-04-24T23:20:54.958Z
+      last_reconciled_at: 2026-04-24T23:40:01.941Z
       created_at: 2026-04-24T23:20:30.854Z
-      updated_at: 2026-04-24T23:20:54.958Z
+      updated_at: 2026-04-24T23:40:01.941Z
     workspace_id: dispatch-workspace-01KQ0JDK3ATZENMNT3TQADSTQB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
