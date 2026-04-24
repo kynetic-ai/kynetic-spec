@@ -1,1 +1,8 @@
-notes: []
+notes:
+  - _ulid: 01KQ0NTTSA4B0NB439XACX0FK1
+    content: "Spec ref cleared: @session-branch-worktree → null. Task is cancelled and the original spec
+      never existed as a standalone item. The shadow repair safety concern is
+      architectural/process-only with no current owning spec."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-24T21:20:18.219Z

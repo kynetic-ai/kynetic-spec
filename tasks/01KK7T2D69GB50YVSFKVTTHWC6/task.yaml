@@ -3,7 +3,7 @@ slugs:
   - remove-shadowautocommit-from-session-operations
 title: Remove shadowAutoCommit from session operations
 type: task
-spec_ref: "@session-remove-shadow-commits"
+spec_ref: "@session-events"
 plan_ref: "@plan-session-storage-separation"
 status: completed
 blocked_by: []
@@ -21,6 +21,14 @@ tags:
   - refactor
 vcs_refs: []
 session_id: 01KK8E2GTFNVVZJ06AC65K7TC2
+history:
+  - author: "@claude"
+    changes:
+      spec_ref:
+        new: "@session-events"
+        previous: "@session-remove-shadow-commits"
+    command: task-set
+    timestamp: 2026-04-24T21:20:13.931Z
 created_at: 2026-03-08T22:46:14.473Z
 started_at: 2026-03-09T04:41:58.090Z
 submitted_at: 2026-03-09T04:57:45.269Z

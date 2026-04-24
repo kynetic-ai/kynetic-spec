@@ -17,7 +17,7 @@ description: >-
   (2) consider in-place repair (re-link broken worktree without deletion), (3) add a backup/restore
   mechanism, (4) at minimum print recovery instructions if recreation fails. Manual task because it
   touches data safety and needs human review of the repair strategy.
-spec_ref: "@session-branch-worktree"
+spec_ref: null
 status: cancelled
 blocked_by: []
 closed_reason: Superseded by @fix-broken-shadow-safety under @broken-shadow-safety. The older task
@@ -28,6 +28,14 @@ context: []
 priority: 3
 tags: []
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      spec_ref:
+        new: null
+        previous: "@session-branch-worktree"
+    command: task-set
+    timestamp: 2026-04-24T21:20:15.963Z
 created_at: 2026-03-10T07:53:31.856Z
 todos: []
 automation: manual_only

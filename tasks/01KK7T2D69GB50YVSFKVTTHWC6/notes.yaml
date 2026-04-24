@@ -39,3 +39,10 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-09T04:57:27.776Z
+  - _ulid: 01KQ0NTSAW53PSAYD9AWAJST3Y
+    content: "Spec ref repaired: @session-remove-shadow-commits → @session-events. Old spec was
+      renamed/merged; behavior (no shadow auto-commit in local storage mode) is covered by
+      @session-events ac-7."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-24T21:20:16.732Z

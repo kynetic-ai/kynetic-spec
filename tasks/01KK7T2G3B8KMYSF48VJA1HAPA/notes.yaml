@@ -113,3 +113,10 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-03-09T07:06:18.814Z
+  - _ulid: 01KQ0NTT2A9FNHT107F2B1Y5V8
+    content: "Spec ref repaired: @session-branch-worktree → @session-events. Old spec was
+      renamed/merged; session branch worktree lifecycle commits are covered by @session-events
+      ac-7."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-24T21:20:17.482Z
