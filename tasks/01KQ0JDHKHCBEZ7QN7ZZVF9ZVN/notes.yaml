@@ -1,1 +1,60 @@
-notes: []
+notes:
+  - _ulid: 01KQ0KXX54YW450Q56WT625F7T
+    content: >-
+      Baseline artifact written to root checkout at:
+
+      plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md
+
+
+      Git revision: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
+
+      Timestamp: 2026-04-24T20:40Z (approximate)
+
+      Branch: dispatch/task/task-catalog-health-baseline/01kq0jdh (dev HEAD)
+
+
+      Commands run:
+
+      - kspec validate --refs --warnings-ok -v → exit 0 (clean)
+
+      - kspec validate --refs -v → exit 0 (clean)
+
+      - kspec validate --alignment -v → exit 6 (36 warnings)
+
+      - kspec validate --completeness -v → exit 6 (494 warnings)
+
+
+      CRITICAL FINDING: All validation modes report Tasks checked: 0. Validation is NOT loading any
+      task records. The 4 hard reference failures from the plan drafting baseline (@cmd-derive,
+      @session-remove-shadow-commits ×1, @session-branch-worktree ×2) have disappeared because
+      validation stopped seeing tasks, not because they were fixed. Task spec_refs still point at
+      missing specs (confirmed via kspec task get).
+
+
+      Major finding categories:
+
+      1. Task data not loaded (Tasks checked: 0) — primary trust issue, blocks ref validation
+      credibility
+
+      2. Reference validation: 0 visible errors (4 expected hidden by missing task loading)
+
+      3. Alignment: 36 warnings (34 orphaned specs, 2 status mismatches)
+
+      4. Completeness: 494 warnings total
+         - 1 missing-AC item (@01KJN1WT Test Trait)
+         - 238 missing own-AC coverage warnings
+         - 255 invalid AC annotations (152 unresolved target, 36 missing-ac-id, 66 blanket ref, 1 non-spec-target)
+      5. Unresolved spec_refs confirmed on tasks:
+         - @cmd-derive → @task-recursive-derive (completed)
+         - @session-remove-shadow-commits → @remove-shadowautocommit-from-session-operations (completed)
+         - @session-branch-worktree → @implement-session-branch-worktree-mode (completed), @01KKBBS7 (cancelled)
+      6. Overlap: @plan-completeness-warning-debt-reduction is broader (owns full completeness
+      backlog); @task-triage-automation-eligible-missing-spec-ref is out of scope. No conflicts.
+
+
+      Top invalid annotation refs by volume: @session-branch-worktree (28), @spec-api-items (23),
+      @cmd-derive (16), @session-storage-modes (15), @task-remove-monolithic (11),
+      @task-test-runner-progress-output (10).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-24T20:47:01.797Z
