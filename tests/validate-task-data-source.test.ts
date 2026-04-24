@@ -1,0 +1,386 @@
+/**
+ * Tests for validation using the canonical task data source.
+ *
+ * Verifies that validation uses TaskDataManager to load tasks from split
+ * storage rather than the legacy findTaskFiles() path, ensuring validation
+ * sees the same tasks that all other kspec consumers see.
+ *
+ * AC: @validation-task-data-source
+ */
+
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import {
+  cleanupTempDir,
+  createTempDir,
+  initGitRepo,
+  kspec,
+  kspecWithStatus,
+  seedSplitTask,
+  testUlid,
+  testUlids,
+} from "./helpers/cli";
+
+describe("validation task data source", () => {
+  let tmpDir: string;
+
+  beforeEach(async () => {
+    tmpDir = await createTempDir("kspec-validate-tds-");
+    initGitRepo(tmpDir);
+  });
+
+  afterEach(async () => {
+    if (tmpDir) {
+      await cleanupTempDir(tmpDir);
+    }
+  });
+
+  /**
+   * Set up a minimal project with split task storage containing the given tasks.
+   * Manifest at rootDir, spec module in spec/, tasks in tasks/<ULID>/.
+   */
+  async function setupProject(options?: {
+    specs?: Array<{ ulid: string; slug: string; title: string }>;
+    tasks?: Array<Record<string, unknown> & { _ulid: string; notes?: unknown[] }>;
+    /** If true, also write a malformed task.yaml for a ULID directory */
+    malformedTask?: { ulid: string; content: string };
+  }): Promise<void> {
+    const specDir = path.join(tmpDir, "spec");
+    await fs.mkdir(specDir, { recursive: true });
+
+    const specs = options?.specs ?? [];
+    const tasks = options?.tasks ?? [];
+
+    // Write manifest
+    const includesLine = specs.length > 0 ? 'includes:\n  - "spec/module.yaml"' : "";
+    await fs.writeFile(
+      path.join(tmpDir, "kynetic.yaml"),
+      `kynetic: "1.1"
+task_storage:
+  format: split
+project:
+  name: validate-tds-test
+  version: 0.1.0
+${includesLine}
+`,
+    );
+
+    // Write spec module if specs provided
+    if (specs.length > 0) {
+      const specYaml = specs
+        .map(
+          (s) => `- _ulid: ${s.ulid}
+  slugs:
+    - ${s.slug}
+  title: "${s.title}"
+  type: feature
+  description: "Test spec for validation task data source"`,
+        )
+        .join("\n");
+      await fs.writeFile(path.join(specDir, "module.yaml"), specYaml);
+    }
+
+    // Seed split tasks
+    for (const task of tasks) {
+      seedSplitTask(tmpDir, task);
+    }
+
+    // Write malformed task if requested
+    if (options?.malformedTask) {
+      const taskDir = path.join(tmpDir, "tasks", options.malformedTask.ulid);
+      await fs.mkdir(taskDir, { recursive: true });
+      await fs.writeFile(
+        path.join(taskDir, "task.yaml"),
+        options.malformedTask.content,
+      );
+    }
+  }
+
+  // ────────────────────────────────────────────────────────────────────────────
+  // AC: @validation-task-data-source ac-all-persisted-tasks-included
+  //
+  // Given: A project contains persisted task records in the supported task
+  //        storage layout
+  // When:  validation runs task-aware checks
+  // Then:  Every persisted task record is included in the validation task set
+  // ────────────────────────────────────────────────────────────────────────────
+
+  describe("ac-all-persisted-tasks-included", () => {
+    // AC: @validation-task-data-source ac-all-persisted-tasks-included
+    it("includes split-storage tasks in validation task count", async () => {
+      const [taskUlid1, taskUlid2, taskUlid3] = testUlids("TSK", 3);
+      const specUlid = testUlid("SPC01");
+
+      await setupProject({
+        specs: [{ ulid: specUlid, slug: "tds-spec", title: "TDS Spec" }],
+        tasks: [
+          {
+            _ulid: taskUlid1,
+            slugs: ["task-one"],
+            title: "Task One",
+            status: "pending",
+            priority: 3,
+            depends_on: [],
+            spec_ref: "@tds-spec",
+            notes: [],
+            created_at: "2026-01-01T00:00:00Z",
+          },
+          {
+            _ulid: taskUlid2,
+            slugs: ["task-two"],
+            title: "Task Two",
+            status: "in_progress",
+            priority: 2,
+            depends_on: [],
+            notes: [{ _ulid: testUlid("NOTE1"), content: "working on it", author: "test", created_at: "2026-01-02T00:00:00Z" }],
+            created_at: "2026-01-01T00:00:00Z",
+          },
+          {
+            _ulid: taskUlid3,
+            slugs: ["task-three"],
+            title: "Task Three",
+            status: "completed",
+            priority: 1,
+            depends_on: [],
+            notes: [],
+            created_at: "2026-01-01T00:00:00Z",
+          },
+        ],
+      });
+
+      const result = kspec("validate --schema --json", tmpDir);
+      const parsed = JSON.parse(result.stdout);
+
+      expect(parsed.stats.tasksChecked).toBe(3);
+    });
+
+    // AC: @validation-task-data-source ac-all-persisted-tasks-included
+    it("reports tasks checked in human-readable output", async () => {
+      const taskUlid = testUlid("TSK01");
+
+      await setupProject({
+        tasks: [
+          {
+            _ulid: taskUlid,
+            slugs: ["task-solo"],
+            title: "Solo Task",
+            status: "pending",
+            priority: 3,
+            depends_on: [],
+            notes: [],
+            created_at: "2026-01-01T00:00:00Z",
+          },
+        ],
+      });
+
+      const result = kspecWithStatus("validate --schema -v", tmpDir);
+      const output = `${result.stdout}\n${result.stderr}`;
+
+      expect(output).toContain("Tasks checked: 1");
+    });
+
+    // AC: @validation-task-data-source ac-all-persisted-tasks-included
+    it("reports zero tasks when no task directories exist", async () => {
+      await setupProject({ specs: [] });
+
+      const result = kspec("validate --schema --json", tmpDir);
+      const parsed = JSON.parse(result.stdout);
+
+      expect(parsed.stats.tasksChecked).toBe(0);
+    });
+  });
+
+  // ────────────────────────────────────────────────────────────────────────────
+  // AC: @validation-task-data-source ac-task-references-checked
+  //
+  // Given: A persisted task contains a field that validation treats as a
+  //        reference
+  // When:  reference validation runs
+  // Then:  The reference contributes to validation findings with the task as
+  //        the source
+  // ────────────────────────────────────────────────────────────────────────────
+
+  describe("ac-task-references-checked", () => {
+    // AC: @validation-task-data-source ac-task-references-checked
+    it("detects dangling spec_ref from a split-storage task", async () => {
+      const taskUlid = testUlid("TSK01");
+
+      await setupProject({
+        tasks: [
+          {
+            _ulid: taskUlid,
+            slugs: ["task-dangling-ref"],
+            title: "Task With Dangling Ref",
+            status: "pending",
+            priority: 3,
+            depends_on: [],
+            spec_ref: "@nonexistent-spec",
+            notes: [],
+            created_at: "2026-01-01T00:00:00Z",
+          },
+        ],
+      });
+
+      const result = kspec("validate --refs --json", tmpDir);
+      const parsed = JSON.parse(result.stdout);
+
+      // Should have a ref error for the dangling spec_ref
+      const refErrors = parsed.refErrors ?? [];
+      const danglingRef = refErrors.find(
+        (e: { ref: string }) => e.ref === "@nonexistent-spec",
+      );
+      expect(danglingRef).toBeDefined();
+      expect(danglingRef.sourceUlid).toBe(taskUlid);
+    });
+
+    // AC: @validation-task-data-source ac-task-references-checked
+    it("detects dangling depends_on from a split-storage task", async () => {
+      const taskUlid = testUlid("TSK01");
+      const phantomUlid = testUlid("GONE1");
+
+      await setupProject({
+        tasks: [
+          {
+            _ulid: taskUlid,
+            slugs: ["task-dangling-dep"],
+            title: "Task With Dangling Dependency",
+            status: "pending",
+            priority: 3,
+            depends_on: [`@${phantomUlid}`],
+            notes: [],
+            created_at: "2026-01-01T00:00:00Z",
+          },
+        ],
+      });
+
+      const result = kspec("validate --refs --json", tmpDir);
+      const parsed = JSON.parse(result.stdout);
+
+      const refErrors = parsed.refErrors ?? [];
+      const danglingDep = refErrors.find(
+        (e: { ref: string }) => e.ref === `@${phantomUlid}`,
+      );
+      expect(danglingDep).toBeDefined();
+      expect(danglingDep.sourceUlid).toBe(taskUlid);
+    });
+
+    // AC: @validation-task-data-source ac-task-references-checked
+    it("resolves valid spec_ref without errors", async () => {
+      const taskUlid = testUlid("TSK01");
+      const specUlid = testUlid("SPC01");
+
+      await setupProject({
+        specs: [{ ulid: specUlid, slug: "valid-spec", title: "Valid Spec" }],
+        tasks: [
+          {
+            _ulid: taskUlid,
+            slugs: ["task-valid-ref"],
+            title: "Task With Valid Ref",
+            status: "pending",
+            priority: 3,
+            depends_on: [],
+            spec_ref: "@valid-spec",
+            notes: [],
+            created_at: "2026-01-01T00:00:00Z",
+          },
+        ],
+      });
+
+      const result = kspec("validate --refs --json", tmpDir);
+      const parsed = JSON.parse(result.stdout);
+
+      expect(parsed.refErrors).toHaveLength(0);
+    });
+  });
+
+  // ────────────────────────────────────────────────────────────────────────────
+  // AC: @validation-task-data-source ac-task-load-errors-reported
+  //
+  // Given: A persisted task record cannot be parsed as a valid task
+  // When:  validation runs
+  // Then:  A validation finding identifies the affected task record instead
+  //        of silently omitting it
+  // ────────────────────────────────────────────────────────────────────────────
+
+  describe("ac-task-load-errors-reported", () => {
+    // AC: @validation-task-data-source ac-task-load-errors-reported
+    it("reports schema errors for malformed task records", async () => {
+      const malformedUlid = testUlid("BAD01");
+
+      await setupProject({
+        malformedTask: {
+          ulid: malformedUlid,
+          // Missing required fields: title, status, priority, slugs
+          content: `_ulid: ${malformedUlid}\ndescription: "incomplete task"\n`,
+        },
+      });
+
+      const result = kspec("validate --schema --json", tmpDir);
+      const parsed = JSON.parse(result.stdout);
+
+      // Should report at least one schema error for the malformed task
+      const taskErrors = (parsed.schemaErrors ?? []).filter(
+        (e: { file: string }) => e.file.includes(malformedUlid),
+      );
+      expect(taskErrors.length).toBeGreaterThan(0);
+    });
+
+    // AC: @validation-task-data-source ac-task-load-errors-reported
+    it("reports errors for task with invalid YAML content", async () => {
+      const badYamlUlid = testUlid("BAD02");
+
+      await setupProject({
+        malformedTask: {
+          ulid: badYamlUlid,
+          content: "this: is: not: valid: yaml: [unclosed",
+        },
+      });
+
+      const result = kspec("validate --schema --json", tmpDir);
+      const parsed = JSON.parse(result.stdout);
+
+      const taskErrors = (parsed.schemaErrors ?? []).filter(
+        (e: { file: string }) => e.file.includes(badYamlUlid),
+      );
+      expect(taskErrors.length).toBeGreaterThan(0);
+    });
+
+    // AC: @validation-task-data-source ac-task-load-errors-reported
+    it("still loads valid tasks alongside malformed ones", async () => {
+      const goodUlid = testUlid("GOOD1");
+      const badUlid = testUlid("BAD01");
+
+      await setupProject({
+        tasks: [
+          {
+            _ulid: goodUlid,
+            slugs: ["task-good"],
+            title: "Good Task",
+            status: "pending",
+            priority: 3,
+            depends_on: [],
+            notes: [],
+            created_at: "2026-01-01T00:00:00Z",
+          },
+        ],
+        malformedTask: {
+          ulid: badUlid,
+          content: `_ulid: ${badUlid}\ndescription: "incomplete"\n`,
+        },
+      });
+
+      const result = kspec("validate --schema --json", tmpDir);
+      const parsed = JSON.parse(result.stdout);
+
+      // Good task should be counted
+      expect(parsed.stats.tasksChecked).toBe(1);
+
+      // Bad task should produce schema errors
+      const taskErrors = (parsed.schemaErrors ?? []).filter(
+        (e: { file: string }) => e.file.includes(badUlid),
+      );
+      expect(taskErrors.length).toBeGreaterThan(0);
+    });
+  });
+});

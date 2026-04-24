@@ -55,6 +55,8 @@ import {
   loadSpecFile,
   readYamlFile,
 } from "./yaml.js";
+import { resolveTaskDataManager } from "./task-data-manager.js";
+import { listTaskDirs, getTaskFilePath } from "./split-backend.js";
 
 // ============================================================
 // TYPES
@@ -258,6 +260,89 @@ async function validateTasksFile(filePath: string): Promise<SchemaValidationErro
   }
 
   return errors;
+}
+
+/**
+ * Validate per-task directory files for schema conformance.
+ *
+ * Iterates ULID directories under specDir/tasks/ and validates each task.yaml
+ * against TaskSchema, assembling the full record (task.yaml + notes.yaml) the
+ * same way the split backend does.  Reports schema errors for malformed task
+ * records instead of silently omitting them.
+ *
+ * AC: @validation-task-data-source ac-task-load-errors-reported
+ */
+async function validatePerTaskFiles(
+  ctx: KspecContext,
+): Promise<{ errors: SchemaValidationError[]; filesChecked: number }> {
+  const errors: SchemaValidationError[] = [];
+  let filesChecked = 0;
+
+  let ulids: string[];
+  try {
+    ulids = await listTaskDirs(ctx);
+  } catch {
+    return { errors, filesChecked };
+  }
+
+  for (const ulid of ulids) {
+    const taskFilePath = getTaskFilePath(ctx, ulid);
+    filesChecked++;
+
+    try {
+      const rawCore = await readYamlFile<unknown>(taskFilePath);
+
+      if (!rawCore || typeof rawCore !== "object") {
+        errors.push({
+          file: taskFilePath,
+          path: ulid,
+          message: "Invalid task file: expected a YAML object",
+        });
+        continue;
+      }
+
+      const rawCoreObj = rawCore as Record<string, unknown>;
+      // Remove history before schema validation (same as split backend)
+      const { history: _h, ...coreWithoutHistory } = rawCoreObj;
+
+      // Read notes file (may not exist)
+      let notes: unknown[] = [];
+      try {
+        const notesFilePath = path.join(path.dirname(taskFilePath), "notes.yaml");
+        const rawNotes = await readYamlFile<unknown>(notesFilePath);
+        if (rawNotes && typeof rawNotes === "object" && "notes" in rawNotes) {
+          const notesWrapper = rawNotes as Record<string, unknown>;
+          notes = Array.isArray(notesWrapper.notes) ? notesWrapper.notes : [];
+        } else if (Array.isArray(rawNotes)) {
+          notes = rawNotes;
+        }
+      } catch {
+        // Notes file doesn't exist — zero notes
+      }
+
+      // Assemble and validate (mirrors split backend's loadTaskFromDirWithHistory)
+      const assembled = { ...coreWithoutHistory, notes };
+      const parsed = TaskSchema.safeParse(assembled);
+
+      if (!parsed.success) {
+        for (const issue of parsed.error.issues) {
+          errors.push({
+            file: taskFilePath,
+            path: `${ulid}.${issue.path.join(".")}`,
+            message: issue.message,
+            details: issue,
+          });
+        }
+      }
+    } catch (err) {
+      errors.push({
+        file: taskFilePath,
+        message: `Failed to parse task YAML: ${err instanceof Error ? err.message : String(err)}`,
+      });
+    }
+  }
+
+  return { errors, filesChecked };
 }
 
 /**
@@ -2212,41 +2297,66 @@ export async function validate(
     result.stats.itemsChecked += manifestItems.length;
   }
 
-  // Find and validate task files
-  // Exclude test fixtures which have their own self-contained references
-  const taskFiles = await findTaskFiles(ctx.rootDir);
-  const specTaskFiles = await findTaskFiles(path.join(ctx.rootDir, "spec"));
-  const allTaskFiles = [...new Set([...taskFiles, ...specTaskFiles])].filter(
-    (f) => !f.includes("/fixtures/"),
-  );
-
-  for (const taskFile of allTaskFiles) {
-    if (runSchema) {
-      const taskErrors = await validateTasksFile(taskFile);
-      result.schemaErrors.push(...taskErrors);
+  // Load tasks via canonical TaskDataManager read path when split storage is available.
+  // AC: @validation-task-data-source ac-all-persisted-tasks-included
+  // This ensures validation sees the same tasks that CLI, API, and dispatch consumers see.
+  let usedCanonicalPath = false;
+  try {
+    const tdm = resolveTaskDataManager(ctx);
+    const loadedTasks = await tdm.loadAllTasks(ctx);
+    for (const task of loadedTasks) {
+      allTasks.push(task);
+      result.stats.tasksChecked++;
     }
-    result.stats.filesChecked++;
+    usedCanonicalPath = true;
+  } catch {
+    // TaskDataManager resolution can fail for legacy projects — fall through to legacy path
+  }
 
-    // Load tasks for ref validation
-    try {
-      const raw = await readYamlFile<unknown>(taskFile);
-      let taskList: unknown[] = [];
+  if (usedCanonicalPath) {
+    // Validate per-task directory files for schema errors and report malformed records.
+    // AC: @validation-task-data-source ac-task-load-errors-reported
+    if (runSchema) {
+      const perTaskErrors = await validatePerTaskFiles(ctx);
+      result.schemaErrors.push(...perTaskErrors.errors);
+      result.stats.filesChecked += perTaskErrors.filesChecked;
+    }
+  } else {
+    // Legacy fallback: find *.tasks.yaml files the traditional way.
+    // Used for kynetic <1.1 projects that don't have split task storage.
+    const taskFiles = await findTaskFiles(ctx.rootDir);
+    const specTaskFiles = await findTaskFiles(path.join(ctx.rootDir, "spec"));
+    const allTaskFiles = [...new Set([...taskFiles, ...specTaskFiles])].filter(
+      (f) => !f.includes("/fixtures/"),
+    );
 
-      if (Array.isArray(raw)) {
-        taskList = raw;
-      } else if (raw && typeof raw === "object" && "tasks" in raw) {
-        taskList = (raw as { tasks: unknown[] }).tasks || [];
+    for (const taskFile of allTaskFiles) {
+      if (runSchema) {
+        const taskErrors = await validateTasksFile(taskFile);
+        result.schemaErrors.push(...taskErrors);
       }
+      result.stats.filesChecked++;
 
-      for (const t of taskList) {
-        const parsed = TaskSchema.safeParse(t);
-        if (parsed.success) {
-          allTasks.push({ ...parsed.data, _sourceFile: taskFile });
-          result.stats.tasksChecked++;
+      try {
+        const raw = await readYamlFile<unknown>(taskFile);
+        let taskList: unknown[] = [];
+
+        if (Array.isArray(raw)) {
+          taskList = raw;
+        } else if (raw && typeof raw === "object" && "tasks" in raw) {
+          taskList = (raw as { tasks: unknown[] }).tasks || [];
         }
+
+        for (const t of taskList) {
+          const parsed = TaskSchema.safeParse(t);
+          if (parsed.success) {
+            allTasks.push({ ...parsed.data, _sourceFile: taskFile });
+            result.stats.tasksChecked++;
+          }
+        }
+      } catch {
+        // Already reported in schema validation
       }
-    } catch {
-      // Already reported in schema validation
     }
   }
 

@@ -13,6 +13,32 @@ import {
   readTestOutput,
 } from "./helpers/cli";
 
+/**
+ * Patch a task field in both the lean index (project.tasks.yaml) and the
+ * per-task directory (tasks/<ULID>/task.yaml) so that validation sees the
+ * change regardless of which storage path it reads from.
+ */
+async function patchTaskField(
+  tempDir: string,
+  taskUlid: string,
+  pattern: RegExp,
+  replacement: string,
+): Promise<void> {
+  // Patch the lean index
+  const indexFile = path.join(tempDir, "project.tasks.yaml");
+  const indexContent = await readTestOutput(indexFile);
+  await fs.writeFile(indexFile, indexContent.replace(pattern, replacement));
+
+  // Patch the per-task file
+  const taskFile = path.join(tempDir, "tasks", taskUlid, "task.yaml");
+  try {
+    const taskContent = await readTestOutput(taskFile);
+    await fs.writeFile(taskFile, taskContent.replace(pattern, replacement));
+  } catch {
+    // Per-task file may not exist in all fixtures
+  }
+}
+
 describe("Task Automation Eligibility", () => {
   let tempDir: string;
 
@@ -235,14 +261,13 @@ describe("Task Automation Eligibility", () => {
       const tasks = kspecJson<any[]>("tasks list", tempDir);
       const task = tasks.find((t) => t.title === "Completed eligible");
 
-      // Manually set status to completed via YAML patch
-      const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      const content = await readTestOutput(tasksFile);
-      const updatedContent = content.replace(
+      // Manually set status to completed via YAML patch (both index and per-task file)
+      await patchTaskField(
+        tempDir,
+        task._ulid,
         new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?status:) pending`),
         "$1 completed",
       );
-      await fs.writeFile(tasksFile, updatedContent);
 
       const output = kspec("validate --completeness", tempDir);
       expect(output).not.toContain("Completed eligible");
@@ -255,14 +280,13 @@ describe("Task Automation Eligibility", () => {
       const tasks = kspecJson<any[]>("tasks list", tempDir);
       const task = tasks.find((t) => t.title === "Cancelled eligible");
 
-      // Manually set status to cancelled via YAML patch
-      const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      const content = await readTestOutput(tasksFile);
-      const updatedContent = content.replace(
+      // Manually set status to cancelled via YAML patch (both index and per-task file)
+      await patchTaskField(
+        tempDir,
+        task._ulid,
         new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?status:) pending`),
         "$1 cancelled",
       );
-      await fs.writeFile(tasksFile, updatedContent);
 
       const output = kspec("validate --completeness", tempDir);
       expect(output).not.toContain("Cancelled eligible");
@@ -300,18 +324,19 @@ describe("Task Automation Eligibility", () => {
       const tasks = kspecJson<any[]>("tasks list", tempDir);
       const task = tasks.find((t) => t.title === "Completed bad ref");
 
-      // Manually patch to completed status with unresolvable spec_ref
-      const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      let content = await readTestOutput(tasksFile);
-      content = content.replace(
+      // Manually patch to completed status with unresolvable spec_ref (both index and per-task)
+      await patchTaskField(
+        tempDir,
+        task._ulid,
         new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?status:) pending`),
         "$1 completed",
       );
-      content = content.replace(
+      await patchTaskField(
+        tempDir,
+        task._ulid,
         new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?)spec_ref: "@test-feature"`),
         '$1spec_ref: "@nonexistent-deleted-spec"',
       );
-      await fs.writeFile(tasksFile, content);
 
       const output = kspec("validate --completeness", tempDir);
       expect(output).not.toContain("Completed bad ref");
@@ -327,18 +352,19 @@ describe("Task Automation Eligibility", () => {
       const tasks = kspecJson<any[]>("tasks list", tempDir);
       const task = tasks.find((t) => t.title === "Cancelled bad ref");
 
-      // Manually patch to cancelled status with unresolvable spec_ref
-      const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      let content = await readTestOutput(tasksFile);
-      content = content.replace(
+      // Manually patch to cancelled status with unresolvable spec_ref (both index and per-task)
+      await patchTaskField(
+        tempDir,
+        task._ulid,
         new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?status:) pending`),
         "$1 cancelled",
       );
-      content = content.replace(
+      await patchTaskField(
+        tempDir,
+        task._ulid,
         new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?)spec_ref: "@test-feature"`),
         '$1spec_ref: "@nonexistent-deleted-spec"',
       );
-      await fs.writeFile(tasksFile, content);
 
       const output = kspec("validate --completeness", tempDir);
       expect(output).not.toContain("Cancelled bad ref");
@@ -351,17 +377,17 @@ describe("Task Automation Eligibility", () => {
         'task add --title "Bad spec ref" --automation eligible --spec-ref @test-feature',
         tempDir,
       );
+      const tasks = kspecJson<any[]>("tasks list", tempDir);
+      const task = tasks.find((t) => t.title === "Bad spec ref");
 
-      // Manually patch the task file to have an unresolvable spec_ref
+      // Manually patch the task to have an unresolvable spec_ref (both index and per-task)
       // This simulates a spec being deleted after the task was created
-      const tasksFile = path.join(tempDir, "project.tasks.yaml");
-      const content = await readTestOutput(tasksFile);
-      // Replace the valid spec_ref with an invalid one
-      const updatedContent = content.replace(
+      await patchTaskField(
+        tempDir,
+        task._ulid,
         /spec_ref: "@test-feature"/,
         'spec_ref: "@nonexistent-deleted-spec"',
       );
-      await fs.writeFile(tasksFile, updatedContent);
 
       // Now validate should warn about the unresolvable spec_ref
       const output = kspec("validate --completeness", tempDir);
