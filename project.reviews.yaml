@@ -165053,6 +165053,12 @@ reviews:
         payload:
           thread_ulid: 01KQ0QDM05X48HY6TK44VF94YT
         timestamp: 2026-04-24T23:02:29.110Z
+      - _ulid: 01KQ0VP6QZNRJ579DMK336K3W6
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQ0QDM05X48HY6TK44VF94YT
+        timestamp: 2026-04-24T23:02:38.080Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
     lifecycle_state: closed
@@ -165151,6 +165157,8 @@ reviews:
               @session-branch-worktree spec."
             created_at: 2026-04-24T23:02:27.998Z
         kind: nit
+        resolved_at: 2026-04-24T23:02:36.974Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -165160,7 +165168,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-24T21:48:18.427Z
     created_at: 2026-04-24T21:33:29.361Z
-    updated_at: 2026-04-24T23:02:27.998Z
+    updated_at: 2026-04-24T23:02:36.974Z
     notes: []
   - _ulid: 01KQ0QHVQHAQY585SYDN800R3G
     slugs: []
