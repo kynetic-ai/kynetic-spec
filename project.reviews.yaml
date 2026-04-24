@@ -164495,6 +164495,17 @@ reviews:
         required: true
         created_at: 2026-04-24T19:29:00.218Z
         completed_at: 2026-04-24T19:29:00.218Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Parents @validation, @spec-completeness, and @coverage-scan-config resolve. Related
+          @test-annotation-sweep blanket-ref semantics were inspected; new specs extend integrity
+          reporting and scan boundaries without conflict.
+        name: Spec neighborhood and refs
+        required: true
+        created_at: 2026-04-24T19:29:00.228Z
+        completed_at: 2026-04-24T19:29:00.228Z
     events:
       - _ulid: 01KQ0FAKTGY9NSPSXYX0N6J9M7
         actor: Jacob Chapel
@@ -164516,6 +164527,13 @@ reviews:
           status: pass
           name: Prior cycle blockers
         timestamp: 2026-04-24T19:29:01.460Z
+      - _ulid: 01KQ0FF4BFRXWJY2D9PCWCWRBQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec neighborhood and refs
+        timestamp: 2026-04-24T19:29:03.343Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -164528,5 +164546,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-24T19:26:35.345Z
-    updated_at: 2026-04-24T19:29:00.218Z
+    updated_at: 2026-04-24T19:29:00.228Z
     notes: []
