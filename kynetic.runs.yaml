@@ -31983,7 +31983,7 @@ runs:
     started_at: 2026-04-24T22:59:21.839Z
     completed_at: 2026-04-24T23:00:47.099Z
   - _ulid: 01KQ0WNDXK4KSEH7TCG1Q3DKZB
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -32032,10 +32032,14 @@ runs:
         completed_at: 2026-04-24T23:21:17.752Z
         notes: Skipped discussion because there are no untracked improvement proposals to ask about;
           searched friction was already covered by existing observations/tasks.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-04-24T23:21:17.752Z
-        completed_at: 2026-04-24T23:21:17.752Z
+        completed_at: 2026-04-24T23:21:25.658Z
+        notes: No capture performed. Existing coverage found for the actionable friction, and no new
+          approved items remained after deduplication. Reflection outcome is documentation in the
+          workflow run only.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T23:19:41.235Z
+    completed_at: 2026-04-24T23:21:25.658Z
