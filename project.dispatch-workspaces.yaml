@@ -8962,7 +8962,7 @@ workspaces:
         head: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
         last_seen_at: 2026-04-24T20:50:48.852Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-catalog-health-baseline-01kq0jdh
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     bootstrap:
       status: succeeded
@@ -9460,9 +9460,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-24T23:03:58.533Z
-      last_reconciled_at: 2026-04-24T23:20:04.229Z
+      last_reconciled_at: 2026-04-24T23:21:45.474Z
       created_at: 2026-04-24T21:16:09.503Z
-      updated_at: 2026-04-24T23:20:05.153Z
+      updated_at: 2026-04-24T23:21:45.474Z
     workspace_id: dispatch-workspace-01KQ0JDHZQ4H04WBFWE7WMR6GV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
