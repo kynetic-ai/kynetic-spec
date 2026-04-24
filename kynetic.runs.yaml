@@ -31984,7 +31984,7 @@ runs:
     completed_at: 2026-04-24T23:00:47.099Z
   - _ulid: 01KQ0WNDXK4KSEH7TCG1Q3DKZB
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31999,7 +31999,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-24T23:20:34.718Z
-        completed_at: 2026-04-24T23:20:34.718Z
+        completed_at: 2026-04-24T23:20:46.505Z
+        notes: "Friction points: npm test initially failed before running tests because this dispatch shell
+          inherited NODE_ENV=production, so npm ci omitted direct dev dependencies such as pagefind.
+          Also, task-specific reference validation required a manual audit because kspec validate
+          --refs still reports Tasks checked: 0 in this workspace state. Both are systemic patterns
+          rather than code-review findings."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-24T23:20:46.505Z
+        completed_at: 2026-04-24T23:20:46.505Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T23:19:41.235Z
