@@ -46,8 +46,12 @@ description: |
 spec_ref: null
 plan_ref: "@plan-spec-catalog-health-and-validation-trust"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Reviewed and approved in @01KQ0QHV. Merge helper reported no-op:
+  dispatch/task/task-remove-live-test-trait/01kq0jdj at b66ae0bb is already integrated at dev.
+  Verified @01KJN1WT/Test Trait is removed from the live trait catalog, completeness missing-AC
+  warning is gone, and npm test passed."
 depends_on:
   - "@task-catalog-health-baseline"
 context: []
@@ -115,8 +119,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-24T21:50:24.778Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Reviewed and approved in @01KQ0QHV. Merge helper reported no-op:
+          dispatch/task/task-remove-live-test-trait/01kq0jdj at b66ae0bb is already integrated at
+          dev. Verified @01KJN1WT/Test Trait is removed from the live trait catalog, completeness
+          missing-AC warning is gone, and npm test passed."
+        previous: null
+      completed_at:
+        new: 2026-04-24T22:04:57.762Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-24T22:04:57.771Z
 created_at: 2026-04-24T20:20:37.873Z
 started_at: 2026-04-24T21:34:02.726Z
 submitted_at: 2026-04-24T21:47:56.014Z
+completed_at: 2026-04-24T22:04:57.762Z
 todos: []
 automation: eligible
