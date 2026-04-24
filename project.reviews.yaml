@@ -164781,6 +164781,19 @@ reviews:
         runner: kspec
         created_at: 2026-04-24T21:14:25.981Z
         completed_at: 2026-04-24T21:14:25.981Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Reran task-scoped baseline commands. refs --warnings-ok -v: exit 0, Tasks checked: 0,
+          References OK. alignment -v: exit 6 with 36 warnings. completeness -v: exit 6 with 494
+          warnings (1 missing AC, 238 missing own-AC coverage, 255 invalid annotations). Counts
+          match artifact."
+        name: baseline validation reruns
+        required: true
+        runner: kspec
+        created_at: 2026-04-24T21:14:29.472Z
+        completed_at: 2026-04-24T21:14:29.472Z
     events:
       - _ulid: 01KQ0M8D3W1MK362EB5GW7W2GZ
         actor: Jacob Chapel
@@ -164816,6 +164829,13 @@ reviews:
           status: pass
           name: plain kspec validate
         timestamp: 2026-04-24T21:14:27.186Z
+      - _ulid: 01KQ0NG7DC147EZFCNA1722G5J
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: baseline validation reruns
+        timestamp: 2026-04-24T21:14:30.700Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
     lifecycle_state: open
@@ -164847,5 +164867,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-24T20:52:45.820Z
-    updated_at: 2026-04-24T21:14:25.981Z
+    updated_at: 2026-04-24T21:14:29.472Z
     notes: []
