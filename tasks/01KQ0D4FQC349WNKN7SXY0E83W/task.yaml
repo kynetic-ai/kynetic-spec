@@ -1,0 +1,76 @@
+_ulid: 01KQ0D4FQC349WNKN7SXY0E83W
+slugs:
+  - task-convert-cruft-02-backfill-process-retirement-plan
+title: Convert cruft seed 02 into Backfill/Process Spec Retirement plan
+type: task
+description: >-
+  Convert seed plan @cruft-02-backfill-process-retirement-seed into a proper reviewed implementation
+  plan for: Convert cruft seed 02 into Backfill/Process Spec Retirement plan.
+
+      Intent:
+      This is a manual planning task in the Spec Cruft Cleanup Program. It is not implementation work and should not directly edit specs/code except as needed to create, import, and review the downstream plan. The seed record is a non-derivable planning artifact; the output of this task should be a new clean derive-ready plan with slug `backfill-process-spec-retirement` (or an explicitly chosen replacement slug if scope is split).
+
+      Source records to read first:
+      - Program charter: @cruft-cleanup-program-charter
+      - Seed plan: @cruft-02-backfill-process-retirement-seed
+      - Audit summary file: /home/chapel/Projects/kynetic-spec/plans/cruft-audit-2026-04-24.md
+
+      Dependency/context:
+      This task should be picked up after: @task-convert-cruft-01-spec-catalog-health-plan.
+
+      Focus of the downstream plan:
+      Plan retirement, demotion, or rewrite of specs that encode cleanup/process history rather than timeless behavior, especially *-ac-backfill and description-backfill items.
+
+      Include in the planning work:
+      - Inventory of all candidate process/backfill specs.
+  - For each candidate: keep, rewrite, deprecate, delete, or convert to historical note/task
+  context.
+
+  - Reference scrubbing strategy for tasks, dependencies, and Covers lines.
+
+  - Validation commands that prove no new broken refs are introduced.
+
+      Exclude from this planning task:
+      - General trait normalization.
+  - CLI/schema command-help rewrite.
+
+  - API/daemon/web mega-spec splitting.
+
+  - Runtime code refactors except reference cleanup required by spec retirement.
+
+      Required process:
+      1. Re-read the program charter and seed record via `kspec plan get` or `kspec plan export`; do not rely on chat history.
+      2. Re-run the relevant discovery/validation commands named in the seed because audit counts may have changed.
+      3. Check for overlap with existing plans/tasks before creating duplicate work.
+      4. Write a normal kspec plan document with behavioral Specs and standalone Tasks, or split the seed into multiple smaller real plans if the seed is too broad.
+      5. Parse/validate the plan document before import.
+      6. Import the real plan as draft with a clean slug/title.
+      7. Run `kspec agent run plan-reviewer` with the charter/seed/audit as background context only; the real plan itself must stand alone.
+      8. Iterate until the real plan is review-ready or clearly blocked by a product/design decision.
+      9. Add a note to @cruft-02-backfill-process-retirement-seed linking to the real plan(s) created and summarizing any split/deferral decisions.
+
+      Done when:
+      - A new draft implementation plan exists for backfill/process spec retirement, or the seed is explicitly split/deferred.
+  - The real plan is self-contained and does not create fake process specs.
+
+  - The seed plan has a note linking to the real plan(s).
+
+      Automation:
+      Manual-only. This task involves planning judgment, scope control, and review-loop decisions. Do not mark automation eligible without explicit human direction.
+spec_ref: null
+meta_ref: null
+plan_ref: "@cruft-02-backfill-process-retirement-seed"
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-convert-cruft-01-spec-catalog-health-plan"
+context: []
+priority: 2
+tags:
+  - cruft
+  - planning
+  - spec-hygiene
+vcs_refs: []
+created_at: 2026-04-24T18:48:17.388Z
+todos: []
+automation: manual_only

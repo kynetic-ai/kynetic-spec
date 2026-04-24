@@ -1,0 +1,75 @@
+_ulid: 01KQ0D4M0CXRA7QPWCG6XKT3W0
+slugs:
+  - task-convert-cruft-06-code-quality-refactors-plan
+title: Convert cruft seed 06 into Spec-Tied Code Quality Refactor plan(s)
+type: task
+description: >-
+  Convert seed plan @cruft-06-code-quality-refactors-seed into a proper reviewed implementation plan
+  for: Convert cruft seed 06 into Spec-Tied Code Quality Refactor plan(s).
+
+      Intent:
+      This is a manual planning task in the Spec Cruft Cleanup Program. It is not implementation work and should not directly edit specs/code except as needed to create, import, and review the downstream plan. The seed record is a non-derivable planning artifact; the output of this task should be a new clean derive-ready plan with slug `spec-tied-code-quality-refactors` (or an explicitly chosen replacement slug if scope is split).
+
+      Source records to read first:
+      - Program charter: @cruft-cleanup-program-charter
+      - Seed plan: @cruft-06-code-quality-refactors-seed
+      - Audit summary file: /home/chapel/Projects/kynetic-spec/plans/cruft-audit-2026-04-24.md
+
+      Dependency/context:
+      This task should be picked up after: @task-convert-cruft-01-spec-catalog-health-plan, @task-convert-cruft-04-cli-schema-spec-rewrite-plan, @task-convert-cruft-05-api-daemon-web-contract-split-plan.
+
+      Focus of the downstream plan:
+      Plan code-quality refactors only where they are tied to cleaned specs or explicit architectural constraints: validation read path, daemon mutation/cache safety, Web UI API client/freshness, and test verification cleanup.
+
+      Include in the planning work:
+      - Decide whether to split into separate real plans for validation, daemon/cache safety, Web UI client/freshness, and test cleanup.
+  - Tie every behavior-changing refactor to a cleaned spec or new behavioral/constraint spec.
+
+  - Include focused verification strategy using npm test with --run slices, not direct vitest.
+
+  - Include preservation/compatibility expectations for refactors.
+
+      Exclude from this planning task:
+      - Unbounded cleanup.
+  - Refactors not connected to spec behavior or explicit architecture constraints.
+
+  - Combining unrelated subsystems into one plan if reviewability suffers.
+
+      Required process:
+      1. Re-read the program charter and seed record via `kspec plan get` or `kspec plan export`; do not rely on chat history.
+      2. Re-run the relevant discovery/validation commands named in the seed because audit counts may have changed.
+      3. Check for overlap with existing plans/tasks before creating duplicate work.
+      4. Write a normal kspec plan document with behavioral Specs and standalone Tasks, or split the seed into multiple smaller real plans if the seed is too broad.
+      5. Parse/validate the plan document before import.
+      6. Import the real plan as draft with a clean slug/title.
+      7. Run `kspec agent run plan-reviewer` with the charter/seed/audit as background context only; the real plan itself must stand alone.
+      8. Iterate until the real plan is review-ready or clearly blocked by a product/design decision.
+      9. Add a note to @cruft-06-code-quality-refactors-seed linking to the real plan(s) created and summarizing any split/deferral decisions.
+
+      Done when:
+      - One or more draft implementation plans exist for spec-tied code-quality refactors, split by subsystem where appropriate.
+  - The real plan(s) have concrete file paths, behavior-preservation tests, and spec/Covers mapping.
+
+  - The seed has a note linking to created plan(s).
+
+      Automation:
+      Manual-only. This task involves planning judgment, scope control, and review-loop decisions. Do not mark automation eligible without explicit human direction.
+spec_ref: null
+meta_ref: null
+plan_ref: "@cruft-06-code-quality-refactors-seed"
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-convert-cruft-01-spec-catalog-health-plan"
+  - "@task-convert-cruft-04-cli-schema-spec-rewrite-plan"
+  - "@task-convert-cruft-05-api-daemon-web-contract-split-plan"
+context: []
+priority: 3
+tags:
+  - cruft
+  - planning
+  - code-quality
+vcs_refs: []
+created_at: 2026-04-24T18:48:21.772Z
+todos: []
+automation: manual_only

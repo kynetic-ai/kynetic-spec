@@ -26938,3 +26938,124 @@
   submitted_at: 2026-04-23T05:28:35.660Z
   completed_at: 2026-04-23T05:43:00.201Z
   automation: eligible
+- _ulid: 01KQ0D4EMBY75KZNFJB9K83MPH
+  slugs:
+    - task-convert-cruft-01-spec-catalog-health-plan
+  title: Convert cruft seed 01 into Spec Catalog Health plan
+  type: task
+  plan_ref: "@cruft-01-spec-catalog-health-seed"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - cruft
+    - planning
+    - spec-hygiene
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-24T18:48:16.267Z
+  automation: manual_only
+- _ulid: 01KQ0D4FQC349WNKN7SXY0E83W
+  slugs:
+    - task-convert-cruft-02-backfill-process-retirement-plan
+  title: Convert cruft seed 02 into Backfill/Process Spec Retirement plan
+  type: task
+  plan_ref: "@cruft-02-backfill-process-retirement-seed"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-convert-cruft-01-spec-catalog-health-plan"
+  priority: 2
+  tags:
+    - cruft
+    - planning
+    - spec-hygiene
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-24T18:48:17.388Z
+  automation: manual_only
+- _ulid: 01KQ0D4GRBNAG0W2JCG4BG06A7
+  slugs:
+    - task-convert-cruft-03-trait-normalization-plan
+  title: Convert cruft seed 03 into Trait Normalization plan
+  type: task
+  plan_ref: "@cruft-03-trait-normalization-seed"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-convert-cruft-01-spec-catalog-health-plan"
+    - "@task-convert-cruft-02-backfill-process-retirement-plan"
+  priority: 2
+  tags:
+    - cruft
+    - planning
+    - traits
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-24T18:48:18.443Z
+  automation: manual_only
+- _ulid: 01KQ0D4HW69J2VJQXY7XSXW86H
+  slugs:
+    - task-convert-cruft-04-cli-schema-spec-rewrite-plan
+  title: Convert cruft seed 04 into CLI/Schema Spec Rewrite plan
+  type: task
+  plan_ref: "@cruft-04-cli-schema-spec-rewrite-seed"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-convert-cruft-01-spec-catalog-health-plan"
+    - "@task-convert-cruft-03-trait-normalization-plan"
+  priority: 3
+  tags:
+    - cruft
+    - planning
+    - cli
+    - schema
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-24T18:48:19.590Z
+  automation: manual_only
+- _ulid: 01KQ0D4JXZV8JB2TJ1ZMTNGE6Y
+  slugs:
+    - task-convert-cruft-05-api-daemon-web-contract-split-plan
+  title: Convert cruft seed 05 into API/Daemon/Web Contract Split plan
+  type: task
+  plan_ref: "@cruft-05-api-daemon-web-contract-split-seed"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-convert-cruft-01-spec-catalog-health-plan"
+    - "@task-convert-cruft-03-trait-normalization-plan"
+  priority: 3
+  tags:
+    - cruft
+    - planning
+    - api
+    - daemon
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-24T18:48:20.671Z
+  automation: manual_only
+- _ulid: 01KQ0D4M0CXRA7QPWCG6XKT3W0
+  slugs:
+    - task-convert-cruft-06-code-quality-refactors-plan
+  title: Convert cruft seed 06 into Spec-Tied Code Quality Refactor plan(s)
+  type: task
+  plan_ref: "@cruft-06-code-quality-refactors-seed"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-convert-cruft-01-spec-catalog-health-plan"
+    - "@task-convert-cruft-04-cli-schema-spec-rewrite-plan"
+    - "@task-convert-cruft-05-api-daemon-web-contract-split-plan"
+  priority: 3
+  tags:
+    - cruft
+    - planning
+    - code-quality
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-24T18:48:21.772Z
+  automation: manual_only
