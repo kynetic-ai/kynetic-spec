@@ -27089,7 +27089,7 @@
   title: Repair broken task spec references
   type: task
   plan_ref: "@plan-spec-catalog-health-and-validation-trust"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-catalog-health-baseline"
@@ -27101,6 +27101,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-24T20:20:37.495Z
+  started_at: 2026-04-24T21:17:01.532Z
   automation: eligible
 - _ulid: 01KQ0JDJBHHP02T25Y6M2NZES7
   slugs:
