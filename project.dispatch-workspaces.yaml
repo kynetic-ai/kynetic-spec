@@ -8782,12 +8782,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-24T20:50:42.595Z
+      updated_at: 2026-04-24T20:50:48.852Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-24T20:50:42.595Z
+      updated_at: 2026-04-24T20:50:48.852Z
     integration:
       status: pending
       detail: null
@@ -8795,24 +8795,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
-      updated_at: 2026-04-24T20:50:42.595Z
-    lifecycle_state: ready
+      updated_at: 2026-04-24T20:50:48.852Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KQ0JDHKHCBEZ7QN7ZZVF9ZVN"
     task_slug: task-catalog-health-baseline
     timestamps:
       closed_at: null
       last_active_at: 2026-04-24T20:40:58.820Z
-      last_reconciled_at: 2026-04-24T20:50:42.595Z
+      last_reconciled_at: 2026-04-24T20:50:48.852Z
       created_at: 2026-04-24T20:40:29.974Z
-      updated_at: 2026-04-24T20:50:42.595Z
+      updated_at: 2026-04-24T20:50:48.852Z
     workspace_id: dispatch-workspace-01KQ0JDHKHCBEZ7QN7ZZVF9ZVN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
+        last_seen_at: 2026-04-24T20:50:48.852Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-catalog-health-baseline-01kq0jdh-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-catalog-health-baseline/01kq0jdh
         head: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
-        last_seen_at: 2026-04-24T20:40:29.974Z
+        last_seen_at: 2026-04-24T20:50:48.852Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-catalog-health-baseline-01kq0jdh
