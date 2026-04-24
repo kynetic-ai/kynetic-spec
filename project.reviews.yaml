@@ -165260,7 +165260,20 @@ reviews:
     slugs: []
     title: Review task-validation-task-data-manager-read-path
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: rg found standalone annotations for @validation-task-data-source
+          ac-all-persisted-tasks-included, ac-task-references-checked, and
+          ac-task-load-errors-reported in tests/validate-task-data-source.test.ts. No trait ACs are
+          inherited by this spec.
+        name: AC annotation search
+        required: false
+        runner: rg
+        created_at: 2026-04-24T22:52:52.614Z
+        completed_at: 2026-04-24T22:52:52.614Z
     events:
       - _ulid: 01KQ0TT8MJ9PRXYV0DP3AMARGN
         actor: Jacob Chapel
@@ -165282,6 +165295,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQ0V2MK5AWE4DJNJQPW30MYG
         timestamp: 2026-04-24T22:51:58.002Z
+      - _ulid: 01KQ0V4C780PH1MS1QFXRCHET2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation search
+        timestamp: 2026-04-24T22:52:53.864Z
     examined_commit: 87c41864b7e745a0f83189eefe2d53b95c2af5ec
     external_links: []
     lifecycle_state: open
@@ -165319,5 +165339,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T22:47:22.514Z
-    updated_at: 2026-04-24T22:51:56.902Z
+    updated_at: 2026-04-24T22:52:52.614Z
     notes: []
