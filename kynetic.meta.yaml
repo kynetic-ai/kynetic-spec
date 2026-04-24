@@ -16096,6 +16096,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-24T19:29:43.959Z
+  - _ulid: 01KQ0PMRWQV9AYXTQ1BMKSD2MD
+    type: success
+    content: "Predecessor task baseline artifact pattern: when a multi-task plan has an
+      investigation→repair dependency chain, having the investigation task produce a structured
+      baseline document (e.g. plans/cruft-baselines/*.md) eliminates investigation overhead for
+      downstream repair tasks. The repair task for broken spec refs completed in a single pass with
+      zero re-investigation because the baseline task had already cataloged all broken refs, their
+      owning tasks, and candidate repair targets."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-24T21:34:28.247Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
