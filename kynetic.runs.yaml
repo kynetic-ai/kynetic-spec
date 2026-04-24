@@ -32045,7 +32045,7 @@ runs:
     completed_at: 2026-04-24T23:21:25.658Z
   - _ulid: 01KQ0XJTG5E4FYECETH1BW37R3
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -32080,7 +32080,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-24T23:37:08.477Z
-        completed_at: 2026-04-24T23:37:08.477Z
+        completed_at: 2026-04-24T23:37:17.773Z
+        notes: "Proposed improvements: (1) Capture a friction observation that source npm run dev task
+          commands can fail to register the split backend under tsx while validate can hide the same
+          breakage; this should feed later triage into either a dev-mode backend registration fix or
+          validation probe requirement. Scope medium. (2) Capture a success observation that review
+          probes should compare validate output with a normal consumer for data-source tasks; this
+          is a lightweight reusable review pattern. Scope small/process."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-24T23:37:17.773Z
+        completed_at: 2026-04-24T23:37:17.773Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T23:35:44.389Z
