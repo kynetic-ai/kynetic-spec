@@ -165732,6 +165732,19 @@ reviews:
         runner: kspec validate
         created_at: 2026-04-24T23:34:10.708Z
         completed_at: 2026-04-24T23:34:10.708Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: rg found annotated behavioral tests for @validation-task-data-source covering
+          ac-all-persisted-tasks-included, ac-task-references-checked, and
+          ac-task-load-errors-reported in tests/validate-task-data-source.test.ts. No
+          source-scanning tests found in changed tests.
+        name: AC annotation search
+        required: false
+        runner: rg
+        created_at: 2026-04-24T23:34:20.503Z
+        completed_at: 2026-04-24T23:34:20.503Z
     events:
       - _ulid: 01KQ0WQZ9MSQ82RZHA3010YHZV
         actor: Jacob Chapel
@@ -165774,6 +165787,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-24T23:34:11.809Z
+      - _ulid: 01KQ0XG9MH4CQRVEJ7Z0WRVMME
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation search
+        timestamp: 2026-04-24T23:34:21.585Z
     examined_commit: 2525fa93d58103ccf02f77efbcd4140c542d491a
     external_links: []
     lifecycle_state: open
@@ -165809,5 +165829,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T23:21:04.564Z
-    updated_at: 2026-04-24T23:34:10.708Z
+    updated_at: 2026-04-24T23:34:20.503Z
     notes: []
