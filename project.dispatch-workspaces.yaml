@@ -10315,12 +10315,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-24T22:46:06.754Z
+      updated_at: 2026-04-24T22:46:08.330Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-24T22:46:06.754Z
+      updated_at: 2026-04-24T22:46:08.330Z
     integration:
       status: pending
       detail: null
@@ -10328,7 +10328,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
-      updated_at: 2026-04-24T22:46:06.754Z
+      updated_at: 2026-04-24T22:46:08.330Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KQ0JDJQQY4HTX1P4JD4K11PA"
@@ -10336,16 +10336,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-24T21:49:32.468Z
-      last_reconciled_at: 2026-04-24T22:46:06.754Z
+      last_reconciled_at: 2026-04-24T22:46:08.330Z
       created_at: 2026-04-24T21:49:05.430Z
-      updated_at: 2026-04-24T22:46:06.754Z
+      updated_at: 2026-04-24T22:46:08.330Z
     workspace_id: dispatch-workspace-01KQ0JDJQQY4HTX1P4JD4K11PA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 87c41864b7e745a0f83189eefe2d53b95c2af5ec
+        last_seen_at: 2026-04-24T22:46:08.330Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validation-task-data-manager-read-path-01kq0jdj-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-validation-task-data-manager-read-path/01kq0jdj
-        head: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
-        last_seen_at: 2026-04-24T21:49:05.430Z
+        head: 87c41864b7e745a0f83189eefe2d53b95c2af5ec
+        last_seen_at: 2026-04-24T22:46:08.330Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validation-task-data-manager-read-path-01kq0jdj
