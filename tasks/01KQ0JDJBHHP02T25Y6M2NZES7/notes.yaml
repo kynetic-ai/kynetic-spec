@@ -24,3 +24,34 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-24T21:35:35.801Z
+  - _ulid: 01KQ0QD6YWPJ07R76ZNK4QYSP8
+    content: >-
+      Completed: Removed @01KJN1WT94B23HXX1R5KVD9BVC (Test Trait) from the live production catalog
+      using kspec item delete.
+
+
+      Decision: DELETE (not rewrite). Evidence:
+
+      - No slugs, no ACs, no code references to its ULID in the codebase
+
+      - Description explicitly states 'Test-only trait for validating trait inheritance mechanics'
+
+      - E2E fixture trait (tests/e2e/fixtures/modules/core.yaml) is a completely separate item with
+      different ULID (01KF1645CB) and slug (test-trait) — independent and unaffected
+
+      - No spec items inherit from the live trait
+
+      - Baseline artifact confirmed it as the sole missing-AC item
+
+
+      Verification:
+
+      - kspec trait list: 19 traits (down from 20), Test Trait gone
+
+      - kspec validate --completeness: 493 warnings (down from 494), zero
+      missing_acceptance_criteria warnings
+
+      - Full test suite: 8362 passed, 5 skipped, 0 failures
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-24T21:47:49.084Z
