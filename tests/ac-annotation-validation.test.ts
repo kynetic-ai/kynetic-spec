@@ -180,6 +180,7 @@ it('should also work', () => {});
 
   // Unresolved references should emit invalid_ac_annotation warnings.
   describe("validateACAnnotations - unresolved references", () => {
+    // AC: @ac-annotation-integrity-reporting ac-unresolved-target-reported
     it("should warn when @slug does not resolve to any item", async () => {
       const ctx = await setupProject({
         specItems: [
@@ -203,6 +204,7 @@ it('should also work', () => {});
         (w) => w.type === "invalid_ac_annotation",
       );
       expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].subtype).toBe("unresolved_target");
       expect(invalidAnnotations[0].message).toContain("@nonexistent-spec");
       expect(invalidAnnotations[0].message).toContain("cannot be resolved");
     });
@@ -240,7 +242,7 @@ it('should also work', () => {});
       expect(invalidAnnotations).toHaveLength(0);
     });
 
-    // AC: @test-annotation-sweep ac-explicit-mapping
+    // AC: @ac-annotation-integrity-reporting ac-valid-annotation-covers-target
     it("credits completeness coverage only when explicit ac ids are provided", async () => {
       const ctx = await setupProject({
         specItems: [
@@ -285,6 +287,7 @@ it('should also work', () => {});
 
   // Non-existent AC ids should emit invalid_ac_annotation warnings.
   describe("validateACAnnotations - non-existent AC ids", () => {
+    // AC: @ac-annotation-integrity-reporting ac-missing-ac-id-reported
     it("should warn when ac-N does not exist on the resolved item", async () => {
       const ctx = await setupProject({
         specItems: [
@@ -316,6 +319,7 @@ it('should also work', () => {});
         (w) => w.type === "invalid_ac_annotation",
       );
       expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].subtype).toBe("missing_ac_id");
       expect(invalidAnnotations[0].message).toContain("@my-spec ac-5");
       expect(invalidAnnotations[0].message).toContain("no acceptance criterion 'ac-5'");
     });
@@ -441,7 +445,7 @@ it('invalid trait AC ref', () => {});
   });
 
   describe("validateACAnnotations - edge cases", () => {
-    // AC: @test-annotation-sweep ac-no-blanket-credit
+    // AC: @ac-annotation-integrity-reporting ac-blanket-ref-does-not-cover
     it("warns and withholds coverage when annotations omit ac ids for items with ACs", async () => {
       const ctx = await setupProject({
         specItems: [
@@ -478,6 +482,7 @@ it('invalid trait AC ref', () => {});
       );
 
       expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].subtype).toBe("blanket_ref");
       expect(invalidAnnotations[0].message).toContain("without explicit ac-* ids");
       expect(missingCoverage).toHaveLength(1);
       expect(missingCoverage[0].details).toContain("ac-1");
@@ -506,6 +511,7 @@ it('invalid trait AC ref', () => {});
         (w) => w.type === "invalid_ac_annotation",
       );
       expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].subtype).toBe("missing_ac_id");
       expect(invalidAnnotations[0].message).toContain("no acceptance criterion 'ac-1'");
     });
 
@@ -536,6 +542,7 @@ it('invalid trait AC ref', () => {});
       expect(invalidAnnotations[0].details).toContain(":1");
     });
 
+    // AC: @ac-annotation-integrity-reporting ac-non-spec-target-reported
     it("should warn when AC annotation references a task instead of a spec item", async () => {
       const ctx = await setupProject({
         specItems: [
@@ -568,6 +575,7 @@ it('invalid trait AC ref', () => {});
         (w) => w.type === "invalid_ac_annotation",
       );
       expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].subtype).toBe("non_spec_target");
       expect(invalidAnnotations[0].message).toContain("@task-example");
       expect(invalidAnnotations[0].message).toContain("not a spec item or trait");
     });
@@ -595,12 +603,14 @@ it('invalid trait AC ref', () => {});
         (w) => w.type === "invalid_ac_annotation",
       );
       expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].subtype).toBe("non_spec_target");
       expect(invalidAnnotations[0].message).toContain("@task-example");
       expect(invalidAnnotations[0].message).toContain("not a spec item or trait");
     });
   });
 
   describe("validateACAnnotations unit tests", () => {
+    // AC: @ac-annotation-integrity-reporting ac-unresolved-target-reported
     it("should detect unresolved references without full kspec project", () => {
       const annotations = [
         {
@@ -617,9 +627,13 @@ it('invalid trait AC ref', () => {});
 
       expect(warnings).toHaveLength(1);
       expect(warnings[0].type).toBe("invalid_ac_annotation");
+      expect(warnings[0].subtype).toBe("unresolved_target");
       expect(warnings[0].message).toContain("cannot be resolved");
+      expect(warnings[0].itemRef).toBe("@nonexistent");
+      expect(warnings[0].details).toContain("/tmp/test.test.ts:5");
     });
 
+    // AC: @ac-annotation-integrity-reporting ac-missing-ac-id-reported
     it("should detect non-existent AC on resolved item", () => {
       const items = [
         {
@@ -648,9 +662,13 @@ it('invalid trait AC ref', () => {});
 
       // ac-1 exists, ac-3 does not
       expect(warnings).toHaveLength(1);
+      expect(warnings[0].subtype).toBe("missing_ac_id");
       expect(warnings[0].message).toContain("ac-3");
+      expect(warnings[0].itemRef).toBe("@my-spec");
+      expect(warnings[0].details).toContain("/tmp/test.test.ts:10");
     });
 
+    // AC: @ac-annotation-integrity-reporting ac-non-spec-target-reported
     it("should warn when ref resolves to a task (not a spec item or trait)", () => {
       // Task is in the reference index but NOT in the spec items list
       const tasks = [
@@ -679,8 +697,10 @@ it('invalid trait AC ref', () => {});
 
       expect(warnings).toHaveLength(1);
       expect(warnings[0].type).toBe("invalid_ac_annotation");
+      expect(warnings[0].subtype).toBe("non_spec_target");
       expect(warnings[0].message).toContain("@task-example");
       expect(warnings[0].message).toContain("not a spec item or trait");
+      expect(warnings[0].details).toContain("/tmp/test.test.ts:5");
     });
 
     it("should warn when ref resolves to a task even without specific AC ids", () => {
@@ -709,6 +729,7 @@ it('invalid trait AC ref', () => {});
 
       expect(warnings).toHaveLength(1);
       expect(warnings[0].type).toBe("invalid_ac_annotation");
+      expect(warnings[0].subtype).toBe("non_spec_target");
       expect(warnings[0].message).toContain("not a spec item or trait");
     });
   });

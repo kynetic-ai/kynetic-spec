@@ -473,19 +473,39 @@ function formatCompletenessWarnings(warnings: CompletenessWarning[], verbose: bo
     }
   }
 
-  // Invalid AC annotations in test files
+  // Invalid AC annotations in test files — grouped by subtype for actionable repair
   const invalidAnnotations = warnings.filter((w) => w.type === "invalid_ac_annotation");
   if (invalidAnnotations.length > 0) {
     console.log(chalk.yellow(`  Invalid AC annotations: ${invalidAnnotations.length}`));
-    const shown = verbose ? invalidAnnotations : invalidAnnotations.slice(0, 5);
-    for (const w of shown) {
-      console.log(chalk.yellow(`    ! ${w.message}`));
-      if (w.details) {
-        console.log(chalk.gray(`      ${w.details}`));
-      }
+
+    const subtypeLabels: Record<string, string> = {
+      unresolved_target: "Unresolved targets",
+      non_spec_target: "Non-spec/trait targets",
+      missing_ac_id: "Missing AC ids",
+      blanket_ref: "Blanket refs (no coverage credit)",
+    };
+
+    const grouped = new Map<string, typeof invalidAnnotations>();
+    for (const w of invalidAnnotations) {
+      const key = w.subtype ?? "other";
+      const list = grouped.get(key) ?? [];
+      list.push(w);
+      grouped.set(key, list);
     }
-    if (!verbose && invalidAnnotations.length > 5) {
-      console.log(chalk.gray(`    ... and ${invalidAnnotations.length - 5} more`));
+
+    for (const [subtype, group] of grouped) {
+      const label = subtypeLabels[subtype] ?? subtype;
+      console.log(chalk.yellow(`    ${label}: ${group.length}`));
+      const shown = verbose ? group : group.slice(0, 3);
+      for (const w of shown) {
+        console.log(chalk.yellow(`      ! ${w.message}`));
+        if (w.details) {
+          console.log(chalk.gray(`        ${w.details}`));
+        }
+      }
+      if (!verbose && group.length > 3) {
+        console.log(chalk.gray(`      ... and ${group.length - 3} more`));
+      }
     }
   }
 }
