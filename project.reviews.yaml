@@ -164931,6 +164931,19 @@ reviews:
         runner: kspec
         created_at: 2026-04-24T21:39:50.228Z
         completed_at: 2026-04-24T21:39:50.228Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit 1. The runner did not execute the suite: it detected missing direct dependency
+          pagefind, attempted dependency repair with npm ci, and still reported pagefind missing
+          from node_modules. I also reran npm ci separately; it exited 0 but node_modules/pagefind
+          remained absent."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-24T21:47:31.255Z
+        completed_at: 2026-04-24T21:47:31.255Z
     events:
       - _ulid: 01KQ0PJZCGQN5V6CNYMYN5Z49E
         actor: Jacob Chapel
@@ -164980,6 +164993,13 @@ reviews:
           status: fail
           name: kspec validate --completeness
         timestamp: 2026-04-24T21:39:51.580Z
+      - _ulid: 01KQ0QCPMJ1QP6DVYGBP9YGN7F
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-04-24T21:47:32.370Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
     lifecycle_state: open
@@ -165032,5 +165052,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T21:33:29.361Z
-    updated_at: 2026-04-24T21:39:50.228Z
+    updated_at: 2026-04-24T21:47:31.255Z
     notes: []
