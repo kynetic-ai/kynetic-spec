@@ -59,7 +59,7 @@ description: >-
 spec_ref: null
 meta_ref: null
 plan_ref: "@cruft-01-spec-catalog-health-seed"
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -69,6 +69,18 @@ tags:
   - planning
   - spec-hygiene
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      started_at:
+        new: 2026-04-24T18:54:33.097Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-24T18:54:33.098Z
 created_at: 2026-04-24T18:48:16.267Z
+started_at: 2026-04-24T18:54:33.097Z
 todos: []
 automation: manual_only
