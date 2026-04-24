@@ -165706,6 +165706,19 @@ reviews:
         runner: npm test
         created_at: 2026-04-24T23:33:35.897Z
         completed_at: 2026-04-24T23:33:35.897Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run dev -- task list --json returned TaskDataManagerError: No storage backend
+          registered for format split; npm run dev -- validate --refs --json exited successfully
+          with stats.tasksChecked=0 and no refErrors, showing the resolver catch silently abandoned
+          the canonical path."
+        name: source CLI canonical validation probe
+        required: true
+        runner: npm run dev
+        created_at: 2026-04-24T23:33:45.349Z
+        completed_at: 2026-04-24T23:33:45.349Z
     events:
       - _ulid: 01KQ0WQZ9MSQ82RZHA3010YHZV
         actor: Jacob Chapel
@@ -165734,6 +165747,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-24T23:33:37.073Z
+      - _ulid: 01KQ0XF7B1CEYZ67S5BGQFVXSJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: source CLI canonical validation probe
+        timestamp: 2026-04-24T23:33:46.465Z
     examined_commit: 2525fa93d58103ccf02f77efbcd4140c542d491a
     external_links: []
     lifecycle_state: open
@@ -165769,5 +165789,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T23:21:04.564Z
-    updated_at: 2026-04-24T23:33:35.897Z
+    updated_at: 2026-04-24T23:33:45.349Z
     notes: []
