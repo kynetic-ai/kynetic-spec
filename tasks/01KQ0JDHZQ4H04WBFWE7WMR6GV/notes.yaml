@@ -71,3 +71,27 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-24T21:48:20.366Z
+  - _ulid: 01KQ0V3J6G44P2YGF4WDEWMZTN
+    content: >-
+      Fix cycle 1: Addressed both review blockers.
+
+
+      1. @task-recursive-derive (blocker): Previously left with spec_ref=null as 'already repaired'.
+      Reviewer correctly identified this is a completed implementation task for current derive
+      behavior, not historical work. Retargeted spec_ref to @derive-commands — the current feature
+      spec that owns derive command behavior. The @cmd-derive slug was the old spec that got
+      renamed/reorganized into @derive-commands and @derive-command.
+
+
+      2. @implement-session-branch-worktree-mode (blocker): Previously retargeted to
+      @session-events, but @session-events ac-7 only covers commit-boundary behavior. The task
+      implemented broader session branch worktree functionality: init, status, repair, sync, and
+      lifecycle commits. Created new behavioral spec @session-branch-worktree under @shadow-branch
+      module with 5 ACs matching the implemented behavior (ac-init, ac-status, ac-repair,
+      ac-commit-boundaries, ac-sync). Retargeted spec_ref to @session-branch-worktree.
+
+
+      Validation: kspec validate --refs --warnings-ok passes clean. Tests running.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-24T22:52:27.216Z
