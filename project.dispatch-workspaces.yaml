@@ -8962,7 +8962,7 @@ workspaces:
         head: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
         last_seen_at: 2026-04-24T20:50:48.852Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-catalog-health-baseline-01kq0jdh
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     bootstrap:
       status: succeeded
@@ -9444,7 +9444,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-24T21:32:31.866Z
+      updated_at: 2026-04-24T21:33:01.329Z
     integration:
       status: pending
       detail: null
@@ -9459,10 +9459,10 @@ workspaces:
     task_slug: task-repair-broken-spec-refs
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-24T21:16:36.159Z
-      last_reconciled_at: 2026-04-24T21:32:31.866Z
+      last_active_at: 2026-04-24T21:33:01.329Z
+      last_reconciled_at: 2026-04-24T21:33:01.329Z
       created_at: 2026-04-24T21:16:09.503Z
-      updated_at: 2026-04-24T21:32:58.475Z
+      updated_at: 2026-04-24T21:33:01.329Z
     workspace_id: dispatch-workspace-01KQ0JDHZQ4H04WBFWE7WMR6GV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
