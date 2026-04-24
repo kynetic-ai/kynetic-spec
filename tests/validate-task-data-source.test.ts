@@ -380,6 +380,49 @@ ${includesLine}
     });
 
     // AC: @validation-task-data-source ac-task-load-errors-reported
+    // Regression: resolveTaskDataManager() errors must not silently fall back
+    // to legacy findTaskFiles(). A split-format project where the resolver
+    // succeeds but loadAllTasks() fails due to unmigrated data should surface
+    // validation errors, not silently report tasksChecked: 0 while the legacy
+    // path finds no tasks. This was the exact scenario reproduced in review
+    // cycle 2 — `task list --json` threw TaskDataManagerError but `validate
+    // --refs --json` exited successfully with 0 tasks and no ref errors.
+    it("does not silently fall back to legacy path when canonical task loading fails for split-format project", async () => {
+      const unmigratedUlid = testUlid("UNM02");
+
+      // Create a split-format project where the canonical TDM will fail:
+      // project.tasks.yaml has full records (unmigrated) but no per-task dirs.
+      const specDir = path.join(tmpDir, "spec");
+      await fs.mkdir(specDir, { recursive: true });
+      await fs.writeFile(
+        path.join(tmpDir, "kynetic.yaml"),
+        `kynetic: "1.1"\ntask_storage:\n  format: split\nproject:\n  name: resolver-fallback-test\n  version: 0.1.0\n`,
+      );
+      await fs.writeFile(
+        path.join(tmpDir, "project.tasks.yaml"),
+        `- _ulid: ${unmigratedUlid}\n  slugs:\n    - task-should-not-silently-vanish\n  title: "Task That Must Not Vanish"\n  status: pending\n  priority: 3\n  depends_on: []\n  spec_ref: "@nonexistent-spec"\n  notes: []\n  created_at: "2026-01-01T00:00:00Z"\n`,
+      );
+
+      // Run ref validation (the mode that triggered the original bug)
+      const result = kspec("validate --refs --json", tmpDir);
+      const parsed = JSON.parse(result.stdout);
+
+      // The old code would silently fall back to findTaskFiles(), which
+      // finds project.tasks.yaml, parses it as legacy, and reports 0 tasks
+      // because the legacy path expects a different format. The fix ensures
+      // the canonical path error is surfaced instead.
+      const hasSchemaError = (parsed.schemaErrors ?? []).length > 0;
+      const hasTaskLoadError = (parsed.schemaErrors ?? []).some(
+        (e: { message: string }) =>
+          e.message.includes("migrated") || e.message.includes("Task data manager"),
+      );
+
+      // Must have surfaced an error — not silently succeeded with 0 tasks
+      expect(hasSchemaError).toBe(true);
+      expect(hasTaskLoadError).toBe(true);
+    });
+
+    // AC: @validation-task-data-source ac-task-load-errors-reported
     it("still loads valid tasks alongside malformed ones", async () => {
       const goodUlid = testUlid("GOOD1");
       const badUlid = testUlid("BAD01");

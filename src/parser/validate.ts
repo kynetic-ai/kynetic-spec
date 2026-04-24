@@ -2300,17 +2300,24 @@ export async function validate(
   // Load tasks via canonical TaskDataManager read path when split storage is available.
   // AC: @validation-task-data-source ac-all-persisted-tasks-included
   // This ensures validation sees the same tasks that CLI, API, and dispatch consumers see.
-  let usedCanonicalPath = false;
-  let tdm: ReturnType<typeof resolveTaskDataManager> | null = null;
-  try {
-    tdm = resolveTaskDataManager(ctx);
-  } catch {
-    // resolveTaskDataManager throws for legacy projects (kynetic <1.1 without split storage)
-    // — fall through to legacy path below
-  }
+  //
+  // Legacy detection: check the manifest condition directly rather than catching
+  // resolveTaskDataManager() errors. Only kynetic <1.1 projects without split storage
+  // should use the legacy findTaskFiles() fallback. All other errors — including
+  // TaskDataManager resolver or backend failures — must be surfaced as validation
+  // findings so validation never silently diverges from the canonical task data source.
+  const kyneticVersion = ctx.manifest?.kynetic;
+  const storageFormat = ctx.manifest?.task_storage?.format;
+  const isLegacyProject =
+    kyneticVersion !== undefined &&
+    storageFormat !== "split" &&
+    parseFloat(kyneticVersion) < 1.1;
 
-  if (tdm) {
+  let usedCanonicalPath = false;
+
+  if (!isLegacyProject) {
     try {
+      const tdm = resolveTaskDataManager(ctx);
       const loadedTasks = await tdm.loadAllTasks(ctx);
       for (const task of loadedTasks) {
         allTasks.push(task);
@@ -2319,9 +2326,9 @@ export async function validate(
       usedCanonicalPath = true;
     } catch (err) {
       // AC: @validation-task-data-source ac-task-load-errors-reported
-      // Split project with data integrity issues (e.g., unmigrated tasks).
-      // Surface as a validation finding — do NOT fall back to legacy path,
-      // which would silently diverge from the canonical task data source.
+      // Surface resolver AND load errors as validation findings — do NOT
+      // fall back to legacy path, which would silently diverge from the
+      // canonical task data source.
       usedCanonicalPath = true;
       const message =
         err instanceof TaskDataManagerError
