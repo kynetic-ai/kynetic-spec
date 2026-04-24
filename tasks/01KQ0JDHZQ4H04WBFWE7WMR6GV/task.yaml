@@ -46,7 +46,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-spec-catalog-health-and-validation-trust"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-catalog-health-baseline"
@@ -66,7 +66,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KQ0NM1K096MXZ2GD755BYPA7
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -115,6 +115,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-24T21:33:32.568Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KQ0NM1K096MXZ2GD755BYPA7
+    command: review-verdict-needs-work
+    timestamp: 2026-04-24T21:48:20.366Z
 created_at: 2026-04-24T20:20:37.495Z
 started_at: 2026-04-24T21:17:01.532Z
 submitted_at: 2026-04-24T21:31:59.720Z

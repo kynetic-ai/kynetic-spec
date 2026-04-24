@@ -27088,7 +27088,7 @@
   title: Repair broken task spec references
   type: task
   plan_ref: "@plan-spec-catalog-health-and-validation-trust"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-catalog-health-baseline"
@@ -27098,7 +27098,7 @@
     - refs
     - spec-hygiene
   review_ref: "@01KQ0PJZCH78WBN9PN2CS9S5CA"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-04-24T20:20:37.495Z
   started_at: 2026-04-24T21:17:01.532Z
