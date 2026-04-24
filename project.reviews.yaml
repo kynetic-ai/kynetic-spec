@@ -164918,6 +164918,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQ0PXE3XCA5X05MY203ZAZAY
         timestamp: 2026-04-24T21:39:13.864Z
+      - _ulid: 01KQ0PXMKVA1K9G0VPCJN5Y9H4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ0PXJY7KY9D31XHS938WHCR
+        timestamp: 2026-04-24T21:39:18.779Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
     lifecycle_state: open
@@ -164948,7 +164955,27 @@ reviews:
               unowned.'
             created_at: 2026-04-24T21:39:12.127Z
         kind: blocker
+      - _ulid: 01KQ0PXJY7KY9D31XHS938WHCR
+        anchor:
+          type: structured
+          field: spec_ref
+          ref: "@implement-session-branch-worktree-mode"
+          section: task_records
+        entries:
+          - _ulid: 01KQ0PXJY7DSWY1HFAKCREZ0W3
+            author: Jacob Chapel
+            body: 'MUST-FIX: @implement-session-branch-worktree-mode was retargeted to @session-events, but
+              @session-events ac-7 only covers commit-boundary behavior. The completed task
+              implemented broader current behavior: branch worktree initialization, status, repair,
+              sync, and lifecycle commits. Evidence: src/parser/session-branch.ts line 8 and
+              tests/session-branch-worktree.test.ts lines 4 and 53-57 still claim coverage for
+              @session-branch-worktree, and kspec search "session branch" found no current spec
+              other than @session-events plus the old completed task. This should be retargeted to
+              an adequate current spec or paired with a recreated behavioral spec; @session-events
+              ac-7 alone is not an adequate owner for the full task.'
+            created_at: 2026-04-24T21:39:17.063Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-24T21:33:29.361Z
-    updated_at: 2026-04-24T21:39:12.127Z
+    updated_at: 2026-04-24T21:39:17.063Z
     notes: []
