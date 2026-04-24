@@ -31927,9 +31927,22 @@ runs:
     completed_at: 2026-04-24T22:07:38.347Z
   - _ulid: 01KQ0VG73FWZDPGVFPQ7AYHR0N
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-24T22:59:21.839Z
+        completed_at: 2026-04-24T23:00:04.854Z
+        notes: "What worked well: detached review snapshot plus first-party review records gave a clean
+          audit trail. Reading the diff before worker notes helped find the important edge case.
+          Using an awaiter for npm test let the required full suite run to completion without
+          blocking the rest of the review bookkeeping. The code-anchored blocker included a concrete
+          reproduction, so the fix-cycle worker has a specific failure mode to verify."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-24T23:00:04.854Z
+        completed_at: 2026-04-24T23:00:04.854Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T22:59:21.839Z
