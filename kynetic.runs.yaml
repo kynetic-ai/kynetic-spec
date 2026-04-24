@@ -31984,9 +31984,22 @@ runs:
     completed_at: 2026-04-24T23:00:47.099Z
   - _ulid: 01KQ0WNDXK4KSEH7TCG1Q3DKZB
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-24T23:19:41.235Z
+        completed_at: 2026-04-24T23:20:34.718Z
+        notes: "What worked well: The detached review flow was effective once anchored to first-party
+          records: reading the prior review before judging the fix cycle made the two blocker
+          resolutions concrete. The supported merge helper cleanly handled the no-op integration
+          case. Independent task spec_ref auditing with kspec task list plus the item index
+          complemented kspec validate --refs, which currently reports Tasks checked: 0."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-24T23:20:34.718Z
+        completed_at: 2026-04-24T23:20:34.718Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T23:19:41.235Z
