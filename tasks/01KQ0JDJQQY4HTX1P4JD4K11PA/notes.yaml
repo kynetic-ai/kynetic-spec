@@ -1,1 +1,50 @@
-notes: []
+notes:
+  - _ulid: 01KQ0QWTP846HE4ZTYYA7GS2DF
+    content: >-
+      Approach: Replace bespoke task-loading in validate() (lines 2215-2251) with
+      TaskDataManager.loadAllTasks().
+
+
+      Current problem: validate() uses findTaskFiles(ctx.rootDir) which finds *.tasks.yaml files. In
+      split storage, those files only contain lean index entries (notes_count instead of notes
+      array), so TaskSchema.safeParse() fails and Tasks checked: 0.
+
+
+      Plan:
+
+      1. Replace the findTaskFiles + inline YAML parsing block with
+      resolveTaskDataManager(ctx).loadAllTasks(ctx) plus a new validateTaskRecords() function for
+      per-task schema errors
+
+      2. For schema validation of per-task files: iterate listTaskDirs(ctx), read task.yaml raw,
+      safeParse with TaskSchema, report errors with task ULID and file path
+
+      3. For task loading (ref validation, orphan detection, completeness): use loadAllTasks()
+      result directly, ensuring _sourceFile is populated
+
+      4. For malformed task records (AC ac-task-load-errors-reported): create a new
+      loadAllTasksWithErrors() helper or iterate per-task dirs in validate and report parse failures
+      as SchemaValidationErrors
+
+      5. Keep stats.tasksChecked accurate by counting successfully loaded tasks plus error'd ones
+
+
+      Edge cases:
+
+      - Split storage with notes.yaml missing (should still load, notes=[])
+
+      - Malformed task.yaml (should produce schema error, not silently skip)
+
+      - Empty tasks/ directory (should report 0 tasks, no errors)
+
+
+      Test plan: 3 ACs × 2+ tests each
+
+      - ac-all-persisted-tasks-included: split tasks loaded, multiple tasks counted
+
+      - ac-task-references-checked: task spec_ref/depends_on contribute to ref validation findings
+
+      - ac-task-load-errors-reported: malformed task.yaml produces validation finding
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-24T21:56:20.809Z
