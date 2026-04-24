@@ -165510,6 +165510,19 @@ reviews:
         runner: kspec
         created_at: 2026-04-24T23:18:03.600Z
         completed_at: 2026-04-24T23:18:03.600Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec task list --json plus kspec item list --json --limit 10000 with ULID-prefix
+          matching: 1415 tasks, 606 items, 0 unresolved task spec_ref values. Watched old refs
+          @cmd-derive and @session-remove-shadow-commits have no task matches;
+          @session-branch-worktree now resolves."
+        name: task spec_ref resolution audit
+        required: true
+        runner: node+kspec
+        created_at: 2026-04-24T23:18:09.086Z
+        completed_at: 2026-04-24T23:18:09.086Z
     events:
       - _ulid: 01KQ0VT28Q4HFTYDJ8Z500SPCE
         actor: Jacob Chapel
@@ -165531,6 +165544,13 @@ reviews:
           status: pass
           name: kspec validate --refs --warnings-ok
         timestamp: 2026-04-24T23:18:04.734Z
+      - _ulid: 01KQ0WJMZ25F03MFGVT6NH52RC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: task spec_ref resolution audit
+        timestamp: 2026-04-24T23:18:10.146Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
     lifecycle_state: open
@@ -165543,5 +165563,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-24T23:04:44.567Z
-    updated_at: 2026-04-24T23:18:03.600Z
+    updated_at: 2026-04-24T23:18:09.086Z
     notes: []
