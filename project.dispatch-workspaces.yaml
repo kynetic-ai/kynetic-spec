@@ -9473,7 +9473,7 @@ workspaces:
         head: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
         last_seen_at: 2026-04-24T21:41:19.698Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-repair-broken-spec-refs-01kq0jdh
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     bootstrap:
       status: succeeded
@@ -9971,9 +9971,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-24T21:49:00.442Z
-      last_reconciled_at: 2026-04-24T22:05:04.550Z
+      last_reconciled_at: 2026-04-24T22:07:55.986Z
       created_at: 2026-04-24T21:33:06.582Z
-      updated_at: 2026-04-24T22:05:05.460Z
+      updated_at: 2026-04-24T22:07:55.986Z
     workspace_id: dispatch-workspace-01KQ0JDJBHHP02T25Y6M2NZES7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
