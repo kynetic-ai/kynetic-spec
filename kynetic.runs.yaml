@@ -32142,9 +32142,20 @@ runs:
     started_at: 2026-04-24T23:55:51.255Z
   - _ulid: 01KQ0YRXEM5S89HAY7BNVQAK0Y
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-24T23:56:32.597Z
+        completed_at: 2026-04-24T23:57:08.198Z
+        notes: "Gate check: Session had meaningful work. Fix cycle 2 for task @01KQ0JDJQQY4HTX1P4JD4K11PA —
+          addressed blocker about resolveTaskDataManager() errors silently falling back to legacy
+          path. One commit (1f8ec9605), 2 files changed, all tests pass."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-24T23:57:08.198Z
+        completed_at: 2026-04-24T23:57:08.198Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-24T23:56:32.597Z
