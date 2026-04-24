@@ -107,9 +107,15 @@ export interface TraitCycleError {
 /**
  * Completeness warning
  */
+export type InvalidAnnotationSubtype =
+  | "unresolved_target"
+  | "non_spec_target"
+  | "missing_ac_id"
+  | "blanket_ref";
+
 export interface CompletenessWarning {
   type: CompletenessWarningType;
-  subtype?: "own_ac" | "trait_ac";
+  subtype?: "own_ac" | "trait_ac" | InvalidAnnotationSubtype;
   itemRef: string;
   itemTitle: string;
   message: string;
@@ -1133,47 +1139,54 @@ export function validateACAnnotations(
     const { specRef, acIds, file, line } = annotation;
     const relFile = path.basename(file);
 
+    // AC: @ac-annotation-integrity-reporting ac-unresolved-target-reported
     // Check if the reference resolves
     const result = index.resolve(specRef);
     if (!result.ok) {
       warnings.push({
         type: "invalid_ac_annotation",
+        subtype: "unresolved_target",
         itemRef: specRef,
         itemTitle: `${relFile}:${line}`,
-        message: `AC annotation references '${specRef}' which cannot be resolved`,
+        message: `Unresolved target: '${specRef}' cannot be resolved`,
         details: `${file}:${line}`,
       });
       continue;
     }
 
+    // AC: @ac-annotation-integrity-reporting ac-non-spec-target-reported
     // Find the resolved item in our loaded spec items
     const item = items.find((i) => i._ulid === result.ulid);
     if (!item) {
       // Resolved to a non-spec item (task, plan, meta) — AC annotations must target spec items or traits
       warnings.push({
         type: "invalid_ac_annotation",
+        subtype: "non_spec_target",
         itemRef: specRef,
         itemTitle: `${relFile}:${line}`,
-        message: `AC annotation references '${specRef}' which resolves but is not a spec item or trait`,
+        message: `Invalid coverage target: '${specRef}' resolves but is not a spec item or trait`,
         details: `${file}:${line}`,
       });
       continue;
     }
 
+    // AC: @ac-annotation-integrity-reporting ac-blanket-ref-does-not-cover
     if (acIds.length === 0) {
       const hasAcceptanceCriteria = (item.acceptance_criteria?.length ?? 0) > 0;
       if (hasAcceptanceCriteria) {
         warnings.push({
           type: "invalid_ac_annotation",
+          subtype: "blanket_ref",
           itemRef: specRef,
           itemTitle: `${relFile}:${line}`,
-          message: `AC annotation references '${specRef}' without explicit ac-* ids; blanket refs do not count for completeness coverage`,
+          message: `Blanket ref: '${specRef}' without explicit ac-* ids does not count for coverage`,
           details: `${file}:${line}`,
         });
       }
       continue;
     }
 
+    // AC: @ac-annotation-integrity-reporting ac-missing-ac-id-reported
     const existingACs = new Set((item.acceptance_criteria || []).map((ac) => ac.id));
 
     for (const acId of acIds) {
@@ -1181,9 +1194,10 @@ export function validateACAnnotations(
         const itemRef = item.slugs?.[0] ? `@${item.slugs[0]}` : `@${index.shortUlid(item._ulid)}`;
         warnings.push({
           type: "invalid_ac_annotation",
+          subtype: "missing_ac_id",
           itemRef,
           itemTitle: `${relFile}:${line}`,
-          message: `AC annotation references '${specRef} ${acId}' but ${itemRef} has no acceptance criterion '${acId}'`,
+          message: `Missing AC: '${specRef} ${acId}' — ${itemRef} has no acceptance criterion '${acId}'`,
           details: `${file}:${line}`,
         });
       }
