@@ -48,3 +48,42 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-24T21:56:20.809Z
+  - _ulid: 01KQ0TNQ63JKKND1J80WSZ5BMT
+    content: >-
+      Implementation complete.
+
+
+      Changes:
+
+      1. src/parser/validate.ts: Replaced bespoke findTaskFiles() + inline YAML parsing with
+      TaskDataManager.loadAllTasks() for split storage projects. Added validatePerTaskFiles()
+      function that iterates per-task directories (tasks/<ULID>/task.yaml) and reports schema errors
+      for malformed records. Legacy kynetic <1.1 projects fall back to the original findTaskFiles
+      path.
+
+
+      2. tests/validate-task-data-source.test.ts: New test file with 9 behavioral tests covering all
+      3 ACs:
+         - ac-all-persisted-tasks-included (3 tests): split-storage tasks counted, human-readable output, zero-task case
+         - ac-task-references-checked (3 tests): dangling spec_ref detected, dangling depends_on detected, valid refs resolve cleanly
+         - ac-task-load-errors-reported (3 tests): malformed task.yaml produces schema errors, invalid YAML detected, valid tasks load alongside malformed ones
+
+      3. tests/automation-eligibility.test.ts: Updated 5 tests that manually patched
+      project.tasks.yaml (lean index only) to also patch per-task task.yaml, ensuring tests work
+      with the canonical read path.
+
+
+      Key design decisions:
+
+      - Split storage projects use TaskDataManager.loadAllTasks() (canonical path)
+
+      - Legacy projects (kynetic <1.1 without split format) use findTaskFiles fallback
+
+      - validatePerTaskFiles() mirrors split backend assembly logic (task.yaml + notes.yaml, strip
+      history) for schema validation
+
+      - Malformed per-task records produce structured SchemaValidationError with file path and ULID
+      context
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-24T22:44:53.571Z
