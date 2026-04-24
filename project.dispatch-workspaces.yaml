@@ -10498,7 +10498,7 @@ workspaces:
         head: 2525fa93d58103ccf02f77efbcd4140c542d491a
         last_seen_at: 2026-04-24T23:40:19.918Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validation-task-data-manager-read-path-01kq0jdj
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     bootstrap:
       status: succeeded
@@ -10981,7 +10981,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-24T23:40:46.752Z
+      updated_at: 2026-04-24T23:41:13.268Z
     integration:
       status: pending
       detail: null
@@ -10996,10 +10996,10 @@ workspaces:
     task_slug: task-ac-annotation-integrity-reporting
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-24T23:20:54.958Z
-      last_reconciled_at: 2026-04-24T23:40:46.752Z
+      last_active_at: 2026-04-24T23:41:13.268Z
+      last_reconciled_at: 2026-04-24T23:41:13.268Z
       created_at: 2026-04-24T23:20:30.854Z
-      updated_at: 2026-04-24T23:41:11.096Z
+      updated_at: 2026-04-24T23:41:13.268Z
     workspace_id: dispatch-workspace-01KQ0JDK3ATZENMNT3TQADSTQB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
