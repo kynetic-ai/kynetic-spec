@@ -165938,6 +165938,25 @@ reviews:
         runner: npm
         created_at: 2026-04-24T23:54:19.304Z
         completed_at: 2026-04-24T23:54:19.304Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/parser/validate.ts, src/cli/commands/validate.ts,
+          tests/ac-annotation-validation.test.ts, API/shared validation type consumers. Commands
+          run: git diff/stat/status, kspec task get, kspec item get, kspec review for-task, rg AC
+          annotations, kspec validate --completeness, kspec validate --completeness --warnings-ok,
+          npm run dev -- validate --completeness --warnings-ok, npm test -- --run
+          tests/ac-annotation-validation.test.ts, npm test, npm run typecheck, git diff --check.
+          Claims verified: all 5 ACs have annotated behavioral tests; dev validate groups all
+          invalid annotation subtypes with file/line/target details; full suite and typecheck pass.
+          Categories searched: correctness, edge cases, error handling, test quality,
+          integration/API consumers."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-04-24T23:54:33.721Z
+        completed_at: 2026-04-24T23:54:33.721Z
     events:
       - _ulid: 01KQ0XYS1Z19292T5B32XS0RPG
         actor: Jacob Chapel
@@ -165987,6 +166006,13 @@ reviews:
           status: pass
           name: dev validate grouping
         timestamp: 2026-04-24T23:54:20.402Z
+      - _ulid: 01KQ0YNADGX1CSW6FVSTWR1VNV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-24T23:54:34.800Z
     examined_commit: 0dd8bca6567e320c7861b5213bf35cfe6f6c0354
     external_links: []
     lifecycle_state: open
@@ -165999,5 +166025,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-24T23:42:16.127Z
-    updated_at: 2026-04-24T23:54:19.304Z
+    updated_at: 2026-04-24T23:54:33.721Z
     notes: []
