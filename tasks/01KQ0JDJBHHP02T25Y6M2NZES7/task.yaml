@@ -1,0 +1,61 @@
+_ulid: 01KQ0JDJBHHP02T25Y6M2NZES7
+slugs:
+  - task-remove-live-test-trait
+title: Remove live test-only trait from production catalog
+type: task
+description: |
+  Remove or relocate the live @01KJN1WT Test Trait item so fixture-only
+  data no longer appears in production completeness validation.
+
+  Why: The live project catalog currently contains a trait described as
+  test-only fixture data. It lacks ACs and creates completeness debt
+  that does not represent product behavior.
+
+  Baseline input:
+  This task depends on @task-catalog-health-baseline. Before changing
+  trait/catalog records, read the ephemeral baseline artifact written by
+  that task at
+  plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md.
+  That ignored root-checkout file is allowed input for this task even
+  though it is not committed or synced into task workspaces. Use it only
+  as starting-state evidence and before/after comparison data. If the
+  artifact is missing, stale, or inaccessible, rerun the baseline
+  commands listed in @task-catalog-health-baseline and add a task note
+  with the regenerated results before proceeding.
+
+  What:
+  - Inspect @01KJN1WT / Test Trait and any references to it.
+  - Confirm whether it is only fixture/test machinery.
+  - If it is fixture-only, remove it from the live catalog using kspec
+    commands and keep any necessary equivalent fixture data in tests.
+  - If it is real behavior, rename/rewrite it as a proper trait with
+    behavioral ACs instead of deleting it.
+  - Add a note documenting the decision.
+
+  How:
+  Use kspec item/trait commands, not manual .kspec YAML edits. Search
+  tasks, specs, and tests for references before deletion or rewrite.
+
+  Testing:
+  Run kspec validate --completeness and verify the missing-AC warning
+  for @01KJN1WT / Test Trait is gone or replaced by intentional trait
+  behavior with ACs.
+
+  Covers: @spec-completeness-policy ac-feature-required,
+  @spec-completeness ac-1.
+spec_ref: null
+plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-catalog-health-baseline"
+context: []
+priority: 1
+tags:
+  - validation
+  - traits
+  - spec-hygiene
+vcs_refs: []
+created_at: 2026-04-24T20:20:37.873Z
+todos: []

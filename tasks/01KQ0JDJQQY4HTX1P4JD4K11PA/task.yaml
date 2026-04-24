@@ -1,0 +1,66 @@
+_ulid: 01KQ0JDJQQY4HTX1P4JD4K11PA
+slugs:
+  - task-validation-task-data-manager-read-path
+title: Use canonical task data source during validation
+type: task
+description: |
+  Update validation so task-aware checks use the canonical task data
+  model instead of a separate task-file scan that can drift from normal
+  consumers.
+
+  Why: The validation trust baseline depends on validation seeing the
+  same tasks and task fields that CLI, API, dispatch, and other
+  consumers see.
+
+  Baseline input:
+  This task depends on @task-catalog-health-baseline. Before changing
+  validation behavior, read the ephemeral baseline artifact written by
+  that task at
+  plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md.
+  That ignored root-checkout file is allowed input for this task even
+  though it is not committed or synced into task workspaces. Use it only
+  as starting-state evidence and before/after comparison data. If the
+  artifact is missing, stale, or inaccessible, rerun the baseline
+  commands listed in @task-catalog-health-baseline and add a task note
+  with the regenerated results before proceeding.
+
+  What:
+  - Inspect src/parser/validate.ts around the current task loading path.
+  - Replace or wrap direct task-file discovery/parsing with the
+    canonical task data manager read path where appropriate.
+  - Preserve schema-error reporting for malformed task records.
+  - Ensure validation stats still report task counts and file/source
+    information useful for repair.
+  - Add regression tests covering split task storage, malformed task
+    records, and task reference fields.
+
+  How:
+  Use existing TaskDataManager helpers rather than duplicating task
+  storage rules in validate.ts. If schema validation still needs raw
+  file-level parsing, keep that path narrowly scoped and ensure task
+  reference/completeness checks consume canonical task data.
+
+  Testing:
+  Run focused tests covering validation, task data manager, and task
+  plan/spec refs. Use npm test -- --run <files>; do not invoke vitest
+  directly.
+
+  Covers: @validation-task-data-source ac-all-persisted-tasks-included,
+  @validation-task-data-source ac-task-references-checked,
+  @validation-task-data-source ac-task-load-errors-reported.
+spec_ref: "@validation-task-data-source"
+plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-catalog-health-baseline"
+context: []
+priority: 1
+tags:
+  - validation
+  - tasks
+  - parser
+vcs_refs: []
+created_at: 2026-04-24T20:20:38.263Z
+todos: []

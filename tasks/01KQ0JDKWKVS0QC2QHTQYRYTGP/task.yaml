@@ -1,0 +1,74 @@
+_ulid: 01KQ0JDKWKVS0QC2QHTQYRYTGP
+slugs:
+  - task-ac-annotation-repair-wave-one
+title: Repair first wave of invalid AC annotations
+type: task
+description: |
+  Classify and repair the first high-confidence wave of invalid AC
+  annotations after validation reporting and scan boundaries are clear.
+
+  Why: The plan should reduce immediate annotation noise without trying
+  to solve the entire long-tail completeness backlog that later cleanup
+  plans will handle.
+
+  Baseline input:
+  This task has indirect baseline dependency through its prerequisite
+  tasks. Before selecting repair candidates, read the ephemeral baseline
+  artifact at
+  plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md
+  if it exists. That ignored root-checkout file is allowed input for
+  this task even though it is not committed or synced into task
+  workspaces. Use the original baseline only as starting-state evidence;
+  select repairs from the current validation output after the reporting
+  and scan-boundary tasks have run. If the artifact is missing, stale,
+  or inaccessible, rerun the baseline commands listed in
+  @task-catalog-health-baseline and add a task note with the regenerated
+  results before proceeding.
+
+  What:
+  - Export current invalid_ac_annotation findings from
+    kspec validate --completeness -v.
+  - Classify each selected finding as unresolved target, non-spec/trait
+    target, missing AC id, blanket ref, shorthand/range form, or
+    intentionally excluded example.
+  - Repair high-confidence stale annotations in configured coverage
+    files by retargeting to the correct current spec/AC, splitting
+    blanket refs into explicit AC ids, or removing annotations that are
+    not real coverage claims.
+  - Leave low-confidence cases documented for later plans instead of
+    guessing.
+
+  How:
+  Work in small batches and preserve behavior of tests. Do not add new
+  specs solely to make stale annotations valid. If a finding reveals a
+  real missing spec, capture it as a follow-up unless it is required for
+  this validation-trust plan.
+
+  Testing:
+  Run affected tests and kspec validate --completeness. Verify invalid
+  annotation counts decrease and no repaired tests lose intended
+  coverage signal.
+
+  Supports: uses @ac-annotation-integrity-reporting
+  ac-unresolved-target-reported, ac-non-spec-target-reported,
+  ac-missing-ac-id-reported, and ac-blanket-ref-does-not-cover as the
+  classification taxonomy for repairing current catalog annotations.
+spec_ref: null
+plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-ac-annotation-integrity-reporting"
+  - "@task-coverage-annotation-scope-boundaries"
+  - "@task-repair-broken-spec-refs"
+  - "@task-remove-live-test-trait"
+context: []
+priority: 2
+tags:
+  - validation
+  - coverage
+  - spec-hygiene
+vcs_refs: []
+created_at: 2026-04-24T20:20:39.443Z
+todos: []

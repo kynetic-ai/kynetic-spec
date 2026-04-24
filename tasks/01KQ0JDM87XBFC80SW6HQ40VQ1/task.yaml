@@ -1,0 +1,66 @@
+_ulid: 01KQ0JDM87XBFC80SW6HQ40VQ1
+slugs:
+  - task-validation-trust-final-gate
+title: Final validation trust gate
+type: task
+description: |
+  Run the final validation gate for this implementation plan and record
+  the remaining validation-trust state.
+
+  Why: The plan is only successful if the project has a clearer
+  validation baseline and future cleanup work can trust the remaining
+  findings.
+
+  Baseline input:
+  Before final comparison, read the ephemeral baseline artifact at
+  plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md.
+  That ignored root-checkout file is allowed input for this task even
+  though it is not committed or synced into task workspaces. Use it as
+  the before-state for this plan's final before/after summary. If the
+  artifact is missing, stale, or inaccessible, rerun the baseline
+  commands listed in @task-catalog-health-baseline and explain in the
+  final task note that the before-state was regenerated.
+
+  What:
+  - Run:
+    - kspec validate --refs --warnings-ok
+    - kspec validate --alignment
+    - kspec validate --completeness
+    - focused npm test -- --run commands from prior tasks
+  - Record before/after counts for reference failures, alignment
+    warnings, missing AC warnings, missing own-AC coverage warnings,
+    and invalid annotation warnings.
+  - Document intentional remaining warning categories and the cleanup
+    area that owns each remaining category.
+  - Add notes to the tasks completed under this plan summarizing final
+    command results and any intentional deferrals.
+
+  How:
+  Treat this as the implementation closeout for this validation-trust
+  slice. Do not derive or implement later cleanup slices from here.
+
+  Testing:
+  Validation commands and focused test commands must be recorded in the
+  task notes. Any non-zero validation exit caused by remaining warnings
+  must be explained and assigned to a later cleanup slice.
+
+  Covers: final verification for @validation-task-data-source,
+  @ac-annotation-integrity-reporting, and
+  @coverage-annotation-scope-boundaries.
+spec_ref: null
+plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-validation-task-data-manager-read-path"
+  - "@task-ac-annotation-repair-wave-one"
+context: []
+priority: 2
+tags:
+  - validation
+  - review
+  - spec-hygiene
+vcs_refs: []
+created_at: 2026-04-24T20:20:39.815Z
+todos: []

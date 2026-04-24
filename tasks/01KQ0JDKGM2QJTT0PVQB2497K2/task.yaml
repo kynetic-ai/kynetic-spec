@@ -1,0 +1,66 @@
+_ulid: 01KQ0JDKGM2QJTT0PVQB2497K2
+slugs:
+  - task-coverage-annotation-scope-boundaries
+title: Enforce coverage annotation scan boundaries
+type: task
+description: |
+  Verify and harden the boundary between real coverage annotations and
+  annotation-like examples outside the configured coverage surface.
+
+  Why: This project contains parser examples and test fixtures that may
+  look like AC annotations. Completeness validation should only treat
+  annotations in configured, non-excluded coverage paths as coverage or
+  invalid-annotation debt.
+
+  Baseline input:
+  This task depends on @task-ac-annotation-integrity-reporting, which in
+  turn depends on @task-catalog-health-baseline. Before changing scan
+  boundaries, read the ephemeral baseline artifact at
+  plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md
+  if it exists. That ignored root-checkout file is allowed input for
+  this task even though it is not committed or synced into task
+  workspaces. Use it only as starting-state evidence and before/after
+  comparison data. If the artifact is missing, stale, or inaccessible,
+  rerun the baseline commands listed in @task-catalog-health-baseline
+  and add a task note with the regenerated results before proceeding.
+
+  What:
+  - Inspect kspec.config.yaml coverage.scan_paths and
+    coverage.exclude_patterns.
+  - Add or update tests proving scan paths are the only included
+    surface and excluded files are skipped.
+  - Confirm annotation-like text in excluded files does not create
+    coverage credit or invalid annotation findings.
+  - Adjust scanner behavior only if current behavior does not satisfy
+    the spec.
+
+  How:
+  Prefer configuration-driven tests over hardcoded project paths. Keep
+  examples in parser tests excluded if they are documentation for the
+  parser rather than real coverage claims.
+
+  Testing:
+  Run focused coverage-scan tests via npm test -- --run. Then run kspec
+  validate --completeness and confirm invalid annotation counts reflect
+  only configured, non-excluded coverage files.
+
+  Covers: @coverage-annotation-scope-boundaries ac-only-configured-paths-scanned,
+  @coverage-annotation-scope-boundaries ac-excluded-paths-skipped,
+  @coverage-annotation-scope-boundaries ac-skipped-annotations-no-credit,
+  @coverage-annotation-scope-boundaries ac-skipped-annotations-no-invalid-debt.
+spec_ref: "@coverage-annotation-scope-boundaries"
+plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-ac-annotation-integrity-reporting"
+context: []
+priority: 2
+tags:
+  - validation
+  - coverage
+  - config
+vcs_refs: []
+created_at: 2026-04-24T20:20:39.060Z
+todos: []

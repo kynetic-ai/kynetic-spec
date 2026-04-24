@@ -1,0 +1,64 @@
+_ulid: 01KQ0JDK3ATZENMNT3TQADSTQB
+slugs:
+  - task-ac-annotation-integrity-reporting
+title: Tighten AC annotation integrity reporting
+type: task
+description: |
+  Ensure invalid AC annotations produce precise repairable findings and
+  valid annotations provide coverage only for existing spec or trait ACs.
+
+  Why: Current invalid-annotation volume makes completeness validation
+  noisy. Workers need findings that identify exactly what to repair and
+  must not receive coverage credit for bad targets.
+
+  Baseline input:
+  This task depends on @task-catalog-health-baseline. Before changing AC
+  annotation reporting, read the ephemeral baseline artifact written by
+  that task at
+  plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md.
+  That ignored root-checkout file is allowed input for this task even
+  though it is not committed or synced into task workspaces. Use it only
+  as starting-state evidence and before/after comparison data. If the
+  artifact is missing, stale, or inaccessible, rerun the baseline
+  commands listed in @task-catalog-health-baseline and add a task note
+  with the regenerated results before proceeding.
+
+  What:
+  - Audit validateACAnnotations and related coverage-scan behavior.
+  - Ensure unresolved targets, non-spec/trait targets, missing AC ids,
+    and blanket refs against AC-bearing items are reported distinctly
+    enough to repair.
+  - Ensure valid annotations still count for the intended AC.
+  - Add focused tests for each reporting case.
+
+  How:
+  Keep parser examples and scan-scope behavior separate from integrity
+  reporting. This task should not mass-edit existing test annotations;
+  that is handled by the repair-wave task.
+
+  Testing:
+  Run focused validation/coverage tests via npm test -- --run. Also run
+  kspec validate --completeness and confirm invalid annotation findings
+  remain visible with file/line/target detail.
+
+  Covers: @ac-annotation-integrity-reporting ac-unresolved-target-reported,
+  @ac-annotation-integrity-reporting ac-non-spec-target-reported,
+  @ac-annotation-integrity-reporting ac-missing-ac-id-reported,
+  @ac-annotation-integrity-reporting ac-blanket-ref-does-not-cover,
+  @ac-annotation-integrity-reporting ac-valid-annotation-covers-target.
+spec_ref: "@ac-annotation-integrity-reporting"
+plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-catalog-health-baseline"
+context: []
+priority: 2
+tags:
+  - validation
+  - coverage
+  - ac-annotations
+vcs_refs: []
+created_at: 2026-04-24T20:20:38.634Z
+todos: []

@@ -42894,10 +42894,21 @@ plans:
       current plan derivation does not preserve automation metadata from plan
       YAML. Set automation status explicitly after derivation according to the
       approved execution strategy.
-    status: approved
+    status: active
     approved_at: 2026-04-24T20:18:41.079Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@validation-task-data-source"
+      - "@ac-annotation-integrity-reporting"
+      - "@coverage-annotation-scope-boundaries"
+    derived_tasks:
+      - "@task-catalog-health-baseline"
+      - "@task-repair-broken-spec-refs"
+      - "@task-remove-live-test-trait"
+      - "@task-validation-task-data-manager-read-path"
+      - "@task-ac-annotation-integrity-reporting"
+      - "@task-coverage-annotation-scope-boundaries"
+      - "@task-ac-annotation-repair-wave-one"
+      - "@task-validation-trust-final-gate"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/spec-catalog-health-validation-trust.md
     created_at: 2026-04-24T19:08:47.130Z
@@ -42934,3 +42945,73 @@ plans:
           @01KQ0HKVBVY6EGBGJTCHQFY29V approved the updated plan with gate passing."
         author: Jacob Chapel
         created_at: 2026-04-24T20:08:55.107Z
+      - _ulid: 01KQ0JDMNEXCP8XHVPMZYTTD97
+        content: |-
+          This plan was created from the non-derivable seed plan
+          `@cruft-01-spec-catalog-health-seed` under the program charter
+          `@cruft-cleanup-program-charter`. Those records are context only; this
+          plan must stand on its own for workers and reviewers.
+
+          Ephemeral baseline coordination:
+
+          - `@task-catalog-health-baseline` writes this plan's before-state report
+            to the root checkout's ignored plan workspace at
+            `plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md`.
+          - The baseline report is not a repo deliverable and should not be
+            committed. It exists only while this plan's tasks are being executed.
+          - Downstream tasks are explicitly allowed to read that root-checkout file
+            even when their derived task workspace does not contain the gitignored
+            `plans/` directory. If the file is unavailable, the task should rerun
+            the baseline commands recorded in `@task-catalog-health-baseline` and
+            note the regenerated before-state before making scope decisions.
+
+          Current baseline at plan drafting time:
+
+          - `kspec validate --refs --warnings-ok -v` exited 4 with four hard
+            reference failures:
+            - `@cmd-derive` in `.kspec/kynetic.tasks.yaml`
+            - `@session-remove-shadow-commits` in `.kspec/project.tasks.yaml`
+            - `@session-branch-worktree` in `.kspec/project.tasks.yaml` twice
+          - `kspec validate --alignment -v` exited 6 with warning output.
+          - `kspec validate --completeness -v` exited 6 with 491 warnings:
+            - 1 missing-AC item: `@01KJN1WT` / `Test Trait`
+            - 235 missing own-AC coverage warnings
+            - 255 invalid AC annotations
+
+          Known exact task candidates containing the hard missing refs include:
+
+          - `@task-recursive-derive` and/or `@01KJWK89Y` history for `@cmd-derive`;
+            current derivation specs include `@derive-command`, `@derive-commands`,
+            and plan-derive specs, so workers must inspect before retargeting.
+          - `@remove-shadowautocommit-from-session-operations` for
+            `@session-remove-shadow-commits`.
+          - `@implement-session-branch-worktree-mode` and the cancelled task
+            `@01KKBBS7` for `@session-branch-worktree`.
+
+          Overlap to manage before derivation:
+
+          - Existing approved plan `@plan-completeness-warning-debt-reduction` and
+            needs-work task `@task-plan-completeness-warning-debt-reduction` already
+            cover broad completeness warning reduction. This plan is narrower: it
+            only restores validation/reference/annotation trust and should not take
+            over the entire completeness backlog.
+          - Existing task `@task-triage-automation-eligible-missing-spec-ref` owns
+            automation-without-spec triage and is out of scope.
+
+          Dependency ordering:
+
+          1. Capture baseline first and write the ignored root-checkout baseline
+             artifact for downstream comparison.
+          2. Repair broken refs and Test Trait independently after baseline.
+          3. Tighten validation read/reporting behavior before mass annotation
+             repair.
+          4. Repair only high-confidence invalid annotations in this plan.
+          5. Run final validation gate and record the remaining validation-trust
+             state.
+
+          Task automation status is intentionally not encoded in this plan because
+          current plan derivation does not preserve automation metadata from plan
+          YAML. Set automation status explicitly after derivation according to the
+          approved execution strategy.
+        author: Jacob Chapel
+        created_at: 2026-04-24T20:20:40.238Z

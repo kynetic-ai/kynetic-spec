@@ -776,6 +776,71 @@ features:
             then: A summary is shown with counts by issue type (e.g., '3 items missing AC, 2 status mismatches')
             when: kspec validate --completeness runs
         tags: []
+        requirements:
+          - _ulid: 01KQ0JDHHXJAZGG0ECFED2VNHX
+            slugs:
+              - ac-annotation-integrity-reporting
+            title: AC Annotation Integrity Reporting
+            type: requirement
+            description: |
+              AC coverage annotations are only valid when they point at a spec item
+              or trait acceptance criterion that exists. Invalid annotations are
+              reported as repairable completeness findings and do not provide
+              coverage credit.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            acceptance_criteria:
+              - given: |
+                  A configured coverage scan path contains an AC annotation whose
+                  target reference cannot be resolved
+                id: ac-unresolved-target-reported
+                then: |
+                  An invalid-annotation finding identifies the target reference and
+                  the source location
+                when: |
+                  completeness validation runs
+              - given: |
+                  A configured coverage scan path contains an AC annotation whose
+                  target resolves to something other than a spec item or trait
+                id: ac-non-spec-target-reported
+                then: |
+                  An invalid-annotation finding identifies the target as an invalid
+                  coverage target and reports the source location
+                when: |
+                  completeness validation runs
+              - given: |
+                  A configured coverage scan path contains an AC annotation whose
+                  target spec or trait exists but whose AC id does not exist on that
+                  target
+                id: ac-missing-ac-id-reported
+                then: |
+                  An invalid-annotation finding identifies the target reference, the
+                  missing AC id, and the source location
+                when: |
+                  completeness validation runs
+              - given: |
+                  A configured coverage scan path contains an AC annotation that
+                  names a spec item or trait with acceptance criteria but does not
+                  name specific AC ids
+                id: ac-blanket-ref-does-not-cover
+                then: |
+                  The annotation does not count as coverage for that target
+                when: |
+                  completeness validation computes coverage
+              - given: |
+                  A configured coverage scan path contains an AC annotation that
+                  names an existing spec or trait AC
+                id: ac-valid-annotation-covers-target
+                then: |
+                  The named AC is treated as covered by that annotation
+                when: |
+                  completeness validation computes coverage
+            tags: []
+            created: 2026-04-24T20:20:37.053Z
+            notes: []
         created: 2026-01-16T13:44:30.558Z
       - _ulid: 01KF3H9Z7Z2C1AQBCM4BJT1BAZ
         slugs:
@@ -800,6 +865,49 @@ features:
           - dx
           - workflow
         created: 2026-01-16T13:53:20.127Z
+      - _ulid: 01KQ0JDHGKYPRN0QZH5W21MCAW
+        slugs:
+          - validation-task-data-source
+        title: Validation Task Data Source
+        type: requirement
+        description: |
+          Validation uses the same task data model that normal kspec consumers
+          use, so reference, schema, and completeness findings cover every
+          persisted task record regardless of the task storage layout.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A project contains persisted task records in the supported task
+              storage layout
+            id: ac-all-persisted-tasks-included
+            then: |
+              Every persisted task record is included in the validation task set
+            when: |
+              validation runs task-aware checks
+          - given: |
+              A persisted task contains a field that validation treats as a
+              reference
+            id: ac-task-references-checked
+            then: |
+              The reference contributes to validation findings with the task as
+              the source
+            when: |
+              reference validation runs
+          - given: |
+              A persisted task record cannot be parsed as a valid task
+            id: ac-task-load-errors-reported
+            then: |
+              A validation finding identifies the affected task record instead
+              of silently omitting it
+            when: |
+              validation runs
+        tags: []
+        created: 2026-04-24T20:20:37.011Z
+        notes: []
   - _ulid: 01JHNKA3W5VERS000000000000
     slugs:
       - versioning

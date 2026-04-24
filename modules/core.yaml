@@ -2157,6 +2157,54 @@ features:
         then: the guidance warning surfaces (coverage does not silently disappear)
         when: validation runs without coverage configuration
     tags: []
+    requirements:
+      - _ulid: 01KQ0JDHJHC8RT1853KA8ZFPBN
+        slugs:
+          - coverage-annotation-scope-boundaries
+        title: Coverage Annotation Scope Boundaries
+        type: requirement
+        description: |
+          AC coverage scanning is limited to the configured coverage surface.
+          Annotations outside configured scan paths or inside excluded paths do
+          not create coverage credit and do not create invalid-annotation debt.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A project has one or more coverage scan paths configured
+            id: ac-only-configured-paths-scanned
+            then: |
+              Only files under the configured scan paths are considered
+            when: |
+              completeness validation scans for AC annotations
+          - given: |
+              A configured coverage scan path contains files that match a
+              configured exclude pattern
+            id: ac-excluded-paths-skipped
+            then: |
+              Matching files are skipped
+            when: |
+              completeness validation scans for AC annotations
+          - given: |
+              A skipped file contains text that looks like an AC annotation
+            id: ac-skipped-annotations-no-credit
+            then: |
+              The skipped text produces no coverage credit
+            when: |
+              completeness validation runs
+          - given: |
+              A skipped file contains text that looks like an AC annotation
+            id: ac-skipped-annotations-no-invalid-debt
+            then: |
+              The skipped text produces no invalid annotation findings
+            when: |
+              completeness validation runs
+        tags: []
+        created: 2026-04-24T20:20:37.073Z
+        notes: []
     created: 2026-04-08T07:14:02.061Z
     notes: []
 modules:

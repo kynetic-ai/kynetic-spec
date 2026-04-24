@@ -1,0 +1,65 @@
+_ulid: 01KQ0JDHKHCBEZ7QN7ZZVF9ZVN
+slugs:
+  - task-catalog-health-baseline
+title: Capture validation trust baseline
+type: task
+description: |
+  Capture the current validation and overlap baseline before changing
+  the spec catalog or validation code.
+
+  Why: This plan exists to restore trust in validation output. Workers
+  need a concrete before/after baseline so improvements are measured
+  against current project state rather than the earlier audit snapshot.
+
+  What:
+  - Run and save current output for:
+    - kspec validate --refs --warnings-ok -v
+    - kspec validate --alignment -v
+    - kspec validate --completeness -v
+  - Record counts for hard reference failures, alignment warnings,
+    missing acceptance criteria warnings, missing own-AC coverage
+    warnings, and invalid AC annotations.
+  - Identify exact tasks that contain the unresolved spec refs
+    @cmd-derive, @session-remove-shadow-commits, and
+    @session-branch-worktree.
+  - Check overlap with @plan-completeness-warning-debt-reduction,
+    @task-plan-completeness-warning-debt-reduction, and
+    @task-triage-automation-eligible-missing-spec-ref.
+
+  How:
+  Use kspec CLI lookups and validation commands. Do not manually edit
+  .kspec YAML. Write the baseline report to this root checkout's ignored
+  plan workspace at:
+
+  plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md
+
+  This file is intentionally not committed and may not be present in
+  derived task workspaces. It is an ephemeral coordination artifact for
+  this plan's task sequence. After writing it, add a task note to this
+  task with the artifact path, timestamp, git revision, commands run,
+  and a short summary of the major finding categories.
+
+  Testing:
+  This task is discovery only. Verification is that the ignored baseline
+  artifact exists in the root checkout and the task note records command
+  output summaries, exact refs for follow-up tasks, and the artifact
+  path that downstream tasks are allowed to read.
+
+  Covers: planning/discovery for @validation-task-data-source,
+  @ac-annotation-integrity-reporting, and
+  @coverage-annotation-scope-boundaries.
+spec_ref: null
+plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - validation
+  - spec-hygiene
+  - audit
+vcs_refs: []
+created_at: 2026-04-24T20:20:37.105Z
+todos: []

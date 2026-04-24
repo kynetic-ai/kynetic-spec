@@ -27061,3 +27061,153 @@
   todos_count: 0
   created_at: 2026-04-24T18:48:21.772Z
   automation: manual_only
+- _ulid: 01KQ0JDHKHCBEZ7QN7ZZVF9ZVN
+  slugs:
+    - task-catalog-health-baseline
+  title: Capture validation trust baseline
+  type: task
+  plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - validation
+    - spec-hygiene
+    - audit
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-24T20:20:37.105Z
+- _ulid: 01KQ0JDHZQ4H04WBFWE7WMR6GV
+  slugs:
+    - task-repair-broken-spec-refs
+  title: Repair broken task spec references
+  type: task
+  plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-catalog-health-baseline"
+  priority: 1
+  tags:
+    - validation
+    - refs
+    - spec-hygiene
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-24T20:20:37.495Z
+- _ulid: 01KQ0JDJBHHP02T25Y6M2NZES7
+  slugs:
+    - task-remove-live-test-trait
+  title: Remove live test-only trait from production catalog
+  type: task
+  plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-catalog-health-baseline"
+  priority: 1
+  tags:
+    - validation
+    - traits
+    - spec-hygiene
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-24T20:20:37.873Z
+- _ulid: 01KQ0JDJQQY4HTX1P4JD4K11PA
+  slugs:
+    - task-validation-task-data-manager-read-path
+  title: Use canonical task data source during validation
+  type: task
+  spec_ref: "@validation-task-data-source"
+  plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-catalog-health-baseline"
+  priority: 1
+  tags:
+    - validation
+    - tasks
+    - parser
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-24T20:20:38.263Z
+- _ulid: 01KQ0JDK3ATZENMNT3TQADSTQB
+  slugs:
+    - task-ac-annotation-integrity-reporting
+  title: Tighten AC annotation integrity reporting
+  type: task
+  spec_ref: "@ac-annotation-integrity-reporting"
+  plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-catalog-health-baseline"
+  priority: 2
+  tags:
+    - validation
+    - coverage
+    - ac-annotations
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-24T20:20:38.634Z
+- _ulid: 01KQ0JDKGM2QJTT0PVQB2497K2
+  slugs:
+    - task-coverage-annotation-scope-boundaries
+  title: Enforce coverage annotation scan boundaries
+  type: task
+  spec_ref: "@coverage-annotation-scope-boundaries"
+  plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-ac-annotation-integrity-reporting"
+  priority: 2
+  tags:
+    - validation
+    - coverage
+    - config
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-24T20:20:39.060Z
+- _ulid: 01KQ0JDKWKVS0QC2QHTQYRYTGP
+  slugs:
+    - task-ac-annotation-repair-wave-one
+  title: Repair first wave of invalid AC annotations
+  type: task
+  plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-ac-annotation-integrity-reporting"
+    - "@task-coverage-annotation-scope-boundaries"
+    - "@task-repair-broken-spec-refs"
+    - "@task-remove-live-test-trait"
+  priority: 2
+  tags:
+    - validation
+    - coverage
+    - spec-hygiene
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-24T20:20:39.443Z
+- _ulid: 01KQ0JDM87XBFC80SW6HQ40VQ1
+  slugs:
+    - task-validation-trust-final-gate
+  title: Final validation trust gate
+  type: task
+  plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-validation-task-data-manager-read-path"
+    - "@task-ac-annotation-repair-wave-one"
+  priority: 2
+  tags:
+    - validation
+    - review
+    - spec-hygiene
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-24T20:20:39.815Z
