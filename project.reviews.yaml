@@ -165275,6 +165275,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-24T22:47:51.522Z
+      - _ulid: 01KQ0V2NNJEG28DRB1KRHY0091
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ0V2MK5AWE4DJNJQPW30MYG
+        timestamp: 2026-04-24T22:51:58.002Z
     examined_commit: 87c41864b7e745a0f83189eefe2d53b95c2af5ec
     external_links: []
     lifecycle_state: open
@@ -165284,8 +165291,33 @@ reviews:
       content_hash: ""
       ref: "@01KQ0JDJQQY4HTX1P4JD4K11PA"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQ0V2MK5AWE4DJNJQPW30MYG
+        anchor:
+          type: code
+          commit: 87c41864b7e745a0f83189eefe2d53b95c2af5ec
+          line_end: 2314
+          line_start: 2312
+          path: src/parser/validate.ts
+          side: head
+        entries:
+          - _ulid: 01KQ0V2MK6GF9AD94Y9G43AVWZ
+            author: Jacob Chapel
+            body: "MUST-FIX: The canonical read failure is swallowed for split projects. I reproduced a kynetic
+              1.1 project with task_storage.format: split and an unmigrated full task record in
+              project.tasks.yaml but no per-task directory.
+              resolveTaskDataManager(ctx).loadAllTasks(ctx) correctly throws: 'Storage format is set
+              to split but 1 task(s) in project.tasks.yaml have not been migrated to per-task
+              directories.' validate() catches that error here, falls back to the legacy scanner,
+              and reports tasksChecked: 1 with no task-data schema/reference error. That means
+              validation can still diverge from normal consumers exactly when the canonical task
+              data source rejects corrupted/unmigrated storage. The fallback needs to be limited to
+              the intended legacy kynetic <1.1 path, or the TaskDataManager error needs to be
+              reported as a validation finding for split projects instead of silently using
+              findTaskFiles()."
+            created_at: 2026-04-24T22:51:56.902Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-24T22:47:22.514Z
-    updated_at: 2026-04-24T22:47:50.435Z
+    updated_at: 2026-04-24T22:51:56.902Z
     notes: []
