@@ -55,7 +55,7 @@ import {
   loadSpecFile,
   readYamlFile,
 } from "./yaml.js";
-import { resolveTaskDataManager } from "./task-data-manager.js";
+import { resolveTaskDataManager, TaskDataManagerError } from "./task-data-manager.js";
 import { listTaskDirs, getTaskFilePath } from "./split-backend.js";
 
 // ============================================================
@@ -2301,16 +2301,37 @@ export async function validate(
   // AC: @validation-task-data-source ac-all-persisted-tasks-included
   // This ensures validation sees the same tasks that CLI, API, and dispatch consumers see.
   let usedCanonicalPath = false;
+  let tdm: ReturnType<typeof resolveTaskDataManager> | null = null;
   try {
-    const tdm = resolveTaskDataManager(ctx);
-    const loadedTasks = await tdm.loadAllTasks(ctx);
-    for (const task of loadedTasks) {
-      allTasks.push(task);
-      result.stats.tasksChecked++;
-    }
-    usedCanonicalPath = true;
+    tdm = resolveTaskDataManager(ctx);
   } catch {
-    // TaskDataManager resolution can fail for legacy projects — fall through to legacy path
+    // resolveTaskDataManager throws for legacy projects (kynetic <1.1 without split storage)
+    // — fall through to legacy path below
+  }
+
+  if (tdm) {
+    try {
+      const loadedTasks = await tdm.loadAllTasks(ctx);
+      for (const task of loadedTasks) {
+        allTasks.push(task);
+        result.stats.tasksChecked++;
+      }
+      usedCanonicalPath = true;
+    } catch (err) {
+      // AC: @validation-task-data-source ac-task-load-errors-reported
+      // Split project with data integrity issues (e.g., unmigrated tasks).
+      // Surface as a validation finding — do NOT fall back to legacy path,
+      // which would silently diverge from the canonical task data source.
+      usedCanonicalPath = true;
+      const message =
+        err instanceof TaskDataManagerError
+          ? err.message
+          : `Task data manager failed to load tasks: ${err instanceof Error ? err.message : String(err)}`;
+      result.schemaErrors.push({
+        file: path.join(ctx.specDir, "project.tasks.yaml"),
+        message,
+      });
+    }
   }
 
   if (usedCanonicalPath) {

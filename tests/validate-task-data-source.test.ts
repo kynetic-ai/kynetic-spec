@@ -347,6 +347,39 @@ ${includesLine}
     });
 
     // AC: @validation-task-data-source ac-task-load-errors-reported
+    it("reports error for split project with unmigrated tasks instead of falling back to legacy path", async () => {
+      const unmigratedUlid = testUlid("UNM01");
+
+      // Set up split-format project with a full (unmigrated) task record
+      // in project.tasks.yaml but NO per-task directory.
+      // The canonical TaskDataManager should reject this, and validation
+      // should surface the error — NOT silently fall back to legacy findTaskFiles.
+      const specDir = path.join(tmpDir, "spec");
+      await fs.mkdir(specDir, { recursive: true });
+      await fs.writeFile(
+        path.join(tmpDir, "kynetic.yaml"),
+        `kynetic: "1.1"\ntask_storage:\n  format: split\nproject:\n  name: unmigrated-test\n  version: 0.1.0\n`,
+      );
+      // Write an unmigrated task record (has notes array, not notes_count scalar)
+      await fs.writeFile(
+        path.join(tmpDir, "project.tasks.yaml"),
+        `- _ulid: ${unmigratedUlid}\n  slugs:\n    - task-unmigrated\n  title: "Unmigrated Task"\n  status: pending\n  priority: 3\n  depends_on: []\n  notes: []\n  created_at: "2026-01-01T00:00:00Z"\n`,
+      );
+
+      const result = kspec("validate --schema --json", tmpDir);
+      const parsed = JSON.parse(result.stdout);
+
+      // Should produce a schema error about unmigrated tasks
+      const migrationErrors = (parsed.schemaErrors ?? []).filter(
+        (e: { message: string }) => e.message.includes("migrated"),
+      );
+      expect(migrationErrors.length).toBeGreaterThan(0);
+
+      // Should NOT have silently loaded the task via the legacy path
+      expect(parsed.stats.tasksChecked).toBe(0);
+    });
+
+    // AC: @validation-task-data-source ac-task-load-errors-reported
     it("still loads valid tasks alongside malformed ones", async () => {
       const goodUlid = testUlid("GOOD1");
       const badUlid = testUlid("BAD01");
