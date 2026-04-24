@@ -117,3 +117,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-24T23:34:46.848Z
+  - _ulid: 01KQ0YQ8FD2BPZN8G0C91J3CW4
+    content: "Fix cycle 2: addressed blocker — resolveTaskDataManager() errors were silently caught and
+      fell back to legacy findTaskFiles() path. Root cause: blanket try/catch around
+      resolveTaskDataManager() treated ALL errors as the legacy kynetic <1.1 case. Fix: replaced
+      error-based fallback with explicit manifest condition check (kynetic < 1.1 AND format \\!==
+      split), matching resolveTaskDataManager()'s own legacy detection logic. Now only the genuine
+      legacy case uses findTaskFiles(); all other errors are surfaced as validation findings. Added
+      regression test verifying split-format project with unmigrated data surfaces errors through
+      --refs validation. All 8373 tests pass, 0 regressions."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-24T23:55:38.349Z
