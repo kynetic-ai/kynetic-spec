@@ -9946,11 +9946,11 @@ workspaces:
     canonical_branch: dispatch/task/task-remove-live-test-trait/01kq0jdj
     canonical_branch_head: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     cleanup:
-      status: blocked
+      status: completed
       detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
       reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-04-24T22:08:03.483Z
+      updated_at: 2026-04-24T22:08:06.430Z
     health:
       status: healthy
       issues: []
@@ -9964,16 +9964,16 @@ workspaces:
       target_branch: dev
       target_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
       updated_at: 2026-04-24T22:08:03.483Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KQ0JDJBHHP02T25Y6M2NZES7"
     task_slug: task-remove-live-test-trait
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-24T22:08:06.430Z
       last_active_at: 2026-04-24T21:49:00.442Z
       last_reconciled_at: 2026-04-24T22:08:03.483Z
       created_at: 2026-04-24T21:33:06.582Z
-      updated_at: 2026-04-24T22:08:03.483Z
+      updated_at: 2026-04-24T22:08:06.430Z
     workspace_id: dispatch-workspace-01KQ0JDJBHHP02T25Y6M2NZES7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
