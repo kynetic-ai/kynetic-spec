@@ -164909,6 +164909,17 @@ reviews:
         runner: kspec
         created_at: 2026-04-24T21:39:42.456Z
         completed_at: 2026-04-24T21:39:42.456Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit 0. Output: Validation passed; Files checked: 8; Items checked: 606; Tasks checked:
+          0; Schema OK; References OK."
+        name: kspec validate --refs --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-04-24T21:39:46.279Z
+        completed_at: 2026-04-24T21:39:46.279Z
     events:
       - _ulid: 01KQ0PJZCGQN5V6CNYMYN5Z49E
         actor: Jacob Chapel
@@ -164944,6 +164955,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-24T21:39:43.753Z
+      - _ulid: 01KQ0PYGSBFAT41P3JKEACJ3Q0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --refs --warnings-ok
+        timestamp: 2026-04-24T21:39:47.627Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
     lifecycle_state: open
@@ -164996,5 +165014,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T21:33:29.361Z
-    updated_at: 2026-04-24T21:39:42.456Z
+    updated_at: 2026-04-24T21:39:46.279Z
     notes: []
