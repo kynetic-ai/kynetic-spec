@@ -8451,7 +8451,7 @@ workspaces:
         head: 778a628e40b17f04ed7a044538c2c4200f5403fe
         last_seen_at: 2026-04-23T05:30:27.500Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-detached-reviewer-conflict-guidance-01kpwbhm
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     bootstrap:
       status: succeeded
@@ -8933,7 +8933,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-24T20:50:48.852Z
+      updated_at: 2026-04-24T20:51:16.288Z
     integration:
       status: pending
       detail: null
@@ -8948,10 +8948,10 @@ workspaces:
     task_slug: task-catalog-health-baseline
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-24T20:40:58.820Z
-      last_reconciled_at: 2026-04-24T20:50:48.852Z
+      last_active_at: 2026-04-24T20:51:16.288Z
+      last_reconciled_at: 2026-04-24T20:51:16.288Z
       created_at: 2026-04-24T20:40:29.974Z
-      updated_at: 2026-04-24T20:51:13.862Z
+      updated_at: 2026-04-24T20:51:16.288Z
     workspace_id: dispatch-workspace-01KQ0JDHKHCBEZ7QN7ZZVF9ZVN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
