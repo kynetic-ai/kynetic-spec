@@ -16129,6 +16129,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-24T22:46:39.525Z
+  - _ulid: 01KQ0VSAAFTR06V6NKPCQA5S1R
+    type: success
+    content: "Batch-based spec creation with task retargeting: Using kspec batch for atomic item add +
+      item ac add + task set operations in a single shadow commit is an effective pattern for spec
+      repair tasks that need to create specs and retarget tasks together."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-24T23:04:20.048Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
