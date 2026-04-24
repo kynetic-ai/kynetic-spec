@@ -164767,6 +164767,20 @@ reviews:
         runner: npm
         created_at: 2026-04-24T21:14:19.358Z
         completed_at: 2026-04-24T21:14:19.358Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Informational: plain kspec validate exits 4 on current metadata with schema error
+          .kspec/modules/meta.yaml modules[0].traits.0 expected string received object, plus known
+          warnings. Branch has no code diff from dev and scoped task baseline commands were the
+          required deliverable, so this is recorded as pre-existing validation debt rather than a
+          task regression."
+        name: plain kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-24T21:14:25.981Z
+        completed_at: 2026-04-24T21:14:25.981Z
     events:
       - _ulid: 01KQ0M8D3W1MK362EB5GW7W2GZ
         actor: Jacob Chapel
@@ -164795,6 +164809,13 @@ reviews:
           kind: nit
           thread_ulid: 01KQ0NFZHJKY9T5G67CNN2N16B
         timestamp: 2026-04-24T21:14:23.774Z
+      - _ulid: 01KQ0NG3ZJNYCFAWF47MDNZ31Z
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: plain kspec validate
+        timestamp: 2026-04-24T21:14:27.186Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
     lifecycle_state: open
@@ -164826,5 +164847,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-24T20:52:45.820Z
-    updated_at: 2026-04-24T21:14:22.642Z
+    updated_at: 2026-04-24T21:14:25.981Z
     notes: []
