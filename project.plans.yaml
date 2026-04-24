@@ -40879,14 +40879,25 @@ plans:
       targeted tests.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: null
     created_at: 2026-04-24T18:28:32.801Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KQ0D7GNG8NW8TZ71PE96SEQQ
+        content: "Created manual-only planning tasks tied to each seed plan via plan_ref:
+          @task-convert-cruft-01-spec-catalog-health-plan,
+          @task-convert-cruft-02-backfill-process-retirement-plan,
+          @task-convert-cruft-03-trait-normalization-plan,
+          @task-convert-cruft-04-cli-schema-spec-rewrite-plan,
+          @task-convert-cruft-05-api-daemon-web-contract-split-plan,
+          @task-convert-cruft-06-code-quality-refactors-plan. These tasks are for creating the real
+          derive-ready plans represented by the seeds; the seed plan records remain durable briefs
+          and should not be derived."
+        author: Jacob Chapel
+        created_at: 2026-04-24T18:49:56.656Z
   - _ulid: 01KQ0C0G886ZV6D43CNYVTH7PY
     slugs:
       - cruft-01-spec-catalog-health-seed
@@ -41107,14 +41118,20 @@ plans:
       6. Decide which parts are direct maintenance tasks versus spec-backed behavioral changes.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: null
     created_at: 2026-04-24T18:28:38.280Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KQ0D7GV2PNNA6BKX1NV2F543
+        content: "Manual-only planning task created to convert this seed into a real derive-ready reviewed
+          plan: @task-convert-cruft-01-spec-catalog-health-plan. Keep this seed as durable context;
+          create a new clean plan record for the implementation plan rather than replacing this seed
+          content."
+        author: Jacob Chapel
+        created_at: 2026-04-24T18:49:56.834Z
   - _ulid: 01KQ0C0NQ31R0MZBB4M0JCQGAG
     slugs:
       - cruft-02-backfill-process-retirement-seed
@@ -41274,14 +41291,20 @@ plans:
       provenance.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: null
     created_at: 2026-04-24T18:28:43.875Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KQ0D7H0STXRZJR14VXVD3DKG
+        content: "Manual-only planning task created to convert this seed into a real derive-ready reviewed
+          plan: @task-convert-cruft-02-backfill-process-retirement-plan. Keep this seed as durable
+          context; create a new clean plan record for the implementation plan rather than replacing
+          this seed content."
+        author: Jacob Chapel
+        created_at: 2026-04-24T18:49:57.017Z
   - _ulid: 01KQ0C0TWQAGMW4725SHK118C9
     slugs:
       - cruft-03-trait-normalization-seed
@@ -41499,14 +41522,20 @@ plans:
       5. Decide whether type-safe input belongs as trait, constraint, or both.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: null
     created_at: 2026-04-24T18:28:49.174Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KQ0D7H4T8F2CAP1V2SE6FCSC
+        content: "Manual-only planning task created to convert this seed into a real derive-ready reviewed
+          plan: @task-convert-cruft-03-trait-normalization-plan. Keep this seed as durable context;
+          create a new clean plan record for the implementation plan rather than replacing this seed
+          content."
+        author: Jacob Chapel
+        created_at: 2026-04-24T18:49:57.146Z
   - _ulid: 01KQ0C1074BR6KANH3S33XW4ME
     slugs:
       - cruft-04-cli-schema-spec-rewrite-seed
@@ -41711,14 +41740,20 @@ plans:
       5. Build a precise Covers migration map for renamed/split ACs.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: null
     created_at: 2026-04-24T18:28:54.628Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KQ0D7H9299YRTYM2PK8Q2CXK
+        content: "Manual-only planning task created to convert this seed into a real derive-ready reviewed
+          plan: @task-convert-cruft-04-cli-schema-spec-rewrite-plan. Keep this seed as durable
+          context; create a new clean plan record for the implementation plan rather than replacing
+          this seed content."
+        author: Jacob Chapel
+        created_at: 2026-04-24T18:49:57.282Z
   - _ulid: 01KQ0C15JHBY8N1KJEG171F62H
     slugs:
       - cruft-05-api-daemon-web-contract-split-seed
@@ -41944,14 +41979,20 @@ plans:
       5. Decide whether to split into more than one real plan based on final scope.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: null
     created_at: 2026-04-24T18:29:00.113Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KQ0D7HD366E1FY2XHTP7AEFF
+        content: "Manual-only planning task created to convert this seed into a real derive-ready reviewed
+          plan: @task-convert-cruft-05-api-daemon-web-contract-split-plan. Keep this seed as durable
+          context; create a new clean plan record for the implementation plan rather than replacing
+          this seed content."
+        author: Jacob Chapel
+        created_at: 2026-04-24T18:49:57.412Z
   - _ulid: 01KQ0C1AX4XWN09CGJ25WV9YR8
     slugs:
       - cruft-06-code-quality-refactors-seed
@@ -42192,11 +42233,17 @@ plans:
       5. Keep task descriptions standalone with file paths, why, how, testing, and Covers lines.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: null
     created_at: 2026-04-24T18:29:05.572Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KQ0D7HH8TXZE6WTW5P92BVAN
+        content: "Manual-only planning task created to convert this seed into a real derive-ready reviewed
+          plan: @task-convert-cruft-06-code-quality-refactors-plan. Keep this seed as durable
+          context; create a new clean plan record for the implementation plan rather than replacing
+          this seed content."
+        author: Jacob Chapel
+        created_at: 2026-04-24T18:49:57.544Z
