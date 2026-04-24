@@ -165448,6 +165448,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-24T22:58:42.343Z
+      - _ulid: 01KQ0WKPXTAFKHR278CJ1T36HQ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQ0V2MK5AWE4DJNJQPW30MYG
+        timestamp: 2026-04-24T23:18:44.922Z
     examined_commit: 87c41864b7e745a0f83189eefe2d53b95c2af5ec
     external_links: []
     lifecycle_state: closed
@@ -165482,6 +165488,29 @@ reviews:
               reported as a validation finding for split projects instead of silently using
               findTaskFiles()."
             created_at: 2026-04-24T22:51:56.902Z
+          - _ulid: 01KQ0WKNW3G606H4RQVGXT26YY
+            author: "@claude"
+            body: >-
+              Fixed. Separated resolveTaskDataManager() and loadAllTasks() into independent
+              try/catch blocks:
+
+
+              1. resolveTaskDataManager() failure → legacy project, fall through to findTaskFiles()
+              (unchanged)
+
+              2. loadAllTasks() failure after successful TDM resolution → split project with data
+              integrity issue. Now surfaces the error as a SchemaValidationError with the
+              project.tasks.yaml path and sets usedCanonicalPath=true to prevent legacy fallback.
+
+
+              Added regression test that sets up a split-format project with an unmigrated full task
+              record in project.tasks.yaml (no per-task directory). Verifies the error is surfaced
+              as a schema error containing "migrated" and that tasksChecked is 0 (no silent legacy
+              fallback).
+
+
+              All 8372 tests pass.
+            created_at: 2026-04-24T23:18:43.842Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -165492,7 +165521,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-24T22:58:42.342Z
     created_at: 2026-04-24T22:47:22.514Z
-    updated_at: 2026-04-24T22:58:42.342Z
+    updated_at: 2026-04-24T23:18:43.842Z
     notes: []
   - _ulid: 01KQ0VT28QQQ5AK2RF7VMY106X
     slugs: []
