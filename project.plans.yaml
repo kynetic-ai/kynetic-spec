@@ -42925,3 +42925,12 @@ plans:
           rerunning baseline commands"
         author: Jacob Chapel
         created_at: 2026-04-24T20:03:26.452Z
+      - _ulid: 01KQ0HR422RWXYP8VKDBVEFYTB
+        content: "Updated after baseline-coordination discussion: task-catalog-health-baseline now writes an
+          ephemeral ignored root-checkout artifact at
+          plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md; downstream tasks
+          explicitly may read it only as starting-state/before-after evidence and must rerun
+          baseline commands if it is missing, stale, or inaccessible. Review cycle 3
+          @01KQ0HKVBVY6EGBGJTCHQFY29V approved the updated plan with gate passing."
+        author: Jacob Chapel
+        created_at: 2026-04-24T20:08:55.107Z
