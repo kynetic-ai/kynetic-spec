@@ -164920,6 +164920,17 @@ reviews:
         runner: kspec
         created_at: 2026-04-24T21:39:46.279Z
         completed_at: 2026-04-24T21:39:46.279Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit 6 warning-only completeness debt: 493 warnings (238 missing own AC coverage, 255
+          invalid AC annotations). References OK; Tasks checked: 0."
+        name: kspec validate --completeness
+        required: false
+        runner: kspec
+        created_at: 2026-04-24T21:39:50.228Z
+        completed_at: 2026-04-24T21:39:50.228Z
     events:
       - _ulid: 01KQ0PJZCGQN5V6CNYMYN5Z49E
         actor: Jacob Chapel
@@ -164962,6 +164973,13 @@ reviews:
           status: pass
           name: kspec validate --refs --warnings-ok
         timestamp: 2026-04-24T21:39:47.627Z
+      - _ulid: 01KQ0PYMMWPKWG1099D0MYHRVN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate --completeness
+        timestamp: 2026-04-24T21:39:51.580Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
     lifecycle_state: open
@@ -165014,5 +165032,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T21:33:29.361Z
-    updated_at: 2026-04-24T21:39:46.279Z
+    updated_at: 2026-04-24T21:39:50.228Z
     notes: []
