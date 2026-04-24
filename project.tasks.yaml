@@ -27067,7 +27067,7 @@
   title: Capture validation trust baseline
   type: task
   plan_ref: "@plan-spec-catalog-health-and-validation-trust"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 1
@@ -27081,6 +27081,7 @@
   created_at: 2026-04-24T20:20:37.105Z
   started_at: 2026-04-24T20:41:22.679Z
   submitted_at: 2026-04-24T20:47:33.449Z
+  completed_at: 2026-04-24T21:15:24.402Z
   automation: eligible
 - _ulid: 01KQ0JDHZQ4H04WBFWE7WMR6GV
   slugs:
