@@ -42247,3 +42247,534 @@ plans:
           this seed content."
         author: Jacob Chapel
         created_at: 2026-04-24T18:49:57.544Z
+  - _ulid: 01KQ0EA0MTVQTQV1D2W8EGV9DF
+    slugs:
+      - plan-spec-catalog-health-and-validation-trust
+    title: Spec Catalog Health and Validation Trust
+    content: |
+      # Spec Catalog Health and Validation Trust
+
+      ## Specs
+
+      ```yaml
+      - title: Validation Task Data Source
+        slug: validation-task-data-source
+        type: requirement
+        parent: "@validation"
+        description: |
+          Validation uses the same task data model that normal kspec consumers
+          use, so reference, schema, and completeness findings cover every
+          persisted task record regardless of the task storage layout.
+        acceptance_criteria:
+          - id: ac-all-persisted-tasks-included
+            given: |
+              A project contains persisted task records in the supported task
+              storage layout
+            when: |
+              validation runs task-aware checks
+            then: |
+              Every persisted task record is included in the validation task set
+          - id: ac-task-references-checked
+            given: |
+              A persisted task contains a field that validation treats as a
+              reference
+            when: |
+              reference validation runs
+            then: |
+              The reference contributes to validation findings with the task as
+              the source
+          - id: ac-task-load-errors-reported
+            given: |
+              A persisted task record cannot be parsed as a valid task
+            when: |
+              validation runs
+            then: |
+              A validation finding identifies the affected task record instead
+              of silently omitting it
+
+      - title: AC Annotation Integrity Reporting
+        slug: ac-annotation-integrity-reporting
+        type: requirement
+        parent: "@spec-completeness"
+        description: |
+          AC coverage annotations are only valid when they point at a spec item
+          or trait acceptance criterion that exists. Invalid annotations are
+          reported as repairable completeness findings and do not provide
+          coverage credit.
+        acceptance_criteria:
+          - id: ac-unresolved-target-reported
+            given: |
+              A configured coverage scan path contains an AC annotation whose
+              target reference cannot be resolved
+            when: |
+              completeness validation runs
+            then: |
+              An invalid-annotation finding identifies the target reference and
+              the source location
+          - id: ac-non-spec-target-reported
+            given: |
+              A configured coverage scan path contains an AC annotation whose
+              target resolves to something other than a spec item or trait
+            when: |
+              completeness validation runs
+            then: |
+              An invalid-annotation finding identifies the target as an invalid
+              coverage target and reports the source location
+          - id: ac-missing-ac-id-reported
+            given: |
+              A configured coverage scan path contains an AC annotation whose
+              target spec or trait exists but whose AC id does not exist on that
+              target
+            when: |
+              completeness validation runs
+            then: |
+              An invalid-annotation finding identifies the target reference, the
+              missing AC id, and the source location
+          - id: ac-blanket-ref-does-not-cover
+            given: |
+              A configured coverage scan path contains an AC annotation that
+              names a spec item or trait with acceptance criteria but does not
+              name specific AC ids
+            when: |
+              completeness validation computes coverage
+            then: |
+              The annotation does not count as coverage for that target
+          - id: ac-valid-annotation-covers-target
+            given: |
+              A configured coverage scan path contains an AC annotation that
+              names an existing spec or trait AC
+            when: |
+              completeness validation computes coverage
+            then: |
+              The named AC is treated as covered by that annotation
+
+      - title: Coverage Annotation Scope Boundaries
+        slug: coverage-annotation-scope-boundaries
+        type: requirement
+        parent: "@coverage-scan-config"
+        description: |
+          AC coverage scanning is limited to the configured coverage surface.
+          Annotations outside configured scan paths or inside excluded paths do
+          not create coverage credit and do not create invalid-annotation debt.
+        acceptance_criteria:
+          - id: ac-only-configured-paths-scanned
+            given: |
+              A project has one or more coverage scan paths configured
+            when: |
+              completeness validation scans for AC annotations
+            then: |
+              Only files under the configured scan paths are considered
+          - id: ac-excluded-paths-skipped
+            given: |
+              A configured coverage scan path contains files that match a
+              configured exclude pattern
+            when: |
+              completeness validation scans for AC annotations
+            then: |
+              Matching files are skipped
+          - id: ac-skipped-annotations-no-debt
+            given: |
+              A skipped file contains text that looks like an AC annotation
+            when: |
+              completeness validation runs
+            then: |
+              The skipped text produces neither coverage credit nor invalid
+              annotation findings
+      ```
+
+      ## Tasks
+
+      derive_from_specs: false
+
+      ```yaml
+      - title: Capture validation trust baseline
+        slug: task-catalog-health-baseline
+        priority: 1
+        tags: [validation, spec-hygiene, audit]
+        automation: manual_only
+        description: |
+          Capture the current validation and overlap baseline before changing
+          the spec catalog or validation code.
+
+          Why: This plan exists to restore trust in validation output. Workers
+          need a concrete before/after baseline so improvements are measured
+          against current project state rather than the earlier audit snapshot.
+
+          What:
+          - Run and save current output for:
+            - kspec validate --refs --warnings-ok -v
+            - kspec validate --alignment -v
+            - kspec validate --completeness -v
+          - Record counts for hard reference failures, alignment warnings,
+            missing acceptance criteria warnings, missing own-AC coverage
+            warnings, and invalid AC annotations.
+          - Identify exact tasks that contain the unresolved spec refs
+            @cmd-derive, @session-remove-shadow-commits, and
+            @session-branch-worktree.
+          - Check overlap with @plan-completeness-warning-debt-reduction,
+            @task-plan-completeness-warning-debt-reduction, and
+            @task-triage-automation-eligible-missing-spec-ref.
+
+          How:
+          Use kspec CLI lookups and validation commands. Do not manually edit
+          .kspec YAML. Store the baseline in task notes or a small ignored
+          working file referenced from the task note.
+
+          Testing:
+          This task is discovery only. Verification is that the note includes
+          command output summaries and exact refs for follow-up tasks.
+
+          Covers: planning/discovery for @validation-task-data-source,
+          @ac-annotation-integrity-reporting, and
+          @coverage-annotation-scope-boundaries.
+
+      - title: Repair broken task spec references
+        slug: task-repair-broken-spec-refs
+        priority: 1
+        tags: [validation, refs, spec-hygiene]
+        automation: manual_only
+        depends_on:
+          - "@task-catalog-health-baseline"
+        description: |
+          Resolve the current hard reference validation failures caused by
+          task spec_ref values that point at missing specs.
+
+          Why: Downstream cleanup cannot trust reference validation while the
+          project has known unresolved task spec refs.
+
+          What:
+          - Inspect each task identified by the baseline for:
+            - @cmd-derive
+            - @session-remove-shadow-commits
+            - @session-branch-worktree
+          - For each broken ref, decide whether the task should be retargeted
+            to a current owning spec, left with no spec_ref because the work is
+            historical/process-only, or paired with a recreated behavioral spec.
+          - Apply the chosen repair through kspec task commands.
+          - Add a task note explaining every retarget/clear/recreate decision.
+
+          How:
+          Prefer retargeting to existing current behavior specs when the old
+          spec was renamed or merged. Only recreate a spec when the behavior is
+          still current and has no adequate owner. Do not create placeholder
+          specs solely to silence validation.
+
+          Testing:
+          Run kspec validate --refs --warnings-ok after repairs and verify the
+          three named missing refs no longer appear as hard failures.
+
+          Covers: @validation ac-valid-2, @ref-validation ac-1.
+
+      - title: Remove live test-only trait from production catalog
+        slug: task-remove-live-test-trait
+        priority: 1
+        tags: [validation, traits, spec-hygiene]
+        automation: manual_only
+        depends_on:
+          - "@task-catalog-health-baseline"
+        description: |
+          Remove or relocate the live @01KJN1WT Test Trait item so fixture-only
+          data no longer appears in production completeness validation.
+
+          Why: The live project catalog currently contains a trait described as
+          test-only fixture data. It lacks ACs and creates completeness debt
+          that does not represent product behavior.
+
+          What:
+          - Inspect @01KJN1WT / Test Trait and any references to it.
+          - Confirm whether it is only fixture/test machinery.
+          - If it is fixture-only, remove it from the live catalog using kspec
+            commands and keep any necessary equivalent fixture data in tests.
+          - If it is real behavior, rename/rewrite it as a proper trait with
+            behavioral ACs instead of deleting it.
+          - Add a note documenting the decision.
+
+          How:
+          Use kspec item/trait commands, not manual .kspec YAML edits. Search
+          tasks, specs, and tests for references before deletion or rewrite.
+
+          Testing:
+          Run kspec validate --completeness and verify the missing-AC warning
+          for @01KJN1WT / Test Trait is gone or replaced by intentional trait
+          behavior with ACs.
+
+          Covers: @spec-completeness-policy ac-feature-required,
+          @spec-completeness ac-1.
+
+      - title: Use canonical task data source during validation
+        slug: task-validation-task-data-manager-read-path
+        priority: 1
+        tags: [validation, tasks, parser]
+        automation: manual_only
+        spec_ref: "@validation-task-data-source"
+        depends_on:
+          - "@task-catalog-health-baseline"
+        description: |
+          Update validation so task-aware checks use the canonical task data
+          model instead of a separate task-file scan that can drift from normal
+          consumers.
+
+          Why: The validation trust baseline depends on validation seeing the
+          same tasks and task fields that CLI, API, dispatch, and other
+          consumers see.
+
+          What:
+          - Inspect src/parser/validate.ts around the current task loading path.
+          - Replace or wrap direct task-file discovery/parsing with the
+            canonical task data manager read path where appropriate.
+          - Preserve schema-error reporting for malformed task records.
+          - Ensure validation stats still report task counts and file/source
+            information useful for repair.
+          - Add regression tests covering split task storage, malformed task
+            records, and task reference fields.
+
+          How:
+          Use existing TaskDataManager helpers rather than duplicating task
+          storage rules in validate.ts. If schema validation still needs raw
+          file-level parsing, keep that path narrowly scoped and ensure task
+          reference/completeness checks consume canonical task data.
+
+          Testing:
+          Run focused tests covering validation, task data manager, and task
+          plan/spec refs. Use npm test -- --run <files>; do not invoke vitest
+          directly.
+
+          Covers: @validation-task-data-source ac-all-persisted-tasks-included,
+          @validation-task-data-source ac-task-references-checked,
+          @validation-task-data-source ac-task-load-errors-reported.
+
+      - title: Tighten AC annotation integrity reporting
+        slug: task-ac-annotation-integrity-reporting
+        priority: 2
+        tags: [validation, coverage, ac-annotations]
+        automation: manual_only
+        spec_ref: "@ac-annotation-integrity-reporting"
+        depends_on:
+          - "@task-catalog-health-baseline"
+        description: |
+          Ensure invalid AC annotations produce precise repairable findings and
+          valid annotations provide coverage only for existing spec or trait ACs.
+
+          Why: Current invalid-annotation volume makes completeness validation
+          noisy. Workers need findings that identify exactly what to repair and
+          must not receive coverage credit for bad targets.
+
+          What:
+          - Audit validateACAnnotations and related coverage-scan behavior.
+          - Ensure unresolved targets, non-spec/trait targets, missing AC ids,
+            and blanket refs against AC-bearing items are reported distinctly
+            enough to repair.
+          - Ensure valid annotations still count for the intended AC.
+          - Add focused tests for each reporting case.
+
+          How:
+          Keep parser examples and scan-scope behavior separate from integrity
+          reporting. This task should not mass-edit existing test annotations;
+          that is handled by the repair-wave task.
+
+          Testing:
+          Run focused validation/coverage tests via npm test -- --run. Also run
+          kspec validate --completeness and confirm invalid annotation findings
+          remain visible with file/line/target detail.
+
+          Covers: @ac-annotation-integrity-reporting ac-unresolved-target-reported,
+          @ac-annotation-integrity-reporting ac-non-spec-target-reported,
+          @ac-annotation-integrity-reporting ac-missing-ac-id-reported,
+          @ac-annotation-integrity-reporting ac-blanket-ref-does-not-cover,
+          @ac-annotation-integrity-reporting ac-valid-annotation-covers-target.
+
+      - title: Enforce coverage annotation scan boundaries
+        slug: task-coverage-annotation-scope-boundaries
+        priority: 2
+        tags: [validation, coverage, config]
+        automation: manual_only
+        spec_ref: "@coverage-annotation-scope-boundaries"
+        depends_on:
+          - "@task-ac-annotation-integrity-reporting"
+        description: |
+          Verify and harden the boundary between real coverage annotations and
+          annotation-like examples outside the configured coverage surface.
+
+          Why: This project contains parser examples and test fixtures that may
+          look like AC annotations. Completeness validation should only treat
+          annotations in configured, non-excluded coverage paths as coverage or
+          invalid-annotation debt.
+
+          What:
+          - Inspect kspec.config.yaml coverage.scan_paths and
+            coverage.exclude_patterns.
+          - Add or update tests proving scan paths are the only included
+            surface and excluded files are skipped.
+          - Confirm annotation-like text in excluded files does not create
+            coverage credit or invalid annotation findings.
+          - Adjust scanner behavior only if current behavior does not satisfy
+            the spec.
+
+          How:
+          Prefer configuration-driven tests over hardcoded project paths. Keep
+          examples in parser tests excluded if they are documentation for the
+          parser rather than real coverage claims.
+
+          Testing:
+          Run focused coverage-scan tests via npm test -- --run. Then run kspec
+          validate --completeness and confirm invalid annotation counts reflect
+          only configured, non-excluded coverage files.
+
+          Covers: @coverage-annotation-scope-boundaries ac-only-configured-paths-scanned,
+          @coverage-annotation-scope-boundaries ac-excluded-paths-skipped,
+          @coverage-annotation-scope-boundaries ac-skipped-annotations-no-debt.
+
+      - title: Repair first wave of invalid AC annotations
+        slug: task-ac-annotation-repair-wave-one
+        priority: 2
+        tags: [validation, coverage, spec-hygiene]
+        automation: manual_only
+        depends_on:
+          - "@task-ac-annotation-integrity-reporting"
+          - "@task-coverage-annotation-scope-boundaries"
+          - "@task-repair-broken-spec-refs"
+          - "@task-remove-live-test-trait"
+        description: |
+          Classify and repair the first high-confidence wave of invalid AC
+          annotations after validation reporting and scan boundaries are clear.
+
+          Why: The plan should reduce immediate annotation noise without trying
+          to solve the entire long-tail completeness backlog that later cleanup
+          plans will handle.
+
+          What:
+          - Export current invalid_ac_annotation findings from
+            kspec validate --completeness -v.
+          - Classify each selected finding as unresolved target, non-spec/trait
+            target, missing AC id, blanket ref, shorthand/range form, or
+            intentionally excluded example.
+          - Repair high-confidence stale annotations in configured coverage
+            files by retargeting to the correct current spec/AC, splitting
+            blanket refs into explicit AC ids, or removing annotations that are
+            not real coverage claims.
+          - Leave low-confidence cases documented for later plans instead of
+            guessing.
+
+          How:
+          Work in small batches and preserve behavior of tests. Do not add new
+          specs solely to make stale annotations valid. If a finding reveals a
+          real missing spec, capture it as a follow-up unless it is required for
+          this validation-trust plan.
+
+          Testing:
+          Run affected tests and kspec validate --completeness. Verify invalid
+          annotation counts decrease and no repaired tests lose intended
+          coverage signal.
+
+          Covers: supports @ac-annotation-integrity-reporting by repairing the
+          current catalog against the reporting contract.
+
+      - title: Final validation trust gate and seed linkage
+        slug: task-validation-trust-final-gate
+        priority: 1
+        tags: [validation, review, spec-hygiene]
+        automation: manual_only
+        depends_on:
+          - "@task-validation-task-data-manager-read-path"
+          - "@task-ac-annotation-repair-wave-one"
+        description: |
+          Run the final validation gate for this plan and connect the seed plan
+          to the resulting implementation plan.
+
+          Why: The plan is only successful if the project has a clearer
+          validation baseline and future cleanup plans can trust the remaining
+          findings.
+
+          What:
+          - Run:
+            - kspec validate --refs --warnings-ok
+            - kspec validate --alignment
+            - kspec validate --completeness
+            - focused npm test -- --run commands from prior tasks
+          - Record before/after counts for reference failures, alignment
+            warnings, missing AC warnings, missing own-AC coverage warnings,
+            and invalid annotation warnings.
+          - Document intentional remaining warning categories and which later
+            seed plan owns them.
+          - Add a note to @cruft-01-spec-catalog-health-seed linking to this
+            implementation plan and summarizing any scope splits or deferrals.
+          - Add a note to @task-convert-cruft-01-spec-catalog-health-plan with
+            the created plan ref and review status.
+
+          How:
+          This task is the handoff point between the first cleanup plan and the
+          rest of the cruft cleanup program. Do not derive later seed plans from
+          here.
+
+          Testing:
+          Validation commands and focused test commands must be recorded in the
+          task note. Any non-zero validation exit caused by remaining warnings
+          must be explained and assigned to a later cleanup slice.
+
+          Covers: final verification for @validation-task-data-source,
+          @ac-annotation-integrity-reporting, and
+          @coverage-annotation-scope-boundaries.
+      ```
+
+      ## Implementation Notes
+
+      This plan was created from the non-derivable seed plan
+      `@cruft-01-spec-catalog-health-seed` under the program charter
+      `@cruft-cleanup-program-charter`. Those records are context only; this
+      plan must stand on its own for workers and reviewers.
+
+      Current baseline at plan drafting time:
+
+      - `kspec validate --refs --warnings-ok -v` exited 4 with four hard
+        reference failures:
+        - `@cmd-derive` in `.kspec/kynetic.tasks.yaml`
+        - `@session-remove-shadow-commits` in `.kspec/project.tasks.yaml`
+        - `@session-branch-worktree` in `.kspec/project.tasks.yaml` twice
+      - `kspec validate --alignment -v` exited 6 with warning output.
+      - `kspec validate --completeness -v` exited 6 with 491 warnings:
+        - 1 missing-AC item: `@01KJN1WT` / `Test Trait`
+        - 235 missing own-AC coverage warnings
+        - 255 invalid AC annotations
+
+      Known exact task candidates containing the hard missing refs include:
+
+      - `@task-recursive-derive` and/or `@01KJWK89Y` history for `@cmd-derive`;
+        current derivation specs include `@derive-command`, `@derive-commands`,
+        and plan-derive specs, so workers must inspect before retargeting.
+      - `@remove-shadowautocommit-from-session-operations` for
+        `@session-remove-shadow-commits`.
+      - `@implement-session-branch-worktree-mode` and the cancelled task
+        `@01KKBBS7` for `@session-branch-worktree`.
+
+      Overlap to manage before derivation:
+
+      - Existing approved plan `@plan-completeness-warning-debt-reduction` and
+        needs-work task `@task-plan-completeness-warning-debt-reduction` already
+        cover broad completeness warning reduction. This plan is narrower: it
+        only restores validation/reference/annotation trust and should not take
+        over the entire completeness backlog.
+      - Existing task `@task-triage-automation-eligible-missing-spec-ref` owns
+        automation-without-spec triage and is out of scope.
+
+      Dependency ordering:
+
+      1. Capture baseline first.
+      2. Repair broken refs and Test Trait independently after baseline.
+      3. Tighten validation read/reporting behavior before mass annotation
+         repair.
+      4. Repair only high-confidence invalid annotations in this plan.
+      5. Run final validation gate and cross-link seed/task records.
+
+      All tasks are marked `manual_only` because they alter or plan changes to
+      the project's spec source of truth and require judgment about whether
+      code, specs, tests, or task metadata are stale.
+    status: draft
+    approved_at: null
+    branch: null
+    derived_specs: []
+    derived_tasks: []
+    module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/spec-catalog-health-validation-trust.md
+    created_at: 2026-04-24T19:08:47.130Z
+    completed_at: null
+    notes: []
