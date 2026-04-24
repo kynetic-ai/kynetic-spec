@@ -32108,7 +32108,7 @@ runs:
     completed_at: 2026-04-24T23:37:53.072Z
   - _ulid: 01KQ0YQN2QYHSZBSXJDW3HZ1ZY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -32124,7 +32124,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-24T23:56:25.891Z
-        completed_at: 2026-04-24T23:56:25.891Z
+        completed_at: 2026-04-24T23:56:57.667Z
+        notes: "Friction points: (1) Recording a thorough review evidence log required several repetitive
+          kspec review check commands with long shell-escaped evidence strings. Existing coverage
+          exists for review CLI body quoting friction via observation @01KMP87Q3, so avoid
+          duplicating that. (2) The parser CompletenessWarning type now includes
+          invalid_ac_annotation and its subtypes, but shared/web-ui API type copies still only list
+          older warning types/subtypes. Typecheck passes because the daemon response is not strongly
+          coupled to those copied API types, which suggests API contract drift can persist
+          silently."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-24T23:56:57.667Z
+        completed_at: 2026-04-24T23:56:57.667Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T23:55:51.255Z
