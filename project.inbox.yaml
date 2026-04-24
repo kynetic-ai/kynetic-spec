@@ -2931,3 +2931,14 @@ inbox:
       - spec
     added_by: "@claude"
     created_at: 2026-04-21T23:55:54.540Z
+  - _ulid: 01KQ0RH7FV736939PE0Z87FCQY
+    text: "Reflection: /kspec:reflect guidance says to use 'kspec workflow show' without a run ref, but
+      in this session the CLI returned 'missing required argument run-ref'. Align the reflect
+      workflow/skill docs with the actual CLI, or make workflow show infer the only active run like
+      run-ref-optional workflow commands do."
+    tags:
+      - reflection
+      - workflow
+      - cli
+    added_by: Jacob Chapel
+    created_at: 2026-04-24T22:07:29.275Z
