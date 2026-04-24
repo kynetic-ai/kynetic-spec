@@ -165719,6 +165719,19 @@ reviews:
         runner: npm run dev
         created_at: 2026-04-24T23:33:45.349Z
         completed_at: 2026-04-24T23:33:45.349Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Installed kspec v0.13.0 validation failed on existing catalog state:
+          .kspec/modules/meta.yaml modules[0].traits.0 expected string, plus known
+          alignment/completeness warnings from baseline. This check is informational for this
+          review."
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-04-24T23:34:10.708Z
+        completed_at: 2026-04-24T23:34:10.708Z
     events:
       - _ulid: 01KQ0WQZ9MSQ82RZHA3010YHZV
         actor: Jacob Chapel
@@ -165754,6 +165767,13 @@ reviews:
           status: fail
           name: source CLI canonical validation probe
         timestamp: 2026-04-24T23:33:46.465Z
+      - _ulid: 01KQ0XG031T1SQ84SX5H7S1A3E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-24T23:34:11.809Z
     examined_commit: 2525fa93d58103ccf02f77efbcd4140c542d491a
     external_links: []
     lifecycle_state: open
@@ -165789,5 +165809,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T23:21:04.564Z
-    updated_at: 2026-04-24T23:33:45.349Z
+    updated_at: 2026-04-24T23:34:10.708Z
     notes: []
