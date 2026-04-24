@@ -10972,11 +10972,11 @@ workspaces:
     canonical_branch: dispatch/task/task-ac-annotation-integrity-reporting/01kq0jdk
     canonical_branch_head: 0dd8bca6567e320c7861b5213bf35cfe6f6c0354
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-24T23:56:03.407Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-24T23:56:04.321Z
     health:
       status: healthy
       issues: []
@@ -10990,7 +10990,7 @@ workspaces:
       target_branch: dev
       target_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
       updated_at: 2026-04-24T23:56:03.407Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQ0JDK3ATZENMNT3TQADSTQB"
     task_slug: task-ac-annotation-integrity-reporting
@@ -10999,7 +10999,7 @@ workspaces:
       last_active_at: 2026-04-24T23:41:13.268Z
       last_reconciled_at: 2026-04-24T23:56:03.407Z
       created_at: 2026-04-24T23:20:30.854Z
-      updated_at: 2026-04-24T23:56:03.407Z
+      updated_at: 2026-04-24T23:56:04.321Z
     workspace_id: dispatch-workspace-01KQ0JDK3ATZENMNT3TQADSTQB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
