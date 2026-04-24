@@ -31869,9 +31869,21 @@ runs:
     completed_at: 2026-04-24T21:52:04.045Z
   - _ulid: 01KQ0RDXFMP262CVNEB6QNV1XX
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-24T22:05:40.724Z
+        completed_at: 2026-04-24T22:06:40.380Z
+        notes: "What worked well: Detached review workflow was effective. kspec review records captured
+          checks/verdict cleanly; the merge helper correctly detected no-op integration; reference
+          searches plus kspec item/trait lookups made it straightforward to prove the live Test
+          Trait was removed while fixture traits remained separate."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-24T22:06:40.380Z
+        completed_at: 2026-04-24T22:06:40.380Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T22:05:40.724Z
