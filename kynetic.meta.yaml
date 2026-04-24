@@ -16147,6 +16147,29 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-24T23:20:19.765Z
+  - _ulid: 01KQ0XPHZ2ZD47B8MKVPC1VFK0
+    type: friction
+    content: "Reviewing validation from a detached snapshot exposed a source CLI dev-mode mismatch: `npm
+      run dev -- task list --json` can fail with TaskDataManagerError `No storage backend registered
+      for format split`, while `npm run dev -- validate --refs --json` can still exit successfully
+      with `tasksChecked: 0`. For data-source validation work, this can hide the same class of trust
+      failure the task is meant to prevent."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KQ0XJT"
+    created_at: 2026-04-24T23:37:46.722Z
+  - _ulid: 01KQ0XPJ79SDNGKDWB8SYXC6PC
+    type: success
+    content: "For validation data-source reviews, comparing `validate` output against a normal consumer
+      of the same canonical model is an effective probe. In this session, source `task list` failing
+      while source `validate --refs` returned `tasksChecked: 0` exposed a remaining fallback bug
+      that the full test suite did not catch."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KQ0XJT"
+    created_at: 2026-04-24T23:37:46.985Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
