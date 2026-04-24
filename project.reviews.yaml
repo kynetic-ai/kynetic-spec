@@ -165498,7 +165498,18 @@ reviews:
     slugs: []
     title: Review repair broken task spec references (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed: references OK. Files checked: 8; items checked: 606; tasks checked: 0 (known
+          validation read-path limitation for task records)."
+        name: kspec validate --refs --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-04-24T23:18:03.600Z
+        completed_at: 2026-04-24T23:18:03.600Z
     events:
       - _ulid: 01KQ0VT28Q4HFTYDJ8Z500SPCE
         actor: Jacob Chapel
@@ -165513,6 +165524,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-24T23:04:55.955Z
+      - _ulid: 01KQ0WJFNXFWCFV5WA5BZY21KD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --refs --warnings-ok
+        timestamp: 2026-04-24T23:18:04.734Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
     lifecycle_state: open
@@ -165525,5 +165543,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-24T23:04:44.567Z
-    updated_at: 2026-04-24T23:04:54.868Z
+    updated_at: 2026-04-24T23:18:03.600Z
     notes: []
