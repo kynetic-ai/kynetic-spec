@@ -164751,3 +164751,29 @@ reviews:
     created_at: 2026-04-24T20:06:35.131Z
     updated_at: 2026-04-24T20:07:30.875Z
     notes: []
+  - _ulid: 01KQ0M8D3WDASSR2ZQYW0JZ9GA
+    slugs: []
+    title: Review task-catalog-health-baseline
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQ0M8D3W1MK362EB5GW7W2GZ
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-24T20:52:45.820Z
+    examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQ0JDHKHCBEZ7QN7ZZVF9ZVN"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-24T20:52:45.820Z
+    updated_at: null
+    notes: []
