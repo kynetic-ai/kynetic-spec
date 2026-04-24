@@ -32108,9 +32108,23 @@ runs:
     completed_at: 2026-04-24T23:37:53.072Z
   - _ulid: 01KQ0YQN2QYHSZBSXJDW3HZ1ZY
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-24T23:55:51.255Z
+        completed_at: 2026-04-24T23:56:25.891Z
+        notes: "What worked well: The detached reviewer merge helper made the approved-review merge path
+          straightforward from a detached snapshot and avoided manual checkout/merge risk. Review
+          checks were easy to record as first-party review artifacts, including full test, focused
+          test, typecheck, validation, and evidence log. Running both global kspec validate and npm
+          run dev -- validate exposed that installed CLI output differed from changed source output,
+          which was useful for verifying the actual submitted implementation."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-24T23:56:25.891Z
+        completed_at: 2026-04-24T23:56:25.891Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T23:55:51.255Z
