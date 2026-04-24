@@ -8,22 +8,7 @@ traits:
     status:
       maturity: draft
       implementation: implemented
-    traits:
-      - _ulid: 01KJN1WT94B23HXX1R5KVD9BVC
-        slugs: []
-        title: Test Trait
-        type: trait
-        description: Test-only trait for validating trait inheritance mechanics in the kspec system. Used by
-          test fixtures to verify that traits correctly propagate acceptance criteria to inheriting
-          specs.
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        traits: []
-        tags: []
-        created: 2026-03-01T15:57:25.668Z
-        notes: []
+    traits: []
     acceptance_criteria:
       - given: command supports JSON mode
         id: ac-1
