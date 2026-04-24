@@ -164517,6 +164517,17 @@ reviews:
         required: true
         created_at: 2026-04-24T19:29:00.271Z
         completed_at: 2026-04-24T19:29:00.271Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/spec-catalog-health-validation-trust.md --dry-run succeeded;
+          parsePlanDocument reports 3 specs, 8 manual tasks, derive_from_specs=false, zero
+          errors/warnings, and task keys limited to supported fields.
+        name: Plan parser/import
+        required: true
+        created_at: 2026-04-24T19:29:21.377Z
+        completed_at: 2026-04-24T19:29:21.377Z
     events:
       - _ulid: 01KQ0FAKTGY9NSPSXYX0N6J9M7
         actor: Jacob Chapel
@@ -164552,6 +164563,13 @@ reviews:
           status: pass
           name: Task coverage and ordering
         timestamp: 2026-04-24T19:29:05.288Z
+      - _ulid: 01KQ0FFQ6D0PG9SZD353CNSDNY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan parser/import
+        timestamp: 2026-04-24T19:29:22.637Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -164564,5 +164582,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-24T19:26:35.345Z
-    updated_at: 2026-04-24T19:29:00.271Z
+    updated_at: 2026-04-24T19:29:21.377Z
     notes: []
