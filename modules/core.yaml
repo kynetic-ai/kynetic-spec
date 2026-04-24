@@ -2167,6 +2167,9 @@ features:
           AC coverage scanning is limited to the configured coverage surface.
           Annotations outside configured scan paths or inside excluded paths do
           not create coverage credit and do not create invalid-annotation debt.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
