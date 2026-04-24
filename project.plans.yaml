@@ -40898,6 +40898,14 @@ plans:
           and should not be derived."
         author: Jacob Chapel
         created_at: 2026-04-24T18:49:56.656Z
+      - _ulid: 01KQ0FQRC42BB4P97W0N1YMRQZ
+        content: "Seed 01 conversion completed: @cruft-01-spec-catalog-health-seed produced the reviewed
+          draft implementation plan @plan-spec-catalog-health-and-validation-trust. Plan-reviewer
+          cycle 1 requested changes in @01KQ0ERKXPS93QMFXVPKWTDWB3; cycle 2 approved the revised
+          plan in @01KQ0FAKTH1FV6YG97H56R426D. This plan is the first downstream cleanup plan for
+          restoring validation/catalog trust before later cruft cleanup plans."
+        author: Jacob Chapel
+        created_at: 2026-04-24T19:33:45.988Z
   - _ulid: 01KQ0C0G886ZV6D43CNYVTH7PY
     slugs:
       - cruft-01-spec-catalog-health-seed
@@ -41132,6 +41140,17 @@ plans:
           content."
         author: Jacob Chapel
         created_at: 2026-04-24T18:49:56.834Z
+      - _ulid: 01KQ0FQRJ0FVX04JMKZTXCPZ7T
+        content: "Converted into real draft implementation plan
+          @plan-spec-catalog-health-and-validation-trust. Conversion decisions: kept this seed as
+          durable context rather than replacing it; scoped the real plan to validation task data
+          source, AC annotation integrity reporting, and coverage annotation scope boundaries;
+          deferred broader backfill retirement, trait normalization, CLI/schema rewrite,
+          API/daemon/web contract split, and general code-quality refactors to the later seeded
+          plans. Review history: cycle 1 @01KQ0ERKXPS93QMFXVPKWTDWB3 requested changes; cycle 2
+          @01KQ0FAKTH1FV6YG97H56R426D approved with passing gate."
+        author: Jacob Chapel
+        created_at: 2026-04-24T19:33:46.176Z
   - _ulid: 01KQ0C0NQ31R0MZBB4M0JCQGAG
     slugs:
       - cruft-02-backfill-process-retirement-seed
@@ -42782,3 +42801,14 @@ plans:
           keep final gate standalone, align final gate priority, clarify repair-wave support"
         author: Jacob Chapel
         created_at: 2026-04-24T19:24:30.463Z
+      - _ulid: 01KQ0FQRPWD4C8Y2SPHNSMSDEJ
+        content: "Created from cruft cleanup program charter @cruft-cleanup-program-charter and seed
+          @cruft-01-spec-catalog-health-seed by manual planning task
+          @task-convert-cruft-01-spec-catalog-health-plan. Source audit context:
+          /home/chapel/Projects/kynetic-spec/plans/cruft-audit-2026-04-24.md. Plan-reviewer history:
+          @01KQ0ERKXPS93QMFXVPKWTDWB3 identified cycle-1 blockers/majors; revised plan addressed
+          them and cycle 2 @01KQ0FAKTH1FV6YG97H56R426D approved with disposition approved and gate
+          passing. Keep seed/charter/audit as context only; this plan should stand alone for
+          derivation/review."
+        author: Jacob Chapel
+        created_at: 2026-04-24T19:33:46.332Z
