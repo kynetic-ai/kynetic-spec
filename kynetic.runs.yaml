@@ -31869,7 +31869,7 @@ runs:
     completed_at: 2026-04-24T21:52:04.045Z
   - _ulid: 01KQ0RDXFMP262CVNEB6QNV1XX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -31883,7 +31883,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-24T22:06:40.380Z
-        completed_at: 2026-04-24T22:06:40.380Z
+        completed_at: 2026-04-24T22:06:50.008Z
+        notes: "Friction points: Full kspec validate still fails from a pre-existing malformed nested trait
+          object, which review had to classify before approval; this is already tracked as inbox
+          01KPAM5ST. Validation task loading still reports Tasks checked: 0, already covered by
+          validation trust follow-up tasks. New friction encountered during reflection: reflect
+          skill says kspec workflow show without arguments, but the CLI required a run ref in this
+          session."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-24T22:06:50.008Z
+        completed_at: 2026-04-24T22:06:50.008Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T22:05:40.724Z
