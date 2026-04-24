@@ -165454,6 +165454,12 @@ reviews:
         payload:
           thread_ulid: 01KQ0V2MK5AWE4DJNJQPW30MYG
         timestamp: 2026-04-24T23:18:44.922Z
+      - _ulid: 01KQ0WM2DCJ7Q9M2HFKGSQKJPT
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQ0V2MK5AWE4DJNJQPW30MYG
+        timestamp: 2026-04-24T23:18:56.685Z
     examined_commit: 87c41864b7e745a0f83189eefe2d53b95c2af5ec
     external_links: []
     lifecycle_state: closed
@@ -165512,6 +165518,8 @@ reviews:
               All 8372 tests pass.
             created_at: 2026-04-24T23:18:43.842Z
         kind: blocker
+        resolved_at: 2026-04-24T23:18:55.634Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -165521,7 +165529,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-24T22:58:42.342Z
     created_at: 2026-04-24T22:47:22.514Z
-    updated_at: 2026-04-24T23:18:43.842Z
+    updated_at: 2026-04-24T23:18:55.634Z
     notes: []
   - _ulid: 01KQ0VT28QQQ5AK2RF7VMY106X
     slugs: []
