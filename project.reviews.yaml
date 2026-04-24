@@ -165745,6 +165745,23 @@ reviews:
         runner: rg
         created_at: 2026-04-24T23:34:20.503Z
         completed_at: 2026-04-24T23:34:20.503Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/parser/validate.ts, src/parser/task-data-manager.ts,
+          src/parser/split-backend.ts, src/parser/refs.ts, src/cli/commands/validate.ts,
+          tests/validate-task-data-source.test.ts, tests/automation-eligibility.test.ts,
+          tests/helpers/cli.ts. Commands run: kspec task get, kspec item get, prior review get, git
+          diff, rg AC search, kspec validate, npm run dev validate/task probes, npm test. Claims
+          verified: prior fallback blocker fixed for loadAllTasks failure, but resolver errors still
+          silently fall back. Categories searched: correctness, edge cases, error handling, test
+          quality, integration."
+        name: review evidence
+        required: false
+        runner: codex review
+        created_at: 2026-04-24T23:34:32.711Z
+        completed_at: 2026-04-24T23:34:32.711Z
     events:
       - _ulid: 01KQ0WQZ9MSQ82RZHA3010YHZV
         actor: Jacob Chapel
@@ -165794,6 +165811,13 @@ reviews:
           status: pass
           name: AC annotation search
         timestamp: 2026-04-24T23:34:21.585Z
+      - _ulid: 01KQ0XGNJEWA42EEPX9D8MJNZM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-24T23:34:33.806Z
     examined_commit: 2525fa93d58103ccf02f77efbcd4140c542d491a
     external_links: []
     lifecycle_state: open
@@ -165829,5 +165853,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T23:21:04.564Z
-    updated_at: 2026-04-24T23:34:20.503Z
+    updated_at: 2026-04-24T23:34:32.711Z
     notes: []
