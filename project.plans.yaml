@@ -42372,14 +42372,20 @@ plans:
               completeness validation scans for AC annotations
             then: |
               Matching files are skipped
-          - id: ac-skipped-annotations-no-debt
+          - id: ac-skipped-annotations-no-credit
             given: |
               A skipped file contains text that looks like an AC annotation
             when: |
               completeness validation runs
             then: |
-              The skipped text produces neither coverage credit nor invalid
-              annotation findings
+              The skipped text produces no coverage credit
+          - id: ac-skipped-annotations-no-invalid-debt
+            given: |
+              A skipped file contains text that looks like an AC annotation
+            when: |
+              completeness validation runs
+            then: |
+              The skipped text produces no invalid annotation findings
       ```
 
       ## Tasks
@@ -42391,7 +42397,6 @@ plans:
         slug: task-catalog-health-baseline
         priority: 1
         tags: [validation, spec-hygiene, audit]
-        automation: manual_only
         description: |
           Capture the current validation and overlap baseline before changing
           the spec catalog or validation code.
@@ -42432,7 +42437,6 @@ plans:
         slug: task-repair-broken-spec-refs
         priority: 1
         tags: [validation, refs, spec-hygiene]
-        automation: manual_only
         depends_on:
           - "@task-catalog-health-baseline"
         description: |
@@ -42469,7 +42473,6 @@ plans:
         slug: task-remove-live-test-trait
         priority: 1
         tags: [validation, traits, spec-hygiene]
-        automation: manual_only
         depends_on:
           - "@task-catalog-health-baseline"
         description: |
@@ -42505,7 +42508,6 @@ plans:
         slug: task-validation-task-data-manager-read-path
         priority: 1
         tags: [validation, tasks, parser]
-        automation: manual_only
         spec_ref: "@validation-task-data-source"
         depends_on:
           - "@task-catalog-health-baseline"
@@ -42547,7 +42549,6 @@ plans:
         slug: task-ac-annotation-integrity-reporting
         priority: 2
         tags: [validation, coverage, ac-annotations]
-        automation: manual_only
         spec_ref: "@ac-annotation-integrity-reporting"
         depends_on:
           - "@task-catalog-health-baseline"
@@ -42587,7 +42588,6 @@ plans:
         slug: task-coverage-annotation-scope-boundaries
         priority: 2
         tags: [validation, coverage, config]
-        automation: manual_only
         spec_ref: "@coverage-annotation-scope-boundaries"
         depends_on:
           - "@task-ac-annotation-integrity-reporting"
@@ -42622,13 +42622,13 @@ plans:
 
           Covers: @coverage-annotation-scope-boundaries ac-only-configured-paths-scanned,
           @coverage-annotation-scope-boundaries ac-excluded-paths-skipped,
-          @coverage-annotation-scope-boundaries ac-skipped-annotations-no-debt.
+          @coverage-annotation-scope-boundaries ac-skipped-annotations-no-credit,
+          @coverage-annotation-scope-boundaries ac-skipped-annotations-no-invalid-debt.
 
       - title: Repair first wave of invalid AC annotations
         slug: task-ac-annotation-repair-wave-one
         priority: 2
         tags: [validation, coverage, spec-hygiene]
-        automation: manual_only
         depends_on:
           - "@task-ac-annotation-integrity-reporting"
           - "@task-coverage-annotation-scope-boundaries"
@@ -42666,23 +42666,24 @@ plans:
           annotation counts decrease and no repaired tests lose intended
           coverage signal.
 
-          Covers: supports @ac-annotation-integrity-reporting by repairing the
-          current catalog against the reporting contract.
+          Supports: uses @ac-annotation-integrity-reporting
+          ac-unresolved-target-reported, ac-non-spec-target-reported,
+          ac-missing-ac-id-reported, and ac-blanket-ref-does-not-cover as the
+          classification taxonomy for repairing current catalog annotations.
 
-      - title: Final validation trust gate and seed linkage
+      - title: Final validation trust gate
         slug: task-validation-trust-final-gate
-        priority: 1
+        priority: 2
         tags: [validation, review, spec-hygiene]
-        automation: manual_only
         depends_on:
           - "@task-validation-task-data-manager-read-path"
           - "@task-ac-annotation-repair-wave-one"
         description: |
-          Run the final validation gate for this plan and connect the seed plan
-          to the resulting implementation plan.
+          Run the final validation gate for this implementation plan and record
+          the remaining validation-trust state.
 
           Why: The plan is only successful if the project has a clearer
-          validation baseline and future cleanup plans can trust the remaining
+          validation baseline and future cleanup work can trust the remaining
           findings.
 
           What:
@@ -42694,21 +42695,18 @@ plans:
           - Record before/after counts for reference failures, alignment
             warnings, missing AC warnings, missing own-AC coverage warnings,
             and invalid annotation warnings.
-          - Document intentional remaining warning categories and which later
-            seed plan owns them.
-          - Add a note to @cruft-01-spec-catalog-health-seed linking to this
-            implementation plan and summarizing any scope splits or deferrals.
-          - Add a note to @task-convert-cruft-01-spec-catalog-health-plan with
-            the created plan ref and review status.
+          - Document intentional remaining warning categories and the cleanup
+            area that owns each remaining category.
+          - Add notes to the tasks completed under this plan summarizing final
+            command results and any intentional deferrals.
 
           How:
-          This task is the handoff point between the first cleanup plan and the
-          rest of the cruft cleanup program. Do not derive later seed plans from
-          here.
+          Treat this as the implementation closeout for this validation-trust
+          slice. Do not derive or implement later cleanup slices from here.
 
           Testing:
           Validation commands and focused test commands must be recorded in the
-          task note. Any non-zero validation exit caused by remaining warnings
+          task notes. Any non-zero validation exit caused by remaining warnings
           must be explained and assigned to a later cleanup slice.
 
           Covers: final verification for @validation-task-data-source,
@@ -42763,18 +42761,24 @@ plans:
       3. Tighten validation read/reporting behavior before mass annotation
          repair.
       4. Repair only high-confidence invalid annotations in this plan.
-      5. Run final validation gate and cross-link seed/task records.
+      5. Run final validation gate and record the remaining validation-trust
+         state.
 
-      All tasks are marked `manual_only` because they alter or plan changes to
-      the project's spec source of truth and require judgment about whether
-      code, specs, tests, or task metadata are stale.
+      Task automation status is intentionally not encoded in this plan because
+      current plan derivation does not preserve automation metadata from plan
+      YAML. Set automation status explicitly after derivation according to the
+      approved execution strategy.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/spec-catalog-health-validation-trust.md
     created_at: 2026-04-24T19:08:47.130Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KQ0F6SVZZDFCQDH88YJFSNGK
+        content: "Address review cycle 1: remove unsupported automation YAML, split skipped-annotation AC,
+          keep final gate standalone, align final gate priority, clarify repair-wave support"
+        author: Jacob Chapel
+        created_at: 2026-04-24T19:24:30.463Z
