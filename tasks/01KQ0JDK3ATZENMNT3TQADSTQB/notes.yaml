@@ -1,1 +1,30 @@
-notes: []
+notes:
+  - _ulid: 01KQ0X033YYAXHHJM6FVGM7D84
+    content: >-
+      Approach: The core validateACAnnotations function already handles all 5 AC cases correctly.
+      The tightening work is:
+
+
+      1. Add distinct subtypes to invalid_ac_annotation warnings so each category
+      (unresolved_target, non_spec_target, missing_ac_id, blanket_ref) is machine-distinguishable.
+      Currently all 4 categories share the same type with no subtype.
+
+
+      2. Update CLI output formatting to group invalid annotations by subtype instead of lumping all
+      255+ together, making the findings more actionable for repair.
+
+
+      3. Add focused AC-annotated tests for each of the 5 spec ACs, asserting on the new subtypes
+      and verifying the full pipeline including coverage computation.
+
+
+      Edge cases: blanket refs on items WITHOUT ACs should NOT warn (current code already handles
+      this). Valid annotations on nonexistent specs shouldn't provide false coverage (already
+      correct since coverage matching is from the item side).
+
+
+      Reusing: existing ReferenceIndex, existing setupProject test helper, existing
+      CompletenessWarning type (extending subtype union).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-24T23:25:30.622Z
