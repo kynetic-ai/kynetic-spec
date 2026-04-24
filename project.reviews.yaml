@@ -165494,3 +165494,29 @@ reviews:
     created_at: 2026-04-24T22:47:22.514Z
     updated_at: 2026-04-24T22:58:42.342Z
     notes: []
+  - _ulid: 01KQ0VT28QQQ5AK2RF7VMY106X
+    slugs: []
+    title: Review repair broken task spec references (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQ0VT28Q4HFTYDJ8Z500SPCE
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-24T23:04:44.567Z
+    examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQ0JDHZQ4H04WBFWE7WMR6GV"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-24T23:04:44.567Z
+    updated_at: null
+    notes: []
