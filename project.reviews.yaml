@@ -165535,6 +165535,18 @@ reviews:
         runner: npm
         created_at: 2026-04-24T23:18:14.561Z
         completed_at: 2026-04-24T23:18:14.561Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Optional full validation still fails on pre-existing repo-wide debt: meta.yaml traits
+          schema error, orphan skill dir warning, alignment/completeness warnings. References are OK
+          and task-specific ref audit passed."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-24T23:18:19.764Z
+        completed_at: 2026-04-24T23:18:19.764Z
     events:
       - _ulid: 01KQ0VT28Q4HFTYDJ8Z500SPCE
         actor: Jacob Chapel
@@ -165570,6 +165582,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-24T23:18:15.641Z
+      - _ulid: 01KQ0WJZDKAJ2R0W1S8RQKNSWY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-24T23:18:20.851Z
     examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
     external_links: []
     lifecycle_state: open
@@ -165582,5 +165601,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-24T23:04:44.567Z
-    updated_at: 2026-04-24T23:18:14.561Z
+    updated_at: 2026-04-24T23:18:19.764Z
     notes: []
