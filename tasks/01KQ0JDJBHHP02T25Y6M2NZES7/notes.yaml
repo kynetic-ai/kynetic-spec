@@ -1,1 +1,26 @@
-notes: []
+notes:
+  - _ulid: 01KQ0PPTVR8KXGAK8M957XE481
+    content: >-
+      Approach: Confirmed @01KJN1WT94B23HXX1R5KVD9BVC (Test Trait) is fixture-only debris in live
+      catalog.
+
+
+      Evidence:
+
+      - No slugs, no ACs, no code references to its ULID
+
+      - E2E fixtures (tests/e2e/fixtures/modules/core.yaml) have a completely separate trait with
+      different ULID 01KF1645CB and slug test-trait — independent of the live catalog item
+
+      - No spec items inherit from the live trait
+
+      - Baseline artifact confirms it as the sole missing-AC item in completeness validation
+
+      - All 'test-trait'/'Test Trait' references in test files are to fixture-created traits, not
+      the live catalog item
+
+
+      Plan: Remove via kspec trait remove, verify completeness validation, run full test suite.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-24T21:35:35.801Z
