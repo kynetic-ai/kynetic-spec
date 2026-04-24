@@ -164607,3 +164607,29 @@ reviews:
     created_at: 2026-04-24T19:26:35.345Z
     updated_at: 2026-04-24T19:29:33.950Z
     notes: []
+  - _ulid: 01KQ0HKVBVY6EGBGJTCHQFY29V
+    slugs: []
+    title: "Plan review: Spec Catalog Health and Validation Trust (cycle 3)"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQ0HKVBVMKE2A1V1F89QB9VW
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-24T20:06:35.131Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-spec-catalog-health-and-validation-trust"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-24T20:06:35.131Z
+    updated_at: null
+    notes: []
