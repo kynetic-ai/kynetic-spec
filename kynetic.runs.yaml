@@ -32045,7 +32045,7 @@ runs:
     completed_at: 2026-04-24T23:21:25.658Z
   - _ulid: 01KQ0XJTG5E4FYECETH1BW37R3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -32060,7 +32060,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-24T23:36:53.624Z
-        completed_at: 2026-04-24T23:36:53.624Z
+        completed_at: 2026-04-24T23:37:01.993Z
+        notes: "Friction points: installed kspec and source npm run dev exercise different code paths in a
+          review snapshot, so both had to be checked manually. More importantly, source task
+          commands failed with TaskDataManagerError: No storage backend registered for format split,
+          while source validate could mask that by reporting tasksChecked=0. kspec meta observations
+          get @ref also produced an unexpectedly broad table instead of a focused record, which made
+          coverage checking noisy."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-24T23:37:01.993Z
+        completed_at: 2026-04-24T23:37:01.993Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-24T23:35:44.389Z
