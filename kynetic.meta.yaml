@@ -16108,6 +16108,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-24T21:34:28.247Z
+  - _ulid: 01KQ0TRYDZF4QCW8GFZ6F0KJXQ
+    type: friction
+    content: Tests that manually patch project.tasks.yaml (lean index) to simulate terminal states
+      (completed/cancelled) break when the validation read path switches from lean index to per-task
+      directories. Found 5 such tests in automation-eligibility.test.ts during the
+      validation-task-data-source task. No shared helper exists for patching both index and per-task
+      files atomically. The patchTaskField() helper added in automation-eligibility.test.ts is a
+      local fix — should be promoted to tests/helpers/cli.ts.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-24T22:46:39.295Z
+  - _ulid: 01KQ0TRYN5HJ2PJ1KBS57C7WTP
+    type: success
+    content: "Baseline artifact (plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md)
+      from @task-catalog-health-baseline provided exact before/after metrics, making it easy to
+      validate the fix addressed the root cause (Tasks checked: 0 → Tasks checked: N)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-24T22:46:39.525Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
