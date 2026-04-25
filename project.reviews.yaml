@@ -168341,7 +168341,66 @@ reviews:
     slugs: []
     title: Review final validation trust gate (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --refs --warnings-ok -v: exit 0. Files checked 8, items checked 606, tasks
+          checked 0 in detached snapshot without .kspec worktree; schema OK and references OK."
+        name: kspec validate --refs
+        required: true
+        runner: kspec
+        created_at: 2026-04-25T03:07:07.383Z
+        completed_at: 2026-04-25T03:07:07.383Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --alignment -v: exit 6 warning-only. Reproduced 35 alignment warnings: 33
+          orphaned specs and 2 status mismatches, matching intentional remaining category."
+        name: kspec validate --alignment
+        required: true
+        runner: kspec
+        created_at: 2026-04-25T03:07:10.272Z
+        completed_at: 2026-04-25T03:07:10.272Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --completeness -v: exit 6 warning-only. Reproduced 271 completeness
+          warnings: 233 missing own-AC coverage and 38 invalid AC annotations.
+          @ac-annotation-integrity-reporting no longer appears uncovered."
+        name: kspec validate --completeness
+        required: true
+        runner: kspec
+        created_at: 2026-04-25T03:07:14.162Z
+        completed_at: 2026-04-25T03:07:14.162Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/validate-task-data-source.test.ts
+          tests/ac-annotation-validation.test.ts tests/ac-annotation-integrity.test.ts
+          tests/coverage-annotation-scope-boundaries.test.ts tests/validate-integration.test.ts
+          tests/validate-exit-codes.test.ts tests/validate-mode-selection.test.ts
+          tests/trait-ac-coverage.test.ts: 44/44 suites passed, 112/112 tests passed."
+        name: focused validation tests
+        required: true
+        runner: npm
+        created_at: 2026-04-25T03:07:16.980Z
+        completed_at: 2026-04-25T03:07:16.980Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: exit 0. Test Suites: 2282/2282 passed. Tests: 8393/8398 passed, 5
+          skipped. Duration 1890.6s."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-25T03:07:19.875Z
+        completed_at: 2026-04-25T03:07:19.875Z
     events:
       - _ulid: 01KQ1934Y2XZTGNWBK40WQ08MD
         actor: Jacob Chapel
@@ -168356,17 +168415,110 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-25T02:57:23.881Z
+      - _ulid: 01KQ19NXAZB1BBQNN664X87GYM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --refs
+        timestamp: 2026-04-25T03:07:08.511Z
+      - _ulid: 01KQ19P05XF0C9TNEDJV3DQTEN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --alignment
+        timestamp: 2026-04-25T03:07:11.421Z
+      - _ulid: 01KQ19P3YJX6ZV55JGV17JQ2PH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --completeness
+        timestamp: 2026-04-25T03:07:15.283Z
+      - _ulid: 01KQ19P6QDTWDFGP02CFRP68E9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused validation tests
+        timestamp: 2026-04-25T03:07:18.125Z
+      - _ulid: 01KQ19P9HBZDM8Q2AJPH1HGHJG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-25T03:07:21.003Z
+      - _ulid: 01KQ19PCCPHZBGFX08JVCFPJ60
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQ19PB7QT4PTW6ATC6ZT6KG9
+        timestamp: 2026-04-25T03:07:23.926Z
+      - _ulid: 01KQ19PF67Q2S7QD55X6R1CA18
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-25T03:07:26.792Z
+      - _ulid: 01KQ19PF68FFFR5PHG9B9H5YPM
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-25T03:07:26.792Z
     examined_commit: 21bb9efcbeeaa767003581e07e155516857cf42a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KQ0JDM87XBFC80SW6HQ40VQ1"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KQ19PB7QT4PTW6ATC6ZT6KG9
+        entries:
+          - _ulid: 01KQ19PB7Q2E9MQ7THZP9VC4RW
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: AGENTS.md, kspec-agents.md, kspec.config.yaml,
+              tests/ac-annotation-integrity.test.ts, tests/ac-annotation-validation.test.ts,
+              src/parser/validate.ts, task records for all plan-derived tasks, plan
+              @plan-spec-catalog-health-and-validation-trust, prior review
+              @01KQ174522871E4FHX42XVTTHJ.
+
+              Commands run: kspec task get @01KQ0JDM87XBFC80SW6HQ40VQ1, kspec review for-task/get,
+              git diff/log/show, kspec item get for the three plan specs, kspec validate --refs
+              --warnings-ok -v, kspec validate --alignment -v, kspec validate --completeness -v,
+              focused npm test -- --run validation files, npm test -- --fresh, git diff --check.
+
+              Claims verified: prior blocker fixed because completeness no longer lists
+              @ac-annotation-integrity-reporting as uncovered; focused tests include the new
+              non-excluded file and pass; full suite passes fresh; plan-derived task final notes are
+              present.
+
+              Categories searched: correctness/spec alignment, AC coverage, test
+              quality/source-scanning risk, validation warning counts, task closeout notes,
+              integration readiness. No blocking findings.
+            created_at: 2026-04-25T03:07:22.743Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-25T03:07:26.791Z
     created_at: 2026-04-25T02:56:53.698Z
-    updated_at: 2026-04-25T02:57:22.563Z
+    updated_at: 2026-04-25T03:07:26.792Z
     notes: []
