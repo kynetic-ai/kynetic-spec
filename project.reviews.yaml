@@ -168337,3 +168337,29 @@ reviews:
     created_at: 2026-04-25T02:22:29.442Z
     updated_at: 2026-04-25T02:54:29.010Z
     notes: []
+  - _ulid: 01KQ1934Y22ZP3MKK4VAVCX03F
+    slugs: []
+    title: Review final validation trust gate (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQ1934Y2XZTGNWBK40WQ08MD
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-25T02:56:53.698Z
+    examined_commit: 21bb9efcbeeaa767003581e07e155516857cf42a
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQ0JDM87XBFC80SW6HQ40VQ1"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-25T02:56:53.698Z
+    updated_at: null
+    notes: []
