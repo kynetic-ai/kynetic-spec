@@ -87,3 +87,11 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-25T01:57:31.441Z
+  - _ulid: 01KQ16WTXXBP1PPHWTETK7EKH5
+    content: "Final gate summary: Wave one repair reduced invalid annotations from 255 → 38. Repaired
+      217 annotations across categories: demoted non-spec refs (99), corrected AC ids (36), promoted
+      blanket refs to explicit ACs (30), and removed false positives (4+1). Remaining 38 are scanner
+      limitations (blanket-ref format) and intentional test fixtures."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-25T02:18:29.694Z
