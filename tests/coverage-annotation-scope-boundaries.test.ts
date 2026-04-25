@@ -14,10 +14,18 @@ import {
   scanTestCoverage,
   scanACAnnotations,
   validate,
-  validateACAnnotations,
 } from "../src/parser/validate.js";
 import { initContext, writeYamlFilePreserveFormat } from "../src/parser/yaml.js";
 import { createTempDir, cleanupTempDir, testUlid } from "./helpers/cli";
+
+/**
+ * Build fixture file content containing an AC annotation line.
+ * Constructed at runtime so the scanner does not match these
+ * string literals as real annotations in THIS source file.
+ */
+function acLine(ref: string, acId?: string): string {
+  return `/${"/"} AC: ${ref}${acId ? ` ${acId}` : ""}`;
+}
 
 describe("coverage-annotation-scope-boundaries", () => {
   let tempDir: string;
@@ -94,13 +102,13 @@ describe("coverage-annotation-scope-boundaries", () => {
       // Annotation inside configured scan path
       await fs.writeFile(
         path.join(testsDir, "feature.test.ts"),
-        '// AC: @my-spec ac-1\nit("test", () => {});\n',
+        `${acLine("@my-spec", "ac-1")}\nit("test", () => {});\n`,
       );
 
       // Annotation-like text OUTSIDE configured scan paths
       await fs.writeFile(
         path.join(srcDir, "implementation.ts"),
-        "// AC: @my-spec ac-2\nexport const x = 1;\n",
+        `${acLine("@my-spec", "ac-2")}\nexport const x = 1;\n`,
       );
 
       const coverage = await scanTestCoverage(tempDir, ["tests/"]);
@@ -115,13 +123,13 @@ describe("coverage-annotation-scope-boundaries", () => {
       // File at project root (not under any scan path)
       await fs.writeFile(
         path.join(tempDir, "root-file.ts"),
-        "// AC: @root-spec ac-1\nconst x = 1;\n",
+        `${acLine("@root-spec", "ac-1")}\nconst x = 1;\n`,
       );
 
       // File inside configured scan path
       await fs.writeFile(
         path.join(testsDir, "real.test.ts"),
-        '// AC: @real-spec ac-1\nit("test", () => {});\n',
+        `${acLine("@real-spec", "ac-1")}\nit("test", () => {});\n`,
       );
 
       const coverage = await scanTestCoverage(tempDir, ["tests/"]);
@@ -138,13 +146,13 @@ describe("coverage-annotation-scope-boundaries", () => {
       // Inside configured path
       await fs.writeFile(
         path.join(testsDir, "real.test.ts"),
-        '// AC: @spec-a ac-1\nit("test", () => {});\n',
+        `${acLine("@spec-a", "ac-1")}\nit("test", () => {});\n`,
       );
 
       // Outside configured path — has annotation-like text
       await fs.writeFile(
         path.join(docsDir, "examples.ts"),
-        "// AC: @spec-b ac-1\n// documentation example\n",
+        `${acLine("@spec-b", "ac-1")}\n// documentation example\n`,
       );
 
       const annotations = await scanACAnnotations(tempDir, ["tests/"]);
@@ -163,15 +171,15 @@ describe("coverage-annotation-scope-boundaries", () => {
 
       await fs.writeFile(
         path.join(unitDir, "unit.test.ts"),
-        '// AC: @unit-spec ac-1\nit("test", () => {});\n',
+        `${acLine("@unit-spec", "ac-1")}\nit("test", () => {});\n`,
       );
       await fs.writeFile(
         path.join(integDir, "integ.test.ts"),
-        '// AC: @integ-spec ac-1\nit("test", () => {});\n',
+        `${acLine("@integ-spec", "ac-1")}\nit("test", () => {});\n`,
       );
       await fs.writeFile(
         path.join(e2eDir, "e2e.test.ts"),
-        '// AC: @e2e-spec ac-1\nit("test", () => {});\n',
+        `${acLine("@e2e-spec", "ac-1")}\nit("test", () => {});\n`,
       );
 
       // Only scan tests/ — e2e/ is a sibling, not included
@@ -190,11 +198,11 @@ describe("coverage-annotation-scope-boundaries", () => {
 
       await fs.writeFile(
         path.join(testsDir, "real.test.ts"),
-        '// AC: @real-spec ac-1\nit("test", () => {});\n',
+        `${acLine("@real-spec", "ac-1")}\nit("test", () => {});\n`,
       );
       await fs.writeFile(
         path.join(testsDir, "excluded.test.ts"),
-        '// AC: @excluded-spec ac-1\nit("test", () => {});\n',
+        `${acLine("@excluded-spec", "ac-1")}\nit("test", () => {});\n`,
       );
 
       const coverage = await scanTestCoverage(
@@ -213,11 +221,11 @@ describe("coverage-annotation-scope-boundaries", () => {
 
       await fs.writeFile(
         path.join(testsDir, "real.test.ts"),
-        '// AC: @real-spec ac-1\nit("test", () => {});\n',
+        `${acLine("@real-spec", "ac-1")}\nit("test", () => {});\n`,
       );
       await fs.writeFile(
         path.join(fixturesDir, "fixture-example.ts"),
-        "// AC: @fixture-spec ac-1\nexport const fixture = true;\n",
+        `${acLine("@fixture-spec", "ac-1")}\nexport const fixture = true;\n`,
       );
 
       const coverage = await scanTestCoverage(
@@ -235,11 +243,11 @@ describe("coverage-annotation-scope-boundaries", () => {
 
       await fs.writeFile(
         path.join(testsDir, "real.test.ts"),
-        '// AC: @real-spec ac-1\nit("test", () => {});\n',
+        `${acLine("@real-spec", "ac-1")}\nit("test", () => {});\n`,
       );
       await fs.writeFile(
         path.join(testsDir, "parser-examples.test.ts"),
-        "// AC: @parser-doc ac-1\n// this is documentation, not real coverage\n",
+        `${acLine("@parser-doc", "ac-1")}\n// this is documentation, not real coverage\n`,
       );
 
       const annotations = await scanACAnnotations(
@@ -272,7 +280,7 @@ describe("coverage-annotation-scope-boundaries", () => {
         ],
         files: {
           // Annotation-like text in src/ (outside scan paths)
-          "src/implementation.ts": '// AC: @boundary-spec ac-1\nexport const x = 1;\n',
+          "src/implementation.ts": `${acLine("@boundary-spec", "ac-1")}\nexport const x = 1;\n`,
         },
       });
 
@@ -314,7 +322,7 @@ describe("coverage-annotation-scope-boundaries", () => {
         files: {
           // This file is excluded — annotation should not count
           "tests/excluded-example.test.ts":
-            '// AC: @excluded-spec ac-1\nit("test", () => {});\n',
+            `${acLine("@excluded-spec", "ac-1")}\nit("test", () => {});\n`,
         },
       });
 
@@ -357,10 +365,10 @@ describe("coverage-annotation-scope-boundaries", () => {
         files: {
           // ac-1 covered in included file
           "tests/included.test.ts":
-            '// AC: @mixed-spec ac-1\nit("test ac-1", () => {});\n',
+            `${acLine("@mixed-spec", "ac-1")}\nit("test ac-1", () => {});\n`,
           // ac-2 "covered" in excluded file — should not count
           "tests/excluded.test.ts":
-            '// AC: @mixed-spec ac-2\nit("test ac-2", () => {});\n',
+            `${acLine("@mixed-spec", "ac-2")}\nit("test ac-2", () => {});\n`,
         },
       });
 
@@ -402,10 +410,10 @@ describe("coverage-annotation-scope-boundaries", () => {
         files: {
           // Invalid annotation (unresolved ref) in src/ (outside scan paths)
           "src/parser-doc.ts":
-            "// AC: @nonexistent-spec ac-1\n// This is a documentation example\n",
+            `${acLine("@nonexistent-spec", "ac-1")}\n// This is a documentation example\n`,
           // Another invalid annotation (missing AC id) outside scan paths
           "docs/examples.ts":
-            "// AC: @real-spec ac-99\n// Documentation showing AC format\n",
+            `${acLine("@real-spec", "ac-99")}\n// Documentation showing AC format\n`,
         },
       });
 
@@ -440,7 +448,7 @@ describe("coverage-annotation-scope-boundaries", () => {
         files: {
           // Excluded file contains annotation referencing nonexistent spec
           "tests/parser-examples.test.ts":
-            '// AC: @nonexistent-parser-doc ac-1\nit("example from docs", () => {});\n',
+            `${acLine("@nonexistent-parser-doc", "ac-1")}\nit("example from docs", () => {});\n`,
         },
       });
 
@@ -478,13 +486,13 @@ describe("coverage-annotation-scope-boundaries", () => {
         files: {
           // Included file with invalid annotation — SHOULD be reported
           "tests/real.test.ts":
-            '// AC: @real-spec ac-99\nit("test with bad AC id", () => {});\n',
+            `${acLine("@real-spec", "ac-99")}\nit("test with bad AC id", () => {});\n`,
           // Excluded file with invalid annotation — should NOT be reported
           "tests/excluded-fixture.test.ts":
-            '// AC: @bogus-ref ac-1\nit("fixture example", () => {});\n',
+            `${acLine("@bogus-ref", "ac-1")}\nit("fixture example", () => {});\n`,
           // Outside scan paths with invalid annotation — should NOT be reported
           "src/doc-example.ts":
-            "// AC: @another-bogus ac-1\nexport const x = 1;\n",
+            `${acLine("@another-bogus", "ac-1")}\nexport const x = 1;\n`,
         },
       });
 
@@ -524,7 +532,7 @@ describe("coverage-annotation-scope-boundaries", () => {
         files: {
           // Excluded file with blanket ref (no ac-N ids) — should NOT generate warning
           "tests/blanket-example.test.ts":
-            '// AC: @blanket-spec\nit("blanket ref example", () => {});\n',
+            `${acLine("@blanket-spec")}\nit("blanket ref example", () => {});\n`,
         },
       });
 
