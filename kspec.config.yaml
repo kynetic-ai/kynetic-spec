@@ -25,4 +25,5 @@ coverage:
   exclude_patterns:
     - "tests/ac-annotation-validation.test.ts"
     - "tests/coverage-cache.test.ts"
+    - "tests/coverage-annotation-scope-boundaries.test.ts"
     - "tests/coverage-scan-config.test.ts"
