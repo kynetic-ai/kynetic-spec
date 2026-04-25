@@ -12035,7 +12035,7 @@ workspaces:
         head: 1cbcf797c03d807268ed0c06abf948e98c9063d4
         last_seen_at: 2026-04-25T01:58:17.772Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-annotation-repair-wave-one-01kq0jdk
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: f1ea722698447b572dee4516380639be67d74538
     bootstrap:
       status: succeeded
@@ -12514,12 +12514,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-04-25T03:07:56.618Z
+      updated_at: 2026-04-25T03:08:07.032Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-25T03:07:56.618Z
+      updated_at: 2026-04-25T03:08:07.032Z
     integration:
       status: merged
       detail: integration:merged
@@ -12527,7 +12527,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f1ea722698447b572dee4516380639be67d74538
-      updated_at: 2026-04-25T03:07:56.618Z
+      updated_at: 2026-04-25T03:08:07.032Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KQ0JDM87XBFC80SW6HQ40VQ1"
@@ -12535,9 +12535,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-25T02:55:56.748Z
-      last_reconciled_at: 2026-04-25T03:07:56.618Z
+      last_reconciled_at: 2026-04-25T03:08:07.032Z
       created_at: 2026-04-25T02:11:14.476Z
-      updated_at: 2026-04-25T03:07:56.618Z
+      updated_at: 2026-04-25T03:08:07.032Z
     workspace_id: dispatch-workspace-01KQ0JDM87XBFC80SW6HQ40VQ1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
