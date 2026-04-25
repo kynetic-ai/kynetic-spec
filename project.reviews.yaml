@@ -167795,6 +167795,18 @@ reviews:
         runner: npm test
         created_at: 2026-04-25T01:08:32.330Z
         completed_at: 2026-04-25T01:08:32.330Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: ./node_modules/.bin/oxlint tests/coverage-annotation-scope-boundaries.test.ts found 0
+          warnings and 0 errors. Full npm run lint still fails on unrelated pre-existing files
+          outside this diff.
+        name: changed-file lint
+        required: true
+        runner: oxlint
+        created_at: 2026-04-25T01:08:35.609Z
+        completed_at: 2026-04-25T01:08:35.609Z
     events:
       - _ulid: 01KQ129BCBHSPNC27P1JPNJ3Q1
         actor: Jacob Chapel
@@ -167823,6 +167835,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-25T01:08:33.494Z
+      - _ulid: 01KQ12WWB2147G6Z6ABND7FRNX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file lint
+        timestamp: 2026-04-25T01:08:36.834Z
     examined_commit: 802dab8e49e3afcc7e29ebbf39d3d107021ef0d3
     external_links: []
     lifecycle_state: open
@@ -167835,5 +167854,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-25T00:57:56.875Z
-    updated_at: 2026-04-25T01:08:32.330Z
+    updated_at: 2026-04-25T01:08:35.609Z
     notes: []
