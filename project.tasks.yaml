@@ -27207,7 +27207,7 @@
   title: Repair first wave of invalid AC annotations
   type: task
   plan_ref: "@plan-spec-catalog-health-and-validation-trust"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-ac-annotation-integrity-reporting"
@@ -27225,6 +27225,7 @@
   created_at: 2026-04-24T20:20:39.443Z
   started_at: 2026-04-25T01:11:17.892Z
   submitted_at: 2026-04-25T01:57:44.021Z
+  completed_at: 2026-04-25T02:10:27.866Z
   automation: eligible
 - _ulid: 01KQ0JDM87XBFC80SW6HQ40VQ1
   slugs:
