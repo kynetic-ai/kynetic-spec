@@ -32326,7 +32326,7 @@ runs:
     completed_at: 2026-04-25T00:31:32.599Z
   - _ulid: 01KQ114G2GDAKHVP60YQ5FYCT4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -32338,7 +32338,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-25T00:39:17.560Z
-        completed_at: 2026-04-25T00:39:17.560Z
+        completed_at: 2026-04-25T00:39:25.193Z
+        notes: "Identified one high-confidence friction point: SplitFileTaskBackend.loadAllTasks() silently
+          swallows per-task parse failures (empty catch block), causing every consumer to
+          unknowingly operate on partial data. This was the root cause across 3 consecutive fix
+          cycles on the same task. Already captured as friction observation via kspec meta observe.
+          No duplicates found in search."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-25T00:39:25.193Z
+        completed_at: 2026-04-25T00:39:25.193Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-25T00:37:49.264Z
