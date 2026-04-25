@@ -166116,6 +166116,19 @@ reviews:
         runner: node --import tsx
         created_at: 2026-04-25T00:13:07.909Z
         completed_at: 2026-04-25T00:13:07.909Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Installed kspec validate exited 4 on known catalog/meta state: .kspec/modules/meta.yaml
+          modules[0].traits.0 expected string, orphaned skill directory warning, and existing
+          alignment/completeness warnings. Changed files are src/parser/validate.ts,
+          tests/automation-eligibility.test.ts, tests/validate-task-data-source.test.ts."
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-04-25T00:13:17.652Z
+        completed_at: 2026-04-25T00:13:17.652Z
     events:
       - _ulid: 01KQ0YYZKX14GF6WMHXH4Z103R
         actor: Jacob Chapel
@@ -166158,6 +166171,13 @@ reviews:
           status: fail
           name: malformed split task refs probe
         timestamp: 2026-04-25T00:13:08.999Z
+      - _ulid: 01KQ0ZQM0BA0VSJRX72X8D03K7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-25T00:13:18.732Z
     examined_commit: 1f8ec960532cc8192bd6cb3abb34c995f3ec4f77
     external_links: []
     lifecycle_state: open
@@ -166195,5 +166215,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T23:59:51.421Z
-    updated_at: 2026-04-25T00:13:07.909Z
+    updated_at: 2026-04-25T00:13:17.652Z
     notes: []
