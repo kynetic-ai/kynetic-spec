@@ -51,7 +51,7 @@ description: |
 spec_ref: "@validation-task-data-source"
 plan_ref: "@plan-spec-catalog-health-and-validation-trust"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-catalog-health-baseline"
@@ -66,8 +66,8 @@ review_ref: "@01KQ0YYZKXDZAF3P9M8CTJ0DKG"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-validation-task-data-manager-read-path/01kq0jdj
-  captured_at: 2026-04-24T23:55:52.513Z
-  commit: 1f8ec960532cc8192bd6cb3abb34c995f3ec4f77
+  captured_at: 2026-04-25T00:37:19.171Z
+  commit: b8aed7ebb9f2bf39b8ead641566f6a31c4de15bc
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-validation-task-data-manager-read-path/01kq0jdj
@@ -257,8 +257,35 @@ history:
         previous: 2026-04-24T23:55:48.540Z
     command: task-start
     timestamp: 2026-04-25T00:18:11.035Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-validation-task-data-manager-read-path/01kq0jdj
+          captured_at: 2026-04-25T00:37:19.171Z
+          commit: b8aed7ebb9f2bf39b8ead641566f6a31c4de15bc
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-validation-task-data-manager-read-path/01kq0jdj
+        previous:
+          review_url: null
+          branch: dispatch/task/task-validation-task-data-manager-read-path/01kq0jdj
+          captured_at: 2026-04-24T23:55:52.513Z
+          commit: 1f8ec960532cc8192bd6cb3abb34c995f3ec4f77
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-validation-task-data-manager-read-path/01kq0jdj
+      submitted_at:
+        new: 2026-04-25T00:37:19.177Z
+        previous: 2026-04-24T23:55:52.518Z
+    command: task-submit
+    timestamp: 2026-04-25T00:37:19.177Z
 created_at: 2026-04-24T20:20:38.263Z
 started_at: 2026-04-25T00:18:11.035Z
-submitted_at: 2026-04-24T23:55:52.518Z
+submitted_at: 2026-04-25T00:37:19.177Z
 todos: []
 automation: eligible
