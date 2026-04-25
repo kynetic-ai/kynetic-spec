@@ -32364,7 +32364,7 @@ runs:
     completed_at: 2026-04-25T00:39:40.536Z
   - _ulid: 01KQ121WNBTF7JFT7SEKY3D1CC
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -32402,7 +32402,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-25T00:56:05.745Z
-        completed_at: 2026-04-25T00:56:05.745Z
+        completed_at: 2026-04-25T00:56:17.008Z
+        notes: "Proposed improvement: Teach kspec batch's structured args for 'review check' to preserve
+          optional checks, either by honoring required:false as --no-required or
+          documenting/enforcing the supported key. This prevents automated review evidence batches
+          from accidentally turning known non-blocking checks into merge gates. Rough scope: small
+          to medium, likely batch command arg mapping plus tests. No proposal for workflow show
+          because existing items already cover it."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-25T00:56:17.008Z
+        completed_at: 2026-04-25T00:56:17.008Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-25T00:53:52.427Z
