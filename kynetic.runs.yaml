@@ -32363,7 +32363,7 @@ runs:
     started_at: 2026-04-25T00:37:49.264Z
     completed_at: 2026-04-25T00:39:40.536Z
   - _ulid: 01KQ121WNBTF7JFT7SEKY3D1CC
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -32420,7 +32420,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-25T00:56:24.690Z
-        completed_at: 2026-04-25T00:56:24.690Z
+        completed_at: 2026-04-25T00:56:55.073Z
+        notes: "Captured: inbox item for batch review check optional flag preservation; friction observation
+          for required:false creating a required review check through batch; success observation for
+          detached reviewer merge helper reliability. Skipped duplicate workflow show capture
+          because existing tasks/inbox/observations already cover it."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-25T00:53:52.427Z
+    completed_at: 2026-04-25T00:56:55.073Z
