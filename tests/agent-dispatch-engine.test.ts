@@ -4968,7 +4968,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
 
 // ─── Priority filter threshold semantics ──────────────────────────────────────
 
-// AC: @ui-agent-dispatch ac-8
+// AC: @agent-dispatch-engine ac-6
 describe("Priority filter uses threshold semantics (<=)", () => {
   let testDir: string;
 

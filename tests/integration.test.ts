@@ -1120,7 +1120,7 @@ describe("Integration: derive", () => {
     expect(listOutput).not.toContain("Implement: Test Feature");
   });
 
-  // AC: @cmd-derive ac-2
+  // Coverage: @derive-command ac-2
   it("should recursively derive tasks for parent and children", () => {
     // test-feature has one child: test-requirement
     const output = kspec("derive @test-feature", tempDir);
@@ -1132,7 +1132,7 @@ describe("Integration: derive", () => {
     expect(listOutput).toContain("Test Requirement");
   });
 
-  // AC: @cmd-derive ac-3
+  // Coverage: @derive-command ac-3
   it("should only derive single item with --flat", () => {
     const output = kspec("derive @test-feature --flat", tempDir);
     expect(output).toContain("Created 1 task(s)");
@@ -1143,7 +1143,7 @@ describe("Integration: derive", () => {
     expect(listOutput).not.toContain("Test Requirement");
   });
 
-  // AC: @cmd-derive ac-4, ac-5
+  // Coverage: @derive-command ac-4, ac-5
   it("should set depends_on for child tasks", () => {
     // Derive recursively to create both tasks
     kspec("derive @test-feature", tempDir);
@@ -1156,7 +1156,7 @@ describe("Integration: derive", () => {
     expect(task.depends_on).toContain("@task-test-feature");
   });
 
-  // AC: @cmd-derive ac-6
+  // Coverage: @derive-command ac-6
   it("should use existing parent task for depends_on", () => {
     // First derive just the parent
     kspec("derive @test-feature --flat", tempDir);
@@ -1172,7 +1172,7 @@ describe("Integration: derive", () => {
     expect(task.depends_on).toContain("@task-test-feature");
   });
 
-  // AC: @cmd-derive ac-7
+  // Coverage: @derive-command ac-7
   it("should skip existing tasks without --force", () => {
     // First derive
     kspec("derive @test-feature --flat", tempDir);
@@ -1183,7 +1183,7 @@ describe("Integration: derive", () => {
     expect(output).toContain("task exists");
   });
 
-  // AC: @cmd-derive ac-8
+  // Coverage: @derive-command ac-8
   it("should handle partial derivation (some children have tasks)", () => {
     // Derive the parent flat first
     kspec("derive @test-feature --flat", tempDir);
@@ -1196,7 +1196,7 @@ describe("Integration: derive", () => {
     expect(output).toContain("Skipped 1");
   });
 
-  // AC: @cmd-derive ac-10
+  // Coverage: @derive-command ac-10
   it("should show dry-run for recursive derive", () => {
     const output = kspec("derive @test-feature --dry-run", tempDir);
     expect(output).toContain("Would create:");
@@ -1205,7 +1205,7 @@ describe("Integration: derive", () => {
     expect(output).toContain("depends:");
   });
 
-  // AC: @cmd-derive ac-11
+  // Coverage: @derive-command ac-11
   it("should output JSON with correct format", () => {
     const output = kspec("derive @test-feature --dry-run --json", tempDir);
     const results = JSON.parse(output);
@@ -1224,13 +1224,13 @@ describe("Integration: derive", () => {
     expect(results[1].depends_on).toContain("@task-test-feature");
   });
 
-  // AC: @cmd-derive ac-13
+  // Coverage: @derive-command ac-13
   it("should error on invalid reference (derive)", () => {
     const result = kspecRun("derive @nonexistent", tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
   });
 
-  // AC: @cmd-derive ac-17
+  // Coverage: @derive-command ac-17
   it("should map spec depends_on to an existing active task dependency", () => {
     kspec(
       'item add --under @test-core --title "Dependency Base" --slug dependency-base --type feature',
@@ -1249,7 +1249,7 @@ describe("Integration: derive", () => {
     expect(task.depends_on).toContain("@task-dependency-base");
   });
 
-  // AC: @cmd-derive ac-17
+  // Coverage: @derive-command ac-17
   it("should map spec depends_on when both tasks are created in the same derive --all run", () => {
     kspec(
       'item add --under @test-core --title "Same Run Consumer" --slug same-run-consumer --type feature',
@@ -1267,7 +1267,7 @@ describe("Integration: derive", () => {
     expect(task.depends_on).toContain("@task-same-run-base");
   });
 
-  // AC: @cmd-derive ac-16
+  // Coverage: @derive-command ac-16
   it("should warn and still create the task when spec dependency has no task", () => {
     kspec(
       'item add --under @test-core --title "Unlinked Base" --slug unlinked-base --type feature',
@@ -1296,7 +1296,7 @@ describe("Integration: derive", () => {
     const task = JSON.parse(taskOutput);
 
     // Task should have a note with implementation context
-    // AC: @cmd-derive ac-author - author set via getAuthor()
+    // Coverage: @derive-command ac-author - author set via getAuthor()
     expect(task.notes).toHaveLength(1);
     expect(task.notes[0].content).toContain("Implementation notes (auto-generated from spec)");
     expect(task.notes[0].content).toContain("A test feature for integration testing"); // From description
@@ -1344,7 +1344,7 @@ describe("Integration: derive", () => {
     expect(task.notes).toHaveLength(0);
   });
 
-  // AC: @cmd-derive ac-15
+  // Coverage: @derive-command ac-15
   it("should exclude cancelled parent tasks from depends_on", () => {
     // Use existing test-feature and test-requirement from fixtures
     // First derive parent task
@@ -1364,7 +1364,7 @@ describe("Integration: derive", () => {
     expect(task.depends_on).toEqual([]);
   });
 
-  // AC: @cmd-derive ac-15 (variant: multiple parent tasks, one cancelled)
+  // Coverage: @derive-command ac-15 (variant: multiple parent tasks, one cancelled)
   it("should use non-cancelled parent task when multiple tasks exist", () => {
     // Use existing test-feature from fixtures
     // Create first task and cancel it
@@ -1394,7 +1394,7 @@ describe("Integration: derive", () => {
     expect(task.depends_on[0]).not.toBe("@task-test-feature");
   });
 
-  // AC: @cmd-derive ac-15 (variant: spec with only cancelled tasks should allow re-derivation)
+  // Coverage: @derive-command ac-15 (variant: spec with only cancelled tasks should allow re-derivation)
   it("should allow re-derivation when only cancelled tasks exist", () => {
     // Use existing test-feature from fixtures
     // Create task and cancel it
@@ -2635,7 +2635,7 @@ describe("Integration: inbox promote", () => {
   });
 });
 
-// AC: @inbox-set ac-1
+// AC: @cmd-inbox-set ac-1
 describe("Integration: inbox set --content", () => {
   let tempDir: string;
 
@@ -2686,7 +2686,7 @@ describe("Integration: inbox set --content", () => {
   });
 });
 
-// AC: @inbox-set ac-2
+// AC: @cmd-inbox-set ac-2
 describe("Integration: inbox set --tag", () => {
   let tempDir: string;
 
@@ -2745,7 +2745,7 @@ describe("Integration: inbox set --tag", () => {
   });
 });
 
-// AC: @inbox-note ac-1
+// AC: @cmd-inbox-note ac-1
 describe("Integration: inbox note", () => {
   let tempDir: string;
 
@@ -2808,7 +2808,7 @@ describe("Integration: inbox note", () => {
   });
 });
 
-// AC: @meta-observe-cmd from-inbox-conversion
+// Coverage: meta observe --from-inbox (no spec AC exists yet)
 describe("Integration: meta observe --from-inbox", () => {
   let tempDir: string;
 
@@ -2922,7 +2922,7 @@ describe("Integration: Batch operations", () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: @multi-ref-batch ac-1 - Basic multi-ref syntax
+  // AC: @multi-ref-batch basic-multi-ref-syntax
   it("should support --refs flag with multiple references", () => {
     // Create three tasks and start them
     const task1 = kspecJson<{ task: { _ulid: string } }>(
@@ -2956,7 +2956,7 @@ describe("Integration: Batch operations", () => {
       tempDir,
     );
 
-    // AC: @multi-ref-batch ac-6 - JSON output format
+    // AC: @multi-ref-batch json-output-format
     expect(result.success).toBe(true);
     expect(result.summary.total).toBe(3);
     expect(result.summary.succeeded).toBe(3);
@@ -2967,7 +2967,7 @@ describe("Integration: Batch operations", () => {
     expect(result.results[2].status).toBe("success");
   });
 
-  // AC: @multi-ref-batch ac-2 - Backward compatibility
+  // AC: @multi-ref-batch backward-compatibility
   it("should maintain backward compatibility with positional ref", () => {
     // Create and start a task
     const task = kspecJson<{ task: { _ulid: string } }>(
@@ -2987,7 +2987,7 @@ describe("Integration: Batch operations", () => {
     expect(result.summary.succeeded).toBe(1);
   });
 
-  // AC: @multi-ref-batch ac-3 - Mutual exclusion error
+  // AC: @multi-ref-batch mutual-exclusion-error
   it("should error when both positional ref and --refs are provided", () => {
     const task = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Test Task" --priority 3',
@@ -3003,7 +3003,7 @@ describe("Integration: Batch operations", () => {
     }
   });
 
-  // AC: @multi-ref-batch ac-4 - Partial failure handling
+  // AC: @multi-ref-batch partial-failure-handling
   it("should continue processing after errors and report partial failures", () => {
     // Create two valid tasks
     const task1 = kspecJson<{ task: { _ulid: string } }>(
@@ -3044,7 +3044,7 @@ describe("Integration: Batch operations", () => {
     expect(result.results[2].status).toBe("success");
   });
 
-  // AC: @multi-ref-batch ac-7 - Empty refs error
+  // AC: @multi-ref-batch empty-refs-error
   it("should error when --refs is provided without values", () => {
     try {
       kspec("task cancel --refs", tempDir);
@@ -3055,7 +3055,7 @@ describe("Integration: Batch operations", () => {
     }
   });
 
-  // AC: @multi-ref-batch ac-8 - Ref resolution uses existing logic
+  // AC: @multi-ref-batch ref-resolution-uses-existing
   it("should resolve refs using existing resolution logic (slugs, ULID prefixes)", () => {
     // Create two tasks with slugs
     const task1 = kspecJson<{ task: { _ulid: string } }>(

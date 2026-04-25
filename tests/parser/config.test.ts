@@ -73,7 +73,7 @@ describe("Project Config", () => {
       expect(result.config.shadow.remote).toBe(defaults.shadow.remote);
       expect(result.config.daemon.port).toBe(defaults.daemon.port);
       expect(result.config.daemon.host).toBe(defaults.daemon.host);
-      // AC: @config-validation — validation defaults
+      // AC: @config-validation ac-2 — validation defaults
       expect(result.config.validation.strict_refs).toBe(defaults.validation.strict_refs);
       expect(result.config.validation.require_acceptance).toBe(
         defaults.validation.require_acceptance,
@@ -618,7 +618,7 @@ title: Test Project
       expect(defaults.shadow.directory).toBe(".kspec");
       expect(defaults.shadow.remote).toBeNull();
       expect(defaults.identity.author).toBeNull();
-      // AC: @config-validation — defaults preserve existing behavior
+      // AC: @config-validation ac-2 — defaults preserve existing behavior
       // strict_refs: true = dangling refs are errors (existing behavior)
       // require_acceptance: false = missing AC is warning (existing behavior)
       expect(defaults.validation.strict_refs).toBe(true);
@@ -647,7 +647,7 @@ title: Test Project
     });
   });
 
-  // AC: @config-author — config author in priority chain
+  // AC: @config-author ac-1 — config author in priority chain
   describe("config author", () => {
     // AC: @config-author ac-1 — config author is used when no env var
     it("config author is used when no env var set", async () => {
@@ -690,7 +690,7 @@ identity:
     });
   });
 
-  // AC: @config-author — getAuthor function with config parameter
+  // AC: @config-author ac-1 — getAuthor function with config parameter
   describe("getAuthor with config", () => {
     // AC: @config-author ac-1 — config author is used when no env var
     it("returns config author when no env var set", () => {
@@ -735,7 +735,7 @@ identity:
       expect(typeof author).toBe("string");
     });
 
-    // AC: @config-author ac-1 — config author works with @-prefix
+    // AC: @config-author ac-1 — config author works with at-prefix
     it("preserves @-prefix in config author", () => {
       delete process.env.KSPEC_AUTHOR;
 
@@ -744,7 +744,7 @@ identity:
       expect(author).toBe("@bot-agent");
     });
 
-    // AC: @config-author ac-1 — config author works without @-prefix
+    // AC: @config-author ac-1 — config author works without at-prefix
     it("works with config author without @-prefix", () => {
       delete process.env.KSPEC_AUTHOR;
 
@@ -754,7 +754,7 @@ identity:
     });
   });
 
-  // AC: @config-validation — validation config fields
+  // AC: @config-validation ac-1 — validation config fields
   describe("validation config", () => {
     // AC: @config-validation ac-1 — require_acceptance config
     it("loads require_acceptance from config", async () => {
@@ -786,7 +786,7 @@ validation:
       expect(result.config.validation.strict_refs).toBe(true);
     });
 
-    // AC: @config-validation — strict_refs defaults to true (preserve existing behavior)
+    // AC: @config-validation ac-2 — strict_refs defaults to true (preserve existing behavior)
     it("defaults strict_refs to true", async () => {
       const result = await loadProjectConfig(tempDir);
 
@@ -836,7 +836,7 @@ dispatch:
     });
   });
 
-  // AC: @dispatch-sync-configuration — dispatch sync configuration
+  // AC: @dispatch-sync-configuration ac-sync-interval — dispatch sync configuration
   describe("dispatch sync config", () => {
     // AC: @dispatch-sync-configuration ac-sync-interval
     it("loads sync_interval from config", async () => {

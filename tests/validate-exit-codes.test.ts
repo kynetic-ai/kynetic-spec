@@ -34,7 +34,7 @@ describe("validate exit codes", () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: @cli-exit-codes (exit 4 for validation errors)
+  // AC: @cli-exit-codes consistent-usage (exit 4 for validation errors)
   describe("exit code 4 (VALIDATION_FAILED)", () => {
     it("should exit 4 when schema errors are present", async () => {
       // Create an invalid spec file with bad ULID
@@ -86,7 +86,7 @@ items:
   // It escalates orphan and staleness warnings to errors
   // The "orphan" detection (result.orphans) is distinct from alignment's "orphaned specs (no tasks)"
 
-  // AC: @cli-exit-codes (exit 6 for warnings only)
+  // AC: @cli-exit-codes consistent-usage (exit 6 for warnings only)
   describe("exit code 6 (VALIDATION_WARNINGS)", () => {
     it("should exit 6 when only warnings are present (no errors)", () => {
       // The base fixtures have completeness warnings (missing ACs)
@@ -205,7 +205,7 @@ items:
     });
   });
 
-  // AC: @cli-exit-codes (exit 0 for clean validation)
+  // AC: @cli-exit-codes consistent-usage (exit 0 for clean validation)
   describe("exit code 0 (SUCCESS)", () => {
     let cleanDir: string;
 

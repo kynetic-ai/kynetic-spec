@@ -34,7 +34,7 @@ function request(urlPath: string, init?: RequestInit) {
 }
 
 describe("GET /api/items", () => {
-  // AC: @spec-api-items ac-1
+  // Coverage: @api-contract ac-1
   it("returns items with required fields", async () => {
     const response = await request("/api/items");
     expect(response.status).toBe(200);
@@ -50,7 +50,7 @@ describe("GET /api/items", () => {
     expect(item).toHaveProperty("title");
   });
 
-  // AC: @spec-api-items ac-2
+  // Coverage: @api-contract ac-2
   it("returns different types", async () => {
     const response = await request("/api/items");
     expect(response.status).toBe(200);
@@ -59,7 +59,7 @@ describe("GET /api/items", () => {
     expect(types.size).toBeGreaterThan(1);
   });
 
-  // AC: @spec-api-items ac-3
+  // Coverage: @api-contract ac-3
   it("items include slugs", async () => {
     const response = await request("/api/items");
     expect(response.status).toBe(200);
@@ -71,7 +71,7 @@ describe("GET /api/items", () => {
   });
 
   describe("type filter", () => {
-    // AC: @spec-api-items ac-4
+    // Coverage: @api-contract ac-4
     it("filters by single type", async () => {
       const response = await request("/api/items?type=feature");
       expect(response.status).toBe(200);
@@ -82,7 +82,7 @@ describe("GET /api/items", () => {
       }
     });
 
-    // AC: @spec-api-items ac-4
+    // Coverage: @api-contract ac-4
     it("filters by multiple types", async () => {
       const response = await request("/api/items?type=feature&type=requirement");
       expect(response.status).toBe(200);
@@ -93,7 +93,7 @@ describe("GET /api/items", () => {
       }
     });
 
-    // AC: @spec-api-items ac-4
+    // Coverage: @api-contract ac-4
     it("type exclusion returns no items of that type", async () => {
       const allResponse = await request("/api/items");
       const allBody = await allResponse.json();
@@ -113,7 +113,7 @@ describe("GET /api/items", () => {
   });
 
   describe("pagination", () => {
-    // AC: @spec-api-items ac-5
+    // Coverage: @api-contract ac-5
     it("returns pagination shape", async () => {
       const response = await request("/api/items?limit=2");
       expect(response.status).toBe(200);
@@ -126,7 +126,7 @@ describe("GET /api/items", () => {
       expect(body.data.length).toBeLessThanOrEqual(2);
     });
 
-    // AC: @spec-api-items ac-5
+    // Coverage: @api-contract ac-5
     it("pagination offsets work", async () => {
       const page1 = await request("/api/items?limit=1&offset=0");
       const page2 = await request("/api/items?limit=1&offset=1");
@@ -142,7 +142,7 @@ describe("GET /api/items", () => {
 });
 
 describe("GET /api/items/:ref", () => {
-  // AC: @spec-api-items ac-6
+  // Coverage: @api-contract ac-6
   it("resolves item by slug", async () => {
     const response = await request("/api/items/@test-feature");
     expect(response.status).toBe(200);
@@ -154,7 +154,7 @@ describe("GET /api/items/:ref", () => {
     expect(item).toHaveProperty("title");
   });
 
-  // AC: @spec-api-items ac-7
+  // Coverage: @api-contract ac-7
   it("returns acceptance_criteria", async () => {
     const response = await request("/api/items/@test-feature");
     expect(response.status).toBe(200);
@@ -164,7 +164,7 @@ describe("GET /api/items/:ref", () => {
     expect(Array.isArray(item.acceptance_criteria)).toBe(true);
   });
 
-  // AC: @spec-api-items ac-8
+  // Coverage: @api-contract ac-8
   it("returns traits", async () => {
     const response = await request("/api/items/@test-feature");
     expect(response.status).toBe(200);
@@ -174,7 +174,7 @@ describe("GET /api/items/:ref", () => {
     expect(Array.isArray(item.traits)).toBe(true);
   });
 
-  // AC: @spec-api-items ac-9
+  // Coverage: @api-contract ac-9
   it("returns description", async () => {
     const response = await request("/api/items/@test-feature");
     expect(response.status).toBe(200);
@@ -183,7 +183,7 @@ describe("GET /api/items/:ref", () => {
     expect(item).toHaveProperty("description");
   });
 
-  // AC: @spec-api-items ac-6
+  // Coverage: @api-contract ac-6
   it("resolves item by ULID", async () => {
     const response = await request("/api/items/@01KF1645CBDJYHWBPYWRN3HYPJ");
     expect(response.status).toBe(200);
@@ -206,7 +206,7 @@ describe("GET /api/items/:ref", () => {
 });
 
 describe("GET /api/items/:ref/tasks", () => {
-  // AC: @spec-api-items ac-10
+  // Coverage: @api-contract ac-10
   it("returns linked tasks", async () => {
     const response = await request("/api/items/@test-feature/tasks");
     expect(response.status).toBe(200);
@@ -216,7 +216,7 @@ describe("GET /api/items/:ref/tasks", () => {
     expect(Array.isArray(body.data)).toBe(true);
   });
 
-  // AC: @spec-api-items ac-10
+  // Coverage: @api-contract ac-10
   it("task entries include summary fields", async () => {
     const response = await request("/api/items/@test-feature/tasks");
     expect(response.status).toBe(200);
@@ -229,7 +229,7 @@ describe("GET /api/items/:ref/tasks", () => {
     expect(task).toHaveProperty("status");
   });
 
-  // AC: @spec-api-items ac-10
+  // Coverage: @api-contract ac-10
   it("returns total matches", async () => {
     const response = await request("/api/items/@test-feature/tasks");
     expect(response.status).toBe(200);
@@ -239,7 +239,7 @@ describe("GET /api/items/:ref/tasks", () => {
     expect(body.meta.total).toBe(body.data.length);
   });
 
-  // AC: @spec-api-items ac-10
+  // Coverage: @api-contract ac-10
   it("tasks have spec_ref matching the item", async () => {
     const response = await request("/api/items/@test-feature/tasks");
     expect(response.status).toBe(200);
@@ -255,7 +255,7 @@ describe("GET /api/items/:ref/tasks", () => {
     expect(response.status).toBe(404);
   });
 
-  // AC: @spec-api-items ac-10
+  // Coverage: @api-contract ac-10
   it("returns empty array when no tasks linked", async () => {
     const response = await request("/api/items/@test-requirement/tasks");
     expect(response.status).toBe(200);
@@ -266,7 +266,7 @@ describe("GET /api/items/:ref/tasks", () => {
 });
 
 describe("POST /api/items/batch", () => {
-  // AC: @spec-api-items ac-11
+  // Coverage: @api-contract ac-11
   it("valid refs return item summaries", async () => {
     const response = await request("/api/items/batch", {
       method: "POST",
@@ -284,7 +284,7 @@ describe("POST /api/items/batch", () => {
     expect(allSlugs).toContain("test-requirement");
   });
 
-  // AC: @spec-api-items ac-12
+  // Coverage: @api-contract ac-12
   it("unresolved refs are reported separately", async () => {
     const response = await request("/api/items/batch", {
       method: "POST",
@@ -300,7 +300,7 @@ describe("POST /api/items/batch", () => {
     expect(body.items.length).toBe(1);
   });
 
-  // AC: @spec-api-items ac-11
+  // Coverage: @api-contract ac-11
   it("task refs return task summaries alongside item summaries", async () => {
     const response = await request("/api/items/batch", {
       method: "POST",
@@ -316,7 +316,7 @@ describe("POST /api/items/batch", () => {
     expect(ulids).toContain("01KG0RR6CA45ZT43W2T6HJMVA1");
   });
 
-  // AC: @spec-api-items ac-11
+  // Coverage: @api-contract ac-11
   it("empty batch returns empty items and unresolved arrays", async () => {
     const response = await request("/api/items/batch", {
       method: "POST",
@@ -328,7 +328,7 @@ describe("POST /api/items/batch", () => {
     expect(body.unresolved).toEqual([]);
   });
 
-  // AC: @spec-api-items ac-13
+  // Coverage: @api-contract ac-13
   it("rejects batch larger than 100 refs", async () => {
     const refs = Array.from({ length: 101 }, (_, i) => `@item-${String(i).padStart(3, "0")}`);
     const response = await request("/api/items/batch", {
@@ -338,7 +338,7 @@ describe("POST /api/items/batch", () => {
     expect(response.status).toBe(400);
   });
 
-  // AC: @spec-api-items ac-13
+  // Coverage: @api-contract ac-13
   it("returns validation error for missing refs field", async () => {
     const response = await request("/api/items/batch", {
       method: "POST",

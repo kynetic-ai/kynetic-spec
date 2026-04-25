@@ -12,7 +12,7 @@ import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import * as path from "node:path";
 import * as os from "node:os";
 
-// AC: @01KNTACP2BXY12MTB2GETNJ7CS ac-3
+// Coverage: lint-no-leaky-test-daemon (no spec AC exists yet) ac-3
 function runOxlint(fileContent: string): { exitCode: number; output: string } {
   const tempDir = mkdtempSync(path.join(os.tmpdir(), "lint-test-"));
   const testFile = path.join(tempDir, "test-file.ts");
@@ -52,8 +52,8 @@ function runOxlint(fileContent: string): { exitCode: number; output: string } {
 
 describe("no-leaky-test-daemon lint rule", () => {
   describe("positive cases (should flag)", () => {
-    // AC: @01KNTACP2BXY12MTB2GETNJ7CS ac-2
-    // AC: @01KNTACP2BXY12MTB2GETNJ7CS ac-6
+    // Coverage: lint-no-leaky-test-daemon (no spec AC exists yet) ac-2
+    // Coverage: lint-no-leaky-test-daemon (no spec AC exists yet) ac-6
     it("should flag runKspec with serve start --detach and no cleanup", () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
@@ -201,7 +201,7 @@ describe("test suite", () => {
   });
 
   describe("negative cases (should NOT flag)", () => {
-    // AC: @01KNTACP2BXY12MTB2GETNJ7CS ac-2
+    // Coverage: lint-no-leaky-test-daemon (no spec AC exists yet) ac-2
     it("should allow serve start --detach with onTestFinished cleanup", () => {
       const result = runOxlint(`
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -417,7 +417,7 @@ describe("test suite", () => {
     });
   });
 
-  // AC: @01KNTACP2BXY12MTB2GETNJ7CS ac-4
+  // Coverage: lint-no-leaky-test-daemon (no spec AC exists yet) ac-4
   describe("real codebase validation", () => {
     it("should pass against the full tests/ directory with zero violations", () => {
       const projectRoot = path.resolve(__dirname, "..");

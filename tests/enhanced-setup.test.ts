@@ -253,7 +253,7 @@ describe("kspec setup (enhanced)", () => {
     });
 
     // AC: @enhanced-setup ac-6 - dry-run previews .gitignore updates for sessions directory
-    // AC: @session-storage-modes ac-gitignore
+    // Coverage: session-storage-modes (no spec AC exists yet) ac-gitignore
     it("should preview .gitignore updates in dry-run mode", async () => {
       // Initialize kspec so .kspec/ exists with .gitignore
       kspec("init --name test-project --no-prompt", tempDir);

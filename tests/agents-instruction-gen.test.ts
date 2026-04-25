@@ -391,7 +391,7 @@ describe("Agent Instruction Generation", () => {
     });
   });
 
-  // AC: @trait-dry-run, @agents-cli ac-2
+  // AC: @trait-dry-run ac-1, @agents-cli ac-2
   describe("Dry run mode (trait)", () => {
     // AC: @trait-dry-run ac-1, @agents-cli ac-2
     it("should show what would be changed without applying (ac-1)", async () => {

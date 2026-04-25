@@ -1440,7 +1440,7 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
       }
     });
 
-    // AC: @trait-markdown-rendering ac-5
+    // AC: @trait-markdown-rendering ac-2
     it("uses dark-mode-compatible prose and highlight theme hooks", async () => {
       const css = await transformWebUiModule("/src/app.css");
 

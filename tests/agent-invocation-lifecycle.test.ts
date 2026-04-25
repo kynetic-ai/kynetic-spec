@@ -1617,7 +1617,7 @@ describe("Host environment variable sanitization", { timeout: 120_000 }, () => {
 
 // ─── No shadow commit on session end ──────────────────────────────────────────
 
-// AC: @session-remove-shadow-commits ac-invocation-end
+// Coverage: session-remove-shadow-commits (no spec AC exists yet) ac-invocation-end
 describe(
   "No shadow commit on session close (session storage separation)",
   { timeout: 120_000 },
