@@ -32493,7 +32493,7 @@ runs:
     completed_at: 2026-04-25T01:12:49.157Z
   - _ulid: 01KQ16FANDDQ25C4JAHSKG22JD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -32507,7 +32507,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-25T02:11:30.949Z
-        completed_at: 2026-04-25T02:11:30.949Z
+        completed_at: 2026-04-25T02:11:37.912Z
+        notes: "Friction: plain kspec validate failed because current shadow/spec state has a pre-existing
+          schema error unrelated to the reviewed code, so review evidence had to split required
+          completeness validation from optional full validation. Full npm test also took 1905s in
+          review, making review completion slow even for a comments-only diff."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-25T02:11:37.912Z
+        completed_at: 2026-04-25T02:11:37.912Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-25T02:11:07.053Z
