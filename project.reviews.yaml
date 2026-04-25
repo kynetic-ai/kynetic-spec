@@ -166516,6 +166516,12 @@ reviews:
         payload:
           thread_ulid: 01KQ102MBY4SFY1A6HNPS632E9
         timestamp: 2026-04-25T00:55:03.886Z
+      - _ulid: 01KQ12480BMYS0RX2PNR1SYBMC
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQ103CFN5BBE1MJ5C15S0HVN
+        timestamp: 2026-04-25T00:55:09.580Z
     examined_commit: 6811de9d4a7252df20afdb48e33b7c34ca166549
     external_links: []
     lifecycle_state: closed
@@ -167521,6 +167527,8 @@ reviews:
             body: "Fixed: Removed the unused validateACAnnotations import. Lint now passes for this file."
             created_at: 2026-04-25T00:54:53.662Z
         kind: blocker
+        resolved_at: 2026-04-25T00:55:08.374Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -167530,7 +167538,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-25T00:28:30.845Z
     created_at: 2026-04-25T00:16:59.637Z
-    updated_at: 2026-04-25T00:55:02.736Z
+    updated_at: 2026-04-25T00:55:08.374Z
     notes: []
   - _ulid: 01KQ117XEZCDF93TFK1G36VW4Q
     slugs: []
