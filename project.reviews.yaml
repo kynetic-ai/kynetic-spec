@@ -166345,6 +166345,18 @@ reviews:
         runner: npm run lint
         created_at: 2026-04-25T00:19:40.602Z
         completed_at: 2026-04-25T00:19:40.602Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Completeness output includes @coverage-annotation-scope-boundaries with all four ACs
+          uncovered: ac-only-configured-paths-scanned, ac-excluded-paths-skipped,
+          ac-skipped-annotations-no-credit, ac-skipped-annotations-no-invalid-debt."
+        name: kspec validate
+        required: true
+        runner: kspec validate --completeness --verbose
+        created_at: 2026-04-25T00:19:47.902Z
+        completed_at: 2026-04-25T00:19:47.902Z
     events:
       - _ulid: 01KQ0ZYBQMX9JGRWT0A8MT7DT1
         actor: Jacob Chapel
@@ -166394,6 +166406,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQ103CFN5BBE1MJ5C15S0HVN
         timestamp: 2026-04-25T00:19:45.506Z
+      - _ulid: 01KQ103HB8NDQAED0XM0GXSY0M
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-25T00:19:49.225Z
     examined_commit: 6811de9d4a7252df20afdb48e33b7c34ca166549
     external_links: []
     lifecycle_state: open
@@ -167387,5 +167406,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-25T00:16:59.637Z
-    updated_at: 2026-04-25T00:19:44.246Z
+    updated_at: 2026-04-25T00:19:47.902Z
     notes: []
