@@ -677,7 +677,7 @@ test.describe("Tasks View", () => {
   });
 
   test.describe("Modal URL Cleanup", () => {
-    // AC: @ui-task-board ac-7
+    // AC: @ui-task-board ac-3
     // AC: @ui-url-panel-state ac-1 — opens dialog via click, URL updated with goto()
     // AC: @ui-url-panel-state ac-2 — dismiss removes ?ref= via goto(), dialog stays closed
     test("closing task detail dialog removes ?ref= query param from URL", async ({
@@ -709,7 +709,7 @@ test.describe("Tasks View", () => {
       await expect(detailPanel).not.toBeVisible();
     });
 
-    // AC: @ui-task-board ac-7
+    // AC: @ui-task-board ac-3
     // AC: @ui-url-panel-state ac-2 — dismiss removes ?ref= via goto(), stays closed
     // AC: @ui-url-panel-state ac-3 — deep-link via ?ref=, dismiss works on first attempt
     test("closing task detail opened via URL param removes ?ref= and stays closed", async ({

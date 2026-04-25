@@ -17,7 +17,7 @@ import { cleanupTempDir, createTempDir, initGitRepo, kspec, testUlids } from "./
 // Register the split backend so TaskDataManager can load split-format data
 ensureSplitBackendRegistered();
 
-// AC: @task-remove-monolithic — version-gated legacy detection
+// Coverage: @task-storage-migration (legacy format) — version-gated legacy detection
 describe("Legacy format detection", () => {
   let tempDir: string;
 
@@ -54,7 +54,7 @@ describe("Legacy format detection", () => {
     return { specDir, env: { KSPEC_SPEC_DIR: specDir } };
   }
 
-  // AC: @task-remove-monolithic — resolveTaskDataManager rejects legacy projects
+  // Coverage: @task-storage-migration (legacy format) — resolveTaskDataManager rejects legacy projects
   it("resolveTaskDataManager throws for kynetic 1.0 without split format", () => {
     const legacyCtx = {
       rootDir: tempDir,
@@ -76,7 +76,7 @@ describe("Legacy format detection", () => {
     );
   });
 
-  // AC: @task-remove-monolithic — clear migration guidance in error
+  // Coverage: @task-storage-migration (legacy format) — clear migration guidance in error
   it("version-gated error includes migration guidance", () => {
     const legacyCtx = {
       rootDir: tempDir,
@@ -102,7 +102,7 @@ describe("Legacy format detection", () => {
     }
   });
 
-  // AC: @task-remove-monolithic — split format works normally
+  // Coverage: @task-storage-migration (legacy format) — split format works normally
   it("resolveTaskDataManager succeeds for kynetic 1.1 with split format", () => {
     const splitCtx = {
       rootDir: tempDir,
@@ -124,7 +124,7 @@ describe("Legacy format detection", () => {
     expect(manager.storageFormat).toBe("split");
   });
 
-  // AC: @task-remove-monolithic — version >= 1.1 implies split even without explicit format
+  // Coverage: @task-storage-migration (legacy format) — version >= 1.1 implies split even without explicit format
   it("resolveTaskDataManager succeeds for kynetic 1.1 without explicit split format", () => {
     const ctx = {
       rootDir: tempDir,
@@ -145,13 +145,13 @@ describe("Legacy format detection", () => {
     expect(manager.storageFormat).toBe("split");
   });
 
-  // AC: @task-remove-monolithic — TaskDataManager defaults to split
+  // Coverage: @task-storage-migration (legacy format) — TaskDataManager defaults to split
   it("TaskDataManager defaults to split format", () => {
     const manager = new TaskDataManager();
     expect(manager.storageFormat).toBe("split");
   });
 
-  // AC: @task-remove-monolithic — migrate updates manifest
+  // Coverage: @task-storage-migration (legacy format) — migrate updates manifest
   it("kspec task migrate sets task_storage.format and bumps version", async () => {
     const { specDir, env } = await setupLegacyProject(tempDir);
 
@@ -189,7 +189,7 @@ describe("Legacy format detection", () => {
     expect(manifest.task_storage).toEqual({ format: "split" });
   });
 
-  // AC: @task-remove-monolithic — migrate upgrades manifest even when tasks file is empty
+  // Coverage: @task-storage-migration (legacy format) — migrate upgrades manifest even when tasks file is empty
   it("kspec task migrate upgrades manifest when project.tasks.yaml is empty", async () => {
     const { specDir, env } = await setupLegacyProject(tempDir);
     // project.tasks.yaml is already empty (setupLegacyProject writes toYaml([]))
@@ -212,7 +212,7 @@ describe("Legacy format detection", () => {
     expect(afterManifest.task_storage).toEqual({ format: "split" });
   });
 
-  // AC: @task-remove-monolithic — migrate upgrades manifest when all entries are already lean
+  // Coverage: @task-storage-migration (legacy format) — migrate upgrades manifest when all entries are already lean
   it("kspec task migrate upgrades manifest when all entries are lean index entries", async () => {
     const { specDir, env } = await setupLegacyProject(tempDir);
 
@@ -269,7 +269,7 @@ describe("Legacy format detection", () => {
     expect(afterManifest.task_storage).toEqual({ format: "split" });
   });
 
-  // AC: @task-remove-monolithic — dry-run does NOT upgrade manifest
+  // Coverage: @task-storage-migration (legacy format) — dry-run does NOT upgrade manifest
   it("kspec task migrate --dry-run does not upgrade manifest", async () => {
     const { specDir, env } = await setupLegacyProject(tempDir);
 
@@ -283,7 +283,7 @@ describe("Legacy format detection", () => {
     expect(afterManifest).not.toHaveProperty("task_storage");
   });
 
-  // AC: @task-remove-monolithic — migrate creates per-task directories
+  // Coverage: @task-storage-migration (legacy format) — migrate creates per-task directories
   it("kspec task migrate creates per-task directory structure", async () => {
     const { specDir, env } = await setupLegacyProject(tempDir);
 

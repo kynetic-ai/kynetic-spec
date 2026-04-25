@@ -1,9 +1,9 @@
-// AC: @kspec-review-threads ac-1
-// AC: @kspec-review-threads ac-2
-// AC: @kspec-review-threads ac-3
-// AC: @kspec-review-threads ac-4
-// AC: @kspec-review-threads ac-5 — N/A: thread pagination not required for review thread operations
-// AC: @kspec-review-threads ac-6 — N/A: bulk thread operations not in scope
+// Coverage: @review-records-daemon-api ac-1
+// Coverage: @review-records-daemon-api ac-2
+// Coverage: @review-records-daemon-api ac-3
+// Coverage: @review-records-daemon-api ac-4
+// Coverage: @review-records-daemon-api ac-5 — N/A: thread pagination not required for review thread operations
+// Coverage: @review-records-daemon-api ac-6 — N/A: bulk thread operations not in scope
 
 import type { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";

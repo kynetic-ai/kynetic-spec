@@ -163,7 +163,6 @@ describe("Daemon API input validation", () => {
   });
 
   // AC: @api-input-type-safety ac-1
-  // AC: @api-input-type-safety ac-4
   // AC: @trait-type-safe-input ac-1
   // AC: @trait-type-safe-input ac-2
   // AC: @trait-type-safe-input ac-3

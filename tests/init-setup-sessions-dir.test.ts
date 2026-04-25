@@ -64,7 +64,7 @@ describe("Init/Setup Sessions Directory", () => {
   }
 
   describe("ensureSessionsGitignore", () => {
-    // AC: @session-storage-modes ac-gitignore
+    // Coverage: session-storage-modes (no spec AC exists yet) ac-gitignore
     it("adds .kspec-sessions/ to root .gitignore", async () => {
       initGit(testDir);
       initialCommit(testDir);
@@ -76,7 +76,7 @@ describe("Init/Setup Sessions Directory", () => {
       expect(content).toContain(".kspec-sessions/");
     });
 
-    // AC: @session-storage-modes ac-gitignore
+    // Coverage: session-storage-modes (no spec AC exists yet) ac-gitignore
     it("is idempotent — does not add duplicate entries", async () => {
       initGit(testDir);
       initialCommit(testDir);
@@ -92,7 +92,7 @@ describe("Init/Setup Sessions Directory", () => {
       expect(matches).toHaveLength(1);
     });
 
-    // AC: @session-storage-modes ac-gitignore
+    // Coverage: session-storage-modes (no spec AC exists yet) ac-gitignore
     it("creates .gitignore if it does not exist", async () => {
       initGit(testDir);
       initialCommit(testDir);
@@ -111,7 +111,7 @@ describe("Init/Setup Sessions Directory", () => {
       expect(content).toContain(".kspec-sessions/");
     });
 
-    // AC: @session-storage-modes ac-gitignore
+    // Coverage: session-storage-modes (no spec AC exists yet) ac-gitignore
     it("detects various existing patterns as already present", async () => {
       initGit(testDir);
       initialCommit(testDir);
@@ -263,7 +263,7 @@ describe("Init/Setup Sessions Directory", () => {
   });
 
   describe("initializeShadow — sessions directory", () => {
-    // AC: @session-storage-modes ac-sessions-dir-autocreate
+    // Coverage: session-storage-modes (no spec AC exists yet) ac-sessions-dir-autocreate
     it.skipIf(!canRunInitTests)("creates .kspec-sessions/ directory during init", async () => {
       initGit(testDir);
       initialCommit(testDir);
@@ -278,7 +278,7 @@ describe("Init/Setup Sessions Directory", () => {
       expect(stat.isDirectory()).toBe(true);
     });
 
-    // AC: @session-storage-modes ac-gitignore
+    // Coverage: session-storage-modes (no spec AC exists yet) ac-gitignore
     it.skipIf(!canRunInitTests)(
       "adds .kspec-sessions/ to root .gitignore during init",
       async () => {
@@ -308,7 +308,7 @@ describe("Init/Setup Sessions Directory", () => {
       expect(shadowGitignore).toContain("artifacts/");
     });
 
-    // AC: @session-storage-modes ac-sessions-dir
+    // Coverage: session-storage-modes (no spec AC exists yet) ac-sessions-dir
     it.skipIf(!canRunInitTests)(".kspec-sessions/ is separate from .kspec/ worktree", async () => {
       initGit(testDir);
       initialCommit(testDir);

@@ -33,7 +33,7 @@ describe("Item Set Relationship Flags", () => {
   });
 
   describe("--relates-to flag", () => {
-    // AC: @item-set ac-5
+    // Coverage: @item-set (--relates-to, spec gap — no AC for relationship flags yet)
     it("should add relates_to reference to item", () => {
       // Create two items
       kspec(
@@ -157,7 +157,7 @@ describe("Item Set Relationship Flags", () => {
   });
 
   describe("--implements flag", () => {
-    // AC: @item-set ac-6
+    // Coverage: @item-set (--implements, spec gap — no AC for relationship flags yet)
     it("should add implements reference to item", () => {
       // Create a feature and a requirement that implements it
       kspec(
@@ -236,7 +236,7 @@ describe("Item Set Relationship Flags", () => {
   });
 
   describe("--depends-on flag", () => {
-    // AC: @item-set ac-7
+    // Coverage: @item-set (--depends-on, spec gap — no AC for relationship flags yet)
     it("should add depends_on reference to item", () => {
       kspec(
         'item add --under @test-core --title "Prereq" --type requirement --slug prereq',

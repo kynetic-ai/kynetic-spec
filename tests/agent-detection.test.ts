@@ -40,7 +40,7 @@ describe("Agent detection", () => {
     process.env = originalEnv;
   });
 
-  // AC: @01KJE3T7 - detect codex using CODEX_THREAD_ID even when sandbox var is absent
+  // Coverage: @cmd-setup (codex detection) - detect codex using CODEX_THREAD_ID even when sandbox var is absent
   it("detects codex-cli from CODEX_THREAD_ID without CODEX_SANDBOX", async () => {
     process.env.CODEX_THREAD_ID = "test-thread-123";
 
@@ -58,7 +58,7 @@ describe("Agent detection", () => {
     });
   });
 
-  // AC: @01KJE3T7 - codex signal precedence over copilot markers
+  // Coverage: @cmd-setup (codex detection) - codex signal precedence over copilot markers
   it("prefers codex-cli when CODEX_THREAD_ID and GH_TOKEN are both present", async () => {
     process.env.CODEX_THREAD_ID = "test-thread-123";
     process.env.GH_TOKEN = "ghp_test";
@@ -72,7 +72,7 @@ describe("Agent detection", () => {
     expect(statusDetected.confidence).toBe("high");
   });
 
-  // AC: @01KJE3T7 - keep CODEX_SANDBOX compatibility for older codex environments
+  // Coverage: @cmd-setup (codex detection) - keep CODEX_SANDBOX compatibility for older codex environments
   it("keeps codex-cli detection via CODEX_SANDBOX", async () => {
     process.env.CODEX_SANDBOX = "1";
 
@@ -85,7 +85,7 @@ describe("Agent detection", () => {
     expect(statusDetected.confidence).toBe("high");
   });
 
-  // AC: @01KJE3T7 - setup and setup-status/doctor use aligned codex confidence semantics
+  // Coverage: @cmd-setup (codex detection) - setup and setup-status/doctor use aligned codex confidence semantics
   it("uses medium-confidence codex fallback signals consistently", async () => {
     process.env.CODEX_CI = "1";
     process.env.CODEX_MANAGED_BY_NPM = "1";

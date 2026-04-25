@@ -755,7 +755,7 @@ describe("Shadow Branch", () => {
     });
   });
 
-  // AC: @shadow-init-remote - Remote detection tests
+  // AC: @shadow-init-remote ac-1 - Remote detection tests
   describe("initializeShadow with remote", () => {
     // Create a bare repo to act as a "remote"
     const remoteDir = path.join("/tmp", `kspec-remote-test-${Date.now()}`);
@@ -1035,7 +1035,7 @@ describe("Shadow Branch", () => {
     });
   });
 
-  // AC: @shadow-sync - Shadow sync tests
+  // AC: @shadow-sync ac-1 - Shadow sync tests
   describe("shadow sync", () => {
     const remoteDir = path.join("/tmp", `kspec-sync-remote-${Date.now()}`);
 
@@ -1823,7 +1823,7 @@ describe("Shadow Branch", () => {
       }
     });
 
-    // AC: @session-remove-shadow-commits ac-no-sync-conflict
+    // Coverage: session-remove-shadow-commits ac-no-sync-conflict (no spec AC exists yet)
     it("session writes to .kspec-sessions/ do not conflict with shadowPull on .kspec/", async () => {
       await setupSyncTest();
       const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
@@ -1901,7 +1901,7 @@ describe("Shadow Branch", () => {
     });
   });
 
-  // AC: @shadow-debug-mode
+  // AC: @shadow-debug-mode ac-1
   describe("Debug Mode", () => {
     let origEnv: string | undefined;
 
@@ -2209,7 +2209,7 @@ describe("Shadow Branch", () => {
   });
 
   // Shadow hook installation and authorization tests
-  // AC: @package-distribution ac-4 - pre-commit hook source included in package
+  // Coverage: package-distribution ac-4 - pre-commit hook source included in package (no spec AC exists yet)
   describe("installShadowHook", () => {
     it("installs pre-commit hook during shadow initialization", async () => {
       // The pre-commit hook is now loaded from the package templates directory
@@ -2340,7 +2340,7 @@ describe("Shadow Branch", () => {
 
   // ══════════════════════════════════════════════════════════════════════════
   // Configurable Shadow Branch Tests
-  // AC: @config-shadow — configurable branch name, directory, and remote
+  // AC: @config-shadow ac-1 — configurable branch name, directory, and remote
   // ══════════════════════════════════════════════════════════════════════════
 
   describe("Configurable Shadow Branch", () => {
