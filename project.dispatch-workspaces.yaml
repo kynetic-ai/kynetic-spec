@@ -11488,18 +11488,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-coverage-annotation-scope-boundaries/01kq0jdk
-    canonical_branch_head: 6811de9d4a7252df20afdb48e33b7c34ca166549
+    canonical_branch_head: 802dab8e49e3afcc7e29ebbf39d3d107021ef0d3
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-25T00:37:59.906Z
+      updated_at: 2026-04-25T00:55:09.830Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-25T00:38:24.420Z
+      updated_at: 2026-04-25T00:55:09.830Z
     integration:
       status: pending
       detail: null
@@ -11507,7 +11507,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ec9a83a59ee6919e49c3597c583c18a19262fa83
-      updated_at: 2026-04-25T00:37:59.906Z
+      updated_at: 2026-04-25T00:55:09.830Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQ0JDKGM2QJTT0PVQB2497K2"
@@ -11515,9 +11515,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-25T00:38:24.420Z
-      last_reconciled_at: 2026-04-25T00:38:24.420Z
+      last_reconciled_at: 2026-04-25T00:55:09.830Z
       created_at: 2026-04-24T23:58:52.045Z
-      updated_at: 2026-04-25T00:38:24.420Z
+      updated_at: 2026-04-25T00:55:09.830Z
     workspace_id: dispatch-workspace-01KQ0JDKGM2QJTT0PVQB2497K2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
