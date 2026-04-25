@@ -32265,7 +32265,7 @@ runs:
     completed_at: 2026-04-25T00:16:32.526Z
   - _ulid: 01KQ10MQJTRP3QGN8F5ZHCREXE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -32280,7 +32280,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-25T00:30:42.388Z
-        completed_at: 2026-04-25T00:30:42.388Z
+        completed_at: 2026-04-25T00:30:52.117Z
+        notes: "Friction points: review comment creation is still shell-fragile for bodies containing
+          backticks or other shell-sensitive text; one attempted blocker command invoked command
+          substitution and failed before I retried with safer quoting. Full npm test is also slow
+          enough in review context that it needed an awaiter, though it completed cleanly."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-25T00:30:52.117Z
+        completed_at: 2026-04-25T00:30:52.117Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-25T00:29:12.666Z
