@@ -167847,6 +167847,17 @@ reviews:
         runner: manual review
         created_at: 2026-04-25T01:09:01.625Z
         completed_at: 2026-04-25T01:09:01.625Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation valid=true; schema and references OK. Completeness warnings remain as baseline
+          catalog debt, but JSON filter found 0 warnings for @coverage-annotation-scope-boundaries.
+        name: kspec validate completeness
+        required: true
+        runner: kspec validate --completeness --warnings-ok
+        created_at: 2026-04-25T01:09:04.886Z
+        completed_at: 2026-04-25T01:09:04.886Z
     events:
       - _ulid: 01KQ129BCBHSPNC27P1JPNJ3Q1
         actor: Jacob Chapel
@@ -167903,6 +167914,13 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-04-25T01:09:02.747Z
+      - _ulid: 01KQ12XRVCHY60W9WR2EDRVVPG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate completeness
+        timestamp: 2026-04-25T01:09:06.029Z
     examined_commit: 802dab8e49e3afcc7e29ebbf39d3d107021ef0d3
     external_links: []
     lifecycle_state: open
@@ -167915,5 +167933,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-25T00:57:56.875Z
-    updated_at: 2026-04-25T01:09:01.625Z
+    updated_at: 2026-04-25T01:09:04.886Z
     notes: []
