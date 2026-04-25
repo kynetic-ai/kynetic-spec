@@ -2956,3 +2956,14 @@ inbox:
       - type-safety
     added_by: Jacob Chapel
     created_at: 2026-04-24T23:57:45.705Z
+  - _ulid: 01KQ1272VH41PT86STH6B1BJA3
+    text: Batch review check commands should preserve optional check intent. During review @01KQ117X,
+      using kspec batch with review check args required:false still created a required check, so
+      known non-blocking kspec validate evidence temporarily failed the review gate until rerun with
+      direct --no-required.
+    tags:
+      - reflection
+      - review
+      - batch
+    added_by: Jacob Chapel
+    created_at: 2026-04-25T00:56:42.609Z

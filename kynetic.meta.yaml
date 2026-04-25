@@ -16193,6 +16193,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-25T00:39:09.429Z
+  - _ulid: 01KQ1272Y69DMREHMXWTE81S4N
+    type: friction
+    content: "kspec batch structured args for review check did not preserve optional-check intent:
+      required:false produced a required check, so a non-blocking kspec validate evidence entry
+      temporarily failed the review gate until corrected with direct --no-required."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-25T00:56:42.694Z
+  - _ulid: 01KQ12735G8668632DRV8B3Y7K
+    type: success
+    content: "The detached reviewer merge helper made manual_merge review completion reliable from a
+      detached snapshot: after review gate approval it advanced dev and refreshed the occupied
+      worktree without checking out the integration branch in the reviewer workspace."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-25T00:56:42.928Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
