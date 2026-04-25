@@ -167962,7 +167962,18 @@ reviews:
     slugs: []
     title: Review task-ac-annotation-repair-wave-one
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit 6 warnings only. Validation passed; current invalid AC annotations: 38, matching
+          submitted note; no schema/ref errors in completeness-only run."
+        name: kspec validate --completeness -v
+        required: true
+        runner: kspec
+        created_at: 2026-04-25T02:09:24.945Z
+        completed_at: 2026-04-25T02:09:24.945Z
     events:
       - _ulid: 01KQ15SN1AVH9CT6CQPKSD8DWQ
         actor: Jacob Chapel
@@ -167977,6 +167988,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-25T01:59:28.128Z
+      - _ulid: 01KQ16C822SF0YKYNZC9Z4XFKY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --completeness -v
+        timestamp: 2026-04-25T02:09:26.083Z
     examined_commit: 1cbcf797c03d807268ed0c06abf948e98c9063d4
     external_links: []
     lifecycle_state: open
@@ -167989,5 +168007,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-25T01:59:16.778Z
-    updated_at: 2026-04-25T01:59:27.028Z
+    updated_at: 2026-04-25T02:09:24.945Z
     notes: []
