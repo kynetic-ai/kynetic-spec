@@ -32632,7 +32632,7 @@ runs:
     completed_at: 2026-04-25T02:20:54.728Z
   - _ulid: 01KQ17VDJCHK27YYR7KP7QW5NA
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -32646,7 +32646,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-25T02:36:51.195Z
-        completed_at: 2026-04-25T02:36:51.195Z
+        completed_at: 2026-04-25T02:36:59.933Z
+        notes: "Friction: detached reviewer snapshots for manual_merge can lack a .kspec checkout, so
+          validation commands run from the assigned workspace report Tasks checked: 0. That is
+          correct for the snapshot but makes final-gate review harder when the task evidence depends
+          on root-checkout task-aware validation counts."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-25T02:36:59.933Z
+        completed_at: 2026-04-25T02:36:59.933Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-25T02:35:11.820Z
