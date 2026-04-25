@@ -138,3 +138,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-25T02:34:26.801Z
+  - _ulid: 01KQ18Z3EB69GDWDXFH191W279
+    content: "Fix cycle 1: addressed blocker — @ac-annotation-integrity-reporting ACs were annotated in
+      tests/ac-annotation-validation.test.ts which is excluded from the coverage scanner (contains
+      fixture strings with AC patterns). Created tests/ac-annotation-integrity.test.ts with 5
+      unit-level behavioral tests calling validateACAnnotations() and computeACCoverage() directly
+      with programmatic data. This file is not excluded, so annotations register in the coverage
+      surface. Verified: kspec validate --completeness no longer lists
+      @ac-annotation-integrity-reporting as uncovered. Missing-own-AC-coverage: 234→233, total
+      completeness warnings: 273→271. Full test suite: 2282/2282 suites, 8393/8398 tests pass (5
+      skipped, unchanged)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-25T02:54:41.099Z
