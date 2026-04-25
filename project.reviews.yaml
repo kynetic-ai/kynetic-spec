@@ -168039,9 +168039,25 @@ reviews:
           kind: nit
           thread_ulid: 01KQ16CWP9091387R0CA33NJ1J
         timestamp: 2026-04-25T02:09:48.282Z
+      - _ulid: 01KQ16D7QE0NNPSM8V0N0TVGQB
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-25T02:09:58.510Z
+      - _ulid: 01KQ16D7QEP6X7HYSMQ0DJJ82Z
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-25T02:09:58.510Z
     examined_commit: 1cbcf797c03d807268ed0c06abf948e98c9063d4
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -168065,7 +168081,14 @@ reviews:
               false claims, source-scanning risk, validation output, integration/test regressions."
             created_at: 2026-04-25T02:09:47.210Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-25T02:09:58.509Z
     created_at: 2026-04-25T01:59:16.778Z
-    updated_at: 2026-04-25T02:09:47.210Z
+    updated_at: 2026-04-25T02:09:58.510Z
     notes: []
