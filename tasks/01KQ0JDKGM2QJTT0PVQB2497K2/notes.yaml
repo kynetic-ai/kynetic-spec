@@ -38,3 +38,12 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-25T00:55:20.309Z
+  - _ulid: 01KQ16WJVDX8Z9X6VXJP14JTZT
+    content: "Final gate summary: Coverage scan correctly respects configured scan paths and exclude
+      patterns. 14 behavioral tests confirm scope boundaries. @test-feature in e2e/fixtures/ is
+      correctly scanned (it's under tests/ which is a configured scan path) — but its
+      unresolved-target warning is expected since @test-feature is a fixture ref. @test-trait in
+      trait-ac-coverage.test.ts is inline test content, also expected."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-25T02:18:21.421Z
