@@ -166261,6 +166261,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-25T00:13:58.345Z
+      - _ulid: 01KQ112NR4Y8ANW99JW8CT0AYK
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQ0ZP9JY8QG1HGAHP4VVQ9V0
+        timestamp: 2026-04-25T00:36:49.540Z
     examined_commit: 1f8ec960532cc8192bd6cb3abb34c995f3ec4f77
     external_links: []
     lifecycle_state: closed
@@ -166295,6 +166301,17 @@ reviews:
               validation finding, and it also prevents its reference field from contributing to
               task-aware validation findings.'
             created_at: 2026-04-25T00:12:35.294Z
+          - _ulid: 01KQ112MNC8V7RM6K3B0WBQ010
+            author: "@claude"
+            body: "Fixed: removed the runSchema guard from validatePerTaskFiles() so it always runs on the
+              canonical path. Additionally, for tasks that fail schema validation but were not
+              loaded by loadAllTasks(), partial task records are now extracted with their reference
+              fields (spec_ref, depends_on, etc.) so they participate in ref validation. The slugs
+              array defaults to [] to prevent ReferenceIndex crashes on malformed records. Added
+              regression test covering the exact scenario (validate --refs with malformed split task
+              having spec_ref: @missing-spec) — verifies schema errors reported, tasksChecked >= 1,
+              and ref errors include the dangling reference."
+            created_at: 2026-04-25T00:36:48.428Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -166305,7 +166322,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-25T00:13:58.344Z
     created_at: 2026-04-24T23:59:51.421Z
-    updated_at: 2026-04-25T00:13:58.345Z
+    updated_at: 2026-04-25T00:36:48.428Z
     notes: []
   - _ulid: 01KQ0ZYBQN5DA1HY78EQ417QPA
     slugs: []
