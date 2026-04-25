@@ -167773,7 +167773,17 @@ reviews:
     slugs: []
     title: Review coverage annotation scan boundaries (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: tsc --noEmit completed with exit code 0.
+        name: typecheck
+        required: true
+        runner: npm run typecheck
+        created_at: 2026-04-25T01:08:29.217Z
+        completed_at: 2026-04-25T01:08:29.217Z
     events:
       - _ulid: 01KQ129BCBHSPNC27P1JPNJ3Q1
         actor: Jacob Chapel
@@ -167788,6 +167798,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-25T00:58:10.599Z
+      - _ulid: 01KQ12WP09WWRZ55ZB6P5QGH6D
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: typecheck
+        timestamp: 2026-04-25T01:08:30.345Z
     examined_commit: 802dab8e49e3afcc7e29ebbf39d3d107021ef0d3
     external_links: []
     lifecycle_state: open
@@ -167800,5 +167817,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-25T00:57:56.875Z
-    updated_at: 2026-04-25T00:58:09.550Z
+    updated_at: 2026-04-25T01:08:29.217Z
     notes: []
