@@ -11494,12 +11494,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-25T00:56:11.181Z
+      updated_at: 2026-04-25T00:56:17.439Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-25T00:56:11.181Z
+      updated_at: 2026-04-25T00:56:17.439Z
     integration:
       status: pending
       detail: null
@@ -11507,24 +11507,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ec9a83a59ee6919e49c3597c583c18a19262fa83
-      updated_at: 2026-04-25T00:56:11.181Z
-    lifecycle_state: ready
+      updated_at: 2026-04-25T00:56:17.439Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KQ0JDKGM2QJTT0PVQB2497K2"
     task_slug: task-coverage-annotation-scope-boundaries
     timestamps:
       closed_at: null
       last_active_at: 2026-04-25T00:38:24.420Z
-      last_reconciled_at: 2026-04-25T00:56:11.181Z
+      last_reconciled_at: 2026-04-25T00:56:17.439Z
       created_at: 2026-04-24T23:58:52.045Z
-      updated_at: 2026-04-25T00:56:11.181Z
+      updated_at: 2026-04-25T00:56:17.439Z
     workspace_id: dispatch-workspace-01KQ0JDKGM2QJTT0PVQB2497K2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 802dab8e49e3afcc7e29ebbf39d3d107021ef0d3
+        last_seen_at: 2026-04-25T00:56:17.439Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-annotation-scope-boundaries-01kq0jdk-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-coverage-annotation-scope-boundaries/01kq0jdk
-        head: 6811de9d4a7252df20afdb48e33b7c34ca166549
-        last_seen_at: 2026-04-25T00:37:59.906Z
+        head: 802dab8e49e3afcc7e29ebbf39d3d107021ef0d3
+        last_seen_at: 2026-04-25T00:56:17.439Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-annotation-scope-boundaries-01kq0jdk
