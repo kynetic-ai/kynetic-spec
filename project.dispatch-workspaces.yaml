@@ -11015,7 +11015,7 @@ workspaces:
         head: 0dd8bca6567e320c7861b5213bf35cfe6f6c0354
         last_seen_at: 2026-04-24T23:40:46.752Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-annotation-integrity-reporting-01kq0jdk
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: ec9a83a59ee6919e49c3597c583c18a19262fa83
     bootstrap:
       status: succeeded
@@ -11500,7 +11500,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-25T00:56:17.439Z
+      updated_at: 2026-04-25T00:56:43.364Z
     integration:
       status: pending
       detail: null
@@ -11515,10 +11515,10 @@ workspaces:
     task_slug: task-coverage-annotation-scope-boundaries
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-25T00:38:24.420Z
-      last_reconciled_at: 2026-04-25T00:56:17.439Z
+      last_active_at: 2026-04-25T00:56:43.364Z
+      last_reconciled_at: 2026-04-25T00:56:43.364Z
       created_at: 2026-04-24T23:58:52.045Z
-      updated_at: 2026-04-25T00:56:41.038Z
+      updated_at: 2026-04-25T00:56:43.364Z
     workspace_id: dispatch-workspace-01KQ0JDKGM2QJTT0PVQB2497K2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
