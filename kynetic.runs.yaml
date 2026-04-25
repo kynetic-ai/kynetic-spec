@@ -32431,7 +32431,7 @@ runs:
     completed_at: 2026-04-25T00:56:55.073Z
   - _ulid: 01KQ130JV9F1Q4SSSCRVXAVB9X
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -32446,7 +32446,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-25T01:11:08.458Z
-        completed_at: 2026-04-25T01:11:08.458Z
+        completed_at: 2026-04-25T01:11:28.963Z
+        notes: "Friction points: (1) npm run lint is not currently a clean review gate because it reports
+          unrelated repo-wide baseline failures; reviewer had to run changed-file oxlint to verify
+          this task did not introduce lint regressions. (2) kspec validate --completeness produced
+          hundreds of baseline warnings, so proving one spec was covered required JSON output plus
+          an external filter/temp file workaround. Both are systemic review-friction patterns rather
+          than task-specific bugs."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-25T01:11:28.963Z
+        completed_at: 2026-04-25T01:11:28.963Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-25T01:10:38.185Z
