@@ -16222,6 +16222,29 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-25T00:57:02.662Z
+  - _ulid: 01KQ133T6CKY8KG3S1HAZR54RT
+    type: friction
+    content: During review, full npm run lint was not usable as a clean task gate because it reported
+      unrelated repository baseline failures. Reviewer had to fall back to changed-file oxlint to
+      verify the submitted diff did not introduce lint regressions. Consider tracking lint baseline
+      debt or adding a branch-regression lint workflow so review checks can distinguish existing
+      lint failures from task changes.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KQ130J"
+    created_at: 2026-04-25T01:12:24.012Z
+  - _ulid: 01KQ133TECKHDRNY36Q6M2SFK3
+    type: friction
+    content: During review, kspec validate --completeness emitted hundreds of baseline catalog warnings,
+      so proving one spec had no coverage warnings required JSON output plus external filtering. A
+      focused completeness validation filter by item/spec ref would make AC coverage review evidence
+      easier and less error-prone.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KQ130J"
+    created_at: 2026-04-25T01:12:24.268Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
