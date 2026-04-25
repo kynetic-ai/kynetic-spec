@@ -32364,7 +32364,7 @@ runs:
     completed_at: 2026-04-25T00:39:40.536Z
   - _ulid: 01KQ121WNBTF7JFT7SEKY3D1CC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -32380,7 +32380,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-25T00:55:48.389Z
-        completed_at: 2026-04-25T00:55:48.389Z
+        completed_at: 2026-04-25T00:55:55.134Z
+        notes: "Friction points: (1) kspec batch with review check args required:false did not produce an
+          optional check; the kspec validate evidence was recorded as required and temporarily made
+          the approved review gate fail until corrected with direct 'kspec review check
+          --no-required'. (2) Reflection guidance says 'kspec workflow show' works without a run
+          ref, but the CLI required @01KQ121W even with this active workflow. The second issue
+          looked pre-existing and likely already tracked."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-25T00:55:55.134Z
+        completed_at: 2026-04-25T00:55:55.134Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-25T00:53:52.427Z
