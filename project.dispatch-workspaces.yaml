@@ -12001,12 +12001,12 @@ workspaces:
       detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
       reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-04-25T02:11:05.859Z
+      updated_at: 2026-04-25T02:14:06.917Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-25T02:13:23.861Z
+      updated_at: 2026-04-25T02:14:06.917Z
     integration:
       status: merged
       detail: integration:merged
@@ -12014,17 +12014,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c21bf60915d20d87cfcd34d6b9a401bf793afaba
-      updated_at: 2026-04-25T02:11:04.912Z
-    lifecycle_state: closing
+      updated_at: 2026-04-25T02:14:06.917Z
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQ0JDKWKVS0QC2QHTQYRYTGP"
     task_slug: task-ac-annotation-repair-wave-one
     timestamps:
       closed_at: null
       last_active_at: 2026-04-25T01:58:43.521Z
-      last_reconciled_at: 2026-04-25T02:13:23.861Z
+      last_reconciled_at: 2026-04-25T02:14:06.917Z
       created_at: 2026-04-25T01:10:14.005Z
-      updated_at: 2026-04-25T02:13:23.861Z
+      updated_at: 2026-04-25T02:14:06.917Z
     workspace_id: dispatch-workspace-01KQ0JDKWKVS0QC2QHTQYRYTGP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
