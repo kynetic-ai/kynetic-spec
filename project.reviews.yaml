@@ -166090,6 +166090,18 @@ reviews:
         runner: npm test
         created_at: 2026-04-25T00:12:45.495Z
         completed_at: 2026-04-25T00:12:45.495Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Focused changed-file run passed: tests/validate-task-data-source.test.ts (11 tests) and
+          tests/automation-eligibility.test.ts (28 tests); 15 suites passed, 39 tests passed; log
+          /tmp/kspec-test-cache/01KQ0YX0E5BN85HHXSKX5EZPVQ/df775a2a8f87ce26.log"
+        name: focused validation tests
+        required: false
+        runner: npm test -- --run
+        created_at: 2026-04-25T00:12:56.981Z
+        completed_at: 2026-04-25T00:12:56.981Z
     events:
       - _ulid: 01KQ0YYZKX14GF6WMHXH4Z103R
         actor: Jacob Chapel
@@ -166118,6 +166130,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-25T00:12:46.600Z
+      - _ulid: 01KQ0ZPZTG19M7GF9G0H3WHFGT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused validation tests
+        timestamp: 2026-04-25T00:12:58.065Z
     examined_commit: 1f8ec960532cc8192bd6cb3abb34c995f3ec4f77
     external_links: []
     lifecycle_state: open
@@ -166155,5 +166174,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T23:59:51.421Z
-    updated_at: 2026-04-25T00:12:45.495Z
+    updated_at: 2026-04-25T00:12:56.981Z
     notes: []
