@@ -12514,12 +12514,12 @@ workspaces:
       detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
       reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-04-25T03:08:07.683Z
+      updated_at: 2026-04-25T03:11:07.628Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-25T03:11:01.153Z
+      updated_at: 2026-04-25T03:11:07.628Z
     integration:
       status: merged
       detail: integration:merged
@@ -12527,17 +12527,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f1ea722698447b572dee4516380639be67d74538
-      updated_at: 2026-04-25T03:08:07.032Z
-    lifecycle_state: closing
+      updated_at: 2026-04-25T03:11:07.628Z
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQ0JDM87XBFC80SW6HQ40VQ1"
     task_slug: task-validation-trust-final-gate
     timestamps:
       closed_at: null
       last_active_at: 2026-04-25T02:55:56.748Z
-      last_reconciled_at: 2026-04-25T03:11:01.153Z
+      last_reconciled_at: 2026-04-25T03:11:07.628Z
       created_at: 2026-04-25T02:11:14.476Z
-      updated_at: 2026-04-25T03:11:01.153Z
+      updated_at: 2026-04-25T03:11:07.628Z
     workspace_id: dispatch-workspace-01KQ0JDM87XBFC80SW6HQ40VQ1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
