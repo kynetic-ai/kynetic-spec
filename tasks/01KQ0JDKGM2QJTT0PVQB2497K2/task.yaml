@@ -51,7 +51,7 @@ description: |
 spec_ref: "@coverage-annotation-scope-boundaries"
 plan_ref: "@plan-spec-catalog-health-and-validation-trust"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-ac-annotation-integrity-reporting"
@@ -62,6 +62,14 @@ tags:
   - coverage
   - config
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-coverage-annotation-scope-boundaries/01kq0jdk
+  captured_at: 2026-04-25T00:15:22.181Z
+  commit: 6811de9d4a7252df20afdb48e33b7c34ca166549
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KQ0YXX6RN6VPYK3THYQSKW8P
 history:
   - author: Jacob Chapel
@@ -84,7 +92,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-24T23:59:39.087Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-coverage-annotation-scope-boundaries/01kq0jdk
+          captured_at: 2026-04-25T00:15:22.181Z
+          commit: 6811de9d4a7252df20afdb48e33b7c34ca166549
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-25T00:15:22.184Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-25T00:15:22.184Z
 created_at: 2026-04-24T20:20:39.060Z
 started_at: 2026-04-24T23:59:39.086Z
+submitted_at: 2026-04-25T00:15:22.184Z
 todos: []
 automation: eligible
