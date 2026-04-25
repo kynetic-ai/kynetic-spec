@@ -166498,6 +166498,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-25T00:28:30.846Z
+      - _ulid: 01KQ123M1JTJGKGNHWJXS2SSYN
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQ102MBY4SFY1A6HNPS632E9
+        timestamp: 2026-04-25T00:54:49.138Z
     examined_commit: 6811de9d4a7252df20afdb48e33b7c34ca166549
     external_links: []
     lifecycle_state: closed
@@ -167473,6 +167479,14 @@ reviews:
                   ! AC annotation references '@trait-error-guidance' without explicit ac-* ids; blanket refs do not count for completeness coverage
                     /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-annotation-scope-boundaries-01kq0jdk-review/tests/workflow-runs.test.ts:819 reports all four ACs on @coverage-annotation-scope-boundaries as uncovered, so the task loses its required AC coverage even though the tests pass. Keep annotation-like fixtures from creating debt without excluding the task's actual coverage annotations, or move the real annotations to a non-excluded behavioral test.
             created_at: 2026-04-25T00:19:19.551Z
+          - _ulid: 01KQ123JYE5JGBFV7BZCFRTAC0
+            author: "@claude"
+            body: "Fixed: Removed the self-exclude for this test file from kspec.config.yaml. To prevent the
+              scanner from matching annotation-like text in fixture string literals, restructured
+              all fixture content strings to use an acLine() runtime helper that concatenates the
+              comment prefix, breaking the // AC: pattern in the source code. kspec validate
+              --completeness now finds all 4 ACs covered."
+            created_at: 2026-04-25T00:54:48.013Z
         kind: blocker
       - _ulid: 01KQ103CFN5BBE1MJ5C15S0HVN
         anchor:
@@ -167498,7 +167512,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-25T00:28:30.845Z
     created_at: 2026-04-25T00:16:59.637Z
-    updated_at: 2026-04-25T00:28:30.846Z
+    updated_at: 2026-04-25T00:54:48.013Z
     notes: []
   - _ulid: 01KQ117XEZCDF93TFK1G36VW4Q
     slugs: []
