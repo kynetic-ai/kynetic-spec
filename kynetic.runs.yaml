@@ -32692,7 +32692,7 @@ runs:
     completed_at: 2026-04-25T02:37:56.910Z
   - _ulid: 01KQ19RNTC5BECY170BDFVKVRD
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -32728,10 +32728,16 @@ runs:
           should make automated reviewer authorship explicit or infer it from session/runtime
           context, so review evidence logs and check events do not appear to come from the human
           user by default. Scope: needs triage before tasking."
-      - status: completed
+      - status: skipped
         step_index: 4
         started_at: 2026-04-25T03:09:55.436Z
-        completed_at: 2026-04-25T03:09:55.436Z
+        completed_at: 2026-04-25T03:09:58.548Z
+        notes: No interactive discussion needed for high-confidence friction observation; workflow-show
+          issue already tracked and will not be duplicated.
+      - status: completed
+        step_index: 5
+        started_at: 2026-04-25T03:09:58.548Z
+        completed_at: 2026-04-25T03:09:58.548Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-25T03:08:39.116Z
