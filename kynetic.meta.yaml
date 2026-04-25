@@ -16276,6 +16276,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-25T01:59:15.506Z
+  - _ulid: 01KQ16J6ZZ57G1SW10HH7MZKMP
+    type: friction
+    content: Review sessions can require splitting validation evidence when plain kspec validate fails
+      from pre-existing catalog/schema state unrelated to a test-only branch. A documented review
+      validation profile or gate would reduce ad hoc optional-check judgment while keeping
+      task-scoped gates strict.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-25T02:12:41.600Z
+  - _ulid: 01KQ16J77XKPRA4XG2YF06GWB9
+    type: friction
+    content: Full npm test took 1905s during review of a comments-only AC annotation diff. Review
+      guidance may need a documented low-risk diff strategy using cached or sharded gates plus
+      escalation to full npm test when behavior changes, so reviewers preserve rigor without
+      unnecessary long waits.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-25T02:12:41.853Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
