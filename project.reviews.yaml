@@ -167604,6 +167604,17 @@ reviews:
         runner: manual review
         created_at: 2026-04-25T00:51:58.572Z
         completed_at: 2026-04-25T00:51:58.572Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Known pre-existing catalog validation failure in .kspec/modules/meta.yaml, not introduced
+          by reviewed diff; tracked as optional review evidence, not a merge gate for this task.
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-04-25T00:52:40.251Z
+        completed_at: 2026-04-25T00:52:40.251Z
     events:
       - _ulid: 01KQ117XEYZ3XH3K4C0BBWDTT0
         actor: Jacob Chapel
@@ -167690,6 +167701,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-25T00:52:02.660Z
+      - _ulid: 01KQ11ZQ8YTX19HJ5WY3SY3G76
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-04-25T00:52:41.374Z
     examined_commit: b8aed7ebb9f2bf39b8ead641566f6a31c4de15bc
     external_links: []
     lifecycle_state: closed
@@ -167709,5 +167727,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-25T00:52:02.660Z
     created_at: 2026-04-25T00:39:41.279Z
-    updated_at: 2026-04-25T00:52:02.660Z
+    updated_at: 2026-04-25T00:52:40.251Z
     notes: []
