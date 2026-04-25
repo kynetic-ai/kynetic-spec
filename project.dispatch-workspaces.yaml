@@ -11486,11 +11486,11 @@ workspaces:
     canonical_branch: dispatch/task/task-coverage-annotation-scope-boundaries/01kq0jdk
     canonical_branch_head: 802dab8e49e3afcc7e29ebbf39d3d107021ef0d3
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-25T01:10:05.769Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-25T01:10:06.397Z
     health:
       status: healthy
       issues: []
@@ -11504,7 +11504,7 @@ workspaces:
       target_branch: dev
       target_commit: ec9a83a59ee6919e49c3597c583c18a19262fa83
       updated_at: 2026-04-25T01:10:05.769Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQ0JDKGM2QJTT0PVQB2497K2"
     task_slug: task-coverage-annotation-scope-boundaries
@@ -11513,7 +11513,7 @@ workspaces:
       last_active_at: 2026-04-25T00:56:43.364Z
       last_reconciled_at: 2026-04-25T01:10:05.769Z
       created_at: 2026-04-24T23:58:52.045Z
-      updated_at: 2026-04-25T01:10:05.769Z
+      updated_at: 2026-04-25T01:10:06.397Z
     workspace_id: dispatch-workspace-01KQ0JDKGM2QJTT0PVQB2497K2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
