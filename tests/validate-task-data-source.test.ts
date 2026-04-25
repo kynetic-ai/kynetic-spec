@@ -449,14 +449,59 @@ ${includesLine}
       const result = kspec("validate --schema --json", tmpDir);
       const parsed = JSON.parse(result.stdout);
 
-      // Good task should be counted
-      expect(parsed.stats.tasksChecked).toBe(1);
+      // Both tasks should be counted — good task loaded by canonical path,
+      // malformed task counted as a partial (included for ref validation)
+      expect(parsed.stats.tasksChecked).toBe(2);
 
       // Bad task should produce schema errors
       const taskErrors = (parsed.schemaErrors ?? []).filter(
         (e: { file: string }) => e.file.includes(badUlid),
       );
       expect(taskErrors.length).toBeGreaterThan(0);
+    });
+
+    // AC: @validation-task-data-source ac-task-load-errors-reported
+    // AC: @validation-task-data-source ac-task-references-checked
+    // Regression: malformed split per-task records must NOT be silently omitted
+    // when task-aware validation runs without schema validation (e.g. validate
+    // --refs). The canonical loadAllTasks() silently skips parse failures, and
+    // validatePerTaskFiles() previously only ran behind runSchema. This meant a
+    // malformed task with spec_ref: "@missing-spec" was invisible to both schema
+    // AND ref checks when running validate --refs.
+    it("reports malformed split tasks and checks their refs even without --schema", async () => {
+      const malformedUlid = testUlid("MALR1");
+
+      await setupProject({
+        malformedTask: {
+          ulid: malformedUlid,
+          // Missing required title — schema invalid, but has spec_ref
+          content: `_ulid: ${malformedUlid}\nspec_ref: "@missing-spec"\nstatus: pending\npriority: 3\n`,
+        },
+      });
+
+      // Run ONLY ref validation (no schema), the exact mode that triggered
+      // the review blocker. Use kspecWithStatus because validation will exit
+      // non-zero when it finds errors.
+      const result = kspecWithStatus("validate --refs --json", tmpDir);
+      const output = result.stdout || result.stderr;
+      const parsed = JSON.parse(output);
+
+      // Must report schema error for the malformed task even without --schema
+      const taskErrors = (parsed.schemaErrors ?? []).filter(
+        (e: { file: string }) => e.file.includes(malformedUlid),
+      );
+      expect(taskErrors.length).toBeGreaterThan(0);
+
+      // Malformed task must be counted (not silently omitted)
+      expect(parsed.stats.tasksChecked).toBeGreaterThanOrEqual(1);
+
+      // The malformed task's spec_ref must contribute to ref validation findings
+      const refErrors = parsed.refErrors ?? [];
+      const danglingRef = refErrors.find(
+        (e: { ref: string }) => e.ref === "@missing-spec",
+      );
+      expect(danglingRef).toBeDefined();
+      expect(danglingRef.sourceUlid).toBe(malformedUlid);
     });
   });
 });

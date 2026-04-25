@@ -274,15 +274,21 @@ async function validateTasksFile(filePath: string): Promise<SchemaValidationErro
  */
 async function validatePerTaskFiles(
   ctx: KspecContext,
-): Promise<{ errors: SchemaValidationError[]; filesChecked: number }> {
+  loadedTaskUlids: Set<string>,
+): Promise<{
+  errors: SchemaValidationError[];
+  filesChecked: number;
+  partialTasks: LoadedTask[];
+}> {
   const errors: SchemaValidationError[] = [];
+  const partialTasks: LoadedTask[] = [];
   let filesChecked = 0;
 
   let ulids: string[];
   try {
     ulids = await listTaskDirs(ctx);
   } catch {
-    return { errors, filesChecked };
+    return { errors, filesChecked, partialTasks };
   }
 
   for (const ulid of ulids) {
@@ -333,6 +339,26 @@ async function validatePerTaskFiles(
             details: issue,
           });
         }
+
+        // AC: @validation-task-data-source ac-task-references-checked
+        // AC: @validation-task-data-source ac-task-load-errors-reported
+        // For tasks that failed schema validation but were NOT loaded by the canonical
+        // path, extract a partial task so their reference fields still participate in
+        // ref validation. Without this, a malformed task with spec_ref: "@missing-spec"
+        // would silently disappear from both schema AND ref checks when loadAllTasks()
+        // skips it.
+        if (!loadedTaskUlids.has(ulid)) {
+          const raw = assembled as Record<string, unknown>;
+          const partial = {
+            ...assembled,
+            _ulid: ulid,
+            _sourceFile: taskFilePath,
+            // Ensure slugs is iterable for ReferenceIndex — malformed tasks
+            // may be missing it entirely.
+            slugs: Array.isArray(raw.slugs) ? raw.slugs : [],
+          } as LoadedTask;
+          partialTasks.push(partial);
+        }
       }
     } catch (err) {
       errors.push({
@@ -342,7 +368,7 @@ async function validatePerTaskFiles(
     }
   }
 
-  return { errors, filesChecked };
+  return { errors, filesChecked, partialTasks };
 }
 
 /**
@@ -2342,12 +2368,22 @@ export async function validate(
   }
 
   if (usedCanonicalPath) {
-    // Validate per-task directory files for schema errors and report malformed records.
+    // Validate per-task directory files and report malformed records unconditionally.
     // AC: @validation-task-data-source ac-task-load-errors-reported
-    if (runSchema) {
-      const perTaskErrors = await validatePerTaskFiles(ctx);
-      result.schemaErrors.push(...perTaskErrors.errors);
-      result.stats.filesChecked += perTaskErrors.filesChecked;
+    // AC: @validation-task-data-source ac-task-references-checked
+    // This must run regardless of runSchema because:
+    // 1. loadAllTasks() silently skips malformed per-task records
+    // 2. Without this, malformed tasks are invisible to ALL validation checks
+    //    (schema, refs, orphans) — not just schema validation
+    const loadedTaskUlids = new Set(allTasks.map((t) => t._ulid));
+    const perTaskResult = await validatePerTaskFiles(ctx, loadedTaskUlids);
+    result.schemaErrors.push(...perTaskResult.errors);
+    result.stats.filesChecked += perTaskResult.filesChecked;
+    // Add partial tasks (malformed records skipped by loadAllTasks) so their
+    // reference fields still participate in ref validation.
+    for (const partial of perTaskResult.partialTasks) {
+      allTasks.push(partial);
+      result.stats.tasksChecked++;
     }
   } else {
     // Legacy fallback: find *.tasks.yaml files the traditional way.
