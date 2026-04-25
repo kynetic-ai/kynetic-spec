@@ -10460,11 +10460,11 @@ workspaces:
     canonical_branch: dispatch/task/task-validation-task-data-manager-read-path/01kq0jdj
     canonical_branch_head: b8aed7ebb9f2bf39b8ead641566f6a31c4de15bc
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-25T00:54:04.957Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-25T00:54:06.062Z
     health:
       status: healthy
       issues: []
@@ -10478,7 +10478,7 @@ workspaces:
       target_branch: dev
       target_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
       updated_at: 2026-04-25T00:54:04.957Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQ0JDJQQY4HTX1P4JD4K11PA"
     task_slug: task-validation-task-data-manager-read-path
@@ -10487,7 +10487,7 @@ workspaces:
       last_active_at: 2026-04-25T00:38:55.722Z
       last_reconciled_at: 2026-04-25T00:54:04.957Z
       created_at: 2026-04-24T21:49:05.430Z
-      updated_at: 2026-04-25T00:54:04.957Z
+      updated_at: 2026-04-25T00:54:06.062Z
     workspace_id: dispatch-workspace-01KQ0JDJQQY4HTX1P4JD4K11PA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
