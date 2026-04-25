@@ -147,3 +147,10 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-25T00:37:12.537Z
+  - _ulid: 01KQ16WBYZ11Q5HHHH9YYYCYM0
+    content: "Final gate summary: Tasks checked went from 0 → 1444. Reference validation now surfaces
+      task-level ref errors (1 @cmd-derive error, 7 deprecated-item warnings visible post-fix). Task
+      data manager canonical path confirmed working for split storage."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-25T02:18:14.367Z
