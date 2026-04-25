@@ -1,1 +1,25 @@
-notes: []
+notes:
+  - _ulid: 01KQ0Z4628CPNSYGJZJK62G4ME
+    content: >-
+      Approach: The scanner implementation already correctly enforces scan boundaries.
+      scanTestCoverage() and scanACAnnotations() only walk directories listed in scan_paths, and
+      isExcluded() filters out files matching exclude_patterns. Files outside scan paths are never
+      visited. I need to write focused tests proving the 4 ACs of
+      @coverage-annotation-scope-boundaries:
+
+      1. ac-only-configured-paths-scanned: files outside scan paths are never considered
+
+      2. ac-excluded-paths-skipped: files matching exclude patterns within scan paths are skipped
+
+      3. ac-skipped-annotations-no-credit: annotation-like text in skipped files produces no
+      coverage credit
+
+      4. ac-skipped-annotations-no-invalid-debt: annotation-like text in skipped files produces no
+      invalid-annotation findings
+
+
+      Tests will use config-driven temp dirs (not hardcoded project paths) per task requirements. No
+      scanner code changes needed — behavior already satisfies the spec.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-25T00:02:41.864Z
