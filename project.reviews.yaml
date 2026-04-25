@@ -167500,3 +167500,29 @@ reviews:
     created_at: 2026-04-25T00:16:59.637Z
     updated_at: 2026-04-25T00:28:30.846Z
     notes: []
+  - _ulid: 01KQ117XEZCDF93TFK1G36VW4Q
+    slugs: []
+    title: Review task-validation-task-data-manager-read-path cycle 4
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQ117XEYZ3XH3K4C0BBWDTT0
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-25T00:39:41.279Z
+    examined_commit: b8aed7ebb9f2bf39b8ead641566f6a31c4de15bc
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQ0JDJQQY4HTX1P4JD4K11PA"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-25T00:39:41.279Z
+    updated_at: null
+    notes: []
