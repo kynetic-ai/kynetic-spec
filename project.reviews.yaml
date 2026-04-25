@@ -166369,6 +166369,24 @@ reviews:
         runner: npm test
         created_at: 2026-04-25T00:28:15.064Z
         completed_at: 2026-04-25T00:28:15.064Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec.config.yaml, tests/coverage-annotation-scope-boundaries.test.ts,
+          tests/coverage-scan-config.test.ts, src/parser/validate.ts, package.json. Commands run:
+          git diff/stat/name-only, kspec task get, kspec item get, kspec validate, kspec validate
+          --completeness --verbose filtered for target spec, rg AC annotations, focused npm test,
+          npm run typecheck, npm run lint, full npm test. Claims verified: scanner already enforces
+          configured scan paths/excludes by reading scanTestCoverage/scanACAnnotations and focused
+          tests; AC coverage claim disproved because target spec remains uncovered when new file is
+          excluded. Categories searched: correctness, edge cases, error handling, test quality,
+          integration/config, lint/typecheck."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-04-25T00:28:18.694Z
+        completed_at: 2026-04-25T00:28:18.694Z
     events:
       - _ulid: 01KQ0ZYBQMX9JGRWT0A8MT7DT1
         actor: Jacob Chapel
@@ -166432,6 +166450,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-25T00:28:16.303Z
+      - _ulid: 01KQ10K44Q8X6Y1NBSX38MPV4T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-25T00:28:19.992Z
     examined_commit: 6811de9d4a7252df20afdb48e33b7c34ca166549
     external_links: []
     lifecycle_state: open
@@ -167425,5 +167450,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-25T00:16:59.637Z
-    updated_at: 2026-04-25T00:28:15.064Z
+    updated_at: 2026-04-25T00:28:18.694Z
     notes: []
