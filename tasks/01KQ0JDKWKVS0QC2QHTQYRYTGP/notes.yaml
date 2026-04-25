@@ -1,1 +1,28 @@
-notes: []
+notes:
+  - _ulid: 01KQ142QPTM8NYR8BTNW4EZD18
+    content: >-
+      Classification complete. 227 invalid annotations across categories:
+
+
+      1. UNRESOLVED TARGETS (spec doesn't exist under that slug):
+         - Simple slug fixes: @inbox-set→@cmd-inbox-set (3), @inbox-note→@cmd-inbox-note (1), @short-ulid→@ulid-shortening (1)
+         - Simple retargets: @skill-type-guard→@skill-meta-type (5), @cli-session-context→@session-context (2), @meta-observe-cmd→@observations (1), @01KJE3T7→@droid-agent-detection (4)
+         - Complex retargets needing AC remapping: @spec-api-items→@api-contract (24), @kspec-review-threads→review specs (6), @cmd-derive→@derive-command (16), @alignment-warnings→@alignment-system (6), @meta-add-cmd/@meta-focus-cmd/@meta-question-cmd→meta specs (22)
+         - Task references (no spec): @task-remove-monolithic (11), @01KNTACP2BXY12MTB2GETNJ7CS (5), @task-test-runner-progress-output (10), @session-remove-shadow-commits (3), @session-storage-modes (15), @package-distribution (1)
+         - Non-spec target: @task-work (1) 
+         - Intentional fixtures: @test-feature (1), @test-trait (1) — skip
+
+      2. MISSING AC IDS: @cmd-clone-for-testing (7), @convention-definitions (4),
+      @api-input-type-safety (1), @ui-task-board (5), @multi-ref-batch (7), @item-set (3),
+      @ui-agent-dispatch (1), @trait-markdown-rendering (1)
+
+
+      3. BLANKET REFS: 17 specs, ~45 annotations
+
+
+      Approach: Repair high-confidence first wave — slug fixes, simple retargets, missing AC id
+      retargets, and blanket ref expansions. Leave task-reference-with-no-spec cases documented for
+      follow-up.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-25T01:29:17.274Z
