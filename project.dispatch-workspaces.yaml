@@ -10469,7 +10469,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-25T00:54:04.957Z
+      updated_at: 2026-04-25T00:57:27.194Z
     integration:
       status: merged
       detail: integration:merged
@@ -10478,25 +10478,20 @@ workspaces:
       target_branch: dev
       target_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
       updated_at: 2026-04-25T00:54:04.957Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KQ0JDJQQY4HTX1P4JD4K11PA"
     task_slug: task-validation-task-data-manager-read-path
     timestamps:
       closed_at: null
       last_active_at: 2026-04-25T00:38:55.722Z
-      last_reconciled_at: 2026-04-25T00:57:25.768Z
+      last_reconciled_at: 2026-04-25T00:57:27.194Z
       created_at: 2026-04-24T21:49:05.430Z
-      updated_at: 2026-04-25T00:57:25.768Z
+      updated_at: 2026-04-25T00:57:27.194Z
     workspace_id: dispatch-workspace-01KQ0JDJQQY4HTX1P4JD4K11PA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: b8aed7ebb9f2bf39b8ead641566f6a31c4de15bc
-        last_seen_at: 2026-04-25T00:38:28.417Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validation-task-data-manager-read-path-01kq0jdj-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-validation-task-data-manager-read-path/01kq0jdj
