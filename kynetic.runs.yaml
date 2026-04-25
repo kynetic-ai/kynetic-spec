@@ -32632,7 +32632,7 @@ runs:
     completed_at: 2026-04-25T02:20:54.728Z
   - _ulid: 01KQ17VDJCHK27YYR7KP7QW5NA
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -32654,7 +32654,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-25T02:36:59.933Z
-        completed_at: 2026-04-25T02:36:59.933Z
+        completed_at: 2026-04-25T02:37:11.026Z
+        notes: "Coverage checked with kspec search: detached review validation tasks checked zero; review
+          snapshot .kspec missing; detached reviewer root checkout; detached validation root counts;
+          coverage scanner excluded test AC annotations; AC annotation integrity reporting coverage.
+          No existing tracking found for the detached validation-count friction. The AC-annotation
+          issue is already tracked directly by review blocker @01KQ1745 on the task under review, so
+          no duplicate capture is needed."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-25T02:37:11.026Z
+        completed_at: 2026-04-25T02:37:11.026Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-25T02:35:11.820Z
