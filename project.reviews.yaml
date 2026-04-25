@@ -166102,6 +166102,20 @@ reviews:
         runner: npm test -- --run
         created_at: 2026-04-25T00:12:56.981Z
         completed_at: 2026-04-25T00:12:56.981Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Required behavioral probe failed: with split backend registered, a malformed
+          tasks/<ULID>/task.yaml missing required title but containing spec_ref @missing-spec
+          returned valid:true, schemaErrors:[], refErrors:[], tasksChecked:0 for
+          validate(ctx,{schema:false,refs:true}). This is a regression against
+          ac-task-load-errors-reported for task-aware --refs validation."
+        name: malformed split task refs probe
+        required: true
+        runner: node --import tsx
+        created_at: 2026-04-25T00:13:07.909Z
+        completed_at: 2026-04-25T00:13:07.909Z
     events:
       - _ulid: 01KQ0YYZKX14GF6WMHXH4Z103R
         actor: Jacob Chapel
@@ -166137,6 +166151,13 @@ reviews:
           status: pass
           name: focused validation tests
         timestamp: 2026-04-25T00:12:58.065Z
+      - _ulid: 01KQ0ZQAG6356ASXYJR70C4X47
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: malformed split task refs probe
+        timestamp: 2026-04-25T00:13:08.999Z
     examined_commit: 1f8ec960532cc8192bd6cb3abb34c995f3ec4f77
     external_links: []
     lifecycle_state: open
@@ -166174,5 +166195,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T23:59:51.421Z
-    updated_at: 2026-04-25T00:12:56.981Z
+    updated_at: 2026-04-25T00:13:07.909Z
     notes: []
