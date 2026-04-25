@@ -166155,6 +166155,26 @@ reviews:
         runner: rg
         created_at: 2026-04-25T00:13:36.683Z
         completed_at: 2026-04-25T00:13:36.683Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: AGENTS.md, kspec-agents.md, src/parser/validate.ts,
+          src/parser/task-data-manager.ts, src/parser/split-backend.ts,
+          src/cli/commands/validate.ts, tests/validate-task-data-source.test.ts,
+          tests/automation-eligibility.test.ts, tests/helpers/cli.ts, prior reviews @01KQ0TT8 and
+          @01KQ0WQZ. Commands run: git diff/stat/log, kspec task get, kspec item get, kspec review
+          get/add/open/comment/check, rg AC/source-read search, npm test focused, kspec validate,
+          npm run dev validate/task probes, full npm test, ad hoc malformed split task refs probe.
+          Claims verified: previous resolver/loadAllTasks fallback blockers are fixed; malformed
+          per-task records still vanish in --refs mode. Categories searched: correctness, edge
+          cases, error handling, test quality, source-scanning tests, integration with
+          TaskDataManager and split backend."
+        name: review evidence
+        required: false
+        runner: codex review
+        created_at: 2026-04-25T00:13:48.911Z
+        completed_at: 2026-04-25T00:13:48.911Z
     events:
       - _ulid: 01KQ0YYZKX14GF6WMHXH4Z103R
         actor: Jacob Chapel
@@ -166218,6 +166238,13 @@ reviews:
           status: pass
           name: AC annotation search
         timestamp: 2026-04-25T00:13:37.775Z
+      - _ulid: 01KQ0ZRJGQMJAM21RAK8Z0Q8K2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-04-25T00:13:49.975Z
     examined_commit: 1f8ec960532cc8192bd6cb3abb34c995f3ec4f77
     external_links: []
     lifecycle_state: open
@@ -166255,5 +166282,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T23:59:51.421Z
-    updated_at: 2026-04-25T00:13:36.683Z
+    updated_at: 2026-04-25T00:13:48.911Z
     notes: []
