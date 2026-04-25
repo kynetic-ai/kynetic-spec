@@ -12510,11 +12510,11 @@ workspaces:
     canonical_branch: dispatch/task/task-validation-trust-final-gate/01kq0jdm
     canonical_branch_head: 21bb9efcbeeaa767003581e07e155516857cf42a
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-25T03:08:07.032Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-25T03:08:07.683Z
     health:
       status: healthy
       issues: []
@@ -12528,7 +12528,7 @@ workspaces:
       target_branch: dev
       target_commit: f1ea722698447b572dee4516380639be67d74538
       updated_at: 2026-04-25T03:08:07.032Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQ0JDM87XBFC80SW6HQ40VQ1"
     task_slug: task-validation-trust-final-gate
@@ -12537,7 +12537,7 @@ workspaces:
       last_active_at: 2026-04-25T02:55:56.748Z
       last_reconciled_at: 2026-04-25T03:08:07.032Z
       created_at: 2026-04-25T02:11:14.476Z
-      updated_at: 2026-04-25T03:08:07.032Z
+      updated_at: 2026-04-25T03:08:07.683Z
     workspace_id: dispatch-workspace-01KQ0JDM87XBFC80SW6HQ40VQ1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
