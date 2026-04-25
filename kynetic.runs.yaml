@@ -32493,9 +32493,21 @@ runs:
     completed_at: 2026-04-25T01:12:49.157Z
   - _ulid: 01KQ16FANDDQ25C4JAHSKG22JD
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-25T02:11:07.053Z
+        completed_at: 2026-04-25T02:11:30.949Z
+        notes: "Worked well: the detached reviewer merge helper cleanly handled manual_merge from the
+          detached snapshot; targeted completeness validation gave a precise before/after signal for
+          annotation repair; recording review checks plus a nit evidence log made approval evidence
+          durable."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-25T02:11:30.949Z
+        completed_at: 2026-04-25T02:11:30.949Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-25T02:11:07.053Z
