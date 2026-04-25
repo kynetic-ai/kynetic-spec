@@ -168096,7 +168096,18 @@ reviews:
     slugs: []
     title: Review final validation trust gate
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran kspec validate --refs --warnings-ok -v from detached review workspace: exit 0,
+          schema/references OK, Tasks checked: 0 because this snapshot has no .kspec worktree."
+        name: kspec validate --refs
+        required: true
+        runner: kspec
+        created_at: 2026-04-25T02:33:36.592Z
+        completed_at: 2026-04-25T02:33:36.592Z
     events:
       - _ulid: 01KQ17452236PWT5QVVNQ6RXBE
         actor: Jacob Chapel
@@ -168118,6 +168129,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQ17QYV1TG99ZNR82FTPJQW6
         timestamp: 2026-04-25T02:33:19.508Z
+      - _ulid: 01KQ17RHMDQ0TZKH2E8ACM48JT
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --refs
+        timestamp: 2026-04-25T02:33:37.677Z
     examined_commit: f1ea722698447b572dee4516380639be67d74538
     external_links: []
     lifecycle_state: open
@@ -168152,5 +168170,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-25T02:22:29.442Z
-    updated_at: 2026-04-25T02:33:18.433Z
+    updated_at: 2026-04-25T02:33:36.592Z
     notes: []
