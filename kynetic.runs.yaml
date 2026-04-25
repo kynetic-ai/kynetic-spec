@@ -32631,7 +32631,7 @@ runs:
     started_at: 2026-04-25T02:19:21.761Z
     completed_at: 2026-04-25T02:20:54.728Z
   - _ulid: 01KQ17VDJCHK27YYR7KP7QW5NA
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -32681,7 +32681,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-25T02:37:35.231Z
-        completed_at: 2026-04-25T02:37:35.231Z
+        completed_at: 2026-04-25T02:37:56.910Z
+        notes: "Captured one friction observation: @01KQ1805. Did not capture the AC-annotation coverage
+          issue separately because it is already recorded as blocker thread in review @01KQ1745. Did
+          not create a task because the right fix spans dispatch setup/docs/helper behavior and
+          should be triaged."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-25T02:35:11.820Z
+    completed_at: 2026-04-25T02:37:56.910Z
