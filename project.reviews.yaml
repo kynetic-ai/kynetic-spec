@@ -166510,6 +166510,12 @@ reviews:
         payload:
           thread_ulid: 01KQ103CFN5BBE1MJ5C15S0HVN
         timestamp: 2026-04-25T00:54:54.892Z
+      - _ulid: 01KQ1242EE6KH5BC4MHECD2884
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQ102MBY4SFY1A6HNPS632E9
+        timestamp: 2026-04-25T00:55:03.886Z
     examined_commit: 6811de9d4a7252df20afdb48e33b7c34ca166549
     external_links: []
     lifecycle_state: closed
@@ -167494,6 +167500,8 @@ reviews:
               --completeness now finds all 4 ACs covered."
             created_at: 2026-04-25T00:54:48.013Z
         kind: blocker
+        resolved_at: 2026-04-25T00:55:02.736Z
+        resolved_by: "@claude"
       - _ulid: 01KQ103CFN5BBE1MJ5C15S0HVN
         anchor:
           type: code
@@ -167522,7 +167530,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-25T00:28:30.845Z
     created_at: 2026-04-25T00:16:59.637Z
-    updated_at: 2026-04-25T00:54:53.662Z
+    updated_at: 2026-04-25T00:55:02.736Z
     notes: []
   - _ulid: 01KQ117XEZCDF93TFK1G36VW4Q
     slugs: []
