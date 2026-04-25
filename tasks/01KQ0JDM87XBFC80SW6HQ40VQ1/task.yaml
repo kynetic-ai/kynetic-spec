@@ -50,7 +50,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-spec-catalog-health-and-validation-trust"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-validation-task-data-manager-read-path"
@@ -62,6 +62,14 @@ tags:
   - review
   - spec-hygiene
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-validation-trust-final-gate/01kq0jdm
+  captured_at: 2026-04-25T02:18:55.489Z
+  commit: f1ea722698447b572dee4516380639be67d74538
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KQ16G9QEBZ349BR78XAJDGHR
 history:
   - author: Jacob Chapel
@@ -84,7 +92,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-25T02:12:25.076Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-validation-trust-final-gate/01kq0jdm
+          captured_at: 2026-04-25T02:18:55.489Z
+          commit: f1ea722698447b572dee4516380639be67d74538
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-25T02:18:55.492Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-25T02:18:55.492Z
 created_at: 2026-04-24T20:20:39.815Z
 started_at: 2026-04-25T02:12:25.076Z
+submitted_at: 2026-04-25T02:18:55.492Z
 todos: []
 automation: eligible
