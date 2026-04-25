@@ -32692,7 +32692,7 @@ runs:
     completed_at: 2026-04-25T02:37:56.910Z
   - _ulid: 01KQ19RNTC5BECY170BDFVKVRD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -32706,7 +32706,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-25T03:09:45.997Z
-        completed_at: 2026-04-25T03:09:45.997Z
+        completed_at: 2026-04-25T03:09:49.106Z
+        notes: "Friction: kspec workflow show without a run ref failed even though the reflect skill
+          documents it without an argument; this is already tracked. Also, review checks/comments
+          recorded through batch defaulted author/event actor to Jacob Chapel unless an explicit
+          author is provided, while the verdict recorded codex, making the audit trail less clear."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-25T03:09:49.106Z
+        completed_at: 2026-04-25T03:09:49.106Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-25T03:08:39.116Z
