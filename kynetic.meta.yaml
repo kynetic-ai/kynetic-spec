@@ -16320,6 +16320,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-25T02:20:47.430Z
+  - _ulid: 01KQ1805DYVMCWKVYWTNVSQ28R
+    type: friction
+    content: "Detached manual_merge reviewer snapshots can lack .kspec shadow state, so task-aware
+      validation commands run from the assigned workspace report Tasks checked: 0 even when the root
+      checkout validation has task data. This makes final-gate reviews harder when the task depends
+      on before/after task validation counts; reviewers need either a supported root-validation
+      helper or clearer dispatch guidance for this case."
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-25T02:37:47.326Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
