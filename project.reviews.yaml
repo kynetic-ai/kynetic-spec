@@ -168211,6 +168211,13 @@ reviews:
           status: fail
           name: kspec validate --completeness
         timestamp: 2026-04-25T02:34:00.187Z
+      - _ulid: 01KQ17SQ5Z5AAST3SDJEWY73EB
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQ17SP371R2K7SE07233XVET
+        timestamp: 2026-04-25T02:34:16.127Z
     examined_commit: f1ea722698447b572dee4516380639be67d74538
     external_links: []
     lifecycle_state: open
@@ -168243,7 +168250,35 @@ reviews:
               the configured scan surface, or otherwise record valid non-excluded AC annotations."
             created_at: 2026-04-25T02:33:18.433Z
         kind: blocker
+      - _ulid: 01KQ17SP371R2K7SE07233XVET
+        entries:
+          - _ulid: 01KQ17SP388F0NY94Y30NYTM5Q
+            author: codex
+            body: >-
+              Review evidence log:
+
+              Files read: `kspec.config.yaml`, `src/parser/validate.ts`,
+              `src/cli/commands/validate.ts`, `tests/validate-task-data-source.test.ts`,
+              `tests/ac-annotation-validation.test.ts`,
+              `tests/coverage-annotation-scope-boundaries.test.ts`, plan/task records for the final
+              gate and prior plan tasks.
+
+              Commands run: `kspec task get @01KQ0JDM87XBFC80SW6HQ40VQ1`, `kspec plan get
+              @plan-spec-catalog-health-and-validation-trust`, `kspec item get` for the three plan
+              specs, `rg` AC annotation searches, `kspec validate --refs --warnings-ok -v`, `kspec
+              validate --alignment -v`, `kspec validate --completeness -v`, focused `npm test --
+              --run ...`, and `npm test -- --fresh`.
+
+              Claims verified: focused tests pass 107/107; full suite passes with 5 skips;
+              validation warning categories reproduce in the detached workspace, subject to `Tasks
+              checked: 0` because `.kspec` is absent in this snapshot.
+
+              Categories searched: correctness/spec alignment, AC coverage, test
+              quality/source-scanning risk, validation error handling, integration/merge state. One
+              blocker recorded.
+            created_at: 2026-04-25T02:34:15.016Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-25T02:22:29.442Z
-    updated_at: 2026-04-25T02:33:59.057Z
+    updated_at: 2026-04-25T02:34:15.016Z
     notes: []
