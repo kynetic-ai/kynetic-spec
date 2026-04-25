@@ -166307,3 +166307,29 @@ reviews:
     created_at: 2026-04-24T23:59:51.421Z
     updated_at: 2026-04-25T00:13:58.345Z
     notes: []
+  - _ulid: 01KQ0ZYBQN5DA1HY78EQ417QPA
+    slugs: []
+    title: Review coverage annotation scan boundaries
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQ0ZYBQMX9JGRWT0A8MT7DT1
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-25T00:16:59.637Z
+    examined_commit: 6811de9d4a7252df20afdb48e33b7c34ca166549
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQ0JDKGM2QJTT0PVQB2497K2"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-25T00:16:59.637Z
+    updated_at: null
+    notes: []
