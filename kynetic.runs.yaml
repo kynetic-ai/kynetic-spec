@@ -32553,7 +32553,7 @@ runs:
     completed_at: 2026-04-25T02:12:51.843Z
   - _ulid: 01KQ16YDS12V4PW9SC69HV8TNN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -32563,7 +32563,40 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-25T02:19:46.872Z
-        completed_at: 2026-04-25T02:19:46.872Z
+        completed_at: 2026-04-25T02:20:16.182Z
+        notes: >-
+          Step 2: Identified two patterns from this session.
+
+
+          FRICTION 1: Worktree validation context mismatch — kspec validate in a .kspec-worktrees/
+          task worktree reports Tasks checked: 0 because .kspec/ (shadow branch) is only attached to
+          the root checkout. This forced running validation from the root checkout instead of the
+          worktree. For a verification/closeout task like this one, the worker had to cd to the root
+          to get accurate validation results. This is systemic — any dispatch worker doing
+          validation work in a worktree will hit this.
+
+          ALREADY TRACKED? Searched — no existing observation or inbox item covers this specific
+          friction. The closest is inbox item 01KQ0RH7 about workflow show missing run-ref, which is
+          unrelated.
+
+
+          FRICTION 2: (Skipping — the only other friction was minor: JSON parse truncation when
+          piping large --json output through jq. Worked around with file redirect. Not systemic
+          enough for loop-mode capture.)
+
+
+          SUCCESS 1: The plan's task decomposition was well-structured. Each prior task had clear
+          scope, and the final gate task could straightforwardly compare before/after because the
+          baseline artifact captured exact counts. The baseline-then-gate pattern worked well for
+          verification plans.
+
+          ALREADY TRACKED? The classification-first approach success observation (01KQ15SK) is
+          similar but about AC annotation repair specifically, not the plan structure. This is a
+          distinct pattern.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-25T02:20:16.182Z
+        completed_at: 2026-04-25T02:20:16.182Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-25T02:19:21.761Z
