@@ -1,1 +1,135 @@
-notes: []
+notes:
+  - _ulid: 01KQ16W1WVQ8C6BX22Y86D0Q93
+    content: >-
+      Final validation gate — before/after comparison.
+
+
+      BEFORE (baseline captured at b66ae0bb, dev HEAD before plan work):
+
+      - Tasks checked: 0 (CRITICAL — validation not loading tasks)
+
+      - Reference errors: 0 visible (4 expected, hidden by Tasks checked: 0)
+
+      - Reference warnings: 0
+
+      - Alignment warnings: 36 (34 orphaned specs, 2 status mismatches)
+
+      - Completeness warnings: 494 (1 missing-AC, 238 missing-own-AC-coverage, 255 invalid
+      annotations)
+        - Invalid annotations: 152 unresolved target, 36 missing-ac-id, 66 blanket, 1 non-spec-target
+
+      AFTER (dev HEAD f1ea72269, post all plan tasks):
+
+      - Tasks checked: 1444 (FIXED — @task-validation-task-data-manager-read-path)
+
+      - Reference errors: 1 (@cmd-derive in kynetic.tasks.yaml — completed task with stale spec_ref;
+      repaired by @task-repair-broken-spec-refs but ref still exists on old task record)
+
+      - Reference warnings: 7 (deprecated item refs on historical tasks)
+
+      - Alignment warnings: 35 (33 orphaned specs, 2 status mismatches)
+
+      - Completeness warnings: 273 (234 missing-own-AC-coverage, 38 invalid annotations, 1
+      automation-eligible-no-spec)
+        - Invalid annotations: 36 blanket refs, 2 unresolved target (test fixtures)
+
+      DELTAS:
+
+      | Metric | Before | After | Delta |
+
+      |--------|--------|-------|-------|
+
+      | Tasks checked | 0 | 1444 | +1444 (FIXED) |
+
+      | Reference errors | 0 (false) | 1 | +1 (now visible) |
+
+      | Reference warnings | 0 | 7 | +7 (now visible via task loading) |
+
+      | Alignment warnings | 36 | 35 | -1 |
+
+      | Completeness total | 494 | 273 | -221 |
+
+      | Missing-AC items | 1 | 0 | -1 (Test Trait removed) |
+
+      | Missing own-AC coverage | 238 | 234 | -4 |
+
+      | Invalid annotations | 255 | 38 | -217 |
+
+      |   Unresolved target | 152 | 2 | -150 |
+
+      |   Missing AC id | 36 | 0 | -36 |
+
+      |   Blanket ref | 66 | 36 | -30 |
+
+      |   Non-spec target | 1 | 0 | -1 |
+
+
+      REMAINING WARNING CATEGORIES AND CLEANUP OWNERSHIP:
+
+
+      1. Missing own-AC coverage (234): Owned by @plan-completeness-warning-debt-reduction. This is
+      the broad completeness backlog — not in scope for this validation-trust plan.
+
+
+      2. Blanket-ref invalid annotations (36): These are annotations like '// AC: @cli-exit-codes'
+      that name a spec but no specific AC id. The underlying tests DO cover behavior but the
+      annotation format doesn't satisfy the scanner's ac-* pattern. Owned by
+      @plan-completeness-warning-debt-reduction (annotation format upgrade pass).
+         Affected refs: @cli-exit-codes (13), @cmd-clone-for-testing (7), @multi-ref-batch (7), @stale-status-detection (5), @cmd-log (4).
+
+      3. Unresolved target annotations (2): @test-feature (E2E fixture) and @test-trait (inline test
+      content). These are intentional test fixtures for the coverage scanner itself. Owned by
+      completeness debt — could be excluded by tightening scan config or marked as intentional.
+
+
+      4. Reference error (1): @cmd-derive on a completed task in kynetic.tasks.yaml. Historical
+      stale ref. Owned by cleanup of legacy kynetic.tasks.yaml entries.
+
+
+      5. Reference warnings (7): Deprecated item refs (@task-storage, @session-summary-cache,
+      @task-activity-git-query) on historical tasks. Owned by general task metadata hygiene.
+
+
+      6. Alignment warnings (35): 33 orphaned specs (no tasks) + 2 status mismatches. Pre-existing
+      and stable. Owned by spec-task alignment sweep (future plan).
+
+
+      7. Automation-eligible-no-spec (1): One task has automation eligible but no spec_ref. Owned by
+      @task-triage-automation-eligible-missing-spec-ref.
+
+
+      VALIDATION COMMANDS RUN:
+
+      - kspec validate --refs --warnings-ok -v (exit 0 in worktree, exit 4 at root)
+
+      - kspec validate --alignment -v (exit 6 — warnings)
+
+      - kspec validate --completeness -v (exit 6 — warnings)
+
+
+      FOCUSED TESTS:
+
+      - tests/validate-task-data-source.test.ts: 12/12 pass
+
+      - tests/ac-annotation-validation.test.ts: 35/35 pass
+
+      - tests/coverage-annotation-scope-boundaries.test.ts: 14/14 pass
+
+      - tests/validate-integration.test.ts: 18/18 pass
+
+      - tests/validate-exit-codes.test.ts: 15/15 pass
+
+      - tests/validate-mode-selection.test.ts: 6/6 pass
+
+      - tests/trait-ac-coverage.test.ts: 7/7 pass
+
+      Total: 107/107 pass
+
+
+      Note on worktree vs root validation: Task-aware validation (Tasks checked > 0) requires the
+      shadow branch (.kspec/) to be present. The worktree at .kspec-worktrees/ does not have
+      .kspec/, so Tasks checked: 0 there is expected. Root checkout validation correctly shows Tasks
+      checked: 1444 after the task-data-manager-read-path fix.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-25T02:18:04.060Z
