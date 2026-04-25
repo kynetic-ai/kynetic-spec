@@ -16342,6 +16342,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-25T02:57:01.298Z
+  - _ulid: 01KQ19VXDTXRSHCRFK4ETBY8WJ
+    type: friction
+    content: Automated review mutations can produce mixed audit authorship unless every review
+      check/comment explicitly passes --author. In this review, batch-created checks and the
+      evidence-log comment were attributed to the human default while the verdict was attributed to
+      codex, which makes the review record harder to audit. Consider inferring automated reviewer
+      identity from session/runtime context or making reviewer workflows require explicit --author
+      consistently.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KQ19RN"
+    created_at: 2026-04-25T03:10:25.210Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
