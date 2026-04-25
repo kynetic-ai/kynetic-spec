@@ -166387,6 +166387,13 @@ reviews:
           status: fail
           name: lint
         timestamp: 2026-04-25T00:19:41.853Z
+      - _ulid: 01KQ103DQ2NHE338A3ZR0YXTD4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ103CFN5BBE1MJ5C15S0HVN
+        timestamp: 2026-04-25T00:19:45.506Z
     examined_commit: 6811de9d4a7252df20afdb48e33b7c34ca166549
     external_links: []
     lifecycle_state: open
@@ -167363,7 +167370,22 @@ reviews:
                     /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-annotation-scope-boundaries-01kq0jdk-review/tests/workflow-runs.test.ts:819 reports all four ACs on @coverage-annotation-scope-boundaries as uncovered, so the task loses its required AC coverage even though the tests pass. Keep annotation-like fixtures from creating debt without excluding the task's actual coverage annotations, or move the real annotations to a non-excluded behavioral test.
             created_at: 2026-04-25T00:19:19.551Z
         kind: blocker
+      - _ulid: 01KQ103CFN5BBE1MJ5C15S0HVN
+        anchor:
+          type: code
+          commit: 6811de9d4a7252df20afdb48e33b7c34ca166549
+          line_end: 18
+          line_start: 13
+          path: tests/coverage-annotation-scope-boundaries.test.ts
+          side: head
+        entries:
+          - _ulid: 01KQ103CFNT28NS82GD1GG7PGP
+            author: Jacob Chapel
+            body: "MUST-FIX: validateACAnnotations is imported but never used. npm run lint fails on this new
+              file with eslint(no-unused-vars), so the branch introduces a lint regression."
+            created_at: 2026-04-25T00:19:44.246Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-25T00:16:59.637Z
-    updated_at: 2026-04-25T00:19:40.602Z
+    updated_at: 2026-04-25T00:19:44.246Z
     notes: []
