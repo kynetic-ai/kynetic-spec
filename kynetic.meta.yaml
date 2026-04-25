@@ -16298,6 +16298,28 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-04-25T02:12:41.853Z
+  - _ulid: 01KQ17116D056EW2TVB10TX3N0
+    type: friction
+    content: "kspec validate in .kspec-worktrees/ task worktrees reports Tasks checked: 0 because the
+      shadow branch (.kspec/) is only attached to the root checkout. Dispatch workers doing
+      validation-gate or verification tasks must run validation from the root checkout to get
+      accurate task counts. This breaks the dispatch invariant that workers should run all commands
+      from their assigned worktree."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-25T02:20:47.181Z
+  - _ulid: 01KQ1711E6C2QXKQTMXGFE0NBT
+    type: success
+    content: "Baseline-then-gate plan pattern: capturing exact validation counts in an ephemeral
+      baseline artifact before starting plan work, then running a final gate task that compares
+      before/after counts, worked well for the spec-catalog-health-and-validation-trust plan. The
+      pattern gives clear verification evidence and makes the final gate task straightforward. Worth
+      replicating for future verification/cleanup plans."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-25T02:20:47.430Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
