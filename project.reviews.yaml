@@ -166245,9 +166245,25 @@ reviews:
           status: pass
           name: review evidence
         timestamp: 2026-04-25T00:13:49.975Z
+      - _ulid: 01KQ0ZRTP9RGWWY17ECGY598YC
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-25T00:13:58.345Z
+      - _ulid: 01KQ0ZRTP9PE15QT02J0V7W8EG
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-25T00:13:58.345Z
     examined_commit: 1f8ec960532cc8192bd6cb3abb34c995f3ec4f77
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -166280,7 +166296,14 @@ reviews:
               task-aware validation findings.'
             created_at: 2026-04-25T00:12:35.294Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-25T00:13:58.344Z
     created_at: 2026-04-24T23:59:51.421Z
-    updated_at: 2026-04-25T00:13:48.911Z
+    updated_at: 2026-04-25T00:13:58.345Z
     notes: []
