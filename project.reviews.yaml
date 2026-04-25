@@ -166129,6 +166129,19 @@ reviews:
         runner: kspec validate
         created_at: 2026-04-25T00:13:17.652Z
         completed_at: 2026-04-25T00:13:17.652Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified prior cycle blocker is fixed for resolver failure: npm run dev -- task list
+          --json exits 1 with TaskDataManagerError, and npm run dev -- validate --refs --json now
+          exits 4 with schemaErrors containing No storage backend registered for format split
+          instead of silently succeeding with tasksChecked:0."
+        name: source CLI canonical resolver probe
+        required: true
+        runner: npm run dev
+        created_at: 2026-04-25T00:13:27.362Z
+        completed_at: 2026-04-25T00:13:27.362Z
     events:
       - _ulid: 01KQ0YYZKX14GF6WMHXH4Z103R
         actor: Jacob Chapel
@@ -166178,6 +166191,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-25T00:13:18.732Z
+      - _ulid: 01KQ0ZQXENHH41ETQMPZ95R4T1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: source CLI canonical resolver probe
+        timestamp: 2026-04-25T00:13:28.405Z
     examined_commit: 1f8ec960532cc8192bd6cb3abb34c995f3ec4f77
     external_links: []
     lifecycle_state: open
@@ -166215,5 +166235,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T23:59:51.421Z
-    updated_at: 2026-04-25T00:13:17.652Z
+    updated_at: 2026-04-25T00:13:27.362Z
     notes: []
