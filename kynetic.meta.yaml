@@ -16180,6 +16180,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-25T00:31:24.898Z
+  - _ulid: 01KQ116YBNNNYMPJC5NR6Q7RVE
+    type: friction
+    content: "SplitFileTaskBackend.loadAllTasks() silently swallows per-task parse/load failures (empty
+      catch block at split-backend.ts:569). This makes every consumer that uses loadAllTasks()
+      unknowingly operate on a partial dataset. Three consecutive fix cycles on the validation task
+      were caused by this pattern — each cycle revealed a new code path that assumed loadAllTasks()
+      returned the complete task set. Consider: (1) adding a loadAllTasksWithErrors() variant that
+      returns Result<LoadedTask, {ulid, error}>[] so consumers can choose error handling, or (2)
+      making loadAllTasks() itself return errors alongside successfully loaded tasks."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-25T00:39:09.429Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
