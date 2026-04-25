@@ -32431,9 +32431,22 @@ runs:
     completed_at: 2026-04-25T00:56:55.073Z
   - _ulid: 01KQ130JV9F1Q4SSSCRVXAVB9X
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-25T01:10:38.185Z
+        completed_at: 2026-04-25T01:11:08.458Z
+        notes: "What worked well: the review workflow gave a clear path from detached snapshot to approval
+          and merge. Prior closed review threads made fix-cycle verification straightforward. The
+          detached merge helper handled integration cleanly without checking out dev in the reviewer
+          snapshot. Focused behavioral tests plus full npm test gave strong evidence for the
+          scan-boundary behavior."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-25T01:11:08.458Z
+        completed_at: 2026-04-25T01:11:08.458Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-25T01:10:38.185Z
