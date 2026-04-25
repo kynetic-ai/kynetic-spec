@@ -70,6 +70,7 @@ tags:
   - coverage
   - spec-hygiene
 vcs_refs: []
+review_ref: "@01KQ15SN1AVGRBXHS9KHPKZPHB"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-ac-annotation-repair-wave-one/01kq0jdk
@@ -120,6 +121,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-25T01:57:44.021Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQ15SN1AVGRBXHS9KHPKZPHB"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-25T01:59:19.816Z
 created_at: 2026-04-24T20:20:39.443Z
 started_at: 2026-04-25T01:11:17.892Z
 submitted_at: 2026-04-25T01:57:44.021Z

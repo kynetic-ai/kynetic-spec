@@ -167958,3 +167958,29 @@ reviews:
     created_at: 2026-04-25T00:57:56.875Z
     updated_at: 2026-04-25T01:09:26.156Z
     notes: []
+  - _ulid: 01KQ15SN1AVGRBXHS9KHPKZPHB
+    slugs: []
+    title: Review task-ac-annotation-repair-wave-one
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQ15SN1AVH9CT6CQPKSD8DWQ
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-25T01:59:16.778Z
+    examined_commit: 1cbcf797c03d807268ed0c06abf948e98c9063d4
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQ0JDKWKVS0QC2QHTQYRYTGP"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-25T01:59:16.778Z
+    updated_at: null
+    notes: []
