@@ -26,3 +26,64 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-25T01:29:17.274Z
+  - _ulid: 01KQ15PE5HNVP1AGJF19Y427M3
+    content: >-
+      Repair complete. Results:
+
+      - Before: 227 invalid AC annotations
+
+      - After: 38 invalid AC annotations
+
+      - Repaired: 189 annotations across 34 test files
+
+
+      Repair breakdown:
+
+      1. Slug fixes (5): @inbox-set→@cmd-inbox-set, @inbox-note→@cmd-inbox-note
+
+      2. Simple retargets (12): @skill-type-guard→@skill-meta-type, @ui-task-board ac-7→ac-3,
+      @ui-agent-dispatch→@agent-dispatch-engine
+
+      3. Missing AC id corrections (23): Numeric ACs→named ACs on @cmd-clone-for-testing,
+      @convention-definitions, @multi-ref-batch, @trait-markdown-rendering
+
+      4. Blanket ref expansions (45): Added specific AC ids to @meta-thread-cmd, @meta-context-cmd,
+      @config-validation, @trait-json-output, @trait-error-guidance, @trait-dry-run, etc.
+
+      5. Non-spec-target demotions (99): Changed 'AC:' prefix to 'Coverage:' for annotations
+      pointing at tasks/non-existent-specs with no matching spec AC
+
+      6. Scanner false-positive fixes (4): Removed @ from comment description text (@short-ulid,
+      @task-work, @-prefix)
+
+      7. Spurious annotation removal (1): Removed duplicate @api-input-type-safety ac-4
+
+
+      Remaining 38 annotations:
+
+      - 36 are scanner false positives: annotations with valid named AC ids (e.g.,
+      exit-code-constants, parent-pending-children-done, creates-isolated-copy) that don't match the
+      scanner's ac-* pattern regex. These are NOT actually invalid — the scanner simply doesn't
+      recognize non-ac-prefixed AC names.
+
+      - 2 are intentional test fixtures (@test-feature, @test-trait) used for testing the coverage
+      scanner itself.
+
+
+      Follow-up observations:
+
+      - The scanner's blanket-ref detection needs to support named AC ids (not just ac-* pattern).
+      This affects @cli-exit-codes, @stale-status-detection, @cmd-clone-for-testing, @cmd-log,
+      @multi-ref-batch.
+
+      - Several test areas lack spec coverage entirely: test-runner-progress-output,
+      lint-no-leaky-test-daemon, session-storage-modes, session-remove-shadow-commits,
+      package-distribution. These need spec items created in a future plan.
+
+      - The @item-set spec is missing ACs for relationship flags (--relates-to, --implements,
+      --depends-on).
+
+      - The @derive-command spec only has ac-1 but the test suite covers 16 distinct behaviors.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-25T01:57:31.441Z
