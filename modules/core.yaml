@@ -2169,7 +2169,7 @@ features:
           not create coverage credit and do not create invalid-annotation debt.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
