@@ -166078,7 +166078,18 @@ reviews:
     slugs: []
     title: Review task-validation-task-data-manager-read-path cycle 3
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2274 suites passed; 8373 passed, 5 skipped of 8378 tests; exit 0. Log:
+          /tmp/kspec-test-cache/01KQ0YX0E5BN85HHXSKX5EZPVQ/02c9d798896679ae.log"
+        name: npm test
+        required: true
+        runner: npm test
+        created_at: 2026-04-25T00:12:45.495Z
+        completed_at: 2026-04-25T00:12:45.495Z
     events:
       - _ulid: 01KQ0YYZKX14GF6WMHXH4Z103R
         actor: Jacob Chapel
@@ -166100,6 +166111,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQ0ZP9JY8QG1HGAHP4VVQ9V0
         timestamp: 2026-04-25T00:12:36.393Z
+      - _ulid: 01KQ0ZPMM8K5HS2782EREA57EE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-25T00:12:46.600Z
     examined_commit: 1f8ec960532cc8192bd6cb3abb34c995f3ec4f77
     external_links: []
     lifecycle_state: open
@@ -166137,5 +166155,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-24T23:59:51.421Z
-    updated_at: 2026-04-25T00:12:35.294Z
+    updated_at: 2026-04-25T00:12:45.495Z
     notes: []
