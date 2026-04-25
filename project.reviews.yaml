@@ -168143,6 +168143,18 @@ reviews:
         runner: npm
         created_at: 2026-04-25T02:33:46.091Z
         completed_at: 2026-04-25T02:33:46.091Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran kspec validate --completeness -v: exit 6 with 272 completeness warnings in detached
+          workspace; includes @ac-annotation-integrity-reporting all five ACs uncovered while its
+          annotated tests are excluded from scan coverage."
+        name: kspec validate --completeness
+        required: true
+        runner: kspec
+        created_at: 2026-04-25T02:33:59.057Z
+        completed_at: 2026-04-25T02:33:59.057Z
     events:
       - _ulid: 01KQ17452236PWT5QVVNQ6RXBE
         actor: Jacob Chapel
@@ -168192,6 +168204,13 @@ reviews:
           status: pass
           name: focused validation tests
         timestamp: 2026-04-25T02:33:47.179Z
+      - _ulid: 01KQ17S7KVCQ64V9ZPT4DXYK5G
+        actor: codex
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate --completeness
+        timestamp: 2026-04-25T02:34:00.187Z
     examined_commit: f1ea722698447b572dee4516380639be67d74538
     external_links: []
     lifecycle_state: open
@@ -168226,5 +168245,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-25T02:22:29.442Z
-    updated_at: 2026-04-25T02:33:46.091Z
+    updated_at: 2026-04-25T02:33:59.057Z
     notes: []
