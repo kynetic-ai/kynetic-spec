@@ -16245,6 +16245,37 @@ observations:
     resolved: false
     workflow_ref: "@01KQ130J"
     created_at: 2026-04-25T01:12:24.268Z
+  - _ulid: 01KQ15SKB8EMRGNYZ95D1N8STD
+    type: friction
+    content: AC annotation scanner only recognizes ac-* pattern for AC ids. Specs using named ACs
+      (exit-code-constants, creates-isolated-copy, parent-pending-children-done,
+      basic-multi-ref-syntax, etc.) produce false-positive blanket-ref warnings. 36 of the 38
+      remaining invalid annotations after wave-one repair are this category. Scanner needs to accept
+      any non-whitespace token after the spec ref as a valid AC id.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-25T01:59:15.049Z
+  - _ulid: 01KQ15SKKCSJMDH67D3W7NC7RD
+    type: friction
+    content: "AC annotation scanner picks up secondary @-references from comment description text. E.g.
+      // AC: @spec ac-1 — uses @short-ulid causes @short-ulid to be parsed as a separate annotation
+      target. The scanner should only extract the first @-reference after the AC: marker, not
+      subsequent @-mentions in the same comment line."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-25T01:59:15.308Z
+  - _ulid: 01KQ15SKSHEX7XS28K0ZHX2WK9
+    type: success
+    content: Classification-first approach for bulk AC annotation repair was highly effective. Running
+      kspec validate --completeness -v to export all findings, spawning parallel research agents to
+      classify every finding before making edits, then applying repairs mechanically by category.
+      Reduced 227 invalid annotations to 38 (189 fixed) in one session with zero test failures.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-25T01:59:15.506Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
