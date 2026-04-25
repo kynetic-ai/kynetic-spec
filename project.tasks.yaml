@@ -27183,7 +27183,7 @@
   type: task
   spec_ref: "@coverage-annotation-scope-boundaries"
   plan_ref: "@plan-spec-catalog-health-and-validation-trust"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-ac-annotation-integrity-reporting"
@@ -27193,7 +27193,7 @@
     - coverage
     - config
   review_ref: "@01KQ0ZYBQN5DA1HY78EQ417QPA"
-  notes_count: 1
+  notes_count: 2
   todos_count: 0
   created_at: 2026-04-24T20:20:39.060Z
   started_at: 2026-04-24T23:59:39.086Z
