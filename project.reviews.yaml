@@ -167830,6 +167830,23 @@ reviews:
         runner: git diff --check
         created_at: 2026-04-25T01:08:58.577Z
         completed_at: 2026-04-25T01:08:58.577Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/coverage-annotation-scope-boundaries.test.ts, src/parser/validate.ts,
+          kspec.config.yaml, task/spec/prior review records. Commands run: kspec task get, kspec
+          item get, kspec review get/for-task, rg AC annotations, git diff/stat/show/diff --check,
+          kspec validate --completeness, npm run lint, changed-file oxlint, npm run typecheck,
+          focused npm test, full npm test. Claims verified: prior blockers resolved; new AC
+          annotations are scanned; fixture AC strings are constructed at runtime; skipped files
+          produce neither coverage credit nor invalid annotation debt. Categories searched:
+          correctness, edge cases, error handling, test quality, integration, config boundaries."
+        name: review evidence log
+        required: false
+        runner: manual review
+        created_at: 2026-04-25T01:09:01.625Z
+        completed_at: 2026-04-25T01:09:01.625Z
     events:
       - _ulid: 01KQ129BCBHSPNC27P1JPNJ3Q1
         actor: Jacob Chapel
@@ -167879,6 +167896,13 @@ reviews:
           status: pass
           name: diff hygiene
         timestamp: 2026-04-25T01:08:59.628Z
+      - _ulid: 01KQ12XNMTBVDB5CYCB26J12AQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-25T01:09:02.747Z
     examined_commit: 802dab8e49e3afcc7e29ebbf39d3d107021ef0d3
     external_links: []
     lifecycle_state: open
@@ -167891,5 +167915,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-25T00:57:56.875Z
-    updated_at: 2026-04-25T01:08:58.577Z
+    updated_at: 2026-04-25T01:09:01.625Z
     notes: []
