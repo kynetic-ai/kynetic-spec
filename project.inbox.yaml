@@ -2967,3 +2967,17 @@ inbox:
       - batch
     added_by: Jacob Chapel
     created_at: 2026-04-25T00:56:42.609Z
+  - _ulid: 01KQ6XYB4KPCAHJYXBQD9054TN
+    text: 'Bug: kspec upgrade/setup scaffolds default-session-reflect without the turn_count filter
+      required for once-per-invocation reflection. Known-good projects have filter {"turn_count":1};
+      comfy-ecaj-nodes after upgrade had no filter. Fix fresh scaffold to include filter
+      {"turn_count":1}, and consider migrating an existing default-session-reflect hook that is
+      missing the filter when it appears unmodified/default. Relevant spec:
+      @default-session-reflection-hook ac-fires-once-per-invocation.'
+    tags:
+      - bug
+      - upgrade
+      - hooks
+      - session-reflect
+    added_by: Jacob Chapel
+    created_at: 2026-04-27T07:37:28.467Z
