@@ -33560,7 +33560,7 @@ runs:
     completed_at: 2026-04-28T07:29:02.763Z
   - _ulid: 01KQ9GBWRXGBEJGV515KEN9AR2
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33596,7 +33596,18 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-28T07:40:17.388Z
-        completed_at: 2026-04-28T07:40:17.388Z
+        completed_at: 2026-04-28T07:40:35.375Z
+        notes: "Proposed improvement: add explicit project guidance and/or a small reusable test helper for
+          annotation-scanner fixtures so tests can construct literal-looking AC annotation lines
+          without the completeness scanner treating them as real coverage. This would codify the
+          acPrefix/acLine runtime-construction pattern and warn that AC annotations in excluded
+          scanner-test files do not count for completeness. Benefit: avoids repeated review fix
+          cycles around scanner self-tests. Scope: small to medium depending on whether it is just
+          documentation/convention or also a helper migration."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-28T07:40:35.375Z
+        completed_at: 2026-04-28T07:40:35.375Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T07:37:55.741Z
