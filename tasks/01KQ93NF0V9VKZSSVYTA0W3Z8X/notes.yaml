@@ -1,1 +1,29 @@
-notes: []
+notes:
+  - _ulid: 01KQ99ZYHRM2R32NKH9RA9TPW4
+    content: >-
+      Approach: The annotation parser already correctly requires ac-* prefixed tokens for explicit
+      AC coverage. The regex pattern in parseACAnnotationLine uses /ac-[\w-]+/g which only matches
+      ac-prefixed tokens. Non-prefixed words after a @ref are simply ignored by the parser.
+
+
+      What needs to change:
+
+      1. Parser comments already use ac-prefixed examples - verify and strengthen doc.
+
+      2. Tests need new cases proving that a non-prefixed token (e.g. 'validate' or '1') after a
+      @ref is NOT parsed as an AC id - proving the spec's ac-bare-ref-no-token-credit AC.
+
+      3. Tests need cases proving ac-prefixed named ids (e.g. ac-create, ac-priority-valid) ARE
+      parsed as explicit refs - proving ac-explicit-token-format and ac-valid-token-covers-ac.
+
+      4. Existing blanket ref tests already handle the blanket case well; verify fixtures are
+      clearly labeled.
+
+
+      Test plan: 3 spec ACs + 2 test-annotation-sweep ACs = 5+ annotated tests needed.
+
+      AC annotations will use @ac-annotation-identifier-format for the spec and
+      @test-annotation-sweep for the sweep ACs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T05:46:32.889Z
