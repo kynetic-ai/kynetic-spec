@@ -21,6 +21,7 @@ tags:
   - validation
   - schema
 vcs_refs: []
+review_ref: "@01KQ98EG20W95170VDDR93XQT2"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fix-meta-traits-schema-validation/01kq97bh
@@ -64,6 +65,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-28T05:17:58.887Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQ98EG20W95170VDDR93XQT2"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-28T05:19:35.541Z
 created_at: 2026-04-28T05:00:27.477Z
 started_at: 2026-04-28T05:01:47.597Z
 submitted_at: 2026-04-28T05:17:58.887Z
