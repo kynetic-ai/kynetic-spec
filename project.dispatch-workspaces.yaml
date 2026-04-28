@@ -11902,7 +11902,7 @@ workspaces:
         head: 21bb9efcbeeaa767003581e07e155516857cf42a
         last_seen_at: 2026-04-25T02:55:31.319Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validation-trust-final-gate-01kq0jdm
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: bcf5b7f55ab4a5fd47c2fa3fc5676b4c816e3ae7
     bootstrap:
       status: succeeded
@@ -12400,9 +12400,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T01:07:09.602Z
-      last_reconciled_at: 2026-04-28T01:19:19.214Z
+      last_reconciled_at: 2026-04-28T01:22:12.018Z
       created_at: 2026-04-28T00:59:30.252Z
-      updated_at: 2026-04-28T01:19:20.747Z
+      updated_at: 2026-04-28T01:22:12.018Z
     workspace_id: dispatch-workspace-01KQ8SGW5FGT6WXRAV2NAK0T75
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
