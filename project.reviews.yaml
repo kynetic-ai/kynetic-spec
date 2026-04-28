@@ -172257,7 +172257,85 @@ reviews:
     slugs: []
     title: Review final AC id format validation gate (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Passed. Schema OK, references OK. 6 reference warnings, all deprecated-item refs unrelated
+          to AC id format.
+        name: kspec validate --refs --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-04-28T08:41:26.533Z
+        completed_at: 2026-04-28T08:41:26.533Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed with warnings-ok. 36 alignment warnings: 33 orphaned specs and 3 status
+          mismatches. The AC Annotation Integrity Reporting mismatch is due to an already-cancelled
+          linked normalization task, not an AC id format regression."
+        name: kspec validate --alignment --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-04-28T08:41:29.569Z
+        completed_at: 2026-04-28T08:41:29.569Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed with warnings-ok. 232 completeness warnings: 230 missing own AC coverage and 2
+          unresolved fixture annotations. No blanket-ref category appeared."
+        name: kspec validate --completeness --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-04-28T08:41:32.431Z
+        completed_at: 2026-04-28T08:41:32.431Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: tsc --noEmit exited 0.
+        name: npm run typecheck
+        required: true
+        runner: tsc
+        created_at: 2026-04-28T08:41:35.401Z
+        completed_at: 2026-04-28T08:41:35.401Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test tests/ac-id-format-gate.test.ts tests/ac-annotation-identifier-format.test.ts
+          tests/ac-annotation-validation.test.ts tests/ac-id-format.test.ts: 40 suites passed, 102
+          tests passed."
+        name: focused AC id format tests
+        required: true
+        runner: npm test
+        created_at: 2026-04-28T08:41:38.331Z
+        completed_at: 2026-04-28T08:41:38.331Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2312 suites passed, 8468 passed, 5 skipped, 0 failed. Log:
+          /tmp/kspec-test-cache/01KQ9KBVRT8MACDD17800XR68S/fe0a68619e69a1a7.log"
+        name: npm test
+        required: true
+        runner: npm test
+        created_at: 2026-04-28T08:41:41.240Z
+        completed_at: 2026-04-28T08:41:41.240Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Scanned 608 items and 3078 acceptance criteria through the CLI JSON output; invalid AC
+          ids: 0."
+        name: catalog AC id scan
+        required: true
+        runner: kspec item list --json --limit 10000
+        created_at: 2026-04-28T08:41:44.081Z
+        completed_at: 2026-04-28T08:41:44.081Z
     events:
       - _ulid: 01KQ9KD6F8W94X7RCREHP8JSZV
         actor: Jacob Chapel
@@ -172272,17 +172350,125 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-28T08:31:32.587Z
+      - _ulid: 01KQ9M07F2C9VM9Q000NX7SPDP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --refs --warnings-ok
+        timestamp: 2026-04-28T08:41:27.778Z
+      - _ulid: 01KQ9M0A97R18P8024WTMPZCPB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --alignment --warnings-ok
+        timestamp: 2026-04-28T08:41:30.664Z
+      - _ulid: 01KQ9M0D32CBYZE143GZ71JYWV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --completeness --warnings-ok
+        timestamp: 2026-04-28T08:41:33.538Z
+      - _ulid: 01KQ9M0G090QGKCSS4Q2CXYE9A
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run typecheck
+        timestamp: 2026-04-28T08:41:36.521Z
+      - _ulid: 01KQ9M0JX7T4W9QAW5BB5PBXZV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused AC id format tests
+        timestamp: 2026-04-28T08:41:39.495Z
+      - _ulid: 01KQ9M0NNV5ZK0FH1TTA40MJW9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-28T08:41:42.331Z
+      - _ulid: 01KQ9M0RE01PCB9A4WNGQSEVRW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: catalog AC id scan
+        timestamp: 2026-04-28T08:41:45.152Z
+      - _ulid: 01KQ9M0VAAZZKH5819TJQHNAMZ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQ9M0T6YNKVQXZWCZHJK9M4S
+        timestamp: 2026-04-28T08:41:48.106Z
+      - _ulid: 01KQ9M0Z5D4D1YX788WZ9WD4DG
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-28T08:41:52.045Z
+      - _ulid: 01KQ9M0Z5DX3FRNCX051MR9A6Y
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-28T08:41:52.046Z
     examined_commit: d80b9c9ea8acdfcc76e4d8414454e5f85cc7e07c
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KQ93NFA9JZMWMAR8QM1NJPMK"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KQ9M0T6YNKVQXZWCZHJK9M4S
+        entries:
+          - _ulid: 01KQ9M0T6YPSVTD96SX0WVY6GA
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: src/parser/validate.ts; src/schema/common.ts; src/cli/commands/item.ts;
+              tests/ac-id-format-gate.test.ts; tests/ac-annotation-identifier-format.test.ts;
+              task/spec/review records for @01KQ93NFA9JZMWMAR8QM1NJPMK,
+              @acceptance-criterion-id-format, @ac-annotation-identifier-format,
+              @ac-annotation-integrity-reporting, and prior review @01KQ9HFJ6TFJZ205WJE79N8595.
+
+              Commands run: git diff/stat/log; kspec item get for covered specs; kspec validate
+              --refs/--alignment/--completeness --warnings-ok; catalog AC id scan via kspec item
+              list --json --limit 10000; npm run typecheck; focused npm test command; full npm test.
+
+              Claims verified: malformed ac-* tokens are filtered through the shared acIdPattern
+              before coverage credit; CLI add/rename invalid-id rejection is covered by temp-fixture
+              behavioral tests; completeness output no longer reports blanket-ref warnings from
+              renamed AC ids; @ac-annotation-integrity-reporting has AC coverage and implemented
+              status.
+
+              Categories searched: correctness, edge cases for malformed tokens,
+              mutation-before-validation, schema/CLI/parser integration, test
+              integrity/source-scanning, validation warning ownership, and merge readiness. No
+              blocking findings.
+            created_at: 2026-04-28T08:41:46.975Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: automated reviewer
+        created_at: 2026-04-28T08:41:52.045Z
     created_at: 2026-04-28T08:31:04.169Z
-    updated_at: 2026-04-28T08:31:31.485Z
+    updated_at: 2026-04-28T08:41:52.045Z
     notes: []
