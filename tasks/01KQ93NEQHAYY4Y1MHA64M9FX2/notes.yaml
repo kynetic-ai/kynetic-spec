@@ -1,1 +1,38 @@
-notes: []
+notes:
+  - _ulid: 01KQ98V28TAWSRA8TBRZ71ZAZ0
+    content: >-
+      Inventory complete: All catalog AC ids already use ac-prefixed kebab-case format (177
+      conforming, 0 non-conforming across all specs and traits). Prior normalization work handled
+      catalog ids.
+
+
+      Continuing with annotation repair. Found annotations using legacy non-prefixed tokens that
+      need ac- prefix:
+
+      - @cli-exit-codes: consistent-usage, exit-code-constants, exit-codes-documented →
+      ac-consistent-usage, ac-exit-code-constants, ac-exit-codes-documented
+
+      - @cmd-clone-for-testing: creates-isolated-copy, sets-up-worktree, checkout-branch,
+      temp-dir-default, json-output → ac-creates-isolated-copy, ac-sets-up-worktree,
+      ac-checkout-branch, ac-temp-dir-default, ac-json-output
+
+      - @cmd-log: list-all-tracked, passthrough-args, passthrough-invalid → ac-list-all-tracked,
+      ac-passthrough-args, ac-passthrough-invalid
+
+      - @multi-ref-batch: basic-multi-ref-syntax, backward-compatibility, mutual-exclusion-error,
+      partial-failure-handling, json-output-format, empty-refs-error, ref-resolution-uses-existing →
+      ac-basic-multi-ref-syntax, ac-backward-compatibility, ac-mutual-exclusion-error,
+      ac-partial-failure-handling, ac-json-output-format, ac-empty-refs-error,
+      ac-ref-resolution-uses-existing
+
+      - @stale-status-detection: parent-pending-children-done, spec-implemented-no-task,
+      task-done-spec-not-started, staleness-flag, staleness-exit-code →
+      ac-parent-pending-children-done, ac-spec-implemented-no-task, ac-task-done-spec-not-started,
+      ac-staleness-flag, ac-staleness-exit-code
+
+
+      Also found: @meta-observe-cmd from-inbox-conversion (unresolved target — spec
+      @meta-observe-cmd does not exist).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T05:26:24.282Z
