@@ -50,7 +50,7 @@ description: |
 spec_ref: "@acceptance-criterion-id-format"
 plan_ref: "@plan-ac-id-format-normalization"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-normalize-catalog-ac-ids-and-annotations"
@@ -71,7 +71,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KQ9JAJQRSMXNBCWMVWVWJ7RA
 history:
   - author: Jacob Chapel
     changes:
@@ -137,8 +137,21 @@ history:
         previous: 01KQ9GCB9ZK6TZHNAY3MY7RM8G
     command: review-verdict-needs-work
     timestamp: 2026-04-28T08:08:39.074Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KQ9JAJQRSMXNBCWMVWVWJ7RA
+        previous: null
+      started_at:
+        new: 2026-04-28T08:28:26.492Z
+        previous: 2026-04-28T07:38:59.941Z
+    command: task-start
+    timestamp: 2026-04-28T08:28:26.493Z
 created_at: 2026-04-28T03:55:58.153Z
-started_at: 2026-04-28T07:38:59.941Z
+started_at: 2026-04-28T08:28:26.492Z
 submitted_at: 2026-04-28T07:55:28.281Z
 todos: []
 automation: eligible
