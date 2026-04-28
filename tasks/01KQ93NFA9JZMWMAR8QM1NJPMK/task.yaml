@@ -47,7 +47,7 @@ description: |
   @ac-annotation-identifier-format ac-bare-ref-no-token-credit,
   @ac-annotation-integrity-reporting ac-valid-annotation-covers-target,
   @ac-annotation-integrity-reporting ac-blanket-ref-does-not-cover.
-spec_ref: null
+spec_ref: "@acceptance-criterion-id-format"
 plan_ref: "@plan-ac-id-format-normalization"
 origin: derived
 status: pending
@@ -70,6 +70,13 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-28T03:59:42.148Z
+  - author: Jacob Chapel
+    changes:
+      spec_ref:
+        new: "@acceptance-criterion-id-format"
+        previous: null
+    command: task-set
+    timestamp: 2026-04-28T04:03:22.950Z
 created_at: 2026-04-28T03:55:58.153Z
 todos: []
 automation: eligible

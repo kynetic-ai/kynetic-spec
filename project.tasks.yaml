@@ -27390,6 +27390,7 @@
     - task-ac-id-format-final-gate
   title: Final AC id format validation gate
   type: task
+  spec_ref: "@acceptance-criterion-id-format"
   plan_ref: "@plan-ac-id-format-normalization"
   status: pending
   blocked_by: []
