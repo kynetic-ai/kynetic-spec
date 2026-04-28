@@ -109,6 +109,7 @@ tags:
   - hooks
   - reflection
 vcs_refs: []
+review_ref: "@01KQ8W54N3J051MVTPJD25CBS7"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-default-session-reflection-reliability/01kq8sgw
@@ -159,6 +160,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-28T01:42:39.955Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQ8W54N3J051MVTPJD25CBS7"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-28T01:44:46.724Z
 created_at: 2026-04-28T00:58:42.030Z
 started_at: 2026-04-28T01:20:51.175Z
 submitted_at: 2026-04-28T01:42:39.954Z
