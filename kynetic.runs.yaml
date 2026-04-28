@@ -33148,7 +33148,7 @@ runs:
     completed_at: 2026-04-28T06:02:09.067Z
   - _ulid: 01KQ9BMW1X0K6EQZ9SDJ87Y1HE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33161,7 +33161,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-28T06:16:23.155Z
-        completed_at: 2026-04-28T06:16:23.155Z
+        completed_at: 2026-04-28T06:16:29.793Z
+        notes: "Friction: posting the review blocker with inline shell text that contained markdown
+          backticks caused command substitution and polluted the first review thread body. This is
+          systemic CLI payload fragility, but it has existing tracking, so no new duplicate should
+          be captured."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-28T06:16:29.793Z
+        completed_at: 2026-04-28T06:16:29.793Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T06:15:27.037Z
