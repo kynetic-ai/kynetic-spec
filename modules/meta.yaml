@@ -7154,6 +7154,9 @@ requirements:
           ac-prefixed token format that catalog acceptance criteria use, so
           annotation parsing and catalog validation agree on what counts as an
           explicit acceptance-criterion reference.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
