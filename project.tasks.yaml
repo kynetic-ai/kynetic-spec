@@ -27350,6 +27350,7 @@
     - task-normalize-catalog-ac-ids-and-annotations
   title: Normalize catalog AC ids and matching annotations
   type: task
+  spec_ref: "@acceptance-criterion-id-format"
   plan_ref: "@plan-ac-id-format-normalization"
   status: pending
   blocked_by: []
