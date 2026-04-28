@@ -170355,6 +170355,18 @@ reviews:
         runner: npm
         created_at: 2026-04-28T05:54:10.749Z
         completed_at: 2026-04-28T05:54:10.749Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --warnings-ok currently exits 4 due to pre-existing catalog schema error:
+          .kspec/modules/meta.yaml:modules[0].traits.0 Expected string, received object. Tracked
+          separately as @01KQ99Z7; scoped refs and completeness checks for this task passed."
+        name: full kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-28T05:54:28.757Z
+        completed_at: 2026-04-28T05:54:28.757Z
     events:
       - _ulid: 01KQ99T59WB2A8HC6Q4CKJ23CS
         actor: Jacob Chapel
@@ -170397,6 +170409,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-28T05:54:12.184Z
+      - _ulid: 01KQ9AEGBNDDVJJJT3CK82NWBA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: full kspec validate
+        timestamp: 2026-04-28T05:54:29.877Z
     examined_commit: 9ece11f41336ff3bf1552e8d2ab3fddb1dbbf8f4
     external_links: []
     lifecycle_state: open
@@ -170409,5 +170428,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T05:43:23.197Z
-    updated_at: 2026-04-28T05:54:10.749Z
+    updated_at: 2026-04-28T05:54:28.757Z
     notes: []
