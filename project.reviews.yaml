@@ -172476,7 +172476,69 @@ reviews:
     slugs: []
     title: "Plan review: AC ID Surface Hardening"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Read @acceptance-criterion-id-format, @item-patch, @ac-annotation-identifier-format, and
+          @ac-annotation-integrity-reporting. The proposed behaviors belong on those existing specs
+          rather than new parallel specs.
+        name: Existing spec placement
+        required: true
+        created_at: 2026-04-28T23:41:06.454Z
+        completed_at: 2026-04-28T23:41:06.454Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 7 proposed ACs are established by task-ac-id-hardening-spec-updates and covered by
+          task-centralize-ac-id-patch-validation, task-strict-ac-annotation-token-parsing, and
+          task-ac-id-hardening-final-gate.
+        name: Coverage mapping
+        required: true
+        created_at: 2026-04-28T23:41:09.694Z
+        completed_at: 2026-04-28T23:41:09.694Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Dependency graph is acyclic: P1 spec updates first, two independent P2 implementation
+          tasks, then P3 final gate after both behavior changes."
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-28T23:41:13.010Z
+        completed_at: 2026-04-28T23:41:13.010Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Target specs resolve via kspec item get. kspec validate --refs --warnings-ok passed with
+          only existing deprecated-reference warnings.
+        name: Reference validation
+        required: true
+        created_at: 2026-04-28T23:41:16.269Z
+        completed_at: 2026-04-28T23:41:16.269Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Two proposed ACs need revision: ac-patch-rejects-invalid-id names an internal update
+          path, and ac-bulk-invalid-operation-isolated has a compound Then clause."
+        name: Spec quality
+        required: true
+        created_at: 2026-04-28T23:41:19.538Z
+        completed_at: 2026-04-28T23:41:19.538Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Tasks include concrete what/why/how/testing details and relevant codepaths. They are
+          automation-ready after the spec wording blockers are fixed.
+        name: Automation readiness
+        required: true
+        created_at: 2026-04-28T23:41:22.829Z
+        completed_at: 2026-04-28T23:41:22.829Z
     events:
       - _ulid: 01KQB7D64EHX1CV1T3MRRK4F7W
         actor: Jacob Chapel
@@ -172484,17 +172546,155 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-28T23:39:49.775Z
+      - _ulid: 01KQB7F5FDGYF1KHXDGBXDHRDK
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-28T23:40:54.637Z
+      - _ulid: 01KQB7F8NREQKVWV7EHYACQTB9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQB7F7EJWP89MFHF7A4ZCX03
+        timestamp: 2026-04-28T23:40:57.912Z
+      - _ulid: 01KQB7FBY12Y84K3S1EHF9NHQM
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQB7FAN2SD0D5ZT3N4S37BZK
+        timestamp: 2026-04-28T23:41:01.250Z
+      - _ulid: 01KQB7FF49MC4BPHA8EGWX5FZ7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KQB7FDWNGRXW7G2HQ7N7A4G9
+        timestamp: 2026-04-28T23:41:04.521Z
+      - _ulid: 01KQB7FJ7NJKH8J7QNJYBX2NB7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec placement
+        timestamp: 2026-04-28T23:41:07.701Z
+      - _ulid: 01KQB7FNE4GJ52YDP31CJFY5ZA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Coverage mapping
+        timestamp: 2026-04-28T23:41:10.980Z
+      - _ulid: 01KQB7FRPF6KZNQ8C0BN05RQ6H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-28T23:41:14.319Z
+      - _ulid: 01KQB7FVV6PD60NBBM8JBMWZEM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Reference validation
+        timestamp: 2026-04-28T23:41:17.542Z
+      - _ulid: 01KQB7FZ1G9ZTZQKHS2J4CSQTN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Spec quality
+        timestamp: 2026-04-28T23:41:20.817Z
+      - _ulid: 01KQB7G27G7KWQQDTF808VH69Z
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Automation readiness
+        timestamp: 2026-04-28T23:41:24.080Z
+      - _ulid: 01KQB7G5CE26H6B0V7E2ANF15X
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-28T23:41:27.310Z
+      - _ulid: 01KQB7G5CEPWV8CPBBE1HRS0KR
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-28T23:41:27.310Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@plan-ac-id-surface-hardening"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KQB7F7EJWP89MFHF7A4ZCX03
+        anchor:
+          type: structured
+          field: ac-patch-rejects-invalid-id
+          ref: "@acceptance-criterion-id-format"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQB7F7EJC3DCHWM7CBGTQTE0
+            author: Jacob Chapel
+            body: The proposed AC includes 'lower-level catalog item update' in the When clause. That is an
+              implementation/API path rather than observable behavior for this spec, and it mixes a
+              user-supplied patch with an internal update path. Move parser-layer/updateSpecItem
+              coverage into task instructions/tests, or split/reword the AC as a behavioral
+              guarantee for supported item mutation paths without naming internals.
+            created_at: 2026-04-28T23:40:56.658Z
+        kind: blocker
+      - _ulid: 01KQB7FAN2SD0D5ZT3N4S37BZK
+        anchor:
+          type: structured
+          field: ac-bulk-invalid-operation-isolated
+          ref: "@item-patch"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQB7FAN24TRNXPHZ16X5NA8T
+            author: Jacob Chapel
+            body: "The Then clause combines three independently verifiable outcomes: the invalid operation is
+              not written, a later valid operation is applied, and the command exits with a failure
+              status. Split this into atomic ACs or merge the exit-status assertion into an existing
+              bulk error/status AC so each criterion has one observable outcome."
+            created_at: 2026-04-28T23:40:59.938Z
+        kind: blocker
+      - _ulid: 01KQB7FDWNGRXW7G2HQ7N7A4G9
+        anchor:
+          type: structured
+          field: ac-valid-delimiters-preserved
+          ref: "@ac-annotation-identifier-format"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQB7FDWNJHK89ZJT38ZT7KHS
+            author: Jacob Chapel
+            body: This AC uses 'supported delimiters such as whitespace or commas', which leaves the accepted
+              delimiter set open-ended and harder to verify. Please state the exact delimiters the
+              contract requires, or move non-exhaustive examples into task guidance.
+            created_at: 2026-04-28T23:41:03.253Z
+        kind: question
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-28T23:41:27.309Z
     created_at: 2026-04-28T23:39:49.775Z
-    updated_at: null
+    updated_at: 2026-04-28T23:41:27.310Z
     notes: []
