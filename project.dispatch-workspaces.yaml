@@ -13255,12 +13255,12 @@ workspaces:
       detail: task-reset
       eligible: true
       reason: task-reset
-      updated_at: 2026-04-28T03:27:25.088Z
+      updated_at: 2026-04-28T03:27:25.672Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-28T03:27:25.088Z
+      updated_at: 2026-04-28T03:27:25.672Z
     integration:
       status: reset
       detail: integration:reset
@@ -13268,17 +13268,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: d2afe3cdc7056698b18833e49bb37ee0543c36ad
-      updated_at: 2026-04-28T03:27:25.088Z
-    lifecycle_state: ready
+      updated_at: 2026-04-28T03:27:25.672Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KQ90ZSYNH0D3S53KTVF5AYJM"
     task_slug: task-normalize-ac-ids-and-annotations
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T03:10:10.644Z
-      last_reconciled_at: 2026-04-28T03:27:25.088Z
+      last_reconciled_at: 2026-04-28T03:27:25.672Z
       created_at: 2026-04-28T03:09:37.269Z
-      updated_at: 2026-04-28T03:27:25.088Z
+      updated_at: 2026-04-28T03:27:25.672Z
     workspace_id: dispatch-workspace-01KQ90ZSYNH0D3S53KTVF5AYJM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
