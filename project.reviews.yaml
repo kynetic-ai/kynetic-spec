@@ -169063,6 +169063,18 @@ reviews:
         required: true
         created_at: 2026-04-28T00:51:46.614Z
         completed_at: 2026-04-28T00:51:46.614Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran kspec validate; it exits 4 on unrelated existing repo-health issues: meta.yaml traits
+          schema error, missing @task-state-transitions reference, deprecated-reference warnings,
+          orphan/alignment warnings, and existing AC coverage warnings. No plan-specific validation
+          artifact exists before derivation."
+        name: Baseline validation
+        required: false
+        created_at: 2026-04-28T00:51:56.074Z
+        completed_at: 2026-04-28T00:51:56.074Z
     events:
       - _ulid: 01KQ8S259S7APDY3J5P0NMTHJB
         actor: Jacob Chapel
@@ -169112,6 +169124,13 @@ reviews:
           status: pass
           name: Plan parser surface
         timestamp: 2026-04-28T00:51:47.746Z
+      - _ulid: 01KQ8S4H3TGFH0PJT6HGK90XY3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: Baseline validation
+        timestamp: 2026-04-28T00:51:57.178Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -169124,5 +169143,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T00:50:39.545Z
-    updated_at: 2026-04-28T00:51:46.614Z
+    updated_at: 2026-04-28T00:51:56.074Z
     notes: []
