@@ -13251,11 +13251,11 @@ workspaces:
     canonical_branch: dispatch/task/task-normalize-ac-ids-and-annotations/01kq90zs
     canonical_branch_head: 04af0dc324117e1bed55d0b7edeb74ebb131c317
     cleanup:
-      status: scheduled
+      status: completed
       detail: task-reset
       eligible: true
       reason: task-reset
-      updated_at: 2026-04-28T03:27:25.672Z
+      updated_at: 2026-04-28T03:27:29.866Z
     health:
       status: healthy
       issues: []
@@ -13269,16 +13269,16 @@ workspaces:
       target_branch: dev
       target_commit: d2afe3cdc7056698b18833e49bb37ee0543c36ad
       updated_at: 2026-04-28T03:27:25.672Z
-    lifecycle_state: integrating
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KQ90ZSYNH0D3S53KTVF5AYJM"
     task_slug: task-normalize-ac-ids-and-annotations
     timestamps:
-      closed_at: null
+      closed_at: 2026-04-28T03:27:29.866Z
       last_active_at: 2026-04-28T03:10:10.644Z
       last_reconciled_at: 2026-04-28T03:27:25.672Z
       created_at: 2026-04-28T03:09:37.269Z
-      updated_at: 2026-04-28T03:27:25.672Z
+      updated_at: 2026-04-28T03:27:29.866Z
     workspace_id: dispatch-workspace-01KQ90ZSYNH0D3S53KTVF5AYJM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
