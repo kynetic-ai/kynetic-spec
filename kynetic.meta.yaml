@@ -16476,6 +16476,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-04-28T07:28:54.592Z
+  - _ulid: 01KQ9GHYR22MR3A1YMSJDCWMZD
+    type: friction
+    content: Annotation-scanner tests can accidentally create scanner-visible fixture annotations when
+      comments or string literals contain literal '// AC:' examples. Recent review cycles required
+      moving real task AC annotations out of an excluded scanner-test file and rewording a quoted
+      fixture pattern. Consider codifying a safe runtime-construction helper or testing convention
+      for annotation fixture lines.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-28T07:41:14.370Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
