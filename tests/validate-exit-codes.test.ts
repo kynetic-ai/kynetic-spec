@@ -60,6 +60,52 @@ items:
       expect(result.stderr + result.stdout).toContain("Schema errors");
     });
 
+    it("should not report schema error for modules with inline nested trait objects", async () => {
+      // Regression: validateSpecItemRecursive must strip nested trait objects
+      // before calling SpecItemSchema.safeParse, just like extractItemsFromRaw does.
+      // Without the fix, traits containing objects with _ulid trigger
+      // "Expected string, received object" because SpecItemSchema.traits expects RefSchema[].
+      const specDir = path.join(tempDir, "modules");
+      await fs.writeFile(
+        path.join(specDir, "nested-traits.yaml"),
+        `_ulid: ${testUlid("NMOD")}
+slugs:
+  - nested-trait-module
+title: Module With Nested Traits
+type: module
+status:
+  maturity: draft
+  implementation: not_started
+traits:
+  - _ulid: ${testUlid("NTRT")}
+    slugs:
+      - inline-trait
+    title: Inline Trait
+    type: trait
+    description: A trait defined inline within a module
+    acceptance_criteria:
+      - id: ac-inline-1
+        given: a spec item applies this trait
+        when: the item is validated
+        then: trait ACs are inherited
+`,
+      );
+
+      const manifestPath = path.join(tempDir, "kynetic.yaml");
+      const manifest = await readTestOutput(manifestPath);
+      const updatedManifest = manifest.replace(
+        "includes:",
+        "includes:\n  - modules/nested-traits.yaml",
+      );
+      await fs.writeFile(manifestPath, updatedManifest);
+
+      const result = kspec("validate --schema", tempDir);
+      const combined = result.stderr + result.stdout;
+      expect(combined).not.toContain("Expected string, received object");
+      expect(combined).toContain("Schema: OK");
+      expect(result.exitCode).not.toBe(4);
+    });
+
     it("should exit 4 when reference errors are present", async () => {
       // Add a task with an invalid spec_ref
       seedSplitTask(tempDir, {
