@@ -170308,7 +170308,19 @@ reviews:
     slugs: []
     title: Review normalize catalog AC ids and annotations
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/ac-annotation*.test.ts tests/trait-ac-coverage.test.ts
+          tests/validate-exit-codes.test.ts tests/exit-codes.test.ts tests/staleness.test.ts
+          tests/clone-for-testing.test.ts passed: 31 suites, 87 tests."
+        name: focused annotation tests
+        required: true
+        runner: npm
+        created_at: 2026-04-28T05:54:04.012Z
+        completed_at: 2026-04-28T05:54:04.012Z
     events:
       - _ulid: 01KQ99T59WB2A8HC6Q4CKJ23CS
         actor: Jacob Chapel
@@ -170323,6 +170335,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-28T05:43:44.027Z
+      - _ulid: 01KQ9ADR6GPNNK0666FZ8NBK8Z
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused annotation tests
+        timestamp: 2026-04-28T05:54:05.137Z
     examined_commit: 9ece11f41336ff3bf1552e8d2ab3fddb1dbbf8f4
     external_links: []
     lifecycle_state: open
@@ -170335,5 +170354,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T05:43:23.197Z
-    updated_at: 2026-04-28T05:43:42.760Z
+    updated_at: 2026-04-28T05:54:04.012Z
     notes: []
