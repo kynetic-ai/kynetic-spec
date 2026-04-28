@@ -32985,7 +32985,7 @@ runs:
     completed_at: 2026-04-28T05:03:52.308Z
   - _ulid: 01KQ994JXCCQ9XVG95CT9TVN2C
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33016,10 +33016,17 @@ runs:
           friction is already covered by observations including @01KPW015 and @01KQ0XPH. npm run dev
           -- validate split-storage failure is already covered by unresolved observation @01KNPHW4.
           No untracked friction found."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-04-28T05:33:44.744Z
-        completed_at: 2026-04-28T05:33:44.744Z
+        completed_at: 2026-04-28T05:34:01.789Z
+        notes: No untracked friction remained after search. Existing task/observations already cover the CLI
+          binary mismatch, detached validation false-negative/build behavior, and npm run dev split
+          backend failure.
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-28T05:34:01.789Z
+        completed_at: 2026-04-28T05:34:01.789Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T05:31:36.236Z
