@@ -5,6 +5,10 @@
  *
  * Validates that // AC: @slug ac-N comments reference real spec items/traits
  * and that ac-N exists on the referenced item.
+ *
+ * EXCLUDED from coverage scanning (kspec.config.yaml exclude_patterns) because
+ * this file contains fixture AC annotation strings inside test file content
+ * that would be misinterpreted as real coverage annotations by the scanner.
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
@@ -141,7 +145,6 @@ it('should also work', () => {});
       expect(refs).toContain("@spec-b ac-2");
     });
 
-    // AC: @test-annotation-sweep ac-annotation-format
     it("should parse named ac ids on sweep annotations", async () => {
       const testsDir = path.join(tempDir, "tests");
       await fs.mkdir(testsDir, { recursive: true });
@@ -735,7 +738,6 @@ it('invalid trait AC ref', () => {});
   });
 
   describe("computeACCoverage", () => {
-    // AC: @test-annotation-sweep ac-annotation-format
     it("uses the declared AC ids when computing coverage status", () => {
       const coverage = computeACCoverage(
         {
@@ -812,6 +814,36 @@ it('invalid trait AC ref', () => {});
     it("should return empty array for non-AC lines", () => {
       expect(parseACAnnotationLine("// just a comment")).toEqual([]);
       expect(parseACAnnotationLine("const x = 1;")).toEqual([]);
+    });
+
+    it("should ignore non-ac-prefixed tokens after a @ref", () => {
+      // A bare word like "validate" after @ref is NOT an AC id
+      const groups = parseACAnnotationLine("// AC: @my-spec validate");
+      expect(groups).toEqual([{ specRef: "@my-spec", acIds: [] }]);
+    });
+
+    it("should ignore numeric-only tokens without ac- prefix", () => {
+      // "1" or "2" are not ac-prefixed, so they should be ignored
+      const groups = parseACAnnotationLine("// AC: @my-spec 1");
+      expect(groups).toEqual([{ specRef: "@my-spec", acIds: [] }]);
+    });
+
+    it("should parse ac-prefixed named ids as explicit AC references", () => {
+      const groups = parseACAnnotationLine("// AC: @my-spec ac-validate-input, ac-reject-invalid");
+      expect(groups).toEqual([
+        { specRef: "@my-spec", acIds: ["ac-validate-input", "ac-reject-invalid"] },
+      ]);
+    });
+
+    it("should parse ac-prefixed numeric ids as explicit AC references", () => {
+      const groups = parseACAnnotationLine("// AC: @my-spec ac-1, ac-2");
+      expect(groups).toEqual([{ specRef: "@my-spec", acIds: ["ac-1", "ac-2"] }]);
+    });
+
+    it("should treat mixed tokens correctly: only ac-prefixed tokens become AC ids", () => {
+      // "some-word" is not ac-prefixed, so only ac-1 should be captured
+      const groups = parseACAnnotationLine("// AC: @my-spec ac-1 some-word");
+      expect(groups).toEqual([{ specRef: "@my-spec", acIds: ["ac-1"] }]);
     });
   });
 
@@ -922,6 +954,210 @@ it('test', () => {});
       expect(invalidAnnotations).toHaveLength(1);
       expect(invalidAnnotations[0].message).toContain("@nonexistent");
       expect(invalidAnnotations[0].message).toContain("cannot be resolved");
+    });
+  });
+
+  describe("ac-prefixed named ids provide coverage credit", () => {
+    it("should credit coverage when annotation uses ac-prefixed named id", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["my-feature"],
+            title: "My Feature",
+            type: "requirement",
+            description: "A feature with named ACs",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [
+              {
+                id: "ac-validate-input",
+                given: "user provides input",
+                when: "validation runs",
+                then: "input is validated",
+              },
+              {
+                id: "ac-reject-invalid",
+                given: "user provides invalid input",
+                when: "validation runs",
+                then: "input is rejected",
+              },
+            ],
+          },
+        ],
+        testFiles: {
+          "feature.test.ts":
+            '// AC: @my-feature ac-validate-input\nit("validates input", () => {});\n' +
+            '// AC: @my-feature ac-reject-invalid\nit("rejects invalid", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      // No invalid annotations
+      const invalidAnnotations = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation",
+      );
+      expect(invalidAnnotations).toHaveLength(0);
+
+      // No missing coverage for this spec
+      const missingCoverage = result.completenessWarnings.filter(
+        (w) =>
+          w.type === "missing_test_coverage" &&
+          w.subtype === "own_ac" &&
+          w.itemRef === "@my-feature",
+      );
+      expect(missingCoverage).toHaveLength(0);
+    });
+
+    it("should credit coverage when annotation uses ac-prefixed numeric id", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["numbered-spec"],
+            title: "Numbered Spec",
+            type: "requirement",
+            description: "A spec with numeric ACs",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [
+              { id: "ac-1", given: "g", when: "w", then: "t" },
+              { id: "ac-2", given: "g2", when: "w2", then: "t2" },
+            ],
+          },
+        ],
+        testFiles: {
+          "numbered.test.ts":
+            '// AC: @numbered-spec ac-1, ac-2\nit("covers both", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      const invalidAnnotations = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation",
+      );
+      const missingCoverage = result.completenessWarnings.filter(
+        (w) =>
+          w.type === "missing_test_coverage" &&
+          w.subtype === "own_ac" &&
+          w.itemRef === "@numbered-spec",
+      );
+
+      expect(invalidAnnotations).toHaveLength(0);
+      expect(missingCoverage).toHaveLength(0);
+    });
+  });
+
+  describe("non-prefixed tokens after @ref provide no AC coverage", () => {
+    it("should not credit coverage when annotation has non-prefixed word after @ref", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["my-spec"],
+            title: "My Spec",
+            type: "requirement",
+            description: "A spec with ACs",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [
+              { id: "ac-1", given: "g", when: "w", then: "t" },
+            ],
+          },
+        ],
+        testFiles: {
+          // "validate" is not ac-prefixed, so this should be treated as a blanket ref
+          "bad-token.test.ts":
+            '// AC: @my-spec validate\nit("test", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      // Should warn about blanket ref (non-prefixed token is ignored by parser)
+      const blanketWarnings = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation" && w.subtype === "blanket_ref",
+      );
+      expect(blanketWarnings).toHaveLength(1);
+      expect(blanketWarnings[0].message).toContain("without explicit ac-* ids");
+
+      // ac-1 should remain uncovered
+      const missingCoverage = result.completenessWarnings.filter(
+        (w) =>
+          w.type === "missing_test_coverage" &&
+          w.subtype === "own_ac" &&
+          w.itemRef === "@my-spec",
+      );
+      expect(missingCoverage).toHaveLength(1);
+      expect(missingCoverage[0].details).toContain("ac-1");
+    });
+
+    it("should not credit coverage when annotation has numeric-only token without ac- prefix", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["my-spec"],
+            title: "My Spec",
+            type: "requirement",
+            description: "A spec with ACs",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [
+              { id: "ac-1", given: "g", when: "w", then: "t" },
+            ],
+          },
+        ],
+        testFiles: {
+          // "1" is not ac-prefixed, parser ignores it → blanket ref behavior
+          "numeric-token.test.ts":
+            '// AC: @my-spec 1\nit("test", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      const blanketWarnings = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation" && w.subtype === "blanket_ref",
+      );
+      expect(blanketWarnings).toHaveLength(1);
+
+      const missingCoverage = result.completenessWarnings.filter(
+        (w) =>
+          w.type === "missing_test_coverage" &&
+          w.subtype === "own_ac" &&
+          w.itemRef === "@my-spec",
+      );
+      expect(missingCoverage).toHaveLength(1);
+    });
+  });
+
+  describe("annotation format with ac-prefixed tokens", () => {
+    it("should parse annotation with mixed numeric and named ac-prefixed ids", async () => {
+      const testsDir = path.join(tempDir, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+
+      await fs.writeFile(
+        path.join(testsDir, "mixed-ids.test.ts"),
+        "// AC: @my-spec ac-1, ac-validate-input\nit('test', () => {});",
+      );
+
+      const annotations = await scanACAnnotations(tempDir, ["tests/"]);
+      expect(annotations).toHaveLength(1);
+      expect(annotations[0].specRef).toBe("@my-spec");
+      expect(annotations[0].acIds).toEqual(["ac-1", "ac-validate-input"]);
+    });
+
+    it("should accept ac-prefixed kebab-case ids of varying length", async () => {
+      const testsDir = path.join(tempDir, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+
+      await fs.writeFile(
+        path.join(testsDir, "kebab-ids.test.ts"),
+        "// AC: @my-spec ac-a, ac-very-long-descriptive-name\nit('test', () => {});",
+      );
+
+      const annotations = await scanACAnnotations(tempDir, ["tests/"]);
+      expect(annotations).toHaveLength(1);
+      expect(annotations[0].acIds).toEqual(["ac-a", "ac-very-long-descriptive-name"]);
     });
   });
 });

@@ -1019,11 +1019,17 @@ const AC_LINE_PREFIX = /\/\/\s*AC:\s*/;
 /**
  * Parse all @ref groups from an AC annotation line.
  * Handles single and multiple @ref groups separated by commas or spaces.
+ *
+ * Only tokens matching the `ac-` prefix are recognized as explicit AC ids.
+ * Non-prefixed words after a @ref are ignored and do NOT create AC coverage.
+ *
  * Examples:
  *   "// AC: @spec-a ac-1"                        → [{specRef:"@spec-a", acIds:["ac-1"]}]
  *   "// AC: @spec-a ac-create, ac-update"        → [{specRef:"@spec-a", acIds:["ac-create","ac-update"]}]
  *   "// AC: @spec-a ac-1, @spec-b ac-2"          → [{specRef:"@spec-a", acIds:["ac-1"]}, {specRef:"@spec-b", acIds:["ac-2"]}]
  *   "// AC: @spec-a ac-1 — N/A: reason"          → [{specRef:"@spec-a", acIds:["ac-1"]}]
+ *   "// AC: @spec-a"                             → [{specRef:"@spec-a", acIds:[]}]  (blanket ref, no AC credit)
+ *   "// AC: @spec-a validate"                    → [{specRef:"@spec-a", acIds:[]}]  (non-prefixed token ignored)
  */
 export function parseACAnnotationLine(
   lineText: string,
@@ -1043,8 +1049,8 @@ export function parseACAnnotationLine(
 
   const groups: { specRef: string; acIds: string[] }[] = [];
 
-  // Match each @ref followed by its optional ac-N ids
-  // This regex captures @ref and then all ac-N tokens until the next @ref or end
+  // Match each @ref followed by its optional ac-prefixed ids.
+  // Only ac-* tokens are captured as explicit AC ids; non-prefixed words are ignored.
   const refGroupPattern = /(@[\w-]+)((?:\s*,?\s*ac-[\w-]+)*)/g;
   let match;
 
