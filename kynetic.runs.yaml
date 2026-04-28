@@ -33201,7 +33201,7 @@ runs:
     completed_at: 2026-04-28T06:16:57.110Z
   - _ulid: 01KQ9CFZ3QEN6ZQGS9QKC013KR
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -33219,7 +33219,31 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-28T06:30:41.974Z
-        completed_at: 2026-04-28T06:30:41.974Z
+        completed_at: 2026-04-28T06:31:48.708Z
+        notes: >-
+          High-confidence friction point identified:
+
+
+          1. FRICTION (systemic): Task @01KQ99Z7 was created for a validation error that was already
+          fixed by a prior task (@task-fix-meta-traits-schema-validation, commit f0e6d14c3) on dev.
+          The error only appeared because the globally installed kspec binary was stale (compiled
+          from an older codebase snapshot). The dispatch engine created this task based on observing
+          the error in the running environment, but the fix was already merged. This pattern —
+          dispatch creating tasks for symptoms caused by stale tooling rather than actual bugs —
+          could recur.
+
+
+          Checked existing coverage: Observation @01KPA0Q5 tracks duplicate task dispatching
+          generally. This is a specific variant: tasks created for issues already fixed on dev but
+          not yet compiled into the running binary.
+
+
+          No success patterns worth capturing — the session was spent investigating and discovering
+          the issue was pre-resolved.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-28T06:31:48.708Z
+        completed_at: 2026-04-28T06:31:48.708Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-28T06:30:14.903Z
