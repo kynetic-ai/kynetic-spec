@@ -169052,6 +169052,17 @@ reviews:
         required: true
         created_at: 2026-04-28T00:51:38.054Z
         completed_at: 2026-04-28T00:51:38.054Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Plan import dry-run accepts the markdown. The hardcoded import summary reports zero
+          derived artifacts by design; plan derive implementation and tests support
+          task-only/manual-task plans with derive_from_specs: false."
+        name: Plan parser surface
+        required: true
+        created_at: 2026-04-28T00:51:46.614Z
+        completed_at: 2026-04-28T00:51:46.614Z
     events:
       - _ulid: 01KQ8S259S7APDY3J5P0NMTHJB
         actor: Jacob Chapel
@@ -169094,6 +169105,13 @@ reviews:
           status: pass
           name: Existing spec neighborhood
         timestamp: 2026-04-28T00:51:39.217Z
+      - _ulid: 01KQ8S47X2A9CMNWSX14NDE2CN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan parser surface
+        timestamp: 2026-04-28T00:51:47.746Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -169106,5 +169124,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T00:50:39.545Z
-    updated_at: 2026-04-28T00:51:38.054Z
+    updated_at: 2026-04-28T00:51:46.614Z
     notes: []
