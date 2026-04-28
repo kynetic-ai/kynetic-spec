@@ -33623,7 +33623,7 @@ runs:
     completed_at: 2026-04-28T07:41:32.723Z
   - _ulid: 01KQ9J5SVQE3P083KCGC1TFEDD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33639,7 +33639,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-28T08:10:26.213Z
-        completed_at: 2026-04-28T08:10:26.213Z
+        completed_at: 2026-04-28T08:10:37.683Z
+        notes: "Friction points: The only substantive issue was task-specific rather than process-wide: the
+          final gate added broad tests but still missed malformed ac-* parser tokens such as
+          ac-bad_id and ac--double. That is already captured as a blocker on review @01KQ9HFJ and
+          returned to the worker via needs_work. No separate systemic workflow/tooling issue was
+          found beyond the existing task feedback."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-28T08:10:37.683Z
+        completed_at: 2026-04-28T08:10:37.683Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T08:09:33.303Z
