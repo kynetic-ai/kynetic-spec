@@ -2981,3 +2981,18 @@ inbox:
       - session-reflect
     added_by: Jacob Chapel
     created_at: 2026-04-27T07:37:28.467Z
+  - _ulid: 01KQ8PRYXFCW678CXJKJYFQVRB
+    text: kspec validate/doctor should flag risky session.idle hooks whose session_prompt action depends
+      on an agent session staying alive but the target agent lacks explicit
+      session.idle_grace_period_ms or uses a grace period too short for post-idle actions. The
+      warning should point at the hook, the affected default/dispatch agents, and the current
+      effective grace so projects do not silently lose reflection prompts with errors like 'Session
+      ... is no longer active'.
+    tags:
+      - validation
+      - doctor
+      - hooks
+      - sessions
+      - reflection
+    added_by: Jacob Chapel
+    created_at: 2026-04-28T00:10:40.943Z
