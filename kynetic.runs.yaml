@@ -33684,7 +33684,7 @@ runs:
     completed_at: 2026-04-28T08:11:11.492Z
   - _ulid: 01KQ9M391G8JRQZG8Z5BM6DNVP
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33725,7 +33725,18 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-28T08:44:43.259Z
-        completed_at: 2026-04-28T08:44:43.259Z
+        completed_at: 2026-04-28T08:44:51.619Z
+        notes: "Proposed improvement: Add a first-class review evidence-log/general-note surface, or a
+          review comment kind that is explicitly audit-only and does not appear as an unresolved
+          thread. It would let reviewers record files read, commands run, claims verified, and
+          categories searched without creating a live nit/question thread. Benefit: approved review
+          records stay clean while preserving the anti-rubber-stamping evidence required by
+          review-gates. Rough scope: medium, likely touches review schema/CLI output and review
+          detail rendering."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-28T08:44:51.619Z
+        completed_at: 2026-04-28T08:44:51.619Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T08:43:07.697Z
