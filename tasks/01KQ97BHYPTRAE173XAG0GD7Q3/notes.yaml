@@ -1,1 +1,20 @@
-notes: []
+notes:
+  - _ulid: 01KQ98AVQP0EDAV6V3ZTVEWJMJ
+    content: >-
+      Approach: The bug was in validateSpecItemRecursive() in src/parser/validate.ts. Two issues:
+
+      1. The nestedFields list was missing 'traits', so nested trait items weren't recursively
+      validated.
+
+      2. Unlike extractItemsFromRaw() in yaml.ts, the validation function didn't strip nested item
+      arrays (objects with _ulid) from items before calling SpecItemSchema.safeParse(). This caused
+      traits containing inline trait objects to fail validation since SpecItemSchema.traits expects
+      z.array(RefSchema) (strings).
+
+
+      Fix: Added 'traits' to nestedFields, and added stripping logic (matching extractItemsFromRaw
+      pattern) to remove nested item arrays before schema validation. Added regression test in
+      validate-exit-codes.test.ts.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T05:17:33.303Z
