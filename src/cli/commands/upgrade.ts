@@ -1281,10 +1281,18 @@ dispatch:
           });
         } else {
           if (!dryRun) {
+            // AC: @default-session-reflection-hook ac-fires-once-per-invocation
+            // AC: @single-command-version-upgrade ac-default-reflection-hook-first-idle-on-upgrade
+            // Restrict to the first idle event of an invocation so reflection
+            // fires once per invocation, not after every turn of a multi-turn
+            // session. The filter value MUST be numeric; hook filter matching
+            // uses strict equality against a z.number() payload field.
+            // This matches the canonical hook shape in setup.ts.
             await saveHook(freshCtx, {
               _ulid: ulid(),
               name: hookName,
               on: "session.idle",
+              filter: { turn_count: 1 },
               action: {
                 type: "session_prompt",
                 prompt: "Run session reflection using /kspec:reflect",
