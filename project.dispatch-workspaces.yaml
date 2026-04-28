@@ -14502,7 +14502,7 @@ workspaces:
         head: 9ece11f41336ff3bf1552e8d2ab3fddb1dbbf8f4
         last_seen_at: 2026-04-28T05:42:01.393Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-normalize-catalog-ac-ids-and-annotations-01kq93ne
-  - active_role: null
+  - active_role: worker
     base_branch_point: 336a0ea4060ea5a7fa44574d1a67476c7bc36ef8
     bootstrap:
       status: succeeded
@@ -14835,7 +14835,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-28T05:42:37.811Z
+      updated_at: 2026-04-28T05:43:02.170Z
     integration:
       status: pending
       detail: null
@@ -14844,16 +14844,16 @@ workspaces:
       target_branch: dev
       target_commit: 336a0ea4060ea5a7fa44574d1a67476c7bc36ef8
       updated_at: 2026-04-28T05:42:37.811Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQ93NF0V9VKZSSVYTA0W3Z8X"
     task_slug: task-align-ac-annotation-format-tests
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-28T05:42:37.811Z
+      last_active_at: 2026-04-28T05:43:02.170Z
+      last_reconciled_at: 2026-04-28T05:43:02.170Z
       created_at: 2026-04-28T05:42:37.811Z
-      updated_at: 2026-04-28T05:43:01.368Z
+      updated_at: 2026-04-28T05:43:02.170Z
     workspace_id: dispatch-workspace-01KQ93NF0V9VKZSSVYTA0W3Z8X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
