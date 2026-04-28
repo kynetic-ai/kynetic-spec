@@ -172702,7 +172702,91 @@ reviews:
     slugs: []
     title: "Plan review: AC ID Surface Hardening (cycle 2)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified review @01KQB7D6 findings are addressed: the patch AC no longer names
+          lower-level catalog item updates; the bulk invalid-operation behavior is split into
+          not-written, continue, and failure-status ACs; delimiter wording explicitly names
+          whitespace, comma, and comma plus whitespace."
+        name: Prior review findings
+        required: true
+        created_at: 2026-04-28T23:47:59.981Z
+        completed_at: 2026-04-28T23:47:59.981Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Checked @acceptance-criterion-id-format, @item-patch, @ac-annotation-identifier-format,
+          and @ac-annotation-integrity-reporting with kspec item get/search. The proposed ACs belong
+          on the named existing owners rather than new parallel specs.
+        name: Existing spec placement
+        required: true
+        created_at: 2026-04-28T23:48:02.958Z
+        completed_at: 2026-04-28T23:48:02.958Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Two @item-patch ACs still use schema/validation mechanics in AC text, and
+          ac-known-fields-validated-with-allow-unknown has a compound Then clause.
+        name: Spec quality
+        required: true
+        created_at: 2026-04-28T23:48:05.824Z
+        completed_at: 2026-04-28T23:48:05.824Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All four tasks include concrete what, why, how, testing, and Establishes/Covers details
+          sufficient for a fresh worker.
+        name: Task standalone quality
+        required: true
+        created_at: 2026-04-28T23:48:08.742Z
+        completed_at: 2026-04-28T23:48:08.742Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All nine proposed ACs are established by the spec-update task and covered by the two
+          implementation tasks plus the final gate; no task claims an uncreated AC.
+        name: Coverage mapping
+        required: true
+        created_at: 2026-04-28T23:48:11.615Z
+        completed_at: 2026-04-28T23:48:11.615Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Spec updates precede implementation; the two behavior tasks depend only on spec updates
+          and can run in parallel; the final gate depends on both behavior tasks. No cycle or
+          priority inversion found.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-28T23:48:14.617Z
+        completed_at: 2026-04-28T23:48:14.617Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/ac-id-surface-hardening.md --dry-run parsed cleanly. kspec
+          validate --refs --warnings-ok passed with pre-existing reference warnings only.
+        name: Reference validation
+        required: true
+        created_at: 2026-04-28T23:48:17.641Z
+        completed_at: 2026-04-28T23:48:17.641Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Tasks are automation-ready: each has bounded scope, concrete files or command areas to
+          inspect, explicit tests, and sufficient dependency ordering."
+        name: Automation readiness
+        required: true
+        created_at: 2026-04-28T23:48:20.575Z
+        completed_at: 2026-04-28T23:48:20.575Z
     events:
       - _ulid: 01KQB7QXDHXJ5ZVM53H5JN3RPG
         actor: Jacob Chapel
@@ -172717,17 +172801,144 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-28T23:45:54.101Z
+      - _ulid: 01KQB7W05EBM45N995KR81AF2Z
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQB7VZ1V6YNTZPVC33F1RTDJ
+        timestamp: 2026-04-28T23:47:55.182Z
+      - _ulid: 01KQB7W32FC3YCSR7PD87965J1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQB7W1Z1G27J2KH34BKKESZV
+        timestamp: 2026-04-28T23:47:58.159Z
+      - _ulid: 01KQB7W5ZP3TVKWERW13HH63V0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Prior review findings
+        timestamp: 2026-04-28T23:48:01.142Z
+      - _ulid: 01KQB7W8V0W6CWCS1S0FN6YQKV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec placement
+        timestamp: 2026-04-28T23:48:04.064Z
+      - _ulid: 01KQB7WBPD45N3NNPEBBK4VQTF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Spec quality
+        timestamp: 2026-04-28T23:48:06.989Z
+      - _ulid: 01KQB7WEFT6ZE1FSDDWQNDE17W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone quality
+        timestamp: 2026-04-28T23:48:09.850Z
+      - _ulid: 01KQB7WHCC44W476C3P9JV35PG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Coverage mapping
+        timestamp: 2026-04-28T23:48:12.812Z
+      - _ulid: 01KQB7WM8HZA60YH9J556Z0QTQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-28T23:48:15.761Z
+      - _ulid: 01KQB7WQ5RVSATEXXCBNS4JSA3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Reference validation
+        timestamp: 2026-04-28T23:48:18.744Z
+      - _ulid: 01KQB7WT35ANPN733GHM529YXQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Automation readiness
+        timestamp: 2026-04-28T23:48:21.734Z
+      - _ulid: 01KQB7WX0B3GDSV74147T57Y0V
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-28T23:48:24.716Z
+      - _ulid: 01KQB7WX0CEH748XTSXGSEFW22
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-28T23:48:24.716Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@plan-ac-id-surface-hardening"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KQB7VZ1V6YNTZPVC33F1RTDJ
+        anchor:
+          type: structured
+          field: ac-known-fields-validated-with-allow-unknown
+          ref: "@item-patch"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQB7VZ1VCTR6FVANS9F3W491
+            author: Jacob Chapel
+            body: This AC still has a compound Then clause and implementation-facing wording. The outcome says
+              the unknown field is allowed but the invalid known schema field is rejected, which
+              combines two independently verifiable assertions and exposes schema terminology.
+              Rewrite it as one observable result, for example that a patch using --allow-unknown is
+              rejected because a recognized item field has an invalid value, while the unknown field
+              is not the rejection reason.
+            created_at: 2026-04-28T23:47:54.043Z
+        kind: blocker
+      - _ulid: 01KQB7W1Z1G27J2KH34BKKESZV
+        anchor:
+          type: structured
+          field: ac-bulk-dry-run-validates-data
+          ref: "@item-patch"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQB7W1Z2P4DMY5CFJ9HW2F7N
+            author: Jacob Chapel
+            body: "This AC describes the trigger as data that would fail schema validation in a real write and
+              the When as kspec validating the operation. That is mechanism-level wording for an
+              acceptance criterion. Keep the schema/helper details in the implementation task, and
+              state the observable command behavior instead: a bulk dry-run operation with patch
+              data that a normal write would reject is reported as an error rather than a successful
+              preview."
+            created_at: 2026-04-28T23:47:57.026Z
+        kind: blocker
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-28T23:48:24.715Z
     created_at: 2026-04-28T23:45:41.297Z
-    updated_at: 2026-04-28T23:45:52.802Z
+    updated_at: 2026-04-28T23:48:24.716Z
     notes: []
