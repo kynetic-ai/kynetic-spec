@@ -52,7 +52,7 @@ description: |
 spec_ref: "@acceptance-criterion-id-format"
 plan_ref: "@plan-ac-id-format-normalization"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -62,6 +62,14 @@ tags:
   - validation
   - cli
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-enforce-ac-id-format/01kq93ne
+  captured_at: 2026-04-28T04:47:17.090Z
+  commit: 6a54d8669fac304c6ed57cb57298159a12bfbc58
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KQ93YMW8TX1XCZ7BVZH3F770
 history:
   - author: Jacob Chapel
@@ -84,7 +92,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-28T04:01:20.798Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-enforce-ac-id-format/01kq93ne
+          captured_at: 2026-04-28T04:47:17.090Z
+          commit: 6a54d8669fac304c6ed57cb57298159a12bfbc58
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-28T04:47:17.092Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-28T04:47:17.093Z
 created_at: 2026-04-28T03:55:57.244Z
 started_at: 2026-04-28T04:01:20.798Z
+submitted_at: 2026-04-28T04:47:17.092Z
 todos: []
 automation: eligible
