@@ -124,6 +124,9 @@ features:
           Acceptance criterion identifiers use a uniform ac-prefixed kebab-case
           token format everywhere they are stored, edited, validated, and
           referenced by coverage annotations.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
