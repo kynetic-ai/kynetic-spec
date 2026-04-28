@@ -169004,7 +169004,19 @@ reviews:
     slugs: []
     title: "Plan review: Default Session Reflection Reliability"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The plan names exact target specs @multi-turn-session-lifecycle,
+          @default-project-agents-and-conventions, and @single-command-version-upgrade; gives stable
+          AC ids and Given/When/Then text; explicitly excludes code changes, duplicate
+          @default-session-reflection-hook ACs, and validation/doctor work tracked by @01KQ8PRY.
+        name: Spec-update task detail
+        required: true
+        created_at: 2026-04-28T00:51:08.741Z
+        completed_at: 2026-04-28T00:51:08.741Z
     events:
       - _ulid: 01KQ8S259S7APDY3J5P0NMTHJB
         actor: Jacob Chapel
@@ -169019,6 +169031,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-28T00:51:00.397Z
+      - _ulid: 01KQ8S32XBZEX891HYEJ43S3NA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec-update task detail
+        timestamp: 2026-04-28T00:51:09.867Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -169031,5 +169050,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T00:50:39.545Z
-    updated_at: 2026-04-28T00:50:59.247Z
+    updated_at: 2026-04-28T00:51:08.741Z
     notes: []
