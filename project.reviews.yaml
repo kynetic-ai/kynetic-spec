@@ -169197,6 +169197,21 @@ reviews:
         runner: kspec
         created_at: 2026-04-28T01:17:59.678Z
         completed_at: 2026-04-28T01:17:59.678Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified via kspec item get and JSON exact-count check: @multi-turn-session-lifecycle
+          ac-idle-hook-prompt-window appears once; @default-project-agents-and-conventions
+          ac-default-agents-reflection-promptable appears once; @single-command-version-upgrade
+          ac-default-reflection-hook-first-idle-on-upgrade appears once;
+          @default-session-reflection-hook still has four own ACs, including only
+          ac-fires-once-per-invocation for first-idle behavior."
+        name: spec inspection
+        required: true
+        runner: kspec
+        created_at: 2026-04-28T01:18:03.692Z
+        completed_at: 2026-04-28T01:18:03.692Z
     events:
       - _ulid: 01KQ8T1AEMVEYDFMD124417AQN
         actor: Jacob Chapel
@@ -169225,6 +169240,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-28T01:18:00.871Z
+      - _ulid: 01KQ8TMC1XHXCBPW7737PGC369
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: spec inspection
+        timestamp: 2026-04-28T01:18:04.861Z
     examined_commit: bcf5b7f55ab4a5fd47c2fa3fc5676b4c816e3ae7
     external_links: []
     lifecycle_state: open
@@ -169237,5 +169259,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T01:07:40.628Z
-    updated_at: 2026-04-28T01:17:59.678Z
+    updated_at: 2026-04-28T01:18:03.692Z
     notes: []
