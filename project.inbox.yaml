@@ -3020,3 +3020,19 @@ inbox:
       - dispatch
     added_by: Jacob Chapel
     created_at: 2026-04-28T05:57:47.378Z
+  - _ulid: 01KQB7J5BJ4SDFEX9WXCAK29M7
+    text: Update the kspec PR/task review skill so reviewers inspect the source plan when a task was
+      derived from a plan, using it for whole-scope context, dependency/sequence understanding,
+      design-validation sources, and deliberate-deviation checks instead of reviewing only the
+      isolated task text. Guidance should explain how reviewers discover the plan ref from task
+      metadata/notes, when plan context is required vs optional, and how to read root-checkout
+      artifacts (for example gitignored plans/design handoffs) when detached review worktrees do not
+      contain them.
+    tags:
+      - review
+      - skill
+      - plans
+      - dispatch
+      - agents
+    added_by: Jacob Chapel
+    created_at: 2026-04-28T23:42:32.818Z
