@@ -10,7 +10,7 @@ description: "Full kspec validate currently fails with: .kspec/modules/meta.yaml
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -23,11 +23,11 @@ review_ref: "@01KQ9CKT5EXA1S03X81ZYS1V7G"
 submission_linkage:
   review_url: null
   branch: dispatch/task/fix-meta-catalog-schema-error-in-traits-field/01kq99z7
-  captured_at: 2026-04-28T06:29:35.043Z
+  captured_at: 2026-04-28T07:09:59.469Z
   commit: f60d02714d3f2c5968fd6410f35a091341bde765
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/fix-meta-catalog-schema-error-in-traits-field/01kq99z7
 session_id: 01KQ9DJXXKSNTDE52F21NEDTX4
 history:
   - author: "@claude"
@@ -93,8 +93,35 @@ history:
         previous: 2026-04-28T06:03:50.282Z
     command: task-start
     timestamp: 2026-04-28T06:56:20.404Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/fix-meta-catalog-schema-error-in-traits-field/01kq99z7
+          captured_at: 2026-04-28T07:09:59.469Z
+          commit: f60d02714d3f2c5968fd6410f35a091341bde765
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/fix-meta-catalog-schema-error-in-traits-field/01kq99z7
+        previous:
+          review_url: null
+          branch: dispatch/task/fix-meta-catalog-schema-error-in-traits-field/01kq99z7
+          captured_at: 2026-04-28T06:29:35.043Z
+          commit: f60d02714d3f2c5968fd6410f35a091341bde765
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-04-28T07:09:59.473Z
+        previous: 2026-04-28T06:29:35.046Z
+    command: task-submit
+    timestamp: 2026-04-28T07:09:59.473Z
 created_at: 2026-04-28T05:46:09.330Z
 started_at: 2026-04-28T06:56:20.403Z
-submitted_at: 2026-04-28T06:29:35.046Z
+submitted_at: 2026-04-28T07:09:59.473Z
 todos: []
 automation: eligible
