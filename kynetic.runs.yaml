@@ -33105,9 +33105,24 @@ runs:
     completed_at: 2026-04-28T05:58:13.469Z
   - _ulid: 01KQ9ATM89GGRE6YAEN3E3E7NY
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-28T06:01:07.081Z
+        completed_at: 2026-04-28T06:01:31.218Z
+        notes: "Session: Worked on @task-align-ac-annotation-format-tests. Task was test-focused: adding
+          tests and doc comments to align annotation parser with the ac-prefixed id format contract.
+          What worked well: (1) The existing parser already enforced ac-prefixed tokens correctly
+          via the regex pattern, so this was purely about making the contract explicit through tests
+          and documentation. (2) The test infrastructure (setupProject helper, validate integration)
+          made it easy to write focused integration tests. (3) kspec validate --completeness
+          --warnings-ok confirmed no new warning categories."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-28T06:01:31.218Z
+        completed_at: 2026-04-28T06:01:31.218Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-28T06:01:07.081Z
