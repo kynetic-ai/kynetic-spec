@@ -16366,6 +16366,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-28T04:48:17.324Z
+  - _ulid: 01KQ98DDZ1X1PM52FFG53JRVWG
+    type: friction
+    content: validateSpecItemRecursive in validate.ts had its own inline nestedFields list that drifted
+      from NESTED_ITEM_FIELDS in yaml.ts, missing traits. Duplicated constants are a recurring bug
+      vector — consider exporting NESTED_ITEM_FIELDS and reusing it in validate.ts.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-28T05:18:57.505Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
