@@ -172013,3 +172013,29 @@ reviews:
     created_at: 2026-04-28T07:25:36.475Z
     updated_at: 2026-04-28T07:36:15.670Z
     notes: []
+  - _ulid: 01KQ9HFJ6TFJZ205WJE79N8595
+    slugs: []
+    title: Review final AC id format validation gate
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQ9HFJ6S26CCNY8EJ61YP2XF
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-28T07:57:24.569Z
+    examined_commit: 6bbe44ebae65184677ab20dfbf89096a178396ca
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQ93NFA9JZMWMAR8QM1NJPMK"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-28T07:57:24.570Z
+    updated_at: null
+    notes: []
