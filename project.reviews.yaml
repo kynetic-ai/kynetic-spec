@@ -170216,6 +170216,22 @@ reviews:
         runner: node dist/cli/index.js validate --schema
         created_at: 2026-04-28T05:30:10.642Z
         completed_at: 2026-04-28T05:30:10.642Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, src/parser/validate.ts, src/parser/yaml.ts,
+          src/schema/spec.ts, tests/validate-exit-codes.test.ts, tests/helpers/cli.ts,
+          scripts/test.cjs. Commands run: git diff, kspec task get, kspec validate (installed CLI
+          baseline observation), node dist/cli/index.js validate, node dist/cli/index.js validate
+          --schema, npm test. Claim verified: nested trait-object schema error is removed in built
+          submitted CLI; Schema: OK. Categories searched: correctness, edge cases around nested
+          fields, error handling, test quality, integration/build behavior."
+        name: review evidence log
+        required: false
+        runner: manual review
+        created_at: 2026-04-28T05:30:13.936Z
+        completed_at: 2026-04-28T05:30:13.936Z
     events:
       - _ulid: 01KQ98EG1ZJDVWCDG06TXXG641
         actor: Jacob Chapel
@@ -170244,6 +170260,13 @@ reviews:
           status: pass
           name: schema validation
         timestamp: 2026-04-28T05:30:11.809Z
+      - _ulid: 01KQ9923NQ6YPX7ZDM5JW3AQ5B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-28T05:30:15.095Z
     examined_commit: f0e6d14c30c780a4a1f4fd0714349ab95f365679
     external_links: []
     lifecycle_state: open
@@ -170256,5 +170279,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T05:19:32.416Z
-    updated_at: 2026-04-28T05:30:10.642Z
+    updated_at: 2026-04-28T05:30:13.936Z
     notes: []
