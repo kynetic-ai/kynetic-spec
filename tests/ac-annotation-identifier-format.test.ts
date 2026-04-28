@@ -204,7 +204,7 @@ describe("ac-bare-ref-no-token-credit: annotations without valid AC tokens earn 
   });
 
   it("non-ac-prefixed tokens after @ref are ignored and earn no coverage", () => {
-    // Parser should treat "// AC: @my-spec validate" as a blanket ref
+    // Parser should treat a non-prefixed word like "validate" as noise, yielding a blanket ref
     const groups = parseACAnnotationLine(acPrefix + "@my-spec validate");
     expect(groups).toEqual([{ specRef: "@my-spec", acIds: [] }]);
 
