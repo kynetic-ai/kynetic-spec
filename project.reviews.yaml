@@ -168526,7 +168526,76 @@ reviews:
     slugs: []
     title: "Plan review: Default Session Reflection Reliability"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Read @plan-default-session-reflection-reliability, @agent-definitions,
+          @multi-turn-session-lifecycle, @default-session-reflection-hook,
+          @default-project-agents-and-conventions, @single-command-version-upgrade, and inbox refs
+          @01KQ6XYB/@01KQ8PRY. Referenced existing specs and inbox items resolve.
+        name: Plan reference resolution
+        required: true
+        runner: kspec-cli
+        created_at: 2026-04-28T00:21:39.954Z
+        completed_at: 2026-04-28T00:21:39.954Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "New requirements under @agent-definitions overlap with existing ownership named in the
+          plan: lifecycle, default-agent scaffold, default reflection hook, and upgrade specs."
+        name: Spec hierarchy and overlap
+        required: true
+        runner: manual-review
+        created_at: 2026-04-28T00:21:44.481Z
+        completed_at: 2026-04-28T00:21:44.481Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Found a compound parity AC and a vague prompt-window AC that do not meet atomic behavioral
+          criteria.
+        name: AC quality
+        required: true
+        runner: manual-review
+        created_at: 2026-04-28T00:21:50.069Z
+        completed_at: 2026-04-28T00:21:50.069Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The task has strong what/why/how/testing detail, but includes explicit agent session-block
+          and existing-hook migration work that lacks matching AC coverage.
+        name: Task standalone executability
+        required: true
+        runner: manual-review
+        created_at: 2026-04-28T00:21:53.479Z
+        completed_at: 2026-04-28T00:21:53.479Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Requested tests exercise runtime hook behavior, setup/upgrade outputs, and explicitly
+          forbid source-text assertions.
+        name: Testing approach
+        required: true
+        runner: manual-review
+        created_at: 2026-04-28T00:21:57.311Z
+        completed_at: 2026-04-28T00:21:57.311Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Combining default idle grace and upgrade hook filter in one implementation task is
+          coherent for the observed failure, and validation/doctor warnings are explicitly out of
+          scope via @01KQ8PRY.
+        name: Scope boundaries
+        required: true
+        runner: manual-review
+        created_at: 2026-04-28T00:22:00.948Z
+        completed_at: 2026-04-28T00:22:00.948Z
     events:
       - _ulid: 01KQ8QA31HS1XEW7VMBWMDQN97
         actor: Jacob Chapel
@@ -168534,17 +168603,208 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-28T00:20:02.225Z
+      - _ulid: 01KQ8QCCW9R31KD06K29DM3YSX
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-28T00:21:17.833Z
+      - _ulid: 01KQ8QCGHVNT258J9J7GN7R5N4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ8QCF40ZHS9HX38JJC34P6J
+        timestamp: 2026-04-28T00:21:21.595Z
+      - _ulid: 01KQ8QCMBZD6SY7RWB50BN1T3X
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ8QCJH8512D5079HYP7VC5C
+        timestamp: 2026-04-28T00:21:25.504Z
+      - _ulid: 01KQ8QCRR1T55V3N8FD3G1AHF8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ8QCQDDCHQ6CSZ8BXV9M4VK
+        timestamp: 2026-04-28T00:21:29.986Z
+      - _ulid: 01KQ8QCWE2HJ91Y5D07TCVWKHV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ8QCTTMHC0QE3HJ5Y3RS0RC
+        timestamp: 2026-04-28T00:21:33.762Z
+      - _ulid: 01KQ8QD08H56F8BVK5XYQG5D11
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ8QCYKS9X379GBXA1FRKKJ4
+        timestamp: 2026-04-28T00:21:37.682Z
+      - _ulid: 01KQ8QD44BPX5ZS8N9A62ERZFG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan reference resolution
+        timestamp: 2026-04-28T00:21:41.643Z
+      - _ulid: 01KQ8QD98CS7B23SKG61P4YE48
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Spec hierarchy and overlap
+        timestamp: 2026-04-28T00:21:46.892Z
+      - _ulid: 01KQ8QDDM58B4CJ0AP626AD4HA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: AC quality
+        timestamp: 2026-04-28T00:21:51.365Z
+      - _ulid: 01KQ8QDH27FC9Z0CHMPB8QNF9W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Task standalone executability
+        timestamp: 2026-04-28T00:21:54.887Z
+      - _ulid: 01KQ8QDMV5WFZCBS34PEQFM77C
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Testing approach
+        timestamp: 2026-04-28T00:21:58.758Z
+      - _ulid: 01KQ8QDR8BXBQNFH8ZH6XR6SZ5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Scope boundaries
+        timestamp: 2026-04-28T00:22:02.251Z
+      - _ulid: 01KQ8QDVEKRPK3A0MA6M2FK4R4
+        actor: Codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-28T00:22:05.523Z
+      - _ulid: 01KQ8QDVEKTRH6SG4NAVBN0NBP
+        actor: Codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-28T00:22:05.524Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@plan-default-session-reflection-reliability"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KQ8QCF40ZHS9HX38JJC34P6J
+        anchor:
+          type: structured
+          ref: "@session-idle-hook-promptability"
+          section: specs
+        entries:
+          - _ulid: 01KQ8QCF41SECKTVS78RDBRGMP
+            author: Jacob Chapel
+            body: "The proposed specs are placed under @agent-definitions even though the plan itself says the
+              behavior is owned by existing specs: @multi-turn-session-lifecycle for idle grace and
+              promptability, @default-project-agents-and-conventions for default agent scaffolding,
+              @default-session-reflection-hook for first-idle reflection, and
+              @single-command-version-upgrade for upgrade parity. Creating new requirements here
+              duplicates or misplaces those contracts and leaves future implementers choosing
+              between competing specs. Revise the plan to update or explicitly extend the owning
+              specs, or move any genuinely new requirement under the owning feature with a clear
+              non-overlap statement."
+            created_at: 2026-04-28T00:21:20.129Z
+        kind: blocker
+      - _ulid: 01KQ8QCJH8512D5079HYP7VC5C
+        anchor:
+          type: structured
+          field: ac-upgrade-hook-matches-setup
+          ref: "@default-reflection-scaffold-parity"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQ8QCJH8ACZFF53F12YVF3CY
+            author: Jacob Chapel
+            body: "This AC has a compound Then: trigger, filter, action, and enabled-state semantics are
+              separate verifiable outcomes. It also describes hook shape rather than one observable
+              behavior. Split this into atomic criteria or rewrite it as a single behavioral parity
+              guarantee, with implementation fields left to the task notes."
+            created_at: 2026-04-28T00:21:23.624Z
+        kind: blocker
+      - _ulid: 01KQ8QCQDDCHQ6CSZ8BXV9M4VK
+        anchor:
+          type: structured
+          field: ac-default-reflection-has-prompt-window
+          ref: "@session-idle-hook-promptability"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQ8QCQDDVSJE0XW8NAZ1HCYE
+            author: Jacob Chapel
+            body: The phrase sufficient for the default reflection prompt is not an observable outcome. A
+              behavioral AC should state the result directly, for example that the default
+              reflection prompt is accepted for the same session before automatic close. This needs
+              a concrete pass or fail condition before derivation.
+            created_at: 2026-04-28T00:21:28.621Z
+        kind: blocker
+      - _ulid: 01KQ8QCTTMHC0QE3HJ5Y3RS0RC
+        anchor:
+          type: structured
+          ref: "@task-default-session-reflection-reliability"
+          section: tasks
+        entries:
+          - _ulid: 01KQ8QCTTM4RAWWARPPB8PTPZY
+            author: Jacob Chapel
+            body: The task requires explicit session blocks on scaffolded default dispatch agents and metadata
+              tests for those blocks, but the proposed ACs only require an effective prompt window.
+              The runtime fallback alone could satisfy that behavior, so the task currently asks for
+              a specific scaffolded config guarantee that no spec covers. Either add or update an AC
+              on the default-agent scaffolding spec requiring dispatch-capable defaults to expose
+              this session configuration, or remove the explicit session-block work and
+              generated-metadata test from scope.
+            created_at: 2026-04-28T00:21:32.116Z
+        kind: blocker
+      - _ulid: 01KQ8QCYKS9X379GBXA1FRKKJ4
+        anchor:
+          type: structured
+          ref: "@task-default-session-reflection-reliability"
+          section: tasks
+        entries:
+          - _ulid: 01KQ8QCYKSH601EPKXMBM06YVC
+            author: Jacob Chapel
+            body: "The task includes conditional normalization of an existing default-session-reflect hook when
+              it appears to be the unmodified default, plus manual-review reporting when it is
+              customized. That is a risky migration behavior, but no AC covers patching existing
+              hooks or reporting unchanged customized hooks, and the requested tests only cover a
+              customized hook not being overwritten. Either remove existing-hook migration from this
+              task, or add behavioral ACs and tests for the full matrix: missing hook created,
+              unmodified existing default patched, customized existing hook preserved and reported,
+              and previously removed hook not recreated."
+            created_at: 2026-04-28T00:21:35.993Z
+        kind: blocker
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: Codex
+        role: reviewer
+        created_at: 2026-04-28T00:22:05.523Z
     created_at: 2026-04-28T00:20:02.235Z
-    updated_at: null
+    updated_at: 2026-04-28T00:22:05.523Z
     notes: []
