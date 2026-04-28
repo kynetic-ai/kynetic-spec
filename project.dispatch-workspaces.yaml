@@ -15160,12 +15160,12 @@ workspaces:
       detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
       reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-04-28T07:27:35.113Z
+      updated_at: 2026-04-28T07:29:33.867Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-28T07:29:26.526Z
+      updated_at: 2026-04-28T07:29:33.867Z
     integration:
       status: merged
       detail: integration:merged
@@ -15173,17 +15173,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f60d02714d3f2c5968fd6410f35a091341bde765
-      updated_at: 2026-04-28T07:27:34.214Z
-    lifecycle_state: closing
+      updated_at: 2026-04-28T07:29:33.867Z
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQ99Z7HJ34SMZNGBBE1BTXRD"
     task_slug: fix-meta-catalog-schema-error-in-traits-field
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T07:11:08.421Z
-      last_reconciled_at: 2026-04-28T07:29:26.526Z
+      last_reconciled_at: 2026-04-28T07:29:33.867Z
       created_at: 2026-04-28T06:03:02.953Z
-      updated_at: 2026-04-28T07:29:26.526Z
+      updated_at: 2026-04-28T07:29:33.867Z
     workspace_id: dispatch-workspace-01KQ99Z7HJ34SMZNGBBE1BTXRD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
