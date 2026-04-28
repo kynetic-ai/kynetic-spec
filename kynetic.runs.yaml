@@ -33491,7 +33491,7 @@ runs:
     completed_at: 2026-04-28T07:26:02.532Z
   - _ulid: 01KQ9FR4VJ4DDYT65BESBV61VD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33508,7 +33508,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-28T07:28:05.952Z
-        completed_at: 2026-04-28T07:28:05.952Z
+        completed_at: 2026-04-28T07:28:14.592Z
+        notes: "Friction points: npm test initially failed before running tests because the dispatch
+          environment had NODE_ENV=production. The test runner detected missing direct dependency
+          pagefind and attempted npm ci, but npm inherited production mode and continued omitting
+          devDependencies, so the auto-fix reported the same missing dependency. Verification
+          required manually running NODE_ENV=development npm_config_omit= npm ci and then
+          NODE_ENV=development npm_config_omit= npm test. This is systemic for review/test sessions
+          because the runner's dependency-repair path can be defeated by environment-level npm omit
+          settings."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-28T07:28:14.592Z
+        completed_at: 2026-04-28T07:28:14.592Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T07:27:08.658Z
