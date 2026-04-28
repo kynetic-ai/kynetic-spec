@@ -170321,6 +170321,18 @@ reviews:
         runner: npm
         created_at: 2026-04-28T05:54:04.012Z
         completed_at: 2026-04-28T05:54:04.012Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --completeness --warnings-ok exited 0. Blanket-ref findings are gone;
+          remaining warnings are 231 pre-existing missing own AC coverage plus 2 unresolved fixture
+          targets.
+        name: kspec validate completeness
+        required: true
+        runner: kspec
+        created_at: 2026-04-28T05:54:07.374Z
+        completed_at: 2026-04-28T05:54:07.374Z
     events:
       - _ulid: 01KQ99T59WB2A8HC6Q4CKJ23CS
         actor: Jacob Chapel
@@ -170342,6 +170354,13 @@ reviews:
           status: pass
           name: focused annotation tests
         timestamp: 2026-04-28T05:54:05.137Z
+      - _ulid: 01KQ9ADVGG681R12N6QY0CYNEX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate completeness
+        timestamp: 2026-04-28T05:54:08.528Z
     examined_commit: 9ece11f41336ff3bf1552e8d2ab3fddb1dbbf8f4
     external_links: []
     lifecycle_state: open
@@ -170354,5 +170373,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T05:43:23.197Z
-    updated_at: 2026-04-28T05:54:04.012Z
+    updated_at: 2026-04-28T05:54:07.374Z
     notes: []
