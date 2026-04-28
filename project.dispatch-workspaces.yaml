@@ -13456,7 +13456,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-28T05:02:25.685Z
+      updated_at: 2026-04-28T05:04:09.456Z
     integration:
       status: merged
       detail: integration:merged
@@ -13465,25 +13465,20 @@ workspaces:
       target_branch: dev
       target_commit: a905c802f26bb5974a12d3860687d4a548f60742
       updated_at: 2026-04-28T05:02:25.685Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KQ93NEDWGRGWMG1VM1FBB94S"
     task_slug: task-enforce-ac-id-format
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T04:49:03.680Z
-      last_reconciled_at: 2026-04-28T05:04:07.936Z
+      last_reconciled_at: 2026-04-28T05:04:09.456Z
       created_at: 2026-04-28T04:00:35.359Z
-      updated_at: 2026-04-28T05:04:07.936Z
+      updated_at: 2026-04-28T05:04:09.456Z
     workspace_id: dispatch-workspace-01KQ93NEDWGRGWMG1VM1FBB94S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 6a54d8669fac304c6ed57cb57298159a12bfbc58
-        last_seen_at: 2026-04-28T04:48:36.184Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-enforce-ac-id-format-01kq93ne-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-enforce-ac-id-format/01kq93ne
