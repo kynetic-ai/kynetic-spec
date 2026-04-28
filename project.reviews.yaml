@@ -172946,7 +172946,106 @@ reviews:
     slugs: []
     title: "Plan review: AC ID Surface Hardening (cycle 3)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Confirmed @01KQB7D6 findings are resolved: internal update wording removed, bulk invalid
+          operation behavior split into atomic ACs, and delimiter wording is exact. Confirmed
+          @01KQB7QX findings are resolved: the two @item-patch ACs were replaced with observable
+          command behavior for --allow-unknown invalid AC IDs and bulk dry-run invalid AC IDs."
+        name: Prior review findings
+        required: true
+        created_at: 2026-04-28T23:56:49.906Z
+        completed_at: 2026-04-28T23:56:49.906Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Read @acceptance-criterion-id-format, @item-patch, @ac-annotation-identifier-format, and
+          @ac-annotation-integrity-reporting; searched related terms. The proposed ACs extend
+          existing owners without conflicting or parallel specs.
+        name: Existing spec placement
+        required: true
+        created_at: 2026-04-28T23:56:52.842Z
+        completed_at: 2026-04-28T23:56:52.842Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All nine proposed ACs are direct and verifiable. AC text is behavioral for the owning
+          specs, avoids schema/helper/API mechanics, and no Then clause combines the prior compound
+          outcomes.
+        name: Spec quality
+        required: true
+        created_at: 2026-04-28T23:56:55.819Z
+        completed_at: 2026-04-28T23:56:55.819Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Each task includes concrete What, Why, How, Testing, and Establishes/Covers detail. A
+          fresh worker has target specs, files/areas, commands, and verification expectations
+          without needing chat history.
+        name: Task standalone quality
+        required: true
+        created_at: 2026-04-28T23:56:58.752Z
+        completed_at: 2026-04-28T23:56:58.752Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All nine proposed ACs are established by task-ac-id-hardening-spec-updates and covered by
+          task-centralize-ac-id-patch-validation, task-strict-ac-annotation-token-parsing, and/or
+          task-ac-id-hardening-final-gate. No task claims a nonexistent proposed AC.
+        name: Coverage mapping
+        required: true
+        created_at: 2026-04-28T23:57:01.661Z
+        completed_at: 2026-04-28T23:57:01.661Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Dependency graph is acyclic and appropriately staged: P1 spec updates first, two
+          independent P2 implementation tasks in parallel, then P3 final gate after both behavior
+          tasks. No priority inversion found."
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-28T23:57:04.609Z
+        completed_at: 2026-04-28T23:57:04.609Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/ac-id-surface-hardening.md --dry-run parsed cleanly. kspec
+          validate --refs --warnings-ok passed; warnings are current deprecated-reference warnings
+          outside this plan.
+        name: Reference validation
+        required: true
+        created_at: 2026-04-28T23:57:07.530Z
+        completed_at: 2026-04-28T23:57:07.530Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --alignment --warnings-ok and --completeness --warnings-ok passed with
+          existing repo warnings: orphan/status alignment warnings and existing missing AC
+          coverage/invalid annotation warnings. These are not introduced by this draft plan."
+        name: Repo warning classification
+        required: true
+        created_at: 2026-04-28T23:57:10.478Z
+        completed_at: 2026-04-28T23:57:10.478Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Tasks are bounded, ordered, and verifiable, with concrete code areas and test commands.
+          They are ready for automated execution after plan approval/derivation.
+        name: Automation readiness
+        required: true
+        created_at: 2026-04-28T23:57:13.337Z
+        completed_at: 2026-04-28T23:57:13.337Z
     events:
       - _ulid: 01KQB8ADYVMHF08XXZZHY6WF2J
         actor: Jacob Chapel
@@ -172954,9 +173053,95 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-28T23:55:48.060Z
+      - _ulid: 01KQB8C8J99G41AFFMT7QBD9GC
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-28T23:56:48.073Z
+      - _ulid: 01KQB8CBF33THEGKN82QS1RQRZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Prior review findings
+        timestamp: 2026-04-28T23:56:51.044Z
+      - _ulid: 01KQB8CEBDFNQF183MFXP28Q2N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec placement
+        timestamp: 2026-04-28T23:56:53.998Z
+      - _ulid: 01KQB8CH6V4D3KZRR5MM6CZS34
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec quality
+        timestamp: 2026-04-28T23:56:56.923Z
+      - _ulid: 01KQB8CM4Y0Q4XJBZQ0526HF49
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone quality
+        timestamp: 2026-04-28T23:56:59.934Z
+      - _ulid: 01KQB8CPY4JJDP5X2J5K6JC76C
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Coverage mapping
+        timestamp: 2026-04-28T23:57:02.788Z
+      - _ulid: 01KQB8CSVS0X0XKQND7KJ0QWSK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-28T23:57:05.785Z
+      - _ulid: 01KQB8CWND7AHXMSYT1X5WHWX1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Reference validation
+        timestamp: 2026-04-28T23:57:08.653Z
+      - _ulid: 01KQB8CZGMP4ZPN4P9NAPWBANZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Repo warning classification
+        timestamp: 2026-04-28T23:57:11.572Z
+      - _ulid: 01KQB8D2B81FB7JNCKZQWXF760
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Automation readiness
+        timestamp: 2026-04-28T23:57:14.472Z
+      - _ulid: 01KQB8D565DQFTN671T0NT7SGE
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-28T23:57:17.381Z
+      - _ulid: 01KQB8D565N0PN8DXZ38WEVCZP
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-28T23:57:17.381Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -172964,7 +173149,14 @@ reviews:
       ref: "@plan-ac-id-surface-hardening"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-28T23:57:17.381Z
     created_at: 2026-04-28T23:55:48.060Z
-    updated_at: null
+    updated_at: 2026-04-28T23:57:17.381Z
     notes: []
