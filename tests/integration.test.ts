@@ -1605,19 +1605,19 @@ describe("Integration: item ac", () => {
 
   it("should add acceptance criterion with custom ID", () => {
     kspec(
-      'item ac add @test-feature --id my-custom-ac --given "custom given" --when "custom when" --then "custom then"',
+      'item ac add @test-feature --id ac-custom --given "custom given" --when "custom when" --then "custom then"',
       tempDir,
     );
 
     const listOutput = kspec("item ac list @test-feature", tempDir);
-    expect(listOutput).toContain("[my-custom-ac]");
+    expect(listOutput).toContain("[ac-custom]");
   });
 
   it("should reject duplicate AC ID", () => {
-    kspec('item ac add @test-feature --id unique-ac --given "g" --when "w" --then "t"', tempDir);
+    kspec('item ac add @test-feature --id ac-unique --given "g" --when "w" --then "t"', tempDir);
 
     const result = kspecRun(
-      'item ac add @test-feature --id unique-ac --given "g2" --when "w2" --then "t2"',
+      'item ac add @test-feature --id ac-unique --given "g2" --when "w2" --then "t2"',
       tempDir,
       { expectFail: true },
     );

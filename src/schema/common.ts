@@ -14,6 +14,12 @@ export const ulidPattern = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
 export const slugPattern = /^[a-z][a-z0-9-]*$/;
 
 /**
+ * Acceptance criterion id pattern - ac-prefixed kebab-case token
+ * Examples: ac-1, ac-validation-rule, ac-stored-id-format
+ */
+export const acIdPattern = /^ac-[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/**
  * Reference pattern - @ prefix followed by slug or ULID (or short ULID)
  */
 export const refPattern = /^@[a-zA-Z0-9-]+$/;
@@ -22,6 +28,9 @@ export const refPattern = /^@[a-zA-Z0-9-]+$/;
 export const UlidSchema = z.string().regex(ulidPattern, "Invalid ULID format");
 export const SlugSchema = z.string().regex(slugPattern, "Invalid slug format");
 export const RefSchema = z.string().regex(refPattern, "Invalid reference format");
+export const AcIdSchema = z
+  .string()
+  .regex(acIdPattern, 'AC ID must use ac-prefixed kebab-case format (e.g. "ac-1", "ac-my-criterion")');
 
 // Priority can be string or number
 export const PrioritySchema = z.union([
@@ -91,6 +100,7 @@ export const SubmissionLinkageSchema = z.object({
 export type Ulid = z.infer<typeof UlidSchema>;
 export type Slug = z.infer<typeof SlugSchema>;
 export type Ref = z.infer<typeof RefSchema>;
+export type AcId = z.infer<typeof AcIdSchema>;
 export type Priority = z.infer<typeof PrioritySchema>;
 export type DateTime = z.infer<typeof DateTimeSchema>;
 export type Maturity = z.infer<typeof MaturitySchema>;
