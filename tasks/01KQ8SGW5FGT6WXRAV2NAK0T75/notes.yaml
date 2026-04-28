@@ -1,1 +1,27 @@
-notes: []
+notes:
+  - _ulid: 01KQ8SRP9V258SAJH1AH022RPD
+    content: >-
+      Added three acceptance criteria to existing specs:
+
+
+      1. @multi-turn-session-lifecycle ac-idle-hook-prompt-window — covers the idle grace window
+      accepting hook-queued prompts.
+
+      2. @default-project-agents-and-conventions ac-default-agents-reflection-promptable — covers
+      default agent+hook integration accepting reflection prompt on first idle.
+
+      3. @single-command-version-upgrade ac-default-reflection-hook-first-idle-on-upgrade — covers
+      upgrade-created hook restricting reflection to first idle.
+
+
+      Verified @default-session-reflection-hook unchanged — still has only four original ACs
+      (ac-reflection-hook-present, ac-hook-idempotent, ac-hook-removable,
+      ac-fires-once-per-invocation). No duplicate first-idle AC was added.
+
+
+      All three new ACs confirmed present on their target specs via kspec item get. kspec validate
+      ran with only pre-existing baseline warnings (236 missing AC coverage, 38 invalid annotations)
+      — no new issues introduced.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T01:02:57.851Z
