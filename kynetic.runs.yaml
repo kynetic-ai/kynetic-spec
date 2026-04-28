@@ -32985,7 +32985,7 @@ runs:
     completed_at: 2026-04-28T05:03:52.308Z
   - _ulid: 01KQ994JXCCQ9XVG95CT9TVN2C
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -32999,7 +32999,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-28T05:33:04.830Z
-        completed_at: 2026-04-28T05:33:04.830Z
+        completed_at: 2026-04-28T05:33:17.856Z
+        notes: "Friction points: review instructions initially led to running the installed global kspec
+          binary, which reported the pre-fix schema error even though the submitted source later
+          verified clean through built dist; this required distinguishing global CLI, npm run dev,
+          and dist CLI behavior. A second known friction recurred: npm run dev -- validate fails on
+          this split-storage project with TaskDataManagerError: No storage backend registered for
+          format split."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-28T05:33:17.856Z
+        completed_at: 2026-04-28T05:33:17.856Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T05:31:36.236Z
