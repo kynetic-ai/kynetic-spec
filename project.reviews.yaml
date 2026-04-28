@@ -168826,6 +168826,19 @@ reviews:
         runner: manual-review
         created_at: 2026-04-28T00:28:04.788Z
         completed_at: 2026-04-28T00:28:04.788Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Read @multi-turn-session-lifecycle, @default-project-agents-and-conventions,
+          @default-session-reflection-hook, @single-command-version-upgrade, and @agent-definitions.
+          Proposed ACs sit under the owning specs and do not duplicate @agent-definitions or
+          conflict with existing ACs.
+        name: Spec hierarchy and overlap
+        required: true
+        runner: manual-review
+        created_at: 2026-04-28T00:28:16.265Z
+        completed_at: 2026-04-28T00:28:16.265Z
     events:
       - _ulid: 01KQ8QR1HTN76715J5PC6VYTJW
         actor: Jacob Chapel
@@ -168847,6 +168860,13 @@ reviews:
           status: pass
           name: Prior blocker resolution
         timestamp: 2026-04-28T00:28:05.992Z
+      - _ulid: 01KQ8QS6MCDWJD7D5T36SS636B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec hierarchy and overlap
+        timestamp: 2026-04-28T00:28:17.420Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -168859,5 +168879,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T00:27:39.454Z
-    updated_at: 2026-04-28T00:28:04.788Z
+    updated_at: 2026-04-28T00:28:16.265Z
     notes: []
