@@ -27355,7 +27355,7 @@
   type: task
   spec_ref: "@acceptance-criterion-id-format"
   plan_ref: "@plan-ac-id-format-normalization"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-enforce-ac-id-format"
@@ -27370,6 +27370,7 @@
   created_at: 2026-04-28T03:55:57.553Z
   started_at: 2026-04-28T05:19:52.939Z
   submitted_at: 2026-04-28T05:41:26.138Z
+  completed_at: 2026-04-28T05:55:08.453Z
   automation: eligible
 - _ulid: 01KQ93NF0V9VKZSSVYTA0W3Z8X
   slugs:
