@@ -43085,8 +43085,8 @@ plans:
 
       No new acceptance criterion is required on
       `@default-session-reflection-hook`: it already promises first-idle-only
-      behavior via `ac-fires-once-per-invocation`. The task below fixes the
-      upgrade path so that existing spec promise is honored when the hook is
+      behavior via `ac-fires-once-per-invocation`. The implementation task fixes
+      the upgrade path so that existing spec promise is honored when the hook is
       created by `kspec upgrade`, not only by fresh setup.
 
       ## Tasks
@@ -43094,11 +43094,86 @@ plans:
       derive_from_specs: false
 
       ```yaml
+      - title: Update specs for default session reflection reliability
+        slug: task-default-session-reflection-spec-updates
+        priority: 1
+        tags: [specs, dispatch, sessions, setup, upgrade, hooks, reflection]
+        spec_ref: "@multi-turn-session-lifecycle"
+        description: |
+          Update the existing owning specs before any implementation work so the
+          implementation task can be reviewed against finalized behavioral
+          contracts. Keep this task limited to kspec metadata/spec updates and
+          do not change runtime, setup, or upgrade implementation code.
+
+          Why:
+          - The current product gap spans existing implemented specs rather than
+            a new standalone feature.
+          - A clean review path requires the implementation task to depend on an
+            explicit spec-update task instead of asking the same task to both
+            rewrite specs and implement behavior.
+          - The spec updates must be precise so future reviewers can distinguish
+            the new promises from the already-existing
+            @default-session-reflection-hook ac-fires-once-per-invocation promise.
+
+          What:
+          - Update @multi-turn-session-lifecycle by adding acceptance criterion
+            ac-idle-hook-prompt-window with this exact behavioral shape:
+              Given: An auto-closing agent session has emitted a session.idle event.
+              When: A matching session.idle hook queues a prompt during the idle
+              grace window.
+              Then: The session accepts the prompt instead of rejecting it as inactive.
+          - Update @default-project-agents-and-conventions by adding acceptance
+            criterion ac-default-agents-reflection-promptable with this exact
+            behavioral shape:
+              Given: A project uses kspec-created default dispatch agents and the
+              default session reflection hook.
+              When: A default agent emits its first session.idle event.
+              Then: The default reflection prompt is accepted before automatic close.
+          - Update @single-command-version-upgrade by adding acceptance criterion
+            ac-default-reflection-hook-first-idle-on-upgrade with this exact
+            behavioral shape:
+              Given: An existing project does not have the scaffolded default
+              session reflection hook.
+              When: kspec upgrade creates the hook.
+              Then: Later idle events from the same invocation are not eligible for
+              the scaffolded reflection action.
+          - Do not add a duplicate acceptance criterion to
+            @default-session-reflection-hook; it already owns the first-idle
+            promise through ac-fires-once-per-invocation. If its surrounding prose
+            needs clarification, keep the clarification aligned with that existing
+            AC instead of creating a new promise.
+          - Do not add validation/doctor behavior to these specs; that follow-up
+            remains tracked separately by inbox item @01KQ8PRY.
+
+          How:
+          - Use kspec spec/item update commands or the project’s accepted kspec
+            metadata workflow to add the listed ACs to the named existing specs.
+          - Keep the AC ids and wording stable enough that the dependent
+            implementation task can reference them directly.
+          - Verify each target spec shows the new AC exactly once and that
+            @default-session-reflection-hook still has only the existing
+            ac-fires-once-per-invocation coverage for first-idle behavior.
+
+          Testing:
+          - Run the narrow kspec inspection commands needed to prove each target
+            spec contains the listed AC id and behavioral Given/When/Then text.
+          - Run kspec validation if the local repo baseline allows it. If
+            validation fails for unrelated existing repo-health issues, record the
+            baseline failure and do not treat it as completion evidence for this
+            task.
+
+          Establishes:
+          - @multi-turn-session-lifecycle ac-idle-hook-prompt-window
+          - @default-project-agents-and-conventions ac-default-agents-reflection-promptable
+          - @single-command-version-upgrade ac-default-reflection-hook-first-idle-on-upgrade
+
       - title: Make default session reflection reliable after setup and upgrade
         slug: task-default-session-reflection-reliability
-        priority: 1
+        priority: 2
         tags: [dispatch, sessions, setup, upgrade, hooks, reflection]
         spec_ref: "@multi-turn-session-lifecycle"
+        depends_on:
+          - "@task-default-session-reflection-spec-updates"
         description: |
           Fix the default session reflection race where a session.idle hook
           fires but its session_prompt action can lose to auto-close and fail
@@ -43116,6 +43191,9 @@ plans:
             turn_count filter, but upgrade-created hooks do not, even though
             @default-session-reflection-hook ac-fires-once-per-invocation
             already promises once-per-invocation reflection.
+          - This task depends on @task-default-session-reflection-spec-updates so
+            implementation and review happen against finalized spec ACs rather
+            than mixing spec authoring and implementation in one task.
 
           What:
           - Raise the centralized default idle grace used for session.idle hook
@@ -43140,9 +43218,8 @@ plans:
             existing default-session-reflect hook during this task. Any repair
             of already-existing customized or legacy hooks belongs in a
             separate migration proposal.
-          - Align existing spec text if needed rather than creating duplicate
-            behavioral promises. In particular, extend the owning specs listed
-            above and keep validation/doctor warning behavior out of this task.
+          - Keep validation/doctor warning behavior out of this task; that
+            follow-up remains tracked separately by inbox item @01KQ8PRY.
 
           How:
           - Update src/agent-runtime/invocation.ts so DEFAULT_IDLE_GRACE_MS is
@@ -43195,6 +43272,9 @@ plans:
         restricted the setup-created hook to `turn_count: 1`. The gap is that
         the upgrade scaffold still creates the same named hook without that
         filter.
+      - The first task is a spec-update task. The implementation task depends on
+        it so implementation review can use finalized spec ACs as the source of
+        truth instead of reviewing code against plan prose.
       - The multi-turn session lifecycle plan described a default 5 second
         grace period, but current runtime code still falls back to 100 ms when
         session.idle hooks exist and agents do not define
@@ -43219,3 +43299,7 @@ plans:
         content: Address plan-reviewer feedback
         author: Jacob Chapel
         created_at: 2026-04-28T00:24:31.050Z
+      - _ulid: 01KQ8RXYHKW9B3G9VQHXD16J4N
+        content: Add prerequisite spec-update task before implementation per review workflow
+        author: Jacob Chapel
+        created_at: 2026-04-28T00:48:21.555Z
