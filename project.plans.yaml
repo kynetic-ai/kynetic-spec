@@ -43353,7 +43353,6 @@ plans:
         slug: acceptance-criterion-id-format
         type: requirement
         parent: "@spec-item"
-        tags: [validation, spec-hygiene]
         description: |
           Acceptance criterion identifiers use a uniform ac-prefixed kebab-case
           token format everywhere they are stored, edited, validated, and
@@ -43405,7 +43404,6 @@ plans:
         slug: ac-annotation-identifier-format
         type: requirement
         parent: "@test-annotation-sweep"
-        tags: [validation, coverage]
         description: |
           Coverage annotations name acceptance criteria using the same
           ac-prefixed token format that catalog acceptance criteria use, so
@@ -43632,9 +43630,16 @@ plans:
           - Run the focused tests added or changed by this plan.
           - Run npm run typecheck.
 
-          Covers: final verification for @acceptance-criterion-id-format,
-          @ac-annotation-identifier-format, and the AC annotation integrity ACs
-          touched by this plan.
+          Covers: @acceptance-criterion-id-format ac-stored-id-format,
+          @acceptance-criterion-id-format ac-invalid-stored-id-reported,
+          @acceptance-criterion-id-format ac-create-rejects-invalid-id,
+          @acceptance-criterion-id-format ac-rename-rejects-invalid-id,
+          @acceptance-criterion-id-format ac-generated-ids-conform,
+          @ac-annotation-identifier-format ac-explicit-token-format,
+          @ac-annotation-identifier-format ac-valid-token-covers-ac,
+          @ac-annotation-identifier-format ac-bare-ref-no-token-credit,
+          @ac-annotation-integrity-reporting ac-valid-annotation-covers-target,
+          @ac-annotation-integrity-reporting ac-blanket-ref-does-not-cover.
       ```
 
       ## Implementation Notes
@@ -43679,11 +43684,15 @@ plans:
          cleanup have landed.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/ac-id-format-normalization.md
     created_at: 2026-04-28T03:24:08.330Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KQ9283BTBHR0XDH44ZJPHZ2M
+        content: "Address cycle 1 review nits: remove unsupported planned spec tags and make final gate
+          Covers concrete"
+        author: Jacob Chapel
+        created_at: 2026-04-28T03:31:11.355Z
