@@ -1,1 +1,70 @@
-notes: []
+notes:
+  - _ulid: 01KQ9HAHRBHZDB4C9PK6YD9XMN
+    content: >-
+      Gate verification complete. Results:
+
+
+      ## Validation runs
+
+      - kspec validate --refs --warnings-ok: PASS. 6 ref warnings (all deprecated-item refs,
+      unrelated to AC id format).
+
+      - kspec validate --alignment --warnings-ok: PASS. 35 warnings (33 orphaned specs, 2 status
+      mismatches — unrelated).
+
+      - kspec validate --completeness --warnings-ok: PASS. 232 warnings:
+        - 230 missing own AC coverage (specs without test annotations — out of scope, not AC id format issues)
+        - 2 invalid annotation warnings (unresolved targets @test-feature and @test-trait — these are intentional test fixtures)
+        - 0 blanket-ref findings — confirms normalization eliminated all false positives from renamed AC ids
+
+      ## AC id format enforcement verified
+
+      - All catalog AC ids in live project conform to ac-prefixed kebab-case (visible in
+      completeness output: ac-1, ac-item-1, ac-stored-id-format, etc.)
+
+      - Schema validation (AcIdSchema) rejects non-prefixed ids with clear error message
+
+      - CLI item ac add --id rejects invalid ids before mutation
+
+      - CLI item ac set --id rejects invalid rename ids before mutation
+
+      - Auto-generated ids produce ac-N format conforming to acIdPattern
+
+      - Annotation parser only recognizes ac-prefixed tokens as explicit AC ids
+
+      - Blanket refs (no ac-* tokens) do not earn coverage credit
+
+
+      ## Remaining completeness warning categories and owners
+
+      1. missing_test_coverage/own_ac (230 items): Specs without AC test annotations. Owner:
+      individual spec task backlogs. Not caused by AC id format issues.
+
+      2. invalid_ac_annotation/unresolved_target (2 items): @test-feature and @test-trait in test
+      fixtures. Owner: test fixture design. Intentional.
+
+
+      ## Tests
+
+      - ac-id-format.test.ts: 22 tests pass (schema, CLI, auto-generation)
+
+      - ac-annotation-identifier-format.test.ts: 13 tests pass (parser, coverage credit, blanket
+      refs)
+
+      - ac-annotation-validation.test.ts: 46 tests pass (reference resolution, non-spec targets,
+      missing AC ids)
+
+      - ac-id-format-gate.test.ts: 15 tests pass (integration gate)
+
+      - Full suite: 8462 tests pass, 0 failures
+
+      - npm run typecheck: clean
+
+
+      ## @ac-annotation-integrity-reporting status
+
+      All 5 ACs have test coverage and working implementation. Updated from in_progress to
+      implemented.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T07:54:40.267Z
