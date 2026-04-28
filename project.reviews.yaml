@@ -168876,6 +168876,18 @@ reviews:
         runner: manual-review
         created_at: 2026-04-28T00:28:50.138Z
         completed_at: 2026-04-28T00:28:50.138Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Resolved all referenced specs and inbox item @01KQ8PRY. kspec plan import
+          plans/default-session-reflection-reliability.md --dry-run succeeded. Existing tests
+          confirm derive_from_specs:false still creates manual tasks on plan derive.
+        name: Reference and plan parsing
+        required: true
+        runner: kspec-cli
+        created_at: 2026-04-28T00:29:00.567Z
+        completed_at: 2026-04-28T00:29:00.567Z
     events:
       - _ulid: 01KQ8QR1HTN76715J5PC6VYTJW
         actor: Jacob Chapel
@@ -168925,6 +168937,13 @@ reviews:
           status: pass
           name: Testing approach
         timestamp: 2026-04-28T00:28:51.476Z
+      - _ulid: 01KQ8QTJMKW9WRWPVVF4J18XJS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Reference and plan parsing
+        timestamp: 2026-04-28T00:29:02.483Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -168937,5 +168956,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T00:27:39.454Z
-    updated_at: 2026-04-28T00:28:50.138Z
+    updated_at: 2026-04-28T00:29:00.567Z
     notes: []
