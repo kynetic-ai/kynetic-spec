@@ -50,7 +50,7 @@ description: |
 spec_ref: "@acceptance-criterion-id-format"
 plan_ref: "@plan-ac-id-format-normalization"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-normalize-catalog-ac-ids-and-annotations"
@@ -66,11 +66,11 @@ review_ref: "@01KQ9HFJ6TFJZ205WJE79N8595"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-ac-id-format-final-gate/01kq93nf
-  captured_at: 2026-04-28T07:55:28.278Z
-  commit: 6bbe44ebae65184677ab20dfbf89096a178396ca
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-04-28T08:28:29.801Z
+  commit: d80b9c9ea8acdfcc76e4d8414454e5f85cc7e07c
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-ac-id-format-final-gate/01kq93nf
 session_id: 01KQ9JAJQRSMXNBCWMVWVWJ7RA
 history:
   - author: Jacob Chapel
@@ -150,8 +150,35 @@ history:
         previous: 2026-04-28T07:38:59.941Z
     command: task-start
     timestamp: 2026-04-28T08:28:26.493Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-ac-id-format-final-gate/01kq93nf
+          captured_at: 2026-04-28T08:28:29.801Z
+          commit: d80b9c9ea8acdfcc76e4d8414454e5f85cc7e07c
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-ac-id-format-final-gate/01kq93nf
+        previous:
+          review_url: null
+          branch: dispatch/task/task-ac-id-format-final-gate/01kq93nf
+          captured_at: 2026-04-28T07:55:28.278Z
+          commit: 6bbe44ebae65184677ab20dfbf89096a178396ca
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-04-28T08:28:29.804Z
+        previous: 2026-04-28T07:55:28.281Z
+    command: task-submit
+    timestamp: 2026-04-28T08:28:29.804Z
 created_at: 2026-04-28T03:55:58.153Z
 started_at: 2026-04-28T08:28:26.492Z
-submitted_at: 2026-04-28T07:55:28.281Z
+submitted_at: 2026-04-28T08:28:29.804Z
 todos: []
 automation: eligible

@@ -27403,7 +27403,7 @@
   type: task
   spec_ref: "@acceptance-criterion-id-format"
   plan_ref: "@plan-ac-id-format-normalization"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-normalize-catalog-ac-ids-and-annotations"
@@ -27418,7 +27418,7 @@
   todos_count: 0
   created_at: 2026-04-28T03:55:58.153Z
   started_at: 2026-04-28T08:28:26.492Z
-  submitted_at: 2026-04-28T07:55:28.281Z
+  submitted_at: 2026-04-28T08:28:29.804Z
   automation: eligible
 - _ulid: 01KQ97BHYPTRAE173XAG0GD7Q3
   slugs:
