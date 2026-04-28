@@ -33321,7 +33321,7 @@ runs:
     completed_at: 2026-04-28T06:46:19.782Z
   - _ulid: 01KQ9EC5CGAYWB5F0TYP21ZBZM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33336,7 +33336,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-28T07:03:54.086Z
-        completed_at: 2026-04-28T07:03:54.086Z
+        completed_at: 2026-04-28T07:04:09.578Z
+        notes: "Friction points: the non-excluded AC annotation test file still allowed a literal annotation
+          marker in prose, which produced scanner noise at validation time; review comment bodies
+          containing backticks are easy to accidentally run through shell command substitution when
+          passed inline; the full npm test run took about 32 minutes, so long-running verification
+          needed awaiter handling."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-28T07:04:09.578Z
+        completed_at: 2026-04-28T07:04:09.578Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T07:03:07.408Z
