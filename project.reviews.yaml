@@ -169017,6 +169017,17 @@ reviews:
         required: true
         created_at: 2026-04-28T00:51:08.741Z
         completed_at: 2026-04-28T00:51:08.741Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Implementation task @task-default-session-reflection-reliability depends on
+          @task-default-session-reflection-spec-updates. Priorities align P1 before P2, and
+          implementation prose says it must not mix spec authoring with code work.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-04-28T00:51:19.174Z
+        completed_at: 2026-04-28T00:51:19.174Z
     events:
       - _ulid: 01KQ8S259S7APDY3J5P0NMTHJB
         actor: Jacob Chapel
@@ -169038,6 +169049,13 @@ reviews:
           status: pass
           name: Spec-update task detail
         timestamp: 2026-04-28T00:51:09.867Z
+      - _ulid: 01KQ8S3D44AQXGNKPJNXRME5SA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-04-28T00:51:20.324Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -169050,5 +169068,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T00:50:39.545Z
-    updated_at: 2026-04-28T00:51:08.741Z
+    updated_at: 2026-04-28T00:51:19.174Z
     notes: []
