@@ -168851,6 +168851,19 @@ reviews:
         runner: manual-review
         created_at: 2026-04-28T00:28:28.825Z
         completed_at: 2026-04-28T00:28:28.825Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Manual task includes what/why/how, concrete files (invocation.ts, setup-defaults.ts,
+          upgrade.ts), explicit preservation rules, testing plan, and Covers lines for all
+          proposed/existing ACs. Scope is tight: default idle grace, fresh setup default-agent
+          promptability, and newly upgrade-created hook first-idle filter only."
+        name: Task standalone executability and scope
+        required: true
+        runner: manual-review
+        created_at: 2026-04-28T00:28:38.899Z
+        completed_at: 2026-04-28T00:28:38.899Z
     events:
       - _ulid: 01KQ8QR1HTN76715J5PC6VYTJW
         actor: Jacob Chapel
@@ -168886,6 +168899,13 @@ reviews:
           status: pass
           name: AC quality
         timestamp: 2026-04-28T00:28:29.959Z
+      - _ulid: 01KQ8QSWW9CE2SYJC3RB5RBN15
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone executability and scope
+        timestamp: 2026-04-28T00:28:40.202Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -168898,5 +168918,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T00:27:39.454Z
-    updated_at: 2026-04-28T00:28:28.825Z
+    updated_at: 2026-04-28T00:28:38.899Z
     notes: []
