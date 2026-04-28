@@ -50,7 +50,7 @@ description: |
 spec_ref: "@acceptance-criterion-id-format"
 plan_ref: "@plan-ac-id-format-normalization"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-enforce-ac-id-format"
@@ -61,6 +61,14 @@ tags:
   - coverage
   - tests
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-normalize-catalog-ac-ids-and-annotations/01kq93ne
+  captured_at: 2026-04-28T05:41:26.136Z
+  commit: 9ece11f41336ff3bf1552e8d2ab3fddb1dbbf8f4
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KQ98EESAADFE5Z4V7NWYX63M
 history:
   - author: Jacob Chapel
@@ -90,7 +98,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-28T05:19:52.940Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-normalize-catalog-ac-ids-and-annotations/01kq93ne
+          captured_at: 2026-04-28T05:41:26.136Z
+          commit: 9ece11f41336ff3bf1552e8d2ab3fddb1dbbf8f4
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-28T05:41:26.138Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-28T05:41:26.139Z
 created_at: 2026-04-28T03:55:57.553Z
 started_at: 2026-04-28T05:19:52.939Z
+submitted_at: 2026-04-28T05:41:26.138Z
 todos: []
 automation: eligible
