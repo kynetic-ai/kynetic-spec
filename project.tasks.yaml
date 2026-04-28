@@ -27382,6 +27382,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-28T03:55:57.851Z
+  automation: eligible
 - _ulid: 01KQ93NFA9JZMWMAR8QM1NJPMK
   slugs:
     - task-ac-id-format-final-gate
