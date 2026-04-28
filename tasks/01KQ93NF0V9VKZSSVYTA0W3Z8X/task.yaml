@@ -41,7 +41,7 @@ description: |
 spec_ref: "@ac-annotation-identifier-format"
 plan_ref: "@plan-ac-id-format-normalization"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-enforce-ac-id-format"
@@ -61,7 +61,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KQ99SGP7EJEYC7GCJ66QF60S
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -110,6 +110,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-28T06:03:47.069Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KQ99SGP7EJEYC7GCJ66QF60S
+    command: review-verdict-needs-work
+    timestamp: 2026-04-28T06:14:48.088Z
 created_at: 2026-04-28T03:55:57.851Z
 started_at: 2026-04-28T05:43:33.219Z
 submitted_at: 2026-04-28T06:00:23.769Z
