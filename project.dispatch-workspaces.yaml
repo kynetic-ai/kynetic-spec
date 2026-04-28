@@ -12745,12 +12745,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-28T01:43:43.841Z
+      updated_at: 2026-04-28T01:43:48.940Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-28T01:43:43.841Z
+      updated_at: 2026-04-28T01:43:48.940Z
     integration:
       status: pending
       detail: null
@@ -12758,24 +12758,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bcf5b7f55ab4a5fd47c2fa3fc5676b4c816e3ae7
-      updated_at: 2026-04-28T01:43:43.841Z
-    lifecycle_state: ready
+      updated_at: 2026-04-28T01:43:48.940Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KQ8SGWFE8Q868QA10Y1NFTK8"
     task_slug: task-default-session-reflection-reliability
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T01:19:59.359Z
-      last_reconciled_at: 2026-04-28T01:43:43.841Z
+      last_reconciled_at: 2026-04-28T01:43:48.940Z
       created_at: 2026-04-28T01:19:29.521Z
-      updated_at: 2026-04-28T01:43:43.841Z
+      updated_at: 2026-04-28T01:43:48.940Z
     workspace_id: dispatch-workspace-01KQ8SGWFE8Q868QA10Y1NFTK8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 03f6193cdd7bcf4fdc53182232787efa46fdbc02
+        last_seen_at: 2026-04-28T01:43:48.940Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-default-session-reflection-reliability-01kq8sgw-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-default-session-reflection-reliability/01kq8sgw
-        head: bcf5b7f55ab4a5fd47c2fa3fc5676b4c816e3ae7
-        last_seen_at: 2026-04-28T01:19:29.521Z
+        head: 03f6193cdd7bcf4fdc53182232787efa46fdbc02
+        last_seen_at: 2026-04-28T01:43:48.940Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-default-session-reflection-reliability-01kq8sgw
