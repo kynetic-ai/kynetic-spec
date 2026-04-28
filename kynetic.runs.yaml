@@ -33559,7 +33559,7 @@ runs:
     started_at: 2026-04-28T07:27:08.658Z
     completed_at: 2026-04-28T07:29:02.763Z
   - _ulid: 01KQ9GBWRXGBEJGV515KEN9AR2
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -33613,7 +33613,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-28T07:41:03.858Z
-        completed_at: 2026-04-28T07:41:03.858Z
+        completed_at: 2026-04-28T07:41:32.723Z
+        notes: "Captured one friction observation: @01KQ9GHY. No duplicate success observation for detached
+          reviewer merge helper because existing observations and implemented task coverage already
+          track that pattern."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T07:37:55.741Z
+    completed_at: 2026-04-28T07:41:32.723Z
