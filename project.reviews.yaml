@@ -169471,3 +169471,29 @@ reviews:
     created_at: 2026-04-28T01:44:42.915Z
     updated_at: 2026-04-28T01:56:09.225Z
     notes: []
+  - _ulid: 01KQ922MCW2QB7HZ1JVA0N3J4Z
+    slugs: []
+    title: "Plan review: AC ID Format Normalization"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQ922MCW3BNE9ZX76CTKNJJ9
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-28T03:28:12.188Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-ac-id-format-normalization"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-28T03:28:12.188Z
+    updated_at: null
+    notes: []
