@@ -170506,6 +170506,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KQ9B5Y59M50B7S6059KNERKW
         timestamp: 2026-04-28T06:07:19.092Z
+      - _ulid: 01KQ9B6ZM54A5JECZTC9FCYAGR
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQ9B5Y59M50B7S6059KNERKW
+        timestamp: 2026-04-28T06:07:51.941Z
     examined_commit: 62db331553686ea959c714efbe9de1d6c579c86c
     external_links: []
     lifecycle_state: open
@@ -171103,7 +171109,9 @@ reviews:
                       /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf-review/tests/trait-ac-coverage.test.ts:158 still reports  uncovered for ac-explicit-token-format, ac-valid-token-covers-ac, and ac-bare-ref-no-token-credit, and  uncovered for ac-annotation-format and ac-no-blanket-credit. Move or duplicate the task-level AC annotations onto behavioral tests in a non-excluded file, or add a separate non-excluded coverage-focused test file that does not contain fixture annotation strings.
             created_at: 2026-04-28T06:07:17.674Z
         kind: blocker
+        resolved_at: 2026-04-28T06:07:50.399Z
+        resolved_by: Jacob Chapel
     verdicts: []
     created_at: 2026-04-28T06:03:43.396Z
-    updated_at: 2026-04-28T06:07:17.674Z
+    updated_at: 2026-04-28T06:07:50.399Z
     notes: []
