@@ -172017,7 +172017,59 @@ reviews:
     slugs: []
     title: Review final AC id format validation gate
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed. Reference warnings: 6 deprecated-item references, unrelated to AC id format."
+        name: kspec validate --refs --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-04-28T08:08:15.863Z
+        completed_at: 2026-04-28T08:08:15.863Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed. Alignment warnings: 33 orphaned specs and 3 status mismatches. AC Annotation
+          Integrity Reporting status mismatch observed, not a format gate failure."
+        name: kspec validate --alignment --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-04-28T08:08:18.959Z
+        completed_at: 2026-04-28T08:08:18.959Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed. Completeness warnings: 230 missing own AC coverage and 2 unresolved test fixture
+          targets; no blanket-ref findings reported."
+        name: kspec validate --completeness --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-04-28T08:08:21.819Z
+        completed_at: 2026-04-28T08:08:21.819Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: tsc --noEmit completed with exit code 0.
+        name: npm run typecheck
+        required: true
+        runner: tsc
+        created_at: 2026-04-28T08:08:24.618Z
+        completed_at: 2026-04-28T08:08:24.618Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Test Suites: 2312 passed of 2312. Tests: 5 skipped, 8462 passed of 8467. Exit code 0."
+        name: npm test
+        required: true
+        runner: npm test
+        created_at: 2026-04-28T08:08:27.405Z
+        completed_at: 2026-04-28T08:08:27.405Z
     events:
       - _ulid: 01KQ9HFJ6S26CCNY8EJ61YP2XF
         actor: Jacob Chapel
@@ -172032,17 +172084,128 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-28T07:57:48.285Z
+      - _ulid: 01KQ9J3FCPKF9KNX7079EYZWK5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --refs --warnings-ok
+        timestamp: 2026-04-28T08:08:17.046Z
+      - _ulid: 01KQ9J3JAPQW93BMSCQ6FXE6FW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --alignment --warnings-ok
+        timestamp: 2026-04-28T08:08:20.054Z
+      - _ulid: 01KQ9J3N3QQFVYQNM5V9KE7WJB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --completeness --warnings-ok
+        timestamp: 2026-04-28T08:08:22.903Z
+      - _ulid: 01KQ9J3QT04GQE5D58T8CNVCEK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run typecheck
+        timestamp: 2026-04-28T08:08:25.664Z
+      - _ulid: 01KQ9J3TM6QTZZPPK0CPMMD6K8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-28T08:08:28.550Z
+      - _ulid: 01KQ9J3XADNGVH2Z1XQ0RT3MAZ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ9J3W819J6QNR3V69ZCAY48
+        timestamp: 2026-04-28T08:08:31.309Z
+      - _ulid: 01KQ9J407J2EQY0HCREAVQ2NTF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQ9J3Z40BPTWTJFGVWNVK0B1
+        timestamp: 2026-04-28T08:08:34.290Z
+      - _ulid: 01KQ9J43438EEJQ03XKPNXA8W5
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-28T08:08:37.251Z
+      - _ulid: 01KQ9J4343RM90YCBSRMX0BKWT
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-28T08:08:37.251Z
     examined_commit: 6bbe44ebae65184677ab20dfbf89096a178396ca
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KQ93NFA9JZMWMAR8QM1NJPMK"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KQ9J3W819J6QNR3V69ZCAY48
+        anchor:
+          type: code
+          commit: 6bbe44ebae65184677ab20dfbf89096a178396ca
+          line_end: 1064
+          line_start: 1054
+          path: src/parser/validate.ts
+          side: head
+        entries:
+          - _ulid: 01KQ9J3W81R31N1GBR94Q53QP6
+            author: Jacob Chapel
+            body: 'MUST-FIX: The annotation parser still treats malformed ac-* strings as explicit AC ids. The
+              required format is the same ac-prefixed kebab-case token enforced by AcIdSchema, but
+              these regexes accept underscore, doubled hyphen, trailing hyphen, and uppercase suffix
+              examples. I verified against the reviewed source with node --import tsx:
+              parseACAnnotationLine("// AC: @spec ac-bad_id") returned acIds ["ac-bad_id"], and the
+              same happened for ac--double, ac-trailing-, and ac-Bad. That violates
+              @ac-annotation-identifier-format ac-explicit-token-format and leaves the final gate
+              without coverage for malformed ac-* tokens. Use the shared acIdPattern or equivalent
+              strict token boundary matching here and add behavioral tests for invalid ac-* shapes.'
+            created_at: 2026-04-28T08:08:30.209Z
+        kind: blocker
+      - _ulid: 01KQ9J3Z40BPTWTJFGVWNVK0B1
+        entries:
+          - _ulid: 01KQ9J3Z40WDBZK3A280ZMFN7K
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: tests/ac-id-format-gate.test.ts, tests/ac-id-format.test.ts,
+              tests/ac-annotation-identifier-format.test.ts, tests/ac-annotation-integrity.test.ts,
+              src/schema/common.ts, src/schema/spec.ts, src/parser/validate.ts,
+              src/cli/commands/item.ts. Commands run: kspec item get for
+              @acceptance-criterion-id-format, @ac-annotation-identifier-format,
+              @ac-annotation-integrity-reporting; rg AC annotations; kspec validate
+              refs/alignment/completeness with warnings-ok; npm run typecheck; npm test; node
+              --import tsx parser probe. Claims verified: catalog/schema validation passes with only
+              unrelated warnings; CLI add/set validation is covered behaviorally; parser malformed
+              ac-* edge case fails spec alignment. Categories searched: correctness, edge cases,
+              error handling, test quality, integration."
+            created_at: 2026-04-28T08:08:33.152Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: automated reviewer
+        created_at: 2026-04-28T08:08:37.251Z
     created_at: 2026-04-28T07:57:24.570Z
-    updated_at: 2026-04-28T07:57:47.174Z
+    updated_at: 2026-04-28T08:08:37.251Z
     notes: []
