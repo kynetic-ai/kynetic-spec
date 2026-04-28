@@ -78,9 +78,15 @@ export const DEFAULT_MAX_PROMPT_QUEUE_DEPTH = 64;
  * stays open long enough for async prompt delivery without hanging
  * indefinitely.
  *
+ * 5000 ms is the healthy default for dispatch agents with session.idle
+ * hooks — it gives hook handlers (e.g. session_prompt for reflection)
+ * enough time to queue a follow-up prompt before auto-close. Agents
+ * can override this via session.idle_grace_period_ms.
+ *
  * AC: @multi-turn-session-lifecycle ac-2
+ * AC: @multi-turn-session-lifecycle ac-idle-hook-prompt-window
  */
-export const DEFAULT_IDLE_GRACE_MS = 100;
+export const DEFAULT_IDLE_GRACE_MS = 5000;
 
 /**
  * Session update types that count as meaningful agent activity.

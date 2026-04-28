@@ -301,3 +301,83 @@ describe("reflection hook user-removal detection", () => {
     expect(hooksAfterForce.some((h) => h.name === "default-session-reflect")).toBe(true);
   });
 });
+
+// ─── Default Agent Reflection Promptability ──────────────────────────────────
+
+/**
+ * Read agent definitions from the meta manifest.
+ */
+async function readAgents(dir: string): Promise<
+  Array<{
+    _ulid: string;
+    id: string;
+    session?: { mode?: string; idle_grace_period_ms?: number };
+    dispatch?: Array<{ on: string }>;
+  }>
+> {
+  const metaPath = path.join(dir, "kynetic.meta.yaml");
+  const raw = YAML.parse(await readTestOutput(metaPath, "utf-8")) as {
+    agents?: Array<Record<string, unknown>>;
+  };
+  return (raw.agents || []) as ReturnType<typeof readAgents> extends Promise<infer T> ? T : never;
+}
+
+// AC: @default-project-agents-and-conventions ac-default-agents-reflection-promptable
+describe("default dispatch agent reflection promptability", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir();
+    await setupMinimalProject(tempDir);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @default-project-agents-and-conventions ac-default-agents-reflection-promptable
+  it("scaffolded dispatch agents have session config with auto_close mode and idle_grace_period_ms", async () => {
+    const result = await kspec("setup --no-hooks --skip-skills", tempDir);
+    expect(result.exitCode).toBe(0);
+
+    const agents = await readAgents(tempDir);
+
+    // Dispatch-capable agents (those with dispatch rules) must have session config
+    const dispatchAgents = agents.filter((a) => a.dispatch && a.dispatch.length > 0);
+    expect(dispatchAgents.length).toBeGreaterThan(0);
+
+    for (const agent of dispatchAgents) {
+      expect(agent.session).toBeDefined();
+      expect(agent.session!.mode).toBe("auto_close");
+      expect(agent.session!.idle_grace_period_ms).toBe(5000);
+    }
+  });
+
+  // AC: @default-project-agents-and-conventions ac-default-agents-reflection-promptable
+  it("non-dispatch agents do not have session config", async () => {
+    await kspec("setup --no-hooks --skip-skills", tempDir);
+
+    const agents = await readAgents(tempDir);
+
+    // Non-dispatch agents (no dispatch rules) should NOT have session config
+    const nonDispatchAgents = agents.filter((a) => !a.dispatch || a.dispatch.length === 0);
+    expect(nonDispatchAgents.length).toBeGreaterThan(0);
+
+    for (const agent of nonDispatchAgents) {
+      expect(agent.session).toBeUndefined();
+    }
+  });
+
+  // AC: @default-project-agents-and-conventions ac-default-agents-reflection-promptable
+  it("idle_grace_period_ms matches DEFAULT_IDLE_GRACE_MS ensuring single source of truth", async () => {
+    await kspec("setup --no-hooks --skip-skills", tempDir);
+
+    const agents = await readAgents(tempDir);
+    const taskWorker = agents.find((a) => a.id === "task-worker");
+
+    expect(taskWorker).toBeDefined();
+    expect(taskWorker!.session).toBeDefined();
+    // The value should match the runtime default so there is a single source of truth
+    expect(taskWorker!.session!.idle_grace_period_ms).toBe(5000);
+  });
+});

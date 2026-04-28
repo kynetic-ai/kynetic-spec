@@ -504,7 +504,11 @@ describe("Multi-turn lifecycle", { timeout: 60_000 }, () => {
       trigger: "task.ready",
       timeoutMinutes: 0.05, // safety timeout
       sessionRegistry: registry,
-      idleGracePeriodMs: DEFAULT_IDLE_GRACE_MS,
+      // Use an explicit short grace period for this test — it exercises
+      // basic async delivery, not the default grace size. The 50ms prompt
+      // delay must land within this window but the overall session timeout
+      // must exceed the grace period so turn 2's idle can auto-close.
+      idleGracePeriodMs: 200,
       onIdle: (ctx) => {
         idleContexts.push(ctx);
         if (ctx.turnCount === 1) {
@@ -1587,6 +1591,117 @@ describe("Agent session schema", () => {
     });
 
     expect(result.success).toBe(false);
+  });
+});
+
+// ─── Idle Hook Prompt Window ──────────────────────────────────────────────────
+
+describe("Idle hook prompt window (default grace)", { timeout: 60_000 }, () => {
+  let testDir: string;
+  let spawnSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-idle-hook-grace-");
+    registerMockAdapter();
+  });
+
+  afterEach(async () => {
+    spawnSpy?.mockRestore();
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-idle-hook-prompt-window
+  it("should accept a prompt queued by a session.idle hook within the default grace window", async () => {
+    const { spawnedAgent } = createMockSpawnedAgent();
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
+
+    const registry = new SessionRegistry();
+    const idleContexts: SessionIdleContext[] = [];
+
+    // Simulate a session.idle hook that queues a session_prompt action
+    // after a short async delay (as would happen via the event bus → hook
+    // executor → session registry path in production). The default grace
+    // period (DEFAULT_IDLE_GRACE_MS = 5000) must keep the session open
+    // long enough for this prompt to be accepted.
+    const result = await runInvocation({
+      agent: makeTestAgent(),
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Initial turn",
+      trigger: "task.ready",
+      sessionRegistry: registry,
+      // Use the default grace period (DEFAULT_IDLE_GRACE_MS)
+      idleGracePeriodMs: DEFAULT_IDLE_GRACE_MS,
+      sessionMode: "auto_close",
+      onIdle: (ctx) => {
+        idleContexts.push(ctx);
+        if (ctx.turnCount === 1) {
+          // Simulate hook-driven session_prompt delivery after async delay.
+          // This must arrive within the default grace window.
+          setTimeout(() => {
+            registry.get(ctx.sessionId)?.sendPrompt("Reflection prompt from hook");
+          }, 50);
+        }
+      },
+    });
+
+    // The session should have accepted the hook-queued prompt and run
+    // a second turn instead of auto-closing before the prompt arrived.
+    expect(result.outcome).toBe("success");
+    expect(result.turnCount).toBe(2);
+    expect(idleContexts).toHaveLength(2);
+    expect(spawnedAgent.client.prompt).toHaveBeenCalledTimes(2);
+  });
+
+  // AC: @multi-turn-session-lifecycle ac-idle-hook-prompt-window
+  it("should reject a prompt queued after the grace window has closed", async () => {
+    const { spawnedAgent } = createMockSpawnedAgent();
+    spawnSpy = vi
+      .spyOn(spawnerModule, "spawnAndInitialize")
+      .mockResolvedValue(
+        spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+      );
+
+    const registry = new SessionRegistry();
+    let latePromptError: Error | undefined;
+
+    // Use a very short grace period to prove that prompts outside the
+    // window are rejected.
+    const result = await runInvocation({
+      agent: makeTestAgent(),
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Initial turn",
+      trigger: "task.ready",
+      sessionRegistry: registry,
+      idleGracePeriodMs: 10, // Very short — prompt will arrive after close
+      sessionMode: "auto_close",
+      onIdle: (ctx) => {
+        if (ctx.turnCount === 1) {
+          // Deliver prompt AFTER the grace window has expired
+          setTimeout(() => {
+            registry
+              .get(ctx.sessionId)
+              ?.sendPrompt("Too late")
+              .catch((err) => {
+                latePromptError = err as Error;
+              });
+          }, 100);
+        }
+      },
+    });
+
+    // Session should have auto-closed after the short grace period
+    expect(result.outcome).toBe("success");
+    expect(result.turnCount).toBe(1);
   });
 });
 

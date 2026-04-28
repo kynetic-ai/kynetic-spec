@@ -11,7 +11,8 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { KspecContext } from "../../parser/yaml.js";
-import type { Agent, AgentDispatchRule, Convention } from "../../schema/meta.js";
+import type { Agent, AgentDispatchRule, AgentSession, Convention } from "../../schema/meta.js";
+import { DEFAULT_IDLE_GRACE_MS } from "../../agent-runtime/invocation.js";
 
 function debugLog(message: string, detail?: unknown): void {
   if (process.env.KSPEC_DEBUG === "1") {
@@ -96,6 +97,7 @@ const SCAFFOLD_TAG = "scaffold-default";
  * AC: @default-project-agents-and-conventions ac-plan-reviewer-agent-skills
  * AC: @default-project-agents-and-conventions ac-plan-reviewer-adapter-guidance
  * AC: @default-project-agents-and-conventions ac-all-defaults-write-authorized
+ * AC: @default-project-agents-and-conventions ac-default-agents-reflection-promptable
  */
 interface DefaultAgentDef {
   id: string;
@@ -107,6 +109,8 @@ interface DefaultAgentDef {
   skills: string[];
   concurrency: { max_concurrent: number };
   auto_approve: true;
+  /** Session config for dispatch-capable agents. Omitted for non-dispatch agents. */
+  session?: AgentSession;
 }
 
 const DEFAULT_AGENTS: DefaultAgentDef[] = [
@@ -124,6 +128,12 @@ const DEFAULT_AGENTS: DefaultAgentDef[] = [
     skills: ["task-work"],
     concurrency: { max_concurrent: 1 },
     auto_approve: true,
+    // AC: @default-project-agents-and-conventions ac-default-agents-reflection-promptable
+    // Explicit session config ensures the default reflection hook's session_prompt
+    // action is accepted before auto-close. Uses DEFAULT_IDLE_GRACE_MS as the
+    // single source of truth so runtime fallback, setup defaults, and scaffold code
+    // cannot drift.
+    session: { mode: "auto_close", idle_grace_period_ms: DEFAULT_IDLE_GRACE_MS },
   },
   {
     id: "pr-reviewer",
@@ -136,6 +146,8 @@ const DEFAULT_AGENTS: DefaultAgentDef[] = [
     skills: ["pr-review"],
     concurrency: { max_concurrent: 1 },
     auto_approve: true,
+    // AC: @default-project-agents-and-conventions ac-default-agents-reflection-promptable
+    session: { mode: "auto_close", idle_grace_period_ms: DEFAULT_IDLE_GRACE_MS },
   },
   {
     id: "primary-dev",
@@ -332,6 +344,10 @@ export async function scaffoldDefaults(
             concurrency: { ...def.concurrency },
             auto_approve: def.auto_approve,
             tags: [SCAFFOLD_TAG],
+            // AC: @default-project-agents-and-conventions ac-default-agents-reflection-promptable
+            // Preserve session config for dispatch-capable agents so metadata
+            // reflects the idle grace period needed for reflection promptability.
+            ...(def.session ? { session: { ...def.session } } : {}),
           };
           await saveMetaItem(ctx, agentData, "agent");
         }

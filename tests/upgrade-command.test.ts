@@ -1537,6 +1537,82 @@ describe("kspec upgrade", () => {
       expect(existsSync(moduleFilePath)).toBe(false);
     });
 
+    // AC: @single-command-version-upgrade ac-default-reflection-hook-first-idle-on-upgrade
+    it("creates reflection hook with first-idle filter when hook is missing", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // Remove the existing hook so upgrade will recreate it
+      kspec("hook remove default-session-reflect --confirm", tempDir);
+
+      // Clear scaffold state so upgrade doesn't think user deliberately removed it
+      const scaffoldStatePath = path.join(tempDir, ".kspec", ".setup-scaffold-state.json");
+      try {
+        const stateRaw = await fs.readFile(scaffoldStatePath, "utf-8");
+        const state = JSON.parse(stateRaw);
+        delete state.reflectionHookScaffolded;
+        await fs.writeFile(scaffoldStatePath, JSON.stringify(state, null, 2) + "\n", "utf-8");
+      } catch {
+        // No state file — hook was never scaffolded, upgrade should create it fresh
+      }
+
+      // Verify hook is gone
+      const hookCheck = kspec("hook list --json", tempDir);
+      expect(hookCheck.stdout).not.toContain("default-session-reflect");
+
+      // Run upgrade — should create the hook with turn_count filter
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string; message: string }>;
+      }>("upgrade", tempDir);
+
+      const hookStep = result.steps.find((s) => s.name === "Scaffold reflection hook");
+      expect(hookStep).toBeDefined();
+      expect(hookStep!.status).toBe("done");
+      expect(hookStep!.message).toContain("created");
+
+      // Verify the hook has the correct filter
+      const hookListResult = kspecJson<
+        Array<{
+          name: string;
+          on: string;
+          filter?: Record<string, unknown>;
+          action: { type: string; skills?: string[] };
+        }>
+      >("hook list --json", tempDir);
+
+      const reflectHook = hookListResult.find(
+        (h: { name: string }) => h.name === "default-session-reflect",
+      );
+      expect(reflectHook).toBeDefined();
+      expect(reflectHook!.on).toBe("session.idle");
+      // AC: @default-session-reflection-hook ac-fires-once-per-invocation
+      // The hook must have turn_count filter so later idle events from the
+      // same invocation are not eligible for the scaffolded reflection action.
+      expect(reflectHook!.filter).toBeDefined();
+      expect(reflectHook!.filter).toEqual({ turn_count: 1 });
+      expect(typeof reflectHook!.filter!.turn_count).toBe("number");
+    });
+
+    // AC: @single-command-version-upgrade ac-default-reflection-hook-first-idle-on-upgrade
+    it("does not overwrite an existing reflection hook during upgrade", async () => {
+      await initProject(tempDir);
+      await writeLastKnownVersion(tempDir, "0.8.0");
+
+      // The hook should already exist from init --setup
+      const hookCheck = kspec("hook list --json", tempDir);
+      expect(hookCheck.stdout).toContain("default-session-reflect");
+
+      // Run upgrade — should skip the existing hook
+      const result = kspecJson<{
+        steps: Array<{ name: string; status: string; message: string }>;
+      }>("upgrade", tempDir);
+
+      const hookStep = result.steps.find((s) => s.name === "Scaffold reflection hook");
+      expect(hookStep).toBeDefined();
+      expect(hookStep!.status).toBe("skipped");
+      expect(hookStep!.message).toContain("already exists");
+    });
+
     it("does not recreate user-removed reflection hook even with --force", async () => {
       await initProject(tempDir);
       await writeLastKnownVersion(tempDir, "0.8.0");
