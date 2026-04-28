@@ -1,1 +1,25 @@
-notes: []
+notes:
+  - _ulid: 01KQ9BDCMAEGRS6ZGXQ49DG7JM
+    content: >-
+      Investigation findings:
+
+
+      Root cause: In .kspec/modules/meta.yaml, the agent-integration module (ULID:
+      01KHFBSP8ABF1QSGXRW86P323E) has its traits field containing an inline trait object definition
+      (trait-idempotent-file-scaffold, ULID: 01KNXYJ2VH0Y7Z6XHSMXE251GK) instead of a string
+      reference. The SpecItemSchema defines traits as z.array(RefSchema) — an array of strings.
+
+
+      The code fix in commit f0e6d14c3 makes validateSpecItemRecursive strip nested objects before
+      validation, but the globally installed kspec (v0.13.0) does not have this fix compiled in.
+      More importantly, the data itself is malformed — the trait definition should not be in the
+      module's traits reference field.
+
+
+      Approach: Use the kspec CLI to relocate the trait definition. The trait should be a child item
+      of the agent-integration module (in a traits array meant for definitions) or at the module
+      catalog top level, NOT in the spec item's traits reference field. Will use kspec batch or item
+      commands to fix the data.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T06:11:21.866Z
