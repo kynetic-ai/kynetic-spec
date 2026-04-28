@@ -58,3 +58,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-28T06:44:12.595Z
+  - _ulid: 01KQ9ERH80ZMYZFP2PMDZG2EP8
+    content: "Fix cycle 1: Addressed the blocker — kspec validate --schema --warnings-ok now exits 0.
+      Root cause was the trait-idempotent-file-scaffold definition stored as an inline object in
+      agent-integration's traits field (meta.yaml:2617), where SpecItemSchema expects string
+      references. All other traits are defined in kynetic.yaml at the project root level; this one
+      was the only exception. Used a 10-step atomic kspec batch to relocate the trait: removed refs
+      from 2 consuming specs, deleted the inline definition, recreated at root with same
+      slug/title/description/4 ACs, restored trait references. Verified: kspec validate passes,
+      kspec trait list shows 19 traits, both consuming specs retain their trait references, full
+      test suite passes (8423/8423)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T07:09:52.768Z
