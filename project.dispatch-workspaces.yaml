@@ -13297,7 +13297,7 @@ workspaces:
         head: d2afe3cdc7056698b18833e49bb37ee0543c36ad
         last_seen_at: 2026-04-28T03:09:37.269Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-normalize-ac-ids-and-annotations-01kq90zs
-  - active_role: null
+  - active_role: worker
     base_branch_point: a905c802f26bb5974a12d3860687d4a548f60742
     bootstrap:
       status: succeeded
@@ -13633,7 +13633,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-28T04:00:35.359Z
+      updated_at: 2026-04-28T04:00:58.848Z
     integration:
       status: pending
       detail: null
@@ -13642,16 +13642,16 @@ workspaces:
       target_branch: dev
       target_commit: a905c802f26bb5974a12d3860687d4a548f60742
       updated_at: 2026-04-28T04:00:35.359Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQ93NEDWGRGWMG1VM1FBB94S"
     task_slug: task-enforce-ac-id-format
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-28T04:00:35.359Z
+      last_active_at: 2026-04-28T04:00:58.848Z
+      last_reconciled_at: 2026-04-28T04:00:58.848Z
       created_at: 2026-04-28T04:00:35.359Z
-      updated_at: 2026-04-28T04:00:58.138Z
+      updated_at: 2026-04-28T04:00:58.848Z
     workspace_id: dispatch-workspace-01KQ93NEDWGRGWMG1VM1FBB94S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
