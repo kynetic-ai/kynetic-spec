@@ -5797,6 +5797,10 @@ modules:
               is full
             when: |
               A new prompt is submitted
+          - given: An auto-closing agent session has emitted a session.idle event
+            id: ac-idle-hook-prompt-window
+            then: The session accepts the prompt instead of rejecting it as inactive
+            when: A matching session.idle hook queues a prompt during the idle grace window
         tags: []
         features:
           - _ulid: 01KMA74DMNAA6Z4G7KCJR60KM1
@@ -6714,6 +6718,10 @@ modules:
               items (including renamed ones) untouched
             when: |
               Setup runs with the force flag
+          - given: A project uses kspec-created default dispatch agents and the default session reflection hook
+            id: ac-default-agents-reflection-promptable
+            then: The default reflection prompt is accepted before automatic close
+            when: A default agent emits its first session.idle event
         tags: []
         created: 2026-04-11T09:39:23.901Z
         notes: []
@@ -6910,6 +6918,11 @@ modules:
               created
             when: |
               The command completes
+          - given: An existing project does not have the scaffolded default session reflection hook
+            id: ac-default-reflection-hook-first-idle-on-upgrade
+            then: Later idle events from the same invocation are not eligible for the scaffolded reflection
+              action
+            when: kspec upgrade creates the hook
         tags: []
         created: 2026-04-11T09:39:24.251Z
         notes: []
