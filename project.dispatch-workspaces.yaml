@@ -14685,3 +14685,79 @@ workspaces:
         head: 62db331553686ea959c714efbe9de1d6c579c86c
         last_seen_at: 2026-04-28T06:02:33.199Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf
+  - active_role: null
+    base_branch_point: f60d02714d3f2c5968fd6410f35a091341bde765
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/fix-meta-catalog-schema-error-in-traits-field/01kq99z7
+    canonical_branch_head: f60d02714d3f2c5968fd6410f35a091341bde765
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-28T06:03:02.953Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-28T06:03:02.953Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: f60d02714d3f2c5968fd6410f35a091341bde765
+      updated_at: 2026-04-28T06:03:02.953Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KQ99Z7HJ34SMZNGBBE1BTXRD"
+    task_slug: fix-meta-catalog-schema-error-in-traits-field
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-28T06:03:02.953Z
+      created_at: 2026-04-28T06:03:02.953Z
+      updated_at: 2026-04-28T06:03:02.953Z
+    workspace_id: dispatch-workspace-01KQ99Z7HJ34SMZNGBBE1BTXRD
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/fix-meta-catalog-schema-error-in-traits-field/01kq99z7
+        head: f60d02714d3f2c5968fd6410f35a091341bde765
+        last_seen_at: 2026-04-28T06:03:02.953Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-meta-catalog-schema-error-in-traits-field-01kq99z7
