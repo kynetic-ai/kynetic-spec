@@ -9,3 +9,26 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-28T04:03:50.256Z
+  - _ulid: 01KQ96K780M5BJB4AEEDP8XJPR
+    content: >-
+      Implementation complete. Changes:
+
+      - Added acIdPattern (/^ac-[a-z0-9]+(?:-[a-z0-9]+)*$/) and AcIdSchema to src/schema/common.ts
+
+      - Applied AcIdSchema to AcceptanceCriterionSchema.id in src/schema/spec.ts (enforces at schema
+      parse boundary)
+
+      - Added invalidAcIdFormat error message to src/strings/errors.ts
+
+      - Added pre-mutation validation in item ac add and item ac set CLI commands
+      (src/cli/commands/item.ts)
+
+      - Created tests/ac-id-format.test.ts with 22 tests covering all 5 ACs
+
+      - Updated 2 existing integration tests that used non-prefixed AC ids (my-custom-ac →
+      ac-custom, unique-ac → ac-unique)
+
+      - Full test suite: 8422 passed, 5 skipped, 0 failures
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T04:47:10.080Z
