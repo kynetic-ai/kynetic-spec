@@ -43790,20 +43790,22 @@ plans:
 
       - spec_ref: "@item-patch"
         add_acceptance_criteria:
-          - id: ac-known-fields-validated-with-allow-unknown
+          - id: ac-allow-unknown-rejects-invalid-ac-id
             given: |
-              A user patches an item with --allow-unknown and the patch includes both
-              an unknown field and a known schema field with an invalid value
+              A user patches an item with --allow-unknown and the patch would store an
+              acceptance criterion identifier that does not conform to the required
+              token format
             when: |
-              kspec validates the patch
+              kspec item patch runs
             then: |
-              The unknown field is allowed but the invalid known field is rejected
-          - id: ac-bulk-dry-run-validates-data
+              The command fails without writing the patch
+          - id: ac-bulk-dry-run-rejects-invalid-ac-id
             given: |
-              A bulk patch dry-run includes an operation whose patch data would fail
-              schema validation in a real write
+              A bulk patch dry-run includes an operation that would store an
+              acceptance criterion identifier that does not conform to the required
+              token format
             when: |
-              kspec item patch --bulk --dry-run validates the operation
+              kspec item patch --bulk --dry-run runs
             then: |
               The operation is reported as an error instead of a successful preview
           - id: ac-bulk-invalid-operation-not-written
@@ -43899,19 +43901,19 @@ plans:
               When: kspec validates the patch for a single item patch or bulk item
               patch.
               Then: The update is rejected before the catalog item is mutated.
-          - Add @item-patch ac-known-fields-validated-with-allow-unknown with this
-            exact behavioral shape:
-              Given: A user patches an item with --allow-unknown and the patch
-              includes both an unknown field and a known schema field with an invalid
-              value.
-              When: kspec validates the patch.
-              Then: The unknown field is allowed but the invalid known field is
-              rejected.
-          - Add @item-patch ac-bulk-dry-run-validates-data with this exact behavioral
-            shape:
-              Given: A bulk patch dry-run includes an operation whose patch data would
-              fail schema validation in a real write.
-              When: kspec item patch --bulk --dry-run validates the operation.
+          - Add @item-patch ac-allow-unknown-rejects-invalid-ac-id with this exact
+            behavioral shape:
+              Given: A user patches an item with --allow-unknown and the patch would
+              store an acceptance criterion identifier that does not conform to the
+              required token format.
+              When: kspec item patch runs.
+              Then: The command fails without writing the patch.
+          - Add @item-patch ac-bulk-dry-run-rejects-invalid-ac-id with this exact
+            behavioral shape:
+              Given: A bulk patch dry-run includes an operation that would store an
+              acceptance criterion identifier that does not conform to the required
+              token format.
+              When: kspec item patch --bulk --dry-run runs.
               Then: The operation is reported as an error instead of a successful
               preview.
           - Add @item-patch ac-bulk-invalid-operation-not-written with this exact
@@ -43974,8 +43976,8 @@ plans:
 
           Establishes:
           - @acceptance-criterion-id-format ac-patch-rejects-invalid-id
-          - @item-patch ac-known-fields-validated-with-allow-unknown
-          - @item-patch ac-bulk-dry-run-validates-data
+          - @item-patch ac-allow-unknown-rejects-invalid-ac-id
+          - @item-patch ac-bulk-dry-run-rejects-invalid-ac-id
           - @item-patch ac-bulk-invalid-operation-not-written
           - @item-patch ac-bulk-valid-operations-continue
           - @item-patch ac-bulk-invalid-operation-fails-command
@@ -44062,8 +44064,8 @@ plans:
 
           Covers:
           - @acceptance-criterion-id-format ac-patch-rejects-invalid-id
-          - @item-patch ac-known-fields-validated-with-allow-unknown
-          - @item-patch ac-bulk-dry-run-validates-data
+          - @item-patch ac-allow-unknown-rejects-invalid-ac-id
+          - @item-patch ac-bulk-dry-run-rejects-invalid-ac-id
           - @item-patch ac-bulk-invalid-operation-not-written
           - @item-patch ac-bulk-valid-operations-continue
           - @item-patch ac-bulk-invalid-operation-fails-command
@@ -44184,8 +44186,8 @@ plans:
 
           Covers:
           - @acceptance-criterion-id-format ac-patch-rejects-invalid-id
-          - @item-patch ac-known-fields-validated-with-allow-unknown
-          - @item-patch ac-bulk-dry-run-validates-data
+          - @item-patch ac-allow-unknown-rejects-invalid-ac-id
+          - @item-patch ac-bulk-dry-run-rejects-invalid-ac-id
           - @item-patch ac-bulk-invalid-operation-not-written
           - @item-patch ac-bulk-valid-operations-continue
           - @item-patch ac-bulk-invalid-operation-fails-command
@@ -44226,3 +44228,8 @@ plans:
           and make delimiter contract exact"
         author: Jacob Chapel
         created_at: 2026-04-28T23:44:04.485Z
+      - _ulid: 01KQB7ZYWMVHX8BK0TCJANCMAD
+        content: "Address review @01KQB7QX: reword allow-unknown and bulk dry-run ACs as observable AC-ID
+          command behavior"
+        author: Jacob Chapel
+        created_at: 2026-04-28T23:50:04.949Z
