@@ -41,8 +41,12 @@ description: |
 spec_ref: "@ac-annotation-identifier-format"
 plan_ref: "@plan-ac-id-format-normalization"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Reviewed and merged to dev via detached reviewer merge helper. Merge advanced dev
+  from f60d02714d3f2c5968fd6410f35a091341bde765 to 9dae4c027848447342bfb174399cd3d925395b15. Changes
+  align annotation parser guidance and tests with ac-prefixed AC id format; validation and full npm
+  test passed.
 depends_on:
   - "@task-enforce-ac-id-format"
 context: []
@@ -224,8 +228,25 @@ history:
         previous: "@01KQ9DNHEJF1XF62XY855Y2MJ9"
     command: review-link
     timestamp: 2026-04-28T07:25:39.749Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Reviewed and merged to dev via detached reviewer merge helper. Merge advanced dev from
+          f60d02714d3f2c5968fd6410f35a091341bde765 to 9dae4c027848447342bfb174399cd3d925395b15.
+          Changes align annotation parser guidance and tests with ac-prefixed AC id format;
+          validation and full npm test passed.
+        previous: null
+      completed_at:
+        new: 2026-04-28T07:37:00.760Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-28T07:37:00.770Z
 created_at: 2026-04-28T03:55:57.851Z
 started_at: 2026-04-28T07:23:39.265Z
 submitted_at: 2026-04-28T07:23:42.760Z
+completed_at: 2026-04-28T07:37:00.760Z
 todos: []
 automation: eligible
