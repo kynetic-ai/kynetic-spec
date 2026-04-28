@@ -658,9 +658,38 @@ function validateSpecItemRecursive(
 ): void {
   if (!raw || typeof raw !== "object") return;
 
+  // Fields that may contain nested spec items (objects with _ulid) instead of refs (strings)
+  const nestedFields = [
+    "modules",
+    "features",
+    "requirements",
+    "constraints",
+    "decisions",
+    "traits",
+    "items",
+  ];
+
   // Check if this is a spec item (has _ulid)
   if ("_ulid" in raw) {
-    const result = SpecItemSchema.safeParse(raw);
+    // Strip nested item arrays before validation since they're processed
+    // recursively and SpecItemSchema expects refs (strings), not nested objects
+    const cleanedForValidation: Record<string, unknown> = {
+      ...(raw as Record<string, unknown>),
+    };
+    for (const field of nestedFields) {
+      if (field in cleanedForValidation && Array.isArray(cleanedForValidation[field])) {
+        const arr = cleanedForValidation[field] as unknown[];
+        const hasNestedItems = arr.some(
+          (item) =>
+            item && typeof item === "object" && "_ulid" in (item as Record<string, unknown>),
+        );
+        if (hasNestedItems) {
+          delete cleanedForValidation[field];
+        }
+      }
+    }
+
+    const result = SpecItemSchema.safeParse(cleanedForValidation);
     if (!result.success) {
       for (const issue of result.error.issues) {
         errors.push({
@@ -672,9 +701,6 @@ function validateSpecItemRecursive(
       }
     }
   }
-
-  // Recurse into nested structures
-  const nestedFields = ["modules", "features", "requirements", "constraints", "decisions", "items"];
   const obj = raw as Record<string, unknown>;
 
   for (const field of nestedFields) {
