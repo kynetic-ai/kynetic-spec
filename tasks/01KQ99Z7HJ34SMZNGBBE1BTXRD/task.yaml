@@ -1,0 +1,24 @@
+_ulid: 01KQ99Z7HJ34SMZNGBBE1BTXRD
+slugs: []
+title: Fix meta catalog schema error in traits field
+type: task
+description: "Full kspec validate currently fails with: .kspec/modules/meta.yaml:modules[0].traits.0
+  Expected string, received object. This appears unrelated to task @01KQ93NEQHAYY4Y1MHA64M9FX2,
+  whose code diff only normalizes AC annotation tokens. Investigate the malformed traits entry in
+  the meta catalog, repair it through supported kspec commands or a safe batch mutation path, and
+  verify kspec validate --schema --warnings-ok exits 0."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - validation
+vcs_refs: []
+created_at: 2026-04-28T05:46:09.330Z
+todos: []
+automation: eligible
