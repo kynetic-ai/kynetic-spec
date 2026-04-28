@@ -36,3 +36,29 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-28T05:26:24.282Z
+  - _ulid: 01KQ99P4Z5MQ7PPCQD6D93EM60
+    content: >-
+      Work complete. Summary:
+
+
+      1. Catalog inventory: All 177 AC ids across specs and traits already conform to ac-prefixed
+      kebab-case format. No catalog renames needed.
+
+
+      2. Annotation repair: Fixed 43 annotations across 8 files (5 test files, 3 source files) that
+      used legacy non-prefixed AC tokens. Each token had its corresponding ac-prefixed id already in
+      the catalog — the annotations just needed the prefix added.
+
+
+      3. Validation results after fix:
+         - Blanket ref findings: 36 → 0 (all eliminated)
+         - Invalid annotations: 38 → 2 (remaining 2 are intentional test fixture unresolved targets: @test-feature and @test-trait)
+         - All 357 test suites pass with zero failures
+
+      4. Out-of-scope items noted:
+         - @meta-observe-cmd annotations (unresolved target, not a renamed-id issue)
+         - Blanket refs using dash-separator style (e.g., '// AC: @trait-dry-run - supports...') — pre-existing style issue, not renamed ids
+         - Missing own AC coverage (231 items) — pre-existing backlog
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T05:41:11.781Z
