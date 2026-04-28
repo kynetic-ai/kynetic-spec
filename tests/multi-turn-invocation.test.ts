@@ -1669,7 +1669,7 @@ describe("Idle hook prompt window (default grace)", { timeout: 60_000 }, () => {
       );
 
     const registry = new SessionRegistry();
-    let latePromptError: Error | undefined;
+    let latePromptAttempt: Promise<Error | undefined> | undefined;
 
     // Use a very short grace period to prove that prompts outside the
     // window are rejected.
@@ -1686,15 +1686,18 @@ describe("Idle hook prompt window (default grace)", { timeout: 60_000 }, () => {
       sessionMode: "auto_close",
       onIdle: (ctx) => {
         if (ctx.turnCount === 1) {
-          // Deliver prompt AFTER the grace window has expired
-          setTimeout(() => {
-            registry
-              .get(ctx.sessionId)
-              ?.sendPrompt("Too late")
-              .catch((err) => {
-                latePromptError = err as Error;
-              });
-          }, 100);
+          const handle = registry.get(ctx.sessionId);
+          // Deliver prompt AFTER the grace window has expired. Keep the live
+          // handle reference so the test proves the closed session rejects,
+          // rather than only proving the registry entry was removed.
+          latePromptAttempt = new Promise((resolve) => {
+            setTimeout(() => {
+              handle?.sendPrompt("Too late").then(
+                () => resolve(undefined),
+                (err) => resolve(err as Error),
+              );
+            }, 100);
+          });
         }
       },
     });
@@ -1702,6 +1705,10 @@ describe("Idle hook prompt window (default grace)", { timeout: 60_000 }, () => {
     // Session should have auto-closed after the short grace period
     expect(result.outcome).toBe("success");
     expect(result.turnCount).toBe(1);
+
+    const latePromptError = await latePromptAttempt;
+    expect(latePromptError).toBeInstanceOf(Error);
+    expect(latePromptError?.message).toBe("Session is closed");
   });
 });
 
