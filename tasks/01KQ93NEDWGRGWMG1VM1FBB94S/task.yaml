@@ -52,7 +52,7 @@ description: |
 spec_ref: "@acceptance-criterion-id-format"
 plan_ref: "@plan-ac-id-format-normalization"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -62,6 +62,7 @@ tags:
   - validation
   - cli
 vcs_refs: []
+session_id: 01KQ93YMW8TX1XCZ7BVZH3F770
 history:
   - author: Jacob Chapel
     changes:
@@ -70,6 +71,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-28T03:59:41.026Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KQ93YMW8TX1XCZ7BVZH3F770
+        previous: null
+      started_at:
+        new: 2026-04-28T04:01:20.798Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-28T04:01:20.798Z
 created_at: 2026-04-28T03:55:57.244Z
+started_at: 2026-04-28T04:01:20.798Z
 todos: []
 automation: eligible
