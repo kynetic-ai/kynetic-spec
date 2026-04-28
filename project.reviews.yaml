@@ -169131,9 +169131,25 @@ reviews:
           status: skipped
           name: Baseline validation
         timestamp: 2026-04-28T00:51:57.178Z
+      - _ulid: 01KQ8S4RYQTFBG8DTGAHR66MG8
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-28T00:52:05.207Z
+      - _ulid: 01KQ8S4RYQA4A9CAQBSBAXMYT6
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-28T00:52:05.207Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -169141,7 +169157,14 @@ reviews:
       ref: "@plan-default-session-reflection-reliability"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-28T00:52:05.207Z
     created_at: 2026-04-28T00:50:39.545Z
-    updated_at: 2026-04-28T00:51:56.074Z
+    updated_at: 2026-04-28T00:52:05.207Z
     notes: []
