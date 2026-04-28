@@ -81,329 +81,6 @@ workspaces:
         last_seen_at: 2026-03-15T17:49:47.015Z
         path: /home/chapel/Projects/kynetic-spec-dispatch
   - active_role: null
-    base_branch_point: 9d65ad244237659c2a29a45679392595ae0135ee
-    bootstrap:
-      status: succeeded
-      canonicalBranchHead: 498c3bfcac17469de57268f0f62fc08fca80ee33
-      configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-      failureMessage: null
-      invalidationReasons:
-        - canonical-branch-head-changed
-        - workspace-build-missing
-      lastRole: reviewer
-      lastRunAt: 2026-04-21T04:15:30.455Z
-      roleStates:
-        reviewer:
-          status: succeeded
-          canonicalBranchHead: 498c3bfcac17469de57268f0f62fc08fca80ee33
-          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-          failureMessage: null
-          invalidationReasons:
-            - canonical-branch-head-changed
-            - workspace-build-missing
-          lastRunAt: 2026-04-21T04:15:30.455Z
-          steps:
-            - status: succeeded
-              allowTrackedChanges: false
-              idempotent: true
-              name: build-workspace-artifacts
-              output: >-
-                iv class="flex flex-wrap gap-1.5" data-testid="session-filter-status-group">
-
-                183:       <button
-
-                9:15:20 PM [vite-plugin-svelte]
-                src/lib/components/content/StructuredContentViewer.svelte:280:11 Buttons and links
-                should either contain text or have an `aria-label`, `aria-labelledby` or `title`
-                attribute
-
-                https://svelte.dev/e/a11y_consider_explicit_label
-
-                278:                     </div>
-
-                279:                     {#if isInteractive}
-
-                280:                       <button
-                                                  ^
-                281:                         type="button"
-
-                282:                         class="opacity-0 group-hover/ac:opacity-100
-                transition-opacity text-xs text-muted-foreground hover:text-foreground shrink-0"
-
-                "notifyManager" and "replaceEqualDeep" are imported from external module
-                "@tanstack/query-core" but never used in
-                "../../../../node_modules/@tanstack/svelte-query/dist/createMutation.svelte.js" and
-                "../../../../node_modules/@tanstack/svelte-query/dist/useMutationState.svelte.js".
-
-                9:15:23 PM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8
-                `<svelte:component>` is deprecated in runes mode — components are dynamic by default
-
-                https://svelte.dev/e/svelte_component_deprecated
-
-                102:             <div class="flex items-start gap-3">
-
-                103:               <div class={`mt-0.5 ${typeColors[obs.type]}`}
-                data-testid="observation-type-icon">
-
-                104:                 <svelte:component this={typeIcons[obs.type]} class="h-5 w-5" />
-                                                                                                    ^
-                105:               </div>
-
-                106:               <div class="flex-1">
-
-                9:15:23 PM [vite-plugin-svelte]
-                src/lib/components/automation/DispatchTriggersSection.svelte:293:7 A form label must
-                be associated with a control
-
-                https://svelte.dev/e/a11y_label_has_associated_control
-
-                291:             <!-- Tag filter with removable chips -->
-
-                292:             <div class="flex items-start gap-2">
-
-                293:               <label class="text-xs text-muted-foreground w-20 shrink-0
-                mt-1.5">Tags</label>
-                                                                                                                 ^
-                294:               <div class="flex-1">
-
-                295:                 <div class="flex flex-wrap gap-1 mb-1"
-                data-testid="trigger-tags-{trigger.on}">
-
-                9:15:23 PM [vite-plugin-svelte]
-                src/lib/components/automation/DispatchTriggersSection.svelte:345:7 A form label must
-                be associated with a control
-
-                https://svelte.dev/e/a11y_label_has_associated_control
-
-                343:             <!-- Priority filter threshold -->
-
-                344:             <div class="flex items-center gap-2">
-
-                345:               <label class="text-xs text-muted-foreground w-20
-                shrink-0">Priority &#x2264;</label>
-                                                                                                                       ^
-                346:               <Input
-
-                347:                 class="h-7 text-xs flex-1"
-
-                9:15:23 PM [vite-plugin-svelte]
-                src/lib/components/session/SessionFilters.svelte:181:2 A form label must be
-                associated with a control
-
-                https://svelte.dev/e/a11y_label_has_associated_control
-
-                179:   <!-- AC: @session-filter-controls ac-status-filter -->
-
-                180:   <div class="min-w-[240px]">
-
-                181:     <label class="text-xs font-medium text-muted-foreground mb-1
-                block">Status</label>
-                                                                                                           ^
-                182:     <div class="flex flex-wrap gap-1.5"
-                data-testid="session-filter-status-group">
-
-                183:       <button
-
-                9:15:25 PM [vite-plugin-svelte]
-                src/lib/components/content/StructuredContentViewer.svelte:280:11 Buttons and links
-                should either contain text or have an `aria-label`, `aria-labelledby` or `title`
-                attribute
-
-                https://svelte.dev/e/a11y_consider_explicit_label
-
-                278:                     </div>
-
-                279:                     {#if isInteractive}
-
-                280:                       <button
-                                                  ^
-                281:                         type="button"
-
-                282:                         class="opacity-0 group-hover/ac:opacity-100
-                transition-opacity text-xs text-muted-foreground hover:text-foreground shrink-0"
-              reviewerRerunAllowed: true
-              role: reviewer
-              run: npm run build
-              source: dispatch
-        worker:
-          status: succeeded
-          canonicalBranchHead: 765071be773d1738dbd5b14ec2c05e76954c2c98
-          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-          failureMessage: null
-          invalidationReasons:
-            - canonical-branch-head-changed
-          lastRunAt: 2026-04-21T04:01:55.173Z
-          steps: []
-      steps:
-        - status: succeeded
-          allowTrackedChanges: false
-          idempotent: true
-          name: build-workspace-artifacts
-          output: >-
-            iv class="flex flex-wrap gap-1.5" data-testid="session-filter-status-group">
-
-            183:       <button
-
-            9:15:20 PM [vite-plugin-svelte]
-            src/lib/components/content/StructuredContentViewer.svelte:280:11 Buttons and links
-            should either contain text or have an `aria-label`, `aria-labelledby` or `title`
-            attribute
-
-            https://svelte.dev/e/a11y_consider_explicit_label
-
-            278:                     </div>
-
-            279:                     {#if isInteractive}
-
-            280:                       <button
-                                              ^
-            281:                         type="button"
-
-            282:                         class="opacity-0 group-hover/ac:opacity-100
-            transition-opacity text-xs text-muted-foreground hover:text-foreground shrink-0"
-
-            "notifyManager" and "replaceEqualDeep" are imported from external module
-            "@tanstack/query-core" but never used in
-            "../../../../node_modules/@tanstack/svelte-query/dist/createMutation.svelte.js" and
-            "../../../../node_modules/@tanstack/svelte-query/dist/useMutationState.svelte.js".
-
-            9:15:23 PM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8
-            `<svelte:component>` is deprecated in runes mode — components are dynamic by default
-
-            https://svelte.dev/e/svelte_component_deprecated
-
-            102:             <div class="flex items-start gap-3">
-
-            103:               <div class={`mt-0.5 ${typeColors[obs.type]}`}
-            data-testid="observation-type-icon">
-
-            104:                 <svelte:component this={typeIcons[obs.type]} class="h-5 w-5" />
-                                                                                                ^
-            105:               </div>
-
-            106:               <div class="flex-1">
-
-            9:15:23 PM [vite-plugin-svelte]
-            src/lib/components/automation/DispatchTriggersSection.svelte:293:7 A form label must be
-            associated with a control
-
-            https://svelte.dev/e/a11y_label_has_associated_control
-
-            291:             <!-- Tag filter with removable chips -->
-
-            292:             <div class="flex items-start gap-2">
-
-            293:               <label class="text-xs text-muted-foreground w-20 shrink-0
-            mt-1.5">Tags</label>
-                                                                                                             ^
-            294:               <div class="flex-1">
-
-            295:                 <div class="flex flex-wrap gap-1 mb-1"
-            data-testid="trigger-tags-{trigger.on}">
-
-            9:15:23 PM [vite-plugin-svelte]
-            src/lib/components/automation/DispatchTriggersSection.svelte:345:7 A form label must be
-            associated with a control
-
-            https://svelte.dev/e/a11y_label_has_associated_control
-
-            343:             <!-- Priority filter threshold -->
-
-            344:             <div class="flex items-center gap-2">
-
-            345:               <label class="text-xs text-muted-foreground w-20 shrink-0">Priority
-            &#x2264;</label>
-                                                                                                                   ^
-            346:               <Input
-
-            347:                 class="h-7 text-xs flex-1"
-
-            9:15:23 PM [vite-plugin-svelte] src/lib/components/session/SessionFilters.svelte:181:2 A
-            form label must be associated with a control
-
-            https://svelte.dev/e/a11y_label_has_associated_control
-
-            179:   <!-- AC: @session-filter-controls ac-status-filter -->
-
-            180:   <div class="min-w-[240px]">
-
-            181:     <label class="text-xs font-medium text-muted-foreground mb-1
-            block">Status</label>
-                                                                                                       ^
-            182:     <div class="flex flex-wrap gap-1.5" data-testid="session-filter-status-group">
-
-            183:       <button
-
-            9:15:25 PM [vite-plugin-svelte]
-            src/lib/components/content/StructuredContentViewer.svelte:280:11 Buttons and links
-            should either contain text or have an `aria-label`, `aria-labelledby` or `title`
-            attribute
-
-            https://svelte.dev/e/a11y_consider_explicit_label
-
-            278:                     </div>
-
-            279:                     {#if isInteractive}
-
-            280:                       <button
-                                              ^
-            281:                         type="button"
-
-            282:                         class="opacity-0 group-hover/ac:opacity-100
-            transition-opacity text-xs text-muted-foreground hover:text-foreground shrink-0"
-          reviewerRerunAllowed: true
-          role: reviewer
-          run: npm run build
-          source: dispatch
-    branch_provenance:
-      adopted_at: null
-      adopted_from: null
-      ownership: dispatcher-managed
-      rehydrated: null
-      remote_ref: null
-      source: provisioned
-    canonical_branch: dispatch/task/task-docs-rendering/01kppn42
-    canonical_branch_head: 498c3bfcac17469de57268f0f62fc08fca80ee33
-    cleanup:
-      status: completed
-      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      eligible: true
-      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-04-21T04:32:51.063Z
-    health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-21T04:32:47.321Z
-    integration:
-      status: merged
-      detail: integration:merged
-      outcome: merged
-      publication_mode: manual_merge
-      target_branch: dev
-      target_commit: 9d65ad244237659c2a29a45679392595ae0135ee
-      updated_at: 2026-04-21T04:32:47.321Z
-    lifecycle_state: closed
-    resolved_base_branch: dev
-    task_ref: "@01KPPN42CDKS6A6951ZATDPKXP"
-    task_slug: task-docs-rendering
-    timestamps:
-      closed_at: 2026-04-21T04:32:51.063Z
-      last_active_at: 2026-04-21T04:15:33.826Z
-      last_reconciled_at: 2026-04-21T04:32:47.321Z
-      created_at: 2026-04-21T00:10:39.606Z
-      updated_at: 2026-04-21T04:32:51.063Z
-    workspace_id: dispatch-workspace-01KPPN42CDKS6A6951ZATDPKXP
-    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
-    worktrees:
-      reviewer: null
-      worker:
-        branch_mode: branch
-        branch_ref: dispatch/task/task-docs-rendering/01kppn42
-        head: 498c3bfcac17469de57268f0f62fc08fca80ee33
-        last_seen_at: 2026-04-21T04:15:10.628Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-rendering-01kppn42
-  - active_role: null
     base_branch_point: 9336acd81a8e97f655a484bf98104089cde47c9f
     bootstrap:
       status: succeeded
@@ -13622,18 +13299,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-enforce-ac-id-format/01kq93ne
-    canonical_branch_head: a905c802f26bb5974a12d3860687d4a548f60742
+    canonical_branch_head: 6a54d8669fac304c6ed57cb57298159a12bfbc58
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-28T04:00:35.359Z
+      updated_at: 2026-04-28T04:47:23.836Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-28T04:00:58.848Z
+      updated_at: 2026-04-28T04:47:23.836Z
     integration:
       status: pending
       detail: null
@@ -13641,7 +13318,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a905c802f26bb5974a12d3860687d4a548f60742
-      updated_at: 2026-04-28T04:00:35.359Z
+      updated_at: 2026-04-28T04:47:23.836Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQ93NEDWGRGWMG1VM1FBB94S"
@@ -13649,9 +13326,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T04:00:58.848Z
-      last_reconciled_at: 2026-04-28T04:00:58.848Z
+      last_reconciled_at: 2026-04-28T04:47:23.836Z
       created_at: 2026-04-28T04:00:35.359Z
-      updated_at: 2026-04-28T04:00:58.848Z
+      updated_at: 2026-04-28T04:47:23.836Z
     workspace_id: dispatch-workspace-01KQ93NEDWGRGWMG1VM1FBB94S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
