@@ -169000,3 +169000,29 @@ reviews:
     created_at: 2026-04-28T00:27:39.454Z
     updated_at: 2026-04-28T00:29:31.148Z
     notes: []
+  - _ulid: 01KQ8S259SQBBK6N129NKXPX66
+    slugs: []
+    title: "Plan review: Default Session Reflection Reliability"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQ8S259S7APDY3J5P0NMTHJB
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-28T00:50:39.545Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-default-session-reflection-reliability"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-28T00:50:39.545Z
+    updated_at: null
+    notes: []
