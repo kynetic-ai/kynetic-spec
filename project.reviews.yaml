@@ -171449,6 +171449,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-28T06:51:04.642Z
+      - _ulid: 01KQ9DR5KAZ5MN7RHJGSQSFHP2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ9DR4BE4AMWF32DKYNT67VF
+        timestamp: 2026-04-28T06:52:12.266Z
     examined_commit: 1fdb1ea369cf04108846566b3b8ce0e5ce57096f
     external_links: []
     lifecycle_state: open
@@ -171458,8 +171465,70 @@ reviews:
       content_hash: ""
       ref: "@01KQ93NF0V9VKZSSVYTA0W3Z8X"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQ9DR4BE4AMWF32DKYNT67VF
+        anchor:
+          type: code
+          commit: 1fdb1ea369cf04108846566b3b8ce0e5ce57096f
+          line_end: 207
+          line_start: 207
+          path: tests/ac-annotation-identifier-format.test.ts
+          side: head
+        entries:
+          - _ulid: 01KQ9DR4BE99V73SF5W27Y4296
+            author: Jacob Chapel
+            body: >-
+              MUST-FIX: This prose comment contains a literal coverage annotation string, so the
+              real completeness scanner treats it as an annotation for unresolved @my-spec.
+              Evidence: ✓ Validation passed
+
+              ────────────────────────────────────────
+
+              Files checked: 1432
+
+              Items checked: 608
+
+              Tasks checked: 1424
+
+              Meta: 12 agents, 11 workflows, 11 conventions
+
+
+              Schema: OK
+
+              References: OK
+
+
+              Completeness warnings: 273
+                Missing own AC coverage: 233
+                  ! @spec-item - Spec Item
+                    Uncovered: ac-item-1, ac-item-2
+                  ! @ulid-system - ULID Identifier System
+                    Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+                  ! @slug-system - Slug Alias System
+                    Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+                  ... and 230 more
+                Automation without spec: 1
+                  ! @01KQ99Z7 - Fix meta catalog schema error in traits field
+                    Task @01KQ99Z7 is automation: eligible but has no spec_ref - eligible tasks should have linked specs
+                Invalid AC annotations: 39
+                  Unresolved targets: 3
+                    ! Unresolved target: '@my-spec' cannot be resolved
+                      /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf-review/tests/ac-annotation-identifier-format.test.ts:207
+                    ! Unresolved target: '@test-feature' cannot be resolved
+                      /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf-review/tests/e2e/fixtures/project-tests/coverage-test.test.ts:6
+                    ! Unresolved target: '@test-trait' cannot be resolved
+                      /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf-review/tests/trait-ac-coverage.test.ts:158
+                  Blanket refs (no coverage credit): 36
+                    ! Blanket ref: '@cmd-clone-for-testing' without explicit ac-* ids does not count for coverage
+                      /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf-review/tests/clone-for-testing.test.ts:60
+                    ! Blanket ref: '@cmd-clone-for-testing' without explicit ac-* ids does not count for coverage
+                      /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf-review/tests/clone-for-testing.test.ts:93
+                    ! Blanket ref: '@cmd-clone-for-testing' without explicit ac-* ids does not count for coverage
+                      /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf-review/tests/clone-for-testing.test.ts:119
+                    ... and 33 more reports  at this exact line. That reintroduces the same class of false-positive scanner noise the fix cycle was supposed to avoid; construct or reword the comment so non-fixture prose in this non-excluded file does not contain a literal  annotation.
+            created_at: 2026-04-28T06:52:10.990Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-28T06:50:46.098Z
-    updated_at: 2026-04-28T06:51:03.495Z
+    updated_at: 2026-04-28T06:52:10.990Z
     notes: []
