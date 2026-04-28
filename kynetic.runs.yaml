@@ -33147,7 +33147,7 @@ runs:
     started_at: 2026-04-28T06:01:07.081Z
     completed_at: 2026-04-28T06:02:09.067Z
   - _ulid: 01KQ9BMW1X0K6EQZ9SDJ87Y1HE
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -33191,7 +33191,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-28T06:16:50.031Z
-        completed_at: 2026-04-28T06:16:50.031Z
+        completed_at: 2026-04-28T06:16:57.110Z
+        notes: "Capture: no new items added. The review-comment shell quoting friction is already tracked by
+          existing observations, and the main review finding is already captured as blocker thread
+          @01KQ9B7FK4JD215JPQ3PKCN6HR on review @01KQ9AZCX4V20GZY9P0306MK3G."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T06:15:27.037Z
+    completed_at: 2026-04-28T06:16:57.110Z
