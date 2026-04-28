@@ -33041,7 +33041,7 @@ runs:
     completed_at: 2026-04-28T05:34:21.278Z
   - _ulid: 01KQ9AH4DJRWGFPR122QDV5B38
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33056,7 +33056,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-28T05:56:15.892Z
-        completed_at: 2026-04-28T05:56:15.892Z
+        completed_at: 2026-04-28T05:56:25.234Z
+        notes: "Friction points: (1) kspec workflow show without a run-ref failed even though I had just
+          started a single active workflow, so reflection needed manual run-ref handling. (2) Full
+          kspec validate failed on an unrelated catalog schema error, requiring reviewer triage to
+          avoid incorrectly blocking a narrow annotation task; I created follow-up @01KQ99Z7. (3) In
+          the detached review snapshot, .kspec is not a normal filesystem worktree, so direct git
+          inspection with git -C .kspec failed; the supported kspec CLI still worked, but this is
+          easy to misread during review."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-28T05:56:25.234Z
+        completed_at: 2026-04-28T05:56:25.234Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T05:55:55.954Z
