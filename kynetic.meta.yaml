@@ -16375,6 +16375,23 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-28T05:18:57.505Z
+  - _ulid: 01KQ99RRQADM1JFR9VZS7YAPWT
+    type: friction
+    content: kspec trait list --json omits acceptance_criteria from output, forcing per-trait kspec item
+      get calls to inventory trait ACs. item list --json includes them for specs but not traits.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-28T05:42:37.546Z
+  - _ulid: 01KQ99RRYYCNJ4H4F26J1DWVJ4
+    type: success
+    content: "Inventory-then-repair pattern for annotation normalization: programmatic catalog scan
+      first to confirm state, then targeted annotation fixes with before/after kspec validate
+      --completeness metrics. Reduced blanket refs from 36 to 0 in one focused pass."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-28T05:42:37.790Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
