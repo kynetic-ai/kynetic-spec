@@ -172155,6 +172155,12 @@ reviews:
         payload:
           thread_ulid: 01KQ9J3W819J6QNR3V69ZCAY48
         timestamp: 2026-04-28T08:27:18.774Z
+      - _ulid: 01KQ9K6KWARNBZEADDB2V7J1DY
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQ9J3W819J6QNR3V69ZCAY48
+        timestamp: 2026-04-28T08:27:28.522Z
     examined_commit: 6bbe44ebae65184677ab20dfbf89096a178396ca
     external_links: []
     lifecycle_state: closed
@@ -172198,6 +172204,8 @@ reviews:
               uppercase, and mixed valid/invalid cases. All 8468 tests pass."
             created_at: 2026-04-28T08:27:17.650Z
         kind: blocker
+        resolved_at: 2026-04-28T08:27:27.448Z
+        resolved_by: "@claude"
       - _ulid: 01KQ9J3Z40BPTWTJFGVWNVK0B1
         entries:
           - _ulid: 01KQ9J3Z40WDBZK3A280ZMFN7K
@@ -172224,5 +172232,5 @@ reviews:
         role: automated reviewer
         created_at: 2026-04-28T08:08:37.251Z
     created_at: 2026-04-28T07:57:24.570Z
-    updated_at: 2026-04-28T08:27:17.650Z
+    updated_at: 2026-04-28T08:27:27.448Z
     notes: []
