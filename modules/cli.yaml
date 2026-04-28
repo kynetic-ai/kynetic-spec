@@ -392,16 +392,16 @@ features:
           - "@cli-design"
         acceptance_criteria:
           - given: CLI codebase uses exit codes
-            id: exit-code-constants
+            id: ac-exit-code-constants
             then: Uses named constants from a centralized EXIT_CODES object (e.g., EXIT_CODES.NOT_FOUND instead
               of magic number 3)
             when: Commands need to exit with specific code
           - given: User wants to script kspec commands
-            id: exit-codes-documented
+            id: ac-exit-codes-documented
             then: All exit codes are listed with their meanings and which commands may return them
             when: User runs kspec help --exit-codes or checks documentation
           - given: Multiple commands use exit codes
-            id: consistent-usage
+            id: ac-consistent-usage
             then: All commands use consistent exit codes for the same error types (e.g., all 'not found' errors
               exit 3, all validation errors exit 4)
             when: Commands exit with errors
@@ -1985,16 +1985,16 @@ features:
             then: shows error 'Reference not found' with exit code 3
             when: kspec log @invalid runs
           - given: No ref argument provided
-            id: list-all-tracked
+            id: ac-list-all-tracked
             then: "Shows all commits with Task: or Spec: trailers in reverse chronological order, respecting
               --limit (default 10)"
             when: User runs kspec log without any ref or filter
           - given: User wants additional git log formatting (like -p, --stat, --graph)
-            id: passthrough-args
+            id: ac-passthrough-args
             then: Arguments after -- are passed through to underlying git log command
             when: User runs kspec log @ref -- -p --stat
           - given: User passes invalid git log arguments after --
-            id: passthrough-invalid
+            id: ac-passthrough-invalid
             then: Git's error message is shown and command exits with non-zero code
             when: User runs kspec log @ref -- --invalid-flag
         tags: []
@@ -2352,26 +2352,26 @@ features:
         tests: []
         acceptance_criteria:
           - given: Task with dependency tasks, where task status is pending or in_progress
-            id: parent-pending-children-done
+            id: ac-parent-pending-children-done
             then: "Warns: 'Task @task is pending/in_progress but all dependencies are completed. Consider
               completing or reviewing.'"
             when: kspec validate --staleness runs and all dependency tasks are completed
           - given: Spec item is marked implemented but no completed tasks reference it
-            id: spec-implemented-no-task
+            id: ac-spec-implemented-no-task
             then: "Warns: 'Spec @spec-item is implemented but has no completed tasks. Verify implementation or
               link existing task.'"
             when: kspec validate --staleness runs
           - given: Task is completed but linked spec is still not_started
-            id: task-done-spec-not-started
+            id: ac-task-done-spec-not-started
             then: "Warns: 'Task @task completed but spec @spec-item is not_started. Update spec status.'"
             when: kspec validate --staleness runs
           - given: User wants to check for stale statuses
-            id: staleness-flag
+            id: ac-staleness-flag
             then: Runs staleness checks in scoped mode (only staleness section by default). Can be combined with
               other validate flags to run multiple sections.
             when: kspec validate --staleness runs
           - given: Staleness issues are found
-            id: staleness-exit-code
+            id: ac-staleness-exit-code
             then: Exits with code 0 (warnings don't fail validation by default). With --strict, exits code 4 if
               any staleness warnings.
             when: kspec validate --staleness completes
@@ -2604,16 +2604,16 @@ features:
         tests: []
         acceptance_criteria:
           - given: Repository has kspec-meta branch but no .kspec worktree
-            id: detect-existing-repo
+            id: ac-detect-existing-repo
             then: "Detects missing worktree and prompts: 'kspec-meta branch exists but .kspec worktree is
               missing. Create it? (y/N)', creates worktree if confirmed"
             when: User runs kspec setup or any kspec command
           - given: Repository has kspec-meta branch but no .kspec worktree
-            id: auto-worktree-flag
+            id: ac-auto-worktree-flag
             then: Automatically creates .kspec worktree without prompting
             when: User runs kspec setup --auto-worktree
           - given: .kspec worktree already exists and is valid
-            id: worktree-already-exists
+            id: ac-worktree-already-exists
             then: Skips worktree creation, proceeds with other setup steps
             when: User runs kspec setup
           - given: no agent environment is detected (no Claude Code, Aider, Codex, etc.)
@@ -2731,24 +2731,24 @@ features:
         tests: []
         acceptance_criteria:
           - given: User needs isolated repo for testing
-            id: creates-isolated-copy
+            id: ac-creates-isolated-copy
             then: "Creates full clone of source repo (default: current repo) to dest directory, removes remote
               origin, preserves all branches including kspec-meta"
             when: User runs kspec clone-for-testing [source] [dest]
           - given: Cloned repo has kspec-meta branch
-            id: sets-up-worktree
+            id: ac-sets-up-worktree
             then: Automatically creates .kspec worktree pointing to kspec-meta branch
             when: Clone completes
           - given: User specifies --branch flag
-            id: checkout-branch
+            id: ac-checkout-branch
             then: Checks out specified branch in the cloned repo after setup
             when: User runs kspec clone-for-testing --branch feature-x dest
           - given: No dest argument provided
-            id: temp-dir-default
+            id: ac-temp-dir-default
             then: Creates clone in system temp directory with generated name, prints path to stdout
             when: User runs kspec clone-for-testing
           - given: --json flag provided
-            id: json-output
+            id: ac-json-output
             then: 'Outputs JSON with path to cloned repo: {"path": "/tmp/kspec-test-xxx", "branch": "main"}'
             when: Clone completes successfully
         tags:
@@ -3956,18 +3956,18 @@ features:
         tests: []
         acceptance_criteria:
           - given: User runs kspec ralph with valid adapter (default or --adapter)
-            id: valid-adapter-proceeds
+            id: ac-valid-adapter-proceeds
             then: Adapter package is verified to exist (via npm/npx check), and command proceeds to spawn agent
             when: Startup validation runs
           - given: User runs kspec ralph --adapter @nonexistent/package
-            id: invalid-adapter-error
+            id: ac-invalid-adapter-error
             then: "Command exits immediately with exit code 3 and error message: 'Adapter not found: <package>.
               Install with: npm install -g <package>'. When the adapter ID differs from the package
               name, the error shows both (e.g., 'Adapter not found: codex-acp
               (@zed-industries/codex-acp)')."
             when: Startup validation runs
           - given: Adapter validation fails
-            id: validation-before-spawn
+            id: ac-validation-before-spawn
             then: No ACP agent process is spawned, no session is created, no events are logged
             when: Error is shown
         tags:
@@ -4999,41 +4999,41 @@ features:
     tests: []
     acceptance_criteria:
       - given: A command that supports multi-ref (e.g., task complete)
-        id: basic-multi-ref-syntax
+        id: ac-basic-multi-ref-syntax
         then: The operation applies to all three refs, each ref is processed independently, and results are
           collected for final output
         when: User runs kspec task complete --refs @task-a @task-b @task-c
       - given: Existing single-ref positional usage
-        id: backward-compatibility
+        id: ac-backward-compatibility
         then: Behavior is identical to current implementation with no deprecation warnings
         when: User runs kspec task complete @task-a
       - given: Both positional ref AND --refs flag provided
-        id: mutual-exclusion-error
+        id: ac-mutual-exclusion-error
         then: Command exits with code 3, error message says cannot use both positional ref and --refs flag,
           no operations are performed
         when: User runs kspec task complete @task-a --refs @task-b @task-c
       - given: --refs with mix of valid and invalid refs
-        id: partial-failure-handling
+        id: ac-partial-failure-handling
         then: Valid refs are processed successfully, invalid refs are skipped with error recorded, exit code
           is 2 (partial failure), output shows which succeeded and which failed with reasons
         when: User runs kspec task complete --refs @valid-task @nonexistent @another-valid
       - given: Batch operation completes (success or partial)
-        id: human-output-format
+        id: ac-human-output-format
         then: First line shows summary count (e.g., Completed 2 of 3 tasks:), each item listed with status
           indicator (checkmark for success, X for failure), failed items include failure reason
         when: Output is rendered without --json flag
       - given: Batch operation with --json flag
-        id: json-output-format
+        id: ac-json-output-format
         then: "Output is valid JSON with structure: {success: boolean, summary: {total, succeeded, failed},
           results: [{ref, ulid, status, error?, message?}]}"
         when: Command completes
       - given: --refs flag with no values
-        id: empty-refs-error
+        id: ac-empty-refs-error
         then: Command exits with code 3, error message says --refs requires at least one reference, no
           operations are performed
         when: User runs kspec task complete --refs
       - given: Refs can be slugs, full ULIDs, or ULID prefixes
-        id: ref-resolution-uses-existing
+        id: ac-ref-resolution-uses-existing
         then: Each ref resolves using existing ReferenceIndex.resolve() logic, ambiguous ULID prefixes are
           reported as errors for that specific ref, other refs in the batch still process normally
         when: User runs kspec task complete --refs @task-slug @01KFAB95 @01KFA
