@@ -169212,6 +169212,25 @@ reviews:
         runner: kspec
         created_at: 2026-04-28T01:18:03.692Z
         completed_at: 2026-04-28T01:18:03.692Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md; task @01KQ8SGW5FGT6WXRAV2NAK0T75; specs
+          @multi-turn-session-lifecycle, @default-project-agents-and-conventions,
+          @single-command-version-upgrade, @default-session-reflection-hook. Commands run: git
+          status --short --branch; git diff --stat dev...HEAD; git show --stat HEAD; git branch
+          --all --contains HEAD; kspec task get; kspec review add/open/get; kspec item get for four
+          specs; JSON exact-count AC check; kspec validate; npm test. Claims verified: three
+          requested ACs appear exactly once with requested behavior; no duplicate first-idle AC
+          added to default-session-reflection-hook; code branch has no runtime changes relative to
+          dev. Categories searched: correctness/spec alignment, scope, duplicate AC risk,
+          validation, full regression tests."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-04-28T01:18:20.142Z
+        completed_at: 2026-04-28T01:18:20.142Z
     events:
       - _ulid: 01KQ8T1AEMVEYDFMD124417AQN
         actor: Jacob Chapel
@@ -169247,6 +169266,13 @@ reviews:
           status: pass
           name: spec inspection
         timestamp: 2026-04-28T01:18:04.861Z
+      - _ulid: 01KQ8TMW2RC2H9CE6EC860DKZ0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-28T01:18:21.273Z
     examined_commit: bcf5b7f55ab4a5fd47c2fa3fc5676b4c816e3ae7
     external_links: []
     lifecycle_state: open
@@ -169259,5 +169285,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T01:07:40.628Z
-    updated_at: 2026-04-28T01:18:03.692Z
+    updated_at: 2026-04-28T01:18:20.142Z
     notes: []
