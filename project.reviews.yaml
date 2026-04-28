@@ -172942,3 +172942,29 @@ reviews:
     created_at: 2026-04-28T23:45:41.297Z
     updated_at: 2026-04-28T23:48:24.716Z
     notes: []
+  - _ulid: 01KQB8ADYWTABQJYB14EJSDZD7
+    slugs: []
+    title: "Plan review: AC ID Surface Hardening (cycle 3)"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQB8ADYVMHF08XXZZHY6WF2J
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-28T23:55:48.060Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-ac-id-surface-hardening"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-28T23:55:48.060Z
+    updated_at: null
+    notes: []
