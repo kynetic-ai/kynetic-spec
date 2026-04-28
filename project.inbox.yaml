@@ -2996,3 +2996,16 @@ inbox:
       - reflection
     added_by: Jacob Chapel
     created_at: 2026-04-28T00:10:40.943Z
+  - _ulid: 01KQ8TTNA1MHYWJVDHVWY8BS0Q
+    text: Session reflection loop baseline discovery should avoid unbounded full-list commands in mature
+      repos. The current step instructs agents to run kspec meta observations list, kspec inbox
+      list, and kspec tasks list before identifying reflection items; in this session those produced
+      thousands of lines of output, consuming context and making duplicate-checking harder. Consider
+      changing the workflow/skill to use targeted searches plus bounded summaries, or add list
+      filters/limits suitable for reflection duplicate checks.
+    tags:
+      - reflection
+      - workflow
+      - dx
+    added_by: Jacob Chapel
+    created_at: 2026-04-28T01:21:30.946Z
