@@ -171434,7 +171434,60 @@ reviews:
     slugs: []
     title: Review task-align-ac-annotation-format-tests cycle 2
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran kspec validate --completeness --warnings-ok. It exited 0 due to warnings-ok, but
+          reported an introduced invalid AC annotation: unresolved target @my-spec at
+          tests/ac-annotation-identifier-format.test.ts:207."
+        name: kspec validate completeness
+        required: true
+        runner: kspec validate
+        created_at: 2026-04-28T07:01:36.664Z
+        completed_at: 2026-04-28T07:01:36.664Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit code 0. Summary: 2301/2301 test suites passed; 8447/8452 tests passed with 5
+          skipped. Full log: /tmp/kspec-test-cache/01KQ9DKTK94ND4ZCX3C79HS9T3/98174a26820bec23.log"
+        name: npm test
+        required: true
+        runner: npm test
+        created_at: 2026-04-28T07:01:40.773Z
+        completed_at: 2026-04-28T07:01:40.773Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: git diff --check 336a0ea4060ea5a7fa44574d1a67476c7bc36ef8...HEAD produced no whitespace
+          errors.
+        name: git diff check
+        required: true
+        runner: git diff --check
+        created_at: 2026-04-28T07:01:44.005Z
+        completed_at: 2026-04-28T07:01:44.005Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, src/parser/validate.ts,
+          tests/ac-annotation-identifier-format.test.ts, tests/ac-annotation-validation.test.ts,
+          kspec.config.yaml, prior review @01KQ9AZC. Commands run: kspec task get, kspec item get
+          for @ac-annotation-identifier-format and @test-annotation-sweep, kspec review
+          get/for-task, git diff, rg AC annotations, kspec validate --completeness --warnings-ok,
+          git diff --check, npm test. Claims verified: prior blocker was partially addressed by
+          moving five intended AC annotations into a non-excluded file, but validation still reports
+          an unintended unresolved annotation at line 207. Categories searched: correctness, AC
+          coverage, test quality, fixture false positives, integration with coverage exclude
+          config."
+        name: review evidence log
+        required: true
+        runner: manual review
+        created_at: 2026-04-28T07:01:47.941Z
+        completed_at: 2026-04-28T07:01:47.941Z
     events:
       - _ulid: 01KQ9DNHEJKEX27M4XPF3BP06N
         actor: Jacob Chapel
@@ -171462,9 +171515,53 @@ reviews:
         payload:
           thread_ulid: 01KQ9DR4BE4AMWF32DKYNT67VF
         timestamp: 2026-04-28T06:52:42.673Z
+      - _ulid: 01KQ9E9DZ2DQ2B4H250YBTTCKV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate completeness
+        timestamp: 2026-04-28T07:01:37.890Z
+      - _ulid: 01KQ9E9HZK5T3D01RJJ2ZSEXN5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-28T07:01:42.003Z
+      - _ulid: 01KQ9E9N9JTVSSTP5EQ2WX6R4J
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: git diff check
+        timestamp: 2026-04-28T07:01:45.394Z
+      - _ulid: 01KQ9E9S46GXTWW2ERE5FXZ4XA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-28T07:01:49.318Z
+      - _ulid: 01KQ9E9WQ0MWK2ABGQM2V47B31
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-28T07:01:52.992Z
+      - _ulid: 01KQ9E9WQ0741FV12AFDWAN7RK
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-28T07:01:52.993Z
     examined_commit: 1fdb1ea369cf04108846566b3b8ce0e5ce57096f
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -171541,7 +171638,14 @@ reviews:
               marker string so this non-excluded file only exposes intentional real AC annotations."
             created_at: 2026-04-28T06:52:41.351Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: automated-reviewer
+        created_at: 2026-04-28T07:01:52.992Z
     created_at: 2026-04-28T06:50:46.098Z
-    updated_at: 2026-04-28T06:52:41.351Z
+    updated_at: 2026-04-28T07:01:52.992Z
     notes: []
