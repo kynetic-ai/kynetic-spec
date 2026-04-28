@@ -43031,72 +43031,63 @@ plans:
     content: |
       # Default Session Reflection Reliability
 
-      ## Specs
+      ## Existing Spec Updates
+
+      This proposal intentionally extends the existing owning specs instead of
+      introducing parallel requirements. The behavior spans four established
+      areas:
+
+      - `@multi-turn-session-lifecycle` owns session idle/grace/auto-close
+        behavior.
+      - `@default-project-agents-and-conventions` owns the behavior of agents
+        created by kspec setup defaults.
+      - `@default-session-reflection-hook` owns first-idle reflection behavior.
+      - `@single-command-version-upgrade` owns setup/upgrade parity for existing
+        projects.
+
+      Proposed changes:
 
       ```yaml
-      - title: Session Idle Hook Promptability
-        slug: session-idle-hook-promptability
-        type: requirement
-        parent: "@agent-definitions"
-        tags: [dispatch, sessions, hooks, reflection]
-        description: |
-          Agent sessions that emit idle events remain promptable for the idle
-          grace window so enabled session-idle hooks can enqueue follow-up
-          prompts before auto-close tears the session down. This keeps
-          same-session hook actions, including the default reflection prompt,
-          from racing against session cleanup.
-        acceptance_criteria:
-          - id: ac-idle-grace-prompt-window
+      - spec_ref: "@multi-turn-session-lifecycle"
+        add_acceptance_criteria:
+          - id: ac-idle-hook-prompt-window
             given: |
-              An agent session has emitted a session.idle event and auto-close
-              is enabled
+              An auto-closing agent session has emitted a session.idle event
             when: |
-              A session-idle hook enqueues a prompt before the configured idle
-              grace window elapses
+              A matching session.idle hook queues a prompt during the idle
+              grace window
             then: |
-              The prompt is accepted for the same session instead of being
-              rejected as inactive
-          - id: ac-default-reflection-has-prompt-window
+              The session accepts the prompt instead of rejecting it as inactive
+
+      - spec_ref: "@default-project-agents-and-conventions"
+        add_acceptance_criteria:
+          - id: ac-default-agents-reflection-promptable
             given: |
-              A project uses kspec-created default agents together with the
+              A project uses kspec-created default dispatch agents and the
               default session reflection hook
             when: |
               A default agent emits its first session.idle event
             then: |
-              The agent's effective idle grace window is sufficient for the
-              default reflection prompt to be enqueued before auto-close
+              The default reflection prompt is accepted before automatic close
 
-      - title: Default Reflection Scaffold Parity
-        slug: default-reflection-scaffold-parity
-        type: requirement
-        parent: "@agent-definitions"
-        tags: [setup, upgrade, hooks, reflection]
-        description: |
-          kspec creates the default session reflection hook with the same
-          behavior regardless of whether the hook is introduced during fresh
-          setup or during an upgrade of an existing project. The scaffolded
-          hook targets session idle events, queues the standard reflection
-          prompt back into the same session, and only runs for the first idle
-          event of an invocation.
-        acceptance_criteria:
-          - id: ac-upgrade-hook-matches-setup
+      - spec_ref: "@single-command-version-upgrade"
+        add_acceptance_criteria:
+          - id: ac-default-reflection-hook-first-idle-on-upgrade
             given: |
-              A project does not yet have the scaffolded default session
+              An existing project does not have the scaffolded default session
               reflection hook
             when: |
-              kspec upgrade creates that hook
+              kspec upgrade creates the hook
             then: |
-              The created hook has the same trigger, filter, action, and
-              enabled-state semantics as the hook created by fresh setup
-          - id: ac-first-idle-only
-            given: |
-              A scaffolded default session reflection hook handles idle events
-              from a multi-turn invocation
-            when: |
-              The invocation emits more than one session.idle event
-            then: |
-              The hook action is eligible only for the first idle event
+              Later idle events from the same invocation are not eligible for
+              the scaffolded reflection action
       ```
+
+      No new acceptance criterion is required on
+      `@default-session-reflection-hook`: it already promises first-idle-only
+      behavior via `ac-fires-once-per-invocation`. The task below fixes the
+      upgrade path so that existing spec promise is honored when the hook is
+      created by `kspec upgrade`, not only by fresh setup.
 
       ## Tasks
 
@@ -43107,58 +43098,64 @@ plans:
         slug: task-default-session-reflection-reliability
         priority: 1
         tags: [dispatch, sessions, setup, upgrade, hooks, reflection]
-        spec_ref: "@session-idle-hook-promptability"
+        spec_ref: "@multi-turn-session-lifecycle"
         description: |
-          Fix the default session reflection race where the session.idle hook
+          Fix the default session reflection race where a session.idle hook
           fires but its session_prompt action can lose to auto-close and fail
-          with an inactive-session error. Keep this task self-contained: do not
-          rely on chat history or a particular affected project.
+          because the session is already inactive. Keep this task
+          self-contained: do not rely on chat history or a particular affected
+          project.
 
           Why:
           - kspec currently has a runtime fallback idle grace that is too short
             for post-idle session_prompt hooks under realistic dispatch timing.
-          - Default dispatch agents created by setup do not visibly carry
-            session grace configuration, so projects can look correctly
-            scaffolded while still depending on the too-short fallback.
+          - Default dispatch agents created by setup can appear correctly
+            scaffolded while still depending on that too-short fallback for
+            default reflection promptability.
           - setup-created default-session-reflect hooks include the first-idle
             turn_count filter, but upgrade-created hooks do not, even though
             @default-session-reflection-hook ac-fires-once-per-invocation
             already promises once-per-invocation reflection.
 
           What:
-          - Raise the shared runtime fallback for session-idle hook grace from
-            the current 100 ms to 5000 ms. Keep the value centralized so setup,
-            upgrade, and runtime behavior do not drift.
-          - Ensure kspec-scaffolded default dispatch agents have session mode
-            auto_close and an idle_grace_period_ms of 5000, and ensure the
-            default-agent scaffold/save path preserves that session block.
-          - Update upgrade-created default-session-reflect hooks so newly
-            scaffolded hooks include filter: { turn_count: 1 }, matching the
-            setup-created hook and @default-session-reflection-hook
-            ac-fires-once-per-invocation.
-          - If an existing default-session-reflect hook is already present,
-            preserve user-customized hooks. Only normalize an existing hook's
-            missing turn_count filter if the implementation can identify it as
-            the unmodified kspec default; otherwise report that the hook was
-            left unchanged for manual review.
+          - Raise the centralized default idle grace used for session.idle hook
+            promptability from the current 100 ms to 5000 ms. The default must
+            apply when an agent does not override idle_grace_period_ms and a
+            same-session idle hook may queue a prompt.
+          - Ensure kspec-created default dispatch agents get the same effective
+            5000 ms idle grace behavior after fresh setup. Prefer a single
+            source of truth so runtime fallback, setup defaults, and future
+            scaffold code do not drift.
+          - If explicit session blocks are used to make the scaffolded default
+            behavior visible in metadata, update src/cli/commands/setup-defaults.ts
+            so DefaultAgentDef and the saved agentData preserve session mode
+            auto_close and idle_grace_period_ms 5000 for dispatch-capable
+            default agents.
+          - Update src/cli/commands/upgrade.ts where it creates a missing
+            default-session-reflect hook so newly scaffolded hooks include the
+            first-idle filter matching the setup-created hook and
+            @default-session-reflection-hook ac-fires-once-per-invocation.
+          - Preserve existing user intent: do not recreate default agents/hooks
+            that kspec records as deliberately removed, and do not overwrite an
+            existing default-session-reflect hook during this task. Any repair
+            of already-existing customized or legacy hooks belongs in a
+            separate migration proposal.
           - Align existing spec text if needed rather than creating duplicate
-            behavioral promises: @multi-turn-session-lifecycle owns idle grace
-            semantics, @default-project-agents-and-conventions owns default
-            agent scaffolding, @default-session-reflection-hook owns first-idle
-            reflection behavior, and @single-command-version-upgrade owns
-            upgrade parity.
+            behavioral promises. In particular, extend the owning specs listed
+            above and keep validation/doctor warning behavior out of this task.
 
           How:
           - Update src/agent-runtime/invocation.ts so DEFAULT_IDLE_GRACE_MS is
             the healthy default used when session.idle hooks exist and an agent
             does not override idle_grace_period_ms.
-          - Update src/cli/commands/setup-defaults.ts so DefaultAgentDef and
-            the scaffolded agentData object carry through session
-            configuration. Apply the explicit session block to default agents
-            that can be launched by dispatch.
-          - Update src/cli/commands/upgrade.ts where default-session-reflect is
-            scaffolded so the hook shape includes the same first-idle filter as
-            setup's ensureDefaultReflectionHook path.
+          - Update the default-agent scaffold path only as much as needed for
+            fresh setup to satisfy @default-project-agents-and-conventions
+            ac-default-agents-reflection-promptable. If explicit session blocks
+            are emitted, ensure setup-defaults preserves them from definition
+            through saved metadata.
+          - Update the upgrade scaffold for default-session-reflect so a newly
+            created hook has filter.turn_count equal to 1. Reuse the setup-side
+            hook shape if practical so setup and upgrade cannot drift again.
           - Keep existing first-run/user-removal behavior intact: setup and
             upgrade must not recreate or overwrite default agents/hooks that a
             user deliberately removed or customized.
@@ -43167,50 +43164,61 @@ plans:
           - Add or update a dispatch/invocation regression test that drives an
             idle session with a session.idle -> session_prompt hook and proves
             a prompt queued within the default grace window is accepted for the
-            same session rather than failing with the inactive-session error.
-          - Add or update setup default-agent tests so a fresh setup produces
-            dispatch-capable default agents with the expected session mode and
-            idle grace configuration after reading the generated meta data.
+            same session rather than failing with an inactive-session error.
+          - Add or update setup default-agent tests so a fresh setup followed by
+            reading the generated meta data demonstrates that default dispatch
+            agents satisfy the reflection promptability behavior. If the chosen
+            implementation emits explicit session metadata, assert the generated
+            metadata shows mode auto_close and idle_grace_period_ms 5000.
           - Add or update upgrade command tests so a project missing
-            default-session-reflect receives a hook whose filter.turn_count is
-            1, and so an existing customized hook is not overwritten.
+            default-session-reflect receives a hook whose behavior is first-idle
+            only. The observable metadata check should confirm the generated
+            hook has filter.turn_count equal to 1.
+          - Add or preserve upgrade tests proving user intent is respected: a
+            previously removed default-session-reflect hook is not recreated,
+            and an existing hook is not overwritten by this task.
           - Keep tests behavioral: exercise setup/upgrade/runtime outputs and
             hook execution behavior. Do not add tests that merely search source
             files for literal strings.
 
-          Covers: @session-idle-hook-promptability ac-idle-grace-prompt-window,
-          @session-idle-hook-promptability ac-default-reflection-has-prompt-window,
-          @default-reflection-scaffold-parity ac-upgrade-hook-matches-setup,
-          @default-reflection-scaffold-parity ac-first-idle-only,
-          @default-session-reflection-hook ac-fires-once-per-invocation.
+          Covers:
+          - @multi-turn-session-lifecycle ac-idle-hook-prompt-window
+          - @default-project-agents-and-conventions ac-default-agents-reflection-promptable
+          - @default-session-reflection-hook ac-fires-once-per-invocation
+          - @single-command-version-upgrade ac-default-reflection-hook-first-idle-on-upgrade
       ```
 
       ## Implementation Notes
 
-      - Existing coverage is partial. @default-session-reflection-hook already
+      - Existing coverage is partial. `@default-session-reflection-hook` already
         promises first-idle-only behavior, and a completed historical task
-        restricted the setup-created hook to turn_count 1. The gap is that the
-        upgrade scaffold still creates the same named hook without that filter.
+        restricted the setup-created hook to `turn_count: 1`. The gap is that
+        the upgrade scaffold still creates the same named hook without that
+        filter.
       - The multi-turn session lifecycle plan described a default 5 second
         grace period, but current runtime code still falls back to 100 ms when
-        session.idle hooks exist and agents do not define idle_grace_period_ms.
+        session.idle hooks exist and agents do not define
+        `idle_grace_period_ms`.
       - The validation/doctor improvement is intentionally not part of this
         implementation task. It is tracked separately in inbox item
-        @01KQ8PRY: validate/doctor should warn about risky session.idle hooks
+        `@01KQ8PRY`: validate/doctor should warn about risky session.idle hooks
         whose session_prompt action depends on missing or too-short idle grace.
       - This plan should be reviewed and approved before deriving tasks. Do not
         dispatch implementation from this proposal until the user explicitly
         approves the scope.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/default-session-reflection-reliability.md
     created_at: 2026-04-28T00:16:56.548Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KQ8QJ9JA5E6CJKBP8V3M45HH
+        content: Address plan-reviewer feedback
+        author: Jacob Chapel
+        created_at: 2026-04-28T00:24:31.050Z
   - _ulid: 01KQ8QGF79QZHSBAVFZTCPYBTG
     slugs:
       - plan-default-session-reflection-reliability-1
