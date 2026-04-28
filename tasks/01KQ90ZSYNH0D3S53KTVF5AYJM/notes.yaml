@@ -1,1 +1,75 @@
-notes: []
+notes:
+  - _ulid: 01KQ91SKY0AKASA7FN2BVD7VGF
+    content: >-
+      Renamed 30 non-ac-* AC IDs across 7 specs to ac-* format. All matching code/test annotations
+      updated.
+
+
+      Mappings (old -> new):
+
+
+      @cmd-clone-for-testing (5 ACs):
+        creates-isolated-copy -> ac-creates-isolated-copy
+        sets-up-worktree -> ac-sets-up-worktree
+        checkout-branch -> ac-checkout-branch
+        temp-dir-default -> ac-temp-dir-default
+        json-output -> ac-json-output
+
+      @cli-exit-codes (3 ACs):
+        exit-code-constants -> ac-exit-code-constants
+        exit-codes-documented -> ac-exit-codes-documented
+        consistent-usage -> ac-consistent-usage
+
+      @cmd-log (3 ACs):
+        list-all-tracked -> ac-list-all-tracked
+        passthrough-args -> ac-passthrough-args
+        passthrough-invalid -> ac-passthrough-invalid
+
+      @stale-status-detection (5 ACs):
+        parent-pending-children-done -> ac-parent-pending-children-done
+        spec-implemented-no-task -> ac-spec-implemented-no-task
+        task-done-spec-not-started -> ac-task-done-spec-not-started
+        staleness-flag -> ac-staleness-flag
+        staleness-exit-code -> ac-staleness-exit-code
+
+      @cmd-setup (3 ACs):
+        detect-existing-repo -> ac-detect-existing-repo
+        auto-worktree-flag -> ac-auto-worktree-flag
+        worktree-already-exists -> ac-worktree-already-exists
+
+      @ralph-adapter-validation (3 ACs):
+        valid-adapter-proceeds -> ac-valid-adapter-proceeds
+        invalid-adapter-error -> ac-invalid-adapter-error
+        validation-before-spawn -> ac-validation-before-spawn
+
+      @multi-ref-batch (8 ACs):
+        basic-multi-ref-syntax -> ac-basic-multi-ref-syntax
+        backward-compatibility -> ac-backward-compatibility
+        mutual-exclusion-error -> ac-mutual-exclusion-error
+        partial-failure-handling -> ac-partial-failure-handling
+        human-output-format -> ac-human-output-format
+        json-output-format -> ac-json-output-format
+        empty-refs-error -> ac-empty-refs-error
+        ref-resolution-uses-existing -> ac-ref-resolution-uses-existing
+
+      Source/test files updated (12 files):
+        src/cli/commands/clone-for-testing.ts (5 annotations: ac-1..ac-5 -> descriptive ac-*)
+        src/cli/exit-codes.ts (2 annotations)
+        src/cli/commands/log.ts (2 annotations)
+        src/cli/commands/validate.ts (7 annotations: ac-1..ac-5 -> descriptive ac-*)
+        src/cli/commands/task.ts (7 annotations: ac-N -> descriptive ac-*)
+        src/cli/batch.ts (8 annotations: ac-N -> descriptive ac-*)
+        tests/clone-for-testing.test.ts (7 annotations)
+        tests/exit-codes.test.ts (11 annotations)
+        tests/validate-exit-codes.test.ts (3 annotations)
+        tests/integration.test.ts (10 annotations)
+        tests/staleness.test.ts (5 annotations)
+
+      Not changed (already valid):
+        @cmd-setup ac-1 — already ac-* format, unchanged
+        @cmd-log ac-1..ac-5 — already ac-* format, unchanged
+        @trait-multi-ref-batch ac-1..ac-8 — trait ACs already ac-* format
+        @ralph-adapter-validation — no existing code annotations found
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T03:23:16.800Z
