@@ -168839,6 +168839,18 @@ reviews:
         runner: manual-review
         created_at: 2026-04-28T00:28:16.265Z
         completed_at: 2026-04-28T00:28:16.265Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Proposed ACs are atomic and observable enough for derivation: prompt accepted before
+          auto-close, default-agent reflection prompt accepted before auto-close, and
+          upgrade-created hook excludes later idle events from the scaffolded action."
+        name: AC quality
+        required: true
+        runner: manual-review
+        created_at: 2026-04-28T00:28:28.825Z
+        completed_at: 2026-04-28T00:28:28.825Z
     events:
       - _ulid: 01KQ8QR1HTN76715J5PC6VYTJW
         actor: Jacob Chapel
@@ -168867,6 +168879,13 @@ reviews:
           status: pass
           name: Spec hierarchy and overlap
         timestamp: 2026-04-28T00:28:17.420Z
+      - _ulid: 01KQ8QSJW7DJPS899ANDP0DBPM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC quality
+        timestamp: 2026-04-28T00:28:29.959Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -168879,5 +168898,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T00:27:39.454Z
-    updated_at: 2026-04-28T00:28:16.265Z
+    updated_at: 2026-04-28T00:28:28.825Z
     notes: []
