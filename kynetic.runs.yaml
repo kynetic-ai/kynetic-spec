@@ -33384,9 +33384,22 @@ runs:
     completed_at: 2026-04-28T07:04:51.867Z
   - _ulid: 01KQ9ESHK2MM6GQJT50SK51TTF
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-28T07:10:25.890Z
+        completed_at: 2026-04-28T07:12:07.997Z
+        notes: "Session gate: Worked on fix cycle for @01KQ99Z7HJ34SMZNGBBE1BTXRD. Fixed malformed inline
+          trait object in meta catalog via 10-step atomic kspec batch. What worked: kspec batch
+          atomicity, --dry-run validation, specific review feedback. Friction: no item move/reparent
+          command (already tracked in inbox 01KJP2PB), previous worker confused by node dist vs
+          kspec validate discrepancy."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-28T07:12:07.997Z
+        completed_at: 2026-04-28T07:12:07.997Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-28T07:10:25.890Z
