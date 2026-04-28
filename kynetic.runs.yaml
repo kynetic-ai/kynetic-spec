@@ -33041,7 +33041,7 @@ runs:
     completed_at: 2026-04-28T05:34:21.278Z
   - _ulid: 01KQ9AH4DJRWGFPR122QDV5B38
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33076,7 +33076,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-28T05:57:06.769Z
-        completed_at: 2026-04-28T05:57:06.769Z
+        completed_at: 2026-04-28T05:57:21.915Z
+        notes: "Proposal for untracked friction: Capture an inbox item to clarify detached reviewer snapshot
+          shadow-state expectations. It would document that .kspec may not be present as a normal
+          filesystem worktree in detached review snapshots and that reviewers should use kspec
+          CLI/review commands rather than direct git -C .kspec inspection. Benefit: prevents
+          reviewers from misclassifying expected snapshot layout as broken shadow state. Scope:
+          small docs/instructions update, exact source location to triage."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-28T05:57:21.915Z
+        completed_at: 2026-04-28T05:57:21.915Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T05:55:55.954Z
