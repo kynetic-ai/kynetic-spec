@@ -170122,6 +170122,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-28T05:00:30.510Z
+      - _ulid: 01KQ97C6XEFZZGKVWW484YXBJZ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQ97C5R6C0TDBGT57EXVRWES
+        timestamp: 2026-04-28T05:00:48.942Z
     examined_commit: 6a54d8669fac304c6ed57cb57298159a12bfbc58
     external_links: []
     lifecycle_state: open
@@ -170131,8 +170138,31 @@ reviews:
       content_hash: ""
       ref: "@01KQ93NEDWGRGWMG1VM1FBB94S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQ97C5R6C0TDBGT57EXVRWES
+        entries:
+          - _ulid: 01KQ97C5R68ZY00YAS9F89XM89
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/schema/common.ts, src/schema/spec.ts, src/cli/commands/item.ts,
+              src/strings/errors.ts, tests/ac-id-format.test.ts, tests/integration.test.ts,
+              src/parser/yaml.ts, src/parser/validate.ts, src/cli/commands/validate.ts.
+
+              Commands run: kspec task get, kspec item get, kspec review add/open, git
+              diff/stat/name-status, rg AC annotations, kspec validate, git diff --check, npm test.
+
+              Claims verified: shared AC id pattern/schema is applied to AcceptanceCriterionSchema
+              and CLI add/set rejection happens before updateSpecItem; generated IDs remain ac-N;
+              tests are behavioral and annotated for all five ACs.
+
+              Categories searched: correctness, schema/write boundaries, CLI error handling,
+              mutation-before-validation, test quality/source-scanning, fixture impact, integration
+              with item patch/plan parsing. No branch-introduced blockers found.
+            created_at: 2026-04-28T05:00:47.750Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-28T04:49:51.919Z
-    updated_at: 2026-04-28T05:00:29.334Z
+    updated_at: 2026-04-28T05:00:47.750Z
     notes: []
