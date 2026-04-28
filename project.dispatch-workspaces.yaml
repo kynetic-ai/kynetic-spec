@@ -15020,7 +15020,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-28T08:11:30.167Z
+      updated_at: 2026-04-28T08:11:32.253Z
     integration:
       status: pending
       detail: null
@@ -15029,25 +15029,20 @@ workspaces:
       target_branch: dev
       target_commit: 9dae4c027848447342bfb174399cd3d925395b15
       updated_at: 2026-04-28T08:11:30.167Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KQ93NFA9JZMWMAR8QM1NJPMK"
     task_slug: task-ac-id-format-final-gate
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T07:56:44.221Z
-      last_reconciled_at: 2026-04-28T08:11:30.167Z
+      last_reconciled_at: 2026-04-28T08:11:32.253Z
       created_at: 2026-04-28T07:37:46.746Z
-      updated_at: 2026-04-28T08:11:30.167Z
+      updated_at: 2026-04-28T08:11:32.253Z
     workspace_id: dispatch-workspace-01KQ93NFA9JZMWMAR8QM1NJPMK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 6bbe44ebae65184677ab20dfbf89096a178396ca
-        last_seen_at: 2026-04-28T07:56:15.391Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-id-format-final-gate-01kq93nf-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-ac-id-format-final-gate/01kq93nf
