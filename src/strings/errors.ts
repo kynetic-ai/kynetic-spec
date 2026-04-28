@@ -121,6 +121,10 @@ export const validationErrors = {
   unknownFields: (fields: string[]) => `Unknown field(s): ${fields.join(", ")}`,
   invalidPatchDataWithIssues: (issues: string) => `Invalid patch data: ${issues}`,
 
+  // AC id format
+  invalidAcIdFormat: (id: string) =>
+    `Invalid AC ID "${id}": must use ac-prefixed kebab-case format (e.g. "ac-1", "ac-my-criterion")`,
+
   // Constraint validation
   priorityOutOfRange: "Priority must be between 1 and 5",
   invalidObservationType: (type: string) => `Invalid observation type: ${type}`,

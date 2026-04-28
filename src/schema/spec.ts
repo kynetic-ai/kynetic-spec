@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {
+  AcIdSchema,
   DateTimeSchema,
   ImplementationStatusSchema,
   ItemTypeSchema,
@@ -23,7 +24,7 @@ export const StatusSchema = z.object({
  * Acceptance criteria in Given/When/Then format
  */
 export const AcceptanceCriterionSchema = z.object({
-  id: z.string(),
+  id: AcIdSchema,
   given: z.string(),
   when: z.string(),
   then: z.string(),

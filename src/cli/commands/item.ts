@@ -41,7 +41,7 @@ import type {
   SpecItemInput,
 } from "../../schema/index.js";
 import { ItemTypeSchema, SpecItemPatchSchema } from "../../schema/index.js";
-import { ImplementationStatusSchema, MaturitySchema } from "../../schema/common.js";
+import { acIdPattern, ImplementationStatusSchema, MaturitySchema } from "../../schema/common.js";
 import { errors } from "../../strings/errors.js";
 import { fieldLabels, sectionHeaders } from "../../strings/labels.js";
 import { formatMatchedFields, grepItem } from "../../utils/grep.js";
@@ -2006,6 +2006,12 @@ Examples:
         // Determine ID
         const acId = options.id || generateNextAcId(existingAc);
 
+        // Validate AC ID format
+        if (!acIdPattern.test(acId)) {
+          error(errors.validation.invalidAcIdFormat(acId));
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
         // Check for duplicate ID
         if (existingAc.some((ac) => ac.id === acId)) {
           const itemRef = item.slugs[0] || refIndex.shortUlid(item._ulid);
@@ -2060,6 +2066,12 @@ Examples:
         if (!options.id && !options.given && !options.when && !options.then) {
           warn("No updates specified");
           return;
+        }
+
+        // Validate new AC ID format if renaming
+        if (options.id && !acIdPattern.test(options.id)) {
+          error(errors.validation.invalidAcIdFormat(options.id));
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
         // Check for duplicate ID if renaming
