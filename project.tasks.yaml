@@ -27285,7 +27285,7 @@
   type: task
   spec_ref: "@multi-turn-session-lifecycle"
   plan_ref: "@plan-default-session-reflection-reliability"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-default-session-reflection-spec-updates"
@@ -27301,4 +27301,5 @@
   todos_count: 0
   created_at: 2026-04-28T00:58:42.030Z
   started_at: 2026-04-28T01:20:51.175Z
+  submitted_at: 2026-04-28T01:42:39.954Z
   automation: eligible
