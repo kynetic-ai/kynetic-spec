@@ -14313,18 +14313,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-normalize-catalog-ac-ids-and-annotations/01kq93ne
-    canonical_branch_head: ed751cdf902b61295b12b311c7eb34c3d4b76851
+    canonical_branch_head: 9ece11f41336ff3bf1552e8d2ab3fddb1dbbf8f4
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-28T05:19:06.538Z
+      updated_at: 2026-04-28T05:41:30.014Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-28T05:19:31.198Z
+      updated_at: 2026-04-28T05:41:30.014Z
     integration:
       status: pending
       detail: null
@@ -14332,7 +14332,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ed751cdf902b61295b12b311c7eb34c3d4b76851
-      updated_at: 2026-04-28T05:19:06.538Z
+      updated_at: 2026-04-28T05:41:30.014Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQ93NEQHAYY4Y1MHA64M9FX2"
@@ -14340,9 +14340,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T05:19:31.198Z
-      last_reconciled_at: 2026-04-28T05:19:31.198Z
+      last_reconciled_at: 2026-04-28T05:41:30.014Z
       created_at: 2026-04-28T05:19:06.538Z
-      updated_at: 2026-04-28T05:19:31.198Z
+      updated_at: 2026-04-28T05:41:30.014Z
     workspace_id: dispatch-workspace-01KQ93NEQHAYY4Y1MHA64M9FX2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
