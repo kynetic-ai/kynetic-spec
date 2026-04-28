@@ -14866,7 +14866,7 @@ workspaces:
         head: f60d02714d3f2c5968fd6410f35a091341bde765
         last_seen_at: 2026-04-28T07:11:05.680Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-meta-catalog-schema-error-in-traits-field-01kq99z7
-  - active_role: worker
+  - active_role: null
     base_branch_point: 9dae4c027848447342bfb174399cd3d925395b15
     bootstrap:
       status: succeeded
@@ -15194,12 +15194,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-28T07:55:37.180Z
+      updated_at: 2026-04-28T07:56:09.336Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-28T07:55:37.180Z
+      updated_at: 2026-04-28T07:56:09.336Z
     integration:
       status: pending
       detail: null
@@ -15207,17 +15207,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9dae4c027848447342bfb174399cd3d925395b15
-      updated_at: 2026-04-28T07:55:37.180Z
-    lifecycle_state: active
+      updated_at: 2026-04-28T07:56:09.336Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KQ93NFA9JZMWMAR8QM1NJPMK"
     task_slug: task-ac-id-format-final-gate
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T07:38:10.799Z
-      last_reconciled_at: 2026-04-28T07:55:37.180Z
+      last_reconciled_at: 2026-04-28T07:56:09.336Z
       created_at: 2026-04-28T07:37:46.746Z
-      updated_at: 2026-04-28T07:55:37.180Z
+      updated_at: 2026-04-28T07:56:09.336Z
     workspace_id: dispatch-workspace-01KQ93NFA9JZMWMAR8QM1NJPMK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
