@@ -169172,7 +169172,18 @@ reviews:
     slugs: []
     title: Review default session reflection spec updates
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2282 suites, 8393 tests passed, 5 skipped, 8398 total. Log:
+          /tmp/kspec-test-cache/01KQ8T0BPDS72R9Q5KAMB40T6H/57a74942ed55b7e1.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-28T01:17:55.693Z
+        completed_at: 2026-04-28T01:17:55.693Z
     events:
       - _ulid: 01KQ8T1AEMVEYDFMD124417AQN
         actor: Jacob Chapel
@@ -169187,6 +169198,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-28T01:07:57.272Z
+      - _ulid: 01KQ8TM498A7XC1AHT6BVDVPPY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-28T01:17:56.904Z
     examined_commit: bcf5b7f55ab4a5fd47c2fa3fc5676b4c816e3ae7
     external_links: []
     lifecycle_state: open
@@ -169199,5 +169217,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T01:07:40.628Z
-    updated_at: 2026-04-28T01:07:56.015Z
+    updated_at: 2026-04-28T01:17:55.693Z
     notes: []
