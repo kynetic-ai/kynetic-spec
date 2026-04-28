@@ -170029,3 +170029,29 @@ reviews:
     created_at: 2026-04-28T03:39:23.020Z
     updated_at: 2026-04-28T03:40:29.150Z
     notes: []
+  - _ulid: 01KQ96R59FQ4QZSSRHQGMX4SBR
+    slugs: []
+    title: Review enforce AC identifier format
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQ96R59E5CHYAKS6CXANPFFJ
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-28T04:49:51.919Z
+    examined_commit: 6a54d8669fac304c6ed57cb57298159a12bfbc58
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQ93NEDWGRGWMG1VM1FBB94S"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-28T04:49:51.919Z
+    updated_at: null
+    notes: []

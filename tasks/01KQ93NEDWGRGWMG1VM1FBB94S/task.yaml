@@ -62,6 +62,7 @@ tags:
   - validation
   - cli
 vcs_refs: []
+review_ref: "@01KQ96R59FQ4QZSSRHQGMX4SBR"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-enforce-ac-id-format/01kq93ne
@@ -112,6 +113,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-28T04:47:17.093Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQ96R59FQ4QZSSRHQGMX4SBR"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-28T04:49:55.151Z
 created_at: 2026-04-28T03:55:57.244Z
 started_at: 2026-04-28T04:01:20.798Z
 submitted_at: 2026-04-28T04:47:17.092Z
