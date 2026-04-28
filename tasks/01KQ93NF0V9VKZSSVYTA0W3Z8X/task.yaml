@@ -52,7 +52,7 @@ tags:
   - coverage
   - tests
 vcs_refs: []
-review_ref: "@01KQ9DNHEJF1XF62XY855Y2MJ9"
+review_ref: "@01KQ9FNATV0J8F0BGH2NB2ZDV1"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-align-ac-annotation-format-tests/01kq93nf
@@ -217,6 +217,13 @@ history:
         previous: 2026-04-28T06:48:40.830Z
     command: task-submit
     timestamp: 2026-04-28T07:23:42.760Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQ9FNATV0J8F0BGH2NB2ZDV1"
+        previous: "@01KQ9DNHEJF1XF62XY855Y2MJ9"
+    command: review-link
+    timestamp: 2026-04-28T07:25:39.749Z
 created_at: 2026-04-28T03:55:57.851Z
 started_at: 2026-04-28T07:23:39.265Z
 submitted_at: 2026-04-28T07:23:42.760Z
