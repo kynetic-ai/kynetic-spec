@@ -1,1 +1,32 @@
-notes: []
+notes:
+  - _ulid: 01KQ8TYRVC530AJYK8TD32QX0H
+    content: |-
+      Approach: Three changes needed to satisfy the covered ACs:
+
+      1. invocation.ts: Raise DEFAULT_IDLE_GRACE_MS from 100ms to 5000ms.
+         This is the single source of truth used by dispatch.ts when no per-agent
+         idle_grace_period_ms is set and session.idle hooks exist.
+
+      2. setup-defaults.ts: Add explicit session config (mode: auto_close,
+         idle_grace_period_ms: 5000) to dispatch-capable default agents (task-worker,
+         pr-reviewer). This makes the intent visible in metadata and provides a
+         single source of truth. The DefaultAgentDef interface gets a session field.
+         The agentData saving flow preserves session through to saved metadata.
+
+      3. upgrade.ts: Add filter: { turn_count: 1 } to the hook created at line 1284.
+         Extract the hook shape from setup.ts so setup and upgrade cannot drift.
+         This fixes ac-fires-once-per-invocation for upgrade-created hooks and
+         satisfies ac-default-reflection-hook-first-idle-on-upgrade.
+
+      Tests:
+      - Multi-turn invocation: add test for idle-hook prompt within default grace window
+      - Setup defaults: add test for session config on scaffolded dispatch agents
+      - Upgrade command: add test for hook filter.turn_count === 1 on upgrade-created hook
+      - Preserve existing user-intent tests (already covered by existing tests)
+
+      Edge cases:
+      - Agents without dispatch rules (primary-dev, plan-reviewer) don't need session config
+      - Non-dispatch agents should not get session config to avoid unnecessary metadata
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T01:23:45.644Z
