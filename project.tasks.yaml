@@ -3286,12 +3286,11 @@
   spec_ref: "@pending-review-state"
   status: completed
   blocked_by: []
-  depends_on:
-    - "@task-state-transitions"
+  depends_on: []
   priority: 2
   tags:
     - tasks
-  notes_count: 3
+  notes_count: 5
   todos_count: 0
   created_at: 2026-01-20T02:13:28.713Z
   started_at: 2026-01-20T02:15:59.174Z
@@ -27304,4 +27303,23 @@
   started_at: 2026-04-28T01:20:51.175Z
   submitted_at: 2026-04-28T01:42:39.954Z
   completed_at: 2026-04-28T01:56:33.988Z
+  automation: eligible
+- _ulid: 01KQ90ZSYNH0D3S53KTVF5AYJM
+  slugs:
+    - task-normalize-ac-ids-and-annotations
+  title: Normalize AC ids and annotations to ac-* format
+  type: task
+  spec_ref: "@ac-annotation-integrity-reporting"
+  plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - validation
+    - spec-hygiene
+    - coverage
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-28T03:09:10.997Z
   automation: eligible

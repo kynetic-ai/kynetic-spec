@@ -1,0 +1,78 @@
+_ulid: 01KQ90ZSYNH0D3S53KTVF5AYJM
+slugs:
+  - task-normalize-ac-ids-and-annotations
+title: Normalize AC ids and annotations to ac-* format
+type: task
+description: >-
+  Follow-up from @plan-spec-catalog-health-and-validation-trust implementation validation.
+
+
+  Intent:
+
+  Normalize the remaining catalog acceptance criterion ids that do not use the ac-* prefix, and
+  update all matching AC annotations so validation can classify explicit AC coverage without relying
+  on mixed id conventions.
+
+
+  Why:
+
+  The validation-trust plan made invalid AC annotations explicit and reduced most annotation debt,
+  but parser behavior currently treats annotation tokens as AC ids only when they match ac-*. The
+  live catalog still contains valid AC ids such as creates-isolated-copy, exit-code-constants,
+  parent-pending-children-done, and related annotations. Those appear as blanket refs/no-credit even
+  when the annotation is meant to name a concrete AC. The agreed cleanup direction is to normalize
+  the ids and annotations to ac-* rather than broaden the parser around mixed legacy ids.
+
+
+  What:
+
+  - Identify every spec/trait acceptance criterion id that does not start with ac-.
+
+  - Rename each such id to a stable ac-* id that preserves the existing meaning.
+
+  - Update every code/test/docs annotation that references the old id to the new id.
+
+  - Preserve behavioral meaning; do not rewrite spec scope or create placeholder ACs.
+
+  - Pay special attention to currently known examples under @cmd-clone-for-testing, @cli-exit-codes,
+  @cmd-log, @stale-status-detection, @cmd-setup, @ralph-adapter-validation, and @multi-ref-batch.
+
+  - Add a task note summarizing all renamed ids as old -> new mappings.
+
+
+  Testing:
+
+  - Run kspec validate --completeness --warnings-ok and verify the remaining blanket_ref findings
+  caused by non-ac-prefixed ids are gone or explicitly explained.
+
+  - Run kspec validate --refs --warnings-ok.
+
+  - Run focused tests covering the touched annotation surfaces, at minimum clone-for-testing,
+  validate/completeness annotation scanning, and any CLI behavior whose annotations were renamed.
+
+  - Run npm test -- --run for the focused files touched by the annotation updates.
+
+
+  Out of scope:
+
+  - Broad missing-own-AC coverage cleanup beyond updating annotations that match renamed ids.
+
+  - Changing parser semantics to support arbitrary AC id tokens.
+
+  - Renaming AC ids that already use ac-* unless needed to resolve a direct collision.
+spec_ref: "@ac-annotation-integrity-reporting"
+meta_ref: null
+plan_ref: "@plan-spec-catalog-health-and-validation-trust"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - validation
+  - spec-hygiene
+  - coverage
+vcs_refs: []
+created_at: 2026-04-28T03:09:10.997Z
+todos: []
+automation: eligible

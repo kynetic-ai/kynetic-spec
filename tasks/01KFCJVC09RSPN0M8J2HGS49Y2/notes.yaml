@@ -121,3 +121,17 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-01-20T02:28:02.092Z
+  - _ulid: 01KQ90ZR6VPVY64HQA57J1RVVM
+    content: "Dependencies cleared (was: @task-state-transitions)"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-28T03:09:09.212Z
+  - _ulid: 01KQ90ZRYZGZAZZDN1RYD30DB3
+    content: Cleared stale unresolved depends_on @task-state-transitions after validation-trust
+      follow-up review. No task or item with that ref exists; @task-pending-review-state is
+      completed, its behavior is covered by @pending-review-state, and preserving the missing
+      historical dependency caused a current hard refs validation failure without adding actionable
+      ordering information.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-04-28T03:09:09.983Z

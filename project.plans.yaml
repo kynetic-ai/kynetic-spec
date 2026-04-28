@@ -43024,6 +43024,17 @@ plans:
           @task-validation-trust-final-gate. Review approval: @01KQ0HKVBVY6EGBGJTCHQFY29V."
         author: Jacob Chapel
         created_at: 2026-04-24T20:24:01.639Z
+      - _ulid: 01KQ90ZT93WE62730GWH5BSDNK
+        content: "Post-implementation validation follow-up: user approved fixing the newly visible hard refs
+          failure and creating a separate cleanup task for non-ac-prefixed AC ids/annotations.
+          Cleared stale unresolved dependency @task-state-transitions from
+          @task-pending-review-state because no such task/item exists and the task is completed
+          against @pending-review-state. Created @task-normalize-ac-ids-and-annotations to normalize
+          remaining non-ac-* AC ids and matching annotations, linked to
+          @ac-annotation-integrity-reporting. The ignored baseline artifact was only needed during
+          plan execution; durable baseline/final evidence remains in task notes."
+        author: Jacob Chapel
+        created_at: 2026-04-28T03:09:11.331Z
   - _ulid: 01KQ8Q4DQD3FY5357A6H6EVQMV
     slugs:
       - plan-default-session-reflection-reliability
