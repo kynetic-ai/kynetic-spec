@@ -1,0 +1,65 @@
+_ulid: 01KQ93NEQHAYY4Y1MHA64M9FX2
+slugs:
+  - task-normalize-catalog-ac-ids-and-annotations
+title: Normalize catalog AC ids and matching annotations
+type: task
+description: |
+  Bring the live catalog and coverage annotations into the required AC
+  id format, preserving behavior while eliminating mismatched legacy
+  tokens.
+
+  Why:
+  Existing projects may contain acceptance criterion ids or annotations
+  that predate the ac-prefixed convention. Once the format is enforced,
+  the current project catalog and its coverage annotations must agree on
+  the normalized ids so completeness findings represent real debt.
+
+  What:
+  - Inventory every spec and trait acceptance criterion id in the live
+    catalog.
+  - For each id that does not use the required format, choose a stable
+    ac-prefixed replacement that preserves the original meaning.
+  - Rename nonconforming catalog ids through kspec item AC commands or a
+    safe batch mutation path; do not hand-edit shadow YAML files.
+  - Update every coverage annotation, test fixture expectation, and
+    documentation example that names a renamed AC id.
+  - Add a task note listing every old id to new id mapping, grouped by
+    spec or trait ref.
+  - If the inventory finds that the catalog was already normalized by
+    prior work, record that result and continue with annotation repair.
+
+  How:
+  Use kspec CLI lookups and repository searches to build a complete
+  mapping before making changes. Treat annotations as claims that must
+  match actual catalog ids after the rename. Avoid broad missing-AC
+  coverage cleanup that is unrelated to renamed ids.
+
+  Testing:
+  - Run kspec validate --refs --warnings-ok.
+  - Run kspec validate --completeness --warnings-ok and verify that
+    blanket-ref findings caused by renamed non-prefixed ids are gone.
+  - Run focused tests for every touched annotation surface.
+  - Run the coverage annotation validation tests after annotation
+    updates.
+
+  Covers: @acceptance-criterion-id-format ac-stored-id-format,
+  @ac-annotation-identifier-format ac-valid-token-covers-ac,
+  @ac-annotation-identifier-format ac-bare-ref-no-token-credit,
+  @ac-annotation-integrity-reporting ac-valid-annotation-covers-target,
+  @ac-annotation-integrity-reporting ac-blanket-ref-does-not-cover.
+spec_ref: null
+plan_ref: "@plan-ac-id-format-normalization"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-enforce-ac-id-format"
+context: []
+priority: 1
+tags:
+  - spec-hygiene
+  - coverage
+  - tests
+vcs_refs: []
+created_at: 2026-04-28T03:55:57.553Z
+todos: []

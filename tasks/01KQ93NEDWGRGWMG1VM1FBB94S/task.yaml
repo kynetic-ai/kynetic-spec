@@ -1,0 +1,66 @@
+_ulid: 01KQ93NEDWGRGWMG1VM1FBB94S
+slugs:
+  - task-enforce-ac-id-format
+title: Enforce AC identifier format at catalog write boundaries
+type: task
+description: |
+  Enforce the required ac-prefixed kebab-case acceptance criterion id
+  format wherever kspec validates, creates, or renames acceptance
+  criteria.
+
+  Why:
+  Coverage annotations and completeness validation can only be
+  trustworthy when the catalog and annotation parser agree on the token
+  shape used for acceptance criterion ids. The catalog schema currently
+  accepts any string, while the annotation scanner only treats ac-*
+  tokens as explicit AC ids.
+
+  What:
+  - Add a reusable acceptance criterion id validator/pattern for the
+    required ac-prefixed kebab-case token format.
+  - Apply that validator to the acceptance criterion schema so persisted
+    spec and trait items with invalid AC ids fail schema validation.
+  - Apply the same validation to `kspec item ac add --id ...` before
+    the item is mutated.
+  - Apply the same validation to `kspec item ac set <ref> <ac-id>
+    --id ...` before the item is mutated.
+  - Keep automatic id generation on `kspec item ac add` producing ids
+    in the required format.
+  - Make the user-facing error identify that the id must use the
+    ac-prefixed kebab-case format.
+
+  How:
+  Prefer a single shared parser/schema helper for the id format so CLI
+  command validation, item schema validation, tests, and future import
+  paths do not drift. Do not introduce a broader parser that accepts
+  legacy non-prefixed ids as valid explicit AC ids.
+
+  Testing:
+  - Add schema tests for valid and invalid acceptance criterion ids.
+  - Add CLI tests proving `item ac add --id <invalid>` exits before
+    mutating the item.
+  - Add CLI tests proving `item ac set ... --id <invalid>` exits before
+    mutating the item.
+  - Add a CLI test proving generated ids still use the required format.
+  - Run the focused schema and item AC command tests.
+
+  Covers: @acceptance-criterion-id-format ac-stored-id-format,
+  @acceptance-criterion-id-format ac-invalid-stored-id-reported,
+  @acceptance-criterion-id-format ac-create-rejects-invalid-id,
+  @acceptance-criterion-id-format ac-rename-rejects-invalid-id,
+  @acceptance-criterion-id-format ac-generated-ids-conform.
+spec_ref: "@acceptance-criterion-id-format"
+plan_ref: "@plan-ac-id-format-normalization"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - schema
+  - validation
+  - cli
+vcs_refs: []
+created_at: 2026-04-28T03:55:57.244Z
+todos: []

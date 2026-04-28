@@ -1,0 +1,66 @@
+_ulid: 01KQ93NFA9JZMWMAR8QM1NJPMK
+slugs:
+  - task-ac-id-format-final-gate
+title: Final AC id format validation gate
+type: task
+description: |
+  Verify the AC id format enforcement work from both catalog and code
+  perspectives, then record the remaining validation state.
+
+  Why:
+  The work is only complete when the project both enforces the required
+  identifier format and no longer misclassifies renamed AC annotations as
+  blanket coverage claims.
+
+  What:
+  - Verify that every live spec and trait acceptance criterion id uses
+    the required format.
+  - Verify that no remaining completeness blanket-ref findings are caused
+    by annotations naming old non-prefixed AC ids.
+  - Verify that invalid AC id creation and rename attempts fail before
+    mutation.
+  - Verify that schema validation reports invalid persisted AC ids.
+  - Record remaining completeness warning categories and their owners in
+    a task note.
+  - If @ac-annotation-integrity-reporting satisfies its ACs after the
+    normalization, update its implementation status appropriately.
+
+  How:
+  Use kspec validation output, focused tests, and a small catalog scan.
+  Treat unrelated missing-own-AC coverage warnings as out of scope, but
+  explicitly separate them from AC id format failures.
+
+  Testing:
+  - Run kspec validate --refs --warnings-ok.
+  - Run kspec validate --alignment --warnings-ok.
+  - Run kspec validate --completeness --warnings-ok.
+  - Run the focused tests added or changed by this plan.
+  - Run npm run typecheck.
+
+  Covers: @acceptance-criterion-id-format ac-stored-id-format,
+  @acceptance-criterion-id-format ac-invalid-stored-id-reported,
+  @acceptance-criterion-id-format ac-create-rejects-invalid-id,
+  @acceptance-criterion-id-format ac-rename-rejects-invalid-id,
+  @acceptance-criterion-id-format ac-generated-ids-conform,
+  @ac-annotation-identifier-format ac-explicit-token-format,
+  @ac-annotation-identifier-format ac-valid-token-covers-ac,
+  @ac-annotation-identifier-format ac-bare-ref-no-token-credit,
+  @ac-annotation-integrity-reporting ac-valid-annotation-covers-target,
+  @ac-annotation-integrity-reporting ac-blanket-ref-does-not-cover.
+spec_ref: null
+plan_ref: "@plan-ac-id-format-normalization"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-normalize-catalog-ac-ids-and-annotations"
+  - "@task-align-ac-annotation-format-tests"
+context: []
+priority: 2
+tags:
+  - validation
+  - review
+  - spec-hygiene
+vcs_refs: []
+created_at: 2026-04-28T03:55:58.153Z
+todos: []

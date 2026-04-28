@@ -1,0 +1,56 @@
+_ulid: 01KQ93NF0V9VKZSSVYTA0W3Z8X
+slugs:
+  - task-align-ac-annotation-format-tests
+title: Align annotation parser tests and guidance with required AC id format
+type: task
+description: |
+  Make the annotation parser's tests and guidance state that explicit AC
+  references use ac-prefixed tokens.
+
+  Why:
+  The annotation scanner already treats ac-* tokens as explicit AC ids,
+  but tests and examples should make that contract unmistakable now that
+  the catalog enforces the same format.
+
+  What:
+  - Update parser comments and tests so examples use ac-prefixed
+    numeric or named ids.
+  - Add or adjust tests showing that an annotation with a non-prefixed
+    token after a spec ref does not create explicit AC coverage.
+  - Add or adjust tests showing that ac-prefixed named ids are parsed as
+    explicit AC references.
+  - Ensure test fixtures that intentionally contain invalid or blanket
+    annotations remain clearly scoped as invalid/blanket fixtures.
+
+  How:
+  Keep the parser behavior aligned with the catalog format. Do not make
+  the parser accept arbitrary identifier words as AC ids, because that
+  would make bare prose after a spec ref ambiguous and would weaken the
+  enforced format.
+
+  Testing:
+  - Run the AC annotation parser and completeness validation tests.
+  - Run kspec validate --completeness --warnings-ok and confirm the
+    remaining invalid annotation categories are expected.
+
+  Covers: @ac-annotation-identifier-format ac-explicit-token-format,
+  @ac-annotation-identifier-format ac-valid-token-covers-ac,
+  @ac-annotation-identifier-format ac-bare-ref-no-token-credit,
+  @test-annotation-sweep ac-annotation-format,
+  @test-annotation-sweep ac-no-blanket-credit.
+spec_ref: "@ac-annotation-identifier-format"
+plan_ref: "@plan-ac-id-format-normalization"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-enforce-ac-id-format"
+context: []
+priority: 2
+tags:
+  - validation
+  - coverage
+  - tests
+vcs_refs: []
+created_at: 2026-04-28T03:55:57.851Z
+todos: []

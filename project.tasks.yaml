@@ -27325,3 +27325,77 @@
   started_at: 2026-04-28T03:27:00.610Z
   submitted_at: 2026-04-28T03:27:01.345Z
   automation: manual_only
+- _ulid: 01KQ93NEDWGRGWMG1VM1FBB94S
+  slugs:
+    - task-enforce-ac-id-format
+  title: Enforce AC identifier format at catalog write boundaries
+  type: task
+  spec_ref: "@acceptance-criterion-id-format"
+  plan_ref: "@plan-ac-id-format-normalization"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - schema
+    - validation
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-28T03:55:57.244Z
+- _ulid: 01KQ93NEQHAYY4Y1MHA64M9FX2
+  slugs:
+    - task-normalize-catalog-ac-ids-and-annotations
+  title: Normalize catalog AC ids and matching annotations
+  type: task
+  plan_ref: "@plan-ac-id-format-normalization"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-enforce-ac-id-format"
+  priority: 1
+  tags:
+    - spec-hygiene
+    - coverage
+    - tests
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-28T03:55:57.553Z
+- _ulid: 01KQ93NF0V9VKZSSVYTA0W3Z8X
+  slugs:
+    - task-align-ac-annotation-format-tests
+  title: Align annotation parser tests and guidance with required AC id format
+  type: task
+  spec_ref: "@ac-annotation-identifier-format"
+  plan_ref: "@plan-ac-id-format-normalization"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-enforce-ac-id-format"
+  priority: 2
+  tags:
+    - validation
+    - coverage
+    - tests
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-28T03:55:57.851Z
+- _ulid: 01KQ93NFA9JZMWMAR8QM1NJPMK
+  slugs:
+    - task-ac-id-format-final-gate
+  title: Final AC id format validation gate
+  type: task
+  plan_ref: "@plan-ac-id-format-normalization"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-normalize-catalog-ac-ids-and-annotations"
+    - "@task-align-ac-annotation-format-tests"
+  priority: 2
+  tags:
+    - validation
+    - review
+    - spec-hygiene
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-04-28T03:55:58.153Z

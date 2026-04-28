@@ -7143,6 +7143,52 @@ requirements:
           acceptance-criteria coverage credit
         when: kspec validate evaluates completeness coverage
     tags: []
+    requirements:
+      - _ulid: 01KQ93NEBFF14YMVCMKPGGARA6
+        slugs:
+          - ac-annotation-identifier-format
+        title: AC Annotation Identifier Format
+        type: requirement
+        description: |
+          Coverage annotations name acceptance criteria using the same
+          ac-prefixed token format that catalog acceptance criteria use, so
+          annotation parsing and catalog validation agree on what counts as an
+          explicit acceptance-criterion reference.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A coverage annotation names a spec item or trait acceptance
+              criterion
+            id: ac-explicit-token-format
+            then: |
+              The acceptance criterion token is interpreted only when it uses
+              the required ac-prefixed format
+            when: |
+              completeness validation parses the annotation
+          - given: |
+              A coverage annotation names an existing acceptance criterion using
+              the required token format
+            id: ac-valid-token-covers-ac
+            then: |
+              The named acceptance criterion receives coverage credit from the
+              annotation
+            when: |
+              completeness validation computes acceptance-criterion coverage
+          - given: |
+              A coverage annotation names a spec item or trait without a valid
+              acceptance criterion token
+            id: ac-bare-ref-no-token-credit
+            then: |
+              The annotation provides no acceptance-criterion coverage credit
+            when: |
+              completeness validation computes acceptance-criterion coverage
+        tags: []
+        created: 2026-04-28T03:55:57.167Z
+        notes: []
     created: 2026-03-10T06:55:43.251Z
     notes: []
   - _ulid: 01KKB8FCNZMAS4XRX9HAPJWQ5K

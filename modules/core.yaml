@@ -115,6 +115,65 @@ features:
           - dx
           - cli
         created: 2026-01-16T13:52:39.770Z
+      - _ulid: 01KQ93NEA34HVXTZVQB3BT4Q3V
+        slugs:
+          - acceptance-criterion-id-format
+        title: Acceptance Criterion Identifier Format
+        type: requirement
+        description: |
+          Acceptance criterion identifiers use a uniform ac-prefixed kebab-case
+          token format everywhere they are stored, edited, validated, and
+          referenced by coverage annotations.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A spec item or trait has acceptance criteria
+            id: ac-stored-id-format
+            then: |
+              Each acceptance criterion identifier conforms to the ac-prefixed
+              kebab-case token format
+            when: |
+              the item is stored in the project catalog
+          - given: |
+              A project catalog contains an acceptance criterion identifier that
+              does not conform to the required token format
+            id: ac-invalid-stored-id-reported
+            then: |
+              Validation reports the offending acceptance criterion identifier
+              as invalid
+            when: |
+              schema validation runs
+          - given: |
+              A user supplies a new acceptance criterion identifier that does not
+              conform to the required token format
+            id: ac-create-rejects-invalid-id
+            then: |
+              The command rejects the identifier before mutating the item
+            when: |
+              the user asks kspec to add the acceptance criterion to an item
+          - given: |
+              A user supplies a replacement acceptance criterion identifier that
+              does not conform to the required token format
+            id: ac-rename-rejects-invalid-id
+            then: |
+              The command rejects the identifier before mutating the item
+            when: |
+              the user asks kspec to rename an existing acceptance criterion
+          - given: |
+              A user asks kspec to add an acceptance criterion without supplying
+              an identifier
+            id: ac-generated-ids-conform
+            then: |
+              The generated identifier conforms to the required token format
+            when: |
+              kspec generates the acceptance criterion identifier
+        tags: []
+        created: 2026-04-28T03:55:57.124Z
+        notes: []
   - _ulid: 01KEZCJPHZ0NV4QECZ6ADZDX1Z
     slugs:
       - ulid-system
