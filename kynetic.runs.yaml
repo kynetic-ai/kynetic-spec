@@ -33040,7 +33040,7 @@ runs:
     started_at: 2026-04-28T05:31:36.236Z
     completed_at: 2026-04-28T05:34:21.278Z
   - _ulid: 01KQ9AH4DJRWGFPR122QDV5B38
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -33093,7 +33093,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-28T05:57:33.189Z
-        completed_at: 2026-04-28T05:57:33.189Z
+        completed_at: 2026-04-28T05:58:13.469Z
+        notes: "Captured: inbox @01KQ9AMH for detached reviewer snapshot shadow-state documentation;
+          friction observation @01KQ9AMHA for misleading direct .kspec inspection in detached
+          snapshots; success observation @01KQ9AMHH for the detached reviewer merge helper flow.
+          Existing tracked items referenced but not duplicated: @01KKBD52 for workflow show
+          defaulting to active run, @01KQ99Z7 for the full-validate meta catalog schema error."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T05:55:55.954Z
+    completed_at: 2026-04-28T05:58:13.469Z
