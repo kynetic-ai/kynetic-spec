@@ -171371,6 +171371,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-28T06:44:10.517Z
+      - _ulid: 01KQ9EQ9YKEZWNB8120N1Z5T08
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQ9D8Z76C1G41V8JYC16R81K
+        timestamp: 2026-04-28T07:09:12.531Z
     examined_commit: f60d02714d3f2c5968fd6410f35a091341bde765
     external_links: []
     lifecycle_state: closed
@@ -171402,6 +171408,17 @@ reviews:
               reproducible for reviewers/users invoking kspec. Evidence: command output recorded in
               the required failing review check."
             created_at: 2026-04-28T06:43:54.215Z
+          - _ulid: 01KQ9EQ8V7V219ZN7GY259B1SD
+            author: "@claude"
+            body: "Fixed: The inline trait object in agent-integration's traits field was the root cause. The
+              trait-idempotent-file-scaffold trait was defined as a full inline object (with _ulid,
+              type, ACs, etc.) inside the module's traits array, which expects string references per
+              SpecItemSchema. Used a 10-step kspec batch to atomically: (1) remove trait refs from
+              consuming specs, (2) delete the inline definition, (3) recreate the trait at the
+              project root level in kynetic.yaml (where all other traits live), (4) re-add all 4
+              ACs, (5) restore trait references on both consuming specs. kspec validate --schema
+              --warnings-ok now exits 0."
+            created_at: 2026-04-28T07:09:11.399Z
         kind: blocker
       - _ulid: 01KQ9D92BZCKH2ECCF1S8SA4AK
         entries:
@@ -171428,7 +171445,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-28T06:44:10.516Z
     created_at: 2026-04-28T06:32:20.910Z
-    updated_at: 2026-04-28T06:44:10.517Z
+    updated_at: 2026-04-28T07:09:11.399Z
     notes: []
   - _ulid: 01KQ9DNHEJF1XF62XY855Y2MJ9
     slugs: []
