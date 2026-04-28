@@ -32985,9 +32985,21 @@ runs:
     completed_at: 2026-04-28T05:03:52.308Z
   - _ulid: 01KQ994JXCCQ9XVG95CT9TVN2C
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-28T05:31:36.236Z
+        completed_at: 2026-04-28T05:33:04.830Z
+        notes: "What worked well: detached reviewer merge helper handled approved manual_merge cleanly from
+          the detached snapshot; review records/checks made the approval evidence explicit; npm
+          test's pre-test build refreshed dist so the submitted CLI behavior could be verified from
+          the snapshot build."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-28T05:33:04.830Z
+        completed_at: 2026-04-28T05:33:04.830Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T05:31:36.236Z
