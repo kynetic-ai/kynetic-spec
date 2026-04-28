@@ -171695,3 +171695,29 @@ reviews:
     created_at: 2026-04-28T06:50:46.098Z
     updated_at: 2026-04-28T07:01:52.992Z
     notes: []
+  - _ulid: 01KQ9EX5J289VVYS3M1YR5MA31
+    slugs: []
+    title: Review fix meta catalog schema error in traits field (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQ9EX5J20AY0V7YRF61R64W5
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-28T07:12:24.642Z
+    examined_commit: f60d02714d3f2c5968fd6410f35a091341bde765
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQ99Z7HJ34SMZNGBBE1BTXRD"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-28T07:12:24.642Z
+    updated_at: null
+    notes: []
