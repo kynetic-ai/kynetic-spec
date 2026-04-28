@@ -204,6 +204,20 @@ describe("Gate: annotation parser only interprets ac-prefixed tokens", () => {
     const groups = parseACAnnotationLine(acPrefix + "@spec ac-validate, ac-create");
     expect(groups).toEqual([{ specRef: "@spec", acIds: ["ac-validate", "ac-create"] }]);
   });
+
+  it("malformed ac-* tokens are rejected by the parser", () => {
+    // Underscore, doubled hyphen, trailing hyphen, and uppercase are all invalid
+    const malformed = [
+      { input: "@spec ac-bad_id", desc: "underscore" },
+      { input: "@spec ac--double", desc: "doubled hyphen" },
+      { input: "@spec ac-trailing-", desc: "trailing hyphen" },
+      { input: "@spec ac-Bad", desc: "uppercase" },
+    ];
+    for (const { input, desc } of malformed) {
+      const groups = parseACAnnotationLine(acPrefix + input);
+      expect(groups[0].acIds, `"${desc}" should yield empty acIds`).toEqual([]);
+    }
+  });
 });
 
 // AC: @ac-annotation-identifier-format ac-valid-token-covers-ac
