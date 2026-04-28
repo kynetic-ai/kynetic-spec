@@ -10,8 +10,13 @@ description: "Full kspec validate currently fails with: .kspec/modules/meta.yaml
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KQ9EX5. Merge helper reported no-op because
+  dispatch/task/fix-meta-catalog-schema-error-in-traits-field/01kq99z7 at
+  f60d02714d3f2c5968fd6410f35a091341bde765 is already integrated at dev. Verified kspec validate
+  --schema --warnings-ok exits 0, relocated trait is project-level with consumers intact, and npm
+  test passes.
 depends_on: []
 context: []
 priority: 2
@@ -127,8 +132,26 @@ history:
         previous: "@01KQ9CKT5EXA1S03X81ZYS1V7G"
     command: review-link
     timestamp: 2026-04-28T07:12:27.776Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KQ9EX5. Merge helper reported no-op because
+          dispatch/task/fix-meta-catalog-schema-error-in-traits-field/01kq99z7 at
+          f60d02714d3f2c5968fd6410f35a091341bde765 is already integrated at dev. Verified kspec
+          validate --schema --warnings-ok exits 0, relocated trait is project-level with consumers
+          intact, and npm test passes.
+        previous: null
+      completed_at:
+        new: 2026-04-28T07:26:30.879Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-28T07:26:30.889Z
 created_at: 2026-04-28T05:46:09.330Z
 started_at: 2026-04-28T06:56:20.403Z
 submitted_at: 2026-04-28T07:09:59.473Z
+completed_at: 2026-04-28T07:26:30.879Z
 todos: []
 automation: eligible
