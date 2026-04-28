@@ -13807,18 +13807,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-fix-meta-traits-schema-validation/01kq97bh
-    canonical_branch_head: a905c802f26bb5974a12d3860687d4a548f60742
+    canonical_branch_head: f0e6d14c30c780a4a1f4fd0714349ab95f365679
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-28T05:18:27.848Z
+      updated_at: 2026-04-28T05:18:28.863Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-28T05:18:27.848Z
+      updated_at: 2026-04-28T05:18:28.863Z
     integration:
       status: pending
       detail: null
@@ -13826,17 +13826,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a905c802f26bb5974a12d3860687d4a548f60742
-      updated_at: 2026-04-28T05:18:27.848Z
-    lifecycle_state: ready
+      updated_at: 2026-04-28T05:18:28.863Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KQ97BHYPTRAE173XAG0GD7Q3"
     task_slug: task-fix-meta-traits-schema-validation
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T05:01:12.457Z
-      last_reconciled_at: 2026-04-28T05:18:27.848Z
+      last_reconciled_at: 2026-04-28T05:18:28.863Z
       created_at: 2026-04-28T05:00:45.286Z
-      updated_at: 2026-04-28T05:18:27.848Z
+      updated_at: 2026-04-28T05:18:28.863Z
     workspace_id: dispatch-workspace-01KQ97BHYPTRAE173XAG0GD7Q3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
