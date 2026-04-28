@@ -27440,7 +27440,7 @@
   slugs: []
   title: Fix meta catalog schema error in traits field
   type: task
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -27450,4 +27450,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-28T05:46:09.330Z
+  started_at: 2026-04-28T06:03:50.282Z
   automation: eligible
