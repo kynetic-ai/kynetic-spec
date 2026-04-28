@@ -33424,7 +33424,7 @@ runs:
     completed_at: 2026-04-28T07:12:45.418Z
   - _ulid: 01KQ9FK39TXQFXPEH2BGHDVCDV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -33438,7 +33438,31 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-28T07:24:51.929Z
-        completed_at: 2026-04-28T07:24:51.929Z
+        completed_at: 2026-04-28T07:25:41.988Z
+        notes: >-
+          Searched observations, inbox, and tasks. Found existing tracking:
+
+          - @01KQ127P (friction): AC annotation scanner false positives from literal patterns in
+          comments/strings — exactly the issue this fix cycle addressed.
+
+          - @01KQ15SKB and @01KQ15SKK: related scanner behavior observations.
+
+
+          Friction this session: The fix cycle 2 blocker was a single prose comment containing a
+          literal annotation pattern. This is a known scanner limitation already tracked by
+          @01KQ127P.
+
+
+          Success: The acPrefix string concatenation pattern established in cycle 1 works well — the
+          new blocker was in a *comment* not a string literal, which is a different vector of the
+          same underlying issue. The fix was a simple reword.
+
+
+          No new friction to capture — all patterns already tracked.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-28T07:25:41.988Z
+        completed_at: 2026-04-28T07:25:41.988Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-28T07:24:23.226Z
