@@ -14688,7 +14688,7 @@ workspaces:
         head: 348f3242f4b8d70143d392b658eb7ef01f1d4605
         last_seen_at: 2026-04-28T07:24:26.605Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: f60d02714d3f2c5968fd6410f35a091341bde765
     bootstrap:
       status: succeeded
@@ -15181,9 +15181,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T07:11:08.421Z
-      last_reconciled_at: 2026-04-28T07:27:34.214Z
+      last_reconciled_at: 2026-04-28T07:29:24.806Z
       created_at: 2026-04-28T06:03:02.953Z
-      updated_at: 2026-04-28T07:27:35.113Z
+      updated_at: 2026-04-28T07:29:24.806Z
     workspace_id: dispatch-workspace-01KQ99Z7HJ34SMZNGBBE1BTXRD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
