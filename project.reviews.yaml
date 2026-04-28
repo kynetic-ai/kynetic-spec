@@ -171456,6 +171456,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KQ9DR4BE4AMWF32DKYNT67VF
         timestamp: 2026-04-28T06:52:12.266Z
+      - _ulid: 01KQ9DS39H51A5SKD9CQJPNFPD
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQ9DR4BE4AMWF32DKYNT67VF
+        timestamp: 2026-04-28T06:52:42.673Z
     examined_commit: 1fdb1ea369cf04108846566b3b8ce0e5ce57096f
     external_links: []
     lifecycle_state: open
@@ -171527,8 +171533,15 @@ reviews:
                       /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf-review/tests/clone-for-testing.test.ts:119
                     ... and 33 more reports  at this exact line. That reintroduces the same class of false-positive scanner noise the fix cycle was supposed to avoid; construct or reword the comment so non-fixture prose in this non-excluded file does not contain a literal  annotation.
             created_at: 2026-04-28T06:52:10.990Z
+          - _ulid: 01KQ9DS207WN5C61DW22XKRB4R
+            author: Jacob Chapel
+            body: "Clarification: the blocker is specifically the literal annotation text in the prose comment.
+              Validation reports unresolved target @my-spec at
+              tests/ac-annotation-identifier-format.test.ts:207. Reword the comment or split the
+              marker string so this non-excluded file only exposes intentional real AC annotations."
+            created_at: 2026-04-28T06:52:41.351Z
         kind: blocker
     verdicts: []
     created_at: 2026-04-28T06:50:46.098Z
-    updated_at: 2026-04-28T06:52:10.990Z
+    updated_at: 2026-04-28T06:52:41.351Z
     notes: []
