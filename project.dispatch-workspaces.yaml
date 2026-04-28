@@ -13485,7 +13485,7 @@ workspaces:
         head: 6a54d8669fac304c6ed57cb57298159a12bfbc58
         last_seen_at: 2026-04-28T04:48:36.184Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-enforce-ac-id-format-01kq93ne
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: a905c802f26bb5974a12d3860687d4a548f60742
     bootstrap:
       status: succeeded
@@ -13978,9 +13978,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T05:19:04.039Z
-      last_reconciled_at: 2026-04-28T05:31:25.258Z
+      last_reconciled_at: 2026-04-28T05:34:38.800Z
       created_at: 2026-04-28T05:00:45.286Z
-      updated_at: 2026-04-28T05:31:26.169Z
+      updated_at: 2026-04-28T05:34:38.800Z
     workspace_id: dispatch-workspace-01KQ97BHYPTRAE173XAG0GD7Q3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
