@@ -169854,7 +169854,81 @@ reviews:
     slugs: []
     title: "Plan review: AC ID Format Normalization (cycle 3)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan specs no longer include unsupported tags; final gate Covers line lists concrete AC
+          refs instead of summary wording.
+        name: Cycle 1 nit verification
+        required: true
+        created_at: 2026-04-28T03:40:07.301Z
+        completed_at: 2026-04-28T03:40:07.301Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@task-normalize-ac-ids-and-annotations is cancelled and automation manual_only; search
+          did not reveal another active duplicate implementation task."
+        name: Cycle 2 duplicate active-work blocker
+        required: true
+        created_at: 2026-04-28T03:40:10.352Z
+        completed_at: 2026-04-28T03:40:10.352Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Reviewed @spec-item, @test-annotation-sweep, and @ac-annotation-integrity-reporting. New
+          specs split catalog id format from annotation parsing/coverage credit without overlapping
+          existing ACs.
+        name: Spec quality and neighborhood fit
+        required: true
+        created_at: 2026-04-28T03:40:13.331Z
+        completed_at: 2026-04-28T03:40:13.331Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 5 ACs on @acceptance-criterion-id-format and all 3 ACs on
+          @ac-annotation-identifier-format are claimed by concrete task Covers lines; referenced
+          external AC ids resolve.
+        name: Required behavior coverage
+        required: true
+        created_at: 2026-04-28T03:40:16.236Z
+        completed_at: 2026-04-28T03:40:16.236Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All four planned tasks include Why, What, How, Testing, and Covers sections with enough
+          context for a fresh worker; no unresolved see-above dependencies found.
+        name: Task standalone quality
+        required: true
+        created_at: 2026-04-28T03:40:19.156Z
+        completed_at: 2026-04-28T03:40:19.156Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Dependency chain is enforce -> normalize/align -> final gate, with no cycles or P1-on-P2
+          dependency. Scope matches existing schema, CLI AC commands, validation, and annotation
+          parser surfaces.
+        name: Dependency ordering and implementation feasibility
+        required: true
+        created_at: 2026-04-28T03:40:22.136Z
+        completed_at: 2026-04-28T03:40:22.136Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/ac-id-format-normalization.md --dry-run parsed cleanly. kspec
+          validate --refs --warnings-ok and --alignment --warnings-ok passed with existing unrelated
+          warnings.
+        name: Parser/import cleanliness
+        required: true
+        created_at: 2026-04-28T03:40:25.140Z
+        completed_at: 2026-04-28T03:40:25.140Z
     events:
       - _ulid: 01KQ92Q3GBYH2XMAS1G7ZJGVB8
         actor: Jacob Chapel
@@ -169862,9 +169936,81 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-28T03:39:23.019Z
+      - _ulid: 01KQ92RCWRK4H9BG7WK1TH7ZED
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-28T03:40:05.400Z
+      - _ulid: 01KQ92RFYYANH5T4DDXJQR9RSW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Cycle 1 nit verification
+        timestamp: 2026-04-28T03:40:08.542Z
+      - _ulid: 01KQ92RJTPMVKZ99HY51YKJCWR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Cycle 2 duplicate active-work blocker
+        timestamp: 2026-04-28T03:40:11.478Z
+      - _ulid: 01KQ92RNR2YE97PVE90CPWBRQV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec quality and neighborhood fit
+        timestamp: 2026-04-28T03:40:14.466Z
+      - _ulid: 01KQ92RRJWBW84B1HHGTFMTZRF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Required behavior coverage
+        timestamp: 2026-04-28T03:40:17.372Z
+      - _ulid: 01KQ92RVEAZ8CC30ZBX7R9XCSP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone quality
+        timestamp: 2026-04-28T03:40:20.298Z
+      - _ulid: 01KQ92RYEGHDGC2QS56Y07YSWW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering and implementation feasibility
+        timestamp: 2026-04-28T03:40:23.376Z
+      - _ulid: 01KQ92S18TFFKGKBRQE4ZWEVTY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Parser/import cleanliness
+        timestamp: 2026-04-28T03:40:26.266Z
+      - _ulid: 01KQ92S42Y1EV7Q9C1H6YVCPFH
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-28T03:40:29.150Z
+      - _ulid: 01KQ92S42Y5P33ZHKP3S32C490
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-28T03:40:29.150Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -169872,7 +170018,14 @@ reviews:
       ref: "@plan-ac-id-format-normalization"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-28T03:40:29.150Z
     created_at: 2026-04-28T03:39:23.020Z
-    updated_at: null
+    updated_at: 2026-04-28T03:40:29.150Z
     notes: []
