@@ -33265,7 +33265,7 @@ runs:
     completed_at: 2026-04-28T06:32:27.633Z
   - _ulid: 01KQ9DATRFSFZKD24RC03F7MM7
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33288,7 +33288,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-28T06:45:45.045Z
-        completed_at: 2026-04-28T06:45:45.045Z
+        completed_at: 2026-04-28T06:45:53.850Z
+        notes: "Coverage checked with kspec search for 'kspec binary', 'global kspec', and 'validate schema
+          warnings', plus pending observations. The binary mismatch is already tracked by pending
+          task @01KK7935 ('Investigate: global kspec install overrides local linked version'), inbox
+          @01KHFCDS47 (version pinning/global kspec), and observations @01KN0KN0N, @01KN6D0J,
+          @01KNPJXXA. Current task @01KQ99Z7 also now has a review blocker documenting this exact
+          instance. No untracked friction remains from this session."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-28T06:45:53.850Z
+        completed_at: 2026-04-28T06:45:53.850Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T06:44:55.183Z
