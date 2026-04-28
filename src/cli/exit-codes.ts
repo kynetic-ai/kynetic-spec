@@ -1,7 +1,7 @@
 /**
  * Semantic exit codes for kspec CLI
  *
- * AC: @cli-exit-codes exit-code-constants
+ * AC: @cli-exit-codes ac-exit-code-constants
  * Centralized constants for all CLI exit codes
  *
  * @see Use these constants instead of magic numbers throughout the CLI
@@ -36,7 +36,7 @@ export type ExitCode = (typeof EXIT_CODES)[keyof typeof EXIT_CODES];
 
 /**
  * Exit code metadata for documentation
- * AC: @cli-exit-codes exit-codes-documented
+ * AC: @cli-exit-codes ac-exit-codes-documented
  */
 export const EXIT_CODE_METADATA = [
   {

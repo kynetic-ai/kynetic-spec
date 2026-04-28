@@ -147,7 +147,7 @@ async function resolveTaskRef(
         }
         break;
     }
-    // AC: @cli-exit-codes consistent-usage - NOT_FOUND for missing resources
+    // AC: @cli-exit-codes ac-consistent-usage - NOT_FOUND for missing resources
     process.exit(EXIT_CODES.NOT_FOUND);
   }
 
@@ -155,7 +155,7 @@ async function resolveTaskRef(
   const taskSummary = tasks.find((t) => t._ulid === result.ulid);
   if (!taskSummary) {
     error(errors.reference.notTask(ref));
-    // AC: @cli-exit-codes consistent-usage - NOT_FOUND for missing resources
+    // AC: @cli-exit-codes ac-consistent-usage - NOT_FOUND for missing resources
     process.exit(EXIT_CODES.NOT_FOUND);
   }
 

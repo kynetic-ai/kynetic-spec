@@ -57,7 +57,7 @@ describe("Integration: clone-for-testing", () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: @cmd-clone-for-testing creates-isolated-copy
+  // AC: @cmd-clone-for-testing ac-creates-isolated-copy
   it("should create isolated copy of source repo", () => {
     const dest = path.join(os.tmpdir(), `clone-test-${Date.now()}`);
 
@@ -90,7 +90,7 @@ describe("Integration: clone-for-testing", () => {
     }
   });
 
-  // AC: @cmd-clone-for-testing sets-up-worktree
+  // AC: @cmd-clone-for-testing ac-sets-up-worktree
   it("should setup .kspec worktree when kspec-meta branch exists", () => {
     const dest = path.join(os.tmpdir(), `clone-test-${Date.now()}`);
 
@@ -116,7 +116,7 @@ describe("Integration: clone-for-testing", () => {
     }
   });
 
-  // AC: @cmd-clone-for-testing sets-up-worktree (negative case)
+  // AC: @cmd-clone-for-testing ac-sets-up-worktree (negative case)
   it("should not fail when kspec-meta branch does not exist", () => {
     // Create a source repo WITHOUT kspec-meta
     const noMetaRepo = path.join(os.tmpdir(), `no-meta-${Date.now()}`);
@@ -155,7 +155,7 @@ describe("Integration: clone-for-testing", () => {
     }
   });
 
-  // AC: @cmd-clone-for-testing checkout-branch
+  // AC: @cmd-clone-for-testing ac-checkout-branch
   it("should checkout specified branch when --branch flag provided", () => {
     // Create a feature branch in source repo
     git("checkout -b feature-test", sourceRepo);
@@ -192,7 +192,7 @@ describe("Integration: clone-for-testing", () => {
     }
   });
 
-  // AC: @cmd-clone-for-testing temp-dir-default
+  // AC: @cmd-clone-for-testing ac-temp-dir-default
   it("should create clone in system temp directory when no dest provided", () => {
     let clonedPath = "";
 
@@ -223,7 +223,7 @@ describe("Integration: clone-for-testing", () => {
     }
   });
 
-  // AC: @cmd-clone-for-testing json-output
+  // AC: @cmd-clone-for-testing ac-json-output
   it("should output JSON with path and branch when --json flag provided", () => {
     const dest = path.join(os.tmpdir(), `clone-test-${Date.now()}`);
 
@@ -249,7 +249,7 @@ describe("Integration: clone-for-testing", () => {
     }
   });
 
-  // AC: @cmd-clone-for-testing json-output (with branch)
+  // AC: @cmd-clone-for-testing ac-json-output (with branch)
   it("should output correct branch in JSON when --branch flag used", () => {
     // Create a feature branch
     git("checkout -b feature-json", sourceRepo);
