@@ -145,7 +145,6 @@ it('should also work', () => {});
       expect(refs).toContain("@spec-b ac-2");
     });
 
-    // AC: @test-annotation-sweep ac-annotation-format
     it("should parse named ac ids on sweep annotations", async () => {
       const testsDir = path.join(tempDir, "tests");
       await fs.mkdir(testsDir, { recursive: true });
@@ -739,7 +738,6 @@ it('invalid trait AC ref', () => {});
   });
 
   describe("computeACCoverage", () => {
-    // AC: @test-annotation-sweep ac-annotation-format
     it("uses the declared AC ids when computing coverage status", () => {
       const coverage = computeACCoverage(
         {
@@ -818,21 +816,18 @@ it('invalid trait AC ref', () => {});
       expect(parseACAnnotationLine("const x = 1;")).toEqual([]);
     });
 
-    // AC: @ac-annotation-identifier-format ac-explicit-token-format
     it("should ignore non-ac-prefixed tokens after a @ref", () => {
       // A bare word like "validate" after @ref is NOT an AC id
       const groups = parseACAnnotationLine("// AC: @my-spec validate");
       expect(groups).toEqual([{ specRef: "@my-spec", acIds: [] }]);
     });
 
-    // AC: @ac-annotation-identifier-format ac-explicit-token-format
     it("should ignore numeric-only tokens without ac- prefix", () => {
       // "1" or "2" are not ac-prefixed, so they should be ignored
       const groups = parseACAnnotationLine("// AC: @my-spec 1");
       expect(groups).toEqual([{ specRef: "@my-spec", acIds: [] }]);
     });
 
-    // AC: @ac-annotation-identifier-format ac-explicit-token-format
     it("should parse ac-prefixed named ids as explicit AC references", () => {
       const groups = parseACAnnotationLine("// AC: @my-spec ac-validate-input, ac-reject-invalid");
       expect(groups).toEqual([
@@ -840,13 +835,11 @@ it('invalid trait AC ref', () => {});
       ]);
     });
 
-    // AC: @ac-annotation-identifier-format ac-explicit-token-format
     it("should parse ac-prefixed numeric ids as explicit AC references", () => {
       const groups = parseACAnnotationLine("// AC: @my-spec ac-1, ac-2");
       expect(groups).toEqual([{ specRef: "@my-spec", acIds: ["ac-1", "ac-2"] }]);
     });
 
-    // AC: @ac-annotation-identifier-format ac-explicit-token-format
     it("should treat mixed tokens correctly: only ac-prefixed tokens become AC ids", () => {
       // "some-word" is not ac-prefixed, so only ac-1 should be captured
       const groups = parseACAnnotationLine("// AC: @my-spec ac-1 some-word");
@@ -964,7 +957,6 @@ it('test', () => {});
     });
   });
 
-  // AC: @ac-annotation-identifier-format ac-valid-token-covers-ac
   describe("ac-prefixed named ids provide coverage credit", () => {
     it("should credit coverage when annotation uses ac-prefixed named id", async () => {
       const ctx = await setupProject({
@@ -1056,8 +1048,6 @@ it('test', () => {});
     });
   });
 
-  // AC: @ac-annotation-identifier-format ac-bare-ref-no-token-credit
-  // AC: @test-annotation-sweep ac-no-blanket-credit
   describe("non-prefixed tokens after @ref provide no AC coverage", () => {
     it("should not credit coverage when annotation has non-prefixed word after @ref", async () => {
       const ctx = await setupProject({
@@ -1140,7 +1130,6 @@ it('test', () => {});
     });
   });
 
-  // AC: @test-annotation-sweep ac-annotation-format
   describe("annotation format with ac-prefixed tokens", () => {
     it("should parse annotation with mixed numeric and named ac-prefixed ids", async () => {
       const testsDir = path.join(tempDir, "tests");
