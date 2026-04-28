@@ -168963,9 +168963,25 @@ reviews:
           status: fail
           name: kspec validate baseline
         timestamp: 2026-04-28T00:29:14.509Z
+      - _ulid: 01KQ8QVEMCH2DNJQB5K7T6HFSF
+        actor: Codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-28T00:29:31.148Z
+      - _ulid: 01KQ8QVEMC8QG359ZG0Z52VRGN
+        actor: Codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-28T00:29:31.148Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -168973,7 +168989,14 @@ reviews:
       ref: "@plan-default-session-reflection-reliability"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: Codex
+        role: reviewer
+        created_at: 2026-04-28T00:29:31.143Z
     created_at: 2026-04-28T00:27:39.454Z
-    updated_at: 2026-04-28T00:29:13.118Z
+    updated_at: 2026-04-28T00:29:31.148Z
     notes: []
