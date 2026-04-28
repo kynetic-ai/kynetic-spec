@@ -33384,7 +33384,7 @@ runs:
     completed_at: 2026-04-28T07:04:51.867Z
   - _ulid: 01KQ9ESHK2MM6GQJT50SK51TTF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -33399,7 +33399,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-28T07:12:07.997Z
-        completed_at: 2026-04-28T07:12:07.997Z
+        completed_at: 2026-04-28T07:12:16.439Z
+        notes: "High-confidence findings: (1) SUCCESS: kspec batch atomic operations work well for complex
+          data repairs — 10-step relocate with dry-run validation, zero data loss. (2) FRICTION: No
+          item reparent/move command — already tracked in inbox 01KJP2PB. Relocating a spec item
+          requires delete+recreate cycle which changes the ULID. No new items to capture — the only
+          friction point is already tracked."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-28T07:12:16.439Z
+        completed_at: 2026-04-28T07:12:16.439Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-28T07:10:25.890Z
