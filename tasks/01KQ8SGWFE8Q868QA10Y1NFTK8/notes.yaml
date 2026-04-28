@@ -30,3 +30,34 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-28T01:23:45.644Z
+  - _ulid: 01KQ8W165BQ4N99TBF2Q54TFF8
+    content: |-
+      Implementation complete. Changes:
+
+      1. invocation.ts: Raised DEFAULT_IDLE_GRACE_MS from 100ms to 5000ms.
+         This is the single source of truth used by dispatch.ts when no per-agent
+         idle_grace_period_ms is configured and session.idle hooks exist.
+
+      2. setup-defaults.ts: Added explicit session config (mode: auto_close,
+         idle_grace_period_ms: DEFAULT_IDLE_GRACE_MS) to dispatch-capable default
+         agents (task-worker, pr-reviewer). Non-dispatch agents (primary-dev,
+         plan-reviewer) do not get session config. The DefaultAgentDef interface
+         and agentData saving flow preserve the session field through to metadata.
+
+      3. upgrade.ts: Added filter: { turn_count: 1 } to the reflection hook
+         created during upgrade scaffold (step 5c). This matches the canonical
+         setup.ts hook shape and ensures once-per-invocation reflection firing.
+
+      Tests added/updated:
+      - multi-turn-invocation.test.ts: 2 new tests for idle hook prompt window
+        (accept within grace, reject after close). Fixed existing async delivery
+        test to use explicit grace period instead of DEFAULT_IDLE_GRACE_MS.
+      - setup-reflection-hook.test.ts: 3 new tests for dispatch agent session
+        config promptability.
+      - upgrade-command.test.ts: 2 new tests for hook filter on upgrade-created
+        hooks and existing-hook preservation.
+
+      All 8400 tests pass. No regressions.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T01:42:33.387Z
