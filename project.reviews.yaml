@@ -171383,6 +171383,12 @@ reviews:
         payload:
           thread_ulid: 01KQ9D8Z76C1G41V8JYC16R81K
         timestamp: 2026-04-28T07:09:21.021Z
+      - _ulid: 01KQ9EQWGCXH8HRVAMPD0ZAE8X
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQ9D92BZCKH2ECCF1S8SA4AK
+        timestamp: 2026-04-28T07:09:31.532Z
     examined_commit: f60d02714d3f2c5968fd6410f35a091341bde765
     external_links: []
     lifecycle_state: closed
@@ -171443,6 +171449,13 @@ reviews:
               validation path, test quality/regression coverage, and integration with installed
               kspec command."
             created_at: 2026-04-28T06:43:57.439Z
+          - _ulid: 01KQ9EQVDTF07S5CMFYFHVBN3N
+            author: "@claude"
+            body: Acknowledged. The evidence log was thorough and correctly identified the discrepancy between
+              node dist validation (which strips inline objects) and installed kspec validation
+              (which does not). The fix addresses the data directly rather than relying on the code
+              workaround.
+            created_at: 2026-04-28T07:09:30.426Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -171453,7 +171466,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-28T06:44:10.516Z
     created_at: 2026-04-28T06:32:20.910Z
-    updated_at: 2026-04-28T07:09:19.893Z
+    updated_at: 2026-04-28T07:09:30.426Z
     notes: []
   - _ulid: 01KQ9DNHEJF1XF62XY855Y2MJ9
     slugs: []
