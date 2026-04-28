@@ -2613,77 +2613,7 @@ modules:
     implements: []
     relates_to: []
     tests: []
-    traits:
-      - _ulid: 01KNXYJ2VH0Y7Z6XHSMXE251GK
-        slugs:
-          - trait-idempotent-file-scaffold
-        title: Idempotent File Scaffolding Trait
-        type: trait
-        description: |
-          A scaffolding step that creates a file or writes to a
-          managed block inside a file on disk follows a uniform set
-          of rules so users can predict its behavior without reading
-          its implementation: the target file is never modified
-          unless the force flag is set; when force is set, the
-          existing file is backed up to a sibling path before being
-          replaced and the backup path is reported in the step's
-          output; the step is safe to re-run and produces the same
-          visible result on the second run as the first when no
-          inputs changed; the step always reports its action
-          (created, skipped, force-recreated) in a stable format
-          consumable by the setup summary; and the step never
-          destroys user content outside the file it owns.
-
-          Scope: this trait applies only to scaffolding that writes
-          files on disk. Scaffolds that create meta-spec items
-          (agents, conventions, hooks, modules) have different force
-          semantics — they use first-run-only creation with
-          "reseed missing items only" on force — and must not
-          inherit this trait.
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        traits: []
-        acceptance_criteria:
-          - given: |
-              A file scaffold step's target file already exists
-            id: ac-existing-file-preserved-without-force
-            then: |
-              The existing file is preserved byte-for-byte and
-              the step reports "skipped"
-            when: |
-              The step runs without the force flag
-          - given: |
-              A file scaffold step's target file already exists and
-              the step is invoked with the force flag
-            id: ac-force-backs-up-before-overwrite
-            then: |
-              The previous content is preserved as a sibling backup
-              with a timestamped name, the backup path is reported
-              before the overwrite, and only then is the file
-              replaced with a freshly scaffolded template
-            when: |
-              The step runs
-          - given: |
-              A file scaffold step's target file does not exist
-            id: ac-fresh-file-creation
-            then: |
-              The file is created and the step reports "created"
-            when: |
-              The step runs with or without the force flag
-          - given: |
-              Any file scaffold step completes
-            id: ac-step-reports-action
-            then: |
-              The step's action (created, skipped, force-recreated)
-              and any backup path are included in the summary in a
-              stable format
-            when: |
-              The setup summary is produced
-        tags: []
-        created: 2026-04-11T09:39:23.633Z
-        notes: []
+    traits: []
     tags: []
     decisions:
       - _ulid: 01KKZPVBRMZCGV3JGQMMTS23KH
@@ -6479,8 +6409,8 @@ modules:
         relates_to: []
         tests: []
         traits:
-          - "@trait-idempotent-file-scaffold"
           - "@trait-error-guidance"
+          - "@trait-idempotent-file-scaffold"
         acceptance_criteria:
           - given: |
               A project has no project config file at its root
