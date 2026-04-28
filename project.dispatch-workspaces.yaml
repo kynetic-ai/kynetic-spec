@@ -14688,7 +14688,7 @@ workspaces:
         head: 348f3242f4b8d70143d392b658eb7ef01f1d4605
         last_seen_at: 2026-04-28T07:24:26.605Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: f60d02714d3f2c5968fd6410f35a091341bde765
     bootstrap:
       status: succeeded
@@ -15156,16 +15156,16 @@ workspaces:
     canonical_branch: dispatch/task/fix-meta-catalog-schema-error-in-traits-field/01kq99z7
     canonical_branch_head: f60d02714d3f2c5968fd6410f35a091341bde765
     cleanup:
-      status: blocked
-      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      status: scheduled
+      detail: integrated-into-base-branch
       eligible: true
-      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-04-28T07:26:37.250Z
+      reason: integrated-into-base-branch
+      updated_at: 2026-04-28T07:26:41.573Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-28T07:26:36.437Z
+      updated_at: 2026-04-28T07:26:41.573Z
     integration:
       status: merged
       detail: integration:merged
@@ -15173,17 +15173,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f60d02714d3f2c5968fd6410f35a091341bde765
-      updated_at: 2026-04-28T07:26:36.437Z
-    lifecycle_state: cleanup_blocked
+      updated_at: 2026-04-28T07:26:41.573Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KQ99Z7HJ34SMZNGBBE1BTXRD"
     task_slug: fix-meta-catalog-schema-error-in-traits-field
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T07:11:08.421Z
-      last_reconciled_at: 2026-04-28T07:26:36.437Z
+      last_reconciled_at: 2026-04-28T07:26:41.573Z
       created_at: 2026-04-28T06:03:02.953Z
-      updated_at: 2026-04-28T07:26:37.250Z
+      updated_at: 2026-04-28T07:26:41.573Z
     workspace_id: dispatch-workspace-01KQ99Z7HJ34SMZNGBBE1BTXRD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
