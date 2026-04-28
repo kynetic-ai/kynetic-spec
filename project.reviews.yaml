@@ -168888,6 +168888,18 @@ reviews:
         runner: kspec-cli
         created_at: 2026-04-28T00:29:00.567Z
         completed_at: 2026-04-28T00:29:00.567Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran kspec validate. It fails on pre-existing repository health issues unrelated to this
+          draft plan: meta.yaml trait schema error, missing @task-state-transitions dependency,
+          deprecated refs, orphan/spec alignment warnings, and historical coverage warnings."
+        name: kspec validate baseline
+        required: false
+        runner: kspec-cli
+        created_at: 2026-04-28T00:29:13.118Z
+        completed_at: 2026-04-28T00:29:13.118Z
     events:
       - _ulid: 01KQ8QR1HTN76715J5PC6VYTJW
         actor: Jacob Chapel
@@ -168944,6 +168956,13 @@ reviews:
           status: pass
           name: Reference and plan parsing
         timestamp: 2026-04-28T00:29:02.483Z
+      - _ulid: 01KQ8QTYCDNC5N4YH7MHMGKYCC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate baseline
+        timestamp: 2026-04-28T00:29:14.509Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -168956,5 +168975,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T00:27:39.454Z
-    updated_at: 2026-04-28T00:29:00.567Z
+    updated_at: 2026-04-28T00:29:13.118Z
     notes: []
