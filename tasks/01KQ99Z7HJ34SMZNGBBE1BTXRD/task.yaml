@@ -10,7 +10,7 @@ description: "Full kspec validate currently fails with: .kspec/modules/meta.yaml
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -19,6 +19,14 @@ tags:
   - bug
   - validation
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/fix-meta-catalog-schema-error-in-traits-field/01kq99z7
+  captured_at: 2026-04-28T06:29:35.043Z
+  commit: f60d02714d3f2c5968fd6410f35a091341bde765
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KQ9AYYB5MQX8ZFR0G8QQCXQ5
 history:
   - author: "@claude"
@@ -34,7 +42,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-28T06:03:50.283Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/fix-meta-catalog-schema-error-in-traits-field/01kq99z7
+          captured_at: 2026-04-28T06:29:35.043Z
+          commit: f60d02714d3f2c5968fd6410f35a091341bde765
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-28T06:29:35.046Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-28T06:29:35.047Z
 created_at: 2026-04-28T05:46:09.330Z
 started_at: 2026-04-28T06:03:50.282Z
+submitted_at: 2026-04-28T06:29:35.046Z
 todos: []
 automation: eligible
