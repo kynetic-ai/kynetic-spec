@@ -171862,7 +171862,71 @@ reviews:
     slugs: []
     title: Review task-align-ac-annotation-format-tests cycle 3
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --completeness --warnings-ok exited 0. Remaining invalid annotation
+          warnings are expected pre-existing blanket/unresolved fixture categories; task refs
+          @ac-annotation-identifier-format and @test-annotation-sweep are covered.
+        name: kspec validate completeness
+        required: true
+        runner: kspec
+        created_at: 2026-04-28T07:36:00.177Z
+        completed_at: 2026-04-28T07:36:00.177Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --warnings-ok exited 0. Schema/references OK; warnings are existing
+          reference/alignment/completeness warnings unrelated to this task.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-04-28T07:36:03.062Z
+        completed_at: 2026-04-28T07:36:03.062Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test exited 0: 2301/2301 suites passed; 8447 passed, 5 skipped of 8452 tests. Log:
+          /tmp/kspec-test-cache/01KQ9FKZEXK6S13NWFHYA5TF7V/1f0e24a516498989.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-28T07:36:05.917Z
+        completed_at: 2026-04-28T07:36:05.917Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: git diff --check
+          336a0ea4060ea5a7fa44574d1a67476c7bc36ef8..348f3242f4b8d70143d392b658eb7ef01f1d4605 exited
+          0.
+        name: git diff check
+        required: true
+        runner: git
+        created_at: 2026-04-28T07:36:08.816Z
+        completed_at: 2026-04-28T07:36:08.816Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/parser/validate.ts, tests/ac-annotation-identifier-format.test.ts,
+          tests/ac-annotation-validation.test.ts, kspec.config.yaml. Commands run: kspec task get,
+          kspec item get @ac-annotation-identifier-format, kspec item get @test-annotation-sweep,
+          prior review gets, rg AC annotations, kspec validate --completeness --warnings-ok, kspec
+          validate --warnings-ok, git diff --check, npm test. Claims verified: prior
+          scanner-visibility and literal-pattern blockers are fixed; non-prefixed tokens produce
+          blanket/no-credit behavior; ac-prefixed named/numeric ids receive coverage. Categories
+          searched: correctness, edge cases, error handling/warnings, test quality,
+          integration/scanner config."
+        name: review evidence log
+        required: true
+        runner: codex
+        created_at: 2026-04-28T07:36:11.636Z
+        completed_at: 2026-04-28T07:36:11.636Z
     events:
       - _ulid: 01KQ9FNATVXTCHS79KCB76PDZQ
         actor: Jacob Chapel
@@ -171877,9 +171941,60 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-28T07:25:53.637Z
+      - _ulid: 01KQ9G8D0J582447JTVTT320A6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate completeness
+        timestamp: 2026-04-28T07:36:01.298Z
+      - _ulid: 01KQ9G8FT7HP79AWGYYHWJVDVM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-28T07:36:04.167Z
+      - _ulid: 01KQ9G8JMEHFW8HH7WC864ADEQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-28T07:36:07.054Z
+      - _ulid: 01KQ9G8ND3VM30ME8A1SRJK92R
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: git diff check
+        timestamp: 2026-04-28T07:36:09.892Z
+      - _ulid: 01KQ9G8R758VXKNJ61DK49JGNH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-28T07:36:12.773Z
+      - _ulid: 01KQ9G8V1PWTDTTD9W5CCSZJ61
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-28T07:36:15.670Z
+      - _ulid: 01KQ9G8V1PMB7EG1N7CVNPS9CZ
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-28T07:36:15.670Z
     examined_commit: 348f3242f4b8d70143d392b658eb7ef01f1d4605
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -171887,7 +172002,14 @@ reviews:
       ref: "@01KQ93NF0V9VKZSSVYTA0W3Z8X"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-28T07:36:15.670Z
     created_at: 2026-04-28T07:25:36.475Z
-    updated_at: 2026-04-28T07:25:52.494Z
+    updated_at: 2026-04-28T07:36:15.670Z
     notes: []
