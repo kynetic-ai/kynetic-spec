@@ -169648,7 +169648,83 @@ reviews:
     slugs: []
     title: "Plan review: AC ID Format Normalization (cycle 2)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Stored plan has no spec-level tags in the planned spec YAML, and
+          @task-ac-id-format-final-gate now lists concrete Covers refs instead of a summary line.
+        name: Cycle 1 nit verification
+        required: true
+        created_at: 2026-04-28T03:35:00.723Z
+        completed_at: 2026-04-28T03:35:00.723Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: New @acceptance-criterion-id-format requirement fits under @spec-item; new
+          @ac-annotation-identifier-format requirement fits under @test-annotation-sweep and refines
+          existing annotation semantics without contradicting @ac-annotation-integrity-reporting.
+        name: Spec quality and neighborhood fit
+        required: true
+        created_at: 2026-04-28T03:35:03.768Z
+        completed_at: 2026-04-28T03:35:03.768Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Planned ACs cover stored id validation, invalid create/rename rejection, generated id
+          format, explicit annotation token parsing, valid-token coverage, and bare-ref no-credit
+          behavior. Covers lines map those ACs to implementation tasks.
+        name: Required behavior coverage
+        required: true
+        created_at: 2026-04-28T03:35:06.660Z
+        completed_at: 2026-04-28T03:35:06.660Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Each planned task includes concrete why/what/how/testing sections, file-area guidance, and
+          explicit Covers refs sufficient for a fresh worker to execute without chat history.
+        name: Task standalone quality
+        required: true
+        created_at: 2026-04-28T03:35:09.561Z
+        completed_at: 2026-04-28T03:35:09.561Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ordering inside the plan is coherent, but existing @task-normalize-ac-ids-and-annotations
+          is active pending_review with overlapping normalization scope and already ran before
+          planned enforcement. This contradicts the draft retirement note and creates duplicate-work
+          risk on derive.
+        name: Dependency ordering and duplicate task handling
+        required: true
+        created_at: 2026-04-28T03:35:13.649Z
+        completed_at: 2026-04-28T03:35:13.649Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validator/schema/CLI enforcement, catalog migration, annotation parser tests, and final
+          validation gate are feasible with existing schema, item AC commands, validation, and test
+          infrastructure.
+        name: Implementation feasibility
+        required: true
+        created_at: 2026-04-28T03:35:16.697Z
+        completed_at: 2026-04-28T03:35:16.697Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/ac-id-format-normalization.md --dry-run succeeded. kspec validate
+          --refs --warnings-ok and --alignment --warnings-ok also completed with only pre-existing
+          warnings.
+        name: Parser/import cleanliness
+        required: true
+        created_at: 2026-04-28T03:35:19.653Z
+        completed_at: 2026-04-28T03:35:19.653Z
     events:
       - _ulid: 01KQ92CYKVRB8553PRMVKM2T4T
         actor: Jacob Chapel
@@ -169663,17 +169739,114 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-28T03:34:08.026Z
+      - _ulid: 01KQ92F1HP5R2T524RDKKCSB0X
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQ92F0DX2E6A251G1YPBQHHJ
+        timestamp: 2026-04-28T03:34:58.870Z
+      - _ulid: 01KQ92F4JAXEG29J09VDXZ0XVF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Cycle 1 nit verification
+        timestamp: 2026-04-28T03:35:01.962Z
+      - _ulid: 01KQ92F7D9G4SHSWZ96B9SB5H9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec quality and neighborhood fit
+        timestamp: 2026-04-28T03:35:04.874Z
+      - _ulid: 01KQ92FA8C14NKRNM75R9N16SH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Required behavior coverage
+        timestamp: 2026-04-28T03:35:07.788Z
+      - _ulid: 01KQ92FD2DEZ7HDX9Z1BNJZ8ZG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone quality
+        timestamp: 2026-04-28T03:35:10.669Z
+      - _ulid: 01KQ92FH7XPHGE1CREEG2P178E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Dependency ordering and duplicate task handling
+        timestamp: 2026-04-28T03:35:14.941Z
+      - _ulid: 01KQ92FM2X6FNYA49JN43055X1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Implementation feasibility
+        timestamp: 2026-04-28T03:35:17.853Z
+      - _ulid: 01KQ92FPXMC3MQD91THTC9AP99
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Parser/import cleanliness
+        timestamp: 2026-04-28T03:35:20.756Z
+      - _ulid: 01KQ92FSYE1RSW2ZWHSGRNSHH0
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-28T03:35:23.854Z
+      - _ulid: 01KQ92FSYE4RHBX29Y9QC8T8X9
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-28T03:35:23.854Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@plan-ac-id-format-normalization"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KQ92F0DX2E6A251G1YPBQHHJ
+        anchor:
+          type: structured
+          ref: "@task-normalize-catalog-ac-ids-and-annotations"
+          section: dependencies
+        entries:
+          - _ulid: 01KQ92F0DXBWQVFJV8VEWGXNK1
+            author: Jacob Chapel
+            body: "Active duplicate work blocks derivation: the draft says the direct provisional task was
+              retired, but @task-normalize-ac-ids-and-annotations is currently pending_review and
+              has already performed the same catalog/annotation normalization covered by planned
+              task @task-normalize-catalog-ac-ids-and-annotations. That also violates the plan
+              ordering because normalization ran before planned enforcement task
+              @task-enforce-ac-id-format. Cancel, complete, or explicitly absorb that existing task
+              before approval, and update the plan notes/task scope so derivation cannot create
+              overlapping work."
+            created_at: 2026-04-28T03:34:57.725Z
+        kind: blocker
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-28T03:35:23.854Z
     created_at: 2026-04-28T03:33:50.331Z
-    updated_at: 2026-04-28T03:34:06.880Z
+    updated_at: 2026-04-28T03:35:23.854Z
     notes: []
