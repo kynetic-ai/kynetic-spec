@@ -170045,6 +170045,18 @@ reviews:
         runner: npm test
         created_at: 2026-04-28T05:00:17.715Z
         completed_at: 2026-04-28T05:00:17.715Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec item get @acceptance-criterion-id-format showed five ACs; rg found annotations for
+          ac-stored-id-format, ac-invalid-stored-id-reported, ac-create-rejects-invalid-id,
+          ac-rename-rejects-invalid-id, and ac-generated-ids-conform in tests/ac-id-format.test.ts.
+        name: AC coverage
+        required: true
+        runner: manual+rg
+        created_at: 2026-04-28T05:00:20.972Z
+        completed_at: 2026-04-28T05:00:20.972Z
     events:
       - _ulid: 01KQ96R59E5CHYAKS6CXANPFFJ
         actor: Jacob Chapel
@@ -170066,6 +170078,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-28T05:00:18.876Z
+      - _ulid: 01KQ97BCS5QBDZKM80ARAQW2HH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage
+        timestamp: 2026-04-28T05:00:22.181Z
     examined_commit: 6a54d8669fac304c6ed57cb57298159a12bfbc58
     external_links: []
     lifecycle_state: open
@@ -170078,5 +170097,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T04:49:51.919Z
-    updated_at: 2026-04-28T05:00:17.715Z
+    updated_at: 2026-04-28T05:00:20.972Z
     notes: []
