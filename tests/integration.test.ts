@@ -2109,7 +2109,7 @@ describe("Integration: kspec log", () => {
     expect(output).toContain("No commits found");
   });
 
-  // AC: @cmd-log list-all-tracked
+  // AC: @cmd-log ac-list-all-tracked
   it("should list all commits with Task: or Spec: trailers when no ref provided", () => {
     // Create commits with Task: and Spec: trailers
     execSync("touch test1.txt", { cwd: tempDir, stdio: "ignore" });
@@ -2134,7 +2134,7 @@ describe("Integration: kspec log", () => {
     expect(output).toContain("2 commit(s) found");
   });
 
-  // AC: @cmd-log list-all-tracked
+  // AC: @cmd-log ac-list-all-tracked
   it("should respect --limit flag when listing all tracked commits", () => {
     // Create 3 commits with trailers
     for (let i = 0; i < 3; i++) {
@@ -2152,7 +2152,7 @@ describe("Integration: kspec log", () => {
     expect(output).toContain("2 commit(s) found");
   });
 
-  // AC: @cmd-log passthrough-args
+  // AC: @cmd-log ac-passthrough-args
   it("should pass through git log arguments after --", () => {
     // Create a commit with Task: trailer
     execSync("touch passthrough-test.txt", { cwd: tempDir, stdio: "ignore" });
@@ -2169,7 +2169,7 @@ describe("Integration: kspec log", () => {
     expect(output).toContain("changed");
   });
 
-  // AC: @cmd-log passthrough-invalid
+  // AC: @cmd-log ac-passthrough-invalid
   it("should show git error for invalid passthrough arguments", () => {
     // Create a commit with Task: trailer
     execSync("touch invalid-arg-test.txt", { cwd: tempDir, stdio: "ignore" });
@@ -2922,7 +2922,7 @@ describe("Integration: Batch operations", () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: @multi-ref-batch basic-multi-ref-syntax
+  // AC: @multi-ref-batch ac-basic-multi-ref-syntax
   it("should support --refs flag with multiple references", () => {
     // Create three tasks and start them
     const task1 = kspecJson<{ task: { _ulid: string } }>(
@@ -2956,7 +2956,7 @@ describe("Integration: Batch operations", () => {
       tempDir,
     );
 
-    // AC: @multi-ref-batch json-output-format
+    // AC: @multi-ref-batch ac-json-output-format
     expect(result.success).toBe(true);
     expect(result.summary.total).toBe(3);
     expect(result.summary.succeeded).toBe(3);
@@ -2967,7 +2967,7 @@ describe("Integration: Batch operations", () => {
     expect(result.results[2].status).toBe("success");
   });
 
-  // AC: @multi-ref-batch backward-compatibility
+  // AC: @multi-ref-batch ac-backward-compatibility
   it("should maintain backward compatibility with positional ref", () => {
     // Create and start a task
     const task = kspecJson<{ task: { _ulid: string } }>(
@@ -2987,7 +2987,7 @@ describe("Integration: Batch operations", () => {
     expect(result.summary.succeeded).toBe(1);
   });
 
-  // AC: @multi-ref-batch mutual-exclusion-error
+  // AC: @multi-ref-batch ac-mutual-exclusion-error
   it("should error when both positional ref and --refs are provided", () => {
     const task = kspecJson<{ task: { _ulid: string } }>(
       'task add --title "Test Task" --priority 3',
@@ -3003,7 +3003,7 @@ describe("Integration: Batch operations", () => {
     }
   });
 
-  // AC: @multi-ref-batch partial-failure-handling
+  // AC: @multi-ref-batch ac-partial-failure-handling
   it("should continue processing after errors and report partial failures", () => {
     // Create two valid tasks
     const task1 = kspecJson<{ task: { _ulid: string } }>(
@@ -3044,7 +3044,7 @@ describe("Integration: Batch operations", () => {
     expect(result.results[2].status).toBe("success");
   });
 
-  // AC: @multi-ref-batch empty-refs-error
+  // AC: @multi-ref-batch ac-empty-refs-error
   it("should error when --refs is provided without values", () => {
     try {
       kspec("task cancel --refs", tempDir);
@@ -3055,7 +3055,7 @@ describe("Integration: Batch operations", () => {
     }
   });
 
-  // AC: @multi-ref-batch ref-resolution-uses-existing
+  // AC: @multi-ref-batch ac-ref-resolution-uses-existing
   it("should resolve refs using existing resolution logic (slugs, ULID prefixes)", () => {
     // Create two tasks with slugs
     const task1 = kspecJson<{ task: { _ulid: string } }>(

@@ -28,7 +28,7 @@ describe("Staleness detection", () => {
     }
   });
 
-  // AC: @stale-status-detection parent-pending-children-done
+  // AC: @stale-status-detection ac-parent-pending-children-done
   it("should warn when task dependencies are completed but task is pending", async () => {
     // Create spec directory
     const specDir = path.join(tmpDir, "spec");
@@ -102,7 +102,7 @@ includes:
     expect(result).toContain("all dependencies are completed");
   });
 
-  // AC: @stale-status-detection spec-implemented-no-task
+  // AC: @stale-status-detection ac-spec-implemented-no-task
   it("should warn when spec is implemented but has no completed tasks", async () => {
     const specDir = path.join(tmpDir, "spec");
     await fs.mkdir(specDir);
@@ -154,7 +154,7 @@ includes:
     expect(result).toContain("no completed tasks");
   });
 
-  // AC: @stale-status-detection task-done-spec-not-started
+  // AC: @stale-status-detection ac-task-done-spec-not-started
   it("should warn when task is completed but spec is not_started", async () => {
     const specDir = path.join(tmpDir, "spec");
     await fs.mkdir(specDir);
@@ -208,7 +208,7 @@ includes:
     expect(result).toContain("not_started");
   });
 
-  // AC: @stale-status-detection staleness-flag
+  // AC: @stale-status-detection ac-staleness-flag
   it("should only run staleness checks when --staleness flag is provided", async () => {
     const specDir = path.join(tmpDir, "spec");
     await fs.mkdir(specDir);
@@ -269,7 +269,7 @@ includes:
     expect(resultWithFlag).not.toContain("Completeness warnings");
   });
 
-  // AC: @stale-status-detection staleness-exit-code
+  // AC: @stale-status-detection ac-staleness-exit-code
   it("should exit with code 0 by default, or code 4 with --strict", async () => {
     const specDir = path.join(tmpDir, "spec");
     await fs.mkdir(specDir);

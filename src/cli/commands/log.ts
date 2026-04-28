@@ -260,7 +260,7 @@ export function registerLogCommand(program: Command): void {
             patterns.push(`Task: ${normalizeRefInput(options.task)}`);
           }
 
-          // AC: @cmd-log list-all-tracked
+          // AC: @cmd-log ac-list-all-tracked
           // If no patterns specified, list all commits with Task: or Spec: trailers
           if (patterns.length === 0) {
             patterns.push("Task: @");
@@ -269,7 +269,7 @@ export function registerLogCommand(program: Command): void {
 
           const limit = parseInt(options.limit, 10);
 
-          // AC: @cmd-log passthrough-args, passthrough-invalid
+          // AC: @cmd-log ac-passthrough-args, ac-passthrough-invalid
           // If passthrough args are present, use raw git output
           if (passthroughArgs.length > 0) {
             const rawOutput = searchCommitsRaw(patterns, {
