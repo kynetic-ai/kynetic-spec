@@ -169040,6 +169040,18 @@ reviews:
         required: true
         created_at: 2026-04-28T00:51:28.470Z
         completed_at: 2026-04-28T00:51:28.470Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Read @multi-turn-session-lifecycle, @default-project-agents-and-conventions,
+          @default-session-reflection-hook, @single-command-version-upgrade, plus adjacent
+          @session-idle-event and @session-prompt-action. The plan extends owning specs without
+          contradicting or duplicating existing first-idle behavior.
+        name: Existing spec neighborhood
+        required: true
+        created_at: 2026-04-28T00:51:38.054Z
+        completed_at: 2026-04-28T00:51:38.054Z
     events:
       - _ulid: 01KQ8S259S7APDY3J5P0NMTHJB
         actor: Jacob Chapel
@@ -169075,6 +169087,13 @@ reviews:
           status: pass
           name: Coverage and scope mapping
         timestamp: 2026-04-28T00:51:29.615Z
+      - _ulid: 01KQ8S3ZJHXP2SRAZ72XFR61NY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec neighborhood
+        timestamp: 2026-04-28T00:51:39.217Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -169087,5 +169106,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T00:50:39.545Z
-    updated_at: 2026-04-28T00:51:28.470Z
+    updated_at: 2026-04-28T00:51:38.054Z
     notes: []
