@@ -12924,3 +12924,79 @@ workspaces:
         head: 03f6193cdd7bcf4fdc53182232787efa46fdbc02
         last_seen_at: 2026-04-28T01:43:48.940Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-default-session-reflection-reliability-01kq8sgw
+  - active_role: null
+    base_branch_point: d2afe3cdc7056698b18833e49bb37ee0543c36ad
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-normalize-ac-ids-and-annotations/01kq90zs
+    canonical_branch_head: d2afe3cdc7056698b18833e49bb37ee0543c36ad
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-04-28T03:09:37.269Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-04-28T03:09:37.269Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: d2afe3cdc7056698b18833e49bb37ee0543c36ad
+      updated_at: 2026-04-28T03:09:37.269Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KQ90ZSYNH0D3S53KTVF5AYJM"
+    task_slug: task-normalize-ac-ids-and-annotations
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-04-28T03:09:37.269Z
+      created_at: 2026-04-28T03:09:37.269Z
+      updated_at: 2026-04-28T03:09:37.269Z
+    workspace_id: dispatch-workspace-01KQ90ZSYNH0D3S53KTVF5AYJM
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-normalize-ac-ids-and-annotations/01kq90zs
+        head: d2afe3cdc7056698b18833e49bb37ee0543c36ad
+        last_seen_at: 2026-04-28T03:09:37.269Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-normalize-ac-ids-and-annotations-01kq90zs
