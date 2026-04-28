@@ -15155,12 +15155,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-28T07:10:32.403Z
+      updated_at: 2026-04-28T07:11:05.680Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-28T07:10:32.403Z
+      updated_at: 2026-04-28T07:11:05.680Z
     integration:
       status: pending
       detail: null
@@ -15168,7 +15168,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f60d02714d3f2c5968fd6410f35a091341bde765
-      updated_at: 2026-04-28T07:10:32.403Z
+      updated_at: 2026-04-28T07:11:05.680Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KQ99Z7HJ34SMZNGBBE1BTXRD"
@@ -15176,16 +15176,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T06:49:20.736Z
-      last_reconciled_at: 2026-04-28T07:10:32.403Z
+      last_reconciled_at: 2026-04-28T07:11:05.680Z
       created_at: 2026-04-28T06:03:02.953Z
-      updated_at: 2026-04-28T07:10:32.403Z
+      updated_at: 2026-04-28T07:11:05.680Z
     workspace_id: dispatch-workspace-01KQ99Z7HJ34SMZNGBBE1BTXRD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f60d02714d3f2c5968fd6410f35a091341bde765
+        last_seen_at: 2026-04-28T07:11:05.680Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-meta-catalog-schema-error-in-traits-field-01kq99z7-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-meta-catalog-schema-error-in-traits-field/01kq99z7
         head: f60d02714d3f2c5968fd6410f35a091341bde765
-        last_seen_at: 2026-04-28T06:49:19.592Z
+        last_seen_at: 2026-04-28T07:11:05.680Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-meta-catalog-schema-error-in-traits-field-01kq99z7
