@@ -16392,6 +16392,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-28T05:42:37.790Z
+  - _ulid: 01KQ9AMHA2ASQXAW3RRDHZH7MB
+    type: friction
+    content: "Detached review snapshots can make direct shadow-state inspection misleading: git -C
+      .kspec failed because .kspec was not present in the snapshot, while kspec CLI commands still
+      resolved shadow state correctly via project configuration/dispatch context."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-28T05:57:47.458Z
+  - _ulid: 01KQ9AMHHXP2GWKTD777TQFW8T
+    type: success
+    content: "The detached reviewer merge helper worked cleanly for manual_merge review completion:
+      after review approval it merged the canonical task branch into dev and refreshed the occupied
+      worktree without requiring branch checkout or manual merge commands in the detached snapshot."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-04-28T05:57:47.709Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
