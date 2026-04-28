@@ -32747,7 +32747,7 @@ runs:
     completed_at: 2026-04-25T03:10:28.137Z
   - _ulid: 01KQ8STJ8R64X06JWQ41M5G1YD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -32777,7 +32777,33 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-28T01:04:45.804Z
-        completed_at: 2026-04-28T01:04:45.804Z
+        completed_at: 2026-04-28T01:05:21.468Z
+        notes: >-
+          Searched existing state: 30+ observations already tracked, 6+ inbox items. Reviewed all
+          recent entries.
+
+
+          High-confidence items from this session:
+
+
+          SUCCESS: Well-structured spec-only task descriptions with exact AC ids, exact
+          Given/When/Then text, and explicit negative constraints ("do not add duplicate") make
+          spec-update tasks trivially executable. The precision eliminated all ambiguity and the
+          task completed in a single pass with no questions. This pattern (exact AC id + exact G/W/T
+          + explicit exclusions) should be the standard for spec-update tasks.
+
+
+          Already tracked: Inbox @01KQ0RH7 already covers the 'kspec workflow show' missing run-ref
+          friction I hit briefly — no duplicate needed.
+
+
+          No new friction: This session was short (single spec-only task) and the tooling worked as
+          expected. kspec batch handled atomic multi-AC addition cleanly. No new systemic friction
+          to report.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-28T01:05:21.468Z
+        completed_at: 2026-04-28T01:05:21.468Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-28T01:03:59.256Z
