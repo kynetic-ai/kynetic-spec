@@ -43784,8 +43784,7 @@ plans:
               A user supplies patch data that would store an acceptance criterion
               identifier that does not conform to the required token format
             when: |
-              kspec validates the patch for a single item, a bulk operation, or a
-              lower-level catalog item update
+              kspec validates the patch for a single item patch or bulk item patch
             then: |
               The update is rejected before the catalog item is mutated
 
@@ -43807,15 +43806,27 @@ plans:
               kspec item patch --bulk --dry-run validates the operation
             then: |
               The operation is reported as an error instead of a successful preview
-          - id: ac-bulk-invalid-operation-isolated
+          - id: ac-bulk-invalid-operation-not-written
             given: |
-              A bulk patch contains an operation with invalid patch data and another
-              operation with valid patch data
+              A bulk patch contains an operation with invalid patch data
             when: |
               kspec item patch --bulk runs without --fail-fast
             then: |
-              The invalid operation is not written, the valid operation is still
-              applied, and the command exits with a failure status
+              The invalid operation is not written
+          - id: ac-bulk-valid-operations-continue
+            given: |
+              A bulk patch contains an invalid operation followed by a valid operation
+            when: |
+              kspec item patch --bulk runs without --fail-fast
+            then: |
+              The valid operation after the invalid operation is applied
+          - id: ac-bulk-invalid-operation-fails-command
+            given: |
+              A bulk patch contains at least one operation with invalid patch data
+            when: |
+              kspec item patch --bulk finishes processing the requested operations
+            then: |
+              The command exits with a failure status
 
       - spec_ref: "@ac-annotation-identifier-format"
         add_acceptance_criteria:
@@ -43832,12 +43843,12 @@ plans:
           - id: ac-valid-delimiters-preserved
             given: |
               A coverage annotation separates valid acceptance criterion tokens with
-              supported delimiters such as whitespace or commas
+              whitespace, a comma, or a comma followed by whitespace
             when: |
               completeness validation parses the annotation
             then: |
-              Each valid token is recognized without requiring punctuation to be part
-              of the token grammar
+              Each delimiter-separated token is recognized as its own acceptance
+              criterion token
 
       - spec_ref: "@ac-annotation-integrity-reporting"
         add_acceptance_criteria:
@@ -43870,8 +43881,8 @@ plans:
 
           Why:
           - The existing acceptance criterion identifier format spec covers direct
-            add and rename commands, but patch and lower-level item update paths also
-            store acceptance criteria and must not become bypass surfaces.
+            add and rename commands, but single-item and bulk patch paths also store
+            acceptance criteria and must not become bypass surfaces.
           - The existing item patch spec documents strict validation, dry-run, bulk,
             fail-fast, and --allow-unknown behavior, but it does not say that known
             schema fields remain validated in bulk and allow-unknown modes.
@@ -43885,8 +43896,8 @@ plans:
             exact behavioral shape:
               Given: A user supplies patch data that would store an acceptance
               criterion identifier that does not conform to the required token format.
-              When: kspec validates the patch for a single item, a bulk operation, or
-              a lower-level catalog item update.
+              When: kspec validates the patch for a single item patch or bulk item
+              patch.
               Then: The update is rejected before the catalog item is mutated.
           - Add @item-patch ac-known-fields-validated-with-allow-unknown with this
             exact behavioral shape:
@@ -43903,13 +43914,24 @@ plans:
               When: kspec item patch --bulk --dry-run validates the operation.
               Then: The operation is reported as an error instead of a successful
               preview.
-          - Add @item-patch ac-bulk-invalid-operation-isolated with this exact
+          - Add @item-patch ac-bulk-invalid-operation-not-written with this exact
             behavioral shape:
-              Given: A bulk patch contains an operation with invalid patch data and
-              another operation with valid patch data.
+              Given: A bulk patch contains an operation with invalid patch data.
               When: kspec item patch --bulk runs without --fail-fast.
-              Then: The invalid operation is not written, the valid operation is still
-              applied, and the command exits with a failure status.
+              Then: The invalid operation is not written.
+          - Add @item-patch ac-bulk-valid-operations-continue with this exact
+            behavioral shape:
+              Given: A bulk patch contains an invalid operation followed by a valid
+              operation.
+              When: kspec item patch --bulk runs without --fail-fast.
+              Then: The valid operation after the invalid operation is applied.
+          - Add @item-patch ac-bulk-invalid-operation-fails-command with this exact
+            behavioral shape:
+              Given: A bulk patch contains at least one operation with invalid patch
+              data.
+              When: kspec item patch --bulk finishes processing the requested
+              operations.
+              Then: The command exits with a failure status.
           - Add @ac-annotation-identifier-format ac-malformed-token-not-truncated with
             this exact behavioral shape:
               Given: A coverage annotation contains an ac-prefixed token with
@@ -43921,10 +43943,10 @@ plans:
           - Add @ac-annotation-identifier-format ac-valid-delimiters-preserved with
             this exact behavioral shape:
               Given: A coverage annotation separates valid acceptance criterion tokens
-              with supported delimiters such as whitespace or commas.
+              with whitespace, a comma, or a comma followed by whitespace.
               When: completeness validation parses the annotation.
-              Then: Each valid token is recognized without requiring punctuation to be
-              part of the token grammar.
+              Then: Each delimiter-separated token is recognized as its own acceptance
+              criterion token.
           - Add @ac-annotation-integrity-reporting ac-malformed-ac-token-reported with
             this exact behavioral shape:
               Given: A configured coverage scan path contains an AC annotation with a
@@ -43954,7 +43976,9 @@ plans:
           - @acceptance-criterion-id-format ac-patch-rejects-invalid-id
           - @item-patch ac-known-fields-validated-with-allow-unknown
           - @item-patch ac-bulk-dry-run-validates-data
-          - @item-patch ac-bulk-invalid-operation-isolated
+          - @item-patch ac-bulk-invalid-operation-not-written
+          - @item-patch ac-bulk-valid-operations-continue
+          - @item-patch ac-bulk-invalid-operation-fails-command
           - @ac-annotation-identifier-format ac-malformed-token-not-truncated
           - @ac-annotation-identifier-format ac-valid-delimiters-preserved
           - @ac-annotation-integrity-reporting ac-malformed-ac-token-reported
@@ -44040,7 +44064,9 @@ plans:
           - @acceptance-criterion-id-format ac-patch-rejects-invalid-id
           - @item-patch ac-known-fields-validated-with-allow-unknown
           - @item-patch ac-bulk-dry-run-validates-data
-          - @item-patch ac-bulk-invalid-operation-isolated
+          - @item-patch ac-bulk-invalid-operation-not-written
+          - @item-patch ac-bulk-valid-operations-continue
+          - @item-patch ac-bulk-invalid-operation-fails-command
 
       - title: Reject malformed AC annotation tokens instead of truncating them
         slug: task-strict-ac-annotation-token-parsing
@@ -44160,7 +44186,9 @@ plans:
           - @acceptance-criterion-id-format ac-patch-rejects-invalid-id
           - @item-patch ac-known-fields-validated-with-allow-unknown
           - @item-patch ac-bulk-dry-run-validates-data
-          - @item-patch ac-bulk-invalid-operation-isolated
+          - @item-patch ac-bulk-invalid-operation-not-written
+          - @item-patch ac-bulk-valid-operations-continue
+          - @item-patch ac-bulk-invalid-operation-fails-command
           - @ac-annotation-identifier-format ac-malformed-token-not-truncated
           - @ac-annotation-identifier-format ac-valid-delimiters-preserved
           - @ac-annotation-integrity-reporting ac-malformed-ac-token-reported
@@ -44186,11 +44214,15 @@ plans:
       covered.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/ac-id-surface-hardening.md
     created_at: 2026-04-28T23:36:21.018Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KQB7MYW5A9GDS2EJ5R43VA3E
+        content: "Address review @01KQB7D6: remove internal update wording, split bulk invalid-operation AC,
+          and make delimiter contract exact"
+        author: Jacob Chapel
+        created_at: 2026-04-28T23:44:04.485Z
