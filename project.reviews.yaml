@@ -169326,6 +169326,19 @@ reviews:
         runner: npm
         created_at: 2026-04-28T01:55:35.664Z
         completed_at: 2026-04-28T01:55:35.664Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit 4 from pre-existing shadow metadata issues outside code diff:
+          .kspec/modules/meta.yaml modules[0].traits.0 expected string; missing
+          @task-state-transitions dependency in unrelated task 01KFCJVC09RSPN0M8J2HGS49Y2. Code diff
+          changes only src/ and tests/."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-04-28T01:55:35.678Z
+        completed_at: 2026-04-28T01:55:35.678Z
     events:
       - _ulid: 01KQ8W54N3V723YSEDW759RP2T
         actor: Jacob Chapel
@@ -169347,6 +169360,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-28T01:55:36.888Z
+      - _ulid: 01KQ8WS53N6TSTJ76VYZ2ARXMS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-04-28T01:55:38.742Z
     examined_commit: 03f6193cdd7bcf4fdc53182232787efa46fdbc02
     external_links: []
     lifecycle_state: open
@@ -169359,5 +169379,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T01:44:42.915Z
-    updated_at: 2026-04-28T01:55:35.664Z
+    updated_at: 2026-04-28T01:55:35.678Z
     notes: []
