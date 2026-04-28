@@ -171605,6 +171605,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-28T07:01:52.993Z
+      - _ulid: 01KQ9FGSVV12AQQA8HTQYTJJN3
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQ9DR4BE4AMWF32DKYNT67VF
+        timestamp: 2026-04-28T07:23:08.027Z
     examined_commit: 1fdb1ea369cf04108846566b3b8ce0e5ce57096f
     external_links: []
     lifecycle_state: closed
@@ -171683,6 +171689,14 @@ reviews:
               tests/ac-annotation-identifier-format.test.ts:207. Reword the comment or split the
               marker string so this non-excluded file only exposes intentional real AC annotations."
             created_at: 2026-04-28T06:52:41.351Z
+          - _ulid: 01KQ9FGRRGMRH8N4QH64FCJFPB
+            author: "@claude"
+            body: "Fixed: reworded the prose comment on line 207 to describe the parser behavior without
+              embedding a literal annotation pattern. The comment now says 'Parser should treat a
+              non-prefixed word like \"validate\" as noise, yielding a blanket ref' — no AC: @ref
+              pattern for the scanner to match. Unresolved targets dropped from 3 to 2 (remaining
+              are pre-existing @test-feature and @test-trait in other fixture files)."
+            created_at: 2026-04-28T07:23:06.896Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -171693,7 +171707,7 @@ reviews:
         role: automated-reviewer
         created_at: 2026-04-28T07:01:52.992Z
     created_at: 2026-04-28T06:50:46.098Z
-    updated_at: 2026-04-28T07:01:52.992Z
+    updated_at: 2026-04-28T07:23:06.896Z
     notes: []
   - _ulid: 01KQ9EX5J289VVYS3M1YR5MA31
     slugs: []
