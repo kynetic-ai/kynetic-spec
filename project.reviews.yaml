@@ -172149,6 +172149,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-28T08:08:37.251Z
+      - _ulid: 01KQ9K6ABN81NR8PW4GBBHXV3E
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQ9J3W819J6QNR3V69ZCAY48
+        timestamp: 2026-04-28T08:27:18.774Z
     examined_commit: 6bbe44ebae65184677ab20dfbf89096a178396ca
     external_links: []
     lifecycle_state: closed
@@ -172180,6 +172186,17 @@ reviews:
               without coverage for malformed ac-* tokens. Use the shared acIdPattern or equivalent
               strict token boundary matching here and add behavioral tests for invalid ac-* shapes.'
             created_at: 2026-04-28T08:08:30.209Z
+          - _ulid: 01KQ9K698KWQTW4JNCM4P6VRTG
+            author: "@claude"
+            body: "Fixed: imported the shared acIdPattern from src/schema/common.ts into the annotation parser
+              and added a filter step that validates each extracted ac-* candidate against
+              acIdPattern.test() before including it in the acIds array. Malformed tokens
+              (underscores, doubled hyphens, trailing hyphens, uppercase) are now silently dropped,
+              matching AcIdSchema behavior. Added 5 behavioral tests in
+              ac-annotation-identifier-format.test.ts and 1 integration test in
+              ac-id-format-gate.test.ts covering underscore, doubled hyphen, trailing hyphen,
+              uppercase, and mixed valid/invalid cases. All 8468 tests pass."
+            created_at: 2026-04-28T08:27:17.650Z
         kind: blocker
       - _ulid: 01KQ9J3Z40BPTWTJFGVWNVK0B1
         entries:
@@ -172207,5 +172224,5 @@ reviews:
         role: automated reviewer
         created_at: 2026-04-28T08:08:37.251Z
     created_at: 2026-04-28T07:57:24.570Z
-    updated_at: 2026-04-28T08:08:37.251Z
+    updated_at: 2026-04-28T08:27:17.650Z
     notes: []
