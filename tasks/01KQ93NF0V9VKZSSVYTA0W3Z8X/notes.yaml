@@ -75,3 +75,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-28T06:14:48.088Z
+  - _ulid: 01KQ9DH62SEKJ0YD1BJR4PZ0QQ
+    content: "Fix cycle 1: addressed review blocker — AC annotations were in an excluded file
+      (tests/ac-annotation-validation.test.ts) and invisible to completeness scanning. Created
+      tests/ac-annotation-identifier-format.test.ts with the same behavioral tests in a non-excluded
+      file. Used string concatenation for fixture annotation strings to avoid scanner false
+      positives. Removed task-specific AC annotations from excluded file. All 5 ACs now register in
+      kspec validate --completeness. Full test suite passes (8447 tests). Replied to and resolved
+      the blocker thread."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T06:48:23.386Z
