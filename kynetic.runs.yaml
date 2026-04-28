@@ -33491,7 +33491,7 @@ runs:
     completed_at: 2026-04-28T07:26:02.532Z
   - _ulid: 01KQ9FR4VJ4DDYT65BESBV61VD
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33532,7 +33532,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-28T07:28:27.476Z
-        completed_at: 2026-04-28T07:28:27.476Z
+        completed_at: 2026-04-28T07:28:36.093Z
+        notes: "Proposed improvement: Update the test runner dependency-repair path so it installs required
+          test/dev dependencies regardless of caller NODE_ENV/omit settings, for example by invoking
+          npm ci with an explicit development include/omit override or by surfacing a clearer
+          diagnostic that names NODE_ENV=production as the cause. Benefit: review agents can run npm
+          test directly in dispatch environments without manual dependency installation workarounds.
+          Scope: small to medium, likely in scripts/test.cjs and/or scripts/dependency-health.cjs."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-28T07:28:36.093Z
+        completed_at: 2026-04-28T07:28:36.093Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T07:27:08.658Z
