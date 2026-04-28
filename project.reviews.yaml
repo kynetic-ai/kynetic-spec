@@ -169028,6 +169028,18 @@ reviews:
         required: true
         created_at: 2026-04-28T00:51:19.174Z
         completed_at: 2026-04-28T00:51:19.174Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Implementation Covers lines claim the three new ACs plus existing
+          @default-session-reflection-hook ac-fires-once-per-invocation. Scope preserves default
+          idle grace reliability, setup/upgrade parity, behavioral tests, validation/doctor as
+          @01KQ8PRY, and no existing-hook migration.
+        name: Coverage and scope mapping
+        required: true
+        created_at: 2026-04-28T00:51:28.470Z
+        completed_at: 2026-04-28T00:51:28.470Z
     events:
       - _ulid: 01KQ8S259S7APDY3J5P0NMTHJB
         actor: Jacob Chapel
@@ -169056,6 +169068,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-04-28T00:51:20.324Z
+      - _ulid: 01KQ8S3P6FM7X5VYAPZFT03767
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Coverage and scope mapping
+        timestamp: 2026-04-28T00:51:29.615Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -169068,5 +169087,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T00:50:39.545Z
-    updated_at: 2026-04-28T00:51:19.174Z
+    updated_at: 2026-04-28T00:51:28.470Z
     notes: []
