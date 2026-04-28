@@ -27,3 +27,46 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-28T05:46:32.889Z
+  - _ulid: 01KQ9ARQWJAMP2FJCGC8FT1894
+    content: >-
+      Completed implementation:
+
+
+      1. Updated parseACAnnotationLine() doc comment to explicitly document that non-ac-prefixed
+      tokens are ignored and do not create AC coverage. Added two new examples showing blanket ref
+      and non-prefixed token behavior.
+
+
+      2. Updated inline regex comments to clarify the ac-prefix requirement.
+
+
+      3. Added 5 new parseACAnnotationLine unit tests covering:
+         - Non-ac-prefixed bare words are ignored (ac-explicit-token-format)
+         - Numeric-only tokens without ac- prefix are ignored (ac-explicit-token-format)
+         - ac-prefixed named ids are parsed as explicit AC refs (ac-explicit-token-format)
+         - ac-prefixed numeric ids are parsed correctly (ac-explicit-token-format)
+         - Mixed ac-prefixed and non-prefixed tokens: only ac-prefixed captured (ac-explicit-token-format)
+
+      4. Added 2 integration tests proving ac-prefixed named ids provide coverage credit
+      (ac-valid-token-covers-ac):
+         - Named ids (ac-validate-input, ac-reject-invalid) → full coverage
+         - Numeric ids (ac-1, ac-2) → full coverage
+
+      5. Added 2 integration tests proving non-prefixed tokens provide no AC coverage
+      (ac-bare-ref-no-token-credit, ac-no-blanket-credit):
+         - Non-prefixed word 'validate' → blanket ref warning + missing coverage
+         - Plain numeric '1' → blanket ref warning + missing coverage
+
+      6. Added 2 scanACAnnotations tests for annotation format (ac-annotation-format):
+         - Mixed numeric and named ac-prefixed ids parsed correctly
+         - Kebab-case ids of varying length accepted
+
+      7. Added exclusion reason comment to ac-annotation-validation.test.ts header explaining why
+      it's in kspec.config.yaml exclude_patterns.
+
+
+      All 8434 tests pass. kspec validate --completeness --warnings-ok shows no new warning
+      categories.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T06:00:05.266Z
