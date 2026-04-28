@@ -43682,7 +43682,7 @@ plans:
          annotation cleanup.
       4. Run the final validation gate after both enforcement and annotation
          cleanup have landed.
-    status: active
+    status: completed
     approved_at: 2026-04-28T03:55:23.874Z
     derived_specs:
       - "@acceptance-criterion-id-format"
