@@ -16452,6 +16452,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-28T06:49:52.546Z
+  - _ulid: 01KQ9EXJECM505DBHXAX0Q0MNZ
+    type: success
+    content: "kspec batch atomic operations handle complex data repairs well. Used a 10-step batch to
+      relocate an inline trait definition: remove refs, delete, recreate at new location, add ACs,
+      restore refs. The --dry-run flag validated all 10 steps before execution, and atomicity
+      ensured no partial state. This pattern is reliable for catalog restructuring."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-28T07:12:37.836Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
