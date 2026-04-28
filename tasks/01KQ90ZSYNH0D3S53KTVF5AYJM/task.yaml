@@ -63,12 +63,9 @@ description: >-
 spec_ref: "@ac-annotation-integrity-reporting"
 meta_ref: null
 plan_ref: "@plan-spec-catalog-health-and-validation-trust"
-status: cancelled
+status: pending_review
 blocked_by: []
-closed_reason: Superseded by new plan-level follow-up for AC id prefix formatting/enforcement.
-  Partial catalog id normalization already committed in shadow state is retained; remaining
-  annotation migration and enforcement should proceed through the reviewed plan rather than this
-  direct provisional task.
+closed_reason: null
 depends_on: []
 context: []
 priority: 2
@@ -77,6 +74,14 @@ tags:
   - spec-hygiene
   - coverage
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-normalize-ac-ids-and-annotations/01kq90zs
+  captured_at: 2026-04-28T03:27:01.344Z
+  commit: 04af0dc324117e1bed55d0b7edeb74ebb131c317
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KQ911M2ZZCFXN2ZDFXW3X05W
 history:
   - author: "@claude"
@@ -105,7 +110,60 @@ history:
         previous: null
     command: task-cancel
     timestamp: 2026-04-28T03:22:13.812Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending
+        previous: cancelled
+      closed_reason:
+        new: null
+        previous: Superseded by new plan-level follow-up for AC id prefix formatting/enforcement. Partial
+          catalog id normalization already committed in shadow state is retained; remaining
+          annotation migration and enforcement should proceed through the reviewed plan rather than
+          this direct provisional task.
+      session_id:
+        new: null
+        previous: 01KQ911M2ZZCFXN2ZDFXW3X05W
+      started_at:
+        new: null
+        previous: 2026-04-28T03:10:38.601Z
+    command: task-reset
+    timestamp: 2026-04-28T03:26:59.862Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KQ911M2ZZCFXN2ZDFXW3X05W
+        previous: null
+      started_at:
+        new: 2026-04-28T03:27:00.610Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-28T03:27:00.610Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-normalize-ac-ids-and-annotations/01kq90zs
+          captured_at: 2026-04-28T03:27:01.344Z
+          commit: 04af0dc324117e1bed55d0b7edeb74ebb131c317
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-28T03:27:01.345Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-28T03:27:01.345Z
 created_at: 2026-04-28T03:09:10.997Z
-started_at: 2026-04-28T03:10:38.601Z
+started_at: 2026-04-28T03:27:00.610Z
+submitted_at: 2026-04-28T03:27:01.345Z
 todos: []
 automation: eligible
