@@ -27414,7 +27414,7 @@
     - task-fix-meta-traits-schema-validation
   title: Fix meta traits schema validation failure
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -27424,4 +27424,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-28T05:00:27.477Z
+  started_at: 2026-04-28T05:01:47.597Z
   automation: eligible
