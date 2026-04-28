@@ -7,6 +7,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import {
+  acIdPattern,
   AgentSchema,
   ConventionSchema,
   HookSchema,
@@ -1050,7 +1051,10 @@ export function parseACAnnotationLine(
   const groups: { specRef: string; acIds: string[] }[] = [];
 
   // Match each @ref followed by its optional ac-prefixed ids.
-  // Only ac-* tokens are captured as explicit AC ids; non-prefixed words are ignored.
+  // Only ac-* tokens that conform to the required ac-prefixed kebab-case
+  // format (acIdPattern) are captured as explicit AC ids; non-prefixed words
+  // and malformed ac-* strings (underscores, doubled hyphens, trailing
+  // hyphens, uppercase) are ignored.
   const refGroupPattern = /(@[\w-]+)((?:\s*,?\s*ac-[\w-]+)*)/g;
   let match;
 
@@ -1060,10 +1064,14 @@ export function parseACAnnotationLine(
     const acIds: string[] = [];
 
     if (acPart) {
-      // Extract individual ac-N tokens
+      // Extract candidate ac-* tokens, then filter through the strict pattern
       const acMatches = acPart.match(/ac-[\w-]+/g);
       if (acMatches) {
-        acIds.push(...acMatches);
+        for (const candidate of acMatches) {
+          if (acIdPattern.test(candidate)) {
+            acIds.push(candidate);
+          }
+        }
       }
     }
 

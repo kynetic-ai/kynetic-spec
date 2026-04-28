@@ -61,6 +61,35 @@ describe("ac-explicit-token-format: only ac-prefixed tokens are parsed as AC ids
     const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-1 some-word");
     expect(groups).toEqual([{ specRef: "@my-spec", acIds: ["ac-1"] }]);
   });
+
+  it("rejects ac-* tokens containing underscores", () => {
+    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-bad_id");
+    expect(groups).toEqual([{ specRef: "@my-spec", acIds: [] }]);
+  });
+
+  it("rejects ac-* tokens with doubled hyphens", () => {
+    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac--double");
+    expect(groups).toEqual([{ specRef: "@my-spec", acIds: [] }]);
+  });
+
+  it("rejects ac-* tokens with trailing hyphens", () => {
+    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-trailing-");
+    expect(groups).toEqual([{ specRef: "@my-spec", acIds: [] }]);
+  });
+
+  it("rejects ac-* tokens with uppercase characters", () => {
+    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-Bad");
+    expect(groups).toEqual([{ specRef: "@my-spec", acIds: [] }]);
+  });
+
+  it("filters out malformed ac-* tokens while keeping valid ones", () => {
+    const groups = parseACAnnotationLine(
+      acPrefix + "@my-spec ac-valid, ac-bad_id, ac-also-valid",
+    );
+    expect(groups).toEqual([
+      { specRef: "@my-spec", acIds: ["ac-valid", "ac-also-valid"] },
+    ]);
+  });
 });
 
 // ---------------------------------------------------------------------------
