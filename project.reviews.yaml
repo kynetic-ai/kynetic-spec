@@ -169475,7 +169475,53 @@ reviews:
     slugs: []
     title: "Plan review: AC ID Format Normalization"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Read @spec-item, @test-annotation-sweep, and @ac-annotation-integrity-reporting. Proposed
+          placement is additive and does not conflict with existing ACs.
+        name: Spec neighborhood fit
+        required: true
+        runner: kspec
+        created_at: 2026-04-28T03:29:58.208Z
+        completed_at: 2026-04-28T03:29:58.208Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan covers stored AC id format, schema validation, item ac add/set mutation boundaries,
+          generated ids, annotation token parsing/coverage credit, blanket-ref semantics, and a
+          final validation gate.
+        name: Required behavior coverage
+        required: true
+        runner: manual
+        created_at: 2026-04-28T03:30:01.619Z
+        completed_at: 2026-04-28T03:30:01.619Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Task order is enforcement -> normalization/parser alignment -> final gate.
+          @task-normalize-ac-ids-and-annotations is cancelled, and active task list contains no
+          duplicate actionable AC id normalization task.
+        name: Dependency and duplicate task check
+        required: true
+        runner: kspec
+        created_at: 2026-04-28T03:30:04.912Z
+        completed_at: 2026-04-28T03:30:04.912Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --refs --warnings-ok passed. kspec validate --completeness --warnings-ok
+          passed with known missing coverage, blanket-ref, and fixture unresolved-target warnings.
+        name: Validation baseline
+        required: true
+        runner: kspec
+        created_at: 2026-04-28T03:30:08.452Z
+        completed_at: 2026-04-28T03:30:08.452Z
     events:
       - _ulid: 01KQ922MCW3BNE9ZX76CTKNJJ9
         actor: Jacob Chapel
@@ -169483,17 +169529,118 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-04-28T03:28:12.188Z
+      - _ulid: 01KQ925JSCAVSCVTH18N5F6XE4
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-04-28T03:29:48.845Z
+      - _ulid: 01KQ925PAZ0YYVKCMBE4418XWC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQ925MZK4DPADV6JS1X4Q32S
+        timestamp: 2026-04-28T03:29:52.479Z
+      - _ulid: 01KQ925SS9Q582A5ADQR2GFVPN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQ925REBE3FV9GHVGMAG4Y5C
+        timestamp: 2026-04-28T03:29:56.009Z
+      - _ulid: 01KQ925X74DXFFJNX82SN565KJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec neighborhood fit
+        timestamp: 2026-04-28T03:29:59.524Z
+      - _ulid: 01KQ9260FP9G1H76049P7Y5M3T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Required behavior coverage
+        timestamp: 2026-04-28T03:30:02.870Z
+      - _ulid: 01KQ9263TYBYY2Q2FG86ADDFEX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency and duplicate task check
+        timestamp: 2026-04-28T03:30:06.302Z
+      - _ulid: 01KQ92678YQJFR8FH120NN7RAP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Validation baseline
+        timestamp: 2026-04-28T03:30:09.822Z
+      - _ulid: 01KQ926AJ03585B1MQXH2VQYZG
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-28T03:30:13.184Z
+      - _ulid: 01KQ926AJ003RE4P1K6E05YKCJ
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-28T03:30:13.184Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@plan-ac-id-format-normalization"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KQ925MZK4DPADV6JS1X4Q32S
+        anchor:
+          type: structured
+          field: tags
+          ref: "@acceptance-criterion-id-format"
+          section: specs
+        entries:
+          - _ulid: 01KQ925MZMTAD4QH8MF26CJ3Z6
+            author: Jacob Chapel
+            body: The planned specs include spec-level tags, but the current plan import schema and documented
+              plan spec fields do not support tags on specs, so these tags will be ignored during
+              derive. Remove the spec tags from the plan or add importer support before relying on
+              them; task tags are already supported.
+            created_at: 2026-04-28T03:29:51.092Z
+        kind: nit
+      - _ulid: 01KQ925REBE3FV9GHVGMAG4Y5C
+        anchor:
+          type: structured
+          field: Covers
+          ref: "@task-ac-id-format-final-gate"
+          section: tasks
+        entries:
+          - _ulid: 01KQ925REBHE7CSFDM9J3FKETP
+            author: Jacob Chapel
+            body: The final validation task uses a summary Covers line instead of concrete spec/AC refs. The
+              task is otherwise executable, but using explicit AC refs would make derived task
+              traceability clearer for agents and review tooling.
+            created_at: 2026-04-28T03:29:54.636Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-28T03:30:13.184Z
     created_at: 2026-04-28T03:28:12.188Z
-    updated_at: null
+    updated_at: 2026-04-28T03:30:13.184Z
     notes: []
