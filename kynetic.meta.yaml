@@ -16462,6 +16462,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-28T07:12:37.836Z
+  - _ulid: 01KQ9FVCA0ZF7370BKBNNSB5HK
+    type: friction
+    content: During review verification, npm test initially failed before running tests because the
+      dispatch environment had NODE_ENV=production. scripts/test.cjs detected missing direct
+      dependency pagefind and attempted npm ci, but npm inherited production-mode omit behavior and
+      still skipped devDependencies, so the auto-fix failed with the same missing dependency. Manual
+      workaround was NODE_ENV=development npm_config_omit= npm ci followed by NODE_ENV=development
+      npm_config_omit= npm test. Consider making the test runner's dependency repair path explicitly
+      include dev dependencies or emit a diagnostic that names NODE_ENV/npm omit as the cause.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-28T07:28:54.592Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
