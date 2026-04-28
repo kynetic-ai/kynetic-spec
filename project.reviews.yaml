@@ -171430,3 +171430,29 @@ reviews:
     created_at: 2026-04-28T06:32:20.910Z
     updated_at: 2026-04-28T06:44:10.517Z
     notes: []
+  - _ulid: 01KQ9DNHEJF1XF62XY855Y2MJ9
+    slugs: []
+    title: Review task-align-ac-annotation-format-tests cycle 2
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQ9DNHEJKEX27M4XPF3BP06N
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-28T06:50:46.098Z
+    examined_commit: 1fdb1ea369cf04108846566b3b8ce0e5ce57096f
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQ93NF0V9VKZSSVYTA0W3Z8X"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-28T06:50:46.098Z
+    updated_at: null
+    notes: []
