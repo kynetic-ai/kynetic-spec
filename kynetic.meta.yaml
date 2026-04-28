@@ -16423,6 +16423,35 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-28T06:32:13.402Z
+  - _ulid: 01KQ9DKWPP08D19480ZSMSG7R2
+    type: friction
+    content: 'Coverage scanner treats AC annotation patterns inside JavaScript string literals as real
+      annotations. Tests that construct fixture annotation strings must use string concatenation
+      (e.g. "//" + " AC: ") to avoid false positives. This is non-obvious and caused the fix cycle
+      on task-align-ac-annotation-format-tests.'
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-28T06:49:52.086Z
+  - _ulid: 01KQ9DKWYHJT2GH3BW0ERMAXN8
+    type: friction
+    content: No warning when AC annotations are placed in files excluded by kspec.config.yaml
+      exclude_patterns. The annotations are silently invisible to completeness validation. A
+      diagnostic like "N annotations found in excluded file X — these will not count toward
+      coverage" would catch this class of error at validate time.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-28T06:49:52.337Z
+  - _ulid: 01KQ9DKX52NC0QM4SQXCN3FA6Y
+    type: success
+    content: The ac-annotation-integrity.test.ts pattern (programmatic data tests in a non-excluded
+      file) provided a clear model for the fix cycle on task-align-ac-annotation-format-tests.
+      Having an existing precedent for non-excluded coverage tests made the solution immediate.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-28T06:49:52.546Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
