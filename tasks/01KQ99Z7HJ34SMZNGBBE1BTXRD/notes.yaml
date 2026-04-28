@@ -23,3 +23,33 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-28T06:11:21.866Z
+  - _ulid: 01KQ9CDWMJKDC990CMCPC63KC3
+    content: >-
+      Resolution: This task is a duplicate of @task-fix-meta-traits-schema-validation (01KQ97BH),
+      which was already completed and approved.
+
+
+      The code fix (commit f0e6d14c3) added 'traits' to the nestedFields list in
+      validateSpecItemRecursive() and added stripping logic to handle nested trait objects before
+      schema validation. This fix is present on dev and in this worktree.
+
+
+      The validation error only appears when running the globally installed kspec binary (symlinked
+      to /home/chapel/Projects/kynetic-spec/dist/), which has stale compiled code without the fix.
+      The worktree's own build passes validation:
+
+
+      - node dist/cli/index.js validate --schema --warnings-ok → exits 0 (pass)
+
+      - npm run dev -- validate --schema --warnings-ok → passes (no traits error)
+
+
+      The meta catalog data (.kspec/modules/meta.yaml) is in the correct format: the
+      agent-integration module nests trait-idempotent-file-scaffold under its traits field, which is
+      the designed pattern supported by extractItemsFromRaw() and TYPE_TO_CHILD_FIELD mapping.
+
+
+      No code or data changes are needed. The fix is already merged on dev. All 8423 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T06:29:06.834Z
