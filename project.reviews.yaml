@@ -170484,7 +170484,20 @@ reviews:
     slugs: []
     title: Review task-align-ac-annotation-format-tests
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Task-specific AC coverage is still missing: @ac-annotation-identifier-format reports
+          ac-explicit-token-format, ac-valid-token-covers-ac, ac-bare-ref-no-token-credit uncovered;
+          @test-annotation-sweep reports ac-annotation-format and ac-no-blanket-credit uncovered.
+          The only new annotations are in excluded file tests/ac-annotation-validation.test.ts."
+        name: AC coverage registration
+        required: true
+        runner: kspec validate --completeness --warnings-ok --verbose
+        created_at: 2026-04-28T06:14:29.623Z
+        completed_at: 2026-04-28T06:14:29.623Z
     events:
       - _ulid: 01KQ9AZCX45A67W13WAFZK2SRZ
         actor: Jacob Chapel
@@ -170519,6 +170532,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQ9B74NNDJF9C0GS96E7TDDN
         timestamp: 2026-04-28T06:07:58.601Z
+      - _ulid: 01KQ9BK52AJTW1JQ79087N16EG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: AC coverage registration
+        timestamp: 2026-04-28T06:14:30.730Z
     examined_commit: 62db331553686ea959c714efbe9de1d6c579c86c
     external_links: []
     lifecycle_state: open
@@ -171143,5 +171163,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-28T06:03:43.396Z
-    updated_at: 2026-04-28T06:07:57.109Z
+    updated_at: 2026-04-28T06:14:29.623Z
     notes: []
