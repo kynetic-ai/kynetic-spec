@@ -12413,7 +12413,7 @@ workspaces:
         head: bcf5b7f55ab4a5fd47c2fa3fc5676b4c816e3ae7
         last_seen_at: 2026-04-28T01:06:41.459Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-default-session-reflection-spec-updates-01kq8sgw
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: bcf5b7f55ab4a5fd47c2fa3fc5676b4c816e3ae7
     bootstrap:
       status: succeeded
@@ -12911,9 +12911,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T01:44:16.871Z
-      last_reconciled_at: 2026-04-28T01:57:21.831Z
+      last_reconciled_at: 2026-04-28T01:58:55.168Z
       created_at: 2026-04-28T01:19:29.521Z
-      updated_at: 2026-04-28T01:57:23.562Z
+      updated_at: 2026-04-28T01:58:55.168Z
     workspace_id: dispatch-workspace-01KQ8SGWFE8Q868QA10Y1NFTK8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
