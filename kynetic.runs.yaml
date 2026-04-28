@@ -33560,7 +33560,7 @@ runs:
     completed_at: 2026-04-28T07:29:02.763Z
   - _ulid: 01KQ9GBWRXGBEJGV515KEN9AR2
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33574,7 +33574,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-28T07:38:46.874Z
-        completed_at: 2026-04-28T07:38:46.874Z
+        completed_at: 2026-04-28T07:39:00.950Z
+        notes: "Friction points: coverage annotation tests are easy to make self-referential because the
+          completeness scanner treats literal // AC: examples in comments or fixture strings as real
+          annotations unless the file is excluded or the string is constructed at runtime. Prior fix
+          cycles show this is systemic for tests of the annotation scanner itself: first annotations
+          were placed in an excluded file, then a quoted example in prose caused an
+          unresolved-target warning."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-28T07:39:00.950Z
+        completed_at: 2026-04-28T07:39:00.950Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T07:37:55.741Z
