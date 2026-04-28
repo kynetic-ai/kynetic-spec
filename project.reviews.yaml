@@ -168864,6 +168864,18 @@ reviews:
         runner: manual-review
         created_at: 2026-04-28T00:28:38.899Z
         completed_at: 2026-04-28T00:28:38.899Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Testing plan requires behavioral runtime hook execution, setup metadata/output checks,
+          upgrade-created hook metadata behavior, removed-hook and existing-hook preservation, and
+          explicitly rejects source-scanning tests.
+        name: Testing approach
+        required: true
+        runner: manual-review
+        created_at: 2026-04-28T00:28:50.138Z
+        completed_at: 2026-04-28T00:28:50.138Z
     events:
       - _ulid: 01KQ8QR1HTN76715J5PC6VYTJW
         actor: Jacob Chapel
@@ -168906,6 +168918,13 @@ reviews:
           status: pass
           name: Task standalone executability and scope
         timestamp: 2026-04-28T00:28:40.202Z
+      - _ulid: 01KQ8QT7WM0KBGJE241TVWTQR5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Testing approach
+        timestamp: 2026-04-28T00:28:51.476Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -168918,5 +168937,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T00:27:39.454Z
-    updated_at: 2026-04-28T00:28:38.899Z
+    updated_at: 2026-04-28T00:28:50.138Z
     notes: []
