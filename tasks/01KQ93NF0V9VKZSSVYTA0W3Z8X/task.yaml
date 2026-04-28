@@ -41,7 +41,7 @@ description: |
 spec_ref: "@ac-annotation-identifier-format"
 plan_ref: "@plan-ac-id-format-normalization"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-enforce-ac-id-format"
@@ -52,6 +52,7 @@ tags:
   - coverage
   - tests
 vcs_refs: []
+session_id: 01KQ99SGP7EJEYC7GCJ66QF60S
 history:
   - author: Jacob Chapel
     changes:
@@ -60,6 +61,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-28T03:59:41.795Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KQ99SGP7EJEYC7GCJ66QF60S
+        previous: null
+      started_at:
+        new: 2026-04-28T05:43:33.219Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-28T05:43:33.219Z
 created_at: 2026-04-28T03:55:57.851Z
+started_at: 2026-04-28T05:43:33.219Z
 todos: []
 automation: eligible
