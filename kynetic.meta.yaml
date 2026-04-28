@@ -16355,6 +16355,17 @@ observations:
     resolved: false
     workflow_ref: "@01KQ19RN"
     created_at: 2026-04-25T03:10:25.210Z
+  - _ulid: 01KQ96N8XC7QQ3CMG1G00D66GZ
+    type: success
+    content: AC id format enforcement task (task-enforce-ac-id-format) completed cleanly in a single
+      pass. The plan document provided clear boundary decisions. Shared pattern approach (regex +
+      Zod schema + CLI validation + error message) kept the implementation minimal (33 insertions
+      across 4 production files). Only 2 existing tests needed updating, confirming the codebase was
+      mostly already conformant.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-28T04:48:17.324Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
