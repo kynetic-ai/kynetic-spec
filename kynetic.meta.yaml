@@ -16410,6 +16410,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-28T05:57:47.709Z
+  - _ulid: 01KQ9CKJTTDTJ32TH60ZVSNSV7
+    type: friction
+    content: "Task @01KQ99Z7 was created for a validation error already fixed by
+      @task-fix-meta-traits-schema-validation (commit f0e6d14c3 on dev). The error appeared only
+      because the globally installed kspec binary was compiled from an older snapshot without the
+      fix. The dispatch engine assessed the validation failure using the stale binary and created a
+      new task for an already-resolved issue. Pattern: when dev branch has code fixes that the
+      running binary lacks, dispatch can create false-positive tasks for symptoms that are already
+      fixed. Relates to @01KPA0Q5 (duplicate dispatch observation)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-28T06:32:13.402Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
