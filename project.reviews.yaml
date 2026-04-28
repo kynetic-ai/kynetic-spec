@@ -171745,6 +171745,20 @@ reviews:
         runner: npm
         created_at: 2026-04-28T07:25:34.415Z
         completed_at: 2026-04-28T07:25:34.415Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec trait list shows @trait-idempotent-file-scaffold as project-level trait (19 traits
+          total). kspec item get @trait-idempotent-file-scaffold shows 4 ACs. kspec item list
+          --limit 1000 --json found two consumers retaining the trait: @complete-auto-gitignore and
+          @scaffolded-project-config; kspec item get for both shows inherited ACs from
+          @trait-idempotent-file-scaffold."
+        name: trait relocation verification
+        required: false
+        runner: kspec
+        created_at: 2026-04-28T07:25:47.114Z
+        completed_at: 2026-04-28T07:25:47.114Z
     events:
       - _ulid: 01KQ9EX5J20AY0V7YRF61R64W5
         actor: Jacob Chapel
@@ -171773,6 +171787,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-04-28T07:25:35.589Z
+      - _ulid: 01KQ9FNPB3TC2CN5HQQQD0XV7C
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: trait relocation verification
+        timestamp: 2026-04-28T07:25:48.259Z
     examined_commit: f60d02714d3f2c5968fd6410f35a091341bde765
     external_links: []
     lifecycle_state: open
@@ -171785,7 +171806,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T07:12:24.642Z
-    updated_at: 2026-04-28T07:25:34.415Z
+    updated_at: 2026-04-28T07:25:47.114Z
     notes: []
   - _ulid: 01KQ9FNATV0J8F0BGH2NB2ZDV1
     slugs: []
