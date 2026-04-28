@@ -91,3 +91,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-28T07:01:55.316Z
+  - _ulid: 01KQ9FHDAQ4R7PKZC4ZC830YY6
+    content: "Fix cycle 2: addressed review blocker — prose comment on line 207 of
+      tests/ac-annotation-identifier-format.test.ts contained a literal annotation pattern ('// AC:
+      @my-spec validate' inside quotes) that the completeness scanner matched as a real annotation,
+      producing an unresolved target warning. Reworded to describe behavior without embedding the
+      pattern. Unresolved targets now 2 (pre-existing @test-feature, @test-trait in fixture files).
+      All 8447 tests pass. kspec validate --completeness --warnings-ok clean for this task's scope."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-28T07:23:27.959Z
