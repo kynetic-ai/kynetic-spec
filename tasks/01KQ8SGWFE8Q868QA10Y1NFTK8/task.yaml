@@ -95,8 +95,11 @@ description: |
 spec_ref: "@multi-turn-session-lifecycle"
 plan_ref: "@plan-default-session-reflection-reliability"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Reviewed and merged to dev at d2afe3cdc7056698b18833e49bb37ee0543c36ad. Changes raise
+  default idle grace to 5000 ms, persist promptable default dispatch-agent session metadata, and
+  make upgrade-created default reflection hooks first-idle only.
 depends_on:
   - "@task-default-session-reflection-spec-updates"
 context: []
@@ -167,8 +170,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-28T01:44:46.724Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Reviewed and merged to dev at d2afe3cdc7056698b18833e49bb37ee0543c36ad. Changes raise default
+          idle grace to 5000 ms, persist promptable default dispatch-agent session metadata, and
+          make upgrade-created default reflection hooks first-idle only.
+        previous: null
+      completed_at:
+        new: 2026-04-28T01:56:33.988Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-28T01:56:33.996Z
 created_at: 2026-04-28T00:58:42.030Z
 started_at: 2026-04-28T01:20:51.175Z
 submitted_at: 2026-04-28T01:42:39.954Z
+completed_at: 2026-04-28T01:56:33.988Z
 todos: []
 automation: eligible
