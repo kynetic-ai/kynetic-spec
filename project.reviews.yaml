@@ -171332,9 +171332,25 @@ reviews:
           kind: nit
           thread_ulid: 01KQ9D92BZCKH2ECCF1S8SA4AK
         timestamp: 2026-04-28T06:43:58.585Z
+      - _ulid: 01KQ9D9F4M2Q9D7J3D9FZ8HFF2
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-28T06:44:10.517Z
+      - _ulid: 01KQ9D9F4N94MPF1GTVAJFR4DG
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-28T06:44:10.517Z
     examined_commit: f60d02714d3f2c5968fd6410f35a091341bde765
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -171380,7 +171396,14 @@ reviews:
               kspec command."
             created_at: 2026-04-28T06:43:57.439Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-28T06:44:10.516Z
     created_at: 2026-04-28T06:32:20.910Z
-    updated_at: 2026-04-28T06:43:57.439Z
+    updated_at: 2026-04-28T06:44:10.517Z
     notes: []
