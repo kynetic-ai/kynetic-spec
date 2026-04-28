@@ -15165,7 +15165,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-28T07:27:34.214Z
+      updated_at: 2026-04-28T07:29:26.526Z
     integration:
       status: merged
       detail: integration:merged
@@ -15174,25 +15174,20 @@ workspaces:
       target_branch: dev
       target_commit: f60d02714d3f2c5968fd6410f35a091341bde765
       updated_at: 2026-04-28T07:27:34.214Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KQ99Z7HJ34SMZNGBBE1BTXRD"
     task_slug: fix-meta-catalog-schema-error-in-traits-field
     timestamps:
       closed_at: null
       last_active_at: 2026-04-28T07:11:08.421Z
-      last_reconciled_at: 2026-04-28T07:29:24.806Z
+      last_reconciled_at: 2026-04-28T07:29:26.526Z
       created_at: 2026-04-28T06:03:02.953Z
-      updated_at: 2026-04-28T07:29:24.806Z
+      updated_at: 2026-04-28T07:29:26.526Z
     workspace_id: dispatch-workspace-01KQ99Z7HJ34SMZNGBBE1BTXRD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: f60d02714d3f2c5968fd6410f35a091341bde765
-        last_seen_at: 2026-04-28T07:11:05.680Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-meta-catalog-schema-error-in-traits-field-01kq99z7-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-meta-catalog-schema-error-in-traits-field/01kq99z7
