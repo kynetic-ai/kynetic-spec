@@ -168812,7 +168812,20 @@ reviews:
     slugs: []
     title: "Plan re-review: Default Session Reflection Reliability"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified prior blockers from @01KQ8QA3: plan now extends owning specs instead of
+          @agent-definitions, rewrites upgrade/default prompt ACs as single behavioral outcomes,
+          removes existing-hook migration/normalization, and keeps validation/doctor work out of
+          scope via @01KQ8PRY."
+        name: Prior blocker resolution
+        required: true
+        runner: manual-review
+        created_at: 2026-04-28T00:28:04.788Z
+        completed_at: 2026-04-28T00:28:04.788Z
     events:
       - _ulid: 01KQ8QR1HTN76715J5PC6VYTJW
         actor: Jacob Chapel
@@ -168827,6 +168840,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-28T00:27:51.482Z
+      - _ulid: 01KQ8QRVF8VKNKFYACZ2GQZT8H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Prior blocker resolution
+        timestamp: 2026-04-28T00:28:05.992Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -168839,5 +168859,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-28T00:27:39.454Z
-    updated_at: 2026-04-28T00:27:50.243Z
+    updated_at: 2026-04-28T00:28:04.788Z
     notes: []
