@@ -33684,7 +33684,7 @@ runs:
     completed_at: 2026-04-28T08:11:11.492Z
   - _ulid: 01KQ9M391G8JRQZG8Z5BM6DNVP
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33700,7 +33700,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-28T08:44:25.716Z
-        completed_at: 2026-04-28T08:44:25.716Z
+        completed_at: 2026-04-28T08:44:33.739Z
+        notes: "Friction points: Review evidence logs have to be stored as general review comment threads;
+          in practice that leaves an unresolved nit thread on an approved/closed review even when
+          the thread is purely audit evidence, not feedback needing resolution. Workflow show
+          required the run ref and did not display current-step detail without advancing, but this
+          appears already tracked as workflow introspection work. Validation output still has large
+          baseline warning categories, but focused completeness filters are already captured in
+          prior observations."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-28T08:44:33.739Z
+        completed_at: 2026-04-28T08:44:33.739Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-28T08:43:07.697Z
