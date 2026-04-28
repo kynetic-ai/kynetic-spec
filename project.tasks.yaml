@@ -27355,7 +27355,7 @@
   type: task
   spec_ref: "@acceptance-criterion-id-format"
   plan_ref: "@plan-ac-id-format-normalization"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-enforce-ac-id-format"
@@ -27367,6 +27367,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-28T03:55:57.553Z
+  started_at: 2026-04-28T05:19:52.939Z
   automation: eligible
 - _ulid: 01KQ93NF0V9VKZSSVYTA0W3Z8X
   slugs:
