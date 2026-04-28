@@ -843,7 +843,17 @@ features:
                   completeness validation computes coverage
             tags: []
             created: 2026-04-24T20:20:37.053Z
-            notes: []
+            notes:
+              - _ulid: 01KQ912V3R6V71NBK47VQBBGEC
+                content: Post-implementation validation found that the remaining non-ac-prefixed acceptance
+                  criterion ids and matching annotations prevent this behavior from being fully
+                  trusted in practice. Marked implementation in_progress while
+                  @task-normalize-ac-ids-and-annotations is pending; restore implemented/verified
+                  after that task normalizes ids and validation confirms explicit annotations are no
+                  longer misclassified as blanket refs.
+                supersedes: null
+                author: Jacob Chapel
+                created_at: 2026-04-28T03:10:50.488Z
         created: 2026-01-16T13:44:30.558Z
       - _ulid: 01KF3H9Z7Z2C1AQBCM4BJT1BAZ
         slugs:
