@@ -63,7 +63,7 @@ description: >-
 spec_ref: "@ac-annotation-integrity-reporting"
 meta_ref: null
 plan_ref: "@plan-spec-catalog-health-and-validation-trust"
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -73,6 +73,22 @@ tags:
   - spec-hygiene
   - coverage
 vcs_refs: []
+session_id: 01KQ911M2ZZCFXN2ZDFXW3X05W
+history:
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KQ911M2ZZCFXN2ZDFXW3X05W
+        previous: null
+      started_at:
+        new: 2026-04-28T03:10:38.601Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-28T03:10:38.603Z
 created_at: 2026-04-28T03:09:10.997Z
+started_at: 2026-04-28T03:10:38.601Z
 todos: []
 automation: eligible
