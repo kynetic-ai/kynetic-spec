@@ -14136,11 +14136,11 @@ workspaces:
     canonical_branch: dispatch/task/task-normalize-catalog-ac-ids-and-annotations/01kq93ne
     canonical_branch_head: 9ece11f41336ff3bf1552e8d2ab3fddb1dbbf8f4
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-28T05:55:25.897Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-28T05:55:27.254Z
     health:
       status: healthy
       issues: []
@@ -14154,7 +14154,7 @@ workspaces:
       target_branch: dev
       target_commit: ed751cdf902b61295b12b311c7eb34c3d4b76851
       updated_at: 2026-04-28T05:55:25.897Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQ93NEQHAYY4Y1MHA64M9FX2"
     task_slug: task-normalize-catalog-ac-ids-and-annotations
@@ -14163,7 +14163,7 @@ workspaces:
       last_active_at: 2026-04-28T05:42:29.217Z
       last_reconciled_at: 2026-04-28T05:55:25.897Z
       created_at: 2026-04-28T05:19:06.538Z
-      updated_at: 2026-04-28T05:55:25.897Z
+      updated_at: 2026-04-28T05:55:27.254Z
     workspace_id: dispatch-workspace-01KQ93NEQHAYY4Y1MHA64M9FX2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
