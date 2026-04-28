@@ -63,9 +63,12 @@ description: >-
 spec_ref: "@ac-annotation-integrity-reporting"
 meta_ref: null
 plan_ref: "@plan-spec-catalog-health-and-validation-trust"
-status: pending_review
+status: cancelled
 blocked_by: []
-closed_reason: null
+closed_reason: Superseded by @plan-ac-id-format-normalization after cycle 2 plan review
+  @01KQ92CYKV64WAKRHY1HT17AQZ. Keep submitted branch/notes as investigation context only; do not
+  treat this direct task as active implementation. Plan-derived tasks are authoritative for
+  remaining work after user approval.
 depends_on: []
 context: []
 priority: 2
@@ -162,6 +165,19 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-28T03:27:01.345Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: cancelled
+        previous: pending_review
+      closed_reason:
+        new: Superseded by @plan-ac-id-format-normalization after cycle 2 plan review
+          @01KQ92CYKV64WAKRHY1HT17AQZ. Keep submitted branch/notes as investigation context only; do
+          not treat this direct task as active implementation. Plan-derived tasks are authoritative
+          for remaining work after user approval.
+        previous: null
+    command: task-cancel
+    timestamp: 2026-04-28T03:36:31.790Z
 created_at: 2026-04-28T03:09:10.997Z
 started_at: 2026-04-28T03:27:00.610Z
 submitted_at: 2026-04-28T03:27:01.345Z

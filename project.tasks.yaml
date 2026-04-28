@@ -27311,7 +27311,7 @@
   type: task
   spec_ref: "@ac-annotation-integrity-reporting"
   plan_ref: "@plan-spec-catalog-health-and-validation-trust"
-  status: pending_review
+  status: cancelled
   blocked_by: []
   depends_on: []
   priority: 2
