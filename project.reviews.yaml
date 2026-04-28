@@ -169367,6 +169367,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-04-28T01:55:38.742Z
+      - _ulid: 01KQ8WS8QX04DSJSR1R687S486
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQ8WS7GYT8QTGG1K6NWQPQRT
+        timestamp: 2026-04-28T01:55:42.461Z
     examined_commit: 03f6193cdd7bcf4fdc53182232787efa46fdbc02
     external_links: []
     lifecycle_state: open
@@ -169376,8 +169383,29 @@ reviews:
       content_hash: ""
       ref: "@01KQ8SGWFE8Q868QA10Y1NFTK8"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQ8WS7GYT8QTGG1K6NWQPQRT
+        entries:
+          - _ulid: 01KQ8WS7GY4330MVSTD8DW5S34
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/agent-runtime/invocation.ts, src/agent-runtime/dispatch.ts,
+              src/agent-runtime/action-executor.ts, src/schema/hooks.ts, src/schema/meta.ts,
+              src/cli/commands/setup.ts, src/cli/commands/setup-defaults.ts,
+              src/cli/commands/upgrade.ts, tests/multi-turn-invocation.test.ts,
+              tests/setup-reflection-hook.test.ts, tests/upgrade-command.test.ts,
+              tests/agent-dispatch-engine.test.ts. Commands run: git
+              diff/stat/name-status/diff-check, kspec task get, kspec item get for
+              @multi-turn-session-lifecycle/@default-project-agents-and-conventions/@default-sessio\
+              n-reflection-hook/@single-command-version-upgrade, AC annotation rg checks, kspec
+              validate --json, npm test. Claims verified: DEFAULT_IDLE_GRACE_MS is 5000; dispatch
+              passes DEFAULT_IDLE_GRACE_MS when session.idle hooks exist and 0 without hooks; setup
+              persists session auto_close/5000 for dispatch defaults; upgrade-created
+              default-session-reflect hook includes numeric filter.turn_count=1 and preserves
+              existing/removed hooks. Categories searched: correctness, edge cases, error handling,
+              test quality, integration. No blockers found."
+            created_at: 2026-04-28T01:55:41.214Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-28T01:44:42.915Z
-    updated_at: 2026-04-28T01:55:35.678Z
+    updated_at: 2026-04-28T01:55:41.214Z
     notes: []
