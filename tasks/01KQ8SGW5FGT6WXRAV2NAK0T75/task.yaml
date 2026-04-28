@@ -1,0 +1,91 @@
+_ulid: 01KQ8SGW5FGT6WXRAV2NAK0T75
+slugs:
+  - task-default-session-reflection-spec-updates
+title: Update specs for default session reflection reliability
+type: task
+description: |
+  Update the existing owning specs before any implementation work so the
+  implementation task can be reviewed against finalized behavioral
+  contracts. Keep this task limited to kspec metadata/spec updates and
+  do not change runtime, setup, or upgrade implementation code.
+
+  Why:
+  - The current product gap spans existing implemented specs rather than
+    a new standalone feature.
+  - A clean review path requires the implementation task to depend on an
+    explicit spec-update task instead of asking the same task to both
+    rewrite specs and implement behavior.
+  - The spec updates must be precise so future reviewers can distinguish
+    the new promises from the already-existing
+    @default-session-reflection-hook ac-fires-once-per-invocation promise.
+
+  What:
+  - Update @multi-turn-session-lifecycle by adding acceptance criterion
+    ac-idle-hook-prompt-window with this exact behavioral shape:
+      Given: An auto-closing agent session has emitted a session.idle event.
+      When: A matching session.idle hook queues a prompt during the idle
+      grace window.
+      Then: The session accepts the prompt instead of rejecting it as inactive.
+  - Update @default-project-agents-and-conventions by adding acceptance
+    criterion ac-default-agents-reflection-promptable with this exact
+    behavioral shape:
+      Given: A project uses kspec-created default dispatch agents and the
+      default session reflection hook.
+      When: A default agent emits its first session.idle event.
+      Then: The default reflection prompt is accepted before automatic close.
+  - Update @single-command-version-upgrade by adding acceptance criterion
+    ac-default-reflection-hook-first-idle-on-upgrade with this exact
+    behavioral shape:
+      Given: An existing project does not have the scaffolded default
+      session reflection hook.
+      When: kspec upgrade creates the hook.
+      Then: Later idle events from the same invocation are not eligible for
+      the scaffolded reflection action.
+  - Do not add a duplicate acceptance criterion to
+    @default-session-reflection-hook; it already owns the first-idle
+    promise through ac-fires-once-per-invocation. If its surrounding prose
+    needs clarification, keep the clarification aligned with that existing
+    AC instead of creating a new promise.
+  - Do not add validation/doctor behavior to these specs; that follow-up
+    remains tracked separately by inbox item @01KQ8PRY.
+
+  How:
+  - Use kspec spec/item update commands or the project’s accepted kspec
+    metadata workflow to add the listed ACs to the named existing specs.
+  - Keep the AC ids and wording stable enough that the dependent
+    implementation task can reference them directly.
+  - Verify each target spec shows the new AC exactly once and that
+    @default-session-reflection-hook still has only the existing
+    ac-fires-once-per-invocation coverage for first-idle behavior.
+
+  Testing:
+  - Run the narrow kspec inspection commands needed to prove each target
+    spec contains the listed AC id and behavioral Given/When/Then text.
+  - Run kspec validation if the local repo baseline allows it. If
+    validation fails for unrelated existing repo-health issues, record the
+    baseline failure and do not treat it as completion evidence for this
+    task.
+
+  Establishes:
+  - @multi-turn-session-lifecycle ac-idle-hook-prompt-window
+  - @default-project-agents-and-conventions ac-default-agents-reflection-promptable
+  - @single-command-version-upgrade ac-default-reflection-hook-first-idle-on-upgrade
+spec_ref: "@multi-turn-session-lifecycle"
+plan_ref: "@plan-default-session-reflection-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - specs
+  - dispatch
+  - sessions
+  - setup
+  - upgrade
+  - hooks
+  - reflection
+vcs_refs: []
+created_at: 2026-04-28T00:58:41.709Z
+todos: []

@@ -43286,10 +43286,12 @@ plans:
       - This plan should be reviewed and approved before deriving tasks. Do not
         dispatch implementation from this proposal until the user explicitly
         approves the scope.
-    status: approved
+    status: active
     approved_at: 2026-04-28T00:58:16.868Z
     derived_specs: []
-    derived_tasks: []
+    derived_tasks:
+      - "@task-default-session-reflection-spec-updates"
+      - "@task-default-session-reflection-reliability"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/default-session-reflection-reliability.md
     created_at: 2026-04-28T00:16:56.548Z
@@ -43303,3 +43305,26 @@ plans:
         content: Add prerequisite spec-update task before implementation per review workflow
         author: Jacob Chapel
         created_at: 2026-04-28T00:48:21.555Z
+      - _ulid: 01KQ8SGWSZ4P2VT8T3TBRDARJ6
+        content: |-
+          - Existing coverage is partial. `@default-session-reflection-hook` already
+            promises first-idle-only behavior, and a completed historical task
+            restricted the setup-created hook to `turn_count: 1`. The gap is that
+            the upgrade scaffold still creates the same named hook without that
+            filter.
+          - The first task is a spec-update task. The implementation task depends on
+            it so implementation review can use finalized spec ACs as the source of
+            truth instead of reviewing code against plan prose.
+          - The multi-turn session lifecycle plan described a default 5 second
+            grace period, but current runtime code still falls back to 100 ms when
+            session.idle hooks exist and agents do not define
+            `idle_grace_period_ms`.
+          - The validation/doctor improvement is intentionally not part of this
+            implementation task. It is tracked separately in inbox item
+            `@01KQ8PRY`: validate/doctor should warn about risky session.idle hooks
+            whose session_prompt action depends on missing or too-short idle grace.
+          - This plan should be reviewed and approved before deriving tasks. Do not
+            dispatch implementation from this proposal until the user explicitly
+            approves the scope.
+        author: Jacob Chapel
+        created_at: 2026-04-28T00:58:42.368Z
