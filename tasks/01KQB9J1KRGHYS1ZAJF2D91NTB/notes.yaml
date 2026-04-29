@@ -1,1 +1,50 @@
-notes: []
+notes:
+  - _ulid: 01KQBB4NYK3065TW6W8CV9N4CG
+    content: >-
+      Approach: Create a shared validateSpecItemPatchData() helper in src/parser/yaml.ts that:
+
+      1. Accepts patch data and an allowUnknown flag
+
+      2. Always validates known schema fields (acceptance_criteria[].id via AcIdSchema) even when
+      allowUnknown=true
+
+      3. Returns a Result type with formatted error messages matching existing patterns
+
+      4. Used by: single patch CLI, bulk patch (patchSpecItems), updateSpecItem parser layer, and
+      replaces direct acIdPattern.test() in ac add/set
+
+
+      Implementation plan:
+
+      - Helper uses SpecItemPatchSchema for known-field validation; when allowUnknown=true, uses
+      .passthrough() (current default) instead of .strict()
+
+      - Key insight: SpecItemPatchSchema.partial() already includes AcceptanceCriterionSchema with
+      AcIdSchema - so schema validation catches invalid AC IDs in both strict and passthrough modes
+
+      - For bulk mode: validate before dry-run reports 'updated' and before real writes
+
+      - For parser layer: validate patch data in updateSpecItem before applying
+
+      - For ac add/set: route through AcIdSchema.safeParse() instead of acIdPattern.test() for
+      consistent error messages
+
+
+      Test plan: 6 ACs x 1+ test each
+
+      - ac-patch-rejects-invalid-id: single patch dry-run + real mode
+
+      - ac-allow-unknown-rejects-invalid-ac-id: --allow-unknown with invalid AC ID
+
+      - ac-bulk-dry-run-rejects-invalid-ac-id: bulk --dry-run with invalid AC ID op
+
+      - ac-bulk-invalid-operation-not-written: bulk invalid op not persisted
+
+      - ac-bulk-valid-operations-continue: valid op after invalid still applied
+
+      - ac-bulk-invalid-operation-fails-command: exit code nonzero with any invalid
+
+      - Parser-layer test: updateSpecItem rejects invalid AC IDs
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T00:45:05.363Z
