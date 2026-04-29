@@ -12,6 +12,13 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { kspec, kspecJson, setupTempFixtures, cleanupTempDir } from "./helpers/cli.js";
 import { validateSpecItemPatchData } from "../src/parser/yaml.js";
+import {
+  initContext,
+  loadAllItems,
+  updateSpecItem,
+  readYamlFile,
+  type LoadedSpecItem,
+} from "../src/parser/index.js";
 
 describe("AC ID patch validation", () => {
   let tempDir: string;
@@ -391,25 +398,49 @@ describe("AC ID patch validation", () => {
 
   // AC: @acceptance-criterion-id-format ac-patch-rejects-invalid-id
   describe("parser-layer updateSpecItem rejects invalid AC IDs", () => {
-    it("throws when called with invalid acceptance_criteria IDs", async () => {
-      // Use the CLI to set up state, then test the parser layer directly
-      // We need to get a LoadedSpecItem to pass to updateSpecItem
-      // Instead of importing the full context, verify through CLI behavior
-      // that the parser layer rejects invalid IDs even when called directly
-      const data = JSON.stringify({
+    function findItemBySlug(items: LoadedSpecItem[], slug: string): LoadedSpecItem {
+      const found = items.find((item) => item.slugs.includes(slug));
+      if (!found) throw new Error(`Missing fixture item: ${slug}`);
+      return found;
+    }
+
+    it("rejects invalid acceptance_criteria IDs before writing", async () => {
+      const ctx = await initContext(tempDir);
+      const items = await loadAllItems(ctx);
+      const target = findItemBySlug(items, "patch-target-b");
+
+      // Capture file content before the call to verify no mutation
+      const contentBefore = await readYamlFile<unknown>(target._sourceFile!);
+
+      await expect(
+        updateSpecItem(ctx, target, {
+          acceptance_criteria: [
+            { id: "parser-layer-INVALID", given: "g", when: "w", then: "t" },
+          ],
+        }),
+      ).rejects.toThrow("ac-prefixed kebab-case");
+
+      // Verify catalog was not mutated
+      const contentAfter = await readYamlFile<unknown>(target._sourceFile!);
+      expect(contentAfter).toEqual(contentBefore);
+    });
+
+    it("allows valid acceptance_criteria IDs through updateSpecItem", async () => {
+      const ctx = await initContext(tempDir);
+      const items = await loadAllItems(ctx);
+      const target = findItemBySlug(items, "patch-target-b");
+
+      const result = await updateSpecItem(ctx, target, {
         acceptance_criteria: [
-          { id: "parser-layer-INVALID", given: "g", when: "w", then: "t" },
+          { id: "ac-valid-parser-layer", given: "g", when: "w", then: "t" },
         ],
       });
-      // Single patch without --allow-unknown exercises updateSpecItem
-      // after the shared validation helper
-      const result = kspec(
-        `item patch @patch-target-b --data '${data}'`,
-        tempDir,
-        { expectFail: true },
+
+      expect(result.acceptance_criteria).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ id: "ac-valid-parser-layer" }),
+        ]),
       );
-      expect(result.exitCode).not.toBe(0);
-      expect(result.stderr).toContain("ac-prefixed kebab-case");
     });
   });
 
