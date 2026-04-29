@@ -960,6 +960,28 @@ features:
             id: ac-12
             then: "error: Item not found: @nonexistent"
             when: kspec item patch @nonexistent --data '{...}' runs
+          - given: A user patches an item with --allow-unknown and the patch would store an acceptance criterion
+              identifier that does not conform to the required token format
+            id: ac-allow-unknown-rejects-invalid-ac-id
+            then: The command fails without writing the patch
+            when: kspec item patch runs
+          - given: A bulk patch dry-run includes an operation that would store an acceptance criterion
+              identifier that does not conform to the required token format
+            id: ac-bulk-dry-run-rejects-invalid-ac-id
+            then: The operation is reported as an error instead of a successful preview
+            when: kspec item patch --bulk --dry-run runs
+          - given: A bulk patch contains an operation with invalid patch data
+            id: ac-bulk-invalid-operation-not-written
+            then: The invalid operation is not written
+            when: kspec item patch --bulk runs without --fail-fast
+          - given: A bulk patch contains an invalid operation followed by a valid operation
+            id: ac-bulk-valid-operations-continue
+            then: The valid operation after the invalid operation is applied
+            when: kspec item patch --bulk runs without --fail-fast
+          - given: A bulk patch contains at least one operation with invalid patch data
+            id: ac-bulk-invalid-operation-fails-command
+            then: The command exits with a failure status
+            when: kspec item patch --bulk finishes processing the requested operations
         tags:
           - cli
           - dx

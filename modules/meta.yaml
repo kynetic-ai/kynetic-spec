@@ -7119,6 +7119,17 @@ requirements:
               The annotation provides no acceptance-criterion coverage credit
             when: |
               completeness validation computes acceptance-criterion coverage
+          - given: A coverage annotation contains an ac-prefixed token with unsupported characters or embedded
+              punctuation, such as ac-valid.extra, ac-valid/path, ac-valid#anchor, or ac-valid?query
+            id: ac-malformed-token-not-truncated
+            then: The malformed token is not truncated to a valid prefix and does not provide coverage credit to
+              any acceptance criterion
+            when: completeness validation parses the annotation
+          - given: A coverage annotation separates valid acceptance criterion tokens with whitespace, a comma,
+              or a comma followed by whitespace
+            id: ac-valid-delimiters-preserved
+            then: Each delimiter-separated token is recognized as its own acceptance criterion token
+            when: completeness validation parses the annotation
         tags: []
         created: 2026-04-28T03:55:57.167Z
         notes: []

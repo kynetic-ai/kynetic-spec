@@ -841,6 +841,11 @@ features:
                   The named AC is treated as covered by that annotation
                 when: |
                   completeness validation computes coverage
+              - given: A configured coverage scan path contains an AC annotation with a malformed ac-prefixed
+                  acceptance criterion token
+                id: ac-malformed-ac-token-reported
+                then: An invalid-annotation finding identifies the malformed token and the source location
+                when: completeness validation runs
             tags: []
             created: 2026-04-24T20:20:37.053Z
             notes:
