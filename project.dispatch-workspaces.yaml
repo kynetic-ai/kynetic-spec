@@ -11699,7 +11699,7 @@ workspaces:
         head: 3861de3762c451ce106e7e32d006bf401fe2e1b9
         last_seen_at: 2026-04-29T02:01:51.841Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-centralize-ac-id-patch-validation-01kqb9j1
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 16b161551bb2c8055be06a503b1701ba756c1dea
     bootstrap:
       status: succeeded
@@ -12197,9 +12197,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-29T01:47:06.089Z
-      last_reconciled_at: 2026-04-29T02:00:41.434Z
+      last_reconciled_at: 2026-04-29T02:04:54.122Z
       created_at: 2026-04-29T01:23:07.048Z
-      updated_at: 2026-04-29T02:00:42.279Z
+      updated_at: 2026-04-29T02:04:54.122Z
     workspace_id: dispatch-workspace-01KQB9J1X2V281Z6YFN7WM1V1W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
