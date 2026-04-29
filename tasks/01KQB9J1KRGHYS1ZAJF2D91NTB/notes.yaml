@@ -188,3 +188,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-29T03:54:02.654Z
+  - _ulid: 01KQBQ08S8FD3B5WY3S790Q99X
+    content: "Fix cycle 5: Addressed blocker — collectNestedAcErrors was silently skipping non-array
+      acceptance_criteria in nested catalog items. When acceptance_criteria is present but not an
+      array (e.g. a string or number), the helper now emits an 'Expected array' error. Added 6
+      tests: 3 helper-level (string, number, strict mode), 1 CLI --allow-unknown, 1 parser-layer
+      updateSpecItem, covering all three patch surfaces. All 2323 suites pass (8511 tests),
+      typecheck clean. Re-verified all 6 task ACs against implementation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T04:12:23.721Z
