@@ -13,3 +13,24 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-29T19:37:16.711Z
+  - _ulid: 01KQDCQCNHA5QN7APXSGC9CECM
+    content: "Implementation complete. Added tests/daemon-web-ui-startup-asset-coherence.test.ts (5
+      tests, all passing) covering: (1) every same-origin link[href]/script[src] reference in the
+      served entry doc returns HTTP 200, (2) per-content-type assertions for modulepreload JS,
+      stylesheet CSS, and classic script src, (3) old-asset regression — after a bundle replacement
+      the served entry no longer references the missing old asset, the old asset 404s, and the new
+      asset is served, (4) path traversal containment is preserved (sentinel file outside the bundle
+      root not reachable via /_app/../escape), (5) 404 preserved for /_app and root-level paths not
+      referenced and not present. Refactored: extracted serveWebUiStaticAsset, isRootWebUiAssetPath,
+      and a new registerWebUiNodeStaticRoutes helper from server.ts into
+      packages/daemon/src/web-ui-static.ts (mirrors web-ui-entry.ts pattern; gives tests a focused
+      seam without importing the whole server module). server.ts now calls
+      registerWebUiNodeStaticRoutes for the node branch — no behavior change, content-types and
+      cache-control headers preserved. Bun route order is still covered by the existing
+      daemon-web-ui-bun-route-order test. Full test suite passes (shard1: 2570/2571, shard2:
+      3369/3373, shard3: 2606/2606; skips are pre-existing). No production serving gap surfaced —
+      the bundle's startup references already use /_app/* and root paths covered by the existing
+      routes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T19:51:15.889Z
