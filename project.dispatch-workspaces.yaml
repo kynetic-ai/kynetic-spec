@@ -12536,12 +12536,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-29T04:38:50.742Z
+      updated_at: 2026-04-29T04:38:57.492Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-29T04:38:50.742Z
+      updated_at: 2026-04-29T04:38:57.492Z
     integration:
       status: pending
       detail: null
@@ -12549,7 +12549,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
-      updated_at: 2026-04-29T04:38:50.742Z
+      updated_at: 2026-04-29T04:38:57.492Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KQB9J270540ZSC74AQCR27HA"
@@ -12557,16 +12557,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-29T04:28:22.550Z
-      last_reconciled_at: 2026-04-29T04:38:50.742Z
+      last_reconciled_at: 2026-04-29T04:38:57.492Z
       created_at: 2026-04-29T04:27:55.154Z
-      updated_at: 2026-04-29T04:38:50.742Z
+      updated_at: 2026-04-29T04:38:57.492Z
     workspace_id: dispatch-workspace-01KQB9J270540ZSC74AQCR27HA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
+        last_seen_at: 2026-04-29T04:38:57.492Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-id-hardening-final-gate-01kqb9j2-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-ac-id-hardening-final-gate/01kqb9j2
         head: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
-        last_seen_at: 2026-04-29T04:27:55.154Z
+        last_seen_at: 2026-04-29T04:38:57.492Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-id-hardening-final-gate-01kqb9j2
