@@ -89,7 +89,7 @@ description: |
 spec_ref: "@daemon-server"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-daemon-web-ui-asset-coherence-specs"
@@ -110,7 +110,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KQD5DT41348X6WFW158C0TRZ
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -159,6 +159,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-29T18:03:46.955Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KQD5DT41348X6WFW158C0TRZ
+    command: review-verdict-needs-work
+    timestamp: 2026-04-29T18:15:13.007Z
 created_at: 2026-04-29T17:19:21.971Z
 started_at: 2026-04-29T17:44:11.031Z
 submitted_at: 2026-04-29T18:00:35.707Z

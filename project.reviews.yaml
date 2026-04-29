@@ -174976,9 +174976,25 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-04-29T18:15:01.206Z
+      - _ulid: 01KQD77EZKGPR6A5MMWY6YCGEF
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-29T18:15:11.091Z
+      - _ulid: 01KQD77EZK2TSHAF2PBKEDTSN9
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-29T18:15:11.091Z
     examined_commit: 945338daa35a23bc27de0d5a6c0fd0a65cfef91b
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -175007,7 +175023,14 @@ reviews:
               served bundle and be browser-cacheable instead of revalidating."
             created_at: 2026-04-29T18:07:30.779Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-29T18:15:11.091Z
     created_at: 2026-04-29T18:03:43.603Z
-    updated_at: 2026-04-29T18:15:00.072Z
+    updated_at: 2026-04-29T18:15:11.091Z
     notes: []
