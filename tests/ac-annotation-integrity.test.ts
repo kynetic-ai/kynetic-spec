@@ -25,6 +25,7 @@ describe("AC annotation integrity reporting", () => {
       {
         specRef: "@nonexistent-spec",
         acIds: ["ac-1"],
+        malformedTokens: [],
         file: "/tmp/tests/example.test.ts",
         line: 10,
       },
@@ -59,6 +60,7 @@ describe("AC annotation integrity reporting", () => {
       {
         specRef: "@task-my-work",
         acIds: ["ac-1"],
+        malformedTokens: [],
         file: "/tmp/tests/example.test.ts",
         line: 5,
       },
@@ -94,6 +96,7 @@ describe("AC annotation integrity reporting", () => {
       {
         specRef: "@my-feature",
         acIds: ["ac-1", "ac-nonexistent"],
+        malformedTokens: [],
         file: "/tmp/tests/feature.test.ts",
         line: 15,
       },
@@ -134,6 +137,7 @@ describe("AC annotation integrity reporting", () => {
       {
         specRef: "@my-feature",
         acIds: [],
+        malformedTokens: [],
         file: "/tmp/tests/feature.test.ts",
         line: 3,
       },
@@ -173,6 +177,7 @@ describe("AC annotation integrity reporting", () => {
       {
         specRef: "@my-feature",
         acIds: ["ac-1"],
+        malformedTokens: [],
         file: "/tmp/tests/feature.test.ts",
         line: 5,
       },
@@ -190,5 +195,102 @@ describe("AC annotation integrity reporting", () => {
       expect.objectContaining({ id: "ac-1", covered: true }),
       expect.objectContaining({ id: "ac-2", covered: false }),
     ]);
+  });
+
+  // AC: @ac-annotation-integrity-reporting ac-malformed-ac-token-reported
+  it("reports an invalid-annotation finding for a malformed ac-prefixed token", () => {
+    const items = [
+      {
+        _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+        slugs: ["my-feature"],
+        title: "My Feature",
+        type: "requirement" as const,
+        description: "A feature spec",
+        status: { maturity: "draft" as const, implementation: "not_started" as const },
+        acceptance_criteria: [
+          { id: "ac-good", given: "g", when: "w", then: "t" },
+        ],
+        _sourceFile: "modules/feature.yaml",
+      },
+    ];
+
+    const index = new ReferenceIndex([], items);
+    const annotations = [
+      {
+        specRef: "@my-feature",
+        acIds: [],
+        malformedTokens: ["ac-good.extra"],
+        file: "/tmp/tests/feature.test.ts",
+        line: 7,
+      },
+    ];
+
+    const warnings = validateACAnnotations(annotations, items, index);
+
+    // Should have a malformed_ac_token warning (and a blanket_ref because acIds is empty)
+    const malformedWarnings = warnings.filter((w) => w.subtype === "malformed_ac_token");
+    expect(malformedWarnings).toHaveLength(1);
+    expect(malformedWarnings[0].type).toBe("invalid_ac_annotation");
+    expect(malformedWarnings[0].subtype).toBe("malformed_ac_token");
+    expect(malformedWarnings[0].message).toContain("ac-good.extra");
+    expect(malformedWarnings[0].itemRef).toBe("@my-feature");
+    expect(malformedWarnings[0].details).toContain("feature.test.ts:7");
+  });
+
+  it("reports multiple malformed tokens individually", () => {
+    const items = [
+      {
+        _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+        slugs: ["my-feature"],
+        title: "My Feature",
+        type: "requirement" as const,
+        description: "A feature spec",
+        status: { maturity: "draft" as const, implementation: "not_started" as const },
+        acceptance_criteria: [
+          { id: "ac-1", given: "g", when: "w", then: "t" },
+        ],
+        _sourceFile: "modules/feature.yaml",
+      },
+    ];
+
+    const index = new ReferenceIndex([], items);
+    const annotations = [
+      {
+        specRef: "@my-feature",
+        acIds: ["ac-1"],
+        malformedTokens: ["ac-bad.dot", "ac-bad/slash"],
+        file: "/tmp/tests/feature.test.ts",
+        line: 12,
+      },
+    ];
+
+    const warnings = validateACAnnotations(annotations, items, index);
+
+    const malformedWarnings = warnings.filter((w) => w.subtype === "malformed_ac_token");
+    expect(malformedWarnings).toHaveLength(2);
+    expect(malformedWarnings[0].message).toContain("ac-bad.dot");
+    expect(malformedWarnings[1].message).toContain("ac-bad/slash");
+  });
+
+  it("reports malformed tokens even when the target reference is unresolved", () => {
+    const index = new ReferenceIndex([], []);
+    const annotations = [
+      {
+        specRef: "@nonexistent",
+        acIds: [],
+        malformedTokens: ["ac-bad.token"],
+        file: "/tmp/tests/example.test.ts",
+        line: 3,
+      },
+    ];
+
+    const warnings = validateACAnnotations(annotations, [], index);
+
+    // Should have both malformed_ac_token and unresolved_target warnings
+    const malformedWarnings = warnings.filter((w) => w.subtype === "malformed_ac_token");
+    const unresolvedWarnings = warnings.filter((w) => w.subtype === "unresolved_target");
+    expect(malformedWarnings).toHaveLength(1);
+    expect(malformedWarnings[0].message).toContain("ac-bad.token");
+    expect(unresolvedWarnings).toHaveLength(1);
   });
 });

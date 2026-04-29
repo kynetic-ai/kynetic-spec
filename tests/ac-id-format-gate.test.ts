@@ -197,12 +197,12 @@ describe("Gate: auto-generated AC ids conform", () => {
 describe("Gate: annotation parser only interprets ac-prefixed tokens", () => {
   it("non-prefixed tokens after @ref are not treated as AC ids", () => {
     const groups = parseACAnnotationLine(acPrefix + "@spec validate create");
-    expect(groups).toEqual([{ specRef: "@spec", acIds: [] }]);
+    expect(groups).toEqual([{ specRef: "@spec", acIds: [], malformedTokens: [] }]);
   });
 
   it("ac-prefixed tokens are captured as AC ids", () => {
     const groups = parseACAnnotationLine(acPrefix + "@spec ac-validate, ac-create");
-    expect(groups).toEqual([{ specRef: "@spec", acIds: ["ac-validate", "ac-create"] }]);
+    expect(groups).toEqual([{ specRef: "@spec", acIds: ["ac-validate", "ac-create"], malformedTokens: [] }]);
   });
 
   it("malformed ac-* tokens are rejected by the parser", () => {
@@ -256,7 +256,7 @@ describe("Gate: ac-prefixed annotation tokens earn coverage credit", () => {
     ];
     const index = new ReferenceIndex([], items);
     const annotations = [
-      { specRef: "@gate-spec", acIds: ["ac-1"], file: "/tmp/test.ts", line: 1 },
+      { specRef: "@gate-spec", acIds: ["ac-1"], malformedTokens: [], file: "/tmp/test.ts", line: 1 },
     ];
 
     const warnings = validateACAnnotations(annotations, items, index);
@@ -281,7 +281,7 @@ describe("Gate: bare ref without ac-prefixed tokens earns no coverage", () => {
     ];
     const index = new ReferenceIndex([], items);
     const annotations = [
-      { specRef: "@gate-spec", acIds: [], file: "/tmp/test.ts", line: 1 },
+      { specRef: "@gate-spec", acIds: [], malformedTokens: [], file: "/tmp/test.ts", line: 1 },
     ];
 
     const warnings = validateACAnnotations(annotations, items, index);
@@ -327,7 +327,7 @@ describe("Gate: valid annotation covers target", () => {
     ];
     const index = new ReferenceIndex([], items);
     const annotations = [
-      { specRef: "@gate-integrity", acIds: ["ac-validate"], file: "/tmp/test.ts", line: 1 },
+      { specRef: "@gate-integrity", acIds: ["ac-validate"], malformedTokens: [], file: "/tmp/test.ts", line: 1 },
     ];
 
     // No warnings
@@ -362,7 +362,7 @@ describe("Gate: blanket ref does not cover", () => {
     ];
     const index = new ReferenceIndex([], items);
     const annotations = [
-      { specRef: "@gate-blanket", acIds: [], file: "/tmp/test.ts", line: 1 },
+      { specRef: "@gate-blanket", acIds: [], malformedTokens: [], file: "/tmp/test.ts", line: 1 },
     ];
 
     const warnings = validateACAnnotations(annotations, items, index);
