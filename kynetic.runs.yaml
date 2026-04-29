@@ -34136,7 +34136,7 @@ runs:
     completed_at: 2026-04-29T02:04:35.701Z
   - _ulid: 01KQBGG0HJXVRKQWTPT0E36V07
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -34149,7 +34149,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-29T02:19:28.216Z
-        completed_at: 2026-04-29T02:19:28.216Z
+        completed_at: 2026-04-29T02:19:42.624Z
+        notes: "Friction points: the reflection instructions list kspec workflow show without a run ref, but
+          this CLI returned missing required argument run-ref; review also required ad hoc
+          temp-fixture scripting to prove nested known-field validation under passthrough data."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-29T02:19:42.624Z
+        completed_at: 2026-04-29T02:19:42.624Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T02:18:39.538Z
