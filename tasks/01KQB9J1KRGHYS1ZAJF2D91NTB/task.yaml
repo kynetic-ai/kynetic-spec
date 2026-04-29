@@ -95,6 +95,7 @@ tags:
   - schema
   - parser
 vcs_refs: []
+review_ref: "@01KQBDAJ7W1J9W7JWNFM4Y8YDE"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-centralize-ac-id-patch-validation/01kqb9j1
@@ -145,6 +146,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-29T01:21:29.856Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQBDAJ7W1J9W7JWNFM4Y8YDE"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-29T01:23:18.773Z
 created_at: 2026-04-29T00:17:26.136Z
 started_at: 2026-04-29T00:39:55.569Z
 submitted_at: 2026-04-29T01:21:29.856Z
