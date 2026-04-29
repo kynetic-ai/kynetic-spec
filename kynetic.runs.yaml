@@ -34693,7 +34693,7 @@ runs:
     completed_at: 2026-04-29T04:56:10.541Z
   - _ulid: 01KQD78X4FAPKC3VWNDNPS4JM8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -34707,7 +34707,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-29T18:17:03.011Z
-        completed_at: 2026-04-29T18:17:03.011Z
+        completed_at: 2026-04-29T18:17:13.936Z
+        notes: "Friction points: the new tests exercised the extracted helper and manually registered
+          fallback routes, but not the production non-Node stack where staticPlugin is registered
+          before the fallback. This made a route-precedence regression easy to miss even with good
+          targeted tests. kspec validate still exits 6 for broad pre-existing warnings, so review
+          evidence has to classify those warnings manually instead of treating validate as a clean
+          gate."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-29T18:17:13.936Z
+        completed_at: 2026-04-29T18:17:13.936Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T18:15:58.351Z
