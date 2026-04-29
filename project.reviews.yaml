@@ -174992,6 +174992,18 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-29T18:15:11.091Z
+      - _ulid: 01KQD8PRVJGYT2N95K6SCX0HXW
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQD6SDEV7JGB5ZTYGRHFCKNE
+        timestamp: 2026-04-29T18:41:01.298Z
+      - _ulid: 01KQD8PVYY9KCYJVQCX9YG0FGS
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQD6SDEV7JGB5ZTYGRHFCKNE
+        timestamp: 2026-04-29T18:41:04.478Z
     examined_commit: 945338daa35a23bc27de0d5a6c0fd0a65cfef91b
     external_links: []
     lifecycle_state: closed
@@ -175022,7 +175034,24 @@ reviews:
               ac-reload-uses-current-entry because the root route can remain tied to the older
               served bundle and be browser-cacheable instead of revalidating."
             created_at: 2026-04-29T18:07:30.779Z
+          - _ulid: 01KQD8PQH77FNTJV178NA0V14C
+            author: "@claude"
+            body: "Fixed: registerWebUiEntryRoutes now runs BEFORE staticPlugin in the non-node branch, and the
+              plugin is mounted with indexHTML: false so it no longer claims '/' from index.html.
+              Reproduced the original bug under Bun (GET / returned the plugin's '{}' bundle
+              response, never reflected bundle changes), then verified the fix: GET / and GET /tasks
+              both serve the entry helper's revalidating response and pick up the new bundle on the
+              next request after replacing index.html. Added
+              tests/daemon-web-ui-bun-route-order.test.ts which spawns Bun against
+              tests/fixtures/daemon-web-ui-bun-route-order.mjs, mirrors the production server stack
+              (registerWebUiEntryRoutes -> staticPlugin), and asserts the entry helper handles '/'
+              and '/tasks' across a bundle replacement while the plugin still serves /_app/main.js.
+              Asset routes (/_app/*, /favicon.svg) and the explicit Node-runtime asset handlers are
+              unchanged."
+            created_at: 2026-04-29T18:40:59.942Z
         kind: blocker
+        resolved_at: 2026-04-29T18:41:03.250Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -175032,5 +175061,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-29T18:15:11.091Z
     created_at: 2026-04-29T18:03:43.603Z
-    updated_at: 2026-04-29T18:15:11.091Z
+    updated_at: 2026-04-29T18:41:03.250Z
     notes: []
