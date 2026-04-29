@@ -44214,8 +44214,8 @@ plans:
       parsing touch different codepaths. The final gate depends on both behavior
       changes so status updates and validation evidence happen after both surfaces are
       covered.
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-04-29T00:17:03.758Z
     derived_specs: []
     derived_tasks: []
     module_ref: null
