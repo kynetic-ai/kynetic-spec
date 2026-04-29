@@ -34693,7 +34693,7 @@ runs:
     completed_at: 2026-04-29T04:56:10.541Z
   - _ulid: 01KQD78X4FAPKC3VWNDNPS4JM8
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -34726,7 +34726,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-04-29T18:17:22.497Z
-        completed_at: 2026-04-29T18:17:22.497Z
+        completed_at: 2026-04-29T18:17:30.214Z
+        notes: "Proposal: capture a success/process observation that route-extraction reviews should include
+          at least one test or manual repro of the actual production route stack, including
+          framework/static plugins and registration order, not only the extracted helper. Scope:
+          small documentation/process observation; no implementation task because the code fix is
+          already represented by the review blocker."
+      - status: completed
+        step_index: 4
+        started_at: 2026-04-29T18:17:30.214Z
+        completed_at: 2026-04-29T18:17:30.214Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T18:15:58.351Z
