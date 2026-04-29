@@ -27500,6 +27500,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-29T00:17:26.136Z
+  automation: eligible
 - _ulid: 01KQB9J1X2V281Z6YFN7WM1V1W
   slugs:
     - task-strict-ac-annotation-token-parsing

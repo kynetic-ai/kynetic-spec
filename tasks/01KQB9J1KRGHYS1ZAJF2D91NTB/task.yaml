@@ -95,5 +95,14 @@ tags:
   - schema
   - parser
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-04-29T00:18:08.451Z
 created_at: 2026-04-29T00:17:26.136Z
 todos: []
+automation: eligible
