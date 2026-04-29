@@ -33849,9 +33849,40 @@ runs:
     completed_at: 2026-04-29T01:36:37.579Z
   - _ulid: 01KQBEKZPHG5S89Q1WY4M9T3PJ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-29T01:45:52.593Z
+        completed_at: 2026-04-29T01:46:33.191Z
+        notes: >-
+          Gate passed: 1 commit (a784c6635), task submitted to pending_review, clean working tree.
+
+
+          What worked well:
+
+          - Tokenization rewrite was clean — replacing regex capture groups with split-on-delimiters
+          was the right abstraction. Simple, correct, no edge case surprises.
+
+          - Existing test structure made it straightforward to add new AC coverage tests.
+
+          - malformedTokens field carries cleanly through the full pipeline (parser to scanner to
+          validator).
+
+
+          Friction:
+
+          1. Updating ~20 toEqual assertions across 4 test files for the new malformedTokens field
+          was mechanical and time-consuming. A structural type change to a widely-tested return type
+          creates a wave of assertion updates.
+
+          2. No other significant friction — task description, spec ACs, and existing code were
+          well-aligned.
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-29T01:46:33.191Z
+        completed_at: 2026-04-29T01:46:33.191Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-29T01:45:52.593Z
