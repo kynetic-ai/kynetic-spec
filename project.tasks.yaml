@@ -27491,7 +27491,7 @@
   type: task
   spec_ref: "@acceptance-criterion-id-format"
   plan_ref: "@plan-ac-id-surface-hardening"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-ac-id-hardening-spec-updates"
@@ -27502,7 +27502,7 @@
     - schema
     - parser
   review_ref: "@01KQBDAJ7W1J9W7JWNFM4Y8YDE"
-  notes_count: 2
+  notes_count: 3
   todos_count: 0
   created_at: 2026-04-29T00:17:26.136Z
   started_at: 2026-04-29T00:39:55.569Z

@@ -173363,9 +173363,25 @@ reviews:
           kind: nit
           thread_ulid: 01KQBDZ5C6X492ED11JGM738Z8
         timestamp: 2026-04-29T01:34:31.401Z
+      - _ulid: 01KQBDZ9R5V2DBKYQC0Y8F5CWN
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-29T01:34:34.757Z
+      - _ulid: 01KQBDZ9R5821H1TYAH4FHV3AN
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-29T01:34:34.757Z
     examined_commit: 770669fd163946ab2c1f6da1cc7ea8caa83fbe56
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -173410,7 +173426,14 @@ reviews:
               handling, test quality, AC coverage, integration."
             created_at: 2026-04-29T01:34:30.278Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-29T01:34:34.756Z
     created_at: 2026-04-29T01:23:15.324Z
-    updated_at: 2026-04-29T01:34:30.278Z
+    updated_at: 2026-04-29T01:34:34.757Z
     notes: []
