@@ -173720,6 +173720,12 @@ reviews:
         payload:
           thread_ulid: 01KQBGE218PMPJ4H1ZM206Q0DS
         timestamp: 2026-04-29T02:40:06.130Z
+      - _ulid: 01KQBHQH5FZCAP8V5ZTJCVCT4W
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQBGE218PMPJ4H1ZM206Q0DS
+        timestamp: 2026-04-29T02:40:14.512Z
     examined_commit: 3861de3762c451ce106e7e32d006bf401fe2e1b9
     external_links: []
     lifecycle_state: closed
@@ -173765,6 +173771,8 @@ reviews:
               invalid AC IDs. All 2323 suites pass (8499 tests)."
             created_at: 2026-04-29T02:40:05.002Z
         kind: blocker
+        resolved_at: 2026-04-29T02:40:13.361Z
+        resolved_by: "@claude"
       - _ulid: 01KQBGE4YEAGWQPW4W8Z9XSV4S
         entries:
           - _ulid: 01KQBGE4YEX7PPWC8K7R01QR2J
@@ -173791,5 +173799,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-29T02:17:42.827Z
     created_at: 2026-04-29T02:02:59.745Z
-    updated_at: 2026-04-29T02:40:05.002Z
+    updated_at: 2026-04-29T02:40:13.361Z
     notes: []
