@@ -175227,6 +175227,26 @@ reviews:
         runner: kspec
         created_at: 2026-04-29T20:04:58.950Z
         completed_at: 2026-04-29T20:04:58.950Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/server.ts, packages/daemon/src/web-ui-static.ts,
+          packages/daemon/src/web-ui-entry.ts, tests/daemon-web-ui-startup-asset-coherence.test.ts,
+          tests/daemon-web-ui-entry.test.ts, tests/daemon-web-ui-bun-route-order.test.ts,
+          tests/daemon-build.test.ts, kspec-agents.md. Commands run: git diff/stat/log/show, kspec
+          task get, kspec item get @daemon-web-ui-bundle, kspec validate, kspec validate
+          --warnings-ok, rg AC/source-scan searches, git diff --check, npm test -- --fresh. Claims
+          verified: worker's all-tests-pass claim verified by fresh full npm test; refactor
+          equivalence verified against base server.ts; startup asset coherence verified by
+          behavioral tests requesting served entry asset URLs. Categories searched: correctness,
+          route order/integration, path traversal, not-found behavior, test quality, AC annotations,
+          config/build suppression."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-04-29T20:05:07.906Z
+        completed_at: 2026-04-29T20:05:07.906Z
     events:
       - _ulid: 01KQDCXJMCMJS687Z5CFA37QXT
         actor: Jacob Chapel
@@ -175255,6 +175275,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-29T20:05:00.174Z
+      - _ulid: 01KQDDGTE94AY134SR3DTMGT1M
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-29T20:05:09.193Z
     examined_commit: 4a080f2cf6cbbd9f35e1c1edaa0e61527b128a04
     external_links: []
     lifecycle_state: open
@@ -175267,5 +175294,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-29T19:54:38.604Z
-    updated_at: 2026-04-29T20:04:58.950Z
+    updated_at: 2026-04-29T20:05:07.906Z
     notes: []
