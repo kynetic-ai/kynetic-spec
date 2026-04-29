@@ -174335,6 +174335,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-04-29T03:53:08.519Z
+      - _ulid: 01KQBNXEXR956NT2XQZZB8MK5T
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQBNXDR5S6K299CS3GJ4Z0ZS
+        timestamp: 2026-04-29T03:53:23.128Z
     examined_commit: 5e67779375f034279702015897899ef726badcf3
     external_links: []
     lifecycle_state: open
@@ -174344,8 +174351,32 @@ reviews:
       content_hash: ""
       ref: "@01KQB9J1KRGHYS1ZAJF2D91NTB"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQBNXDR5S6K299CS3GJ4Z0ZS
+        anchor:
+          type: code
+          commit: 5e67779375f034279702015897899ef726badcf3
+          line_end: 1829
+          line_start: 1829
+          path: src/parser/yaml.ts
+          side: head
+        entries:
+          - _ulid: 01KQBNXDR5ZTXMSFGKEM3R982X
+            author: Jacob Chapel
+            body: "MUST-FIX: nested acceptance_criteria is only validated when it is already an array. If a
+              nested catalog item is patched with a known acceptance_criteria field of the wrong
+              shape, collectNestedAcErrors skips it and --allow-unknown writes invalid YAML. I
+              reproduced this with a fixture patch against @test-core: data { features: [{ _ulid:
+              '01AAAAAAAAAAAAAAAAAAAATEST', title: 'Nested Feature', acceptance_criteria:
+              'not-an-array' }] } plus --allow-unknown exited 0 and persisted 'acceptance_criteria:
+              not-an-array' in modules/core.yaml. Impact: the shared helper still lets patch/update
+              surfaces store an invalid known AC field, violating @acceptance-criterion-id-format
+              ac-patch-rejects-invalid-id and @item-patch ac-allow-unknown-rejects-invalid-ac-id.
+              Validate the nested acceptance_criteria field shape before iterating entries, and
+              cover CLI/parser-layer cases."
+            created_at: 2026-04-29T03:53:21.925Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-29T03:42:29.180Z
-    updated_at: 2026-04-29T03:53:07.341Z
+    updated_at: 2026-04-29T03:53:21.925Z
     notes: []
