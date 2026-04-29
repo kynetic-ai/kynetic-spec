@@ -16571,6 +16571,28 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-04-29T03:57:08.176Z
+  - _ulid: 01KQBQ4FYKBG6J0TEE2S1SDKNK
+    type: friction
+    content: "Recursive nested validation (e.g. collectNestedAcErrors for acceptance_criteria in nested
+      catalog items) required 5 fix cycles because the initial implementation only validated
+      happy-path array shapes. Each cycle revealed one more invalid input shape: wrong container
+      type (non-array), missing required fields, partial structures. Convention candidate: when
+      writing validation for recursive/nested structures, enumerate ALL invalid shapes (wrong type,
+      empty, null, partial) upfront alongside the valid case, not just the happy path."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-29T04:14:42.131Z
+  - _ulid: 01KQBQ4G6VP5WKF997K0W5Y7CM
+    type: success
+    content: "Reviewer feedback during fix cycles for task-centralize-ac-id-patch-validation was
+      consistently precise and actionable: each blocker thread included the exact file/line, a
+      fixture repro command, and clear description of the gap. This made each fix cycle fast to
+      resolve (single targeted change + tests). Effective pattern for automated review."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-29T04:14:42.395Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
