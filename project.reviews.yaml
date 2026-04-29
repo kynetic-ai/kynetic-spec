@@ -173617,7 +173617,38 @@ reviews:
     slugs: []
     title: Review centralize AC ID patch validation cycle 2
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full fresh test run passed: 2323/2323 suites, 8491 passed, 5 skipped, 8496 total."
+        name: npm test -- --fresh
+        required: true
+        runner: npm test
+        created_at: 2026-04-29T02:17:26.535Z
+        completed_at: 2026-04-29T02:17:26.535Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: tsc --noEmit completed with exit code 0 and no errors.
+        name: typecheck
+        required: true
+        runner: npm run typecheck
+        created_at: 2026-04-29T02:17:29.496Z
+        completed_at: 2026-04-29T02:17:29.496Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema and references OK; command exited 6 due to existing repo warnings (deprecated refs,
+          alignment/completeness warnings), not task-specific errors.
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-04-29T02:17:32.521Z
+        completed_at: 2026-04-29T02:17:32.521Z
     events:
       - _ulid: 01KQBFKAS1P21VJVAWJE208EDN
         actor: Jacob Chapel
@@ -173632,17 +173663,116 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-29T02:03:22.703Z
+      - _ulid: 01KQBGDTCST8QBK6R20MXNZHXM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-04-29T02:17:27.706Z
+      - _ulid: 01KQBGDX94XA8C9SWW9EZ6C84Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: typecheck
+        timestamp: 2026-04-29T02:17:30.661Z
+      - _ulid: 01KQBGE09DFQ7FNG4M2CCAXGAR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-29T02:17:33.741Z
+      - _ulid: 01KQBGE3451PGZG8R8GMEEY9C9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQBGE218PMPJ4H1ZM206Q0DS
+        timestamp: 2026-04-29T02:17:36.645Z
+      - _ulid: 01KQBGE64X0TD0CENWPCJRT4A7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQBGE4YEAGWQPW4W8Z9XSV4S
+        timestamp: 2026-04-29T02:17:39.741Z
+      - _ulid: 01KQBGE95BJJYZWSF9DF272E1S
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-04-29T02:17:42.827Z
+      - _ulid: 01KQBGE95BCWT1XH1XXN59EYZ6
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-29T02:17:42.827Z
     examined_commit: 3861de3762c451ce106e7e32d006bf401fe2e1b9
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KQB9J1KRGHYS1ZAJF2D91NTB"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KQBGE218PMPJ4H1ZM206Q0DS
+        anchor:
+          type: code
+          commit: 3861de3762c451ce106e7e32d006bf401fe2e1b9
+          line_end: 1819
+          line_start: 1816
+          path: src/parser/yaml.ts
+          side: head
+        entries:
+          - _ulid: 01KQBGE21806VCZA50DXZNS2C4
+            author: Jacob Chapel
+            body: 'MUST-FIX: validateSpecItemPatchData only validates the root SpecItemPatchSchema, so
+              parser-supported nested catalog arrays such as features/requirements are treated as
+              unknown passthrough data. With --allow-unknown, a patch can write
+              features[].acceptance_criteria[].id = "BAD-ID" because the helper returns success and
+              updateSpecItem later writes the raw payload. I reproduced this against a temp fixture:
+              item patch @test-core --data with features containing an acceptance criterion id
+              "BAD-ID" --allow-unknown --json exited 0 and persisted id: BAD-ID in
+              modules/core.yaml. This violates @item-patch ac-allow-unknown-rejects-invalid-ac-id
+              and @acceptance-criterion-id-format ac-patch-rejects-invalid-id for supported nested
+              catalog structures. Add nested catalog AC validation and a behavioral test for nested
+              payloads.'
+            created_at: 2026-04-29T02:17:35.528Z
+        kind: blocker
+      - _ulid: 01KQBGE4YEAGWQPW4W8Z9XSV4S
+        entries:
+          - _ulid: 01KQBGE4YEX7PPWC8K7R01QR2J
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md, task details, @acceptance-criterion-id-format,
+              @item-patch, prior review @01KQBDAJ7W1J9W7JWNFM4Y8YDE, src/parser/yaml.ts,
+              src/cli/commands/item.ts, src/schema/spec.ts, src/schema/common.ts,
+              tests/ac-id-patch-validation.test.ts, related helper/schema context. Commands run: git
+              diff/stat/log, kspec task get, kspec item get for both specs, kspec validate, AC
+              annotation searches, npm test -- --fresh, npm run typecheck, temp-fixture CLI
+              reproduction for nested --allow-unknown AC IDs. Claims verified: worker fix-cycle
+              parser-layer test is now direct updateSpecItem behavior; full tests/typecheck pass;
+              single/bulk root acceptance_criteria validation is present; nested catalog payloads
+              still bypass validation. Categories searched: correctness, edge cases, error handling,
+              test quality, integration/regression surface."
+            created_at: 2026-04-29T02:17:38.510Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-29T02:17:42.827Z
     created_at: 2026-04-29T02:02:59.745Z
-    updated_at: 2026-04-29T02:03:21.541Z
+    updated_at: 2026-04-29T02:17:42.827Z
     notes: []
