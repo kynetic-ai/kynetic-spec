@@ -15,7 +15,6 @@ import {
 } from "../cli/batch-write-buffer.js";
 import {
   AcceptanceCriterionSchema,
-  AcIdSchema,
   InboxFileSchema,
   type InboxItem,
   type InboxItemInput,
