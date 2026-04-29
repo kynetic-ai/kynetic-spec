@@ -51,6 +51,7 @@ import {
   stopAllShadowSync,
   createShadowSyncOnPullHandler,
 } from "./shadow-sync-manager.js";
+import { registerWebUiEntryRoutes } from "./web-ui-entry.js";
 
 export type DaemonRuntime = "bun" | "node";
 
@@ -642,9 +643,6 @@ export async function createServer(options: ServerOptions) {
   // AC: @daemon-server ac-17 - Serve web UI static assets
   // Added after API routes so API routes take precedence
   if (resolvedWebUiPath) {
-    const indexHtmlPath = join(resolvedWebUiPath, "index.html");
-    const indexHtml = readFileSync(indexHtmlPath);
-
     if (runtime === "node") {
       app.get("/_app/*", ({ request }) =>
         serveWebUiStaticAsset(resolvedWebUiPath, new URL(request.url).pathname),
@@ -669,41 +667,13 @@ export async function createServer(options: ServerOptions) {
     }
 
     // SPA fallback routes for client-side routing
-    // These catch paths like /tasks, /items, /inbox that don't have static files
-    const spaRoutes = [
-      "/",
-      "/tasks",
-      "/tasks/*",
-      "/items",
-      "/items/*",
-      "/inbox",
-      "/observations",
-      "/triage",
-      "/validate",
-      "/sessions",
-      "/sessions/*",
-      "/agents",
-      "/specs",
-      "/workflows",
-      "/plans",
-      "/reviews",
-      "/reviews/*",
-      "/settings",
-      "/automation",
-      "/docs",
-      "/docs/*",
-    ];
-    for (const route of spaRoutes) {
-      app.get(
-        route,
-        () =>
-          new Response(indexHtml, {
-            headers: {
-              "Content-Type": "text/html; charset=utf-8",
-            },
-          }),
-      );
-    }
+    // These catch paths like /tasks, /items, /inbox that don't have static files.
+    // The handlers re-read the entry document on every request so daemon
+    // responses track the currently served bundle without a restart.
+    // AC: @daemon-server ac-root-route-current-entry, ac-app-route-current-entry
+    // AC: @daemon-web-ui-bundle ac-entry-unavailable-during-replacement,
+    // ac-entry-recovers-after-replacement, ac-reload-uses-current-entry
+    registerWebUiEntryRoutes(app, resolvedWebUiPath);
 
     console.log("[daemon] Web UI static file serving enabled");
   }
