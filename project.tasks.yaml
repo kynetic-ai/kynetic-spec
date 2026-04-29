@@ -27481,7 +27481,7 @@
   title: Keep daemon web UI entry responses current with the served bundle
   type: task
   spec_ref: "@daemon-server"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-daemon-web-ui-asset-coherence-specs"
@@ -27497,6 +27497,7 @@
   created_at: 2026-04-29T17:19:21.971Z
   started_at: 2026-04-29T18:41:40.948Z
   submitted_at: 2026-04-29T18:41:44.388Z
+  completed_at: 2026-04-29T19:31:45.545Z
   automation: eligible
 - _ulid: 01KQD419B9Q4X5CXH2R4H2ZH0Q
   slugs:
