@@ -173198,6 +173198,13 @@ reviews:
           status: pass
           name: kspec validate --refs --warnings-ok
         timestamp: 2026-04-29T00:37:10.963Z
+      - _ulid: 01KQBAP9W6X2SZ7KV7XE2CAKCD
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQBAP8R6GG3Y0NKJJ5E7N7PW
+        timestamp: 2026-04-29T00:37:14.246Z
     examined_commit: 16b161551bb2c8055be06a503b1701ba756c1dea
     external_links: []
     lifecycle_state: open
@@ -173207,8 +173214,24 @@ reviews:
       content_hash: ""
       ref: "@01KQB9J19S505X97BQ5FMAHG99"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQBAP8R6GG3Y0NKJJ5E7N7PW
+        entries:
+          - _ulid: 01KQBAP8R6H2TA7EHX4K79KDB5
+            author: Jacob Chapel
+            body: "Evidence log: Files/specs read: kspec-agents.md, task @01KQB9J19S505X97BQ5FMAHG99, plan
+              @plan-ac-id-surface-hardening, @acceptance-criterion-id-format, @item-patch,
+              @ac-annotation-identifier-format, @ac-annotation-integrity-reporting. Commands run:
+              git diff --stat dev...HEAD, git diff --name-status dev...HEAD, git diff --check
+              dev...HEAD, git log --oneline, kspec item get/ac list for all four target specs, kspec
+              validate --refs, kspec validate --refs --warnings-ok, rg for existing AC annotations,
+              npm test. Claims verified: all nine requested AC IDs exist exactly once on the
+              intended specs; all four target specs are implementation=in_progress; no runtime/code
+              diff exists. Categories searched: spec alignment, duplicate/missing ACs,
+              validation/reference health, accidental code changes, test regression risk."
+            created_at: 2026-04-29T00:37:13.094Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-29T00:27:00.755Z
-    updated_at: 2026-04-29T00:37:09.897Z
+    updated_at: 2026-04-29T00:37:13.094Z
     notes: []
