@@ -16537,6 +16537,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-04-29T02:20:44.579Z
+  - _ulid: 01KQBHWJMDXVBYJMXM6TERMWF9
+    type: friction
+    content: SpecItemPatchSchema (SpecItemInputSchema.partial().passthrough()) does not include nested
+      catalog fields (features, requirements, etc.) as known schema properties — they pass through
+      as unknown data. Each new validation concern for nested structures requires adding a separate
+      recursive walk (e.g. collectNestedAcIdErrors). Consider a NestedCatalogPatchSchema or
+      extending SpecItemInputSchema to include optional nested catalog arrays with their own
+      validation, so schema-level safeParse catches nested issues without custom helpers.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-29T02:42:59.853Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
