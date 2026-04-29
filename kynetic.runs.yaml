@@ -34741,9 +34741,22 @@ runs:
     started_at: 2026-04-29T18:15:58.351Z
   - _ulid: 01KQDBN9B3ZW9HB9D152JQGYS1
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-29T19:32:38.371Z
+        completed_at: 2026-04-29T19:33:09.279Z
+        notes: "What worked well: The detached reviewer workflow was effective end to end: prior review
+          context exposed the exact Bun root-route blocker; the new Bun subprocess regression
+          directly exercised the production route stack; the supported detached merge helper
+          integrated the approved branch without manual checkout or merge commands. The evidence log
+          structure also made it straightforward to record what was verified before approval."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-29T19:33:09.279Z
+        completed_at: 2026-04-29T19:33:09.279Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T19:32:38.371Z
