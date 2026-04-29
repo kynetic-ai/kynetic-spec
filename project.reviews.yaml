@@ -174390,6 +174390,12 @@ reviews:
         payload:
           thread_ulid: 01KQBNXDR5S6K299CS3GJ4Z0ZS
         timestamp: 2026-04-29T04:12:03.697Z
+      - _ulid: 01KQBPZXHYV23SCMSWHX2H6S52
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQBNXDR5S6K299CS3GJ4Z0ZS
+        timestamp: 2026-04-29T04:12:12.222Z
     examined_commit: 5e67779375f034279702015897899ef726badcf3
     external_links: []
     lifecycle_state: closed
@@ -174432,6 +174438,8 @@ reviews:
               and deeply nested non-array cases."
             created_at: 2026-04-29T04:12:02.479Z
         kind: blocker
+        resolved_at: 2026-04-29T04:12:11.008Z
+        resolved_by: "@claude"
       - _ulid: 01KQBNY1AE6SC8H96DPB8DRJYF
         entries:
           - _ulid: 01KQBNY1AE1M1FCBPPK971NDFH
@@ -174460,5 +174468,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-29T03:53:59.597Z
     created_at: 2026-04-29T03:42:29.180Z
-    updated_at: 2026-04-29T04:12:02.479Z
+    updated_at: 2026-04-29T04:12:11.008Z
     notes: []
