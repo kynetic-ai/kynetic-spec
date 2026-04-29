@@ -36,3 +36,75 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-29T04:30:35.805Z
+  - _ulid: 01KQBRBFSTWJF8Z8PCWEQS621N
+    content: >-
+      End-to-end validation gate completed. All evidence collected:
+
+
+      == Focused Test Results ==
+
+
+      1. tests/ac-id-patch-validation.test.ts: 43 tests PASS (34.6s)
+         Covers: @acceptance-criterion-id-format ac-patch-rejects-invalid-id,
+         @item-patch ac-allow-unknown-rejects-invalid-ac-id, ac-bulk-dry-run-rejects-invalid-ac-id,
+         ac-bulk-invalid-operation-not-written, ac-bulk-valid-operations-continue,
+         ac-bulk-invalid-operation-fails-command
+
+      2. tests/ac-annotation-identifier-format.test.ts: 30 tests PASS (6ms)
+         Covers: @ac-annotation-identifier-format ac-malformed-token-not-truncated,
+         ac-valid-delimiters-preserved
+
+      3. tests/ac-annotation-integrity.test.ts: 8 tests PASS (5ms)
+         Covers: @ac-annotation-integrity-reporting ac-malformed-ac-token-reported
+
+      4. tests/ac-id-format.test.ts: 22 tests PASS (6.4s)
+         Covers: @acceptance-criterion-id-format ac-stored-id-format, ac-invalid-stored-id-reported,
+         ac-create-rejects-invalid-id, ac-rename-rejects-invalid-id, ac-generated-ids-conform
+
+      5. tests/ac-id-format-gate.test.ts: 16 tests PASS (2.5s)
+         Cross-cutting gate across schema, CLI, annotation, and completeness
+
+      6. tests/ac-annotation-validation.test.ts: 46 tests PASS (389ms)
+         Integration-level annotation validation
+
+      == Typecheck ==
+
+      npm run typecheck: PASS (clean, no errors)
+
+
+      == kspec validate ==
+
+      - --refs --warnings-ok: PASS (6 pre-existing deprecated ref warnings)
+
+      - --alignment --warnings-ok: PASS (36 pre-existing: 33 orphaned specs, 3 status mismatches)
+
+      - --completeness --warnings-ok: PASS (232 pre-existing: 230 uncovered ACs, 2 test fixture
+      refs)
+
+
+      == Catalog AC ID Scan ==
+
+      Requirement ACs: 150 scanned, 0 invalid
+
+      Feature ACs: 232 scanned, 0 invalid
+
+      Trait ACs: 114 scanned, 0 invalid
+
+      Total: 496 ACs, all conform to ac-prefixed kebab-case format
+
+
+      == Implementation Status Updates ==
+
+      @acceptance-criterion-id-format: in_progress -> implemented
+
+      @item-patch: in_progress -> implemented
+
+      @ac-annotation-integrity-reporting: in_progress -> implemented
+
+      @ac-annotation-identifier-format: already implemented (no change needed)
+
+
+      No code changes required — this is a validation-only gate task.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T04:35:59.930Z
