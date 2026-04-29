@@ -83,7 +83,7 @@ description: |
 spec_ref: "@acceptance-criterion-id-format"
 plan_ref: "@plan-ac-id-surface-hardening"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-ac-id-hardening-spec-updates"
@@ -104,7 +104,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KQBEN32B00EV4S5QSW6KMA0M
 history:
   - author: Jacob Chapel
     changes:
@@ -163,8 +163,21 @@ history:
         previous: 01KQBASQMEHJXG1YEMS50ZA13E
     command: review-verdict-needs-work
     timestamp: 2026-04-29T01:34:36.830Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KQBEN32B00EV4S5QSW6KMA0M
+        previous: null
+      started_at:
+        new: 2026-04-29T02:00:57.429Z
+        previous: 2026-04-29T00:39:55.569Z
+    command: task-start
+    timestamp: 2026-04-29T02:00:57.429Z
 created_at: 2026-04-29T00:17:26.136Z
-started_at: 2026-04-29T00:39:55.569Z
+started_at: 2026-04-29T02:00:57.429Z
 submitted_at: 2026-04-29T01:21:29.856Z
 todos: []
 automation: eligible
