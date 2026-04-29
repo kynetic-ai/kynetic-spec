@@ -619,6 +619,7 @@ it('invalid trait AC ref', () => {});
         {
           specRef: "@nonexistent",
           acIds: ["ac-1"],
+          malformedTokens: [],
           file: "/tmp/test.test.ts",
           line: 5,
         },
@@ -656,6 +657,7 @@ it('invalid trait AC ref', () => {});
         {
           specRef: "@my-spec",
           acIds: ["ac-1", "ac-3"],
+          malformedTokens: [],
           file: "/tmp/test.test.ts",
           line: 10,
         },
@@ -691,6 +693,7 @@ it('invalid trait AC ref', () => {});
         {
           specRef: "@task-example",
           acIds: ["ac-1"],
+          malformedTokens: [],
           file: "/tmp/test.test.ts",
           line: 5,
         },
@@ -723,6 +726,7 @@ it('invalid trait AC ref', () => {});
         {
           specRef: "@task-example",
           acIds: [],
+          malformedTokens: [],
           file: "/tmp/test.test.ts",
           line: 5,
         },
@@ -761,27 +765,27 @@ it('invalid trait AC ref', () => {});
   describe("parseACAnnotationLine - multi-group annotations", () => {
     it("should parse a single @ref with single AC", () => {
       const groups = parseACAnnotationLine("// AC: @spec-a ac-1");
-      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1"] }]);
+      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1"], malformedTokens: [] }]);
     });
 
     it("should parse a single @ref with multiple comma-separated ACs", () => {
       const groups = parseACAnnotationLine("// AC: @spec-a ac-1, ac-2, ac-3");
-      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1", "ac-2", "ac-3"] }]);
+      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1", "ac-2", "ac-3"], malformedTokens: [] }]);
     });
 
     it("should parse multiple @ref groups on the same line", () => {
       const groups = parseACAnnotationLine("// AC: @spec-a ac-1, @spec-b ac-2");
       expect(groups).toEqual([
-        { specRef: "@spec-a", acIds: ["ac-1"] },
-        { specRef: "@spec-b", acIds: ["ac-2"] },
+        { specRef: "@spec-a", acIds: ["ac-1"], malformedTokens: [] },
+        { specRef: "@spec-b", acIds: ["ac-2"], malformedTokens: [] },
       ]);
     });
 
     it("should parse multiple @ref groups with multiple ACs each", () => {
       const groups = parseACAnnotationLine("// AC: @spec-a ac-1, ac-2, @spec-b ac-3, ac-4");
       expect(groups).toEqual([
-        { specRef: "@spec-a", acIds: ["ac-1", "ac-2"] },
-        { specRef: "@spec-b", acIds: ["ac-3", "ac-4"] },
+        { specRef: "@spec-a", acIds: ["ac-1", "ac-2"], malformedTokens: [] },
+        { specRef: "@spec-b", acIds: ["ac-3", "ac-4"], malformedTokens: [] },
       ]);
     });
 
@@ -790,25 +794,25 @@ it('invalid trait AC ref', () => {});
         "// AC: @agent-instruction-gen ac-5, @agents-cli ac-3, @agents-cli ac-4",
       );
       expect(groups).toEqual([
-        { specRef: "@agent-instruction-gen", acIds: ["ac-5"] },
-        { specRef: "@agents-cli", acIds: ["ac-3"] },
-        { specRef: "@agents-cli", acIds: ["ac-4"] },
+        { specRef: "@agent-instruction-gen", acIds: ["ac-5"], malformedTokens: [] },
+        { specRef: "@agents-cli", acIds: ["ac-3"], malformedTokens: [] },
+        { specRef: "@agents-cli", acIds: ["ac-4"], malformedTokens: [] },
       ]);
     });
 
     it("should parse @ref without AC ids", () => {
       const groups = parseACAnnotationLine("// AC: @some-spec");
-      expect(groups).toEqual([{ specRef: "@some-spec", acIds: [] }]);
+      expect(groups).toEqual([{ specRef: "@some-spec", acIds: [], malformedTokens: [] }]);
     });
 
     it("should strip N/A suffix", () => {
       const groups = parseACAnnotationLine("// AC: @spec-a ac-1 — N/A: reason why");
-      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1"] }]);
+      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1"], malformedTokens: [] }]);
     });
 
     it("should strip parenthetical comments", () => {
       const groups = parseACAnnotationLine("// AC: @cli-exit-codes (exit 4 for validation errors)");
-      expect(groups).toEqual([{ specRef: "@cli-exit-codes", acIds: [] }]);
+      expect(groups).toEqual([{ specRef: "@cli-exit-codes", acIds: [], malformedTokens: [] }]);
     });
 
     it("should return empty array for non-AC lines", () => {
@@ -819,31 +823,31 @@ it('invalid trait AC ref', () => {});
     it("should ignore non-ac-prefixed tokens after a @ref", () => {
       // A bare word like "validate" after @ref is NOT an AC id
       const groups = parseACAnnotationLine("// AC: @my-spec validate");
-      expect(groups).toEqual([{ specRef: "@my-spec", acIds: [] }]);
+      expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: [] }]);
     });
 
     it("should ignore numeric-only tokens without ac- prefix", () => {
       // "1" or "2" are not ac-prefixed, so they should be ignored
       const groups = parseACAnnotationLine("// AC: @my-spec 1");
-      expect(groups).toEqual([{ specRef: "@my-spec", acIds: [] }]);
+      expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: [] }]);
     });
 
     it("should parse ac-prefixed named ids as explicit AC references", () => {
       const groups = parseACAnnotationLine("// AC: @my-spec ac-validate-input, ac-reject-invalid");
       expect(groups).toEqual([
-        { specRef: "@my-spec", acIds: ["ac-validate-input", "ac-reject-invalid"] },
+        { specRef: "@my-spec", acIds: ["ac-validate-input", "ac-reject-invalid"], malformedTokens: [] },
       ]);
     });
 
     it("should parse ac-prefixed numeric ids as explicit AC references", () => {
       const groups = parseACAnnotationLine("// AC: @my-spec ac-1, ac-2");
-      expect(groups).toEqual([{ specRef: "@my-spec", acIds: ["ac-1", "ac-2"] }]);
+      expect(groups).toEqual([{ specRef: "@my-spec", acIds: ["ac-1", "ac-2"], malformedTokens: [] }]);
     });
 
     it("should treat mixed tokens correctly: only ac-prefixed tokens become AC ids", () => {
       // "some-word" is not ac-prefixed, so only ac-1 should be captured
       const groups = parseACAnnotationLine("// AC: @my-spec ac-1 some-word");
-      expect(groups).toEqual([{ specRef: "@my-spec", acIds: ["ac-1"] }]);
+      expect(groups).toEqual([{ specRef: "@my-spec", acIds: ["ac-1"], malformedTokens: [] }]);
     });
   });
 

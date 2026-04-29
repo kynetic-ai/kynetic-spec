@@ -114,7 +114,8 @@ export type InvalidAnnotationSubtype =
   | "unresolved_target"
   | "non_spec_target"
   | "missing_ac_id"
-  | "blanket_ref";
+  | "blanket_ref"
+  | "malformed_ac_token";
 
 export interface CompletenessWarning {
   type: CompletenessWarningType;
@@ -1018,24 +1019,36 @@ export function getACLinePrefix(ext: string): RegExp | null {
 const AC_LINE_PREFIX = /\/\/\s*AC:\s*/;
 
 /**
+ * Parsed result from a single @ref group in an AC annotation line.
+ */
+export interface ParsedACGroup {
+  specRef: string;
+  acIds: string[];
+  malformedTokens: string[];
+}
+
+/**
  * Parse all @ref groups from an AC annotation line.
  * Handles single and multiple @ref groups separated by commas or spaces.
  *
  * Only tokens matching the `ac-` prefix are recognized as explicit AC ids.
  * Non-prefixed words after a @ref are ignored and do NOT create AC coverage.
+ * Malformed ac-prefixed tokens (e.g. ac-good.extra, ac-good/path) are detected
+ * and returned in malformedTokens instead of being silently truncated.
  *
  * Examples:
- *   "// AC: @spec-a ac-1"                        → [{specRef:"@spec-a", acIds:["ac-1"]}]
- *   "// AC: @spec-a ac-create, ac-update"        → [{specRef:"@spec-a", acIds:["ac-create","ac-update"]}]
- *   "// AC: @spec-a ac-1, @spec-b ac-2"          → [{specRef:"@spec-a", acIds:["ac-1"]}, {specRef:"@spec-b", acIds:["ac-2"]}]
- *   "// AC: @spec-a ac-1 — N/A: reason"          → [{specRef:"@spec-a", acIds:["ac-1"]}]
- *   "// AC: @spec-a"                             → [{specRef:"@spec-a", acIds:[]}]  (blanket ref, no AC credit)
- *   "// AC: @spec-a validate"                    → [{specRef:"@spec-a", acIds:[]}]  (non-prefixed token ignored)
+ *   "// AC: @spec-a ac-1"                        → [{specRef:"@spec-a", acIds:["ac-1"], malformedTokens:[]}]
+ *   "// AC: @spec-a ac-create, ac-update"        → [{specRef:"@spec-a", acIds:["ac-create","ac-update"], malformedTokens:[]}]
+ *   "// AC: @spec-a ac-1, @spec-b ac-2"          → [{specRef:"@spec-a", acIds:["ac-1"], ...}, {specRef:"@spec-b", acIds:["ac-2"], ...}]
+ *   "// AC: @spec-a ac-1 — N/A: reason"          → [{specRef:"@spec-a", acIds:["ac-1"], malformedTokens:[]}]
+ *   "// AC: @spec-a"                             → [{specRef:"@spec-a", acIds:[], malformedTokens:[]}]  (blanket ref, no AC credit)
+ *   "// AC: @spec-a validate"                    → [{specRef:"@spec-a", acIds:[], malformedTokens:[]}]  (non-prefixed token ignored)
+ *   "// AC: @spec-a ac-good.extra"               → [{specRef:"@spec-a", acIds:[], malformedTokens:["ac-good.extra"]}]
  */
 export function parseACAnnotationLine(
   lineText: string,
   prefix: RegExp = AC_LINE_PREFIX,
-): { specRef: string; acIds: string[] }[] {
+): ParsedACGroup[] {
   const prefixMatch = prefix.exec(lineText);
   if (!prefixMatch) return [];
 
@@ -1048,34 +1061,28 @@ export function parseACAnnotationLine(
   // Strip parenthetical comments: " (some comment)"
   remainder = remainder.replace(/\s*\(.*$/, "");
 
-  const groups: { specRef: string; acIds: string[] }[] = [];
+  // Tokenize by whitespace and commas — these are the only valid delimiters.
+  // This preserves the full raw token text so we can detect malformed tokens
+  // like "ac-good.extra" instead of silently truncating to "ac-good".
+  const tokens = remainder.split(/[\s,]+/).filter((t) => t.length > 0);
 
-  // Match each @ref followed by its optional ac-prefixed ids.
-  // Only ac-* tokens that conform to the required ac-prefixed kebab-case
-  // format (acIdPattern) are captured as explicit AC ids; non-prefixed words
-  // and malformed ac-* strings (underscores, doubled hyphens, trailing
-  // hyphens, uppercase) are ignored.
-  const refGroupPattern = /(@[\w-]+)((?:\s*,?\s*ac-[\w-]+)*)/g;
-  let match;
+  const groups: ParsedACGroup[] = [];
+  let currentGroup: ParsedACGroup | null = null;
 
-  while ((match = refGroupPattern.exec(remainder)) !== null) {
-    const specRef = match[1];
-    const acPart = match[2].trim();
-    const acIds: string[] = [];
-
-    if (acPart) {
-      // Extract candidate ac-* tokens, then filter through the strict pattern
-      const acMatches = acPart.match(/ac-[\w-]+/g);
-      if (acMatches) {
-        for (const candidate of acMatches) {
-          if (acIdPattern.test(candidate)) {
-            acIds.push(candidate);
-          }
-        }
+  for (const token of tokens) {
+    if (token.startsWith("@")) {
+      // New @ref group
+      currentGroup = { specRef: token, acIds: [], malformedTokens: [] };
+      groups.push(currentGroup);
+    } else if (currentGroup && token.startsWith("ac-")) {
+      // ac-prefixed token — validate against strict pattern
+      if (acIdPattern.test(token)) {
+        currentGroup.acIds.push(token);
+      } else {
+        currentGroup.malformedTokens.push(token);
       }
     }
-
-    groups.push({ specRef, acIds });
+    // Non-ac-prefixed, non-@ref tokens are silently ignored (e.g. bare words)
   }
 
   return groups;
@@ -1175,6 +1182,8 @@ export interface ACAnnotation {
   specRef: string;
   /** Specific AC ids like "ac-1", "ac-2", or empty if just the ref */
   acIds: string[];
+  /** Malformed ac-prefixed tokens that failed strict validation */
+  malformedTokens: string[];
   /** Source file where annotation was found */
   file: string;
   /** Line number in the source file (1-based) */
@@ -1221,10 +1230,11 @@ async function scanDirForACAnnotationsStructured(
       if (!prefix.test(lineText)) continue;
 
       const groups = parseACAnnotationLine(lineText, prefix);
-      for (const { specRef, acIds } of groups) {
+      for (const { specRef, acIds, malformedTokens } of groups) {
         annotations.push({
           specRef,
           acIds,
+          malformedTokens,
           file: filePath,
           line: i + 1,
         });
@@ -1287,8 +1297,23 @@ export function validateACAnnotations(
   const warnings: CompletenessWarning[] = [];
 
   for (const annotation of annotations) {
-    const { specRef, acIds, file, line } = annotation;
+    const { specRef, acIds, malformedTokens, file, line } = annotation;
     const relFile = path.basename(file);
+
+    // AC: @ac-annotation-integrity-reporting ac-malformed-ac-token-reported
+    // Report malformed ac-prefixed tokens before other validation
+    if (malformedTokens && malformedTokens.length > 0) {
+      for (const token of malformedTokens) {
+        warnings.push({
+          type: "invalid_ac_annotation",
+          subtype: "malformed_ac_token",
+          itemRef: specRef,
+          itemTitle: `${relFile}:${line}`,
+          message: `Malformed AC token: '${token}' in annotation targeting '${specRef}' is not a valid ac-prefixed identifier`,
+          details: `${file}:${line}`,
+        });
+      }
+    }
 
     // AC: @ac-annotation-integrity-reporting ac-unresolved-target-reported
     // Check if the reference resolves
