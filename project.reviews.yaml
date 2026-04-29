@@ -175203,7 +175203,18 @@ reviews:
     slugs: []
     title: Review task-daemon-web-ui-startup-asset-coherence
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh passed. Test Suites: 2332 passed of 2332. Tests: 5 skipped, 8545
+          passed of 8550. Failed tests: none."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-29T20:04:55.418Z
+        completed_at: 2026-04-29T20:04:55.418Z
     events:
       - _ulid: 01KQDCXJMCMJS687Z5CFA37QXT
         actor: Jacob Chapel
@@ -175218,6 +175229,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-29T19:55:04.284Z
+      - _ulid: 01KQDDGE67QDG4CQHPRSKTYD15
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-29T20:04:56.647Z
     examined_commit: 4a080f2cf6cbbd9f35e1c1edaa0e61527b128a04
     external_links: []
     lifecycle_state: open
@@ -175230,5 +175248,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-29T19:54:38.604Z
-    updated_at: 2026-04-29T19:55:02.948Z
+    updated_at: 2026-04-29T20:04:55.418Z
     notes: []
