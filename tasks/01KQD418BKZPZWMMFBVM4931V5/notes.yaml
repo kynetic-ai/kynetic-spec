@@ -36,3 +36,21 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-29T18:15:13.007Z
+  - _ulid: 01KQD8QHSN9MP6RV1CWMXMMRK2
+    content: "Fix cycle 1: addressed the codex MUST-FIX about the non-Node web UI route stack. Root
+      cause: under Bun, staticPlugin's HTML scan pre-registers GET '/' (and '/index.html') from
+      index.html, so mounting the plugin before registerWebUiEntryRoutes left '/' bound to the
+      plugin's cached bundle response. GET /tasks worked because the plugin had no /tasks file, but
+      GET / never reflected bundle changes. Fix: register SPA fallback routes BEFORE staticPlugin in
+      the non-node branch, and pass indexHTML: false so the plugin stops claiming '/'. Reproduced
+      the bug under Bun and verified the fix (GET / and GET /tasks both pick up the new bundle after
+      replacing index.html, revalidating cache headers preserved, /_app/main.js still served by the
+      plugin). Added tests/daemon-web-ui-bun-route-order.test.ts and
+      tests/fixtures/daemon-web-ui-bun-route-order.mjs that spawn Bun and exercise the same Elysia
+      stack as production, gated on bun being on PATH and dist/daemon/web-ui-entry.js being built.
+      Targeted suite (37 tests) plus full suite (8540 passed / 5 skipped, +1 vs main for the new
+      test) green; kspec validate exits 6 with the same pre-existing warnings noted in the prior
+      review evidence."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T18:41:26.837Z
