@@ -26957,27 +26957,6 @@
   started_at: 2026-04-24T18:54:33.097Z
   completed_at: 2026-04-24T19:34:03.753Z
   automation: manual_only
-- _ulid: 01KQ0D4M0CXRA7QPWCG6XKT3W0
-  slugs:
-    - task-convert-cruft-06-code-quality-refactors-plan
-  title: Convert cruft seed 06 into Spec-Tied Code Quality Refactor plan(s)
-  type: task
-  plan_ref: "@cruft-06-code-quality-refactors-seed"
-  status: pending
-  blocked_by: []
-  depends_on:
-    - "@task-convert-cruft-01-spec-catalog-health-plan"
-    - "@task-convert-cruft-04-cli-schema-spec-rewrite-plan"
-    - "@task-convert-cruft-05-api-daemon-web-contract-split-plan"
-  priority: 3
-  tags:
-    - cruft
-    - planning
-    - code-quality
-  notes_count: 0
-  todos_count: 0
-  created_at: 2026-04-24T18:48:21.772Z
-  automation: eligible
 - _ulid: 01KQ0JDHKHCBEZ7QN7ZZVF9ZVN
   slugs:
     - task-catalog-health-baseline
