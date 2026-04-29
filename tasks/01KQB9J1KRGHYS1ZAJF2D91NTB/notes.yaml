@@ -106,3 +106,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-29T01:34:36.830Z
+  - _ulid: 01KQBFF8Z8A889NQXAZ7CK25F0
+    content: "Fix cycle 1: Addressed blocker — replaced CLI-proxy parser-layer test with a direct
+      behavioral test that calls updateSpecItem from the parser module. The old test invoked the CLI
+      single-patch path, which validates in item.ts before reaching updateSpecItem, so it would pass
+      even without the updateSpecItem guard. New test: imports
+      initContext/loadAllItems/updateSpecItem, loads a LoadedSpecItem, calls updateSpecItem with
+      invalid AC ID, verifies rejection with 'ac-prefixed kebab-case' error, and confirms no catalog
+      mutation. Also added a positive-path test. All 2323 suites pass (8491 tests), typecheck clean.
+      Re-verified all 6 task ACs against implementation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T02:00:46.825Z
