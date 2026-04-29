@@ -11180,7 +11180,7 @@ workspaces:
         head: 16b161551bb2c8055be06a503b1701ba756c1dea
         last_seen_at: 2026-04-29T00:26:00.974Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-id-hardening-spec-updates-01kqb9j1
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 16b161551bb2c8055be06a503b1701ba756c1dea
     bootstrap:
       status: succeeded
@@ -11665,7 +11665,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-29T04:13:28.967Z
+      updated_at: 2026-04-29T04:13:59.460Z
     integration:
       status: pending
       detail: null
@@ -11680,10 +11680,10 @@ workspaces:
     task_slug: task-centralize-ac-id-patch-validation
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-29T03:58:23.158Z
-      last_reconciled_at: 2026-04-29T04:13:28.967Z
+      last_active_at: 2026-04-29T04:13:59.460Z
+      last_reconciled_at: 2026-04-29T04:13:59.460Z
       created_at: 2026-04-29T00:38:43.387Z
-      updated_at: 2026-04-29T04:13:55.063Z
+      updated_at: 2026-04-29T04:13:59.460Z
     workspace_id: dispatch-workspace-01KQB9J1KRGHYS1ZAJF2D91NTB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
