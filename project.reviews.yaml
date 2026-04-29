@@ -174150,6 +174150,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-29T03:25:19.758Z
+      - _ulid: 01KQBN4YNPF046Q4WTVQX2JW0A
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQBKZEP2AJNQXWC3QED1R8GE
+        timestamp: 2026-04-29T03:40:00.054Z
     examined_commit: 903835f41e3af9329fd287481534e664c7dc6d96
     external_links: []
     lifecycle_state: closed
@@ -174177,6 +174183,12 @@ reviews:
               tests/ac-id-patch-validation.test.ts exits 1 with eslint(no-unused-vars) on this
               import. This is a branch-introduced lint error and should be removed before merge."
             created_at: 2026-04-29T03:19:31.266Z
+          - _ulid: 01KQBN4XHD14DEYY1170JF3ZCG
+            author: "@claude"
+            body: "Fixed: Removed the unused AcIdSchema import from src/parser/yaml.ts. It became stale in cycle
+              3 when nested AC validation switched to AcceptanceCriterionSchema. Lint now passes
+              cleanly (0 errors on changed files)."
+            created_at: 2026-04-29T03:39:58.892Z
         kind: blocker
       - _ulid: 01KQBM9KDJEB5T51711XG8H6CR
         entries:
@@ -174204,5 +174216,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-29T03:25:19.758Z
     created_at: 2026-04-29T03:14:58.113Z
-    updated_at: 2026-04-29T03:25:19.758Z
+    updated_at: 2026-04-29T03:39:58.892Z
     notes: []
