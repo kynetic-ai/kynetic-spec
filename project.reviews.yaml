@@ -175067,7 +175067,59 @@ reviews:
     slugs: []
     title: Review daemon web UI current entry responses (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/daemon-web-ui-entry.test.ts
+          tests/daemon-web-ui-bun-route-order.test.ts tests/daemon-web-ui-bundle.test.ts
+          tests/daemon-api/server.test.ts --fresh: exit 0; 13 suites passed; 37 tests passed."
+        name: targeted daemon web UI tests
+        required: true
+        runner: npm test
+        created_at: 2026-04-29T19:31:04.689Z
+        completed_at: 2026-04-29T19:31:04.689Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: exit 0; 2330 suites passed; 8540 passed / 5 skipped; duration
+          1949.7s."
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-04-29T19:31:08.075Z
+        completed_at: 2026-04-29T19:31:08.075Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit 6: schema and references OK; validation passed with existing project-wide warnings
+          (reference/alignment/completeness), no new warnings for changed files."
+        name: kspec validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-04-29T19:31:11.261Z
+        completed_at: 2026-04-29T19:31:11.261Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/server.ts, packages/daemon/src/web-ui-entry.ts,
+          tests/daemon-web-ui-entry.test.ts, tests/daemon-web-ui-bun-route-order.test.ts,
+          tests/fixtures/daemon-web-ui-bun-route-order.mjs, tests/daemon-web-ui-bundle.test.ts,
+          tests/daemon-api/server.test.ts, node_modules/@elysiajs/static/dist/index.mjs. Commands
+          run: git diff dev...HEAD; kspec task get; kspec review get prior; kspec item get
+          @daemon-server and @daemon-web-ui-bundle; rg AC annotations; kspec validate; targeted npm
+          test; full npm test; git diff --check. Claims verified: request-time entry reads,
+          503/no-store missing entry, no-cache success, Bun root route fix with indexHTML:false,
+          static asset path containment unchanged. Categories searched: correctness, edge cases,
+          error handling, security/path containment, test quality, integration."
+        name: review evidence log
+        required: true
+        created_at: 2026-04-29T19:31:14.367Z
+        completed_at: 2026-04-29T19:31:14.367Z
     events:
       - _ulid: 01KQDAZ7B6K4DEQVZF1NAX5VSV
         actor: Jacob Chapel
@@ -175082,9 +175134,53 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-29T19:21:08.749Z
+      - _ulid: 01KQDBJF37NRW4MP98A2S2PC06
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon web UI tests
+        timestamp: 2026-04-29T19:31:05.960Z
+      - _ulid: 01KQDBJJ9ZF9W9VBWXFN7XM8PB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-04-29T19:31:09.247Z
+      - _ulid: 01KQDBJNGVQRRB1B056P0ANGWT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-29T19:31:12.539Z
+      - _ulid: 01KQDBJRFHK350W8WW8BWABXVB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-29T19:31:15.569Z
+      - _ulid: 01KQDBJVJNX3WXM4BSE0XXWG0Q
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-04-29T19:31:18.741Z
+      - _ulid: 01KQDBJVJNGQ4KDN3BRBQ04NHQ
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-04-29T19:31:18.741Z
     examined_commit: fcdc59aad4f07a4359c5a141785272156d848c73
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -175092,7 +175188,14 @@ reviews:
       ref: "@01KQD418BKZPZWMMFBVM4931V5"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-04-29T19:31:18.741Z
     created_at: 2026-04-29T19:20:35.430Z
-    updated_at: 2026-04-29T19:21:07.487Z
+    updated_at: 2026-04-29T19:31:18.741Z
     notes: []
