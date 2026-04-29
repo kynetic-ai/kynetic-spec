@@ -157,3 +157,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-29T02:53:43.247Z
+  - _ulid: 01KQBKGAK650CNNGQDYGR5EBT3
+    content: "Fix cycle 3: Addressed blocker — nested acceptance_criteria entries were only validated
+      for id field, not the full AC schema. Root cause: collectNestedAcIdErrors only checked
+      AcIdSchema on the id field when present, allowing ACs missing id entirely or missing required
+      fields (given/when/then) to be written as invalid YAML. Fix: renamed to collectNestedAcErrors,
+      now validates each nested AC entry against the full AcceptanceCriterionSchema. Added 7 new
+      tests covering missing id, missing then, and missing multiple fields across helper, CLI, and
+      parser-layer surfaces. All 2323 suites pass (8506 tests), typecheck clean. Re-verified all 6
+      task ACs against implementation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T03:11:15.558Z
