@@ -174260,6 +174260,18 @@ reviews:
         runner: kspec
         created_at: 2026-04-29T03:52:56.713Z
         completed_at: 2026-04-29T03:52:56.713Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npx oxlint src/cli/commands/item.ts src/parser/yaml.ts
+          tests/ac-id-patch-validation.test.ts exited 0 with 0 errors (warnings only). Full npm run
+          lint still has pre-existing errors outside this task.
+        name: changed-file oxlint
+        required: false
+        runner: oxlint
+        created_at: 2026-04-29T03:53:00.194Z
+        completed_at: 2026-04-29T03:53:00.194Z
     events:
       - _ulid: 01KQBN9G9WDQHBVA8474F88SHN
         actor: Jacob Chapel
@@ -174281,6 +174293,13 @@ reviews:
           status: pass
           name: kspec validate --warnings-ok
         timestamp: 2026-04-29T03:52:57.881Z
+      - _ulid: 01KQBNWSPNA84N6V36FW81E8RC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file oxlint
+        timestamp: 2026-04-29T03:53:01.397Z
     examined_commit: 5e67779375f034279702015897899ef726badcf3
     external_links: []
     lifecycle_state: open
@@ -174293,5 +174312,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-29T03:42:29.180Z
-    updated_at: 2026-04-29T03:52:56.713Z
+    updated_at: 2026-04-29T03:53:00.194Z
     notes: []
