@@ -12716,7 +12716,7 @@ workspaces:
         head: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
         last_seen_at: 2026-04-29T04:38:57.492Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-id-hardening-final-gate-01kqb9j2
-  - active_role: worker
+  - active_role: null
     base_branch_point: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
     bootstrap:
       status: succeeded
@@ -13044,12 +13044,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-29T17:32:18.260Z
+      updated_at: 2026-04-29T17:37:19.674Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-29T17:32:42.169Z
+      updated_at: 2026-04-29T17:37:19.674Z
     integration:
       status: pending
       detail: null
@@ -13057,17 +13057,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
-      updated_at: 2026-04-29T17:32:18.260Z
-    lifecycle_state: active
+      updated_at: 2026-04-29T17:37:19.674Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KQ0D4FQC349WNKN7SXY0E83W"
     task_slug: task-convert-cruft-02-backfill-process-retirement-plan
     timestamps:
       closed_at: null
       last_active_at: 2026-04-29T17:32:42.169Z
-      last_reconciled_at: 2026-04-29T17:32:42.169Z
+      last_reconciled_at: 2026-04-29T17:37:19.674Z
       created_at: 2026-04-29T17:32:18.260Z
-      updated_at: 2026-04-29T17:32:42.169Z
+      updated_at: 2026-04-29T17:37:19.674Z
     workspace_id: dispatch-workspace-01KQ0D4FQC349WNKN7SXY0E83W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
