@@ -34136,7 +34136,7 @@ runs:
     completed_at: 2026-04-29T02:04:35.701Z
   - _ulid: 01KQBGG0HJXVRKQWTPT0E36V07
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -34156,7 +34156,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-29T02:19:42.624Z
-        completed_at: 2026-04-29T02:19:42.624Z
+        completed_at: 2026-04-29T02:19:50.218Z
+        notes: "Coverage checked with kspec search: no matches for 'workflow show run-ref', 'session reflect
+          workflow show', 'workflow command docs', 'nested catalog validation', or 'parallel review
+          reproduction'. The concrete nested validation issue is already tracked as review blocker
+          @01KQBFKAS128XYHTS7HH43W7JT rather than needing a separate inbox item."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-29T02:19:50.218Z
+        completed_at: 2026-04-29T02:19:50.218Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T02:18:39.538Z
