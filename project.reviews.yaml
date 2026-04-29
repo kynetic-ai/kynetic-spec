@@ -174015,7 +174015,19 @@ reviews:
     slugs: []
     title: Review centralize AC ID patch validation cycle 4
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npx oxlint src/cli/commands/item.ts src/parser/yaml.ts
+          tests/ac-id-patch-validation.test.ts exits 1; branch-introduced error:
+          src/parser/yaml.ts:18 imports AcIdSchema but it is unused."
+        name: changed-file lint
+        required: true
+        runner: oxlint
+        created_at: 2026-04-29T03:19:34.652Z
+        completed_at: 2026-04-29T03:19:34.652Z
     events:
       - _ulid: 01KQBKQ3Y1K10QPKD0D241TXRZ
         actor: Jacob Chapel
@@ -174037,6 +174049,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQBKZEP2AJNQXWC3QED1R8GE
         timestamp: 2026-04-29T03:19:32.393Z
+      - _ulid: 01KQBKZK63RF7E6MAE0JZP7PCD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: changed-file lint
+        timestamp: 2026-04-29T03:19:35.875Z
     examined_commit: 903835f41e3af9329fd287481534e664c7dc6d96
     external_links: []
     lifecycle_state: open
@@ -174067,5 +174086,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-29T03:14:58.113Z
-    updated_at: 2026-04-29T03:19:31.266Z
+    updated_at: 2026-04-29T03:19:34.652Z
     notes: []
