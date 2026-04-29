@@ -34799,7 +34799,7 @@ runs:
     started_at: 2026-04-29T19:32:38.371Z
     completed_at: 2026-04-29T19:34:20.204Z
   - _ulid: 01KQDDKMFRCJGV1BTMZ741JDX7
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -34849,7 +34849,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-29T20:08:27.916Z
-        completed_at: 2026-04-29T20:08:27.916Z
+        completed_at: 2026-04-29T20:08:37.479Z
+        notes: Captured one success observation. No friction observation, task, or inbox item captured
+          because searches showed the merge-helper pattern is already tracked and the remaining
+          friction was incidental or expected.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T20:06:41.400Z
+    completed_at: 2026-04-29T20:08:37.480Z
