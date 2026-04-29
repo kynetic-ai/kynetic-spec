@@ -33742,7 +33742,7 @@ runs:
     started_at: 2026-04-28T08:43:07.697Z
   - _ulid: 01KQBARE4JGT66B9J8DX6MW2TN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33758,7 +33758,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-29T00:38:44.395Z
-        completed_at: 2026-04-29T00:38:44.395Z
+        completed_at: 2026-04-29T00:38:55.175Z
+        notes: "Friction points: The required full npm test gate took about 1845 seconds for a task that
+          intentionally changed only kspec metadata/spec state and had an empty code diff. That is
+          defensible as a merge gate, but it is a repeatable review-time cost for metadata-only
+          tasks. Minor friction: kspec workflow show requires an explicit run ref, which is easy to
+          miss after start output, but that was a one-off CLI usage detail and not worth capturing
+          by itself."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-29T00:38:55.175Z
+        completed_at: 2026-04-29T00:38:55.175Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T00:38:24.146Z
