@@ -11180,7 +11180,7 @@ workspaces:
         head: 16b161551bb2c8055be06a503b1701ba756c1dea
         last_seen_at: 2026-04-29T00:26:00.974Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-id-hardening-spec-updates-01kqb9j1
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 16b161551bb2c8055be06a503b1701ba756c1dea
     bootstrap:
       status: succeeded
@@ -11660,12 +11660,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-29T03:41:23.691Z
+      updated_at: 2026-04-29T03:57:41.232Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-29T03:41:50.704Z
+      updated_at: 2026-04-29T03:57:41.232Z
     integration:
       status: pending
       detail: null
@@ -11673,7 +11673,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 16b161551bb2c8055be06a503b1701ba756c1dea
-      updated_at: 2026-04-29T03:41:23.691Z
+      updated_at: 2026-04-29T03:57:41.232Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KQB9J1KRGHYS1ZAJF2D91NTB"
@@ -11681,9 +11681,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-29T03:41:50.704Z
-      last_reconciled_at: 2026-04-29T03:41:50.704Z
+      last_reconciled_at: 2026-04-29T03:57:41.232Z
       created_at: 2026-04-29T00:38:43.387Z
-      updated_at: 2026-04-29T03:41:50.704Z
+      updated_at: 2026-04-29T03:57:41.232Z
     workspace_id: dispatch-workspace-01KQB9J1KRGHYS1ZAJF2D91NTB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
