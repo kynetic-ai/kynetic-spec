@@ -12166,11 +12166,11 @@ workspaces:
     canonical_branch: dispatch/task/task-strict-ac-annotation-token-parsing/01kqb9j1
     canonical_branch_head: a784c6635ed440da739f01ac5ce12a61d5fc426a
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-29T02:00:41.434Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-29T02:00:42.279Z
     health:
       status: healthy
       issues: []
@@ -12184,7 +12184,7 @@ workspaces:
       target_branch: dev
       target_commit: 16b161551bb2c8055be06a503b1701ba756c1dea
       updated_at: 2026-04-29T02:00:41.434Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQB9J1X2V281Z6YFN7WM1V1W"
     task_slug: task-strict-ac-annotation-token-parsing
@@ -12193,7 +12193,7 @@ workspaces:
       last_active_at: 2026-04-29T01:47:06.089Z
       last_reconciled_at: 2026-04-29T02:00:41.434Z
       created_at: 2026-04-29T01:23:07.048Z
-      updated_at: 2026-04-29T02:00:41.434Z
+      updated_at: 2026-04-29T02:00:42.279Z
     workspace_id: dispatch-workspace-01KQB9J1X2V281Z6YFN7WM1V1W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
