@@ -34800,7 +34800,7 @@ runs:
     completed_at: 2026-04-29T19:34:20.204Z
   - _ulid: 01KQDDKMFRCJGV1BTMZ741JDX7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -34815,7 +34815,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-29T20:07:21.929Z
-        completed_at: 2026-04-29T20:07:21.929Z
+        completed_at: 2026-04-29T20:07:44.376Z
+        notes: "Friction points: full npm test -- --fresh took 1971.7s, but the project already documents
+          sharded local runs and reviewers still need full-suite evidence before merge; no new task
+          proposed. One parallel read of review state immediately after submitting a verdict
+          observed the pre-verdict state because the commands raced; this was an incidental
+          sequencing issue, not a product/workflow gap. No blocker or recurring friction found."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-29T20:07:44.376Z
+        completed_at: 2026-04-29T20:07:44.376Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T20:06:41.400Z
