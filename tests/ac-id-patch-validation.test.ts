@@ -179,6 +179,68 @@ describe("AC ID patch validation", () => {
       // Should report both the unknown field error AND the nested AC ID error
       expect(result).toContain("ac-prefixed kebab-case");
     });
+
+    it("rejects nested AC missing id entirely", () => {
+      const result = validateSpecItemPatchData(
+        {
+          features: [
+            {
+              _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+              title: "Feature",
+              acceptance_criteria: [
+                { given: "g", when: "w", then: "t" },
+              ],
+            },
+          ],
+        },
+        { allowUnknown: true },
+      );
+      expect(result).not.toBeNull();
+      expect(result).toContain("features[0].acceptance_criteria[0]");
+      expect(result).toContain("Required");
+    });
+
+    it("rejects nested AC with valid id but missing required then field", () => {
+      const result = validateSpecItemPatchData(
+        {
+          features: [
+            {
+              _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+              title: "Feature",
+              acceptance_criteria: [
+                { id: "ac-valid", given: "g", when: "w" },
+              ],
+            },
+          ],
+        },
+        { allowUnknown: true },
+      );
+      expect(result).not.toBeNull();
+      expect(result).toContain("features[0].acceptance_criteria[0].then");
+      expect(result).toContain("Required");
+    });
+
+    it("rejects nested AC with valid id but missing multiple required fields", () => {
+      const result = validateSpecItemPatchData(
+        {
+          features: [
+            {
+              _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+              title: "Feature",
+              acceptance_criteria: [
+                { id: "ac-valid" },
+              ],
+            },
+          ],
+        },
+        { allowUnknown: true },
+      );
+      expect(result).not.toBeNull();
+      // Should report errors for given, when, and then
+      expect(result).toContain("features[0].acceptance_criteria[0].given");
+      expect(result).toContain("features[0].acceptance_criteria[0].when");
+      expect(result).toContain("features[0].acceptance_criteria[0].then");
+    });
   });
 
   // ─── Single item patch: ac-patch-rejects-invalid-id ────────────────
@@ -355,6 +417,50 @@ describe("AC ID patch validation", () => {
         tempDir,
       );
       expect(result.exitCode).toBe(0);
+    });
+
+    // AC: @item-patch ac-allow-unknown-rejects-invalid-ac-id
+    it("rejects nested AC missing id with --allow-unknown", () => {
+      const data = JSON.stringify({
+        features: [
+          {
+            _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+            title: "Feature",
+            acceptance_criteria: [
+              { given: "g", when: "w", then: "t" },
+            ],
+          },
+        ],
+      });
+      const result = kspec(
+        `item patch @test-core --data '${data}' --allow-unknown`,
+        tempDir,
+        { expectFail: true },
+      );
+      expect(result.exitCode).not.toBe(0);
+      expect(result.stderr).toContain("Required");
+    });
+
+    // AC: @item-patch ac-allow-unknown-rejects-invalid-ac-id
+    it("rejects nested AC with valid id but missing then with --allow-unknown", () => {
+      const data = JSON.stringify({
+        features: [
+          {
+            _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+            title: "Feature",
+            acceptance_criteria: [
+              { id: "ac-valid", given: "g", when: "w" },
+            ],
+          },
+        ],
+      });
+      const result = kspec(
+        `item patch @test-core --data '${data}' --allow-unknown`,
+        tempDir,
+        { expectFail: true },
+      );
+      expect(result.exitCode).not.toBe(0);
+      expect(result.stderr).toContain("Required");
     });
   });
 
@@ -620,6 +726,62 @@ describe("AC ID patch validation", () => {
       await expect(
         updateSpecItem(ctx, target, nestedPatch as never),
       ).rejects.toThrow("ac-prefixed kebab-case");
+
+      // Verify catalog was not mutated
+      const contentAfter = await readYamlFile<unknown>(target._sourceFile!);
+      expect(contentAfter).toEqual(contentBefore);
+    });
+
+    // AC: @acceptance-criterion-id-format ac-patch-rejects-invalid-id
+    it("rejects nested AC missing id via updateSpecItem", async () => {
+      const ctx = await initContext(tempDir);
+      const items = await loadAllItems(ctx);
+      const target = findItemBySlug(items, "test-core");
+
+      const contentBefore = await readYamlFile<unknown>(target._sourceFile!);
+
+      const nestedPatch = {
+        features: [
+          {
+            _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+            title: "Feature Missing AC ID",
+            acceptance_criteria: [
+              { given: "g", when: "w", then: "t" },
+            ],
+          },
+        ],
+      };
+      await expect(
+        updateSpecItem(ctx, target, nestedPatch as never),
+      ).rejects.toThrow("Required");
+
+      // Verify catalog was not mutated
+      const contentAfter = await readYamlFile<unknown>(target._sourceFile!);
+      expect(contentAfter).toEqual(contentBefore);
+    });
+
+    // AC: @acceptance-criterion-id-format ac-patch-rejects-invalid-id
+    it("rejects nested AC with valid id but missing then via updateSpecItem", async () => {
+      const ctx = await initContext(tempDir);
+      const items = await loadAllItems(ctx);
+      const target = findItemBySlug(items, "test-core");
+
+      const contentBefore = await readYamlFile<unknown>(target._sourceFile!);
+
+      const nestedPatch = {
+        features: [
+          {
+            _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+            title: "Feature Incomplete AC",
+            acceptance_criteria: [
+              { id: "ac-valid", given: "g", when: "w" },
+            ],
+          },
+        ],
+      };
+      await expect(
+        updateSpecItem(ctx, target, nestedPatch as never),
+      ).rejects.toThrow("Required");
 
       // Verify catalog was not mutated
       const contentAfter = await readYamlFile<unknown>(target._sourceFile!);

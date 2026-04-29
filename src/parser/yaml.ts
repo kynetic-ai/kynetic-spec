@@ -14,6 +14,7 @@ import {
   readdirBufferAware,
 } from "../cli/batch-write-buffer.js";
 import {
+  AcceptanceCriterionSchema,
   AcIdSchema,
   InboxFileSchema,
   type InboxItem,
@@ -1801,14 +1802,14 @@ function assertSpecItemPatch(
 }
 
 /**
- * Recursively collect AC ID validation errors from nested catalog structures.
+ * Recursively collect AC validation errors from nested catalog structures.
  *
  * SpecItemPatchSchema validates top-level acceptance_criteria, but nested catalog
  * fields (features, requirements, etc.) pass through as unknown data. This helper
- * walks those nested structures and validates any acceptance_criteria[].id values
- * against AcIdSchema.
+ * walks those nested structures and validates each acceptance_criteria entry
+ * against the full AcceptanceCriterionSchema (id, given, when, then).
  */
-function collectNestedAcIdErrors(
+function collectNestedAcErrors(
   data: Record<string, unknown>,
   parentPath: string = "",
 ): string[] {
@@ -1825,24 +1826,24 @@ function collectNestedAcIdErrors(
       const obj = item as Record<string, unknown>;
       const itemPath = parentPath ? `${parentPath}.${field}[${i}]` : `${field}[${i}]`;
 
-      // Validate acceptance_criteria[].id on this nested item
+      // Validate each acceptance_criteria entry against the full schema
       if ("acceptance_criteria" in obj && Array.isArray(obj.acceptance_criteria)) {
         const acs = obj.acceptance_criteria as unknown[];
         for (let j = 0; j < acs.length; j++) {
           const ac = acs[j];
-          if (ac && typeof ac === "object" && "id" in (ac as Record<string, unknown>)) {
-            const id = (ac as Record<string, unknown>).id;
-            const parseResult = AcIdSchema.safeParse(id);
-            if (!parseResult.success) {
-              const msg = parseResult.error.issues.map((issue) => issue.message).join(", ");
-              errors.push(`${itemPath}.acceptance_criteria[${j}].id: ${msg}`);
+          const acPath = `${itemPath}.acceptance_criteria[${j}]`;
+          const parseResult = AcceptanceCriterionSchema.safeParse(ac);
+          if (!parseResult.success) {
+            for (const issue of parseResult.error.issues) {
+              const fieldPath = issue.path.length > 0 ? `.${issue.path.join(".")}` : "";
+              errors.push(`${acPath}${fieldPath}: ${issue.message}`);
             }
           }
         }
       }
 
       // Recurse into deeper nesting (e.g. features[0].requirements[0].…)
-      errors.push(...collectNestedAcIdErrors(obj, itemPath));
+      errors.push(...collectNestedAcErrors(obj, itemPath));
     }
   }
   return errors;
@@ -1856,9 +1857,9 @@ function collectNestedAcIdErrors(
  * When allowUnknown is true, unknown fields pass through but known fields are
  * still validated.
  *
- * Also validates acceptance_criteria[].id in nested catalog structures (features,
- * requirements, etc.) which are not part of SpecItemPatchSchema but are supported
- * by the parser as nested catalog items.
+ * Also validates acceptance_criteria entries in nested catalog structures (features,
+ * requirements, etc.) against the full AcceptanceCriterionSchema. These fields are
+ * not part of SpecItemPatchSchema but are supported by the parser as nested catalog items.
  *
  * @returns null if valid, or a formatted error string if invalid
  */
@@ -1872,10 +1873,10 @@ export function validateSpecItemPatchData(
     ? []
     : result.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`);
 
-  // Validate AC IDs in nested catalog structures (features, requirements, etc.)
+  // Validate acceptance_criteria in nested catalog structures (features, requirements, etc.)
   // These fields pass through SpecItemPatchSchema as unknown data but can contain
-  // acceptance_criteria with IDs that must conform to the ac-prefixed format.
-  const nestedErrors = collectNestedAcIdErrors(data);
+  // acceptance_criteria entries that must conform to the full AC schema.
+  const nestedErrors = collectNestedAcErrors(data);
 
   const allErrors = [...schemaErrors, ...nestedErrors];
   return allErrors.length > 0 ? allErrors.join("; ") : null;
