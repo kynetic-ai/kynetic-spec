@@ -173462,6 +173462,19 @@ reviews:
         runner: tsc
         created_at: 2026-04-29T01:59:01.101Z
         completed_at: 2026-04-29T01:59:01.101Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Schema and references OK. Command exited 6 because this repository currently has
+          warning-level validation debt: 7 reference warnings, 36 alignment warnings, 234
+          completeness warnings, including 2 existing invalid AC annotations. No schema/reference
+          errors were reported and no malformed-token warnings from this change were present."
+        name: kspec validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-04-29T01:59:11.799Z
+        completed_at: 2026-04-29T01:59:11.799Z
     events:
       - _ulid: 01KQBEQQXMXP8G1X0HA89VXCKB
         actor: Jacob Chapel
@@ -173490,6 +173503,13 @@ reviews:
           status: pass
           name: npm run typecheck
         timestamp: 2026-04-29T01:59:02.243Z
+      - _ulid: 01KQBFCD912CY6P69Y6810PV97
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-29T01:59:12.929Z
     examined_commit: a784c6635ed440da739f01ac5ce12a61d5fc426a
     external_links: []
     lifecycle_state: open
@@ -173502,5 +173522,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-29T01:47:55.700Z
-    updated_at: 2026-04-29T01:59:01.101Z
+    updated_at: 2026-04-29T01:59:11.799Z
     notes: []
