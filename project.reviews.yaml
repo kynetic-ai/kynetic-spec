@@ -173935,6 +173935,12 @@ reviews:
         payload:
           thread_ulid: 01KQBJ2PHZSPGKC09HH7WVGYTE
         timestamp: 2026-04-29T03:10:54.755Z
+      - _ulid: 01KQBKFYMTHFPY7Y28Q6695VG7
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQBJ2PHZSPGKC09HH7WVGYTE
+        timestamp: 2026-04-29T03:11:03.322Z
     examined_commit: c071ab72e16dd5eab71222c5e45e233d67b277e0
     external_links: []
     lifecycle_state: closed
@@ -173975,6 +173981,8 @@ reviews:
               fields. All 2323 suites pass (8506 tests), typecheck clean."
             created_at: 2026-04-29T03:10:53.618Z
         kind: blocker
+        resolved_at: 2026-04-29T03:11:02.169Z
+        resolved_by: "@claude"
       - _ulid: 01KQBJFTZJE5BP2TT5QVGVKWQN
         entries:
           - _ulid: 01KQBJFTZJXATCQMP7NS3TT1E5
@@ -174001,5 +174009,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-29T02:53:41.374Z
     created_at: 2026-04-29T02:43:41.544Z
-    updated_at: 2026-04-29T03:10:53.618Z
+    updated_at: 2026-04-29T03:11:02.169Z
     notes: []
