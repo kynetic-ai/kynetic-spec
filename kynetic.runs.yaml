@@ -34741,7 +34741,7 @@ runs:
     started_at: 2026-04-29T18:15:58.351Z
   - _ulid: 01KQDBN9B3ZW9HB9D152JQGYS1
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -34767,7 +34767,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-29T19:33:17.368Z
-        completed_at: 2026-04-29T19:33:17.368Z
+        completed_at: 2026-04-29T19:33:50.622Z
+        notes: "Coverage check: optional review check friction is already tracked by inbox/observation
+          @01KQ1272 ('Batch review check commands should preserve optional check...' / batch
+          structured args did not preserve --no-required intent). Full-suite duration is already
+          tracked by inbox @01KNTB8Z4 ('Test suite duration is too long and trending worse...').
+          Detached reviewer merge helper success is also already represented by existing
+          observations found via search. No untracked friction remains from this session."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-29T19:33:50.622Z
+        completed_at: 2026-04-29T19:33:50.622Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T19:32:38.371Z
