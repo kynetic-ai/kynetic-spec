@@ -34135,7 +34135,7 @@ runs:
     started_at: 2026-04-29T02:00:47.545Z
     completed_at: 2026-04-29T02:04:35.701Z
   - _ulid: 01KQBGG0HJXVRKQWTPT0E36V07
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -34179,7 +34179,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-04-29T02:20:06.450Z
-        completed_at: 2026-04-29T02:20:06.450Z
+        completed_at: 2026-04-29T02:20:52.917Z
+        notes: "Captured: one inbox item for updating reflection workflow command examples; one friction
+          observation for the run-ref mismatch; one success observation for parallel review plus
+          temp-fixture reproduction on schema passthrough validation."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T02:18:39.538Z
+    completed_at: 2026-04-29T02:20:52.917Z
