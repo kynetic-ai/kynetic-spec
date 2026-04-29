@@ -24,6 +24,7 @@ import {
   type SpecItem,
   type SpecItemInput,
   SpecItemInputSchema,
+  SpecItemPatchSchema,
   SpecItemSchema,
   type Task,
   type TaskInput,
@@ -1799,6 +1800,26 @@ function assertSpecItemPatch(
 }
 
 /**
+ * Validate spec item patch data against the schema.
+ *
+ * Always validates known fields (including acceptance_criteria[].id) through
+ * SpecItemPatchSchema. When allowUnknown is false, unknown fields are rejected.
+ * When allowUnknown is true, unknown fields pass through but known fields are
+ * still validated.
+ *
+ * @returns null if valid, or a formatted error string if invalid
+ */
+export function validateSpecItemPatchData(
+  data: Record<string, unknown>,
+  options: { allowUnknown?: boolean } = {},
+): string | null {
+  const schema = options.allowUnknown ? SpecItemPatchSchema : SpecItemPatchSchema.strict();
+  const result = schema.safeParse(data);
+  if (result.success) return null;
+  return result.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
+}
+
+/**
  * Parse a path string into segments.
  * e.g., "features[0].requirements[2]" -> [["features", 0], ["requirements", 2]]
  */
@@ -2036,6 +2057,16 @@ export async function updateSpecItem(
     throw new Error("Item has no source file");
   }
   assertSpecItemPatch(updates, "updateSpecItem");
+
+  // Validate known schema fields (e.g. acceptance_criteria[].id) before writing.
+  // Uses passthrough mode so callers can include extension fields.
+  const validationError = validateSpecItemPatchData(
+    updates as Record<string, unknown>,
+    { allowUnknown: true },
+  );
+  if (validationError) {
+    throw new Error(`Invalid patch data: ${validationError}`);
+  }
 
   // Lock the file to prevent concurrent read-modify-write races
   return withFileLock(item._sourceFile, async () => {
@@ -2942,6 +2973,22 @@ export async function patchSpecItems(
         ref: patch.ref,
         status: "error",
         error: "Not a spec item",
+      });
+      if (options.failFast) {
+        stopProcessing = true;
+      }
+      continue;
+    }
+
+    // Validate patch data against schema before dry-run or real write
+    const patchValidationError = validateSpecItemPatchData(patch.data, {
+      allowUnknown: options.allowUnknown,
+    });
+    if (patchValidationError) {
+      results.push({
+        ref: patch.ref,
+        status: "error",
+        error: `Invalid patch data: ${patchValidationError}`,
       });
       if (options.failFast) {
         stopProcessing = true;
