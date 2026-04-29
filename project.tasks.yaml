@@ -27467,7 +27467,7 @@
   type: task
   spec_ref: "@acceptance-criterion-id-format"
   plan_ref: "@plan-ac-id-surface-hardening"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -27480,6 +27480,7 @@
   todos_count: 0
   created_at: 2026-04-29T00:17:25.817Z
   started_at: 2026-04-29T00:20:36.179Z
+  submitted_at: 2026-04-29T00:24:24.184Z
   automation: eligible
 - _ulid: 01KQB9J1KRGHYS1ZAJF2D91NTB
   slugs:
