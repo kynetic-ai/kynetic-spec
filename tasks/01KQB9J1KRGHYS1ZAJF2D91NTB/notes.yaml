@@ -174,3 +174,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-29T03:25:21.673Z
+  - _ulid: 01KQBN5Z8TD4K6ZPWWQ787S048
+    content: "Fix cycle 4: Addressed blocker — removed unused AcIdSchema import from src/parser/yaml.ts.
+      This import became stale in cycle 3 when collectNestedAcErrors switched from AcIdSchema to
+      AcceptanceCriterionSchema for full nested AC validation. Changed-file lint now passes (0
+      errors). All 2323 test suites pass (8506 tests), typecheck clean. Re-verified all 6 task ACs
+      against implementation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T03:40:33.434Z
