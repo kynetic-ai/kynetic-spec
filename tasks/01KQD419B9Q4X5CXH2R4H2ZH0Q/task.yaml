@@ -68,7 +68,7 @@ description: |
 spec_ref: "@daemon-web-ui-bundle"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-daemon-web-ui-current-entry-responses"
@@ -80,6 +80,14 @@ tags:
   - reliability
   - tests
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-daemon-web-ui-startup-asset-coherence/01kqd419
+  captured_at: 2026-04-29T19:51:21.464Z
+  commit: e9dabcfc7a57e76a62477afe8f2d6b7b6c721949
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KQDBMSPXQAPMDAYS23YVWXD3
 history:
   - author: Jacob Chapel
@@ -102,7 +110,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-29T19:32:54.679Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-daemon-web-ui-startup-asset-coherence/01kqd419
+          captured_at: 2026-04-29T19:51:21.464Z
+          commit: e9dabcfc7a57e76a62477afe8f2d6b7b6c721949
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-29T19:51:21.466Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-29T19:51:21.467Z
 created_at: 2026-04-29T17:19:22.985Z
 started_at: 2026-04-29T19:32:54.678Z
+submitted_at: 2026-04-29T19:51:21.466Z
 todos: []
 automation: eligible
