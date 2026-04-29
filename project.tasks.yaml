@@ -26957,28 +26957,6 @@
   started_at: 2026-04-24T18:54:33.097Z
   completed_at: 2026-04-24T19:34:03.753Z
   automation: manual_only
-- _ulid: 01KQ0D4JXZV8JB2TJ1ZMTNGE6Y
-  slugs:
-    - task-convert-cruft-05-api-daemon-web-contract-split-plan
-  title: Convert cruft seed 05 into API/Daemon/Web Contract Split plan
-  type: task
-  plan_ref: "@cruft-05-api-daemon-web-contract-split-seed"
-  status: pending
-  blocked_by: []
-  depends_on:
-    - "@task-convert-cruft-01-spec-catalog-health-plan"
-    - "@task-convert-cruft-03-trait-normalization-plan"
-  priority: 3
-  tags:
-    - cruft
-    - planning
-    - api
-    - daemon
-    - web-ui
-  notes_count: 0
-  todos_count: 0
-  created_at: 2026-04-24T18:48:20.671Z
-  automation: eligible
 - _ulid: 01KQ0D4M0CXRA7QPWCG6XKT3W0
   slugs:
     - task-convert-cruft-06-code-quality-refactors-plan
