@@ -34493,7 +34493,7 @@ runs:
     completed_at: 2026-04-29T04:14:49.408Z
   - _ulid: 01KQBQXNKC9HM9842SF5MHR0WS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -34508,7 +34508,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-29T04:29:33.766Z
-        completed_at: 2026-04-29T04:29:33.766Z
+        completed_at: 2026-04-29T04:29:45.076Z
+        notes: "Friction points: Full npm test is still slow for review gating (2148.8s this run), though
+          this is already a known review-session friction pattern. Running npm run lint -- <files>
+          was misleading because the lint script still ran the full configured src/tests/packages
+          target before the file arguments, producing unrelated pre-existing errors; changed-file
+          oxlint had to be invoked directly. kspec workflow show without a run ref errors instead of
+          listing active runs, which made reflection startup slightly less discoverable."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-29T04:29:45.076Z
+        completed_at: 2026-04-29T04:29:45.076Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T04:28:27.116Z
