@@ -173813,7 +173813,18 @@ reviews:
     slugs: []
     title: Review centralize AC ID patch validation cycle 3
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/ac-id-patch-validation.test.ts: 11 suites passed, 31 tests
+          passed, duration 25.0s"
+        name: focused ac-id patch tests
+        required: true
+        runner: npm test
+        created_at: 2026-04-29T02:46:16.723Z
+        completed_at: 2026-04-29T02:46:16.723Z
     events:
       - _ulid: 01KQBHXVB86K82518D8634H9VM
         actor: Jacob Chapel
@@ -173828,6 +173839,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-29T02:44:12.214Z
+      - _ulid: 01KQBJ2M4C8WEAP7EXX2BHESK5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused ac-id patch tests
+        timestamp: 2026-04-29T02:46:17.996Z
     examined_commit: c071ab72e16dd5eab71222c5e45e233d67b277e0
     external_links: []
     lifecycle_state: open
@@ -173840,5 +173858,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-29T02:43:41.544Z
-    updated_at: 2026-04-29T02:44:10.908Z
+    updated_at: 2026-04-29T02:46:16.723Z
     notes: []
