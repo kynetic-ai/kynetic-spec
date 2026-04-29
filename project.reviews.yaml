@@ -173164,7 +173164,19 @@ reviews:
     slugs: []
     title: Review task-ac-id-hardening-spec-updates
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation passed: files checked 1436, items 608, tasks 1428; schema OK, references OK.
+          Six deprecated-reference warnings were reported and treated as pre-existing/documented by
+          --warnings-ok."
+        name: kspec validate --refs --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-04-29T00:37:09.897Z
+        completed_at: 2026-04-29T00:37:09.897Z
     events:
       - _ulid: 01KQBA3JRKRPMECBH88AZYPP9X
         actor: Jacob Chapel
@@ -173179,6 +173191,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-29T00:27:20.268Z
+      - _ulid: 01KQBAP6NKFZ7C09SCW1KWM0KW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --refs --warnings-ok
+        timestamp: 2026-04-29T00:37:10.963Z
     examined_commit: 16b161551bb2c8055be06a503b1701ba756c1dea
     external_links: []
     lifecycle_state: open
@@ -173191,5 +173210,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-29T00:27:00.755Z
-    updated_at: 2026-04-29T00:27:18.862Z
+    updated_at: 2026-04-29T00:37:09.897Z
     notes: []
