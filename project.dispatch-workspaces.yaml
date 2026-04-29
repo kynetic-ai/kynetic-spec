@@ -12205,7 +12205,7 @@ workspaces:
         head: a784c6635ed440da739f01ac5ce12a61d5fc426a
         last_seen_at: 2026-04-29T01:46:39.722Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-strict-ac-annotation-token-parsing-01kqb9j1
-  - active_role: worker
+  - active_role: null
     base_branch_point: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
     bootstrap:
       status: succeeded
@@ -12536,12 +12536,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-29T04:27:55.154Z
+      updated_at: 2026-04-29T04:38:37.031Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-29T04:28:22.550Z
+      updated_at: 2026-04-29T04:38:37.031Z
     integration:
       status: pending
       detail: null
@@ -12549,17 +12549,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
-      updated_at: 2026-04-29T04:27:55.154Z
-    lifecycle_state: active
+      updated_at: 2026-04-29T04:38:37.031Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KQB9J270540ZSC74AQCR27HA"
     task_slug: task-ac-id-hardening-final-gate
     timestamps:
       closed_at: null
       last_active_at: 2026-04-29T04:28:22.550Z
-      last_reconciled_at: 2026-04-29T04:28:22.550Z
+      last_reconciled_at: 2026-04-29T04:38:37.031Z
       created_at: 2026-04-29T04:27:55.154Z
-      updated_at: 2026-04-29T04:28:22.550Z
+      updated_at: 2026-04-29T04:38:37.031Z
     workspace_id: dispatch-workspace-01KQB9J270540ZSC74AQCR27HA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
