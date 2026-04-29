@@ -34492,7 +34492,7 @@ runs:
     started_at: 2026-04-29T04:13:01.064Z
     completed_at: 2026-04-29T04:14:49.408Z
   - _ulid: 01KQBQXNKC9HM9842SF5MHR0WS
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -34538,10 +34538,13 @@ runs:
         started_at: 2026-04-29T04:30:26.314Z
         completed_at: 2026-04-29T04:30:40.915Z
         notes: "Skipped discussion: no untracked improvement proposals to ask about after coverage search."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-04-29T04:30:40.915Z
-        completed_at: 2026-04-29T04:30:40.915Z
+        completed_at: 2026-04-29T04:30:48.738Z
+        notes: No captures made. All high-confidence success and friction patterns from this session were
+          already represented by existing records; duplicating them would add noise.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T04:28:27.116Z
+    completed_at: 2026-04-29T04:30:48.738Z
