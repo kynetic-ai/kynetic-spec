@@ -34741,7 +34741,7 @@ runs:
     started_at: 2026-04-29T18:15:58.351Z
   - _ulid: 01KQDBN9B3ZW9HB9D152JQGYS1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -34756,7 +34756,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-29T19:33:09.279Z
-        completed_at: 2026-04-29T19:33:09.279Z
+        completed_at: 2026-04-29T19:33:17.368Z
+        notes: "Friction points: (1) In a batch review check command, setting required:false did not produce
+          the intended optional check; the review displayed kspec validate and evidence log as
+          required. The CLI has --no-required, but the batch argument shape for negative options is
+          not obvious from normal usage. (2) A fresh full npm test run was necessary for review
+          rigor and passed, but it took about 32.5 minutes; that duration makes reviewer turns long
+          even when the change is narrow. This is expected for --fresh, but still a recurring
+          review-cost concern."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-29T19:33:17.368Z
+        completed_at: 2026-04-29T19:33:17.368Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T19:32:38.371Z
