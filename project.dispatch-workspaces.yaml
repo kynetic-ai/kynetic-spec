@@ -11665,7 +11665,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-29T03:57:41.232Z
+      updated_at: 2026-04-29T03:57:44.389Z
     integration:
       status: pending
       detail: null
@@ -11674,25 +11674,20 @@ workspaces:
       target_branch: dev
       target_commit: 16b161551bb2c8055be06a503b1701ba756c1dea
       updated_at: 2026-04-29T03:57:41.232Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KQB9J1KRGHYS1ZAJF2D91NTB"
     task_slug: task-centralize-ac-id-patch-validation
     timestamps:
       closed_at: null
       last_active_at: 2026-04-29T03:41:50.704Z
-      last_reconciled_at: 2026-04-29T03:57:41.232Z
+      last_reconciled_at: 2026-04-29T03:57:44.389Z
       created_at: 2026-04-29T00:38:43.387Z
-      updated_at: 2026-04-29T03:57:41.232Z
+      updated_at: 2026-04-29T03:57:44.389Z
     workspace_id: dispatch-workspace-01KQB9J1KRGHYS1ZAJF2D91NTB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 5e67779375f034279702015897899ef726badcf3
-        last_seen_at: 2026-04-29T03:41:23.691Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-centralize-ac-id-patch-validation-01kqb9j1-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-centralize-ac-id-patch-validation/01kqb9j1
