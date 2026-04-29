@@ -173714,6 +173714,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-29T02:17:42.827Z
+      - _ulid: 01KQBHQ8ZJTZ7JQ3HN3NCGZCAD
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQBGE218PMPJ4H1ZM206Q0DS
+        timestamp: 2026-04-29T02:40:06.130Z
     examined_commit: 3861de3762c451ce106e7e32d006bf401fe2e1b9
     external_links: []
     lifecycle_state: closed
@@ -173747,6 +173753,17 @@ reviews:
               catalog structures. Add nested catalog AC validation and a behavioral test for nested
               payloads.'
             created_at: 2026-04-29T02:17:35.528Z
+          - _ulid: 01KQBHQ7WADB06QXKZJP8QB7ZF
+            author: "@claude"
+            body: "Fixed: Added collectNestedAcIdErrors() helper that recursively walks nested catalog fields
+              (features, requirements, constraints, decisions, modules, traits) and validates
+              acceptance_criteria[].id against AcIdSchema. Called from validateSpecItemPatchData
+              after root schema validation. Now all patch surfaces (single, bulk, parser-layer)
+              validate AC IDs in nested catalog structures regardless of --allow-unknown. Added 8
+              new tests: unit tests for nested/deeply-nested validation, CLI tests for
+              --allow-unknown with nested features, and parser-layer updateSpecItem test with nested
+              invalid AC IDs. All 2323 suites pass (8499 tests)."
+            created_at: 2026-04-29T02:40:05.002Z
         kind: blocker
       - _ulid: 01KQBGE4YEAGWQPW4W8Z9XSV4S
         entries:
@@ -173774,5 +173791,5 @@ reviews:
         role: reviewer
         created_at: 2026-04-29T02:17:42.827Z
     created_at: 2026-04-29T02:02:59.745Z
-    updated_at: 2026-04-29T02:17:42.827Z
+    updated_at: 2026-04-29T02:40:05.002Z
     notes: []
