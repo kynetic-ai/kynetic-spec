@@ -55,7 +55,7 @@ description: |
 spec_ref: "@acceptance-criterion-id-format"
 plan_ref: "@plan-ac-id-surface-hardening"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-centralize-ac-id-patch-validation"
@@ -67,6 +67,7 @@ tags:
   - tests
   - qa
 vcs_refs: []
+session_id: 01KQBQXH1WQZW9SSNS81BJ92GX
 history:
   - author: Jacob Chapel
     changes:
@@ -75,6 +76,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-29T00:18:09.159Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KQBQXH1WQZW9SSNS81BJ92GX
+        previous: null
+      started_at:
+        new: 2026-04-29T04:29:02.627Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-29T04:29:02.627Z
 created_at: 2026-04-29T00:17:26.752Z
+started_at: 2026-04-29T04:29:02.627Z
 todos: []
 automation: eligible
