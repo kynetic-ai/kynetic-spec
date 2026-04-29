@@ -33928,7 +33928,7 @@ runs:
     started_at: 2026-04-29T01:45:52.593Z
     completed_at: 2026-04-29T01:47:17.972Z
   - _ulid: 01KQBFF9NRW05QRVPYCR8F22C8
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -34123,10 +34123,14 @@ runs:
         completed_at: 2026-04-29T02:04:28.522Z
         notes: Skipped discussion because there are no new proposed improvements after search; all
           reflection candidates are already tracked.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-04-29T02:04:28.522Z
-        completed_at: 2026-04-29T02:04:28.522Z
+        completed_at: 2026-04-29T02:04:35.700Z
+        notes: No capture performed. Existing tasks/observations already cover the success patterns and
+          friction points from this session, so adding new inbox items or observations would create
+          noise.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T02:00:47.545Z
+    completed_at: 2026-04-29T02:04:35.701Z
