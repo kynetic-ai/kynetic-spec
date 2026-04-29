@@ -96,6 +96,89 @@ describe("AC ID patch validation", () => {
       expect(result).not.toBeNull();
       expect(result).toContain("ac-prefixed kebab-case");
     });
+
+    // ─── Nested catalog AC ID validation ──────────────────────────────
+
+    it("rejects invalid AC IDs in nested features", () => {
+      const result = validateSpecItemPatchData(
+        {
+          features: [
+            {
+              _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+              title: "Nested Feature",
+              acceptance_criteria: [
+                { id: "BAD-ID", given: "g", when: "w", then: "t" },
+              ],
+            },
+          ],
+        },
+        { allowUnknown: true },
+      );
+      expect(result).not.toBeNull();
+      expect(result).toContain("ac-prefixed kebab-case");
+      expect(result).toContain("features[0].acceptance_criteria[0].id");
+    });
+
+    it("rejects invalid AC IDs in nested requirements under features", () => {
+      const result = validateSpecItemPatchData(
+        {
+          features: [
+            {
+              _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+              title: "Feature",
+              requirements: [
+                {
+                  _ulid: "01BBBBBBBBBBBBBBBBBBBBBTEST",
+                  title: "Requirement",
+                  acceptance_criteria: [
+                    { id: "INVALID-DEEP", given: "g", when: "w", then: "t" },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        { allowUnknown: true },
+      );
+      expect(result).not.toBeNull();
+      expect(result).toContain("ac-prefixed kebab-case");
+      expect(result).toContain("features[0].requirements[0].acceptance_criteria[0].id");
+    });
+
+    it("accepts valid AC IDs in nested catalog structures", () => {
+      const result = validateSpecItemPatchData(
+        {
+          features: [
+            {
+              _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+              title: "Feature",
+              acceptance_criteria: [
+                { id: "ac-nested-valid", given: "g", when: "w", then: "t" },
+              ],
+            },
+          ],
+        },
+        { allowUnknown: true },
+      );
+      expect(result).toBeNull();
+    });
+
+    it("rejects invalid AC IDs in nested catalog without allowUnknown", () => {
+      const result = validateSpecItemPatchData({
+        features: [
+          {
+            _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+            title: "Feature",
+            acceptance_criteria: [
+              { id: "BAD-ID", given: "g", when: "w", then: "t" },
+            ],
+          },
+        ],
+      });
+      expect(result).not.toBeNull();
+      // Should report both the unknown field error AND the nested AC ID error
+      expect(result).toContain("ac-prefixed kebab-case");
+    });
   });
 
   // ─── Single item patch: ac-patch-rejects-invalid-id ────────────────
@@ -200,6 +283,75 @@ describe("AC ID patch validation", () => {
       });
       const result = kspec(
         `item patch @patch-target-a --data '${data}' --allow-unknown`,
+        tempDir,
+      );
+      expect(result.exitCode).toBe(0);
+    });
+
+    // AC: @item-patch ac-allow-unknown-rejects-invalid-ac-id
+    it("rejects invalid AC ID in nested features even with --allow-unknown", () => {
+      const data = JSON.stringify({
+        features: [
+          {
+            _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+            title: "Nested Feature",
+            acceptance_criteria: [
+              { id: "BAD-ID", given: "g", when: "w", then: "t" },
+            ],
+          },
+        ],
+      });
+      const result = kspec(
+        `item patch @test-core --data '${data}' --allow-unknown`,
+        tempDir,
+        { expectFail: true },
+      );
+      expect(result.exitCode).not.toBe(0);
+      expect(result.stderr).toContain("ac-prefixed kebab-case");
+    });
+
+    // AC: @item-patch ac-allow-unknown-rejects-invalid-ac-id
+    it("rejects invalid AC ID in deeply nested requirements with --allow-unknown", () => {
+      const data = JSON.stringify({
+        features: [
+          {
+            _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+            title: "Feature",
+            requirements: [
+              {
+                _ulid: "01BBBBBBBBBBBBBBBBBBBBBTEST",
+                title: "Requirement",
+                acceptance_criteria: [
+                  { id: "INVALID-DEEP", given: "g", when: "w", then: "t" },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      const result = kspec(
+        `item patch @test-core --data '${data}' --allow-unknown`,
+        tempDir,
+        { expectFail: true },
+      );
+      expect(result.exitCode).not.toBe(0);
+      expect(result.stderr).toContain("ac-prefixed kebab-case");
+    });
+
+    it("accepts valid AC IDs in nested features with --allow-unknown", () => {
+      const data = JSON.stringify({
+        features: [
+          {
+            _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+            title: "Nested Feature",
+            acceptance_criteria: [
+              { id: "ac-nested-valid", given: "g", when: "w", then: "t" },
+            ],
+          },
+        ],
+      });
+      const result = kspec(
+        `item patch @test-core --data '${data}' --allow-unknown`,
         tempDir,
       );
       expect(result.exitCode).toBe(0);
@@ -441,6 +593,37 @@ describe("AC ID patch validation", () => {
           expect.objectContaining({ id: "ac-valid-parser-layer" }),
         ]),
       );
+    });
+
+    // AC: @acceptance-criterion-id-format ac-patch-rejects-invalid-id
+    it("rejects invalid AC IDs in nested features via updateSpecItem", async () => {
+      const ctx = await initContext(tempDir);
+      const items = await loadAllItems(ctx);
+      const target = findItemBySlug(items, "test-core");
+
+      const contentBefore = await readYamlFile<unknown>(target._sourceFile!);
+
+      // Features is not part of SpecItemInput (nested catalog field), so we
+      // cast through unknown to simulate what happens when a caller passes
+      // nested catalog data through the parser layer.
+      const nestedPatch = {
+        features: [
+          {
+            _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+            title: "Feature With Bad AC",
+            acceptance_criteria: [
+              { id: "BAD-NESTED-ID", given: "g", when: "w", then: "t" },
+            ],
+          },
+        ],
+      };
+      await expect(
+        updateSpecItem(ctx, target, nestedPatch as never),
+      ).rejects.toThrow("ac-prefixed kebab-case");
+
+      // Verify catalog was not mutated
+      const contentAfter = await readYamlFile<unknown>(target._sourceFile!);
+      expect(contentAfter).toEqual(contentBefore);
     });
   });
 
