@@ -13555,7 +13555,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-29T18:17:49.346Z
+      updated_at: 2026-04-29T18:17:50.659Z
     integration:
       status: pending
       detail: null
@@ -13564,25 +13564,20 @@ workspaces:
       target_branch: dev
       target_commit: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
       updated_at: 2026-04-29T18:17:49.346Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KQD418BKZPZWMMFBVM4931V5"
     task_slug: task-daemon-web-ui-current-entry-responses
     timestamps:
       closed_at: null
       last_active_at: 2026-04-29T18:03:08.001Z
-      last_reconciled_at: 2026-04-29T18:17:49.346Z
+      last_reconciled_at: 2026-04-29T18:17:50.659Z
       created_at: 2026-04-29T17:43:18.285Z
-      updated_at: 2026-04-29T18:17:49.346Z
+      updated_at: 2026-04-29T18:17:50.659Z
     workspace_id: dispatch-workspace-01KQD418BKZPZWMMFBVM4931V5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 945338daa35a23bc27de0d5a6c0fd0a65cfef91b
-        last_seen_at: 2026-04-29T18:02:42.118Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-web-ui-current-entry-responses-01kqd418-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-web-ui-current-entry-responses/01kqd418
