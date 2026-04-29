@@ -13587,7 +13587,7 @@ workspaces:
         head: fcdc59aad4f07a4359c5a141785272156d848c73
         last_seen_at: 2026-04-29T19:18:33.908Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-web-ui-current-entry-responses-01kqd418
-  - active_role: worker
+  - active_role: null
     base_branch_point: 775f461393f22a3ce59eeb2c447cb2f5053eb4ab
     bootstrap:
       status: succeeded
@@ -13915,12 +13915,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-29T19:52:47.339Z
+      updated_at: 2026-04-29T19:53:29.627Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-29T19:52:47.339Z
+      updated_at: 2026-04-29T19:53:29.627Z
     integration:
       status: pending
       detail: null
@@ -13928,17 +13928,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 775f461393f22a3ce59eeb2c447cb2f5053eb4ab
-      updated_at: 2026-04-29T19:52:47.339Z
-    lifecycle_state: active
+      updated_at: 2026-04-29T19:53:29.627Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KQD419B9Q4X5CXH2R4H2ZH0Q"
     task_slug: task-daemon-web-ui-startup-asset-coherence
     timestamps:
       closed_at: null
       last_active_at: 2026-04-29T19:32:22.447Z
-      last_reconciled_at: 2026-04-29T19:52:47.339Z
+      last_reconciled_at: 2026-04-29T19:53:29.627Z
       created_at: 2026-04-29T19:31:58.125Z
-      updated_at: 2026-04-29T19:52:47.339Z
+      updated_at: 2026-04-29T19:53:29.627Z
     workspace_id: dispatch-workspace-01KQD419B9Q4X5CXH2R4H2ZH0Q
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
