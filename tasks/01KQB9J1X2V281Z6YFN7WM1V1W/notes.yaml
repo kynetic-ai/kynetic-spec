@@ -21,3 +21,35 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-29T01:25:53.041Z
+  - _ulid: 01KQBEJPDY0GSRXXBJZ05YJ174
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. parseACAnnotationLine: Replaced regex capture group (which could match valid prefixes
+      inside malformed tokens) with whitespace/comma tokenization that preserves full token text.
+      Malformed ac-prefixed tokens now go into a new malformedTokens array instead of being silently
+      dropped.
+
+
+      2. ACAnnotation interface: Added malformedTokens: string[] field.
+
+
+      3. InvalidAnnotationSubtype: Added malformed_ac_token variant.
+
+
+      4. validateACAnnotations: Reports each malformed token as an invalid_ac_annotation finding
+      before other validation checks, so malformed tokens are always reported regardless of target
+      resolution status.
+
+
+      5. Tests: Updated all existing tests for new malformedTokens field. Added new tests for
+      ac-malformed-token-not-truncated (dot, slash, hash, query, colon suffixes),
+      ac-valid-delimiters-preserved (whitespace, comma, mixed), and ac-malformed-ac-token-reported
+      (finding generation, multiple tokens, unresolved targets).
+
+
+      All 8483 tests pass. Typecheck clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T01:45:10.334Z
