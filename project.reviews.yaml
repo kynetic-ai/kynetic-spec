@@ -173280,7 +173280,18 @@ reviews:
     slugs: []
     title: Review centralize AC ID patch validation
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh passed: 2323 test suites, 8490 tests passed, 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KQBD9HTKNA2N4BQ771FGP9EX/7dbda8416fb9476d.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-29T01:34:02.782Z
+        completed_at: 2026-04-29T01:34:02.782Z
     events:
       - _ulid: 01KQBDAJ7WCNMMX1HWP0AM23YJ
         actor: Jacob Chapel
@@ -173302,6 +173313,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQBDY7A3AN0PAWE1YFT28ZE0
         timestamp: 2026-04-29T01:34:00.624Z
+      - _ulid: 01KQBDYBQ2PWS5R320VYM53VT9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-29T01:34:04.002Z
     examined_commit: 770669fd163946ab2c1f6da1cc7ea8caa83fbe56
     external_links: []
     lifecycle_state: open
@@ -173335,5 +173353,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-29T01:23:15.324Z
-    updated_at: 2026-04-29T01:33:59.491Z
+    updated_at: 2026-04-29T01:34:02.782Z
     notes: []
