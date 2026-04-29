@@ -174878,6 +174878,18 @@ reviews:
         runner: kspec validate
         created_at: 2026-04-29T18:07:51.191Z
         completed_at: 2026-04-29T18:07:51.191Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "With staticPlugin({ prefix: '/' }) registered before registerWebUiEntryRoutes(),
+          replacing index.html left GET / on the plugin response (old body/cache policy) while GET
+          /tasks returned the updated helper body. Bun run also showed / did not reach the helper."
+        name: non-node root route static plugin repro
+        required: true
+        runner: manual Elysia route repro
+        created_at: 2026-04-29T18:07:55.241Z
+        completed_at: 2026-04-29T18:07:55.241Z
     events:
       - _ulid: 01KQD6JFKJR6XB370SJ3TS72QV
         actor: Jacob Chapel
@@ -174913,6 +174925,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-29T18:07:52.583Z
+      - _ulid: 01KQD6T6KNN0GXENNS644YWHA3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: non-node root route static plugin repro
+        timestamp: 2026-04-29T18:07:56.533Z
     examined_commit: 945338daa35a23bc27de0d5a6c0fd0a65cfef91b
     external_links: []
     lifecycle_state: open
@@ -174946,5 +174965,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-29T18:03:43.603Z
-    updated_at: 2026-04-29T18:07:51.191Z
+    updated_at: 2026-04-29T18:07:55.241Z
     notes: []
