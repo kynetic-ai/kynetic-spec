@@ -11654,18 +11654,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-centralize-ac-id-patch-validation/01kqb9j1
-    canonical_branch_head: 5e67779375f034279702015897899ef726badcf3
+    canonical_branch_head: 551a9819996fd7858878d6fa38c9de249245b9e1
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-29T03:57:56.584Z
+      updated_at: 2026-04-29T04:11:51.343Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-29T03:58:23.158Z
+      updated_at: 2026-04-29T04:11:51.343Z
     integration:
       status: pending
       detail: null
@@ -11673,7 +11673,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 16b161551bb2c8055be06a503b1701ba756c1dea
-      updated_at: 2026-04-29T03:57:56.584Z
+      updated_at: 2026-04-29T04:11:51.343Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQB9J1KRGHYS1ZAJF2D91NTB"
@@ -11681,9 +11681,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-29T03:58:23.158Z
-      last_reconciled_at: 2026-04-29T03:58:23.158Z
+      last_reconciled_at: 2026-04-29T04:11:51.343Z
       created_at: 2026-04-29T00:38:43.387Z
-      updated_at: 2026-04-29T03:58:23.158Z
+      updated_at: 2026-04-29T04:11:51.343Z
     workspace_id: dispatch-workspace-01KQB9J1KRGHYS1ZAJF2D91NTB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
