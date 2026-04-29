@@ -16558,6 +16558,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-29T02:43:07.474Z
+  - _ulid: 01KQBP4APF1BA09FC2ZXK9DB5H
+    type: friction
+    content: During review, `npm run lint -- src/cli/commands/item.ts src/parser/yaml.ts
+      tests/ac-id-patch-validation.test.ts` still ran the hardcoded full lint target (`oxlint src/
+      tests/ packages/ ...`) and surfaced unrelated pre-existing errors. Reviewers need a
+      first-class changed-file lint command or script that scopes exactly to supplied files so
+      review evidence does not depend on remembering to bypass npm with `npx oxlint <files>`. Search
+      before capture found no existing tracking for this lint-script friction.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-04-29T03:57:08.176Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
