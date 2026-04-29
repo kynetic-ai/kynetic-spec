@@ -173613,3 +173613,29 @@ reviews:
     created_at: 2026-04-29T01:47:55.700Z
     updated_at: 2026-04-29T01:59:34.158Z
     notes: []
+  - _ulid: 01KQBFKAS128XYHTS7HH43W7JT
+    slugs: []
+    title: Review centralize AC ID patch validation cycle 2
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQBFKAS1P21VJVAWJE208EDN
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-29T02:02:59.745Z
+    examined_commit: 3861de3762c451ce106e7e32d006bf401fe2e1b9
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQB9J1KRGHYS1ZAJF2D91NTB"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-29T02:02:59.745Z
+    updated_at: null
+    notes: []
