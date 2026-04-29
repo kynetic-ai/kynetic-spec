@@ -12678,11 +12678,11 @@ workspaces:
     canonical_branch: dispatch/task/task-ac-id-hardening-final-gate/01kqb9j2
     canonical_branch_head: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-29T04:53:51.061Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-29T04:53:51.550Z
     health:
       status: healthy
       issues: []
@@ -12696,7 +12696,7 @@ workspaces:
       target_branch: dev
       target_commit: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
       updated_at: 2026-04-29T04:53:51.061Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQB9J270540ZSC74AQCR27HA"
     task_slug: task-ac-id-hardening-final-gate
@@ -12705,7 +12705,7 @@ workspaces:
       last_active_at: 2026-04-29T04:39:24.657Z
       last_reconciled_at: 2026-04-29T04:53:51.061Z
       created_at: 2026-04-29T04:27:55.154Z
-      updated_at: 2026-04-29T04:53:51.061Z
+      updated_at: 2026-04-29T04:53:51.550Z
     workspace_id: dispatch-workspace-01KQB9J270540ZSC74AQCR27HA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
