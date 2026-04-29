@@ -643,6 +643,16 @@ export async function createServer(options: ServerOptions) {
   // AC: @daemon-server ac-17 - Serve web UI static assets
   // Added after API routes so API routes take precedence
   if (resolvedWebUiPath) {
+    // SPA fallback routes for client-side routing.
+    // Registered BEFORE the static plugin so the entry helper owns the root
+    // and application routes — the Bun static plugin pre-registers '/' from
+    // index.html, which would otherwise serve a stale, browser-cacheable
+    // bundle after a web UI rebuild.
+    // AC: @daemon-server ac-root-route-current-entry, ac-app-route-current-entry
+    // AC: @daemon-web-ui-bundle ac-entry-unavailable-during-replacement,
+    // ac-entry-recovers-after-replacement, ac-reload-uses-current-entry
+    registerWebUiEntryRoutes(app, resolvedWebUiPath);
+
     if (runtime === "node") {
       app.get("/_app/*", ({ request }) =>
         serveWebUiStaticAsset(resolvedWebUiPath, new URL(request.url).pathname),
@@ -656,24 +666,19 @@ export async function createServer(options: ServerOptions) {
         return serveWebUiStaticAsset(resolvedWebUiPath, requestPath);
       });
     } else {
-      // Bun's static plugin serves the bundle with correct MIME metadata.
+      // Bun's static plugin serves bundle assets with correct MIME metadata.
+      // indexHTML: false stops the plugin from claiming '/' (and other
+      // directory paths) for index.html — the entry helper owns those routes
+      // so bundle changes are reflected on the next request.
       app.use(
         await staticPlugin({
           assets: resolvedWebUiPath,
           prefix: "/",
+          indexHTML: false,
           noCache: process.env.NODE_ENV === "development", // Disable cache in dev
         }),
       );
     }
-
-    // SPA fallback routes for client-side routing
-    // These catch paths like /tasks, /items, /inbox that don't have static files.
-    // The handlers re-read the entry document on every request so daemon
-    // responses track the currently served bundle without a restart.
-    // AC: @daemon-server ac-root-route-current-entry, ac-app-route-current-entry
-    // AC: @daemon-web-ui-bundle ac-entry-unavailable-during-replacement,
-    // ac-entry-recovers-after-replacement, ac-reload-uses-current-entry
-    registerWebUiEntryRoutes(app, resolvedWebUiPath);
 
     console.log("[daemon] Web UI static file serving enabled");
   }
