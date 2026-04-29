@@ -33849,7 +33849,7 @@ runs:
     completed_at: 2026-04-29T01:36:37.579Z
   - _ulid: 01KQBEKZPHG5S89Q1WY4M9T3PJ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -33882,7 +33882,26 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-29T01:46:33.191Z
-        completed_at: 2026-04-29T01:46:33.191Z
+        completed_at: 2026-04-29T01:47:00.937Z
+        notes: >-
+          Search results checked. The friction point about mechanical toEqual assertion updates is
+          not tracked anywhere. However, this is a general test maintenance pattern, not specific to
+          this project — it's inherent to strict equality assertions in vitest. Not high-confidence
+          enough to capture as a systemic project friction because it's a language/framework
+          characteristic, not a kspec process issue.
+
+
+          Success pattern: The parseACAnnotationLine tokenization rewrite demonstrates that
+          split-by-delimiter is more correct than regex capture for token boundary detection. This
+          is already reflected in the implementation itself.
+
+
+          Conclusion: No high-confidence, systemic, previously-untracked friction to capture. The
+          session was smooth and the task was well-scoped.
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-29T01:47:00.937Z
+        completed_at: 2026-04-29T01:47:00.937Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-29T01:45:52.593Z
