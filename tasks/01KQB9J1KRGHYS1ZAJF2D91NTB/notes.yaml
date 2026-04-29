@@ -123,3 +123,32 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-29T02:17:44.729Z
+  - _ulid: 01KQBHRAXBG5B21BX2MHDS77WR
+    content: >-
+      Fix cycle 2: Addressed blocker — nested catalog AC ID validation bypass. The root cause was
+      that SpecItemPatchSchema only validates top-level fields; nested catalog fields (features,
+      requirements, etc.) pass through as unknown data, allowing invalid AC IDs in structures like
+      features[].acceptance_criteria[].id even with --allow-unknown.
+
+
+      Fix: Added collectNestedAcIdErrors() helper that recursively walks NESTED_ITEM_FIELDS-aligned
+      catalog fields and validates each acceptance_criteria[].id against AcIdSchema. Integrated into
+      validateSpecItemPatchData after root schema validation. This covers all three patch surfaces:
+      single CLI patch, bulk patch, and parser-layer updateSpecItem.
+
+
+      Added 8 new tests (31 total in ac-id-patch-validation.test.ts):
+
+      - 4 unit tests for validateSpecItemPatchData with nested features, deeply nested requirements,
+      valid nested ACs, and strict mode
+
+      - 3 CLI tests for --allow-unknown with nested invalid/valid AC IDs
+
+      - 1 parser-layer test for updateSpecItem with nested features containing invalid AC IDs
+
+
+      Re-verified all 6 task ACs plus nested coverage. All 2323 suites pass (8499 tests), typecheck
+      clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T02:40:40.875Z
