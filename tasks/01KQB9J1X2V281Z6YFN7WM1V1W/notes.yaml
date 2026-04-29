@@ -1,1 +1,23 @@
-notes: []
+notes:
+  - _ulid: 01KQBDFC8H4PGMB64MGZJCSC3M
+    content: >-
+      Approach: Change parseACAnnotationLine to tokenize by whitespace/comma boundaries instead of
+      using regex capture groups that can match prefixes of longer tokens. Return malformed ac-*
+      tokens alongside valid ones. Extend ACAnnotation with malformedTokens field. Add
+      malformed_ac_token subtype to InvalidAnnotationSubtype. validateACAnnotations reports
+      malformed tokens as invalid-annotation findings.
+
+
+      Edge cases: ac-good.extra, ac-good/path, ac-good#anchor, ac-good?query, ac-good: — all must be
+      rejected, not truncated to ac-good. Mixed valid+malformed in same line. N/A suffix and
+      parenthetical stripping must still work. Comma-separated and whitespace-separated valid tokens
+      must still work.
+
+
+      Test plan: 5 ACs to cover — ac-malformed-token-not-truncated, ac-valid-delimiters-preserved
+      from @ac-annotation-identifier-format, plus ac-malformed-ac-token-reported from
+      @ac-annotation-integrity-reporting. Tests for parser rejection, coverage non-granting, and
+      finding generation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T01:25:53.041Z
