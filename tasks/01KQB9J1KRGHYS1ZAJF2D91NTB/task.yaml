@@ -83,7 +83,7 @@ description: |
 spec_ref: "@acceptance-criterion-id-format"
 plan_ref: "@plan-ac-id-surface-hardening"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-ac-id-hardening-spec-updates"
@@ -104,7 +104,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-centralize-ac-id-patch-validation/01kqb9j1
-session_id: null
+session_id: 01KQBJP4KFDZGQP8TVC4GQWXBG
 history:
   - author: Jacob Chapel
     changes:
@@ -277,8 +277,21 @@ history:
         previous: 01KQBGPA2RPNZERNF7Q4JAYTCR
     command: review-verdict-needs-work
     timestamp: 2026-04-29T02:53:43.247Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KQBJP4KFDZGQP8TVC4GQWXBG
+        previous: null
+      started_at:
+        new: 2026-04-29T03:11:28.314Z
+        previous: 2026-04-29T02:40:52.411Z
+    command: task-start
+    timestamp: 2026-04-29T03:11:28.315Z
 created_at: 2026-04-29T00:17:26.136Z
-started_at: 2026-04-29T02:40:52.411Z
+started_at: 2026-04-29T03:11:28.314Z
 submitted_at: 2026-04-29T02:40:55.542Z
 todos: []
 automation: eligible
