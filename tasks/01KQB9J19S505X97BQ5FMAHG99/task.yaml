@@ -1,0 +1,130 @@
+_ulid: 01KQB9J19S505X97BQ5FMAHG99
+slugs:
+  - task-ac-id-hardening-spec-updates
+title: Update specs for AC ID mutation and annotation hardening
+type: task
+description: |
+  Update the existing owning specs before implementation so later tasks can
+  be reviewed against explicit behavioral contracts. Keep this task limited
+  to kspec metadata/spec updates; do not change runtime, CLI, parser, or test
+  code in this task.
+
+  Why:
+  - The existing acceptance criterion identifier format spec covers direct
+    add and rename commands, but single-item and bulk patch paths also store
+    acceptance criteria and must not become bypass surfaces.
+  - The existing item patch spec documents strict validation, dry-run, bulk,
+    fail-fast, and --allow-unknown behavior, but it does not say that known
+    schema fields remain validated in bulk and allow-unknown modes.
+  - The existing AC annotation specs say valid ac-prefixed tokens earn
+    coverage and invalid annotations are repairable findings, but they do not
+    explicitly prevent malformed tokens from being truncated into apparently
+    valid prefixes.
+
+  What:
+  - Add @acceptance-criterion-id-format ac-patch-rejects-invalid-id with this
+    exact behavioral shape:
+      Given: A user supplies patch data that would store an acceptance
+      criterion identifier that does not conform to the required token format.
+      When: kspec validates the patch for a single item patch or bulk item
+      patch.
+      Then: The update is rejected before the catalog item is mutated.
+  - Add @item-patch ac-allow-unknown-rejects-invalid-ac-id with this exact
+    behavioral shape:
+      Given: A user patches an item with --allow-unknown and the patch would
+      store an acceptance criterion identifier that does not conform to the
+      required token format.
+      When: kspec item patch runs.
+      Then: The command fails without writing the patch.
+  - Add @item-patch ac-bulk-dry-run-rejects-invalid-ac-id with this exact
+    behavioral shape:
+      Given: A bulk patch dry-run includes an operation that would store an
+      acceptance criterion identifier that does not conform to the required
+      token format.
+      When: kspec item patch --bulk --dry-run runs.
+      Then: The operation is reported as an error instead of a successful
+      preview.
+  - Add @item-patch ac-bulk-invalid-operation-not-written with this exact
+    behavioral shape:
+      Given: A bulk patch contains an operation with invalid patch data.
+      When: kspec item patch --bulk runs without --fail-fast.
+      Then: The invalid operation is not written.
+  - Add @item-patch ac-bulk-valid-operations-continue with this exact
+    behavioral shape:
+      Given: A bulk patch contains an invalid operation followed by a valid
+      operation.
+      When: kspec item patch --bulk runs without --fail-fast.
+      Then: The valid operation after the invalid operation is applied.
+  - Add @item-patch ac-bulk-invalid-operation-fails-command with this exact
+    behavioral shape:
+      Given: A bulk patch contains at least one operation with invalid patch
+      data.
+      When: kspec item patch --bulk finishes processing the requested
+      operations.
+      Then: The command exits with a failure status.
+  - Add @ac-annotation-identifier-format ac-malformed-token-not-truncated with
+    this exact behavioral shape:
+      Given: A coverage annotation contains an ac-prefixed token with
+      unsupported characters or embedded punctuation, such as ac-valid.extra,
+      ac-valid/path, ac-valid#anchor, or ac-valid?query.
+      When: completeness validation parses the annotation.
+      Then: The malformed token is not truncated to a valid prefix and does
+      not provide coverage credit to any acceptance criterion.
+  - Add @ac-annotation-identifier-format ac-valid-delimiters-preserved with
+    this exact behavioral shape:
+      Given: A coverage annotation separates valid acceptance criterion tokens
+      with whitespace, a comma, or a comma followed by whitespace.
+      When: completeness validation parses the annotation.
+      Then: Each delimiter-separated token is recognized as its own acceptance
+      criterion token.
+  - Add @ac-annotation-integrity-reporting ac-malformed-ac-token-reported with
+    this exact behavioral shape:
+      Given: A configured coverage scan path contains an AC annotation with a
+      malformed ac-prefixed acceptance criterion token.
+      When: completeness validation runs.
+      Then: An invalid-annotation finding identifies the malformed token and
+      the source location.
+  - Set the implementation status of the four updated specs to in_progress so
+    the new ACs are not claimed as implemented before the follow-up work
+    lands.
+
+  How:
+  - Use `kspec item ac add` for each new acceptance criterion and `kspec item
+    set` or the accepted metadata workflow to set implementation status.
+  - Verify each target spec shows the new AC exactly once with `kspec item
+    get`.
+  - Do not create duplicate specs for these behaviors; the listed specs
+    already own the relevant contracts.
+
+  Testing:
+  - Run targeted kspec inspection commands proving the new AC ids exist on the
+    intended specs.
+  - Run `kspec validate --refs --warnings-ok` and classify any pre-existing
+    warnings separately from this task.
+
+  Establishes:
+  - @acceptance-criterion-id-format ac-patch-rejects-invalid-id
+  - @item-patch ac-allow-unknown-rejects-invalid-ac-id
+  - @item-patch ac-bulk-dry-run-rejects-invalid-ac-id
+  - @item-patch ac-bulk-invalid-operation-not-written
+  - @item-patch ac-bulk-valid-operations-continue
+  - @item-patch ac-bulk-invalid-operation-fails-command
+  - @ac-annotation-identifier-format ac-malformed-token-not-truncated
+  - @ac-annotation-identifier-format ac-valid-delimiters-preserved
+  - @ac-annotation-integrity-reporting ac-malformed-ac-token-reported
+spec_ref: "@acceptance-criterion-id-format"
+plan_ref: "@plan-ac-id-surface-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - specs
+  - validation
+  - cli
+  - coverage
+vcs_refs: []
+created_at: 2026-04-29T00:17:25.817Z
+todos: []

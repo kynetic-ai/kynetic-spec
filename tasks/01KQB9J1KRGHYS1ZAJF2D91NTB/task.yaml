@@ -1,0 +1,99 @@
+_ulid: 01KQB9J1KRGHYS1ZAJF2D91NTB
+slugs:
+  - task-centralize-ac-id-patch-validation
+title: Centralize AC ID validation across item patch surfaces
+type: task
+description: |
+  Make every item mutation path that can store acceptance criteria apply the
+  same known-field validation before writing or reporting a successful dry-run
+  preview.
+
+  Why:
+  - `kspec item ac add` and `kspec item ac set` already reject invalid
+    acceptance criterion identifiers, but patch-style mutation paths can
+    replace the full acceptance_criteria array.
+  - Single `kspec item patch` currently validates patch data before dry-run,
+    while bulk patch validates only operation shape before reporting dry-run
+    success.
+  - `--allow-unknown` should allow extension fields, not disable validation of
+    known schema fields such as acceptance_criteria.
+  - Parser-layer callers such as `updateSpecItem` should not be able to write
+    invalid known fields when they bypass the CLI wrapper.
+
+  What:
+  - Add a shared validation helper for spec item patch/update data that:
+    - validates known fields through the spec item schemas used by normal item
+      creation/loading;
+    - allows unknown fields only when the caller explicitly opts in;
+    - still validates known fields when unknown fields are allowed;
+    - formats validation errors consistently with existing item patch errors;
+    - can be called by CLI single patch, CLI bulk patch, and parser-layer item
+      update paths.
+  - Update single `kspec item patch` to use the shared helper instead of
+    having a separate CLI-only schema validation branch.
+  - Update `patchSpecItems` so every bulk operation validates patch data before
+    dry-run success and before real writes. Invalid operations must be counted
+    as failed; later valid operations should continue unless `--fail-fast` is
+    set.
+  - Update `updateSpecItem` so direct parser-layer updates that include known
+    schema fields are validated before YAML is written. The helper must not
+    reject existing supported nested catalog structures only because they are
+    stored in nested YAML files.
+  - Replace direct AC ID regex validation in `kspec item ac add` and `kspec
+    item ac set` with the shared AC ID schema/helper so user-facing AC ID
+    validation messages do not drift from schema validation.
+  - Preserve existing successful behavior for valid patches, unknown fields
+    under `--allow-unknown`, and AC removal.
+
+  How:
+  - Inspect `src/schema/common.ts`, `src/schema/spec.ts`,
+    `src/cli/commands/item.ts`, and `src/parser/yaml.ts` before editing.
+  - Keep `acIdPattern` as the single token-pattern source and route
+    user-facing mutation validation through `AcIdSchema` or a small helper
+    built from it.
+  - In bulk mode, validate after refs resolve and before the dry-run branch
+    reports `updated`.
+  - For parser-layer validation, validate the fields being patched and, where
+    necessary, the merged item state before `writeYamlFilePreserveFormat`.
+  - Maintain current bulk result semantics: invalid operations produce
+    per-operation errors, `summary.failed` increments, and the command exits
+    nonzero when any operation failed.
+
+  Testing:
+  - Add focused tests proving invalid `acceptance_criteria[].id` is rejected
+    by single `kspec item patch` in dry-run and real modes.
+  - Add focused tests proving `kspec item patch --bulk --dry-run` reports an
+    invalid AC ID operation as failed rather than `updated`.
+  - Add focused tests proving `kspec item patch --bulk` does not persist an
+    invalid AC ID operation, still applies a later valid operation without
+    `--fail-fast`, and skips later operations with `--fail-fast`.
+  - Add a test proving `--allow-unknown` preserves unknown-field writes but
+    rejects invalid known fields.
+  - Add a parser-layer test proving direct `updateSpecItem` calls reject
+    invalid acceptance_criteria before writing.
+  - Run the focused item patch and AC ID tests plus `npm run typecheck`.
+
+  Covers:
+  - @acceptance-criterion-id-format ac-patch-rejects-invalid-id
+  - @item-patch ac-allow-unknown-rejects-invalid-ac-id
+  - @item-patch ac-bulk-dry-run-rejects-invalid-ac-id
+  - @item-patch ac-bulk-invalid-operation-not-written
+  - @item-patch ac-bulk-valid-operations-continue
+  - @item-patch ac-bulk-invalid-operation-fails-command
+spec_ref: "@acceptance-criterion-id-format"
+plan_ref: "@plan-ac-id-surface-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-ac-id-hardening-spec-updates"
+context: []
+priority: 2
+tags:
+  - cli
+  - validation
+  - schema
+  - parser
+vcs_refs: []
+created_at: 2026-04-29T00:17:26.136Z
+todos: []

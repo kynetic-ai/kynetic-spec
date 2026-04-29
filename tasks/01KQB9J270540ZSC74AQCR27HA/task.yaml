@@ -1,0 +1,71 @@
+_ulid: 01KQB9J270540ZSC74AQCR27HA
+slugs:
+  - task-ac-id-hardening-final-gate
+title: Validate AC ID hardening end to end
+type: task
+description: |
+  Run an end-to-end validation gate for the AC ID hardening work and record
+  evidence that both patch validation and annotation parsing now enforce the
+  finalized specs.
+
+  Why:
+  - The work touches CLI mutation, parser-layer writes, bulk result handling,
+    dry-run previews, and coverage validation.
+  - A final focused gate prevents one surface from being fixed while another
+    still grants false success or false coverage.
+
+  What:
+  - Run the focused item patch, AC ID format, AC annotation identifier, AC
+    annotation validation, and AC ID gate tests that cover the new behavior.
+  - Run `npm run typecheck`.
+  - Run `kspec validate --refs --warnings-ok`, `kspec validate --alignment
+    --warnings-ok`, and `kspec validate --completeness --warnings-ok`.
+  - Re-run the catalog AC ID scan or equivalent validation proving stored
+    acceptance criterion identifiers still conform to the required format.
+  - Inspect the new bulk patch and malformed annotation behavior manually if a
+    focused test failure would otherwise be ambiguous.
+  - Update the implementation status of the four hardened specs to
+    implemented only after the focused tests and validation evidence pass.
+
+  How:
+  - Use the project test runner (`npm test -- --fresh ...`) rather than
+    invoking the underlying test framework directly.
+  - If validation emits pre-existing warnings unrelated to this plan, record
+    them separately and do not count them as plan-specific failures.
+  - Include exact command output snippets or file paths to logs in the task
+    completion note so the reviewer can verify the evidence.
+
+  Testing:
+  - Focused AC ID and item patch tests pass.
+  - Focused AC annotation parser/validation tests pass.
+  - Typecheck passes.
+  - kspec refs, alignment, and completeness validation complete with only
+    classified pre-existing warnings.
+
+  Covers:
+  - @acceptance-criterion-id-format ac-patch-rejects-invalid-id
+  - @item-patch ac-allow-unknown-rejects-invalid-ac-id
+  - @item-patch ac-bulk-dry-run-rejects-invalid-ac-id
+  - @item-patch ac-bulk-invalid-operation-not-written
+  - @item-patch ac-bulk-valid-operations-continue
+  - @item-patch ac-bulk-invalid-operation-fails-command
+  - @ac-annotation-identifier-format ac-malformed-token-not-truncated
+  - @ac-annotation-identifier-format ac-valid-delimiters-preserved
+  - @ac-annotation-integrity-reporting ac-malformed-ac-token-reported
+spec_ref: "@acceptance-criterion-id-format"
+plan_ref: "@plan-ac-id-surface-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-centralize-ac-id-patch-validation"
+  - "@task-strict-ac-annotation-token-parsing"
+context: []
+priority: 3
+tags:
+  - validation
+  - tests
+  - qa
+vcs_refs: []
+created_at: 2026-04-29T00:17:26.752Z
+todos: []

@@ -1,0 +1,80 @@
+_ulid: 01KQB9J1X2V281Z6YFN7WM1V1W
+slugs:
+  - task-strict-ac-annotation-token-parsing
+title: Reject malformed AC annotation tokens instead of truncating them
+type: task
+description: |
+  Tighten coverage annotation parsing so malformed ac-prefixed tokens are
+  detected as invalid annotations and never converted into coverage for a
+  valid-looking prefix.
+
+  Why:
+  - Completeness validation uses AC annotations as direct evidence that code
+    covers specific acceptance criteria.
+  - A token such as `ac-valid.extra` or `ac-valid/path` is not the same
+    identifier as `ac-valid`; granting coverage to the prefix can hide missing
+    or mistyped evidence.
+  - Valid comments still need ergonomic delimiters, so comma-separated and
+    whitespace-separated AC tokens should continue to work.
+
+  What:
+  - Change the AC annotation tokenizer in `src/parser/validate.ts` so it
+    preserves raw ac-prefixed token text long enough to distinguish valid
+    tokens, supported delimiters, and malformed tokens.
+  - Reject or ignore-with-finding malformed ac-prefixed tokens that contain
+    unsupported punctuation or characters, including dotted, path-like,
+    fragment-like, and query-like suffixes.
+  - Ensure malformed tokens do not grant coverage to any valid prefix.
+  - Preserve supported delimiters for valid tokens, including whitespace and
+    comma separation.
+  - Extend structured annotation data or validation plumbing as needed so
+    malformed tokens can be reported with the token text, target reference,
+    file, and line.
+  - Report malformed ac-prefixed tokens as invalid-annotation findings during
+    completeness validation.
+
+  How:
+  - Inspect `parseACAnnotationLine`, `scanDirForACAnnotations`,
+    `scanDirForACAnnotationsStructured`, and `validateACAnnotations` in
+    `src/parser/validate.ts` before editing.
+  - Avoid extracting candidates with a regex that can match a valid prefix
+    inside a longer malformed token.
+  - Prefer tokenization that treats only whitespace, comma, end-of-line, and
+    documented suffix boundaries such as the existing N/A and parenthetical
+    stripping as non-token delimiters.
+  - Keep valid examples such as `// AC: @spec ac-good, ac-ok` working.
+  - Update user-facing warning text so a maintainer can repair the malformed
+    token without guessing what was parsed.
+
+  Testing:
+  - Add parser tests for malformed tokens such as `ac-good.extra`,
+    `ac-good/path`, `ac-good#anchor`, `ac-good?query`, and `ac-good:` proving
+    they do not parse as `ac-good`.
+  - Add coverage tests proving a spec with `ac-good` remains uncovered when
+    the only annotation is `@spec ac-good.extra`.
+  - Add completeness validation tests proving malformed tokens produce
+    invalid-annotation findings with source location.
+  - Add regression tests proving comma-separated and whitespace-separated
+    valid tokens still provide coverage.
+  - Run focused AC annotation tests plus `npm run typecheck`.
+
+  Covers:
+  - @ac-annotation-identifier-format ac-malformed-token-not-truncated
+  - @ac-annotation-identifier-format ac-valid-delimiters-preserved
+  - @ac-annotation-integrity-reporting ac-malformed-ac-token-reported
+spec_ref: "@ac-annotation-identifier-format"
+plan_ref: "@plan-ac-id-surface-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-ac-id-hardening-spec-updates"
+context: []
+priority: 2
+tags:
+  - coverage
+  - validation
+  - parser
+vcs_refs: []
+created_at: 2026-04-29T00:17:26.434Z
+todos: []
