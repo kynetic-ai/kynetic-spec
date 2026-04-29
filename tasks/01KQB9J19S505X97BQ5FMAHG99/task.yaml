@@ -115,7 +115,7 @@ description: |
 spec_ref: "@acceptance-criterion-id-format"
 plan_ref: "@plan-ac-id-surface-hardening"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -126,6 +126,7 @@ tags:
   - cli
   - coverage
 vcs_refs: []
+session_id: 01KQB9Q18YT8DPYQ8GV6V2451G
 history:
   - author: Jacob Chapel
     changes:
@@ -134,6 +135,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-04-29T00:18:08.059Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KQB9Q18YT8DPYQ8GV6V2451G
+        previous: null
+      started_at:
+        new: 2026-04-29T00:20:36.179Z
+        previous: null
+    command: task-start
+    timestamp: 2026-04-29T00:20:36.179Z
 created_at: 2026-04-29T00:17:25.817Z
+started_at: 2026-04-29T00:20:36.179Z
 todos: []
 automation: eligible
