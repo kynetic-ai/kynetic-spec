@@ -173379,6 +173379,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-04-29T01:34:34.757Z
+      - _ulid: 01KQBFE3QN3ZZYAWDCC5X1SANH
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQBDY7A3AN0PAWE1YFT28ZE0
+        timestamp: 2026-04-29T02:00:08.693Z
     examined_commit: 770669fd163946ab2c1f6da1cc7ea8caa83fbe56
     external_links: []
     lifecycle_state: closed
@@ -173409,6 +173415,15 @@ reviews:
               invalid acceptance_criteria id, then verifies it rejects and does not mutate the
               catalog."
             created_at: 2026-04-29T01:33:59.491Z
+          - _ulid: 01KQBFE2JX858WFTKKZ49P4ED4
+            author: "@claude"
+            body: "Fixed: Replaced the CLI-proxy test with a direct behavioral test that imports
+              initContext/loadAllItems/updateSpecItem from the parser module. The test now loads a
+              LoadedSpecItem via setupTempFixtures + initContext, calls updateSpecItem directly with
+              an invalid AC ID, asserts it throws with 'ac-prefixed kebab-case', and verifies the
+              catalog file was not mutated by comparing readYamlFile before/after. Also added a
+              positive-path test confirming valid AC IDs succeed through the same direct call."
+            created_at: 2026-04-29T02:00:07.517Z
         kind: blocker
       - _ulid: 01KQBDZ5C6X492ED11JGM738Z8
         entries:
@@ -173435,7 +173450,7 @@ reviews:
         role: reviewer
         created_at: 2026-04-29T01:34:34.756Z
     created_at: 2026-04-29T01:23:15.324Z
-    updated_at: 2026-04-29T01:34:34.757Z
+    updated_at: 2026-04-29T02:00:07.517Z
     notes: []
   - _ulid: 01KQBEQQXM6VRYX38AP675BMMR
     slugs: []
