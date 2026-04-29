@@ -173846,6 +173846,13 @@ reviews:
           status: pass
           name: focused ac-id patch tests
         timestamp: 2026-04-29T02:46:17.996Z
+      - _ulid: 01KQBJ2QTZ9Z7S9HQWX201TKB4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQBJ2PHZSPGKC09HH7WVGYTE
+        timestamp: 2026-04-29T02:46:21.791Z
     examined_commit: c071ab72e16dd5eab71222c5e45e233d67b277e0
     external_links: []
     lifecycle_state: open
@@ -173855,8 +173862,28 @@ reviews:
       content_hash: ""
       ref: "@01KQB9J1KRGHYS1ZAJF2D91NTB"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQBJ2PHZSPGKC09HH7WVGYTE
+        anchor:
+          type: code
+          commit: c071ab72e16dd5eab71222c5e45e233d67b277e0
+          line_end: 1840
+          line_start: 1833
+          path: src/parser/yaml.ts
+          side: head
+        entries:
+          - _ulid: 01KQBJ2PHZERY3086J7YAEZF45
+            author: Jacob Chapel
+            body: "MUST-FIX: nested acceptance_criteria entries are not validated with the acceptance criterion
+              schema; only an existing id field is checked. A patch like {features:[{...,
+              acceptance_criteria:[{given:'g', when:'w', then:'t'}]}]} with --allow-unknown
+              currently exits 0 and writes raw YAML that the next load reports as invalid
+              (acceptance_criteria[0].id required). The same happens for a nested AC with
+              id:'ac-valid' but missing then. This violates the task requirement that item
+              patch/update surfaces apply the same known-field validation before writing."
+            created_at: 2026-04-29T02:46:20.479Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-29T02:43:41.544Z
-    updated_at: 2026-04-29T02:46:16.723Z
+    updated_at: 2026-04-29T02:46:20.479Z
     notes: []
