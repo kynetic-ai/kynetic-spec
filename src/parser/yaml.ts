@@ -1825,17 +1825,23 @@ function collectNestedAcErrors(
       const obj = item as Record<string, unknown>;
       const itemPath = parentPath ? `${parentPath}.${field}[${i}]` : `${field}[${i}]`;
 
-      // Validate each acceptance_criteria entry against the full schema
-      if ("acceptance_criteria" in obj && Array.isArray(obj.acceptance_criteria)) {
-        const acs = obj.acceptance_criteria as unknown[];
-        for (let j = 0; j < acs.length; j++) {
-          const ac = acs[j];
-          const acPath = `${itemPath}.acceptance_criteria[${j}]`;
-          const parseResult = AcceptanceCriterionSchema.safeParse(ac);
-          if (!parseResult.success) {
-            for (const issue of parseResult.error.issues) {
-              const fieldPath = issue.path.length > 0 ? `.${issue.path.join(".")}` : "";
-              errors.push(`${acPath}${fieldPath}: ${issue.message}`);
+      // Validate acceptance_criteria field shape and entries
+      if ("acceptance_criteria" in obj) {
+        if (!Array.isArray(obj.acceptance_criteria)) {
+          errors.push(
+            `${itemPath}.acceptance_criteria: Expected array, received ${typeof obj.acceptance_criteria}`,
+          );
+        } else {
+          const acs = obj.acceptance_criteria as unknown[];
+          for (let j = 0; j < acs.length; j++) {
+            const ac = acs[j];
+            const acPath = `${itemPath}.acceptance_criteria[${j}]`;
+            const parseResult = AcceptanceCriterionSchema.safeParse(ac);
+            if (!parseResult.success) {
+              for (const issue of parseResult.error.issues) {
+                const fieldPath = issue.path.length > 0 ? `.${issue.path.join(".")}` : "";
+                errors.push(`${acPath}${fieldPath}: ${issue.message}`);
+              }
             }
           }
         }

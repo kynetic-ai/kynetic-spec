@@ -241,6 +241,64 @@ describe("AC ID patch validation", () => {
       expect(result).toContain("features[0].acceptance_criteria[0].when");
       expect(result).toContain("features[0].acceptance_criteria[0].then");
     });
+
+    // ─── Non-array acceptance_criteria field shape validation ──────────
+
+    it("rejects non-array acceptance_criteria in nested features", () => {
+      const result = validateSpecItemPatchData(
+        {
+          features: [
+            {
+              _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+              title: "Nested Feature",
+              acceptance_criteria: "not-an-array",
+            },
+          ],
+        },
+        { allowUnknown: true },
+      );
+      expect(result).not.toBeNull();
+      expect(result).toContain("features[0].acceptance_criteria");
+      expect(result).toContain("Expected array");
+    });
+
+    it("rejects non-array acceptance_criteria in deeply nested requirements", () => {
+      const result = validateSpecItemPatchData(
+        {
+          features: [
+            {
+              _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+              title: "Feature",
+              requirements: [
+                {
+                  _ulid: "01BBBBBBBBBBBBBBBBBBBBBTEST",
+                  title: "Requirement",
+                  acceptance_criteria: 42,
+                },
+              ],
+            },
+          ],
+        },
+        { allowUnknown: true },
+      );
+      expect(result).not.toBeNull();
+      expect(result).toContain("features[0].requirements[0].acceptance_criteria");
+      expect(result).toContain("Expected array");
+    });
+
+    it("rejects non-array acceptance_criteria without allowUnknown", () => {
+      const result = validateSpecItemPatchData({
+        features: [
+          {
+            _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+            title: "Feature",
+            acceptance_criteria: "not-an-array",
+          },
+        ],
+      });
+      expect(result).not.toBeNull();
+      expect(result).toContain("Expected array");
+    });
   });
 
   // ─── Single item patch: ac-patch-rejects-invalid-id ────────────────
@@ -439,6 +497,26 @@ describe("AC ID patch validation", () => {
       );
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("Required");
+    });
+
+    // AC: @item-patch ac-allow-unknown-rejects-invalid-ac-id
+    it("rejects non-array nested acceptance_criteria with --allow-unknown", () => {
+      const data = JSON.stringify({
+        features: [
+          {
+            _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+            title: "Nested Feature",
+            acceptance_criteria: "not-an-array",
+          },
+        ],
+      });
+      const result = kspec(
+        `item patch @test-core --data '${data}' --allow-unknown`,
+        tempDir,
+        { expectFail: true },
+      );
+      expect(result.exitCode).not.toBe(0);
+      expect(result.stderr).toContain("Expected array");
     });
 
     // AC: @item-patch ac-allow-unknown-rejects-invalid-ac-id
@@ -754,6 +832,32 @@ describe("AC ID patch validation", () => {
       await expect(
         updateSpecItem(ctx, target, nestedPatch as never),
       ).rejects.toThrow("Required");
+
+      // Verify catalog was not mutated
+      const contentAfter = await readYamlFile<unknown>(target._sourceFile!);
+      expect(contentAfter).toEqual(contentBefore);
+    });
+
+    // AC: @acceptance-criterion-id-format ac-patch-rejects-invalid-id
+    it("rejects non-array nested acceptance_criteria via updateSpecItem", async () => {
+      const ctx = await initContext(tempDir);
+      const items = await loadAllItems(ctx);
+      const target = findItemBySlug(items, "test-core");
+
+      const contentBefore = await readYamlFile<unknown>(target._sourceFile!);
+
+      const nestedPatch = {
+        features: [
+          {
+            _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
+            title: "Feature With Bad AC Shape",
+            acceptance_criteria: "not-an-array",
+          },
+        ],
+      };
+      await expect(
+        updateSpecItem(ctx, target, nestedPatch as never),
+      ).rejects.toThrow("Expected array");
 
       // Verify catalog was not mutated
       const contentAfter = await readYamlFile<unknown>(target._sourceFile!);
