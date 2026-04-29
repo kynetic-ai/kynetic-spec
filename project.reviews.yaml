@@ -174902,6 +174902,24 @@ reviews:
         runner: npm test
         created_at: 2026-04-29T18:14:45.202Z
         completed_at: 2026-04-29T18:14:45.202Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/server.ts, packages/daemon/src/web-ui-entry.ts,
+          tests/daemon-web-ui-entry.test.ts, tests/daemon-web-ui-bundle.test.ts,
+          tests/daemon-api/server.test.ts, node_modules/@elysiajs/static/dist/index.js. Commands
+          run: kspec task get, kspec item get @daemon-server, kspec item get @daemon-web-ui-bundle,
+          kspec validate, rg AC annotations/source reads, git diff, targeted npm test, full npm
+          test, Node/Bun Elysia static-plugin repros. Claims verified: helper re-reads index.html
+          for app routes; root route still bypasses helper in non-node static-plugin stack.
+          Categories searched: correctness, edge cases, error handling, cache behavior, route
+          precedence/integration, test quality, path containment/security."
+        name: review evidence log
+        required: false
+        runner: manual review
+        created_at: 2026-04-29T18:15:00.072Z
+        completed_at: 2026-04-29T18:15:00.072Z
     events:
       - _ulid: 01KQD6JFKJR6XB370SJ3TS72QV
         actor: Jacob Chapel
@@ -174951,6 +174969,13 @@ reviews:
           status: pass
           name: full test suite
         timestamp: 2026-04-29T18:14:46.358Z
+      - _ulid: 01KQD775ANVNAVQ44H4S2YJ0AJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-04-29T18:15:01.206Z
     examined_commit: 945338daa35a23bc27de0d5a6c0fd0a65cfef91b
     external_links: []
     lifecycle_state: open
@@ -174984,5 +175009,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-29T18:03:43.603Z
-    updated_at: 2026-04-29T18:14:45.202Z
+    updated_at: 2026-04-29T18:15:00.072Z
     notes: []
