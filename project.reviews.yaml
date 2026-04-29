@@ -173356,6 +173356,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-04-29T01:34:10.968Z
+      - _ulid: 01KQBDZ6F9A7RRB50T313AGXVY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQBDZ5C6X492ED11JGM738Z8
+        timestamp: 2026-04-29T01:34:31.401Z
     examined_commit: 770669fd163946ab2c1f6da1cc7ea8caa83fbe56
     external_links: []
     lifecycle_state: open
@@ -173387,7 +173394,23 @@ reviews:
               catalog."
             created_at: 2026-04-29T01:33:59.491Z
         kind: blocker
+      - _ulid: 01KQBDZ5C6X492ED11JGM738Z8
+        entries:
+          - _ulid: 01KQBDZ5C65XR5BTMPT3GKJCBP
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/parser/yaml.ts, src/cli/commands/item.ts, src/schema/spec.ts,
+              tests/ac-id-patch-validation.test.ts, tests/spec-item-mutation-serialization.test.ts,
+              task/spec details for @01KQB9J1KRGHYS1ZAJF2D91NTB, @acceptance-criterion-id-format,
+              and @item-patch. Commands run: git diff/stat/log, kspec task get, kspec item get,
+              kspec validate, AC annotation rg scans, source-scanning rg scan, git diff --check, npm
+              run typecheck, npm test -- --fresh. Claims verified: shared helper is wired into
+              single patch, bulk patch, and updateSpecItem; bulk invalid operations fail and tests
+              pass; worker's parser-layer test claim is false because the test exits through CLI
+              validation before updateSpecItem. Categories searched: correctness, edge cases, error
+              handling, test quality, AC coverage, integration."
+            created_at: 2026-04-29T01:34:30.278Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-29T01:23:15.324Z
-    updated_at: 2026-04-29T01:34:09.795Z
+    updated_at: 2026-04-29T01:34:30.278Z
     notes: []
