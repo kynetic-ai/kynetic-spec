@@ -13078,7 +13078,7 @@ workspaces:
         head: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
         last_seen_at: 2026-04-29T17:32:18.260Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-convert-cruft-02-backfill-process-retirement-plan-01kq0d4f
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
     bootstrap:
       status: succeeded
@@ -13558,7 +13558,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-29T19:18:33.908Z
+      updated_at: 2026-04-29T19:19:00.605Z
     integration:
       status: pending
       detail: null
@@ -13573,10 +13573,10 @@ workspaces:
     task_slug: task-daemon-web-ui-current-entry-responses
     timestamps:
       closed_at: null
-      last_active_at: 2026-04-29T18:18:21.776Z
-      last_reconciled_at: 2026-04-29T19:18:33.908Z
+      last_active_at: 2026-04-29T19:19:00.605Z
+      last_reconciled_at: 2026-04-29T19:19:00.605Z
       created_at: 2026-04-29T17:43:18.285Z
-      updated_at: 2026-04-29T19:18:58.229Z
+      updated_at: 2026-04-29T19:19:00.605Z
     workspace_id: dispatch-workspace-01KQD418BKZPZWMMFBVM4931V5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
