@@ -16497,6 +16497,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-28T07:56:58.784Z
+  - _ulid: 01KQBA14TE3VDM3145HQJKGBWG
+    type: success
+    content: Spec-only tasks (adding ACs, updating implementation status) are efficiently handled with
+      kspec batch — 9 AC additions + 3 status updates completed in 2 batch calls with atomic
+      commits, versus 12 sequential CLI invocations.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-29T00:25:40.942Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
