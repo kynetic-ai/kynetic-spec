@@ -34444,9 +34444,23 @@ runs:
     completed_at: 2026-04-29T03:57:08.874Z
   - _ulid: 01KQBQ1D88C4ZKWJ0T4024F8AJ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-29T04:13:01.064Z
+        completed_at: 2026-04-29T04:14:06.533Z
+        notes: "Session: fix cycle 5 for task-centralize-ac-id-patch-validation. Single fix —
+          collectNestedAcErrors skipped non-array acceptance_criteria in nested catalog items. Fix +
+          6 tests, all passing. What worked: review was precise and actionable, fix was isolated.
+          Friction: this task has had 5 fix cycles, each revealing a narrow gap in recursive nested
+          validation (nested catalogs, then full schema, then unused import, then field shape).
+          Pattern: incremental edge-case discovery in recursive validation logic."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-29T04:14:06.533Z
+        completed_at: 2026-04-29T04:14:06.533Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-29T04:13:01.064Z
