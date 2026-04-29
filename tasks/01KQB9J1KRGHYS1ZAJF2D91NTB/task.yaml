@@ -83,7 +83,7 @@ description: |
 spec_ref: "@acceptance-criterion-id-format"
 plan_ref: "@plan-ac-id-surface-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-ac-id-hardening-spec-updates"
@@ -95,6 +95,14 @@ tags:
   - schema
   - parser
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-centralize-ac-id-patch-validation/01kqb9j1
+  captured_at: 2026-04-29T01:21:29.853Z
+  commit: 770669fd163946ab2c1f6da1cc7ea8caa83fbe56
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KQBASQMEHJXG1YEMS50ZA13E
 history:
   - author: Jacob Chapel
@@ -117,7 +125,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-29T00:39:55.570Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-centralize-ac-id-patch-validation/01kqb9j1
+          captured_at: 2026-04-29T01:21:29.853Z
+          commit: 770669fd163946ab2c1f6da1cc7ea8caa83fbe56
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-29T01:21:29.856Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-29T01:21:29.856Z
 created_at: 2026-04-29T00:17:26.136Z
 started_at: 2026-04-29T00:39:55.569Z
+submitted_at: 2026-04-29T01:21:29.856Z
 todos: []
 automation: eligible
