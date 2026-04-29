@@ -11696,7 +11696,7 @@ workspaces:
         head: 770669fd163946ab2c1f6da1cc7ea8caa83fbe56
         last_seen_at: 2026-04-29T01:22:13.706Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-centralize-ac-id-patch-validation-01kqb9j1
-  - active_role: null
+  - active_role: worker
     base_branch_point: 16b161551bb2c8055be06a503b1701ba756c1dea
     bootstrap:
       status: succeeded
@@ -12032,7 +12032,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-29T01:23:07.048Z
+      updated_at: 2026-04-29T01:23:31.744Z
     integration:
       status: pending
       detail: null
@@ -12041,16 +12041,16 @@ workspaces:
       target_branch: dev
       target_commit: 16b161551bb2c8055be06a503b1701ba756c1dea
       updated_at: 2026-04-29T01:23:07.048Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQB9J1X2V281Z6YFN7WM1V1W"
     task_slug: task-strict-ac-annotation-token-parsing
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-04-29T01:23:07.048Z
+      last_active_at: 2026-04-29T01:23:31.744Z
+      last_reconciled_at: 2026-04-29T01:23:31.744Z
       created_at: 2026-04-29T01:23:07.048Z
-      updated_at: 2026-04-29T01:23:30.673Z
+      updated_at: 2026-04-29T01:23:31.744Z
     workspace_id: dispatch-workspace-01KQB9J1X2V281Z6YFN7WM1V1W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
