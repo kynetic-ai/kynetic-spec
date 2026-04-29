@@ -27540,7 +27540,7 @@
   type: task
   spec_ref: "@acceptance-criterion-id-format"
   plan_ref: "@plan-ac-id-surface-hardening"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-centralize-ac-id-patch-validation"
@@ -27556,4 +27556,5 @@
   created_at: 2026-04-29T00:17:26.752Z
   started_at: 2026-04-29T04:29:02.627Z
   submitted_at: 2026-04-29T04:36:07.230Z
+  completed_at: 2026-04-29T04:53:42.582Z
   automation: eligible
