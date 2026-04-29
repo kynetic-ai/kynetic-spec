@@ -34636,9 +34636,23 @@ runs:
     completed_at: 2026-04-29T04:38:24.603Z
   - _ulid: 01KQBSD2Q2XVCJN3DSY2S9SCTT
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-04-29T04:54:20.642Z
+        completed_at: 2026-04-29T04:54:52.660Z
+        notes: "What worked well: The detached-review path was reliable: creating a fresh review record,
+          recording checks, approving, then using the detached merge helper led to a clean no-op
+          merge/completion without touching dev in the review snapshot. The focused gate plus full
+          fresh npm test gave strong evidence for a validation-only task. The review evidence log
+          check was useful for preserving what was read, what ran, and what claims were
+          independently verified."
+      - status: completed
+        step_index: 1
+        started_at: 2026-04-29T04:54:52.660Z
+        completed_at: 2026-04-29T04:54:52.660Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T04:54:20.642Z
