@@ -83,8 +83,12 @@ description: |
 spec_ref: "@acceptance-criterion-id-format"
 plan_ref: "@plan-ac-id-surface-hardening"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e. Centralized spec item
+  patch validation now covers single patch, bulk patch dry-run/write paths, parser-layer
+  updateSpecItem, nested catalog acceptance_criteria validation, and AC add/set ID validation
+  through shared schema-backed helpers.
 depends_on:
   - "@task-ac-id-hardening-spec-updates"
 context: []
@@ -438,8 +442,25 @@ history:
         previous: "@01KQBN9G9WMHZXQNMHP0X7JQAF"
     command: review-link
     timestamp: 2026-04-29T04:15:14.184Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e. Centralized spec item patch
+          validation now covers single patch, bulk patch dry-run/write paths, parser-layer
+          updateSpecItem, nested catalog acceptance_criteria validation, and AC add/set ID
+          validation through shared schema-backed helpers.
+        previous: null
+      completed_at:
+        new: 2026-04-29T04:27:28.002Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-29T04:27:28.017Z
 created_at: 2026-04-29T00:17:26.136Z
 started_at: 2026-04-29T04:12:34.811Z
 submitted_at: 2026-04-29T04:12:37.962Z
+completed_at: 2026-04-29T04:27:28.002Z
 todos: []
 automation: eligible

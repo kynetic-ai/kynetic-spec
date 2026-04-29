@@ -27491,7 +27491,7 @@
   type: task
   spec_ref: "@acceptance-criterion-id-format"
   plan_ref: "@plan-ac-id-surface-hardening"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-ac-id-hardening-spec-updates"
@@ -27507,6 +27507,7 @@
   created_at: 2026-04-29T00:17:26.136Z
   started_at: 2026-04-29T04:12:34.811Z
   submitted_at: 2026-04-29T04:12:37.962Z
+  completed_at: 2026-04-29T04:27:28.002Z
   automation: eligible
 - _ulid: 01KQB9J1X2V281Z6YFN7WM1V1W
   slugs:
