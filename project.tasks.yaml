@@ -27491,7 +27491,7 @@
   type: task
   spec_ref: "@acceptance-criterion-id-format"
   plan_ref: "@plan-ac-id-surface-hardening"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-ac-id-hardening-spec-updates"
@@ -27505,7 +27505,7 @@
   notes_count: 6
   todos_count: 0
   created_at: 2026-04-29T00:17:26.136Z
-  started_at: 2026-04-29T02:00:57.429Z
+  started_at: 2026-04-29T02:40:52.411Z
   submitted_at: 2026-04-29T02:01:00.814Z
   automation: eligible
 - _ulid: 01KQB9J1X2V281Z6YFN7WM1V1W
