@@ -16516,6 +16516,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-29T02:02:21.522Z
+  - _ulid: 01KQBGKTDMTCE5D5PGT0B0Q9HT
+    type: friction
+    content: Reflection workflow instructions showed `kspec workflow show` without a run ref, but the
+      current CLI required `run-ref` in this detached review session. This caused an avoidable
+      failed command during reflection and suggests command examples should include explicit run
+      refs.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-29T02:20:44.340Z
+  - _ulid: 01KQBGKTN3BE5X86M6DRKPHM00
+    type: success
+    content: For high-risk schema/passthrough validation reviews, combining parallel code exploration
+      with a concrete temp-fixture reproduction command caught a nested catalog AC-id bypass that
+      the full test suite did not cover.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-04-29T02:20:44.579Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

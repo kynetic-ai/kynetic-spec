@@ -3036,3 +3036,14 @@ inbox:
       - agents
     added_by: Jacob Chapel
     created_at: 2026-04-28T23:42:32.818Z
+  - _ulid: 01KQBGKTB5XXF7A8RX3CCXV15K
+    text: Update session reflection workflow examples to match current workflow CLI syntax. In this
+      session, `kspec workflow show` returned "missing required argument run-ref" while the reflect
+      instructions show it without a run ref; examples should show `kspec workflow show <run-ref>`
+      and `kspec workflow next <run-ref> --notes ...` or explain when the ref can be omitted.
+    tags:
+      - reflection
+      - docs
+      - workflow
+    added_by: Jacob Chapel
+    created_at: 2026-04-29T02:20:44.261Z
