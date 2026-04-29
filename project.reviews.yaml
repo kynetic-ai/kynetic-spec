@@ -174648,7 +174648,102 @@ reviews:
     slugs: []
     title: Review task-ac-id-hardening-final-gate
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/ac-id-patch-validation.test.ts
+          tests/ac-annotation-identifier-format.test.ts tests/ac-annotation-integrity.test.ts
+          tests/ac-id-format.test.ts tests/ac-id-format-gate.test.ts
+          tests/ac-annotation-validation.test.ts: 55 suites passed, 165 tests passed, log
+          /tmp/kspec-test-cache/01KQBRHQACBJN6DK8NV6ZYN04F/3b0b8169e219bf47.log"
+        name: focused-ac-id-gate
+        required: true
+        runner: npm-test
+        created_at: 2026-04-29T04:52:38.065Z
+        completed_at: 2026-04-29T04:52:38.065Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: 2325 suites passed, 8526 passed, 5 skipped, exit 0"
+        name: full-npm-test
+        required: true
+        runner: npm-test
+        created_at: 2026-04-29T04:52:41.300Z
+        completed_at: 2026-04-29T04:52:41.300Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run typecheck: tsc --noEmit exited 0"
+        name: typecheck
+        required: true
+        runner: tsc
+        created_at: 2026-04-29T04:52:44.495Z
+        completed_at: 2026-04-29T04:52:44.495Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --refs --warnings-ok: passed; 1436 files, 608 items, 1428 tasks;
+          references OK; 6 deprecated-ref warnings"
+        name: kspec-validate-refs
+        required: true
+        runner: kspec-validate
+        created_at: 2026-04-29T04:52:47.653Z
+        completed_at: 2026-04-29T04:52:47.653Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --alignment --warnings-ok: passed; 33 orphan warnings and 4 status
+          mismatch warnings while task pending review"
+        name: kspec-validate-alignment
+        required: true
+        runner: kspec-validate
+        created_at: 2026-04-29T04:52:50.747Z
+        completed_at: 2026-04-29T04:52:50.747Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --completeness --warnings-ok: passed; 230 missing own AC coverage warnings
+          and 2 fixture invalid annotation warnings classified as existing catalog debt"
+        name: kspec-validate-completeness
+        required: true
+        runner: kspec-validate
+        created_at: 2026-04-29T04:52:53.896Z
+        completed_at: 2026-04-29T04:52:53.896Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec item list --json --limit 10000 scan: 608 items, 3087 AC ids checked, 0 invalid"
+        name: catalog-ac-id-scan
+        required: true
+        runner: kspec-item-list-json
+        created_at: 2026-04-29T04:52:58.047Z
+        completed_at: 2026-04-29T04:52:58.047Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, task/spec output, tests/ac-id-patch-validation.test.ts,
+          tests/ac-id-format.test.ts, tests/ac-annotation-identifier-format.test.ts,
+          tests/ac-annotation-integrity.test.ts, src/parser/yaml.ts, src/parser/validate.ts,
+          src/schema/common.ts, src/schema/spec.ts, src/cli/commands/item.ts. Commands run: git
+          diff/name/status, kspec item get, rg AC annotations, npm focused/full tests, typecheck,
+          kspec validate refs/alignment/completeness, catalog scan. Claims verified: validation-only
+          branch has empty code diff; focused tests/typecheck/validation/catalog scan pass; tests
+          are behavioral/parser/CLI/schema tests, not source scanning. Categories searched:
+          correctness, edge cases, error handling, test quality, integration. Findings: none."
+        name: review-evidence-log
+        required: true
+        runner: reviewer
+        created_at: 2026-04-29T04:53:01.110Z
+        completed_at: 2026-04-29T04:53:01.110Z
     events:
       - _ulid: 01KQBRKCCBC0B2053DD81ZK9Q6
         actor: Jacob Chapel
@@ -174663,6 +174758,62 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-29T04:40:34.321Z
+      - _ulid: 01KQBS9ZSZR5C6TF69DQ9B4BG1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused-ac-id-gate
+        timestamp: 2026-04-29T04:52:39.359Z
+      - _ulid: 01KQBSA2WFPBNY1D7YQ01T33FD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full-npm-test
+        timestamp: 2026-04-29T04:52:42.511Z
+      - _ulid: 01KQBSA60A9AKFQ5T5AAB3ZA8W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: typecheck
+        timestamp: 2026-04-29T04:52:45.706Z
+      - _ulid: 01KQBSA92F9JRXW3SS3T4N586Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate-refs
+        timestamp: 2026-04-29T04:52:48.847Z
+      - _ulid: 01KQBSAC529NP7QMZ46ZMG5WK3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate-alignment
+        timestamp: 2026-04-29T04:52:52.002Z
+      - _ulid: 01KQBSAF5S68BCB1GAH38X57FT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate-completeness
+        timestamp: 2026-04-29T04:52:55.097Z
+      - _ulid: 01KQBSAK77BM806JTQ82Q2NSGN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: catalog-ac-id-scan
+        timestamp: 2026-04-29T04:52:59.239Z
+      - _ulid: 01KQBSAP8ECD3K5QTRRGK39HZE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence-log
+        timestamp: 2026-04-29T04:53:02.350Z
     examined_commit: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
     external_links: []
     lifecycle_state: open
@@ -174675,5 +174826,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-29T04:40:18.571Z
-    updated_at: 2026-04-29T04:40:33.052Z
+    updated_at: 2026-04-29T04:53:01.110Z
     notes: []
