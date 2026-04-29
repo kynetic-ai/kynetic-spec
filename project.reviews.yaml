@@ -174030,6 +174030,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-29T03:15:19.331Z
+      - _ulid: 01KQBKZFS9RH0PETKR0V5M49KD
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQBKZEP2AJNQXWC3QED1R8GE
+        timestamp: 2026-04-29T03:19:32.393Z
     examined_commit: 903835f41e3af9329fd287481534e664c7dc6d96
     external_links: []
     lifecycle_state: open
@@ -174039,8 +174046,26 @@ reviews:
       content_hash: ""
       ref: "@01KQB9J1KRGHYS1ZAJF2D91NTB"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQBKZEP2AJNQXWC3QED1R8GE
+        anchor:
+          type: code
+          commit: 903835f41e3af9329fd287481534e664c7dc6d96
+          line_end: 18
+          line_start: 18
+          path: src/parser/yaml.ts
+          side: head
+        entries:
+          - _ulid: 01KQBKZEP262PJ0655SER5VG7G
+            author: Jacob Chapel
+            body: "MUST-FIX: changed-file lint fails because src/parser/yaml.ts imports AcIdSchema but no longer
+              uses it after nested AC validation switched to AcceptanceCriterionSchema. Evidence:
+              running npx oxlint src/cli/commands/item.ts src/parser/yaml.ts
+              tests/ac-id-patch-validation.test.ts exits 1 with eslint(no-unused-vars) on this
+              import. This is a branch-introduced lint error and should be removed before merge."
+            created_at: 2026-04-29T03:19:31.266Z
+        kind: blocker
     verdicts: []
     created_at: 2026-04-29T03:14:58.113Z
-    updated_at: 2026-04-29T03:15:18.068Z
+    updated_at: 2026-04-29T03:19:31.266Z
     notes: []
