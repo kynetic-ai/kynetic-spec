@@ -34636,7 +34636,7 @@ runs:
     completed_at: 2026-04-29T04:38:24.603Z
   - _ulid: 01KQBSD2Q2XVCJN3DSY2S9SCTT
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -34652,7 +34652,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-29T04:54:52.660Z
-        completed_at: 2026-04-29T04:54:52.660Z
+        completed_at: 2026-04-29T04:55:02.083Z
+        notes: "Friction points: (1) The reflect skill says to use  with no argument, but the CLI requires a
+          run ref, producing . (2) While recording review checks through , an argument of  did not
+          result in the  option being passed; the evidence-log check was recorded as required. This
+          looks like a generic batch handling gap for Commander negated boolean options."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-29T04:55:02.083Z
+        completed_at: 2026-04-29T04:55:02.083Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T04:54:20.642Z
