@@ -11656,11 +11656,11 @@ workspaces:
     canonical_branch: dispatch/task/task-centralize-ac-id-patch-validation/01kqb9j1
     canonical_branch_head: 551a9819996fd7858878d6fa38c9de249245b9e1
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-29T04:27:44.940Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-29T04:27:45.667Z
     health:
       status: healthy
       issues: []
@@ -11674,7 +11674,7 @@ workspaces:
       target_branch: dev
       target_commit: 16b161551bb2c8055be06a503b1701ba756c1dea
       updated_at: 2026-04-29T04:27:44.940Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQB9J1KRGHYS1ZAJF2D91NTB"
     task_slug: task-centralize-ac-id-patch-validation
@@ -11683,7 +11683,7 @@ workspaces:
       last_active_at: 2026-04-29T04:13:59.460Z
       last_reconciled_at: 2026-04-29T04:27:44.940Z
       created_at: 2026-04-29T00:38:43.387Z
-      updated_at: 2026-04-29T04:27:44.940Z
+      updated_at: 2026-04-29T04:27:45.667Z
     workspace_id: dispatch-workspace-01KQB9J1KRGHYS1ZAJF2D91NTB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
