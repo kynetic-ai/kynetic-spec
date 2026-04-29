@@ -13,3 +13,21 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-29T17:47:02.692Z
+  - _ulid: 01KQD6C5MRKARFJ3JHG8NF071X
+    content: "Implementation complete. Created packages/daemon/src/web-ui-entry.ts with
+      serveWebUiEntry(webUiPath) (reads index.html at request time; 200 + text/html + Cache-Control:
+      no-cache on success; 503 + text/plain + Cache-Control: no-store when missing) and
+      registerWebUiEntryRoutes(app, webUiPath) which iterates WEB_UI_ENTRY_ROUTES (the same SPA
+      route list the daemon previously registered). server.ts now removes the
+      readFileSync(indexHtmlPath) startup capture and calls registerWebUiEntryRoutes(app,
+      resolvedWebUiPath); SPA registration order is unchanged so /api/* and /ws still take
+      precedence. Bun static plugin and node serveWebUiStaticAsset are untouched, preserving asset
+      path containment and resolveWebUiPath behavior. Added tests/daemon-web-ui-entry.test.ts (13
+      tests) covering: bundle-change reflected on next response (helper + via Elysia for /, /tasks,
+      /items, /plans, /reviews), text/html content type, revalidating cache headers, 503 when
+      index.html missing or webUiPath null, no-store on 503, and recovery after the entry returns.
+      Full suite: 8539 passed / 5 skipped (unchanged from main). Lint warnings reduced by one (fixed
+      urlFor scoping in new test); pre-existing 13 errors untouched."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T18:00:16.792Z
