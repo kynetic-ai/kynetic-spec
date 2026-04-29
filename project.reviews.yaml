@@ -174855,7 +174855,18 @@ reviews:
     slugs: []
     title: Review daemon web UI current entry responses
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/daemon-web-ui-entry.test.ts tests/daemon-web-ui-bundle.test.ts
+          tests/daemon-api/server.test.ts: 36 passed across 11 suites"
+        name: targeted daemon web UI tests
+        required: true
+        runner: npm test
+        created_at: 2026-04-29T18:07:47.336Z
+        completed_at: 2026-04-29T18:07:47.336Z
     events:
       - _ulid: 01KQD6JFKJR6XB370SJ3TS72QV
         actor: Jacob Chapel
@@ -174877,6 +174888,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQD6SDEV7JGB5ZTYGRHFCKNE
         timestamp: 2026-04-29T18:07:32.010Z
+      - _ulid: 01KQD6SYXN53R0NCNH4JKDZNPC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon web UI tests
+        timestamp: 2026-04-29T18:07:48.662Z
     examined_commit: 945338daa35a23bc27de0d5a6c0fd0a65cfef91b
     external_links: []
     lifecycle_state: open
@@ -174910,5 +174928,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-29T18:03:43.603Z
-    updated_at: 2026-04-29T18:07:30.779Z
+    updated_at: 2026-04-29T18:07:47.336Z
     notes: []
