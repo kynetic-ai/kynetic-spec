@@ -27515,7 +27515,7 @@
   type: task
   spec_ref: "@ac-annotation-identifier-format"
   plan_ref: "@plan-ac-id-surface-hardening"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-ac-id-hardening-spec-updates"
@@ -27528,6 +27528,7 @@
   todos_count: 0
   created_at: 2026-04-29T00:17:26.434Z
   started_at: 2026-04-29T01:24:02.704Z
+  submitted_at: 2026-04-29T01:45:16.791Z
   automation: eligible
 - _ulid: 01KQB9J270540ZSC74AQCR27HA
   slugs:
