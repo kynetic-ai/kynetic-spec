@@ -13549,11 +13549,11 @@ workspaces:
     canonical_branch: dispatch/task/task-daemon-web-ui-current-entry-responses/01kqd418
     canonical_branch_head: fcdc59aad4f07a4359c5a141785272156d848c73
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-04-29T19:31:46.133Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-04-29T19:31:47.974Z
     health:
       status: healthy
       issues: []
@@ -13567,7 +13567,7 @@ workspaces:
       target_branch: dev
       target_commit: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
       updated_at: 2026-04-29T19:31:46.133Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQD418BKZPZWMMFBVM4931V5"
     task_slug: task-daemon-web-ui-current-entry-responses
@@ -13576,7 +13576,7 @@ workspaces:
       last_active_at: 2026-04-29T19:19:00.605Z
       last_reconciled_at: 2026-04-29T19:31:46.133Z
       created_at: 2026-04-29T17:43:18.285Z
-      updated_at: 2026-04-29T19:31:46.133Z
+      updated_at: 2026-04-29T19:31:47.974Z
     workspace_id: dispatch-workspace-01KQD418BKZPZWMMFBVM4931V5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
