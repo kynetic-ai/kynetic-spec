@@ -68,8 +68,12 @@ description: |
 spec_ref: "@daemon-web-ui-bundle"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev via detached reviewer merge helper. Reviewed daemon-served web UI
+  startup asset coherence coverage: entry-referenced same-origin assets return 200, stale old asset
+  references are not served from current entry responses, traversal remains contained, and missing
+  unreferenced assets still 404. Full npm test -- --fresh passed."
 depends_on:
   - "@task-daemon-web-ui-current-entry-responses"
 context: []
@@ -138,8 +142,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-29T19:54:42.211Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev via detached reviewer merge helper. Reviewed daemon-served web UI startup asset
+          coherence coverage: entry-referenced same-origin assets return 200, stale old asset
+          references are not served from current entry responses, traversal remains contained, and
+          missing unreferenced assets still 404. Full npm test -- --fresh passed."
+        previous: null
+      completed_at:
+        new: 2026-04-29T20:06:03.518Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-29T20:06:03.527Z
 created_at: 2026-04-29T17:19:22.985Z
 started_at: 2026-04-29T19:32:54.678Z
 submitted_at: 2026-04-29T19:51:21.466Z
+completed_at: 2026-04-29T20:06:03.518Z
 todos: []
 automation: eligible

@@ -27505,7 +27505,7 @@
   title: Verify daemon-served entry documents only reference available startup assets
   type: task
   spec_ref: "@daemon-web-ui-bundle"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-daemon-web-ui-current-entry-responses"
@@ -27521,4 +27521,5 @@
   created_at: 2026-04-29T17:19:22.985Z
   started_at: 2026-04-29T19:32:54.678Z
   submitted_at: 2026-04-29T19:51:21.466Z
+  completed_at: 2026-04-29T20:06:03.518Z
   automation: eligible
