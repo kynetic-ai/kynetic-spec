@@ -27520,6 +27520,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-04-29T00:17:26.434Z
+  automation: eligible
 - _ulid: 01KQB9J270540ZSC74AQCR27HA
   slugs:
     - task-ac-id-hardening-final-gate
