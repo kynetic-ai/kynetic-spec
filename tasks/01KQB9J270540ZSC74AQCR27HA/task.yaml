@@ -55,7 +55,7 @@ description: |
 spec_ref: "@acceptance-criterion-id-format"
 plan_ref: "@plan-ac-id-surface-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-centralize-ac-id-patch-validation"
@@ -67,6 +67,14 @@ tags:
   - tests
   - qa
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-ac-id-hardening-final-gate/01kqb9j2
+  captured_at: 2026-04-29T04:36:07.226Z
+  commit: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KQBQXH1WQZW9SSNS81BJ92GX
 history:
   - author: Jacob Chapel
@@ -89,7 +97,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-04-29T04:29:02.627Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-ac-id-hardening-final-gate/01kqb9j2
+          captured_at: 2026-04-29T04:36:07.226Z
+          commit: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-04-29T04:36:07.230Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-04-29T04:36:07.230Z
 created_at: 2026-04-29T00:17:26.752Z
 started_at: 2026-04-29T04:29:02.627Z
+submitted_at: 2026-04-29T04:36:07.230Z
 todos: []
 automation: eligible
