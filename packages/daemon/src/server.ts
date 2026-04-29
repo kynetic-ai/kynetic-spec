@@ -9,9 +9,9 @@ import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { staticPlugin } from "@elysiajs/static";
 import { ulid } from "ulidx";
-import { existsSync, readFileSync } from "fs";
+import { existsSync } from "fs";
 import { fileURLToPath } from "url";
-import { dirname, extname, join, resolve } from "path";
+import { dirname, join } from "path";
 import { PubSubManager } from "./websocket/pubsub.js";
 import { HeartbeatManager } from "./websocket/heartbeat.js";
 import { WebSocketHandler } from "./websocket/handler.js";
@@ -52,6 +52,7 @@ import {
   createShadowSyncOnPullHandler,
 } from "./shadow-sync-manager.js";
 import { registerWebUiEntryRoutes } from "./web-ui-entry.js";
+import { registerWebUiNodeStaticRoutes } from "./web-ui-static.js";
 
 export type DaemonRuntime = "bun" | "node";
 
@@ -117,49 +118,6 @@ export function logHeartbeatDegradationWarning(runtime: DaemonRuntime): void {
 
 function hasWebUiIndex(dir: string | undefined): dir is string {
   return Boolean(dir && existsSync(join(dir, "index.html")));
-}
-
-const STATIC_ASSET_CONTENT_TYPES: Record<string, string> = {
-  ".css": "text/css; charset=utf-8",
-  ".html": "text/html; charset=utf-8",
-  ".ico": "image/x-icon",
-  ".js": "text/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".map": "application/json; charset=utf-8",
-  ".png": "image/png",
-  ".svg": "image/svg+xml",
-  ".txt": "text/plain; charset=utf-8",
-  ".woff": "font/woff",
-  ".woff2": "font/woff2",
-};
-
-function getStaticAssetContentType(assetPath: string): string {
-  return STATIC_ASSET_CONTENT_TYPES[extname(assetPath).toLowerCase()] ?? "application/octet-stream";
-}
-
-function serveWebUiStaticAsset(webUiPath: string, requestPath: string): Response {
-  const webUiRoot = resolve(webUiPath);
-  const relativePath = requestPath.startsWith("/") ? requestPath.slice(1) : requestPath;
-  const assetPath = resolve(webUiRoot, relativePath);
-  if (assetPath !== webUiRoot && !assetPath.startsWith(`${webUiRoot}/`)) {
-    return new Response("Not found", { status: 404 });
-  }
-
-  if (!existsSync(assetPath)) {
-    return new Response("Not found", { status: 404 });
-  }
-
-  return new Response(readFileSync(assetPath), {
-    headers: {
-      "Cache-Control": "public, max-age=86400",
-      "Content-Type": getStaticAssetContentType(assetPath),
-    },
-  });
-}
-
-function isRootWebUiAssetPath(requestPath: string): boolean {
-  const normalizedPath = requestPath.startsWith("/") ? requestPath.slice(1) : requestPath;
-  return normalizedPath.length > 0 && !normalizedPath.includes("/") && normalizedPath.includes(".");
 }
 
 /**
@@ -654,17 +612,7 @@ export async function createServer(options: ServerOptions) {
     registerWebUiEntryRoutes(app, resolvedWebUiPath);
 
     if (runtime === "node") {
-      app.get("/_app/*", ({ request }) =>
-        serveWebUiStaticAsset(resolvedWebUiPath, new URL(request.url).pathname),
-      );
-      app.get("/:asset", ({ request }) => {
-        const requestPath = new URL(request.url).pathname;
-        if (!isRootWebUiAssetPath(requestPath)) {
-          return new Response("Not found", { status: 404 });
-        }
-
-        return serveWebUiStaticAsset(resolvedWebUiPath, requestPath);
-      });
+      registerWebUiNodeStaticRoutes(app, resolvedWebUiPath);
     } else {
       // Bun's static plugin serves bundle assets with correct MIME metadata.
       // indexHTML: false stops the plugin from claiming '/' (and other
