@@ -1,1 +1,38 @@
-notes: []
+notes:
+  - _ulid: 01KQBR1K8XCDEKP8W9ABHHF3JF
+    content: >-
+      Approach: End-to-end validation gate for AC ID hardening.
+
+
+      Focused test files identified:
+
+      1. tests/ac-id-patch-validation.test.ts — @acceptance-criterion-id-format
+      ac-patch-rejects-invalid-id, @item-patch bulk/allow-unknown ACs
+
+      2. tests/ac-annotation-identifier-format.test.ts — @ac-annotation-identifier-format
+      ac-malformed-token-not-truncated, ac-valid-delimiters-preserved
+
+      3. tests/ac-annotation-integrity.test.ts — @ac-annotation-integrity-reporting
+      ac-malformed-ac-token-reported
+
+      4. tests/ac-id-format.test.ts — core @acceptance-criterion-id-format ACs
+
+      5. tests/ac-id-format-gate.test.ts — cross-cutting gate tests
+
+      6. tests/ac-annotation-validation.test.ts — annotation validation integration
+
+
+      Plan:
+
+      - Run all focused test suites
+
+      - Run typecheck
+
+      - Run kspec validate (refs, alignment, completeness)
+
+      - Catalog AC ID scan
+
+      - Update implementation status if all passes
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T04:30:35.805Z
