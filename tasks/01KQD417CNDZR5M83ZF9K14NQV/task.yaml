@@ -1,0 +1,131 @@
+_ulid: 01KQD417CNDZR5M83ZF9K14NQV
+slugs:
+  - task-daemon-web-ui-asset-coherence-specs
+title: Update specs for daemon web UI asset coherence
+type: task
+description: |
+  Update the existing daemon web UI specs so implementation work is reviewed
+  against explicit behavioral contracts. Keep this task limited to kspec
+  metadata/spec updates. Do not change daemon runtime code, web UI build
+  scripts, web UI source code, or tests in this task.
+
+  Why:
+  - The daemon web UI can fail even when the HTML route returns HTTP 200 if
+    the entry document points at assets that the daemon no longer serves.
+  - @daemon-server ac-17 currently says the daemon serves the built web UI
+    assets as the root route, but it does not say which bundle version the
+    root route must represent after the served bundle changes.
+  - @daemon-web-ui-bundle currently covers bundle packaging and path
+    resolution, but it does not require the served entry document and the
+    served startup assets to remain coherent.
+  - The spec changes must be explicit before implementation so reviewers do
+    not need this planning conversation to understand the desired behavior.
+
+  What:
+  - Add @daemon-server ac-root-route-current-entry with this exact
+    behavioral shape:
+      Given: The daemon's served web UI bundle has changed since an earlier
+      entry response.
+      When: A client requests the daemon root route.
+      Then: The response contains the entry document for the currently served
+      bundle.
+  - Add @daemon-server ac-app-route-current-entry with this exact behavioral
+    shape:
+      Given: The daemon's served web UI bundle has changed since an earlier
+      entry response.
+      When: A client requests a web UI application route.
+      Then: The response contains the entry document for the currently served
+      bundle.
+  - Add @daemon-web-ui-bundle ac-entry-bootstrap-assets-available with this
+    exact behavioral shape:
+      Given: A client receives a daemon-served web UI entry document.
+      When: The client requests a same-origin asset needed to start the web
+      UI.
+      Then: The daemon returns HTTP 200 with the requested asset content.
+  - Add @daemon-web-ui-bundle ac-reload-uses-current-entry with this exact
+    behavioral shape:
+      Given: A browser has previously loaded the daemon-served web UI from an
+      older served bundle.
+      When: The browser reloads a web UI route.
+      Then: The browser receives the entry document for the currently served
+      bundle.
+  - Add @daemon-web-ui-bundle ac-entry-unavailable-during-replacement with
+    this exact behavioral shape:
+      Given: The served web UI entry document is temporarily unavailable.
+      When: A client requests a web UI route.
+      Then: The daemon returns HTTP 503 for the web UI route.
+  - Add @daemon-web-ui-bundle ac-entry-recovers-after-replacement with this
+    exact behavioral shape:
+      Given: The served web UI entry document is available after a temporary
+      interruption.
+      When: A client requests a web UI route.
+      Then: The daemon returns the available entry document.
+  - Set the implementation status of @daemon-server and
+    @daemon-web-ui-bundle to in_progress so the new acceptance criteria are
+    not claimed as implemented before the follow-up code tasks land.
+  - Do not create a new spec for daemon web UI asset coherence. The listed
+    existing specs already own the relevant daemon serving and packaged
+    bundle contracts.
+
+  How:
+  - Use `kspec item ac add` for each listed acceptance criterion.
+  - Use the accepted kspec metadata workflow to set implementation status on
+    each updated spec.
+  - Verify each target spec shows each new AC exactly once with
+    `kspec item get`.
+  - Verify no duplicate spec item was created for the same behavior.
+
+  Testing:
+  - Run `kspec item get @daemon-server` and confirm the two new AC ids are
+    present on that spec.
+  - Run `kspec item get @daemon-web-ui-bundle` and confirm the four new AC
+    ids are present on that spec.
+  - Run `kspec validate --refs --warnings-ok`. If unrelated baseline
+    warnings already exist, record them separately and do not count them as
+    evidence for this task.
+
+  Establishes:
+  - @daemon-server ac-root-route-current-entry
+  - @daemon-server ac-app-route-current-entry
+  - @daemon-web-ui-bundle ac-entry-bootstrap-assets-available
+  - @daemon-web-ui-bundle ac-reload-uses-current-entry
+  - @daemon-web-ui-bundle ac-entry-unavailable-during-replacement
+  - @daemon-web-ui-bundle ac-entry-recovers-after-replacement
+spec_ref: "@daemon-web-ui-bundle"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Spec ACs were applied directly from the approved reviewed proposal; no runtime code
+  or tests changed.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - specs
+  - daemon
+  - web-ui
+  - reliability
+vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending
+      closed_reason:
+        new: Spec ACs were applied directly from the approved reviewed proposal; no runtime code or tests
+          changed.
+        previous: null
+      started_at:
+        new: 2026-04-29T17:19:23.747Z
+        previous: null
+      completed_at:
+        new: 2026-04-29T17:19:23.747Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-29T17:19:23.767Z
+created_at: 2026-04-29T17:19:20.981Z
+started_at: 2026-04-29T17:19:23.747Z
+completed_at: 2026-04-29T17:19:23.747Z
+todos: []

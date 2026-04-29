@@ -1,0 +1,84 @@
+_ulid: 01KQD419B9Q4X5CXH2R4H2ZH0Q
+slugs:
+  - task-daemon-web-ui-startup-asset-coherence
+title: Verify daemon-served entry documents only reference available startup assets
+type: task
+description: |
+  Add regression coverage and any required serving adjustments so a
+  daemon-served web UI entry document does not send the browser to missing
+  same-origin startup assets.
+
+  Why:
+  - The observable failure mode is not only stale HTML. The user-facing break
+    occurs when the browser follows asset references from a daemon-served
+    entry document and receives missing-asset responses.
+  - @daemon-web-ui-bundle must guarantee that a successful entry document is a
+    usable starting point for the browser, not merely a successful HTML
+    response.
+  - This task depends on the current-entry task so asset coherence is checked
+    against the same entry document behavior that users receive from root and
+    application routes.
+
+  What:
+  - Inspect the current daemon static asset serving behavior in
+    `packages/daemon/src/server.ts`.
+  - Identify the same-origin asset references in a daemon-served entry
+    document that are required to start the web UI. Include script,
+    modulepreload, stylesheet, and other same-origin startup references that
+    the generated entry document asks the browser to fetch before the app can
+    start.
+  - Add tests proving each required same-origin startup asset referenced by a
+    served entry document is returned successfully by the daemon.
+  - Include a regression case where an older entry document names an asset
+    that is not present after a bundle change. The test must prove that the
+    route response used for startup no longer names that missing asset.
+  - If tests expose a static asset serving gap, update daemon static asset
+    serving so the referenced startup asset is served successfully.
+  - Preserve path traversal protection for every static asset request.
+  - Preserve not-found behavior for asset paths that are not referenced by the
+    served entry document and do not exist in the served bundle.
+
+  How:
+  - Prefer test helpers that read a served entry response and extract
+    same-origin startup asset URLs from standard HTML attributes.
+  - Keep asset URL extraction test-side unless production code needs the same
+    behavior for an explicit user-facing feature.
+  - Use temporary bundle fixtures in tests so the regression does not depend
+    on the current repository's generated hash names.
+  - Do not assert specific generated hash values from the repository build.
+    Assert coherence between the entry response and the asset responses.
+  - Do not weaken static path containment to make tests pass.
+
+  Testing:
+  - Add a regression test where the entry response references a current script
+    asset and the daemon returns that script asset successfully.
+  - Add a regression test where the entry response references a current
+    stylesheet or preload asset when present and the daemon returns that asset
+    successfully.
+  - Add a regression test where a previous entry document referenced a missing
+    old asset after a bundle change and the current route response no longer
+    references that missing old asset.
+  - Add or preserve a path traversal test for static web UI assets.
+  - Run the targeted daemon web UI static-serving tests.
+
+  Covers:
+  - @daemon-web-ui-bundle ac-entry-bootstrap-assets-available
+  - @daemon-server ac-root-route-current-entry
+  - @daemon-server ac-app-route-current-entry
+spec_ref: "@daemon-web-ui-bundle"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-daemon-web-ui-current-entry-responses"
+context: []
+priority: 2
+tags:
+  - daemon
+  - web-ui
+  - reliability
+  - tests
+vcs_refs: []
+created_at: 2026-04-29T17:19:22.985Z
+todos: []

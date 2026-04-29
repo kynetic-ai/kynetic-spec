@@ -1,0 +1,105 @@
+_ulid: 01KQD418BKZPZWMMFBVM4931V5
+slugs:
+  - task-daemon-web-ui-current-entry-responses
+title: Keep daemon web UI entry responses current with the served bundle
+type: task
+description: |
+  Change daemon web UI route handling so root and application-route entry
+  responses track the currently served web UI bundle during the daemon
+  process lifetime. The daemon must satisfy this behavior without requiring
+  a daemon restart after the web UI bundle changes.
+
+  Why:
+  - A long-running daemon can continue serving a web UI entry document that
+    names assets from an older bundle while asset requests are resolved
+    against the current served bundle.
+  - That mismatch breaks the browser startup path: the route response is
+    successful, but the browser cannot load the scripts needed to start the
+    web UI.
+  - The daemon is also the host process for dispatch and running agents, so
+    users must not need to restart the daemon just to recover coherent web
+    UI HTML after a local web UI rebuild.
+
+  What:
+  - Inspect `packages/daemon/src/server.ts`, especially the web UI serving
+    block that registers static asset routes and SPA fallback routes.
+  - Remove the behavior where SPA fallback handlers reuse an entry document
+    captured once during daemon startup.
+  - Ensure the daemon root route returns the current entry document for the
+    served bundle after that bundle changes.
+  - Ensure web UI application routes such as `/tasks`, `/items`, `/plans`,
+    and `/reviews` return the current entry document for the served bundle
+    after that bundle changes.
+  - Ensure a missing entry document returns HTTP 503 for the web UI route
+    instead of a generic not-found response.
+  - Ensure a later request succeeds after the entry document becomes
+    available again.
+  - Ensure entry document responses are not reusable by a browser across a
+    later bundle change.
+  - Preserve existing API and WebSocket precedence. Requests under `/api/*`
+    and `/ws` must continue to reach the daemon API and WebSocket handlers,
+    not the web UI fallback.
+  - Preserve existing static asset path containment checks so requests cannot
+    escape the served web UI directory.
+  - Preserve current explicit webUiDir, WEB_UI_DIR, and bundled dist/web-ui
+    path resolution behavior from @daemon-web-ui-bundle ac-4 and ac-5.
+
+  How:
+  - Introduce a focused daemon server helper for serving the web UI entry
+    document from the currently resolved web UI directory at request time.
+  - Have every SPA fallback route call that helper instead of closing over
+    entry-document bytes read during daemon startup.
+  - Give successful entry document responses an HTML content type and cache
+    behavior that requires revalidation before reuse.
+  - Give temporary missing-entry responses HTTP 503 and cache behavior that
+    prevents the temporary response from being reused.
+  - Keep the helper small and exportable if needed so unit tests can exercise
+    it without starting a daemon process.
+  - Do not change which routes are considered web UI application routes unless
+    a test proves an existing route is missing from the current route list.
+  - Do not change dispatch, agent, API, WebSocket, project-context, or watcher
+    behavior in this task.
+
+  Testing:
+  - Add a targeted unit or integration test that creates a temporary web UI
+    bundle directory with an entry document naming an old startup asset,
+    serves an entry response, replaces the entry document with one naming a
+    new startup asset, serves another entry response without restarting the
+    daemon or recreating the route handler, and asserts the second response
+    contains only the new startup asset name.
+  - Add a test for a web UI application route, not only `/`, so
+    @daemon-server ac-app-route-current-entry is covered.
+  - Add a test where the entry document is temporarily absent and assert the
+    response returns HTTP 503.
+  - Add a test where the entry document becomes available after a temporary
+    absence and assert the next route request returns the available entry
+    document.
+  - Add assertions for entry document response content type and cache behavior.
+  - Run the narrow daemon/web-ui tests that cover `@daemon-server` ac-17 and
+    `@daemon-web-ui-bundle` path resolution.
+  - Run `npm test -- --run tests/daemon-web-ui-bundle.test.ts tests/daemon-server.test.ts`
+    or the updated equivalent targeted test command.
+
+  Covers:
+  - @daemon-server ac-root-route-current-entry
+  - @daemon-server ac-app-route-current-entry
+  - @daemon-web-ui-bundle ac-entry-unavailable-during-replacement
+  - @daemon-web-ui-bundle ac-entry-recovers-after-replacement
+  - @daemon-web-ui-bundle ac-reload-uses-current-entry
+spec_ref: "@daemon-server"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-daemon-web-ui-asset-coherence-specs"
+context: []
+priority: 1
+tags:
+  - daemon
+  - web-ui
+  - reliability
+  - tests
+vcs_refs: []
+created_at: 2026-04-29T17:19:21.971Z
+todos: []

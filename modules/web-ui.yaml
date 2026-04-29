@@ -139,6 +139,14 @@ features:
         then: it returns per-project cache state including domain states (unloaded/loading/ready/degraded),
           watcher status, entry counts per domain, and last invalidation timestamps
         when: GET /api/debug/cache-status is requested
+      - given: The daemon's served web UI bundle has changed since an earlier entry response
+        id: ac-root-route-current-entry
+        then: The response contains the entry document for the currently served bundle
+        when: A client requests the daemon root route
+      - given: The daemon's served web UI bundle has changed since an earlier entry response
+        id: ac-app-route-current-entry
+        then: The response contains the entry document for the currently served bundle
+        when: A client requests a web UI application route
     tags:
       - server
       - websocket
@@ -487,7 +495,7 @@ features:
           falls back to that location relative to the daemon module.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
@@ -515,6 +523,22 @@ features:
             then: web UI assets are served from the bundled dist/web-ui/ directory relative to the daemon's own
               module location
             when: daemon starts and resolves web UI path
+          - given: A client receives a daemon-served web UI entry document
+            id: ac-entry-bootstrap-assets-available
+            then: The daemon returns HTTP 200 with the requested asset content
+            when: The client requests a same-origin asset needed to start the web UI
+          - given: A browser has previously loaded the daemon-served web UI from an older served bundle
+            id: ac-reload-uses-current-entry
+            then: The browser receives the entry document for the currently served bundle
+            when: The browser reloads a web UI route
+          - given: The served web UI entry document is temporarily unavailable
+            id: ac-entry-unavailable-during-replacement
+            then: The daemon returns HTTP 503 for the web UI route
+            when: A client requests a web UI route
+          - given: The served web UI entry document is available after a temporary interruption
+            id: ac-entry-recovers-after-replacement
+            then: The daemon returns the available entry document
+            when: A client requests a web UI route
         tags: []
         created: 2026-03-03T04:39:13.036Z
         notes: []
