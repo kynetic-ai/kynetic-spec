@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KQDBXS566SKBXRYHCW21N65N
+    content: "Approach: extract serveWebUiStaticAsset + isRootWebUiAssetPath from server.ts into a new
+      packages/daemon/src/web-ui-static.ts module (mirrors web-ui-entry.ts pattern, gives tests a
+      focused seam). Add tests/daemon-web-ui-startup-asset-coherence.test.ts that builds an Elysia
+      app with the entry helper + node-runtime asset routes against a temp bundle fixture with
+      synthetic hash names, parses the served entry document for same-origin asset URLs (link[href],
+      script[src]), and asserts each is served HTTP 200. Regression case: replace bundle (new
+      index.html, delete old asset, add new asset); served entry no longer names old asset, old
+      asset 404s, new asset 200. Plus path traversal preservation and 404 preservation for
+      non-referenced missing assets. No production serving changes expected unless a gap surfaces;
+      the bundle's startup references already use /_app/* and root paths which are both covered."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T19:37:16.711Z
