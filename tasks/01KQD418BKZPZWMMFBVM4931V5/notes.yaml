@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KQD5KY549EB7MZ2KFA0RKHTW
+    content: "Approach: introduce packages/daemon/src/web-ui-entry.ts with a single exported helper
+      serveWebUiEntry(webUiPath) that reads index.html at request time. Returns 200 with text/html +
+      Cache-Control: no-cache when present, 503 with text/plain + Cache-Control: no-store when
+      missing. Replace the readFileSync(indexHtmlPath) capture in server.ts and have every SPA
+      fallback route call the helper. Tests: direct helper unit tests for bundle change, missing
+      entry 503, recovery, content type and cache headers; plus an Elysia app integration test that
+      registers SPA routes and exercises both / and /tasks via app.handle to prove app-route AC.
+      Preserve API/WS precedence (already handled by registration order before SPA routes), static
+      asset containment (untouched serveWebUiStaticAsset), and resolveWebUiPath behavior
+      (untouched)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T17:47:02.692Z
