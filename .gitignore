@@ -46,3 +46,4 @@ playwright-report/
 plans/
 bun.lock
 .claude/plugins/
+.claude/scheduled_tasks.lock
