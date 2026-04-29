@@ -173510,6 +173510,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-04-29T01:59:12.929Z
+      - _ulid: 01KQBFCRYCG65P6VRMH4ZRB74H
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQBFCQTHBY0SRGS657H4VNN3
+        timestamp: 2026-04-29T01:59:24.876Z
     examined_commit: a784c6635ed440da739f01ac5ce12a61d5fc426a
     external_links: []
     lifecycle_state: open
@@ -173519,8 +173526,25 @@ reviews:
       content_hash: ""
       ref: "@01KQB9J1X2V281Z6YFN7WM1V1W"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQBFCQTHBY0SRGS657H4VNN3
+        entries:
+          - _ulid: 01KQBFCQTJQZMZ6G1WWJS20R1W
+            author: Jacob Chapel
+            body: "Review evidence log (non-blocking): Files read: src/parser/validate.ts,
+              src/cli/commands/validate.ts, tests/ac-annotation-identifier-format.test.ts,
+              tests/ac-annotation-integrity.test.ts, tests/ac-annotation-validation.test.ts,
+              tests/ac-id-format-gate.test.ts. Commands run: kspec item get
+              @ac-annotation-identifier-format; kspec item get @ac-annotation-integrity-reporting;
+              rg AC annotations; rg source-read patterns in changed tests; kspec validate; npm run
+              typecheck; npm test; node --import tsx parser/validator probe. Claims verified:
+              malformed ac-good.extra is preserved as malformed, not truncated; comma/whitespace
+              valid tokens still parse; malformed tokens surface as invalid_ac_annotation warnings.
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration."
+            created_at: 2026-04-29T01:59:23.730Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-29T01:47:55.700Z
-    updated_at: 2026-04-29T01:59:11.799Z
+    updated_at: 2026-04-29T01:59:23.730Z
     notes: []
