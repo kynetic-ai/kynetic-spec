@@ -174867,6 +174867,17 @@ reviews:
         runner: npm test
         created_at: 2026-04-29T18:07:47.336Z
         completed_at: 2026-04-29T18:07:47.336Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema and references passed; command exited 6 for existing project-wide warnings
+          (reference/alignment/completeness warnings not introduced by this branch).
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-04-29T18:07:51.191Z
+        completed_at: 2026-04-29T18:07:51.191Z
     events:
       - _ulid: 01KQD6JFKJR6XB370SJ3TS72QV
         actor: Jacob Chapel
@@ -174895,6 +174906,13 @@ reviews:
           status: pass
           name: targeted daemon web UI tests
         timestamp: 2026-04-29T18:07:48.662Z
+      - _ulid: 01KQD6T2R7T3FPM3F69K38QESE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-29T18:07:52.583Z
     examined_commit: 945338daa35a23bc27de0d5a6c0fd0a65cfef91b
     external_links: []
     lifecycle_state: open
@@ -174928,5 +174946,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-29T18:03:43.603Z
-    updated_at: 2026-04-29T18:07:47.336Z
+    updated_at: 2026-04-29T18:07:51.191Z
     notes: []
