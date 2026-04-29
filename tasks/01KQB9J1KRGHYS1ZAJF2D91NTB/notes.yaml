@@ -48,3 +48,56 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-04-29T00:45:05.363Z
+  - _ulid: 01KQBD6YMGDW2WBBR2YTQBKVHP
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. Added validateSpecItemPatchData() in src/parser/yaml.ts — shared helper that validates
+      known schema fields (including acceptance_criteria[].id) via SpecItemPatchSchema. Supports
+      allowUnknown flag: when true, unknown fields pass through but known fields are still
+      validated.
+
+
+      2. Updated single item patch (src/cli/commands/item.ts) — replaced inline
+      SpecItemPatchSchema.strict() validation with shared helper. Now validates in both strict and
+      --allow-unknown modes.
+
+
+      3. Updated patchSpecItems (src/parser/yaml.ts) — added validation of each bulk operation's
+      patch data before dry-run success and before real writes. Invalid operations counted as failed
+      per existing bulk result semantics.
+
+
+      4. Updated updateSpecItem (src/parser/yaml.ts) — added validation before writing so
+      parser-layer callers cannot bypass AC ID validation. Uses passthrough mode to allow extension
+      fields.
+
+
+      5. Replaced acIdPattern.test() in ac add/set (src/cli/commands/item.ts) with
+      AcIdSchema.safeParse() for consistent schema-based validation.
+
+
+      Tests: 22 new tests in tests/ac-id-patch-validation.test.ts covering all 6 ACs:
+
+      - ac-patch-rejects-invalid-id: single patch real + dry-run + no mutation + valid acceptance
+
+      - ac-allow-unknown-rejects-invalid-ac-id: invalid known fields rejected with --allow-unknown
+
+      - ac-bulk-dry-run-rejects-invalid-ac-id: dry-run reports error instead of updated
+
+      - ac-bulk-invalid-operation-not-written: invalid op not persisted
+
+      - ac-bulk-valid-operations-continue: valid ops after invalid applied (and fail-fast variant)
+
+      - ac-bulk-invalid-operation-fails-command: exit nonzero with any invalid op
+
+      - Parser-layer validation test
+
+      - Existing behavior preservation tests
+
+
+      All 2323 test suites pass (8490 tests), typecheck clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T01:21:16.944Z
