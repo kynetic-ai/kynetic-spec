@@ -33929,7 +33929,7 @@ runs:
     completed_at: 2026-04-29T01:47:17.972Z
   - _ulid: 01KQBFF9NRW05QRVPYCR8F22C8
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -34031,7 +34031,89 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-29T02:01:31.030Z
-        completed_at: 2026-04-29T02:01:31.030Z
+        completed_at: 2026-04-29T02:04:03.605Z
+        notes: >-
+          Coverage check: Detached reviewer merge-helper success/friction is already tracked by
+          completed @task-detached-reviewer-merge-helper plus observations @01KQ1273 and @01KQ9AMH.
+          Clean review/merge fast-path is covered by completed @01KHARBW. Evidence-log handling is
+          partially covered by @01KMP87Q3 (review CLI body/evidence-from-file friction) and
+          @01KMREY8T (success pattern for direct evidence plus evidence log). ✓ Validation passed
+
+          ────────────────────────────────────────
+
+          Files checked: 1439
+
+          Items checked: 608
+
+          Tasks checked: 1428
+
+          Meta: 12 agents, 11 workflows, 11 conventions
+
+
+          Schema: OK
+
+          References: OK
+
+
+          Reference warnings: 7
+            ⚠ @session-summary-cache
+              Reference "@session-summary-cache" points to deprecated item: Session Summary Cache
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/tasks/01KKB3PHA6MSJDZS7AZ1Z2VN6A/task.yaml (spec_ref)
+            ⚠ @session-summary-cache
+              Reference "@session-summary-cache" points to deprecated item: Session Summary Cache
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/tasks/01KKSRDQY1HZBENKBD06V6KDGW/task.yaml (spec_ref)
+            ⚠ @task-activity-git-query
+              Reference "@task-activity-git-query" points to deprecated item: Task Activity Git Query
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/tasks/01KKW4VPB0MV22C92JHNR7APJZ/task.yaml (spec_ref)
+            ⚠ @task-activity-git-query
+              Reference "@task-activity-git-query" points to deprecated item: Task Activity Git Query
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/tasks/01KKW6PK9QFXKH69HE6KY8Q40Y/task.yaml (spec_ref)
+            ⚠ @task-activity-git-query
+              Reference "@task-activity-git-query" points to deprecated item: Task Activity Git Query
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/tasks/01KKWG44FR0W955X7EFVBHPX6B/task.yaml (spec_ref)
+            ... and 2 more (use -v to see all)
+
+          Alignment warnings: 36
+            Orphaned specs (no tasks): 33
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ○ Semantic Exit Codes
+              ... and 30 more
+            Status mismatches: 3
+              ! Task Set Batch Support
+                Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+              ! kspec item patch
+                Spec "kspec item patch" status is "in_progress" but should be "implemented" based on task progress
+              ! Concurrent Read Command Execution
+                Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+          Alignment stats: 443/608 specs have tasks, 440 aligned
+
+
+          Completeness warnings: 234
+            Missing own AC coverage: 232
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @acceptance-criterion-id-format - Acceptance Criterion Identifier Format
+                Uncovered: ac-patch-rejects-invalid-id
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ... and 229 more
+            Invalid AC annotations: 2
+              Unresolved targets: 2
+                ! Unresolved target: '@test-feature' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-strict-ac-annotation-token-parsing-01kqb9j1-review/tests/e2e/fixtures/project-tests/coverage-test.test.ts:6
+                ! Unresolved target: '@test-trait' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-strict-ac-annotation-token-parsing-01kqb9j1-review/tests/trait-ac-coverage.test.ts:158
+          Skills: OK (10 files checked) warning noise is already covered by unresolved @01KPVTM6 and
+          several earlier validate-noise observations. Full npm test review latency is already
+          covered by recent observations including @01KQ16J7 and @01KQ9FVC, plus pending test
+          stability work @01KN69W9 for fresh shard instability. No untracked high-confidence
+          friction remains from this session.
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-29T02:04:03.605Z
+        completed_at: 2026-04-29T02:04:03.605Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T02:00:47.545Z
