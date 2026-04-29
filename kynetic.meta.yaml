@@ -16593,6 +16593,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-04-29T04:14:42.395Z
+  - _ulid: 01KQBRFN9EG8WVE3ACT2C8F8Z8
+    type: friction
+    content: "kspec batch with item set --status triggers interactive cascade prompt when target has
+      child items. Batch context is inherently non-interactive, but the cascade prompt blocks
+      execution. Workaround: explicitly pass --no-cascade in batch args. Consider making batch imply
+      non-interactive mode or auto-apply --no-cascade."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-04-29T04:38:16.622Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
