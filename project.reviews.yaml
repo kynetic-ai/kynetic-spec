@@ -174272,6 +174272,17 @@ reviews:
         runner: oxlint
         created_at: 2026-04-29T03:53:00.194Z
         completed_at: 2026-04-29T03:53:00.194Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test: 2323/2323 suites passed; 8506 passed, 5 skipped; duration 1953.9s. Log:
+          /tmp/kspec-test-cache/01KQBN8A2QYFQXM3XTPM7GK4NW/3576289634fdf963.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-04-29T03:53:03.743Z
+        completed_at: 2026-04-29T03:53:03.743Z
     events:
       - _ulid: 01KQBN9G9WDQHBVA8474F88SHN
         actor: Jacob Chapel
@@ -174300,6 +174311,13 @@ reviews:
           status: pass
           name: changed-file oxlint
         timestamp: 2026-04-29T03:53:01.397Z
+      - _ulid: 01KQBNWX65T9ERA6P8HJ9T0WPQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-29T03:53:04.966Z
     examined_commit: 5e67779375f034279702015897899ef726badcf3
     external_links: []
     lifecycle_state: open
@@ -174312,5 +174330,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-29T03:42:29.180Z
-    updated_at: 2026-04-29T03:53:00.194Z
+    updated_at: 2026-04-29T03:53:03.743Z
     notes: []
