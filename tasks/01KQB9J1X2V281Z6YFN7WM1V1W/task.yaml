@@ -65,8 +65,12 @@ description: |
 spec_ref: "@ac-annotation-identifier-format"
 plan_ref: "@plan-ac-id-surface-hardening"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved and merged to dev via detached reviewer merge helper. Implemented strict AC
+  annotation token parsing so malformed ac-prefixed tokens are reported and do not grant coverage,
+  while valid comma/whitespace delimiters continue to work. Verified with npm test, npm run
+  typecheck, kspec validate, and direct parser/validator probe.
 depends_on:
   - "@task-ac-id-hardening-spec-updates"
 context: []
@@ -134,8 +138,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-04-29T01:47:59.111Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved and merged to dev via detached reviewer merge helper. Implemented strict AC annotation
+          token parsing so malformed ac-prefixed tokens are reported and do not grant coverage,
+          while valid comma/whitespace delimiters continue to work. Verified with npm test, npm run
+          typecheck, kspec validate, and direct parser/validator probe.
+        previous: null
+      completed_at:
+        new: 2026-04-29T02:00:04.027Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-04-29T02:00:04.037Z
 created_at: 2026-04-29T00:17:26.434Z
 started_at: 2026-04-29T01:24:02.704Z
 submitted_at: 2026-04-29T01:45:16.791Z
+completed_at: 2026-04-29T02:00:04.027Z
 todos: []
 automation: eligible
