@@ -67,6 +67,7 @@ tags:
   - tests
   - qa
 vcs_refs: []
+review_ref: "@01KQBRKCCBZDP9JZKYVY8ZTTP3"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-ac-id-hardening-final-gate/01kqb9j2
@@ -117,6 +118,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-04-29T04:36:07.230Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQBRKCCBZDP9JZKYVY8ZTTP3"
+        previous: null
+    command: review-link
+    timestamp: 2026-04-29T04:40:22.287Z
 created_at: 2026-04-29T00:17:26.752Z
 started_at: 2026-04-29T04:29:02.627Z
 submitted_at: 2026-04-29T04:36:07.230Z

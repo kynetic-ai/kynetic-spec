@@ -174644,3 +174644,29 @@ reviews:
     created_at: 2026-04-29T04:15:10.870Z
     updated_at: 2026-04-29T04:26:57.594Z
     notes: []
+  - _ulid: 01KQBRKCCBZDP9JZKYVY8ZTTP3
+    slugs: []
+    title: Review task-ac-id-hardening-final-gate
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQBRKCCBC0B2053DD81ZK9Q6
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-04-29T04:40:18.571Z
+    examined_commit: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQB9J270540ZSC74AQCR27HA"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-04-29T04:40:18.571Z
+    updated_at: null
+    notes: []
