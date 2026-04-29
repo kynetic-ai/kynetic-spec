@@ -12205,7 +12205,7 @@ workspaces:
         head: a784c6635ed440da739f01ac5ce12a61d5fc426a
         last_seen_at: 2026-04-29T01:46:39.722Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-strict-ac-annotation-token-parsing-01kqb9j1
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 603dc47bdd64f45ca28ddd4339fb60023f6fcb1e
     bootstrap:
       status: succeeded
@@ -12703,9 +12703,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-04-29T04:39:24.657Z
-      last_reconciled_at: 2026-04-29T04:54:47.074Z
+      last_reconciled_at: 2026-04-29T04:56:28.861Z
       created_at: 2026-04-29T04:27:55.154Z
-      updated_at: 2026-04-29T04:54:47.074Z
+      updated_at: 2026-04-29T04:56:28.861Z
     workspace_id: dispatch-workspace-01KQB9J270540ZSC74AQCR27HA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
