@@ -14,6 +14,7 @@ import {
   readdirBufferAware,
 } from "../cli/batch-write-buffer.js";
 import {
+  AcceptanceCriterionSchema,
   InboxFileSchema,
   type InboxItem,
   type InboxItemInput,
@@ -24,6 +25,7 @@ import {
   type SpecItem,
   type SpecItemInput,
   SpecItemInputSchema,
+  SpecItemPatchSchema,
   SpecItemSchema,
   type Task,
   type TaskInput,
@@ -1799,6 +1801,93 @@ function assertSpecItemPatch(
 }
 
 /**
+ * Recursively collect AC validation errors from nested catalog structures.
+ *
+ * SpecItemPatchSchema validates top-level acceptance_criteria, but nested catalog
+ * fields (features, requirements, etc.) pass through as unknown data. This helper
+ * walks those nested structures and validates each acceptance_criteria entry
+ * against the full AcceptanceCriterionSchema (id, given, when, then).
+ */
+function collectNestedAcErrors(
+  data: Record<string, unknown>,
+  parentPath: string = "",
+): string[] {
+  const errors: string[] = [];
+  // Catalog fields that can contain nested spec items with acceptance_criteria
+  const catalogFields = ["modules", "features", "requirements", "constraints", "decisions", "traits"];
+
+  for (const field of catalogFields) {
+    if (!(field in data) || !Array.isArray(data[field])) continue;
+    const items = data[field] as unknown[];
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (!item || typeof item !== "object") continue;
+      const obj = item as Record<string, unknown>;
+      const itemPath = parentPath ? `${parentPath}.${field}[${i}]` : `${field}[${i}]`;
+
+      // Validate acceptance_criteria field shape and entries
+      if ("acceptance_criteria" in obj) {
+        if (!Array.isArray(obj.acceptance_criteria)) {
+          errors.push(
+            `${itemPath}.acceptance_criteria: Expected array, received ${typeof obj.acceptance_criteria}`,
+          );
+        } else {
+          const acs = obj.acceptance_criteria as unknown[];
+          for (let j = 0; j < acs.length; j++) {
+            const ac = acs[j];
+            const acPath = `${itemPath}.acceptance_criteria[${j}]`;
+            const parseResult = AcceptanceCriterionSchema.safeParse(ac);
+            if (!parseResult.success) {
+              for (const issue of parseResult.error.issues) {
+                const fieldPath = issue.path.length > 0 ? `.${issue.path.join(".")}` : "";
+                errors.push(`${acPath}${fieldPath}: ${issue.message}`);
+              }
+            }
+          }
+        }
+      }
+
+      // Recurse into deeper nesting (e.g. features[0].requirements[0].…)
+      errors.push(...collectNestedAcErrors(obj, itemPath));
+    }
+  }
+  return errors;
+}
+
+/**
+ * Validate spec item patch data against the schema.
+ *
+ * Always validates known fields (including acceptance_criteria[].id) through
+ * SpecItemPatchSchema. When allowUnknown is false, unknown fields are rejected.
+ * When allowUnknown is true, unknown fields pass through but known fields are
+ * still validated.
+ *
+ * Also validates acceptance_criteria entries in nested catalog structures (features,
+ * requirements, etc.) against the full AcceptanceCriterionSchema. These fields are
+ * not part of SpecItemPatchSchema but are supported by the parser as nested catalog items.
+ *
+ * @returns null if valid, or a formatted error string if invalid
+ */
+export function validateSpecItemPatchData(
+  data: Record<string, unknown>,
+  options: { allowUnknown?: boolean } = {},
+): string | null {
+  const schema = options.allowUnknown ? SpecItemPatchSchema : SpecItemPatchSchema.strict();
+  const result = schema.safeParse(data);
+  const schemaErrors = result.success
+    ? []
+    : result.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`);
+
+  // Validate acceptance_criteria in nested catalog structures (features, requirements, etc.)
+  // These fields pass through SpecItemPatchSchema as unknown data but can contain
+  // acceptance_criteria entries that must conform to the full AC schema.
+  const nestedErrors = collectNestedAcErrors(data);
+
+  const allErrors = [...schemaErrors, ...nestedErrors];
+  return allErrors.length > 0 ? allErrors.join("; ") : null;
+}
+
+/**
  * Parse a path string into segments.
  * e.g., "features[0].requirements[2]" -> [["features", 0], ["requirements", 2]]
  */
@@ -2036,6 +2125,16 @@ export async function updateSpecItem(
     throw new Error("Item has no source file");
   }
   assertSpecItemPatch(updates, "updateSpecItem");
+
+  // Validate known schema fields (e.g. acceptance_criteria[].id) before writing.
+  // Uses passthrough mode so callers can include extension fields.
+  const validationError = validateSpecItemPatchData(
+    updates as Record<string, unknown>,
+    { allowUnknown: true },
+  );
+  if (validationError) {
+    throw new Error(`Invalid patch data: ${validationError}`);
+  }
 
   // Lock the file to prevent concurrent read-modify-write races
   return withFileLock(item._sourceFile, async () => {
@@ -2942,6 +3041,22 @@ export async function patchSpecItems(
         ref: patch.ref,
         status: "error",
         error: "Not a spec item",
+      });
+      if (options.failFast) {
+        stopProcessing = true;
+      }
+      continue;
+    }
+
+    // Validate patch data against schema before dry-run or real write
+    const patchValidationError = validateSpecItemPatchData(patch.data, {
+      allowUnknown: options.allowUnknown,
+    });
+    if (patchValidationError) {
+      results.push({
+        ref: patch.ref,
+        status: "error",
+        error: `Invalid patch data: ${patchValidationError}`,
       });
       if (options.failFast) {
         stopProcessing = true;
