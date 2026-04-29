@@ -174342,6 +174342,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQBNXDR5S6K299CS3GJ4Z0ZS
         timestamp: 2026-04-29T03:53:23.128Z
+      - _ulid: 01KQBNY2HAER5JJEKQBJ8DQZZA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQBNY1AE6SC8H96DPB8DRJYF
+        timestamp: 2026-04-29T03:53:43.210Z
     examined_commit: 5e67779375f034279702015897899ef726badcf3
     external_links: []
     lifecycle_state: open
@@ -174376,7 +174383,26 @@ reviews:
               cover CLI/parser-layer cases."
             created_at: 2026-04-29T03:53:21.925Z
         kind: blocker
+      - _ulid: 01KQBNY1AE6SC8H96DPB8DRJYF
+        entries:
+          - _ulid: 01KQBNY1AE1M1FCBPPK971NDFH
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md, task details, all four prior review summaries,
+              @acceptance-criterion-id-format, @item-patch, src/parser/yaml.ts diff/context,
+              src/cli/commands/item.ts diff/context, tests/ac-id-patch-validation.test.ts,
+              schema/common.ts, schema/spec.ts, bulk patch parsing context, updateSpecItem call
+              sites. Commands run: git status/rev-parse/diff/log, kspec task get, kspec review
+              for-task/get/add/open, kspec item get, rg AC annotations and call sites, kspec
+              validate, kspec validate --warnings-ok, npm test, npm run typecheck, npm run lint
+              (full, pre-existing unrelated errors), npx oxlint changed files, and a fixture CLI
+              repro for nested acceptance_criteria field shape. Claims verified: prior blockers for
+              direct parser test, nested catalog validation, full nested AC entry validation, and
+              unused import were reviewed; current implementation still misses non-array nested
+              acceptance_criteria. Categories searched: correctness, edge cases, error handling,
+              test quality, integration, lint/build."
+            created_at: 2026-04-29T03:53:41.966Z
+        kind: nit
     verdicts: []
     created_at: 2026-04-29T03:42:29.180Z
-    updated_at: 2026-04-29T03:53:21.925Z
+    updated_at: 2026-04-29T03:53:41.966Z
     notes: []
