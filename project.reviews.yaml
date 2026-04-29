@@ -173825,6 +173825,17 @@ reviews:
         runner: npm test
         created_at: 2026-04-29T02:46:16.723Z
         completed_at: 2026-04-29T02:46:16.723Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Schema/references/skills OK; command exited 6 due existing warnings: deprecated refs,
+          orphaned specs/status mismatches, missing AC coverage, two fixture annotation targets."
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-04-29T02:46:24.324Z
+        completed_at: 2026-04-29T02:46:24.324Z
     events:
       - _ulid: 01KQBHXVB86K82518D8634H9VM
         actor: Jacob Chapel
@@ -173853,6 +173864,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQBJ2PHZSPGKC09HH7WVGYTE
         timestamp: 2026-04-29T02:46:21.791Z
+      - _ulid: 01KQBJ2VJJ0R0RDXVR0QQD84H0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-04-29T02:46:25.618Z
     examined_commit: c071ab72e16dd5eab71222c5e45e233d67b277e0
     external_links: []
     lifecycle_state: open
@@ -173885,5 +173903,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-29T02:43:41.544Z
-    updated_at: 2026-04-29T02:46:20.479Z
+    updated_at: 2026-04-29T02:46:24.324Z
     notes: []
