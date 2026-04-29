@@ -1,1 +1,27 @@
-notes: []
+notes:
+  - _ulid: 01KQB9YJN8MGXQ04C163CYJFEN
+    content: >-
+      Added all 9 new acceptance criteria to the 4 target specs via kspec batch:
+
+
+      - @acceptance-criterion-id-format: +ac-patch-rejects-invalid-id (now 6 ACs)
+
+      - @item-patch: +ac-allow-unknown-rejects-invalid-ac-id,
+      +ac-bulk-dry-run-rejects-invalid-ac-id, +ac-bulk-invalid-operation-not-written,
+      +ac-bulk-valid-operations-continue, +ac-bulk-invalid-operation-fails-command (now 17 ACs)
+
+      - @ac-annotation-identifier-format: +ac-malformed-token-not-truncated,
+      +ac-valid-delimiters-preserved (now 5 ACs)
+
+      - @ac-annotation-integrity-reporting: +ac-malformed-ac-token-reported (now 6 ACs)
+
+
+      All 4 specs set to implementation: in_progress so new ACs are not claimed as implemented
+      before follow-up work lands.
+
+
+      Validation: kspec validate --refs --warnings-ok passed. 6 pre-existing warnings (deprecated
+      spec refs) unrelated to this task.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-04-29T00:24:16.808Z
