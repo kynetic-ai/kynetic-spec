@@ -173441,7 +173441,17 @@ reviews:
     slugs: []
     title: Review task-strict-ac-annotation-token-parsing
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2314/2314 suites, 8483/8488 tests passed, 5 skipped. Duration 2089.1s."
+        name: npm test
+        required: true
+        runner: npm test
+        created_at: 2026-04-29T01:58:52.677Z
+        completed_at: 2026-04-29T01:58:52.677Z
     events:
       - _ulid: 01KQBEQQXMXP8G1X0HA89VXCKB
         actor: Jacob Chapel
@@ -173456,6 +173466,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-04-29T01:48:18.093Z
+      - _ulid: 01KQBFBTJN8T39TW40C05S0GYV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-04-29T01:58:53.782Z
     examined_commit: a784c6635ed440da739f01ac5ce12a61d5fc426a
     external_links: []
     lifecycle_state: open
@@ -173468,5 +173485,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-04-29T01:47:55.700Z
-    updated_at: 2026-04-29T01:48:16.855Z
+    updated_at: 2026-04-29T01:58:52.677Z
     notes: []
