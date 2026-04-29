@@ -47,16 +47,18 @@ describe("Adapter auto-approve args registry", () => {
   });
 
   // AC: @ralph-adapter-auto-approve ac-2
-  it("claude-agent-acp has --dangerously-skip-permissions", () => {
+  it("claude-agent-acp uses ACP org package with --dangerously-skip-permissions", () => {
     const adapter = getAdapter("claude-agent-acp");
     expect(adapter).toBeDefined();
+    expect(adapter!.args).toContain("@agentclientprotocol/claude-agent-acp@0.31.4");
     expect(adapter!.autoApproveArgs).toEqual(["--dangerously-skip-permissions"]);
   });
 
   // AC: @ralph-adapter-auto-approve ac-2
-  it("claude-code-acp (deprecated alias) has same autoApproveArgs", () => {
+  it("claude-code-acp (deprecated alias) uses same ACP org package and autoApproveArgs", () => {
     const adapter = getAdapter("claude-code-acp");
     expect(adapter).toBeDefined();
+    expect(adapter!.args).toContain("@agentclientprotocol/claude-agent-acp@0.31.4");
     expect(adapter!.autoApproveArgs).toEqual(["--dangerously-skip-permissions"]);
   });
 

@@ -61,11 +61,11 @@ const { command: PKG_RUNNER_CMD, prependArgs: PKG_RUNNER_PREPEND } = resolvePkgR
 const ADAPTERS: Record<string, AgentAdapter> = {
   /**
    * Claude Agent ACP adapter - the primary production adapter.
-   * Uses @zed-industries/claude-agent-acp package.
+   * Uses the Agent Client Protocol org package.
    */
   "claude-agent-acp": {
     command: PKG_RUNNER_CMD,
-    args: [...PKG_RUNNER_PREPEND, "@zed-industries/claude-agent-acp"],
+    args: [...PKG_RUNNER_PREPEND, "@agentclientprotocol/claude-agent-acp@0.31.4"],
     shell: process.platform === "win32" && !IS_BUN,
     description: "Claude Agent via ACP protocol",
     autoApproveArgs: ["--dangerously-skip-permissions"],
@@ -73,12 +73,12 @@ const ADAPTERS: Record<string, AgentAdapter> = {
 
   /**
    * @deprecated Alias for backwards compatibility.
-   * The package was renamed from claude-code-acp to claude-agent-acp.
+   * The adapter ID was renamed from claude-code-acp to claude-agent-acp.
    * This alias ensures existing scripts with --adapter claude-code-acp continue to work.
    */
   "claude-code-acp": {
     command: PKG_RUNNER_CMD,
-    args: [...PKG_RUNNER_PREPEND, "@zed-industries/claude-agent-acp"],
+    args: [...PKG_RUNNER_PREPEND, "@agentclientprotocol/claude-agent-acp@0.31.4"],
     shell: process.platform === "win32" && !IS_BUN,
     description: "Claude Agent via ACP protocol (deprecated alias)",
     autoApproveArgs: ["--dangerously-skip-permissions"],
