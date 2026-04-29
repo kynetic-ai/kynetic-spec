@@ -11660,12 +11660,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-04-29T03:41:14.740Z
+      updated_at: 2026-04-29T03:41:23.691Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-04-29T03:41:14.740Z
+      updated_at: 2026-04-29T03:41:23.691Z
     integration:
       status: pending
       detail: null
@@ -11673,26 +11673,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 16b161551bb2c8055be06a503b1701ba756c1dea
-      updated_at: 2026-04-29T03:41:14.740Z
-    lifecycle_state: ready
+      updated_at: 2026-04-29T03:41:23.691Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KQB9J1KRGHYS1ZAJF2D91NTB"
     task_slug: task-centralize-ac-id-patch-validation
     timestamps:
       closed_at: null
       last_active_at: 2026-04-29T03:28:33.081Z
-      last_reconciled_at: 2026-04-29T03:41:14.740Z
+      last_reconciled_at: 2026-04-29T03:41:23.691Z
       created_at: 2026-04-29T00:38:43.387Z
-      updated_at: 2026-04-29T03:41:14.740Z
+      updated_at: 2026-04-29T03:41:23.691Z
     workspace_id: dispatch-workspace-01KQB9J1KRGHYS1ZAJF2D91NTB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 5e67779375f034279702015897899ef726badcf3
+        last_seen_at: 2026-04-29T03:41:23.691Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-centralize-ac-id-patch-validation-01kqb9j1-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-centralize-ac-id-patch-validation/01kqb9j1
-        head: 903835f41e3af9329fd287481534e664c7dc6d96
-        last_seen_at: 2026-04-29T03:28:09.123Z
+        head: 5e67779375f034279702015897899ef726badcf3
+        last_seen_at: 2026-04-29T03:41:23.691Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-centralize-ac-id-patch-validation-01kqb9j1
   - active_role: null
     base_branch_point: 16b161551bb2c8055be06a503b1701ba756c1dea
