@@ -174890,6 +174890,18 @@ reviews:
         runner: manual Elysia route repro
         created_at: 2026-04-29T18:07:55.241Z
         completed_at: 2026-04-29T18:07:55.241Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit 0. Test Suites: 2328 passed of 2328. Tests: 5 skipped, 8539 passed of 8544.
+          Duration: 1874.2s. Full log:
+          /tmp/kspec-test-cache/01KQD6HC1Y9FZ5NTPAKDRVX85Y/b84d37353cbb0fd6.log"
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-04-29T18:14:45.202Z
+        completed_at: 2026-04-29T18:14:45.202Z
     events:
       - _ulid: 01KQD6JFKJR6XB370SJ3TS72QV
         actor: Jacob Chapel
@@ -174932,6 +174944,13 @@ reviews:
           status: fail
           name: non-node root route static plugin repro
         timestamp: 2026-04-29T18:07:56.533Z
+      - _ulid: 01KQD76PTPJ6MM3V8K08SPCWG4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-04-29T18:14:46.358Z
     examined_commit: 945338daa35a23bc27de0d5a6c0fd0a65cfef91b
     external_links: []
     lifecycle_state: open
@@ -174965,5 +174984,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-04-29T18:03:43.603Z
-    updated_at: 2026-04-29T18:07:55.241Z
+    updated_at: 2026-04-29T18:14:45.202Z
     notes: []
