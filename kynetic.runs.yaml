@@ -33802,7 +33802,7 @@ runs:
     completed_at: 2026-04-29T00:40:10.300Z
   - _ulid: 01KQBE0PKE5GP623Z604N21N55
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -33816,7 +33816,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-29T01:35:54.246Z
-        completed_at: 2026-04-29T01:35:54.246Z
+        completed_at: 2026-04-29T01:36:19.607Z
+        notes: "High-confidence observations from this session: (1) review workflow caught a test-quality
+          issue where a test claimed parser-layer coverage while exercising CLI validation; this is
+          already covered by review/work-gates guidance and the specific task review blocker, so no
+          new capture. (2) reflection baseline commands produced very large output in a mature repo;
+          already tracked by inbox @01KQ8TTN. (3) kspec workflow show requires an explicit run ref
+          despite reflect docs examples; already tracked by inbox @01KQ0RH7. Success pattern:
+          diff-first review plus AC/spec lookup plus full test verification produced a precise
+          request_changes verdict; similar PR review success observations already exist, so no
+          duplicate capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-29T01:36:19.607Z
+        completed_at: 2026-04-29T01:36:19.607Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-04-29T01:35:20.686Z
