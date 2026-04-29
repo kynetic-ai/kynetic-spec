@@ -34800,7 +34800,7 @@ runs:
     completed_at: 2026-04-29T19:34:20.204Z
   - _ulid: 01KQDDKMFRCJGV1BTMZ741JDX7
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -34824,7 +34824,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-04-29T20:07:44.376Z
-        completed_at: 2026-04-29T20:07:44.376Z
+        completed_at: 2026-04-29T20:08:04.606Z
+        notes: "Coverage search: 'detached reviewer merge helper' is already well tracked by
+          @detached-reviewer-merge-helper plus completed helper/guidance tasks and existing
+          observations, so no duplicate capture. 'review evidence log' had no kspec search matches
+          but is already encoded in review-gates guidance used this session. 'full test suite
+          duration' and 'awaiter full test' had no direct tracking; sharding guidance exists in
+          agent instructions and the long full run is expected for merge confidence. No untracked
+          friction is high-confidence enough to promote to inbox/task."
+      - status: completed
+        step_index: 3
+        started_at: 2026-04-29T20:08:04.606Z
+        completed_at: 2026-04-29T20:08:04.606Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T20:06:41.400Z
