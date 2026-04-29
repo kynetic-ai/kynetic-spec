@@ -174293,6 +174293,18 @@ reviews:
         runner: npm
         created_at: 2026-04-29T03:53:07.341Z
         completed_at: 2026-04-29T03:53:07.341Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fixture CLI repro: kspec item patch @test-core --data
+          '{features:[{...,acceptance_criteria:\"not-an-array\"}]}' --allow-unknown exited 0 and
+          persisted acceptance_criteria: not-an-array in tests fixture copy."
+        name: nested AC field-shape repro
+        required: true
+        runner: manual
+        created_at: 2026-04-29T03:53:45.524Z
+        completed_at: 2026-04-29T03:53:45.524Z
     events:
       - _ulid: 01KQBN9G9WDQHBVA8474F88SHN
         actor: Jacob Chapel
@@ -174349,6 +174361,13 @@ reviews:
           kind: nit
           thread_ulid: 01KQBNY1AE6SC8H96DPB8DRJYF
         timestamp: 2026-04-29T03:53:43.210Z
+      - _ulid: 01KQBNY612QPFYEF3Q67K3V21K
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: nested AC field-shape repro
+        timestamp: 2026-04-29T03:53:46.786Z
     examined_commit: 5e67779375f034279702015897899ef726badcf3
     external_links: []
     lifecycle_state: open
@@ -174404,5 +174423,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-04-29T03:42:29.180Z
-    updated_at: 2026-04-29T03:53:41.966Z
+    updated_at: 2026-04-29T03:53:45.524Z
     notes: []
