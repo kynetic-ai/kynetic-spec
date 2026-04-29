@@ -34189,7 +34189,7 @@ runs:
     completed_at: 2026-04-29T02:20:52.917Z
   - _ulid: 01KQBJH9FTG8SPFBMD0B11B7Z9
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -34204,7 +34204,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-04-29T02:55:08.326Z
-        completed_at: 2026-04-29T02:55:08.326Z
+        completed_at: 2026-04-29T02:55:20.521Z
+        notes: "Friction points: the main friction was not workflow tooling but review scope: the
+          implementation added nested validation by hand and validated only the id token instead of
+          the full nested acceptance criterion object. That is a task-specific correctness gap
+          already captured as a blocker. Command-line repro snippets had some quoting/tsx rough
+          edges, but existing observations already track behavioral temp-project repros as a useful
+          review pattern, so this does not appear to need new tracking."
+      - status: completed
+        step_index: 2
+        started_at: 2026-04-29T02:55:20.521Z
+        completed_at: 2026-04-29T02:55:20.521Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-04-29T02:54:18.618Z
