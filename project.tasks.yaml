@@ -26937,26 +26937,6 @@
   submitted_at: 2026-04-23T05:28:35.660Z
   completed_at: 2026-04-23T05:43:00.201Z
   automation: eligible
-- _ulid: 01KQ0D4EMBY75KZNFJB9K83MPH
-  slugs:
-    - task-convert-cruft-01-spec-catalog-health-plan
-  title: Convert cruft seed 01 into Spec Catalog Health plan
-  type: task
-  plan_ref: "@cruft-01-spec-catalog-health-seed"
-  status: completed
-  blocked_by: []
-  depends_on: []
-  priority: 1
-  tags:
-    - cruft
-    - planning
-    - spec-hygiene
-  notes_count: 3
-  todos_count: 0
-  created_at: 2026-04-24T18:48:16.267Z
-  started_at: 2026-04-24T18:54:33.097Z
-  completed_at: 2026-04-24T19:34:03.753Z
-  automation: manual_only
 - _ulid: 01KQ0JDHKHCBEZ7QN7ZZVF9ZVN
   slugs:
     - task-catalog-health-baseline
