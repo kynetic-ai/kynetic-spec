@@ -43303,7 +43303,7 @@ plans:
       - This plan should be reviewed and approved before deriving tasks. Do not
         dispatch implementation from this proposal until the user explicitly
         approves the scope.
-    status: active
+    status: completed
     approved_at: 2026-04-28T00:58:16.868Z
     derived_specs: []
     derived_tasks:
