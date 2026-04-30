@@ -3082,3 +3082,15 @@ inbox:
       - moved-from-hawse
     added_by: Jacob Chapel
     created_at: 2026-04-30T06:04:49.715Z
+  - _ulid: 01KQEFTXTHNBK5Y4T2YGP0KW9Z
+    text: "Moved from Hawse inbox 01KQE02T1M: Consider adding cargo fmt --all --check and/or git diff
+      --check to the standard review gates, or document why formatting checks are intentionally
+      optional; this review found rustfmt and trailing-blank-line drift after required gates
+      passed."
+    tags:
+      - review-workflow
+      - testing
+      - process
+      - moved-from-hawse
+    added_by: Jacob Chapel
+    created_at: 2026-04-30T06:04:51.922Z
