@@ -42900,7 +42900,7 @@ plans:
       current plan derivation does not preserve automation metadata from plan
       YAML. Set automation status explicitly after derivation according to the
       approved execution strategy.
-    status: active
+    status: completed
     approved_at: 2026-04-24T20:18:41.079Z
     derived_specs:
       - "@validation-task-data-source"
