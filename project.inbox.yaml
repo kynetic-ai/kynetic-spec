@@ -3058,3 +3058,15 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-04-29T04:38:16.913Z
+  - _ulid: 01KQEFTMJVQV63V07EKQCA60EV
+    text: "Moved from Hawse inbox 01KQCD0J: Add a review helper or kspec command to record a standard
+      set of passing review checks in one operation after the commands have run (fmt, diff check,
+      validate, targeted tests, workspace tests, no-std, clippy), reducing eight repeated kspec
+      review check commands per clean review."
+    tags:
+      - review-workflow
+      - cli
+      - ergonomics
+      - moved-from-hawse
+    added_by: Jacob Chapel
+    created_at: 2026-04-30T06:04:42.459Z
