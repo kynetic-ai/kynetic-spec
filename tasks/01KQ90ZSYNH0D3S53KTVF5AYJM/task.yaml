@@ -60,7 +60,7 @@ description: >-
   - Changing parser semantics to support arbitrary AC id tokens.
 
   - Renaming AC ids that already use ac-* unless needed to resolve a direct collision.
-spec_ref: "@ac-annotation-integrity-reporting"
+spec_ref: null
 meta_ref: null
 plan_ref: "@plan-spec-catalog-health-and-validation-trust"
 status: cancelled
@@ -185,6 +185,13 @@ history:
         previous: eligible
     command: task-set
     timestamp: 2026-04-28T03:36:35.371Z
+  - author: Jacob Chapel
+    changes:
+      spec_ref:
+        new: null
+        previous: "@ac-annotation-integrity-reporting"
+    command: task-set
+    timestamp: 2026-04-30T22:29:40.371Z
 created_at: 2026-04-28T03:09:10.997Z
 started_at: 2026-04-28T03:27:00.610Z
 submitted_at: 2026-04-28T03:27:01.345Z

@@ -27206,7 +27206,6 @@
     - task-normalize-ac-ids-and-annotations
   title: Normalize AC ids and annotations to ac-* format
   type: task
-  spec_ref: "@ac-annotation-integrity-reporting"
   plan_ref: "@plan-spec-catalog-health-and-validation-trust"
   status: cancelled
   blocked_by: []
