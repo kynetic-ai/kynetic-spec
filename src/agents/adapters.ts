@@ -90,7 +90,7 @@ const ADAPTERS: Record<string, AgentAdapter> = {
    */
   "codex-acp": {
     command: PKG_RUNNER_CMD,
-    args: [...PKG_RUNNER_PREPEND, "@zed-industries/codex-acp"],
+    args: [...PKG_RUNNER_PREPEND, "@zed-industries/codex-acp@0.12.0"],
     shell: process.platform === "win32" && !IS_BUN,
     description: "Codex agent via ACP protocol",
     autoApproveArgs: ["-c", 'approval_policy="never"', "-c", 'sandbox_mode="danger-full-access"'],

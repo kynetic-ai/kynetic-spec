@@ -123,11 +123,16 @@ export function spawnAgent(adapter: AgentAdapter, options: SpawnAgentOptions): S
   // Build args from fresh copy to prevent cross-call leakage
   const args = [...adapter.args, ...(extraArgs || [])];
 
-  // Spawn the agent process
+  // Spawn the agent process. On POSIX, create a dedicated process group so
+  // package runners such as npx cannot orphan the real adapter binary during
+  // cleanup. Killing the group terminates the runner and any descendants that
+  // inherited its stdio handles.
+  const useProcessGroup = process.platform !== "win32";
   const child = spawn(adapter.command, args, {
     cwd,
     env: processEnv,
     shell: adapter.shell,
+    detached: useProcessGroup,
     stdio: ["pipe", "pipe", "pipe"], // pipe all stdio so stderr can be filtered
   });
 
@@ -176,9 +181,25 @@ export function spawnAgent(adapter: AgentAdapter, options: SpawnAgentOptions): S
 
   // Kill function with graceful shutdown
   const kill = (signal: NodeJS.Signals = "SIGTERM"): void => {
-    if (!child.killed) {
+    if (!client.isClosed()) {
+      client.close(`Subagent process terminated with signal ${signal}`);
+    }
+
+    if (useProcessGroup && child.pid) {
+      try {
+        process.kill(-child.pid, signal);
+      } catch {
+        if (!child.killed) {
+          child.kill(signal);
+        }
+      }
+    } else if (!child.killed) {
       child.kill(signal);
     }
+
+    child.stdin?.destroy();
+    child.stdout?.destroy();
+    child.stderr?.destroy();
   };
 
   return { client, process: child, kill, spawnError };

@@ -35,9 +35,10 @@ async function cleanShutdown(agent: SpawnedAgent): Promise<void> {
 
 describe("Adapter auto-approve args registry", () => {
   // AC: @ralph-adapter-auto-approve ac-1
-  it("codex-acp has correct autoApproveArgs", () => {
+  it("codex-acp pins latest Zed package and has correct autoApproveArgs", () => {
     const adapter = getAdapter("codex-acp");
     expect(adapter).toBeDefined();
+    expect(adapter!.args).toContain("@zed-industries/codex-acp@0.12.0");
     expect(adapter!.autoApproveArgs).toEqual([
       "-c",
       'approval_policy="never"',
