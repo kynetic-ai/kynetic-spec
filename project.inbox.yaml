@@ -3070,3 +3070,15 @@ inbox:
       - moved-from-hawse
     added_by: Jacob Chapel
     created_at: 2026-04-30T06:04:42.459Z
+  - _ulid: 01KQEFTVNK9P2WKQT0NDYCSS3N
+    text: "Moved from Hawse inbox 01KQDB0Y: `kspec review reply --resolve` flag (or a single `kspec
+      review address` subcommand) — replying to and resolving a thread are almost always paired in
+      fix-cycle workflow, so doing them as separate commands × N threads doubles the CLI calls.
+      Closing a 5-thread review needed 10 CLI invocations."
+    tags:
+      - cli
+      - review
+      - ergonomics
+      - moved-from-hawse
+    added_by: Jacob Chapel
+    created_at: 2026-04-30T06:04:49.715Z
