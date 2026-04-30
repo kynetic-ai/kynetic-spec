@@ -87,3 +87,10 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-04-28T03:36:35.371Z
+  - _ulid: 01KQG861XBKH8F8JAG6A4T8C15
+    content: "Hermes cleanup before closing @plan-spec-catalog-health-and-validation-trust: this
+      cancelled normalization task was superseded by @plan-ac-id-format-normalization, so its stale
+      @ac-annotation-integrity-reporting spec_ref should not keep alignment in_progress."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-04-30T22:29:36.811Z
