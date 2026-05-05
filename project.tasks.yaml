@@ -27540,6 +27540,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-05T21:16:20.271Z
+  automation: eligible
 - _ulid: 01KQWZZFPY4HE3CJZHZEGRE1BQ
   slugs:
     - task-update-daemon-server-endpoint-ac
