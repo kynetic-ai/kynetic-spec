@@ -79,5 +79,14 @@ tags:
   - config
   - foundation
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-05-05T21:19:52.096Z
 created_at: 2026-05-05T21:16:22.136Z
 todos: []
+automation: eligible
