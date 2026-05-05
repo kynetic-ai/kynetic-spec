@@ -175359,6 +175359,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-05T19:58:43.340Z
+      - _ulid: 01KQWVHX1QGC2T4QXRF7WVQEBB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQWVHVRV63A27YQD837CSQVN
+        timestamp: 2026-05-05T19:59:01.176Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -175368,8 +175375,26 @@ reviews:
       content_hash: ""
       ref: "@plan-daemon-network-endpoint-contract"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQWVHVRV63A27YQD837CSQVN
+        anchor:
+          type: structured
+          field: ac-clients-use-metadata
+          ref: "@daemon-network-endpoint-contract"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQWVHVRWS1QNDQ6T412XP19W
+            author: Jacob Chapel
+            body: "MUST-FIX: This AC is implementation-facing instead of behavioral. It requires the endpoint to
+              be produced by the shared daemon endpoint resolver and lists internal CLI code
+              categories, so the spec would test a mechanism rather than an observable contract.
+              Move the shared-resolver requirement into implementation tasks, and rewrite the AC to
+              require that CLI, status, scheduled, agent, event, task-event, and web UI development
+              clients connect using the advertised daemon endpoint metadata/URLs rather than
+              independently derived localhost defaults."
+            created_at: 2026-05-05T19:58:59.868Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-05T19:58:30.947Z
-    updated_at: 2026-05-05T19:58:42.037Z
+    updated_at: 2026-05-05T19:58:59.868Z
     notes: []
