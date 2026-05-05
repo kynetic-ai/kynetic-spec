@@ -175685,6 +175685,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-05T20:52:23.118Z
+      - _ulid: 01KQWYM5VQJ070NQ7CXEGKKVSS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQWYM4FNR9BESGCNPX9R6CQF
+        timestamp: 2026-05-05T20:52:41.463Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -175694,8 +175701,26 @@ reviews:
       content_hash: ""
       ref: "@plan-daemon-network-endpoint-contract"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQWYM4FNR9BESGCNPX9R6CQF
+        anchor:
+          type: structured
+          field: ac-wildcard-not-destination
+          ref: "@trait-daemon-endpoint-consumer"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQWYM4FNKWMZP9MDJXNVN2M6
+            author: Jacob Chapel
+            body: "The trait AC combines two different consumer surfaces: communicating with the daemon and
+              reporting a destination to a user. The plan then applies this trait to
+              @daemon-proxy-detection, which communicates with a daemon but does not describe
+              user-facing destination reporting. Because inherited trait ACs must be covered by
+              every implementer, this makes the trait broader than the specs it is applied to and
+              leaves ambiguous coverage. Split the reporting behavior into a separate AC/trait or
+              keep @trait-daemon-endpoint-consumer limited to communication-only endpoint use."
+            created_at: 2026-05-05T20:52:40.053Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-05T20:52:10.040Z
-    updated_at: 2026-05-05T20:52:21.689Z
+    updated_at: 2026-05-05T20:52:40.053Z
     notes: []
