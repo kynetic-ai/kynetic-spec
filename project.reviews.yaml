@@ -175670,7 +175670,18 @@ reviews:
     slugs: []
     title: "Plan review: Daemon Network Endpoint Contract (cycle 3)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --warnings-ok passed. Existing project warnings remain, but schema and
+          references are OK.
+        name: catalog validation
+        required: true
+        runner: kspec
+        created_at: 2026-05-05T20:53:00.538Z
+        completed_at: 2026-05-05T20:53:00.538Z
     events:
       - _ulid: 01KQWYK75QKZ1AZRYE71JV4CYW
         actor: Jacob Chapel
@@ -175699,6 +175710,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQWYM4H6TAJ0S3XKQVB15VKM
         timestamp: 2026-05-05T20:52:43.704Z
+      - _ulid: 01KQWYMSTT3R280AYT9Y5AAWV3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: catalog validation
+        timestamp: 2026-05-05T20:53:01.914Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -175746,5 +175764,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-05T20:52:10.040Z
-    updated_at: 2026-05-05T20:52:40.102Z
+    updated_at: 2026-05-05T20:53:00.538Z
     notes: []
