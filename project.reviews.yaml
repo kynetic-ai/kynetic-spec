@@ -175846,7 +175846,85 @@ reviews:
     slugs: []
     title: "Plan review: Daemon Network Endpoint Contract (cycle 4)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified cycle 3 blockers are resolved: @trait-daemon-endpoint-consumer
+          ac-wildcard-not-destination now only constrains consumer communication, and
+          @task-daemon-endpoint-regression-tests explicitly adds wildcard/non-loopback
+          external-binding warning regression coverage."
+        name: prior cycle blockers
+        required: true
+        created_at: 2026-05-05T20:59:20.561Z
+        completed_at: 2026-05-05T20:59:20.561Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --warnings-ok passed. Schema and references are OK; remaining warnings are
+          pre-existing deprecated refs, orphan specs, and AC annotation warnings.
+        name: catalog validation
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-05T20:59:24.112Z
+        completed_at: 2026-05-05T20:59:24.112Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/daemon-network-endpoint-contract.md --dry-run succeeded and stored
+          full document content without changing state.
+        name: plan import dry-run
+        required: true
+        runner: kspec plan import
+        created_at: 2026-05-05T20:59:27.662Z
+        completed_at: 2026-05-05T20:59:27.662Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "New endpoint-consumer trait is narrow and behavioral: it applies only to surfaces that
+          communicate with a running daemon, and the application task limits it to cli-daemon-proxy,
+          daemon-proxy-detection, and cli-serve-commands."
+        name: trait suitability
+        required: true
+        created_at: 2026-05-05T20:59:31.039Z
+        completed_at: 2026-05-05T20:59:31.039Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan requires default 127.0.0.1 without localhost resolution, allows explicit
+          wildcard/non-loopback binding, maps wildcard client destinations to non-wildcard connect
+          hosts, and surfaces visible unauthenticated-exposure warnings.
+        name: loopback and external binding contract
+        required: true
+        created_at: 2026-05-05T20:59:34.363Z
+        completed_at: 2026-05-05T20:59:34.363Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All new plan-spec ACs are claimed by spec-update, implementation, or regression tasks;
+          prior external-warning gap is covered by the regression lifecycle test. Dependency
+          ordering puts spec updates before implementation, metadata before client rewiring, and
+          cross-surface regression coverage last.
+        name: coverage and dependency mapping
+        required: true
+        created_at: 2026-05-05T20:59:37.736Z
+        completed_at: 2026-05-05T20:59:37.736Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: rg confirmed the cited hardcoded localhost/127.0.0.1 daemon client/server/web UI paths and
+          existing daemon.host/runtime parsing in the files named by the plan.
+        name: code grounding
+        required: true
+        created_at: 2026-05-05T20:59:41.135Z
+        completed_at: 2026-05-05T20:59:41.135Z
     events:
       - _ulid: 01KQWYYV4DVGEBYM5BPKTJ3YPS
         actor: Jacob Chapel
@@ -175861,9 +175939,74 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-05T20:58:44.203Z
+      - _ulid: 01KQWZ0D0KHQ2PFBWMR7MARW40
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: prior cycle blockers
+        timestamp: 2026-05-05T20:59:22.003Z
+      - _ulid: 01KQWZ0GAEQ6DFMJQRW6MM0T77
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: catalog validation
+        timestamp: 2026-05-05T20:59:25.390Z
+      - _ulid: 01KQWZ0KTANRDC07B5R4AZR4KG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: plan import dry-run
+        timestamp: 2026-05-05T20:59:28.971Z
+      - _ulid: 01KQWZ0Q38WE6N137AFBNDK96B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: trait suitability
+        timestamp: 2026-05-05T20:59:32.328Z
+      - _ulid: 01KQWZ0TB9VPCY667E7NFM9P7S
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: loopback and external binding contract
+        timestamp: 2026-05-05T20:59:35.657Z
+      - _ulid: 01KQWZ0XPBWQJXAG56C256ZQCS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: coverage and dependency mapping
+        timestamp: 2026-05-05T20:59:39.083Z
+      - _ulid: 01KQWZ11119BDYH3KJAZF3ZAP3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: code grounding
+        timestamp: 2026-05-05T20:59:42.497Z
+      - _ulid: 01KQWZ1478RSRS4769C7C5TPV2
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-05T20:59:45.768Z
+      - _ulid: 01KQWZ1478XJ5RZA20GYC7N12A
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-05T20:59:45.768Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -175871,7 +176014,14 @@ reviews:
       ref: "@plan-daemon-network-endpoint-contract"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-05T20:59:45.768Z
     created_at: 2026-05-05T20:58:30.926Z
-    updated_at: 2026-05-05T20:58:42.888Z
+    updated_at: 2026-05-05T20:59:45.768Z
     notes: []
