@@ -27561,6 +27561,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-05T21:16:20.574Z
+  automation: eligible
 - _ulid: 01KQWZZG0BC74MJ02VRH2V9W4C
   slugs:
     - task-update-cli-daemon-proxy-endpoint-ac
