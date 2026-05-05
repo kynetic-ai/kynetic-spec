@@ -27581,6 +27581,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-05T21:16:20.875Z
+  automation: eligible
 - _ulid: 01KQWZZGBHAJ7J46CFAFTCZKG6
   slugs:
     - task-update-daemon-lifecycle-endpoint-ac
