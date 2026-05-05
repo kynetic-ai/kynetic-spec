@@ -175703,6 +175703,17 @@ reviews:
         required: true
         created_at: 2026-05-05T20:53:00.628Z
         completed_at: 2026-05-05T20:53:00.628Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@trait-daemon-endpoint-consumer ac-wildcard-not-destination mixes communication and
+          user-facing destination reporting, but the plan applies it to @daemon-proxy-detection
+          which is not a reporting surface."
+        name: trait suitability
+        required: true
+        created_at: 2026-05-05T20:53:15.823Z
+        completed_at: 2026-05-05T20:53:15.823Z
     events:
       - _ulid: 01KQWYK75QKZ1AZRYE71JV4CYW
         actor: Jacob Chapel
@@ -175752,6 +175763,13 @@ reviews:
           status: fail
           name: coverage mapping
         timestamp: 2026-05-05T20:53:06.039Z
+      - _ulid: 01KQWYN8S2FP922JEQN5RJ5RMX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: trait suitability
+        timestamp: 2026-05-05T20:53:17.218Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -175799,5 +175817,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-05T20:52:10.040Z
-    updated_at: 2026-05-05T20:53:00.628Z
+    updated_at: 2026-05-05T20:53:15.823Z
     notes: []
