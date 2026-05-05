@@ -27602,6 +27602,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-05T21:16:21.233Z
+  automation: eligible
 - _ulid: 01KQWZZGMN1E0SQQ0WQS590JGW
   slugs:
     - task-apply-daemon-endpoint-consumer-trait
