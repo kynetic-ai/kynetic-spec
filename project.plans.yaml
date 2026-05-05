@@ -44047,6 +44047,33 @@ plans:
       ## Specs
 
       ```yaml
+      - title: Daemon Endpoint Consumer
+        slug: trait-daemon-endpoint-consumer
+        type: trait
+        description: |
+          Cross-cutting behavior for kspec surfaces that communicate with a running
+          daemon. A daemon consumer uses the daemon endpoint that kspec reports for
+          client communication instead of independently choosing a different local or
+          wildcard address.
+        acceptance_criteria:
+          - id: ac-uses-reported-endpoint
+            given: |
+              A running daemon has reported the endpoint clients should use
+            when: |
+              A daemon consumer communicates with that daemon
+            then: |
+              The consumer addresses the reported endpoint rather than independently
+              choosing a different daemon destination
+          - id: ac-wildcard-not-destination
+            given: |
+              The daemon is explicitly configured to listen on all interfaces
+            when: |
+              A daemon consumer communicates with that daemon or reports the daemon
+              destination to a user
+            then: |
+              The wildcard listen address is not used or shown as the client
+              destination
+
       - title: Daemon Network Endpoint Contract
         slug: daemon-network-endpoint-contract
         type: requirement
@@ -44154,12 +44181,16 @@ plans:
 
           What: Change @trait-localhost-security exactly as follows.
 
+          Update the title to:
+            Loopback Default Security
+
           Replace the description with:
             Security pattern for daemon services that are loopback-only by
-            default. External binding is allowed only by explicit configuration
-            and is treated as unauthenticated network exposure; specs using this
-            trait must enforce loopback-only behavior in default mode and surface
-            explicit warnings when external binding is enabled.
+            default. Binding to wildcard or other non-loopback interfaces is never
+            the default; it is allowed only by explicit configuration and is treated
+            as unauthenticated network exposure. Specs using this trait must enforce
+            loopback-only behavior in default mode and surface explicit warnings when
+            external binding is enabled.
 
           Replace the existing acceptance criteria with these four ACs:
 
@@ -44188,9 +44219,9 @@ plans:
                     authentication and exposes project data and mutation APIs on
                     the configured network interface
 
-          How: Use kspec item set to update the trait description. Use kspec item
-          ac set/add/remove commands to leave exactly the four ACs above on the
-          trait. Keep the trait slug unchanged. Verify with kspec item get
+          How: Use kspec item set to update the trait title and description. Use
+          kspec item ac set/add/remove commands to leave exactly the four ACs above
+          on the trait. Keep the trait slug unchanged. Verify with kspec item get
           @trait-localhost-security.
 
           Testing: Run kspec validate --warnings-ok after the spec mutation.
@@ -44531,6 +44562,49 @@ plans:
           ac-remote-auto-register-blocked, ac-project-registry-local-only;
           @cli-serve-commands ac-2, ac-4, ac-6, ac-8.
 
+      - title: Apply daemon endpoint consumer trait to client specs
+        slug: task-apply-daemon-endpoint-consumer-trait
+        priority: 1
+        tags: [spec-update, daemon, cli, trait]
+        spec_ref: "@trait-daemon-endpoint-consumer"
+        depends_on:
+          - "@task-update-cli-daemon-proxy-endpoint-ac"
+          - "@task-update-daemon-lifecycle-endpoint-ac"
+        description: |
+          Apply the new @trait-daemon-endpoint-consumer trait to existing specs that
+          describe kspec surfaces communicating with a running daemon.
+
+          Why: The endpoint consumer behavior is cross-cutting: daemon proxy
+          detection, command proxying, and serve lifecycle/status commands all need
+          the same user-visible guarantee that they communicate with the endpoint
+          kspec reports for clients and never present a wildcard listen address as a
+          destination. Keeping that behavior in a trait prevents each daemon client
+          spec from restating the same contract with slightly different wording.
+
+          What:
+          - Add @trait-daemon-endpoint-consumer to @cli-daemon-proxy.
+          - Add @trait-daemon-endpoint-consumer to @daemon-proxy-detection.
+          - Add @trait-daemon-endpoint-consumer to @cli-serve-commands.
+          - Do not add the trait to @config-daemon; it defines settings rather than
+            consuming the daemon endpoint.
+          - Do not add the trait to @daemon-server; it produces and protects the
+            endpoint and should use @trait-localhost-security instead.
+          - Do not add the trait to @api-contract or broad @web-ui unless a future
+            spec specifically describes a daemon-consuming client surface there.
+
+          How: Use kspec item set or the appropriate trait-update command to add the
+          trait refs without removing existing traits. Verify each target item with
+          kspec item get and confirm the existing @trait-api-endpoint,
+          @trait-websocket-protocol, @trait-error-guidance, or @trait-json-output
+          refs remain unchanged where present.
+
+          Testing: Run kspec validate --warnings-ok after the trait refs are added.
+
+          Covers: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint,
+          ac-wildcard-not-destination; @cli-daemon-proxy ac-auto-detect;
+          @daemon-proxy-detection ac-connection-metadata-check;
+          @cli-serve-commands ac-6.
+
       - title: Update web API and runtime specs for endpoint-aware clients
         slug: task-update-web-api-endpoint-ac
         priority: 1
@@ -44734,6 +44808,7 @@ plans:
         depends_on:
           - "@task-daemon-startup-bind-host-metadata"
           - "@task-update-cli-daemon-proxy-endpoint-ac"
+          - "@task-apply-daemon-endpoint-consumer-trait"
         description: |
           Replace scattered CLI daemon URL construction with the shared endpoint
           resolver.
@@ -44777,10 +44852,12 @@ plans:
           tests/cli-serve.test.ts tests/parser/daemon-config.test.ts.
 
           Covers: @daemon-network-endpoint-contract ac-clients-use-metadata,
-          ac-legacy-port-fallback; @cli-daemon-proxy ac-auto-detect,
-          ac-force-direct, ac-force-direct-management-exception;
-          @daemon-proxy-detection ac-connection-metadata-check,
-          ac-legacy-port-file-fallback, ac-health-timeout; @cli-serve-commands ac-6.
+          ac-legacy-port-fallback; @trait-daemon-endpoint-consumer
+          ac-uses-reported-endpoint, ac-wildcard-not-destination;
+          @cli-daemon-proxy ac-auto-detect, ac-force-direct,
+          ac-force-direct-management-exception; @daemon-proxy-detection
+          ac-connection-metadata-check, ac-legacy-port-file-fallback,
+          ac-health-timeout; @cli-serve-commands ac-6.
 
       - title: Centralize web UI development daemon endpoints and CORS origins
         slug: task-centralize-web-ui-daemon-endpoints
@@ -44882,8 +44959,10 @@ plans:
             tests/daemon-api/server.test.ts tests/daemon-api/websocket-protocol.test.ts
             tests/web-ui
 
-          Covers: @daemon-network-endpoint-contract all ACs; @daemon-server ac-1,
-          ac-2, ac-3, ac-external-bind-warning; @cli-daemon-proxy ac-auto-detect;
+          Covers: @daemon-network-endpoint-contract all ACs;
+          @trait-daemon-endpoint-consumer ac-uses-reported-endpoint,
+          ac-wildcard-not-destination; @daemon-server ac-1, ac-2, ac-3,
+          ac-external-bind-warning; @cli-daemon-proxy ac-auto-detect;
           @daemon-proxy-detection ac-connection-metadata-check; @api-contract ac-1,
           ac-websocket-origin.
       ```
@@ -44929,7 +45008,11 @@ plans:
 
       ### Dependency ordering
 
-      Spec-update tasks run first so the catalog no longer contradicts the work.
+      Spec-update tasks run first so the catalog no longer contradicts the work. The
+      localhost-security update reconciles default loopback security with explicitly
+      configured external binding. The endpoint-consumer trait is applied after the
+      existing CLI daemon specs are updated, so the shared client contract is attached
+      only to specs that actually communicate with a running daemon.
       `task-shared-daemon-endpoint-resolver` creates the shared pure contract before
       startup or client code is rewired. Daemon startup writes metadata before CLI and
       web UI clients switch to consuming it. Regression coverage runs last because it
@@ -44955,3 +45038,9 @@ plans:
           regression with behavioral coverage"
         author: Jacob Chapel
         created_at: 2026-05-05T20:00:52.879Z
+      - _ulid: 01KQWYCA02XCD8SHFCQYCPSQMX
+        content: "Address human verification feedback: add behavioral daemon endpoint consumer trait, apply
+          it via concrete spec-update task, and clarify loopback default vs explicit wildcard
+          binding"
+        author: Jacob Chapel
+        created_at: 2026-05-05T20:48:23.554Z
