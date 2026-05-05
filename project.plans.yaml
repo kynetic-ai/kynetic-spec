@@ -44068,11 +44068,10 @@ plans:
             given: |
               The daemon is explicitly configured to listen on all interfaces
             when: |
-              A daemon consumer communicates with that daemon or reports the daemon
-              destination to a user
+              A daemon consumer communicates with that daemon
             then: |
-              The wildcard listen address is not used or shown as the client
-              destination
+              The consumer addresses a non-wildcard destination reported for client
+              communication
 
       - title: Daemon Network Endpoint Contract
         slug: daemon-network-endpoint-contract
@@ -44577,9 +44576,10 @@ plans:
           Why: The endpoint consumer behavior is cross-cutting: daemon proxy
           detection, command proxying, and serve lifecycle/status commands all need
           the same user-visible guarantee that they communicate with the endpoint
-          kspec reports for clients and never present a wildcard listen address as a
-          destination. Keeping that behavior in a trait prevents each daemon client
-          spec from restating the same contract with slightly different wording.
+          kspec reports for clients and never attempt to use a wildcard listen
+          address as the daemon destination. Keeping that behavior in a trait
+          prevents each daemon client spec from restating the same contract with
+          slightly different wording.
 
           What:
           - Add @trait-daemon-endpoint-consumer to @cli-daemon-proxy.
@@ -44937,9 +44937,12 @@ plans:
              reach the production listen call for node and bun runtime paths.
           4. Add a status test that creates metadata with non-default host/port and
              proves kspec serve status reads and reports that endpoint.
-          5. Add web UI constants tests for configured dev host/port and IPv6 bracket
+          5. Add a daemon lifecycle test that explicitly configures a wildcard or
+             non-loopback bind host and asserts startup or status output includes the
+             unauthenticated external-binding warning.
+          6. Add web UI constants tests for configured dev host/port and IPv6 bracket
              formatting.
-          6. Add behavioral coverage for every production daemon client path that
+          7. Add behavioral coverage for every production daemon client path that
              previously constructed its own host: main proxy health/project/command
              requests, serve status health/project requests, daemon-status health
              checks, agent/event/schedule daemon helpers, task event emission, and
@@ -45044,3 +45047,8 @@ plans:
           binding"
         author: Jacob Chapel
         created_at: 2026-05-05T20:48:23.554Z
+      - _ulid: 01KQWYQGCW82BXH4ADK0EQ4VAJ
+        content: "Address cycle 3 review: narrow endpoint-consumer wildcard AC to communication-only
+          behavior and add explicit external-binding warning regression coverage"
+        author: Jacob Chapel
+        created_at: 2026-05-05T20:54:30.556Z
