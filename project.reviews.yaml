@@ -175692,6 +175692,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQWYM4FNR9BESGCNPX9R6CQF
         timestamp: 2026-05-05T20:52:41.463Z
+      - _ulid: 01KQWYM81R80XQ5WM993FFMT50
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQWYM4H6TAJ0S3XKQVB15VKM
+        timestamp: 2026-05-05T20:52:43.704Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -175720,7 +175727,24 @@ reviews:
               keep @trait-daemon-endpoint-consumer limited to communication-only endpoint use."
             created_at: 2026-05-05T20:52:40.053Z
         kind: blocker
+      - _ulid: 01KQWYM4H6TAJ0S3XKQVB15VKM
+        anchor:
+          type: structured
+          field: covers
+          ref: "@task-daemon-endpoint-regression-tests"
+          section: tasks
+        entries:
+          - _ulid: 01KQWYM4H62Y0VZ2GVBSN8R3Y0
+            author: Jacob Chapel
+            body: "The task claims 'Covers: @daemon-network-endpoint-contract all ACs', but its What/Testing
+              sections do not require a behavioral regression for ac-external-binding-warning. It
+              covers configured hosts and client endpoint use, but not the visible
+              unauthenticated-exposure warning when a non-loopback or wildcard bind host is
+              effective. Either add an explicit warning assertion to this task or narrow the Covers
+              line to the ACs it actually tests."
+            created_at: 2026-05-05T20:52:40.102Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-05T20:52:10.040Z
-    updated_at: 2026-05-05T20:52:40.053Z
+    updated_at: 2026-05-05T20:52:40.102Z
     notes: []
