@@ -175682,6 +175682,17 @@ reviews:
         runner: kspec
         created_at: 2026-05-05T20:53:00.538Z
         completed_at: 2026-05-05T20:53:00.538Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan states default host is 127.0.0.1, keeps wildcard/non-loopback binding explicit, maps
+          wildcard client destinations away from wildcard bind addresses, and requires visible
+          unauthenticated-exposure warnings.
+        name: loopback default and explicit external binding
+        required: true
+        created_at: 2026-05-05T20:53:00.611Z
+        completed_at: 2026-05-05T20:53:00.611Z
     events:
       - _ulid: 01KQWYK75QKZ1AZRYE71JV4CYW
         actor: Jacob Chapel
@@ -175717,6 +175728,13 @@ reviews:
           status: pass
           name: catalog validation
         timestamp: 2026-05-05T20:53:01.914Z
+      - _ulid: 01KQWYMVSZ6W0R7PKC5VXQSW3M
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: loopback default and explicit external binding
+        timestamp: 2026-05-05T20:53:03.935Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -175764,5 +175782,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-05T20:52:10.040Z
-    updated_at: 2026-05-05T20:53:00.538Z
+    updated_at: 2026-05-05T20:53:00.611Z
     notes: []
