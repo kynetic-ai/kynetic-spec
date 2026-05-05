@@ -755,6 +755,41 @@ traits:
     tags: []
     created: 2026-04-28T06:58:15.451Z
     notes: []
+  - _ulid: 01KQWZZF1ZKTHYGHJS7W2YAA0T
+    slugs:
+      - trait-daemon-endpoint-consumer
+    title: Daemon Endpoint Consumer
+    type: trait
+    description: |
+      Cross-cutting behavior for kspec surfaces that communicate with a running
+      daemon. A daemon consumer uses the daemon endpoint that kspec reports for
+      client communication instead of independently choosing a different local or
+      wildcard address.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          A running daemon has reported the endpoint clients should use
+        id: ac-uses-reported-endpoint
+        then: |
+          The consumer addresses the reported endpoint rather than independently
+          choosing a different daemon destination
+        when: |
+          A daemon consumer communicates with that daemon
+      - given: |
+          The daemon is explicitly configured to listen on all interfaces
+        id: ac-wildcard-not-destination
+        then: |
+          The consumer addresses a non-wildcard destination reported for client
+          communication
+        when: |
+          A daemon consumer communicates with that daemon
+    tags: []
+    created: 2026-05-05T21:16:19.903Z
+    notes: []
 default_module: 01KPQQD7D9699RHY3593221X1B
 includes:
   - modules/core.yaml

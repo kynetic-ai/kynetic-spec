@@ -1,0 +1,58 @@
+_ulid: 01KQWZZGMN1E0SQQ0WQS590JGW
+slugs:
+  - task-apply-daemon-endpoint-consumer-trait
+title: Apply daemon endpoint consumer trait to client specs
+type: task
+description: |
+  Apply the new @trait-daemon-endpoint-consumer trait to existing specs that
+  describe kspec surfaces communicating with a running daemon.
+
+  Why: The endpoint consumer behavior is cross-cutting: daemon proxy
+  detection, command proxying, and serve lifecycle/status commands all need
+  the same user-visible guarantee that they communicate with the endpoint
+  kspec reports for clients and never attempt to use a wildcard listen
+  address as the daemon destination. Keeping that behavior in a trait
+  prevents each daemon client spec from restating the same contract with
+  slightly different wording.
+
+  What:
+  - Add @trait-daemon-endpoint-consumer to @cli-daemon-proxy.
+  - Add @trait-daemon-endpoint-consumer to @daemon-proxy-detection.
+  - Add @trait-daemon-endpoint-consumer to @cli-serve-commands.
+  - Do not add the trait to @config-daemon; it defines settings rather than
+    consuming the daemon endpoint.
+  - Do not add the trait to @daemon-server; it produces and protects the
+    endpoint and should use @trait-localhost-security instead.
+  - Do not add the trait to @api-contract or broad @web-ui unless a future
+    spec specifically describes a daemon-consuming client surface there.
+
+  How: Use kspec item set or the appropriate trait-update command to add the
+  trait refs without removing existing traits. Verify each target item with
+  kspec item get and confirm the existing @trait-api-endpoint,
+  @trait-websocket-protocol, @trait-error-guidance, or @trait-json-output
+  refs remain unchanged where present.
+
+  Testing: Run kspec validate --warnings-ok after the trait refs are added.
+
+  Covers: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint,
+  ac-wildcard-not-destination; @cli-daemon-proxy ac-auto-detect;
+  @daemon-proxy-detection ac-connection-metadata-check;
+  @cli-serve-commands ac-6.
+spec_ref: "@trait-daemon-endpoint-consumer"
+plan_ref: "@plan-daemon-network-endpoint-contract"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-cli-daemon-proxy-endpoint-ac"
+  - "@task-update-daemon-lifecycle-endpoint-ac"
+context: []
+priority: 1
+tags:
+  - spec-update
+  - daemon
+  - cli
+  - trait
+vcs_refs: []
+created_at: 2026-05-05T21:16:21.525Z
+todos: []

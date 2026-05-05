@@ -752,6 +752,99 @@ features:
         tags: []
         created: 2026-03-16T08:28:58.926Z
         notes: []
+      - _ulid: 01KQWZZF2JMQAK4J6ZMZ4VQSN8
+        slugs:
+          - daemon-network-endpoint-contract
+        title: Daemon Network Endpoint Contract
+        type: requirement
+        description: |
+          The daemon has one canonical network endpoint contract shared by
+          daemon startup, daemon lifecycle metadata, CLI clients, web UI
+          development clients, and tests. The default endpoint is a local
+          loopback endpoint that does not depend on operating-system hostname
+          resolution. Configured host and port values are resolved once and
+          every daemon client uses the advertised connection endpoint instead
+          of constructing daemon URLs independently.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              No daemon host is configured by CLI flag, environment variable,
+              or kspec.config.yaml
+            id: ac-default-loopback-v4
+            then: |
+              The daemon binds and advertises 127.0.0.1 without resolving
+              the name localhost
+            when: |
+              The daemon starts
+          - given: |
+              No daemon host is configured and binding 127.0.0.1 fails because
+              IPv4 loopback is unavailable
+            id: ac-default-ipv6-fallback
+            then: |
+              The daemon retries on ::1 and advertises URLs using bracketed
+              IPv6 host syntax
+            when: |
+              The daemon starts
+          - given: |
+              A daemon host is configured by CLI flag, environment variable,
+              or kspec.config.yaml
+            id: ac-configured-bind-host
+            then: |
+              The daemon binds to the configured host value
+            when: |
+              The daemon starts
+          - given: |
+              The daemon bind host is 0.0.0.0 or ::
+            id: ac-wildcard-connect-host
+            then: |
+              The advertised connect host is a loopback address or explicitly
+              configured connect host, not the wildcard bind address
+            when: |
+              The daemon advertises its connection endpoint for local CLI use
+          - given: |
+              The daemon starts successfully
+            id: ac-connection-metadata
+            then: |
+              The global daemon metadata records pid, port, bind_host,
+              connect_host, api_url, ws_url, and runtime
+            when: |
+              Daemon lifecycle state is written
+          - given: |
+              A daemon client needs to call the daemon from CLI code, daemon
+              status code, scheduled-command code, agent-command code, event
+              code, task-event code, or web UI development code
+            id: ac-clients-use-metadata
+            then: |
+              The client calls the advertised URL instead of a separately chosen
+              daemon host or port
+            when: |
+              Daemon connection metadata advertises an API URL or WebSocket URL
+          - given: |
+              New daemon connection metadata is absent but the legacy global
+              daemon.port file exists
+            id: ac-legacy-port-fallback
+            then: |
+              The client attempts 127.0.0.1 with the legacy port value before
+              treating the daemon as unavailable
+            when: |
+              A CLI client checks daemon availability
+          - given: |
+              The effective daemon bind host is a non-loopback address or a
+              wildcard address
+            id: ac-external-binding-warning
+            then: |
+              The output includes a visible warning that the daemon exposes
+              unauthenticated project data and mutation APIs on the configured
+              network interface
+            when: |
+              The daemon starts or a lifecycle command reports the endpoint
+        tags: []
+        created: 2026-05-05T21:16:19.922Z
+        notes: []
     created: 2026-01-22T01:18:09.314Z
     notes: []
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW

@@ -45027,10 +45027,24 @@ plans:
       This plan does not add daemon authentication, TLS, remote user management, or a
       LAN discovery workflow. It only makes configured external binding explicit,
       warned, and internally consistent with existing unauthenticated daemon APIs.
-    status: approved
+    status: active
     approved_at: 2026-05-05T21:15:25.993Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@trait-daemon-endpoint-consumer"
+      - "@daemon-network-endpoint-contract"
+    derived_tasks:
+      - "@task-update-localhost-security-trait"
+      - "@task-update-config-daemon-endpoint-ac"
+      - "@task-update-daemon-server-endpoint-ac"
+      - "@task-update-cli-daemon-proxy-endpoint-ac"
+      - "@task-update-daemon-lifecycle-endpoint-ac"
+      - "@task-apply-daemon-endpoint-consumer-trait"
+      - "@task-update-web-api-endpoint-ac"
+      - "@task-shared-daemon-endpoint-resolver"
+      - "@task-daemon-startup-bind-host-metadata"
+      - "@task-centralize-cli-daemon-clients"
+      - "@task-centralize-web-ui-daemon-endpoints"
+      - "@task-daemon-endpoint-regression-tests"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/daemon-network-endpoint-contract.md
     created_at: 2026-05-05T19:55:12.662Z
@@ -45052,3 +45066,62 @@ plans:
           behavior and add explicit external-binding warning regression coverage"
         author: Jacob Chapel
         created_at: 2026-05-05T20:54:30.556Z
+      - _ulid: 01KQWZZJQG1EQHDR08Q84BMC1A
+        content: |-
+          ### Investigation summary
+
+          The current daemon network contract is split across hardcoded values:
+
+          - `packages/daemon/src/server.ts:634-642` binds and logs `localhost` directly.
+          - `packages/daemon/src/server.ts:229-257` parses Host headers manually and
+            permits only `localhost`, `127.0.0.1`, and `::1`.
+          - `src/parser/config.ts:86-97` parses `daemon.host` and `daemon.runtime`, and
+            `src/parser/config.ts:693-705` resolves `daemon.host`, but daemon startup
+            does not pass that host to the daemon.
+          - `src/cli/index.ts:195-199` auto-starts the daemon with `--port` and
+            `--kspec-dir` only.
+          - `src/cli/daemon-proxy.ts:94`, `:164`, and `:218` hardcode
+            `http://127.0.0.1:<port>`.
+          - `src/parser/daemon-status.ts:72`, `src/cli/commands/serve.ts:579` and `:595`,
+            `src/cli/commands/task.ts:99`, and helper functions in
+            `src/cli/commands/agent.ts`, `src/cli/commands/event.ts`, and
+            `src/cli/commands/schedule.ts` use `localhost`-based daemon URLs.
+          - `packages/web-ui/src/lib/constants.ts:13-25` hardcodes dev/SSR API and
+            WebSocket endpoints to `localhost:3456`.
+          - `src/cli/pid-utils.ts` and `packages/daemon/src/pid.ts` duplicate global
+            daemon pid/port handling and persist only the port, not the host or URL.
+
+          Cross-platform recommendation: default to numeric IPv4 loopback `127.0.0.1`
+          for both bind and connect. Numeric loopback avoids `/etc/hosts`, DNS result
+          ordering, and Node/Bun/Elysia differences. If default IPv4 loopback is
+          unavailable, fallback to `::1` and advertise bracketed IPv6 URLs such as
+          `http://[::1]:3456`. Do not rely on omitted host, Bun/Elysia defaults, or
+          `localhost`: omitted host and framework defaults can expose `0.0.0.0`/`::`,
+          and `localhost` is resolver-dependent.
+
+          External binding is intentionally supported only by explicit configuration.
+          When the bind host is wildcard or non-loopback, the daemon must warn that it has
+          no authentication and exposes project data and mutation APIs. Wildcard bind
+          addresses are not valid client endpoints, so local clients should use a loopback
+          connect host or an explicit configured connect host.
+
+          ### Dependency ordering
+
+          Spec-update tasks run first so the catalog no longer contradicts the work. The
+          localhost-security update reconciles default loopback security with explicitly
+          configured external binding. The endpoint-consumer trait is applied after the
+          existing CLI daemon specs are updated, so the shared client contract is attached
+          only to specs that actually communicate with a running daemon.
+          `task-shared-daemon-endpoint-resolver` creates the shared pure contract before
+          startup or client code is rewired. Daemon startup writes metadata before CLI and
+          web UI clients switch to consuming it. Regression coverage runs last because it
+          spans the shared module, daemon startup, CLI proxy, serve status, and web UI dev
+          endpoints.
+
+          ### Out of scope
+
+          This plan does not add daemon authentication, TLS, remote user management, or a
+          LAN discovery workflow. It only makes configured external binding explicit,
+          warned, and internally consistent with existing unauthenticated daemon APIs.
+        author: Jacob Chapel
+        created_at: 2026-05-05T21:16:23.664Z

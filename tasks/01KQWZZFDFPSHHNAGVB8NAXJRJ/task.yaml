@@ -1,0 +1,97 @@
+_ulid: 01KQWZZFDFPSHHNAGVB8NAXJRJ
+slugs:
+  - task-update-config-daemon-endpoint-ac
+title: Update configurable daemon settings spec for endpoint resolution
+type: task
+description: |
+  Update @config-daemon so it owns the daemon port, host, connect host,
+  runtime, and precedence contract used by daemon startup and auto-start.
+
+  Why: src/parser/config.ts currently parses daemon.host and
+  KSPEC_DAEMON_HOST, but daemon startup ignores the host. The spec also
+  omits connect-host metadata, runtime config, and port environment
+  precedence even though these values affect daemon lifecycle behavior.
+
+  What: Change @config-daemon exactly as follows.
+
+  Replace the description with:
+    Daemon port, bind host, optional connect host, runtime, and auto-start
+    behavior are configurable in kspec.config.yaml. These settings are
+    loaded before shadow branch detection so daemon lifecycle and
+    auto-start decisions do not depend on the shadow worktree. CLI flags
+    and documented environment variables take precedence over file config.
+
+  Keep ac-1 through ac-4, ac-7, and ac-8 unless their text is otherwise
+  unchanged by current code. Replace ac-5 and ac-6, and add these ACs:
+
+    ac-host-default
+      given: No daemon.host is configured
+      when: kspec serve start is run
+      then: The daemon uses 127.0.0.1 as the effective bind host
+
+    ac-host-config
+      given: kspec.config.yaml sets daemon.host to "0.0.0.0"
+      when: kspec serve start is run
+      then: The daemon uses 0.0.0.0 as the effective bind host and emits
+            the external binding warning required by @trait-localhost-security
+
+    ac-host-env-precedence
+      given: KSPEC_DAEMON_HOST is set
+      when: kspec.config.yaml also sets daemon.host
+      then: KSPEC_DAEMON_HOST is the effective bind host
+
+    ac-connect-host-config
+      given: kspec.config.yaml sets daemon.connect_host
+      when: the daemon writes connection metadata
+      then: daemon.connect_host is the advertised connect host used by
+            local daemon clients
+
+    ac-port-env-precedence
+      given: KSPEC_DAEMON_PORT is set to a valid port
+      when: kspec.config.yaml also sets daemon.port and no --port flag is passed
+      then: KSPEC_DAEMON_PORT is the effective daemon port
+
+    ac-runtime-config
+      given: kspec.config.yaml sets daemon.runtime to "node" or "bun"
+      when: the daemon starts explicitly or via auto-start
+      then: the daemon is spawned with the configured runtime
+
+    ac-runtime-default
+      given: no daemon.runtime is configured
+      when: the daemon starts
+      then: the daemon uses node as the default runtime
+
+    ac-connection-metadata
+      given: the daemon starts successfully
+      when: daemon lifecycle state is written
+      then: the global daemon connection metadata records pid, port,
+            bind_host, connect_host, api_url, ws_url, and runtime
+
+  How: Use kspec item set and kspec item ac set/add commands. If ac-5 and
+  ac-6 keep their ids, update them to ac-host-config and
+  ac-host-env-precedence only if kspec supports id changes; otherwise
+  remove/re-add the ACs with the new ids. Verify with kspec item get
+  @config-daemon.
+
+  Testing: Run kspec validate --warnings-ok after the spec mutation.
+
+  Covers: @config-daemon ac-host-default, ac-host-config,
+  ac-host-env-precedence, ac-connect-host-config,
+  ac-port-env-precedence, ac-runtime-config, ac-runtime-default,
+  ac-connection-metadata.
+spec_ref: "@config-daemon"
+plan_ref: "@plan-daemon-network-endpoint-contract"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-localhost-security-trait"
+context: []
+priority: 1
+tags:
+  - spec-update
+  - daemon
+  - config
+vcs_refs: []
+created_at: 2026-05-05T21:16:20.271Z
+todos: []

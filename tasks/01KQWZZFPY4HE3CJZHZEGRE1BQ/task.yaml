@@ -1,0 +1,100 @@
+_ulid: 01KQWZZFPY4HE3CJZHZEGRE1BQ
+slugs:
+  - task-update-daemon-server-endpoint-ac
+title: Update daemon server spec for default loopback and metadata
+type: task
+description: |
+  Update @daemon-server so daemon startup, security checks, global state,
+  and web UI root URLs match the centralized network endpoint contract.
+
+  Why: @daemon-server currently says the daemon binds to localhost only,
+  writes a per-project .kspec/.daemon.pid file, and serves the UI at
+  http://localhost:<port>/. The implementation already uses global daemon
+  pid/port files, and the new endpoint contract must avoid localhost
+  resolver dependence while supporting explicitly configured interfaces.
+
+  What: Change @daemon-server exactly as follows.
+
+  Replace the description with:
+    Long-running Elysia.js server that exposes kspec state via HTTP API
+    and WebSocket for real-time updates. File watcher drives both
+    WebSocket broadcast and entity cache invalidation. The server binds
+    to a resolved daemon endpoint that defaults to 127.0.0.1 loopback and
+    can be explicitly configured for other interfaces with visible
+    unauthenticated-exposure warnings. Supports foreground and background
+    modes with global daemon lifecycle metadata. Includes heartbeat
+    ping/pong for connection health monitoring on runtimes that support it.
+
+  Replace these existing ACs:
+
+    ac-1
+      given: kspec is installed
+      when: the user runs "kspec serve start"
+      then: The Elysia HTTP server starts on the effective daemon port and
+            bind host, defaulting to port 3456 on 127.0.0.1
+
+    ac-2
+      given: daemon.host is unset
+      when: the server binds to the network interface
+      then: the daemon accepts only loopback HTTP and WebSocket connections
+
+    ac-3
+      given: daemon.host is unset
+      when: a request is received from a non-loopback remote address or
+            with a non-local Host or Origin
+      then: the request is rejected with 403 Forbidden for HTTP or a
+            policy-violation close for WebSocket
+
+    ac-9
+      given: daemon is not running
+      when: the user runs "kspec serve start --detach"
+      then: the process detaches to the background, writes global daemon
+            lifecycle and connection metadata under ~/.config/kspec/, and
+            the CLI returns immediately
+
+    ac-10
+      given: daemon is running in background
+      when: the user runs "kspec serve stop"
+      then: the daemon shuts down gracefully, removes global daemon
+            lifecycle and connection metadata, and closes all WebSocket
+            connections
+
+    ac-17
+      given: daemon is running with web UI assets available
+      when: browser opens the advertised daemon api_url
+      then: the daemon serves the built web UI assets as the root route
+
+  Add this AC:
+
+    ac-external-bind-warning
+      given: daemon.host is explicitly configured to a non-loopback or
+             wildcard address
+      when: the daemon starts
+      then: the server binds to that address and emits the external
+            binding warning required by @trait-localhost-security
+
+  How: Use kspec item ac set/add commands and verify with kspec item get
+  @daemon-server. Do not remove unrelated WebSocket, watcher, cache, or
+  web UI asset-coherence ACs.
+
+  Testing: Run kspec validate --warnings-ok after the spec mutation.
+
+  Covers: @daemon-server ac-1, ac-2, ac-3, ac-9, ac-10, ac-17,
+  ac-external-bind-warning.
+spec_ref: "@daemon-server"
+plan_ref: "@plan-daemon-network-endpoint-contract"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-localhost-security-trait"
+  - "@task-update-config-daemon-endpoint-ac"
+context: []
+priority: 1
+tags:
+  - spec-update
+  - daemon
+  - server
+vcs_refs: []
+created_at: 2026-05-05T21:16:20.574Z
+todos: []

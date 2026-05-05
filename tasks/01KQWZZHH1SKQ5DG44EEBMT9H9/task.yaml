@@ -1,0 +1,68 @@
+_ulid: 01KQWZZHH1SKQ5DG44EEBMT9H9
+slugs:
+  - task-daemon-startup-bind-host-metadata
+title: Wire daemon startup to resolved bind host and endpoint metadata
+type: task
+description: |
+  Make daemon startup bind to the resolved host and write complete daemon
+  endpoint metadata.
+
+  Why: packages/daemon/src/server.ts currently calls app.listen({ port,
+  hostname: "localhost" }) and logs localhost URLs. packages/daemon/src/index.ts
+  parses --port and --kspec-dir but no --host. src/cli/commands/serve.ts and
+  src/cli/index.ts spawn the daemon with only --port. This ignores daemon.host
+  and creates the reported IPv4/IPv6 mismatch when localhost resolves only to
+  ::1.
+
+  What:
+  1. Extend packages/daemon/src/server.ts ServerOptions to include bindHost,
+     connectHost, and resolved URL fields.
+  2. Change the production listen call in packages/daemon/src/server.ts from
+     hostname: "localhost" to the resolved bindHost.
+  3. If the default 127.0.0.1 bind fails specifically because IPv4 loopback
+     is unavailable, retry once on ::1 and advertise bracketed IPv6 URLs.
+     Do not retry on ::1 for unrelated errors such as EADDRINUSE.
+  4. Write the complete daemon metadata under ~/.config/kspec/ after the
+     server is listening and continue writing daemon.port for compatibility.
+  5. Remove metadata on clean shutdown and stop; keep stale metadata cleanup
+     behavior aligned with existing stale pid cleanup.
+  6. Add --host and --connect-host parsing to packages/daemon/src/index.ts.
+  7. Update src/cli/commands/serve.ts and src/cli/index.ts auto-start to pass
+     resolved --host and --connect-host values from config and env.
+  8. Update startup/status logs to print the advertised apiUrl and wsUrl. If
+     the bind host is non-loopback or wildcard, print the external binding
+     warning from @trait-localhost-security.
+
+  How: Reuse the shared endpoint resolver exclusively. Keep the daemon's
+  network values immutable after startup and store the actual fallback bind
+  host in metadata if ::1 fallback occurs. Ensure node and bun runtime paths
+  receive the same ServerOptions values.
+
+  Testing: Add daemon startup tests that assert app.listen receives 127.0.0.1
+  by default, configured host values are passed through, --host overrides
+  config/env as specified, metadata is written with api_url/ws_url, and ::1
+  fallback produces http://[::1]:<port> URLs. Run npm test -- --run
+  tests/parser/daemon-config.test.ts tests/cli-serve.test.ts
+  tests/daemon-server.test.ts.
+
+  Covers: @daemon-network-endpoint-contract ac-default-loopback-v4,
+  ac-default-ipv6-fallback, ac-configured-bind-host,
+  ac-connection-metadata, ac-external-binding-warning; @daemon-server ac-1,
+  ac-9, ac-10, ac-external-bind-warning; @config-daemon ac-host-config,
+  ac-host-env-precedence.
+spec_ref: "@daemon-network-endpoint-contract"
+plan_ref: "@plan-daemon-network-endpoint-contract"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-shared-daemon-endpoint-resolver"
+context: []
+priority: 1
+tags:
+  - daemon
+  - server
+  - lifecycle
+vcs_refs: []
+created_at: 2026-05-05T21:16:22.433Z
+todos: []

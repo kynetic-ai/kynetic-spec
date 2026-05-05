@@ -27502,3 +27502,241 @@
   submitted_at: 2026-04-29T19:51:21.466Z
   completed_at: 2026-04-29T20:06:03.518Z
   automation: eligible
+- _ulid: 01KQWZZF3YJRCPKB6176HW9HWW
+  slugs:
+    - task-update-localhost-security-trait
+  title: Update localhost security trait for configurable daemon endpoints
+  type: task
+  spec_ref: "@trait-localhost-security"
+  plan_ref: "@plan-daemon-network-endpoint-contract"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+    - daemon
+    - security
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-05T21:16:19.966Z
+- _ulid: 01KQWZZFDFPSHHNAGVB8NAXJRJ
+  slugs:
+    - task-update-config-daemon-endpoint-ac
+  title: Update configurable daemon settings spec for endpoint resolution
+  type: task
+  spec_ref: "@config-daemon"
+  plan_ref: "@plan-daemon-network-endpoint-contract"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-localhost-security-trait"
+  priority: 1
+  tags:
+    - spec-update
+    - daemon
+    - config
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-05T21:16:20.271Z
+- _ulid: 01KQWZZFPY4HE3CJZHZEGRE1BQ
+  slugs:
+    - task-update-daemon-server-endpoint-ac
+  title: Update daemon server spec for default loopback and metadata
+  type: task
+  spec_ref: "@daemon-server"
+  plan_ref: "@plan-daemon-network-endpoint-contract"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-localhost-security-trait"
+    - "@task-update-config-daemon-endpoint-ac"
+  priority: 1
+  tags:
+    - spec-update
+    - daemon
+    - server
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-05T21:16:20.574Z
+- _ulid: 01KQWZZG0BC74MJ02VRH2V9W4C
+  slugs:
+    - task-update-cli-daemon-proxy-endpoint-ac
+  title: Update daemon proxy and direct-mode specs for endpoint metadata
+  type: task
+  spec_ref: "@cli-daemon-proxy"
+  plan_ref: "@plan-daemon-network-endpoint-contract"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-config-daemon-endpoint-ac"
+  priority: 1
+  tags:
+    - spec-update
+    - daemon
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-05T21:16:20.875Z
+- _ulid: 01KQWZZGBHAJ7J46CFAFTCZKG6
+  slugs:
+    - task-update-daemon-lifecycle-endpoint-ac
+  title: Update global daemon lifecycle and serve command specs for endpoint metadata
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  plan_ref: "@plan-daemon-network-endpoint-contract"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-config-daemon-endpoint-ac"
+    - "@task-update-daemon-server-endpoint-ac"
+  priority: 1
+  tags:
+    - spec-update
+    - daemon
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-05T21:16:21.233Z
+- _ulid: 01KQWZZGMN1E0SQQ0WQS590JGW
+  slugs:
+    - task-apply-daemon-endpoint-consumer-trait
+  title: Apply daemon endpoint consumer trait to client specs
+  type: task
+  spec_ref: "@trait-daemon-endpoint-consumer"
+  plan_ref: "@plan-daemon-network-endpoint-contract"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-cli-daemon-proxy-endpoint-ac"
+    - "@task-update-daemon-lifecycle-endpoint-ac"
+  priority: 1
+  tags:
+    - spec-update
+    - daemon
+    - cli
+    - trait
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-05T21:16:21.525Z
+- _ulid: 01KQWZZGYEXCEGMNAX1KT6H7XM
+  slugs:
+    - task-update-web-api-endpoint-ac
+  title: Update web API and runtime specs for endpoint-aware clients
+  type: task
+  spec_ref: "@api-contract"
+  plan_ref: "@plan-daemon-network-endpoint-contract"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-config-daemon-endpoint-ac"
+  priority: 1
+  tags:
+    - spec-update
+    - daemon
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-05T21:16:21.838Z
+- _ulid: 01KQWZZH7R9W7WKATZXFB61MPC
+  slugs:
+    - task-shared-daemon-endpoint-resolver
+  title: Implement shared daemon endpoint resolver and metadata model
+  type: task
+  spec_ref: "@daemon-network-endpoint-contract"
+  plan_ref: "@plan-daemon-network-endpoint-contract"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-config-daemon-endpoint-ac"
+    - "@task-update-daemon-server-endpoint-ac"
+    - "@task-update-daemon-lifecycle-endpoint-ac"
+  priority: 1
+  tags:
+    - daemon
+    - cli
+    - config
+    - foundation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-05T21:16:22.136Z
+- _ulid: 01KQWZZHH1SKQ5DG44EEBMT9H9
+  slugs:
+    - task-daemon-startup-bind-host-metadata
+  title: Wire daemon startup to resolved bind host and endpoint metadata
+  type: task
+  spec_ref: "@daemon-network-endpoint-contract"
+  plan_ref: "@plan-daemon-network-endpoint-contract"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-shared-daemon-endpoint-resolver"
+  priority: 1
+  tags:
+    - daemon
+    - server
+    - lifecycle
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-05T21:16:22.433Z
+- _ulid: 01KQWZZHTBFAA5NBV00W1WVJNN
+  slugs:
+    - task-centralize-cli-daemon-clients
+  title: Centralize CLI daemon client connection logic
+  type: task
+  spec_ref: "@daemon-network-endpoint-contract"
+  plan_ref: "@plan-daemon-network-endpoint-contract"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-daemon-startup-bind-host-metadata"
+    - "@task-update-cli-daemon-proxy-endpoint-ac"
+    - "@task-apply-daemon-endpoint-consumer-trait"
+  priority: 1
+  tags:
+    - cli
+    - daemon
+    - proxy
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-05T21:16:22.731Z
+- _ulid: 01KQWZZJ3RF0881VRCVS1H7843
+  slugs:
+    - task-centralize-web-ui-daemon-endpoints
+  title: Centralize web UI development daemon endpoints and CORS origins
+  type: task
+  spec_ref: "@daemon-network-endpoint-contract"
+  plan_ref: "@plan-daemon-network-endpoint-contract"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-shared-daemon-endpoint-resolver"
+    - "@task-update-web-api-endpoint-ac"
+  priority: 1
+  tags:
+    - web-ui
+    - daemon
+    - api
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-05T21:16:23.032Z
+- _ulid: 01KQWZZJD5A6068Q7BBY7SKH43
+  slugs:
+    - task-daemon-endpoint-regression-tests
+  title: Add daemon endpoint regression coverage across IPv4, IPv6, and configured hosts
+  type: task
+  spec_ref: "@daemon-network-endpoint-contract"
+  plan_ref: "@plan-daemon-network-endpoint-contract"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-centralize-cli-daemon-clients"
+    - "@task-centralize-web-ui-daemon-endpoints"
+  priority: 2
+  tags:
+    - daemon
+    - cli
+    - tests
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-05T21:16:23.333Z

@@ -1,0 +1,85 @@
+_ulid: 01KQWZZG0BC74MJ02VRH2V9W4C
+slugs:
+  - task-update-cli-daemon-proxy-endpoint-ac
+title: Update daemon proxy and direct-mode specs for endpoint metadata
+type: task
+description: |
+  Update @cli-daemon-proxy and @daemon-proxy-detection so daemon routing
+  uses connection metadata instead of reconstructing URLs from only a port.
+
+  Why: src/cli/daemon-proxy.ts currently health-checks and proxies to
+  http://127.0.0.1:<port>, while other daemon clients use localhost. Once
+  bind and connect hosts are configurable, proxy behavior needs to be a
+  single metadata-driven contract. The current KSPEC_NO_DAEMON wording also
+  conflicts with explicit daemon management command behavior.
+
+  What: Change @cli-daemon-proxy exactly as follows.
+
+    Replace ac-auto-detect with:
+      given: The user runs a daemon-proxy-eligible kspec command
+      when: Daemon connection metadata points to a running daemon and the
+            current project can be registered or is already registered
+      then: The command is routed through the daemon API using the
+            advertised connect_host and port instead of operating directly
+            on the shadow branch
+
+    Replace ac-force-direct with:
+      given: KSPEC_NO_DAEMON=1 is set
+      when: The user runs a non-daemon-management kspec command
+      then: The command operates directly on the shadow branch and
+            suppresses incidental daemon communication
+
+    Add ac-force-direct-management-exception:
+      given: KSPEC_NO_DAEMON=1 is set
+      when: The user runs an explicit daemon management command such as
+            kspec serve start, stop, status, or restart
+      then: The command follows daemon lifecycle semantics rather than
+            forcing direct shadow mode
+
+  Change @daemon-proxy-detection exactly as follows.
+
+    Replace ac-port-file-check with ac-connection-metadata-check:
+      given: The CLI starts up
+      when: It checks for daemon availability
+      then: It reads daemon connection metadata from the standard global
+            location and attempts a health check against connect_host and port
+
+    Add ac-legacy-port-file-fallback:
+      given: Daemon connection metadata is absent but the legacy global
+             daemon.port file exists
+      when: The CLI checks for daemon availability
+      then: It attempts the health check against 127.0.0.1 and the legacy
+            port value
+
+    Replace ac-health-timeout with:
+      given: Daemon connection metadata exists but the advertised endpoint
+             is unresponsive
+      when: The CLI sends a health check
+      then: The health check times out within 200ms and the CLI falls back
+            to direct mode
+
+  How: Use kspec item ac set/add commands for both specs. Verify with
+  kspec item get @cli-daemon-proxy and kspec item get @daemon-proxy-detection.
+
+  Testing: Run kspec validate --warnings-ok after the spec mutation.
+
+  Covers: @cli-daemon-proxy ac-auto-detect, ac-force-direct,
+  ac-force-direct-management-exception; @daemon-proxy-detection
+  ac-connection-metadata-check, ac-legacy-port-file-fallback,
+  ac-health-timeout.
+spec_ref: "@cli-daemon-proxy"
+plan_ref: "@plan-daemon-network-endpoint-contract"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-config-daemon-endpoint-ac"
+context: []
+priority: 1
+tags:
+  - spec-update
+  - daemon
+  - cli
+vcs_refs: []
+created_at: 2026-05-05T21:16:20.875Z
+todos: []

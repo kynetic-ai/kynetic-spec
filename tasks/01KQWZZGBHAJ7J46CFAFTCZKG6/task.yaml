@@ -1,0 +1,102 @@
+_ulid: 01KQWZZGBHAJ7J46CFAFTCZKG6
+slugs:
+  - task-update-daemon-lifecycle-endpoint-ac
+title: Update global daemon lifecycle and serve command specs for endpoint metadata
+type: task
+description: |
+  Update @multi-directory-daemon and @cli-serve-commands so global daemon
+  lifecycle state records the complete endpoint and serve commands report it.
+
+  Why: The current global daemon model stores pid and port but not the host
+  or URL that clients should use. The older serve command specs still refer
+  to per-project .kspec daemon files and do not require host/connect_host in
+  status output.
+
+  What: Change @multi-directory-daemon exactly as follows.
+
+    Replace ac-9 with:
+      given: no daemon is running
+      when: kspec serve start runs from any directory
+      then: the daemon starts and writes global lifecycle state under
+            ~/.config/kspec/, including daemon.pid, daemon.port compatibility
+            file, and daemon connection metadata containing pid, port,
+            bind_host, connect_host, api_url, ws_url, and runtime
+
+    Replace ac-13 with:
+      given: CLI needs to connect to a running daemon
+      when: daemon connection metadata exists under ~/.config/kspec/
+      then: the CLI reads connect_host and port from the metadata, falling
+            back to ~/.config/kspec/daemon.port plus 127.0.0.1 only for
+            legacy compatibility
+
+    Add ac-remote-auto-register-blocked:
+      given: the daemon is externally bound and a request originates from a
+             non-loopback remote address
+      when: the request includes X-Kspec-Dir for a project path that is not
+            already registered
+      then: the daemon rejects the request with 403 and guidance to register
+            the project from a local CLI or use the default project
+
+    Add ac-project-registry-local-only:
+      given: the daemon is externally bound and a request originates from a
+             non-loopback remote address
+      when: POST /api/projects or DELETE /api/projects/:encodedPath is called
+      then: the daemon rejects the project registry mutation with 403 because
+            project registration is local-only
+
+  Change @cli-serve-commands exactly as follows.
+
+    Replace ac-2 with:
+      given: daemon not running
+      when: kspec serve start --detach is executed
+      then: starts in background, writes global daemon lifecycle and
+            connection metadata under ~/.config/kspec/, and returns
+            immediately with status message including pid, port, bind_host,
+            connect_host, and URL
+
+    Replace ac-4 with:
+      given: daemon running
+      when: kspec serve stop is executed
+      then: sends SIGTERM to the daemon PID from global daemon state, waits
+            for clean shutdown, and removes global daemon lifecycle and
+            connection metadata
+
+    Replace ac-6 with:
+      given: any state
+      when: kspec serve status is executed
+      then: outputs status including running, pid, port, bind_host,
+            connect_host, uptime, connections, runtime, and registered
+            projects; JSON mode returns the same fields as structured JSON
+
+    Replace ac-8 with:
+      given: any state
+      when: kspec serve logs is executed
+      then: tails the daemon log file from the global daemon state directory
+            under ~/.config/kspec/
+
+  How: Use kspec item ac set/add commands for both specs. Verify with
+  kspec item get @multi-directory-daemon and kspec item get
+  @cli-serve-commands.
+
+  Testing: Run kspec validate --warnings-ok after the spec mutation.
+
+  Covers: @multi-directory-daemon ac-9, ac-13,
+  ac-remote-auto-register-blocked, ac-project-registry-local-only;
+  @cli-serve-commands ac-2, ac-4, ac-6, ac-8.
+spec_ref: "@multi-directory-daemon"
+plan_ref: "@plan-daemon-network-endpoint-contract"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-config-daemon-endpoint-ac"
+  - "@task-update-daemon-server-endpoint-ac"
+context: []
+priority: 1
+tags:
+  - spec-update
+  - daemon
+  - cli
+vcs_refs: []
+created_at: 2026-05-05T21:16:21.233Z
+todos: []

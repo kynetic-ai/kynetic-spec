@@ -1,0 +1,79 @@
+_ulid: 01KQWZZF3YJRCPKB6176HW9HWW
+slugs:
+  - task-update-localhost-security-trait
+title: Update localhost security trait for configurable daemon endpoints
+type: task
+description: |
+  Update the existing @trait-localhost-security trait so it no longer
+  contradicts configurable daemon interface binding.
+
+  Why: The current trait says services accept only 127.0.0.1 and ::1,
+  while @config-daemon already says daemon.host can be set to 0.0.0.0.
+  Implementing configurable daemon interfaces without reconciling this
+  trait would leave specs that are impossible to satisfy together.
+
+  What: Change @trait-localhost-security exactly as follows.
+
+  Update the title to:
+    Loopback Default Security
+
+  Replace the description with:
+    Security pattern for daemon services that are loopback-only by
+    default. Binding to wildcard or other non-loopback interfaces is never
+    the default; it is allowed only by explicit configuration and is treated
+    as unauthenticated network exposure. Specs using this trait must enforce
+    loopback-only behavior in default mode and surface explicit warnings when
+    external binding is enabled.
+
+  Replace the existing acceptance criteria with these four ACs:
+
+    ac-loopback-default
+      given: No non-loopback daemon host is configured
+      when: The server starts
+      then: The server binds only to loopback interfaces
+
+    ac-loopback-rejects-nonlocal
+      given: The server is running in loopback-only mode
+      when: An HTTP request is received from a non-loopback remote
+            address or with a non-local Host or Origin
+      then: The request is rejected with 403 Forbidden
+
+    ac-external-host-explicit
+      given: daemon.host is explicitly configured to a non-loopback or
+             wildcard address
+      when: The server starts
+      then: The server binds to the configured address
+
+    ac-external-warning
+      given: The effective daemon host is non-loopback or wildcard
+      when: The daemon starts or a lifecycle command reports the daemon
+            endpoint
+      then: Output includes a visible warning that the daemon has no
+            authentication and exposes project data and mutation APIs on
+            the configured network interface
+
+  How: Use kspec item set to update the trait title and description. Use
+  kspec item ac set/add/remove commands to leave exactly the four ACs above
+  on the trait. Keep the trait slug unchanged. Verify with kspec item get
+  @trait-localhost-security.
+
+  Testing: Run kspec validate --warnings-ok after the spec mutation.
+
+  Covers: @trait-localhost-security ac-loopback-default,
+  ac-loopback-rejects-nonlocal, ac-external-host-explicit,
+  ac-external-warning.
+spec_ref: "@trait-localhost-security"
+plan_ref: "@plan-daemon-network-endpoint-contract"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - daemon
+  - security
+vcs_refs: []
+created_at: 2026-05-05T21:16:19.966Z
+todos: []

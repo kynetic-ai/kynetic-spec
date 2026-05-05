@@ -1,0 +1,84 @@
+_ulid: 01KQWZZGYEXCEGMNAX1KT6H7XM
+slugs:
+  - task-update-web-api-endpoint-ac
+title: Update web API and runtime specs for endpoint-aware clients
+type: task
+description: |
+  Update web API, runtime, and high-level web UI specs so CORS, WebSocket,
+  runtime config, and developer UI endpoints follow the centralized daemon
+  endpoint contract.
+
+  Why: packages/web-ui/src/lib/constants.ts hardcodes localhost:3456 for
+  development API and WebSocket URLs, while production uses same-origin.
+  packages/daemon/src/server.ts hardcodes CORS origins for localhost and
+  127.0.0.1. The runtime config spec also needs to agree that node is the
+  default runtime in current config.
+
+  What: Change @api-contract exactly as follows.
+
+    Replace ac-1 with:
+      given: daemon is running
+      when: an API request includes an Origin header
+      then: CORS allows same-origin daemon web UI requests and configured
+            local development origins only
+
+    Add ac-websocket-origin:
+      given: daemon is running
+      when: a WebSocket connection request includes an Origin header
+      then: the origin is accepted only if it matches the same-origin daemon
+            web UI or configured local development origins; otherwise the
+            connection is rejected
+
+  Change @daemon-runtime-adapter exactly as follows.
+
+    Add ac-config-surface:
+      given: kspec.config.yaml contains daemon.runtime
+      when: config is loaded before daemon startup
+      then: the runtime preference is available as the resolved daemon
+            runtime used by serve start and daemon auto-start
+
+    Ensure the default-runtime AC says node is the default runtime. If the
+    existing id is ac-default-node, leave it. If the existing id or wording
+    still says bun, update it to:
+      id: ac-default-node
+      given: No runtime preference is configured
+      when: The daemon starts
+      then: By default the daemon spawns using node
+
+  Change @web-ui exactly as follows.
+
+    Replace the Bun-only local daemon wording in the description with:
+      Local daemon mode runs the daemon on the configured JavaScript
+      runtime, defaulting to Node, using Elysia with the appropriate runtime
+      adapter. Bun remains supported as an optional configured runtime.
+
+    Replace @web-ui ac-1 with:
+      given: user installs kspec CLI package
+      when: daemon starts on the configured runtime
+      then: all daemon runtime dependencies for the configured runtime are
+            available without additional install steps except the runtime
+            executable itself when an optional runtime such as Bun is selected
+
+  How: Use kspec item ac set/add and kspec item set commands. Verify with
+  kspec item get @api-contract, @daemon-runtime-adapter, and @web-ui.
+
+  Testing: Run kspec validate --warnings-ok after the spec mutation.
+
+  Covers: @api-contract ac-1, ac-websocket-origin;
+  @daemon-runtime-adapter ac-config-surface, ac-default-node; @web-ui ac-1.
+spec_ref: "@api-contract"
+plan_ref: "@plan-daemon-network-endpoint-contract"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-config-daemon-endpoint-ac"
+context: []
+priority: 1
+tags:
+  - spec-update
+  - daemon
+  - web-ui
+vcs_refs: []
+created_at: 2026-05-05T21:16:21.838Z
+todos: []

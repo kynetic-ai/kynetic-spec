@@ -1,0 +1,83 @@
+_ulid: 01KQWZZH7R9W7WKATZXFB61MPC
+slugs:
+  - task-shared-daemon-endpoint-resolver
+title: Implement shared daemon endpoint resolver and metadata model
+type: task
+description: |
+  Create the shared daemon endpoint module that all daemon binding and
+  client connection code uses.
+
+  Why: The repository currently duplicates daemon lifecycle state code in
+  src/cli/pid-utils.ts and packages/daemon/src/pid.ts, hardcodes daemon
+  URLs in multiple CLI files, and hardcodes daemon listen hostname in
+  packages/daemon/src/server.ts. A single shared endpoint module prevents
+  localhost, IPv4, IPv6, wildcard, and port behavior from drifting again.
+
+  What:
+  1. Add a shared TypeScript module usable by both src/cli/* and
+     packages/daemon/src/*, for example src/daemon/endpoint.ts or a shared
+     package-local module included by the daemon build.
+  2. Define exported types for daemon network config and metadata:
+     - port: number
+     - bindHost: string
+     - connectHost: string
+     - apiUrl: string
+     - wsUrl: string
+     - runtime: "node" | "bun"
+     - pid: number
+     - externallyReachable: boolean
+  3. Implement helpers:
+     - normalizeDaemonHost(value): validates and normalizes host strings
+     - resolveDaemonBindHost(config): defaults to 127.0.0.1
+     - resolveDaemonConnectHost(bindHost, explicitConnectHost?): maps
+       wildcard bind hosts to a loopback or explicit connect host
+     - formatHostForUrl(host): brackets IPv6 literals only in URLs
+     - buildDaemonUrls(connectHost, port): returns apiUrl and wsUrl
+     - isLoopbackHost(host) and isWildcardHost(host)
+     - readDaemonConnectionMetadata() and writeDaemonConnectionMetadata()
+     - readLegacyDaemonPortEndpoint() for daemon.port fallback
+  4. Extend the config schema in src/parser/config.ts with optional
+     daemon.connect_host and KSPEC_DAEMON_CONNECT_HOST precedence.
+  5. Change DEFAULT_CONFIG.daemon.host from localhost to 127.0.0.1 and keep
+     DEFAULT_CONFIG.daemon.port as the existing default port.
+  6. Retain the legacy daemon.port file for compatibility while making the
+     new metadata file the source of truth for new clients.
+  7. Update or replace duplicated PID/port helpers so metadata behavior is
+     defined in one implementation. If both files must temporarily remain,
+     make one delegate to shared helpers and add tests proving they stay in
+     sync.
+
+  How: Start with pure helper functions and unit tests before wiring any
+  network listener. Keep URL construction out of command files; command
+  files should receive or read a resolved endpoint object. Do not use
+  dns.setDefaultResultOrder() as a fix because it changes process-wide DNS
+  behavior and does not control daemon binding. Do not advertise 0.0.0.0 or
+  :: as client URLs.
+
+  Testing: Add focused unit tests for default 127.0.0.1 behavior, IPv6 URL
+  bracket formatting, wildcard bind-host connect-host mapping, explicit
+  connect host, env/config precedence, and legacy daemon.port fallback.
+
+  Covers: @daemon-network-endpoint-contract ac-default-loopback-v4,
+  ac-wildcard-connect-host, ac-connection-metadata, ac-legacy-port-fallback;
+  @config-daemon ac-host-default, ac-connect-host-config,
+  ac-port-env-precedence, ac-connection-metadata.
+spec_ref: "@daemon-network-endpoint-contract"
+plan_ref: "@plan-daemon-network-endpoint-contract"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-config-daemon-endpoint-ac"
+  - "@task-update-daemon-server-endpoint-ac"
+  - "@task-update-daemon-lifecycle-endpoint-ac"
+context: []
+priority: 1
+tags:
+  - daemon
+  - cli
+  - config
+  - foundation
+vcs_refs: []
+created_at: 2026-05-05T21:16:22.136Z
+todos: []
