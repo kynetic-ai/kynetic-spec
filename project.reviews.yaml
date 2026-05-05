@@ -175511,7 +175511,75 @@ reviews:
     slugs: []
     title: "Plan review: Daemon Network Endpoint Contract (cycle 2)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified cycle-1 blockers are addressed: @daemon-network-endpoint-contract
+          ac-clients-use-metadata now requires clients to call advertised metadata URLs instead of
+          requiring a shared resolver implementation; @task-daemon-endpoint-regression-tests now
+          requires behavioral endpoint coverage across production client paths and no longer asks
+          for source-scanning tests."
+        name: prior review fixes
+        required: true
+        runner: kspec-review-plan
+        created_at: 2026-05-05T20:05:13.625Z
+        completed_at: 2026-05-05T20:05:13.625Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec plan get @plan-daemon-network-endpoint-contract succeeded. Referenced existing
+          specs resolved with kspec item get: @daemon-server, @config-daemon,
+          @trait-localhost-security, @cli-daemon-proxy, @daemon-proxy-detection,
+          @multi-directory-daemon, @cli-serve-commands, @api-contract, @daemon-runtime-adapter,
+          @web-ui, plus relevant traits."
+        name: plan reference validation
+        required: true
+        runner: kspec
+        created_at: 2026-05-05T20:05:17.043Z
+        completed_at: 2026-05-05T20:05:17.043Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan introduces one cross-cutting requirement under @daemon-server and exact update tasks
+          for existing conflicting specs. ACs are testable, task descriptions are standalone with
+          why/what/how/testing/Covers sections, every new endpoint-contract AC is claimed by
+          implementation or regression tasks, and dependency ordering keeps spec updates before
+          shared resolver, startup metadata, clients, and final regression coverage.
+        name: spec and task quality
+        required: true
+        runner: kspec-review-plan
+        created_at: 2026-05-05T20:05:20.423Z
+        completed_at: 2026-05-05T20:05:20.423Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --warnings-ok passed. Existing repo warnings remain for deprecated refs,
+          orphan specs, and missing AC annotations, but there are no validation errors blocking this
+          plan review.
+        name: catalog validation
+        required: true
+        runner: kspec
+        created_at: 2026-05-05T20:05:23.842Z
+        completed_at: 2026-05-05T20:05:23.842Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified cited source state with rg: daemon server still binds/logs localhost and
+          enforces localhost Host checks; config parses daemon.host/runtime and defaults host to
+          localhost; CLI auto-start passes only port/kspec-dir; daemon proxy, serve status,
+          daemon-status, task events, agent/event/schedule helpers, and web UI constants still
+          construct hardcoded daemon URLs; PID helpers still persist only pid/port."
+        name: code grounding
+        required: true
+        runner: shell
+        created_at: 2026-05-05T20:05:27.360Z
+        completed_at: 2026-05-05T20:05:27.360Z
     events:
       - _ulid: 01KQWVVPGHQA12PQTZSCY6S603
         actor: Jacob Chapel
@@ -175526,9 +175594,60 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-05T20:04:45.194Z
+      - _ulid: 01KQWVXA3E0EPY7YVMDZF54RN5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: prior review fixes
+        timestamp: 2026-05-05T20:05:14.990Z
+      - _ulid: 01KQWVXDCGSTRRG10YF3ED6W3P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: plan reference validation
+        timestamp: 2026-05-05T20:05:18.352Z
+      - _ulid: 01KQWVXGPD197EJXXE6VC50VD1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: spec and task quality
+        timestamp: 2026-05-05T20:05:21.741Z
+      - _ulid: 01KQWVXM0ECFN45FF88AMQ4RB3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: catalog validation
+        timestamp: 2026-05-05T20:05:25.135Z
+      - _ulid: 01KQWVXQK82H4NR9RBQ9GWJN1Z
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: code grounding
+        timestamp: 2026-05-05T20:05:28.808Z
+      - _ulid: 01KQWVXTW978N7VYQSJNP2P5CV
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-05T20:05:32.169Z
+      - _ulid: 01KQWVXTW9KYBQ70955HGKT0T6
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-05T20:05:32.169Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -175536,7 +175655,14 @@ reviews:
       ref: "@plan-daemon-network-endpoint-contract"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-05T20:05:32.169Z
     created_at: 2026-05-05T20:04:22.161Z
-    updated_at: 2026-05-05T20:04:43.782Z
+    updated_at: 2026-05-05T20:05:32.169Z
     notes: []
