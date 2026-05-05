@@ -44108,9 +44108,10 @@ plans:
               status code, scheduled-command code, agent-command code, event
               code, task-event code, or web UI development code
             when: |
-              It constructs an HTTP or WebSocket endpoint
+              Daemon connection metadata advertises an API URL or WebSocket URL
             then: |
-              The endpoint is produced by the shared daemon endpoint resolver
+              The client calls the advertised URL instead of a separately chosen
+              daemon host or port
           - id: ac-legacy-port-fallback
             given: |
               New daemon connection metadata is absent but the legacy global
@@ -44861,10 +44862,13 @@ plans:
              proves kspec serve status reads and reports that endpoint.
           5. Add web UI constants tests for configured dev host/port and IPv6 bracket
              formatting.
-          6. Add a negative regression that no production CLI daemon client file
-             contains hardcoded http://localhost, ws://localhost, or
-             http://127.0.0.1 daemon URL construction outside the shared endpoint
-             module and tests.
+          6. Add behavioral coverage for every production daemon client path that
+             previously constructed its own host: main proxy health/project/command
+             requests, serve status health/project requests, daemon-status health
+             checks, agent/event/schedule daemon helpers, task event emission, and
+             web UI development API/WebSocket endpoints. Each test should seed or
+             configure a non-default advertised endpoint and assert the request is
+             sent to that endpoint.
 
           How: Prefer deterministic unit/integration tests over mutating the machine's
           /etc/hosts. Use high ephemeral ports and isolated temporary config
@@ -44939,11 +44943,15 @@ plans:
       warned, and internally consistent with existing unauthenticated daemon APIs.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/daemon-network-endpoint-contract.md
     created_at: 2026-05-05T19:55:12.662Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KQWVNA4FXQQC85A7365Y3909
+        content: "Address review @01KQWVGZ: make client endpoint AC behavioral and replace source-scanning
+          regression with behavioral coverage"
+        author: Jacob Chapel
+        created_at: 2026-05-05T20:00:52.879Z
