@@ -175433,9 +175433,25 @@ reviews:
           status: pass
           name: code grounding
         timestamp: 2026-05-05T19:59:44.008Z
+      - _ulid: 01KQWVKP9XNSH24416P1QKE879
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-05T19:59:59.805Z
+      - _ulid: 01KQWVKP9X24RN5J54J2CVM8QG
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-05T19:59:59.805Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -175480,7 +175496,14 @@ reviews:
               AC coverage."
             created_at: 2026-05-05T19:59:14.887Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-05T19:59:59.805Z
     created_at: 2026-05-05T19:58:30.947Z
-    updated_at: 2026-05-05T19:59:42.633Z
+    updated_at: 2026-05-05T19:59:59.805Z
     notes: []
