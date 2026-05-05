@@ -80,5 +80,14 @@ tags:
   - daemon
   - web-ui
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-05-05T21:19:51.739Z
 created_at: 2026-05-05T21:16:21.838Z
 todos: []
+automation: eligible
