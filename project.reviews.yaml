@@ -175358,6 +175358,17 @@ reviews:
         runner: kspec
         created_at: 2026-05-05T19:59:28.091Z
         completed_at: 2026-05-05T19:59:28.091Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --warnings-ok passed. Existing repo has warnings for deprecated references,
+          orphan specs, and missing AC coverage, but no validation errors blocking this plan review.
+        name: catalog validation
+        required: true
+        runner: kspec
+        created_at: 2026-05-05T19:59:28.202Z
+        completed_at: 2026-05-05T19:59:28.202Z
     events:
       - _ulid: 01KQWVGZH37F5ZP8QJHDSBFRK1
         actor: Jacob Chapel
@@ -175393,6 +175404,13 @@ reviews:
           status: pass
           name: plan reference validation
         timestamp: 2026-05-05T19:59:29.456Z
+      - _ulid: 01KQWVJTWWV9M5ZMNHV0HZV9NG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: catalog validation
+        timestamp: 2026-05-05T19:59:31.740Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -175442,5 +175460,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-05T19:58:30.947Z
-    updated_at: 2026-05-05T19:59:28.091Z
+    updated_at: 2026-05-05T19:59:28.202Z
     notes: []
