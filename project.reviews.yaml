@@ -175507,3 +175507,29 @@ reviews:
     created_at: 2026-05-05T19:58:30.947Z
     updated_at: 2026-05-05T19:59:59.805Z
     notes: []
+  - _ulid: 01KQWVVPGHKGSTQFQQVWQTR8NR
+    slugs: []
+    title: "Plan review: Daemon Network Endpoint Contract (cycle 2)"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQWVVPGHQA12PQTZSCY6S603
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-05T20:04:22.161Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-daemon-network-endpoint-contract"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-05T20:04:22.161Z
+    updated_at: null
+    notes: []
