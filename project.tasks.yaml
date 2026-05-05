@@ -27624,6 +27624,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-05T21:16:21.525Z
+  automation: eligible
 - _ulid: 01KQWZZGYEXCEGMNAX1KT6H7XM
   slugs:
     - task-update-web-api-endpoint-ac
