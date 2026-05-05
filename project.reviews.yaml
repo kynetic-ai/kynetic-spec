@@ -175366,6 +175366,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQWVHVRV63A27YQD837CSQVN
         timestamp: 2026-05-05T19:59:01.176Z
+      - _ulid: 01KQWVJBVJXTHEBM41BR3EX2HD
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQWVJAE7QHN1WVR2GCVGG76T
+        timestamp: 2026-05-05T19:59:16.338Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -175394,7 +175401,26 @@ reviews:
               independently derived localhost defaults."
             created_at: 2026-05-05T19:58:59.868Z
         kind: blocker
+      - _ulid: 01KQWVJAE7QHN1WVR2GCVGG76T
+        anchor:
+          type: structured
+          field: description
+          ref: "@task-daemon-endpoint-regression-tests"
+          section: tasks
+        entries:
+          - _ulid: 01KQWVJAE7J9P76ADQ1VKTM31Q
+            author: Jacob Chapel
+            body: "MUST-FIX: The task explicitly asks for a negative regression that scans production CLI source
+              files for hardcoded URL strings. Project review rules reject source-scanning tests as
+              invalid AC coverage because they inspect implementation text rather than exercising
+              behavior. Replace this with behavioral coverage that proves all production client call
+              paths use metadata, for example by seeding non-default or IPv6 metadata and exercising
+              proxy, serve status, agent, event, schedule, task-event, and web UI dev endpoint
+              paths. If a lint/static rule is desired, make it a separate non-AC quality guard, not
+              AC coverage."
+            created_at: 2026-05-05T19:59:14.887Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-05T19:58:30.947Z
-    updated_at: 2026-05-05T19:58:59.868Z
+    updated_at: 2026-05-05T19:59:14.887Z
     notes: []
