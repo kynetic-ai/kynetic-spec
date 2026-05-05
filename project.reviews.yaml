@@ -175369,6 +175369,21 @@ reviews:
         runner: kspec
         created_at: 2026-05-05T19:59:28.202Z
         completed_at: 2026-05-05T19:59:28.202Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified cited callsites are current: packages/daemon/src/server.ts still binds/logs
+          localhost and enforces localhost Host checks; src/parser/config.ts parses
+          daemon.host/runtime and defaults host to localhost; src/cli/index.ts and
+          src/cli/commands/serve.ts pass only --port/--kspec-dir; CLI/web UI client URL hardcodes
+          cited in daemon-proxy, serve, task, agent/event/schedule, and web-ui constants are
+          present."
+        name: code grounding
+        required: true
+        runner: shell
+        created_at: 2026-05-05T19:59:42.633Z
+        completed_at: 2026-05-05T19:59:42.633Z
     events:
       - _ulid: 01KQWVGZH37F5ZP8QJHDSBFRK1
         actor: Jacob Chapel
@@ -175411,6 +175426,13 @@ reviews:
           status: pass
           name: catalog validation
         timestamp: 2026-05-05T19:59:31.740Z
+      - _ulid: 01KQWVK6W8V17S0FVJQYDRNNA6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: code grounding
+        timestamp: 2026-05-05T19:59:44.008Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -175460,5 +175482,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-05T19:58:30.947Z
-    updated_at: 2026-05-05T19:59:28.202Z
+    updated_at: 2026-05-05T19:59:42.633Z
     notes: []
