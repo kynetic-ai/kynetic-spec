@@ -175770,9 +175770,25 @@ reviews:
           status: fail
           name: trait suitability
         timestamp: 2026-05-05T20:53:17.218Z
+      - _ulid: 01KQWYNHTX53BVBCJGK58SNQNW
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-05T20:53:26.493Z
+      - _ulid: 01KQWYNHTX5C0965ZDGS1EP2VR
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-05T20:53:26.493Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -175815,7 +175831,14 @@ reviews:
               line to the ACs it actually tests."
             created_at: 2026-05-05T20:52:40.102Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-05T20:53:26.493Z
     created_at: 2026-05-05T20:52:10.040Z
-    updated_at: 2026-05-05T20:53:15.823Z
+    updated_at: 2026-05-05T20:53:26.493Z
     notes: []
