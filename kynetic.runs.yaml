@@ -35195,9 +35195,23 @@ runs:
     completed_at: 2026-05-06T05:47:15.948Z
   - _ulid: 01KQXY14SJHDKD736KK9TB25WK
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T06:01:32.210Z
+        completed_at: 2026-05-06T06:02:08.128Z
+        notes: "What worked well: detached reviewer workflow was effective end-to-end. The review record
+          gave a clean place to store evidence, required checks, and the approval verdict. The
+          detached reviewer merge helper handled the manual_merge target cleanly and refreshed the
+          occupied worktree without requiring checkout or manual merge commands in the snapshot. The
+          prior task notes plus plan context made it possible to distinguish spec-update scope from
+          downstream implementation work."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T06:02:08.128Z
+        completed_at: 2026-05-06T06:02:08.128Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:01:32.210Z
