@@ -179728,6 +179728,18 @@ reviews:
         runner: npm
         created_at: 2026-05-06T14:50:02.553Z
         completed_at: 2026-05-06T14:50:02.553Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Command rerun passed: npm test -- --run tests/daemon-api/websocket-protocol.test.ts (10
+          tests passed, 17.3s). Full npm test also passed changed files. Initial combined targeted
+          run hit a timeout in an existing websocket close-code test; rerun and full suite passed."
+        name: targeted daemon/web-ui tests
+        required: true
+        runner: npm
+        created_at: 2026-05-06T14:50:13.821Z
+        completed_at: 2026-05-06T14:50:13.821Z
     events:
       - _ulid: 01KQYVH3B4FYP1Q7BD0T7WHYE2
         actor: Jacob Chapel
@@ -179756,6 +179768,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-06T14:50:03.790Z
+      - _ulid: 01KQYW984298XXJP8R5JSVJN14
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon/web-ui tests
+        timestamp: 2026-05-06T14:50:15.042Z
     examined_commit: 4603717540f7bb2e42ae700d74115f8d990a1422
     external_links: []
     lifecycle_state: open
@@ -179793,5 +179812,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-06T14:37:03.716Z
-    updated_at: 2026-05-06T14:50:02.553Z
+    updated_at: 2026-05-06T14:50:13.821Z
     notes: []
