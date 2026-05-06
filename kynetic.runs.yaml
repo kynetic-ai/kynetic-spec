@@ -35055,7 +35055,7 @@ runs:
     completed_at: 2026-05-06T01:09:41.129Z
   - _ulid: 01KQXDJ0R40YEFSDDDXPAAGDT6
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35069,7 +35069,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T01:14:38.806Z
-        completed_at: 2026-05-06T01:14:38.806Z
+        completed_at: 2026-05-06T01:14:56.042Z
+        notes: "High-confidence friction: during spec-update review, regular kspec validate --warnings-ok
+          exited 0 and the default summary hid the task-relevant stale @config-daemon ac-5/ac-6
+          annotations among hundreds of existing warnings. The reviewer needed verbose validation
+          plus manual rg filtering to isolate warnings introduced by the current spec change. This
+          is systemic for any spec AC rename while the catalog still has warning debt. Success:
+          review records captured anchored blockers and check evidence cleanly; no extra capture
+          needed beyond the review artifact."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T01:14:56.042Z
+        completed_at: 2026-05-06T01:14:56.042Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T01:13:39.332Z
