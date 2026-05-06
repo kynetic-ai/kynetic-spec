@@ -179423,6 +179423,36 @@ reviews:
         runner: npm
         created_at: 2026-05-06T13:35:49.332Z
         completed_at: 2026-05-06T13:35:49.332Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Read full submitted diff and cycle-7 fix diff; git diff --check clean; git status clean
+          after build/test. No source-scanning tests added; daemon-server test now imports
+          production middleware instead of duplicating logic.
+        name: diff hygiene
+        required: false
+        runner: git
+        created_at: 2026-05-06T13:36:05.683Z
+        completed_at: 2026-05-06T13:36:05.683Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/daemon-shared/endpoint.ts, packages/daemon/src/server.ts,
+          src/cli/daemon-proxy.ts, src/cli/commands/serve.ts, src/cli/index.ts,
+          src/parser/config.ts, src/parser/daemon-status.ts, packages/web-ui/src/lib/constants.ts,
+          packages/web-ui/vite.config.ts, scripts/build-daemon.cjs, changed tests. Claims verified:
+          cycle-6 connect_host blocker fixed by resolver rejection for non-wildcard mismatches and
+          middleware allow-list for advertised hosts; metadata-first client resolution preserved;
+          default 127.0.0.1/IPv6 fallback/wildcard/legacy paths covered. Categories searched:
+          correctness, edge cases, error handling, security/Host header allow-listing, test quality,
+          integration/build."
+        name: review evidence log
+        required: false
+        runner: codex
+        created_at: 2026-05-06T13:36:08.992Z
+        completed_at: 2026-05-06T13:36:08.992Z
     events:
       - _ulid: 01KQYQE9CPX5G7HR6Q3MSCKSEJ
         actor: Jacob Chapel
@@ -179465,6 +179495,20 @@ reviews:
           status: pass
           name: npm run build:daemon
         timestamp: 2026-05-06T13:35:50.510Z
+      - _ulid: 01KQYR1G8CB8JQYDZK2016WG26
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: diff hygiene
+        timestamp: 2026-05-06T13:36:06.924Z
+      - _ulid: 01KQYR1KF9XQZKA8S324RWNHJW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-06T13:36:10.217Z
     examined_commit: 9c7e0b6fffb00c787a2c867224e1ac885a3b6efb
     external_links: []
     lifecycle_state: open
@@ -179477,5 +179521,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T13:25:37.303Z
-    updated_at: 2026-05-06T13:35:49.332Z
+    updated_at: 2026-05-06T13:36:08.992Z
     notes: []
