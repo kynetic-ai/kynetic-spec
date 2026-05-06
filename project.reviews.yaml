@@ -176302,7 +176302,19 @@ reviews:
     slugs: []
     title: Review task-update-config-daemon-endpoint-ac
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exit 0. Validation passed with warnings allowed; verbose output shows pre-existing warning
+          volume plus task-relevant stale @config-daemon ac-5/ac-6 annotations, recorded separately
+          as blockers.
+        name: kspec validate --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-05-06T01:11:55.072Z
+        completed_at: 2026-05-06T01:11:55.072Z
     events:
       - _ulid: 01KQXCSWE995HBKWCB9T33400Z
         actor: Jacob Chapel
@@ -176338,6 +176350,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQXDE9M08PJPKJV0GY1VN253
         timestamp: 2026-05-06T01:11:38.579Z
+      - _ulid: 01KQXDEW4XW3FPK09MWWBP4YDX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-05-06T01:11:56.317Z
     examined_commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
     external_links: []
     lifecycle_state: open
@@ -176403,5 +176422,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-06T01:00:28.490Z
-    updated_at: 2026-05-06T01:11:37.345Z
+    updated_at: 2026-05-06T01:11:55.072Z
     notes: []
