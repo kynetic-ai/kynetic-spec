@@ -180112,7 +180112,19 @@ reviews:
     slugs: []
     title: Review task-centralize-web-ui-daemon-endpoints
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full npm test passed on reviewed snapshot 61588c0f057e5a473d1f455147f5cbac71972378: 2367
+          suites passed; 8685 tests passed, 5 skipped; duration 1908.9s. Log:
+          /tmp/kspec-test-cache/01KQYZ08VR9M2ZAXY8S5TTTET7/e361049516a0a7e1.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-06T15:51:30.014Z
+        completed_at: 2026-05-06T15:51:30.014Z
     events:
       - _ulid: 01KQYZ1KVRYX6XTG8AZJCSFHDD
         actor: Jacob Chapel
@@ -180127,6 +180139,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-06T15:38:54.046Z
+      - _ulid: 01KQYZSE5M3Q7CXYYG21CAJ7M7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-06T15:51:31.252Z
     examined_commit: 61588c0f057e5a473d1f455147f5cbac71972378
     external_links: []
     lifecycle_state: open
@@ -180139,5 +180158,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T15:38:30.648Z
-    updated_at: 2026-05-06T15:38:52.748Z
+    updated_at: 2026-05-06T15:51:30.014Z
     notes: []
