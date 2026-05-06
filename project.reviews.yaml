@@ -178506,6 +178506,19 @@ reviews:
         runner: kspec
         created_at: 2026-05-06T10:43:30.855Z
         completed_at: 2026-05-06T10:43:30.855Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full fresh suite failed: tests/task-unblock-prior-status.test.ts had 1 failure; 8638
+          passed, 5 skipped. Error was ERR_MODULE_NOT_FOUND for dist/daemon/endpoint.js imported
+          from dist/cli/pid-utils.js. Isolated rerun of tests/task-unblock-prior-status.test.ts
+          passed, consistent with a concurrent dist/daemon rebuild race."
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-05-06T10:43:34.453Z
+        completed_at: 2026-05-06T10:43:34.453Z
     events:
       - _ulid: 01KQYDJ9RF5KYYCRTVKSY96VSA
         actor: Jacob Chapel
@@ -178548,6 +178561,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-06T10:43:32.135Z
+      - _ulid: 01KQYE5KKSW79ACGW6T29C8Z5E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test -- --fresh
+        timestamp: 2026-05-06T10:43:35.673Z
     examined_commit: 506eb2b3e31fd95451b0d8e52509ce42d8ab6124
     external_links: []
     lifecycle_state: open
@@ -178607,5 +178627,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-06T10:33:02.992Z
-    updated_at: 2026-05-06T10:43:30.855Z
+    updated_at: 2026-05-06T10:43:34.453Z
     notes: []
