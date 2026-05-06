@@ -36325,7 +36325,7 @@ runs:
     completed_at: 2026-05-06T12:34:37.294Z
   - _ulid: 01KQYN9HBK2PYKY61EX4D35FER
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36359,7 +36359,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T12:49:22.386Z
-        completed_at: 2026-05-06T12:49:22.386Z
+        completed_at: 2026-05-06T12:49:31.327Z
+        notes: "Proposed improvements: no new standalone item. The high-confidence improvement is to make
+          endpoint regression coverage prove that advertised api_url/ws_url are actually reachable
+          through daemon request validation, including explicit connect_host and wildcard/external
+          bind modes. That belongs in existing @task-daemon-endpoint-regression-tests or the
+          immediate fix for @task-shared-daemon-endpoint-resolver, rather than a duplicate inbox
+          item."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T12:49:31.327Z
+        completed_at: 2026-05-06T12:49:31.327Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T12:48:04.468Z
