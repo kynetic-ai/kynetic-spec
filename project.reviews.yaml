@@ -178504,6 +178504,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQYDQMNJ4WN4GVGDWDQ5A8P1
         timestamp: 2026-05-06T10:35:59.317Z
+      - _ulid: 01KQYE4TAGAV8EQT4KERKJVFCV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQYE4S4FPSX2QRK2DFA0AVGX
+        timestamp: 2026-05-06T10:43:09.776Z
     examined_commit: 506eb2b3e31fd95451b0d8e52509ce42d8ab6124
     external_links: []
     lifecycle_state: open
@@ -178537,7 +178544,31 @@ reviews:
               host/connect_host."
             created_at: 2026-05-06T10:35:58.002Z
         kind: blocker
+      - _ulid: 01KQYE4S4FPSX2QRK2DFA0AVGX
+        anchor:
+          type: code
+          commit: 506eb2b3e31fd95451b0d8e52509ce42d8ab6124
+          line_end: 12
+          line_start: 7
+          path: src/cli/pid-utils.ts
+          side: head
+        entries:
+          - _ulid: 01KQYE4S4FHXNY0PPADPYK3QJ1
+            author: Jacob Chapel
+            body: "MUST-FIX: the CLI now imports its shared PID/endpoint implementation from
+              ../daemon/endpoint.js, which compiles to dist/cli/pid-utils.js importing
+              dist/daemon/endpoint.js. scripts/build-daemon.cjs deletes dist/daemon during npm run
+              build:daemon, so any concurrent CLI subprocess can fail while that directory is
+              absent. Impact: the full test suite now has a race where unrelated CLI tests crash
+              with ERR_MODULE_NOT_FOUND for dist/daemon/endpoint.js, and installed/runtime CLI
+              commands can hit the same missing module during a daemon rebuild. Evidence: npm test
+              -- --fresh failed in tests/task-unblock-prior-status.test.ts with Cannot find module
+              'dist/daemon/endpoint.js' imported from dist/cli/pid-utils.js; the isolated rerun of
+              that test passed, which matches a concurrent build/delete race.
+              scripts/build-daemon.cjs:49-50 removes dist/daemon before rebuilding it."
+            created_at: 2026-05-06T10:43:08.559Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-06T10:33:02.992Z
-    updated_at: 2026-05-06T10:35:58.002Z
+    updated_at: 2026-05-06T10:43:08.559Z
     notes: []
