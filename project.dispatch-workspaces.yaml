@@ -5015,7 +5015,7 @@ workspaces:
         head: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
         last_seen_at: 2026-05-06T06:30:23.154Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-daemon-lifecycle-endpoint-ac-01kqwzzg
-  - active_role: null
+  - active_role: worker
     base_branch_point: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
     bootstrap:
       status: succeeded
@@ -5498,7 +5498,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T10:12:18.260Z
+      updated_at: 2026-05-06T10:12:19.114Z
     integration:
       status: pending
       detail: null
@@ -5507,16 +5507,16 @@ workspaces:
       target_branch: dev
       target_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
       updated_at: 2026-05-06T10:12:18.260Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQWZZH7R9W7WKATZXFB61MPC"
     task_slug: task-shared-daemon-endpoint-resolver
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-06T09:12:04.505Z
-      last_reconciled_at: 2026-05-06T10:12:18.260Z
+      last_active_at: 2026-05-06T10:12:19.114Z
+      last_reconciled_at: 2026-05-06T10:12:19.114Z
       created_at: 2026-05-06T06:57:40.618Z
-      updated_at: 2026-05-06T10:12:18.538Z
+      updated_at: 2026-05-06T10:12:19.114Z
     workspace_id: dispatch-workspace-01KQWZZH7R9W7WKATZXFB61MPC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
