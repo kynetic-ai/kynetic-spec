@@ -177334,7 +177334,18 @@ reviews:
     slugs: []
     title: Review task-update-web-api-endpoint-ac
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed. Existing project warnings remain, but command exited 0 with
+          --warnings-ok and affected specs resolved correctly.
+        name: kspec validate --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-05-06T06:32:21.612Z
+        completed_at: 2026-05-06T06:32:21.612Z
     events:
       - _ulid: 01KQXZ6Y2KMJT3YHMYB3YV7TYC
         actor: Jacob Chapel
@@ -177349,6 +177360,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-06T06:22:37.963Z
+      - _ulid: 01KQXZSM3PJESYBQHPSJT3E28Z
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-05-06T06:32:22.903Z
     examined_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
     external_links: []
     lifecycle_state: open
@@ -177361,7 +177379,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T06:22:10.515Z
-    updated_at: 2026-05-06T06:22:36.678Z
+    updated_at: 2026-05-06T06:32:21.612Z
     notes: []
   - _ulid: 01KQXZRB6F8FNH0Z6H40Z8M178
     slugs: []
