@@ -36325,7 +36325,7 @@ runs:
     completed_at: 2026-05-06T12:34:37.294Z
   - _ulid: 01KQYN9HBK2PYKY61EX4D35FER
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36340,7 +36340,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T12:48:39.288Z
-        completed_at: 2026-05-06T12:48:39.288Z
+        completed_at: 2026-05-06T12:48:50.671Z
+        notes: "Friction points: The endpoint work has several tests that verify metadata shape and process
+          arguments but not reachability through the advertised URL. That made a
+          connect_host/client-use mismatch easy to miss until a manual built-middleware probe. Also,
+          kspec validate produces a large repo-wide warning set, so review evidence has to
+          distinguish baseline warning noise from task-specific failures every cycle."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T12:48:50.671Z
+        completed_at: 2026-05-06T12:48:50.671Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T12:48:04.468Z
