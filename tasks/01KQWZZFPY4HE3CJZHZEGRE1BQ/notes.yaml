@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KQXY0X9EV9H857RJYM3E7ZVE
+    content: "Approach: spec mutation only — no implementation work. Use kspec batch with item set
+      (description) and item ac set/add for the six AC replacements (ac-1, 2, 3, 9, 10, 17) and one
+      new AC (ac-external-bind-warning). Each ac-* update follows the given/when/then text in the
+      task description verbatim. After mutation: run kspec validate --warnings-ok to verify, then
+      submit."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T06:01:24.526Z
