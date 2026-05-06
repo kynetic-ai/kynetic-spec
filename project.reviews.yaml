@@ -179574,6 +179574,17 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-06T14:13:53.797Z
         completed_at: 2026-05-06T14:13:53.797Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/parser/daemon-config.test.ts tests/cli-serve.test.ts
+          tests/daemon-server.test.ts: 23 suites passed, 85 tests passed."
+        name: targeted daemon/config tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-06T14:13:57.372Z
+        completed_at: 2026-05-06T14:13:57.372Z
     events:
       - _ulid: 01KQYSHZ8Z03RKNFSZFRM2BPWD
         actor: Jacob Chapel
@@ -179602,6 +179613,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-06T14:13:55.051Z
+      - _ulid: 01KQYT6TMNNG40HH4QWKFFAM3M
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon/config tests
+        timestamp: 2026-05-06T14:13:58.549Z
     examined_commit: 32746e58b5712cb18605f876a1ca8ab6f47aaa63
     external_links: []
     lifecycle_state: open
@@ -179614,5 +179632,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T14:02:35.168Z
-    updated_at: 2026-05-06T14:13:53.797Z
+    updated_at: 2026-05-06T14:13:57.372Z
     notes: []
