@@ -1,1 +1,9 @@
-notes: []
+notes:
+  - _ulid: 01KQXYWNMY67VKAJV1N83KD0T6
+    content: "Approach: spec-only mutation task. Will use kspec batch to atomically update @api-contract
+      (replace ac-1, add ac-websocket-origin), @daemon-runtime-adapter (add ac-config-surface;
+      ac-default-node already says node), and @web-ui (replace description, replace ac-1) per task
+      description. Verify each with kspec item get; final check via kspec validate --warnings-ok."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T06:16:34.206Z
