@@ -177107,6 +177107,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-06T06:16:40.415Z
+      - _ulid: 01KQXYXB9YG84BZTV6W0MN65RF
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQXYX9ZY2R3RDDTJ0VQQJWPE
+        timestamp: 2026-05-06T06:16:56.382Z
     examined_commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
     external_links: []
     lifecycle_state: open
@@ -177116,8 +177123,24 @@ reviews:
       content_hash: ""
       ref: "@01KQWZZG0BC74MJ02VRH2V9W4C"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQXYX9ZY2R3RDDTJ0VQQJWPE
+        anchor:
+          type: structured
+          field: ac-force-direct-management-exception
+          ref: "@cli-daemon-proxy"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQXYX9ZY3662Z6FFG68HHKVE
+            author: codex
+            body: "MUST-FIX: The new @cli-daemon-proxy ac-force-direct-management-exception acceptance criterion
+              has no annotated test coverage. I searched tests/src/packages/templates/.agents for
+              'ac-force-direct-management-exception' and found no matches. This leaves the new
+              KSPEC_NO_DAEMON management-command exception unverified, which violates the AC
+              coverage gate for newly added criteria."
+            created_at: 2026-05-06T06:16:55.038Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-06T06:15:47.921Z
-    updated_at: 2026-05-06T06:16:38.969Z
+    updated_at: 2026-05-06T06:16:55.038Z
     notes: []
