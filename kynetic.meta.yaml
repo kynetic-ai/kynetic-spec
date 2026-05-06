@@ -17116,6 +17116,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T17:50:19.956Z
+  - _ulid: 01KQZ8J35CF3HHECWEP2AAXJC9
+    type: success
+    content: When a fire-and-forget CLI helper (e.g., postDispatchEvent firing /api/agent/events from
+      src/cli/commands/task.ts) needs URL-contract regression coverage but its only production
+      callers are proxied CLI commands (so subprocess CLI tests can't reach the helper after the
+      proxy hop), the right fix is to extract the helper into a dedicated production module (e.g.,
+      src/cli/dispatch-events.ts) imported by every production caller. The behavioral regression
+      test then imports the function from the new module — the export is consumed by 6+ production
+      sites, not a test seam. This satisfies work-gates (no test-only exports from src/) and
+      resolves the conflict raised by friction @01KQZ6JZ and inbox @01KQZ7F5. Pattern demonstrated
+      on @task-daemon-endpoint-regression-tests cycle 2 fix, which removed the prior
+      _postDispatchEvent re-export from src/cli/commands/task.ts in favor of the production-owned
+      extraction.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KQZ8EF"
+    created_at: 2026-05-06T18:24:47.788Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
