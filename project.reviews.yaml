@@ -176315,6 +176315,19 @@ reviews:
         runner: kspec
         created_at: 2026-05-06T01:11:55.072Z
         completed_at: 2026-05-06T01:11:55.072Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: rg found stale @config-daemon ac-5/ac-6 annotations in tests/parser/config.test.ts:85,
+          tests/parser/config.test.ts:286, and src/parser/config.ts:699 after the spec renamed those
+          ACs. kspec validate --warnings-ok -v confirms missing AC warnings for the two test
+          annotations.
+        name: AC annotation integrity
+        required: true
+        runner: rg+kspec
+        created_at: 2026-05-06T01:12:08.183Z
+        completed_at: 2026-05-06T01:12:08.183Z
     events:
       - _ulid: 01KQXCSWE995HBKWCB9T33400Z
         actor: Jacob Chapel
@@ -176357,6 +176370,13 @@ reviews:
           status: pass
           name: kspec validate --warnings-ok
         timestamp: 2026-05-06T01:11:56.317Z
+      - _ulid: 01KQXDF8XRWHZWKQS8YFDN6Q3Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: AC annotation integrity
+        timestamp: 2026-05-06T01:12:09.400Z
     examined_commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
     external_links: []
     lifecycle_state: open
@@ -176422,5 +176442,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-06T01:00:28.490Z
-    updated_at: 2026-05-06T01:11:55.072Z
+    updated_at: 2026-05-06T01:12:08.183Z
     notes: []
