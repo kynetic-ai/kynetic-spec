@@ -87,8 +87,23 @@ const DaemonConfigSchema = z
   .object({
     /** Default port for daemon (default: 3456) */
     port: z.number().int().min(1).max(65535).optional(),
-    /** Host to bind to (default: localhost) */
+    /**
+     * Host to bind to. Default is the numeric IPv4 loopback 127.0.0.1
+     * (avoids /etc/hosts and DNS resolution differences).
+     *
+     * AC: @config-daemon ac-host-default
+     * AC: @config-daemon ac-host-config
+     * AC: @config-daemon ac-host-env-precedence
+     */
     host: z.string().optional(),
+    /**
+     * Host that local clients should connect to. When the daemon binds
+     * a wildcard address (0.0.0.0 / ::), clients use this host to reach
+     * it. When omitted, defaults to a loopback derived from `host`.
+     *
+     * AC: @config-daemon ac-connect-host-config
+     */
+    connect_host: z.string().optional(),
     /**
      * JavaScript runtime used to spawn the daemon (default: node).
      * AC: @daemon-runtime-adapter ac-runtime-selection
@@ -368,6 +383,14 @@ export interface ResolvedKspecConfig {
     port: number;
     host: string;
     /**
+     * Explicit host advertised to local clients. Null when no override is
+     * configured — callers derive the connect host from `host` (loopback
+     * when bind is wildcard).
+     *
+     * AC: @config-daemon ac-connect-host-config
+     */
+    connect_host: string | null;
+    /**
      * Runtime used to spawn the daemon.
      * AC: @daemon-runtime-adapter ac-runtime-selection
      * AC: @daemon-runtime-adapter ac-default-node
@@ -487,7 +510,11 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
   },
   daemon: {
     port: 3456,
-    host: "localhost",
+    // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+    // AC: @config-daemon ac-host-default
+    // Numeric IPv4 loopback avoids /etc/hosts and DNS resolution drift.
+    host: "127.0.0.1",
+    connect_host: null,
     runtime: "node",
     auto_start: true, // AC: @config-daemon — default auto-start enabled
   },
@@ -665,6 +692,7 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
     ? parseInt(process.env.KSPEC_DAEMON_PORT, 10)
     : undefined;
   const envHost = process.env.KSPEC_DAEMON_HOST;
+  const envConnectHost = process.env.KSPEC_DAEMON_CONNECT_HOST;
 
   // Resolve shadow remote if specified
   const remoteValue = file.shadow?.remote;
@@ -692,12 +720,16 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
     },
     daemon: {
       // AC: ac-5 — env vars take precedence
+      // AC: @config-daemon ac-port-env-precedence
       port:
         (envPort && !isNaN(envPort) ? envPort : undefined) ??
         file.daemon?.port ??
         DEFAULT_CONFIG.daemon.port,
       // AC: @config-daemon ac-host-default ac-host-config ac-host-env-precedence — host from env/config/default
       host: envHost ?? file.daemon?.host ?? DEFAULT_CONFIG.daemon.host,
+      // AC: @config-daemon ac-connect-host-config — explicit connect host from env/config; null otherwise
+      connect_host:
+        envConnectHost ?? file.daemon?.connect_host ?? DEFAULT_CONFIG.daemon.connect_host,
       // AC: @daemon-runtime-adapter ac-runtime-selection
       // AC: @daemon-runtime-adapter ac-default-node
       runtime: file.daemon?.runtime ?? DEFAULT_CONFIG.daemon.runtime,
@@ -790,6 +822,7 @@ export function getDefaultConfig(): ResolvedKspecConfig {
     daemon: {
       port: DEFAULT_CONFIG.daemon.port,
       host: DEFAULT_CONFIG.daemon.host,
+      connect_host: DEFAULT_CONFIG.daemon.connect_host,
       runtime: DEFAULT_CONFIG.daemon.runtime,
       auto_start: DEFAULT_CONFIG.daemon.auto_start,
     },

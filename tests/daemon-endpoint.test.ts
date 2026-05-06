@@ -1,0 +1,584 @@
+/**
+ * Tests for the shared daemon endpoint module.
+ *
+ * Covers helper purity (host normalization, loopback/wildcard detection,
+ * URL formatting, connect-host resolution, full endpoint resolution),
+ * connection metadata I/O, and the legacy daemon.port fallback.
+ *
+ * AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+ * AC: @daemon-network-endpoint-contract ac-wildcard-connect-host
+ * AC: @daemon-network-endpoint-contract ac-connection-metadata
+ * AC: @daemon-network-endpoint-contract ac-legacy-port-fallback
+ * AC: @config-daemon ac-host-default
+ * AC: @config-daemon ac-connect-host-config
+ * AC: @config-daemon ac-port-env-precedence
+ * AC: @config-daemon ac-connection-metadata
+ */
+
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+
+import {
+  CONNECTION_METADATA_FILENAME,
+  DEFAULT_BIND_HOST,
+  DEFAULT_DAEMON_PORT,
+  LEGACY_PORT_FILENAME,
+  LOOPBACK_HOST_V4,
+  LOOPBACK_HOST_V6,
+  PID_FILENAME,
+  PidFileManager,
+  WILDCARD_HOST_V4,
+  WILDCARD_HOST_V6,
+  buildDaemonUrls,
+  formatHostForUrl,
+  getDaemonConnectionMetadataPath,
+  getDaemonPidPath,
+  getLegacyDaemonPortPath,
+  isExternallyReachable,
+  isIpv6Literal,
+  isLoopbackHost,
+  isNoDaemonModeEnabled,
+  isWildcardHost,
+  normalizeDaemonHost,
+  readDaemonConnectionMetadata,
+  readLegacyDaemonPortEndpoint,
+  removeDaemonConnectionMetadata,
+  resolveDaemonBindHost,
+  resolveDaemonConnectHost,
+  resolveDaemonEndpoint,
+  writeDaemonConnectionMetadata,
+} from "../src/daemon/endpoint.js";
+
+import type { DaemonConnectionMetadata } from "../src/daemon/endpoint.js";
+
+import { PidFileManager as CliPidFileManager } from "../src/cli/pid-utils.js";
+import { PidFileManager as DaemonPidFileManager } from "../packages/daemon/src/pid.js";
+
+import { createTempDir, cleanupTempDir } from "./helpers/cli";
+
+function sampleMetadata(
+  overrides: Partial<DaemonConnectionMetadata> = {},
+): DaemonConnectionMetadata {
+  return {
+    pid: process.pid,
+    port: 3456,
+    bind_host: "127.0.0.1",
+    connect_host: "127.0.0.1",
+    api_url: "http://127.0.0.1:3456",
+    ws_url: "ws://127.0.0.1:3456/ws",
+    runtime: "node",
+    ...overrides,
+  };
+}
+
+describe("daemon endpoint module", () => {
+  describe("constants", () => {
+    it("exposes the canonical default port", () => {
+      expect(DEFAULT_DAEMON_PORT).toBe(3456);
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+    // AC: @config-daemon ac-host-default
+    it("uses numeric IPv4 loopback as the default bind host (not localhost)", () => {
+      expect(DEFAULT_BIND_HOST).toBe("127.0.0.1");
+    });
+
+    it("knows the canonical wildcard and loopback addresses", () => {
+      expect(LOOPBACK_HOST_V4).toBe("127.0.0.1");
+      expect(LOOPBACK_HOST_V6).toBe("::1");
+      expect(WILDCARD_HOST_V4).toBe("0.0.0.0");
+      expect(WILDCARD_HOST_V6).toBe("::");
+    });
+  });
+
+  describe("normalizeDaemonHost", () => {
+    it("trims surrounding whitespace", () => {
+      expect(normalizeDaemonHost("  127.0.0.1  ")).toBe("127.0.0.1");
+    });
+
+    it("strips brackets from IPv6 literals", () => {
+      expect(normalizeDaemonHost("[::1]")).toBe("::1");
+      expect(normalizeDaemonHost("[2001:db8::1]")).toBe("2001:db8::1");
+    });
+
+    it("passes through DNS names and IPv4 addresses unchanged", () => {
+      expect(normalizeDaemonHost("localhost")).toBe("localhost");
+      expect(normalizeDaemonHost("0.0.0.0")).toBe("0.0.0.0");
+    });
+
+    it("rejects empty strings", () => {
+      expect(() => normalizeDaemonHost("")).toThrow(/empty/i);
+      expect(() => normalizeDaemonHost("   ")).toThrow(/empty/i);
+    });
+  });
+
+  describe("resolveDaemonBindHost", () => {
+    // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+    // AC: @config-daemon ac-host-default
+    it("returns 127.0.0.1 when no host is configured", () => {
+      expect(resolveDaemonBindHost()).toBe("127.0.0.1");
+      expect(resolveDaemonBindHost(null)).toBe("127.0.0.1");
+      expect(resolveDaemonBindHost({})).toBe("127.0.0.1");
+      expect(resolveDaemonBindHost({ host: undefined })).toBe("127.0.0.1");
+      expect(resolveDaemonBindHost({ host: null })).toBe("127.0.0.1");
+      expect(resolveDaemonBindHost({ host: "" })).toBe("127.0.0.1");
+    });
+
+    it("returns configured host when provided", () => {
+      expect(resolveDaemonBindHost({ host: "0.0.0.0" })).toBe("0.0.0.0");
+      expect(resolveDaemonBindHost({ host: "::" })).toBe("::");
+      expect(resolveDaemonBindHost({ host: "192.168.1.10" })).toBe("192.168.1.10");
+    });
+
+    it("does not resolve 'localhost' to 127.0.0.1 — preserves configured value", () => {
+      // Resolution from localhost to numeric is not this helper's job; the
+      // default is what guarantees we never resolve localhost at all.
+      expect(resolveDaemonBindHost({ host: "localhost" })).toBe("localhost");
+    });
+  });
+
+  describe("isLoopbackHost / isWildcardHost / isExternallyReachable", () => {
+    it("recognizes IPv4 and IPv6 loopback as loopback", () => {
+      expect(isLoopbackHost("127.0.0.1")).toBe(true);
+      expect(isLoopbackHost("127.0.0.5")).toBe(true);
+      expect(isLoopbackHost("::1")).toBe(true);
+      expect(isLoopbackHost("[::1]")).toBe(true);
+    });
+
+    it("does not treat 'localhost' as loopback (resolver-dependent)", () => {
+      expect(isLoopbackHost("localhost")).toBe(false);
+    });
+
+    it("does not treat wildcards as loopback", () => {
+      expect(isLoopbackHost("0.0.0.0")).toBe(false);
+      expect(isLoopbackHost("::")).toBe(false);
+    });
+
+    it("recognizes IPv4 and IPv6 wildcard addresses", () => {
+      expect(isWildcardHost("0.0.0.0")).toBe(true);
+      expect(isWildcardHost("::")).toBe(true);
+      expect(isWildcardHost("127.0.0.1")).toBe(false);
+      expect(isWildcardHost("192.168.1.10")).toBe(false);
+    });
+
+    it("flags non-loopback and wildcard hosts as externally reachable", () => {
+      expect(isExternallyReachable("127.0.0.1")).toBe(false);
+      expect(isExternallyReachable("::1")).toBe(false);
+      expect(isExternallyReachable("0.0.0.0")).toBe(true);
+      expect(isExternallyReachable("::")).toBe(true);
+      expect(isExternallyReachable("192.168.1.10")).toBe(true);
+    });
+  });
+
+  describe("isIpv6Literal", () => {
+    it("detects IPv6 literals", () => {
+      expect(isIpv6Literal("::1")).toBe(true);
+      expect(isIpv6Literal("[::1]")).toBe(true);
+      expect(isIpv6Literal("2001:db8::1")).toBe(true);
+    });
+
+    it("does not flag IPv4 or DNS names", () => {
+      expect(isIpv6Literal("127.0.0.1")).toBe(false);
+      expect(isIpv6Literal("0.0.0.0")).toBe(false);
+      expect(isIpv6Literal("localhost")).toBe(false);
+    });
+  });
+
+  describe("formatHostForUrl", () => {
+    it("brackets IPv6 literals", () => {
+      expect(formatHostForUrl("::1")).toBe("[::1]");
+      expect(formatHostForUrl("2001:db8::1")).toBe("[2001:db8::1]");
+    });
+
+    it("re-brackets IPv6 input that already had brackets", () => {
+      // normalizeDaemonHost strips the brackets, formatHostForUrl re-adds them.
+      expect(formatHostForUrl("[::1]")).toBe("[::1]");
+    });
+
+    it("passes IPv4 and DNS names through unchanged", () => {
+      expect(formatHostForUrl("127.0.0.1")).toBe("127.0.0.1");
+      expect(formatHostForUrl("0.0.0.0")).toBe("0.0.0.0");
+      expect(formatHostForUrl("localhost")).toBe("localhost");
+    });
+  });
+
+  describe("buildDaemonUrls", () => {
+    it("constructs http and ws URLs for IPv4", () => {
+      expect(buildDaemonUrls("127.0.0.1", 3456)).toEqual({
+        apiUrl: "http://127.0.0.1:3456",
+        wsUrl: "ws://127.0.0.1:3456/ws",
+      });
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback (URL formatting only)
+    it("brackets IPv6 literals in URLs", () => {
+      expect(buildDaemonUrls("::1", 3456)).toEqual({
+        apiUrl: "http://[::1]:3456",
+        wsUrl: "ws://[::1]:3456/ws",
+      });
+    });
+
+    it("rejects out-of-range ports", () => {
+      expect(() => buildDaemonUrls("127.0.0.1", 0)).toThrow();
+      expect(() => buildDaemonUrls("127.0.0.1", 65536)).toThrow();
+      expect(() => buildDaemonUrls("127.0.0.1", 1.5)).toThrow();
+    });
+  });
+
+  describe("resolveDaemonConnectHost", () => {
+    // AC: @daemon-network-endpoint-contract ac-wildcard-connect-host
+    it("maps IPv4 wildcard bind to IPv4 loopback connect host", () => {
+      expect(resolveDaemonConnectHost("0.0.0.0")).toBe("127.0.0.1");
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-wildcard-connect-host
+    it("maps IPv6 wildcard bind to IPv6 loopback connect host", () => {
+      expect(resolveDaemonConnectHost("::")).toBe("::1");
+    });
+
+    it("returns the bind host unchanged when it is not wildcard", () => {
+      expect(resolveDaemonConnectHost("127.0.0.1")).toBe("127.0.0.1");
+      expect(resolveDaemonConnectHost("::1")).toBe("::1");
+      expect(resolveDaemonConnectHost("10.0.0.1")).toBe("10.0.0.1");
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-wildcard-connect-host
+    // AC: @config-daemon ac-connect-host-config
+    it("uses an explicit connect host even when the bind is a wildcard", () => {
+      expect(resolveDaemonConnectHost("0.0.0.0", "10.0.0.1")).toBe("10.0.0.1");
+      expect(resolveDaemonConnectHost("::", "[::1]")).toBe("::1");
+    });
+
+    it("uses an explicit connect host even when the bind is a loopback", () => {
+      expect(resolveDaemonConnectHost("127.0.0.1", "192.168.1.10")).toBe("192.168.1.10");
+    });
+
+    it("ignores empty/whitespace explicit connect host strings", () => {
+      expect(resolveDaemonConnectHost("0.0.0.0", "")).toBe("127.0.0.1");
+      expect(resolveDaemonConnectHost("0.0.0.0", "   ")).toBe("127.0.0.1");
+    });
+  });
+
+  describe("resolveDaemonEndpoint", () => {
+    // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+    it("resolves a default loopback endpoint with IPv4 URLs", () => {
+      const ep = resolveDaemonEndpoint({ port: 3456, bindHost: "127.0.0.1" });
+      expect(ep).toEqual({
+        port: 3456,
+        bindHost: "127.0.0.1",
+        connectHost: "127.0.0.1",
+        apiUrl: "http://127.0.0.1:3456",
+        wsUrl: "ws://127.0.0.1:3456/ws",
+        externallyReachable: false,
+      });
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-wildcard-connect-host
+    it("never advertises a wildcard bind host as the client URL", () => {
+      const ep = resolveDaemonEndpoint({ port: 4000, bindHost: "0.0.0.0" });
+      expect(ep.bindHost).toBe("0.0.0.0");
+      expect(ep.connectHost).toBe("127.0.0.1");
+      expect(ep.apiUrl).toBe("http://127.0.0.1:4000");
+      expect(ep.wsUrl).toBe("ws://127.0.0.1:4000/ws");
+      expect(ep.externallyReachable).toBe(true);
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback (URL shape)
+    it("produces bracketed IPv6 URLs for IPv6 loopback bind", () => {
+      const ep = resolveDaemonEndpoint({ port: 3456, bindHost: "::1" });
+      expect(ep.connectHost).toBe("::1");
+      expect(ep.apiUrl).toBe("http://[::1]:3456");
+      expect(ep.wsUrl).toBe("ws://[::1]:3456/ws");
+      expect(ep.externallyReachable).toBe(false);
+    });
+
+    // AC: @config-daemon ac-connect-host-config
+    it("uses an explicit connect host when provided", () => {
+      const ep = resolveDaemonEndpoint({
+        port: 3456,
+        bindHost: "0.0.0.0",
+        connectHost: "10.0.0.5",
+      });
+      expect(ep.connectHost).toBe("10.0.0.5");
+      expect(ep.apiUrl).toBe("http://10.0.0.5:3456");
+      expect(ep.wsUrl).toBe("ws://10.0.0.5:3456/ws");
+      expect(ep.externallyReachable).toBe(true);
+    });
+  });
+
+  describe("connection metadata I/O", () => {
+    let configDir: string;
+
+    beforeEach(async () => {
+      configDir = await createTempDir("kspec-endpoint-test-");
+    });
+
+    afterEach(async () => {
+      await cleanupTempDir(configDir);
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-connection-metadata
+    // AC: @config-daemon ac-connection-metadata
+    it("writes and reads metadata round-trip with all required fields", () => {
+      const metadata = sampleMetadata();
+      writeDaemonConnectionMetadata(metadata, configDir);
+
+      const path = getDaemonConnectionMetadataPath(configDir);
+      expect(existsSync(path)).toBe(true);
+
+      const onDisk = JSON.parse(readFileSync(path, "utf-8")) as DaemonConnectionMetadata;
+      expect(onDisk).toEqual(metadata);
+      expect(Object.keys(onDisk)).toEqual([
+        "pid",
+        "port",
+        "bind_host",
+        "connect_host",
+        "api_url",
+        "ws_url",
+        "runtime",
+      ]);
+
+      const read = readDaemonConnectionMetadata(configDir);
+      expect(read).toEqual(metadata);
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-connection-metadata
+    it("preserves IPv6 brackets in advertised URLs", () => {
+      const metadata = sampleMetadata({
+        bind_host: "::1",
+        connect_host: "::1",
+        api_url: "http://[::1]:3456",
+        ws_url: "ws://[::1]:3456/ws",
+      });
+      writeDaemonConnectionMetadata(metadata, configDir);
+      const read = readDaemonConnectionMetadata(configDir);
+      expect(read?.api_url).toBe("http://[::1]:3456");
+      expect(read?.ws_url).toBe("ws://[::1]:3456/ws");
+    });
+
+    it("writes connection metadata to the canonical filename", () => {
+      writeDaemonConnectionMetadata(sampleMetadata(), configDir);
+      const expectedPath = join(configDir, CONNECTION_METADATA_FILENAME);
+      expect(existsSync(expectedPath)).toBe(true);
+      expect(getDaemonConnectionMetadataPath(configDir)).toBe(expectedPath);
+    });
+
+    it("creates the config directory if missing", async () => {
+      const nested = join(configDir, "nested", "child");
+      writeDaemonConnectionMetadata(sampleMetadata(), nested);
+      expect(existsSync(getDaemonConnectionMetadataPath(nested))).toBe(true);
+    });
+
+    it("returns null when metadata file is absent", () => {
+      expect(readDaemonConnectionMetadata(configDir)).toBeNull();
+    });
+
+    it("returns null when metadata file contains invalid JSON", () => {
+      writeFileSync(getDaemonConnectionMetadataPath(configDir), "not-json", "utf-8");
+      expect(readDaemonConnectionMetadata(configDir)).toBeNull();
+    });
+
+    it("returns null when metadata file is missing required fields", () => {
+      writeFileSync(
+        getDaemonConnectionMetadataPath(configDir),
+        JSON.stringify({ pid: 1234, port: 3456 }),
+        "utf-8",
+      );
+      expect(readDaemonConnectionMetadata(configDir)).toBeNull();
+    });
+
+    it("returns null when runtime field is invalid", () => {
+      const bad = { ...sampleMetadata(), runtime: "deno" };
+      writeFileSync(getDaemonConnectionMetadataPath(configDir), JSON.stringify(bad), "utf-8");
+      expect(readDaemonConnectionMetadata(configDir)).toBeNull();
+    });
+
+    it("rejects writing metadata with an invalid port", () => {
+      expect(() => writeDaemonConnectionMetadata(sampleMetadata({ port: 0 }), configDir)).toThrow();
+      expect(() =>
+        writeDaemonConnectionMetadata(sampleMetadata({ port: 70000 }), configDir),
+      ).toThrow();
+    });
+
+    it("rejects writing metadata with an invalid runtime", () => {
+      expect(() =>
+        writeDaemonConnectionMetadata(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          sampleMetadata({ runtime: "deno" as any }),
+          configDir,
+        ),
+      ).toThrow();
+    });
+
+    it("removes metadata file safely when present and absent", () => {
+      writeDaemonConnectionMetadata(sampleMetadata(), configDir);
+      expect(existsSync(getDaemonConnectionMetadataPath(configDir))).toBe(true);
+
+      removeDaemonConnectionMetadata(configDir);
+      expect(existsSync(getDaemonConnectionMetadataPath(configDir))).toBe(false);
+
+      // Idempotent
+      expect(() => removeDaemonConnectionMetadata(configDir)).not.toThrow();
+    });
+  });
+
+  describe("legacy port file fallback", () => {
+    let configDir: string;
+
+    beforeEach(async () => {
+      configDir = await createTempDir("kspec-endpoint-legacy-");
+    });
+
+    afterEach(async () => {
+      await cleanupTempDir(configDir);
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-legacy-port-fallback
+    it("synthesizes a 127.0.0.1 endpoint from the legacy port file", () => {
+      writeFileSync(getLegacyDaemonPortPath(configDir), "9999\n", "utf-8");
+
+      const fallback = readLegacyDaemonPortEndpoint(configDir);
+      expect(fallback).toEqual({
+        port: 9999,
+        connectHost: "127.0.0.1",
+        apiUrl: "http://127.0.0.1:9999",
+        wsUrl: "ws://127.0.0.1:9999/ws",
+      });
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-legacy-port-fallback
+    it("returns null when the legacy port file is missing", () => {
+      expect(readLegacyDaemonPortEndpoint(configDir)).toBeNull();
+    });
+
+    it("returns null when the legacy port file contains an invalid port", () => {
+      writeFileSync(getLegacyDaemonPortPath(configDir), "not-a-number", "utf-8");
+      expect(readLegacyDaemonPortEndpoint(configDir)).toBeNull();
+
+      writeFileSync(getLegacyDaemonPortPath(configDir), "0", "utf-8");
+      expect(readLegacyDaemonPortEndpoint(configDir)).toBeNull();
+
+      writeFileSync(getLegacyDaemonPortPath(configDir), "65536", "utf-8");
+      expect(readLegacyDaemonPortEndpoint(configDir)).toBeNull();
+    });
+  });
+
+  describe("path helpers", () => {
+    it("joins configDir with the canonical filenames", () => {
+      const dir = "/tmp/kspec-test-config";
+      expect(getDaemonPidPath(dir)).toBe(join(dir, PID_FILENAME));
+      expect(getLegacyDaemonPortPath(dir)).toBe(join(dir, LEGACY_PORT_FILENAME));
+      expect(getDaemonConnectionMetadataPath(dir)).toBe(join(dir, CONNECTION_METADATA_FILENAME));
+    });
+  });
+
+  describe("isNoDaemonModeEnabled", () => {
+    it("returns false when env var is unset", () => {
+      expect(isNoDaemonModeEnabled({})).toBe(false);
+    });
+
+    it("returns true for truthy values", () => {
+      expect(isNoDaemonModeEnabled({ KSPEC_NO_DAEMON: "1" })).toBe(true);
+      expect(isNoDaemonModeEnabled({ KSPEC_NO_DAEMON: "true" })).toBe(true);
+      expect(isNoDaemonModeEnabled({ KSPEC_NO_DAEMON: "yes" })).toBe(true);
+    });
+
+    it("returns false for explicit falsy values", () => {
+      expect(isNoDaemonModeEnabled({ KSPEC_NO_DAEMON: "0" })).toBe(false);
+      expect(isNoDaemonModeEnabled({ KSPEC_NO_DAEMON: "false" })).toBe(false);
+      expect(isNoDaemonModeEnabled({ KSPEC_NO_DAEMON: "no" })).toBe(false);
+      expect(isNoDaemonModeEnabled({ KSPEC_NO_DAEMON: "off" })).toBe(false);
+      expect(isNoDaemonModeEnabled({ KSPEC_NO_DAEMON: "" })).toBe(false);
+    });
+  });
+
+  describe("PidFileManager metadata integration", () => {
+    let configDir: string;
+
+    beforeEach(async () => {
+      configDir = await createTempDir("kspec-endpoint-pid-");
+    });
+
+    afterEach(async () => {
+      await cleanupTempDir(configDir);
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-connection-metadata
+    it("writeConnectionMetadata round-trips via readConnectionMetadata", () => {
+      const manager = new PidFileManager(configDir);
+      const metadata: DaemonConnectionMetadata = {
+        pid: process.pid,
+        port: 8080,
+        bind_host: "127.0.0.1",
+        connect_host: "127.0.0.1",
+        api_url: "http://127.0.0.1:8080",
+        ws_url: "ws://127.0.0.1:8080/ws",
+        runtime: "node",
+      };
+      manager.writeConnectionMetadata(metadata);
+      expect(manager.readConnectionMetadata()).toEqual(metadata);
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-legacy-port-fallback
+    it("readLegacyEndpoint reads daemon.port and synthesizes a connect URL", () => {
+      const manager = new PidFileManager(configDir);
+      manager.writePort(7777);
+      expect(manager.readLegacyEndpoint()).toEqual({
+        port: 7777,
+        connectHost: "127.0.0.1",
+        apiUrl: "http://127.0.0.1:7777",
+        wsUrl: "ws://127.0.0.1:7777/ws",
+      });
+    });
+
+    it("remove() deletes pid, port, and metadata files", () => {
+      const manager = new PidFileManager(configDir);
+      manager.writePid();
+      manager.writePort(3456);
+      manager.writeConnectionMetadata({
+        pid: process.pid,
+        port: 3456,
+        bind_host: "127.0.0.1",
+        connect_host: "127.0.0.1",
+        api_url: "http://127.0.0.1:3456",
+        ws_url: "ws://127.0.0.1:3456/ws",
+        runtime: "node",
+      });
+
+      expect(existsSync(getDaemonPidPath(configDir))).toBe(true);
+      expect(existsSync(getLegacyDaemonPortPath(configDir))).toBe(true);
+      expect(existsSync(getDaemonConnectionMetadataPath(configDir))).toBe(true);
+
+      manager.remove();
+
+      expect(existsSync(getDaemonPidPath(configDir))).toBe(false);
+      expect(existsSync(getLegacyDaemonPortPath(configDir))).toBe(false);
+      expect(existsSync(getDaemonConnectionMetadataPath(configDir))).toBe(false);
+    });
+
+    it("rejects invalid port values when writing daemon.port", () => {
+      const manager = new PidFileManager(configDir);
+      expect(() => manager.writePort(0)).toThrow();
+      expect(() => manager.writePort(65536)).toThrow();
+    });
+  });
+});
+
+describe("PidFileManager shared identity across CLI and daemon imports", () => {
+  // AC: @multi-directory-daemon ac-9, ac-10, ac-11, ac-13
+  // The CLI's pid-utils and the daemon package's pid module must be the same
+  // class — there is exactly one implementation. This guarantees behavior
+  // never drifts between CLI and daemon code paths.
+  it("CLI pid-utils and daemon package pid export the same class", () => {
+    expect(CliPidFileManager).toBe(PidFileManager);
+    expect(DaemonPidFileManager).toBe(PidFileManager);
+    expect(CliPidFileManager).toBe(DaemonPidFileManager);
+  });
+
+  it("instances created from any import share the same prototype", () => {
+    const a = new CliPidFileManager();
+    const b = new DaemonPidFileManager();
+    expect(Object.getPrototypeOf(a)).toBe(Object.getPrototypeOf(b));
+  });
+});
