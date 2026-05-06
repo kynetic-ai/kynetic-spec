@@ -132,7 +132,7 @@ describe("daemon proxy detection", () => {
     _resetDetectionCacheForTesting();
   });
 
-  // AC: @daemon-proxy-detection ac-port-file-check
+  // AC: @daemon-proxy-detection ac-connection-metadata-check
   it("returns unavailable when no port file exists", async () => {
     const originalHome = process.env.HOME;
     const tempDir = await createTempDir();
@@ -855,7 +855,7 @@ describe("daemon proxy health check timeout", () => {
     }
   });
 
-  // AC: @daemon-proxy-detection ac-port-file-check (successful detection)
+  // AC: @daemon-proxy-detection ac-legacy-port-file-fallback
   it("detects running daemon via port file and health check", async () => {
     const originalHome = process.env.HOME;
     const tempDir = await createTempDir();
