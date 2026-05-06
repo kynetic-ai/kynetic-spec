@@ -35055,9 +35055,21 @@ runs:
     completed_at: 2026-05-06T01:09:41.129Z
   - _ulid: 01KQXDJ0R40YEFSDDDXPAAGDT6
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T01:13:39.332Z
+        completed_at: 2026-05-06T01:14:38.806Z
+        notes: "Worked well: kspec review records made the needs_work transition durable, and kspec validate
+          --warnings-ok -v plus rg isolated stale @config-daemon AC ids despite the warning backlog.
+          Friction: regular validation output with --warnings-ok hid task-relevant invalid AC
+          annotations among existing warnings, requiring manual verbose filtering."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T01:14:38.806Z
+        completed_at: 2026-05-06T01:14:38.806Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T01:13:39.332Z
