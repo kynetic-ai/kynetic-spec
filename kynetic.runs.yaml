@@ -37052,7 +37052,7 @@ runs:
     started_at: 2026-05-06T16:23:47.763Z
   - _ulid: 01KQZ3QBM15H6TYPFM90XNTJZ6
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -37090,7 +37090,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-06T17:01:17.533Z
-        completed_at: 2026-05-06T17:01:17.533Z
+        completed_at: 2026-05-06T17:01:53.813Z
+        notes: "Searched: 'proxy skip' (no results), 'postDispatchEvent' (only the existing related tasks,
+          none documenting the testability gap), 'KSPEC_NO_DAEMON test' (no results), 'recording
+          daemon' (no results). None of the three friction points are tracked: (1) proxy-skip-list
+          discoverability, (2) untestable internal fire-and-forget helpers, (3) the
+          KSPEC_NO_DAEMON='' override surprise in the test helper."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-06T17:01:53.813Z
+        completed_at: 2026-05-06T17:01:53.813Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T17:00:17.409Z
