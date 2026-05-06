@@ -36500,7 +36500,7 @@ runs:
     completed_at: 2026-05-06T13:39:24.850Z
   - _ulid: 01KQYS930SQKZ7X3RTGKKKAC4M
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -36516,7 +36516,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T13:59:38.521Z
-        completed_at: 2026-05-06T13:59:38.521Z
+        completed_at: 2026-05-06T13:59:50.160Z
+        notes: "Friction: (1) Upstream task fix cycles absorbed downstream task work —
+          task-shared-daemon-endpoint-resolver's fix commits implemented most of this task's
+          described work (wiring resolver into startup, metadata writes, IPv6 fallback, external
+          warnings, --host/--connect-host parsing). When inheriting a downstream task, scoping is
+          unclear: most behavior already exists, leaving only gaps to identify. (2) AC annotations
+          don't follow when scope is absorbed — even though tests covered behavior, they were
+          annotated with upstream task's spec ACs, not downstream's, so AC coverage gap surfaced for
+          @daemon-server ac-1/ac-9/ac-10 even though the behavior was tested. (3) kspec workflow
+          show errored without run-ref arg (no default to most recent active run) — already tracked
+          as task @01KKBD52."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T13:59:50.160Z
+        completed_at: 2026-05-06T13:59:50.160Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T13:57:44.090Z
