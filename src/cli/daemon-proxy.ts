@@ -212,8 +212,7 @@ async function ensureProjectRegistered(apiUrl: string, projectPath: string): Pro
  * AC: @cli-daemon-proxy ac-timeout-mutation-error — mutating commands error on timeout
  */
 export async function proxyCommand(opts: {
-  port: number;
-  endpoint?: DaemonClientEndpoint;
+  endpoint: DaemonClientEndpoint;
   command: string;
   args: Record<string, unknown>;
   projectPath: string;
@@ -222,12 +221,14 @@ export async function proxyCommand(opts: {
   | { ok: true; result: ProxyCommandResult }
   | { ok: false; fallbackToDirectMode: boolean; error: string }
 > {
-  const { port, endpoint, command, args, projectPath, isMutating } = opts;
+  const { endpoint, command, args, projectPath, isMutating } = opts;
 
-  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata —
-  // call the advertised api_url. Fall back to legacy 127.0.0.1:<port>
-  // construction when callers haven't yet been migrated.
-  const apiUrl = endpoint?.apiUrl ?? `http://127.0.0.1:${port}`;
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
+  // Always call the resolved client endpoint's advertised api_url so we
+  // honor IPv6 bracketed hosts, custom connect_host, and metadata-driven
+  // ports without re-deriving URLs from a port number alone.
+  const apiUrl = endpoint.apiUrl;
 
   // AC: @daemon-proxy-detection ac-project-registered
   await ensureProjectRegistered(apiUrl, projectPath);

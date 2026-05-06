@@ -601,16 +601,22 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
   const pid = pidManager.readPid();
 
   // AC: @daemon-network-endpoint-contract ac-clients-use-metadata,
-  //     ac-legacy-port-fallback — resolve via metadata first, legacy fallback
+  //     ac-legacy-port-fallback — resolve via metadata first, legacy fallback.
+  // AC: @cli-serve-commands ac-6 — status reports bind_host, connect_host,
+  //     and runtime alongside running, pid, port, uptime, and projects.
   let port: number | null = null;
   let apiUrl: string | null = null;
   let bindHost: string | null = null;
+  let connectHost: string | null = null;
+  let runtime: string | null = null;
   if (running) {
     const endpoint = resolveDaemonClientEndpoint();
     if (endpoint) {
       port = endpoint.port;
       apiUrl = endpoint.apiUrl;
       bindHost = endpoint.bindHost;
+      connectHost = endpoint.connectHost;
+      runtime = endpoint.runtime;
     } else {
       try {
         port = pidManager.readPort();
@@ -670,10 +676,15 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
     }
   }
 
+  // AC: @cli-serve-commands ac-6 — status JSON returns the same fields
+  //     as human-readable mode, including bind_host, connect_host, runtime.
   const status = {
     running,
     pid: pid ?? null,
     port,
+    bind_host: bindHost,
+    connect_host: connectHost,
+    runtime,
     uptime,
     projects,
   };
@@ -685,6 +696,15 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
       output(`Daemon running (PID: ${pid})`);
       if (port) {
         output(`  Port: ${port}`);
+      }
+      if (bindHost) {
+        output(`  Bind host: ${bindHost}`);
+      }
+      if (connectHost) {
+        output(`  Connect host: ${connectHost}`);
+      }
+      if (runtime) {
+        output(`  Runtime: ${runtime}`);
       }
       // AC: @multi-directory-daemon ac-12 - Show uptime
       if (uptime !== null) {

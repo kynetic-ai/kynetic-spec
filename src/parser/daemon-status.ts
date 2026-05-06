@@ -7,7 +7,8 @@
  * AC: @doctor-command ac-daemon-running, ac-daemon-not-running, ac-daemon-unreachable
  */
 
-import { PidFileManager, resolveDaemonClientEndpoint } from "../cli/pid-utils.js";
+import { PidFileManager } from "../cli/pid-utils.js";
+import { getRunningDaemonClient } from "../cli/daemon-client.js";
 
 /**
  * Daemon status information
@@ -55,16 +56,11 @@ export async function getDaemonStatus(): Promise<DaemonStatus> {
   }
 
   // AC: @daemon-network-endpoint-contract ac-clients-use-metadata,
-  //     ac-legacy-port-fallback — resolve via metadata first, legacy fallback
-  const endpoint = resolveDaemonClientEndpoint();
+  //     ac-legacy-port-fallback — shared helper handles both metadata
+  //     and legacy daemon.port fallback in one call.
+  const endpoint = getRunningDaemonClient();
   if (endpoint) {
     status.port = endpoint.port;
-  } else {
-    try {
-      status.port = pidManager.readPort();
-    } catch {
-      status.port = null;
-    }
   }
 
   // Probe health endpoint if we have an endpoint

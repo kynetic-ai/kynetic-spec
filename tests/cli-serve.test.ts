@@ -844,7 +844,9 @@ describe("kspec serve commands", () => {
   });
 
   // AC: @cli-serve-commands ac-6
-  it("should return JSON status with process info", async () => {
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  // AC: @daemon-network-endpoint-contract ac-connection-metadata
+  it("should return JSON status with process info, bind_host, connect_host, and runtime", async () => {
     if (!nodeAvailable) {
       console.log("  ⊘ Skipping test - Node runtime required");
       return;
@@ -857,17 +859,49 @@ describe("kspec serve commands", () => {
     const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
     onTestFinished(() => killPid(pid));
 
+    await waitForDaemonHealth(port);
+
     // Check status with --json flag
     const result = runKspec(`serve status --json --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
-    // Should output valid JSON with process info
+    // Should output valid JSON with full endpoint metadata so daemon
+    // clients (CLI, web UI, scripts) can read the same fields the daemon
+    // advertises in daemon.connection.json.
     const status = JSON.parse(result.stdout);
     expect(status).toMatchObject({
       running: true,
       pid: pid,
+      port,
+      bind_host: "127.0.0.1",
+      connect_host: "127.0.0.1",
+      runtime: "node",
     });
 
     // Cleanup
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+  });
+
+  // AC: @cli-serve-commands ac-6
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  it("should report bind_host, connect_host, and runtime in human-readable status", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+    runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
+
+    await waitForDaemonHealth(port);
+
+    const result = runKspec(`serve status --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+    expect(result.stdout).toContain("Bind host: 127.0.0.1");
+    expect(result.stdout).toContain("Connect host: 127.0.0.1");
+    expect(result.stdout).toContain("Runtime: node");
+
     runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
   });
 

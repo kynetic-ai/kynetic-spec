@@ -56,7 +56,7 @@ import { describeEnumValues } from "../enum-help.js";
 import { addListOptions, listTasksAction } from "./tasks.js";
 import { findClosestCommand } from "../suggest.js";
 import { checkBudget, incrementBudget, isEndLoopRequested } from "../../sessions/store.js";
-import { PidFileManager, resolveDaemonClientEndpoint } from "../pid-utils.js";
+import { getRunningDaemonClient } from "../daemon-client.js";
 
 /**
  * Post a task state change event to the daemon dispatch engine.
@@ -80,11 +80,8 @@ async function postDispatchEvent(opts: {
   // events until the watcher recovers and diffs the changed state.
   if (process.env.KSPEC_SESSION_ID) return;
 
-  const pidManager = new PidFileManager();
-  if (!pidManager.isDaemonRunning()) return;
-
   // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
-  const endpoint = resolveDaemonClientEndpoint();
+  const endpoint = getRunningDaemonClient();
   if (!endpoint) return;
 
   const headers: Record<string, string> = { "Content-Type": "application/json" };

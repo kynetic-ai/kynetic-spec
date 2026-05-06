@@ -14,11 +14,13 @@
  * - @daemon-proxy-detection ac-legacy-port-file-fallback: reads legacy daemon.port file and health-checks 127.0.0.1:port
  * - @daemon-proxy-detection ac-fast-detection: fast fail on missing port/refused
  * - @daemon-proxy-detection ac-project-registered: registers project before routing
- *
- * Not covered here (deferred to metadata implementation tasks):
- * - @cli-daemon-proxy ac-auto-detect (metadata-keyed)
- * - @daemon-proxy-detection ac-connection-metadata-check
- * - @daemon-proxy-detection ac-health-timeout (metadata-keyed)
+ * - @daemon-proxy-detection ac-connection-metadata-check: detection reads daemon.connection.json
+ * - @daemon-proxy-detection ac-health-timeout: 200ms timeout against advertised endpoint
+ * - @cli-daemon-proxy ac-auto-detect: routes via advertised connect_host/port from metadata
+ * - @daemon-network-endpoint-contract ac-clients-use-metadata
+ * - @daemon-network-endpoint-contract ac-legacy-port-fallback
+ * - @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
+ * - @trait-daemon-endpoint-consumer ac-wildcard-not-destination
  *
  * - @trait-error-guidance ac-1: error includes description
  * - @trait-error-guidance ac-2: error includes suggested action
@@ -49,6 +51,7 @@ import {
   _resetDetectionCacheForTesting,
   _setDetectionCacheForTesting,
 } from "../src/cli/daemon-proxy.js";
+import type { DaemonClientEndpoint } from "../src/cli/pid-utils.js";
 
 // ── Helper: Create a Node HTTP server and return its address ──────
 
@@ -78,6 +81,27 @@ function readBody(req: http.IncomingMessage): Promise<string> {
     });
     req.on("end", () => resolve(data));
   });
+}
+
+// ── Helper: Build a DaemonClientEndpoint for proxyCommand tests ───
+// proxyCommand requires the resolved endpoint object (not a port) so its
+// URL construction is purely metadata-driven; tests synthesize a legacy
+// port endpoint here to drive the same code path.
+function makeTestEndpoint(
+  port: number,
+  overrides: Partial<DaemonClientEndpoint> = {},
+): DaemonClientEndpoint {
+  return {
+    port,
+    connectHost: "127.0.0.1",
+    apiUrl: `http://127.0.0.1:${port}`,
+    wsUrl: `ws://127.0.0.1:${port}/ws`,
+    bindHost: null,
+    runtime: null,
+    pid: null,
+    source: "legacy-port",
+    ...overrides,
+  };
 }
 
 // ── Helper: Start mock daemon in a child process ──────────────────
@@ -195,6 +219,9 @@ describe("daemon proxy detection", () => {
 
   // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
   // AC: @daemon-network-endpoint-contract ac-legacy-port-fallback
+  // AC: @daemon-proxy-detection ac-connection-metadata-check
+  // AC: @cli-daemon-proxy ac-auto-detect
+  // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
   it("uses the advertised api_url from daemon.connection.json when present", async () => {
     const originalHome = process.env.HOME;
     const tempDir = await createTempDir();
@@ -241,6 +268,75 @@ describe("daemon proxy detection", () => {
         expect(result.endpoint.source).toBe("metadata");
         expect(result.endpoint.apiUrl).toBe(`http://127.0.0.1:${started.port}`);
         expect(result.endpoint.wsUrl).toBe(`ws://127.0.0.1:${started.port}/ws`);
+      }
+    } finally {
+      process.env.HOME = originalHome!;
+      if (server) await closeServer(server);
+      await cleanupTempDir(tempDir);
+    }
+  });
+
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
+  // Detection must honor the metadata's bracketed IPv6 api_url instead of
+  // re-deriving a URL from port alone.
+  it("honors bracketed IPv6 api_url advertised by daemon metadata", async () => {
+    const originalHome = process.env.HOME;
+    const tempDir = await createTempDir();
+    let server: http.Server | undefined;
+    try {
+      process.env.HOME = tempDir;
+
+      const ipv6Started = await new Promise<{ server: http.Server; port: number } | null>(
+        (resolve) => {
+          const s = http.createServer((req, res) => {
+            if (req.url === "/api/health") {
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ status: "ok" }));
+              return;
+            }
+            res.writeHead(404);
+            res.end();
+          });
+          s.once("error", () => resolve(null));
+          s.listen(0, "::1", () => {
+            const addr = s.address() as { port: number } | null;
+            if (!addr) {
+              s.close(() => resolve(null));
+              return;
+            }
+            resolve({ server: s, port: addr.port });
+          });
+        },
+      );
+      if (!ipv6Started) {
+        console.log("  ⊘ Skipping test - IPv6 loopback (::1) not available");
+        return;
+      }
+      server = ipv6Started.server;
+
+      const configDir = join(tempDir, ".config", "kspec");
+      mkdirSync(configDir, { recursive: true });
+      writeFileSync(
+        join(configDir, "daemon.connection.json"),
+        JSON.stringify({
+          pid: 4242,
+          port: ipv6Started.port,
+          bind_host: "::1",
+          connect_host: "::1",
+          api_url: `http://[::1]:${ipv6Started.port}`,
+          ws_url: `ws://[::1]:${ipv6Started.port}/ws`,
+          runtime: "node",
+        }),
+      );
+
+      const result = await detectDaemon();
+      expect(result.available).toBe(true);
+      if (result.available) {
+        // Bracketed IPv6 host preserved verbatim — never re-derived.
+        expect(result.endpoint.apiUrl).toBe(`http://[::1]:${ipv6Started.port}`);
+        expect(result.endpoint.wsUrl).toBe(`ws://[::1]:${ipv6Started.port}/ws`);
+        expect(result.endpoint.connectHost).toBe("::1");
       }
     } finally {
       process.env.HOME = originalHome!;
@@ -520,7 +616,7 @@ describe("proxyCommand", () => {
     testServer = server;
 
     const result = await proxyCommand({
-      port,
+      endpoint: makeTestEndpoint(port),
       command: "task list",
       args: {},
       projectPath: "/tmp/test-project",
@@ -561,7 +657,7 @@ describe("proxyCommand", () => {
     testServer = server;
 
     const result = await proxyCommand({
-      port,
+      endpoint: makeTestEndpoint(port),
       command: "task get",
       args: { ref: "@nonexistent" },
       projectPath: "/tmp/test-project",
@@ -578,7 +674,7 @@ describe("proxyCommand", () => {
   // AC: @cli-daemon-proxy ac-timeout-fallback
   it("falls back to direct mode on read-only connection failure", async () => {
     const result = await proxyCommand({
-      port: 1, // Invalid port — connection will be refused
+      endpoint: makeTestEndpoint(1),
       command: "task list",
       args: {},
       projectPath: "/tmp/test-project",
@@ -594,7 +690,7 @@ describe("proxyCommand", () => {
   // AC: @cli-daemon-proxy ac-timeout-mutation-error
   it("returns error (no fallback) on mutation connection failure", async () => {
     const result = await proxyCommand({
-      port: 1, // Invalid port
+      endpoint: makeTestEndpoint(1),
       command: "task start",
       args: { ref: "@my-task" },
       projectPath: "/tmp/test-project",
@@ -632,7 +728,7 @@ describe("proxyCommand", () => {
     testServer = server;
 
     await proxyCommand({
-      port,
+      endpoint: makeTestEndpoint(port),
       command: "task list",
       args: {},
       projectPath: "/tmp/my-project",
@@ -671,7 +767,7 @@ describe("proxyCommand", () => {
     testServer = server;
 
     const result = await proxyCommand({
-      port,
+      endpoint: makeTestEndpoint(port),
       command: "task start",
       args: { ref: "@my-task" },
       projectPath: "/tmp/test-project",
@@ -707,7 +803,7 @@ describe("proxyCommand", () => {
     testServer = server;
 
     await proxyCommand({
-      port,
+      endpoint: makeTestEndpoint(port),
       command: "task list",
       args: {},
       projectPath: "/home/user/my-project",
@@ -739,7 +835,7 @@ describe("proxyCommand", () => {
 
     const start = performance.now();
     const result = await proxyCommand({
-      port,
+      endpoint: makeTestEndpoint(port),
       command: "task list",
       args: {},
       projectPath: "/tmp/test-project",
@@ -753,6 +849,143 @@ describe("proxyCommand", () => {
     // Should complete within registration timeout (5s) + reasonable overhead,
     // not hang indefinitely
     expect(elapsed).toBeLessThan(10_000);
+  });
+
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
+  // AC: @trait-daemon-endpoint-consumer ac-wildcard-not-destination
+  // AC: @daemon-proxy-detection ac-connection-metadata-check
+  // proxyCommand must call the api_url that the endpoint advertises, not
+  // re-derive `http://127.0.0.1:<port>` from the port. Drive a real local
+  // server on a non-default loopback (127.0.0.2 on Linux) and prove the
+  // request landed on the advertised host. The endpoint reports
+  // bind_host=0.0.0.0 (wildcard) but connect_host=127.0.0.2, so this also
+  // proves the consumer addresses the non-wildcard destination.
+  it("calls the endpoint's advertised api_url verbatim, not a constructed 127.0.0.1 URL", async () => {
+    let receivedHost: string | null = null;
+    const started = await new Promise<{ server: http.Server; port: number } | null>((resolve) => {
+      const server = http.createServer(async (req, res) => {
+        receivedHost = req.headers.host ?? null;
+        const url = new URL(req.url!, `http://${req.headers.host ?? "127.0.0.1"}`);
+        if (url.pathname === "/api/projects") {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ status: "ok" }));
+          return;
+        }
+        if (url.pathname === "/api/command") {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ stdout: "ok\n", stderr: "", exitCode: 0 }));
+          return;
+        }
+        res.writeHead(404);
+        res.end();
+      });
+      server.once("error", () => resolve(null));
+      server.listen(0, "127.0.0.2", () => {
+        const addr = server.address() as { port: number } | null;
+        if (!addr) {
+          server.close(() => resolve(null));
+          return;
+        }
+        resolve({ server, port: addr.port });
+      });
+    });
+    if (!started) {
+      // Skip when 127.0.0.2 is not locally addressable (macOS / Windows).
+      console.log("  ⊘ Skipping test - 127.0.0.2 loopback alias not available");
+      return;
+    }
+    testServer = started.server;
+    const advertisedPort = started.port;
+
+    // Build an endpoint that advertises 127.0.0.2 even though the test
+    // server is also reachable at 127.0.0.1. If proxyCommand re-derived
+    // the URL from port alone, the request would land on 127.0.0.1 and
+    // the Host header would not match the advertised connect_host.
+    const endpoint = makeTestEndpoint(advertisedPort, {
+      connectHost: "127.0.0.2",
+      apiUrl: `http://127.0.0.2:${advertisedPort}`,
+      wsUrl: `ws://127.0.0.2:${advertisedPort}/ws`,
+      bindHost: "0.0.0.0",
+      runtime: "node",
+      pid: 12345,
+      source: "metadata",
+    });
+
+    const result = await proxyCommand({
+      endpoint,
+      command: "task list",
+      args: {},
+      projectPath: "/tmp/test-project",
+      isMutating: false,
+    });
+
+    expect(result.ok).toBe(true);
+    expect(receivedHost).toBe(`127.0.0.2:${advertisedPort}`);
+  });
+
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+  // proxyCommand must honor IPv6 bracketed hosts that come from metadata
+  // — clients receive a bracketed api_url already and should not re-bracket
+  // or otherwise re-derive it.
+  it("uses bracketed IPv6 api_url verbatim from metadata", async () => {
+    const ipv6Started = await new Promise<{ server: http.Server; port: number } | null>(
+      (resolve) => {
+        const server = http.createServer((req, res) => {
+          const url = new URL(req.url!, `http://${req.headers.host ?? "::1"}`);
+          if (url.pathname === "/api/projects") {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ status: "ok" }));
+            return;
+          }
+          if (url.pathname === "/api/command") {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ stdout: "ok\n", stderr: "", exitCode: 0 }));
+            return;
+          }
+          res.writeHead(404);
+          res.end();
+        });
+        server.once("error", () => resolve(null));
+        server.listen(0, "::1", () => {
+          const addr = server.address() as { port: number } | null;
+          if (!addr) {
+            server.close(() => resolve(null));
+            return;
+          }
+          resolve({ server, port: addr.port });
+        });
+      },
+    );
+    if (!ipv6Started) {
+      console.log("  ⊘ Skipping test - IPv6 loopback (::1) not available");
+      return;
+    }
+    testServer = ipv6Started.server;
+
+    const endpoint = makeTestEndpoint(ipv6Started.port, {
+      connectHost: "::1",
+      apiUrl: `http://[::1]:${ipv6Started.port}`,
+      wsUrl: `ws://[::1]:${ipv6Started.port}/ws`,
+      bindHost: "::1",
+      runtime: "node",
+      pid: 4242,
+      source: "metadata",
+    });
+
+    const result = await proxyCommand({
+      endpoint,
+      command: "task list",
+      args: {},
+      projectPath: "/tmp/test-project",
+      isMutating: false,
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.result.exitCode).toBe(0);
+    }
   });
 });
 
@@ -946,10 +1179,11 @@ describe("daemon proxy health check timeout", () => {
     }
   });
 
-  // No AC annotation: ac-health-timeout's "given" requires daemon connection
-  // metadata, which is not yet read by the implementation. This test
-  // exercises the same 200ms timeout via the legacy port file path; the
-  // metadata-keyed AC will be covered by the metadata implementation tasks.
+  // AC: @daemon-proxy-detection ac-health-timeout
+  // Detection now reads metadata first; this test exercises the 200ms
+  // health-check timeout via the legacy port path because the same
+  // detection code path runs in both cases — see the metadata-keyed
+  // timeout test below for the metadata variant.
   it("times out within 200ms when daemon is unresponsive", async () => {
     const originalHome = process.env.HOME;
     const tempDir = await createTempDir();
@@ -975,6 +1209,52 @@ describe("daemon proxy health check timeout", () => {
         expect(result.reason).toBe("health check timed out");
       }
       // Should complete within 200ms + reasonable overhead
+      expect(elapsed).toBeLessThan(500);
+    } finally {
+      process.env.HOME = originalHome!;
+      await cleanupTempDir(tempDir);
+    }
+  });
+
+  // AC: @daemon-proxy-detection ac-health-timeout
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  // Drive the 200ms health-check timeout against the metadata-advertised
+  // api_url so the metadata-keyed variant of ac-health-timeout has direct
+  // behavioral coverage.
+  it("times out within 200ms against the metadata-advertised endpoint", async () => {
+    const originalHome = process.env.HOME;
+    const tempDir = await createTempDir();
+
+    const { server, port } = await createTestServer((_req, _res) => {
+      // Hang — never respond to /api/health.
+    });
+    testServer = server;
+
+    try {
+      process.env.HOME = tempDir;
+      const configDir = join(tempDir, ".config", "kspec");
+      mkdirSync(configDir, { recursive: true });
+      writeFileSync(
+        join(configDir, "daemon.connection.json"),
+        JSON.stringify({
+          pid: 4242,
+          port,
+          bind_host: "127.0.0.1",
+          connect_host: "127.0.0.1",
+          api_url: `http://127.0.0.1:${port}`,
+          ws_url: `ws://127.0.0.1:${port}/ws`,
+          runtime: "node",
+        }),
+      );
+
+      const start = performance.now();
+      const result = await detectDaemon();
+      const elapsed = performance.now() - start;
+
+      expect(result.available).toBe(false);
+      if (!result.available) {
+        expect(result.reason).toBe("health check timed out");
+      }
       expect(elapsed).toBeLessThan(500);
     } finally {
       process.env.HOME = originalHome!;

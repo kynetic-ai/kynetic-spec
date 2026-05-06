@@ -23,23 +23,7 @@ import {
 } from "../../schema/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output } from "../output.js";
-import { PidFileManager, resolveDaemonClientEndpoint } from "../pid-utils.js";
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-/**
- * Get the daemon URL from the resolved client endpoint.
- * Returns null if the daemon is not running.
- *
- * AC: @daemon-network-endpoint-contract ac-clients-use-metadata
- */
-function getDaemonUrl(): { url: string; port: number } | null {
-  const pidManager = new PidFileManager();
-  if (!pidManager.isDaemonRunning()) return null;
-  const endpoint = resolveDaemonClientEndpoint();
-  if (!endpoint) return null;
-  return { url: endpoint.apiUrl, port: endpoint.port };
-}
+import { getRunningDaemonClient } from "../daemon-client.js";
 
 // ─── Formatting ─────────────────────────────────────────────────────────────
 
@@ -286,9 +270,9 @@ export function registerEventCommands(program: Command): void {
           }
         }
 
-        const daemonConn = getDaemonUrl();
+        const daemon = getRunningDaemonClient();
 
-        if (!daemonConn) {
+        if (!daemon) {
           // AC: @trait-error-guidance ac-1, ac-2
           error(
             "Daemon is not running. " +
@@ -304,7 +288,7 @@ export function registerEventCommands(program: Command): void {
         if (options.offset) params.set("offset", options.offset);
 
         const queryString = params.toString();
-        const url = `${daemonConn.url}/api/events/recent${queryString ? `?${queryString}` : ""}`;
+        const url = `${daemon.apiUrl}/api/events/recent${queryString ? `?${queryString}` : ""}`;
 
         const response = await fetch(url);
 
@@ -403,15 +387,15 @@ export function registerEventCommands(program: Command): void {
           }
         }
 
-        const daemonConn = getDaemonUrl();
+        const daemon = getRunningDaemonClient();
 
-        if (!daemonConn) {
+        if (!daemon) {
           // AC: @trait-error-guidance ac-1, ac-2
           error("Daemon is not running. Start the daemon with 'kspec serve start' to emit events.");
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const response = await fetch(`${daemonConn.url}/api/events/emit`, {
+        const response = await fetch(`${daemon.apiUrl}/api/events/emit`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

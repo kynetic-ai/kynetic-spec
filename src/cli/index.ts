@@ -356,7 +356,6 @@ function configureProgram(program: Command): Command {
           }
 
           const result = await proxyCommand({
-            port: proxyResult.port,
             endpoint: proxyResult.endpoint,
             command,
             args: cmdArgs,
