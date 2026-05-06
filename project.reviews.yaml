@@ -179126,6 +179126,17 @@ reviews:
         runner: npm
         created_at: 2026-05-06T12:46:05.593Z
         completed_at: 2026-05-06T12:46:05.593Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: scripts/build-daemon.cjs completed with exit 0 and emitted dist/daemon/endpoint.js plus
+          daemon files
+        name: npm run build:daemon
+        required: false
+        runner: npm
+        created_at: 2026-05-06T12:46:16.687Z
+        completed_at: 2026-05-06T12:46:16.687Z
     events:
       - _ulid: 01KQYMKJ0805YFWBVRK46JQAD6
         actor: Jacob Chapel
@@ -179154,6 +179165,13 @@ reviews:
           status: pass
           name: npm run typecheck
         timestamp: 2026-05-06T12:46:06.916Z
+      - _ulid: 01KQYN699Y476MWGNV1XSXN3D8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run build:daemon
+        timestamp: 2026-05-06T12:46:17.918Z
     examined_commit: 39de9f92f702d1e369143656c861fedd9099411b
     external_links: []
     lifecycle_state: open
@@ -179166,5 +179184,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T12:36:04.232Z
-    updated_at: 2026-05-06T12:46:05.593Z
+    updated_at: 2026-05-06T12:46:16.687Z
     notes: []
