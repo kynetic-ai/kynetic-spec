@@ -177065,3 +177065,29 @@ reviews:
     created_at: 2026-05-06T06:05:47.155Z
     updated_at: 2026-05-06T06:15:43.337Z
     notes: []
+  - _ulid: 01KQXYV8EHEKNRMRG6XEDBY8CH
+    slugs: []
+    title: Review task-update-cli-daemon-proxy-endpoint-ac
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQXYV8EHGA41GRHQSWBP3FHD
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-06T06:15:47.921Z
+    examined_commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQWZZG0BC74MJ02VRH2V9W4C"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-06T06:15:47.921Z
+    updated_at: null
+    notes: []
