@@ -16751,6 +16751,20 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-06T06:35:52.085Z
+  - _ulid: 01KQY0K9MMWJRBKGQ6R4D8GXCS
+    type: friction
+    content: Task completion auto-synced @multi-directory-daemon from in_progress to implemented after
+      completing a narrow spec-update task (@task-update-daemon-lifecycle-endpoint-ac). That spec
+      had newly added endpoint metadata ACs and downstream implementation tasks still pending, so
+      completion status sync can create false implemented status for broad specs when spec-update
+      tasks are linked directly to them. Consider making task completion skip implementation-status
+      sync for spec-update/catalog tasks or require an explicit flag before marking the linked spec
+      implemented.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-06T06:46:24.148Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
