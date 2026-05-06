@@ -36243,7 +36243,7 @@ runs:
     completed_at: 2026-05-06T11:59:31.979Z
   - _ulid: 01KQYKASFQK8X85TA80116VZCT
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36257,7 +36257,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T12:14:23.345Z
-        completed_at: 2026-05-06T12:14:23.345Z
+        completed_at: 2026-05-06T12:15:43.412Z
+        notes: "Coverage checked before capture. Existing tracking already covers the high-confidence
+          reflection candidates: detached reviewer merge/conflict mechanics are covered by
+          @detached-reviewer-merge-helper plus related detached-reviewer merge tasks and
+          observations; reflection baseline discovery producing huge full-list output is covered by
+          inbox 01KQ8TTN; workflow show/run-ref friction is covered by inbox items 01KQ0RH7,
+          01KQBGKT, and 01KGGPJ6; review-time validation warning noise is covered by
+          @read-side-validation-warnings and related validation-warning inbox/tasks. No new
+          untracked, high-confidence improvement remains from this session."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T12:15:43.412Z
+        completed_at: 2026-05-06T12:15:43.412Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T12:13:48.407Z
