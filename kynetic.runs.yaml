@@ -35351,7 +35351,7 @@ runs:
     completed_at: 2026-05-06T06:14:01.793Z
   - _ulid: 01KQXYXQNQKFQZFYN1B3S5DYXZ
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35376,7 +35376,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-06T06:18:05.547Z
-        completed_at: 2026-05-06T06:18:05.547Z
+        completed_at: 2026-05-06T06:18:18.184Z
+        notes: "Coverage search completed with kspec search. Existing coverage found: spec-only
+          review/test-gate friction appears covered by observations @01KMW99S and @01KMRPKQ plus
+          related @01KN0M9GJ; detached snapshot/shadow-state orientation is covered by @01KN7VFQ,
+          @01KN8TSZP, @01KNE559G, @01KNMCWX, and @01KNMCWY2; noisy validation for small task checks
+          is covered by @01KN8TCP. Search terms included 'spec-only', 'shadow-only', 'test gate',
+          'review gates', 'spec-only review full test', 'detached reviewer merge no-op', and 'review
+          evidence log'. No untracked friction survived search strongly enough to capture."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-06T06:18:18.184Z
+        completed_at: 2026-05-06T06:18:18.184Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:17:09.047Z
