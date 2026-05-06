@@ -23,7 +23,9 @@ import type { ConnectionData, ConnectedEvent } from "./websocket/types.js";
 import { PidFileManager } from "./pid.js";
 import {
   DEFAULT_BIND_HOST,
+  isIpv6Literal,
   resolveDaemonEndpoint,
+  selectStartupBindHost,
   type DaemonConnectionMetadata,
 } from "./endpoint.js";
 import { projectContextMiddleware } from "./middleware/project-context.js";
@@ -75,6 +77,14 @@ export interface ServerOptions {
    * AC: @daemon-network-endpoint-contract ac-configured-bind-host
    */
   bindHost?: string;
+  /**
+   * True when `bindHost` came from an explicit env/config value rather
+   * than the built-in default. Disables IPv6 fallback when set —
+   * explicit configuration is honored verbatim.
+   *
+   * AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+   */
+  bindHostExplicitlyConfigured?: boolean;
   /**
    * Host the daemon advertises to local clients. When omitted, derived
    * from `bindHost` (loopback when bind is wildcard).
@@ -314,6 +324,7 @@ export async function createServer(options: ServerOptions) {
     kspecDir = join(process.cwd(), ".kspec"),
     webUiDir,
     bindHost,
+    bindHostExplicitlyConfigured,
     connectHost,
     configDir,
   } = options;
@@ -339,12 +350,29 @@ export async function createServer(options: ServerOptions) {
   // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
   // AC: @daemon-network-endpoint-contract ac-configured-bind-host
   // AC: @daemon-network-endpoint-contract ac-wildcard-connect-host
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
   // AC: @config-daemon ac-host-default
-  // Resolve the endpoint once via the shared module so bind host, connect
-  // host, and advertised URLs cannot drift.
+  // Resolve the bind host once via the shared module. When the user
+  // didn't explicitly configure a host AND the default IPv4 loopback
+  // can't be bound (e.g. IPv4 disabled on the system), fall back to ::1
+  // so daemon startup still succeeds and metadata advertises bracketed
+  // IPv6 URLs. The explicit-config flag is forwarded by the CLI from
+  // the parsed config (env / kspec.config.yaml) so explicit settings
+  // are never silently rewritten.
+  const requestedBindHost = bindHost ?? DEFAULT_BIND_HOST;
+  const bindSelection = await selectStartupBindHost({
+    resolvedBindHost: requestedBindHost,
+    port,
+    hostExplicitlyConfigured: bindHostExplicitlyConfigured === true,
+  });
+  if (bindSelection.fellBackToIpv6) {
+    console.warn(
+      `[daemon] IPv4 loopback (${DEFAULT_BIND_HOST}) is unavailable for binding; falling back to IPv6 loopback (::1).`,
+    );
+  }
   const endpoint = resolveDaemonEndpoint({
     port,
-    bindHost: bindHost ?? DEFAULT_BIND_HOST,
+    bindHost: bindSelection.bindHost,
     connectHost: connectHost ?? null,
   });
 
@@ -693,10 +721,44 @@ export async function createServer(options: ServerOptions) {
 
   // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
   // AC: @daemon-network-endpoint-contract ac-configured-bind-host
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
   // AC: @daemon-server ac-1, ac-2
   // Bind to the resolved bind host (numeric IPv4 loopback by default —
   // never 'localhost', so binding does not depend on /etc/hosts or DNS).
-  app.listen({ port, hostname: endpoint.bindHost });
+  // The bind host has already been adjusted via selectStartupBindHost to
+  // prefer ::1 when IPv4 loopback is unavailable on this host.
+  //
+  // The IPv6 path needs a localized URL polyfill: @elysiajs/node
+  // constructs `new URL("http://::1:port")` synchronously inside its
+  // listen() implementation, which throws because IPv6 hosts must be
+  // bracketed inside URL strings. We patch globalThis.URL to bracket
+  // bare IPv6 host segments only for the duration of the listen call,
+  // then restore the original. The underlying http.Server bind itself
+  // accepts the bare ::1 hostname (and rejects the bracketed form), so
+  // we cannot change what we pass to Elysia — only what Elysia builds
+  // internally. Bug context: https://github.com/elysiajs/elysia/issues
+  if (isIpv6Literal(endpoint.bindHost)) {
+    const OriginalURL = globalThis.URL;
+    function PatchedURL(input: ConstructorParameters<typeof URL>[0], base?: ConstructorParameters<typeof URL>[1]): URL {
+      const fixed =
+        typeof input === "string"
+          ? input.replace(
+              /^(https?:\/\/)([0-9a-fA-F]*:[0-9a-fA-F:]+)(:\d+)/,
+              "$1[$2]$3",
+            )
+          : input;
+      return new OriginalURL(fixed, base);
+    }
+    PatchedURL.prototype = OriginalURL.prototype;
+    (globalThis as { URL: typeof URL }).URL = PatchedURL as unknown as typeof URL;
+    try {
+      app.listen({ port, hostname: endpoint.bindHost });
+    } finally {
+      (globalThis as { URL: typeof URL }).URL = OriginalURL;
+    }
+  } else {
+    app.listen({ port, hostname: endpoint.bindHost });
+  }
 
   console.log(`[daemon] Server listening on ${endpoint.apiUrl} (bind: ${endpoint.bindHost})`);
   console.log(`[daemon] WebSocket available at ${endpoint.wsUrl}`);

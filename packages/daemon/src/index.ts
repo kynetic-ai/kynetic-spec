@@ -24,6 +24,10 @@ const { values } = parseArgs({
     runtime: { type: "string" },
     "kspec-dir": { type: "string" },
     host: { type: "string" },
+    // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+    // Set by the CLI when daemon.host came from an explicit env/config
+    // value rather than the built-in default. Suppresses IPv6 fallback.
+    "host-explicit": { type: "boolean" },
     "connect-host": { type: "string" },
   },
   allowPositionals: true,
@@ -36,6 +40,7 @@ const runtimeValue =
   process.env.KSPEC_DAEMON_RUNTIME ??
   detectProcessRuntime();
 const bindHost = (values.host as string | undefined) ?? undefined;
+const hostExplicit = values["host-explicit"] === true;
 const connectHost = (values["connect-host"] as string | undefined) ?? undefined;
 
 // Validate port
@@ -61,6 +66,7 @@ async function main() {
       runtime,
       kspecDir,
       bindHost,
+      bindHostExplicitlyConfigured: hostExplicit,
       connectHost: connectHost ?? null,
     });
 

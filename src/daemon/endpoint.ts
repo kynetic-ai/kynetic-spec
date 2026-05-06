@@ -27,6 +27,7 @@ import {
   unlinkSync,
   writeFileSync,
 } from "node:fs";
+import { createServer as createNetServer } from "node:net";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -267,6 +268,78 @@ export function resolveDaemonEndpoint(config: DaemonNetworkConfig): DaemonResolv
   };
 }
 
+// ── Bind probing / IPv6 fallback ───────────────────────────────────
+
+/**
+ * Probe whether `host:port` can be bound. Opens a transient TCP listener
+ * and resolves true on `listening`, false on any error (EADDRNOTAVAIL,
+ * EAFNOSUPPORT, EADDRINUSE, etc). The probe is closed before resolving.
+ *
+ * Used by daemon startup to detect whether the default IPv4 loopback is
+ * available before falling back to ::1.
+ *
+ * AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+ */
+export function probeBindAvailable(host: string, port: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    const server = createNetServer();
+    let settled = false;
+    const finish = (result: boolean): void => {
+      if (settled) return;
+      settled = true;
+      try {
+        server.close(() => resolve(result));
+      } catch {
+        resolve(result);
+      }
+    };
+    server.once("error", () => finish(false));
+    server.once("listening", () => finish(true));
+    try {
+      server.listen({ host, port, exclusive: true });
+    } catch {
+      finish(false);
+    }
+  });
+}
+
+export interface StartupBindSelection {
+  bindHost: string;
+  fellBackToIpv6: boolean;
+}
+
+/**
+ * Choose the bind host the daemon should actually use at startup. When
+ * the resolved bind host is the default IPv4 loopback AND the user did
+ * not explicitly configure a host, probe whether 127.0.0.1 can be bound;
+ * fall back to ::1 if it cannot.
+ *
+ * Pass `probe = probeBindAvailable` in production. Tests inject a stub.
+ *
+ * AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+ */
+export async function selectStartupBindHost(args: {
+  resolvedBindHost: string;
+  port: number;
+  hostExplicitlyConfigured: boolean;
+  probe?: (host: string, port: number) => Promise<boolean>;
+}): Promise<StartupBindSelection> {
+  const probe = args.probe ?? probeBindAvailable;
+  const normalized = normalizeDaemonHost(args.resolvedBindHost);
+  // Only fall back when the user did not configure a host AND the
+  // resolved default is the IPv4 loopback. Explicit config is honored
+  // verbatim — if the user asked for 127.0.0.1, surface a bind error
+  // instead of silently switching protocols.
+  if (args.hostExplicitlyConfigured || normalized !== LOOPBACK_HOST_V4) {
+    return { bindHost: normalized, fellBackToIpv6: false };
+  }
+  const ipv4Available = await probe(LOOPBACK_HOST_V4, args.port);
+  if (ipv4Available) {
+    return { bindHost: LOOPBACK_HOST_V4, fellBackToIpv6: false };
+  }
+  return { bindHost: LOOPBACK_HOST_V6, fellBackToIpv6: true };
+}
+
 // ── Connection metadata I/O ────────────────────────────────────────
 
 // mkdirSync({ recursive: true }) is idempotent, so no pre-existence check.
@@ -474,6 +547,26 @@ export function resolveDaemonClientEndpoint(
     };
   }
   return null;
+}
+
+/**
+ * Resolve the api_url / ws_url that the web UI Vite dev server should
+ * inject into the browser bundle so the dev client connects to the same
+ * URLs the daemon advertises (honoring IPv6 fallback, custom ports, and
+ * non-default connect hosts). When no daemon state is present, returns
+ * the documented default `http://127.0.0.1:3456` so the dev server still
+ * starts before the daemon is launched.
+ *
+ * AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+ */
+export function resolveDevDaemonEndpoint(
+  configDir: string = getDefaultDaemonConfigDir(),
+): { apiUrl: string; wsUrl: string } {
+  const endpoint = resolveDaemonClientEndpoint(configDir);
+  if (endpoint) {
+    return { apiUrl: endpoint.apiUrl, wsUrl: endpoint.wsUrl };
+  }
+  return buildDaemonUrls(LOOPBACK_HOST_V4, DEFAULT_DAEMON_PORT);
 }
 
 // ── KSPEC_NO_DAEMON env helper ─────────────────────────────────────

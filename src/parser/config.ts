@@ -383,6 +383,16 @@ export interface ResolvedKspecConfig {
     port: number;
     host: string;
     /**
+     * True when `host` came from an explicit source (config file or env
+     * var) rather than the built-in default. Daemon startup uses this
+     * to decide whether IPv6 fallback applies — when the user explicitly
+     * configured a host, surface bind errors instead of silently
+     * switching to ::1.
+     *
+     * AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+     */
+    host_explicitly_configured: boolean;
+    /**
      * Explicit host advertised to local clients. Null when no override is
      * configured — callers derive the connect host from `host` (loopback
      * when bind is wildcard).
@@ -514,6 +524,7 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
     // AC: @config-daemon ac-host-default
     // Numeric IPv4 loopback avoids /etc/hosts and DNS resolution drift.
     host: "127.0.0.1",
+    host_explicitly_configured: false,
     connect_host: null,
     runtime: "node",
     auto_start: true, // AC: @config-daemon — default auto-start enabled
@@ -727,6 +738,13 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
         DEFAULT_CONFIG.daemon.port,
       // AC: @config-daemon ac-host-default ac-host-config ac-host-env-precedence — host from env/config/default
       host: envHost ?? file.daemon?.host ?? DEFAULT_CONFIG.daemon.host,
+      // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+      // True when env or file supplied a non-empty host. Daemon startup
+      // uses this to gate the IPv4 → IPv6 fallback (only auto-fallback
+      // when the user did not explicitly configure a host).
+      host_explicitly_configured:
+        (typeof envHost === "string" && envHost.length > 0) ||
+        (typeof file.daemon?.host === "string" && file.daemon.host.length > 0),
       // AC: @config-daemon ac-connect-host-config — explicit connect host from env/config; null otherwise
       connect_host:
         envConnectHost ?? file.daemon?.connect_host ?? DEFAULT_CONFIG.daemon.connect_host,
@@ -822,6 +840,7 @@ export function getDefaultConfig(): ResolvedKspecConfig {
     daemon: {
       port: DEFAULT_CONFIG.daemon.port,
       host: DEFAULT_CONFIG.daemon.host,
+      host_explicitly_configured: DEFAULT_CONFIG.daemon.host_explicitly_configured,
       connect_host: DEFAULT_CONFIG.daemon.connect_host,
       runtime: DEFAULT_CONFIG.daemon.runtime,
       auto_start: DEFAULT_CONFIG.daemon.auto_start,

@@ -280,6 +280,7 @@ daemon:
 
       expect(config.daemon.port).toBe(3456);
       expect(config.daemon.host).toBe("127.0.0.1");
+      expect(config.daemon.host_explicitly_configured).toBe(false);
       expect(config.daemon.connect_host).toBeNull();
       expect(config.daemon.runtime).toBe("node");
       expect(config.daemon.auto_start).toBe(true);
@@ -293,10 +294,53 @@ daemon:
 
       expect(config.daemon.port).toBe(3456); // default
       expect(config.daemon.host).toBe("127.0.0.1"); // default loopback
+      expect(config.daemon.host_explicitly_configured).toBe(false); // not in file
       expect(config.daemon.connect_host).toBeNull(); // default
       expect(config.daemon.runtime).toBe("node"); // default
       expect(config.daemon.auto_start).toBe(false); // from config
     });
+  });
+
+  describe("daemon.host_explicitly_configured", () => {
+    // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+    // The IPv6 fallback only triggers when no host was explicitly
+    // configured. Daemon startup gates the fallback on this flag, so
+    // resolveConfig must report it accurately.
+
+    it("is false when neither config nor env var sets the host", () => {
+      const config = resolveConfig({});
+      expect(config.daemon.host_explicitly_configured).toBe(false);
+    });
+
+    it("is true when the config file sets daemon.host (even to the default value)", () => {
+      // Setting host to 127.0.0.1 explicitly counts as configured —
+      // explicit config is honored verbatim, no fallback is applied.
+      const config = resolveConfig({ daemon: { host: "127.0.0.1" } });
+      expect(config.daemon.host_explicitly_configured).toBe(true);
+    });
+
+    it("is true when the config file sets a non-default host", () => {
+      const config = resolveConfig({ daemon: { host: "0.0.0.0" } });
+      expect(config.daemon.host_explicitly_configured).toBe(true);
+      expect(config.daemon.host).toBe("0.0.0.0");
+    });
+
+    it("is true when KSPEC_DAEMON_HOST env var is set", () => {
+      const original = process.env.KSPEC_DAEMON_HOST;
+      process.env.KSPEC_DAEMON_HOST = "192.0.2.5";
+      try {
+        const config = resolveConfig({});
+        expect(config.daemon.host_explicitly_configured).toBe(true);
+        expect(config.daemon.host).toBe("192.0.2.5");
+      } finally {
+        if (original === undefined) {
+          delete process.env.KSPEC_DAEMON_HOST;
+        } else {
+          process.env.KSPEC_DAEMON_HOST = original;
+        }
+      }
+    });
+
   });
 
   describe("getDefaultConfig daemon", () => {

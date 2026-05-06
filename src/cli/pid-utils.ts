@@ -8,5 +8,6 @@ export {
   PidFileManager,
   isNoDaemonModeEnabled,
   resolveDaemonClientEndpoint,
+  isExternallyReachable,
 } from "../daemon/endpoint.js";
 export type { DaemonClientEndpoint } from "../daemon/endpoint.js";

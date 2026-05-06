@@ -41,6 +41,7 @@ import {
   isNoDaemonModeEnabled,
   isWildcardHost,
   normalizeDaemonHost,
+  probeBindAvailable,
   readDaemonConnectionMetadata,
   readLegacyDaemonPortEndpoint,
   removeDaemonConnectionMetadata,
@@ -48,6 +49,7 @@ import {
   resolveDaemonClientEndpoint,
   resolveDaemonConnectHost,
   resolveDaemonEndpoint,
+  selectStartupBindHost,
   writeDaemonConnectionMetadata,
 } from "../src/daemon/endpoint.js";
 
@@ -668,6 +670,115 @@ describe("daemon endpoint module", () => {
       const manager = new PidFileManager(configDir);
       expect(() => manager.writePort(0)).toThrow();
       expect(() => manager.writePort(65536)).toThrow();
+    });
+  });
+});
+
+describe("IPv6 fallback for daemon startup bind", () => {
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+
+  describe("probeBindAvailable", () => {
+    it("returns true when 127.0.0.1 binding succeeds on a free port", async () => {
+      // Port 0 lets the OS pick a free port — proves the probe really binds.
+      const available = await probeBindAvailable(LOOPBACK_HOST_V4, 0);
+      expect(available).toBe(true);
+    });
+
+    it("returns false when the port is already taken", async () => {
+      const { createServer } = await import("node:net");
+      const blocker = createServer();
+      await new Promise<void>((resolve) => {
+        blocker.listen({ host: LOOPBACK_HOST_V4, port: 0 }, () => resolve());
+      });
+      const address = blocker.address();
+      const port =
+        typeof address === "object" && address && "port" in address ? address.port : 0;
+      try {
+        const available = await probeBindAvailable(LOOPBACK_HOST_V4, port);
+        expect(available).toBe(false);
+      } finally {
+        await new Promise<void>((resolve) => blocker.close(() => resolve()));
+      }
+    });
+
+    it("releases the probed port immediately after probing", async () => {
+      // After probeBindAvailable resolves, the next probe on the same port
+      // must succeed. If we leaked the listener, this would return false.
+      const first = await probeBindAvailable(LOOPBACK_HOST_V4, 0);
+      expect(first).toBe(true);
+      const second = await probeBindAvailable(LOOPBACK_HOST_V4, 0);
+      expect(second).toBe(true);
+    });
+  });
+
+  describe("selectStartupBindHost", () => {
+    it("returns 127.0.0.1 unchanged when default and IPv4 loopback is available", async () => {
+      const result = await selectStartupBindHost({
+        resolvedBindHost: LOOPBACK_HOST_V4,
+        port: 12345,
+        hostExplicitlyConfigured: false,
+        probe: async () => true,
+      });
+      expect(result.bindHost).toBe(LOOPBACK_HOST_V4);
+      expect(result.fellBackToIpv6).toBe(false);
+    });
+
+    it("falls back to ::1 when default IPv4 loopback is unavailable", async () => {
+      // The reviewer's specific concern: if probing 127.0.0.1 fails, the
+      // daemon must switch its bind host to ::1 BEFORE writing metadata
+      // so clients see bracketed IPv6 URLs.
+      const result = await selectStartupBindHost({
+        resolvedBindHost: LOOPBACK_HOST_V4,
+        port: 12345,
+        hostExplicitlyConfigured: false,
+        probe: async () => false,
+      });
+      expect(result.bindHost).toBe(LOOPBACK_HOST_V6);
+      expect(result.fellBackToIpv6).toBe(true);
+    });
+
+    it("does NOT fall back when the host was explicitly configured", async () => {
+      // If the user asked for 127.0.0.1, surface a bind error rather than
+      // silently switching protocols. Same for explicit non-loopback hosts.
+      const result = await selectStartupBindHost({
+        resolvedBindHost: LOOPBACK_HOST_V4,
+        port: 12345,
+        hostExplicitlyConfigured: true,
+        probe: async () => false,
+      });
+      expect(result.bindHost).toBe(LOOPBACK_HOST_V4);
+      expect(result.fellBackToIpv6).toBe(false);
+    });
+
+    it("does NOT fall back when bind host is not the default IPv4 loopback", async () => {
+      const result = await selectStartupBindHost({
+        resolvedBindHost: WILDCARD_HOST_V4,
+        port: 12345,
+        hostExplicitlyConfigured: false,
+        probe: async () => false,
+      });
+      expect(result.bindHost).toBe(WILDCARD_HOST_V4);
+      expect(result.fellBackToIpv6).toBe(false);
+    });
+
+    it("end-to-end: fallback bind host produces bracketed IPv6 URLs via resolveDaemonEndpoint", async () => {
+      // Compose the two helpers as the daemon does. After the IPv4 probe
+      // fails, the resolved endpoint MUST advertise [::1] in api/ws URLs.
+      const selection = await selectStartupBindHost({
+        resolvedBindHost: LOOPBACK_HOST_V4,
+        port: 4321,
+        hostExplicitlyConfigured: false,
+        probe: async () => false,
+      });
+      const endpoint = resolveDaemonEndpoint({
+        port: 4321,
+        bindHost: selection.bindHost,
+      });
+      expect(endpoint.bindHost).toBe(LOOPBACK_HOST_V6);
+      expect(endpoint.connectHost).toBe(LOOPBACK_HOST_V6);
+      expect(endpoint.apiUrl).toBe("http://[::1]:4321");
+      expect(endpoint.wsUrl).toBe("ws://[::1]:4321/ws");
+      expect(endpoint.externallyReachable).toBe(false);
     });
   });
 });

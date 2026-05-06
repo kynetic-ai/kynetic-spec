@@ -10,7 +10,11 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { error, info, output, success, warn, isJsonMode } from "../output.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { PidFileManager, resolveDaemonClientEndpoint } from "../pid-utils.js";
+import {
+  PidFileManager,
+  resolveDaemonClientEndpoint,
+  isExternallyReachable,
+} from "../pid-utils.js";
 import { loadProjectConfig } from "../../parser/config.js";
 import { initContext } from "../../parser/yaml.js";
 
@@ -318,9 +322,13 @@ async function startServer(opts: {
 
   // AC: @config-daemon ac-host-default, ac-host-config, ac-connect-host-config
   // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
-  // Forward resolved bind/connect hosts to the spawned daemon so it
-  // never falls back to its built-in defaults if config drifts.
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+  // Forward the resolved bind host to the spawned daemon so it never
+  // falls back to its built-in defaults if config drifts. We also
+  // forward whether the host was explicitly configured so the daemon
+  // knows whether IPv6 loopback fallback applies (only for default).
   const bindHost = config.daemon.host;
+  const hostExplicitlyConfigured = config.daemon.host_explicitly_configured;
   const connectHost = config.daemon.connect_host;
 
   // AC: @cli-serve-commands ac-10
@@ -404,8 +412,28 @@ async function startServer(opts: {
     "--host",
     bindHost,
   ];
+  if (hostExplicitlyConfigured) {
+    // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+    // Tell the daemon the host came from an explicit user setting so it
+    // does NOT auto-fall back to ::1 when 127.0.0.1 binding fails.
+    daemonArgs.push("--host-explicit");
+  }
   if (connectHost) {
     daemonArgs.push("--connect-host", connectHost);
+  }
+
+  // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  // AC: @trait-localhost-security ac-external-warning
+  // AC: @config-daemon ac-host-config
+  // Surface the external-binding warning from the parent CLI process so
+  // it is visible even when the daemon child is detached with stdio
+  // ignored. warn() routes to stderr in structured output modes so it
+  // never corrupts the JSON payload on stdout.
+  const externallyReachable = isExternallyReachable(bindHost);
+  if (externallyReachable) {
+    warn(
+      `WARNING: daemon will bind to ${bindHost}, exposing unauthenticated kspec project data and mutation APIs on a non-loopback interface. Restrict access at the network/firewall level.`,
+    );
   }
 
   // AC: @cli-serve-commands ac-2 - background mode
@@ -576,11 +604,13 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
   //     ac-legacy-port-fallback — resolve via metadata first, legacy fallback
   let port: number | null = null;
   let apiUrl: string | null = null;
+  let bindHost: string | null = null;
   if (running) {
     const endpoint = resolveDaemonClientEndpoint();
     if (endpoint) {
       port = endpoint.port;
       apiUrl = endpoint.apiUrl;
+      bindHost = endpoint.bindHost;
     } else {
       try {
         port = pidManager.readPort();
@@ -588,6 +618,16 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
         port = null;
       }
     }
+  }
+
+  // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  // AC: @trait-localhost-security ac-external-warning
+  // Surface the warning whenever a lifecycle command reports the daemon
+  // endpoint and the bind host is non-loopback.
+  if (running && bindHost && isExternallyReachable(bindHost)) {
+    warn(
+      `WARNING: daemon is bound to ${bindHost}, exposing unauthenticated kspec project data and mutation APIs on a non-loopback interface. Restrict access at the network/firewall level.`,
+    );
   }
 
   // AC: @multi-directory-daemon ac-12 - Fetch list of registered projects and uptime

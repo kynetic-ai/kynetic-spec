@@ -397,6 +397,144 @@ describe("kspec serve commands", () => {
     expect(existsSync(metadataPath)).toBe(false);
   });
 
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+  it("falls back to ::1 binding and metadata when default IPv4 loopback port is unavailable", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    // Pre-bind 127.0.0.1:PORT so the daemon's startup probe finds the
+    // default IPv4 loopback unavailable. The daemon must then fall back
+    // to ::1 and advertise bracketed IPv6 URLs in its metadata. IPv4 and
+    // IPv6 ports are independent on Linux, so ::1:PORT is still free.
+    const blocker = createServer();
+    await new Promise<void>((resolve, reject) => {
+      blocker.once("error", reject);
+      blocker.listen({ host: "127.0.0.1", port }, () => resolve());
+    });
+    onTestFinished(
+      () =>
+        new Promise<void>((resolve) => {
+          blocker.close(() => resolve());
+        }),
+    );
+
+    runKspec(
+      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+    );
+
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
+
+    // Wait for the daemon to be reachable on ::1 (proves bind landed there).
+    await waitForStartup(
+      `daemon health endpoint on [::1]:${port}`,
+      async () => {
+        try {
+          const response = await fetch(`http://[::1]:${port}/api/health`);
+          const body = (await response.text()).trim();
+          return {
+            ok: response.ok || body.includes('"status":"ok"'),
+            details: `status=${response.status}`,
+          };
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          return { ok: false, details: `fetch error=${message}` };
+        }
+      },
+      { timeoutMs: 10_000 },
+    );
+
+    const metadataPath = join(isolatedHome, ".config", "kspec", "daemon.connection.json");
+    expect(existsSync(metadataPath)).toBe(true);
+
+    const metadata = JSON.parse(readTestOutputSync(metadataPath));
+    expect(metadata).toMatchObject({
+      pid,
+      port,
+      bind_host: "::1",
+      connect_host: "::1",
+      api_url: `http://[::1]:${port}`,
+      ws_url: `ws://[::1]:${port}/ws`,
+      runtime: "node",
+    });
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+  });
+
+  // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  // AC: @trait-localhost-security ac-external-warning
+  // AC: @config-daemon ac-host-config
+  it("surfaces external-binding warning from the parent CLI on detached starts", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    // Configure the daemon to bind to a wildcard address so the CLI
+    // sees an externally-reachable bind host. We rely on the CLI to
+    // surface the warning on stderr — the detached child has stdio
+    // ignored, so any warning the child writes is invisible.
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      ["daemon:", "  host: 0.0.0.0", `  port: ${port}`, ""].join("\n"),
+      "utf-8",
+    );
+
+    const result = runKspec(
+      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+    );
+
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
+
+    expect(result.stderr).toMatch(/WARNING/i);
+    expect(result.stderr).toContain("0.0.0.0");
+    expect(result.stderr).toContain("non-loopback");
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+  });
+
+  // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  // AC: @trait-localhost-security ac-external-warning
+  it("surfaces external-binding warning when serve status reports a non-loopback bind", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      ["daemon:", "  host: 0.0.0.0", `  port: ${port}`, ""].join("\n"),
+      "utf-8",
+    );
+
+    runKspec(
+      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+    );
+
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
+
+    await waitForDaemonHealth(port);
+
+    const status = runKspec(`serve status --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+    expect(status.stderr).toMatch(/WARNING/i);
+    expect(status.stderr).toContain("0.0.0.0");
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+  });
+
   // AC: @cli-serve-commands ac-3
   it("should accept custom port via --port flag", async () => {
     if (!nodeAvailable) {
