@@ -648,11 +648,30 @@ export function resolveDaemonClientEndpoint(
 export function resolveDevDaemonEndpoint(
   configDir: string = getDefaultDaemonConfigDir(),
 ): { apiUrl: string; wsUrl: string } {
+  const endpoint = resolveDevDaemonEndpointFromMetadata(configDir);
+  if (endpoint) return endpoint;
+  return buildDaemonUrls(LOOPBACK_HOST_V4, DEFAULT_DAEMON_PORT);
+}
+
+/**
+ * Resolve the api_url / ws_url from the running daemon's published
+ * connection metadata only — returns `null` when no metadata or legacy
+ * port file exists. Lets the Vite dev server distinguish "daemon is
+ * running, use its advertised URLs" from "no daemon yet, fall back to
+ * env-driven host/port or the documented default" so user-provided
+ * VITE_KSPEC_DAEMON_HOST / VITE_KSPEC_DAEMON_PORT are not silently
+ * overridden by the resolver's hardcoded default.
+ *
+ * AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+ */
+export function resolveDevDaemonEndpointFromMetadata(
+  configDir: string = getDefaultDaemonConfigDir(),
+): { apiUrl: string; wsUrl: string } | null {
   const endpoint = resolveDaemonClientEndpoint(configDir);
   if (endpoint) {
     return { apiUrl: endpoint.apiUrl, wsUrl: endpoint.wsUrl };
   }
-  return buildDaemonUrls(LOOPBACK_HOST_V4, DEFAULT_DAEMON_PORT);
+  return null;
 }
 
 // ── KSPEC_NO_DAEMON env helper ─────────────────────────────────────
