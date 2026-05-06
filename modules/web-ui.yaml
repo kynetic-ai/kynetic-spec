@@ -779,6 +779,9 @@ features:
           resolution. Configured host and port values are resolved once and
           every daemon client uses the advertised connection endpoint instead
           of constructing daemon URLs independently.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
