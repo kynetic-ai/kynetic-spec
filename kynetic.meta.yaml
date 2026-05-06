@@ -16794,6 +16794,21 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T06:56:44.859Z
+  - _ulid: 01KQY40H5C9MA55D9BZH6A5STV
+    type: friction
+    content: "Cross-package shim pattern (used by packages/daemon/src/shadow-sync-manager.ts and now
+      packages/daemon/src/{pid,endpoint}.ts) is undocumented. Pattern: a committed shim re-exports
+      from src/daemon/<name>.ts via the relative '../../../src/daemon/<name>.js' path, then
+      scripts/build-daemon.cjs copies the source into the staging dir AND overwrites the shim with a
+      sibling import ('./<name>.js') so the bundled daemon does not reach back into src/. Future
+      agents adding a 4th shared module currently have to read scripts/build-daemon.cjs to
+      understand this. A short note in AGENTS.md or a comment block at the top of
+      scripts/build-daemon.cjs would prevent every cross-package addition from re-deriving the
+      pattern."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T07:46:03.565Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
