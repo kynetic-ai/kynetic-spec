@@ -7397,12 +7397,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-06T16:08:54.685Z
+      updated_at: 2026-05-06T16:09:01.278Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T16:08:54.685Z
+      updated_at: 2026-05-06T16:09:01.278Z
     integration:
       status: pending
       detail: null
@@ -7410,24 +7410,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 63d56f0330190650f9e916202640256064df38a4
-      updated_at: 2026-05-06T16:08:54.685Z
-    lifecycle_state: ready
+      updated_at: 2026-05-06T16:09:01.278Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KQWZZHTBFAA5NBV00W1WVJNN"
     task_slug: task-centralize-cli-daemon-clients
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T15:38:12.903Z
-      last_reconciled_at: 2026-05-06T16:08:54.685Z
+      last_reconciled_at: 2026-05-06T16:09:01.278Z
       created_at: 2026-05-06T15:37:49.474Z
-      updated_at: 2026-05-06T16:08:54.685Z
+      updated_at: 2026-05-06T16:09:01.278Z
     workspace_id: dispatch-workspace-01KQWZZHTBFAA5NBV00W1WVJNN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: e42ab0f5270510fb69a6bb1fbf5e036166b207d5
+        last_seen_at: 2026-05-06T16:09:01.278Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-centralize-cli-daemon-clients-01kqwzzh-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-centralize-cli-daemon-clients/01kqwzzh
-        head: 63d56f0330190650f9e916202640256064df38a4
-        last_seen_at: 2026-05-06T15:37:49.474Z
+        head: e42ab0f5270510fb69a6bb1fbf5e036166b207d5
+        last_seen_at: 2026-05-06T16:09:01.278Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-centralize-cli-daemon-clients-01kqwzzh
