@@ -180187,6 +180187,13 @@ reviews:
           status: pass
           name: targeted daemon/web-ui tests
         timestamp: 2026-05-06T15:51:38.162Z
+      - _ulid: 01KQYZT6DE316G9M25T7SZXKKE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQYZT56FFWRFATAY8HZAT1DK
+        timestamp: 2026-05-06T15:51:56.078Z
     examined_commit: 61588c0f057e5a473d1f455147f5cbac71972378
     external_links: []
     lifecycle_state: open
@@ -180196,8 +180203,29 @@ reviews:
       content_hash: ""
       ref: "@01KQWZZJ3RF0881VRCVS1H7843"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQYZT56FFWRFATAY8HZAT1DK
+        entries:
+          - _ulid: 01KQYZT56FYEZHYS0P0Y78Z3A1
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: packages/daemon/src/server.ts,
+              packages/web-ui/src/lib/constants.ts, packages/web-ui/src/lib/daemon-endpoint-host.ts,
+              packages/web-ui/vite.config.ts, src/daemon-shared/endpoint.ts,
+              tests/daemon-api/server.test.ts, tests/daemon-api/websocket-protocol.test.ts,
+              tests/web-ui/daemon-endpoint-host-parity.test.ts,
+              tests/web-ui/dev-server-daemon-endpoint.test.ts, scripts/test.cjs. Commands run: kspec
+              task get, kspec review get prior cycle, kspec item get
+              @daemon-network-endpoint-contract/@api-contract/@web-ui, kspec validate, git
+              diff/stat/log/show, AC annotation search, targeted npm test reruns, full npm test.
+              Claims verified: prior localhost daemon-port WebSocket blocker is fixed by loopback
+              daemon-port aliases and behavioral WS regression coverage; dev endpoints prefer daemon
+              metadata, honor host/port env fallback, default to 127.0.0.1, and bracket IPv6; daemon
+              CORS/WS origin lists are derived from endpoint config without wildcard origins.
+              Categories searched: correctness, edge cases, error handling, security/origin checks,
+              test quality, integration. No blockers or should-fix findings found."
+            created_at: 2026-05-06T15:51:54.831Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-06T15:38:30.648Z
-    updated_at: 2026-05-06T15:51:36.926Z
+    updated_at: 2026-05-06T15:51:54.831Z
     notes: []
