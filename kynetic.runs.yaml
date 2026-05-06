@@ -36689,7 +36689,7 @@ runs:
     completed_at: 2026-05-06T14:54:25.485Z
   - _ulid: 01KQYXH973KRM5YVA5YNBJP5VB
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -36723,7 +36723,34 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-06T15:12:45.394Z
-        completed_at: 2026-05-06T15:12:45.394Z
+        completed_at: 2026-05-06T15:13:58.146Z
+        notes: >-
+          Searched specs/tasks/inbox for related coverage. Findings:
+
+
+          (1) CLI-mediated daemon test hang: untracked. The existing IPv6 fallback test uses kspec
+          serve start --detach successfully — under cycle-1's bug the daemon child silently
+          'succeeded' (wrote metadata + stayed alive), so the parent CLI's polling completes
+          quickly. Under the fix, the daemon child correctly DIES, but the parent CLI somehow takes
+          30s+ to return spawnSync. This is a real difference in test infrastructure behavior that's
+          not documented.
+
+
+          (2) Async listen() semantics undocumented: untracked. No existing notes/specs on the
+          contract that @elysiajs/node's app.listen() returns sync but bind happens async on Node.
+
+
+          (3) TodoWrite reminder noise: not a kspec friction — that's a Claude Code harness
+          behavior, out of scope for kspec.
+
+
+          Related but distinct: @01KQYJGD (friction observation) covers fallback/recovery tests
+          passing for the wrong reason. My friction is about test infrastructure timing, not about
+          test correctness — same family, different specific issue.
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-06T15:13:58.146Z
+        completed_at: 2026-05-06T15:13:58.146Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T15:12:06.883Z
