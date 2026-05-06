@@ -65,7 +65,7 @@ description: |
 spec_ref: "@daemon-network-endpoint-contract"
 plan_ref: "@plan-daemon-network-endpoint-contract"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-update-config-daemon-endpoint-ac"
@@ -83,8 +83,8 @@ review_ref: "@01KQY802VM6SV93T3MF6XBXE72"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-shared-daemon-endpoint-resolver/01kqwzzh
-  captured_at: 2026-05-06T08:50:46.320Z
-  commit: d64e038c3b6cb090a8b4e199e212200cc9448da0
+  captured_at: 2026-05-06T10:29:22.897Z
+  commit: 506eb2b3e31fd95451b0d8e52509ce42d8ab6124
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-shared-daemon-endpoint-resolver/01kqwzzh
@@ -217,8 +217,35 @@ history:
         previous: 2026-05-06T08:50:42.823Z
     command: task-start
     timestamp: 2026-05-06T10:29:19.520Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-shared-daemon-endpoint-resolver/01kqwzzh
+          captured_at: 2026-05-06T10:29:22.897Z
+          commit: 506eb2b3e31fd95451b0d8e52509ce42d8ab6124
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-shared-daemon-endpoint-resolver/01kqwzzh
+        previous:
+          review_url: null
+          branch: dispatch/task/task-shared-daemon-endpoint-resolver/01kqwzzh
+          captured_at: 2026-05-06T08:50:46.320Z
+          commit: d64e038c3b6cb090a8b4e199e212200cc9448da0
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-shared-daemon-endpoint-resolver/01kqwzzh
+      submitted_at:
+        new: 2026-05-06T10:29:22.902Z
+        previous: 2026-05-06T08:50:46.325Z
+    command: task-submit
+    timestamp: 2026-05-06T10:29:22.903Z
 created_at: 2026-05-05T21:16:22.136Z
 started_at: 2026-05-06T10:29:19.519Z
-submitted_at: 2026-05-06T08:50:46.325Z
+submitted_at: 2026-05-06T10:29:22.902Z
 todos: []
 automation: eligible
