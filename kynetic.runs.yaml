@@ -35855,9 +35855,22 @@ runs:
     completed_at: 2026-05-06T07:46:26.020Z
   - _ulid: 01KQY4WC4WR3SGZ77NFZ7YKE2J
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T08:01:15.932Z
+        completed_at: 2026-05-06T08:02:09.171Z
+        notes: "Worked well: reading the diff before task notes exposed that the implementation was mostly
+          helper-level and not wired into server/client integration paths. rg across endpoint
+          metadata, readPort/readConnectionMetadata, and hardcoded localhost call sites quickly
+          found the gap. kspec review records provided a clean path to anchor blockers, record
+          checks, and transition the task to needs_work."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T08:02:09.171Z
+        completed_at: 2026-05-06T08:02:09.171Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T08:01:15.932Z
