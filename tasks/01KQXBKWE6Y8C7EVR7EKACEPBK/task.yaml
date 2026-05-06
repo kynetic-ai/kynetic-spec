@@ -17,7 +17,7 @@ description: "During review of @01KQWZZF3YJRCPKB6176HW9HWW, npm test failed dete
 spec_ref: "@codex-acp-adapter-registration"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -27,6 +27,22 @@ tags:
   - agents
   - acp
 vcs_refs: []
+session_id: 01KQXBMZT2678GZ7ZDAJGC0G34
+history:
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KQXBMZT2678GZ7ZDAJGC0G34
+        previous: null
+      started_at:
+        new: 2026-05-06T00:40:41.263Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-06T00:40:41.263Z
 created_at: 2026-05-06T00:39:43.302Z
+started_at: 2026-05-06T00:40:41.263Z
 todos: []
 automation: eligible
