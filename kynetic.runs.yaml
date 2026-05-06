@@ -35099,7 +35099,7 @@ runs:
     started_at: 2026-05-06T01:13:39.332Z
     completed_at: 2026-05-06T01:15:16.952Z
   - _ulid: 01KQXFBDQB1G04P7EDRP245JRC
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -35144,7 +35144,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-06T01:46:48.762Z
-        completed_at: 2026-05-06T01:46:48.762Z
+        completed_at: 2026-05-06T01:46:55.158Z
+        notes: "Captured observation @01KQXFDP: default validation output can hide touched-spec AC coverage
+          gaps during review; reviewers should use verbose validation filtered to the spec before
+          approval. Existing related observation @01KQXEKC was left unresolved as separate
+          stale-AC-id rename friction."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T01:45:00.395Z
+    completed_at: 2026-05-06T01:46:55.159Z
