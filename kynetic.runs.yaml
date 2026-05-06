@@ -36689,9 +36689,25 @@ runs:
     completed_at: 2026-05-06T14:54:25.485Z
   - _ulid: 01KQYXH973KRM5YVA5YNBJP5VB
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T15:12:06.883Z
+        completed_at: 2026-05-06T15:12:34.029Z
+        notes: "Worked well: (1) Traced the review's blocker to root cause by reading @elysiajs/node → srvx
+          adapter → http.Server source. The .catch(() => {}) on srvx's serve() in the NodeServer
+          constructor was the smoking gun — it explained why the daemon stayed alive past EADDRINUSE
+          without crashing. (2) Manual repro before writing the test: spawning the daemon directly
+          against a pre-bound port confirmed the fix worked end-to-end before I committed to a
+          particular test shape. (3) Verified the regression test by temporarily disabling the fix
+          and watching the test fail with the expected symptom (daemon hung past 10s, exitCode null)
+          — gives high confidence the test will catch a future regression of the same shape."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T15:12:34.029Z
+        completed_at: 2026-05-06T15:12:34.029Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T15:12:06.883Z
