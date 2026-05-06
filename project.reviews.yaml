@@ -179375,3 +179375,29 @@ reviews:
     created_at: 2026-05-06T12:36:04.232Z
     updated_at: 2026-05-06T13:20:22.264Z
     notes: []
+  - _ulid: 01KQYQE9CQVVYTWCTP3BY2D68R
+    slugs: []
+    title: Review shared daemon endpoint resolver (cycle 7)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQYQE9CPX5G7HR6Q3MSCKSEJ
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-06T13:25:37.303Z
+    examined_commit: 9c7e0b6fffb00c787a2c867224e1ac885a3b6efb
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQWZZH7R9W7WKATZXFB61MPC"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-06T13:25:37.303Z
+    updated_at: null
+    notes: []
