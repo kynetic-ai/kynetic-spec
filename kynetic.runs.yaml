@@ -35351,9 +35351,22 @@ runs:
     completed_at: 2026-05-06T06:14:01.793Z
   - _ulid: 01KQXYXQNQKFQZFYN1B3S5DYXZ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T06:17:09.047Z
+        completed_at: 2026-05-06T06:17:56.274Z
+        notes: "What worked well: detached review flow was clear once oriented by task/review records; kspec
+          item get exposed the exact daemon-server spec state including inherited localhost-security
+          trait ACs; git -C main .kspec show against shadow commit fbd9c8722 made the worker claim
+          independently verifiable; detached reviewer merge helper correctly reported no-op
+          integration instead of requiring manual merge logic."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T06:17:56.274Z
+        completed_at: 2026-05-06T06:17:56.274Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:17:09.047Z
