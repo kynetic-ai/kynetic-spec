@@ -178597,6 +178597,12 @@ reviews:
         payload:
           thread_ulid: 01KQYDQMNJ4WN4GVGDWDQ5A8P1
         timestamp: 2026-05-06T11:12:27.477Z
+      - _ulid: 01KQYFTXWZ01XJ1SZ10KC84XHB
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQYE4S4FPSX2QRK2DFA0AVGX
+        timestamp: 2026-05-06T11:12:42.911Z
     examined_commit: 506eb2b3e31fd95451b0d8e52509ce42d8ab6124
     external_links: []
     lifecycle_state: closed
@@ -178665,6 +178671,23 @@ reviews:
               that test passed, which matches a concurrent build/delete race.
               scripts/build-daemon.cjs:49-50 removes dist/daemon before rebuilding it."
             created_at: 2026-05-06T10:43:08.559Z
+          - _ulid: 01KQYFTWND20SRVK8RJVARRCZ8
+            author: "@claude"
+            body: "Fixed in cycle 3 commit 3ef22cbfd by moving the shared module out of dist/daemon's path.
+              src/daemon/endpoint.ts → src/daemon-shared/endpoint.ts, so its tsc output is
+              dist/daemon-shared/endpoint.js — owned exclusively by tsc. dist/daemon/ is now owned
+              exclusively by scripts/build-daemon.cjs's esbuild stage; deleting and rebuilding
+              dist/daemon/ no longer affects any CLI subprocess. src/cli/pid-utils.ts and
+              packages/daemon/src/pid.ts re-export from the new path;
+              packages/web-ui/vite.config.ts, tests/daemon-endpoint.test.ts,
+              tests/web-ui/dev-server-daemon-endpoint.test.ts, and scripts/build-daemon.cjs's
+              endpointSource constant updated to match. Verified empirically: deleted dist/daemon/
+              and confirmed dist/cli/pid-utils.js still resolves all four exports through
+              dist/daemon-shared/endpoint.js. Full fresh test suite (npm test --fresh): 2359/2359
+              suites pass, 8640 tests pass (5 skipped, 0 failures); the previously racy
+              tests/task-unblock-prior-status.test.ts run is now stable under the same parallel test
+              concurrency."
+            created_at: 2026-05-06T11:12:41.644Z
         kind: blocker
       - _ulid: 01KQYE64TDQ4VMTWGX1T3A0P9G
         entries:
@@ -178701,5 +178724,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T10:44:04.615Z
     created_at: 2026-05-06T10:33:02.992Z
-    updated_at: 2026-05-06T11:12:26.243Z
+    updated_at: 2026-05-06T11:12:41.644Z
     notes: []
