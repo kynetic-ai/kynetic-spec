@@ -177449,7 +177449,49 @@ reviews:
     slugs: []
     title: Review daemon lifecycle endpoint metadata spec updates
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation exited 0 with warnings allowed; schema and references OK. Warnings are existing
+          repository-wide coverage/alignment noise, not new errors from this spec-only task.
+        name: kspec validate --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-06T06:42:16.177Z
+        completed_at: 2026-05-06T06:42:16.177Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "2332/2332 suites passed; 8546 passed, 5 skipped; duration 1916.6s. Full log:
+          /tmp/kspec-test-cache/01KQXZPR48BNPXWSZ5NAQHKS1Q/3897602d9ca8b2ca.log"
+        name: npm test
+        required: true
+        runner: npm test
+        created_at: 2026-05-06T06:42:19.350Z
+        completed_at: 2026-05-06T06:42:19.350Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, .agents/skills/kspec-review/SKILL.md,
+          .agents/skills/kspec-merge/SKILL.md, .agents/skills/review-gates/SKILL.md,
+          .agents/skills/work-gates/SKILL.md, tests/cli-serve.test.ts,
+          tests/daemon-global-pid-port.test.ts, src/cli/commands/serve.ts. Commands run: git
+          diff/stat/log/status, kspec task get, kspec review for-task/add/open, kspec item get
+          @multi-directory-daemon and @cli-serve-commands, kspec plan get
+          @plan-daemon-network-endpoint-contract, kspec search, kspec validate --warnings-ok, kspec
+          validate --alignment --warnings-ok, rg AC annotations, npm test. Claims verified: both
+          target specs contain the requested AC replacements/additions; plan confirms implementation
+          work is downstream. Categories searched: spec alignment, task scope, validation, AC
+          annotations, existing serve implementation/tests, full regression suite."
+        name: review evidence log
+        required: false
+        runner: manual review
+        created_at: 2026-05-06T06:42:22.440Z
+        completed_at: 2026-05-06T06:42:22.440Z
     events:
       - _ulid: 01KQXZRB6EE4K1HYQDW5EHGE6G
         actor: Jacob Chapel
@@ -177464,9 +177506,46 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-06T06:32:05.220Z
+      - _ulid: 01KQY0BRRDKSAVGZWQESSXKPW9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-05-06T06:42:17.485Z
+      - _ulid: 01KQY0BVQPEW583CRJ44YYJ0C1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-06T06:42:20.534Z
+      - _ulid: 01KQY0BYWJTNHW2BR2CQRPCG0N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-06T06:42:23.763Z
+      - _ulid: 01KQY0C33E5RD1AD8B4GK9KFKK
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-06T06:42:28.078Z
+      - _ulid: 01KQY0C33ETHY2BQPG4BG6WKJC
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-06T06:42:28.078Z
     examined_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -177474,7 +177553,14 @@ reviews:
       ref: "@01KQWZZGBHAJ7J46CFAFTCZKG6"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-06T06:42:28.078Z
     created_at: 2026-05-06T06:31:41.007Z
-    updated_at: 2026-05-06T06:32:03.946Z
+    updated_at: 2026-05-06T06:42:28.078Z
     notes: []
