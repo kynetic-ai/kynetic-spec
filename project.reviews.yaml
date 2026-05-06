@@ -179656,6 +179656,12 @@ reviews:
         payload:
           thread_ulid: 01KQYT7937KEX03MWX9ESHD5BK
         timestamp: 2026-05-06T15:10:53.657Z
+      - _ulid: 01KQYXFACQ4MNSM8KEW1KM6ADH
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQYT7937KEX03MWX9ESHD5BK
+        timestamp: 2026-05-06T15:11:02.551Z
     examined_commit: 32746e58b5712cb18605f876a1ca8ab6f47aaa63
     external_links: []
     lifecycle_state: closed
@@ -179720,6 +179726,8 @@ reviews:
               alive past 10s and exitCode was null, asserting failed as expected.
             created_at: 2026-05-06T15:10:52.378Z
         kind: blocker
+        resolved_at: 2026-05-06T15:11:01.245Z
+        resolved_by: "@claude"
       - _ulid: 01KQYT85367E3CC8RSV1VWYKC1
         entries:
           - _ulid: 01KQYT85365YHX1Z7BY4GJX31P
@@ -179746,7 +179754,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T14:15:00.537Z
     created_at: 2026-05-06T14:02:35.168Z
-    updated_at: 2026-05-06T15:10:52.378Z
+    updated_at: 2026-05-06T15:11:01.245Z
     notes: []
   - _ulid: 01KQYVH3B48Q4X4F31646WZSZF
     slugs: []
