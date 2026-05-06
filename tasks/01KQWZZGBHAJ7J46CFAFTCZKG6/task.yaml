@@ -86,8 +86,12 @@ description: |
 spec_ref: "@multi-directory-daemon"
 plan_ref: "@plan-daemon-network-endpoint-contract"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Review approved and merge helper reported no-op: canonical branch
+  dispatch/task/task-update-daemon-lifecycle-endpoint-ac/01kqwzzg at
+  a91411a36d48f7e1dbc37abdc0a8494bbf538e1d is already integrated at dev. Spec updates verified for
+  @multi-directory-daemon and @cli-serve-commands; npm test passed."
 depends_on:
   - "@task-update-config-daemon-endpoint-ac"
   - "@task-update-daemon-server-endpoint-ac"
@@ -156,8 +160,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-06T06:31:44.325Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Review approved and merge helper reported no-op: canonical branch
+          dispatch/task/task-update-daemon-lifecycle-endpoint-ac/01kqwzzg at
+          a91411a36d48f7e1dbc37abdc0a8494bbf538e1d is already integrated at dev. Spec updates
+          verified for @multi-directory-daemon and @cli-serve-commands; npm test passed."
+        previous: null
+      completed_at:
+        new: 2026-05-06T06:42:54.235Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-06T06:42:54.244Z
 created_at: 2026-05-05T21:16:21.233Z
 started_at: 2026-05-06T06:22:43.390Z
 submitted_at: 2026-05-06T06:25:14.548Z
+completed_at: 2026-05-06T06:42:54.235Z
 todos: []
 automation: eligible
