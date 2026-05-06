@@ -36192,7 +36192,7 @@ runs:
     completed_at: 2026-05-06T11:34:02.231Z
   - _ulid: 01KQYJ9Q6ZQ60YMFFKAFS1CMAR
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -36207,7 +36207,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T11:57:08.222Z
-        completed_at: 2026-05-06T11:57:08.222Z
+        completed_at: 2026-05-06T11:59:04.213Z
+        notes: "Searched observations + inbox + tasks: 274 inbox items, ~150 observations. Closest existing
+          items: @01KPVPPB (narrow AC reading), @01KNEEGVQBC (tests failing for wrong reason via env
+          leak). Neither covers the specific pattern surfaced this cycle. NEW high-confidence
+          pattern: fallback/recovery tests that pre-create the failure condition can PASS for the
+          wrong reason — the cycle-2 e2e test pre-bound 127.0.0.1:PORT and asserted ::1 fallback,
+          but only passed because the bug collapsed EADDRINUSE and EADDRNOTAVAIL into the same
+          fallback path. The test read as if it verified the spec but actually verified the bug.
+          Generalizable: any test that induces a recovery path by triggering ONE failure type must
+          also assert the recovery was driven by that failure mode's spec-defined classification,
+          not just that recovery occurred."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T11:59:04.213Z
+        completed_at: 2026-05-06T11:59:04.213Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T11:55:44.735Z
