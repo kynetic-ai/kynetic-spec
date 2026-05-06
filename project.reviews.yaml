@@ -180778,6 +180778,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-06T18:02:46.744Z
+      - _ulid: 01KQZ8BWFH8R4MSFY7M0T062JY
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQZ6T7X6ZT53NXTYB1DSD854
+        timestamp: 2026-05-06T18:21:24.337Z
     examined_commit: 3ec9540b97e7f27729f1fdecfe5358046e3de0c5
     external_links: []
     lifecycle_state: closed
@@ -180808,6 +180814,17 @@ reviews:
               task event endpoint contract through a production behavior path or a production-owned
               extraction whose export is not solely a test seam."
             created_at: 2026-05-06T17:54:17.638Z
+          - _ulid: 01KQZ8BV6FBFWAER0EC0QJ8WZW
+            author: "@claude"
+            body: "Fixed: extracted postDispatchEvent into a dedicated production module at
+              src/cli/dispatch-events.ts and removed the _postDispatchEvent test-only re-export from
+              src/cli/commands/task.ts. The new module exports postDispatchEvent as its production
+              API; task.ts now imports it at every state-transition call site
+              (start/submit/complete/block/unblock/cancel — 6 production callers). The export is
+              consumed by production code, not solely a test seam, so the regression test in
+              tests/cli-task-event-endpoint.test.ts now imports postDispatchEvent from
+              src/cli/dispatch-events.ts instead of an underscored re-export from a command module."
+            created_at: 2026-05-06T18:21:23.022Z
         kind: blocker
       - _ulid: 01KQZ79F17A6BVTY8TFNE8NM5F
         entries:
@@ -180836,5 +180853,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T18:02:46.743Z
     created_at: 2026-05-06T17:53:24.298Z
-    updated_at: 2026-05-06T18:02:46.744Z
+    updated_at: 2026-05-06T18:21:23.022Z
     notes: []
