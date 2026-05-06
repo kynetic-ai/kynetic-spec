@@ -56,7 +56,7 @@ tags:
   - daemon
   - api
 vcs_refs: []
-review_ref: "@01KQYVH3B48Q4X4F31646WZSZF"
+review_ref: "@01KQYZ1KVR9ZN0B6FTHVSKHHRY"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-centralize-web-ui-daemon-endpoints/01kqwzzj
@@ -164,6 +164,13 @@ history:
         previous: 2026-05-06T14:26:49.211Z
     command: task-submit
     timestamp: 2026-05-06T15:32:10.855Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQYZ1KVR9ZN0B6FTHVSKHHRY"
+        previous: "@01KQYVH3B48Q4X4F31646WZSZF"
+    command: review-link
+    timestamp: 2026-05-06T15:38:33.962Z
 created_at: 2026-05-05T21:16:23.032Z
 started_at: 2026-05-06T15:32:10.064Z
 submitted_at: 2026-05-06T15:32:10.855Z
