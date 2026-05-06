@@ -36854,9 +36854,21 @@ runs:
     completed_at: 2026-05-06T15:33:08.218Z
   - _ulid: 01KQYYQ7JV77JJ7ZGYTMR0F4W1
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T15:32:50.395Z
+        completed_at: 2026-05-06T15:36:07.187Z
+        notes: "Step 1 done: searched observations list, inbox list, and ran keyword searches (same-origin,
+          CORS allow-list, websocket origin, localhostOnly, host header origin). Established
+          baseline — 16 prior observations on this branch lineage; no prior coverage of Origin
+          allow-list / Host allow-list derivation drift."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T15:36:07.187Z
+        completed_at: 2026-05-06T15:36:07.187Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T15:32:50.395Z
