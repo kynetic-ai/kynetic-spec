@@ -36022,7 +36022,7 @@ runs:
     completed_at: 2026-05-06T08:22:14.291Z
   - _ulid: 01KQY8RAMSBTMEA5MWTANJS3S7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36036,7 +36036,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T09:09:45.423Z
-        completed_at: 2026-05-06T09:09:45.423Z
+        completed_at: 2026-05-06T09:09:56.079Z
+        notes: "Friction points: AC verification still required several separate commands and manual
+          cross-checks across spec output, rg annotation searches, changed tests, and changed
+          production files. kspec validate was useful but globally noisy: it exited 6 from
+          repository-wide historical warnings, so the review had to classify it as optional rather
+          than directly actionable for this task. The web UI endpoint consumer gap was found by
+          broad text search rather than by a subject-scoped coverage report."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T09:09:56.079Z
+        completed_at: 2026-05-06T09:09:56.079Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T09:08:57.625Z
