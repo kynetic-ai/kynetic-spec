@@ -37000,9 +37000,22 @@ runs:
     completed_at: 2026-05-06T16:08:40.316Z
   - _ulid: 01KQZ1MH9K7XCFNH54Y52KJ1DX
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T16:23:47.763Z
+        completed_at: 2026-05-06T16:24:49.572Z
+        notes: "Worked well: detached-reviewer merge helper gave a clear, non-manual merge path for the
+          detached snapshot and refreshed the occupied dev worktree cleanly; review records made it
+          straightforward to attach concrete check evidence; targeted daemon endpoint tests plus
+          full suite/build/typecheck gave strong confidence before merge; reading diff before notes
+          helped keep review independent."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T16:24:49.572Z
+        completed_at: 2026-05-06T16:24:49.572Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T16:23:47.763Z
