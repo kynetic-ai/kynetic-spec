@@ -3829,18 +3829,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-fix-codex-acp-adapter-package-resolution-test/01kqxbkw
-    canonical_branch_head: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
+    canonical_branch_head: 91354aec65fbdf3f7469d28308f0743c9cb78c61
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-06T00:39:54.851Z
+      updated_at: 2026-05-06T00:52:48.899Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T00:40:19.581Z
+      updated_at: 2026-05-06T00:52:48.899Z
     integration:
       status: pending
       detail: null
@@ -3848,7 +3848,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
-      updated_at: 2026-05-06T00:39:54.851Z
+      updated_at: 2026-05-06T00:52:48.899Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQXBKWE6Y8C7EVR7EKACEPBK"
@@ -3856,9 +3856,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T00:40:19.581Z
-      last_reconciled_at: 2026-05-06T00:40:19.581Z
+      last_reconciled_at: 2026-05-06T00:52:48.899Z
       created_at: 2026-05-06T00:39:54.851Z
-      updated_at: 2026-05-06T00:40:19.581Z
+      updated_at: 2026-05-06T00:52:48.899Z
     workspace_id: dispatch-workspace-01KQXBKWE6Y8C7EVR7EKACEPBK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
