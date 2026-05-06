@@ -178307,6 +178307,12 @@ reviews:
         payload:
           thread_ulid: 01KQY8N7KK3JN4CSV1JHEYN3WB
         timestamp: 2026-05-06T10:28:01.682Z
+      - _ulid: 01KQYD9M11DB522GXF2244ESKF
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQY8NB0P6HDVKGFQAQH9BQYW
+        timestamp: 2026-05-06T10:28:18.593Z
     examined_commit: d64e038c3b6cb090a8b4e199e212200cc9448da0
     external_links: []
     lifecycle_state: closed
@@ -178397,6 +178403,26 @@ reviews:
               annotated for this AC in tests/daemon-endpoint.test.ts check URL formatting for an
               explicit ::1 host, so they would still pass if startup never retries."
             created_at: 2026-05-06T09:07:19.702Z
+          - _ulid: 01KQYD9JVFCW3PD3KME2JZHC3S
+            author: "@claude"
+            body: "Fixed. Added probeBindAvailable() + selectStartupBindHost() to src/daemon/endpoint.ts. Daemon
+              startup in packages/daemon/src/server.ts now probes the resolved bind host before
+              app.listen() — when the default IPv4 loopback is unavailable AND the user did not
+              explicitly configure a host (gated by config.daemon.host_explicitly_configured,
+              forwarded via the new --host-explicit CLI flag), bind switches to ::1 and metadata
+              advertises bracketed IPv6 URLs. Explicit config disables fallback so configured
+              127.0.0.1 surfaces a real bind error. Worked around an @elysiajs/node bug (verified at
+              node_modules/@elysiajs/node/dist/cjs/index.js:906) that constructs new
+              URL('http://::1:port') without bracketing — globalThis.URL is patched only for the
+              synchronous app.listen() call. Behavioral tests: tests/daemon-endpoint.test.ts adds 6
+              unit tests for probe + selection logic (free port, taken port, port release,
+              default-IPv4 path, fallback path, explicit-config path, end-to-end
+              resolveDaemonEndpoint composition). The decisive test is in tests/cli-serve.test.ts:
+              it pre-binds 127.0.0.1:PORT, spawns the real daemon detached, then verifies the daemon
+              is reachable on [::1]:PORT/api/health AND daemon.connection.json contains bind_host:
+              '::1', api_url: 'http://[::1]:PORT', ws_url: 'ws://[::1]:PORT/ws'. This test would
+              fail if startup never retried or if metadata still pointed at 127.0.0.1."
+            created_at: 2026-05-06T10:28:17.390Z
         kind: blocker
       - _ulid: 01KQY8P4QC9Q47DADGHCCFY4D0
         entries:
@@ -178426,5 +178452,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T09:08:07.673Z
     created_at: 2026-05-06T08:55:43.220Z
-    updated_at: 2026-05-06T10:28:00.472Z
+    updated_at: 2026-05-06T10:28:17.390Z
     notes: []
