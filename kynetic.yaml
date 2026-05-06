@@ -424,7 +424,7 @@ traits:
       binding is enabled.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     acceptance_criteria:
       - given: No non-loopback daemon host is configured
         id: ac-loopback-default
