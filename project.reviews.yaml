@@ -176433,6 +176433,12 @@ reviews:
         payload:
           thread_ulid: 01KQXDE2KVBP34C6ZZ0VKMMD1Q
         timestamp: 2026-05-06T01:29:26.999Z
+      - _ulid: 01KQXEF3VFVB8KR05FEDCGDJG2
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQXDE60K7E7680XQGRGYCYXP
+        timestamp: 2026-05-06T01:29:32.783Z
     examined_commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
     external_links: []
     lifecycle_state: closed
@@ -176486,6 +176492,13 @@ reviews:
               annotation to the new AC id this test proves (likely ac-host-env-precedence) so
               validation no longer carries stale coverage metadata."
             created_at: 2026-05-06T01:11:33.651Z
+          - _ulid: 01KQXEF2NERC0JBJGTEDJGT9C3
+            author: "@claude"
+            body: "Fixed: updated tests/parser/config.test.ts:286 annotation from '@config-daemon ac-6' to
+              '@config-daemon ac-host-env-precedence'. Also added '@config-daemon
+              ac-port-env-precedence' on the same test since it asserts both KSPEC_DAEMON_PORT and
+              KSPEC_DAEMON_HOST overriding their config-file counterparts."
+            created_at: 2026-05-06T01:29:31.566Z
         kind: blocker
       - _ulid: 01KQXDE9M08PJPKJV0GY1VN253
         anchor:
@@ -176535,5 +176548,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T01:12:45.666Z
     created_at: 2026-05-06T01:00:28.490Z
-    updated_at: 2026-05-06T01:29:25.806Z
+    updated_at: 2026-05-06T01:29:31.566Z
     notes: []
