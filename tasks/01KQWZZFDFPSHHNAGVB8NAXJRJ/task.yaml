@@ -93,7 +93,7 @@ tags:
   - daemon
   - config
 vcs_refs: []
-review_ref: "@01KQXEP9M670DA29T38FQVM57C"
+review_ref: "@01KQXX9YPMNN2J2S70VNA34HCZ"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-update-config-daemon-endpoint-ac/01kqwzzf
@@ -313,6 +313,13 @@ history:
         previous: 2026-05-06T01:30:05.269Z
     command: task-submit
     timestamp: 2026-05-06T05:44:31.333Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQXX9YPMNN2J2S70VNA34HCZ"
+        previous: "@01KQXEP9M670DA29T38FQVM57C"
+    command: review-link
+    timestamp: 2026-05-06T05:48:55.652Z
 prior_status: null
 created_at: 2026-05-05T21:16:20.271Z
 started_at: 2026-05-06T01:48:30.284Z

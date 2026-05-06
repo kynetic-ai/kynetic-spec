@@ -176825,3 +176825,29 @@ reviews:
     created_at: 2026-05-06T01:33:28.070Z
     updated_at: 2026-05-06T01:44:23.114Z
     notes: []
+  - _ulid: 01KQXX9YPMNN2J2S70VNA34HCZ
+    slugs: []
+    title: Review task-update-config-daemon-endpoint-ac cycle 3
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQXX9YPK2A4GAQ43Q5SSVJJK
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-06T05:48:52.307Z
+    examined_commit: 44f834541c5fd5d1f0c0fc655c52b84fda9b8cb4
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQWZZFDFPSHHNAGVB8NAXJRJ"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-06T05:48:52.308Z
+    updated_at: null
+    notes: []
