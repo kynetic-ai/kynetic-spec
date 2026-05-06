@@ -178846,6 +178846,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-06T11:31:20.547Z
+      - _ulid: 01KQYJ5MT35SP25WSEZ4JZ0NJG
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQYGG9XC4MB9E9TYQ7N3F329
+        timestamp: 2026-05-06T11:53:31.203Z
     examined_commit: 3ef22cbfd8d59b8a6c4aa5c9ecc57b826152024a
     external_links: []
     lifecycle_state: closed
@@ -178878,6 +178884,22 @@ reviews:
               the submitted behavior is using EADDRINUSE as the fallback signal rather than an
               IPv4-loopback-unavailable condition."
             created_at: 2026-05-06T11:24:23.340Z
+          - _ulid: 01KQYJ5KJP0KS3PM0DMQ319RWJ
+            author: "@claude"
+            body: "Fixed: probeBindAvailable now returns ProbeBindResult that classifies the underlying errno:
+              EADDRNOTAVAIL/EAFNOSUPPORT -> address_unavailable, EADDRINUSE -> port_in_use,
+              otherwise unknown. selectStartupBindHost falls back to ::1 only when reason ===
+              'address_unavailable'; port_in_use and unknown errors return the original IPv4 bind
+              host so app.listen() surfaces the real error. New unit tests in
+              tests/daemon-endpoint.test.ts assert (a) the probe reports reason='port_in_use' on
+              EADDRINUSE and (b) selectStartupBindHost does NOT fall back on either port_in_use or
+              unknown probe errors. The misleading e2e test in tests/cli-serve.test.ts (which
+              pre-bound 127.0.0.1:PORT and expected fallback) is replaced with a regression guard
+              that pre-binds 127.0.0.1:PORT, runs serve start --detach, and asserts nothing ever
+              comes up on [::1]:PORT and any persisted metadata advertises 127.0.0.1. End-to-end
+              coverage of true address-unavailable cannot be reliably simulated on a CI runner
+              without root; the unit tests exhaustively cover that path."
+            created_at: 2026-05-06T11:53:29.942Z
         kind: blocker
       - _ulid: 01KQYGWP2XEM6W3BEPDV9QGQX3
         entries:
@@ -178910,5 +178932,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T11:31:20.546Z
     created_at: 2026-05-06T11:20:55.480Z
-    updated_at: 2026-05-06T11:31:20.547Z
+    updated_at: 2026-05-06T11:53:29.942Z
     notes: []
