@@ -35958,7 +35958,7 @@ runs:
     completed_at: 2026-05-06T08:05:56.549Z
   - _ulid: 01KQY5YSDP7MM8QGM3BTKB7QB5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35975,7 +35975,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T08:21:27.076Z
-        completed_at: 2026-05-06T08:21:27.076Z
+        completed_at: 2026-05-06T08:21:36.397Z
+        notes: "Friction points: kspec validate emits a large repo-wide warning set, so a small trait/spec
+          review requires manual separation of expected new warnings from pre-existing catalog
+          health issues. The required full npm test run took 1897.2s for a metadata-only review,
+          which is expensive but currently mandated by review gates. The reflect docs say kspec
+          workflow show without a run ref, but this CLI required an explicit run ref."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T08:21:36.397Z
+        completed_at: 2026-05-06T08:21:36.397Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T08:20:03.638Z
