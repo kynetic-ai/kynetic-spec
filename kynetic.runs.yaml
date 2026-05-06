@@ -35155,9 +35155,21 @@ runs:
     completed_at: 2026-05-06T01:46:55.159Z
   - _ulid: 01KQXX32DGNSA21QXEV3A00N0K
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T05:45:06.736Z
+        completed_at: 2026-05-06T05:46:35.250Z
+        notes: "Worked: read full task notes to discover Hermes' unblock and the cycle-2 review history
+          before re-running validate; verified spec content, ran kspec validate -v to confirm only
+          the expected 3 uncovered ACs remained, ran full npm test (8546 pass), and resubmitted with
+          a clear note documenting the override rationale."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T05:46:35.250Z
+        completed_at: 2026-05-06T05:46:35.250Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T05:45:06.736Z
