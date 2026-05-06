@@ -180711,6 +180711,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-06T17:53:47.180Z
+      - _ulid: 01KQZ6T9A2Q392ATN70J4GDX79
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQZ6T7X6ZT53NXTYB1DSD854
+        timestamp: 2026-05-06T17:54:19.074Z
     examined_commit: 3ec9540b97e7f27729f1fdecfe5358046e3de0c5
     external_links: []
     lifecycle_state: open
@@ -180720,8 +180727,29 @@ reviews:
       content_hash: ""
       ref: "@01KQWZZJD5A6068Q7BBY7SKH43"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQZ6T7X6ZT53NXTYB1DSD854
+        anchor:
+          type: code
+          commit: 3ec9540b97e7f27729f1fdecfe5358046e3de0c5
+          line_end: 115
+          line_start: 115
+          path: src/cli/commands/task.ts
+          side: head
+        entries:
+          - _ulid: 01KQZ6T7X6KSXR132MYE44KKR6
+            author: Jacob Chapel
+            body: "MUST-FIX: This adds a test-only export from production code. The new comment explicitly says
+              _postDispatchEvent is exported for behavioral regression tests, and
+              tests/cli-task-event-endpoint.test.ts imports that underscored helper directly.
+              Project work-gates classify test-only exports from src/ modules as MUST-FIX; they make
+              internals part of the production module surface and let the regression test bypass the
+              CLI behavior it is meant to protect. Please remove this test-only export and cover the
+              task event endpoint contract through a production behavior path or a production-owned
+              extraction whose export is not solely a test seam."
+            created_at: 2026-05-06T17:54:17.638Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-06T17:53:24.298Z
-    updated_at: 2026-05-06T17:53:45.703Z
+    updated_at: 2026-05-06T17:54:17.638Z
     notes: []
