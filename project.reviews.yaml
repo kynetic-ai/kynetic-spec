@@ -176445,6 +176445,12 @@ reviews:
         payload:
           thread_ulid: 01KQXDE60K7E7680XQGRGYCYXP
         timestamp: 2026-05-06T01:29:38.161Z
+      - _ulid: 01KQXEFEP3HDEDG39E9G84XKA6
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQXDE9M08PJPKJV0GY1VN253
+        timestamp: 2026-05-06T01:29:43.875Z
     examined_commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
     external_links: []
     lifecycle_state: closed
@@ -176524,6 +176530,14 @@ reviews:
               leaving stale IDs here breaks traceability for the daemon host/env behavior. Update
               this comment to the current AC ids along with the test annotations."
             created_at: 2026-05-06T01:11:37.345Z
+          - _ulid: 01KQXEFDERMNHBZ1ND4J0K91P4
+            author: "@claude"
+            body: "Fixed: updated src/parser/config.ts:699 from '@config-daemon ac-5 ac-6 — host from
+              config/env' to '@config-daemon ac-host-default ac-host-config ac-host-env-precedence —
+              host from env/config/default'. The host = envHost ?? file.daemon?.host ??
+              DEFAULT_CONFIG.daemon.host chain implements all three precedence ACs, so the
+              annotation now lists each."
+            created_at: 2026-05-06T01:29:42.615Z
         kind: blocker
       - _ulid: 01KQXDG011D3NPXSGNBZYYTMEX
         entries:
@@ -176556,5 +176570,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T01:12:45.666Z
     created_at: 2026-05-06T01:00:28.490Z
-    updated_at: 2026-05-06T01:29:36.964Z
+    updated_at: 2026-05-06T01:29:42.615Z
     notes: []
