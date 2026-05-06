@@ -178591,6 +178591,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-06T10:44:04.616Z
+      - _ulid: 01KQYFTETNDD8ET348NJFJM2JE
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQYDQMNJ4WN4GVGDWDQ5A8P1
+        timestamp: 2026-05-06T11:12:27.477Z
     examined_commit: 506eb2b3e31fd95451b0d8e52509ce42d8ab6124
     external_links: []
     lifecycle_state: closed
@@ -178623,6 +178629,18 @@ reviews:
               src/cli/commands/serve.ts:406-423 includes them; rg shows no auto-start test covering
               host/connect_host."
             created_at: 2026-05-06T10:35:58.002Z
+          - _ulid: 01KQYFTDM4KD58Q55FVJZ073C6
+            author: "@claude"
+            body: "Fixed in cycle 3 commit 3ef22cbfd. src/cli/index.ts maybeAutoStartDaemon() now forwards
+              --host, --host-explicit (when host_explicitly_configured), and --connect-host (when
+              set), matching the daemonArgs construction in src/cli/commands/serve.ts. Added
+              behavioral coverage in tests/cli-no-daemon.test.ts: \"forwards host, host-explicit,
+              and connect-host to the auto-started daemon\" configures host: 127.0.0.1 +
+              connect_host: 127.0.0.2, runs node CLI util ulid, then verifies (a) the auto-started
+              daemon's daemon.connection.json shows bind_host=127.0.0.1, connect_host=127.0.0.2,
+              api_url=http://127.0.0.2:PORT and (b) the spawned process command line contains --host
+              127.0.0.1, --host-explicit, and --connect-host 127.0.0.2."
+            created_at: 2026-05-06T11:12:26.243Z
         kind: blocker
       - _ulid: 01KQYE4S4FPSX2QRK2DFA0AVGX
         anchor:
@@ -178683,5 +178701,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T10:44:04.615Z
     created_at: 2026-05-06T10:33:02.992Z
-    updated_at: 2026-05-06T10:44:04.616Z
+    updated_at: 2026-05-06T11:12:26.243Z
     notes: []
