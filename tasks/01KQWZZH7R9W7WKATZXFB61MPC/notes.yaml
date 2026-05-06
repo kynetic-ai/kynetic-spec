@@ -188,3 +188,58 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-06T11:31:22.506Z
+  - _ulid: 01KQYJ7N5X8D5T5DYHT3FRCW0Y
+    content: >-
+      Fix cycle 4: addressed reviewer blocker on IPv6 fallback semantics (review @01KQYG9Y).
+
+
+      Root cause: probeBindAvailable returned a boolean, so selectStartupBindHost could not
+      distinguish "IPv4 loopback genuinely unavailable" from "this port is taken". EADDRINUSE on
+      127.0.0.1:PORT fell through to ::1, silently starting the daemon on the wrong endpoint over a
+      real port collision. The spec only permits fallback when "binding 127.0.0.1 fails because IPv4
+      loopback is unavailable".
+
+
+      Fix in src/daemon-shared/endpoint.ts:
+
+      1. probeBindAvailable now returns ProbeBindResult — {available:true} | {available:false,
+      reason: 'address_unavailable'|'port_in_use'|'unknown', code}. Reason is derived from Node
+      errno (EADDRNOTAVAIL/EAFNOSUPPORT -> address_unavailable, EADDRINUSE -> port_in_use, else
+      unknown).
+
+      2. selectStartupBindHost falls back to ::1 ONLY when reason === 'address_unavailable'.
+      port_in_use and unknown return the resolved IPv4 host so app.listen() surfaces the real error
+      verbatim.
+
+
+      Tests:
+
+      - daemon-endpoint.test.ts: probe asserts reason='port_in_use'/code='EADDRINUSE' on a pre-bound
+      port; selectStartupBindHost adds explicit guards proving port_in_use AND unknown errors do NOT
+      trigger fallback (kept existing fallback-on-address_unavailable, explicit-host,
+      non-default-host, end-to-end-IPv6-URLs cases).
+
+      - cli-serve.test.ts: replaced the misleading e2e test that pre-bound 127.0.0.1:PORT and
+      expected ::1 fallback (false evidence — passed only because of the bug). Replacement is a
+      regression guard: pre-binds 127.0.0.1:PORT, runs serve start --detach, polls 2s for [::1]:PORT
+      health, asserts NO daemon appears there, and asserts any persisted metadata advertises
+      127.0.0.1 not ::1.
+
+
+      End-to-end coverage of the genuine address_unavailable path can't be reliably simulated on CI
+      without root (would require disabling 127.0.0.1 system-wide); the selectStartupBindHost unit
+      tests cover all branches deterministically with stub probes.
+
+
+      Re-verified all ACs against the implementation: ac-default-loopback-v4,
+      ac-default-ipv6-fallback (now correctly scoped), ac-configured-bind-host,
+      ac-wildcard-connect-host, ac-connection-metadata, ac-clients-use-metadata,
+      ac-legacy-port-fallback, ac-external-binding-warning on @daemon-network-endpoint-contract;
+      ac-host-default, ac-connect-host-config, ac-port-env-precedence, ac-connection-metadata on
+      @config-daemon.
+
+
+      Full test suite: 8642 passing, 5 skipped, 0 failures (npm test -- --fresh, 1916s).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T11:54:37.117Z
