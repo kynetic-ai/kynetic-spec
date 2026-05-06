@@ -6006,7 +6006,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T08:18:55.583Z
+      updated_at: 2026-05-06T08:22:33.125Z
     integration:
       status: merged
       detail: integration:merged
@@ -6015,25 +6015,20 @@ workspaces:
       target_branch: dev
       target_commit: 85b4465b79f63cfe59cbac09a0a58cc054c22d36
       updated_at: 2026-05-06T08:18:55.583Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KQWZZGMN1E0SQQ0WQS590JGW"
     task_slug: task-apply-daemon-endpoint-consumer-trait
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T08:07:08.199Z
-      last_reconciled_at: 2026-05-06T08:22:31.593Z
+      last_reconciled_at: 2026-05-06T08:22:33.125Z
       created_at: 2026-05-06T07:47:13.603Z
-      updated_at: 2026-05-06T08:22:31.593Z
+      updated_at: 2026-05-06T08:22:33.125Z
     workspace_id: dispatch-workspace-01KQWZZGMN1E0SQQ0WQS590JGW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 85b4465b79f63cfe59cbac09a0a58cc054c22d36
-        last_seen_at: 2026-05-06T08:06:42.247Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-apply-daemon-endpoint-consumer-trait-01kqwzzg-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-apply-daemon-endpoint-consumer-trait/01kqwzzg
