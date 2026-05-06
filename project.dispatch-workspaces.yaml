@@ -5489,18 +5489,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-shared-daemon-endpoint-resolver/01kqwzzh
-    canonical_branch_head: 27e4c267163c4a46aacfec0f3ee99ec6e8ec9aa9
+    canonical_branch_head: 0d8a67a39b4a7874c89c0cae7aacd33fb2623109
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-06T11:36:01.685Z
+      updated_at: 2026-05-06T11:54:00.895Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T11:36:01.685Z
+      updated_at: 2026-05-06T11:54:00.895Z
     integration:
       status: pending
       detail: null
@@ -5508,7 +5508,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
-      updated_at: 2026-05-06T11:36:01.685Z
+      updated_at: 2026-05-06T11:54:00.895Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQWZZH7R9W7WKATZXFB61MPC"
@@ -5516,9 +5516,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T11:34:58.902Z
-      last_reconciled_at: 2026-05-06T11:36:01.685Z
+      last_reconciled_at: 2026-05-06T11:54:00.895Z
       created_at: 2026-05-06T06:57:40.618Z
-      updated_at: 2026-05-06T11:36:01.685Z
+      updated_at: 2026-05-06T11:54:00.895Z
     workspace_id: dispatch-workspace-01KQWZZH7R9W7WKATZXFB61MPC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
