@@ -65,8 +65,14 @@ description: |
 spec_ref: "@trait-localhost-security"
 plan_ref: "@plan-daemon-network-endpoint-contract"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Review approved and merge helper reported no-op:
+  dispatch/task/task-update-localhost-security-trait/01kqwzzf at
+  9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec is already integrated at dev. Trait
+  @trait-localhost-security now has title 'Loopback Default Security', the requested
+  configurable-endpoint description, and exactly the four requested ACs: ac-loopback-default,
+  ac-loopback-rejects-nonlocal, ac-external-host-explicit, and ac-external-warning."
 depends_on: []
 context: []
 priority: 1
@@ -133,8 +139,28 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-06T00:28:39.979Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Review approved and merge helper reported no-op:
+          dispatch/task/task-update-localhost-security-trait/01kqwzzf at
+          9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec is already integrated at dev. Trait
+          @trait-localhost-security now has title 'Loopback Default Security', the requested
+          configurable-endpoint description, and exactly the four requested ACs:
+          ac-loopback-default, ac-loopback-rejects-nonlocal, ac-external-host-explicit, and
+          ac-external-warning."
+        previous: null
+      completed_at:
+        new: 2026-05-06T00:40:54.804Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-06T00:40:54.811Z
 created_at: 2026-05-05T21:16:19.966Z
 started_at: 2026-05-06T00:23:14.447Z
 submitted_at: 2026-05-06T00:25:19.517Z
+completed_at: 2026-05-06T00:40:54.804Z
 todos: []
 automation: eligible
