@@ -17088,6 +17088,34 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-06T17:22:45.167Z
+  - _ulid: 01KQZ6JZSM17MMH6H6ZH75HD06
+    type: friction
+    content: >-
+      Fire-and-forget CLI helpers that run AFTER a daemon proxy hop cannot be exercised behaviorally
+      via the CLI subprocess test path. When the CLI proxies a mutating command through
+      /api/command, the daemon executes the mutation server-side and the inline helper (e.g.,
+      postDispatchEvent in src/cli/commands/task.ts firing /api/agent/events) never runs in the CLI
+      process. So a subprocess-based behavioral test never invokes the helper's fetch/WebSocket
+      call, and a regression that hardcoded a different URL would still pass.
+
+
+      The only way to get behavioral URL-contract coverage is to add a test-only re-export (e.g.,
+      '_postDispatchEvent' alias) and invoke the helper directly from the test process with seeded
+      daemon.connection.json metadata. Justifying coverage as transitive ('the source line uses
+      endpoint.apiUrl + getRunningDaemonClient is unit-tested') is insufficient — reviewers reject
+      it because both legs can pass while the integration is broken. Discovered during fix cycle 1
+      of @task-daemon-endpoint-regression-tests on review @01KQZ3YZVDEDPQ7K3ZJ20J2QXP — the prior
+      cycle's explanatory comment in tests/cli-daemon-endpoint-regression.test.ts was the explicit
+      rejection trigger.
+
+
+      Suggested mitigation: when adding a daemon-side fire-and-forget helper that has no production
+      caller other than a proxied CLI command, ship the test-only re-export alongside the helper
+      from day one.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T17:50:19.956Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
