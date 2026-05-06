@@ -177705,6 +177705,25 @@ reviews:
         runner: npm
         created_at: 2026-05-06T07:08:49.673Z
         completed_at: 2026-05-06T07:08:49.673Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md; src/cli/daemon-proxy.ts; tests/cli-daemon-proxy.test.ts;
+          src/cli/commands/serve.ts references via rg; prior review @01KQXYV8EHEKNRMRG6XEDBY8CH;
+          @cli-daemon-proxy and @daemon-proxy-detection via kspec item get. Commands run: git
+          diff/stat/name-only; rg AC annotations and ac-port-file-check; kspec item get for both
+          specs; kspec validate --warnings-ok; npm test. Claims verified: prior stale
+          ac-port-file-check references are removed; metadata-specific ACs are no longer claimed by
+          legacy port-file tests; ac-force-direct-management-exception has a behavioral E2E and
+          serve commands use ignoreNoDaemon: true. Categories searched: spec alignment, annotation
+          coverage, correctness, edge cases, error handling, test quality, integration. Findings:
+          none."
+        name: review evidence log
+        required: false
+        runner: codex
+        created_at: 2026-05-06T07:09:08.127Z
+        completed_at: 2026-05-06T07:09:08.127Z
     events:
       - _ulid: 01KQY18TQN1ZYHEA86NRY4Z870
         actor: Jacob Chapel
@@ -177733,6 +177752,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-06T07:08:50.939Z
+      - _ulid: 01KQY1WYVQXF9W2ECMJFWGV17S
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-06T07:09:09.367Z
     examined_commit: f26b5726ee13f90095b4fd8b662548f960799d08
     external_links: []
     lifecycle_state: open
@@ -177745,5 +177771,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T06:58:09.781Z
-    updated_at: 2026-05-06T07:08:49.673Z
+    updated_at: 2026-05-06T07:09:08.127Z
     notes: []
