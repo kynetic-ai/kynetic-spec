@@ -16641,6 +16641,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T01:31:53.049Z
+  - _ulid: 01KQXFDPTJ7KZ0NVH78MTK917C
+    type: friction
+    content: "Default validation output can hide task-relevant AC coverage gaps during review: kspec
+      validate --warnings-ok exited 0 and summarized only the first warnings, while kspec validate
+      --warnings-ok -v | rg '@config-daemon|Uncovered' exposed five uncovered @config-daemon ACs
+      that required needs_work. Reviewers of spec/AC mutation tasks should run verbose validation
+      filtered to the touched spec before approving, especially when worker notes claim zero
+      missing-AC warnings. Evidence: review @01KQXEP9M670DA29T38FQVM57C for
+      @01KQWZZFDFPSHHNAGVB8NAXJRJ."
+    author: codex-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-06T01:46:15.251Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
