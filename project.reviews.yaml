@@ -180569,6 +180569,12 @@ reviews:
         payload:
           thread_ulid: 01KQZ4QJ1VE6W2QQ6ZR1WD3W8S
         timestamp: 2026-05-06T17:46:17.491Z
+      - _ulid: 01KQZ6C0SZ71AB4Q4VS16PAGVD
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQZ4QN1GFAYJ6Z6KRG0DQG4P
+        timestamp: 2026-05-06T17:46:31.615Z
     examined_commit: 60affba7e51fa122d4808fd964e818ad775d6fa3
     external_links: []
     lifecycle_state: closed
@@ -180634,6 +180640,20 @@ reviews:
               behavioral coverage with a fake WebSocket and metadata such as
               ws://127.0.0.2:<port>/ws or ws://[::1]:<port>/ws."
             created_at: 2026-05-06T17:17:55.632Z
+          - _ulid: 01KQZ6BZJ5NCX0DQA2MFX8H534
+            author: "@claude"
+            body: "Fixed in 3ec9540b9. Added tests/cli-agent-watch-endpoint.test.ts which seeds
+              daemon.connection.json with non-default ws_url values, mocks initContext via the
+              existing pattern, runs `agent dispatch watch` against a URL-capturing fake WebSocket
+              through `_setWebSocketCtor`, and asserts the constructor receives the
+              metadata-advertised ws_url verbatim. Three cases cover: (a)
+              ws://127.0.0.1:<alt-port>/ws (port fidelity), (b) ws://127.0.0.2:<port>/ws (host
+              fidelity — proves URL came from connect_host metadata, not a hardcoded loopback), and
+              (c) ws://[::1]:<port>/ws when IPv6 loopback is available (bracket fidelity). A
+              regression that re-derived ws://127.0.0.1:<port>/ws now fails the suite — verified
+              locally by reverting daemon!.wsUrl to a hardcoded localhost:port form and observing
+              all three tests fail."
+            created_at: 2026-05-06T17:46:30.341Z
         kind: blocker
       - _ulid: 01KQZ4QQYJCCEPBCAC18FDSZ62
         entries:
@@ -180662,5 +180682,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T17:18:02.863Z
     created_at: 2026-05-06T17:04:27.501Z
-    updated_at: 2026-05-06T17:46:16.205Z
+    updated_at: 2026-05-06T17:46:30.341Z
     notes: []
