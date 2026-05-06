@@ -180755,6 +180755,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-06T18:02:25.300Z
+      - _ulid: 01KQZ79G94ENW59VSJ8GHQS8N1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQZ79F17A6BVTY8TFNE8NM5F
+        timestamp: 2026-05-06T18:02:37.732Z
     examined_commit: 3ec9540b97e7f27729f1fdecfe5358046e3de0c5
     external_links: []
     lifecycle_state: open
@@ -180786,7 +180793,25 @@ reviews:
               extraction whose export is not solely a test seam."
             created_at: 2026-05-06T17:54:17.638Z
         kind: blocker
+      - _ulid: 01KQZ79F17A6BVTY8TFNE8NM5F
+        entries:
+          - _ulid: 01KQZ79F17V5X9YPNGZY5V2RAA
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: kspec-agents.md; task/spec/trait context; prior review; full
+              diff for src/cli/commands/task.ts, tests/cli-agent-watch-endpoint.test.ts,
+              tests/cli-daemon-endpoint-regression.test.ts, tests/cli-task-event-endpoint.test.ts,
+              tests/cli-serve.test.ts, tests/daemon-status-endpoint.test.ts,
+              tests/helpers/recording-daemon.cjs; surrounding agent watch implementation. Commands
+              run: git diff/stat/name-only; kspec task get; kspec item get for spec and trait; kspec
+              review for-task/get/add/open; rg AC annotations and new internals; kspec validate; npm
+              test. Claims verified: prior missing task-event/watch endpoint coverage is now present
+              and passes; source-scanning pattern was checked; new task-event coverage uses direct
+              _postDispatchEvent import; full suite passed. Categories searched: correctness,
+              AC/trait coverage, test quality, integration, endpoint edge cases, project
+              work-gates."
+            created_at: 2026-05-06T18:02:36.455Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-06T17:53:24.298Z
-    updated_at: 2026-05-06T18:02:24.091Z
+    updated_at: 2026-05-06T18:02:36.455Z
     notes: []
