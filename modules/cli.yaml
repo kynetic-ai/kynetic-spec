@@ -10696,7 +10696,7 @@ features:
       accordingly. Users can force either mode explicitly.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
