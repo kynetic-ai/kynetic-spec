@@ -177219,6 +177219,66 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-06T06:25:59.965Z
+      - _ulid: 01KQY0XSV6YK0JTCF65FJHKHGQ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQXYX9ZY2R3RDDTJ0VQQJWPE
+        timestamp: 2026-05-06T06:52:08.422Z
+      - _ulid: 01KQY0XWV4G9QNQWJNPJ7VB447
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQXYX9ZY2R3RDDTJ0VQQJWPE
+        timestamp: 2026-05-06T06:52:11.492Z
+      - _ulid: 01KQY0XZVTF5E126905QVJ7S07
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQXYXMZA63Z6R1850FV9VVKV
+        timestamp: 2026-05-06T06:52:14.586Z
+      - _ulid: 01KQY0Y2V83Z9BFSA3FAZ6H2E5
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQXYXMZA63Z6R1850FV9VVKV
+        timestamp: 2026-05-06T06:52:17.640Z
+      - _ulid: 01KQY0Y5WAZAG3ZXJ78XGDJ01N
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQXYY0D6S8ZRA1ENJ82XZ71Z
+        timestamp: 2026-05-06T06:52:20.747Z
+      - _ulid: 01KQY0Y8TYFM610ATSFZVAGEKS
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQXYY0D6S8ZRA1ENJ82XZ71Z
+        timestamp: 2026-05-06T06:52:23.774Z
+      - _ulid: 01KQY0YBRF0AEQD94YBSNSCZ3N
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQXYYBH41D7QCJ0FMHKY93YR
+        timestamp: 2026-05-06T06:52:26.767Z
+      - _ulid: 01KQY0YER5HN26G876NH1GT54C
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQXYYBH41D7QCJ0FMHKY93YR
+        timestamp: 2026-05-06T06:52:29.829Z
+      - _ulid: 01KQY0YHQWQA33ESX15FXHYN7R
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQXYYPZ3ZVKD31G1PXF8BY22
+        timestamp: 2026-05-06T06:52:32.892Z
+      - _ulid: 01KQY0YMRV502PC93K75RGP6A0
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQXYYPZ3ZVKD31G1PXF8BY22
+        timestamp: 2026-05-06T06:52:35.995Z
     examined_commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
     external_links: []
     lifecycle_state: closed
@@ -177244,7 +177304,18 @@ reviews:
               KSPEC_NO_DAEMON management-command exception unverified, which violates the AC
               coverage gate for newly added criteria."
             created_at: 2026-05-06T06:16:55.038Z
+          - _ulid: 01KQY0XRHTKG53H1PTP8BVXNER
+            author: "@claude"
+            body: "Fixed: added behavioral E2E test for ac-force-direct-management-exception in
+              tests/cli-daemon-proxy.test.ts that runs `kspec serve status --json` with
+              KSPEC_NO_DAEMON=1 and a live daemon.pid, asserting running:true is reported. Without
+              the exception, KSPEC_NO_DAEMON would short-circuit isDaemonRunning() to false; the
+              serve commands explicitly bypass it via {ignoreNoDaemon: true} and never go through
+              daemon-proxy.ts."
+            created_at: 2026-05-06T06:52:07.097Z
         kind: blocker
+        resolved_at: 2026-05-06T06:52:10.330Z
+        resolved_by: "@claude"
       - _ulid: 01KQXYXMZA63Z6R1850FV9VVKV
         anchor:
           type: code
@@ -177263,7 +177334,17 @@ reviews:
               HOME and expects reason 'no port file', so it would still pass if metadata reading and
               connect_host routing were completely absent."
             created_at: 2026-05-06T06:17:06.283Z
+          - _ulid: 01KQY0XYNSYF8Z3M30JSQMRJ4R
+            author: "@claude"
+            body: "Fixed: removed the misleading ac-connection-metadata-check annotation. The test only
+              exercises the legacy port-file negative case, so it is now annotated as
+              ac-legacy-port-file-fallback (negative case). The metadata-driven AC will be covered
+              when the metadata reader lands via @task-shared-daemon-endpoint-resolver and
+              @task-centralize-cli-daemon-clients."
+            created_at: 2026-05-06T06:52:13.369Z
         kind: blocker
+        resolved_at: 2026-05-06T06:52:16.473Z
+        resolved_by: "@claude"
       - _ulid: 01KQXYY0D6S8ZRA1ENJ82XZ71Z
         anchor:
           type: code
@@ -177281,7 +177362,19 @@ reviews:
               points to a running daemon; this E2E writes only daemon.port/daemon.pid, so it does
               not prove advertised connect_host is used or that metadata is read."
             created_at: 2026-05-06T06:17:17.990Z
+          - _ulid: 01KQY0Y4MNBSSK0T8H7S5Y08WG
+            author: "@claude"
+            body: "Fixed: re-annotated the E2E to @daemon-proxy-detection ac-legacy-port-file-fallback (positive
+              case) plus @cli-daemon-proxy ac-transparent-output. Removed the misleading
+              ac-auto-detect claim — the metadata-keyed AC requires metadata reading and
+              connect_host routing, which is not yet implemented. Also updated the unit
+              shouldProxyCommand test at line 270 to drop its ac-auto-detect annotation, with a
+              comment that the routing-decision unit test bypasses detection via the testing cache
+              helper."
+            created_at: 2026-05-06T06:52:19.477Z
         kind: blocker
+        resolved_at: 2026-05-06T06:52:22.586Z
+        resolved_by: "@claude"
       - _ulid: 01KQXYYBH41D7QCJ0FMHKY93YR
         anchor:
           type: code
@@ -177299,7 +177392,17 @@ reviews:
               of connection metadata with connect_host plus port, this test would not fail if the
               new metadata timeout path were missing."
             created_at: 2026-05-06T06:17:29.380Z
+          - _ulid: 01KQY0YAN69D5H1CV7EW70JKVV
+            author: "@claude"
+            body: "Fixed: removed the misleading ac-health-timeout annotation. The test still exercises the
+              200ms timeout via the legacy port-file path; the metadata-keyed AC explicitly requires
+              connection metadata to exist, which the implementation does not yet read. Added a
+              comment that the metadata-keyed AC will be covered by the metadata implementation
+              tasks."
+            created_at: 2026-05-06T06:52:25.638Z
         kind: blocker
+        resolved_at: 2026-05-06T06:52:28.638Z
+        resolved_by: "@claude"
       - _ulid: 01KQXYYPZ3ZVKD31G1PXF8BY22
         anchor:
           type: code
@@ -177318,7 +177421,18 @@ reviews:
               the spec/test map misleading and contradicts the task note that no ac-port-file-check
               references remain."
             created_at: 2026-05-06T06:17:41.092Z
+          - _ulid: 01KQY0YGJPE027JYHDECEET6FT
+            author: "@claude"
+            body: "Fixed: replaced all ac-port-file-check references in src/cli/daemon-proxy.ts (lines 13, 66,
+              and the test file header at line 14) with ac-legacy-port-file-fallback. Also dropped
+              the metadata-keyed ac-auto-detect/ac-health-timeout annotations from source since the
+              implementation does not yet read connection metadata; added comments noting the
+              metadata-driven coverage lands with the implementation tasks. Verified `rg
+              ac-port-file-check` returns no matches."
+            created_at: 2026-05-06T06:52:31.702Z
         kind: blocker
+        resolved_at: 2026-05-06T06:52:34.706Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -177328,7 +177442,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T06:25:59.965Z
     created_at: 2026-05-06T06:15:47.921Z
-    updated_at: 2026-05-06T06:25:59.965Z
+    updated_at: 2026-05-06T06:52:34.706Z
     notes: []
   - _ulid: 01KQXZ6Y2KQHF8KS0AD9BZYDMG
     slugs: []
