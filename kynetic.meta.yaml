@@ -16881,6 +16881,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T10:46:23.374Z
+  - _ulid: 01KQYG6TQXAC2B00A9HB45WRAS
+    type: friction
+    content: "Daemon spawn args are hand-rolled in two CLI locations: src/cli/index.ts
+      maybeAutoStartDaemon() and src/cli/commands/serve.ts startServer(). Both build a Node-style
+      argv list of daemon flags (--port, --kspec-dir, --host, --host-explicit, --connect-host, etc.)
+      from the same resolved daemon config, but independently. Same drift class surfaced twice on
+      @01KQWZZH7R9W7WKATZXFB61MPC: cycle-1 review caught serve.ts not forwarding
+      --host/--connect-host (fixed); cycle-3 review caught the auto-start path still not forwarding
+      them. Future endpoint flags will drift the same way unless arg construction is centralized.
+      Suggested resolution: extract buildDaemonSpawnArgs(daemonConfig, kspecDir, opts?) helper
+      colocated with buildDaemonChildEnv (already shared). Both call sites call the helper; new
+      flags get added in one place."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T11:19:12.893Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
