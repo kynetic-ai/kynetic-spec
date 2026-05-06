@@ -7033,7 +7033,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T14:54:58.220Z
+      updated_at: 2026-05-06T14:54:59.869Z
     integration:
       status: pending
       detail: null
@@ -7042,25 +7042,20 @@ workspaces:
       target_branch: dev
       target_commit: 83a52e650b8e91a71275f2ec67767b01765f5e53
       updated_at: 2026-05-06T14:54:58.220Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KQWZZJ3RF0881VRCVS1H7843"
     task_slug: task-centralize-web-ui-daemon-endpoints
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T14:36:34.431Z
-      last_reconciled_at: 2026-05-06T14:54:58.220Z
+      last_reconciled_at: 2026-05-06T14:54:59.869Z
       created_at: 2026-05-06T14:01:50.017Z
-      updated_at: 2026-05-06T14:54:58.220Z
+      updated_at: 2026-05-06T14:54:59.869Z
     workspace_id: dispatch-workspace-01KQWZZJ3RF0881VRCVS1H7843
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 4603717540f7bb2e42ae700d74115f8d990a1422
-        last_seen_at: 2026-05-06T14:36:06.797Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-centralize-web-ui-daemon-endpoints-01kqwzzj-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-centralize-web-ui-daemon-endpoints/01kqwzzj
