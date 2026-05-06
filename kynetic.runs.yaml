@@ -37193,7 +37193,7 @@ runs:
     completed_at: 2026-05-06T17:22:59.026Z
   - _ulid: 01KQZ6F1TZ5D0JX0B4Z3V1A8B0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -37207,7 +37207,43 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T17:49:09.783Z
-        completed_at: 2026-05-06T17:49:09.783Z
+        completed_at: 2026-05-06T17:49:58.401Z
+        notes: >-
+          Identified high-confidence items from this fix cycle on
+          @task-daemon-endpoint-regression-tests:
+
+
+          NEW (candidate to capture):
+
+          - Friction: Fire-and-forget CLI helpers that run AFTER a daemon proxy hop (e.g.,
+          postDispatchEvent in src/cli/commands/task.ts) cannot be exercised behaviorally via the
+          CLI subprocess test path — the proxy intercepts the command and the daemon executes
+          server-side, so the inline helper never runs in the CLI process. Behavioral URL-contract
+          coverage requires a test-only re-export (e.g., _postDispatchEvent) that the test imports
+          and invokes directly. The fix-cycle 0 comment justifying transitive coverage (source-line
+          + helper-resolution test) was rejected by the reviewer because a regression that hardcoded
+          a different URL would still pass both. Concrete and systemic — applies to any daemon-side
+          mutation followed by a fire-and-forget side effect.
+
+
+          DUPLICATES (skip):
+
+          - Verifying regression test by reverting fix → @01KQYXP3VNGX8JE2993K359WX5 (used twice
+          this session, reinforcing pattern value)
+
+          - Recording mock daemon pattern → @01KQZ3VH854WETA9FST65ATSMM
+
+          - Exhaustive endpoint-consumer coverage gap → @01KQZ50FSFTABRK90WCK5XY82A (this fix cycle
+          is direct evidence of the gap they describe)
+
+
+          LOW CONFIDENCE (skip):
+
+          - _setWebSocketCtor reuse — too generic, just "reuse existing seams"
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T17:49:58.401Z
+        completed_at: 2026-05-06T17:49:58.401Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T17:48:10.975Z
