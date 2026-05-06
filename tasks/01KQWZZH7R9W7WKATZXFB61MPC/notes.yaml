@@ -44,3 +44,48 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-06T08:00:32.401Z
+  - _ulid: 01KQY7P32GM2S7327B3MSA2HTJ
+    content: >-
+      Fix cycle 1: addressed all three review blockers.
+
+
+      1. Daemon startup now persists daemon.connection.json (pid, port, bind_host, connect_host,
+      api_url, ws_url, runtime) via PidFileManager.writeConnectionMetadata, alongside the legacy
+      daemon.pid and daemon.port files (server.ts:307 area).
+
+
+      2. Daemon now binds to the resolved bind host (default 127.0.0.1) instead of the string
+      'localhost'. createServer accepts bindHost/connectHost in ServerOptions, the daemon binary
+      accepts --host/--connect-host, and serve.ts forwards config.daemon.host/connect_host on every
+      spawn. Non-loopback bind triggers the ac-external-binding-warning warning. (server.ts:634
+      area).
+
+
+      3. CLI clients (detectDaemon, proxyCommand, ensureProjectRegistered, getDaemonStatus, kspec
+      serve status fetches, postDispatchEvent, the four getDaemonUrl helpers, agent watch ws URL)
+      now resolve via the new shared resolveDaemonClientEndpoint() in src/daemon/endpoint.ts. It
+      reads daemon.connection.json first and only falls back to daemon.port when metadata is absent.
+      Command files receive endpoint.apiUrl/wsUrl instead of constructing URLs from a port
+      (daemon-proxy.ts:78 area).
+
+
+      Tests: 5 new behavioral tests. tests/daemon-endpoint.test.ts covers
+      resolveDaemonClientEndpoint metadata vs legacy precedence and IPv6 bracket preservation.
+      tests/cli-daemon-proxy.test.ts stands up real HTTP servers and asserts detectDaemon uses the
+      metadata-advertised api_url when present and the synthesized 127.0.0.1 endpoint when only
+      legacy is present. tests/cli-serve.test.ts spawns the actual daemon binary detached and
+      asserts daemon.connection.json exists with correct fields plus a successful direct 127.0.0.1
+      health check (proving non-localhost binding).
+
+
+      Re-verified all original ACs against the implementation: ac-default-loopback-v4,
+      ac-wildcard-connect-host, ac-connection-metadata, ac-legacy-port-fallback
+      (@daemon-network-endpoint-contract); ac-host-default, ac-connect-host-config,
+      ac-port-env-precedence, ac-connection-metadata (@config-daemon). Also brought
+      ac-clients-use-metadata coverage forward since this task is now the natural place for it.
+
+
+      Full test suite: 8617 passing on a fresh run, 0 failed, 5 skipped.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T08:50:15.760Z
