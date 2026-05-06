@@ -53,7 +53,7 @@ description: |
 spec_ref: "@daemon-network-endpoint-contract"
 plan_ref: "@plan-daemon-network-endpoint-contract"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-shared-daemon-endpoint-resolver"
@@ -68,11 +68,11 @@ review_ref: "@01KQYSHZ90XHVAG0E3FV84A68N"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-daemon-startup-bind-host-metadata/01kqwzzh
-  captured_at: 2026-05-06T13:57:17.867Z
-  commit: 32746e58b5712cb18605f876a1ca8ab6f47aaa63
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-06T15:11:43.284Z
+  commit: 27dd906a119379484115323ad771e3b9fd823ca3
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-daemon-startup-bind-host-metadata/01kqwzzh
 session_id: 01KQYVF7JGP2PFQAYW703QHNE4
 history:
   - author: Jacob Chapel
@@ -145,8 +145,35 @@ history:
         previous: 2026-05-06T13:38:01.595Z
     command: task-start
     timestamp: 2026-05-06T15:11:37.026Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-daemon-startup-bind-host-metadata/01kqwzzh
+          captured_at: 2026-05-06T15:11:43.284Z
+          commit: 27dd906a119379484115323ad771e3b9fd823ca3
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-daemon-startup-bind-host-metadata/01kqwzzh
+        previous:
+          review_url: null
+          branch: dispatch/task/task-daemon-startup-bind-host-metadata/01kqwzzh
+          captured_at: 2026-05-06T13:57:17.867Z
+          commit: 32746e58b5712cb18605f876a1ca8ab6f47aaa63
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-06T15:11:43.288Z
+        previous: 2026-05-06T13:57:17.870Z
+    command: task-submit
+    timestamp: 2026-05-06T15:11:43.288Z
 created_at: 2026-05-05T21:16:22.433Z
 started_at: 2026-05-06T15:11:37.026Z
-submitted_at: 2026-05-06T13:57:17.870Z
+submitted_at: 2026-05-06T15:11:43.288Z
 todos: []
 automation: eligible
