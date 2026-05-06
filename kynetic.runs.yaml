@@ -34994,7 +34994,7 @@ runs:
     completed_at: 2026-05-06T00:59:09.353Z
   - _ulid: 01KQXD76YTTHYP2N3WNF8F3XBT
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35018,7 +35018,21 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-06T01:09:04.880Z
-        completed_at: 2026-05-06T01:09:04.880Z
+        completed_at: 2026-05-06T01:09:17.245Z
+        notes: "Coverage search: searched 'workflow show run-ref', 'kspec workflow show', 'validate warnings
+          review', 'kspec validate warnings', 'validation warnings', 'warnings-ok', 'detached
+          reviewer merge helper', 'review evidence log', and 'full fresh npm test'. Results:
+          workflow-show mismatch is already tracked by task @01KKBD52, inbox items
+          @01KJV1PFC/@01KQ0RH7/@01KQBGKT, and observations including
+          @01KN0DG5Q/@01KNA4979/@01KPWDWX/@01KQBGKTD. Validate warning noise is already tracked by
+          observation @01KNTPX4T and related validation trust/catalog-health tasks. Detached merge
+          helper success already has feature @detached-reviewer-merge-helper and observations
+          @01KQ1273/@01KQ9AMHH. Review evidence log had no direct match, but this was a light
+          success pattern rather than clear friction."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-06T01:09:17.245Z
+        completed_at: 2026-05-06T01:09:17.245Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T01:07:45.242Z
