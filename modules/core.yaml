@@ -1085,11 +1085,10 @@ features:
           - config-daemon
         title: Configurable Daemon Settings
         type: feature
-        description: |
-          Daemon port and auto-start configurable in kspec.config.yaml. Replaces the
-          manifest daemon block (which exists in the schema but is never read by
-          serve start). Resolves the chicken-and-egg problem where daemon config was
-          inside the shadow branch.
+        description: Daemon port, bind host, optional connect host, runtime, and auto-start behavior are
+          configurable in kspec.config.yaml. These settings are loaded before shadow branch
+          detection so daemon lifecycle and auto-start decisions do not depend on the shadow
+          worktree. CLI flags and documented environment variables take precedence over file config.
         status:
           maturity: draft
           implementation: in_progress
@@ -1121,14 +1120,15 @@ features:
               the manifest daemon block is ignored and a deprecation warning is emitted
               recommending migration to kspec.config.yaml
             when: kspec commands are run
-          - given: kspec.config.yaml sets daemon.host to '0.0.0.0'
-            id: ac-5
-            then: daemon binds to the configured host address
+          - given: kspec.config.yaml sets daemon.host to "0.0.0.0"
+            id: ac-host-config
+            then: The daemon uses 0.0.0.0 as the effective bind host and emits the external binding warning
+              required by @trait-localhost-security
             when: kspec serve start is run
-          - given: KSPEC_DAEMON_HOST env var is set
-            id: ac-6
-            then: env var value takes precedence
-            when: config file also sets daemon.host
+          - given: KSPEC_DAEMON_HOST is set
+            id: ac-host-env-precedence
+            then: KSPEC_DAEMON_HOST is the effective bind host
+            when: kspec.config.yaml also sets daemon.host
           - given: the CLI is running inside a dispatch agent session
             id: ac-7
             then: auto-start is suppressed — the agent relies on the host daemon
@@ -1137,6 +1137,31 @@ features:
             id: ac-8
             then: auto-start is suppressed to avoid conflicting with the user's intent
             when: auto-start would normally trigger
+          - given: No daemon.host is configured
+            id: ac-host-default
+            then: The daemon uses 127.0.0.1 as the effective bind host
+            when: kspec serve start is run
+          - given: kspec.config.yaml sets daemon.connect_host
+            id: ac-connect-host-config
+            then: daemon.connect_host is the advertised connect host used by local daemon clients
+            when: the daemon writes connection metadata
+          - given: KSPEC_DAEMON_PORT is set to a valid port
+            id: ac-port-env-precedence
+            then: KSPEC_DAEMON_PORT is the effective daemon port
+            when: kspec.config.yaml also sets daemon.port and no --port flag is passed
+          - given: kspec.config.yaml sets daemon.runtime to "node" or "bun"
+            id: ac-runtime-config
+            then: the daemon is spawned with the configured runtime
+            when: the daemon starts explicitly or via auto-start
+          - given: no daemon.runtime is configured
+            id: ac-runtime-default
+            then: the daemon uses node as the default runtime
+            when: the daemon starts
+          - given: the daemon starts successfully
+            id: ac-connection-metadata
+            then: the global daemon connection metadata records pid, port, bind_host, connect_host, api_url,
+              ws_url, and runtime
+            when: daemon lifecycle state is written
         tags: []
         created: 2026-02-19T21:41:10.986Z
         notes: []
