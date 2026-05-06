@@ -16975,6 +16975,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T14:00:51.916Z
+  - _ulid: 01KQYVDZ3309P56Z8Y19BKSG80
+    type: success
+    content: "Mirror-with-parity-test pattern for sharing code between Node and browser: when a
+      Node-only module mixes pure helpers with platform-specific I/O (fs/net/os), creating a small
+      browser-side mirror file containing only the pure helpers — locked in by a parity test that
+      imports both modules and asserts they produce identical results across a fixed input matrix —
+      keeps the two in lockstep without forcing the Node source to become platform-neutral or
+      refactoring the build pipeline. Used in @task-centralize-web-ui-daemon-endpoints to give the
+      web UI access to formatHostForUrl/buildDaemonUrls/normalizeDaemonHost/isIpv6Literal from
+      src/daemon-shared/endpoint without importing node:fs/node:net at browser bundle time.
+      Trade-off: a maintainer must update both files when adding a helper, but the parity test fails
+      loudly on drift."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T14:35:21.059Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
