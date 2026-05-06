@@ -35855,7 +35855,7 @@ runs:
     completed_at: 2026-05-06T07:46:26.020Z
   - _ulid: 01KQY4WC4WR3SGZ77NFZ7YKE2J
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35870,7 +35870,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T08:02:09.171Z
-        completed_at: 2026-05-06T08:02:09.171Z
+        completed_at: 2026-05-06T08:02:18.057Z
+        notes: "Friction: the review workflow evidence log has to be added as a freeform nit thread because
+          there is no dedicated evidence-log field/check type. Minor workflow UX: kspec workflow
+          show requires a run ref when multiple active runs exist, while the reflect skill examples
+          omit it. I also had to be careful not to mistake future task notes for scope permission
+          because this task text explicitly required binding/client code to use the shared module."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T08:02:18.057Z
+        completed_at: 2026-05-06T08:02:18.057Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T08:01:15.932Z
