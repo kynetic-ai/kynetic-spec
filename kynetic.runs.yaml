@@ -35636,7 +35636,7 @@ runs:
     completed_at: 2026-05-06T06:36:00.723Z
   - _ulid: 01KQY0EXQD8QJXP07B5FAAAC18
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35671,7 +35671,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T06:45:49.161Z
-        completed_at: 2026-05-06T06:45:49.161Z
+        completed_at: 2026-05-06T06:45:57.402Z
+        notes: "Proposed improvement: task completion should avoid auto-marking a linked spec implemented
+          when the task is explicitly a spec-update/documentation/catalog task, especially when
+          downstream tasks under the same plan still implement the newly added behavior. It could
+          either skip implementation status sync for spec-update tagged tasks or require an explicit
+          completion flag. Helps prevent false implemented status on broad specs. Scope: medium,
+          likely task completion/status-cascade logic plus tests."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T06:45:57.402Z
+        completed_at: 2026-05-06T06:45:57.402Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:44:00.878Z
