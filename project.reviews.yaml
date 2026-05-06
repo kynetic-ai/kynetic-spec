@@ -177363,3 +177363,29 @@ reviews:
     created_at: 2026-05-06T06:22:10.515Z
     updated_at: 2026-05-06T06:22:36.678Z
     notes: []
+  - _ulid: 01KQXZRB6F8FNH0Z6H40Z8M178
+    slugs: []
+    title: Review daemon lifecycle endpoint metadata spec updates
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQXZRB6EE4K1HYQDW5EHGE6G
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-06T06:31:41.007Z
+    examined_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQWZZGBHAJ7J46CFAFTCZKG6"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-06T06:31:41.007Z
+    updated_at: null
+    notes: []

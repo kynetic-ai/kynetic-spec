@@ -98,6 +98,7 @@ tags:
   - daemon
   - cli
 vcs_refs: []
+review_ref: "@01KQXZRB6F8FNH0Z6H40Z8M178"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-update-daemon-lifecycle-endpoint-ac/01kqwzzg
@@ -148,6 +149,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-05-06T06:25:14.549Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQXZRB6F8FNH0Z6H40Z8M178"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-06T06:31:44.325Z
 created_at: 2026-05-05T21:16:21.233Z
 started_at: 2026-05-06T06:22:43.390Z
 submitted_at: 2026-05-06T06:25:14.548Z
