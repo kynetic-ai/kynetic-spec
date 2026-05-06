@@ -4516,3 +4516,79 @@ workspaces:
         head: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
         last_seen_at: 2026-05-06T06:21:08.756Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-web-api-endpoint-ac-01kqwzzg
+  - active_role: null
+    base_branch_point: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-update-daemon-lifecycle-endpoint-ac/01kqwzzg
+    canonical_branch_head: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-06T06:21:37.186Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-06T06:21:37.186Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
+      updated_at: 2026-05-06T06:21:37.186Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KQWZZGBHAJ7J46CFAFTCZKG6"
+    task_slug: task-update-daemon-lifecycle-endpoint-ac
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-06T06:21:37.186Z
+      created_at: 2026-05-06T06:21:37.186Z
+      updated_at: 2026-05-06T06:21:37.186Z
+    workspace_id: dispatch-workspace-01KQWZZGBHAJ7J46CFAFTCZKG6
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-update-daemon-lifecycle-endpoint-ac/01kqwzzg
+        head: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
+        last_seen_at: 2026-05-06T06:21:37.186Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-daemon-lifecycle-endpoint-ac-01kqwzzg
