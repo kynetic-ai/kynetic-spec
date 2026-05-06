@@ -3136,3 +3136,26 @@ inbox:
       - ergonomics
     added_by: "@claude"
     created_at: 2026-05-06T12:34:29.887Z
+  - _ulid: 01KQYSETMA23YK2WW07TAYT782
+    text: "Tooling: when a fix-cycle review on task X expands to implement work nominally scoped to
+      dependent task Y, surface this absorption to the downstream worker. Options: (a) add a `kspec
+      task scope-absorbed-by @X` note on Y, (b) extend `kspec task get` to flag commits that touch
+      Ys spec ACs but were authored under @X, (c) extend kspec review submit to ask reviewers if
+      their requested fixes overlap with downstream task scope. Reduces wasted scoping effort on
+      downstream tasks. Scope: medium."
+    tags:
+      - reflection
+      - tooling
+      - dispatch
+    added_by: "@claude"
+    created_at: 2026-05-06T14:00:52.106Z
+  - _ulid: 01KQYSETP9DN46RSN6E1FT55A1
+    text: "Tooling: surface in `kspec task get` (or `kspec validate`) when a tasks spec ACs already have
+      behavioral test coverage annotated under a different task ULID. Helps a worker quickly see
+      what AC work is residual annotation work vs net-new coverage. Scope: small."
+    tags:
+      - reflection
+      - tooling
+      - tests
+    added_by: "@claude"
+    created_at: 2026-05-06T14:00:52.169Z

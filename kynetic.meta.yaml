@@ -16938,6 +16938,43 @@ observations:
     resolved: false
     workflow_ref: "@01KQYR3N"
     created_at: 2026-05-06T13:39:15.493Z
+  - _ulid: 01KQYSESZ7YKHW6FT066A0R0YT
+    type: friction
+    content: Upstream task fix cycles can absorb work scoped to dependent tasks. When task A is in
+      review and the reviewer requests changes that nominally belong to dependent task B, the fix
+      commits implement Bs work under As task ID. The downstream worker on B then inherits a task
+      whose stated work is mostly already done, causing scope confusion and risk of either (a)
+      duplicating annotations, or (b) missing residual gaps. Observed during work on
+      task-daemon-startup-bind-host-metadata after task-shared-daemon-endpoint-resolver fix cycles
+      wired the resolver into startup, metadata, and clients.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T14:00:51.432Z
+  - _ulid: 01KQYSET7JBKQFQ16H18YSWKW4
+    type: friction
+    content: "AC annotation gaps surface when test coverage is added under one task but the spec ACs are
+      formally owned by another task. Behavioral coverage exists, but kspec validate/task get does
+      not surface that the tests are annotated under a different ULID. Observed: @daemon-server
+      ac-1/ac-9/ac-10/ac-external-bind-warning had behavioral coverage in tests/cli-serve.test.ts
+      but no annotations until this task added them — even though the coverage was authored as part
+      of the upstream task fix cycle."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T14:00:51.698Z
+  - _ulid: 01KQYSETEC978PKFB0DR8YHCZB
+    type: success
+    content: "Reading task description literally caught a real ordering requirement (point 4: write
+      daemon metadata after the server is listening) that the existing implementation violated
+      despite passing review on the upstream task. Pattern: when a task description is directive and
+      explicit (not just descriptive), treat each point as a requirement even if the existing code
+      or prior reviews differ. The defensive check protected against a reviewer rejecting the work
+      for not meeting the stated requirement."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T14:00:51.916Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
