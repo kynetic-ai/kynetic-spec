@@ -37052,9 +37052,26 @@ runs:
     started_at: 2026-05-06T16:23:47.763Z
   - _ulid: 01KQZ3QBM15H6TYPFM90XNTJZ6
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T17:00:17.409Z
+        completed_at: 2026-05-06T17:01:03.479Z
+        notes: "Surveying existing test coverage before writing new tests prevented heavy duplication — most
+          of the task's items already had thorough coverage in 8+ existing files; only items 3
+          (partial), 4 (fake-metadata variant), and 7 (CLI helpers) needed new tests. Building a
+          single recording mock daemon as a child process (recording-daemon.cjs) writing to a JSONL
+          file made the same pattern reusable across 11 CLI integration tests, and works cleanly
+          with the spawnSync-based kspec() test helper. Choosing 127.0.0.2 as the mock's bind host
+          (with skip-on-unavailable for non-Linux) gave the strongest behavioral proof that URLs
+          came from metadata: a request that landed there can only have used the metadata-advertised
+          api_url, not a hardcoded 127.0.0.1 fallback."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T17:01:03.479Z
+        completed_at: 2026-05-06T17:01:03.479Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T17:00:17.409Z
