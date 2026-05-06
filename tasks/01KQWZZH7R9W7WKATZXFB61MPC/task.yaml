@@ -65,7 +65,7 @@ description: |
 spec_ref: "@daemon-network-endpoint-contract"
 plan_ref: "@plan-daemon-network-endpoint-contract"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-update-config-daemon-endpoint-ac"
@@ -88,7 +88,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KQY18PR6BHR2ZYXFPH8F2S10
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -137,6 +137,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-06T07:48:36.880Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KQY18PR6BHR2ZYXFPH8F2S10
+    command: review-verdict-needs-work
+    timestamp: 2026-05-06T08:00:32.402Z
 created_at: 2026-05-05T21:16:22.136Z
 started_at: 2026-05-06T06:58:48.783Z
 submitted_at: 2026-05-06T07:43:03.012Z
