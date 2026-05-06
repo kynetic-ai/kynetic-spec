@@ -178568,6 +178568,13 @@ reviews:
           status: fail
           name: npm test -- --fresh
         timestamp: 2026-05-06T10:43:35.673Z
+      - _ulid: 01KQYE66200KW0XJN1KV33QBNG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQYE64TDQ4VMTWGX1T3A0P9G
+        timestamp: 2026-05-06T10:43:54.560Z
     examined_commit: 506eb2b3e31fd95451b0d8e52509ce42d8ab6124
     external_links: []
     lifecycle_state: open
@@ -178625,7 +178632,33 @@ reviews:
               scripts/build-daemon.cjs:49-50 removes dist/daemon before rebuilding it."
             created_at: 2026-05-06T10:43:08.559Z
         kind: blocker
+      - _ulid: 01KQYE64TDQ4VMTWGX1T3A0P9G
+        entries:
+          - _ulid: 01KQYE64TDRT3AB0FX3HTDR6D7
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; task/spec context for @01KQWZZH7R9W7WKATZXFB61MPC,
+              @daemon-network-endpoint-contract, @config-daemon, @trait-localhost-security; previous
+              reviews @01KQY453 and @01KQY802; src/daemon/endpoint.ts;
+              packages/daemon/src/server.ts; packages/daemon/src/index.ts;
+              packages/daemon/src/pid.ts; src/cli/pid-utils.ts; src/cli/index.ts;
+              src/cli/daemon-proxy.ts; src/cli/commands/{serve,agent,event,schedule,task}.ts;
+              src/parser/{config,daemon-status}.ts;
+              packages/web-ui/{vite.config.ts,src/lib/constants.ts}; scripts/build-daemon.cjs;
+              tests/daemon-endpoint.test.ts; tests/cli-daemon-proxy.test.ts;
+              tests/cli-serve.test.ts; tests/web-ui/dev-server-daemon-endpoint.test.ts;
+              tests/parser/{config,daemon-config}.test.ts; tests/daemon-build.test.ts. Commands run:
+              kspec task get; kspec item get; kspec review for-task/get/add/open; git show/diff; rg
+              AC annotations and endpoint call sites; kspec validate; npm test -- --fresh; npm test
+              -- tests/task-unblock-prior-status.test.ts --fresh; log grep for ERR_MODULE_NOT_FOUND.
+              Claims verified: cycle-2 web UI dev metadata injection exists; external binding
+              warnings are emitted by parent serve start/status; IPv6 fallback is implemented and
+              covered; daemon clients now use metadata api/ws URLs; auto-start still omits endpoint
+              flags; full-suite failure is a dist/daemon endpoint race. Categories searched:
+              correctness, AC alignment, edge cases, error handling, test integrity,
+              build/integration."
+            created_at: 2026-05-06T10:43:53.293Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-06T10:33:02.992Z
-    updated_at: 2026-05-06T10:43:34.453Z
+    updated_at: 2026-05-06T10:43:53.293Z
     notes: []
