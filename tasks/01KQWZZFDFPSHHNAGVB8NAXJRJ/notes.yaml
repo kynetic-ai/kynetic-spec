@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KQXCKV6C7W7SENRJCTQPBY5R
+    content: "Spec @config-daemon updated via batch (one atomic shadow commit): description rewritten to
+      include bind host, connect host, runtime, and pre-shadow load order; ac-5 renamed to
+      ac-host-config and rewritten to require external binding warning per
+      @trait-localhost-security; ac-6 renamed to ac-host-env-precedence; added ac-host-default,
+      ac-connect-host-config, ac-port-env-precedence, ac-runtime-config, ac-runtime-default,
+      ac-connection-metadata. Kept ac-1, ac-2, ac-3, ac-4, ac-7, ac-8 unchanged. kspec validate
+      --warnings-ok exits 0; remaining warnings are pre-existing AC coverage gaps tracked by other
+      tasks in @plan-daemon-network-endpoint-contract."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T00:57:10.604Z
