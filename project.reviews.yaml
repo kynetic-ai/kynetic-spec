@@ -177859,6 +177859,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-06T07:59:23.079Z
+      - _ulid: 01KQY4S1ASRD7WA2VFCPE551X7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQY4S05TBHYZQ8S74AV8G7NV
+        timestamp: 2026-05-06T07:59:26.553Z
     examined_commit: 65bfbcb012624d11b50d350ce353d2161ca0d9da
     external_links: []
     lifecycle_state: open
@@ -177887,7 +177894,25 @@ reviews:
               exercised by unit tests and is not called from the lifecycle path."
             created_at: 2026-05-06T07:59:18.384Z
         kind: blocker
+      - _ulid: 01KQY4S05TBHYZQ8S74AV8G7NV
+        anchor:
+          type: code
+          commit: 65bfbcb012624d11b50d350ce353d2161ca0d9da
+          line_end: 642
+          line_start: 634
+          path: packages/daemon/src/server.ts
+          side: head
+        entries:
+          - _ulid: 01KQY4S05TEABA0S288HA4F91H
+            author: Jacob Chapel
+            body: "MUST-FIX: the daemon still binds with hostname localhost instead of the resolved endpoint.
+              DEFAULT_CONFIG now says 127.0.0.1 and the task requires all daemon binding code to use
+              the shared resolver, but createServer hardcodes localhost and logs localhost URLs.
+              That means default startup still depends on OS hostname resolution and configured
+              daemon.host values cannot affect the actual listener."
+            created_at: 2026-05-06T07:59:25.370Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-06T07:48:33.590Z
-    updated_at: 2026-05-06T07:59:21.895Z
+    updated_at: 2026-05-06T07:59:25.370Z
     notes: []
