@@ -82,7 +82,7 @@ description: |
 spec_ref: "@config-daemon"
 plan_ref: "@plan-daemon-network-endpoint-contract"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-update-localhost-security-trait"
@@ -97,8 +97,8 @@ review_ref: "@01KQXEP9M670DA29T38FQVM57C"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-update-config-daemon-endpoint-ac/01kqwzzf
-  captured_at: 2026-05-06T01:30:05.266Z
-  commit: 58ec0818c5c144f8867f7269909b62545c610777
+  captured_at: 2026-05-06T05:44:31.326Z
+  commit: 44f834541c5fd5d1f0c0fc655c52b84fda9b8cb4
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-update-config-daemon-endpoint-ac/01kqwzzf
@@ -286,9 +286,36 @@ history:
         previous: in_progress
     command: task-unblock
     timestamp: 2026-05-06T05:33:11.513Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-update-config-daemon-endpoint-ac/01kqwzzf
+          captured_at: 2026-05-06T05:44:31.326Z
+          commit: 44f834541c5fd5d1f0c0fc655c52b84fda9b8cb4
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-update-config-daemon-endpoint-ac/01kqwzzf
+        previous:
+          review_url: null
+          branch: dispatch/task/task-update-config-daemon-endpoint-ac/01kqwzzf
+          captured_at: 2026-05-06T01:30:05.266Z
+          commit: 58ec0818c5c144f8867f7269909b62545c610777
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-update-config-daemon-endpoint-ac/01kqwzzf
+      submitted_at:
+        new: 2026-05-06T05:44:31.333Z
+        previous: 2026-05-06T01:30:05.269Z
+    command: task-submit
+    timestamp: 2026-05-06T05:44:31.333Z
 prior_status: null
 created_at: 2026-05-05T21:16:20.271Z
 started_at: 2026-05-06T01:48:30.284Z
-submitted_at: 2026-05-06T01:30:05.269Z
+submitted_at: 2026-05-06T05:44:31.333Z
 todos: []
 automation: eligible
