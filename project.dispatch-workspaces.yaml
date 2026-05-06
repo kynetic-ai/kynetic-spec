@@ -6043,7 +6043,7 @@ workspaces:
         head: 85b4465b79f63cfe59cbac09a0a58cc054c22d36
         last_seen_at: 2026-05-06T08:06:42.247Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-apply-daemon-endpoint-consumer-trait-01kqwzzg
-  - active_role: null
+  - active_role: worker
     base_branch_point: 83a52e650b8e91a71275f2ec67767b01765f5e53
     bootstrap:
       status: succeeded
@@ -6379,7 +6379,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T13:37:13.928Z
+      updated_at: 2026-05-06T13:37:37.935Z
     integration:
       status: pending
       detail: null
@@ -6388,16 +6388,16 @@ workspaces:
       target_branch: dev
       target_commit: 83a52e650b8e91a71275f2ec67767b01765f5e53
       updated_at: 2026-05-06T13:37:13.928Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQWZZHH1SKQ5DG44EEBMT9H9"
     task_slug: task-daemon-startup-bind-host-metadata
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-06T13:37:13.928Z
+      last_active_at: 2026-05-06T13:37:37.935Z
+      last_reconciled_at: 2026-05-06T13:37:37.935Z
       created_at: 2026-05-06T13:37:13.928Z
-      updated_at: 2026-05-06T13:37:37.287Z
+      updated_at: 2026-05-06T13:37:37.935Z
     workspace_id: dispatch-workspace-01KQWZZHH1SKQ5DG44EEBMT9H9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
