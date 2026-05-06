@@ -36439,7 +36439,7 @@ runs:
     completed_at: 2026-05-06T13:24:12.373Z
   - _ulid: 01KQYR3N0VP142XJB42BFAZ8K7
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36462,7 +36462,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-06T13:38:31.075Z
-        completed_at: 2026-05-06T13:38:31.075Z
+        completed_at: 2026-05-06T13:38:41.114Z
+        notes: "Coverage search results: 'coverage scanner' found @coverage-scan-config,
+          @task-coverage-scan-config, @task-ac-annotation-repair-wave-one,
+          @task-validation-trust-final-gate, and a related observation; 'validation warnings' found
+          @read-side-validation-warnings and related inbox items. Detached reviewer search found
+          @detached-reviewer-merge-helper plus completed helper/guidance tasks and many
+          observations. Searches for 'review evidence log' and 'first-party review checks' found no
+          matches, so the success pattern is untracked."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-06T13:38:41.114Z
+        completed_at: 2026-05-06T13:38:41.114Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T13:37:17.339Z
