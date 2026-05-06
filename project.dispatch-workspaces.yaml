@@ -3466,11 +3466,11 @@ workspaces:
     canonical_branch: dispatch/task/task-update-localhost-security-trait/01kqwzzf
     canonical_branch_head: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
     cleanup:
-      status: blocked
+      status: completed
       detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
       reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-05-06T00:44:47.748Z
+      updated_at: 2026-05-06T00:44:50.847Z
     health:
       status: healthy
       issues: []
@@ -3484,16 +3484,16 @@ workspaces:
       target_branch: dev
       target_commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
       updated_at: 2026-05-06T00:44:47.748Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KQWZZF3YJRCPKB6176HW9HWW"
     task_slug: task-update-localhost-security-trait
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-06T00:44:50.847Z
       last_active_at: 2026-05-06T00:27:32.170Z
       last_reconciled_at: 2026-05-06T00:44:47.748Z
       created_at: 2026-05-06T00:22:21.427Z
-      updated_at: 2026-05-06T00:44:47.748Z
+      updated_at: 2026-05-06T00:44:50.847Z
     workspace_id: dispatch-workspace-01KQWZZF3YJRCPKB6176HW9HWW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
