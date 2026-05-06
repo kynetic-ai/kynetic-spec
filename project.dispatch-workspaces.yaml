@@ -4479,7 +4479,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T06:33:55.491Z
+      updated_at: 2026-05-06T06:36:34.702Z
     integration:
       status: merged
       detail: integration:merged
@@ -4488,25 +4488,20 @@ workspaces:
       target_branch: dev
       target_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
       updated_at: 2026-05-06T06:33:55.491Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KQWZZGYEXCEGMNAX1KT6H7XM"
     task_slug: task-update-web-api-endpoint-ac
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T06:21:34.686Z
-      last_reconciled_at: 2026-05-06T06:36:33.287Z
+      last_reconciled_at: 2026-05-06T06:36:34.702Z
       created_at: 2026-05-06T06:14:49.133Z
-      updated_at: 2026-05-06T06:36:33.287Z
+      updated_at: 2026-05-06T06:36:34.702Z
     workspace_id: dispatch-workspace-01KQWZZGYEXCEGMNAX1KT6H7XM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
-        last_seen_at: 2026-05-06T06:21:08.756Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-web-api-endpoint-ac-01kqwzzg-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-update-web-api-endpoint-ac/01kqwzzg
