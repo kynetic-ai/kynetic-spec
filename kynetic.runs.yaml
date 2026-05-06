@@ -36387,9 +36387,19 @@ runs:
     completed_at: 2026-05-06T12:49:50.960Z
   - _ulid: 01KQYQ790CVAMKKXAATA421BSR
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T13:21:47.532Z
+        completed_at: 2026-05-06T13:22:19.969Z
+        notes: "Step 1 (search before capture): searching for existing tracking on candidate friction
+          patterns from this session."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T13:22:19.969Z
+        completed_at: 2026-05-06T13:22:19.969Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T13:21:47.532Z
