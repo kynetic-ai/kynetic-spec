@@ -34993,7 +34993,7 @@ runs:
     started_at: 2026-05-06T00:57:46.995Z
     completed_at: 2026-05-06T00:59:09.353Z
   - _ulid: 01KQXD76YTTHYP2N3WNF8F3XBT
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -35042,10 +35042,14 @@ runs:
         completed_at: 2026-05-06T01:09:32.494Z
         notes: Skipped discussion because there were no untracked improvements to ask about; searched
           candidates were already covered or too minor to capture.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-06T01:09:32.494Z
-        completed_at: 2026-05-06T01:09:32.494Z
+        completed_at: 2026-05-06T01:09:41.129Z
+        notes: No approved items to capture. Existing tracking covers workflow-show mismatch, validation
+          warning review noise, and detached reviewer merge helper success; no new inbox items or
+          observations were created.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T01:07:45.242Z
+    completed_at: 2026-05-06T01:09:41.129Z
