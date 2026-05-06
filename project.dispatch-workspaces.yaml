@@ -2988,7 +2988,7 @@ workspaces:
         head: 44f834541c5fd5d1f0c0fc655c52b84fda9b8cb4
         last_seen_at: 2026-05-06T05:47:32.868Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-config-daemon-endpoint-ac-01kqwzzf
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
     bootstrap:
       status: succeeded
@@ -3481,9 +3481,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T06:05:07.966Z
-      last_reconciled_at: 2026-05-06T06:16:54.829Z
+      last_reconciled_at: 2026-05-06T06:18:56.890Z
       created_at: 2026-05-06T06:00:00.510Z
-      updated_at: 2026-05-06T06:17:02.249Z
+      updated_at: 2026-05-06T06:18:56.890Z
     workspace_id: dispatch-workspace-01KQWZZFPY4HE3CJZHZEGRE1BQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
