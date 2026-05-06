@@ -177994,7 +177994,18 @@ reviews:
     slugs: []
     title: Review task-apply-daemon-endpoint-consumer-trait
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test passed: 2332 test suites passed; 8547 tests passed, 5 skipped; duration 1897.2s;
+          full log /tmp/kspec-test-cache/01KQY573Q5RD2VFWET2AFAZQZE/adc1f8d891c6e9c3.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-06T08:18:02.437Z
+        completed_at: 2026-05-06T08:18:02.437Z
     events:
       - _ulid: 01KQY591ZJ54YK1Z9G30SWMCHF
         actor: Jacob Chapel
@@ -178009,6 +178020,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-06T08:08:23.554Z
+      - _ulid: 01KQY5V48FJWPG2S5171M3WGME
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-06T08:18:03.663Z
     examined_commit: 85b4465b79f63cfe59cbac09a0a58cc054c22d36
     external_links: []
     lifecycle_state: open
@@ -178021,5 +178039,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T08:08:11.506Z
-    updated_at: 2026-05-06T08:08:22.290Z
+    updated_at: 2026-05-06T08:18:02.437Z
     notes: []
