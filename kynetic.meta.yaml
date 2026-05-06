@@ -17018,6 +17018,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T15:14:45.237Z
+  - _ulid: 01KQYYYAAZKQX15F4X0QA4RR0M
+    type: friction
+    content: "Daemon Origin allow-list (buildAllowedOrigins / WS beforeHandle) and Host allow-list
+      (localhostOnly) are derived independently with different rules and silently drift.
+      localhostOnly always accepts Host: localhost / 127.0.0.1 / ::1 regardless of bind host, but
+      the Origin builder only added the resolved api_url for same-origin. A user opening the
+      production daemon UI at http://localhost:<daemon-port> while bound to 127.0.0.1 got a
+      same-origin browser context the daemon refused at WS upgrade (cycle-1 review blocker on
+      @task-centralize-web-ui-daemon-endpoints). Fix mirrored the loopback aliases manually in
+      buildAllowedOrigins, but the invariant 'Origin allow-list ⊇ (Host allow-list mapped to URLs on
+      the daemon port)' is still hand-coded across two functions with no shared source. Future
+      additions to the accepted-Host set will silently break production same-origin again unless
+      someone remembers to mirror them in the Origin builder. Candidate fixes: derive both from a
+      single 'accepted endpoints' record, or add an integration test that asserts every Host the
+      daemon accepts has a matching Origin entry on the daemon port."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T15:36:42.591Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
