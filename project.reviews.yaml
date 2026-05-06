@@ -177896,6 +177896,42 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-06T08:00:30.425Z
+      - _ulid: 01KQY7MDXW7HMXJ0D1XG3G60K3
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQY4RSBGQ05HYFGTNTDAYH1Q
+        timestamp: 2026-05-06T08:49:21.340Z
+      - _ulid: 01KQY7MGX0J8FXYQC0TT9R7WXP
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQY4RSBGQ05HYFGTNTDAYH1Q
+        timestamp: 2026-05-06T08:49:24.384Z
+      - _ulid: 01KQY7MMWQ9P5G610BREFAFM65
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQY4S05TBHYZQ8S74AV8G7NV
+        timestamp: 2026-05-06T08:49:28.472Z
+      - _ulid: 01KQY7MQX12X8EYW9VSHN33Q1G
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQY4S05TBHYZQ8S74AV8G7NV
+        timestamp: 2026-05-06T08:49:31.553Z
+      - _ulid: 01KQY7MTVEBDGND6ZD08N7DBKX
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQY4SK9SJHR0CQ8WFST0WXQS
+        timestamp: 2026-05-06T08:49:34.574Z
+      - _ulid: 01KQY7MY0074S3JTC3N30NE0XK
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQY4SK9SJHR0CQ8WFST0WXQS
+        timestamp: 2026-05-06T08:49:37.793Z
     examined_commit: 65bfbcb012624d11b50d350ce353d2161ca0d9da
     external_links: []
     lifecycle_state: closed
@@ -177923,7 +177959,20 @@ reviews:
               bind_host, connect_host, api_url, ws_url, and runtime. The new metadata writer is only
               exercised by unit tests and is not called from the lifecycle path."
             created_at: 2026-05-06T07:59:18.384Z
+          - _ulid: 01KQY7MCP3VY5WV1JHAFY18X4X
+            author: "@claude"
+            body: "Fixed: createServer now writes daemon.connection.json on startup via
+              PidFileManager.writeConnectionMetadata, alongside the legacy daemon.pid and
+              daemon.port files. Metadata fields (pid, port, bind_host, connect_host, api_url,
+              ws_url, runtime) come from a single resolveDaemonEndpoint() call so they cannot drift
+              from what the daemon actually binds. Added a behavioral test in
+              tests/cli-serve.test.ts that starts the daemon detached and asserts the metadata file
+              exists with the expected fields plus a 127.0.0.1 health check that proves the bind
+              host is the resolved address."
+            created_at: 2026-05-06T08:49:20.067Z
         kind: blocker
+        resolved_at: 2026-05-06T08:49:23.223Z
+        resolved_by: "@claude"
       - _ulid: 01KQY4S05TBHYZQ8S74AV8G7NV
         anchor:
           type: code
@@ -177941,7 +177990,23 @@ reviews:
               That means default startup still depends on OS hostname resolution and configured
               daemon.host values cannot affect the actual listener."
             created_at: 2026-05-06T07:59:25.370Z
+          - _ulid: 01KQY7MKQYXEVVHZF0WRXRWRG0
+            author: "@claude"
+            body: "Fixed: app.listen() now binds to the resolved bind host (DEFAULT_BIND_HOST = 127.0.0.1 by
+              default, configured value otherwise) instead of the literal string 'localhost'.
+              createServer accepts bindHost/connectHost in ServerOptions and routes them through
+              resolveDaemonEndpoint() before binding. The daemon binary
+              (packages/daemon/src/index.ts) gained --host/--connect-host CLI flags, and serve.ts
+              forwards config.daemon.host / config.daemon.connect_host on every spawn (foreground
+              and detached). Startup logs now show the resolved api_url and emit a visible warning
+              when the bind host is non-loopback (ac-external-binding-warning). Behavioral coverage:
+              tests/cli-serve.test.ts directly fetches http://127.0.0.1:<port>/api/health to prove
+              the daemon is bound on the numeric IPv4 address rather than via OS hostname
+              resolution."
+            created_at: 2026-05-06T08:49:27.294Z
         kind: blocker
+        resolved_at: 2026-05-06T08:49:30.343Z
+        resolved_by: "@claude"
       - _ulid: 01KQY4SK9SJHR0CQ8WFST0WXQS
         anchor:
           type: code
@@ -177961,7 +178026,27 @@ reviews:
               ac-clients-use-metadata; a daemon advertising a different api_url or ws_url will not
               be used."
             created_at: 2026-05-06T07:59:44.953Z
+          - _ulid: 01KQY7MSRAYMR9C66DPDCPG225
+            author: "@claude"
+            body: "Fixed: introduced resolveDaemonClientEndpoint() in src/daemon/endpoint.ts that reads
+              daemon.connection.json first and only falls back to the legacy daemon.port file when
+              metadata is absent. detectDaemon() and ensureProjectRegistered() / proxyCommand() now
+              consume the resolved endpoint object (apiUrl, wsUrl) instead of synthesizing
+              http://127.0.0.1:<port>. The DaemonDetectionResult type was extended with an endpoint
+              field so command files receive a fully resolved endpoint, never a port number alone.
+              The four duplicated getDaemonUrl() helpers in commands/agent.ts, event.ts,
+              schedule.ts, and the ws URL in agent.ts now resolve via the shared helper, as does the
+              postDispatchEvent path in commands/task.ts, the kspec serve status fetches in
+              commands/serve.ts, and the doctor health probe in parser/daemon-status.ts. Behavioral
+              tests in tests/cli-daemon-proxy.test.ts stand up an in-process server and prove
+              detectDaemon (a) uses the metadata-advertised api_url when present and (b) falls back
+              to the legacy port file when metadata is absent. tests/daemon-endpoint.test.ts adds
+              round-trip coverage for resolveDaemonClientEndpoint including the metadata-over-legacy
+              precedence."
+            created_at: 2026-05-06T08:49:33.450Z
         kind: blocker
+        resolved_at: 2026-05-06T08:49:36.513Z
+        resolved_by: "@claude"
       - _ulid: 01KQY4TFEMBM796P75K2EYMVNT
         entries:
           - _ulid: 01KQY4TFEMEH9M3G9C0SJS6A2D
@@ -177988,7 +178073,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T08:00:30.425Z
     created_at: 2026-05-06T07:48:33.590Z
-    updated_at: 2026-05-06T08:00:30.425Z
+    updated_at: 2026-05-06T08:49:36.513Z
     notes: []
   - _ulid: 01KQY591ZJXMY1Y6HFQ1E3C3TQ
     slugs: []
