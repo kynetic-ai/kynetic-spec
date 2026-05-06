@@ -16614,6 +16614,18 @@ observations:
     resolved: false
     workflow_ref: "@01KQDDKM"
     created_at: 2026-04-29T20:08:36.551Z
+  - _ulid: 01KQXBVDBV63JJSP5N00Z6KG1F
+    type: friction
+    content: During a detached dispatch review, creating a follow-up bug task for a pre-existing test
+      failure caused the new task to appear in_progress under the current session, even though the
+      reviewer only intended to record future work. The reviewer had to reset the task back to
+      pending. Dispatch/review workflows need a way to create follow-up tasks without immediately
+      claiming or starting them, or guidance/tooling should make this behavior explicit.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-06T00:43:50.011Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
