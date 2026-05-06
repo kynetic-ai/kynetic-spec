@@ -1,1 +1,47 @@
-notes: []
+notes:
+  - _ulid: 01KQXZCGX8NSMKQAQYJ7J0BD3S
+    content: >-
+      Spec mutations applied via atomic batch (8 ops, all OK):
+
+
+      @multi-directory-daemon:
+
+      - ac-9: replaced — daemon writes global lifecycle state under ~/.config/kspec/ including pid,
+      port, daemon.port compat file, and connection metadata (pid, port, bind_host, connect_host,
+      api_url, ws_url, runtime).
+
+      - ac-13: replaced — CLI reads connect_host and port from daemon connection metadata, falling
+      back to ~/.config/kspec/daemon.port + 127.0.0.1 only for legacy compatibility.
+
+      - ac-remote-auto-register-blocked: added — externally bound daemon rejects non-loopback
+      X-Kspec-Dir auto-registration with 403 + register-locally guidance.
+
+      - ac-project-registry-local-only: added — externally bound daemon rejects non-loopback POST
+      /api/projects and DELETE /api/projects/:encodedPath with 403; project registry is local-only.
+
+
+      @cli-serve-commands:
+
+      - ac-2: replaced — kspec serve start --detach writes global daemon lifecycle and connection
+      metadata, returns immediately with status including pid, port, bind_host, connect_host, URL.
+
+      - ac-4: replaced — kspec serve stop sends SIGTERM to PID from global daemon state, waits,
+      removes lifecycle and connection metadata.
+
+      - ac-6: replaced — kspec serve status outputs running, pid, port, bind_host, connect_host,
+      uptime, connections, runtime, registered projects; JSON mode same fields as structured JSON.
+
+      - ac-8: replaced — kspec serve logs tails daemon log file from the global daemon state
+      directory under ~/.config/kspec/.
+
+
+      Verification: kspec item get @multi-directory-daemon and kspec item get @cli-serve-commands
+      both confirm the new wording matches the task brief verbatim. kspec validate --warnings-ok
+      exits 0 (pre-existing trait coverage and annotation warnings are unrelated to these spec
+      mutations). No code or test changes — this task is spec-text only; behavioral implementation
+      lives in downstream tasks (@task-shared-daemon-endpoint-resolver,
+      @task-daemon-startup-bind-host-metadata, @task-centralize-cli-daemon-clients, etc.) under the
+      same plan.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T06:25:13.640Z
