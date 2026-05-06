@@ -35571,7 +35571,7 @@ runs:
     completed_at: 2026-05-06T06:29:27.288Z
   - _ulid: 01KQXZWTJXTASZJNM1XFWEQWRZ
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35608,7 +35608,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T06:35:21.105Z
-        completed_at: 2026-05-06T06:35:21.105Z
+        completed_at: 2026-05-06T06:35:29.440Z
+        notes: "Proposal: Improve workflow run discoverability and step display. kspec workflow show could
+          default to the active workflow run when exactly one active run exists, or workflow start
+          could print the exact next command. The non-JSON show output should include the current
+          step title/body and a suggested kspec workflow next command. Scope: small CLI UX
+          improvement in workflow commands. Benefit: reduces reflection/session workflow friction
+          and avoids needing JSON output just to see the actionable current step."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T06:35:29.440Z
+        completed_at: 2026-05-06T06:35:29.440Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:34:07.837Z
