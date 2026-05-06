@@ -84,8 +84,13 @@ description: |
 spec_ref: "@daemon-server"
 plan_ref: "@plan-daemon-network-endpoint-contract"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Review approved and merge helper reported no-op: canonical branch
+  dispatch/task/task-update-daemon-server-endpoint-ac/01kqwzzf at
+  a91411a36d48f7e1dbc37abdc0a8494bbf538e1d is already integrated at dev. Spec updated for daemon
+  default 127.0.0.1 loopback, global lifecycle metadata, advertised api_url root route, and external
+  bind warning AC."
 depends_on:
   - "@task-update-localhost-security-trait"
   - "@task-update-config-daemon-endpoint-ac"
@@ -154,8 +159,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-06T06:05:50.396Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Review approved and merge helper reported no-op: canonical branch
+          dispatch/task/task-update-daemon-server-endpoint-ac/01kqwzzf at
+          a91411a36d48f7e1dbc37abdc0a8494bbf538e1d is already integrated at dev. Spec updated for
+          daemon default 127.0.0.1 loopback, global lifecycle metadata, advertised api_url root
+          route, and external bind warning AC."
+        previous: null
+      completed_at:
+        new: 2026-05-06T06:16:25.694Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-06T06:16:25.703Z
 created_at: 2026-05-05T21:16:20.574Z
 started_at: 2026-05-06T06:00:50.053Z
 submitted_at: 2026-05-06T06:03:07.018Z
+completed_at: 2026-05-06T06:16:25.694Z
 todos: []
 automation: eligible
