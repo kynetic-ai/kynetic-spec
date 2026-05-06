@@ -3465,7 +3465,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T06:16:54.829Z
+      updated_at: 2026-05-06T06:18:58.588Z
     integration:
       status: merged
       detail: integration:merged
@@ -3474,25 +3474,20 @@ workspaces:
       target_branch: dev
       target_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
       updated_at: 2026-05-06T06:16:54.829Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KQWZZFPY4HE3CJZHZEGRE1BQ"
     task_slug: task-update-daemon-server-endpoint-ac
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T06:05:07.966Z
-      last_reconciled_at: 2026-05-06T06:18:56.890Z
+      last_reconciled_at: 2026-05-06T06:18:58.588Z
       created_at: 2026-05-06T06:00:00.510Z
-      updated_at: 2026-05-06T06:18:56.890Z
+      updated_at: 2026-05-06T06:18:58.588Z
     workspace_id: dispatch-workspace-01KQWZZFPY4HE3CJZHZEGRE1BQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
-        last_seen_at: 2026-05-06T06:04:42.891Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-daemon-server-endpoint-ac-01kqwzzf-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-update-daemon-server-endpoint-ac/01kqwzzf
