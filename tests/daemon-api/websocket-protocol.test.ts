@@ -355,6 +355,34 @@ describe("daemon websocket protocol", () => {
   });
 
   // AC: @api-contract ac-websocket-origin
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  // Regression: production same-origin must succeed when the user
+  // opens the daemon UI through the `localhost` alias instead of the
+  // advertised connect host (127.0.0.1). The daemon's localhostOnly
+  // middleware accepts Host: localhost regardless of bind host, so the
+  // browser-attached Origin: http://localhost:<daemon-port> header
+  // must be in the allow-list — otherwise opening
+  // http://localhost:<daemon-port> in production breaks the WebSocket.
+  it("accepts a WebSocket upgrade from the localhost daemon-port same-origin", async () => {
+    const ws = new WebSocket(runtime.wsUrl, {
+      origin: `http://localhost:${runtime.port}`,
+    });
+    const connectedPromise = nextMessage<ConnectedMessage>(
+      ws,
+      (message): message is ConnectedMessage =>
+        typeof message === "object" &&
+        message !== null &&
+        "event" in message &&
+        (message as ConnectedMessage).event === "connected",
+    );
+    await waitForOpen(ws);
+    const connected = await connectedPromise;
+    expect(connected.data.session_id).toMatch(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+    ws.close(1000, "test complete");
+    await waitForClose(ws);
+  });
+
+  // AC: @api-contract ac-websocket-origin
   // Browsers attach the Origin header automatically. A connection from
   // an origin outside the allow-list must be rejected at the upgrade
   // step instead of being silently accepted (which would let any

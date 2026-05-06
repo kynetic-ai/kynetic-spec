@@ -326,6 +326,54 @@ describe("buildAllowedOrigins (CORS + WebSocket origin derivation)", () => {
     // any cross-origin caller — never produced, even for external bind.
     expect(origins).not.toContain("*");
   });
+
+  // Regression: when a user opens the production daemon UI through a
+  // loopback alias (http://localhost:DAEMON_PORT), the same-origin
+  // request must succeed. The localhostOnly middleware accepts Host:
+  // localhost / 127.0.0.1 / ::1 regardless of bind host, so the origin
+  // allow-list must mirror those aliases on the daemon port — otherwise
+  // production same-origin breaks for any user who types `localhost` or
+  // any IPv6 user when the daemon is bound to IPv4 (or vice versa).
+  // AC: @api-contract ac-websocket-origin
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  it("includes loopback aliases of the daemon URL for production same-origin", () => {
+    const origins = buildAllowedOrigins({
+      apiUrl: "http://127.0.0.1:3456",
+      connectHost: "127.0.0.1",
+    });
+    expect(origins).toContain("http://localhost:3456");
+    expect(origins).toContain("http://127.0.0.1:3456");
+    expect(origins).toContain("http://[::1]:3456");
+  });
+
+  // AC: @api-contract ac-websocket-origin
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+  it("includes loopback aliases on the daemon port when bound to IPv6", () => {
+    const origins = buildAllowedOrigins({
+      apiUrl: "http://[::1]:4321",
+      connectHost: "::1",
+    });
+    // Same-origin via IPv6 literal.
+    expect(origins).toContain("http://[::1]:4321");
+    // Same-origin via developer-typed `localhost` (which may resolve to
+    // ::1 via /etc/hosts) and via the IPv4 loopback alias.
+    expect(origins).toContain("http://localhost:4321");
+    expect(origins).toContain("http://127.0.0.1:4321");
+  });
+
+  // AC: @api-contract ac-websocket-origin
+  it("propagates the configured daemon port into loopback aliases", () => {
+    const origins = buildAllowedOrigins({
+      apiUrl: "http://127.0.0.1:7777",
+      connectHost: "127.0.0.1",
+    });
+    expect(origins).toContain("http://localhost:7777");
+    expect(origins).toContain("http://127.0.0.1:7777");
+    expect(origins).toContain("http://[::1]:7777");
+    // The default daemon port must not leak in when a non-default port
+    // is configured.
+    expect(origins).not.toContain("http://localhost:3456");
+  });
 });
 
 describe("isAllowedOrigin (origin gate predicate)", () => {
@@ -339,6 +387,17 @@ describe("isAllowedOrigin (origin gate predicate)", () => {
     expect(isAllowedOrigin("http://127.0.0.1:5173", allowed)).toBe(true);
     expect(isAllowedOrigin("http://localhost:5173", allowed)).toBe(true);
     expect(isAllowedOrigin("http://127.0.0.1:3456", allowed)).toBe(true);
+  });
+
+  // Regression for the production same-origin failure when the daemon
+  // UI is opened through `localhost`: the daemon binds to 127.0.0.1 and
+  // accepts Host: localhost (via localhostOnly), so the browser sends
+  // Origin: http://localhost:DAEMON_PORT and the WebSocket upgrade must
+  // not be rejected.
+  // AC: @api-contract ac-websocket-origin
+  it("accepts loopback-alias origins on the daemon port for production same-origin", () => {
+    expect(isAllowedOrigin("http://localhost:3456", allowed)).toBe(true);
+    expect(isAllowedOrigin("http://[::1]:3456", allowed)).toBe(true);
   });
 
   // AC: @api-contract ac-websocket-origin

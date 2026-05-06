@@ -298,6 +298,14 @@ function readWebUiDevPort(): number {
  * Always includes:
  *  - The same-origin daemon URL (api_url) so the bundled production web
  *    UI can call the daemon it's served from.
+ *  - Loopback aliases of the daemon URL (http://localhost:PORT,
+ *    http://127.0.0.1:PORT, http://[::1]:PORT). The localhostOnly
+ *    middleware always accepts Host: localhost, 127.0.0.1, and ::1
+ *    regardless of bind host, so a user opening the production daemon
+ *    UI through any loopback alias gets a same-origin browser context
+ *    whose requests must be allowed. Mirroring those aliases here
+ *    preserves production same-origin across IPv4/IPv6 fallback and
+ *    developer-typed `localhost` URLs.
  *  - The local Vite dev server origin at the resolved connect host
  *    (with IPv6 bracketing) on KSPEC_WEB_UI_DEV_PORT (default 5173).
  *  - Loopback dev origins (http://localhost:DEV_PORT and
@@ -324,6 +332,16 @@ export function buildAllowedOrigins(args: {
 
   // Same-origin daemon URL (production: web UI is served from the daemon).
   origins.add(args.apiUrl);
+
+  // Same-origin daemon-port loopback aliases. Empty string when the
+  // daemon listens on the protocol's default port — browsers strip the
+  // default port from the Origin header, so we must not append `:80` to
+  // the alias.
+  const apiUrlPort = new URL(args.apiUrl).port;
+  const daemonPortSuffix = apiUrlPort.length > 0 ? `:${apiUrlPort}` : "";
+  origins.add(`http://localhost${daemonPortSuffix}`);
+  origins.add(`http://127.0.0.1${daemonPortSuffix}`);
+  origins.add(`http://[::1]${daemonPortSuffix}`);
 
   // Local dev server origin at the resolved connect host. IPv6 is bracketed.
   const formattedConnect = formatHostForUrl(args.connectHost);
