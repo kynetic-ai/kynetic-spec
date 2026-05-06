@@ -178864,6 +178864,12 @@ reviews:
         payload:
           thread_ulid: 01KQYGWP2XEM6W3BEPDV9QGQX3
         timestamp: 2026-05-06T11:53:45.443Z
+      - _ulid: 01KQYJ6AAJFHC9YN7HE96EM3HM
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQYGWP2XEM6W3BEPDV9QGQX3
+        timestamp: 2026-05-06T11:53:53.235Z
     examined_commit: 3ef22cbfd8d59b8a6c4aa5c9ecc57b826152024a
     external_links: []
     lifecycle_state: closed
@@ -178941,6 +178947,8 @@ reviews:
             body: Acknowledged. The evidence-log nit is informational; no code change required.
             created_at: 2026-05-06T11:53:44.108Z
         kind: nit
+        resolved_at: 2026-05-06T11:53:52.017Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -178950,5 +178958,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T11:31:20.546Z
     created_at: 2026-05-06T11:20:55.480Z
-    updated_at: 2026-05-06T11:53:44.108Z
+    updated_at: 2026-05-06T11:53:52.017Z
     notes: []
