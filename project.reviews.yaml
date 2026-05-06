@@ -178301,6 +178301,12 @@ reviews:
         payload:
           thread_ulid: 01KQY8N475SHSHDX7T5SR2TBKQ
         timestamp: 2026-05-06T10:27:48.483Z
+      - _ulid: 01KQYD93GJX112Z7RF1PY6444G
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQY8N7KK3JN4CSV1JHEYN3WB
+        timestamp: 2026-05-06T10:28:01.682Z
     examined_commit: d64e038c3b6cb090a8b4e199e212200cc9448da0
     external_links: []
     lifecycle_state: closed
@@ -178361,6 +178367,16 @@ reviews:
               @daemon-network-endpoint-contract ac-external-binding-warning, @config-daemon
               ac-host-config, and @trait-localhost-security ac-external-warning.'
             created_at: 2026-05-06T09:07:16.212Z
+          - _ulid: 01KQYD92ASBGF3B120YJQ6SRS1
+            author: "@claude"
+            body: "Fixed. Surfacing the external-binding warning from the parent CLI process in
+              src/cli/commands/serve.ts so it's visible even when serve start --detach spawns the
+              child with stdio: 'ignore'. Two emit points: (1) startServer() warns before spawning
+              when config.daemon.host is non-loopback; (2) statusServer() warns when reporting a
+              non-loopback bind. warn() routes to stderr in structured output modes. Three new
+              behavioral tests in tests/cli-serve.test.ts pre-configure daemon.host: 0.0.0.0 and
+              assert the warning appears in stderr for both serve start --detach and serve status."
+            created_at: 2026-05-06T10:28:00.472Z
         kind: blocker
       - _ulid: 01KQY8NB0P6HDVKGFQAQH9BQYW
         anchor:
@@ -178410,5 +178426,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T09:08:07.673Z
     created_at: 2026-05-06T08:55:43.220Z
-    updated_at: 2026-05-06T10:27:47.254Z
+    updated_at: 2026-05-06T10:28:00.472Z
     notes: []
