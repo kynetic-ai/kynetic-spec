@@ -3456,11 +3456,11 @@ workspaces:
     canonical_branch: dispatch/task/task-update-daemon-server-endpoint-ac/01kqwzzf
     canonical_branch_head: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
     cleanup:
-      status: blocked
+      status: completed
       detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
       reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-05-06T06:19:53.340Z
+      updated_at: 2026-05-06T06:19:56.341Z
     health:
       status: healthy
       issues: []
@@ -3474,16 +3474,16 @@ workspaces:
       target_branch: dev
       target_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
       updated_at: 2026-05-06T06:19:53.340Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KQWZZFPY4HE3CJZHZEGRE1BQ"
     task_slug: task-update-daemon-server-endpoint-ac
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-06T06:19:56.341Z
       last_active_at: 2026-05-06T06:05:07.966Z
       last_reconciled_at: 2026-05-06T06:19:53.340Z
       created_at: 2026-05-06T06:00:00.510Z
-      updated_at: 2026-05-06T06:19:53.340Z
+      updated_at: 2026-05-06T06:19:56.341Z
     workspace_id: dispatch-workspace-01KQWZZFPY4HE3CJZHZEGRE1BQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
