@@ -2993,7 +2993,7 @@ workspaces:
         head: 4a080f2cf6cbbd9f35e1c1edaa0e61527b128a04
         last_seen_at: 2026-04-29T19:53:35.518Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-web-ui-startup-asset-coherence-01kqd419
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
     bootstrap:
       status: succeeded
@@ -3491,9 +3491,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T00:27:32.170Z
-      last_reconciled_at: 2026-05-06T00:41:47.343Z
+      last_reconciled_at: 2026-05-06T00:44:24.935Z
       created_at: 2026-05-06T00:22:21.427Z
-      updated_at: 2026-05-06T00:41:47.989Z
+      updated_at: 2026-05-06T00:44:24.935Z
     workspace_id: dispatch-workspace-01KQWZZF3YJRCPKB6176HW9HWW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
