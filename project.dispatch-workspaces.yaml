@@ -3981,12 +3981,12 @@ workspaces:
       detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
       reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-05-06T01:07:47.863Z
+      updated_at: 2026-05-06T01:10:48.152Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T01:09:58.731Z
+      updated_at: 2026-05-06T01:10:48.152Z
     integration:
       status: merged
       detail: integration:merged
@@ -3994,17 +3994,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
-      updated_at: 2026-05-06T01:07:47.863Z
-    lifecycle_state: closing
+      updated_at: 2026-05-06T01:10:48.152Z
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQXBKWE6Y8C7EVR7EKACEPBK"
     task_slug: task-fix-codex-acp-adapter-package-resolution-test
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T00:54:09.938Z
-      last_reconciled_at: 2026-05-06T01:09:58.731Z
+      last_reconciled_at: 2026-05-06T01:10:48.152Z
       created_at: 2026-05-06T00:39:54.851Z
-      updated_at: 2026-05-06T01:09:58.731Z
+      updated_at: 2026-05-06T01:10:48.152Z
     workspace_id: dispatch-workspace-01KQXBKWE6Y8C7EVR7EKACEPBK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
