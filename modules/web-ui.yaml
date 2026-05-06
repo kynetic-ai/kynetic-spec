@@ -49,9 +49,10 @@ features:
     type: feature
     description: Long-running Elysia.js server that exposes kspec state via HTTP API and WebSocket for
       real-time updates. File watcher drives both WebSocket broadcast and entity cache invalidation.
-      Binds to localhost only for security. Supports foreground and background modes with PID file
-      management. Includes heartbeat ping/pong for connection health monitoring on runtimes that
-      support it.
+      The server binds to a resolved daemon endpoint that defaults to 127.0.0.1 loopback and can be
+      explicitly configured for other interfaces with visible unauthenticated-exposure warnings.
+      Supports foreground and background modes with global daemon lifecycle metadata. Includes
+      heartbeat ping/pong for connection health monitoring on runtimes that support it.
     status:
       maturity: draft
       implementation: in_progress
@@ -68,16 +69,17 @@ features:
     acceptance_criteria:
       - given: kspec is installed
         id: ac-1
-        then: Elysia HTTP server starts on configurable port (default 3456) binding to localhost only
-        when: user runs 'kspec serve'
-      - given: daemon is starting
+        then: The Elysia HTTP server starts on the effective daemon port and bind host, defaulting to port
+          3456 on 127.0.0.1
+        when: the user runs "kspec serve start"
+      - given: daemon.host is unset
         id: ac-2
-        then: only accepts connections from 127.0.0.1 and ::1 (IPv6 localhost)
-        when: server binds to network interface
-      - given: connection attempt from non-localhost IP
+        then: the daemon accepts only loopback HTTP and WebSocket connections
+        when: the server binds to the network interface
+      - given: daemon.host is unset
         id: ac-3
-        then: connection rejected with 403 Forbidden
-        when: request received
+        then: the request is rejected with 403 Forbidden for HTTP or a policy-violation close for WebSocket
+        when: a request is received from a non-loopback remote address or with a non-local Host or Origin
       - given: daemon is running
         id: ac-4
         then: connected WebSocket clients receive update event via topic subscription
@@ -98,14 +100,16 @@ features:
         id: ac-8
         then: changes are detected reliably across all supported platforms without manual configuration
         when: file monitoring is initialized
-      - given: daemon is running
+      - given: daemon is not running
         id: ac-9
-        then: process detaches to background, writes PID to .kspec/.daemon.pid, CLI returns immediately
-        when: user runs 'kspec serve --daemon'
+        then: the process detaches to the background, writes global daemon lifecycle and connection metadata
+          under ~/.config/kspec/, and the CLI returns immediately
+        when: the user runs "kspec serve start --detach"
       - given: daemon is running in background
         id: ac-10
-        then: daemon shuts down gracefully, removes PID file, closes all WebSocket connections
-        when: user runs 'kspec serve stop'
+        then: the daemon shuts down gracefully, removes global daemon lifecycle and connection metadata, and
+          closes all WebSocket connections
+        when: the user runs "kspec serve stop"
       - given: daemon is running
         id: ac-11
         then: returns {status, uptime, connections, version} JSON
@@ -130,10 +134,10 @@ features:
         id: ac-16
         then: produces standalone executable without requiring Bun installation
         when: bun build --compile runs
-      - given: daemon is running with web UI built
+      - given: daemon is running with web UI assets available
         id: ac-17
-        then: serves the built web UI assets (SvelteKit static build) as the root route
-        when: browser opens http://localhost:<port>/
+        then: the daemon serves the built web UI assets as the root route
+        when: browser opens the advertised daemon api_url
       - given: the daemon is running
         id: ac-18
         then: it returns per-project cache state including domain states (unloaded/loading/ready/degraded),
@@ -147,6 +151,11 @@ features:
         id: ac-app-route-current-entry
         then: The response contains the entry document for the currently served bundle
         when: A client requests a web UI application route
+      - given: daemon.host is explicitly configured to a non-loopback or wildcard address
+        id: ac-external-bind-warning
+        then: the server binds to that address and emits the external binding warning required by
+          @trait-localhost-security
+        when: the daemon starts
     tags:
       - server
       - websocket
