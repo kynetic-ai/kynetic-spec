@@ -1724,32 +1724,36 @@ features:
         when: kspec serve executed
       - given: daemon not running
         id: ac-2
-        then: starts in background, writes PID file, returns immediately with status message
-        when: kspec serve --daemon executed
+        then: starts in background, writes global daemon lifecycle and connection metadata under
+          ~/.config/kspec/, and returns immediately with status message including pid, port,
+          bind_host, connect_host, and URL
+        when: kspec serve start --detach is executed
       - given: daemon not running
         id: ac-3
         then: starts on specified port
         when: kspec serve --port 8080 executed
       - given: daemon running
         id: ac-4
-        then: sends SIGTERM to daemon PID, waits for clean shutdown, removes PID file
-        when: kspec serve stop executed
+        then: sends SIGTERM to the daemon PID from global daemon state, waits for clean shutdown, and
+          removes global daemon lifecycle and connection metadata
+        when: kspec serve stop is executed
       - given: daemon not running
         id: ac-5
         then: outputs 'Daemon not running' with exit code 0 (idempotent)
         when: kspec serve stop executed
       - given: any state
         id: ac-6
-        then: outputs JSON with {running, pid, port, uptime, connections}
-        when: kspec serve status executed
+        then: outputs status including running, pid, port, bind_host, connect_host, uptime, connections,
+          runtime, and registered projects; JSON mode returns the same fields as structured JSON
+        when: kspec serve status is executed
       - given: daemon running
         id: ac-7
         then: stops existing daemon, starts new one, preserves port setting
         when: kspec serve restart executed
       - given: any state
         id: ac-8
-        then: tails daemon log file (.kspec/.daemon.log)
-        when: kspec serve logs executed
+        then: tails the daemon log file from the global daemon state directory under ~/.config/kspec/
+        when: kspec serve logs is executed
       - given: daemon running
         id: ac-9
         then: streams log output continuously until Ctrl+C
@@ -1838,10 +1842,11 @@ features:
         id: ac-8b
         then: return 403 with error "Permission denied - cannot read <path>"
         when: request processed
-      - given: no daemon running
+      - given: no daemon is running
         id: ac-9
-        then: daemon starts and writes PID to ~/.config/kspec/daemon.pid and port to
-          ~/.config/kspec/daemon.port
+        then: the daemon starts and writes global lifecycle state under ~/.config/kspec/, including
+          daemon.pid, daemon.port compatibility file, and daemon connection metadata containing pid,
+          port, bind_host, connect_host, api_url, ws_url, and runtime
         when: kspec serve start runs from any directory
       - given: ~/.config/kspec/ does not exist
         id: ac-9b
@@ -1868,10 +1873,11 @@ features:
         id: ac-12
         then: shows daemon status with port, uptime, and list of registered projects with their paths
         when: kspec serve status runs
-      - given: CLI needs to connect to daemon
+      - given: CLI needs to connect to a running daemon
         id: ac-13
-        then: CLI reads port from ~/.config/kspec/daemon.port
-        when: daemon is running
+        then: the CLI reads connect_host and port from the metadata, falling back to
+          ~/.config/kspec/daemon.port plus 127.0.0.1 only for legacy compatibility
+        when: daemon connection metadata exists under ~/.config/kspec/
       - given: daemon restarts
         id: ac-14
         then: project is re-registered automatically (same as initial registration)
@@ -1983,6 +1989,16 @@ features:
         id: ac-35
         then: a file watcher is started for that project before any cached data is served
         when: registration succeeds
+      - given: the daemon is externally bound and a request originates from a non-loopback remote address
+        id: ac-remote-auto-register-blocked
+        then: the daemon rejects the request with 403 and guidance to register the project from a local CLI
+          or use the default project
+        when: the request includes X-Kspec-Dir for a project path that is not already registered
+      - given: the daemon is externally bound and a request originates from a non-loopback remote address
+        id: ac-project-registry-local-only
+        then: the daemon rejects the project registry mutation with 403 because project registration is
+          local-only
+        when: POST /api/projects or DELETE /api/projects/:encodedPath is called
     tags:
       - daemon
       - architecture
