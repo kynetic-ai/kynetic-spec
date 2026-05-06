@@ -16626,6 +16626,21 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-06T00:43:50.011Z
+  - _ulid: 01KQXEKCTSQX46MZQ7ZJMW6WXJ
+    type: friction
+    content: "When a task renames AC ids on a spec (e.g. ac-5 → ac-host-config), downstream test/source
+      annotations referencing the old ids silently become stale: kspec validate --warnings-ok exits
+      0 because the missing-AC findings are warnings, only visible with -v. This task's first cycle
+      was kicked back as needs_work for exactly that pattern (3 stale @config-daemon ac-5/ac-6
+      annotations across tests/parser/config.test.ts and src/parser/config.ts). Workers performing
+      AC-id renames should rg @<spec-ref> ac-<old-id> across the repo and update annotations in the
+      same atomic commit, OR run kspec validate --warnings-ok -v | grep 'Missing AC' filtered for
+      the renamed spec. Evidence: @01KQWZZFDFPSHHNAGVB8NAXJRJ fix cycle 1 review
+      @01KQXCSWEA8NKFB23BDNCR8DVC."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T01:31:53.049Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
