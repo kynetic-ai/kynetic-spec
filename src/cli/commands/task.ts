@@ -56,56 +56,7 @@ import { describeEnumValues } from "../enum-help.js";
 import { addListOptions, listTasksAction } from "./tasks.js";
 import { findClosestCommand } from "../suggest.js";
 import { checkBudget, incrementBudget, isEndLoopRequested } from "../../sessions/store.js";
-import { getRunningDaemonClient } from "../daemon-client.js";
-
-/**
- * Post a task state change event to the daemon dispatch engine.
- * Fails silently — dispatch requires a running daemon; if absent, this is a no-op.
- * AC: @daemon-agent-dispatch ac-2, ac-7
- * AC: @agent-dispatch-engine ac-18
- */
-async function postDispatchEvent(opts: {
-  taskId: string;
-  taskRef: string;
-  fromStatus: string;
-  toStatus: string;
-  projectPath?: string;
-}): Promise<void> {
-  // AC: @agent-dispatch-engine ac-18 - Suppress self-triggering when running
-  // inside a dispatched agent invocation. The file watcher will independently
-  // detect the change, so the CLI event would be redundant and causes stale
-  // queue entries to accumulate.
-  // NOTE: This relies on the daemon's file watcher being active. If the watcher
-  // is temporarily down, dispatched agents' task mutations won't produce dispatch
-  // events until the watcher recovers and diffs the changed state.
-  if (process.env.KSPEC_SESSION_ID) return;
-
-  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
-  const endpoint = getRunningDaemonClient();
-  if (!endpoint) return;
-
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (opts.projectPath) {
-    headers["X-Kspec-Dir"] = opts.projectPath;
-  }
-
-  try {
-    await fetch(`${endpoint.apiUrl}/api/agent/events`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        task_id: opts.taskId,
-        task_ref: opts.taskRef,
-        from_status: opts.fromStatus,
-        to_status: opts.toStatus,
-        timestamp: Date.now(),
-      }),
-      signal: AbortSignal.timeout(1000), // 1s timeout — fire-and-forget
-    });
-  } catch {
-    // Silent fail — daemon unreachable or dispatch engine not running
-  }
-}
+import { postDispatchEvent } from "../dispatch-events.js";
 
 /**
  * Find a task by reference with detailed error reporting.
