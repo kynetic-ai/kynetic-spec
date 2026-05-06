@@ -65,7 +65,7 @@ description: |
 spec_ref: "@daemon-network-endpoint-contract"
 plan_ref: "@plan-daemon-network-endpoint-contract"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-update-config-daemon-endpoint-ac"
@@ -88,7 +88,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-shared-daemon-endpoint-resolver/01kqwzzh
-session_id: 01KQYECJZKB11135PMPG2GKPES
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -308,6 +308,16 @@ history:
         previous: "@01KQYDJ9RG2M1EY0ECD389X8D7"
     command: review-link
     timestamp: 2026-05-06T11:20:58.704Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KQYECJZKB11135PMPG2GKPES
+    command: review-verdict-needs-work
+    timestamp: 2026-05-06T11:31:22.506Z
 created_at: 2026-05-05T21:16:22.136Z
 started_at: 2026-05-06T11:13:55.456Z
 submitted_at: 2026-05-06T11:13:58.977Z

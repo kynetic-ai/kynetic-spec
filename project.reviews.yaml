@@ -178830,9 +178830,25 @@ reviews:
           kind: nit
           thread_ulid: 01KQYGWP2XEM6W3BEPDV9QGQX3
         timestamp: 2026-05-06T11:31:10.179Z
+      - _ulid: 01KQYGX1B2Q668M4GWP5RKJ2AQ
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-06T11:31:20.547Z
+      - _ulid: 01KQYGX1B3NT8F549MZRNCMV59
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-06T11:31:20.547Z
     examined_commit: 3ef22cbfd8d59b8a6c4aa5c9ecc57b826152024a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -178885,7 +178901,14 @@ reviews:
               unavailability."
             created_at: 2026-05-06T11:31:09.021Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-06T11:31:20.546Z
     created_at: 2026-05-06T11:20:55.480Z
-    updated_at: 2026-05-06T11:31:09.021Z
+    updated_at: 2026-05-06T11:31:20.547Z
     notes: []
