@@ -35195,7 +35195,7 @@ runs:
     completed_at: 2026-05-06T05:47:15.948Z
   - _ulid: 01KQXY14SJHDKD736KK9TB25WK
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35244,7 +35244,16 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-05-06T06:02:45.549Z
-        completed_at: 2026-05-06T06:02:45.549Z
+        completed_at: 2026-05-06T06:03:02.104Z
+        notes: "Discussion decision: proceed with a conservative friction observation. This is not ready for
+          a task because the exact policy wording should be triaged against review-gates and
+          kspec-review guidance, but the pattern is high-confidence: a spec-update task in a staged
+          plan incurred avoidable fix-cycle churn because review guidance treated all uncovered ACs
+          as blockers without a scoped exception path for downstream-owned implementation coverage."
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-06T06:03:02.104Z
+        completed_at: 2026-05-06T06:03:02.104Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:01:32.210Z
