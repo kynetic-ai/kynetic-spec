@@ -35571,7 +35571,7 @@ runs:
     completed_at: 2026-05-06T06:29:27.288Z
   - _ulid: 01KQXZWTJXTASZJNM1XFWEQWRZ
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35598,7 +35598,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-06T06:35:12.312Z
-        completed_at: 2026-05-06T06:35:12.312Z
+        completed_at: 2026-05-06T06:35:21.105Z
+        notes: "Coverage check: Searched 'workflow show current step' and 'workflow show run-ref'; both
+          returned no matches, so the workflow display/run-ref friction appears untracked. Searched
+          'review evidence' and found existing observations/tasks around review validation noise and
+          full-suite review behavior, so no new capture for review evidence logging. Searched 'merge
+          no-op' and found no matches, but the detached merge helper handled the no-op correctly, so
+          no improvement proposal is needed there."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-06T06:35:21.105Z
+        completed_at: 2026-05-06T06:35:21.105Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:34:07.837Z
