@@ -176173,6 +176173,18 @@ reviews:
         runner: npm
         created_at: 2026-05-06T01:05:32.037Z
         completed_at: 2026-05-06T01:05:32.037Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exits 6 due to existing project warnings; kspec validate --warnings-ok
+          exits 0 with schema/references OK. Warnings are broad pre-existing
+          coverage/alignment/reference warnings unrelated to this one-file test change.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-06T01:05:41.791Z
+        completed_at: 2026-05-06T01:05:41.791Z
     events:
       - _ulid: 01KQXCFW8240Z1C59J58PJYGQA
         actor: Jacob Chapel
@@ -176201,6 +176213,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-06T01:05:33.249Z
+      - _ulid: 01KQXD3FMY0ZSN65XE5QQ6XFRE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-06T01:05:43.071Z
     examined_commit: 91354aec65fbdf3f7469d28308f0743c9cb78c61
     external_links: []
     lifecycle_state: open
@@ -176213,7 +176232,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T00:55:00.611Z
-    updated_at: 2026-05-06T01:05:32.037Z
+    updated_at: 2026-05-06T01:05:41.791Z
     notes: []
   - _ulid: 01KQXCSWEA8NKFB23BDNCR8DVC
     slugs: []
