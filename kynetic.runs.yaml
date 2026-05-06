@@ -36689,7 +36689,7 @@ runs:
     completed_at: 2026-05-06T14:54:25.485Z
   - _ulid: 01KQYXH973KRM5YVA5YNBJP5VB
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -36772,10 +36772,17 @@ runs:
 
           (3) Inline comment near awaitListenSuccess explaining the @elysiajs/node async-listen
           contract — already done as part of this fix, no separate item needed.
-      - status: completed
+      - status: skipped
         step_index: 4
         started_at: 2026-05-06T15:14:11.420Z
-        completed_at: 2026-05-06T15:14:11.420Z
+        completed_at: 2026-05-06T15:14:26.946Z
+        notes: "Skipping discussion step: autonomous dispatch mode (no interactive user). Per loop-mode
+          guidance, applying high-confidence-only filter and routing items as observation/inbox
+          rather than tasks. Capturing in step 6."
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-06T15:14:26.946Z
+        completed_at: 2026-05-06T15:14:26.946Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T15:12:06.883Z
