@@ -34859,9 +34859,20 @@ runs:
     completed_at: 2026-04-29T20:08:37.480Z
   - _ulid: 01KQXATC8KENAT1CQ53AVYSBQX
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T00:25:47.540Z
+        completed_at: 2026-05-06T00:25:59.397Z
+        notes: "Session: completed 1 task (@task-update-localhost-security-trait). Pure spec mutation via
+          kspec batch. No code changes, clean worker tree, shadow commit 7d9f21124. Task moved to
+          pending_review."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T00:25:59.397Z
+        completed_at: 2026-05-06T00:25:59.397Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T00:25:47.540Z
