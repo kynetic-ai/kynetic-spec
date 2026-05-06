@@ -79,7 +79,7 @@ tags:
   - config
   - foundation
 vcs_refs: []
-review_ref: "@01KQYDJ9RG2M1EY0ECD389X8D7"
+review_ref: "@01KQYG9YXR62Y55A15Q832B7PE"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-shared-daemon-endpoint-resolver/01kqwzzh
@@ -301,6 +301,13 @@ history:
         previous: 2026-05-06T10:29:22.902Z
     command: task-submit
     timestamp: 2026-05-06T11:13:58.978Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQYG9YXR62Y55A15Q832B7PE"
+        previous: "@01KQYDJ9RG2M1EY0ECD389X8D7"
+    command: review-link
+    timestamp: 2026-05-06T11:20:58.704Z
 created_at: 2026-05-05T21:16:22.136Z
 started_at: 2026-05-06T11:13:55.456Z
 submitted_at: 2026-05-06T11:13:58.977Z
