@@ -8,3 +8,15 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-06T06:01:24.526Z
+  - _ulid: 01KQXY3VJAPSNCBKA47J3F8KCS
+    content: "Spec mutation completed via batch (8 commands, atomic) and committed to shadow branch
+      fbd9c8722. Verified with kspec item get @daemon-server: description updated, ac-1/2/3/9/10/17
+      replaced with new given/when/then text matching the task description verbatim,
+      ac-external-bind-warning added. kspec validate --warnings-ok passed (warnings are pre-existing
+      alignment/coverage gaps tracked by sibling tasks in @plan-daemon-network-endpoint-contract).
+      No source code changes required for this task — implementation tasks (e.g.,
+      @task-daemon-startup-bind-host-metadata) will cover the new ACs. No worker-branch commits
+      needed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T06:03:01.066Z
