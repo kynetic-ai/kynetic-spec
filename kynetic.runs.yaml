@@ -36191,7 +36191,7 @@ runs:
     started_at: 2026-05-06T11:32:05.956Z
     completed_at: 2026-05-06T11:34:02.231Z
   - _ulid: 01KQYJ9Q6ZQ60YMFFKAFS1CMAR
-    status: active
+    status: completed
     current_step: 3
     initiated_by: "@claude"
     step_results:
@@ -36232,7 +36232,12 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T11:59:13.888Z
-        completed_at: 2026-05-06T11:59:13.888Z
+        completed_at: 2026-05-06T11:59:31.979Z
+        notes: Captured 1 friction observation @01KQYJGD documenting the false-positive fallback test
+          pattern. No success captures (single-fix-cycle wins are too session-specific to
+          generalize). No inbox additions (no actionable scoped change to propose; the friction
+          observation feeds review/work-gates skill evolution naturally).
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T11:55:44.735Z
+    completed_at: 2026-05-06T11:59:31.979Z
