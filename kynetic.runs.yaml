@@ -35351,7 +35351,7 @@ runs:
     completed_at: 2026-05-06T06:14:01.793Z
   - _ulid: 01KQXYXQNQKFQZFYN1B3S5DYXZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35366,7 +35366,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T06:17:56.274Z
-        completed_at: 2026-05-06T06:17:56.274Z
+        completed_at: 2026-05-06T06:18:05.547Z
+        notes: "Friction points: full npm test -- --fresh took 1896.7s for a spec-only/shadow-state review;
+          kspec validate --warnings-ok output is noisy for unrelated repo-wide warnings; detached
+          snapshot had no .kspec directory so shadow commit inspection required using the main
+          project shadow worktree path; initial git diff dev...HEAD was empty because the canonical
+          branch was already integrated at dev, so orientation depended on task records and
+          kspec-meta history rather than source diff."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T06:18:05.547Z
+        completed_at: 2026-05-06T06:18:05.547Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:17:09.047Z
