@@ -16926,6 +16926,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T12:34:29.636Z
+  - _ulid: 01KQYR78D50NK6STKQCV2XQ3CH
+    type: success
+    content: "Cycle-7 review of @task-shared-daemon-endpoint-resolver showed that explicit review
+      evidence checks plus the detached reviewer merge helper make complex multi-cycle approvals
+      auditable: the reviewer could verify prior blockers, record deterministic gates on @01KQYQE9,
+      approve, merge into dev via the helper, and complete the task without manual branch
+      switching."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KQYR3N"
+    created_at: 2026-05-06T13:39:15.493Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
