@@ -7071,3 +7071,79 @@ workspaces:
         head: 61588c0f057e5a473d1f455147f5cbac71972378
         last_seen_at: 2026-05-06T15:37:21.470Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-centralize-web-ui-daemon-endpoints-01kqwzzj
+  - active_role: null
+    base_branch_point: 63d56f0330190650f9e916202640256064df38a4
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-centralize-cli-daemon-clients/01kqwzzh
+    canonical_branch_head: 63d56f0330190650f9e916202640256064df38a4
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-06T15:37:49.474Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-06T15:37:49.474Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 63d56f0330190650f9e916202640256064df38a4
+      updated_at: 2026-05-06T15:37:49.474Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KQWZZHTBFAA5NBV00W1WVJNN"
+    task_slug: task-centralize-cli-daemon-clients
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-06T15:37:49.474Z
+      created_at: 2026-05-06T15:37:49.474Z
+      updated_at: 2026-05-06T15:37:49.474Z
+    workspace_id: dispatch-workspace-01KQWZZHTBFAA5NBV00W1WVJNN
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-centralize-cli-daemon-clients/01kqwzzh
+        head: 63d56f0330190650f9e916202640256064df38a4
+        last_seen_at: 2026-05-06T15:37:49.474Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-centralize-cli-daemon-clients-01kqwzzh
