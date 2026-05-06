@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KQYRKS58DXH7VCXD0C0PXTZ4
+    content: "Approach: Most wiring was already in place from upstream
+      task-shared-daemon-endpoint-resolver fix cycles. Two changes for this task: (1) moved
+      writeConnectionMetadata to AFTER app.listen() per task description point 4 — pid/port files
+      stay early (stale detection coordination primitive); metadata only written when listen has
+      been initiated, so a synchronous bind error never leaves an api_url advertising a dead daemon.
+      (2) Added AC annotations on existing tests for @daemon-server ac-1, ac-9, ac-10,
+      ac-external-bind-warning. Existing tests already covered the behavior end-to-end
+      (waitForDaemonHealth ensures listen succeeded before metadata assertions)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T13:46:05.864Z
