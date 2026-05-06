@@ -36794,7 +36794,7 @@ runs:
     completed_at: 2026-05-06T15:14:53.074Z
   - _ulid: 01KQYYM9GNVSVQSXQ8984GTMBM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36809,7 +36809,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T15:31:57.535Z
-        completed_at: 2026-05-06T15:31:57.535Z
+        completed_at: 2026-05-06T15:32:21.718Z
+        notes: "Friction points: full npm test is a long gate for reviews but it did finish cleanly;
+          repo-wide kspec validate exits with warnings unrelated to the reviewed branch; repo-wide
+          npm run lint and even touched-file lint reported pre-existing issues that require base
+          comparison to classify correctly. These were manageable, but they add review overhead. No
+          new untracked friction identified yet."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T15:32:21.718Z
+        completed_at: 2026-05-06T15:32:21.718Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T15:31:14.070Z
