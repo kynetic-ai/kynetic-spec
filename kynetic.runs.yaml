@@ -37052,7 +37052,7 @@ runs:
     started_at: 2026-05-06T16:23:47.763Z
   - _ulid: 01KQZ3QBM15H6TYPFM90XNTJZ6
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -37071,7 +37071,26 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T17:01:03.479Z
-        completed_at: 2026-05-06T17:01:03.479Z
+        completed_at: 2026-05-06T17:01:17.533Z
+        notes: "Friction 1: proxy-skip-list interaction with daemon clients is non-obvious and only
+          learnable by reading the source. The proxySkipCommands set in src/cli/index.ts (init,
+          serve, help, setup, upgrade, release-notes, shadow, doctor, clone-for-testing, batch,
+          agent, event) controls whether /api/command proxying happens before each command's inline
+          action handler runs. A test author writing CLI endpoint tests needs this knowledge to
+          avoid expecting the inline handler to run when the proxy succeeds — I had to debug
+          schedule list/trigger failures to discover this. Friction 2: internal fire-and-forget
+          daemon helpers like postDispatchEvent in task.ts are practically untestable behaviorally —
+          they only fire when the daemon is detected AND proxy is bypassed, but proxy bypass via
+          KSPEC_NO_DAEMON=1 also disables getRunningDaemonClient, so the firing path is logically
+          unreachable in production. The URL contract is enforced transitively through
+          getRunningDaemonClient unit tests. Friction 3: the kspec() test helper sets
+          KSPEC_NO_DAEMON=1 by default to keep most tests deterministic, but daemon-endpoint tests
+          must explicitly override with KSPEC_NO_DAEMON='' which is a surprising contract — easy to
+          miss if not aware."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T17:01:17.533Z
+        completed_at: 2026-05-06T17:01:17.533Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T17:00:17.409Z
