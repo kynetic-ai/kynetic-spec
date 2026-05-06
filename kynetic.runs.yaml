@@ -36571,7 +36571,7 @@ runs:
     completed_at: 2026-05-06T14:00:59.961Z
   - _ulid: 01KQYT9VBX2RHDAE2C1TF509VF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36586,7 +36586,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T14:16:10.343Z
-        completed_at: 2026-05-06T14:16:10.343Z
+        completed_at: 2026-05-06T14:16:21.701Z
+        notes: "Friction points: the existing port-collision regression test checked that no IPv6 fallback
+          occurred but explicitly tolerated daemon.connection.json being written for the failed
+          startup, so it did not prove the task's metadata-after-listening requirement. The review
+          also needed a custom temporary HOME/project reproduction because there is no focused
+          helper or test assertion for 'detached daemon startup must not advertise connection
+          metadata until a real listen success'."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T14:16:21.701Z
+        completed_at: 2026-05-06T14:16:21.701Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T14:15:37.597Z
