@@ -27752,7 +27752,7 @@
   type: task
   spec_ref: "@daemon-network-endpoint-contract"
   plan_ref: "@plan-daemon-network-endpoint-contract"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-shared-daemon-endpoint-resolver"
@@ -27766,6 +27766,7 @@
   todos_count: 0
   created_at: 2026-05-05T21:16:23.032Z
   started_at: 2026-05-06T14:04:51.659Z
+  submitted_at: 2026-05-06T14:26:49.211Z
   automation: eligible
 - _ulid: 01KQWZZJD5A6068Q7BBY7SKH43
   slugs:
