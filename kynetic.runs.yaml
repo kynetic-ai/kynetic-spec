@@ -37375,7 +37375,7 @@ runs:
     completed_at: 2026-05-06T18:24:54.154Z
   - _ulid: 01KQZ9BKCTW8CGSW5G9GWKXSZS
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -37400,7 +37400,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-06T18:39:26.049Z
-        completed_at: 2026-05-06T18:39:26.049Z
+        completed_at: 2026-05-06T18:39:47.724Z
+        notes: "Coverage check: Searched 'validate warnings', 'review signal noise', 'full npm test', 'test
+          duration', 'test runner progress', and 'detached reviewer merge'. The validate-warning
+          friction is already tracked by observation @01KNTPX4T ('Review signal noise: repo-wide
+          kspec validate warnings...'). Test progress/duration has existing coverage via completed
+          @task-test-runner-progress-output; no new concrete gap beyond inherent full-suite
+          duration. Detached reviewer helper is implemented by @detached-reviewer-merge-helper with
+          prior success observations, so no duplicate capture needed."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-06T18:39:47.724Z
+        completed_at: 2026-05-06T18:39:47.724Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T18:38:43.610Z
