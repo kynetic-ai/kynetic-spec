@@ -176584,7 +176584,40 @@ reviews:
     slugs: []
     title: Review task-update-config-daemon-endpoint-ac cycle 2
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 0 with warnings allowed. Base validation passed; verbose AC coverage warning is
+          recorded separately as a required failure.
+        name: kspec validate --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-06T01:43:54.726Z
+        completed_at: 2026-05-06T01:43:54.726Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --warnings-ok -v | rg reported @config-daemon Uncovered: ac-host-default,
+          ac-connect-host-config, ac-runtime-config, ac-runtime-default, ac-connection-metadata."
+        name: "@config-daemon AC coverage"
+        required: true
+        runner: kspec validate -v
+        created_at: 2026-05-06T01:43:57.850Z
+        completed_at: 2026-05-06T01:43:57.850Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "2332 suites passed; 8545 tests passed; 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KQXEMTPT70N1Z16CC7SVTHW8/18fab58d920eb5c0.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm test
+        created_at: 2026-05-06T01:44:00.885Z
+        completed_at: 2026-05-06T01:44:00.885Z
     events:
       - _ulid: 01KQXEP9M5Q4854VTA9CVFT5KX
         actor: Jacob Chapel
@@ -176599,17 +176632,196 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-06T01:33:50.995Z
+      - _ulid: 01KQXF9EV2T1AED9X1F4N63T2S
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-05-06T01:43:56.003Z
+      - _ulid: 01KQXF9HTKTP0AFBV4185EK19D
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: "@config-daemon AC coverage"
+        timestamp: 2026-05-06T01:43:59.059Z
+      - _ulid: 01KQXF9MS0Y4FH96TKCTH8SP2N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-06T01:44:02.080Z
+      - _ulid: 01KQXF9QP42CQ066C1F633J4VR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQXF9PKFDG485EFBGYNFBXRG
+        timestamp: 2026-05-06T01:44:05.060Z
+      - _ulid: 01KQXF9TKR7R5HB49KKRVQBCPZ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQXF9SE9221ASCVX05HJQ6X1
+        timestamp: 2026-05-06T01:44:08.057Z
+      - _ulid: 01KQXF9XHANZF0N0PCV15T2PFC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQXF9WC2RTHKD5HHW1EAS2PS
+        timestamp: 2026-05-06T01:44:11.050Z
+      - _ulid: 01KQXFA0EM1V430NQYAN6CS9CB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQXF9ZAHDEM0E7QV88QRK6B3
+        timestamp: 2026-05-06T01:44:14.036Z
+      - _ulid: 01KQXFA3F1QBGDXD0QEEZ7Q8X4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQXFA27XMRMBSS0ZVT5TDF4Q
+        timestamp: 2026-05-06T01:44:17.122Z
+      - _ulid: 01KQXFA6C05B257KFNBAC9MXR3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQXFA56XGQNVPJNP97M4VCBD
+        timestamp: 2026-05-06T01:44:20.096Z
+      - _ulid: 01KQXFA9AAEVNFWKNY1JHV9MF9
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-06T01:44:23.114Z
+      - _ulid: 01KQXFA9AA5B7QFKZP4M950NF4
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-06T01:44:23.114Z
     examined_commit: 58ec0818c5c144f8867f7269909b62545c610777
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KQWZZFDFPSHHNAGVB8NAXJRJ"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KQXF9PKFDG485EFBGYNFBXRG
+        anchor:
+          type: structured
+          field: ac-host-default
+          ref: "@config-daemon"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQXF9PKF481VAJASB69YJBPB
+            author: Jacob Chapel
+            body: "MUST-FIX: @config-daemon ac-host-default has no behavioral test coverage. Evidence: kspec
+              validate --warnings-ok -v reports @config-daemon Uncovered: ac-host-default. The
+              source annotation in src/parser/config.ts does not prove the serve-start
+              default-bind-host behavior and does not satisfy own AC test coverage."
+            created_at: 2026-05-06T01:44:03.951Z
+        kind: blocker
+      - _ulid: 01KQXF9SE9221ASCVX05HJQ6X1
+        anchor:
+          type: structured
+          field: ac-connect-host-config
+          ref: "@config-daemon"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQXF9SE932MARWP2AMHH3BRF
+            author: Jacob Chapel
+            body: "MUST-FIX: @config-daemon ac-connect-host-config has no behavioral test coverage. Evidence:
+              kspec validate --warnings-ok -v reports @config-daemon Uncovered:
+              ac-connect-host-config, and rg found no @config-daemon ac-connect-host-config
+              annotation in tests. This leaves the advertised connect-host contract unverified."
+            created_at: 2026-05-06T01:44:06.857Z
+        kind: blocker
+      - _ulid: 01KQXF9WC2RTHKD5HHW1EAS2PS
+        anchor:
+          type: structured
+          field: ac-runtime-config
+          ref: "@config-daemon"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQXF9WC2YQGA2JP2XTTW3CYV
+            author: Jacob Chapel
+            body: "MUST-FIX: @config-daemon ac-runtime-config has no behavioral test coverage. Evidence: kspec
+              validate --warnings-ok -v reports @config-daemon Uncovered: ac-runtime-config, and the
+              runtime tests are annotated only to @daemon-runtime-adapter. This new @config-daemon
+              contract needs its own annotation on a test that proves configured runtime is used for
+              explicit and auto-start daemon launches."
+            created_at: 2026-05-06T01:44:09.859Z
+        kind: blocker
+      - _ulid: 01KQXF9ZAHDEM0E7QV88QRK6B3
+        anchor:
+          type: structured
+          field: ac-runtime-default
+          ref: "@config-daemon"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQXF9ZAJ41QF6ZX6DQKQ91ZM
+            author: Jacob Chapel
+            body: "MUST-FIX: @config-daemon ac-runtime-default has no behavioral test coverage. Evidence: kspec
+              validate --warnings-ok -v reports @config-daemon Uncovered: ac-runtime-default. A
+              parser/default test exists for @daemon-runtime-adapter, but this spec now owns the
+              default-runtime contract and needs its own behavioral AC annotation."
+            created_at: 2026-05-06T01:44:12.882Z
+        kind: blocker
+      - _ulid: 01KQXFA27XMRMBSS0ZVT5TDF4Q
+        anchor:
+          type: structured
+          field: ac-connection-metadata
+          ref: "@config-daemon"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KQXFA27XVHXH3Z6M8WRW2CG1
+            author: Jacob Chapel
+            body: "MUST-FIX: @config-daemon ac-connection-metadata has no behavioral test coverage. Evidence:
+              kspec validate --warnings-ok -v reports @config-daemon Uncovered:
+              ac-connection-metadata, and rg found no @config-daemon ac-connection-metadata
+              annotation in tests. The global daemon metadata fields are part of the spec contract
+              and must be verified behaviorally."
+            created_at: 2026-05-06T01:44:15.869Z
+        kind: blocker
+      - _ulid: 01KQXFA56XGQNVPJNP97M4VCBD
+        entries:
+          - _ulid: 01KQXFA56YMBNA5TBFS48RHHNB
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: kspec-agents.md; @config-daemon via kspec item get; previous
+              review @01KQXCSWEA8NKFB23BDNCR8DVC; git show/diff for 58ec0818; src/parser/config.ts;
+              tests/parser/config.test.ts; tests/parser/daemon-config.test.ts;
+              tests/daemon-connection-state.test.ts; tests/daemon-build.test.ts. Commands run: git
+              status; git diff/stat/show/log; kspec task get; kspec review for-task/get/add/open;
+              kspec item get; rg AC annotations; kspec validate --warnings-ok; kspec validate
+              --warnings-ok -v | rg; npm test -- --fresh. Claims verified: stale ac-5/ac-6
+              annotations were removed, but worker claim that @config-daemon has zero missing-AC
+              warnings was disproved by verbose validation. Categories searched: correctness/spec
+              alignment, AC coverage, test quality/source scanning, integration, regression tests."
+            created_at: 2026-05-06T01:44:18.910Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-05-06T01:44:23.114Z
     created_at: 2026-05-06T01:33:28.070Z
-    updated_at: 2026-05-06T01:33:49.589Z
+    updated_at: 2026-05-06T01:44:23.114Z
     notes: []

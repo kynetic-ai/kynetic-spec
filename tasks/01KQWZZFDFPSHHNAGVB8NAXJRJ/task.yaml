@@ -82,7 +82,7 @@ description: |
 spec_ref: "@config-daemon"
 plan_ref: "@plan-daemon-network-endpoint-contract"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-update-localhost-security-trait"
@@ -102,7 +102,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-update-config-daemon-endpoint-ac/01kqwzzf
-session_id: 01KQXDNS6NAN301XZKGSFN5X0R
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -208,6 +208,16 @@ history:
         previous: "@01KQXCSWEA8NKFB23BDNCR8DVC"
     command: review-link
     timestamp: 2026-05-06T01:33:31.264Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KQXDNS6NAN301XZKGSFN5X0R
+    command: review-verdict-needs-work
+    timestamp: 2026-05-06T01:44:25.002Z
 created_at: 2026-05-05T21:16:20.271Z
 started_at: 2026-05-06T01:16:31.264Z
 submitted_at: 2026-05-06T01:30:05.269Z
