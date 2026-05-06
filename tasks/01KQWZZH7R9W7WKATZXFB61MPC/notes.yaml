@@ -99,3 +99,43 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-06T10:12:07.548Z
+  - _ulid: 01KQYDB6MDBCDAT6PXWW90S7RV
+    content: >-
+      Fix cycle 2: addressed all three review blockers from @01KQY802.
+
+
+      (1) ac-clients-use-metadata for web UI dev client: added resolveDevDaemonEndpoint() in
+      src/daemon/endpoint.ts; packages/web-ui/vite.config.ts injects
+      VITE_KSPEC_DAEMON_API_URL/WS_URL from daemon-advertised metadata; constants.ts honors injected
+      URLs with 127.0.0.1:3456 fallback (no more hardcoded http://localhost:3456). New tests at
+      tests/web-ui/dev-server-daemon-endpoint.test.ts.
+
+
+      (2) ac-external-binding-warning: serve start --detach and serve status now emit the warning
+      from the CLI parent process via warn() to stderr, so it is visible even with stdio: ignore on
+      the daemon child. Three new tests in tests/cli-serve.test.ts cover both paths.
+
+
+      (3) ac-default-ipv6-fallback: probeBindAvailable() + selectStartupBindHost() in
+      src/daemon/endpoint.ts; daemon startup probes 127.0.0.1 and falls back to ::1 with bracketed
+      metadata when IPv4 loopback is unavailable. Gated on config.daemon.host_explicitly_configured
+      (new field, forwarded via --host-explicit CLI flag) so explicit user config is honored
+      verbatim. URL polyfill works around an @elysiajs/node bug that builds unbracketed IPv6 URLs
+      synchronously inside app.listen() (confirmed at
+      node_modules/@elysiajs/node/dist/cjs/index.js:906). Six new unit tests for probe/selection
+      plus an end-to-end cli-serve test that pre-binds 127.0.0.1:PORT and verifies the daemon falls
+      back to [::1] with correct metadata.
+
+
+      Re-verified all original ACs against the current implementation: ac-default-loopback-v4,
+      ac-default-ipv6-fallback, ac-configured-bind-host, ac-wildcard-connect-host,
+      ac-connection-metadata, ac-clients-use-metadata, ac-legacy-port-fallback,
+      ac-external-binding-warning on @daemon-network-endpoint-contract; ac-host-default,
+      ac-connect-host-config, ac-port-env-precedence, ac-connection-metadata on @config-daemon.
+
+
+      Full test suite: 8639 passing, 5 skipped, 0 failures (npm test, fresh run). 22 new behavioral
+      tests vs cycle 1.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T10:29:10.413Z
