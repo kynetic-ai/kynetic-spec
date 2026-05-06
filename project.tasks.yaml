@@ -27532,8 +27532,20 @@
   type: task
   spec_ref: "@config-daemon"
   plan_ref: "@plan-daemon-network-endpoint-contract"
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Three of the five cycle-2 review blockers cannot be addressed within this task's scope.
+      Implementation is owned by other pending tasks in @plan-daemon-network-endpoint-contract:
+      @task-shared-daemon-endpoint-resolver (changes DEFAULT_CONFIG.daemon.host from localhost to
+      127.0.0.1; adds connect_host field) and @task-daemon-startup-bind-host-metadata (changes
+      daemon server to bind to resolved host; writes complete connection metadata file). Without
+      those implementations, ac-host-default, ac-connect-host-config, and ac-connection-metadata are
+      not testable behaviorally. Recommended resolution: re-sequence plan so the two implementation
+      tasks complete first, then this task resumes to add the remaining annotations; or reduce this
+      task's AC scope by removing the three unimplementable ACs (which are also covered by
+      @daemon-network-endpoint-contract). See latest task note for full analysis. Partial progress
+      committed (44f834541): added behavioral coverage for ac-runtime-config and ac-runtime-default;
+      uncovered count reduced from 5 to 3."
   depends_on:
     - "@task-update-localhost-security-trait"
   priority: 1
