@@ -16765,6 +16765,35 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-06T06:46:24.148Z
+  - _ulid: 01KQY167GP7T1AJY6SB9V0NN89
+    type: friction
+    content: "Semantic AC rename invalidates prior test coverage even when annotations remain
+      syntactically valid. When a spec rename is a semantic shift (e.g. @daemon-proxy-detection
+      ac-port-file-check renamed to ac-connection-metadata-check, where the new AC text requires
+      reading metadata + connect_host routing rather than a port file), repointing existing test
+      annotations forward to the new AC IDs creates false coverage: kspec validate passes because
+      targets resolve, but tests still exercise the old behavior. Distinct from @01KQXZKM which
+      addresses syntactic stale-reference leftovers; this pattern produces validation-clean but
+      behaviorally-misaligned coverage. Triggered the review changes_requested on
+      @01KQWZZG0BC74MJ02VRH2V9W4C with 4 of 5 blockers being semantic-mismatch annotations."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T06:56:44.566Z
+  - _ulid: 01KQY167SVMAWTCB611T1CR7E5
+    type: success
+    content: Deferring AC coverage to implementation tasks beats repointing annotations forward. When a
+      spec evolves to describe forward-looking behavior split across multiple implementation tasks
+      (e.g. @plan-daemon-network-endpoint-contract spans the spec-update task plus
+      @task-shared-daemon-endpoint-resolver / @task-daemon-startup-bind-host-metadata /
+      @task-centralize-cli-daemon-clients), removing the misleading metadata-keyed annotations and
+      adding short comments indicating where the AC will be covered is cleaner than fabricating
+      coverage. The implementation tasks naturally add proper behavioral tests when they land.
+      Pattern accepted by reviewer in fix-cycle 1 of @01KQWZZG0BC74MJ02VRH2V9W4C.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T06:56:44.859Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
