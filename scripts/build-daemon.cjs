@@ -12,7 +12,7 @@ const outDir = path.join(distRoot, "daemon");
 const daemonSourceDir = path.join(projectRoot, "packages", "daemon", "src");
 const entityCacheSource = path.join(projectRoot, "src", "daemon", "entity-cache.ts");
 const shadowSyncManagerSource = path.join(projectRoot, "src", "daemon", "shadow-sync-manager.ts");
-const endpointSource = path.join(projectRoot, "src", "daemon", "endpoint.ts");
+const endpointSource = path.join(projectRoot, "src", "daemon-shared", "endpoint.ts");
 const parserIndexDist = path.join(distRoot, "parser", "index.js");
 
 function collectTypeScriptFiles(dir) {

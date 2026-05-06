@@ -2,7 +2,7 @@ import { resolve } from "node:path";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig } from "vite";
 import { docsPlugin } from "./vite-plugin-docs";
-import { resolveDevDaemonEndpoint } from "../../src/daemon/endpoint";
+import { resolveDevDaemonEndpoint } from "../../src/daemon-shared/endpoint";
 
 const docsDir = resolve(__dirname, "../../docs");
 const releaseNotesPath = resolve(__dirname, "../../RELEASE_NOTES.md");

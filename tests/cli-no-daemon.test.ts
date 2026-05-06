@@ -1,7 +1,8 @@
 import { execSync, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { createServer } from "node:net";
 import { join } from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, onTestFinished } from "vitest";
 import { PidFileManager } from "../src/cli/pid-utils";
 import { buildDaemonChildEnv } from "../src/cli/commands/serve";
 import {
@@ -150,6 +151,134 @@ describe("KSPEC_NO_DAEMON", () => {
       env: isolatedHome.env,
     });
   });
+  // AC: @daemon-network-endpoint-contract ac-configured-bind-host
+  // AC: @config-daemon ac-connect-host-config
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+  // AC: @daemon-network-endpoint-contract ac-connection-metadata
+  it("forwards host, host-explicit, and connect-host to the auto-started daemon", async () => {
+    const port = await new Promise<number>((resolve, reject) => {
+      const probe = createServer();
+      probe.once("error", reject);
+      probe.listen(0, "127.0.0.1", () => {
+        const address = probe.address();
+        if (!address || typeof address === "string") {
+          probe.close(() => reject(new Error("Failed to allocate ephemeral port")));
+          return;
+        }
+        const allocatedPort = address.port;
+        probe.close((err) => (err ? reject(err) : resolve(allocatedPort)));
+      });
+    });
+
+    const isolatedHome = await createIsolatedKspecHome(tempDir);
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      [
+        "daemon:",
+        "  runtime: node",
+        `  port: ${port}`,
+        "  host: 127.0.0.1",
+        "  connect_host: 127.0.0.2",
+        "  auto_start: true",
+        "",
+      ].join("\n"),
+      "utf-8",
+    );
+
+    const {
+      KSPEC_NO_DAEMON: _kspecNoDaemon,
+      KSPEC_SESSION_ID: _sessionId,
+      KSPEC_RALPH_SESSION: _legacySession,
+      KSPEC_DISPATCH_CANONICAL_HEAD: _dispatchCanonicalHead,
+      KSPEC_SHADOW_MUTATION_LOCK_FILE: _shadowMutationLockFile,
+      KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS: _shadowMutationLockTimeoutMs,
+      KSPEC_DAEMON_HOST: _daemonHost,
+      KSPEC_DAEMON_CONNECT_HOST: _daemonConnectHost,
+      KSPEC_DAEMON_PORT: _daemonPort,
+      ...cleanEnv
+    } = process.env;
+
+    const result = spawnSync("node", [CLI_PATH, "util", "ulid"], {
+      cwd: tempDir,
+      encoding: "utf-8",
+      env: { ...cleanEnv, ...isolatedHome.env, KSPEC_AUTHOR: "@test" },
+    });
+
+    expect(result.status).toBe(0);
+
+    // Wait for the auto-started daemon to write its PID file, then register
+    // SIGTERM cleanup before any assertion that could throw — keeps the
+    // detached daemon from leaking on assertion failure.
+    await waitForStartup(
+      "auto-started daemon pid file",
+      async () => {
+        try {
+          const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+          return {
+            ok: Number.isInteger(pid) && pid > 0,
+            details: `pid=${Number.isFinite(pid) ? pid : "invalid"}`,
+          };
+        } catch (err) {
+          const message = err instanceof Error ? err.message : String(err);
+          return { ok: false, details: message };
+        }
+      },
+      { timeoutMs: 10_000 },
+    );
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    onTestFinished(() => {
+      try {
+        process.kill(pid, "SIGTERM");
+      } catch {
+        // Already gone — fine.
+      }
+    });
+
+    // Wait for the auto-started daemon to write connection metadata.
+    const metadataPath = join(isolatedHome.configDir, "daemon.connection.json");
+    await waitForStartup(
+      "auto-started daemon connection metadata",
+      async () => {
+        try {
+          const raw = readTestOutputSync(metadataPath);
+          const parsed = JSON.parse(raw) as { connect_host?: string };
+          return {
+            ok: typeof parsed.connect_host === "string",
+            details: `metadata=${raw.slice(0, 200)}`,
+          };
+        } catch (err) {
+          const message = err instanceof Error ? err.message : String(err);
+          return { ok: false, details: message };
+        }
+      },
+      { timeoutMs: 10_000 },
+    );
+
+    const metadata = JSON.parse(readTestOutputSync(metadataPath)) as {
+      port: number;
+      bind_host: string;
+      connect_host: string;
+      api_url: string;
+      ws_url: string;
+    };
+    expect(metadata.port).toBe(port);
+    expect(metadata.bind_host).toBe("127.0.0.1");
+    expect(metadata.connect_host).toBe("127.0.0.2");
+    expect(metadata.api_url).toBe(`http://127.0.0.2:${port}`);
+    expect(metadata.ws_url).toBe(`ws://127.0.0.2:${port}/ws`);
+
+    // ps output also documents the forwarded flags so a regression that
+    // strips one of them shows up in either layer of the assertion.
+    const processCommand = execSync(`ps -p ${pid} -o command=`, { encoding: "utf-8" }).trim();
+    expect(processCommand).toContain("--host 127.0.0.1");
+    expect(processCommand).toContain("--host-explicit");
+    expect(processCommand).toContain("--connect-host 127.0.0.2");
+
+    kspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
+      env: isolatedHome.env,
+    });
+  });
+
   // AC: @config-daemon ac-8
   describe("explicit daemon lifecycle commands", () => {
     it("does not auto-start the daemon for serve status", async () => {

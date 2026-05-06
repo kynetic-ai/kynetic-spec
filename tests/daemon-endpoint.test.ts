@@ -51,9 +51,9 @@ import {
   resolveDaemonEndpoint,
   selectStartupBindHost,
   writeDaemonConnectionMetadata,
-} from "../src/daemon/endpoint.js";
+} from "../src/daemon-shared/endpoint.js";
 
-import type { DaemonConnectionMetadata } from "../src/daemon/endpoint.js";
+import type { DaemonConnectionMetadata } from "../src/daemon-shared/endpoint.js";
 
 import { PidFileManager as CliPidFileManager } from "../src/cli/pid-utils.js";
 import { PidFileManager as DaemonPidFileManager } from "../packages/daemon/src/pid.js";

@@ -31,7 +31,7 @@ import {
   LEGACY_PORT_FILENAME,
   LOOPBACK_HOST_V4,
   resolveDevDaemonEndpoint,
-} from "../../src/daemon/endpoint";
+} from "../../src/daemon-shared/endpoint";
 
 import { createTempDir, cleanupTempDir } from "../helpers/cli";
 
