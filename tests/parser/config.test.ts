@@ -82,7 +82,7 @@ describe("Project Config", () => {
 
     // AC: @project-config ac-2 (partial - config file parsing)
     // AC: @config-validation ac-1 ac-2 — validation config fields
-    // AC: @config-daemon ac-5 — host from config file
+    // AC: @config-daemon ac-host-config — host from config file
     it("parses valid config file", async () => {
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
@@ -283,7 +283,8 @@ ralph:
     });
 
     // AC: @project-config ac-5
-    // AC: @config-daemon ac-6 — env var overrides config host
+    // AC: @config-daemon ac-host-env-precedence — env var overrides config host
+    // AC: @config-daemon ac-port-env-precedence — env var overrides config port
     it("env vars take precedence over config file values", async () => {
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
