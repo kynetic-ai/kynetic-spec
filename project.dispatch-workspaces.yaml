@@ -6515,12 +6515,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-06T14:18:12.589Z
+      updated_at: 2026-05-06T14:35:38.078Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T14:18:14.115Z
+      updated_at: 2026-05-06T14:35:38.078Z
     integration:
       status: pending
       detail: null
@@ -6528,7 +6528,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 83a52e650b8e91a71275f2ec67767b01765f5e53
-      updated_at: 2026-05-06T14:18:12.589Z
+      updated_at: 2026-05-06T14:35:38.078Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KQWZZHH1SKQ5DG44EEBMT9H9"
@@ -6536,9 +6536,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T14:01:47.623Z
-      last_reconciled_at: 2026-05-06T14:18:14.115Z
+      last_reconciled_at: 2026-05-06T14:35:38.078Z
       created_at: 2026-05-06T13:37:13.928Z
-      updated_at: 2026-05-06T14:18:14.115Z
+      updated_at: 2026-05-06T14:35:38.078Z
     workspace_id: dispatch-workspace-01KQWZZHH1SKQ5DG44EEBMT9H9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -6547,7 +6547,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-startup-bind-host-metadata/01kqwzzh
         head: 32746e58b5712cb18605f876a1ca8ab6f47aaa63
-        last_seen_at: 2026-05-06T14:01:22.260Z
+        last_seen_at: 2026-05-06T14:35:38.078Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-startup-bind-host-metadata-01kqwzzh
   - active_role: null
     base_branch_point: 83a52e650b8e91a71275f2ec67767b01765f5e53
