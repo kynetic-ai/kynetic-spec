@@ -36499,7 +36499,7 @@ runs:
     started_at: 2026-05-06T13:37:17.339Z
     completed_at: 2026-05-06T13:39:24.850Z
   - _ulid: 01KQYS930SQKZ7X3RTGKKKAC4M
-    status: active
+    status: completed
     current_step: 5
     initiated_by: "@claude"
     step_results:
@@ -36559,7 +36559,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-06T14:00:28.602Z
-        completed_at: 2026-05-06T14:00:28.602Z
+        completed_at: 2026-05-06T14:00:59.961Z
+        notes: "Captured: 2 friction observations (upstream-fix-cycle scope absorption; AC annotation gaps
+          across task ULIDs), 1 success observation (reading task description literally caught an
+          ordering bug), 2 inbox items (tooling proposals: surface scope absorption to downstream
+          worker; surface existing AC coverage annotated under other tasks). Skipped task creation —
+          guidelines lean inbox-first when scope is unclear."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T13:57:44.090Z
+    completed_at: 2026-05-06T14:00:59.961Z
