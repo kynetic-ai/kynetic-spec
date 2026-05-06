@@ -178780,6 +178780,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-06T11:21:16.792Z
+      - _ulid: 01KQYGGB9YJH7M5HVXYDNEJBDY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQYGG9XC4MB9E9TYQ7N3F329
+        timestamp: 2026-05-06T11:24:24.766Z
     examined_commit: 3ef22cbfd8d59b8a6c4aa5c9ecc57b826152024a
     external_links: []
     lifecycle_state: open
@@ -178789,8 +178796,31 @@ reviews:
       content_hash: ""
       ref: "@01KQWZZH7R9W7WKATZXFB61MPC"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQYGG9XC4MB9E9TYQ7N3F329
+        anchor:
+          type: code
+          commit: 3ef22cbfd8d59b8a6c4aa5c9ecc57b826152024a
+          line_end: 340
+          line_start: 296
+          path: src/daemon-shared/endpoint.ts
+          side: head
+        entries:
+          - _ulid: 01KQYGG9XC9MESHZP5DQQ834PS
+            author: Jacob Chapel
+            body: "MUST-FIX: IPv6 fallback currently treats every 127.0.0.1 bind failure as 'IPv4 loopback
+              unavailable'.  collapses EADDRINUSE, EAFNOSUPPORT, EADDRNOTAVAIL, and other errors to
+              , and  then falls back to ::1 for all of them. That means if the requested port is
+              already occupied on 127.0.0.1 by another service,  can silently start a daemon on the
+              same port over IPv6 instead of reporting the port collision. The spec's
+              ac-default-ipv6-fallback only permits fallback when IPv4 loopback itself is
+              unavailable; port-in-use is a different startup failure. Evidence:
+              tests/cli-serve.test.ts:409-417 pre-binds 127.0.0.1:PORT and expects fallback, proving
+              the submitted behavior is using EADDRINUSE as the fallback signal rather than an
+              IPv4-loopback-unavailable condition."
+            created_at: 2026-05-06T11:24:23.340Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-06T11:20:55.480Z
-    updated_at: 2026-05-06T11:21:15.386Z
+    updated_at: 2026-05-06T11:24:23.340Z
     notes: []
