@@ -179794,6 +179794,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-06T14:50:25.385Z
+      - _ulid: 01KQYW9Z3M547VYA0TP96EE62T
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQYW9XVSG9083MFGEZ0W6CWS
+        timestamp: 2026-05-06T14:50:38.580Z
     examined_commit: 4603717540f7bb2e42ae700d74115f8d990a1422
     external_links: []
     lifecycle_state: open
@@ -179829,7 +179836,27 @@ reviews:
               to wildcard."
             created_at: 2026-05-06T14:43:51.461Z
         kind: blocker
+      - _ulid: 01KQYW9XVSG9083MFGEZ0W6CWS
+        entries:
+          - _ulid: 01KQYW9XVS16YZQP168N4NR74J
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: packages/daemon/src/server.ts,
+              packages/web-ui/src/lib/constants.ts, packages/web-ui/src/lib/daemon-endpoint-host.ts,
+              packages/web-ui/vite.config.ts, src/daemon-shared/endpoint.ts,
+              tests/daemon-api/server.test.ts, tests/daemon-api/websocket-protocol.test.ts,
+              tests/web-ui/daemon-endpoint-host-parity.test.ts,
+              tests/web-ui/dev-server-daemon-endpoint.test.ts. Commands run: kspec task get, kspec
+              item get @daemon-network-endpoint-contract/@api-contract/@web-ui, kspec validate, git
+              diff/stat/log, AC annotation search, targeted npm test command, isolated
+              websocket-protocol rerun, full npm test, and a node snippet confirming localhost
+              same-origin is rejected by isAllowedOrigin. Claims verified: dev endpoint URLs use
+              daemon metadata/env formatting; CORS/WS origin allow-list is derived from endpoint
+              config; production same-origin regression found for localhost daemon-port access.
+              Categories searched: correctness, edge cases, error handling, security/origin checks,
+              test quality, integration."
+            created_at: 2026-05-06T14:50:37.305Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-06T14:37:03.716Z
-    updated_at: 2026-05-06T14:50:24.125Z
+    updated_at: 2026-05-06T14:50:37.305Z
     notes: []
