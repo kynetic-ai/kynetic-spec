@@ -916,7 +916,9 @@ describe("Environment Injection", () => {
       expect(adapter.description).not.toContain("Ad-hoc");
       // Command is an absolute path to the runtime (bun or npx)
       expect(adapter.command).toMatch(/\b(bun|npx)\b/);
-      expect(adapter.args).toContain("@zed-industries/codex-acp");
+      // Registered codex-acp pins a specific package version; ad-hoc resolution would
+      // pass through the bare adapter id without a version suffix.
+      expect(adapter.args.some((arg) => /^@zed-industries\/codex-acp@/.test(arg))).toBe(true);
     });
 
     // AC: @droid-acp-adapter ac-1
