@@ -17,8 +17,11 @@ description: "During review of @01KQWZZF3YJRCPKB6176HW9HWW, npm test failed dete
 spec_ref: "@codex-acp-adapter-registration"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev at d827bf98fc49af3a05b256f3f2b4d016c0422eb3. Reviewed one-file test
+  fix: codex-acp registration test now asserts a version-pinned registered package arg instead of
+  the bare ad-hoc fallback id. Verified targeted session-create test and full fresh npm test suite."
 depends_on: []
 context: []
 priority: 2
@@ -104,8 +107,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-06T00:55:03.945Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev at d827bf98fc49af3a05b256f3f2b4d016c0422eb3. Reviewed one-file test fix:
+          codex-acp registration test now asserts a version-pinned registered package arg instead of
+          the bare ad-hoc fallback id. Verified targeted session-create test and full fresh npm test
+          suite."
+        previous: null
+      completed_at:
+        new: 2026-05-06T01:06:45.937Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-06T01:06:45.944Z
 created_at: 2026-05-06T00:39:43.302Z
 started_at: 2026-05-06T00:52:19.048Z
 submitted_at: 2026-05-06T00:52:22.380Z
+completed_at: 2026-05-06T01:06:45.937Z
 todos: []
 automation: eligible
