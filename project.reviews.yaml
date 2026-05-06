@@ -179740,6 +179740,18 @@ reviews:
         runner: npm
         created_at: 2026-05-06T14:50:13.821Z
         completed_at: 2026-05-06T14:50:13.821Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate: schema/references OK; exited 6 for repository-wide warnings
+          (reference/alignment/completeness warnings pre-existing in this snapshot), no validation
+          errors."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-06T14:50:24.125Z
+        completed_at: 2026-05-06T14:50:24.125Z
     events:
       - _ulid: 01KQYVH3B4FYP1Q7BD0T7WHYE2
         actor: Jacob Chapel
@@ -179775,6 +179787,13 @@ reviews:
           status: pass
           name: targeted daemon/web-ui tests
         timestamp: 2026-05-06T14:50:15.042Z
+      - _ulid: 01KQYW9J79T6QJ1AEW6G1PYTHC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-06T14:50:25.385Z
     examined_commit: 4603717540f7bb2e42ae700d74115f8d990a1422
     external_links: []
     lifecycle_state: open
@@ -179812,5 +179831,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-06T14:37:03.716Z
-    updated_at: 2026-05-06T14:50:13.821Z
+    updated_at: 2026-05-06T14:50:24.125Z
     notes: []
