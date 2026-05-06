@@ -180784,6 +180784,12 @@ reviews:
         payload:
           thread_ulid: 01KQZ6T7X6ZT53NXTYB1DSD854
         timestamp: 2026-05-06T18:21:24.337Z
+      - _ulid: 01KQZ8C25D2A9HVVCC9PZPJ3BW
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQZ6T7X6ZT53NXTYB1DSD854
+        timestamp: 2026-05-06T18:21:30.157Z
     examined_commit: 3ec9540b97e7f27729f1fdecfe5358046e3de0c5
     external_links: []
     lifecycle_state: closed
@@ -180826,6 +180832,8 @@ reviews:
               src/cli/dispatch-events.ts instead of an underscored re-export from a command module."
             created_at: 2026-05-06T18:21:23.022Z
         kind: blocker
+        resolved_at: 2026-05-06T18:21:28.888Z
+        resolved_by: "@claude"
       - _ulid: 01KQZ79F17A6BVTY8TFNE8NM5F
         entries:
           - _ulid: 01KQZ79F17V5X9YPNGZY5V2RAA
@@ -180853,5 +180861,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T18:02:46.743Z
     created_at: 2026-05-06T17:53:24.298Z
-    updated_at: 2026-05-06T18:21:23.022Z
+    updated_at: 2026-05-06T18:21:28.888Z
     notes: []
