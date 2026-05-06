@@ -16991,6 +16991,33 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T14:35:21.059Z
+  - _ulid: 01KQYXP3HAM9HSHQK0VQXB2BG7
+    type: friction
+    content: "kspec serve start --detach + spawnSync(timeout: 30_000) interaction can hang the test
+      runner for 30+ seconds when the daemon child dies in atypical patterns (e.g. fixed-EADDRINUSE
+      path that exits non-zero quickly). The existing IPv6 fallback test using identical scaffolding
+      completes in 2.5s under the cycle-1 bug because the daemon child silently succeeded (wrote
+      metadata, stayed alive). Under the fix the daemon correctly dies on EADDRINUSE but spawnSync
+      still wedged. Workaround: spawn the daemon binary directly via spawn(node,
+      [dist/daemon/index.js, ...]) for tests asserting daemon-process behavior. Root cause of the
+      wedge not fully diagnosed — likely an interaction between the parent CLI polling loop and
+      detached-child reaping that warrants investigation if more startup-failure tests are added."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T15:14:44.906Z
+  - _ulid: 01KQYXP3VNGX8JE2993K359WX5
+    type: success
+    content: "Verifying a regression test by temporarily disabling the fix and confirming the test fails
+      — then restoring the fix — gives high confidence the test will catch a future regression of
+      the same shape. Did this for the cycle-1 EADDRINUSE blocker: with awaitListenSuccess commented
+      out, the daemon hung past 10s and the new test failed with the expected symptom (exitCode
+      null). With the fix restored, the test passed in 577ms. Worth replicating for any regression
+      test where the failure mode is async/timing-sensitive."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T15:14:45.237Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

@@ -3159,3 +3159,17 @@ inbox:
       - tests
     added_by: "@claude"
     created_at: 2026-05-06T14:00:52.169Z
+  - _ulid: 01KQYXP3SDX48Z1DGZMB5QP8GH
+    text: 'Document daemon test pattern: when asserting on daemon-process behavior (exits, lifecycle
+      file writes, error output), spawn dist/daemon/index.js directly with spawn() rather than going
+      through kspec serve start --detach. The CLI-mediated path adds parent-polling timing the test
+      does not control and has been observed to wedge spawnSync for 30+ seconds on startup-failure
+      paths. See tests/cli-serve.test.ts "does NOT write connection metadata when listen() fails on
+      EADDRINUSE" for an example.'
+    tags:
+      - reflection
+      - testing
+      - daemon
+      - docs
+    added_by: "@claude"
+    created_at: 2026-05-06T15:14:45.165Z
