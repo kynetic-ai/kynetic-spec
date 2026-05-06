@@ -146,6 +146,7 @@ daemon:
 
   describe("daemon.runtime configuration", () => {
     // AC: @daemon-runtime-adapter ac-default-node
+    // AC: @config-daemon ac-runtime-default
     it("defaults runtime to node when no config", async () => {
       const result = await loadProjectConfig(tempDir);
 
@@ -153,6 +154,7 @@ daemon:
     });
 
     // AC: @daemon-runtime-adapter ac-runtime-selection
+    // AC: @config-daemon ac-runtime-config
     it("loads runtime: node from config", async () => {
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
@@ -168,6 +170,7 @@ daemon:
     });
 
     // AC: @daemon-runtime-adapter ac-default-node
+    // AC: @config-daemon ac-runtime-default
     it("defaults runtime to node when daemon config omits runtime", async () => {
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
@@ -183,6 +186,22 @@ daemon:
       expect(result.config.daemon.runtime).toBe("node");
       expect(result.config.daemon.port).toBe(4500);
       expect(result.config.daemon.auto_start).toBe(false);
+    });
+
+    // AC: @daemon-runtime-adapter ac-runtime-selection
+    // AC: @config-daemon ac-runtime-config — bun runtime is selected from config
+    it("loads runtime: bun from config", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+daemon:
+  runtime: bun
+`,
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.daemon.runtime).toBe("bun");
     });
   });
 
