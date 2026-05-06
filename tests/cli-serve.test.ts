@@ -398,7 +398,16 @@ describe("kspec serve commands", () => {
   });
 
   // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
-  it("falls back to ::1 binding and metadata when default IPv4 loopback port is unavailable", async () => {
+  // Regression guard for cycle-4 reviewer blocker: the IPv6 fallback must
+  // distinguish "IPv4 loopback unavailable" (the only condition the spec
+  // permits fallback for) from "this port is taken on 127.0.0.1". A naive
+  // implementation that treats all bind failures the same will silently
+  // start a daemon on [::1]:PORT over a real port collision — masking the
+  // conflict and starting on the wrong endpoint. End-to-end fallback for
+  // genuine address_unavailable conditions (EADDRNOTAVAIL / EAFNOSUPPORT)
+  // can't be reliably simulated without root; that path is exhaustively
+  // covered by selectStartupBindHost unit tests in tests/daemon-endpoint.
+  it("does NOT silently fall back to [::1] when the requested port is already in use on 127.0.0.1", async () => {
     if (!nodeAvailable) {
       console.log("  ⊘ Skipping test - Node runtime required");
       return;
@@ -406,10 +415,10 @@ describe("kspec serve commands", () => {
 
     const port = await getAvailablePort();
 
-    // Pre-bind 127.0.0.1:PORT so the daemon's startup probe finds the
-    // default IPv4 loopback unavailable. The daemon must then fall back
-    // to ::1 and advertise bracketed IPv6 URLs in its metadata. IPv4 and
-    // IPv6 ports are independent on Linux, so ::1:PORT is still free.
+    // Pre-bind 127.0.0.1:PORT so the daemon's actual listen() will see
+    // EADDRINUSE. The previous (incorrect) behavior would have probed,
+    // observed any error, and silently switched to ::1. The fix must
+    // surface the port conflict instead.
     const blocker = createServer();
     await new Promise<void>((resolve, reject) => {
       blocker.once("error", reject);
@@ -422,48 +431,63 @@ describe("kspec serve commands", () => {
         }),
     );
 
+    // The detach parent polls for a live PID and may briefly report
+    // success because PID/metadata files are written before the daemon's
+    // app.listen() call fails. The parent's exit code is therefore not
+    // a reliable signal — the daemon dies shortly after. The reliable
+    // signal is what actually ends up bound on the network.
     runKspec(
       `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
       tempDir,
+      { expectFail: true },
     );
 
-    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
-    onTestFinished(() => killPid(pid));
+    // Best-effort PID cleanup in case the daemon child wrote a PID file
+    // before its listen() call failed.
+    if (existsSync(globalPidFilePath)) {
+      const pidText = readTestOutputSync(globalPidFilePath).trim();
+      const pid = parseInt(pidText, 10);
+      if (Number.isFinite(pid) && pid > 0) {
+        onTestFinished(() => killPid(pid));
+      }
+    }
 
-    // Wait for the daemon to be reachable on ::1 (proves bind landed there).
-    await waitForStartup(
-      `daemon health endpoint on [::1]:${port}`,
-      async () => {
+    // Direct behavioral proof of the fix: nothing should ever come up on
+    // the IPv6 loopback at this port. With the cycle-4 bug, the daemon
+    // would have silently bound [::1]:PORT — health check would succeed.
+    // Poll briefly to make absolutely sure no late-binding sneaks in.
+    const ipv6HealthChecked = await new Promise<boolean>((resolve) => {
+      let elapsed = 0;
+      const tick = async (): Promise<void> => {
         try {
           const response = await fetch(`http://[::1]:${port}/api/health`);
-          const body = (await response.text()).trim();
-          return {
-            ok: response.ok || body.includes('"status":"ok"'),
-            details: `status=${response.status}`,
-          };
-        } catch (error) {
-          const message = error instanceof Error ? error.message : String(error);
-          return { ok: false, details: `fetch error=${message}` };
+          if (response.ok) {
+            resolve(true);
+            return;
+          }
+        } catch {
+          // Connection refused — expected: nothing listening on [::1]:PORT.
         }
-      },
-      { timeoutMs: 10_000 },
-    );
-
-    const metadataPath = join(isolatedHome, ".config", "kspec", "daemon.connection.json");
-    expect(existsSync(metadataPath)).toBe(true);
-
-    const metadata = JSON.parse(readTestOutputSync(metadataPath));
-    expect(metadata).toMatchObject({
-      pid,
-      port,
-      bind_host: "::1",
-      connect_host: "::1",
-      api_url: `http://[::1]:${port}`,
-      ws_url: `ws://[::1]:${port}/ws`,
-      runtime: "node",
+        elapsed += 200;
+        if (elapsed >= 2000) {
+          resolve(false);
+          return;
+        }
+        setTimeout(() => void tick(), 200);
+      };
+      void tick();
     });
+    expect(ipv6HealthChecked).toBe(false);
 
-    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+    // If metadata was written (server.ts writes metadata before listen()),
+    // it must reflect the resolved IPv4 bind host — never silently
+    // advertise [::1] over a real port collision.
+    const metadataPath = join(isolatedHome, ".config", "kspec", "daemon.connection.json");
+    if (existsSync(metadataPath)) {
+      const metadata = JSON.parse(readTestOutputSync(metadataPath));
+      expect(metadata.bind_host).toBe("127.0.0.1");
+      expect(metadata.api_url).toBe(`http://127.0.0.1:${port}`);
+    }
   });
 
   // AC: @daemon-network-endpoint-contract ac-external-binding-warning

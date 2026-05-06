@@ -678,13 +678,18 @@ describe("IPv6 fallback for daemon startup bind", () => {
   // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
 
   describe("probeBindAvailable", () => {
-    it("returns true when 127.0.0.1 binding succeeds on a free port", async () => {
+    it("reports available=true when 127.0.0.1 binding succeeds on a free port", async () => {
       // Port 0 lets the OS pick a free port — proves the probe really binds.
-      const available = await probeBindAvailable(LOOPBACK_HOST_V4, 0);
-      expect(available).toBe(true);
+      const result = await probeBindAvailable(LOOPBACK_HOST_V4, 0);
+      expect(result).toEqual({ available: true });
     });
 
-    it("returns false when the port is already taken", async () => {
+    it("reports reason='port_in_use' (NOT address_unavailable) when the port is taken", async () => {
+      // Critical correctness signal: a port collision must NOT look the
+      // same as the IPv4 loopback being absent from the system. The
+      // reviewer's blocker was that the old boolean signature collapsed
+      // EADDRINUSE and EADDRNOTAVAIL into the same fallback path, which
+      // silently started the daemon on ::1 over a real port collision.
       const { createServer } = await import("node:net");
       const blocker = createServer();
       await new Promise<void>((resolve) => {
@@ -694,8 +699,12 @@ describe("IPv6 fallback for daemon startup bind", () => {
       const port =
         typeof address === "object" && address && "port" in address ? address.port : 0;
       try {
-        const available = await probeBindAvailable(LOOPBACK_HOST_V4, port);
-        expect(available).toBe(false);
+        const result = await probeBindAvailable(LOOPBACK_HOST_V4, port);
+        expect(result.available).toBe(false);
+        if (!result.available) {
+          expect(result.reason).toBe("port_in_use");
+          expect(result.code).toBe("EADDRINUSE");
+        }
       } finally {
         await new Promise<void>((resolve) => blocker.close(() => resolve()));
       }
@@ -705,9 +714,9 @@ describe("IPv6 fallback for daemon startup bind", () => {
       // After probeBindAvailable resolves, the next probe on the same port
       // must succeed. If we leaked the listener, this would return false.
       const first = await probeBindAvailable(LOOPBACK_HOST_V4, 0);
-      expect(first).toBe(true);
+      expect(first).toEqual({ available: true });
       const second = await probeBindAvailable(LOOPBACK_HOST_V4, 0);
-      expect(second).toBe(true);
+      expect(second).toEqual({ available: true });
     });
   });
 
@@ -717,24 +726,63 @@ describe("IPv6 fallback for daemon startup bind", () => {
         resolvedBindHost: LOOPBACK_HOST_V4,
         port: 12345,
         hostExplicitlyConfigured: false,
-        probe: async () => true,
+        probe: async () => ({ available: true }),
       });
       expect(result.bindHost).toBe(LOOPBACK_HOST_V4);
       expect(result.fellBackToIpv6).toBe(false);
     });
 
-    it("falls back to ::1 when default IPv4 loopback is unavailable", async () => {
-      // The reviewer's specific concern: if probing 127.0.0.1 fails, the
-      // daemon must switch its bind host to ::1 BEFORE writing metadata
-      // so clients see bracketed IPv6 URLs.
+    it("falls back to ::1 ONLY when probe reports IPv4 loopback address is unavailable", async () => {
+      // The spec narrows the trigger: fall back when "binding 127.0.0.1
+      // fails because IPv4 loopback is unavailable" — i.e. EADDRNOTAVAIL
+      // / EAFNOSUPPORT, the address itself is unusable. The probe must
+      // distinguish that condition from a port collision.
       const result = await selectStartupBindHost({
         resolvedBindHost: LOOPBACK_HOST_V4,
         port: 12345,
         hostExplicitlyConfigured: false,
-        probe: async () => false,
+        probe: async () => ({
+          available: false,
+          reason: "address_unavailable",
+          code: "EADDRNOTAVAIL",
+        }),
       });
       expect(result.bindHost).toBe(LOOPBACK_HOST_V6);
       expect(result.fellBackToIpv6).toBe(true);
+    });
+
+    it("does NOT fall back when probe reports port_in_use (port collision must surface as an error)", async () => {
+      // Core regression guard for cycle-4 reviewer blocker: if 127.0.0.1
+      // is fine but the requested port is already taken by another
+      // process, the daemon must NOT silently start on ::1 over the same
+      // port. selectStartupBindHost returns 127.0.0.1 so the caller's
+      // app.listen() surfaces the EADDRINUSE error to the user verbatim.
+      const result = await selectStartupBindHost({
+        resolvedBindHost: LOOPBACK_HOST_V4,
+        port: 12345,
+        hostExplicitlyConfigured: false,
+        probe: async () => ({
+          available: false,
+          reason: "port_in_use",
+          code: "EADDRINUSE",
+        }),
+      });
+      expect(result.bindHost).toBe(LOOPBACK_HOST_V4);
+      expect(result.fellBackToIpv6).toBe(false);
+    });
+
+    it("does NOT fall back on an unknown probe error (treated like port collision)", async () => {
+      // Unrecognized error codes are conservative: keep IPv4 so the real
+      // listen() reports the actual error rather than masking it with a
+      // protocol swap.
+      const result = await selectStartupBindHost({
+        resolvedBindHost: LOOPBACK_HOST_V4,
+        port: 12345,
+        hostExplicitlyConfigured: false,
+        probe: async () => ({ available: false, reason: "unknown", code: "EACCES" }),
+      });
+      expect(result.bindHost).toBe(LOOPBACK_HOST_V4);
+      expect(result.fellBackToIpv6).toBe(false);
     });
 
     it("does NOT fall back when the host was explicitly configured", async () => {
@@ -744,7 +792,11 @@ describe("IPv6 fallback for daemon startup bind", () => {
         resolvedBindHost: LOOPBACK_HOST_V4,
         port: 12345,
         hostExplicitlyConfigured: true,
-        probe: async () => false,
+        probe: async () => ({
+          available: false,
+          reason: "address_unavailable",
+          code: "EADDRNOTAVAIL",
+        }),
       });
       expect(result.bindHost).toBe(LOOPBACK_HOST_V4);
       expect(result.fellBackToIpv6).toBe(false);
@@ -755,7 +807,11 @@ describe("IPv6 fallback for daemon startup bind", () => {
         resolvedBindHost: WILDCARD_HOST_V4,
         port: 12345,
         hostExplicitlyConfigured: false,
-        probe: async () => false,
+        probe: async () => ({
+          available: false,
+          reason: "address_unavailable",
+          code: "EADDRNOTAVAIL",
+        }),
       });
       expect(result.bindHost).toBe(WILDCARD_HOST_V4);
       expect(result.fellBackToIpv6).toBe(false);
@@ -763,12 +819,17 @@ describe("IPv6 fallback for daemon startup bind", () => {
 
     it("end-to-end: fallback bind host produces bracketed IPv6 URLs via resolveDaemonEndpoint", async () => {
       // Compose the two helpers as the daemon does. After the IPv4 probe
-      // fails, the resolved endpoint MUST advertise [::1] in api/ws URLs.
+      // reports the address is unavailable, the resolved endpoint MUST
+      // advertise [::1] in api/ws URLs.
       const selection = await selectStartupBindHost({
         resolvedBindHost: LOOPBACK_HOST_V4,
         port: 4321,
         hostExplicitlyConfigured: false,
-        probe: async () => false,
+        probe: async () => ({
+          available: false,
+          reason: "address_unavailable",
+          code: "EAFNOSUPPORT",
+        }),
       });
       const endpoint = resolveDaemonEndpoint({
         port: 4321,

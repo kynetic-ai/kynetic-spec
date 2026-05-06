@@ -271,20 +271,67 @@ export function resolveDaemonEndpoint(config: DaemonNetworkConfig): DaemonResolv
 // ── Bind probing / IPv6 fallback ───────────────────────────────────
 
 /**
+ * Reason a bind probe could not bind the requested host:port.
+ *
+ * - `address_unavailable`: the address itself is unusable on this system
+ *   (e.g. 127.0.0.1 when IPv4 loopback is disabled). This is the only
+ *   condition that justifies switching protocols (IPv4 → IPv6).
+ * - `port_in_use`: the address works but the port is taken by another
+ *   process. This is a real conflict that must surface to the user.
+ * - `unknown`: every other error. Treated like `port_in_use` — never a
+ *   trigger for protocol fallback.
+ */
+export type ProbeUnavailableReason = "address_unavailable" | "port_in_use" | "unknown";
+
+/**
+ * Result of `probeBindAvailable`. When `available` is false, the `reason`
+ * lets the caller decide whether to fall back to a different host or
+ * surface the error.
+ */
+export type ProbeBindResult =
+  | { available: true }
+  | { available: false; reason: ProbeUnavailableReason; code: string | null };
+
+/**
+ * Map a Node `errno` code to a probe failure reason. Only address-level
+ * errors (the IPv4/IPv6 stack itself is unavailable on this system) map
+ * to `address_unavailable`. Port collisions and everything else are
+ * preserved as discrete signals so the caller does not silently swap
+ * protocols on a real conflict.
+ */
+function classifyProbeError(code: string | null | undefined): ProbeUnavailableReason {
+  if (code === "EADDRNOTAVAIL" || code === "EAFNOSUPPORT") return "address_unavailable";
+  if (code === "EADDRINUSE") return "port_in_use";
+  return "unknown";
+}
+
+function errorCode(err: unknown): string | null {
+  if (err && typeof err === "object" && "code" in err) {
+    const code = (err as { code?: unknown }).code;
+    return typeof code === "string" ? code : null;
+  }
+  return null;
+}
+
+/**
  * Probe whether `host:port` can be bound. Opens a transient TCP listener
- * and resolves true on `listening`, false on any error (EADDRNOTAVAIL,
- * EAFNOSUPPORT, EADDRINUSE, etc). The probe is closed before resolving.
+ * and resolves with `{ available: true }` on `listening`, or
+ * `{ available: false, reason, code }` on error. The probe is closed
+ * before resolving.
  *
  * Used by daemon startup to detect whether the default IPv4 loopback is
- * available before falling back to ::1.
+ * unusable on this system. Only `reason: 'address_unavailable'` justifies
+ * falling back to ::1 — `port_in_use` is a real conflict the daemon must
+ * surface, not silently route around by switching protocols on the same
+ * port.
  *
  * AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
  */
-export function probeBindAvailable(host: string, port: number): Promise<boolean> {
+export function probeBindAvailable(host: string, port: number): Promise<ProbeBindResult> {
   return new Promise((resolve) => {
     const server = createNetServer();
     let settled = false;
-    const finish = (result: boolean): void => {
+    const finish = (result: ProbeBindResult): void => {
       if (settled) return;
       settled = true;
       try {
@@ -293,12 +340,16 @@ export function probeBindAvailable(host: string, port: number): Promise<boolean>
         resolve(result);
       }
     };
-    server.once("error", () => finish(false));
-    server.once("listening", () => finish(true));
+    server.once("error", (err: unknown) => {
+      const code = errorCode(err);
+      finish({ available: false, reason: classifyProbeError(code), code });
+    });
+    server.once("listening", () => finish({ available: true }));
     try {
       server.listen({ host, port, exclusive: true });
-    } catch {
-      finish(false);
+    } catch (err) {
+      const code = errorCode(err);
+      finish({ available: false, reason: classifyProbeError(code), code });
     }
   });
 }
@@ -312,7 +363,13 @@ export interface StartupBindSelection {
  * Choose the bind host the daemon should actually use at startup. When
  * the resolved bind host is the default IPv4 loopback AND the user did
  * not explicitly configure a host, probe whether 127.0.0.1 can be bound;
- * fall back to ::1 if it cannot.
+ * fall back to ::1 ONLY when the probe reports the IPv4 loopback address
+ * itself is unavailable (EADDRNOTAVAIL / EAFNOSUPPORT).
+ *
+ * Port-in-use (EADDRINUSE) and other errors do NOT trigger fallback —
+ * the caller's actual `app.listen()` call will surface the same error
+ * to the user. Silently switching protocols on a port collision would
+ * mask a real conflict and start a daemon on the wrong endpoint.
  *
  * Pass `probe = probeBindAvailable` in production. Tests inject a stub.
  *
@@ -322,19 +379,25 @@ export async function selectStartupBindHost(args: {
   resolvedBindHost: string;
   port: number;
   hostExplicitlyConfigured: boolean;
-  probe?: (host: string, port: number) => Promise<boolean>;
+  probe?: (host: string, port: number) => Promise<ProbeBindResult>;
 }): Promise<StartupBindSelection> {
   const probe = args.probe ?? probeBindAvailable;
   const normalized = normalizeDaemonHost(args.resolvedBindHost);
-  // Only fall back when the user did not configure a host AND the
-  // resolved default is the IPv4 loopback. Explicit config is honored
-  // verbatim — if the user asked for 127.0.0.1, surface a bind error
-  // instead of silently switching protocols.
+  // Only consider fallback when the user did not configure a host AND
+  // the resolved default is the IPv4 loopback. Explicit config is
+  // honored verbatim — if the user asked for 127.0.0.1, surface a bind
+  // error instead of silently switching protocols.
   if (args.hostExplicitlyConfigured || normalized !== LOOPBACK_HOST_V4) {
     return { bindHost: normalized, fellBackToIpv6: false };
   }
-  const ipv4Available = await probe(LOOPBACK_HOST_V4, args.port);
-  if (ipv4Available) {
+  const result = await probe(LOOPBACK_HOST_V4, args.port);
+  if (result.available) {
+    return { bindHost: LOOPBACK_HOST_V4, fellBackToIpv6: false };
+  }
+  // Fall back ONLY when the IPv4 loopback address itself is unavailable
+  // on this system. Port collisions and other errors are passed through
+  // so the daemon's actual listen() surfaces them to the user verbatim.
+  if (result.reason !== "address_unavailable") {
     return { bindHost: LOOPBACK_HOST_V4, fellBackToIpv6: false };
   }
   return { bindHost: LOOPBACK_HOST_V6, fellBackToIpv6: true };
