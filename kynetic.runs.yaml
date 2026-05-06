@@ -35195,7 +35195,7 @@ runs:
     completed_at: 2026-05-06T05:47:15.948Z
   - _ulid: 01KQXY14SJHDKD736KK9TB25WK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35211,7 +35211,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T06:02:08.128Z
-        completed_at: 2026-05-06T06:02:08.128Z
+        completed_at: 2026-05-06T06:02:23.661Z
+        notes: "Friction points: the review gate around AC coverage was too blunt for this spec-update task.
+          Prior review cycles treated intentionally future behavioral coverage as a blocker even
+          though the plan explicitly assigned those implementation ACs to downstream endpoint
+          resolver/startup tasks. The reviewer had to reconstruct task/plan ownership manually from
+          task notes, kspec validate -v, and downstream task descriptions before approving. This is
+          systemic for staged plans that first update specs and then implement behavior."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T06:02:23.661Z
+        completed_at: 2026-05-06T06:02:23.661Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:01:32.210Z
