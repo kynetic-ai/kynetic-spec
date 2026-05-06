@@ -1,1 +1,42 @@
-notes: []
+notes:
+  - _ulid: 01KQYSW8VNB000SED6PFSTK8GX
+    content: >-
+      Approach: 
+
+
+      (1) Web UI host helpers: mirror pure host-formatting helpers (formatHostForUrl,
+      buildDaemonUrls, normalizeDaemonHost, isIpv6Literal, DEFAULT_DAEMON_PORT, DEFAULT_BIND_HOST)
+      in a browser-safe file packages/web-ui/src/lib/daemon-endpoint-host.ts. Add a parity test that
+      imports both the mirror and the Node-side src/daemon-shared/endpoint to verify they produce
+      identical results for the same inputs. Mirror approach avoids extracting into a shared file
+      (which would add complexity to the daemon build pipeline that copies endpoint.ts). 
+
+
+      (2) constants.ts precedence: VITE_KSPEC_DAEMON_API_URL/VITE_KSPEC_DAEMON_WS_URL (injected by
+      Vite when daemon metadata exists) > VITE_KSPEC_DAEMON_HOST + VITE_KSPEC_DAEMON_PORT (user
+      override) > defaults (127.0.0.1:DEFAULT_DAEMON_PORT). Use buildDaemonUrls for IPv6 bracketing.
+      Production same-origin path stays unchanged. 
+
+
+      (3) Vite config: only define VITE_KSPEC_DAEMON_API_URL/_WS_URL when daemon metadata is
+      actually present (not when fallback default is used). Add new
+      resolveDevDaemonEndpointFromMetadata() that returns null when no metadata exists. Document
+      VITE_KSPEC_DAEMON_HOST/PORT env vars. 
+
+
+      (4) CORS: derive allowed origins from endpoint config — same-origin daemon URL plus
+      localhost:5173 and 127.0.0.1:5173 plus connect-host:5173 when external. Make dev server port
+      overridable via KSPEC_WEB_UI_DEV_PORT (default 5173). No wildcard CORS. 
+
+
+      (5) WebSocket origin check: in beforeHandle, validate Origin header against the same
+      allowed-origin set as CORS; reject with thrown error (Elysia returns 500-ish; we'll throw to
+      abort upgrade) when not allowed. 
+
+
+      Test plan: parity tests for browser host helpers; constants.ts tests for HOST/PORT env vars +
+      URL var precedence + IPv6 + default; CORS tests for derived origins (loopback bind); WS origin
+      tests covering accept and reject.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T14:08:12.661Z
