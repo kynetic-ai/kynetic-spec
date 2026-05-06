@@ -179239,6 +179239,13 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-05-06T12:46:53.960Z
+      - _ulid: 01KQYN7Z19W1YPFXXFS52F29G3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQYN7XT9EMSBHP5K1VGQHX2X
+        timestamp: 2026-05-06T12:47:12.937Z
     examined_commit: 39de9f92f702d1e369143656c861fedd9099411b
     external_links: []
     lifecycle_state: open
@@ -179248,8 +179255,36 @@ reviews:
       content_hash: ""
       ref: "@01KQWZZH7R9W7WKATZXFB61MPC"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQYN7XT9EMSBHP5K1VGQHX2X
+        anchor:
+          type: code
+          commit: 39de9f92f702d1e369143656c861fedd9099411b
+          line_end: 194
+          line_start: 192
+          path: src/daemon-shared/endpoint.ts
+          side: head
+        entries:
+          - _ulid: 01KQYN7XT9CJN92RAA9ZXSW91F
+            author: Jacob Chapel
+            body: "MUST-FIX: explicit connect_host can be advertised even when that URL is not actually
+              reachable or accepted by the daemon. resolveDaemonConnectHost returns any non-empty
+              explicitConnectHost before considering the bind host, so the branch can write metadata
+              such as bind_host=127.0.0.1 and api_url=http://127.0.0.2:<port>; a server bound to
+              127.0.0.1 is not reachable at 127.0.0.2 (verified with a local HTTP probe: 127.0.0.1
+              -> 200, 127.0.0.2 -> TypeError). For wildcard/external binds, the built daemon
+              middleware still rejects non-default advertised hosts too: importing
+              dist/daemon/server.js and running localhostOnly() returned 403 for Host 127.0.0.2:3456
+              and 192.0.2.10:3456. This breaks @config-daemon ac-connect-host-config and
+              @daemon-network-endpoint-contract ac-clients-use-metadata because clients now honor
+              metadata but the advertised endpoint may fail before any daemon API call succeeds.
+              Constrain explicit connect_host to hosts reachable for the bind host, or make request
+              validation accept the resolved advertised connect host in external-binding mode, and
+              add a behavioral test that starts/calls through a non-default connect_host instead of
+              only asserting metadata."
+            created_at: 2026-05-06T12:47:11.689Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-06T12:36:04.232Z
-    updated_at: 2026-05-06T12:46:52.729Z
+    updated_at: 2026-05-06T12:47:11.689Z
     notes: []
