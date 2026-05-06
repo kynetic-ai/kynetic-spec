@@ -9,3 +9,17 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-06T06:06:45.258Z
+  - _ulid: 01KQXYJ8PXR6T4HYG6HFF5R96S
+    content: "Spec mutations applied via batch (6 ops, atomic). @cli-daemon-proxy: replaced
+      ac-auto-detect (now keyed on connection metadata + connect_host/port routing), replaced
+      ac-force-direct (scoped to non-management commands), added
+      ac-force-direct-management-exception. @daemon-proxy-detection: renamed ac-port-file-check →
+      ac-connection-metadata-check with new metadata-driven text, added ac-legacy-port-file-fallback
+      for legacy port file behavior, replaced ac-health-timeout to key on advertised endpoint.
+      Verified with kspec item get on both. Also updated two stale ac-port-file-check annotations in
+      tests/cli-daemon-proxy.test.ts to point at ac-connection-metadata-check (no-daemon detection
+      case) and ac-legacy-port-file-fallback (port-file success case). kspec validate --warnings-ok
+      confirms no remaining ac-port-file-check references."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T06:10:53.277Z
