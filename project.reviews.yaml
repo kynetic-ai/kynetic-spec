@@ -176029,7 +176029,20 @@ reviews:
     slugs: []
     title: Review task-update-localhost-security-trait
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full npm test ran: 8544 passed, 5 skipped, 1 failed in tests/session-create.test.ts. The
+          failed file reproduced twice with npm test -- --run tests/session-create.test.ts --fresh.
+          git diff --name-only dev...HEAD is empty, so this is not introduced by the reviewed
+          spec-only task. Created follow-up bug task @01KQXBKW."
+        name: npm test regression triage
+        required: true
+        runner: npm
+        created_at: 2026-05-06T00:40:09.849Z
+        completed_at: 2026-05-06T00:40:09.849Z
     events:
       - _ulid: 01KQXAZHH6AEEDEPTJADSDXNF3
         actor: Jacob Chapel
@@ -176044,6 +176057,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-06T00:30:00.684Z
+      - _ulid: 01KQXBMQKQ4ZD0SSKZ9FDC7J7Z
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test regression triage
+        timestamp: 2026-05-06T00:40:11.128Z
     examined_commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
     external_links: []
     lifecycle_state: open
@@ -176056,5 +176076,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T00:28:36.774Z
-    updated_at: 2026-05-06T00:29:59.227Z
+    updated_at: 2026-05-06T00:40:09.849Z
     notes: []
