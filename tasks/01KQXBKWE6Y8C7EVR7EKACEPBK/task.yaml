@@ -17,7 +17,7 @@ description: "During review of @01KQWZZF3YJRCPKB6176HW9HWW, npm test failed dete
 spec_ref: "@codex-acp-adapter-registration"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -27,6 +27,14 @@ tags:
   - agents
   - acp
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-fix-codex-acp-adapter-package-resolution-test/01kqxbkw
+  captured_at: 2026-05-06T00:52:22.377Z
+  commit: 91354aec65fbdf3f7469d28308f0743c9cb78c61
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KQXBMZT2678GZ7ZDAJGC0G34
 history:
   - author: "@claude"
@@ -68,7 +76,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-06T00:52:19.049Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-fix-codex-acp-adapter-package-resolution-test/01kqxbkw
+          captured_at: 2026-05-06T00:52:22.377Z
+          commit: 91354aec65fbdf3f7469d28308f0743c9cb78c61
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-06T00:52:22.380Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-06T00:52:22.381Z
 created_at: 2026-05-06T00:39:43.302Z
 started_at: 2026-05-06T00:52:19.048Z
+submitted_at: 2026-05-06T00:52:22.380Z
 todos: []
 automation: eligible
