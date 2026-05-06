@@ -177866,6 +177866,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQY4S05TBHYZQ8S74AV8G7NV
         timestamp: 2026-05-06T07:59:26.553Z
+      - _ulid: 01KQY4SMG8KBQHW2HFWHCS3920
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQY4SK9SJHR0CQ8WFST0WXQS
+        timestamp: 2026-05-06T07:59:46.184Z
     examined_commit: 65bfbcb012624d11b50d350ce353d2161ca0d9da
     external_links: []
     lifecycle_state: open
@@ -177912,7 +177919,27 @@ reviews:
               daemon.host values cannot affect the actual listener."
             created_at: 2026-05-06T07:59:25.370Z
         kind: blocker
+      - _ulid: 01KQY4SK9SJHR0CQ8WFST0WXQS
+        anchor:
+          type: code
+          commit: 65bfbcb012624d11b50d350ce353d2161ca0d9da
+          line_end: 95
+          line_start: 78
+          path: src/cli/daemon-proxy.ts
+          side: head
+        entries:
+          - _ulid: 01KQY4SK9SGKW545Q49XJPMA4C
+            author: Jacob Chapel
+            body: "MUST-FIX: daemon clients still ignore the new connection metadata and derive URLs from the
+              legacy port file. detectDaemon reads daemon.port and fetches
+              http://127.0.0.1:<port>/api/health directly; other command paths similarly construct
+              http://localhost:<port>. This violates the task requirement that command files receive
+              or read a resolved endpoint object and AC @daemon-network-endpoint-contract
+              ac-clients-use-metadata; a daemon advertising a different api_url or ws_url will not
+              be used."
+            created_at: 2026-05-06T07:59:44.953Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-06T07:48:33.590Z
-    updated_at: 2026-05-06T07:59:25.370Z
+    updated_at: 2026-05-06T07:59:44.953Z
     notes: []
