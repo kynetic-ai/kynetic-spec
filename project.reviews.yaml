@@ -180696,7 +180696,18 @@ reviews:
     slugs: []
     title: Review task-daemon-endpoint-regression-tests (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2377 test suites passed; 8722 passed / 5 skipped; duration 1962.0s.
+          Full log: /tmp/kspec-test-cache/01KQZ6MQGY4PK1T704TCBA981N/256a6d94132c90b9.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-06T18:02:20.574Z
+        completed_at: 2026-05-06T18:02:20.574Z
     events:
       - _ulid: 01KQZ6RKT9PZ8XHETKDRM57BYV
         actor: Jacob Chapel
@@ -180718,6 +180729,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQZ6T7X6ZT53NXTYB1DSD854
         timestamp: 2026-05-06T17:54:19.074Z
+      - _ulid: 01KQZ790RKTN3KY0TGQ48P36WF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-06T18:02:21.843Z
     examined_commit: 3ec9540b97e7f27729f1fdecfe5358046e3de0c5
     external_links: []
     lifecycle_state: open
@@ -180751,5 +180769,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-06T17:53:24.298Z
-    updated_at: 2026-05-06T17:54:17.638Z
+    updated_at: 2026-05-06T18:02:20.574Z
     notes: []
