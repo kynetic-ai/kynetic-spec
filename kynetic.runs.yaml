@@ -34898,7 +34898,7 @@ runs:
     completed_at: 2026-05-06T00:26:44.685Z
   - _ulid: 01KQXBRAAZP1X7RQ0SZS7YPWZ5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -34913,7 +34913,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T00:43:05.059Z
-        completed_at: 2026-05-06T00:43:05.059Z
+        completed_at: 2026-05-06T00:43:13.172Z
+        notes: "Friction: the reflect skill still says kspec workflow show works without a run ref, but the
+          CLI returned missing required argument run-ref; this is already tracked and should not be
+          duplicated. A second friction point was that creating a follow-up bug task during a
+          dispatch review caused the new task @01KQXBKW to appear in_progress under the current
+          session, requiring an immediate reset back to pending so the review session did not
+          accidentally inherit unrelated work."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T00:43:13.172Z
+        completed_at: 2026-05-06T00:43:13.172Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T00:42:08.607Z
