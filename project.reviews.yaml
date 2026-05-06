@@ -178199,7 +178199,18 @@ reviews:
     slugs: []
     title: Review shared daemon endpoint resolver (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fresh run: npm test -- --fresh. Result: 2352 suites passed; 8617 tests passed; 5 skipped;
+          duration 1895.4s."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-06T09:07:23.157Z
+        completed_at: 2026-05-06T09:07:23.157Z
     events:
       - _ulid: 01KQY802VK9CSGJGAEV33QTXMP
         actor: Jacob Chapel
@@ -178235,6 +178246,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQY8NB0P6HDVKGFQAQH9BQYW
         timestamp: 2026-05-06T09:07:20.882Z
+      - _ulid: 01KQY8NFHYT8SGTACREKEMT5ET
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-06T09:07:24.350Z
     examined_commit: d64e038c3b6cb090a8b4e199e212200cc9448da0
     external_links: []
     lifecycle_state: open
@@ -178306,5 +178324,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-06T08:55:43.220Z
-    updated_at: 2026-05-06T09:07:19.702Z
+    updated_at: 2026-05-06T09:07:23.157Z
     notes: []
