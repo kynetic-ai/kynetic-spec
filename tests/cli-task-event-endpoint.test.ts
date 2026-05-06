@@ -1,15 +1,15 @@
 /**
  * Behavioral regression tests for the CLI-side `postDispatchEvent` helper
- * in `src/cli/commands/task.ts`. The helper fires a fire-and-forget POST to
- * `/api/agent/events` whenever a task state transition is committed locally
- * — it is the only CLI-side surface that talks to the daemon's dispatch
- * event ingest endpoint, so it must honour the centralised
+ * in `src/cli/dispatch-events.ts`. The helper fires a fire-and-forget POST
+ * to `/api/agent/events` whenever a task state transition is committed
+ * locally — it is the only CLI-side surface that talks to the daemon's
+ * dispatch event ingest endpoint, so it must honour the centralised
  * `getRunningDaemonClient()` URL contract instead of re-deriving the URL
  * from a port number alone.
  *
  * Stand up an in-process recording HTTP server on a non-default loopback
  * (or bracketed IPv6) host, write daemon connection metadata pointing at
- * that endpoint, then call `_postDispatchEvent` directly and assert the
+ * that endpoint, then call `postDispatchEvent` directly and assert the
  * recorded request uses the metadata-advertised URL — not 127.0.0.1.
  *
  * AC: @daemon-network-endpoint-contract ac-clients-use-metadata
@@ -24,7 +24,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { _postDispatchEvent } from "../src/cli/commands/task.js";
+import { postDispatchEvent } from "../src/cli/dispatch-events.js";
 import { cleanupTempDir, createTempDir } from "./helpers/cli.js";
 
 interface RecordedRequest {
@@ -131,7 +131,7 @@ function expectedHostHeader(host: string, port: number): string {
   return host.includes(":") ? `[${host}]:${port}` : `${host}:${port}`;
 }
 
-describe("_postDispatchEvent posts /api/agent/events to the metadata-advertised api_url", () => {
+describe("postDispatchEvent posts /api/agent/events to the metadata-advertised api_url", () => {
   let homeDir: string;
   let configDir: string;
   let originalHome: string | undefined;
@@ -174,7 +174,7 @@ describe("_postDispatchEvent posts /api/agent/events to the metadata-advertised 
   // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
   //
   // Default loopback baseline: metadata advertises 127.0.0.1 at an
-  // ephemeral port. _postDispatchEvent must POST /api/agent/events at that
+  // ephemeral port. postDispatchEvent must POST /api/agent/events at that
   // exact endpoint, including the advertised port — proving the URL came
   // from metadata rather than a separate hardcoded `localhost`.
   it("posts /api/agent/events at the metadata-advertised 127.0.0.1 endpoint", async () => {
@@ -192,7 +192,7 @@ describe("_postDispatchEvent posts /api/agent/events to the metadata-advertised 
       runtime: "node",
     });
 
-    await _postDispatchEvent({
+    await postDispatchEvent({
       taskId: "01TASKULIDFAKE0000000000000",
       taskRef: "@endpoint-event-task",
       fromStatus: "pending",
@@ -249,7 +249,7 @@ describe("_postDispatchEvent posts /api/agent/events to the metadata-advertised 
       runtime: "node",
     });
 
-    await _postDispatchEvent({
+    await postDispatchEvent({
       taskId: "01TASKULIDALIAS000000000000",
       taskRef: "@endpoint-alias-task",
       fromStatus: "in_progress",
@@ -293,7 +293,7 @@ describe("_postDispatchEvent posts /api/agent/events to the metadata-advertised 
       runtime: "node",
     });
 
-    await _postDispatchEvent({
+    await postDispatchEvent({
       taskId: "01TASKULIDIPV6000000000000",
       taskRef: "@endpoint-ipv6-task",
       fromStatus: "pending",
@@ -332,7 +332,7 @@ describe("_postDispatchEvent posts /api/agent/events to the metadata-advertised 
     });
     process.env.KSPEC_SESSION_ID = "01SESSIONFAKE0000000000000";
 
-    await _postDispatchEvent({
+    await postDispatchEvent({
       taskId: "01TASKULIDSKIP000000000000",
       taskRef: "@endpoint-skip-task",
       fromStatus: "pending",
