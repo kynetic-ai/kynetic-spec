@@ -256,3 +256,41 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-06T12:12:37.319Z
+  - _ulid: 01KQYMB37VYJ56AJRMA2D29BQE
+    content: >-
+      Fix cycle 5: rebased onto origin/dev to resolve the merge-helper conflict reported in
+      @01KQYJK7 (review approved cycle 5 work but the merge into dev failed against 85b4465 with
+      conflicts in src/cli/daemon-proxy.ts and tests/cli-daemon-proxy.test.ts).
+
+
+      What changed: git rebase origin/dev onto the task branch. The two annotation-correction
+      commits we carried locally (c28548f35 "fix(annotations): correct daemon-proxy AC mapping after
+      spec rename" and 1986fbf74 "fix(annotations): update stale @daemon-proxy-detection AC ids")
+      were correctly identified by git as previously applied — they are the same patches dev landed
+      as f26b5726 and 0e475fe9 — so they were skipped. Our endpoint-resolver implementation commit
+      (now 7756bc58a) re-applied cleanly on top.
+
+
+      Verification: dev's corrected AC mappings are preserved (ac-legacy-port-file-fallback in place
+      of ac-port-file-check/ac-health-timeout, the new ac-force-direct-management-exception test
+      from f26b5726, and the deferred-coverage notes for ac-auto-detect/ac-connection-metadata-check
+      that point to this task). Our endpoint-metadata behavior is also preserved: detectDaemon()
+      routes through resolveDaemonClientEndpoint() so daemon.connection.json wins over the legacy
+      daemon.port file, and the proxy/health/registration paths still call the advertised api_url.
+      The two metadata-driven detection tests added in cycle 1 (one for daemon.connection.json
+      precedence, one for legacy daemon.port fallback) are present and passing.
+
+
+      Tests: npm test -- --fresh — 2359 suites, 8642 passed, 5 pre-existing skips, 0 failures (~32
+      minutes). npm run typecheck — clean.
+
+
+      Branch: dispatch/task/task-shared-daemon-endpoint-resolver/01kqwzzh, force-pushed with
+      --force-with-lease (0d8a67a39 → 39de9f92f). Five commits on top of dev: 5fea5d880 (feat:
+      shared endpoint resolver and metadata model), 7756bc58a (wire shared resolver into
+      startup/metadata/clients), 099b43494 (IPv6 fallback, external warnings, web UI dev resolver),
+      6b4ef4b25 (forward endpoint flags on auto-start; fix dist/daemon race), 39de9f92f (scope IPv6
+      fallback to true address-unavailable errors).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T12:31:26.971Z
