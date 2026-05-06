@@ -36500,7 +36500,7 @@ runs:
     completed_at: 2026-05-06T13:39:24.850Z
   - _ulid: 01KQYS930SQKZ7X3RTGKKKAC4M
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -36539,7 +36539,20 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T13:59:59.024Z
-        completed_at: 2026-05-06T13:59:59.024Z
+        completed_at: 2026-05-06T14:00:13.346Z
+        notes: "Proposed improvements for untracked friction: (A) Inbox idea: when a fix-cycle review on
+          task X expands to implement work nominally scoped to dependent task Y, automate a
+          notification or ledger entry so the downstream worker knows scope has been absorbed. Could
+          be a 'scope absorbed by @X' note on Y, or a guideline that fix cycles should not implement
+          downstream task work without explicit retitle/rescope of Y. Scope: small (process
+          guideline) to medium (tooling). (B) Inbox idea: when AC annotations exist on tests but
+          trace to a different task's spec ACs than the current task expects, surface a coverage
+          hint in kspec validate or task get. The downstream worker could see 'tests for these ACs
+          already exist, annotated under @other-task' to reduce duplicate work. Scope: medium."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T14:00:13.346Z
+        completed_at: 2026-05-06T14:00:13.346Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T13:57:44.090Z
