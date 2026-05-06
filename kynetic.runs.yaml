@@ -35570,7 +35570,7 @@ runs:
     started_at: 2026-05-06T06:26:46.037Z
     completed_at: 2026-05-06T06:29:27.288Z
   - _ulid: 01KQXZWTJXTASZJNM1XFWEQWRZ
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -35625,7 +35625,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-06T06:35:42.618Z
-        completed_at: 2026-05-06T06:35:42.618Z
+        completed_at: 2026-05-06T06:36:00.723Z
+        notes: "Captured one friction observation: @01KQY000. No task was created because the workflow was
+          run without an explicit approval round; the observation is sufficient raw material for
+          later triage. No success observation captured because existing review-gate patterns
+          already encourage evidence logging and checks."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:34:07.837Z
+    completed_at: 2026-05-06T06:36:00.723Z
