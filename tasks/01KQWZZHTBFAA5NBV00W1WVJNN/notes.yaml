@@ -1,1 +1,53 @@
-notes: []
+notes:
+  - _ulid: 01KQYZBKR8BDPA3R37AWD2V9H8
+    content: >-
+      Approach: 
+
+
+      1. Add a shared helper getRunningDaemonClient() in src/cli/daemon-client.ts. It returns a
+      non-null DaemonClientEndpoint when (a) PidFileManager.isDaemonRunning() and (b)
+      resolveDaemonClientEndpoint() returns a result. Otherwise returns null. This combines the
+      duplicated 'check pid + resolve endpoint' guard.
+
+
+      2. Replace the duplicate getDaemonUrl() helpers in agent.ts, event.ts, schedule.ts with
+      imports of getRunningDaemonClient() from the shared helper. Switch call sites to read
+      endpoint.apiUrl/endpoint.wsUrl directly off the endpoint object so we never re-derive URLs.
+
+
+      3. Daemon-proxy.ts: Remove the legacy '127.0.0.1:port' fallback in proxyCommand (line 230)
+      since callers always pass the resolved endpoint now. The detection cache test helper
+      synthesizes a legacy endpoint so test compat stays intact.
+
+
+      4. Serve.ts statusServer: Already reads endpoint.bindHost. Add reading endpoint.connectHost
+      and endpoint.runtime, surface them in both human and JSON outputs. cli-serve-commands ac-6
+      lists 'bind_host, connect_host, runtime'.
+
+
+      5. Tests:
+         - cli-daemon-proxy.test.ts: add tests proving daemon-proxy uses metadata's api_url verbatim (covers IPv6 bracketed URLs and custom connect_host), not a constructed URL from port.
+         - cli-serve.test.ts: add tests for serve status JSON exposing bind_host, connect_host, runtime.
+
+      6. KSPEC_NO_DAEMON: shared helper uses isDaemonRunning() which already honors KSPEC_NO_DAEMON;
+      the lifecycle commands in serve.ts pass {ignoreNoDaemon: true} so they keep working when
+      KSPEC_NO_DAEMON is set.
+
+
+      7. --daemon flag clear error: shouldProxyCommand already returns 'daemon required but
+      unavailable' when forceDaemon=true and detection fails. Existing behavior covered.
+
+
+      Edge cases:
+
+      - IPv6 bracketed api_url: detection.endpoint.apiUrl already has bracketed [::1] when daemon
+      advertises IPv6, since metadata stores the formatted URL. No extra work; just need test proof.
+
+      - Legacy port fallback: shared resolveDaemonClientEndpoint already handles this; no
+      per-command logic needed.
+
+      - The agent watch command needs daemonConn.wsUrl (not apiUrl) — keep wsUrl on the helper
+      return type.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T15:43:58.216Z
