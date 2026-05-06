@@ -37330,7 +37330,7 @@ runs:
     completed_at: 2026-05-06T18:05:54.487Z
   - _ulid: 01KQZ8EFGX2Z7TT0E9X8HRVP47
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -37345,7 +37345,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T18:23:22.343Z
-        completed_at: 2026-05-06T18:23:22.343Z
+        completed_at: 2026-05-06T18:24:21.840Z
+        notes: "Step 2: High-confidence findings. SUCCESS to capture: extracting fire-and-forget CLI helpers
+          (postDispatchEvent) into a dedicated production module (src/cli/dispatch-events.ts)
+          consumed by all production callers gives a real production-owned export — resolves the
+          conflict between work-gates (no test-only exports from src/) and the prior friction
+          @01KQZ6JZ (which recommended test-only re-exports for behavioral URL-contract coverage).
+          The dedicated-module pattern satisfies both: behavioral test imports a real production
+          export, and there is no test seam. FRICTION already tracked: @01KQZ6JZ (test-only
+          re-export recommendation), inbox @01KQZ7F5 (proposed lint guard + conflict
+          reconciliation). No additional friction worth capturing — would duplicate."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T18:24:21.840Z
+        completed_at: 2026-05-06T18:24:21.840Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T18:22:49.374Z
