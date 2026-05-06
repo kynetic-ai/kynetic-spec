@@ -5492,7 +5492,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T08:03:16.494Z
+      updated_at: 2026-05-06T08:03:17.742Z
     integration:
       status: pending
       detail: null
@@ -5501,25 +5501,20 @@ workspaces:
       target_branch: dev
       target_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
       updated_at: 2026-05-06T08:03:16.494Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KQWZZH7R9W7WKATZXFB61MPC"
     task_slug: task-shared-daemon-endpoint-resolver
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T07:47:09.996Z
-      last_reconciled_at: 2026-05-06T08:03:16.494Z
+      last_reconciled_at: 2026-05-06T08:03:17.742Z
       created_at: 2026-05-06T06:57:40.618Z
-      updated_at: 2026-05-06T08:03:16.494Z
+      updated_at: 2026-05-06T08:03:17.742Z
     workspace_id: dispatch-workspace-01KQWZZH7R9W7WKATZXFB61MPC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 65bfbcb012624d11b50d350ce353d2161ca0d9da
-        last_seen_at: 2026-05-06T07:46:44.623Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-shared-daemon-endpoint-resolver-01kqwzzh-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-shared-daemon-endpoint-resolver/01kqwzzh
