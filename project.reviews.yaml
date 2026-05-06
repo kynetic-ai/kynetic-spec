@@ -176843,6 +176843,19 @@ reviews:
         runner: kspec
         created_at: 2026-05-06T05:58:56.850Z
         completed_at: 2026-05-06T05:58:56.850Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Read @config-daemon, prior reviews, and @plan-daemon-network-endpoint-contract. Verified
+          cycle-2 runtime coverage was added in tests/parser/daemon-config.test.ts and verified
+          remaining endpoint AC implementation/coverage is delegated to downstream endpoint
+          resolver/startup tasks, matching the Hermes/Jacob unblock note.
+        name: scope and AC ownership review
+        required: true
+        runner: codex-reviewer
+        created_at: 2026-05-06T05:59:00.215Z
+        completed_at: 2026-05-06T05:59:00.215Z
     events:
       - _ulid: 01KQXX9YPK2A4GAQ43Q5SSVJJK
         actor: Jacob Chapel
@@ -176864,6 +176877,13 @@ reviews:
           status: pass
           name: kspec validate --warnings-ok
         timestamp: 2026-05-06T05:58:58.087Z
+      - _ulid: 01KQXXWHHH8MYTRD7SGEJX51M5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: scope and AC ownership review
+        timestamp: 2026-05-06T05:59:01.426Z
     examined_commit: 44f834541c5fd5d1f0c0fc655c52b84fda9b8cb4
     external_links: []
     lifecycle_state: open
@@ -176876,5 +176896,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T05:48:52.308Z
-    updated_at: 2026-05-06T05:58:56.850Z
+    updated_at: 2026-05-06T05:59:00.215Z
     notes: []
