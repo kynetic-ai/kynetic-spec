@@ -35636,7 +35636,7 @@ runs:
     completed_at: 2026-05-06T06:36:00.723Z
   - _ulid: 01KQY0EXQD8QJXP07B5FAAAC18
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35650,7 +35650,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T06:45:24.419Z
-        completed_at: 2026-05-06T06:45:24.419Z
+        completed_at: 2026-05-06T06:45:36.604Z
+        notes: "Friction points: (1) kspec task complete auto-synced @multi-directory-daemon implementation
+          from in_progress to implemented even though the completed task only updated AC wording and
+          downstream implementation tasks remain pending. (2) Full npm test for a spec-only review
+          took 1916.6s; already known/tracked. (3) kspec workflow show without a run ref failed
+          before a run existed; already known/tracked."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T06:45:36.604Z
+        completed_at: 2026-05-06T06:45:36.604Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:44:00.878Z
