@@ -10704,14 +10704,12 @@ features:
     traits:
       - "@trait-error-guidance"
     acceptance_criteria:
-      - given: |
-          the user runs a kspec command
+      - given: The user runs a daemon-proxy-eligible kspec command
         id: ac-auto-detect
-        then: |
-          the command is routed through the daemon's API rather than
-          operating directly on the shadow branch
-        when: |
-          a daemon is running and reachable for the current project
+        then: The command is routed through the daemon API using the advertised connect_host and port
+          instead of operating directly on the shadow branch
+        when: Daemon connection metadata points to a running daemon and the current project can be
+          registered or is already registered
       - given: |
           the user runs a kspec command
         id: ac-direct-fallback
@@ -10719,14 +10717,11 @@ features:
           the command operates directly on the shadow branch
         when: |
           no daemon is running or the daemon is unreachable
-      - given: |
-          KSPEC_NO_DAEMON=1 is set
+      - given: KSPEC_NO_DAEMON=1 is set
         id: ac-force-direct
-        then: |
-          the command operates directly on the shadow branch, bypassing
-          daemon routing
-        when: |
-          the user runs a kspec command
+        then: The command operates directly on the shadow branch and suppresses incidental daemon
+          communication
+        when: The user runs a non-daemon-management kspec command
       - given: |
           the user runs a kspec command with --daemon flag
         id: ac-force-proxy
@@ -10776,6 +10771,11 @@ features:
           because the daemon may still be processing the mutation
         when: |
           the timeout expires
+      - given: KSPEC_NO_DAEMON=1 is set
+        id: ac-force-direct-management-exception
+        then: The command follows daemon lifecycle semantics rather than forcing direct shadow mode
+        when: The user runs an explicit daemon management command such as kspec serve start, stop, status,
+          or restart
     tags: []
     requirements:
       - _ulid: 01KMMB3SK47YTSFKAPPQ0899BM
@@ -10872,14 +10872,11 @@ features:
         tests: []
         traits: []
         acceptance_criteria:
-          - given: |
-              the CLI starts up
-            id: ac-port-file-check
-            then: |
-              it reads the daemon port file at the standard location and
-              attempts a health check on that port
-            when: |
-              it checks for daemon availability
+          - given: The CLI starts up
+            id: ac-connection-metadata-check
+            then: It reads daemon connection metadata from the standard global location and attempts a health
+              check against connect_host and port
+            when: It checks for daemon availability
           - given: |
               no daemon is running
             id: ac-fast-detection
@@ -10888,14 +10885,10 @@ features:
               port file or connection refused
             when: |
               the CLI checks for daemon availability
-          - given: |
-              a port file exists but the daemon is unresponsive
+          - given: Daemon connection metadata exists but the advertised endpoint is unresponsive
             id: ac-health-timeout
-            then: |
-              the health check times out within 200ms and the CLI falls
-              back to direct mode
-            when: |
-              the CLI sends a health check
+            then: The health check times out within 200ms and the CLI falls back to direct mode
+            when: The CLI sends a health check
           - given: |
               the daemon is running but the current project is not registered
             id: ac-project-registered
@@ -10904,6 +10897,10 @@ features:
               the command
             when: |
               the CLI detects the daemon
+          - given: Daemon connection metadata is absent but the legacy global daemon.port file exists
+            id: ac-legacy-port-file-fallback
+            then: It attempts the health check against 127.0.0.1 and the legacy port value
+            when: The CLI checks for daemon availability
         tags: []
         created: 2026-03-26T05:50:40.999Z
         notes: []
