@@ -1,0 +1,32 @@
+_ulid: 01KQXBKWE6Y8C7EVR7EKACEPBK
+slugs:
+  - task-fix-codex-acp-adapter-package-resolution-test
+title: Fix codex-acp adapter package resolution test
+type: bug
+description: "During review of @01KQWZZF3YJRCPKB6176HW9HWW, npm test failed deterministically in
+  tests/session-create.test.ts. The failing test is 'Environment Injection injectEnvForAdapter /
+  removeEnvForAdapter should resolve codex-acp as a registered adapter (not ad-hoc)'. Assertion:
+  expected ['@zed-industries/codex-acp@0.12.0'] to include '@zed-industries/codex-acp'. Reproduced
+  twice with: npm test -- --run tests/session-create.test.ts --fresh. The reviewed task has no
+  source diff against dev (git diff --name-only dev...HEAD is empty), so this appears pre-existing
+  on dev, likely caused by adapter package IDs now including an npm version suffix while the test or
+  registry lookup still expects the bare package name. Fix by investigating whether adapter
+  resolution should normalize package names before version suffix comparison or whether the test
+  should assert the new canonical package identifier, then run npm test -- --run
+  tests/session-create.test.ts --fresh and the full npm test suite."
+spec_ref: "@codex-acp-adapter-registration"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - tests
+  - agents
+  - acp
+vcs_refs: []
+created_at: 2026-05-06T00:39:43.302Z
+todos: []
+automation: eligible
