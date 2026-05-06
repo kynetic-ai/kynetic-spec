@@ -37261,7 +37261,7 @@ runs:
     completed_at: 2026-05-06T17:50:27.616Z
   - _ulid: 01KQZ7B21MN283K2VWEP84YF1K
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -37300,7 +37300,19 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T18:04:58.470Z
-        completed_at: 2026-05-06T18:04:58.470Z
+        completed_at: 2026-05-06T18:05:08.993Z
+        notes: "Proposed improvement: add an automated quality gate that rejects test-only exports from
+          production src modules. It could be an oxlint custom rule, a focused static test like
+          existing lint-no-* tests, or a validation check that scans exports/imports for explicit
+          test-only markers such as '@internal Test-only', '_postDispatchEvent' style aliases, or
+          tests importing underscored helpers from src. Benefit: converts a documented review rule
+          into a pre-review failure, avoids contradictory fix-cycle guidance, and keeps production
+          module APIs from expanding for tests only. Rough scope: small to medium depending on
+          whether implemented as a focused test or reusable lint rule."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T18:05:08.993Z
+        completed_at: 2026-05-06T18:05:08.993Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T18:03:28.692Z
