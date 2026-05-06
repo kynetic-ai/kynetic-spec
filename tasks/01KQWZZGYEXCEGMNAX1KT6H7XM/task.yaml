@@ -80,6 +80,7 @@ tags:
   - daemon
   - web-ui
 vcs_refs: []
+review_ref: "@01KQXZ6Y2KQHF8KS0AD9BZYDMG"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-update-web-api-endpoint-ac/01kqwzzg
@@ -130,6 +131,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-05-06T06:19:02.423Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQXZ6Y2KQHF8KS0AD9BZYDMG"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-06T06:22:14.059Z
 created_at: 2026-05-05T21:16:21.838Z
 started_at: 2026-05-06T06:16:03.594Z
 submitted_at: 2026-05-06T06:19:02.423Z
