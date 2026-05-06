@@ -105,6 +105,79 @@ type ManagedServer = {
   close?: (callback: (error?: Error | null) => void) => void;
 };
 
+/**
+ * Captured shape of the server handle exposed by the listen() callback.
+ *
+ * `@elysiajs/node` builds a serverInfo object that wraps the underlying
+ * srvx NodeServer (`raw`) and the raw `node:http` Server (`raw.node.server`).
+ * We narrow it to the fields we actually use so awaitListenSuccess works
+ * without leaning on adapter internals.
+ */
+interface ListenServerInfo {
+  raw?: {
+    ready?: () => Promise<unknown>;
+    node?: {
+      server?: {
+        listening?: boolean;
+        once: (event: string, listener: (...args: unknown[]) => void) => unknown;
+        off?: (event: string, listener: (...args: unknown[]) => void) => unknown;
+      };
+    };
+  };
+}
+
+/**
+ * Wait for the underlying server to confirm it is actually listening.
+ *
+ * `app.listen()` returns synchronously on Node — the real `http.Server`
+ * `listen()` is invoked on the next tick by srvx's NodeServer, and bind
+ * errors (EADDRINUSE, EADDRNOTAVAIL, EACCES) surface on its `'error'`
+ * event after `app.listen()` has already returned. Treating the absence
+ * of a synchronous throw as "the daemon is up" is therefore unsafe —
+ * the daemon would write connection metadata advertising a URL that no
+ * process actually owns.
+ *
+ * On Bun, `Bun.serve` throws synchronously on bind errors, so the
+ * absence of an exception already proves the daemon is bound; this
+ * helper short-circuits.
+ *
+ * AC: @daemon-network-endpoint-contract ac-connection-metadata
+ */
+async function awaitListenSuccess(
+  serverInfo: ListenServerInfo | null,
+  runtime: DaemonRuntime,
+): Promise<void> {
+  if (runtime === "bun") return;
+  if (!serverInfo) return;
+  const raw = serverInfo.raw;
+  if (raw && typeof raw.ready === "function") {
+    await raw.ready();
+    return;
+  }
+  // Fallback for adapter shapes without `.ready()`: attach listeners
+  // directly to the underlying http.Server. If the server is already
+  // listening we resolve immediately.
+  const httpServer = raw?.node?.server;
+  if (!httpServer) return;
+  if (httpServer.listening === true) return;
+  await new Promise<void>((resolve, reject) => {
+    const cleanup = (): void => {
+      httpServer.off?.("listening", onListening);
+      httpServer.off?.("error", onError);
+    };
+    const onListening = (): void => {
+      cleanup();
+      resolve();
+    };
+    const onError = (err: unknown): void => {
+      cleanup();
+      reject(err instanceof Error ? err : new Error(String(err)));
+    };
+    httpServer.once("listening", onListening as (...args: unknown[]) => void);
+    httpServer.once("error", onError as (...args: unknown[]) => void);
+  });
+}
+
 export async function createServerApp(runtime: DaemonRuntime): Promise<Elysia> {
   if (runtime === "node") {
     const { node } = await import("@elysiajs/node");
@@ -413,24 +486,18 @@ export async function createServer(options: ServerOptions) {
   // metadata writes away from the real ~/.config/kspec.
   const pidManager = configDir ? new PidFileManager(configDir) : new PidFileManager();
 
-  // AC: @multi-directory-daemon ac-9 - Write PID and port files in daemon mode
-  // AC: @daemon-network-endpoint-contract ac-connection-metadata
+  // AC: @multi-directory-daemon ac-9 - Write PID and port files in daemon mode.
+  // PID is written before listen() because it serves as the coordination
+  // primitive for stale-daemon detection (atomic O_CREAT|O_EXCL); the legacy
+  // port file is written alongside it for back-compat consumers. Connection
+  // metadata is written *after* listen() succeeds (see below) so a failed
+  // bind never advertises a daemon URL clients would honor.
+  // AC: @daemon-server ac-9 — detach writes lifecycle and connection metadata
   if (isDaemon) {
     pidManager.writePid();
     pidManager.writePort(port);
-    const metadata: DaemonConnectionMetadata = {
-      pid: process.pid,
-      port: endpoint.port,
-      bind_host: endpoint.bindHost,
-      connect_host: endpoint.connectHost,
-      api_url: endpoint.apiUrl,
-      ws_url: endpoint.wsUrl,
-      runtime,
-    };
-    pidManager.writeConnectionMetadata(metadata);
     console.log(`[daemon] PID file written: ${process.pid}`);
     console.log(`[daemon] Port file written: ${port}`);
-    console.log(`[daemon] Connection metadata written: ${endpoint.apiUrl}`);
   }
 
   // Initialize WebSocket managers
@@ -781,6 +848,10 @@ export async function createServer(options: ServerOptions) {
   // accepts the bare ::1 hostname (and rejects the bracketed form), so
   // we cannot change what we pass to Elysia — only what Elysia builds
   // internally. Bug context: https://github.com/elysiajs/elysia/issues
+  let listenServerInfo: ListenServerInfo | null = null;
+  const captureServerInfo = (info: unknown): void => {
+    listenServerInfo = info as ListenServerInfo;
+  };
   if (isIpv6Literal(endpoint.bindHost)) {
     const OriginalURL = globalThis.URL;
     function PatchedURL(input: ConstructorParameters<typeof URL>[0], base?: ConstructorParameters<typeof URL>[1]): URL {
@@ -796,17 +867,53 @@ export async function createServer(options: ServerOptions) {
     PatchedURL.prototype = OriginalURL.prototype;
     (globalThis as { URL: typeof URL }).URL = PatchedURL as unknown as typeof URL;
     try {
-      app.listen({ port, hostname: endpoint.bindHost });
+      app.listen({ port, hostname: endpoint.bindHost }, captureServerInfo);
     } finally {
       (globalThis as { URL: typeof URL }).URL = OriginalURL;
     }
   } else {
-    app.listen({ port, hostname: endpoint.bindHost });
+    app.listen({ port, hostname: endpoint.bindHost }, captureServerInfo);
   }
+
+  // Block until the underlying http.Server actually emits 'listening'
+  // (or rejects with the bind error). On Node, app.listen() above only
+  // schedules the bind — bind errors fire asynchronously on the http
+  // server's 'error' event. Awaiting here ensures we never write
+  // connection metadata advertising a daemon that failed to bind. On
+  // Bun, app.listen() throws synchronously on bind errors so this is a
+  // no-op once the call returned.
+  //
+  // AC: @daemon-network-endpoint-contract ac-connection-metadata
+  // AC: @daemon-server ac-9
+  await awaitListenSuccess(listenServerInfo, runtime);
 
   console.log(`[daemon] Server listening on ${endpoint.apiUrl} (bind: ${endpoint.bindHost})`);
   console.log(`[daemon] WebSocket available at ${endpoint.wsUrl}`);
+
+  // AC: @daemon-network-endpoint-contract ac-connection-metadata
+  // AC: @daemon-server ac-9
+  // Write connection metadata only after the server has confirmed it is
+  // listening on the resolved bind host (see awaitListenSuccess above).
+  // Bind errors (EADDRINUSE, EADDRNOTAVAIL) surface as a rejection from
+  // that helper before this point — main() catches and exits, leaving
+  // no daemon.connection.json behind.
+  if (isDaemon) {
+    const metadata: DaemonConnectionMetadata = {
+      pid: process.pid,
+      port: endpoint.port,
+      bind_host: endpoint.bindHost,
+      connect_host: endpoint.connectHost,
+      api_url: endpoint.apiUrl,
+      ws_url: endpoint.wsUrl,
+      runtime,
+    };
+    pidManager.writeConnectionMetadata(metadata);
+    console.log(`[daemon] Connection metadata written: ${endpoint.apiUrl}`);
+  }
+
   // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  // AC: @daemon-server ac-external-bind-warning
+  // AC: @trait-localhost-security ac-external-warning
   if (endpoint.externallyReachable) {
     console.warn(
       `[daemon] WARNING: bind host ${endpoint.bindHost} exposes unauthenticated kspec project data and mutation APIs on a non-loopback interface. Restrict access at the network/firewall level.`,
@@ -944,10 +1051,13 @@ export async function createServer(options: ServerOptions) {
       // Stop the server
       await stopManagedServer(app.server as ManagedServer | undefined);
 
-      // AC: @daemon-server ac-10 - Remove PID file on shutdown
+      // AC: @daemon-server ac-10 — Remove PID, port, and connection metadata
+      // files on graceful shutdown. PidFileManager.remove() unlinks the full
+      // global lifecycle set so a stopped daemon never leaves an api_url
+      // advertising itself as available.
       if (isDaemon) {
         pidManager.remove();
-        console.log("[daemon] PID file removed");
+        console.log("[daemon] Lifecycle files removed (pid, port, connection metadata)");
       }
 
       console.log("[daemon] Server stopped successfully");
