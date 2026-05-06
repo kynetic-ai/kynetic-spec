@@ -35751,9 +35751,24 @@ runs:
     completed_at: 2026-05-06T06:56:52.474Z
   - _ulid: 01KQY1ZHWP4SMVTS7F8FW5K3AW
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T07:10:34.390Z
+        completed_at: 2026-05-06T07:10:52.407Z
+        notes: "What worked well: The review-record workflow was effective for a second review cycle:
+          creating a fresh review preserved the prior changes_requested review while anchoring the
+          new approval to f26b5726. The detached reviewer merge helper handled manual_merge mode
+          cleanly and prevented accidental checkout/merge work inside the detached snapshot.
+          Recording explicit review checks and an evidence log made the approval traceable: kspec
+          validate --warnings-ok, full npm test, prior blocker verification, and changed-file review
+          were all bound to @01KQY18T."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T07:10:52.407Z
+        completed_at: 2026-05-06T07:10:52.407Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T07:10:34.390Z
