@@ -180575,6 +180575,12 @@ reviews:
         payload:
           thread_ulid: 01KQZ4QN1GFAYJ6Z6KRG0DQG4P
         timestamp: 2026-05-06T17:46:31.615Z
+      - _ulid: 01KQZ6C8TNWD2D8T90J6JY1JX6
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQZ4QN1GFAYJ6Z6KRG0DQG4P
+        timestamp: 2026-05-06T17:46:39.829Z
     examined_commit: 60affba7e51fa122d4808fd964e818ad775d6fa3
     external_links: []
     lifecycle_state: closed
@@ -180655,6 +180661,8 @@ reviews:
               all three tests fail."
             created_at: 2026-05-06T17:46:30.341Z
         kind: blocker
+        resolved_at: 2026-05-06T17:46:38.582Z
+        resolved_by: "@claude"
       - _ulid: 01KQZ4QQYJCCEPBCAC18FDSZ62
         entries:
           - _ulid: 01KQZ4QQYK1VPZCP2X3Q48EJA2
@@ -180682,5 +180690,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T17:18:02.863Z
     created_at: 2026-05-06T17:04:27.501Z
-    updated_at: 2026-05-06T17:46:30.341Z
+    updated_at: 2026-05-06T17:46:38.582Z
     notes: []
