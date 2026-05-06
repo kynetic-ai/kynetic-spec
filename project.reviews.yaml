@@ -178272,6 +178272,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-06T09:07:43.767Z
+      - _ulid: 01KQY8P5W1MZH86MHR29NV1RND
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQY8P4QC9Q47DADGHCCFY4D0
+        timestamp: 2026-05-06T09:07:47.201Z
     examined_commit: d64e038c3b6cb090a8b4e199e212200cc9448da0
     external_links: []
     lifecycle_state: open
@@ -178341,7 +178348,26 @@ reviews:
               explicit ::1 host, so they would still pass if startup never retries."
             created_at: 2026-05-06T09:07:19.702Z
         kind: blocker
+      - _ulid: 01KQY8P4QC9Q47DADGHCCFY4D0
+        entries:
+          - _ulid: 01KQY8P4QDGJ401TG1D9M4DR30
+            author: Jacob Chapel
+            body: "Evidence log: Files read: AGENTS.md supplied in prompt, kspec-agents.md, task/spec context
+              for @daemon-network-endpoint-contract and @config-daemon, prior review @01KQY453,
+              src/daemon/endpoint.ts, packages/daemon/src/server.ts, src/cli/daemon-proxy.ts,
+              src/cli/commands/{serve,agent,event,schedule,task}.ts,
+              src/parser/{config,daemon-status}.ts, packages/web-ui/src/lib/constants.ts,
+              tests/daemon-endpoint.test.ts, tests/cli-daemon-proxy.test.ts,
+              tests/cli-serve.test.ts, tests/parser/{config,daemon-config}.test.ts. Commands run:
+              git diff/stat/name-only/check/log, rg for endpoint consumers and AC annotations, kspec
+              item get, kspec review for-task/get/add/open, kspec validate, npm test -- --fresh.
+              Claims verified: prior blockers for metadata write, bind host, and CLI client metadata
+              use were checked against code and tests; npm test claim verified by fresh full run.
+              Categories searched: correctness, AC coverage, edge cases, external binding warnings,
+              client integration, test quality, and source-scanning patterns."
+            created_at: 2026-05-06T09:07:46.029Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-06T08:55:43.220Z
-    updated_at: 2026-05-06T09:07:42.540Z
+    updated_at: 2026-05-06T09:07:46.029Z
     notes: []
