@@ -4010,7 +4010,7 @@ workspaces:
         head: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
         last_seen_at: 2026-05-06T06:14:21.013Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-cli-daemon-proxy-endpoint-ac-01kqwzzg
-  - active_role: null
+  - active_role: worker
     base_branch_point: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
     bootstrap:
       status: succeeded
@@ -4343,7 +4343,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T06:14:49.133Z
+      updated_at: 2026-05-06T06:15:13.198Z
     integration:
       status: pending
       detail: null
@@ -4352,16 +4352,16 @@ workspaces:
       target_branch: dev
       target_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
       updated_at: 2026-05-06T06:14:49.133Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQWZZGYEXCEGMNAX1KT6H7XM"
     task_slug: task-update-web-api-endpoint-ac
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-06T06:14:49.133Z
+      last_active_at: 2026-05-06T06:15:13.198Z
+      last_reconciled_at: 2026-05-06T06:15:13.198Z
       created_at: 2026-05-06T06:14:49.133Z
-      updated_at: 2026-05-06T06:15:12.660Z
+      updated_at: 2026-05-06T06:15:13.198Z
     workspace_id: dispatch-workspace-01KQWZZGYEXCEGMNAX1KT6H7XM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
