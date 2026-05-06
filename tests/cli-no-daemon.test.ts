@@ -171,13 +171,19 @@ describe("KSPEC_NO_DAEMON", () => {
     });
 
     const isolatedHome = await createIsolatedKspecHome(tempDir);
+    // bind_host=0.0.0.0 (wildcard) with connect_host=127.0.0.2 is the
+    // configuration the resolver allows: a wildcard listener accepts
+    // connections at any local interface, including the 127.0.0.0/8
+    // loopback alias, so the advertised URL is reachable. A specific
+    // bind_host (e.g. 127.0.0.1) paired with a different connect_host
+    // is rejected at resolve time because the URL would be unreachable.
     writeFileSync(
       join(tempDir, "kspec.config.yaml"),
       [
         "daemon:",
         "  runtime: node",
         `  port: ${port}`,
-        "  host: 127.0.0.1",
+        "  host: 0.0.0.0",
         "  connect_host: 127.0.0.2",
         "  auto_start: true",
         "",
@@ -262,7 +268,7 @@ describe("KSPEC_NO_DAEMON", () => {
       ws_url: string;
     };
     expect(metadata.port).toBe(port);
-    expect(metadata.bind_host).toBe("127.0.0.1");
+    expect(metadata.bind_host).toBe("0.0.0.0");
     expect(metadata.connect_host).toBe("127.0.0.2");
     expect(metadata.api_url).toBe(`http://127.0.0.2:${port}`);
     expect(metadata.ws_url).toBe(`ws://127.0.0.2:${port}/ws`);
@@ -270,7 +276,7 @@ describe("KSPEC_NO_DAEMON", () => {
     // ps output also documents the forwarded flags so a regression that
     // strips one of them shows up in either layer of the assertion.
     const processCommand = execSync(`ps -p ${pid} -o command=`, { encoding: "utf-8" }).trim();
-    expect(processCommand).toContain("--host 127.0.0.1");
+    expect(processCommand).toContain("--host 0.0.0.0");
     expect(processCommand).toContain("--host-explicit");
     expect(processCommand).toContain("--connect-host 127.0.0.2");
 

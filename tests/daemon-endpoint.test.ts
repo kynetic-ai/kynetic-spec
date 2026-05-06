@@ -253,13 +253,41 @@ describe("daemon endpoint module", () => {
       expect(resolveDaemonConnectHost("::", "[::1]")).toBe("::1");
     });
 
-    it("uses an explicit connect host even when the bind is a loopback", () => {
-      expect(resolveDaemonConnectHost("127.0.0.1", "192.168.1.10")).toBe("192.168.1.10");
+    // AC: @config-daemon ac-connect-host-config
+    // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+    // Reachability rule: a daemon bound to a single specific address
+    // (e.g. 127.0.0.1) only accepts connections at that exact address.
+    // Advertising a different connect_host produces metadata that
+    // clients cannot reach. Reject the configuration at resolve time so
+    // the failure surfaces at startup rather than as silent client
+    // connection errors after metadata has been written.
+    it("rejects an explicit connect host that is unreachable for a specific bind host", () => {
+      expect(() => resolveDaemonConnectHost("127.0.0.1", "192.168.1.10")).toThrow(
+        /not reachable for bind_host '127\.0\.0\.1'/,
+      );
+      expect(() => resolveDaemonConnectHost("127.0.0.1", "127.0.0.2")).toThrow(
+        /not reachable for bind_host '127\.0\.0\.1'/,
+      );
+      expect(() => resolveDaemonConnectHost("::1", "::2")).toThrow(
+        /not reachable for bind_host '::1'/,
+      );
+      expect(() => resolveDaemonConnectHost("10.0.0.1", "10.0.0.2")).toThrow(
+        /not reachable for bind_host '10\.0\.0\.1'/,
+      );
+    });
+
+    it("accepts an explicit connect host that equals the specific bind host", () => {
+      expect(resolveDaemonConnectHost("127.0.0.1", "127.0.0.1")).toBe("127.0.0.1");
+      expect(resolveDaemonConnectHost("::1", "[::1]")).toBe("::1");
+      expect(resolveDaemonConnectHost("10.0.0.5", "10.0.0.5")).toBe("10.0.0.5");
     });
 
     it("ignores empty/whitespace explicit connect host strings", () => {
       expect(resolveDaemonConnectHost("0.0.0.0", "")).toBe("127.0.0.1");
       expect(resolveDaemonConnectHost("0.0.0.0", "   ")).toBe("127.0.0.1");
+      // Empty string with specific bind host falls back to the bind host
+      // (not an unreachable error — the empty value is treated as absent).
+      expect(resolveDaemonConnectHost("127.0.0.1", "")).toBe("127.0.0.1");
     });
   });
 

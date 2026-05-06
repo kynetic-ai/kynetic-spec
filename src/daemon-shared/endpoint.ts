@@ -183,19 +183,42 @@ export function resolveDaemonBindHost(config?: { host?: string | null } | null):
  * fall back to the explicit connect host when configured, otherwise to
  * the matching loopback (0.0.0.0 → 127.0.0.1, :: → ::1).
  *
+ * When `bindHost` is a specific (non-wildcard) address and an explicit
+ * `connectHost` is supplied that differs from `bindHost`, the
+ * configuration is rejected: a server bound only to a single specific
+ * address is not reachable at any other address (even another loopback
+ * alias such as 127.0.0.2 against a 127.0.0.1 bind). Advertising an
+ * unreachable URL would break clients that honor the metadata.
+ *
  * AC: @daemon-network-endpoint-contract ac-wildcard-connect-host
+ * AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+ * AC: @config-daemon ac-connect-host-config
  */
 export function resolveDaemonConnectHost(
   bindHost: string,
   explicitConnectHost?: string | null,
 ): string {
+  const normalizedBind = normalizeDaemonHost(bindHost);
   if (explicitConnectHost && explicitConnectHost.trim().length > 0) {
-    return normalizeDaemonHost(explicitConnectHost);
+    const normalizedConnect = normalizeDaemonHost(explicitConnectHost);
+    if (
+      !isWildcardNormalized(normalizedBind) &&
+      normalizedBind !== normalizedConnect
+    ) {
+      throw new Error(
+        `Invalid daemon endpoint configuration: connect_host '${normalizedConnect}' ` +
+          `is not reachable for bind_host '${normalizedBind}'. A daemon bound to a ` +
+          `specific address only accepts connections at that exact address. Either ` +
+          `set bind_host to a wildcard ('${WILDCARD_HOST_V4}' or '${WILDCARD_HOST_V6}') ` +
+          `to expose the daemon on multiple interfaces, or remove connect_host so the ` +
+          `bind host is used directly.`,
+      );
+    }
+    return normalizedConnect;
   }
-  const normalized = normalizeDaemonHost(bindHost);
-  if (normalized === WILDCARD_HOST_V4) return LOOPBACK_HOST_V4;
-  if (normalized === WILDCARD_HOST_V6) return LOOPBACK_HOST_V6;
-  return normalized;
+  if (normalizedBind === WILDCARD_HOST_V4) return LOOPBACK_HOST_V4;
+  if (normalizedBind === WILDCARD_HOST_V6) return LOOPBACK_HOST_V6;
+  return normalizedBind;
 }
 
 /** Detect IPv6 literals; brackets accepted as input. */

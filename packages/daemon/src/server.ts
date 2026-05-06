@@ -259,10 +259,46 @@ function stopSessionSyncForProject(projectPath: string): void {
 }
 
 /**
- * Middleware to enforce localhost-only connections.
- * AC-3: Reject non-localhost connections with 403 Forbidden
+ * Options for the localhost-enforcement middleware.
+ *
+ * `additionalAllowedHosts` adds extra Host header values that the
+ * middleware accepts beyond the default localhost set. The daemon passes
+ * its resolved bind/connect hosts here so that requests addressed to
+ * the advertised endpoint are accepted when external binding is
+ * explicitly configured. Wildcard addresses are filtered out — they are
+ * not real hosts to address, only bind targets.
  */
-export function localhostOnly() {
+export interface LocalhostOnlyOptions {
+  additionalAllowedHosts?: ReadonlyArray<string>;
+}
+
+const WILDCARD_HOSTS = new Set(["0.0.0.0", "::"]);
+
+/**
+ * Middleware to enforce localhost-only connections.
+ *
+ * Default allowed hosts: localhost, 127.0.0.1, ::1. Callers may extend
+ * the allow-list via `additionalAllowedHosts` to accept the daemon's
+ * resolved/advertised connect host when external binding is configured.
+ *
+ * AC: @daemon-server ac-3 — Reject non-localhost connections with 403 Forbidden
+ * AC: @trait-localhost-security ac-loopback-rejects-nonlocal
+ */
+export function localhostOnly(options: LocalhostOnlyOptions = {}) {
+  const allowed = new Set(["localhost", "127.0.0.1", "::1"]);
+  for (const host of options.additionalAllowedHosts ?? []) {
+    if (typeof host !== "string") continue;
+    const trimmed = host.trim();
+    if (trimmed.length === 0) continue;
+    // Accept bracketed IPv6 input from callers that pass URL-formatted hosts.
+    const stripped =
+      trimmed.startsWith("[") && trimmed.endsWith("]")
+        ? trimmed.slice(1, -1)
+        : trimmed;
+    if (WILDCARD_HOSTS.has(stripped)) continue;
+    allowed.add(stripped);
+  }
+
   return (context: { request: Request }) => {
     const host = context.request.headers.get("host");
     if (!host) {
@@ -289,10 +325,7 @@ export function localhostOnly() {
       hostname = host.split(":")[0];
     }
 
-    // Allow localhost, 127.0.0.1, and ::1
-    const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
-
-    if (!isLocalhost) {
+    if (!allowed.has(hostname)) {
       return new Response(
         JSON.stringify({
           error: "Forbidden",
@@ -425,7 +458,18 @@ export async function createServer(options: ServerOptions) {
     )
 
     // AC-3: Enforce localhost-only connections
-    .onRequest(localhostOnly());
+    // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+    // AC: @config-daemon ac-connect-host-config
+    // When external binding is explicitly configured (wildcard bind or a
+    // specific non-loopback address), the resolved connect host is the
+    // value clients call. Extend the localhost allow-list with the
+    // resolved bind/connect hosts so requests addressed to the daemon's
+    // advertised endpoint are not rejected as non-localhost.
+    .onRequest(
+      localhostOnly({
+        additionalAllowedHosts: [endpoint.bindHost, endpoint.connectHost],
+      }),
+    );
 
   // AC: @daemon-entity-cache ac-load-on-register — lazy import entity cache module
   // The daemon build compiles packages/daemon/src plus src/daemon/entity-cache.ts
