@@ -3,20 +3,24 @@ slugs:
   - web-ui
 title: Web UI System
 type: module
-description: >
+description: >-
   Web-based interface for viewing, editing, and managing kspec state. Includes three deployment
   modes:
 
-  1. Local daemon mode - Elysia.js server on Bun with WebSocket for real-time updates
+  1. Local daemon mode runs the daemon on the configured JavaScript runtime, defaulting to Node,
+  using Elysia with the appropriate runtime adapter. Bun remains supported as an optional configured
+  runtime.
 
   2. Web dashboard - SvelteKit + shadcn-svelte for full CRUD operations
 
   3. GitHub Pages export - Static JSON snapshot with read-only SPA for public sharing
 
 
-  Tech stack: Elysia.js, Bun runtime, WebSocket (not SSE), SvelteKit, shadcn-svelte.
+  Tech stack: Elysia.js, WebSocket (not SSE), SvelteKit, shadcn-svelte. Default runtime is Node; Bun
+  is supported as an optional configured runtime.
 
-  Distribution via bun build --compile for portable executables.
+  Distribution via npm; the runtime executable is provided by the user when an optional runtime such
+  as Bun is selected.
 status:
   maturity: draft
   implementation: implemented
@@ -26,11 +30,12 @@ relates_to: []
 tests: []
 traits: []
 acceptance_criteria:
-  - given: kspec is installed globally via npm
+  - given: user installs kspec CLI package
     id: ac-1
-    then: all daemon runtime dependencies (elysia, @elysiajs/cors, @elysiajs/static) are available
-      without additional install steps
-    when: kspec serve start is run
+    then: all daemon runtime dependencies for the configured runtime are available without additional
+      install steps except the runtime executable itself when an optional runtime such as Bun is
+      selected
+    when: daemon starts on the configured runtime
   - given: The configured daemon runtime is not installed
     id: ac-2
     then: Shows a clear error message naming the missing runtime with installation guidance
@@ -883,8 +888,8 @@ features:
     acceptance_criteria:
       - given: daemon is running
         id: ac-1
-        then: CORS headers allow the request (origins configured for dev and production)
-        when: request from allowed CORS origin received
+        then: CORS allows same-origin daemon web UI requests and configured local development origins only
+        when: an API request includes an Origin header
       - given: daemon is running
         id: ac-2
         then: returns JSON array of all tasks with status, priority, spec_ref, notes count
@@ -1045,6 +1050,11 @@ features:
         id: ac-plan-filter-additive
         then: plan filter is additive with other filters
         when: other query parameters are also present (status, tag, etc.)
+      - given: daemon is running
+        id: ac-websocket-origin
+        then: the origin is accepted only if it matches the same-origin daemon web UI or configured local
+          development origins; otherwise the connection is rejected
+        when: a WebSocket connection request includes an Origin header
     tags:
       - api
       - rest
@@ -4171,6 +4181,11 @@ features:
           installation guidance
         when: |
           The daemon attempts to start
+      - given: kspec.config.yaml contains daemon.runtime
+        id: ac-config-surface
+        then: the runtime preference is available as the resolved daemon runtime used by serve start and
+          daemon auto-start
+        when: config is loaded before daemon startup
     tags: []
     created: 2026-04-05T05:25:52.805Z
     notes: []
