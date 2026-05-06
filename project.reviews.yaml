@@ -176239,6 +176239,13 @@ reviews:
           status: pass
           name: AC annotation coverage
         timestamp: 2026-05-06T01:05:54.315Z
+      - _ulid: 01KQXD49R0SYACFQGY9T4HMYHY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQXD48JD873FPCF8R8C3RQ0R
+        timestamp: 2026-05-06T01:06:09.793Z
     examined_commit: 91354aec65fbdf3f7469d28308f0743c9cb78c61
     external_links: []
     lifecycle_state: open
@@ -176248,10 +176255,25 @@ reviews:
       content_hash: ""
       ref: "@01KQXBKWE6Y8C7EVR7EKACEPBK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQXD48JD873FPCF8R8C3RQ0R
+        entries:
+          - _ulid: 01KQXD48JDJVV2MPGCHRTCCM5Q
+            author: Jacob Chapel
+            body: "Evidence log: Files read: tests/session-create.test.ts, src/agents/adapters.ts, base versions
+              of both files, kspec-agents.md. Commands run: kspec task get, kspec item get, kspec
+              review for-task, git diff/log/show, rg AC annotations, kspec validate, kspec validate
+              --warnings-ok, npm test -- --run tests/session-create.test.ts --fresh, npm test --
+              --fresh. Claims verified: the old test expected an exact bare package arg while the
+              registered codex-acp adapter is version-pinned; the new regex distinguishes registered
+              pinned args from ad-hoc bare-id fallback. Categories searched: correctness, edge cases
+              for version bumps, error handling/env injection coverage, test
+              quality/source-scanning, integration/full suite."
+            created_at: 2026-05-06T01:06:08.589Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-06T00:55:00.611Z
-    updated_at: 2026-05-06T01:05:53.098Z
+    updated_at: 2026-05-06T01:06:08.589Z
     notes: []
   - _ulid: 01KQXCSWEA8NKFB23BDNCR8DVC
     slugs: []
