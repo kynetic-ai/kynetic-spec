@@ -27,3 +27,33 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-06T17:18:04.829Z
+  - _ulid: 01KQZ6D4MB50V0T674AEPREK8R
+    content: >-
+      Fix cycle 1: addressed both review blockers.
+
+
+      Blocker 1 (postDispatchEvent task-event URL contract): Added
+      tests/cli-task-event-endpoint.test.ts (4 tests). Exposed postDispatchEvent through a
+      _postDispatchEvent test-only re-export in src/cli/commands/task.ts so the handler can be
+      invoked directly with seeded metadata. Tests cover 127.0.0.1 default loopback at non-default
+      port, 127.0.0.2 loopback alias (skipped on platforms where the alias is not addressable),
+      bracketed ::1 IPv6 (skipped when IPv6 loopback unavailable), and a KSPEC_SESSION_ID
+      suppression baseline. Each test asserts the recorded POST /api/agent/events Host header
+      matches the advertised endpoint — a regression that fetched
+      http://localhost:<port>/api/agent/events fails the suite (verified locally).
+
+
+      Blocker 2 (agent dispatch watch ws_url contract): Added tests/cli-agent-watch-endpoint.test.ts
+      (3 tests). Reused the existing _setWebSocketCtor seam to inject a URL-capturing fake WebSocket
+      and seeded daemon.connection.json with non-default ws_url values. Tests cover
+      ws://127.0.0.1:<alt-port>/ws (port fidelity), ws://127.0.0.2:<port>/ws (host fidelity — proves
+      URL came from connect_host metadata not a hardcoded loopback), and bracketed
+      ws://[::1]:<port>/ws (skipped when IPv6 unavailable). A regression that re-derived
+      ws://127.0.0.1:<port>/ws fails the suite (verified locally).
+
+
+      Verified: focused endpoint suite (376 tests across 105 files) passes; full suite (8722 passed
+      / 5 skipped) passes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T17:47:08.299Z
