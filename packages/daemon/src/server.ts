@@ -23,6 +23,8 @@ import type { ConnectionData, ConnectedEvent } from "./websocket/types.js";
 import { PidFileManager } from "./pid.js";
 import {
   DEFAULT_BIND_HOST,
+  buildDaemonUrls,
+  formatHostForUrl,
   isIpv6Literal,
   resolveDaemonEndpoint,
   selectStartupBindHost,
@@ -347,6 +349,102 @@ export interface LocalhostOnlyOptions {
 
 const WILDCARD_HOSTS = new Set(["0.0.0.0", "::"]);
 
+/** Default Vite dev-server port for the web UI. */
+const DEFAULT_WEB_UI_DEV_PORT = 5173;
+
+function readWebUiDevPort(): number {
+  const raw = process.env.KSPEC_WEB_UI_DEV_PORT;
+  if (raw === undefined) return DEFAULT_WEB_UI_DEV_PORT;
+  const trimmed = raw.trim();
+  if (trimmed.length === 0) return DEFAULT_WEB_UI_DEV_PORT;
+  const parsed = Number.parseInt(trimmed, 10);
+  if (!Number.isInteger(parsed) || parsed < 1 || parsed > 65535) {
+    return DEFAULT_WEB_UI_DEV_PORT;
+  }
+  return parsed;
+}
+
+/**
+ * Build the set of CORS / WebSocket origins the daemon should accept,
+ * derived from the resolved daemon endpoint instead of being hardcoded.
+ *
+ * Always includes:
+ *  - The same-origin daemon URL (api_url) so the bundled production web
+ *    UI can call the daemon it's served from.
+ *  - Loopback aliases of the daemon URL (http://localhost:PORT,
+ *    http://127.0.0.1:PORT, http://[::1]:PORT). The localhostOnly
+ *    middleware always accepts Host: localhost, 127.0.0.1, and ::1
+ *    regardless of bind host, so a user opening the production daemon
+ *    UI through any loopback alias gets a same-origin browser context
+ *    whose requests must be allowed. Mirroring those aliases here
+ *    preserves production same-origin across IPv4/IPv6 fallback and
+ *    developer-typed `localhost` URLs.
+ *  - The local Vite dev server origin at the resolved connect host
+ *    (with IPv6 bracketing) on KSPEC_WEB_UI_DEV_PORT (default 5173).
+ *  - Loopback dev origins (http://localhost:DEV_PORT and
+ *    http://127.0.0.1:DEV_PORT) so a developer running the dev server
+ *    on either localhost alias can reach a loopback-bound daemon.
+ *
+ * Wildcard bind addresses are not added as concrete origins. When the
+ * daemon binds to a non-loopback address the resolved connect host is
+ * still added (a loopback or explicitly configured connect host), but
+ * the allow-list is never widened to `*` — that would expose the
+ * unauthenticated mutation API to any cross-origin caller.
+ *
+ * AC: @api-contract ac-1
+ * AC: @api-contract ac-websocket-origin
+ * AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+ */
+export function buildAllowedOrigins(args: {
+  apiUrl: string;
+  connectHost: string;
+  devPort?: number;
+}): ReadonlyArray<string> {
+  const devPort = args.devPort ?? DEFAULT_WEB_UI_DEV_PORT;
+  const origins = new Set<string>();
+
+  // Same-origin daemon URL (production: web UI is served from the daemon).
+  origins.add(args.apiUrl);
+
+  // Same-origin daemon-port loopback aliases. Empty string when the
+  // daemon listens on the protocol's default port — browsers strip the
+  // default port from the Origin header, so we must not append `:80` to
+  // the alias.
+  const apiUrlPort = new URL(args.apiUrl).port;
+  const daemonPortSuffix = apiUrlPort.length > 0 ? `:${apiUrlPort}` : "";
+  origins.add(`http://localhost${daemonPortSuffix}`);
+  origins.add(`http://127.0.0.1${daemonPortSuffix}`);
+  origins.add(`http://[::1]${daemonPortSuffix}`);
+
+  // Local dev server origin at the resolved connect host. IPv6 is bracketed.
+  const formattedConnect = formatHostForUrl(args.connectHost);
+  origins.add(`http://${formattedConnect}:${devPort}`);
+
+  // Loopback dev origins so a dev server on either localhost alias works
+  // against a loopback-bound daemon.
+  origins.add(`http://localhost:${devPort}`);
+  origins.add(`http://127.0.0.1:${devPort}`);
+
+  return Array.from(origins);
+}
+
+/**
+ * True when the request's `Origin` header is in the allow-list. Returns
+ * true when the header is absent so non-browser clients (curl, the CLI,
+ * native test runners) are not gratuitously rejected — origin checks
+ * are a CSRF mitigation against the browser-controlled `Origin` header,
+ * not a host-level authorization gate (which `localhostOnly` covers).
+ *
+ * AC: @api-contract ac-websocket-origin
+ */
+export function isAllowedOrigin(
+  origin: string | null | undefined,
+  allowed: ReadonlyArray<string>,
+): boolean {
+  if (origin === null || origin === undefined || origin.length === 0) return true;
+  return allowed.includes(origin);
+}
+
 /**
  * Middleware to enforce localhost-only connections.
  *
@@ -513,12 +611,24 @@ export async function createServer(options: ServerOptions) {
 
   const app = await createServerApp(runtime);
 
+  // AC: @api-contract ac-1
+  // AC: @api-contract ac-websocket-origin
+  // Derive the CORS allow-list from the resolved daemon endpoint
+  // (same-origin daemon URL + dev server origins at the resolved
+  // connect host) instead of hardcoding localhost:5173. Explicitly
+  // never expand to wildcard CORS — even when the daemon binds
+  // externally — because the API is unauthenticated.
+  const allowedOrigins = buildAllowedOrigins({
+    apiUrl: endpoint.apiUrl,
+    connectHost: endpoint.connectHost,
+    devPort: readWebUiDevPort(),
+  });
+
   app
     // AC-15: Plugin pattern for middleware
-    // AC: @api-contract ac-1 - Allow CORS from dev server on localhost:5173
     .use(
       cors({
-        origin: ["http://localhost:5173", "http://127.0.0.1:5173"], // Dev server origins
+        origin: Array.from(allowedOrigins),
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       }),
@@ -722,6 +832,18 @@ export async function createServer(options: ServerOptions) {
         // the WebSocket upgrade and sends the value as an HTTP 200 response.
         // Use a WeakMap keyed by Request object to pass data to open().
         try {
+          // AC: @api-contract ac-websocket-origin
+          // Reject the upgrade when the browser-supplied Origin header
+          // is not in the daemon's CORS allow-list. Origin headers are
+          // attached by browsers, not by curl/CLI clients — when absent
+          // we let `localhostOnly` enforce host-level access instead.
+          const origin = request.headers.get("origin");
+          if (!isAllowedOrigin(origin, allowedOrigins)) {
+            throw new Error(
+              `WebSocket origin '${origin ?? ""}' is not in the daemon's allowed origin list`,
+            );
+          }
+
           const manager = (store as Record<string, unknown>).projectManager as
             | import("./project-context.js").ProjectContextManager
             | undefined;

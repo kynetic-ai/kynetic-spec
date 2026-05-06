@@ -332,6 +332,84 @@ describe("daemon websocket protocol", () => {
     await waitForClose(ws);
   });
 
+  // AC: @api-contract ac-websocket-origin
+  // The daemon's WS upgrade hook accepts an Origin header in the
+  // CORS allow-list. The default loopback configuration includes
+  // http://127.0.0.1:5173 and http://localhost:5173 for the dev
+  // server, plus the same-origin daemon URL.
+  it("accepts a WebSocket upgrade from an allowed Origin (dev server)", async () => {
+    const ws = new WebSocket(runtime.wsUrl, { origin: "http://127.0.0.1:5173" });
+    const connectedPromise = nextMessage<ConnectedMessage>(
+      ws,
+      (message): message is ConnectedMessage =>
+        typeof message === "object" &&
+        message !== null &&
+        "event" in message &&
+        (message as ConnectedMessage).event === "connected",
+    );
+    await waitForOpen(ws);
+    const connected = await connectedPromise;
+    expect(connected.data.session_id).toMatch(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+    ws.close(1000, "test complete");
+    await waitForClose(ws);
+  });
+
+  // AC: @api-contract ac-websocket-origin
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  // Regression: production same-origin must succeed when the user
+  // opens the daemon UI through the `localhost` alias instead of the
+  // advertised connect host (127.0.0.1). The daemon's localhostOnly
+  // middleware accepts Host: localhost regardless of bind host, so the
+  // browser-attached Origin: http://localhost:<daemon-port> header
+  // must be in the allow-list — otherwise opening
+  // http://localhost:<daemon-port> in production breaks the WebSocket.
+  it("accepts a WebSocket upgrade from the localhost daemon-port same-origin", async () => {
+    const ws = new WebSocket(runtime.wsUrl, {
+      origin: `http://localhost:${runtime.port}`,
+    });
+    const connectedPromise = nextMessage<ConnectedMessage>(
+      ws,
+      (message): message is ConnectedMessage =>
+        typeof message === "object" &&
+        message !== null &&
+        "event" in message &&
+        (message as ConnectedMessage).event === "connected",
+    );
+    await waitForOpen(ws);
+    const connected = await connectedPromise;
+    expect(connected.data.session_id).toMatch(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+    ws.close(1000, "test complete");
+    await waitForClose(ws);
+  });
+
+  // AC: @api-contract ac-websocket-origin
+  // Browsers attach the Origin header automatically. A connection from
+  // an origin outside the allow-list must be rejected at the upgrade
+  // step instead of being silently accepted (which would let any
+  // cross-origin page subscribe to project state and run commands).
+  it("rejects a WebSocket upgrade from a disallowed Origin", async () => {
+    const ws = new WebSocket(runtime.wsUrl, { origin: "http://evil.example.com" });
+    // The connection must close (or error) without a successful open —
+    // either an error event or a non-1000 close before any 'open'.
+    let opened = false;
+    ws.once("open", () => {
+      opened = true;
+    });
+    const closed = await new Promise<{ code: number }>((resolve) => {
+      const timeout = setTimeout(() => resolve({ code: -1 }), 5_000);
+      const finish = (code: number) => {
+        clearTimeout(timeout);
+        resolve({ code });
+      };
+      ws.once("close", (code) => finish(code));
+      ws.once("error", () => finish(-1));
+    });
+    expect(opened).toBe(false);
+    // Either a close (often code 1006 for abnormal) or error path is
+    // acceptable — both indicate the upgrade was rejected.
+    expect(closed.code === -1 || closed.code === 1006 || closed.code >= 4000).toBe(true);
+  });
+
   // AC: @api-contract ac-26
   // AC: @api-contract ac-27
   it("acknowledges valid commands with correlated ack metadata", async () => {
