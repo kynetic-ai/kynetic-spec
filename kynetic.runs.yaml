@@ -36633,7 +36633,7 @@ runs:
     completed_at: 2026-05-06T14:17:48.022Z
   - _ulid: 01KQYWBZH26TWWAF33WF07ZVT5
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36656,7 +36656,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-06T14:53:12.455Z
-        completed_at: 2026-05-06T14:53:12.455Z
+        completed_at: 2026-05-06T14:53:32.519Z
+        notes: "Coverage checked with kspec search: 'websocket close code 1011 timeout' and 'websocket
+          protocol flaky' had no direct matches; 'STACK_TRACE_ERROR' matched existing pending
+          @task-stabilize-fresh-shard-test-runs plus historical observations/tasks about noisy
+          full-suite failures. The observed timeout is covered by that existing stabilization task;
+          no duplicate item needed."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-06T14:53:32.519Z
+        completed_at: 2026-05-06T14:53:32.519Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T14:51:44.546Z
