@@ -419,6 +419,9 @@ traits:
     type: trait
     description: Security pattern for services that bind only to localhost, providing authentication
       through network isolation
+    status:
+      maturity: draft
+      implementation: in_progress
     acceptance_criteria:
       - given: server is starting
         id: ac-1
