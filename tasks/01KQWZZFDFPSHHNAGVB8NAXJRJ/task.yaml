@@ -82,7 +82,7 @@ description: |
 spec_ref: "@config-daemon"
 plan_ref: "@plan-daemon-network-endpoint-contract"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-update-localhost-security-trait"
@@ -93,6 +93,14 @@ tags:
   - daemon
   - config
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-update-config-daemon-endpoint-ac/01kqwzzf
+  captured_at: 2026-05-06T00:57:21.113Z
+  commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KQXCF4F5EDARXG19QZCYPC8W
 history:
   - author: Jacob Chapel
@@ -115,7 +123,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-06T00:55:06.370Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-update-config-daemon-endpoint-ac/01kqwzzf
+          captured_at: 2026-05-06T00:57:21.113Z
+          commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-06T00:57:21.116Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-06T00:57:21.117Z
 created_at: 2026-05-05T21:16:20.271Z
 started_at: 2026-05-06T00:55:06.370Z
+submitted_at: 2026-05-06T00:57:21.116Z
 todos: []
 automation: eligible
