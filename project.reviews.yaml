@@ -176149,7 +176149,19 @@ reviews:
     slugs: []
     title: Review fix codex-acp adapter package resolution test
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/session-create.test.ts --fresh: 13 suites passed;
+          tests/session-create.test.ts 70/70 passed; full log
+          /tmp/kspec-test-cache/01KQXCEACGYTYSDTDZ06E3PW8E/c1ccc63119ce5605.log"
+        name: targeted session-create
+        required: true
+        runner: npm
+        created_at: 2026-05-06T01:05:20.404Z
+        completed_at: 2026-05-06T01:05:20.404Z
     events:
       - _ulid: 01KQXCFW8240Z1C59J58PJYGQA
         actor: Jacob Chapel
@@ -176164,6 +176176,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-06T00:55:12.158Z
+      - _ulid: 01KQXD2TQ5XH63CVN37BJ9H1A8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted session-create
+        timestamp: 2026-05-06T01:05:21.637Z
     examined_commit: 91354aec65fbdf3f7469d28308f0743c9cb78c61
     external_links: []
     lifecycle_state: open
@@ -176176,7 +176195,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T00:55:00.611Z
-    updated_at: 2026-05-06T00:55:10.932Z
+    updated_at: 2026-05-06T01:05:20.404Z
     notes: []
   - _ulid: 01KQXCSWEA8NKFB23BDNCR8DVC
     slugs: []
