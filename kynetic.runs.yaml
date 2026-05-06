@@ -36898,7 +36898,7 @@ runs:
     completed_at: 2026-05-06T15:36:51.123Z
   - _ulid: 01KQYZXDHWJMY8CADJPAYY5SKF
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36933,7 +36933,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T15:55:15.907Z
-        completed_at: 2026-05-06T15:55:15.907Z
+        completed_at: 2026-05-06T15:55:24.714Z
+        notes: "Proposal: capture one friction observation to investigate/stabilize
+          tests/daemon-api/websocket-protocol.test.ts, specifically the close-code/internal-error
+          scenario that can fail in beforeEach under combined targeted runs but pass when isolated.
+          Help: reduces review retry overhead and makes targeted daemon/web-ui test failures
+          actionable. Scope: small-to-medium, likely test fixture/runtime cleanup or port/process
+          isolation around createRuntime/start/stop."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T15:55:24.714Z
+        completed_at: 2026-05-06T15:55:24.714Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T15:53:41.692Z
