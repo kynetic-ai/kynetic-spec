@@ -4,3 +4,29 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-06T00:41:26.694Z
+  - _ulid: 01KQXCADKS3JRSZBHF9WH9SGQY
+    content: >-
+      Root cause: commit 9981f4ac5 pinned the codex-acp adapter args from
+      '@zed-industries/codex-acp' to '@zed-industries/codex-acp@0.12.0', but session-create.test.ts
+      AC-1 still asserted toContain('@zed-industries/codex-acp') — an exact element match that fails
+      on the version-suffixed string.
+
+
+      Notable inversion: the bare '@zed-industries/codex-acp' (without version) is exactly what
+      resolveAdapter would emit on the ad-hoc fallback path (id passed straight through to npx
+      args). So the original assertion was unintentionally testing the opposite of AC-1's
+      'registered, not ad-hoc' invariant.
+
+
+      Fix: replace the bare-string toContain with a regex prefix match
+      (/^@zed-industries\/codex-acp@/) — this requires a version suffix, distinguishing the
+      registered pinned adapter from the ad-hoc fallback while remaining robust to future version
+      bumps.
+
+
+      Verified: tests/session-create.test.ts passes (70/70). Full npm test passes (8545 passed, 5
+      skipped, 0 failed). No source changes needed — registry resolution already does plain id
+      lookup with no package-name comparison.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T00:52:01.786Z
