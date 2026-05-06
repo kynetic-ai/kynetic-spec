@@ -36022,7 +36022,7 @@ runs:
     completed_at: 2026-05-06T08:22:14.291Z
   - _ulid: 01KQY8RAMSBTMEA5MWTANJS3S7
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36060,7 +36060,19 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T09:10:42.702Z
-        completed_at: 2026-05-06T09:10:42.702Z
+        completed_at: 2026-05-06T09:10:52.569Z
+        notes: "Proposed improvement: Add a review-oriented, subject-scoped AC coverage report. It would
+          take a task or spec ref, list own and inherited ACs, show matching test annotations, and
+          flag ACs whose only coverage is source/comment annotations or formatting-only tests. This
+          would help reviewers find gaps like the IPv6 startup fallback and web UI endpoint consumer
+          case without broad manual rg sweeps. Scope: medium, likely builds on existing coverage
+          scanner and review tooling. Already-tracked/no new proposal: repo-wide validate warning
+          noise is covered by @01KNTPX4T. Current daemon endpoint implementation gaps are already
+          captured as review blockers, not reflection backlog."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T09:10:52.569Z
+        completed_at: 2026-05-06T09:10:52.569Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T09:08:57.625Z
