@@ -144,3 +144,42 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-06T10:44:06.545Z
+  - _ulid: 01KQYFWTSD8ZSJFYVX59DBFK6E
+    content: >-
+      Fix cycle 3: addressed both review blockers from @01KQYDJ9.
+
+
+      (1) Auto-start endpoint flag forwarding: src/cli/index.ts maybeAutoStartDaemon() now appends
+      --host, --host-explicit (when host_explicitly_configured), and --connect-host (when set) to
+      the spawned daemon args, matching what kspec serve start forwards. Without this, a project
+      configured with daemon.host, KSPEC_DAEMON_HOST, or daemon.connect_host would auto-start a
+      daemon on the wrong endpoint and write metadata for the wrong endpoint, breaking
+      @daemon-network-endpoint-contract ac-configured-bind-host and @config-daemon
+      ac-connect-host-config. Added behavioral test in tests/cli-no-daemon.test.ts that configures
+      connect_host=127.0.0.2 and asserts both the daemon.connection.json metadata and the ps command
+      line reflect the forwarded flags.
+
+
+      (2) dist/daemon rebuild race: moved src/daemon/endpoint.ts -> src/daemon-shared/endpoint.ts so
+      the shared module's tsc output (dist/daemon-shared/endpoint.js) lives outside the dist/daemon/
+      tree that scripts/build-daemon.cjs deletes and rebuilds. dist/daemon/ is now owned exclusively
+      by the daemon esbuild stage; the CLI's pid-utils.ts -> daemon-shared/endpoint.js path is owned
+      exclusively by tsc. Confirmed empirically that deleting dist/daemon/ no longer affects
+      dist/cli/pid-utils.js loading. Updated the four direct importers (src/cli/pid-utils.ts,
+      packages/daemon/src/pid.ts, packages/web-ui/vite.config.ts, two test files) plus
+      scripts/build-daemon.cjs's endpointSource constant.
+
+
+      Re-verified original ACs against the current implementation: ac-default-loopback-v4,
+      ac-default-ipv6-fallback, ac-configured-bind-host, ac-wildcard-connect-host,
+      ac-connection-metadata, ac-clients-use-metadata, ac-legacy-port-fallback,
+      ac-external-binding-warning on @daemon-network-endpoint-contract; ac-host-default,
+      ac-connect-host-config, ac-port-env-precedence, ac-connection-metadata on @config-daemon.
+
+
+      Full fresh suite (npm test -- --fresh): 2359/2359 suites pass, 8640 tests pass, 5 pre-existing
+      skips, 0 failures. The previously racy tests/task-unblock-prior-status.test.ts now runs
+      cleanly under the same parallel test concurrency that surfaced the cycle-3 race.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T11:13:45.261Z
