@@ -7,3 +7,27 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-06T06:16:34.206Z
+  - _ulid: 01KQXZ10D1RDZV42Y9QBPQRYDT
+    content: >-
+      Spec mutations applied via atomic batch (5 ops, all OK):
+
+      - @api-contract ac-1: replaced with same-origin + configured local dev origins wording
+
+      - @api-contract ac-websocket-origin: added (origin allow-list applied to WebSocket upgrade)
+
+      - @daemon-runtime-adapter ac-config-surface: added (kspec.config.yaml daemon.runtime resolves
+      before serve start and auto-start)
+
+      - @daemon-runtime-adapter ac-default-node: already had node-default wording, left unchanged
+
+      - @web-ui description: replaced Bun-only daemon wording with configured-runtime / Node-default
+      text
+
+      - @web-ui ac-1: replaced with configured-runtime install AC (runtime executable carve-out for
+      optional Bun)
+
+      Verified with kspec item get on all three specs; kspec validate --warnings-ok passes (warnings
+      unrelated to this change). No code changes — task scope is spec-only.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T06:18:56.289Z
