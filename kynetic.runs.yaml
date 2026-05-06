@@ -35571,9 +35571,23 @@ runs:
     completed_at: 2026-05-06T06:29:27.288Z
   - _ulid: 01KQXZWTJXTASZJNM1XFWEQWRZ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T06:34:07.837Z
+        completed_at: 2026-05-06T06:35:03.648Z
+        notes: "What worked well: The detached reviewer flow was precise for a spec-only task. Creating a
+          fresh review record, recording validation and full-test checks, and then using the
+          supported merge helper gave a clear audit trail. The helper's no-op detection correctly
+          handled the case where the branch head was already integrated at dev. The review evidence
+          log check was useful for preserving files read, commands run, claims verified, and
+          searched categories."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T06:35:03.648Z
+        completed_at: 2026-05-06T06:35:03.648Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:34:07.837Z
