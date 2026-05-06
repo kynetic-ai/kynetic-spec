@@ -17050,6 +17050,31 @@ observations:
     resolved: false
     workflow_ref: "@01KQYZXD"
     created_at: 2026-05-06T15:55:55.903Z
+  - _ulid: 01KQZ3VH03MRW0CC4T2JS54MYM
+    type: friction
+    content: Discovering proxySkipCommands
+      (init/serve/help/setup/upgrade/release-notes/shadow/doctor/clone-for-testing/batch/agent/event
+      in src/cli/index.ts) is non-obvious for test authors writing daemon-endpoint regression tests.
+      Commands NOT in the skip list go through /api/command proxy before the inline action handler
+      runs — so tests for schedule/task daemon helpers must either configure the mock daemon to fail
+      /api/command (forcing fallback for non-mutating commands) or expect the proxy hop. Discovered
+      through debugging during task-daemon-endpoint-regression-tests.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T17:02:33.987Z
+  - _ulid: 01KQZ3VH854WETA9FST65ATSMM
+    type: success
+    content: For verifying CLI commands honor metadata-advertised daemon URLs, a child-process recording
+      mock daemon (recording-daemon.cjs) that writes one JSON object per request to a JSONL audit
+      file works cleanly with spawnSync-based kspec() test helper. Combined with binding the mock to
+      127.0.0.2 (loopback alias on Linux, skipped elsewhere) the recorded Host header gives strong
+      behavioral proof the URL came from metadata, not a hardcoded 127.0.0.1. Pattern reused across
+      11 CLI integration tests in cli-daemon-endpoint-regression.test.ts.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T17:02:34.246Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

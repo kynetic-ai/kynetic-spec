@@ -3173,3 +3173,14 @@ inbox:
       - docs
     added_by: "@claude"
     created_at: 2026-05-06T15:14:45.165Z
+  - _ulid: 01KQZ3VHF1CZZ4YRPVRW38VHFT
+    text: 'Document or expose the kspec() test-helper KSPEC_NO_DAEMON=1 default. Daemon-endpoint tests
+      must override with KSPEC_NO_DAEMON="" — easy to miss. Options: (a) add a comment in
+      tests/helpers/cli.ts where the default is set, (b) add a kspecWithDaemon() wrapper that flips
+      the default. Small.'
+    tags:
+      - reflection
+      - tests
+      - dx
+    added_by: "@claude"
+    created_at: 2026-05-06T17:02:34.465Z
