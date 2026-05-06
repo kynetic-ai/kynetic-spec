@@ -413,24 +413,18 @@ export async function createServer(options: ServerOptions) {
   // metadata writes away from the real ~/.config/kspec.
   const pidManager = configDir ? new PidFileManager(configDir) : new PidFileManager();
 
-  // AC: @multi-directory-daemon ac-9 - Write PID and port files in daemon mode
-  // AC: @daemon-network-endpoint-contract ac-connection-metadata
+  // AC: @multi-directory-daemon ac-9 - Write PID and port files in daemon mode.
+  // PID is written before listen() because it serves as the coordination
+  // primitive for stale-daemon detection (atomic O_CREAT|O_EXCL); the legacy
+  // port file is written alongside it for back-compat consumers. Connection
+  // metadata is written *after* listen() succeeds (see below) so a failed
+  // bind never advertises a daemon URL clients would honor.
+  // AC: @daemon-server ac-9 — detach writes lifecycle and connection metadata
   if (isDaemon) {
     pidManager.writePid();
     pidManager.writePort(port);
-    const metadata: DaemonConnectionMetadata = {
-      pid: process.pid,
-      port: endpoint.port,
-      bind_host: endpoint.bindHost,
-      connect_host: endpoint.connectHost,
-      api_url: endpoint.apiUrl,
-      ws_url: endpoint.wsUrl,
-      runtime,
-    };
-    pidManager.writeConnectionMetadata(metadata);
     console.log(`[daemon] PID file written: ${process.pid}`);
     console.log(`[daemon] Port file written: ${port}`);
-    console.log(`[daemon] Connection metadata written: ${endpoint.apiUrl}`);
   }
 
   // Initialize WebSocket managers
@@ -806,7 +800,31 @@ export async function createServer(options: ServerOptions) {
 
   console.log(`[daemon] Server listening on ${endpoint.apiUrl} (bind: ${endpoint.bindHost})`);
   console.log(`[daemon] WebSocket available at ${endpoint.wsUrl}`);
+
+  // AC: @daemon-network-endpoint-contract ac-connection-metadata
+  // AC: @daemon-server ac-9
+  // Write connection metadata only after the server has been told to listen
+  // on the resolved bind host. A synchronous bind error (EADDRINUSE,
+  // EADDRNOTAVAIL) throws before this point and the metadata file is never
+  // written, so clients never see a URL pointing at a daemon that failed to
+  // start.
+  if (isDaemon) {
+    const metadata: DaemonConnectionMetadata = {
+      pid: process.pid,
+      port: endpoint.port,
+      bind_host: endpoint.bindHost,
+      connect_host: endpoint.connectHost,
+      api_url: endpoint.apiUrl,
+      ws_url: endpoint.wsUrl,
+      runtime,
+    };
+    pidManager.writeConnectionMetadata(metadata);
+    console.log(`[daemon] Connection metadata written: ${endpoint.apiUrl}`);
+  }
+
   // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  // AC: @daemon-server ac-external-bind-warning
+  // AC: @trait-localhost-security ac-external-warning
   if (endpoint.externallyReachable) {
     console.warn(
       `[daemon] WARNING: bind host ${endpoint.bindHost} exposes unauthenticated kspec project data and mutation APIs on a non-loopback interface. Restrict access at the network/firewall level.`,
@@ -944,10 +962,13 @@ export async function createServer(options: ServerOptions) {
       // Stop the server
       await stopManagedServer(app.server as ManagedServer | undefined);
 
-      // AC: @daemon-server ac-10 - Remove PID file on shutdown
+      // AC: @daemon-server ac-10 — Remove PID, port, and connection metadata
+      // files on graceful shutdown. PidFileManager.remove() unlinks the full
+      // global lifecycle set so a stopped daemon never leaves an api_url
+      // advertising itself as available.
       if (isDaemon) {
         pidManager.remove();
-        console.log("[daemon] PID file removed");
+        console.log("[daemon] Lifecycle files removed (pid, port, connection metadata)");
       }
 
       console.log("[daemon] Server stopped successfully");

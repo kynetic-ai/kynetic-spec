@@ -354,6 +354,9 @@ describe("kspec serve commands", () => {
 
   // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
   // AC: @daemon-network-endpoint-contract ac-connection-metadata
+  // AC: @daemon-server ac-1
+  // AC: @daemon-server ac-9
+  // AC: @daemon-server ac-10
   // AC: @config-daemon ac-host-default
   // AC: @config-daemon ac-connection-metadata
   it("writes daemon.connection.json with the resolved 127.0.0.1 endpoint on detached startup", async () => {
@@ -491,6 +494,7 @@ describe("kspec serve commands", () => {
   });
 
   // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  // AC: @daemon-server ac-external-bind-warning
   // AC: @trait-localhost-security ac-external-warning
   // AC: @config-daemon ac-host-config
   it("surfaces external-binding warning from the parent CLI on detached starts", async () => {
@@ -527,6 +531,7 @@ describe("kspec serve commands", () => {
   });
 
   // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  // AC: @daemon-server ac-external-bind-warning
   // AC: @trait-localhost-security ac-external-warning
   it("surfaces external-binding warning when serve status reports a non-loopback bind", async () => {
     if (!nodeAvailable) {
