@@ -82,8 +82,12 @@ description: |
 spec_ref: "@config-daemon"
 plan_ref: "@plan-daemon-network-endpoint-contract"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer merge helper at
+  a91411a36d48f7e1dbc37abdc0a8494bbf538e1d. Review @01KQXX9Y approved after verifying @config-daemon
+  spec updates, downstream ownership for remaining endpoint implementation ACs, kspec validate
+  --warnings-ok, and npm test -- --fresh.
 depends_on:
   - "@task-update-localhost-security-trait"
 context: []
@@ -320,9 +324,26 @@ history:
         previous: "@01KQXEP9M670DA29T38FQVM57C"
     command: review-link
     timestamp: 2026-05-06T05:48:55.652Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer merge helper at a91411a36d48f7e1dbc37abdc0a8494bbf538e1d.
+          Review @01KQXX9Y approved after verifying @config-daemon spec updates, downstream
+          ownership for remaining endpoint implementation ACs, kspec validate --warnings-ok, and npm
+          test -- --fresh.
+        previous: null
+      completed_at:
+        new: 2026-05-06T05:59:39.676Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-06T05:59:39.686Z
 prior_status: null
 created_at: 2026-05-05T21:16:20.271Z
 started_at: 2026-05-06T01:48:30.284Z
 submitted_at: 2026-05-06T05:44:31.333Z
+completed_at: 2026-05-06T05:59:39.676Z
 todos: []
 automation: eligible
