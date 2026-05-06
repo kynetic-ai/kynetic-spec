@@ -16897,6 +16897,21 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T11:19:12.893Z
+  - _ulid: 01KQYJGDP89EBDWY6H578H6PRF
+    type: friction
+    content: "Fallback/recovery tests that pre-create the failure condition can pass for the wrong
+      reason. Example: cycle-2 e2e test pre-bound 127.0.0.1:PORT and asserted ::1 fallback — passed
+      only because the bug treated EADDRINUSE the same as EADDRNOTAVAIL. The test read as if it
+      verified ac-default-ipv6-fallback but actually verified the bug. Generalizable rule: any test
+      that induces a recovery path by triggering ONE failure type must also assert the recovery was
+      driven by that failure mode's spec-defined classification, not just that recovery occurred.
+      Reviewers should look for this; workers should write probe/test pairs that distinguish error
+      classes (e.g. assert reason='port_in_use' on EADDRINUSE before asserting fallback only on
+      'address_unavailable')."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T11:59:24.360Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
