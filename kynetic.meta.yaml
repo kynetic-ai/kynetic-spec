@@ -16694,6 +16694,20 @@ observations:
     resolved: false
     workflow_ref: "@01KQXX32"
     created_at: 2026-05-06T05:46:27.418Z
+  - _ulid: 01KQXY4598QZ6EMYQXA9WW8KDK
+    type: friction
+    content: "Spec-update review scope ambiguity: in staged plans that intentionally update specs before
+      implementation, current review guidance can treat downstream-owned behavioral AC coverage gaps
+      as blockers. This task needed multiple review cycles and manual plan reconstruction before
+      approving that @config-daemon ac-host-default, ac-connect-host-config, and
+      ac-connection-metadata were owned by downstream endpoint resolver/startup tasks. Consider
+      triaging reviewer guidance so stale/invalid annotations remain blockers, but expected
+      uncovered ACs may pass when the approved plan explicitly assigns implementation coverage to
+      later tasks."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T06:03:11.017Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
