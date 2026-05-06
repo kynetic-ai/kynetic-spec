@@ -35195,7 +35195,7 @@ runs:
     completed_at: 2026-05-06T05:47:15.948Z
   - _ulid: 01KQXY14SJHDKD736KK9TB25WK
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35231,7 +35231,20 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T06:02:32.656Z
-        completed_at: 2026-05-06T06:02:32.656Z
+        completed_at: 2026-05-06T06:02:45.549Z
+        notes: "Proposed improvement: add reviewer guidance/checklist support for spec-update tasks in
+          staged plans. The guidance should tell reviewers to distinguish (a) stale/invalid
+          annotations introduced by the current branch, which remain blockers, from (b)
+          intentionally uncovered newly-authored ACs whose implementation coverage is explicitly
+          assigned to downstream tasks in the same approved plan. It should require evidence: task
+          is tagged/spec-update or clearly spec-only, downstream tasks reference the uncovered ACs,
+          and kspec validate warnings are recorded as expected. Scope: small to medium
+          documentation/workflow update, likely in review-gates or kspec-review guidance rather than
+          product code."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T06:02:45.549Z
+        completed_at: 2026-05-06T06:02:45.549Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:01:32.210Z
