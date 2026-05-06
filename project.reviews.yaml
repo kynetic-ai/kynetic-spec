@@ -176331,6 +176331,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQXDE60K7E7680XQGRGYCYXP
         timestamp: 2026-05-06T01:11:34.975Z
+      - _ulid: 01KQXDEATKEAQ7A2BRHMM7Z0V0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQXDE9M08PJPKJV0GY1VN253
+        timestamp: 2026-05-06T01:11:38.579Z
     examined_commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
     external_links: []
     lifecycle_state: open
@@ -176377,7 +176384,24 @@ reviews:
               validation no longer carries stale coverage metadata."
             created_at: 2026-05-06T01:11:33.651Z
         kind: blocker
+      - _ulid: 01KQXDE9M08PJPKJV0GY1VN253
+        anchor:
+          type: code
+          commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
+          line_end: 699
+          line_start: 699
+          path: src/parser/config.ts
+          side: head
+        entries:
+          - _ulid: 01KQXDE9M130G8QQSWT7ACY7SN
+            author: Jacob Chapel
+            body: "MUST-FIX: this source annotation still points to the removed @config-daemon ac-5/ac-6 ids.
+              The task renamed those criteria to ac-host-config and ac-host-env-precedence, so
+              leaving stale IDs here breaks traceability for the daemon host/env behavior. Update
+              this comment to the current AC ids along with the test annotations."
+            created_at: 2026-05-06T01:11:37.345Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-06T01:00:28.490Z
-    updated_at: 2026-05-06T01:11:33.651Z
+    updated_at: 2026-05-06T01:11:37.345Z
     notes: []
