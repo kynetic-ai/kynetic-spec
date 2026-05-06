@@ -36689,7 +36689,7 @@ runs:
     completed_at: 2026-05-06T14:54:25.485Z
   - _ulid: 01KQYXH973KRM5YVA5YNBJP5VB
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -36750,7 +36750,32 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T15:13:58.146Z
-        completed_at: 2026-05-06T15:13:58.146Z
+        completed_at: 2026-05-06T15:14:11.420Z
+        notes: >-
+          Proposed improvements for untracked friction:
+
+
+          (1) Convention/AGENTS.md note: 'When a daemon-startup test needs to assert what the daemon
+          process itself does (exits, writes lifecycle files, etc.), spawn the daemon binary
+          directly via spawn(node, [dist/daemon/index.js, ...]) instead of going through kspec serve
+          start --detach. The CLI-mediated path adds parent-polling timing the test does not control
+          and can hang spawnSync for 30+ seconds when the child dies in atypical patterns.' Scope:
+          small (docs + maybe one example link).
+
+
+          (2) Observation/friction record: 'kspec serve start --detach + spawnSync(timeout: 30_000)
+          interaction can wedge the test runner when the daemon child dies in unexpected ways. Root
+          cause not fully understood — needs investigation if more startup-failure tests are written
+          through the CLI path.' Scope: research, not a defined task yet — fits inbox or observation
+          better.
+
+
+          (3) Inline comment near awaitListenSuccess explaining the @elysiajs/node async-listen
+          contract — already done as part of this fix, no separate item needed.
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T15:14:11.420Z
+        completed_at: 2026-05-06T15:14:11.420Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T15:12:06.883Z
