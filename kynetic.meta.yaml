@@ -16655,6 +16655,29 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-06T01:46:15.251Z
+  - _ulid: 01KQXGBTK1J5QHPWA7B2P0EWTM
+    type: friction
+    content: Plans that add ACs to a spec whose implementation is owned by other pending tasks in the
+      same plan create unsolvable AC coverage gates. The reviewer requires behavioral coverage for
+      new ACs, but the worker cannot add coverage without doing the implementation tasks work, which
+      is scope creep. Observed on @task-update-config-daemon-endpoint-ac (3 fix cycles). Resolution
+      requires either re-sequencing the plan (implementation tasks first, then spec ACs) or
+      splitting the spec update into per-AC slices that ship with each implementation task.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T02:02:42.145Z
+  - _ulid: 01KQXGBTV6WAZ6VF0VVTVD87FF
+    type: friction
+    content: kspec validate --warnings-ok (without -v) hides per-AC uncovered counts. Previous fix-cycle
+      agent claimed kspec validate --warnings-ok now reports zero @config-daemon missing-AC
+      warnings, but kspec validate --warnings-ok -v showed 5 uncovered ACs. Workers and reviewers
+      need a default that surfaces uncovered ACs by spec, or task-work skill should explicitly
+      require running validate with -v before submit.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T02:02:42.406Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
