@@ -1,1 +1,41 @@
-notes: []
+notes:
+  - _ulid: 01KQY3STBZRNAXMH4RYDQH3KRN
+    content: >-
+      Implemented shared daemon endpoint resolver at src/daemon/endpoint.ts.
+
+
+      Module exposes pure host helpers (normalizeDaemonHost, resolveDaemonBindHost,
+      resolveDaemonConnectHost, formatHostForUrl, buildDaemonUrls, isLoopbackHost, isWildcardHost,
+      isIpv6Literal, isExternallyReachable, resolveDaemonEndpoint), connection metadata I/O
+      (read/write/remove + readLegacyDaemonPortEndpoint), KSPEC_NO_DAEMON env helper, path
+      constants/getters, and a single PidFileManager class.
+
+
+      Consolidation: src/cli/pid-utils.ts and packages/daemon/src/pid.ts now both re-export
+      PidFileManager from src/daemon/endpoint.ts. scripts/build-daemon.cjs copies endpoint.ts into
+      the daemon stage dir and rewrites pid.ts to import from a sibling, matching the existing
+      shadow-sync-manager shim pattern. A test asserts the CLI and daemon imports return the same
+      class identity so behavior cannot drift again.
+
+
+      Config changes: DaemonConfigSchema gains optional connect_host; ResolvedKspecConfig.daemon
+      adds connect_host (string | null). Resolution honors KSPEC_DAEMON_CONNECT_HOST > file > null.
+      DEFAULT_CONFIG.daemon.host changed from 'localhost' to '127.0.0.1' so the default never
+      depends on the OS resolver.
+
+
+      Tests: 57 new tests in tests/daemon-endpoint.test.ts covering AC ac-default-loopback-v4,
+      ac-wildcard-connect-host, ac-connection-metadata, ac-legacy-port-fallback (all on
+      @daemon-network-endpoint-contract) and ac-host-default, ac-connect-host-config,
+      ac-port-env-precedence, ac-connection-metadata (on @config-daemon). Updated
+      tests/parser/daemon-config.test.ts and tests/parser/config.test.ts for the new default and
+      added connect_host coverage. tests/daemon-pid.test.ts needed one ignoreNoDaemon: true call now
+      that the daemon-side PidFileManager goes through the shared NO_DAEMON-aware implementation.
+      Full suite: 8607 passing, 5 skipped, 0 failures.
+
+
+      Daemon binding/server.ts is intentionally untouched — that wiring is the next task
+      (@task-daemon-startup-bind-host-metadata).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T07:42:23.616Z
