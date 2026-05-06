@@ -35751,7 +35751,7 @@ runs:
     completed_at: 2026-05-06T06:56:52.474Z
   - _ulid: 01KQY1ZHWP4SMVTS7F8FW5K3AW
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35779,7 +35779,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-06T07:11:07.149Z
-        completed_at: 2026-05-06T07:11:07.149Z
+        completed_at: 2026-05-06T07:11:50.957Z
+        notes: "Coverage search: workflow command friction is already tracked by @01KKBD52 (Workflow UX:
+          allow kspec workflow show and related run commands to default where safe), inbox @01KQBGKT
+          (update reflection workflow examples), and related observations including @01KQY000.
+          Full-suite duration is already covered by @test-suite-perf-reliability and multiple
+          test-runner observations/tasks, including cached runner and progress-output work. No
+          untracked friction with enough confidence to capture."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-06T07:11:50.957Z
+        completed_at: 2026-05-06T07:11:50.957Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T07:10:34.390Z
