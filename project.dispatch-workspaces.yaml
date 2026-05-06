@@ -5494,12 +5494,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-06T10:46:51.936Z
+      updated_at: 2026-05-06T10:47:00.543Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T10:46:53.345Z
+      updated_at: 2026-05-06T10:47:00.543Z
     integration:
       status: pending
       detail: null
@@ -5507,7 +5507,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
-      updated_at: 2026-05-06T10:46:51.936Z
+      updated_at: 2026-05-06T10:47:00.543Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KQWZZH7R9W7WKATZXFB61MPC"
@@ -5515,9 +5515,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T10:32:08.977Z
-      last_reconciled_at: 2026-05-06T10:46:53.345Z
+      last_reconciled_at: 2026-05-06T10:47:00.543Z
       created_at: 2026-05-06T06:57:40.618Z
-      updated_at: 2026-05-06T10:46:53.345Z
+      updated_at: 2026-05-06T10:47:00.543Z
     workspace_id: dispatch-workspace-01KQWZZH7R9W7WKATZXFB61MPC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -5526,7 +5526,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-shared-daemon-endpoint-resolver/01kqwzzh
         head: 506eb2b3e31fd95451b0d8e52509ce42d8ab6124
-        last_seen_at: 2026-05-06T10:31:42.790Z
+        last_seen_at: 2026-05-06T10:47:00.543Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-shared-daemon-endpoint-resolver-01kqwzzh
   - active_role: null
     base_branch_point: 85b4465b79f63cfe59cbac09a0a58cc054c22d36
