@@ -177121,6 +177121,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQXYXMZA63Z6R1850FV9VVKV
         timestamp: 2026-05-06T06:17:07.734Z
+      - _ulid: 01KQXYY1RZHM3ET5BT3J7ZSAYN
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQXYY0D6S8ZRA1ENJ82XZ71Z
+        timestamp: 2026-05-06T06:17:19.391Z
     examined_commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
     external_links: []
     lifecycle_state: open
@@ -177166,7 +177173,25 @@ reviews:
               connect_host routing were completely absent."
             created_at: 2026-05-06T06:17:06.283Z
         kind: blocker
+      - _ulid: 01KQXYY0D6S8ZRA1ENJ82XZ71Z
+        anchor:
+          type: code
+          commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
+          line_end: 754
+          line_start: 744
+          path: tests/cli-daemon-proxy.test.ts
+          side: head
+        entries:
+          - _ulid: 01KQXYY0D62R4NMVRCPPGAH8FM
+            author: codex
+            body: "MUST-FIX: The @cli-daemon-proxy ac-auto-detect annotation still covers legacy daemon.port
+              routing, not the updated metadata-driven contract. The AC now requires routing through
+              the daemon API using the advertised connect_host and port when connection metadata
+              points to a running daemon; this E2E writes only daemon.port/daemon.pid, so it does
+              not prove advertised connect_host is used or that metadata is read."
+            created_at: 2026-05-06T06:17:17.990Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-06T06:15:47.921Z
-    updated_at: 2026-05-06T06:17:06.283Z
+    updated_at: 2026-05-06T06:17:17.990Z
     notes: []
