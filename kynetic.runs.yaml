@@ -34994,7 +34994,7 @@ runs:
     completed_at: 2026-05-06T00:59:09.353Z
   - _ulid: 01KQXD76YTTHYP2N3WNF8F3XBT
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35009,7 +35009,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T01:08:56.948Z
-        completed_at: 2026-05-06T01:08:56.948Z
+        completed_at: 2026-05-06T01:09:04.880Z
+        notes: "Friction points: 1) Reflection guidance says kspec workflow show without a run ref, but this
+          CLI required kspec workflow show @run-ref. 2) kspec validate default exit 6 creates review
+          noise because broad existing warnings need explicit non-regression classification and a
+          second --warnings-ok run. Both are systemic, but neither appeared introduced by this
+          task."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T01:09:04.880Z
+        completed_at: 2026-05-06T01:09:04.880Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T01:07:45.242Z
