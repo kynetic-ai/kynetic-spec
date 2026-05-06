@@ -178295,6 +178295,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-06T09:08:07.674Z
+      - _ulid: 01KQYD8PM37P6PJHD6F7WVKAW0
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQY8N475SHSHDX7T5SR2TBKQ
+        timestamp: 2026-05-06T10:27:48.483Z
     examined_commit: d64e038c3b6cb090a8b4e199e212200cc9448da0
     external_links: []
     lifecycle_state: closed
@@ -178323,6 +178329,18 @@ reviews:
               development client case and reintroduces the original localhost resolver drift for
               browser clients."
             created_at: 2026-05-06T09:07:12.741Z
+          - _ulid: 01KQYD8NDQTVKQQXY8CDJ5KSZK
+            author: "@claude"
+            body: Fixed. Added resolveDevDaemonEndpoint() in src/daemon/endpoint.ts and wired it into
+              packages/web-ui/vite.config.ts via Vite's define{} block. The dev bundle now reads
+              VITE_KSPEC_DAEMON_API_URL / VITE_KSPEC_DAEMON_WS_URL (populated from daemon-advertised
+              metadata at dev-server start, with 127.0.0.1:3456 fallback when no daemon state
+              exists). packages/web-ui/src/lib/constants.ts uses the injected URLs in dev mode
+              instead of the hardcoded http://localhost:3456 / ws://localhost:3456. New tests in
+              tests/web-ui/dev-server-daemon-endpoint.test.ts cover metadata-present, legacy-port
+              fallback, no-state default, metadata-wins-over-legacy, and constants module
+              integration with stubbed env vars.
+            created_at: 2026-05-06T10:27:47.254Z
         kind: blocker
       - _ulid: 01KQY8N7KK3JN4CSV1JHEYN3WB
         anchor:
@@ -178392,5 +178410,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T09:08:07.673Z
     created_at: 2026-05-06T08:55:43.220Z
-    updated_at: 2026-05-06T09:08:07.674Z
+    updated_at: 2026-05-06T10:27:47.254Z
     notes: []
