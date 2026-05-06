@@ -180137,6 +180137,21 @@ reviews:
         runner: kspec
         created_at: 2026-05-06T15:51:33.413Z
         completed_at: 2026-05-06T15:51:33.413Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Changed-area tests passed: npm test -- --run tests/daemon-api/server.test.ts
+          tests/web-ui/dev-server-daemon-endpoint.test.ts
+          tests/web-ui/daemon-endpoint-host-parity.test.ts (54 tests passed); npm test -- --run
+          tests/daemon-api/websocket-protocol.test.ts (11 tests passed). Initial combined target run
+          hit the previously observed close-code websocket flake in beforeEach, then the websocket
+          file and full suite both passed."
+        name: targeted daemon/web-ui tests
+        required: true
+        runner: npm
+        created_at: 2026-05-06T15:51:36.926Z
+        completed_at: 2026-05-06T15:51:36.926Z
     events:
       - _ulid: 01KQYZ1KVRYX6XTG8AZJCSFHDD
         actor: Jacob Chapel
@@ -180165,6 +180180,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-06T15:51:34.617Z
+      - _ulid: 01KQYZSMXJXKAWC276M0HNWNMY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon/web-ui tests
+        timestamp: 2026-05-06T15:51:38.162Z
     examined_commit: 61588c0f057e5a473d1f455147f5cbac71972378
     external_links: []
     lifecycle_state: open
@@ -180177,5 +180199,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T15:38:30.648Z
-    updated_at: 2026-05-06T15:51:33.413Z
+    updated_at: 2026-05-06T15:51:36.926Z
     notes: []
