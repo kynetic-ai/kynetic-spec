@@ -35914,9 +35914,23 @@ runs:
     completed_at: 2026-05-06T08:03:01.954Z
   - _ulid: 01KQY508NA1W4G84WGVPDSH0XZ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T08:03:23.435Z
+        completed_at: 2026-05-06T08:05:21.201Z
+        notes: "Session: applied @trait-daemon-endpoint-consumer to 3 specs via kspec batch and submitted
+          task. What worked: kspec batch atomic mutation; --json | python3 traits verification;
+          cross-referencing sibling task f26b5726e and review @01KQY18T to confirm deferral
+          precedent. Friction encountered: same pattern previously observed — task description
+          'Covers:' line is ambiguous re: whether trait AC coverage is required now or deferred to
+          follow-up implementation tasks."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T08:05:21.201Z
+        completed_at: 2026-05-06T08:05:21.201Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T08:03:23.435Z
