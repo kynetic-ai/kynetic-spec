@@ -177114,6 +177114,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQXYX9ZY2R3RDDTJ0VQQJWPE
         timestamp: 2026-05-06T06:16:56.382Z
+      - _ulid: 01KQXYXPCNYWZ26STGW5CRCMDT
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQXYXMZA63Z6R1850FV9VVKV
+        timestamp: 2026-05-06T06:17:07.734Z
     examined_commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
     external_links: []
     lifecycle_state: open
@@ -177140,7 +177147,26 @@ reviews:
               coverage gate for newly added criteria."
             created_at: 2026-05-06T06:16:55.038Z
         kind: blocker
+      - _ulid: 01KQXYXMZA63Z6R1850FV9VVKV
+        anchor:
+          type: code
+          commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
+          line_end: 145
+          line_start: 135
+          path: tests/cli-daemon-proxy.test.ts
+          side: head
+        entries:
+          - _ulid: 01KQXYXMZB10W5YW8YRMFGT6C6
+            author: codex
+            body: "MUST-FIX: This annotation now claims coverage for @daemon-proxy-detection
+              ac-connection-metadata-check, but the test only covers the old missing daemon.port
+              behavior. The updated AC requires reading daemon connection metadata from the standard
+              global location and health-checking connect_host plus port. This test creates an empty
+              HOME and expects reason 'no port file', so it would still pass if metadata reading and
+              connect_host routing were completely absent."
+            created_at: 2026-05-06T06:17:06.283Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-06T06:15:47.921Z
-    updated_at: 2026-05-06T06:16:55.038Z
+    updated_at: 2026-05-06T06:17:06.283Z
     notes: []
