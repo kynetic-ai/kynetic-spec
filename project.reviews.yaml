@@ -178823,6 +178823,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-06T11:31:06.691Z
+      - _ulid: 01KQYGWQ73968PM8G9S82YFAHE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQYGWP2XEM6W3BEPDV9QGQX3
+        timestamp: 2026-05-06T11:31:10.179Z
     examined_commit: 3ef22cbfd8d59b8a6c4aa5c9ecc57b826152024a
     external_links: []
     lifecycle_state: open
@@ -178856,7 +178863,29 @@ reviews:
               IPv4-loopback-unavailable condition."
             created_at: 2026-05-06T11:24:23.340Z
         kind: blocker
+      - _ulid: 01KQYGWP2XEM6W3BEPDV9QGQX3
+        entries:
+          - _ulid: 01KQYGWP2XPKD2Y0JEY6XA7ZVP
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; task @01KQWZZH7R9W7WKATZXFB61MPC; specs
+              @daemon-network-endpoint-contract and @config-daemon; prior review @01KQYDJ9; changed
+              implementation files including src/daemon-shared/endpoint.ts,
+              packages/daemon/src/server.ts, packages/daemon/src/index.ts, src/parser/config.ts,
+              src/cli/index.ts, src/cli/daemon-proxy.ts, src/cli/commands/serve.ts,
+              src/parser/daemon-status.ts, packages/web-ui/vite.config.ts,
+              packages/web-ui/src/lib/constants.ts, scripts/build-daemon.cjs, pid shims, and changed
+              endpoint tests. Commands run: git status, git diff stat/name/summary, kspec task get,
+              kspec item get, kspec review get/add/open/comment/check, rg AC annotations, kspec
+              validate, npm test -- --fresh. Claims verified: auto-start flag forwarding exists in
+              src/cli/index.ts; dist daemon shared module was moved outside dist/daemon via
+              src/daemon-shared plus build-daemon staging; clients now resolve metadata first via
+              resolveDaemonClientEndpoint; full test suite passes. Categories searched: correctness,
+              edge cases, error handling, security warning path, test quality, integration and build
+              staging. Finding recorded: IPv6 fallback conflates port collision with IPv4 loopback
+              unavailability."
+            created_at: 2026-05-06T11:31:09.021Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-06T11:20:55.480Z
-    updated_at: 2026-05-06T11:31:05.497Z
+    updated_at: 2026-05-06T11:31:09.021Z
     notes: []
