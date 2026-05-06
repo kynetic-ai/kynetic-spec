@@ -34994,9 +34994,22 @@ runs:
     completed_at: 2026-05-06T00:59:09.353Z
   - _ulid: 01KQXD76YTTHYP2N3WNF8F3XBT
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T01:07:45.242Z
+        completed_at: 2026-05-06T01:08:56.948Z
+        notes: "What worked well: Detached reviewer flow was crisp: read diff first, opened a fresh review,
+          recorded concrete checks, approved only after targeted and full fresh test verification,
+          then used the supported detached-reviewer merge helper. The evidence-log thread gave a
+          compact audit trail for files read, commands run, claims verified, and review categories
+          searched."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T01:08:56.948Z
+        completed_at: 2026-05-06T01:08:56.948Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T01:07:45.242Z
