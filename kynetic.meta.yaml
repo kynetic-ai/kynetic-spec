@@ -16852,6 +16852,35 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T10:31:22.300Z
+  - _ulid: 01KQYEAPXW8ZPJV36JV77QH247
+    type: success
+    content: "Review cycle pattern that worked: using prior review records plus a full fresh suite and
+      an isolated failed-suite rerun made it possible to distinguish a real implementation gap from
+      a concurrent build race, and produced evidence precise enough for fix-cycle workers."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T10:46:22.908Z
+  - _ulid: 01KQYEAQ5K6PCHCYDXATBDMWZX
+    type: friction
+    content: Daemon lifecycle startup arguments drifted between explicit serve start and implicit
+      auto-start. Endpoint-related config flags need a shared spawn argument builder or equivalent
+      single path so configured host/connect_host behavior cannot be wired in one lifecycle path and
+      missed in another.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T10:46:23.155Z
+  - _ulid: 01KQYEAQCEQPF76H8XF081CP7H
+    type: friction
+    content: The CLI shared endpoint import now depends on dist/daemon/endpoint.js, while build:daemon
+      deletes and recreates dist/daemon. Concurrent CLI subprocesses can fail during that window, so
+      shared runtime modules used by the CLI should not live behind transient daemon build output
+      unless rebuilds are atomic.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T10:46:23.374Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
