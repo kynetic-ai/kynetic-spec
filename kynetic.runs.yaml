@@ -37000,7 +37000,7 @@ runs:
     completed_at: 2026-05-06T16:08:40.316Z
   - _ulid: 01KQZ1MH9K7XCFNH54Y52KJ1DX
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -37037,7 +37037,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T16:25:18.626Z
-        completed_at: 2026-05-06T16:25:18.626Z
+        completed_at: 2026-05-06T16:25:28.251Z
+        notes: "Proposed improvement: add first-class support for a review evidence log, either as a
+          dedicated review field/command or a standard check/evidence summary command. It would
+          avoid using nit threads for process evidence, keep findings threads focused on actual
+          review comments, and make review-gates evidence machine-parseable. Rough scope: medium,
+          touching review schema/CLI/UI display if promoted."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T16:25:28.251Z
+        completed_at: 2026-05-06T16:25:28.251Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T16:23:47.763Z
