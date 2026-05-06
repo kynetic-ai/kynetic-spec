@@ -177135,6 +177135,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQXYYBH41D7QCJ0FMHKY93YR
         timestamp: 2026-05-06T06:17:30.889Z
+      - _ulid: 01KQXYYRFZAF8C9ENMSKGQA9CH
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQXYYPZ3ZVKD31G1PXF8BY22
+        timestamp: 2026-05-06T06:17:42.656Z
     examined_commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
     external_links: []
     lifecycle_state: open
@@ -177216,7 +177223,26 @@ reviews:
               new metadata timeout path were missing."
             created_at: 2026-05-06T06:17:29.380Z
         kind: blocker
+      - _ulid: 01KQXYYPZ3ZVKD31G1PXF8BY22
+        anchor:
+          type: code
+          commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
+          line_end: 14
+          line_start: 13
+          path: src/cli/daemon-proxy.ts
+          side: head
+        entries:
+          - _ulid: 01KQXYYPZ44GTW9QRB3G88HTZ5
+            author: codex
+            body: "MUST-FIX: The source still references the removed @daemon-proxy-detection ac-port-file-check
+              AC after this task renamed it to ac-connection-metadata-check and added
+              ac-legacy-port-file-fallback. There is another stale reference at line 66, plus the
+              test header still lists ac-port-file-check. Leaving invalid AC references behind makes
+              the spec/test map misleading and contradicts the task note that no ac-port-file-check
+              references remain."
+            created_at: 2026-05-06T06:17:41.092Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-06T06:15:47.921Z
-    updated_at: 2026-05-06T06:17:29.380Z
+    updated_at: 2026-05-06T06:17:41.092Z
     notes: []
