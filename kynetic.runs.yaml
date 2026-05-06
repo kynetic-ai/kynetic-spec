@@ -35914,7 +35914,7 @@ runs:
     completed_at: 2026-05-06T08:03:01.954Z
   - _ulid: 01KQY508NA1W4G84WGVPDSH0XZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -35930,7 +35930,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T08:05:21.201Z
-        completed_at: 2026-05-06T08:05:21.201Z
+        completed_at: 2026-05-06T08:05:30.074Z
+        notes: "Searched kspec for: 'trait AC coverage deferred', 'covers line ambiguous', 'spec ahead of
+          implementation', 'spec-update task', 'kspec batch'. Two existing unresolved observations
+          directly cover the friction/success patterns I'd capture: @01KQXX5H (friction: reviewers
+          flagging missing behavioral coverage as MUST-FIX on spec-update tasks even when ACs depend
+          on downstream tasks) and @01KQY167S (success: deferring AC coverage to implementation
+          tasks beats repointing annotations forward, accepted by reviewer). No additional capture
+          needed — duplication would add noise."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T08:05:30.074Z
+        completed_at: 2026-05-06T08:05:30.074Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T08:03:23.435Z
