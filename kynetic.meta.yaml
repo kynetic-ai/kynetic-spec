@@ -16912,6 +16912,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T11:59:24.360Z
+  - _ulid: 01KQYMGNM47KR8JTDPFSC2SHQM
+    type: friction
+    content: "Merge helper fails on duplicate annotation-correction commits. When two parallel task
+      branches both fix annotations for the same renamed AC ids, both will land
+      effectively-identical commits via different paths. The merge helper sees them as a textual
+      conflict even though git rebase --reapply-cherry-picks (default) recognizes them as
+      equivalent. Observed in fix cycle 5 of @01KQWZZH7R9W7WKATZXFB61MPC: dev had f26b5726/0e475fe9,
+      task branch had c28548f35/1986fbf74 — same patches, different commits. Cost one fix cycle for
+      purely mechanical resolution. Possible fix: have the merge helper attempt rebase with
+      cherry-pick detection before declaring a conflict."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T12:34:29.636Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
