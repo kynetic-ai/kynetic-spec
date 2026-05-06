@@ -82,20 +82,8 @@ description: |
 spec_ref: "@config-daemon"
 plan_ref: "@plan-daemon-network-endpoint-contract"
 origin: derived
-status: blocked
-blocked_by:
-  - "Three of the five cycle-2 review blockers cannot be addressed within this task's scope.
-    Implementation is owned by other pending tasks in @plan-daemon-network-endpoint-contract:
-    @task-shared-daemon-endpoint-resolver (changes DEFAULT_CONFIG.daemon.host from localhost to
-    127.0.0.1; adds connect_host field) and @task-daemon-startup-bind-host-metadata (changes daemon
-    server to bind to resolved host; writes complete connection metadata file). Without those
-    implementations, ac-host-default, ac-connect-host-config, and ac-connection-metadata are not
-    testable behaviorally. Recommended resolution: re-sequence plan so the two implementation tasks
-    complete first, then this task resumes to add the remaining annotations; or reduce this task's
-    AC scope by removing the three unimplementable ACs (which are also covered by
-    @daemon-network-endpoint-contract). See latest task note for full analysis. Partial progress
-    committed (44f834541): added behavioral coverage for ac-runtime-config and ac-runtime-default;
-    uncovered count reduced from 5 to 3."
+status: in_progress
+blocked_by: []
 depends_on:
   - "@task-update-localhost-security-trait"
 context: []
@@ -114,7 +102,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-update-config-daemon-endpoint-ac/01kqwzzf
-session_id: 01KQXFGAMD0VDJP9JAVY7H6JSK
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -269,7 +257,36 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-05-06T02:00:59.471Z
-prior_status: in_progress
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - "Three of the five cycle-2 review blockers cannot be addressed within this task's scope.
+            Implementation is owned by other pending tasks in
+            @plan-daemon-network-endpoint-contract: @task-shared-daemon-endpoint-resolver (changes
+            DEFAULT_CONFIG.daemon.host from localhost to 127.0.0.1; adds connect_host field) and
+            @task-daemon-startup-bind-host-metadata (changes daemon server to bind to resolved host;
+            writes complete connection metadata file). Without those implementations,
+            ac-host-default, ac-connect-host-config, and ac-connection-metadata are not testable
+            behaviorally. Recommended resolution: re-sequence plan so the two implementation tasks
+            complete first, then this task resumes to add the remaining annotations; or reduce this
+            task's AC scope by removing the three unimplementable ACs (which are also covered by
+            @daemon-network-endpoint-contract). See latest task note for full analysis. Partial
+            progress committed (44f834541): added behavioral coverage for ac-runtime-config and
+            ac-runtime-default; uncovered count reduced from 5 to 3."
+      session_id:
+        new: null
+        previous: 01KQXFGAMD0VDJP9JAVY7H6JSK
+      prior_status:
+        new: null
+        previous: in_progress
+    command: task-unblock
+    timestamp: 2026-05-06T05:33:11.513Z
+prior_status: null
 created_at: 2026-05-05T21:16:20.271Z
 started_at: 2026-05-06T01:48:30.284Z
 submitted_at: 2026-05-06T01:30:05.269Z
