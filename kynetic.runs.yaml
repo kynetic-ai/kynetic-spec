@@ -36439,7 +36439,7 @@ runs:
     completed_at: 2026-05-06T13:24:12.373Z
   - _ulid: 01KQYR3N0VP142XJB42BFAZ8K7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36453,7 +36453,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T13:38:19.951Z
-        completed_at: 2026-05-06T13:38:19.951Z
+        completed_at: 2026-05-06T13:38:31.075Z
+        notes: "Friction points: kspec validate still exits 6 with a very large repository-wide warning set,
+          so review had to classify warnings manually as pre-existing rather than a task regression.
+          Detached reviewer merge friction did not recur this cycle because the helper worked, but
+          the session still depended on knowing to avoid manual branch checkout. Both appear
+          systemic, so I searched for existing tracking before proposing anything new."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T13:38:31.075Z
+        completed_at: 2026-05-06T13:38:31.075Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T13:37:17.339Z
