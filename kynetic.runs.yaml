@@ -35100,7 +35100,7 @@ runs:
     completed_at: 2026-05-06T01:15:16.952Z
   - _ulid: 01KQXFBDQB1G04P7EDRP245JRC
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35120,7 +35120,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-06T01:46:27.824Z
-        completed_at: 2026-05-06T01:46:27.824Z
+        completed_at: 2026-05-06T01:46:37.224Z
+        notes: "Check coverage: searched review coverage validation, verbose validation AC coverage, AC
+          coverage warning, warnings-ok, and reviewer validation. Existing coverage:
+          @task-validation-trust-final-gate and @task-catalog-health-baseline cover the broad
+          validation-trust baseline; observation @01KQXEKC covers stale AC-id annotations after
+          renames. Gap: no exact item covered default summary hiding touched-spec uncovered AC
+          warnings during review."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-06T01:46:37.224Z
+        completed_at: 2026-05-06T01:46:37.224Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T01:45:00.395Z
