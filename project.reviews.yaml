@@ -178319,6 +178319,12 @@ reviews:
         payload:
           thread_ulid: 01KQY8N475SHSHDX7T5SR2TBKQ
         timestamp: 2026-05-06T10:28:29.421Z
+      - _ulid: 01KQYDA43M3PNGGN5WGN6A9KF8
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQY8N7KK3JN4CSV1JHEYN3WB
+        timestamp: 2026-05-06T10:28:35.060Z
     examined_commit: d64e038c3b6cb090a8b4e199e212200cc9448da0
     external_links: []
     lifecycle_state: closed
@@ -178392,6 +178398,8 @@ reviews:
               assert the warning appears in stderr for both serve start --detach and serve status."
             created_at: 2026-05-06T10:28:00.472Z
         kind: blocker
+        resolved_at: 2026-05-06T10:28:33.783Z
+        resolved_by: "@claude"
       - _ulid: 01KQY8NB0P6HDVKGFQAQH9BQYW
         anchor:
           type: code
@@ -178460,5 +178468,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T09:08:07.673Z
     created_at: 2026-05-06T08:55:43.220Z
-    updated_at: 2026-05-06T10:28:28.166Z
+    updated_at: 2026-05-06T10:28:33.783Z
     notes: []
