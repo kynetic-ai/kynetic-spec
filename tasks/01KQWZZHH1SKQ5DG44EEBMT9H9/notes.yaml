@@ -16,3 +16,32 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-06T14:15:02.494Z
+  - _ulid: 01KQYXG192141D0BY8RW4VDYF3
+    content: >-
+      Fix cycle 1: addressed cycle-1 reviewer blocker (no metadata on EADDRINUSE).
+
+
+      Root cause: @elysiajs/node's listen path is async on Node — srvx kicks off
+      http.Server.listen() inside its NodeServer constructor with .catch(() => {}) swallowing the
+      rejection. EADDRINUSE/EADDRNOTAVAIL fire on the 'error' event AFTER app.listen() returns, so
+      the prior "metadata after listen()" guard was illusory; the daemon proceeded to write
+      daemon.connection.json advertising a URL it never owned.
+
+
+      Fix: capture the serverInfo via the listen() callback and await raw.ready() (the srvx
+      NodeServer's listening promise) before pidManager.writeConnectionMetadata. On Bun, Bun.serve
+      throws synchronously, so awaitListenSuccess short-circuits.
+
+
+      Regression test in tests/cli-serve.test.ts spawns the daemon binary directly against a
+      pre-bound port and asserts non-zero exit, EADDRINUSE on stderr, and absent metadata file.
+      Verified the test catches the bug (toggled the await off — daemon hung past 10s, assertion
+      failed as expected) before re-enabling.
+
+
+      Targeted suite (tests/parser/daemon-config.test.ts tests/cli-serve.test.ts
+      tests/daemon-server.test.ts): 86/86 passed. Full suite: 8652/8657 passed (5 skipped, none new)
+      in 1911s.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T15:11:25.987Z
