@@ -179731,6 +179731,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-06T14:37:16.597Z
+      - _ulid: 01KQYVXJVXRCN65ACQZQCKE6JH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQYVXHH5P1YVDYC55RKMJ8JP
+        timestamp: 2026-05-06T14:43:52.829Z
     examined_commit: 4603717540f7bb2e42ae700d74115f8d990a1422
     external_links: []
     lifecycle_state: open
@@ -179740,8 +179747,33 @@ reviews:
       content_hash: ""
       ref: "@01KQWZZJ3RF0881VRCVS1H7843"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQYVXHH5P1YVDYC55RKMJ8JP
+        anchor:
+          type: code
+          commit: 4603717540f7bb2e42ae700d74115f8d990a1422
+          line_end: 335
+          line_start: 325
+          path: packages/daemon/src/server.ts
+          side: head
+        entries:
+          - _ulid: 01KQYVXHH56SVRVAFH6PAK03DS
+            author: Jacob Chapel
+            body: "MUST-FIX: production same-origin WebSockets are rejected when the daemon UI is opened through
+              an accepted hostname that is not the advertised connect host. With the default
+              endpoint, buildAllowedOrigins({ apiUrl: 'http://127.0.0.1:3456', connectHost:
+              '127.0.0.1' }) yields ['http://127.0.0.1:3456', 'http://127.0.0.1:5173',
+              'http://localhost:5173'], and isAllowedOrigin('http://localhost:3456', origins) is
+              false. The daemon still accepts Host: localhost, and constants.ts uses
+              window.location.host in production, so a user opening http://localhost:3456 gets a
+              WebSocket to ws://localhost:3456/ws with Origin http://localhost:3456 and the new
+              beforeHandle check rejects it. This violates @api-contract ac-websocket-origin / task
+              requirement to preserve production same-origin behavior; allow same-origin based on
+              the request Host or include equivalent daemon-port loopback origins without widening
+              to wildcard."
+            created_at: 2026-05-06T14:43:51.461Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-06T14:37:03.716Z
-    updated_at: 2026-05-06T14:37:15.349Z
+    updated_at: 2026-05-06T14:43:51.461Z
     notes: []
