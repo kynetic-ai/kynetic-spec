@@ -178852,6 +178852,12 @@ reviews:
         payload:
           thread_ulid: 01KQYGG9XC4MB9E9TYQ7N3F329
         timestamp: 2026-05-06T11:53:31.203Z
+      - _ulid: 01KQYJ5X32CN3VJGNYNZBF1YCS
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQYGG9XC4MB9E9TYQ7N3F329
+        timestamp: 2026-05-06T11:53:39.682Z
     examined_commit: 3ef22cbfd8d59b8a6c4aa5c9ecc57b826152024a
     external_links: []
     lifecycle_state: closed
@@ -178901,6 +178907,8 @@ reviews:
               without root; the unit tests exhaustively cover that path."
             created_at: 2026-05-06T11:53:29.942Z
         kind: blocker
+        resolved_at: 2026-05-06T11:53:38.438Z
+        resolved_by: "@claude"
       - _ulid: 01KQYGWP2XEM6W3BEPDV9QGQX3
         entries:
           - _ulid: 01KQYGWP2XPKD2Y0JEY6XA7ZVP
@@ -178932,5 +178940,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T11:31:20.546Z
     created_at: 2026-05-06T11:20:55.480Z
-    updated_at: 2026-05-06T11:53:29.942Z
+    updated_at: 2026-05-06T11:53:38.438Z
     notes: []
