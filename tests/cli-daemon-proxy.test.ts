@@ -2,19 +2,24 @@
  * Tests for CLI daemon proxy detection and routing.
  *
  * AC Coverage:
- * - @cli-daemon-proxy ac-auto-detect: commands routed through daemon when available
  * - @cli-daemon-proxy ac-direct-fallback: commands operate directly when no daemon
  * - @cli-daemon-proxy ac-force-direct: KSPEC_NO_DAEMON=1 bypasses daemon
+ * - @cli-daemon-proxy ac-force-direct-management-exception: KSPEC_NO_DAEMON does not redirect daemon management commands
  * - @cli-daemon-proxy ac-force-proxy: --daemon flag requires daemon
  * - @cli-daemon-proxy ac-transparent-output: output identical to direct mode
  * - @cli-daemon-proxy ac-mutation-coherence: mutations go through daemon
  * - @cli-daemon-proxy ac-read-from-cache: reads served from daemon cache
  * - @cli-daemon-proxy ac-timeout-fallback: read-only timeout falls back to direct
  * - @cli-daemon-proxy ac-timeout-mutation-error: mutation timeout returns error
- * - @daemon-proxy-detection ac-port-file-check: reads daemon port file
+ * - @daemon-proxy-detection ac-legacy-port-file-fallback: reads legacy daemon.port file and health-checks 127.0.0.1:port
  * - @daemon-proxy-detection ac-fast-detection: fast fail on missing port/refused
- * - @daemon-proxy-detection ac-health-timeout: health check timeout within 200ms
  * - @daemon-proxy-detection ac-project-registered: registers project before routing
+ *
+ * Not covered here (deferred to metadata implementation tasks):
+ * - @cli-daemon-proxy ac-auto-detect (metadata-keyed)
+ * - @daemon-proxy-detection ac-connection-metadata-check
+ * - @daemon-proxy-detection ac-health-timeout (metadata-keyed)
+ *
  * - @trait-error-guidance ac-1: error includes description
  * - @trait-error-guidance ac-2: error includes suggested action
  * - @trait-error-guidance ac-3 — N/A: daemon proxy errors don't involve ref lookups
@@ -132,7 +137,7 @@ describe("daemon proxy detection", () => {
     _resetDetectionCacheForTesting();
   });
 
-  // AC: @daemon-proxy-detection ac-connection-metadata-check
+  // AC: @daemon-proxy-detection ac-legacy-port-file-fallback — negative case: detection reports unavailable when the legacy port file is absent
   it("returns unavailable when no port file exists", async () => {
     const originalHome = process.env.HOME;
     const tempDir = await createTempDir();
@@ -267,8 +272,10 @@ describe("shouldProxyCommand", () => {
     }
   });
 
-  // AC: @cli-daemon-proxy ac-auto-detect
-  it("returns proxy:true when daemon is available (auto-detect)", async () => {
+  // No AC annotation: ac-auto-detect requires reading connection metadata,
+  // which is not yet implemented. This test bypasses detection via the
+  // testing cache helper and only exercises the routing decision.
+  it("returns proxy:true when daemon is available", async () => {
     delete process.env.KSPEC_NO_DAEMON;
     _setDetectionCacheForTesting({ available: true, port: 4567 });
 
@@ -706,6 +713,29 @@ describe("CLI daemon proxy E2E", () => {
     expect(result.exitCode).toBe(0);
   });
 
+  // AC: @cli-daemon-proxy ac-force-direct-management-exception
+  it("KSPEC_NO_DAEMON=1 does not redirect daemon management commands to direct mode", async () => {
+    const isolatedHome = await createIsolatedKspecHome(tempDir);
+    // Write a pid pointing at a live process (the test runner itself) and a
+    // dummy port. If KSPEC_NO_DAEMON forced direct shadow mode, `serve status`
+    // would short-circuit and report running:false. The exception lets the
+    // lifecycle command read pid state and report running:true.
+    writeFileSync(isolatedHome.daemonPortFilePath, "59999");
+    writeFileSync(isolatedHome.daemonPidFilePath, String(process.pid));
+
+    const result = kspec("serve status --json", tempDir, {
+      env: {
+        ...isolatedHome.env,
+        KSPEC_NO_DAEMON: "1",
+      },
+    });
+
+    expect(result.exitCode).toBe(0);
+    const parsed = JSON.parse(result.stdout) as { running: boolean; pid: number | null };
+    expect(parsed.running).toBe(true);
+    expect(parsed.pid).toBe(process.pid);
+  });
+
   // AC: @cli-daemon-proxy ac-force-proxy
   // AC: @trait-error-guidance ac-1 — error includes description
   // AC: @trait-error-guidance ac-2 — error includes suggested action
@@ -741,8 +771,9 @@ describe("CLI daemon proxy E2E", () => {
     expect(Array.isArray(parsed)).toBe(true);
   });
 
-  // AC: @cli-daemon-proxy ac-auto-detect
-  // AC: @cli-daemon-proxy ac-transparent-output
+  // AC: @daemon-proxy-detection ac-legacy-port-file-fallback — positive case: legacy port file lets detection succeed and the command is routed through the daemon
+  // AC: @cli-daemon-proxy ac-transparent-output — proxied stdout matches direct mode
+  // (ac-auto-detect via metadata is deferred to the metadata implementation tasks)
   it("routes command through daemon when available and output matches", async () => {
     const isolatedHome = await createIsolatedKspecHome(tempDir);
 
@@ -822,7 +853,10 @@ describe("daemon proxy health check timeout", () => {
     }
   });
 
-  // AC: @daemon-proxy-detection ac-health-timeout
+  // No AC annotation: ac-health-timeout's "given" requires daemon connection
+  // metadata, which is not yet read by the implementation. This test
+  // exercises the same 200ms timeout via the legacy port file path; the
+  // metadata-keyed AC will be covered by the metadata implementation tasks.
   it("times out within 200ms when daemon is unresponsive", async () => {
     const originalHome = process.env.HOME;
     const tempDir = await createTempDir();

@@ -7,11 +7,11 @@
  *
  * Detection is cached per CLI process lifetime — no re-detection per subcommand.
  *
- * AC: @cli-daemon-proxy ac-auto-detect, ac-direct-fallback, ac-force-direct,
+ * AC: @cli-daemon-proxy ac-direct-fallback, ac-force-direct,
  *     ac-force-proxy, ac-transparent-output, ac-mutation-coherence,
  *     ac-read-from-cache, ac-timeout-fallback, ac-timeout-mutation-error
- * AC: @daemon-proxy-detection ac-port-file-check, ac-fast-detection,
- *     ac-health-timeout, ac-project-registered
+ * AC: @daemon-proxy-detection ac-legacy-port-file-fallback, ac-fast-detection,
+ *     ac-project-registered
  */
 
 import { PidFileManager, isNoDaemonModeEnabled } from "./pid-utils.js";
@@ -59,13 +59,17 @@ let cachedDetection: DaemonDetectionResult | null = null;
 /**
  * Detect whether a daemon is running and reachable.
  *
- * 1. Read port file — if missing, fail fast (< 50ms)
+ * 1. Read legacy daemon.port file — if missing, fail fast (< 50ms)
  * 2. Send health check — if connection refused, fail fast (< 50ms)
  * 3. If health check doesn't respond, timeout within 200ms
  *
- * AC: @daemon-proxy-detection ac-port-file-check — reads daemon port file
+ * Note: This implementation only handles the legacy port-file fallback path.
+ * The metadata-driven path (ac-connection-metadata-check, the metadata-keyed
+ * ac-auto-detect/ac-health-timeout) is added by the shared endpoint resolver
+ * task and the centralize-cli-daemon-clients task.
+ *
+ * AC: @daemon-proxy-detection ac-legacy-port-file-fallback — reads legacy daemon.port file and health-checks 127.0.0.1:port
  * AC: @daemon-proxy-detection ac-fast-detection — completes within 50ms on missing port/refused
- * AC: @daemon-proxy-detection ac-health-timeout — health check times out within 200ms
  */
 export async function detectDaemon(): Promise<DaemonDetectionResult> {
   // Return cached result if available
@@ -86,7 +90,9 @@ export async function detectDaemon(): Promise<DaemonDetectionResult> {
   }
 
   // Step 2: Health check with timeout
-  // AC: @daemon-proxy-detection ac-health-timeout — 200ms timeout
+  // 200ms HEALTH_CHECK_TIMEOUT_MS applies to both detection paths;
+  // the metadata-keyed ac-health-timeout coverage lands with the
+  // metadata reader implementation.
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), HEALTH_CHECK_TIMEOUT_MS);
@@ -118,7 +124,8 @@ export async function detectDaemon(): Promise<DaemonDetectionResult> {
  * Checks (in order):
  * 1. KSPEC_NO_DAEMON=1 → direct mode (ac-force-direct)
  * 2. --daemon flag → require daemon, error if unavailable (ac-force-proxy)
- * 3. Detection result → proxy if available, direct if not (ac-auto-detect, ac-direct-fallback)
+ * 3. Detection result → proxy if available, direct if not (ac-direct-fallback;
+ *    ac-auto-detect once metadata-driven detection is wired in)
  */
 export async function shouldProxyCommand(opts: {
   forceDaemon?: boolean;
@@ -138,7 +145,8 @@ export async function shouldProxyCommand(opts: {
     return { proxy: true, port: detection.port };
   }
 
-  // AC: @cli-daemon-proxy ac-auto-detect, ac-direct-fallback
+  // AC: @cli-daemon-proxy ac-direct-fallback
+  // (ac-auto-detect coverage lands once detectDaemon reads metadata)
   if (detection.available) {
     return { proxy: true, port: detection.port };
   }
