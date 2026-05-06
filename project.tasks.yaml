@@ -27762,7 +27762,7 @@
   title: Fix codex-acp adapter package resolution test
   type: bug
   spec_ref: "@codex-acp-adapter-registration"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -27773,4 +27773,5 @@
   notes_count: 2
   todos_count: 0
   created_at: 2026-05-06T00:39:43.302Z
+  started_at: 2026-05-06T00:52:19.048Z
   automation: eligible
