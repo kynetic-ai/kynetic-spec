@@ -16809,6 +16809,33 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T07:46:03.565Z
+  - _ulid: 01KQY7WVHPWEJK3G2SXSRYYSZ2
+    type: friction
+    content: "Full vitest runs intermittently fail with ERR_MODULE_NOT_FOUND for dist/daemon/endpoint.js
+      (or similar dist artifacts) because tests/daemon-build.test.ts runs `npm run build:daemon`,
+      whose scripts/build-daemon.cjs starts with fs.rmSync(dist/daemon, { recursive: true, force:
+      true }). Other tests run kspec subprocesses concurrently that import from dist/daemon/*.js via
+      the dist/cli/pid-utils.js shim. Hit this twice this session on full-suite runs while
+      cli-daemon-proxy/cli-serve/daemon-endpoint suites all pass cleanly in isolation. Either
+      scripts/build-daemon.cjs should rebuild atomically (write to a stage dir, rename) or
+      daemon-build.test.ts should run in a serialised group / under exclusive lock so concurrent
+      dist consumers do not see a missing-file window."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T08:53:57.431Z
+  - _ulid: 01KQY7WVSNY97GVG6SF5DCK6X4
+    type: success
+    content: "Behavioral coverage for ac-clients-use-metadata via in-process http.createServer plus
+      per-test process.env.HOME isolation worked cleanly in tests/cli-daemon-proxy.test.ts: drop a
+      real daemon.connection.json into tempDir/.config/kspec/, point detectDaemon at the live
+      server's port, and assert result.endpoint.source === 'metadata'. No source scanning, no real
+      daemon spawn, no fixture maintenance. Same pattern for the legacy-port fallback case using
+      only daemon.port. Worth replicating for any future CLI-resolves-X-from-config tests."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T08:53:57.685Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
