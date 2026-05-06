@@ -177990,3 +177990,29 @@ reviews:
     created_at: 2026-05-06T07:48:33.590Z
     updated_at: 2026-05-06T08:00:30.425Z
     notes: []
+  - _ulid: 01KQY591ZJXMY1Y6HFQ1E3C3TQ
+    slugs: []
+    title: Review task-apply-daemon-endpoint-consumer-trait
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQY591ZJ54YK1Z9G30SWMCHF
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-06T08:08:11.506Z
+    examined_commit: 85b4465b79f63cfe59cbac09a0a58cc054c22d36
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQWZZGMN1E0SQQ0WQS590JGW"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-06T08:08:11.506Z
+    updated_at: null
+    notes: []
