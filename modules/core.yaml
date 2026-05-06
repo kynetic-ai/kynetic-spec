@@ -1091,7 +1091,7 @@ features:
           worktree. CLI flags and documented environment variables take precedence over file config.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
