@@ -1,1 +1,24 @@
-notes: []
+notes:
+  - _ulid: 01KQZ3NZEY2JDG4C5QJT68RZYN
+    content: "Approach: surveyed existing daemon-endpoint coverage and identified that items 1, 2, 3
+      (partial), 4 (real-daemon), 5, 6 already had thorough coverage in
+      tests/daemon-endpoint.test.ts, tests/cli-daemon-proxy.test.ts, tests/cli-serve.test.ts
+      (external warning + connect_host tests), tests/web-ui/dev-server-daemon-endpoint.test.ts,
+      tests/web-ui/daemon-endpoint-host-parity.test.ts, tests/parser/daemon-config.test.ts,
+      tests/cli-daemon-client.test.ts, and tests/daemon-server.test.ts. Filled the remaining gaps:
+      (a) tests/daemon-status-endpoint.test.ts — 5 tests for getDaemonStatus() metadata-advertised
+      URL + IPv6 + 127.0.0.2 + legacy fallback. (b) tests/cli-daemon-endpoint-regression.test.ts +
+      tests/helpers/recording-daemon.cjs — 11 behavioral tests for event log/emit, agent dispatch
+      start/stop/status, agent status, schedule list/trigger, task start (proxy hop), and serve
+      status (JSON + human) all using a recording mock daemon to verify each command hits the
+      metadata-advertised api_url verbatim. Where 127.0.0.2 alias is available, the mock listens
+      there and the Host header proves the URL came from metadata, not a hardcoded 127.0.0.1. (c)
+      tests/cli-serve.test.ts — added 'configured non-default daemon.host reaches the production
+      listen call' test that configures daemon.host: 127.0.0.2 and asserts daemon binds there
+      (negative proof: 127.0.0.1:port rejects connections). Note on postDispatchEvent: task commands
+      proxy through /api/command in production, so postDispatchEvent never fires CLI-side when the
+      daemon is running; the URL contract is covered transitively by cli-daemon-client.test.ts and
+      the single source line — added an explanatory comment to the regression test."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T16:59:32.190Z
