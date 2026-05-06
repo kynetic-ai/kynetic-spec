@@ -36571,7 +36571,7 @@ runs:
     completed_at: 2026-05-06T14:00:59.961Z
   - _ulid: 01KQYT9VBX2RHDAE2C1TF509VF
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36604,10 +36604,19 @@ runs:
           @01KQYJGD (fallback/recovery tests should assert both recovery path and side effects),
           @01KQYSET (AC annotation gaps surface when coverage is only partially behavioral), and
           inbox @01KQY7WW (reconcile daemon endpoint sibling tasks). No duplicate capture needed."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-05-06T14:17:11.611Z
-        completed_at: 2026-05-06T14:17:11.611Z
+        completed_at: 2026-05-06T14:17:22.031Z
+        notes: "No untracked improvement proposed. The actionable fix belongs on the already-open needs_work
+          task and blocker thread: make connection metadata depend on an actual successful listen
+          signal and add an EADDRINUSE regression asserting no metadata is advertised. Systemic
+          testing friction is already covered by existing observations, so creating another inbox
+          item would duplicate tracking."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T14:17:22.031Z
+        completed_at: 2026-05-06T14:17:22.031Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T14:15:37.597Z
