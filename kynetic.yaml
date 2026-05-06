@@ -415,26 +415,35 @@ traits:
   - _ulid: 01KFMKZFTYKPEXCHSAK9MTZX5Z
     slugs:
       - trait-localhost-security
-    title: Localhost-Only Security
+    title: Loopback Default Security
     type: trait
-    description: Security pattern for services that bind only to localhost, providing authentication
-      through network isolation
+    description: Security pattern for daemon services that are loopback-only by default. Binding to
+      wildcard or other non-loopback interfaces is never the default; it is allowed only by explicit
+      configuration and is treated as unauthenticated network exposure. Specs using this trait must
+      enforce loopback-only behavior in default mode and surface explicit warnings when external
+      binding is enabled.
     status:
       maturity: draft
       implementation: in_progress
     acceptance_criteria:
-      - given: server is starting
-        id: ac-1
-        then: only accepts connections from 127.0.0.1 and ::1 (IPv6 localhost)
-        when: binding to network interface
-      - given: connection attempt from non-localhost
-        id: ac-2
-        then: connection rejected with 403 Forbidden
-        when: request received
-      - given: server is configured
-        id: ac-3
-        then: warning displayed about security implications
-        when: configuration allows external binding
+      - given: No non-loopback daemon host is configured
+        id: ac-loopback-default
+        then: The server binds only to loopback interfaces
+        when: The server starts
+      - given: The server is running in loopback-only mode
+        id: ac-loopback-rejects-nonlocal
+        then: The request is rejected with 403 Forbidden
+        when: An HTTP request is received from a non-loopback remote address or with a non-local Host or
+          Origin
+      - given: daemon.host is explicitly configured to a non-loopback or wildcard address
+        id: ac-external-host-explicit
+        then: The server binds to the configured address
+        when: The server starts
+      - given: The effective daemon host is non-loopback or wildcard
+        id: ac-external-warning
+        then: Output includes a visible warning that the daemon has no authentication and exposes project
+          data and mutation APIs on the configured network interface
+        when: The daemon starts or a lifecycle command reports the daemon endpoint
   - _ulid: 01KFMXM08H4GK6328W515RBQAJ
     slugs:
       - trait-retrospective
