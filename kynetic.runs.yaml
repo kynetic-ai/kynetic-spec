@@ -37052,7 +37052,7 @@ runs:
     started_at: 2026-05-06T16:23:47.763Z
   - _ulid: 01KQZ3QBM15H6TYPFM90XNTJZ6
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -37099,7 +37099,21 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T17:01:53.813Z
-        completed_at: 2026-05-06T17:01:53.813Z
+        completed_at: 2026-05-06T17:02:05.872Z
+        notes: "Proposals: (a) friction observation — capture proxy-skip-list discoverability friction so
+          future endpoint/proxy tests don't have to re-derive the rule. Small. (b) success
+          observation — recording-daemon.cjs + JSONL log pattern for verifying CLI URL contracts is
+          a reusable test pattern worth documenting. Small. (c) inbox idea — KSPEC_NO_DAEMON
+          test-helper default is undocumented; could be addressed via a comment in
+          tests/helpers/cli.ts or by exposing a higher-level 'kspecWithDaemon()' helper that flips
+          the default. Small. (d) Skip making postDispatchEvent observation — its untestability is a
+          property of the design (fire-and-forget for a narrow proxy-bypass scenario) and proposing
+          changes risks scope creep into production behavior; the existing helper-level coverage in
+          cli-daemon-client.test.ts is sufficient."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T17:02:05.872Z
+        completed_at: 2026-05-06T17:02:05.872Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T17:00:17.409Z
