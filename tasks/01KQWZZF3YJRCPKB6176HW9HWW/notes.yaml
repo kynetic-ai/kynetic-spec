@@ -6,3 +6,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-06T00:23:46.303Z
+  - _ulid: 01KQXASDBCEHTJVZFAWWW855TZ
+    content: "Completed via kspec batch (commit 7d9f21124): updated trait title to 'Loopback Default
+      Security', replaced description, removed ac-1/ac-2/ac-3, added ac-loopback-default,
+      ac-loopback-rejects-nonlocal, ac-external-host-explicit, ac-external-warning. Slug unchanged.
+      kspec validate --warnings-ok passes; remaining warnings are downstream specs
+      (daemon-command-api, daemon-server, etc.) referencing the old AC ids — those are scoped to
+      other tasks in @plan-daemon-network-endpoint-contract."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T00:25:15.884Z
