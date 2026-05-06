@@ -193,6 +193,99 @@ describe("daemon proxy detection", () => {
     }
   });
 
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  // AC: @daemon-network-endpoint-contract ac-legacy-port-fallback
+  it("uses the advertised api_url from daemon.connection.json when present", async () => {
+    const originalHome = process.env.HOME;
+    const tempDir = await createTempDir();
+    let server: http.Server | undefined;
+    try {
+      process.env.HOME = tempDir;
+
+      // Stand up an in-process server bound to 127.0.0.1 with a known port
+      // that responds 200 to /api/health.
+      const started = await createTestServer((req, res) => {
+        if (req.url === "/api/health") {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ status: "ok" }));
+          return;
+        }
+        res.writeHead(404);
+        res.end();
+      });
+      server = started.server;
+
+      // Write metadata advertising the same api_url. The legacy port file
+      // points at an unrelated, non-listening port so a successful health
+      // check here proves detection used the metadata path, not legacy.
+      const configDir = join(tempDir, ".config", "kspec");
+      mkdirSync(configDir, { recursive: true });
+      writeFileSync(join(configDir, "daemon.port"), "1");
+      writeFileSync(
+        join(configDir, "daemon.connection.json"),
+        JSON.stringify({
+          pid: 4242,
+          port: started.port,
+          bind_host: "127.0.0.1",
+          connect_host: "127.0.0.1",
+          api_url: `http://127.0.0.1:${started.port}`,
+          ws_url: `ws://127.0.0.1:${started.port}/ws`,
+          runtime: "node",
+        }),
+      );
+
+      const result = await detectDaemon();
+      expect(result.available).toBe(true);
+      if (result.available) {
+        expect(result.port).toBe(started.port);
+        expect(result.endpoint.source).toBe("metadata");
+        expect(result.endpoint.apiUrl).toBe(`http://127.0.0.1:${started.port}`);
+        expect(result.endpoint.wsUrl).toBe(`ws://127.0.0.1:${started.port}/ws`);
+      }
+    } finally {
+      process.env.HOME = originalHome!;
+      if (server) await closeServer(server);
+      await cleanupTempDir(tempDir);
+    }
+  });
+
+  // AC: @daemon-network-endpoint-contract ac-legacy-port-fallback
+  it("falls back to legacy daemon.port when connection metadata is absent", async () => {
+    const originalHome = process.env.HOME;
+    const tempDir = await createTempDir();
+    let server: http.Server | undefined;
+    try {
+      process.env.HOME = tempDir;
+
+      const started = await createTestServer((req, res) => {
+        if (req.url === "/api/health") {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ status: "ok" }));
+          return;
+        }
+        res.writeHead(404);
+        res.end();
+      });
+      server = started.server;
+
+      const configDir = join(tempDir, ".config", "kspec");
+      mkdirSync(configDir, { recursive: true });
+      writeFileSync(join(configDir, "daemon.port"), String(started.port));
+
+      const result = await detectDaemon();
+      expect(result.available).toBe(true);
+      if (result.available) {
+        expect(result.port).toBe(started.port);
+        expect(result.endpoint.source).toBe("legacy-port");
+        expect(result.endpoint.apiUrl).toBe(`http://127.0.0.1:${started.port}`);
+      }
+    } finally {
+      process.env.HOME = originalHome!;
+      if (server) await closeServer(server);
+      await cleanupTempDir(tempDir);
+    }
+  });
+
   it("caches detection result for process lifetime", async () => {
     _setDetectionCacheForTesting({ available: true, port: 3456 });
     const result = await detectDaemon();

@@ -21,6 +21,11 @@ import { getWebSocketContextId } from "./websocket/context-id.js";
 import { resolveWebSocketProject } from "./websocket/project-resolution.js";
 import type { ConnectionData, ConnectedEvent } from "./websocket/types.js";
 import { PidFileManager } from "./pid.js";
+import {
+  DEFAULT_BIND_HOST,
+  resolveDaemonEndpoint,
+  type DaemonConnectionMetadata,
+} from "./endpoint.js";
 import { projectContextMiddleware } from "./middleware/project-context.js";
 import { createTasksRoutes } from "./routes/tasks.js";
 import { createItemsRoutes } from "./routes/items.js";
@@ -62,6 +67,27 @@ export interface ServerOptions {
   runtime: DaemonRuntime;
   kspecDir?: string; // Path to .kspec directory (default: .kspec in cwd)
   webUiDir?: string; // Path to web UI build directory (default: auto-detect)
+  /**
+   * Host the daemon binds to. Defaults to 127.0.0.1 (numeric IPv4
+   * loopback) so startup does not depend on OS hostname resolution.
+   *
+   * AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+   * AC: @daemon-network-endpoint-contract ac-configured-bind-host
+   */
+  bindHost?: string;
+  /**
+   * Host the daemon advertises to local clients. When omitted, derived
+   * from `bindHost` (loopback when bind is wildcard).
+   *
+   * AC: @daemon-network-endpoint-contract ac-wildcard-connect-host
+   * AC: @config-daemon ac-connect-host-config
+   */
+  connectHost?: string | null;
+  /**
+   * Override directory for daemon lifecycle files (PID, port, metadata).
+   * Tests use this to avoid writing to the real ~/.config/kspec.
+   */
+  configDir?: string;
 }
 
 type ManagedServer = {
@@ -281,7 +307,16 @@ export function localhostOnly() {
  * - ac-15: Uses plugin pattern for middleware
  */
 export async function createServer(options: ServerOptions) {
-  const { port, isDaemon, runtime, kspecDir = join(process.cwd(), ".kspec"), webUiDir } = options;
+  const {
+    port,
+    isDaemon,
+    runtime,
+    kspecDir = join(process.cwd(), ".kspec"),
+    webUiDir,
+    bindHost,
+    connectHost,
+    configDir,
+  } = options;
 
   // Determine startup project path (project root, not .kspec/)
   // AC: @multi-directory-daemon ac-2 - daemon uses startup directory as default project
@@ -301,15 +336,40 @@ export async function createServer(options: ServerOptions) {
     console.log("[daemon] Build the web UI with: cd packages/web-ui && npm run build");
   }
 
-  // Initialize PID file manager (uses global ~/.config/kspec/)
-  const pidManager = new PidFileManager();
+  // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+  // AC: @daemon-network-endpoint-contract ac-configured-bind-host
+  // AC: @daemon-network-endpoint-contract ac-wildcard-connect-host
+  // AC: @config-daemon ac-host-default
+  // Resolve the endpoint once via the shared module so bind host, connect
+  // host, and advertised URLs cannot drift.
+  const endpoint = resolveDaemonEndpoint({
+    port,
+    bindHost: bindHost ?? DEFAULT_BIND_HOST,
+    connectHost: connectHost ?? null,
+  });
+
+  // Initialize PID file manager. configDir override lets tests redirect
+  // metadata writes away from the real ~/.config/kspec.
+  const pidManager = configDir ? new PidFileManager(configDir) : new PidFileManager();
 
   // AC: @multi-directory-daemon ac-9 - Write PID and port files in daemon mode
+  // AC: @daemon-network-endpoint-contract ac-connection-metadata
   if (isDaemon) {
     pidManager.writePid();
     pidManager.writePort(port);
+    const metadata: DaemonConnectionMetadata = {
+      pid: process.pid,
+      port: endpoint.port,
+      bind_host: endpoint.bindHost,
+      connect_host: endpoint.connectHost,
+      api_url: endpoint.apiUrl,
+      ws_url: endpoint.wsUrl,
+      runtime,
+    };
+    pidManager.writeConnectionMetadata(metadata);
     console.log(`[daemon] PID file written: ${process.pid}`);
     console.log(`[daemon] Port file written: ${port}`);
+    console.log(`[daemon] Connection metadata written: ${endpoint.apiUrl}`);
   }
 
   // Initialize WebSocket managers
@@ -631,15 +691,21 @@ export async function createServer(options: ServerOptions) {
     console.log("[daemon] Web UI static file serving enabled");
   }
 
-  // AC-1, AC-2: Start server on localhost only
-  // Using 'localhost' hostname allows Bun/OS to bind to both 127.0.0.1 and ::1
-  app.listen({
-    port,
-    hostname: "localhost", // Resolves to both IPv4 and IPv6 loopback
-  });
+  // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+  // AC: @daemon-network-endpoint-contract ac-configured-bind-host
+  // AC: @daemon-server ac-1, ac-2
+  // Bind to the resolved bind host (numeric IPv4 loopback by default —
+  // never 'localhost', so binding does not depend on /etc/hosts or DNS).
+  app.listen({ port, hostname: endpoint.bindHost });
 
-  console.log(`[daemon] Server listening on http://localhost:${port} (IPv4: 127.0.0.1, IPv6: ::1)`);
-  console.log(`[daemon] WebSocket available at ws://localhost:${port}/ws`);
+  console.log(`[daemon] Server listening on ${endpoint.apiUrl} (bind: ${endpoint.bindHost})`);
+  console.log(`[daemon] WebSocket available at ${endpoint.wsUrl}`);
+  // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  if (endpoint.externallyReachable) {
+    console.warn(
+      `[daemon] WARNING: bind host ${endpoint.bindHost} exposes unauthenticated kspec project data and mutation APIs on a non-loopback interface. Restrict access at the network/firewall level.`,
+    );
+  }
   logHeartbeatDegradationWarning(runtime);
 
   // AC: @agent-dispatch-engine ac-5 - Wire file change callback to dispatch engine

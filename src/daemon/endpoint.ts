@@ -412,6 +412,70 @@ export function readLegacyDaemonPortEndpoint(
   return { port, connectHost, apiUrl, wsUrl };
 }
 
+/**
+ * Resolved client endpoint surface every CLI/daemon client uses to
+ * reach the daemon. `source` distinguishes the metadata path (full
+ * fidelity, includes bind host and runtime) from the legacy port-file
+ * fallback (synthesized 127.0.0.1 endpoint).
+ *
+ * AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+ * AC: @daemon-network-endpoint-contract ac-legacy-port-fallback
+ */
+export interface DaemonClientEndpoint {
+  port: number;
+  connectHost: string;
+  apiUrl: string;
+  wsUrl: string;
+  bindHost: string | null;
+  runtime: DaemonRuntime | null;
+  pid: number | null;
+  source: "metadata" | "legacy-port";
+}
+
+/**
+ * Resolve the endpoint a client should use to reach the daemon. Reads
+ * the new connection metadata first; falls back to the legacy
+ * daemon.port file. Returns null when neither is present.
+ *
+ * Centralises URL construction so command files do not derive daemon
+ * URLs from a port number alone — required so daemons advertising a
+ * non-loopback connect host (or IPv6 bracket syntax) work correctly.
+ *
+ * AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+ * AC: @daemon-network-endpoint-contract ac-legacy-port-fallback
+ */
+export function resolveDaemonClientEndpoint(
+  configDir: string = getDefaultDaemonConfigDir(),
+): DaemonClientEndpoint | null {
+  const metadata = readDaemonConnectionMetadata(configDir);
+  if (metadata) {
+    return {
+      port: metadata.port,
+      connectHost: metadata.connect_host,
+      apiUrl: metadata.api_url,
+      wsUrl: metadata.ws_url,
+      bindHost: metadata.bind_host,
+      runtime: metadata.runtime,
+      pid: metadata.pid,
+      source: "metadata",
+    };
+  }
+  const legacy = readLegacyDaemonPortEndpoint(configDir);
+  if (legacy) {
+    return {
+      port: legacy.port,
+      connectHost: legacy.connectHost,
+      apiUrl: legacy.apiUrl,
+      wsUrl: legacy.wsUrl,
+      bindHost: null,
+      runtime: null,
+      pid: null,
+      source: "legacy-port",
+    };
+  }
+  return null;
+}
+
 // ── KSPEC_NO_DAEMON env helper ─────────────────────────────────────
 
 function isFalsyNoDaemonValue(value: string): boolean {

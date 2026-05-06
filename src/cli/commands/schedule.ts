@@ -23,7 +23,7 @@ import { ACTION_TYPES } from "../../schema/action.js";
 import { markMutating } from "../command-annotations.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, isStructuredMode, output, success } from "../output.js";
-import { PidFileManager } from "../pid-utils.js";
+import { PidFileManager, resolveDaemonClientEndpoint } from "../pid-utils.js";
 import { errors } from "../../strings/errors.js";
 import { validateEnumOption } from "../validators.js";
 
@@ -32,18 +32,17 @@ const SCHEDULE_STATUS_OPTIONS = ["enabled", "disabled"] as const;
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 /**
- * Get the daemon URL from the PID file manager.
+ * Get the daemon URL from the resolved client endpoint.
  * Returns null if the daemon is not running.
+ *
+ * AC: @daemon-network-endpoint-contract ac-clients-use-metadata
  */
 function getDaemonUrl(): { url: string; port: number } | null {
   const pidManager = new PidFileManager();
   if (!pidManager.isDaemonRunning()) return null;
-  try {
-    const port = pidManager.readPort();
-    return { url: `http://localhost:${port}`, port };
-  } catch {
-    return null;
-  }
+  const endpoint = resolveDaemonClientEndpoint();
+  if (!endpoint) return null;
+  return { url: endpoint.apiUrl, port: endpoint.port };
 }
 
 /**

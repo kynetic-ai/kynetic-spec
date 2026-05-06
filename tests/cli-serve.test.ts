@@ -352,6 +352,51 @@ describe("kspec serve commands", () => {
     runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
   });
 
+  // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+  // AC: @daemon-network-endpoint-contract ac-connection-metadata
+  // AC: @config-daemon ac-host-default
+  // AC: @config-daemon ac-connection-metadata
+  it("writes daemon.connection.json with the resolved 127.0.0.1 endpoint on detached startup", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
+
+    await waitForDaemonHealth(port);
+
+    const metadataPath = join(isolatedHome, ".config", "kspec", "daemon.connection.json");
+    expect(existsSync(metadataPath)).toBe(true);
+
+    const metadata = JSON.parse(readTestOutputSync(metadataPath));
+    expect(metadata).toMatchObject({
+      pid,
+      port,
+      bind_host: "127.0.0.1",
+      connect_host: "127.0.0.1",
+      api_url: `http://127.0.0.1:${port}`,
+      ws_url: `ws://127.0.0.1:${port}/ws`,
+      runtime: "node",
+    });
+
+    // Daemon is bound on the resolved bind host (127.0.0.1), proven by a
+    // health check that uses the IPv4 address directly rather than a name.
+    const directIpv4Health = await fetch(`http://127.0.0.1:${port}/api/health`);
+    expect(directIpv4Health.ok).toBe(true);
+
+    // Cleanup
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+
+    // After stop, lifecycle files (including the metadata file) are removed.
+    expect(existsSync(metadataPath)).toBe(false);
+  });
+
   // AC: @cli-serve-commands ac-3
   it("should accept custom port via --port flag", async () => {
     if (!nodeAvailable) {

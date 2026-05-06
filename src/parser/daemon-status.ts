@@ -7,7 +7,7 @@
  * AC: @doctor-command ac-daemon-running, ac-daemon-not-running, ac-daemon-unreachable
  */
 
-import { PidFileManager } from "../cli/pid-utils.js";
+import { PidFileManager, resolveDaemonClientEndpoint } from "../cli/pid-utils.js";
 
 /**
  * Daemon status information
@@ -54,22 +54,27 @@ export async function getDaemonStatus(): Promise<DaemonStatus> {
     return status;
   }
 
-  // Read port from file
-  try {
-    status.port = pidManager.readPort();
-  } catch {
-    // Port file might not exist or be invalid
-    status.port = null;
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata,
+  //     ac-legacy-port-fallback — resolve via metadata first, legacy fallback
+  const endpoint = resolveDaemonClientEndpoint();
+  if (endpoint) {
+    status.port = endpoint.port;
+  } else {
+    try {
+      status.port = pidManager.readPort();
+    } catch {
+      status.port = null;
+    }
   }
 
-  // Probe health endpoint if we have a port
+  // Probe health endpoint if we have an endpoint
   // AC: @doctor-command ac-daemon-unreachable
-  if (status.port) {
+  if (endpoint) {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 2000);
 
-      const response = await fetch(`http://localhost:${status.port}/api/health`, {
+      const response = await fetch(`${endpoint.apiUrl}/api/health`, {
         signal: controller.signal,
       });
 

@@ -4,4 +4,9 @@
  * share one implementation.
  */
 
-export { PidFileManager, isNoDaemonModeEnabled } from "../daemon/endpoint.js";
+export {
+  PidFileManager,
+  isNoDaemonModeEnabled,
+  resolveDaemonClientEndpoint,
+} from "../daemon/endpoint.js";
+export type { DaemonClientEndpoint } from "../daemon/endpoint.js";

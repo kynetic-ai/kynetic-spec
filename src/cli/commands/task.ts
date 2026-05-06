@@ -56,7 +56,7 @@ import { describeEnumValues } from "../enum-help.js";
 import { addListOptions, listTasksAction } from "./tasks.js";
 import { findClosestCommand } from "../suggest.js";
 import { checkBudget, incrementBudget, isEndLoopRequested } from "../../sessions/store.js";
-import { PidFileManager } from "../pid-utils.js";
+import { PidFileManager, resolveDaemonClientEndpoint } from "../pid-utils.js";
 
 /**
  * Post a task state change event to the daemon dispatch engine.
@@ -83,12 +83,9 @@ async function postDispatchEvent(opts: {
   const pidManager = new PidFileManager();
   if (!pidManager.isDaemonRunning()) return;
 
-  let port: number;
-  try {
-    port = pidManager.readPort();
-  } catch {
-    return; // Daemon running but port unreadable — silent fail
-  }
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  const endpoint = resolveDaemonClientEndpoint();
+  if (!endpoint) return;
 
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (opts.projectPath) {
@@ -96,7 +93,7 @@ async function postDispatchEvent(opts: {
   }
 
   try {
-    await fetch(`http://localhost:${port}/api/agent/events`, {
+    await fetch(`${endpoint.apiUrl}/api/agent/events`, {
       method: "POST",
       headers,
       body: JSON.stringify({

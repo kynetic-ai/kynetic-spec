@@ -23,6 +23,8 @@ const { values } = parseArgs({
     port: { type: "string", default: "3456" },
     runtime: { type: "string" },
     "kspec-dir": { type: "string" },
+    host: { type: "string" },
+    "connect-host": { type: "string" },
   },
   allowPositionals: true,
 });
@@ -33,6 +35,8 @@ const runtimeValue =
   (values.runtime as string | undefined) ??
   process.env.KSPEC_DAEMON_RUNTIME ??
   detectProcessRuntime();
+const bindHost = (values.host as string | undefined) ?? undefined;
+const connectHost = (values["connect-host"] as string | undefined) ?? undefined;
 
 // Validate port
 if (isNaN(port) || port < 1 || port > 65535) {
@@ -56,6 +60,8 @@ async function main() {
       isDaemon: true, // Always true when running as standalone daemon
       runtime,
       kspecDir,
+      bindHost,
+      connectHost: connectHost ?? null,
     });
 
     // Server will start listening in createServer

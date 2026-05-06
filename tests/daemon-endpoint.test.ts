@@ -45,6 +45,7 @@ import {
   readLegacyDaemonPortEndpoint,
   removeDaemonConnectionMetadata,
   resolveDaemonBindHost,
+  resolveDaemonClientEndpoint,
   resolveDaemonConnectHost,
   resolveDaemonEndpoint,
   writeDaemonConnectionMetadata,
@@ -461,6 +462,112 @@ describe("daemon endpoint module", () => {
 
       writeFileSync(getLegacyDaemonPortPath(configDir), "65536", "utf-8");
       expect(readLegacyDaemonPortEndpoint(configDir)).toBeNull();
+    });
+  });
+
+  describe("resolveDaemonClientEndpoint", () => {
+    let configDir: string;
+
+    beforeEach(async () => {
+      configDir = await createTempDir("kspec-endpoint-client-");
+    });
+
+    afterEach(async () => {
+      await cleanupTempDir(configDir);
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+    it("returns the metadata-advertised endpoint when daemon.connection.json exists", () => {
+      const metadata: DaemonConnectionMetadata = {
+        pid: 4242,
+        port: 8081,
+        bind_host: "0.0.0.0",
+        connect_host: "10.0.0.5",
+        api_url: "http://10.0.0.5:8081",
+        ws_url: "ws://10.0.0.5:8081/ws",
+        runtime: "node",
+      };
+      writeDaemonConnectionMetadata(metadata, configDir);
+
+      const resolved = resolveDaemonClientEndpoint(configDir);
+      expect(resolved).toEqual({
+        port: 8081,
+        connectHost: "10.0.0.5",
+        apiUrl: "http://10.0.0.5:8081",
+        wsUrl: "ws://10.0.0.5:8081/ws",
+        bindHost: "0.0.0.0",
+        runtime: "node",
+        pid: 4242,
+        source: "metadata",
+      });
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+    it("preserves IPv6-bracketed URLs from metadata", () => {
+      const metadata: DaemonConnectionMetadata = {
+        pid: 1,
+        port: 3456,
+        bind_host: "::1",
+        connect_host: "::1",
+        api_url: "http://[::1]:3456",
+        ws_url: "ws://[::1]:3456/ws",
+        runtime: "bun",
+      };
+      writeDaemonConnectionMetadata(metadata, configDir);
+      const resolved = resolveDaemonClientEndpoint(configDir);
+      expect(resolved?.apiUrl).toBe("http://[::1]:3456");
+      expect(resolved?.wsUrl).toBe("ws://[::1]:3456/ws");
+      expect(resolved?.runtime).toBe("bun");
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-legacy-port-fallback
+    it("falls back to the legacy daemon.port file when metadata is absent", () => {
+      writeFileSync(getLegacyDaemonPortPath(configDir), "5555\n", "utf-8");
+
+      const resolved = resolveDaemonClientEndpoint(configDir);
+      expect(resolved).toEqual({
+        port: 5555,
+        connectHost: "127.0.0.1",
+        apiUrl: "http://127.0.0.1:5555",
+        wsUrl: "ws://127.0.0.1:5555/ws",
+        bindHost: null,
+        runtime: null,
+        pid: null,
+        source: "legacy-port",
+      });
+    });
+
+    // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+    it("prefers metadata over the legacy port file when both exist", () => {
+      writeFileSync(getLegacyDaemonPortPath(configDir), "5555\n", "utf-8");
+      writeDaemonConnectionMetadata(
+        {
+          pid: 1,
+          port: 8888,
+          bind_host: "127.0.0.1",
+          connect_host: "127.0.0.1",
+          api_url: "http://127.0.0.1:8888",
+          ws_url: "ws://127.0.0.1:8888/ws",
+          runtime: "node",
+        },
+        configDir,
+      );
+
+      const resolved = resolveDaemonClientEndpoint(configDir);
+      expect(resolved?.source).toBe("metadata");
+      expect(resolved?.port).toBe(8888);
+    });
+
+    it("returns null when neither metadata nor legacy port file is present", () => {
+      expect(resolveDaemonClientEndpoint(configDir)).toBeNull();
+    });
+
+    it("ignores invalid metadata and falls through to the legacy port file", () => {
+      writeFileSync(getDaemonConnectionMetadataPath(configDir), "not-json", "utf-8");
+      writeFileSync(getLegacyDaemonPortPath(configDir), "9000\n", "utf-8");
+      const resolved = resolveDaemonClientEndpoint(configDir);
+      expect(resolved?.source).toBe("legacy-port");
+      expect(resolved?.port).toBe(9000);
     });
   });
 
