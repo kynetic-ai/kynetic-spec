@@ -36897,7 +36897,7 @@ runs:
     started_at: 2026-05-06T15:32:50.395Z
     completed_at: 2026-05-06T15:36:51.123Z
   - _ulid: 01KQYZXDHWJMY8CADJPAYY5SKF
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -36951,7 +36951,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-06T15:55:46.630Z
-        completed_at: 2026-05-06T15:55:46.630Z
+        completed_at: 2026-05-06T15:56:02.009Z
+        notes: Captured friction observation @01KQZ01G for the repeat websocket-protocol
+          close-code/internal-error flake seen during combined targeted review test runs. Did not
+          capture duplicate success observations for the detached reviewer merge helper because
+          existing coverage was found.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T15:53:41.692Z
+    completed_at: 2026-05-06T15:56:02.009Z
