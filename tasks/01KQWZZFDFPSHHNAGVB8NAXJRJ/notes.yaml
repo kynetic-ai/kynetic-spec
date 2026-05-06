@@ -16,3 +16,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-06T01:12:47.553Z
+  - _ulid: 01KQXEE4VWTRFX3CKXZ9BHAB7M
+    content: "Fix cycle 1: Addressed all 3 review blockers. Updated stale @config-daemon AC annotations
+      to current ids: tests/parser/config.test.ts:85 (ac-5 → ac-host-config),
+      tests/parser/config.test.ts:286 (ac-6 → ac-host-env-precedence + added ac-port-env-precedence
+      since this test also exercises port env override), and src/parser/config.ts:699 (ac-5 ac-6 →
+      ac-host-default ac-host-config ac-host-env-precedence covering the env→config→default
+      precedence chain). Rebased onto origin/dev to pick up the codex-acp registration test fix.
+      kspec validate --warnings-ok now reports zero @config-daemon missing-AC warnings; npm test
+      full suite passes (8545 tests)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T01:29:01.053Z
