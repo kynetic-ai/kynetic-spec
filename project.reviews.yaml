@@ -177812,6 +177812,18 @@ reviews:
         runner: npm
         created_at: 2026-05-06T07:59:14.879Z
         completed_at: 2026-05-06T07:59:14.879Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Schema and references passed; command exited 6 due existing validation warnings:
+          reference warnings, alignment warnings, completeness warnings, and invalid AC annotation
+          warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-06T07:59:21.895Z
+        completed_at: 2026-05-06T07:59:21.895Z
     events:
       - _ulid: 01KQY453NPTNGDKN46XQG9F7EV
         actor: Jacob Chapel
@@ -177840,6 +177852,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQY4RSBGQ05HYFGTNTDAYH1Q
         timestamp: 2026-05-06T07:59:19.607Z
+      - _ulid: 01KQY4RXY7T3VNPWXXJY9N6DF1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-06T07:59:23.079Z
     examined_commit: 65bfbcb012624d11b50d350ce353d2161ca0d9da
     external_links: []
     lifecycle_state: open
@@ -177870,5 +177889,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-06T07:48:33.590Z
-    updated_at: 2026-05-06T07:59:18.384Z
+    updated_at: 2026-05-06T07:59:21.895Z
     notes: []
