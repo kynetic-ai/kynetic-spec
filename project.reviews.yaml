@@ -176829,7 +176829,20 @@ reviews:
     slugs: []
     title: Review task-update-config-daemon-endpoint-ac cycle 3
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed with --warnings-ok. Verbose output shows the remaining @config-daemon
+          uncovered ACs are ac-host-default, ac-connect-host-config, and ac-connection-metadata,
+          which are explicitly owned by downstream tasks @task-shared-daemon-endpoint-resolver and
+          @task-daemon-startup-bind-host-metadata in @plan-daemon-network-endpoint-contract.
+        name: kspec validate --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-05-06T05:58:56.850Z
+        completed_at: 2026-05-06T05:58:56.850Z
     events:
       - _ulid: 01KQXX9YPK2A4GAQ43Q5SSVJJK
         actor: Jacob Chapel
@@ -176844,6 +176857,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-06T05:49:13.957Z
+      - _ulid: 01KQXXWE97CTZG8M1B8CQ6JAAD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-05-06T05:58:58.087Z
     examined_commit: 44f834541c5fd5d1f0c0fc655c52b84fda9b8cb4
     external_links: []
     lifecycle_state: open
@@ -176856,5 +176876,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T05:48:52.308Z
-    updated_at: 2026-05-06T05:49:12.786Z
+    updated_at: 2026-05-06T05:58:56.850Z
     notes: []
