@@ -36387,7 +36387,7 @@ runs:
     completed_at: 2026-05-06T12:49:50.960Z
   - _ulid: 01KQYQ790CVAMKKXAATA421BSR
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -36399,7 +36399,24 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T13:22:19.969Z
-        completed_at: 2026-05-06T13:22:19.969Z
+        completed_at: 2026-05-06T13:23:44.381Z
+        notes: "Searched: kspec search 'fetch host header'/'connect_host reachability'/'review cycle'/'fetch
+          Host header Node'/'test config invalid pre-existing'/'spec coverage missed reachability',
+          and kspec meta observations list --type friction. Found existing tracking for:
+          multiple-fix-cycle pattern (@01KMPR1A 13-cycle observation), daemon spawn args drift
+          (@01KQYG6TQX), cross-package shim pattern (@01KQY40H5C), tests passing for wrong reason
+          (@01KQYJGDP8 — directly covers cycle-2 fallback test issue I also touched). Two candidate
+          frictions: (a) fetch() in Node 18+ silently drops user-set Host header — discovered when
+          my cycle-6 e2e defense-in-depth test got 200 instead of 403; not currently tracked. (b)
+          Pre-existing test relied on validation that didn't exist (cli-no-daemon test with
+          bind=127.0.0.1+connect=127.0.0.2 passed only because resolver didn't validate
+          reachability). The (b) pattern is partially overlapping with @01KQYJGDP8 ('tests can pass
+          for the wrong reason') but with a specific twist: the test was correct for the prior loose
+          semantics and only became wrong when validation was tightened."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T13:23:44.381Z
+        completed_at: 2026-05-06T13:23:44.381Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T13:21:47.532Z
