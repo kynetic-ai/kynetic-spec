@@ -177128,6 +177128,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQXYY0D6S8ZRA1ENJ82XZ71Z
         timestamp: 2026-05-06T06:17:19.391Z
+      - _ulid: 01KQXYYD09QZE1GC2G3R0XJ9V1
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQXYYBH41D7QCJ0FMHKY93YR
+        timestamp: 2026-05-06T06:17:30.889Z
     examined_commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
     external_links: []
     lifecycle_state: open
@@ -177191,7 +177198,25 @@ reviews:
               not prove advertised connect_host is used or that metadata is read."
             created_at: 2026-05-06T06:17:17.990Z
         kind: blocker
+      - _ulid: 01KQXYYBH41D7QCJ0FMHKY93YR
+        anchor:
+          type: code
+          commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
+          line_end: 840
+          line_start: 825
+          path: tests/cli-daemon-proxy.test.ts
+          side: head
+        entries:
+          - _ulid: 01KQXYYBH4RPW2VM735M4DZ20X
+            author: codex
+            body: "MUST-FIX: The @daemon-proxy-detection ac-health-timeout test still uses the legacy
+              daemon.port file, but the updated AC is specifically for connection metadata with an
+              advertised endpoint that is unresponsive. Because the setup writes daemon.port instead
+              of connection metadata with connect_host plus port, this test would not fail if the
+              new metadata timeout path were missing."
+            created_at: 2026-05-06T06:17:29.380Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-06T06:15:47.921Z
-    updated_at: 2026-05-06T06:17:17.990Z
+    updated_at: 2026-05-06T06:17:29.380Z
     notes: []
