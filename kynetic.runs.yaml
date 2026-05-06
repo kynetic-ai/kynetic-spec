@@ -35305,7 +35305,7 @@ runs:
     completed_at: 2026-05-06T06:04:25.666Z
   - _ulid: 01KQXYJXSJHVBWBQTGWK06NJXH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -35315,7 +35315,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T06:11:48.477Z
-        completed_at: 2026-05-06T06:11:48.477Z
+        completed_at: 2026-05-06T06:13:33.865Z
+        notes: "Step 1 (search existing coverage): Searched kspec meta observations --type friction for
+          AC-rename and stale-annotation patterns. Found @01KQXEKC (created 2026-05-06 from prior
+          dependent task @task-update-config-daemon-endpoint-ac fix cycle): documents the exact
+          friction pattern — when a task renames AC ids, downstream annotations silently become
+          stale because kspec validate --warnings-ok exits 0 and missing-AC findings are
+          warnings-only. Prescribes the remediation: rg @<spec-ref> ac-<old-id> across the repo and
+          update annotations atomically. Also found @01KQXFDP and @01KQXGBT covering the validation
+          visibility gap."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T06:13:33.865Z
+        completed_at: 2026-05-06T06:13:33.865Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T06:11:14.866Z
