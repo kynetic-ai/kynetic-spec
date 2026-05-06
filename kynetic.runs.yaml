@@ -34898,9 +34898,22 @@ runs:
     completed_at: 2026-05-06T00:26:44.685Z
   - _ulid: 01KQXBRAAZP1X7RQ0SZS7YPWZ5
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T00:42:08.607Z
+        completed_at: 2026-05-06T00:43:05.059Z
+        notes: "Worked well: the review record flow handled the detached review cleanly. Recording checks
+          made the approval evidence durable, and the detached-reviewer merge helper correctly
+          detected that the canonical branch was already integrated at dev. The pre-existing
+          deterministic npm test failure was separated from this review by checking git diff
+          dev...HEAD and creating follow-up task @01KQXBKW."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T00:43:05.059Z
+        completed_at: 2026-05-06T00:43:05.059Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T00:42:08.607Z
