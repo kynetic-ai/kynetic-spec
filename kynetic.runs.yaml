@@ -35448,9 +35448,34 @@ runs:
     completed_at: 2026-05-06T06:20:45.708Z
   - _ulid: 01KQXZDNBFDEJ2RXP565PGSH18
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T06:25:50.959Z
+        completed_at: 2026-05-06T06:26:30.616Z
+        notes: >-
+          What worked well in this session:
+
+          - Pre-flight dry-run on the 8-op atomic batch caught nothing (clean) but is low-cost
+          insurance against partial-write blast radius on shadow branch. Standard pattern.
+
+          - Wrote batch JSON to /tmp file rather than trying to shell-escape multi-line 'then' text
+          inline. Keeps spec mutation text readable and free of quoting hazards.
+
+          - Combined task note + task submit into a single 2-op atomic batch (one shadow commit,
+          deterministic ordering).
+
+          - Verified mutations with kspec item get against task brief BEFORE submitting — confirmed
+          verbatim match for all 8 ACs.
+
+          - Honored kspec-agents.md guidance: 'do NOT create GitHub PRs for dispatched work' —
+          submitted via review workflow, no PR.
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T06:26:30.616Z
+        completed_at: 2026-05-06T06:26:30.616Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T06:25:50.959Z
