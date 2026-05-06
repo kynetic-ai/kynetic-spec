@@ -36438,7 +36438,7 @@ runs:
     started_at: 2026-05-06T13:21:47.532Z
     completed_at: 2026-05-06T13:24:12.373Z
   - _ulid: 01KQYR3N0VP142XJB42BFAZ8K7
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -36490,7 +36490,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-06T13:39:05.322Z
-        completed_at: 2026-05-06T13:39:05.322Z
+        completed_at: 2026-05-06T13:39:24.850Z
+        notes: "Captured success observation @01KQYR78. No inbox/task items created: validation-warning
+          friction and detached-reviewer merge friction are already represented by existing
+          specs/tasks/observations found during search."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T13:37:17.339Z
+    completed_at: 2026-05-06T13:39:24.850Z
