@@ -178615,6 +178615,12 @@ reviews:
         payload:
           thread_ulid: 01KQYDQMNJ4WN4GVGDWDQ5A8P1
         timestamp: 2026-05-06T11:13:02.579Z
+      - _ulid: 01KQYFVPP3CG9NVEKNMFAGS8Y6
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQYE4S4FPSX2QRK2DFA0AVGX
+        timestamp: 2026-05-06T11:13:08.292Z
     examined_commit: 506eb2b3e31fd95451b0d8e52509ce42d8ab6124
     external_links: []
     lifecycle_state: closed
@@ -178703,6 +178709,8 @@ reviews:
               concurrency."
             created_at: 2026-05-06T11:12:41.644Z
         kind: blocker
+        resolved_at: 2026-05-06T11:13:07.001Z
+        resolved_by: "@claude"
       - _ulid: 01KQYE64TDQ4VMTWGX1T3A0P9G
         entries:
           - _ulid: 01KQYE64TDRT3AB0FX3HTDR6D7
@@ -178743,5 +178751,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T10:44:04.615Z
     created_at: 2026-05-06T10:33:02.992Z
-    updated_at: 2026-05-06T11:13:01.273Z
+    updated_at: 2026-05-06T11:13:07.001Z
     notes: []
