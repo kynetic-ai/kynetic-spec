@@ -16836,6 +16836,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T08:53:57.685Z
+  - _ulid: 01KQYDF7DV1K6QHHD63ZP7SED7
+    type: friction
+    content: "Dispatch fix-cycle invocations that time out can leave substantial uncommitted work in the
+      worker worktree. The next invocation receives bootstrap=prepared and a [AGENT-TIMEOUT] note
+      but no explicit signal that the working tree is dirty — the new agent has to run git status,
+      evaluate the partial diff, decide whether to keep, fix, or discard, and reconstruct the prior
+      agent intent from code alone. Concrete impact this session: the prior invocation had a
+      565-line, 12-file diff implementing all three blockers but never committed; recovery required
+      reading every changed file and running targeted tests before deciding to keep the work.
+      Possible improvement: dispatch prompt could include git status snapshot, or the dispatch
+      engine could auto-checkpoint WIP commits at task-note boundaries during a long invocation so
+      next-agent context is durable."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-06T10:31:22.300Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

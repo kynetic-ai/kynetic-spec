@@ -3112,3 +3112,16 @@ inbox:
       - task-scope
     added_by: "@claude"
     created_at: 2026-05-06T08:53:57.897Z
+  - _ulid: 01KQYDF7P2MB6667VSBAC71XZG
+    text: "Daemon IPv6 fallback path patches globalThis.URL during app.listen() to work around an
+      @elysiajs/node bug at node_modules/@elysiajs/node/dist/cjs/index.js:906 where it constructs
+      new URL(`http://${hostname}:${port}`) without bracketing IPv6 hosts. The polyfill is correct
+      and localized but is a third-party-library workaround. When the upstream bug is fixed (or we
+      replace the @elysiajs/node adapter), the polyfill in packages/daemon/src/server.ts can be
+      deleted. Triage decision: track as known-workaround task or close as wontfix."
+    tags:
+      - daemon
+      - cli
+      - tech-debt
+    added_by: "@claude"
+    created_at: 2026-05-06T10:31:22.562Z
