@@ -44,7 +44,7 @@ description: |
 spec_ref: "@daemon-network-endpoint-contract"
 plan_ref: "@plan-daemon-network-endpoint-contract"
 origin: derived
-status: needs_work
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-shared-daemon-endpoint-resolver"
@@ -60,12 +60,12 @@ review_ref: "@01KQYVH3B48Q4X4F31646WZSZF"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-centralize-web-ui-daemon-endpoints/01kqwzzj
-  captured_at: 2026-05-06T14:26:49.209Z
-  commit: 4603717540f7bb2e42ae700d74115f8d990a1422
-  remote: null
-  remote_url: null
-  upstream_ref: dev
-session_id: null
+  captured_at: 2026-05-06T15:32:10.852Z
+  commit: 61588c0f057e5a473d1f455147f5cbac71972378
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-centralize-web-ui-daemon-endpoints/01kqwzzj
+session_id: 01KQYXQR7QX9ZPA2C5N0XDJ22K
 history:
   - author: Jacob Chapel
     changes:
@@ -124,8 +124,48 @@ history:
         previous: 01KQYSHAB4YV7JF76VXG2YNPE0
     command: review-verdict-needs-work
     timestamp: 2026-05-06T14:50:51.925Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KQYXQR7QX9ZPA2C5N0XDJ22K
+        previous: null
+      started_at:
+        new: 2026-05-06T15:32:10.064Z
+        previous: 2026-05-06T14:04:51.659Z
+    command: task-start
+    timestamp: 2026-05-06T15:32:10.064Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-centralize-web-ui-daemon-endpoints/01kqwzzj
+          captured_at: 2026-05-06T15:32:10.852Z
+          commit: 61588c0f057e5a473d1f455147f5cbac71972378
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-centralize-web-ui-daemon-endpoints/01kqwzzj
+        previous:
+          review_url: null
+          branch: dispatch/task/task-centralize-web-ui-daemon-endpoints/01kqwzzj
+          captured_at: 2026-05-06T14:26:49.209Z
+          commit: 4603717540f7bb2e42ae700d74115f8d990a1422
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-06T15:32:10.855Z
+        previous: 2026-05-06T14:26:49.211Z
+    command: task-submit
+    timestamp: 2026-05-06T15:32:10.855Z
 created_at: 2026-05-05T21:16:23.032Z
-started_at: 2026-05-06T14:04:51.659Z
-submitted_at: 2026-05-06T14:26:49.211Z
+started_at: 2026-05-06T15:32:10.064Z
+submitted_at: 2026-05-06T15:32:10.855Z
 todos: []
 automation: eligible
