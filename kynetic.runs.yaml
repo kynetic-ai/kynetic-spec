@@ -36633,7 +36633,7 @@ runs:
     completed_at: 2026-05-06T14:17:48.022Z
   - _ulid: 01KQYWBZH26TWWAF33WF07ZVT5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36647,7 +36647,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T14:53:01.624Z
-        completed_at: 2026-05-06T14:53:01.624Z
+        completed_at: 2026-05-06T14:53:12.455Z
+        notes: "Friction: the first targeted daemon/web-ui test run timed out in an existing WebSocket
+          close-code test with STACK_TRACE_ERROR, then passed on isolated rerun and full npm test.
+          This added regression-triage time unrelated to the submitted change. Minor tool friction:
+          workflow show needs an explicit run ref when multiple/no active inference is available,
+          but that was incidental."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T14:53:12.455Z
+        completed_at: 2026-05-06T14:53:12.455Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T14:51:44.546Z
