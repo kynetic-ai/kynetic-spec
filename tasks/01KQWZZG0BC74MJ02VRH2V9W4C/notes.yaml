@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KQXYAPGAXEAW0SAKWWHC2XV8
+    content: "Approach: spec-only update. For @cli-daemon-proxy use 'item ac set' to replace
+      ac-auto-detect and ac-force-direct, then 'item ac add' for
+      ac-force-direct-management-exception. For @daemon-proxy-detection, rename ac-port-file-check
+      to ac-connection-metadata-check via 'item ac set --id', add ac-legacy-port-file-fallback, and
+      replace ac-health-timeout text. Apply via single kspec batch and verify with kspec validate
+      --warnings-ok."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T06:06:45.258Z
