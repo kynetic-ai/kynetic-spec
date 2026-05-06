@@ -178482,7 +178482,19 @@ reviews:
     slugs: []
     title: Review shared daemon endpoint resolver (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/task-unblock-prior-status.test.ts --fresh passed: 8 tests passed in
+          10.3s; supports classifying the full-suite failure as a concurrent build/delete race, not
+          a deterministic task-unblock behavior failure."
+        name: targeted failed-suite rerun
+        required: false
+        runner: npm
+        created_at: 2026-05-06T10:43:27.372Z
+        completed_at: 2026-05-06T10:43:27.372Z
     events:
       - _ulid: 01KQYDJ9RF5KYYCRTVKSY96VSA
         actor: Jacob Chapel
@@ -178511,6 +178523,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQYE4S4FPSX2QRK2DFA0AVGX
         timestamp: 2026-05-06T10:43:09.776Z
+      - _ulid: 01KQYE5CS4D39WGSJ010VRZ5QJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted failed-suite rerun
+        timestamp: 2026-05-06T10:43:28.677Z
     examined_commit: 506eb2b3e31fd95451b0d8e52509ce42d8ab6124
     external_links: []
     lifecycle_state: open
@@ -178570,5 +178589,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-06T10:33:02.992Z
-    updated_at: 2026-05-06T10:43:08.559Z
+    updated_at: 2026-05-06T10:43:27.372Z
     notes: []
