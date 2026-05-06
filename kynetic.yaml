@@ -777,6 +777,9 @@ traits:
       daemon. A daemon consumer uses the daemon endpoint that kspec reports for
       client communication instead of independently choosing a different local or
       wildcard address.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
