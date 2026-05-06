@@ -63,6 +63,10 @@ import { getRunningDaemonClient } from "../daemon-client.js";
  * Fails silently — dispatch requires a running daemon; if absent, this is a no-op.
  * AC: @daemon-agent-dispatch ac-2, ac-7
  * AC: @agent-dispatch-engine ac-18
+ *
+ * Exported as `_postDispatchEvent` so behavioral regression tests can verify
+ * the URL contract against advertised daemon metadata. See
+ * tests/cli-task-event-endpoint.test.ts.
  */
 async function postDispatchEvent(opts: {
   taskId: string;
@@ -106,6 +110,9 @@ async function postDispatchEvent(opts: {
     // Silent fail — daemon unreachable or dispatch engine not running
   }
 }
+
+/** @internal Test-only: re-export of postDispatchEvent for behavioral regression tests. */
+export { postDispatchEvent as _postDispatchEvent };
 
 /**
  * Find a task by reference with detailed error reporting.
