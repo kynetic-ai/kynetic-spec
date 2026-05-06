@@ -180194,9 +180194,25 @@ reviews:
           kind: nit
           thread_ulid: 01KQYZT56FFWRFATAY8HZAT1DK
         timestamp: 2026-05-06T15:51:56.078Z
+      - _ulid: 01KQYZTH97PZ9S9YR0ZRGKAWAE
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-06T15:52:07.207Z
+      - _ulid: 01KQYZTH97J2GZHZ55AHJ6DVQS
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-06T15:52:07.207Z
     examined_commit: 61588c0f057e5a473d1f455147f5cbac71972378
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -180225,7 +180241,14 @@ reviews:
               test quality, integration. No blockers or should-fix findings found."
             created_at: 2026-05-06T15:51:54.831Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-06T15:52:07.207Z
     created_at: 2026-05-06T15:38:30.648Z
-    updated_at: 2026-05-06T15:51:54.831Z
+    updated_at: 2026-05-06T15:52:07.207Z
     notes: []
