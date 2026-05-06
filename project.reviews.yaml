@@ -178279,9 +178279,25 @@ reviews:
           kind: nit
           thread_ulid: 01KQY8P4QC9Q47DADGHCCFY4D0
         timestamp: 2026-05-06T09:07:47.201Z
+      - _ulid: 01KQY8PSVS00D82B4KX67Q109Z
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-06T09:08:07.673Z
+      - _ulid: 01KQY8PSVTKP8CQ8VAN7MFQ976
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-06T09:08:07.674Z
     examined_commit: d64e038c3b6cb090a8b4e199e212200cc9448da0
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -178367,7 +178383,14 @@ reviews:
               client integration, test quality, and source-scanning patterns."
             created_at: 2026-05-06T09:07:46.029Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-06T09:08:07.673Z
     created_at: 2026-05-06T08:55:43.220Z
-    updated_at: 2026-05-06T09:07:46.029Z
+    updated_at: 2026-05-06T09:08:07.674Z
     notes: []
