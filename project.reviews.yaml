@@ -179137,6 +179137,18 @@ reviews:
         runner: npm
         created_at: 2026-05-06T12:46:16.687Z
         completed_at: 2026-05-06T12:46:16.687Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Schema/references/skills passed. Command exited 6 because repo-wide pre-existing warnings
+          remain: reference, alignment, completeness, and invalid annotation warnings; no
+          task-specific validation error found."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-06T12:46:26.509Z
+        completed_at: 2026-05-06T12:46:26.509Z
     events:
       - _ulid: 01KQYMKJ0805YFWBVRK46JQAD6
         actor: Jacob Chapel
@@ -179172,6 +179184,13 @@ reviews:
           status: pass
           name: npm run build:daemon
         timestamp: 2026-05-06T12:46:17.918Z
+      - _ulid: 01KQYN6JXEVZA5M9GD8480MJCQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-06T12:46:27.758Z
     examined_commit: 39de9f92f702d1e369143656c861fedd9099411b
     external_links: []
     lifecycle_state: open
@@ -179184,5 +179203,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T12:36:04.232Z
-    updated_at: 2026-05-06T12:46:16.687Z
+    updated_at: 2026-05-06T12:46:26.509Z
     notes: []
