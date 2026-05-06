@@ -663,6 +663,103 @@ describe("kspec serve commands", () => {
     runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
   });
 
+  // AC: @daemon-network-endpoint-contract ac-configured-bind-host
+  // AC: @config-daemon ac-host-config
+  // AC: @daemon-server ac-1
+  //
+  // Regression for the IPv4/IPv6 mismatch incident: configured daemon.host
+  // values must reach the production app.listen() call. A configured
+  // NON-default, non-wildcard host (127.0.0.2 — a loopback alias on
+  // Linux) flows through serve.ts → daemon child --host flag →
+  // selectStartupBindHost → app.listen({ hostname }). The fact that the
+  // daemon answers requests at 127.0.0.2 (and NOT the default 127.0.0.1)
+  // is the strongest behavioral proof: a daemon bound only to 127.0.0.1
+  // would refuse the 127.0.0.2 connection, and a daemon bound to ::1
+  // would refuse it differently. The daemon binds exactly where the
+  // configured host says.
+  it("configured non-default daemon.host reaches the production listen call", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    // Probe whether 127.0.0.2 is locally addressable. Skip rather than
+    // hard-fail on macOS / Windows that don't auto-alias the loopback range.
+    const aliasAvailable = await new Promise<boolean>((resolve) => {
+      const probe = createServer();
+      probe.once("error", () => probe.close(() => resolve(false)));
+      probe.once("listening", () => probe.close(() => resolve(true)));
+      try {
+        probe.listen({ host: "127.0.0.2", port: 0, exclusive: true });
+      } catch {
+        resolve(false);
+      }
+    });
+    if (!aliasAvailable) {
+      console.log("  ⊘ Skipping test - 127.0.0.2 loopback alias not available");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      ["daemon:", "  host: 127.0.0.2", `  port: ${port}`, ""].join("\n"),
+      "utf-8",
+    );
+
+    runKspec(
+      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+    );
+
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
+
+    // Wait for the daemon to be ready at the configured bind host.
+    // Using the configured address proves the daemon listened there —
+    // if app.listen() got 127.0.0.1 instead, this fetch would never
+    // succeed because nothing is bound at 127.0.0.2:port.
+    await waitForStartup(
+      "daemon health endpoint at configured 127.0.0.2",
+      async () => {
+        try {
+          const response = await fetch(`http://127.0.0.2:${port}/api/health`);
+          const body = (await response.text()).trim();
+          return {
+            ok: response.ok,
+            details: `status=${response.status} body=${body || "<empty>"}`,
+          };
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          return { ok: false, details: `fetch error=${message}` };
+        }
+      },
+      { timeoutMs: 10_000 },
+    );
+
+    // Negative proof: nothing at 127.0.0.1:port. If the daemon ignored
+    // the configured host and bound to the default loopback, this would
+    // succeed — and the test must catch that regression.
+    let defaultLoopbackAccepted = false;
+    try {
+      const refused = await fetch(`http://127.0.0.1:${port}/api/health`);
+      defaultLoopbackAccepted = refused.ok;
+    } catch {
+      defaultLoopbackAccepted = false;
+    }
+    expect(defaultLoopbackAccepted).toBe(false);
+
+    // Metadata reflects the configured bind host so clients honor it.
+    const metadataPath = join(isolatedHome, ".config", "kspec", "daemon.connection.json");
+    const metadata = JSON.parse(readTestOutputSync(metadataPath));
+    expect(metadata.bind_host).toBe("127.0.0.2");
+    expect(metadata.connect_host).toBe("127.0.0.2");
+    expect(metadata.api_url).toBe(`http://127.0.0.2:${port}`);
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+  });
+
   // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
   // AC: @config-daemon ac-connect-host-config
   //
