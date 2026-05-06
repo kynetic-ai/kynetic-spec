@@ -7902,18 +7902,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-daemon-endpoint-regression-tests/01kqwzzj
-    canonical_branch_head: 5ce64a516178c338dacc8d1cf3a4d7f7eead8ee3
+    canonical_branch_head: 60affba7e51fa122d4808fd964e818ad775d6fa3
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-06T16:23:16.070Z
+      updated_at: 2026-05-06T17:00:03.568Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T16:23:40.649Z
+      updated_at: 2026-05-06T17:00:03.568Z
     integration:
       status: pending
       detail: null
@@ -7921,7 +7921,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5ce64a516178c338dacc8d1cf3a4d7f7eead8ee3
-      updated_at: 2026-05-06T16:23:16.070Z
+      updated_at: 2026-05-06T17:00:03.568Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQWZZJD5A6068Q7BBY7SKH43"
@@ -7929,9 +7929,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T16:23:40.649Z
-      last_reconciled_at: 2026-05-06T16:23:40.649Z
+      last_reconciled_at: 2026-05-06T17:00:03.568Z
       created_at: 2026-05-06T16:23:16.070Z
-      updated_at: 2026-05-06T16:23:40.649Z
+      updated_at: 2026-05-06T17:00:03.568Z
     workspace_id: dispatch-workspace-01KQWZZJD5A6068Q7BBY7SKH43
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
