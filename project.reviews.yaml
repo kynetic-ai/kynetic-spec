@@ -179262,6 +179262,18 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-06T12:47:22.958Z
+      - _ulid: 01KQYQ4KVAJ2XD22HK27AGF7RA
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KQYN7XT9EMSBHP5K1VGQHX2X
+        timestamp: 2026-05-06T13:20:20.330Z
+      - _ulid: 01KQYQ4PX9HYPD7V46KPM791S3
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KQYN7XT9EMSBHP5K1VGQHX2X
+        timestamp: 2026-05-06T13:20:23.465Z
     examined_commit: 39de9f92f702d1e369143656c861fedd9099411b
     external_links: []
     lifecycle_state: closed
@@ -179299,7 +179311,59 @@ reviews:
               add a behavioral test that starts/calls through a non-default connect_host instead of
               only asserting metadata."
             created_at: 2026-05-06T12:47:11.689Z
+          - _ulid: 01KQYQ4JM13E8M9DBW84VH26K4
+            author: "@claude"
+            body: >-
+              Fixed. Two-part fix.
+
+
+              (1) Reachability validation in resolveDaemonConnectHost
+              (src/daemon-shared/endpoint.ts:188-227). When bind_host is a specific (non-wildcard)
+              address and explicit connect_host doesn't match it, the resolver now throws with a
+              clear message — bind=127.0.0.1, connect=127.0.0.2 / connect=192.168.1.10 / connect=::2
+              / different non-loopback addresses are all rejected at resolve time so unreachable
+              metadata is never written. Wildcard binds (0.0.0.0 / ::) accept any explicit
+              connect_host, and connect=bind is accepted (covers loopback-bind with
+              loopback-connect, and external-bind with same-address connect).
+
+
+              (2) Middleware now accepts the advertised connect_host
+              (packages/daemon/src/server.ts:265-339, 449-462). localhostOnly() takes an optional
+              additionalAllowedHosts list. createServer extends the default localhost set with the
+              resolved endpoint.bindHost / endpoint.connectHost so requests addressed to the
+              metadata-advertised URL are not 403'd. Wildcard addresses are filtered from the
+              additional list (they're bind targets, not real Host header values). Default behavior
+              with no options is unchanged — loopback-default mode stays loopback-only.
+
+
+              Behavioral tests:
+
+              - tests/cli-serve.test.ts: new e2e starts the daemon with bind=0.0.0.0 +
+              connect_host=127.0.0.2, fetches the advertised http://127.0.0.2:port/api/health and
+              asserts 200 OK plus body { status: 'ok' } (skips on platforms without 127.0.0.0/8
+              loopback alias). Before this fix the same URL returned 403 even though metadata
+              pointed clients there.
+
+              - tests/daemon-server.test.ts: middleware unit tests for additionalAllowedHosts
+              (accepts non-default hosts, still rejects unlisted, filters wildcards, accepts
+              bracketed IPv6, ignores empty entries, default-options preserves localhost-only). Test
+              file now imports the production middleware from dist/daemon/server.js instead of
+              duplicating the logic so drift is structurally prevented.
+
+              - tests/daemon-endpoint.test.ts: explicit rejection cases (127.0.0.1+192.168.1.10,
+              127.0.0.1+127.0.0.2, ::1+::2, 10.0.0.1+10.0.0.2) and acceptance cases (connect=bind,
+              empty connect with specific bind falling back to bind).
+
+              - tests/cli-no-daemon.test.ts: pre-existing forward-flags test updated to bind=0.0.0.0
+              so it satisfies the (now enforced) reachability rule.
+
+
+              Full suite: npm test -- --fresh — 2360/2360 suites, 8651 tests passed, 5 pre-existing
+              skips, 0 failures (~32 minutes). npm run typecheck clean. npm run build:daemon clean.
+            created_at: 2026-05-06T13:20:19.073Z
         kind: blocker
+        resolved_at: 2026-05-06T13:20:22.264Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -179309,5 +179373,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-06T12:47:22.958Z
     created_at: 2026-05-06T12:36:04.232Z
-    updated_at: 2026-05-06T12:47:22.958Z
+    updated_at: 2026-05-06T13:20:22.264Z
     notes: []

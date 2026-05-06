@@ -299,3 +299,53 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-06T12:47:25.003Z
+  - _ulid: 01KQYQ4R61YGQKXQ6SJCVY514J
+    content: >-
+      Fix cycle 6: addressed the cycle-6 reviewer blocker on connect_host reachability (review
+      @01KQYMKJ).
+
+
+      Root cause: resolveDaemonConnectHost returned any non-empty explicit connect_host without
+      validating reachability. A bind_host=127.0.0.1 + connect_host=127.0.0.2 configuration wrote
+      metadata advertising http://127.0.0.2:port even though a server bound to a single specific
+      address only accepts connections at that exact address. Compounding the issue, localhostOnly()
+      hardcoded localhost / 127.0.0.1 / ::1 — so legitimate wildcard-bound daemons that advertised a
+      non-default connect_host got 403 on the very URL their metadata told clients to use. Both
+      broke @config-daemon ac-connect-host-config and @daemon-network-endpoint-contract
+      ac-clients-use-metadata.
+
+
+      Fix:
+
+      (1) src/daemon-shared/endpoint.ts: resolveDaemonConnectHost now rejects connect_host that
+      differs from a non-wildcard bind_host. Wildcard binds accept any explicit connect_host (the
+      listener binds every local interface so the advertised URL is reachable). The error message
+      points the user at the two valid configurations (set bind to a wildcard, or remove
+      connect_host).
+
+      (2) packages/daemon/src/server.ts: localhostOnly() takes an optional additionalAllowedHosts
+      list. createServer extends the default localhost allow-list with the resolved
+      endpoint.bindHost / endpoint.connectHost so requests addressed to the metadata-advertised URL
+      pass the middleware. Wildcard addresses are filtered out (bind targets, not Host header
+      values). Default options preserve loopback-only behavior.
+
+
+      Behavioral test (the reviewer's specific ask): tests/cli-serve.test.ts now starts the daemon
+      with bind=0.0.0.0 + connect_host=127.0.0.2, fetches the advertised URL, and asserts 200 OK
+      plus body { status: 'ok' }. Skips when 127.0.0.0/8 isn't aliased (macOS/Windows). Plus
+      middleware unit tests, validation unit tests, and the existing forward-flags test updated to a
+      valid (wildcard-bind) configuration.
+
+
+      Reverified all ACs end-to-end: ac-default-loopback-v4, ac-default-ipv6-fallback,
+      ac-configured-bind-host, ac-wildcard-connect-host, ac-connection-metadata,
+      ac-clients-use-metadata, ac-legacy-port-fallback, ac-external-binding-warning on
+      @daemon-network-endpoint-contract; ac-host-default, ac-connect-host-config,
+      ac-port-env-precedence, ac-connection-metadata on @config-daemon.
+
+
+      Full test suite: 2360 suites, 8651 passing, 5 pre-existing skips, 0 failures (npm test --
+      --fresh, ~32 min). Typecheck and daemon build both clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T13:20:24.769Z
