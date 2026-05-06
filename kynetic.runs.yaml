@@ -35751,7 +35751,7 @@ runs:
     completed_at: 2026-05-06T06:56:52.474Z
   - _ulid: 01KQY1ZHWP4SMVTS7F8FW5K3AW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35768,7 +35768,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T07:10:52.407Z
-        completed_at: 2026-05-06T07:10:52.407Z
+        completed_at: 2026-05-06T07:11:07.149Z
+        notes: "Friction points: (1) The reflection instructions list 'kspec workflow show' without a run
+          ref, but the CLI returned 'missing required argument run-ref'; I had to rerun with
+          @01KQY1ZH. This is a small docs/command ergonomics mismatch. (2) Full npm test took
+          1890.6s for a narrow review involving only daemon proxy annotations and one E2E; the
+          full-suite requirement is valuable for merge confidence but expensive in review loops.
+          Candidate only if not already tracked, since test caching and shard guidance already
+          exist."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T07:11:07.149Z
+        completed_at: 2026-05-06T07:11:07.149Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T07:10:34.390Z
