@@ -179413,6 +179413,16 @@ reviews:
         runner: tsc
         created_at: 2026-05-06T13:35:45.910Z
         completed_at: 2026-05-06T13:35:45.910Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Daemon build completed with exit 0; dist/daemon bundle generated successfully.
+        name: npm run build:daemon
+        required: false
+        runner: npm
+        created_at: 2026-05-06T13:35:49.332Z
+        completed_at: 2026-05-06T13:35:49.332Z
     events:
       - _ulid: 01KQYQE9CPX5G7HR6Q3MSCKSEJ
         actor: Jacob Chapel
@@ -179448,6 +179458,13 @@ reviews:
           status: pass
           name: npm run typecheck
         timestamp: 2026-05-06T13:35:47.077Z
+      - _ulid: 01KQYR107E3R44W64SN20Q1Q5E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run build:daemon
+        timestamp: 2026-05-06T13:35:50.510Z
     examined_commit: 9c7e0b6fffb00c787a2c867224e1ac885a3b6efb
     external_links: []
     lifecycle_state: open
@@ -179460,5 +179477,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T13:25:37.303Z
-    updated_at: 2026-05-06T13:35:45.910Z
+    updated_at: 2026-05-06T13:35:49.332Z
     notes: []
