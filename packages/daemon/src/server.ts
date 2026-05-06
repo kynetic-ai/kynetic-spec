@@ -21,6 +21,13 @@ import { getWebSocketContextId } from "./websocket/context-id.js";
 import { resolveWebSocketProject } from "./websocket/project-resolution.js";
 import type { ConnectionData, ConnectedEvent } from "./websocket/types.js";
 import { PidFileManager } from "./pid.js";
+import {
+  DEFAULT_BIND_HOST,
+  isIpv6Literal,
+  resolveDaemonEndpoint,
+  selectStartupBindHost,
+  type DaemonConnectionMetadata,
+} from "./endpoint.js";
 import { projectContextMiddleware } from "./middleware/project-context.js";
 import { createTasksRoutes } from "./routes/tasks.js";
 import { createItemsRoutes } from "./routes/items.js";
@@ -62,6 +69,35 @@ export interface ServerOptions {
   runtime: DaemonRuntime;
   kspecDir?: string; // Path to .kspec directory (default: .kspec in cwd)
   webUiDir?: string; // Path to web UI build directory (default: auto-detect)
+  /**
+   * Host the daemon binds to. Defaults to 127.0.0.1 (numeric IPv4
+   * loopback) so startup does not depend on OS hostname resolution.
+   *
+   * AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+   * AC: @daemon-network-endpoint-contract ac-configured-bind-host
+   */
+  bindHost?: string;
+  /**
+   * True when `bindHost` came from an explicit env/config value rather
+   * than the built-in default. Disables IPv6 fallback when set —
+   * explicit configuration is honored verbatim.
+   *
+   * AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+   */
+  bindHostExplicitlyConfigured?: boolean;
+  /**
+   * Host the daemon advertises to local clients. When omitted, derived
+   * from `bindHost` (loopback when bind is wildcard).
+   *
+   * AC: @daemon-network-endpoint-contract ac-wildcard-connect-host
+   * AC: @config-daemon ac-connect-host-config
+   */
+  connectHost?: string | null;
+  /**
+   * Override directory for daemon lifecycle files (PID, port, metadata).
+   * Tests use this to avoid writing to the real ~/.config/kspec.
+   */
+  configDir?: string;
 }
 
 type ManagedServer = {
@@ -223,10 +259,46 @@ function stopSessionSyncForProject(projectPath: string): void {
 }
 
 /**
- * Middleware to enforce localhost-only connections.
- * AC-3: Reject non-localhost connections with 403 Forbidden
+ * Options for the localhost-enforcement middleware.
+ *
+ * `additionalAllowedHosts` adds extra Host header values that the
+ * middleware accepts beyond the default localhost set. The daemon passes
+ * its resolved bind/connect hosts here so that requests addressed to
+ * the advertised endpoint are accepted when external binding is
+ * explicitly configured. Wildcard addresses are filtered out — they are
+ * not real hosts to address, only bind targets.
  */
-export function localhostOnly() {
+export interface LocalhostOnlyOptions {
+  additionalAllowedHosts?: ReadonlyArray<string>;
+}
+
+const WILDCARD_HOSTS = new Set(["0.0.0.0", "::"]);
+
+/**
+ * Middleware to enforce localhost-only connections.
+ *
+ * Default allowed hosts: localhost, 127.0.0.1, ::1. Callers may extend
+ * the allow-list via `additionalAllowedHosts` to accept the daemon's
+ * resolved/advertised connect host when external binding is configured.
+ *
+ * AC: @daemon-server ac-3 — Reject non-localhost connections with 403 Forbidden
+ * AC: @trait-localhost-security ac-loopback-rejects-nonlocal
+ */
+export function localhostOnly(options: LocalhostOnlyOptions = {}) {
+  const allowed = new Set(["localhost", "127.0.0.1", "::1"]);
+  for (const host of options.additionalAllowedHosts ?? []) {
+    if (typeof host !== "string") continue;
+    const trimmed = host.trim();
+    if (trimmed.length === 0) continue;
+    // Accept bracketed IPv6 input from callers that pass URL-formatted hosts.
+    const stripped =
+      trimmed.startsWith("[") && trimmed.endsWith("]")
+        ? trimmed.slice(1, -1)
+        : trimmed;
+    if (WILDCARD_HOSTS.has(stripped)) continue;
+    allowed.add(stripped);
+  }
+
   return (context: { request: Request }) => {
     const host = context.request.headers.get("host");
     if (!host) {
@@ -253,10 +325,7 @@ export function localhostOnly() {
       hostname = host.split(":")[0];
     }
 
-    // Allow localhost, 127.0.0.1, and ::1
-    const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
-
-    if (!isLocalhost) {
+    if (!allowed.has(hostname)) {
       return new Response(
         JSON.stringify({
           error: "Forbidden",
@@ -281,7 +350,17 @@ export function localhostOnly() {
  * - ac-15: Uses plugin pattern for middleware
  */
 export async function createServer(options: ServerOptions) {
-  const { port, isDaemon, runtime, kspecDir = join(process.cwd(), ".kspec"), webUiDir } = options;
+  const {
+    port,
+    isDaemon,
+    runtime,
+    kspecDir = join(process.cwd(), ".kspec"),
+    webUiDir,
+    bindHost,
+    bindHostExplicitlyConfigured,
+    connectHost,
+    configDir,
+  } = options;
 
   // Determine startup project path (project root, not .kspec/)
   // AC: @multi-directory-daemon ac-2 - daemon uses startup directory as default project
@@ -301,15 +380,57 @@ export async function createServer(options: ServerOptions) {
     console.log("[daemon] Build the web UI with: cd packages/web-ui && npm run build");
   }
 
-  // Initialize PID file manager (uses global ~/.config/kspec/)
-  const pidManager = new PidFileManager();
+  // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+  // AC: @daemon-network-endpoint-contract ac-configured-bind-host
+  // AC: @daemon-network-endpoint-contract ac-wildcard-connect-host
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+  // AC: @config-daemon ac-host-default
+  // Resolve the bind host once via the shared module. When the user
+  // didn't explicitly configure a host AND the default IPv4 loopback
+  // can't be bound (e.g. IPv4 disabled on the system), fall back to ::1
+  // so daemon startup still succeeds and metadata advertises bracketed
+  // IPv6 URLs. The explicit-config flag is forwarded by the CLI from
+  // the parsed config (env / kspec.config.yaml) so explicit settings
+  // are never silently rewritten.
+  const requestedBindHost = bindHost ?? DEFAULT_BIND_HOST;
+  const bindSelection = await selectStartupBindHost({
+    resolvedBindHost: requestedBindHost,
+    port,
+    hostExplicitlyConfigured: bindHostExplicitlyConfigured === true,
+  });
+  if (bindSelection.fellBackToIpv6) {
+    console.warn(
+      `[daemon] IPv4 loopback (${DEFAULT_BIND_HOST}) is unavailable for binding; falling back to IPv6 loopback (::1).`,
+    );
+  }
+  const endpoint = resolveDaemonEndpoint({
+    port,
+    bindHost: bindSelection.bindHost,
+    connectHost: connectHost ?? null,
+  });
+
+  // Initialize PID file manager. configDir override lets tests redirect
+  // metadata writes away from the real ~/.config/kspec.
+  const pidManager = configDir ? new PidFileManager(configDir) : new PidFileManager();
 
   // AC: @multi-directory-daemon ac-9 - Write PID and port files in daemon mode
+  // AC: @daemon-network-endpoint-contract ac-connection-metadata
   if (isDaemon) {
     pidManager.writePid();
     pidManager.writePort(port);
+    const metadata: DaemonConnectionMetadata = {
+      pid: process.pid,
+      port: endpoint.port,
+      bind_host: endpoint.bindHost,
+      connect_host: endpoint.connectHost,
+      api_url: endpoint.apiUrl,
+      ws_url: endpoint.wsUrl,
+      runtime,
+    };
+    pidManager.writeConnectionMetadata(metadata);
     console.log(`[daemon] PID file written: ${process.pid}`);
     console.log(`[daemon] Port file written: ${port}`);
+    console.log(`[daemon] Connection metadata written: ${endpoint.apiUrl}`);
   }
 
   // Initialize WebSocket managers
@@ -337,7 +458,18 @@ export async function createServer(options: ServerOptions) {
     )
 
     // AC-3: Enforce localhost-only connections
-    .onRequest(localhostOnly());
+    // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+    // AC: @config-daemon ac-connect-host-config
+    // When external binding is explicitly configured (wildcard bind or a
+    // specific non-loopback address), the resolved connect host is the
+    // value clients call. Extend the localhost allow-list with the
+    // resolved bind/connect hosts so requests addressed to the daemon's
+    // advertised endpoint are not rejected as non-localhost.
+    .onRequest(
+      localhostOnly({
+        additionalAllowedHosts: [endpoint.bindHost, endpoint.connectHost],
+      }),
+    );
 
   // AC: @daemon-entity-cache ac-load-on-register — lazy import entity cache module
   // The daemon build compiles packages/daemon/src plus src/daemon/entity-cache.ts
@@ -631,15 +763,55 @@ export async function createServer(options: ServerOptions) {
     console.log("[daemon] Web UI static file serving enabled");
   }
 
-  // AC-1, AC-2: Start server on localhost only
-  // Using 'localhost' hostname allows Bun/OS to bind to both 127.0.0.1 and ::1
-  app.listen({
-    port,
-    hostname: "localhost", // Resolves to both IPv4 and IPv6 loopback
-  });
+  // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+  // AC: @daemon-network-endpoint-contract ac-configured-bind-host
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+  // AC: @daemon-server ac-1, ac-2
+  // Bind to the resolved bind host (numeric IPv4 loopback by default —
+  // never 'localhost', so binding does not depend on /etc/hosts or DNS).
+  // The bind host has already been adjusted via selectStartupBindHost to
+  // prefer ::1 when IPv4 loopback is unavailable on this host.
+  //
+  // The IPv6 path needs a localized URL polyfill: @elysiajs/node
+  // constructs `new URL("http://::1:port")` synchronously inside its
+  // listen() implementation, which throws because IPv6 hosts must be
+  // bracketed inside URL strings. We patch globalThis.URL to bracket
+  // bare IPv6 host segments only for the duration of the listen call,
+  // then restore the original. The underlying http.Server bind itself
+  // accepts the bare ::1 hostname (and rejects the bracketed form), so
+  // we cannot change what we pass to Elysia — only what Elysia builds
+  // internally. Bug context: https://github.com/elysiajs/elysia/issues
+  if (isIpv6Literal(endpoint.bindHost)) {
+    const OriginalURL = globalThis.URL;
+    function PatchedURL(input: ConstructorParameters<typeof URL>[0], base?: ConstructorParameters<typeof URL>[1]): URL {
+      const fixed =
+        typeof input === "string"
+          ? input.replace(
+              /^(https?:\/\/)([0-9a-fA-F]*:[0-9a-fA-F:]+)(:\d+)/,
+              "$1[$2]$3",
+            )
+          : input;
+      return new OriginalURL(fixed, base);
+    }
+    PatchedURL.prototype = OriginalURL.prototype;
+    (globalThis as { URL: typeof URL }).URL = PatchedURL as unknown as typeof URL;
+    try {
+      app.listen({ port, hostname: endpoint.bindHost });
+    } finally {
+      (globalThis as { URL: typeof URL }).URL = OriginalURL;
+    }
+  } else {
+    app.listen({ port, hostname: endpoint.bindHost });
+  }
 
-  console.log(`[daemon] Server listening on http://localhost:${port} (IPv4: 127.0.0.1, IPv6: ::1)`);
-  console.log(`[daemon] WebSocket available at ws://localhost:${port}/ws`);
+  console.log(`[daemon] Server listening on ${endpoint.apiUrl} (bind: ${endpoint.bindHost})`);
+  console.log(`[daemon] WebSocket available at ${endpoint.wsUrl}`);
+  // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  if (endpoint.externallyReachable) {
+    console.warn(
+      `[daemon] WARNING: bind host ${endpoint.bindHost} exposes unauthenticated kspec project data and mutation APIs on a non-loopback interface. Restrict access at the network/firewall level.`,
+    );
+  }
   logHeartbeatDegradationWarning(runtime);
 
   // AC: @agent-dispatch-engine ac-5 - Wire file change callback to dispatch engine

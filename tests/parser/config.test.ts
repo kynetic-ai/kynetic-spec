@@ -380,7 +380,8 @@ daemon:
       });
 
       expect(config.daemon.port).toBe(4567);
-      expect(config.daemon.host).toBe("localhost"); // default
+      // AC: @config-daemon ac-host-default — numeric IPv4 loopback is the default
+      expect(config.daemon.host).toBe("127.0.0.1"); // default
       expect(config.dispatch.base_branch).toBeNull();
       expect(config.dispatch.worktree_root).toBe(".kspec-worktrees");
       expect(config.dispatch.bootstrap.steps).toEqual([]);
@@ -625,7 +626,10 @@ title: Test Project
       expect(defaults.validation.strict_refs).toBe(true);
       expect(defaults.validation.require_acceptance).toBe(false);
       expect(defaults.daemon.port).toBe(3456);
-      expect(defaults.daemon.host).toBe("localhost");
+      // AC: @config-daemon ac-host-default — numeric IPv4 loopback default
+      expect(defaults.daemon.host).toBe("127.0.0.1");
+      // AC: @config-daemon ac-connect-host-config — null when not configured
+      expect(defaults.daemon.connect_host).toBeNull();
       expect(defaults.dispatch.base_branch).toBeNull();
       expect(defaults.dispatch.worktree_root).toBe(".kspec-worktrees");
       expect(defaults.dispatch.bootstrap.steps).toEqual([]);

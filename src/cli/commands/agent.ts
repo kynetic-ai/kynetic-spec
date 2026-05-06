@@ -23,7 +23,7 @@ import { resolveAdapter } from "../../agents/adapters.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success, warn, isJsonMode } from "../output.js";
 import { parseIntOption, validateEnumOption } from "../validators.js";
-import { PidFileManager } from "../pid-utils.js";
+import { PidFileManager, resolveDaemonClientEndpoint } from "../pid-utils.js";
 import { errors } from "../../strings/errors.js";
 import type { LoadedAgent } from "../../parser/meta.js";
 import { requestEndLoop } from "../../sessions/index.js";
@@ -44,19 +44,18 @@ export function _setWebSocketCtor(ctor: typeof WebSocket | null): void {
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 /**
- * Get the daemon URL from the PID file manager.
+ * Get the daemon URL from the resolved client endpoint.
  * Returns null if the daemon is not running.
+ *
  * AC: @cli-agent-commands ac-10
+ * AC: @daemon-network-endpoint-contract ac-clients-use-metadata
  */
-function getDaemonUrl(): { url: string; port: number } | null {
+function getDaemonUrl(): { url: string; port: number; wsUrl: string } | null {
   const pidManager = new PidFileManager();
   if (!pidManager.isDaemonRunning()) return null;
-  try {
-    const port = pidManager.readPort();
-    return { url: `http://localhost:${port}`, port };
-  } catch {
-    return null;
-  }
+  const endpoint = resolveDaemonClientEndpoint();
+  if (!endpoint) return null;
+  return { url: endpoint.apiUrl, port: endpoint.port, wsUrl: endpoint.wsUrl };
 }
 
 /**
@@ -968,7 +967,8 @@ export function registerAgentCommands(program: Command): void {
       let shouldReconnect = true;
 
       function connect(): void {
-        const wsUrl = new URL(`ws://localhost:${daemonConn!.port}/ws`);
+        // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+        const wsUrl = new URL(daemonConn!.wsUrl);
         if (projectDir) {
           wsUrl.searchParams.set("project", projectDir);
         }

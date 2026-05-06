@@ -10,7 +10,11 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { error, info, output, success, warn, isJsonMode } from "../output.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { PidFileManager } from "../pid-utils.js";
+import {
+  PidFileManager,
+  resolveDaemonClientEndpoint,
+  isExternallyReachable,
+} from "../pid-utils.js";
 import { loadProjectConfig } from "../../parser/config.js";
 import { initContext } from "../../parser/yaml.js";
 
@@ -316,6 +320,17 @@ async function startServer(opts: {
   // AC: @config-daemon ac-2 — CLI flag takes precedence over config
   const port = opts.port ? parseInt(opts.port, 10) : configPort;
 
+  // AC: @config-daemon ac-host-default, ac-host-config, ac-connect-host-config
+  // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+  // Forward the resolved bind host to the spawned daemon so it never
+  // falls back to its built-in defaults if config drifts. We also
+  // forward whether the host was explicitly configured so the daemon
+  // knows whether IPv6 loopback fallback applies (only for default).
+  const bindHost = config.daemon.host;
+  const hostExplicitlyConfigured = config.daemon.host_explicitly_configured;
+  const connectHost = config.daemon.connect_host;
+
   // AC: @cli-serve-commands ac-10
   if (isNaN(port) || port < 1 || port > 65535) {
     if (jsonMode) {
@@ -388,19 +403,48 @@ async function startServer(opts: {
     warn('  Run "npm run build:daemon" to update.');
   }
 
+  const daemonArgs: string[] = [
+    daemonBinary,
+    "--port",
+    String(port),
+    "--kspec-dir",
+    kspecDir,
+    "--host",
+    bindHost,
+  ];
+  if (hostExplicitlyConfigured) {
+    // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+    // Tell the daemon the host came from an explicit user setting so it
+    // does NOT auto-fall back to ::1 when 127.0.0.1 binding fails.
+    daemonArgs.push("--host-explicit");
+  }
+  if (connectHost) {
+    daemonArgs.push("--connect-host", connectHost);
+  }
+
+  // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  // AC: @trait-localhost-security ac-external-warning
+  // AC: @config-daemon ac-host-config
+  // Surface the external-binding warning from the parent CLI process so
+  // it is visible even when the daemon child is detached with stdio
+  // ignored. warn() routes to stderr in structured output modes so it
+  // never corrupts the JSON payload on stdout.
+  const externallyReachable = isExternallyReachable(bindHost);
+  if (externallyReachable) {
+    warn(
+      `WARNING: daemon will bind to ${bindHost}, exposing unauthenticated kspec project data and mutation APIs on a non-loopback interface. Restrict access at the network/firewall level.`,
+    );
+  }
+
   // AC: @cli-serve-commands ac-2 - background mode
   if (opts.detach) {
     // Spawn detached process
-    const child = spawn(
-      getDaemonRuntimeCommand(runtime),
-      [daemonBinary, "--port", String(port), "--kspec-dir", kspecDir],
-      {
-        detached: true,
-        stdio: "ignore", // TODO: redirect to log file when logging implemented
-        cwd: process.cwd(),
-        env: buildDaemonChildEnv(runtime),
-      },
-    );
+    const child = spawn(getDaemonRuntimeCommand(runtime), daemonArgs, {
+      detached: true,
+      stdio: "ignore", // TODO: redirect to log file when logging implemented
+      cwd: process.cwd(),
+      env: buildDaemonChildEnv(runtime),
+    });
 
     // Detach from parent
     child.unref();
@@ -440,15 +484,11 @@ async function startServer(opts: {
       info("Press Ctrl+C to stop");
     }
 
-    const child = spawn(
-      getDaemonRuntimeCommand(runtime),
-      [daemonBinary, "--port", String(port), "--kspec-dir", kspecDir],
-      {
-        stdio: "inherit",
-        cwd: process.cwd(),
-        env: buildDaemonChildEnv(runtime),
-      },
-    );
+    const child = spawn(getDaemonRuntimeCommand(runtime), daemonArgs, {
+      stdio: "inherit",
+      cwd: process.cwd(),
+      env: buildDaemonChildEnv(runtime),
+    });
 
     // Handle Ctrl+C - forward SIGTERM to child for graceful shutdown
     process.on("SIGINT", () => {
@@ -560,23 +600,42 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
   const running = pidManager.isDaemonRunning({ ignoreNoDaemon: true });
   const pid = pidManager.readPid();
 
-  // Read port from global config (AC: @multi-directory-daemon ac-13)
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata,
+  //     ac-legacy-port-fallback — resolve via metadata first, legacy fallback
   let port: number | null = null;
+  let apiUrl: string | null = null;
+  let bindHost: string | null = null;
   if (running) {
-    try {
-      port = pidManager.readPort();
-    } catch {
-      // Port file might not exist or be invalid
-      port = null;
+    const endpoint = resolveDaemonClientEndpoint();
+    if (endpoint) {
+      port = endpoint.port;
+      apiUrl = endpoint.apiUrl;
+      bindHost = endpoint.bindHost;
+    } else {
+      try {
+        port = pidManager.readPort();
+      } catch {
+        port = null;
+      }
     }
+  }
+
+  // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  // AC: @trait-localhost-security ac-external-warning
+  // Surface the warning whenever a lifecycle command reports the daemon
+  // endpoint and the bind host is non-loopback.
+  if (running && bindHost && isExternallyReachable(bindHost)) {
+    warn(
+      `WARNING: daemon is bound to ${bindHost}, exposing unauthenticated kspec project data and mutation APIs on a non-loopback interface. Restrict access at the network/firewall level.`,
+    );
   }
 
   // AC: @multi-directory-daemon ac-12 - Fetch list of registered projects and uptime
   let projects: Array<{ path: string; registeredAt: string; watcherStatus: string }> = [];
   let uptime: number | null = null;
-  if (running && port) {
+  if (running && apiUrl) {
     try {
-      const response = await fetch(`http://localhost:${port}/api/projects`);
+      const response = await fetch(`${apiUrl}/api/projects`);
       if (response.ok) {
         const data = (await response.json()) as {
           projects: Array<{ path: string; registeredAt: string; watcherStatus: string }>;
@@ -592,7 +651,7 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
     // Retry briefly to reduce startup races where status is checked immediately after daemon start.
     for (let attempt = 1; attempt <= 5 && uptime === null; attempt++) {
       try {
-        const healthResponse = await fetch(`http://localhost:${port}/api/health`);
+        const healthResponse = await fetch(`${apiUrl}/api/health`);
         if (healthResponse.ok) {
           const healthData = (await healthResponse.json()) as { status: string; uptime?: unknown };
           const parsed = parseUptimeSeconds(healthData.uptime);

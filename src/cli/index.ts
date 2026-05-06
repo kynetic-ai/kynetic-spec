@@ -193,16 +193,35 @@ async function maybeAutoStartDaemon(): Promise<void> {
     }
 
     // Start daemon in background using configured runtime rather than inheriting the CLI runtime.
-    const child = spawn(
-      daemonConfig.runtime,
-      [daemonBinary, "--port", String(port), "--kspec-dir", context.specDir],
-      {
-        detached: true,
-        stdio: "ignore",
-        cwd: process.cwd(),
-        env: buildDaemonChildEnv(daemonConfig.runtime),
-      },
-    );
+    // AC: @daemon-network-endpoint-contract ac-configured-bind-host
+    // AC: @config-daemon ac-connect-host-config
+    // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+    // Forward the resolved bind host, explicit-config flag, and connect host
+    // so the auto-started daemon honors the same endpoint configuration that
+    // `kspec serve start` uses. Without these, an auto-start under a project
+    // configured with daemon.host, KSPEC_DAEMON_HOST, or daemon.connect_host
+    // would spawn on the wrong host and write metadata for the wrong endpoint.
+    const daemonArgs: string[] = [
+      daemonBinary,
+      "--port",
+      String(port),
+      "--kspec-dir",
+      context.specDir,
+      "--host",
+      daemonConfig.host,
+    ];
+    if (daemonConfig.host_explicitly_configured) {
+      daemonArgs.push("--host-explicit");
+    }
+    if (daemonConfig.connect_host) {
+      daemonArgs.push("--connect-host", daemonConfig.connect_host);
+    }
+    const child = spawn(daemonConfig.runtime, daemonArgs, {
+      detached: true,
+      stdio: "ignore",
+      cwd: process.cwd(),
+      env: buildDaemonChildEnv(daemonConfig.runtime),
+    });
 
     // Detach from parent
     child.unref();
@@ -338,6 +357,7 @@ function configureProgram(program: Command): Command {
 
           const result = await proxyCommand({
             port: proxyResult.port,
+            endpoint: proxyResult.endpoint,
             command,
             args: cmdArgs,
             projectPath,

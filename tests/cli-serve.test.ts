@@ -352,6 +352,320 @@ describe("kspec serve commands", () => {
     runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
   });
 
+  // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+  // AC: @daemon-network-endpoint-contract ac-connection-metadata
+  // AC: @config-daemon ac-host-default
+  // AC: @config-daemon ac-connection-metadata
+  it("writes daemon.connection.json with the resolved 127.0.0.1 endpoint on detached startup", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
+
+    await waitForDaemonHealth(port);
+
+    const metadataPath = join(isolatedHome, ".config", "kspec", "daemon.connection.json");
+    expect(existsSync(metadataPath)).toBe(true);
+
+    const metadata = JSON.parse(readTestOutputSync(metadataPath));
+    expect(metadata).toMatchObject({
+      pid,
+      port,
+      bind_host: "127.0.0.1",
+      connect_host: "127.0.0.1",
+      api_url: `http://127.0.0.1:${port}`,
+      ws_url: `ws://127.0.0.1:${port}/ws`,
+      runtime: "node",
+    });
+
+    // Daemon is bound on the resolved bind host (127.0.0.1), proven by a
+    // health check that uses the IPv4 address directly rather than a name.
+    const directIpv4Health = await fetch(`http://127.0.0.1:${port}/api/health`);
+    expect(directIpv4Health.ok).toBe(true);
+
+    // Cleanup
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+
+    // After stop, lifecycle files (including the metadata file) are removed.
+    expect(existsSync(metadataPath)).toBe(false);
+  });
+
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+  // Regression guard for cycle-4 reviewer blocker: the IPv6 fallback must
+  // distinguish "IPv4 loopback unavailable" (the only condition the spec
+  // permits fallback for) from "this port is taken on 127.0.0.1". A naive
+  // implementation that treats all bind failures the same will silently
+  // start a daemon on [::1]:PORT over a real port collision — masking the
+  // conflict and starting on the wrong endpoint. End-to-end fallback for
+  // genuine address_unavailable conditions (EADDRNOTAVAIL / EAFNOSUPPORT)
+  // can't be reliably simulated without root; that path is exhaustively
+  // covered by selectStartupBindHost unit tests in tests/daemon-endpoint.
+  it("does NOT silently fall back to [::1] when the requested port is already in use on 127.0.0.1", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    // Pre-bind 127.0.0.1:PORT so the daemon's actual listen() will see
+    // EADDRINUSE. The previous (incorrect) behavior would have probed,
+    // observed any error, and silently switched to ::1. The fix must
+    // surface the port conflict instead.
+    const blocker = createServer();
+    await new Promise<void>((resolve, reject) => {
+      blocker.once("error", reject);
+      blocker.listen({ host: "127.0.0.1", port }, () => resolve());
+    });
+    onTestFinished(
+      () =>
+        new Promise<void>((resolve) => {
+          blocker.close(() => resolve());
+        }),
+    );
+
+    // The detach parent polls for a live PID and may briefly report
+    // success because PID/metadata files are written before the daemon's
+    // app.listen() call fails. The parent's exit code is therefore not
+    // a reliable signal — the daemon dies shortly after. The reliable
+    // signal is what actually ends up bound on the network.
+    runKspec(
+      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+      { expectFail: true },
+    );
+
+    // Best-effort PID cleanup in case the daemon child wrote a PID file
+    // before its listen() call failed.
+    if (existsSync(globalPidFilePath)) {
+      const pidText = readTestOutputSync(globalPidFilePath).trim();
+      const pid = parseInt(pidText, 10);
+      if (Number.isFinite(pid) && pid > 0) {
+        onTestFinished(() => killPid(pid));
+      }
+    }
+
+    // Direct behavioral proof of the fix: nothing should ever come up on
+    // the IPv6 loopback at this port. With the cycle-4 bug, the daemon
+    // would have silently bound [::1]:PORT — health check would succeed.
+    // Poll briefly to make absolutely sure no late-binding sneaks in.
+    const ipv6HealthChecked = await new Promise<boolean>((resolve) => {
+      let elapsed = 0;
+      const tick = async (): Promise<void> => {
+        try {
+          const response = await fetch(`http://[::1]:${port}/api/health`);
+          if (response.ok) {
+            resolve(true);
+            return;
+          }
+        } catch {
+          // Connection refused — expected: nothing listening on [::1]:PORT.
+        }
+        elapsed += 200;
+        if (elapsed >= 2000) {
+          resolve(false);
+          return;
+        }
+        setTimeout(() => void tick(), 200);
+      };
+      void tick();
+    });
+    expect(ipv6HealthChecked).toBe(false);
+
+    // If metadata was written (server.ts writes metadata before listen()),
+    // it must reflect the resolved IPv4 bind host — never silently
+    // advertise [::1] over a real port collision.
+    const metadataPath = join(isolatedHome, ".config", "kspec", "daemon.connection.json");
+    if (existsSync(metadataPath)) {
+      const metadata = JSON.parse(readTestOutputSync(metadataPath));
+      expect(metadata.bind_host).toBe("127.0.0.1");
+      expect(metadata.api_url).toBe(`http://127.0.0.1:${port}`);
+    }
+  });
+
+  // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  // AC: @trait-localhost-security ac-external-warning
+  // AC: @config-daemon ac-host-config
+  it("surfaces external-binding warning from the parent CLI on detached starts", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    // Configure the daemon to bind to a wildcard address so the CLI
+    // sees an externally-reachable bind host. We rely on the CLI to
+    // surface the warning on stderr — the detached child has stdio
+    // ignored, so any warning the child writes is invisible.
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      ["daemon:", "  host: 0.0.0.0", `  port: ${port}`, ""].join("\n"),
+      "utf-8",
+    );
+
+    const result = runKspec(
+      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+    );
+
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
+
+    expect(result.stderr).toMatch(/WARNING/i);
+    expect(result.stderr).toContain("0.0.0.0");
+    expect(result.stderr).toContain("non-loopback");
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+  });
+
+  // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  // AC: @trait-localhost-security ac-external-warning
+  it("surfaces external-binding warning when serve status reports a non-loopback bind", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      ["daemon:", "  host: 0.0.0.0", `  port: ${port}`, ""].join("\n"),
+      "utf-8",
+    );
+
+    runKspec(
+      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+    );
+
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
+
+    await waitForDaemonHealth(port);
+
+    const status = runKspec(`serve status --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+    expect(status.stderr).toMatch(/WARNING/i);
+    expect(status.stderr).toContain("0.0.0.0");
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+  });
+
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  // AC: @config-daemon ac-connect-host-config
+  //
+  // Behavioral end-to-end proof that the daemon's localhost-only middleware
+  // accepts requests addressed to the metadata-advertised connect_host
+  // when external binding is configured. Without this, a wildcard-bound
+  // daemon with an explicit connect_host (e.g. 127.0.0.2 on a Linux host
+  // that aliases all of 127.0.0.0/8) writes metadata clients honor but
+  // serves them 403 Forbidden because the Host header doesn't match the
+  // hardcoded localhost set. Probes 127.0.0.2 first so the test is a no-op
+  // on platforms (macOS, Windows) that don't auto-alias the loopback range.
+  it("accepts requests at the advertised connect_host when external binding is configured", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    // Probe whether 127.0.0.2 is locally addressable. On Linux every
+    // address in 127.0.0.0/8 routes to loopback; macOS / Windows only
+    // accept 127.0.0.1 by default. Skip rather than hard-fail so this
+    // suite still runs on developer machines that lack the alias.
+    const aliasAvailable = await new Promise<boolean>((resolve) => {
+      const probe = createServer();
+      probe.once("error", () => {
+        probe.close(() => resolve(false));
+      });
+      probe.once("listening", () => {
+        probe.close(() => resolve(true));
+      });
+      try {
+        probe.listen({ host: "127.0.0.2", port: 0, exclusive: true });
+      } catch {
+        resolve(false);
+      }
+    });
+    if (!aliasAvailable) {
+      console.log("  ⊘ Skipping test - 127.0.0.2 loopback alias not available");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    // Bind to wildcard so the daemon listens on every local interface;
+    // advertise 127.0.0.2 as the connect host so clients call a
+    // non-default loopback address. Both must be set for this scenario:
+    // resolveDaemonConnectHost rejects connect_host that differs from a
+    // specific (non-wildcard) bind_host because that URL would be
+    // unreachable.
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      [
+        "daemon:",
+        "  host: 0.0.0.0",
+        "  connect_host: 127.0.0.2",
+        `  port: ${port}`,
+        "",
+      ].join("\n"),
+      "utf-8",
+    );
+
+    runKspec(
+      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+    );
+
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
+
+    // Wait for the daemon to be ready via the advertised endpoint.
+    await waitForStartup(
+      `daemon health endpoint at advertised connect_host`,
+      async () => {
+        try {
+          const response = await fetch(`http://127.0.0.2:${port}/api/health`);
+          const body = (await response.text()).trim();
+          return {
+            ok: response.ok,
+            details: `status=${response.status} body=${body || "<empty>"}`,
+          };
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          return { ok: false, details: `fetch error=${message}` };
+        }
+      },
+      { timeoutMs: 10_000 },
+    );
+
+    // Metadata reflects the explicit connect_host so clients honor it.
+    const metadataPath = join(isolatedHome, ".config", "kspec", "daemon.connection.json");
+    const metadata = JSON.parse(readTestOutputSync(metadataPath));
+    expect(metadata.bind_host).toBe("0.0.0.0");
+    expect(metadata.connect_host).toBe("127.0.0.2");
+    expect(metadata.api_url).toBe(`http://127.0.0.2:${port}`);
+    expect(metadata.ws_url).toBe(`ws://127.0.0.2:${port}/ws`);
+
+    // The behavioral proof: a request whose Host header is the advertised
+    // 127.0.0.2 must succeed. Before the middleware accepted additional
+    // hosts, this came back 403 Forbidden even though metadata said the
+    // URL was the canonical client endpoint.
+    const advertised = await fetch(`http://127.0.0.2:${port}/api/health`);
+    expect(advertised.status).toBe(200);
+    const advertisedBody = (await advertised.json()) as { status: string };
+    expect(advertisedBody.status).toBe("ok");
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+  });
+
   // AC: @cli-serve-commands ac-3
   it("should accept custom port via --port flag", async () => {
     if (!nodeAvailable) {

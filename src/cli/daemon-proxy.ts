@@ -12,15 +12,25 @@
  *     ac-read-from-cache, ac-timeout-fallback, ac-timeout-mutation-error
  * AC: @daemon-proxy-detection ac-legacy-port-file-fallback, ac-fast-detection,
  *     ac-project-registered
+ * AC: @daemon-network-endpoint-contract ac-clients-use-metadata,
+ *     ac-legacy-port-fallback
  */
 
-import { PidFileManager, isNoDaemonModeEnabled } from "./pid-utils.js";
+import {
+  isNoDaemonModeEnabled,
+  resolveDaemonClientEndpoint,
+  type DaemonClientEndpoint,
+} from "./pid-utils.js";
 
 // ── Types ──────────────────────────────────────────────────────────
 
-/** Result of daemon detection. */
+/**
+ * Result of daemon detection. When available, exposes the full
+ * resolved endpoint (api/ws URLs) so callers never re-derive URLs
+ * from the port number alone.
+ */
 export type DaemonDetectionResult =
-  | { available: true; port: number }
+  | { available: true; port: number; endpoint: DaemonClientEndpoint }
   | { available: false; reason: string };
 
 /** Result of proxied command execution. */
@@ -59,17 +69,18 @@ let cachedDetection: DaemonDetectionResult | null = null;
 /**
  * Detect whether a daemon is running and reachable.
  *
- * 1. Read legacy daemon.port file — if missing, fail fast (< 50ms)
+ * 1. Resolve client endpoint (connection metadata first, legacy port fallback)
  * 2. Send health check — if connection refused, fail fast (< 50ms)
  * 3. If health check doesn't respond, timeout within 200ms
  *
- * Note: This implementation only handles the legacy port-file fallback path.
- * The metadata-driven path (ac-connection-metadata-check, the metadata-keyed
- * ac-auto-detect/ac-health-timeout) is added by the shared endpoint resolver
- * task and the centralize-cli-daemon-clients task.
- *
- * AC: @daemon-proxy-detection ac-legacy-port-file-fallback — reads legacy daemon.port file and health-checks 127.0.0.1:port
- * AC: @daemon-proxy-detection ac-fast-detection — completes within 50ms on missing port/refused
+ * AC: @daemon-network-endpoint-contract ac-clients-use-metadata — uses
+ *     advertised api_url from daemon.connection.json when present
+ * AC: @daemon-network-endpoint-contract ac-legacy-port-fallback — falls
+ *     back to legacy daemon.port file when metadata is absent
+ * AC: @daemon-proxy-detection ac-legacy-port-file-fallback — health-checks
+ *     127.0.0.1:port via the synthesized legacy endpoint
+ * AC: @daemon-proxy-detection ac-fast-detection — completes within 50ms on
+ *     missing port/refused
  */
 export async function detectDaemon(): Promise<DaemonDetectionResult> {
   // Return cached result if available
@@ -77,33 +88,26 @@ export async function detectDaemon(): Promise<DaemonDetectionResult> {
     return cachedDetection;
   }
 
-  const pidManager = new PidFileManager();
-
-  // Step 1: Read port file
-  let port: number;
-  try {
-    port = pidManager.readPort();
-  } catch {
-    // AC: @daemon-proxy-detection ac-fast-detection — no port file, fail fast
+  // Step 1: Resolve endpoint via shared resolver (metadata > legacy port)
+  const endpoint = resolveDaemonClientEndpoint();
+  if (!endpoint) {
+    // AC: @daemon-proxy-detection ac-fast-detection — nothing to call, fail fast
     cachedDetection = { available: false, reason: "no port file" };
     return cachedDetection;
   }
 
-  // Step 2: Health check with timeout
-  // 200ms HEALTH_CHECK_TIMEOUT_MS applies to both detection paths;
-  // the metadata-keyed ac-health-timeout coverage lands with the
-  // metadata reader implementation.
+  // Step 2: Health check the advertised api_url with timeout.
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), HEALTH_CHECK_TIMEOUT_MS);
 
-    const response = await fetch(`http://127.0.0.1:${port}/api/health`, {
+    const response = await fetch(`${endpoint.apiUrl}/api/health`, {
       signal: controller.signal,
     });
     clearTimeout(timeout);
 
     if (response.ok) {
-      cachedDetection = { available: true, port };
+      cachedDetection = { available: true, port: endpoint.port, endpoint };
       return cachedDetection;
     }
 
@@ -129,7 +133,10 @@ export async function detectDaemon(): Promise<DaemonDetectionResult> {
  */
 export async function shouldProxyCommand(opts: {
   forceDaemon?: boolean;
-}): Promise<{ proxy: true; port: number } | { proxy: false; reason?: string }> {
+}): Promise<
+  | { proxy: true; port: number; endpoint: DaemonClientEndpoint }
+  | { proxy: false; reason?: string }
+> {
   // AC: @cli-daemon-proxy ac-force-direct
   if (isNoDaemonModeEnabled()) {
     return { proxy: false, reason: "KSPEC_NO_DAEMON is set" };
@@ -142,13 +149,13 @@ export async function shouldProxyCommand(opts: {
     if (!detection.available) {
       return { proxy: false, reason: `daemon required but unavailable: ${detection.reason}` };
     }
-    return { proxy: true, port: detection.port };
+    return { proxy: true, port: detection.port, endpoint: detection.endpoint };
   }
 
   // AC: @cli-daemon-proxy ac-direct-fallback
-  // (ac-auto-detect coverage lands once detectDaemon reads metadata)
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
   if (detection.available) {
-    return { proxy: true, port: detection.port };
+    return { proxy: true, port: detection.port, endpoint: detection.endpoint };
   }
 
   return { proxy: false };
@@ -163,13 +170,14 @@ export async function shouldProxyCommand(opts: {
  * But if no project context is set, we explicitly register.
  *
  * AC: @daemon-proxy-detection ac-project-registered
+ * AC: @daemon-network-endpoint-contract ac-clients-use-metadata
  */
-async function ensureProjectRegistered(port: number, projectPath: string): Promise<void> {
+async function ensureProjectRegistered(apiUrl: string, projectPath: string): Promise<void> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), REGISTRATION_TIMEOUT_MS);
 
   try {
-    const response = await fetch(`http://127.0.0.1:${port}/api/projects`, {
+    const response = await fetch(`${apiUrl}/api/projects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: projectPath }),
@@ -205,6 +213,7 @@ async function ensureProjectRegistered(port: number, projectPath: string): Promi
  */
 export async function proxyCommand(opts: {
   port: number;
+  endpoint?: DaemonClientEndpoint;
   command: string;
   args: Record<string, unknown>;
   projectPath: string;
@@ -213,17 +222,22 @@ export async function proxyCommand(opts: {
   | { ok: true; result: ProxyCommandResult }
   | { ok: false; fallbackToDirectMode: boolean; error: string }
 > {
-  const { port, command, args, projectPath, isMutating } = opts;
+  const { port, endpoint, command, args, projectPath, isMutating } = opts;
+
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata —
+  // call the advertised api_url. Fall back to legacy 127.0.0.1:<port>
+  // construction when callers haven't yet been migrated.
+  const apiUrl = endpoint?.apiUrl ?? `http://127.0.0.1:${port}`;
 
   // AC: @daemon-proxy-detection ac-project-registered
-  await ensureProjectRegistered(port, projectPath);
+  await ensureProjectRegistered(apiUrl, projectPath);
 
   const timeoutMs = isMutating ? MUTATION_COMMAND_TIMEOUT_MS : READ_COMMAND_TIMEOUT_MS;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const response = await fetch(`http://127.0.0.1:${port}/api/command`, {
+    const response = await fetch(`${apiUrl}/api/command`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -343,7 +357,38 @@ export function _resetDetectionCacheForTesting(): void {
   cachedDetection = null;
 }
 
-/** Override cached detection — for testing only. */
-export function _setDetectionCacheForTesting(result: DaemonDetectionResult): void {
+/**
+ * Override cached detection — for testing only. Accepts either the full
+ * `DaemonDetectionResult` shape or a port-only shorthand for tests that
+ * predate the metadata-driven endpoint, in which case the endpoint is
+ * synthesized as the legacy 127.0.0.1:<port> client endpoint.
+ */
+export function _setDetectionCacheForTesting(
+  result:
+    | DaemonDetectionResult
+    | { available: true; port: number }
+    | { available: false; reason: string },
+): void {
+  if (result.available) {
+    if ("endpoint" in result && result.endpoint) {
+      cachedDetection = result;
+      return;
+    }
+    cachedDetection = {
+      available: true,
+      port: result.port,
+      endpoint: {
+        port: result.port,
+        connectHost: "127.0.0.1",
+        apiUrl: `http://127.0.0.1:${result.port}`,
+        wsUrl: `ws://127.0.0.1:${result.port}/ws`,
+        bindHost: null,
+        runtime: null,
+        pid: null,
+        source: "legacy-port",
+      },
+    };
+    return;
+  }
   cachedDetection = result;
 }
