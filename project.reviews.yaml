@@ -180445,7 +180445,46 @@ reviews:
     slugs: []
     title: Review task-daemon-endpoint-regression-tests
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/cli-daemon-endpoint-regression.test.ts
+          tests/daemon-status-endpoint.test.ts tests/cli-serve.test.ts
+          tests/cli-daemon-proxy.test.ts tests/daemon-endpoint.test.ts
+          tests/web-ui/dev-server-daemon-endpoint.test.ts
+          tests/web-ui/daemon-endpoint-host-parity.test.ts tests/parser/daemon-config.test.ts
+          tests/daemon-server.test.ts tests/daemon-api/server.test.ts
+          tests/daemon-api/websocket-protocol.test.ts passed: 72 suites, 281 tests."
+        name: endpoint-focused npm test
+        required: true
+        runner: npm test
+        created_at: 2026-05-06T17:17:43.262Z
+        completed_at: 2026-05-06T17:17:43.262Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test passed: 2373 suites, 8715 tests passed, 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KQZ3X3TP95Q0GQN7AEE6TKHV/e92654142388993a.log"
+        name: full npm test
+        required: true
+        runner: npm test
+        created_at: 2026-05-06T17:17:46.438Z
+        completed_at: 2026-05-06T17:17:46.438Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exited 6 after schema/reference validation passed, due existing project warnings:
+          deprecated refs, orphaned specs/status mismatches, broad missing AC coverage and invalid
+          annotations. No new daemon endpoint-specific validation error found."
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-06T17:17:49.522Z
+        completed_at: 2026-05-06T17:17:49.522Z
     events:
       - _ulid: 01KQZ3YZVC53CKJ1SEFN9CN0KS
         actor: Jacob Chapel
@@ -180460,17 +180499,143 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-06T17:04:39.529Z
+      - _ulid: 01KQZ4QA6Y75AKXJ6SM3T0XYWC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: endpoint-focused npm test
+        timestamp: 2026-05-06T17:17:44.542Z
+      - _ulid: 01KQZ4QD6TV6TBQ703RNAQMFCY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full npm test
+        timestamp: 2026-05-06T17:17:47.610Z
+      - _ulid: 01KQZ4QG8T5MRZXQAY8H292H97
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-06T17:17:50.746Z
+      - _ulid: 01KQZ4QK7CPGWNATVN2S5TYFQA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQZ4QJ1VE6W2QQ6ZR1WD3W8S
+        timestamp: 2026-05-06T17:17:53.772Z
+      - _ulid: 01KQZ4QP5QX529H9137D4PSDEE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQZ4QN1GFAYJ6Z6KRG0DQG4P
+        timestamp: 2026-05-06T17:17:56.791Z
+      - _ulid: 01KQZ4QS5MECZ10S4AZ7C3PKEG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQZ4QQYJCCEPBCAC18FDSZ62
+        timestamp: 2026-05-06T17:17:59.860Z
+      - _ulid: 01KQZ4QW3F5VTR68DXFH8WNXB8
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-06T17:18:02.863Z
+      - _ulid: 01KQZ4QW3F16T50RK5RSHMJFCY
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-06T17:18:02.863Z
     examined_commit: 60affba7e51fa122d4808fd964e818ad775d6fa3
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KQWZZJD5A6068Q7BBY7SKH43"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KQZ4QJ1VE6W2QQ6ZR1WD3W8S
+        anchor:
+          type: code
+          commit: 60affba7e51fa122d4808fd964e818ad775d6fa3
+          line_end: 93
+          line_start: 93
+          path: src/cli/commands/task.ts
+          side: head
+        entries:
+          - _ulid: 01KQZ4QJ1WPDTJ6J69M80CP3TG
+            author: Jacob Chapel
+            body: "MUST-FIX: The task requires behavioral coverage for every production daemon client path,
+              including task-event code. The submitted task-start regression only records POST
+              /api/command and the comment in tests/cli-daemon-endpoint-regression.test.ts
+              explicitly treats the source line for /api/agent/events as transitive coverage. A
+              regression that changed postDispatchEvent to fetch
+              http://localhost:<port>/api/agent/events would still pass the submitted tests, so
+              @daemon-network-endpoint-contract ac-clients-use-metadata is not behaviorally covered
+              for task event emission. Add a behavioral test that causes postDispatchEvent itself to
+              run against metadata advertising a non-default api_url and asserts the recorded
+              /api/agent/events request uses that advertised endpoint."
+            created_at: 2026-05-06T17:17:52.572Z
+        kind: blocker
+      - _ulid: 01KQZ4QN1GFAYJ6Z6KRG0DQG4P
+        anchor:
+          type: code
+          commit: 60affba7e51fa122d4808fd964e818ad775d6fa3
+          line_end: 963
+          line_start: 956
+          path: src/cli/commands/agent.ts
+          side: head
+        entries:
+          - _ulid: 01KQZ4QN1GBJECTCG92DZRXGBW
+            author: Jacob Chapel
+            body: "MUST-FIX: agent dispatch watch is the CLI daemon consumer that uses daemon ws_url, but
+              neither the submitted regression suite nor the existing watch tests seed a non-default
+              daemon.connection.json ws_url and assert the WebSocket constructor receives that
+              advertised URL. The new agent coverage exercises HTTP dispatch start/stop/status only.
+              A regression that re-derived ws://127.0.0.1:<port>/ws for watch would still pass. Add
+              behavioral coverage with a fake WebSocket and metadata such as
+              ws://127.0.0.2:<port>/ws or ws://[::1]:<port>/ws."
+            created_at: 2026-05-06T17:17:55.632Z
+        kind: blocker
+      - _ulid: 01KQZ4QQYJCCEPBCAC18FDSZ62
+        entries:
+          - _ulid: 01KQZ4QQYK1VPZCP2X3Q48EJA2
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: tests/cli-daemon-endpoint-regression.test.ts,
+              tests/daemon-status-endpoint.test.ts, tests/cli-serve.test.ts,
+              tests/helpers/recording-daemon.cjs, src/cli/commands/task.ts,
+              src/cli/commands/agent.ts, src/parser/daemon-status.ts, src/cli/daemon-client.ts,
+              src/cli/daemon-proxy.ts, and existing endpoint/web-ui/agent tests. Commands run: git
+              diff/stat/log, kspec task get, kspec item get @daemon-network-endpoint-contract, kspec
+              item get @trait-daemon-endpoint-consumer, rg AC/source-scan checks, kspec validate,
+              focused npm test, npm test, git diff --check. Claims verified: new tests are
+              behavioral for HTTP CLI/status/daemon-status surfaces and focused/full tests pass;
+              task-event coverage is source-line/transitive rather than behavioral; watch ws_url
+              path lacks non-default metadata coverage. Categories searched: correctness, AC
+              coverage, test quality, edge cases/IPv4/IPv6, integration, source scanning."
+            created_at: 2026-05-06T17:17:58.611Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-06T17:18:02.863Z
     created_at: 2026-05-06T17:04:27.501Z
-    updated_at: 2026-05-06T17:04:38.332Z
+    updated_at: 2026-05-06T17:18:02.863Z
     notes: []
