@@ -16740,6 +16740,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-05-06T06:29:07.064Z
+  - _ulid: 01KQY000CM5AWQQPP2P61RAC2E
+    type: friction
+    content: During session reflection, kspec workflow show required an explicit run ref and the default
+      human-readable output did not include the current step title/body or suggested next command.
+      This made the reflection workflow require JSON output or remembered context to continue
+      smoothly.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-06T06:35:52.085Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
