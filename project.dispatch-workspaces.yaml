@@ -4002,7 +4002,7 @@ workspaces:
         head: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
         last_seen_at: 2026-05-06T06:29:56.349Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-cli-daemon-proxy-endpoint-ac-01kqwzzg
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
     bootstrap:
       status: succeeded
@@ -4495,9 +4495,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T06:21:34.686Z
-      last_reconciled_at: 2026-05-06T06:33:55.491Z
+      last_reconciled_at: 2026-05-06T06:36:33.287Z
       created_at: 2026-05-06T06:14:49.133Z
-      updated_at: 2026-05-06T06:33:56.879Z
+      updated_at: 2026-05-06T06:36:33.287Z
     workspace_id: dispatch-workspace-01KQWZZGYEXCEGMNAX1KT6H7XM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
