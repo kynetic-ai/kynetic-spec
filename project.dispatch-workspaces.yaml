@@ -5526,7 +5526,7 @@ workspaces:
         head: 65bfbcb012624d11b50d350ce353d2161ca0d9da
         last_seen_at: 2026-05-06T08:06:15.813Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-shared-daemon-endpoint-resolver-01kqwzzh
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 85b4465b79f63cfe59cbac09a0a58cc054c22d36
     bootstrap:
       status: succeeded
@@ -6006,7 +6006,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T08:06:42.247Z
+      updated_at: 2026-05-06T08:07:08.199Z
     integration:
       status: pending
       detail: null
@@ -6021,10 +6021,10 @@ workspaces:
     task_slug: task-apply-daemon-endpoint-consumer-trait
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-06T07:47:36.965Z
-      last_reconciled_at: 2026-05-06T08:06:42.247Z
+      last_active_at: 2026-05-06T08:07:08.199Z
+      last_reconciled_at: 2026-05-06T08:07:08.199Z
       created_at: 2026-05-06T07:47:13.603Z
-      updated_at: 2026-05-06T08:07:05.596Z
+      updated_at: 2026-05-06T08:07:08.199Z
     workspace_id: dispatch-workspace-01KQWZZGMN1E0SQQ0WQS590JGW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
