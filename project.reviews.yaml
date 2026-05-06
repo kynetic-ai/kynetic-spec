@@ -178765,7 +178765,18 @@ reviews:
     slugs: []
     title: Review shared daemon endpoint resolver (cycle 4)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 2359/2359 suites passed; 8640 tests passed, 5 skipped; duration 1917.2s; full log
+          /tmp/kspec-test-cache/01KQYG8647FKFV4Z2SQ7XEJ82B/bf791d702d83af78.log
+        name: npm test -- --fresh
+        required: true
+        runner: npm test
+        created_at: 2026-05-06T11:31:01.999Z
+        completed_at: 2026-05-06T11:31:01.999Z
     events:
       - _ulid: 01KQYG9YXRZ5BNJGR4933HYXFR
         actor: Jacob Chapel
@@ -178787,6 +178798,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQYGG9XC4MB9E9TYQ7N3F329
         timestamp: 2026-05-06T11:24:24.766Z
+      - _ulid: 01KQYGWGEXY68VZBKEPVHYTQNQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-06T11:31:03.261Z
     examined_commit: 3ef22cbfd8d59b8a6c4aa5c9ecc57b826152024a
     external_links: []
     lifecycle_state: open
@@ -178822,5 +178840,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-06T11:20:55.480Z
-    updated_at: 2026-05-06T11:24:23.340Z
+    updated_at: 2026-05-06T11:31:01.999Z
     notes: []
