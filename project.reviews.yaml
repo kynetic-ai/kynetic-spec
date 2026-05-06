@@ -180762,9 +180762,25 @@ reviews:
           kind: nit
           thread_ulid: 01KQZ79F17A6BVTY8TFNE8NM5F
         timestamp: 2026-05-06T18:02:37.732Z
+      - _ulid: 01KQZ79S2Q2JWHJFTAV9S22H8D
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-06T18:02:46.743Z
+      - _ulid: 01KQZ79S2R7S7ZCC20KMYTWTWF
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-06T18:02:46.744Z
     examined_commit: 3ec9540b97e7f27729f1fdecfe5358046e3de0c5
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -180811,7 +180827,14 @@ reviews:
               work-gates."
             created_at: 2026-05-06T18:02:36.455Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-06T18:02:46.743Z
     created_at: 2026-05-06T17:53:24.298Z
-    updated_at: 2026-05-06T18:02:36.455Z
+    updated_at: 2026-05-06T18:02:46.744Z
     notes: []
