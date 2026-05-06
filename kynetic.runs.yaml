@@ -35411,7 +35411,7 @@ runs:
     completed_at: 2026-05-06T06:18:42.075Z
   - _ulid: 01KQXZ1YYWRE1JA4DVSS9C55KW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -35425,7 +35425,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T06:20:09.026Z
-        completed_at: 2026-05-06T06:20:09.026Z
+        completed_at: 2026-05-06T06:20:32.462Z
+        notes: "Searched existing coverage. The spec-mutation-via-batch pattern is already captured
+          (observation 01KQ9EXJ on batch atomic operations). No new friction in this session:
+          routine spec-only task with verbatim AC text from plan. Stale /tmp file collision is
+          Claude Code tool behavior, not kspec."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T06:20:32.462Z
+        completed_at: 2026-05-06T06:20:32.462Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T06:19:27.581Z
