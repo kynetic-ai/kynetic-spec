@@ -179627,6 +179627,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQYT7937KEX03MWX9ESHD5BK
         timestamp: 2026-05-06T14:14:14.613Z
+      - _ulid: 01KQYT869N3XY7AX6ZGECX653N
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQYT85367E3CC8RSV1VWYKC1
+        timestamp: 2026-05-06T14:14:43.253Z
     examined_commit: 32746e58b5712cb18605f876a1ca8ab6f47aaa63
     external_links: []
     lifecycle_state: open
@@ -179661,7 +179668,24 @@ reviews:
               EADDRINUSE."
             created_at: 2026-05-06T14:14:13.352Z
         kind: blocker
+      - _ulid: 01KQYT85367E3CC8RSV1VWYKC1
+        entries:
+          - _ulid: 01KQYT85365YHX1Z7BY4GJX31P
+            author: Jacob Chapel
+            body: "Evidence log: Files read: packages/daemon/src/server.ts, packages/daemon/src/index.ts,
+              src/cli/commands/serve.ts, src/cli/index.ts, src/daemon-shared/endpoint.ts,
+              tests/cli-serve.test.ts, tests/daemon-server.test.ts,
+              tests/parser/daemon-config.test.ts. Commands run: kspec task get, kspec item get for
+              @daemon-network-endpoint-contract/@daemon-server/@config-daemon, rg AC annotations,
+              git diff, git diff --check, kspec validate, targeted npm test, full npm test, and a
+              manual port-collision reproduction with a temp HOME/project. Claim verified: metadata
+              is not actually delayed until listen success; reproduction showed detached start
+              returned success and wrote daemon.connection.json for an occupied port. Categories
+              searched: correctness, edge cases, error handling, test quality, integration, and AC
+              coverage."
+            created_at: 2026-05-06T14:14:42.022Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-06T14:02:35.168Z
-    updated_at: 2026-05-06T14:14:13.352Z
+    updated_at: 2026-05-06T14:14:42.022Z
     notes: []
