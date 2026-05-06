@@ -493,6 +493,105 @@ describe("kspec serve commands", () => {
     }
   });
 
+  // AC: @daemon-network-endpoint-contract ac-connection-metadata
+  // AC: @daemon-server ac-9
+  // Regression for cycle-1 reviewer blocker: Node's http.Server reports
+  // bind errors (EADDRINUSE) asynchronously via its 'error' event, AFTER
+  // app.listen() has already returned. Without an explicit listening-
+  // success barrier, the daemon would write daemon.connection.json
+  // before the bind actually succeeded — leaving clients pointed at an
+  // api_url owned by a different process. The fix is to await the
+  // underlying http.Server's 'listening' event before writing metadata.
+  //
+  // We spawn the daemon directly (rather than through `kspec serve start
+  // --detach`) so the test asserts on what the daemon process itself
+  // does, without depending on the parent CLI's polling timing or
+  // detach machinery.
+  it("does NOT write connection metadata when listen() fails on EADDRINUSE", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+    const metadataPath = join(isolatedHome, ".config", "kspec", "daemon.connection.json");
+
+    // Pre-bind 127.0.0.1:PORT so the daemon's actual listen() will fail
+    // with EADDRINUSE asynchronously (after app.listen() has returned
+    // synchronously without throwing).
+    const blocker = createServer();
+    await new Promise<void>((resolve, reject) => {
+      blocker.once("error", reject);
+      blocker.listen({ host: "127.0.0.1", port }, () => resolve());
+    });
+    onTestFinished(
+      () =>
+        new Promise<void>((resolve) => {
+          blocker.close(() => resolve());
+        }),
+    );
+
+    // Strip KSPEC_SESSION_ID so the daemon doesn't trip the dispatch
+    // agent guard when the test suite itself runs under dispatch.
+    const { KSPEC_SESSION_ID: _ignore, ...cleanProcessEnv } = process.env;
+    const daemonChild = spawn(
+      "node",
+      [
+        join(__dirname, "../dist/daemon/index.js"),
+        "--port",
+        String(port),
+        "--kspec-dir",
+        join(tempDir, ".kspec"),
+      ],
+      {
+        cwd: tempDir,
+        stdio: ["ignore", "pipe", "pipe"],
+        env: { ...cleanProcessEnv, ...testEnv },
+      },
+    );
+
+    onTestFinished(async () => {
+      if (daemonChild.exitCode === null) {
+        daemonChild.kill("SIGKILL");
+        await waitForChildExit(daemonChild);
+      }
+    });
+
+    let stderrText = "";
+    daemonChild.stderr?.on("data", (data) => {
+      stderrText += data.toString();
+    });
+    // Drain stdout so the buffer doesn't fill and stall the child.
+    daemonChild.stdout?.on("data", () => {});
+
+    // Wait for the daemon to exit. With the fix, app.listen() rejects
+    // on EADDRINUSE and main() exits non-zero within a few hundred
+    // milliseconds. Without the fix, the daemon process would proceed
+    // past listen(), write metadata, and stay running — the assertion
+    // `exitCode !== 0` would fail.
+    const exitCode = await new Promise<number | null>((resolve) => {
+      const timeout = setTimeout(() => resolve(null), 10_000);
+      daemonChild.once("exit", (code) => {
+        clearTimeout(timeout);
+        resolve(code);
+      });
+    });
+
+    // The daemon must die (non-zero exit) when its bind fails. A
+    // hanging daemon (exitCode === null) implies the listen barrier
+    // itself never resolved — also a regression.
+    expect(exitCode).not.toBe(null);
+    expect(exitCode).not.toBe(0);
+    expect(stderrText).toMatch(/EADDRINUSE/);
+
+    // The regression assertion: no daemon.connection.json may be
+    // present after the daemon failed to bind. With the bug, the file
+    // was written synchronously after app.listen() returned and
+    // persisted past the child's exit, advertising an api_url that no
+    // kspec process actually owns.
+    expect(existsSync(metadataPath)).toBe(false);
+  });
+
   // AC: @daemon-network-endpoint-contract ac-external-binding-warning
   // AC: @daemon-server ac-external-bind-warning
   // AC: @trait-localhost-security ac-external-warning

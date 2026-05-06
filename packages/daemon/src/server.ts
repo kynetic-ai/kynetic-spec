@@ -105,6 +105,79 @@ type ManagedServer = {
   close?: (callback: (error?: Error | null) => void) => void;
 };
 
+/**
+ * Captured shape of the server handle exposed by the listen() callback.
+ *
+ * `@elysiajs/node` builds a serverInfo object that wraps the underlying
+ * srvx NodeServer (`raw`) and the raw `node:http` Server (`raw.node.server`).
+ * We narrow it to the fields we actually use so awaitListenSuccess works
+ * without leaning on adapter internals.
+ */
+interface ListenServerInfo {
+  raw?: {
+    ready?: () => Promise<unknown>;
+    node?: {
+      server?: {
+        listening?: boolean;
+        once: (event: string, listener: (...args: unknown[]) => void) => unknown;
+        off?: (event: string, listener: (...args: unknown[]) => void) => unknown;
+      };
+    };
+  };
+}
+
+/**
+ * Wait for the underlying server to confirm it is actually listening.
+ *
+ * `app.listen()` returns synchronously on Node — the real `http.Server`
+ * `listen()` is invoked on the next tick by srvx's NodeServer, and bind
+ * errors (EADDRINUSE, EADDRNOTAVAIL, EACCES) surface on its `'error'`
+ * event after `app.listen()` has already returned. Treating the absence
+ * of a synchronous throw as "the daemon is up" is therefore unsafe —
+ * the daemon would write connection metadata advertising a URL that no
+ * process actually owns.
+ *
+ * On Bun, `Bun.serve` throws synchronously on bind errors, so the
+ * absence of an exception already proves the daemon is bound; this
+ * helper short-circuits.
+ *
+ * AC: @daemon-network-endpoint-contract ac-connection-metadata
+ */
+async function awaitListenSuccess(
+  serverInfo: ListenServerInfo | null,
+  runtime: DaemonRuntime,
+): Promise<void> {
+  if (runtime === "bun") return;
+  if (!serverInfo) return;
+  const raw = serverInfo.raw;
+  if (raw && typeof raw.ready === "function") {
+    await raw.ready();
+    return;
+  }
+  // Fallback for adapter shapes without `.ready()`: attach listeners
+  // directly to the underlying http.Server. If the server is already
+  // listening we resolve immediately.
+  const httpServer = raw?.node?.server;
+  if (!httpServer) return;
+  if (httpServer.listening === true) return;
+  await new Promise<void>((resolve, reject) => {
+    const cleanup = (): void => {
+      httpServer.off?.("listening", onListening);
+      httpServer.off?.("error", onError);
+    };
+    const onListening = (): void => {
+      cleanup();
+      resolve();
+    };
+    const onError = (err: unknown): void => {
+      cleanup();
+      reject(err instanceof Error ? err : new Error(String(err)));
+    };
+    httpServer.once("listening", onListening as (...args: unknown[]) => void);
+    httpServer.once("error", onError as (...args: unknown[]) => void);
+  });
+}
+
 export async function createServerApp(runtime: DaemonRuntime): Promise<Elysia> {
   if (runtime === "node") {
     const { node } = await import("@elysiajs/node");
@@ -775,6 +848,10 @@ export async function createServer(options: ServerOptions) {
   // accepts the bare ::1 hostname (and rejects the bracketed form), so
   // we cannot change what we pass to Elysia — only what Elysia builds
   // internally. Bug context: https://github.com/elysiajs/elysia/issues
+  let listenServerInfo: ListenServerInfo | null = null;
+  const captureServerInfo = (info: unknown): void => {
+    listenServerInfo = info as ListenServerInfo;
+  };
   if (isIpv6Literal(endpoint.bindHost)) {
     const OriginalURL = globalThis.URL;
     function PatchedURL(input: ConstructorParameters<typeof URL>[0], base?: ConstructorParameters<typeof URL>[1]): URL {
@@ -790,24 +867,36 @@ export async function createServer(options: ServerOptions) {
     PatchedURL.prototype = OriginalURL.prototype;
     (globalThis as { URL: typeof URL }).URL = PatchedURL as unknown as typeof URL;
     try {
-      app.listen({ port, hostname: endpoint.bindHost });
+      app.listen({ port, hostname: endpoint.bindHost }, captureServerInfo);
     } finally {
       (globalThis as { URL: typeof URL }).URL = OriginalURL;
     }
   } else {
-    app.listen({ port, hostname: endpoint.bindHost });
+    app.listen({ port, hostname: endpoint.bindHost }, captureServerInfo);
   }
+
+  // Block until the underlying http.Server actually emits 'listening'
+  // (or rejects with the bind error). On Node, app.listen() above only
+  // schedules the bind — bind errors fire asynchronously on the http
+  // server's 'error' event. Awaiting here ensures we never write
+  // connection metadata advertising a daemon that failed to bind. On
+  // Bun, app.listen() throws synchronously on bind errors so this is a
+  // no-op once the call returned.
+  //
+  // AC: @daemon-network-endpoint-contract ac-connection-metadata
+  // AC: @daemon-server ac-9
+  await awaitListenSuccess(listenServerInfo, runtime);
 
   console.log(`[daemon] Server listening on ${endpoint.apiUrl} (bind: ${endpoint.bindHost})`);
   console.log(`[daemon] WebSocket available at ${endpoint.wsUrl}`);
 
   // AC: @daemon-network-endpoint-contract ac-connection-metadata
   // AC: @daemon-server ac-9
-  // Write connection metadata only after the server has been told to listen
-  // on the resolved bind host. A synchronous bind error (EADDRINUSE,
-  // EADDRNOTAVAIL) throws before this point and the metadata file is never
-  // written, so clients never see a URL pointing at a daemon that failed to
-  // start.
+  // Write connection metadata only after the server has confirmed it is
+  // listening on the resolved bind host (see awaitListenSuccess above).
+  // Bind errors (EADDRINUSE, EADDRNOTAVAIL) surface as a rejection from
+  // that helper before this point — main() catches and exits, leaving
+  // no daemon.connection.json behind.
   if (isDaemon) {
     const metadata: DaemonConnectionMetadata = {
       pid: process.pid,
