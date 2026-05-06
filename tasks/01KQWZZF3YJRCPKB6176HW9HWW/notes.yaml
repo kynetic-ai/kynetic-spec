@@ -1,1 +1,8 @@
-notes: []
+notes:
+  - _ulid: 01KQXAPNVYKTY2FA62VPDBQSNM
+    content: "Approach: Use kspec batch with item set (title + description), item ac remove (ac-1, ac-2,
+      ac-3), and item ac add (4 new ACs) for atomic update. The trait has no AC test annotations to
+      update since traits define the contract — implementing specs add the test annotations."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T00:23:46.303Z
