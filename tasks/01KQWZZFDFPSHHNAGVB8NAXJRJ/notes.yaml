@@ -33,3 +33,55 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-06T01:44:25.002Z
+  - _ulid: 01KQXG7M2ZF9SVYAB6QZNY0P81
+    content: >-
+      Fix cycle 2 partial progress + escalation. Reviewer (cycle 2) flagged 5 ACs as missing
+      behavioral coverage. Addressed 2 of 5 by adding @config-daemon co-annotations to existing
+      daemon-config tests that exercise runtime resolution: ac-runtime-config (loadProjectConfig
+      with runtime: node and new runtime: bun test) and ac-runtime-default (defaults to node).
+      Verified locally: kspec validate -v now reports only 3 uncovered (down from 5). npm test
+      passes (28/28 in tests/parser/daemon-config.test.ts).
+
+
+      Blocking on the remaining 3 ACs because their implementation belongs to other pending tasks in
+      the same plan (@plan-daemon-network-endpoint-contract):
+
+
+      - ac-host-default ("daemon uses 127.0.0.1 as effective bind host"): DEFAULT_CONFIG.daemon.host
+      is currently "localhost" (src/parser/config.ts:490), and packages/daemon/src/server.ts
+      hardcodes hostname: "localhost" in app.listen. Both must change for the AC to be testable
+      behaviorally. @task-shared-daemon-endpoint-resolver step 5 explicitly owns "Change
+      DEFAULT_CONFIG.daemon.host from localhost to 127.0.0.1";
+      @task-daemon-startup-bind-host-metadata step 2 owns "Change the production listen call from
+      hostname: localhost to the resolved bindHost".
+
+
+      - ac-connect-host-config ("daemon.connect_host is the advertised connect host"): connect_host
+      field does not exist in src/parser/config.ts schema. @task-shared-daemon-endpoint-resolver
+      step 4 explicitly owns "Extend the config schema in src/parser/config.ts with optional
+      daemon.connect_host and KSPEC_DAEMON_CONNECT_HOST precedence". The AC's "then" clause requires
+      connection metadata to advertise the value, which depends on the metadata work below.
+
+
+      - ac-connection-metadata ("global daemon metadata records pid, port, bind_host, connect_host,
+      api_url, ws_url, runtime"): src/cli/pid-utils.ts only writes daemon.pid and daemon.port files.
+      No connection metadata file with these 7 fields exists.
+      @task-daemon-startup-bind-host-metadata step 4 explicitly owns "Write the complete daemon
+      metadata under ~/.config/kspec/ after the server is listening".
+
+
+      Implementing these in the current task would: (1) duplicate work explicitly assigned to those
+      tasks, (2) require updating ~5 tests that assert daemon.host == "localhost" plus
+      daemon-server.ts and packages/daemon/src/index.ts, (3) push this spec-update task into
+      substantial implementation scope.
+
+
+      Recommended resolution: re-sequence the plan so @task-shared-daemon-endpoint-resolver and
+      @task-daemon-startup-bind-host-metadata complete first (they will provide the implementation
+      that makes these ACs testable), then this task can re-run to add the final 3 annotations.
+      Alternatively, reduce this task's AC scope by removing ac-host-default,
+      ac-connect-host-config, and ac-connection-metadata from @config-daemon (they are already on
+      @daemon-network-endpoint-contract, which the implementation tasks cover).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T02:00:24.415Z
