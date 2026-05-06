@@ -35100,7 +35100,7 @@ runs:
     completed_at: 2026-05-06T01:15:16.952Z
   - _ulid: 01KQXFBDQB1G04P7EDRP245JRC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35113,7 +35113,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T01:46:22.182Z
-        completed_at: 2026-05-06T01:46:22.182Z
+        completed_at: 2026-05-06T01:46:27.824Z
+        notes: "Friction points: kspec validate --warnings-ok can exit 0 and omit the specific touched spec
+          from the non-verbose summary, so a worker can reasonably believe task-relevant AC coverage
+          is clean while verbose output still shows uncovered ACs."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T01:46:27.824Z
+        completed_at: 2026-05-06T01:46:27.824Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T01:45:00.395Z
