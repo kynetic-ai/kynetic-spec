@@ -36079,7 +36079,7 @@ runs:
     started_at: 2026-05-06T09:08:57.625Z
   - _ulid: 01KQYE7TBBQRH6CQQQXB1YW7G7
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36114,7 +36114,20 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T10:45:40.075Z
-        completed_at: 2026-05-06T10:45:40.075Z
+        completed_at: 2026-05-06T10:45:53.775Z
+        notes: "Proposed improvements: (1) Medium: extract a shared daemon spawn argument builder used by
+          both serve start and maybeAutoStartDaemon, so future endpoint/config flags cannot drift
+          across lifecycle paths. This helps preserve @config-daemon and
+          @daemon-network-endpoint-contract behavior for explicit and implicit starts. (2) Medium:
+          decouple CLI runtime imports from dist/daemon or make daemon rebuild output atomic, so
+          build:daemon cannot temporarily remove modules needed by concurrent CLI subprocesses. This
+          helps full-suite stability and installed CLI reliability. (3) Small: when a full-suite
+          failure passes as an isolated rerun, record the full log path and race hypothesis in
+          review evidence, as done here."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T10:45:53.775Z
+        completed_at: 2026-05-06T10:45:53.775Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T10:44:48.107Z
