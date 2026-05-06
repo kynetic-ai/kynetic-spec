@@ -10703,6 +10703,7 @@ features:
     tests: []
     traits:
       - "@trait-error-guidance"
+      - "@trait-daemon-endpoint-consumer"
     acceptance_criteria:
       - given: The user runs a daemon-proxy-eligible kspec command
         id: ac-auto-detect
@@ -10870,7 +10871,8 @@ features:
         implements: []
         relates_to: []
         tests: []
-        traits: []
+        traits:
+          - "@trait-daemon-endpoint-consumer"
         acceptance_criteria:
           - given: The CLI starts up
             id: ac-connection-metadata-check
