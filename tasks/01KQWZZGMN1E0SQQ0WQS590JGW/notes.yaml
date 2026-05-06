@@ -1,1 +1,18 @@
-notes: []
+notes:
+  - _ulid: 01KQY4DRD54FZ99YR7WESW87B9
+    content: "Applied @trait-daemon-endpoint-consumer to @cli-daemon-proxy, @daemon-proxy-detection, and
+      @cli-serve-commands via kspec batch. Existing traits preserved on each spec (verified:
+      cli-daemon-proxy retains @trait-error-guidance; cli-serve-commands retains @trait-json-output,
+      @trait-semantic-exit-codes, @trait-error-guidance; daemon-proxy-detection had no prior
+      traits). Per the task description, @config-daemon (defines settings) and @daemon-server
+      (produces the endpoint, uses @trait-localhost-security) were intentionally not updated. Trait
+      AC coverage (@trait-daemon-endpoint-consumer ac-uses-reported-endpoint,
+      ac-wildcard-not-destination) is deferred to follow-up implementation tasks
+      (@task-shared-daemon-endpoint-resolver, @task-daemon-startup-bind-host-metadata,
+      @task-centralize-cli-daemon-clients) that introduce metadata-keyed endpoint behavior —
+      consistent with the precedent set by f26b5726e where metadata-keyed AC coverage was deferred
+      to those same tasks. kspec validate --warnings-ok exits 0; the uncovered-trait-AC warnings are
+      expected and will be resolved by the follow-up tasks."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T07:53:16.965Z
