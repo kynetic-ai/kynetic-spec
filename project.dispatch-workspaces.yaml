@@ -3835,12 +3835,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-06T00:26:58.594Z
+      updated_at: 2026-05-06T00:27:06.983Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T00:26:58.594Z
+      updated_at: 2026-05-06T00:27:06.983Z
     integration:
       status: pending
       detail: null
@@ -3848,24 +3848,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
-      updated_at: 2026-05-06T00:26:58.594Z
-    lifecycle_state: ready
+      updated_at: 2026-05-06T00:27:06.983Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KQWZZF3YJRCPKB6176HW9HWW"
     task_slug: task-update-localhost-security-trait
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T00:22:45.414Z
-      last_reconciled_at: 2026-05-06T00:26:58.594Z
+      last_reconciled_at: 2026-05-06T00:27:06.983Z
       created_at: 2026-05-06T00:22:21.427Z
-      updated_at: 2026-05-06T00:26:58.594Z
+      updated_at: 2026-05-06T00:27:06.983Z
     workspace_id: dispatch-workspace-01KQWZZF3YJRCPKB6176HW9HWW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
+        last_seen_at: 2026-05-06T00:27:06.983Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-localhost-security-trait-01kqwzzf-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-update-localhost-security-trait/01kqwzzf
         head: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
-        last_seen_at: 2026-05-06T00:22:21.427Z
+        last_seen_at: 2026-05-06T00:27:06.983Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-localhost-security-trait-01kqwzzf
