@@ -36898,7 +36898,7 @@ runs:
     completed_at: 2026-05-06T15:36:51.123Z
   - _ulid: 01KQYZXDHWJMY8CADJPAYY5SKF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36913,7 +36913,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T15:54:53.996Z
-        completed_at: 2026-05-06T15:54:53.996Z
+        completed_at: 2026-05-06T15:55:06.814Z
+        notes: "Friction: tests/daemon-api/websocket-protocol.test.ts showed a repeat flaky failure in the
+          close-code/internal-error case during combined targeted runs. It failed in beforeEach on
+          this review and was also noted in the prior review evidence, then passed when rerun alone
+          and in the full suite. This adds manual triage/retry overhead during reviews and weakens
+          confidence in targeted test failures until rerun."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T15:55:06.814Z
+        completed_at: 2026-05-06T15:55:06.814Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T15:53:41.692Z
