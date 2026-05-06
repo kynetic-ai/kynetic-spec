@@ -37130,7 +37130,7 @@ runs:
     completed_at: 2026-05-06T17:02:42.488Z
   - _ulid: 01KQZ4SH4RFT6XS7WDBEXSWQY7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -37144,7 +37144,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T17:21:51.659Z
-        completed_at: 2026-05-06T17:21:51.659Z
+        completed_at: 2026-05-06T17:22:01.295Z
+        notes: "Friction points: there is no single inventory/check for daemon endpoint consumers, so I
+          manually searched getRunningDaemonClient, apiUrl/wsUrl, fetch, WebSocket, and endpoint AC
+          annotations to determine which production paths lacked behavioral coverage. kspec validate
+          also remains noisy for review-local gating, but that is already tracked. workflow show
+          requiring an explicit run ref despite the skill text suggesting optional active-run
+          default is already tracked."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T17:22:01.295Z
+        completed_at: 2026-05-06T17:22:01.295Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T17:18:57.176Z
