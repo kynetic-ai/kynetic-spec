@@ -36570,7 +36570,7 @@ runs:
     started_at: 2026-05-06T13:57:44.090Z
     completed_at: 2026-05-06T14:00:59.961Z
   - _ulid: 01KQYT9VBX2RHDAE2C1TF509VF
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -36620,10 +36620,14 @@ runs:
         notes: "Skipped discussion: there are no new untracked improvements to ask about. The only concrete
           action is already captured as a blocker on review @01KQYSHZ and the task is in
           needs_work."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-06T14:17:35.695Z
-        completed_at: 2026-05-06T14:17:35.695Z
+        completed_at: 2026-05-06T14:17:48.022Z
+        notes: "No capture performed. The useful outputs are already durable: review @01KQYSHZ contains the
+          blocker, checks, and evidence log; task @01KQWZZHH1SKQ5DG44EEBMT9H9 is needs_work.
+          Existing observations cover the broader testing-pattern friction."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T14:15:37.597Z
+    completed_at: 2026-05-06T14:17:48.022Z
