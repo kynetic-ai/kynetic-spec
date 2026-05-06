@@ -179927,3 +179927,29 @@ reviews:
     created_at: 2026-05-06T14:37:03.716Z
     updated_at: 2026-05-06T14:50:49.994Z
     notes: []
+  - _ulid: 01KQYXT43FH3T4W59SY9G61PH6
+    slugs: []
+    title: Review task-daemon-startup-bind-host-metadata cycle 2
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQYXT43FCKKRF90YDBBXYXY9
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-06T15:16:56.559Z
+    examined_commit: 27dd906a119379484115323ad771e3b9fd823ca3
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQWZZHH1SKQ5DG44EEBMT9H9"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-06T15:16:56.559Z
+    updated_at: null
+    notes: []

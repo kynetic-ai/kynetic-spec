@@ -64,7 +64,7 @@ tags:
   - server
   - lifecycle
 vcs_refs: []
-review_ref: "@01KQYSHZ90XHVAG0E3FV84A68N"
+review_ref: "@01KQYXT43FH3T4W59SY9G61PH6"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-daemon-startup-bind-host-metadata/01kqwzzh
@@ -172,6 +172,13 @@ history:
         previous: 2026-05-06T13:57:17.870Z
     command: task-submit
     timestamp: 2026-05-06T15:11:43.288Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQYXT43FH3T4W59SY9G61PH6"
+        previous: "@01KQYSHZ90XHVAG0E3FV84A68N"
+    command: review-link
+    timestamp: 2026-05-06T15:16:59.733Z
 created_at: 2026-05-05T21:16:22.433Z
 started_at: 2026-05-06T15:11:37.026Z
 submitted_at: 2026-05-06T15:11:43.288Z
