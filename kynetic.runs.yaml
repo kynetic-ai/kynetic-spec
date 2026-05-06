@@ -36688,7 +36688,7 @@ runs:
     started_at: 2026-05-06T14:51:44.546Z
     completed_at: 2026-05-06T14:54:25.485Z
   - _ulid: 01KQYXH973KRM5YVA5YNBJP5VB
-    status: active
+    status: completed
     current_step: 5
     initiated_by: "@claude"
     step_results:
@@ -36782,7 +36782,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-06T15:14:26.946Z
-        completed_at: 2026-05-06T15:14:26.946Z
+        completed_at: 2026-05-06T15:14:53.074Z
+        notes: "Captured 3 items via batch: (1) friction observation about kspec serve start --detach +
+          spawnSync wedge in startup-failure tests; (2) inbox idea to document the
+          direct-daemon-spawn pattern for daemon-process-behavior tests; (3) success observation
+          about verifying regression tests by temporarily disabling the fix. All routed to
+          observations/inbox (not tasks) per autonomous-mode threshold."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T15:12:06.883Z
+    completed_at: 2026-05-06T15:14:53.074Z
