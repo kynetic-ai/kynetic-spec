@@ -696,7 +696,7 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
         (envPort && !isNaN(envPort) ? envPort : undefined) ??
         file.daemon?.port ??
         DEFAULT_CONFIG.daemon.port,
-      // AC: @config-daemon ac-5 ac-6 — host from config/env
+      // AC: @config-daemon ac-host-default ac-host-config ac-host-env-precedence — host from env/config/default
       host: envHost ?? file.daemon?.host ?? DEFAULT_CONFIG.daemon.host,
       // AC: @daemon-runtime-adapter ac-runtime-selection
       // AC: @daemon-runtime-adapter ac-default-node
