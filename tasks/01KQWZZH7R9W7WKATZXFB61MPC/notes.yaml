@@ -243,3 +243,16 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-06T11:54:37.117Z
+  - _ulid: 01KQYK8M2709ACN8KPGP3FJV1J
+    content: "[FIX_CYCLE: 5] Review findings: Merge helper could not integrate approved snapshot 0d8a67a
+      into dev (85b4465). Conflict files: src/cli/daemon-proxy.ts and
+      tests/cli-daemon-proxy.test.ts. Dev side has recent annotation/spec-ref corrections from
+      f26b5726 and 0e475fe9 for daemon proxy detection AC names and legacy-port fallback
+      comments/tests. Task side rewrites the same daemon proxy detection and tests to use
+      resolveDaemonClientEndpoint(), daemon.connection.json metadata precedence, endpoint
+      apiUrl/wsUrl propagation, and legacy daemon.port fallback. Rebase/merge the task branch onto
+      dev, preserving dev's corrected AC mappings while keeping the shared endpoint metadata
+      behavior, then rerun npm test -- --fresh."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-05-06T12:12:37.319Z
