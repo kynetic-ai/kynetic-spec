@@ -180863,3 +180863,29 @@ reviews:
     created_at: 2026-05-06T17:53:24.298Z
     updated_at: 2026-05-06T18:21:28.888Z
     notes: []
+  - _ulid: 01KQZ8MPG6ZA4JJAGAJC7PJMSN
+    slugs: []
+    title: Review task-daemon-endpoint-regression-tests (cycle 3)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQZ8MPG5858MAF2REGGW6PGM
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-06T18:26:13.126Z
+    examined_commit: c7d9793e06a7add0d934af912ecbb52e1cfe7969
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQWZZJD5A6068Q7BBY7SKH43"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-06T18:26:13.126Z
+    updated_at: null
+    notes: []

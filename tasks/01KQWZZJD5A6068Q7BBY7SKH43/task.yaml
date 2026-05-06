@@ -72,7 +72,7 @@ tags:
   - cli
   - tests
 vcs_refs: []
-review_ref: "@01KQZ6RKTAMRAM7Y9VSWXX8K3G"
+review_ref: "@01KQZ8MPG6ZA4JJAGAJC7PJMSN"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-daemon-endpoint-regression-tests/01kqwzzj
@@ -237,6 +237,13 @@ history:
         previous: 2026-05-06T17:47:32.642Z
     command: task-submit
     timestamp: 2026-05-06T18:22:15.693Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KQZ8MPG6ZA4JJAGAJC7PJMSN"
+        previous: "@01KQZ6RKTAMRAM7Y9VSWXX8K3G"
+    command: review-link
+    timestamp: 2026-05-06T18:26:16.530Z
 created_at: 2026-05-05T21:16:23.333Z
 started_at: 2026-05-06T18:22:08.181Z
 submitted_at: 2026-05-06T18:22:15.693Z
