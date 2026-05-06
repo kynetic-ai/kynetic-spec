@@ -35351,7 +35351,7 @@ runs:
     completed_at: 2026-05-06T06:14:01.793Z
   - _ulid: 01KQXYXQNQKFQZFYN1B3S5DYXZ
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35384,10 +35384,18 @@ runs:
           is covered by @01KN8TCP. Search terms included 'spec-only', 'shadow-only', 'test gate',
           'review gates', 'spec-only review full test', 'detached reviewer merge no-op', and 'review
           evidence log'. No untracked friction survived search strongly enough to capture."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-05-06T06:18:18.184Z
-        completed_at: 2026-05-06T06:18:18.184Z
+        completed_at: 2026-05-06T06:18:26.198Z
+        notes: No new improvement proposed. The only concrete candidate was a lighter or more targeted
+          required verification path for spec-only/shadow-only reviews, but existing observations
+          already track that pattern and related detached snapshot friction. Capturing another item
+          would duplicate existing coverage.
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T06:18:26.198Z
+        completed_at: 2026-05-06T06:18:26.198Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:17:09.047Z
