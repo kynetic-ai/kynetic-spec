@@ -16725,6 +16725,21 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-05-06T06:13:54.625Z
+  - _ulid: 01KQXZKMVRQDX3HYA08HWWGTR5
+    type: friction
+    content: "Review friction: after renaming an acceptance criterion, stale references to the removed
+      AC id can remain in source-level/block-comment AC coverage summaries while kspec validate
+      --warnings-ok still exits 0 because validation has broad pre-existing warning noise and does
+      not make this rename-specific drift obvious. In @task-update-cli-daemon-proxy-endpoint-ac, the
+      worker note claimed no ac-port-file-check references remained, but rg found references in
+      src/cli/daemon-proxy.ts and the test file header. This is distinct from helper-level false
+      coverage (@01KNEDZ0): the repeatable gap is stale removed-AC references surviving in
+      non-standalone annotation summaries after spec renames."
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-05-06T06:29:07.064Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
