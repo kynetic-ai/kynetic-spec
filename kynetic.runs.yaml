@@ -36146,7 +36146,7 @@ runs:
     completed_at: 2026-05-06T10:46:34.981Z
   - _ulid: 01KQYGYDP3X8VFNCNY8CJC8RRS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -36160,7 +36160,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T11:33:28.956Z
-        completed_at: 2026-05-06T11:33:28.956Z
+        completed_at: 2026-05-06T11:33:40.190Z
+        notes: "High-confidence candidates from this review session: (1) reflection loop baseline discovery
+          is too noisy in mature repos; already tracked by inbox @01KQ8TTN. (2) reflect
+          skill/workflow examples for kspec workflow show without run ref are stale; already tracked
+          by @01KQ0RH7, @01KQBGKT, and observation @01KQY000. (3) shell metacharacters in kspec
+          review comment bodies are fragile; already tracked by inbox @01KPPQNX. (4) prior review
+          context plus behavioral AC scrutiny caught a real edge-case bug in the submitted IPv6
+          fallback test; this is a success pattern but overlaps existing review-success observations
+          such as @01KQYEAP and @01KQBHWT. No unique high-confidence item remains."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T11:33:40.190Z
+        completed_at: 2026-05-06T11:33:40.190Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T11:32:05.956Z
