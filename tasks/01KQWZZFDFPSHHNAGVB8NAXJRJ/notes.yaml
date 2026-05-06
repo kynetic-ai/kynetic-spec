@@ -95,3 +95,20 @@ notes:
     supersedes: null
     author: Hermes
     created_at: 2026-05-06T05:33:10.713Z
+  - _ulid: 01KQXX1SNTSBBC8GGW1P8QPQ4N
+    content: >-
+      Resubmit per Hermes/Jacob unblock note (this task's scope is spec creation/update; behavioral
+      coverage for newly introduced endpoint-resolution ACs is owned by downstream implementation
+      tasks in @plan-daemon-network-endpoint-contract — specifically
+      @task-shared-daemon-endpoint-resolver and @task-daemon-startup-bind-host-metadata).
+
+
+      State unchanged since cycle 2 partial fix (commit 44f834541 — added @config-daemon
+      co-annotations for ac-runtime-config and ac-runtime-default). Branch rebased onto origin/dev
+      (no-op, already current). kspec validate -v reports the expected 3 remaining @config-daemon
+      uncovered ACs (ac-host-default, ac-connect-host-config, ac-connection-metadata) — these are
+      intentionally left for the downstream implementation tasks per the plan. Full npm test suite
+      passes (8546 tests, 5 skipped).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T05:44:25.019Z
