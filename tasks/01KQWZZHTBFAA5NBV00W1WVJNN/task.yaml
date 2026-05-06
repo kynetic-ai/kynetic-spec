@@ -55,8 +55,12 @@ description: |
 spec_ref: "@daemon-network-endpoint-contract"
 plan_ref: "@plan-daemon-network-endpoint-contract"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer helper. Centralized CLI daemon client endpoint
+  resolution, migrated daemon proxy/status/agent/event/schedule/task-event call sites to advertised
+  endpoint URLs, added endpoint helper/proxy/serve coverage, and verified full
+  tests/build/typecheck.
 depends_on:
   - "@task-daemon-startup-bind-host-metadata"
   - "@task-update-cli-daemon-proxy-endpoint-ac"
@@ -126,8 +130,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-06T16:10:33.068Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer helper. Centralized CLI daemon client endpoint resolution,
+          migrated daemon proxy/status/agent/event/schedule/task-event call sites to advertised
+          endpoint URLs, added endpoint helper/proxy/serve coverage, and verified full
+          tests/build/typecheck.
+        previous: null
+      completed_at:
+        new: 2026-05-06T16:23:02.410Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-06T16:23:02.419Z
 created_at: 2026-05-05T21:16:22.731Z
 started_at: 2026-05-06T15:39:14.301Z
 submitted_at: 2026-05-06T16:06:21.160Z
+completed_at: 2026-05-06T16:23:02.410Z
 todos: []
 automation: eligible
