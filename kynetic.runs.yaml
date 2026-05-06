@@ -34898,7 +34898,7 @@ runs:
     completed_at: 2026-05-06T00:26:44.685Z
   - _ulid: 01KQXBRAAZP1X7RQ0SZS7YPWZ5
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -34932,7 +34932,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T00:43:23.732Z
-        completed_at: 2026-05-06T00:43:23.732Z
+        completed_at: 2026-05-06T00:43:31.934Z
+        notes: "Proposed improvement: dispatch review sessions should not automatically start or claim
+          freshly created follow-up tasks, or should provide a task add flag/workflow convention for
+          creating follow-up tasks as pending without session ownership. This would avoid reviewers
+          having to reset unrelated tasks after recording pre-existing failures. Scope: small to
+          medium, depending on whether the behavior belongs in dispatch automation, task add
+          options, or reviewer workflow guidance."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T00:43:31.934Z
+        completed_at: 2026-05-06T00:43:31.934Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T00:42:08.607Z
