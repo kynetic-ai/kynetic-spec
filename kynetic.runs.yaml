@@ -35571,7 +35571,7 @@ runs:
     completed_at: 2026-05-06T06:29:27.288Z
   - _ulid: 01KQXZWTJXTASZJNM1XFWEQWRZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35587,7 +35587,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T06:35:03.648Z
-        completed_at: 2026-05-06T06:35:03.648Z
+        completed_at: 2026-05-06T06:35:12.312Z
+        notes: "Friction points: The reflection workflow itself had small UX friction. After workflow start
+          printed the run ID, kspec workflow show without a run ref failed with a missing argument,
+          and the normal show output displayed only progress 1/6 without the current step title or
+          suggested next command. Also, trying to inspect .kspec git history directly failed in this
+          detached review snapshot because .kspec is not a normal directory here; the correct path
+          is through kspec CLI commands. Full npm test was long but expected and required, not a
+          defect."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T06:35:12.312Z
+        completed_at: 2026-05-06T06:35:12.312Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T06:34:07.837Z
