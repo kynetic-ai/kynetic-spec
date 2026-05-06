@@ -35812,7 +35812,7 @@ runs:
     completed_at: 2026-05-06T07:12:13.447Z
   - _ulid: 01KQY3WPPXHPQJPSJPSXEZHJDV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -35827,7 +35827,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T07:45:21.905Z
-        completed_at: 2026-05-06T07:45:21.905Z
+        completed_at: 2026-05-06T07:45:53.487Z
+        notes: "High-confidence friction (no existing tracking found): the cross-package shim pattern used
+          by shadow-sync-manager and now endpoint/pid (committed shim in packages/daemon/src/* +
+          scripts/build-daemon.cjs overwrite at staging) has no central documentation. Future agents
+          adding a 4th shared module will have to reverse-engineer the pattern from build-daemon.cjs
+          and the existing shim files. Worth capturing as an observation."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T07:45:53.487Z
+        completed_at: 2026-05-06T07:45:53.487Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-06T07:43:58.173Z
