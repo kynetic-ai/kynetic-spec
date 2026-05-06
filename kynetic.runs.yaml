@@ -35100,7 +35100,7 @@ runs:
     completed_at: 2026-05-06T01:15:16.952Z
   - _ulid: 01KQXFBDQB1G04P7EDRP245JRC
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -35130,7 +35130,15 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-06T01:46:37.224Z
-        completed_at: 2026-05-06T01:46:37.224Z
+        completed_at: 2026-05-06T01:46:43.344Z
+        notes: "Proposed improvement: capture a friction observation recommending that spec/AC mutation
+          reviewers run kspec validate --warnings-ok -v filtered to the touched spec before
+          approval. Scope is process guidance or future tooling; implementation details should be
+          triaged later."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-06T01:46:43.344Z
+        completed_at: 2026-05-06T01:46:43.344Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T01:45:00.395Z
