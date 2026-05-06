@@ -62,3 +62,25 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-06T18:02:48.709Z
+  - _ulid: 01KQZ8CS30F7S2FVDJBWES1WVE
+    content: >-
+      Fix cycle 2: addressed review blocker by removing the test-only re-export.
+
+
+      Extracted postDispatchEvent from src/cli/commands/task.ts into a new dedicated production
+      module at src/cli/dispatch-events.ts. The new module's exported postDispatchEvent is the
+      production API consumed by task.ts at every state-transition call site (6 callers: start,
+      submit, complete, block, unblock, cancel). The export is consumed by production code, so it is
+      part of the production module surface — not a test seam.
+
+
+      The regression test in tests/cli-task-event-endpoint.test.ts now imports postDispatchEvent
+      from src/cli/dispatch-events.ts instead of the prior _postDispatchEvent underscored re-export
+      from a command module, which the work-gates rule against test-only exports from src/.
+
+
+      Verified: focused endpoint suite (895 tests across 221 files) passes; full suite (8722 passed
+      / 5 skipped) passes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-06T18:21:53.632Z
