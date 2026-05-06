@@ -3965,11 +3965,11 @@ workspaces:
     canonical_branch: dispatch/task/task-update-cli-daemon-proxy-endpoint-ac/01kqwzzg
     canonical_branch_head: f26b5726ee13f90095b4fd8b662548f960799d08
     cleanup:
-      status: blocked
+      status: completed
       detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
       reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-05-06T07:12:57.279Z
+      updated_at: 2026-05-06T07:13:00.304Z
     health:
       status: healthy
       issues: []
@@ -3983,16 +3983,16 @@ workspaces:
       target_branch: dev
       target_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
       updated_at: 2026-05-06T07:12:57.279Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KQWZZG0BC74MJ02VRH2V9W4C"
     task_slug: task-update-cli-daemon-proxy-endpoint-ac
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-06T07:13:00.304Z
       last_active_at: 2026-05-06T06:57:38.327Z
       last_reconciled_at: 2026-05-06T07:12:57.279Z
       created_at: 2026-05-06T06:05:11.604Z
-      updated_at: 2026-05-06T07:12:57.279Z
+      updated_at: 2026-05-06T07:13:00.304Z
     workspace_id: dispatch-workspace-01KQWZZG0BC74MJ02VRH2V9W4C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
