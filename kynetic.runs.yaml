@@ -36500,9 +36500,23 @@ runs:
     completed_at: 2026-05-06T13:39:24.850Z
   - _ulid: 01KQYS930SQKZ7X3RTGKKKAC4M
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-06T13:57:44.090Z
+        completed_at: 2026-05-06T13:59:38.521Z
+        notes: "What worked well: (1) Reading task description literally — caught that point 4 said 'after
+          listening' even though existing impl wrote before, and previous review approved that
+          ordering. (2) Identified scope inheritance — recognized upstream task's fix cycles had
+          absorbed most of this task's work, so I focused on remaining gaps rather than duplicating.
+          (3) Existing behavioral tests already covered the change safely (cycle-4 reviewer used 'if
+          (existsSync)' to handle either metadata-write ordering)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-06T13:59:38.521Z
+        completed_at: 2026-05-06T13:59:38.521Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T13:57:44.090Z
