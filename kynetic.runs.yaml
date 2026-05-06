@@ -37261,7 +37261,7 @@ runs:
     completed_at: 2026-05-06T17:50:27.616Z
   - _ulid: 01KQZ7B21MN283K2VWEP84YF1K
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -37278,7 +37278,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T18:03:46.302Z
-        completed_at: 2026-05-06T18:03:46.302Z
+        completed_at: 2026-05-06T18:03:55.294Z
+        notes: "Friction points: detecting the test-only production export required manually correlating
+          work-gates with the diff. The code made the issue obvious with an @internal comment and
+          underscored export, but there was no automated guard in the test/lint pipeline that
+          flagged it before review. A secondary, lower-confidence friction point is that full npm
+          test took about 32 minutes; that is expected for merge-quality review but makes iterative
+          review feedback slower."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T18:03:55.294Z
+        completed_at: 2026-05-06T18:03:55.294Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T18:03:28.692Z
