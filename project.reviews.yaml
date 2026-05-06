@@ -177873,6 +177873,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KQY4SK9SJHR0CQ8WFST0WXQS
         timestamp: 2026-05-06T07:59:46.184Z
+      - _ulid: 01KQY4TGNZ00R53CEBCZZZ7KT8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQY4TFEMBM796P75K2EYMVNT
+        timestamp: 2026-05-06T08:00:15.039Z
     examined_commit: 65bfbcb012624d11b50d350ce353d2161ca0d9da
     external_links: []
     lifecycle_state: open
@@ -177939,7 +177946,24 @@ reviews:
               be used."
             created_at: 2026-05-06T07:59:44.953Z
         kind: blocker
+      - _ulid: 01KQY4TFEMBM796P75K2EYMVNT
+        entries:
+          - _ulid: 01KQY4TFEMEH9M3G9C0SJS6A2D
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md, task/spec context, src/daemon/endpoint.ts,
+              src/parser/config.ts, src/cli/pid-utils.ts, packages/daemon/src/pid.ts,
+              packages/daemon/src/server.ts, src/cli/index.ts, src/cli/daemon-proxy.ts,
+              src/cli/commands/{serve,agent,event,schedule,task}.ts, tests/daemon-endpoint.test.ts,
+              tests/parser/{config,daemon-config}.test.ts, tests/daemon-pid.test.ts. Commands run:
+              git diff/stat/log, rg call-site and AC searches, kspec task get, kspec item get
+              @daemon-network-endpoint-contract and @config-daemon, kspec validate, npm test. Claims
+              verified: shared PidFileManager exists, config default/connect_host parsing added, but
+              daemon startup and clients do not use metadata/resolved endpoint. Categories searched:
+              correctness, spec alignment, edge cases for host/wildcard/IPv6, error handling, test
+              quality, integration."
+            created_at: 2026-05-06T08:00:13.780Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-06T07:48:33.590Z
-    updated_at: 2026-05-06T07:59:44.953Z
+    updated_at: 2026-05-06T08:00:13.780Z
     notes: []
