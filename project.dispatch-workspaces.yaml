@@ -3504,7 +3504,7 @@ workspaces:
         head: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
         last_seen_at: 2026-05-06T00:27:06.983Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-localhost-security-trait-01kqwzzf
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
     bootstrap:
       status: succeeded
@@ -4002,9 +4002,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T00:54:09.938Z
-      last_reconciled_at: 2026-05-06T01:07:47.863Z
+      last_reconciled_at: 2026-05-06T01:09:57.567Z
       created_at: 2026-05-06T00:39:54.851Z
-      updated_at: 2026-05-06T01:07:47.863Z
+      updated_at: 2026-05-06T01:09:57.567Z
     workspace_id: dispatch-workspace-01KQXBKWE6Y8C7EVR7EKACEPBK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
