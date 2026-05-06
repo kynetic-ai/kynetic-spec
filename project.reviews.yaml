@@ -176185,6 +176185,18 @@ reviews:
         runner: kspec
         created_at: 2026-05-06T01:05:41.791Z
         completed_at: 2026-05-06T01:05:41.791Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: rg found @codex-acp-adapter-registration annotations in tests/session-create.test.ts for
+          ac-1 at line 912, ac-2 at line 953, and ac-3 at lines 975/1001/1024. The changed ac-1 test
+          calls resolveAdapter("codex-acp") behaviorally and does not scan source text.
+        name: AC annotation coverage
+        required: true
+        runner: rg
+        created_at: 2026-05-06T01:05:53.098Z
+        completed_at: 2026-05-06T01:05:53.098Z
     events:
       - _ulid: 01KQXCFW8240Z1C59J58PJYGQA
         actor: Jacob Chapel
@@ -176220,6 +176232,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-06T01:05:43.071Z
+      - _ulid: 01KQXD3TMB1YCR1WRYABX29D7A
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation coverage
+        timestamp: 2026-05-06T01:05:54.315Z
     examined_commit: 91354aec65fbdf3f7469d28308f0743c9cb78c61
     external_links: []
     lifecycle_state: open
@@ -176232,7 +176251,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T00:55:00.611Z
-    updated_at: 2026-05-06T01:05:41.791Z
+    updated_at: 2026-05-06T01:05:53.098Z
     notes: []
   - _ulid: 01KQXCSWEA8NKFB23BDNCR8DVC
     slugs: []
