@@ -176987,6 +176987,23 @@ reviews:
         runner: kspec
         created_at: 2026-05-06T06:15:36.154Z
         completed_at: 2026-05-06T06:15:36.154Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files/context read: kspec-agents.md, task @01KQWZZFPY4HE3CJZHZEGRE1BQ, item
+          @daemon-server, item @trait-localhost-security, plan
+          @plan-daemon-network-endpoint-contract, shadow commit fbd9c8722 patch for
+          modules/web-ui.yaml. Verified worker claim that the batch changed only daemon-server
+          description/ac-1/ac-2/ac-3/ac-9/ac-10/ac-17 and added ac-external-bind-warning; patch
+          matches the approved plan/task wording; no source/test files changed. Categories checked:
+          spec alignment, collateral changes, validation, regression tests, planned follow-on
+          coverage."
+        name: manual review evidence
+        required: false
+        runner: codex
+        created_at: 2026-05-06T06:15:39.560Z
+        completed_at: 2026-05-06T06:15:39.560Z
     events:
       - _ulid: 01KQXY8XRK5YEMZ2AN2CWZHMKP
         actor: Jacob Chapel
@@ -177008,6 +177025,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-06T06:15:37.407Z
+      - _ulid: 01KQXYV1E8CM3XBBCJQ4GCXX8N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: manual review evidence
+        timestamp: 2026-05-06T06:15:40.744Z
     examined_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
     external_links: []
     lifecycle_state: open
@@ -177020,5 +177044,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T06:05:47.155Z
-    updated_at: 2026-05-06T06:15:36.154Z
+    updated_at: 2026-05-06T06:15:39.560Z
     notes: []
