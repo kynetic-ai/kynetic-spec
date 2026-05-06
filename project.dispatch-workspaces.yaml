@@ -3974,7 +3974,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-06T07:09:56.192Z
+      updated_at: 2026-05-06T07:12:37.436Z
     integration:
       status: merged
       detail: integration:merged
@@ -3983,25 +3983,20 @@ workspaces:
       target_branch: dev
       target_commit: a91411a36d48f7e1dbc37abdc0a8494bbf538e1d
       updated_at: 2026-05-06T07:09:56.192Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KQWZZG0BC74MJ02VRH2V9W4C"
     task_slug: task-update-cli-daemon-proxy-endpoint-ac
     timestamps:
       closed_at: null
       last_active_at: 2026-05-06T06:57:38.327Z
-      last_reconciled_at: 2026-05-06T07:12:36.014Z
+      last_reconciled_at: 2026-05-06T07:12:37.436Z
       created_at: 2026-05-06T06:05:11.604Z
-      updated_at: 2026-05-06T07:12:36.014Z
+      updated_at: 2026-05-06T07:12:37.436Z
     workspace_id: dispatch-workspace-01KQWZZG0BC74MJ02VRH2V9W4C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: f26b5726ee13f90095b4fd8b662548f960799d08
-        last_seen_at: 2026-05-06T06:57:13.114Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-cli-daemon-proxy-endpoint-ac-01kqwzzg-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-update-cli-daemon-proxy-endpoint-ac/01kqwzzg
