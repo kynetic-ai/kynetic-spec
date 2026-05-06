@@ -17075,6 +17075,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T17:02:34.246Z
+  - _ulid: 01KQZ50FSFTABRK90WCK5XY82A
+    type: friction
+    content: Reviewing tasks that require exhaustive daemon endpoint consumer coverage currently depends
+      on ad hoc source inventory. In this review, the green endpoint-focused and full suites still
+      missed two coverage gaps until I manually searched
+      apiUrl/wsUrl/getRunningDaemonClient/fetch/WebSocket call sites. A lightweight checklist or
+      generated inventory for daemon endpoint consumers would make future worker and reviewer
+      coverage decisions less error-prone.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-06T17:22:45.167Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
