@@ -36689,7 +36689,7 @@ runs:
     completed_at: 2026-05-06T14:54:25.485Z
   - _ulid: 01KQYXH973KRM5YVA5YNBJP5VB
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -36707,7 +36707,23 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-06T15:12:34.029Z
-        completed_at: 2026-05-06T15:12:34.029Z
+        completed_at: 2026-05-06T15:12:45.394Z
+        notes: "Friction: (1) Initial regression test went through 'kspec serve start --detach' (mirroring
+          the existing IPv6 fallback test pattern) but hung for 30+ seconds for unclear reasons even
+          though the IPv6 test using identical scaffolding ran in ~2.5s. After ~10 minutes of
+          debugging I pivoted to spawning the daemon binary directly. The root cause of the hang was
+          never identified — possibly an interaction between the failing daemon child and the parent
+          CLI's polling loop that doesn't trigger when the daemon successfully (silently-buggy)
+          binds with SO_REUSEPORT in the existing IPv6 test. (2) Understanding @elysiajs/node's
+          listen async semantics required reading minified dist code across three packages
+          (@elysiajs/node, crossws, srvx) — there was no public docstring confirming whether
+          app.listen() awaits or returns sync. (3) The TodoWrite hook reminder fired ~6 times even
+          though I was actively maintaining a todo list — the heuristic seems to count reminders
+          against actual updates I made via the tool."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-06T15:12:45.394Z
+        completed_at: 2026-05-06T15:12:45.394Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-06T15:12:06.883Z
