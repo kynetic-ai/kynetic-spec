@@ -179379,7 +179379,18 @@ reviews:
     slugs: []
     title: Review shared daemon endpoint resolver (cycle 7)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fresh full suite passed: 2360/2360 suites, 8651 tests passed, 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KQYQD2KZDRDFEAH5QWP1DZ3Z/1ee64cee797e5ff4.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-05-06T13:35:38.913Z
+        completed_at: 2026-05-06T13:35:38.913Z
     events:
       - _ulid: 01KQYQE9CPX5G7HR6Q3MSCKSEJ
         actor: Jacob Chapel
@@ -179394,6 +179405,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-06T13:25:49.690Z
+      - _ulid: 01KQYR0P5NFTQN0KW0KKS2VK44
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-06T13:35:40.214Z
     examined_commit: 9c7e0b6fffb00c787a2c867224e1ac885a3b6efb
     external_links: []
     lifecycle_state: open
@@ -179406,5 +179424,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-06T13:25:37.303Z
-    updated_at: 2026-05-06T13:25:48.460Z
+    updated_at: 2026-05-06T13:35:38.913Z
     notes: []
