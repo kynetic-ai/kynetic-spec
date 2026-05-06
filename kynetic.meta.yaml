@@ -16678,6 +16678,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-06T02:02:42.406Z
+  - _ulid: 01KQXX5H6TTPPQNPWVW388H983
+    type: friction
+    content: "Reviewers can flag missing behavioral coverage as MUST-FIX blockers on spec-update tasks
+      even when the new ACs explicitly depend on downstream implementation tasks in the same plan
+      for testability. Pattern: task @01KQWZZFDFPSHHNAGVB8NAXJRJ added 6 new ACs to @config-daemon,
+      then went through a fix cycle and a block requiring a manual unblock note from Hermes
+      clarifying that spec-update task scope is the spec mutation, not behavioral coverage owned by
+      sibling tasks. The review-gates / work-gates checklists do not distinguish task type
+      (spec-update vs implementation) when applying AC-coverage MUST-FIX criteria. Systemic risk:
+      any plan that splits 'add ACs' from 'implement and cover ACs' across separate tasks will
+      repeat this churn."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KQXX32"
+    created_at: 2026-05-06T05:46:27.418Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
