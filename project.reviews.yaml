@@ -179620,6 +179620,13 @@ reviews:
           status: pass
           name: targeted daemon/config tests
         timestamp: 2026-05-06T14:13:58.549Z
+      - _ulid: 01KQYT7AANZ5EQWSSP67W8VH46
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KQYT7937KEX03MWX9ESHD5BK
+        timestamp: 2026-05-06T14:14:14.613Z
     examined_commit: 32746e58b5712cb18605f876a1ca8ab6f47aaa63
     external_links: []
     lifecycle_state: open
@@ -179629,8 +179636,32 @@ reviews:
       content_hash: ""
       ref: "@01KQWZZHH1SKQ5DG44EEBMT9H9"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQYT7937KEX03MWX9ESHD5BK
+        anchor:
+          type: code
+          commit: 32746e58b5712cb18605f876a1ca8ab6f47aaa63
+          line_end: 822
+          line_start: 804
+          path: packages/daemon/src/server.ts
+          side: head
+        entries:
+          - _ulid: 01KQYT793845RFPSHYWMFC86GT
+            author: Jacob Chapel
+            body: "MUST-FIX: daemon.connection.json is still written before a successful bind is known. This
+              block runs immediately after app.listen(...), but the Node/Elysia listen path can
+              report EADDRINUSE asynchronously after the call returns. I reproduced this by
+              pre-binding 127.0.0.1:45165 and then running serve start --detach --port 45165; the
+              parent returned status 0 and ~/.config/kspec/daemon.connection.json existed with
+              api_url http://127.0.0.1:45165 even though that daemon never successfully owned the
+              port. That violates @daemon-network-endpoint-contract ac-connection-metadata and the
+              task requirement to write complete metadata only after the server is listening. Move
+              the metadata write behind an actual listening success barrier or remove it on listen
+              failure, and add a regression that asserts no connection metadata is advertised on
+              EADDRINUSE."
+            created_at: 2026-05-06T14:14:13.352Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-06T14:02:35.168Z
-    updated_at: 2026-05-06T14:13:57.372Z
+    updated_at: 2026-05-06T14:14:13.352Z
     notes: []
