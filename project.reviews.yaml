@@ -179033,6 +179033,13 @@ reviews:
           status: pass
           name: npm test -- --fresh
         timestamp: 2026-05-06T12:11:05.908Z
+      - _ulid: 01KQYK6DE8DS3CM3HQC52JAYK8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KQYK6C6Z80Y7N089DQG9PG34
+        timestamp: 2026-05-06T12:11:25.000Z
     examined_commit: 0d8a67a39b4a7874c89c0cae7aacd33fb2623109
     external_links: []
     lifecycle_state: open
@@ -179042,8 +179049,31 @@ reviews:
       content_hash: ""
       ref: "@01KQWZZH7R9W7WKATZXFB61MPC"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KQYK6C6Z80Y7N089DQG9PG34
+        entries:
+          - _ulid: 01KQYK6C6ZRS62S5DT9JV65SBD
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; task @01KQWZZH7R9W7WKATZXFB61MPC; specs
+              @daemon-network-endpoint-contract and @config-daemon; prior review @01KQYG9Y; diffs
+              and surrounding code for src/daemon-shared/endpoint.ts, packages/daemon/src/server.ts,
+              packages/daemon/src/index.ts, src/parser/config.ts, src/cli/index.ts,
+              src/cli/daemon-proxy.ts, src/cli/commands/{serve,agent,event,schedule,task}.ts,
+              src/parser/daemon-status.ts, packages/web-ui/{vite.config.ts,src/lib/constants.ts},
+              scripts/build-daemon.cjs, src/cli/pid-utils.ts, packages/daemon/src/pid.ts, and the
+              changed daemon/proxy/config/web-ui tests. Commands run: kspec task get, kspec item
+              get, kspec review get/for-task, rg AC annotations and daemon URL construction, kspec
+              validate, npm test -- --fresh, npm run typecheck, git diff/status. Claims verified:
+              cycle-4 IPv6 fallback blocker now only falls back on address_unavailable and preserves
+              port collision errors; clients resolve api/ws URLs from daemon.connection.json before
+              legacy daemon.port; default bind host is 127.0.0.1; serve start/status warnings use
+              resolved bind host; auto-start forwards host/connect-host flags; shared pid modules
+              re-export one implementation. Categories searched: correctness, edge cases, error
+              handling, security warning path, test quality, build/import integration. No blocking
+              findings found."
+            created_at: 2026-05-06T12:11:23.743Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-06T12:00:56.094Z
-    updated_at: 2026-05-06T12:11:04.602Z
+    updated_at: 2026-05-06T12:11:23.743Z
     notes: []
