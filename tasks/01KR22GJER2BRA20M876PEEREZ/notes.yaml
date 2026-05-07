@@ -1,1 +1,38 @@
-notes: []
+notes:
+  - _ulid: 01KR239BES20EH96P8KRTNA1R6
+    content: >-
+      Spec mutations applied via kspec batch:
+
+      - @daemon-sensitive-cli-test-determinism: retitled to 'Daemon-Sensitive Test Determinism',
+      description rewritten, replaced ac-1/2/3 with five named ACs (ac-readiness-diagnostics,
+      ac-bounded-readiness, ac-isolated-home-config, ac-scoped-daemon-cleanup,
+      ac-fixture-contract-tests). Implementation status -> in_progress.
+
+      - @e2e-test-daemon-isolation: retitled to 'Browser E2E Daemon Fixture Integration',
+      description rewritten, replaced ac-1..ac-5 with five named ACs (ac-uses-shared-fixture,
+      ac-browser-endpoint-from-fixture, ac-isolated-e2e-state, ac-e2e-scoped-cleanup,
+      ac-dynamic-port-propagation). Implementation status -> in_progress.
+
+      - @daemon-network-endpoint-contract: appended ac-tests-use-resolved-endpoint without
+      disturbing existing ACs. Implementation status -> in_progress (this branch does not migrate
+      the test-side endpoint resolution behavior).
+
+
+      Stale AC annotations updated where the underlying test still truthfully covers the rewritten
+      AC:
+
+      - tests/cli-serve.test.ts: ac-1->ac-readiness-diagnostics, ac-2->ac-isolated-home-config,
+      ac-3->ac-bounded-readiness.
+
+      - tests/e2e/fixtures/test-base.ts: ac-1/ac-5 mapped to ac-dynamic-port-propagation (port
+      allocation/propagation), ac-3->ac-isolated-e2e-state, ac-4->ac-e2e-scoped-cleanup, ac-5
+      baseURL line->ac-browser-endpoint-from-fixture, added ac-uses-shared-fixture annotation on the
+      daemon fixture's use() handoff. The ac-2 'never kill user daemons' annotation was removed
+      because that AC was dropped from the rewritten spec.
+
+
+      kspec validate --refs --warnings-ok passes (only pre-existing deprecation warnings unrelated
+      to this task).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-07T20:50:21.785Z
