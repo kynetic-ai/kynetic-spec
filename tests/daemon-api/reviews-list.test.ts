@@ -13,9 +13,10 @@
 // AC: @trait-error-guidance ac-4 — N/A: error guidance is a CLI trait, not applicable to daemon API
 // AC: @trait-error-guidance ac-5 — N/A: error guidance is a CLI trait, not applicable to daemon API
 // AC: @trait-error-guidance ac-6 — N/A: error guidance is a CLI trait, not applicable to daemon API
-// AC: @trait-localhost-security ac-1 — N/A: localhost binding tested in server.test.ts
-// AC: @trait-localhost-security ac-2 — N/A: non-localhost rejection tested in server.test.ts
-// AC: @trait-localhost-security ac-3 — N/A: external binding warning not tested (never configured)
+// AC: @trait-localhost-security ac-loopback-default — N/A: review-list route handler tests do not invoke app.listen(); default loopback bind is exercised in tests/cli-serve.test.ts (daemon child startup).
+// AC: @trait-localhost-security ac-loopback-rejects-nonlocal — N/A: localhostOnly middleware is a server-level concern, exercised in tests/daemon-api/server.test.ts and tests/daemon-server.test.ts.
+// AC: @trait-localhost-security ac-external-host-explicit — N/A: explicit non-loopback bind is exercised in tests/cli-serve.test.ts where daemon.host is configured.
+// AC: @trait-localhost-security ac-external-warning — N/A: external-bind warning is surfaced from the CLI lifecycle path and exercised in tests/cli-serve.test.ts.
 // AC: @trait-websocket-protocol ac-1 — N/A: WebSocket lifecycle not tested in review list API tests
 // AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe not tested in review list API tests
 // AC: @trait-websocket-protocol ac-3 — N/A: WebSocket broadcast not tested in review list API tests

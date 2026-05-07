@@ -15,12 +15,14 @@
  * - @daemon-server ac-15: Plugin pattern middleware (CORS verified via response headers)
  * - @daemon-server ac-17: Non-API routes bypass project context middleware (SPA fallback regression)
  * - @api-contract ac-1: CORS headers allow localhost origins (dev server)
- * - @trait-localhost-security ac-1: Daemon binds to localhost only (implicit)
- * - @trait-localhost-security ac-2: Non-localhost connections rejected with 403 Forbidden
+ * - @trait-localhost-security ac-loopback-rejects-nonlocal: Production middleware accepts loopback Host and rejects non-localhost Host with 403 Forbidden
  */
 
 // AC: @trait-api-endpoint ac-2 — N/A: health endpoint does not mutate state
 // AC: @trait-api-endpoint ac-3 — N/A: health endpoint has no validation schema
+// AC: @trait-localhost-security ac-loopback-default — N/A: this file constructs an Elysia app from production middleware but does not invoke app.listen(); default loopback bind semantics are exercised in tests/cli-serve.test.ts (daemon child startup writes 127.0.0.1 endpoint to daemon.connection.json).
+// AC: @trait-localhost-security ac-external-host-explicit — N/A: explicit non-loopback bind is exercised in tests/cli-serve.test.ts where daemon.host is configured and the daemon child binds to the configured address.
+// AC: @trait-localhost-security ac-external-warning — N/A: external-bind warning surfaces from the CLI lifecycle path (serve start --detach, serve status) and is exercised in tests/cli-serve.test.ts.
 
 import { cors } from "@elysiajs/cors";
 import { Elysia } from "elysia";
@@ -238,7 +240,7 @@ describe("CORS Headers", () => {
 });
 
 describe("Localhost Security", () => {
-  // AC: @trait-localhost-security ac-1, @daemon-server ac-2
+  // AC: @trait-localhost-security ac-loopback-rejects-nonlocal, @daemon-server ac-2
   it("is accessible from localhost", async () => {
     const response = await makeReqWithHost("/api/health", "localhost");
     expect(response.status).toBe(200);
@@ -254,7 +256,7 @@ describe("Localhost Security", () => {
     expect(response.status).toBe(200);
   });
 
-  // AC: @trait-localhost-security ac-2, @daemon-server ac-3
+  // AC: @trait-localhost-security ac-loopback-rejects-nonlocal, @daemon-server ac-3
   it("rejects non-localhost Host with 403", async () => {
     const response = await makeReqWithHost("/api/health", "evil.example.com");
     expect(response.status).toBe(403);
@@ -263,7 +265,7 @@ describe("Localhost Security", () => {
     expect(body.message).toContain("localhost");
   });
 
-  // AC: @trait-localhost-security ac-2, @daemon-server ac-3
+  // AC: @trait-localhost-security ac-loopback-rejects-nonlocal, @daemon-server ac-3
   it("rejects external IP Host with 403", async () => {
     const response = await makeReqWithHost("/api/health", "192.168.1.100");
     expect(response.status).toBe(403);

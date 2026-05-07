@@ -359,6 +359,7 @@ describe("kspec serve commands", () => {
   // AC: @daemon-server ac-10
   // AC: @config-daemon ac-host-default
   // AC: @config-daemon ac-connection-metadata
+  // AC: @trait-localhost-security ac-loopback-default
   it("writes daemon.connection.json with the resolved 127.0.0.1 endpoint on detached startup", async () => {
     if (!nodeAvailable) {
       console.log("  ⊘ Skipping test - Node runtime required");
@@ -666,6 +667,7 @@ describe("kspec serve commands", () => {
   // AC: @daemon-network-endpoint-contract ac-configured-bind-host
   // AC: @config-daemon ac-host-config
   // AC: @daemon-server ac-1
+  // AC: @trait-localhost-security ac-external-host-explicit
   //
   // Regression for the IPv4/IPv6 mismatch incident: configured daemon.host
   // values must reach the production app.listen() call. A configured

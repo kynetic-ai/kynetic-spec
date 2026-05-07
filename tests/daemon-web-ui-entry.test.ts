@@ -230,9 +230,10 @@ describe("registerWebUiEntryRoutes (Elysia integration)", () => {
 // AC: @trait-shadow-commit ac-6 — N/A: same as above
 // AC: @trait-shadow-commit ac-7 — N/A: same as above
 // AC: @trait-shadow-commit ac-8 — N/A: same as above
-// AC: @trait-localhost-security ac-1 — N/A: covered by daemon-server.test.ts
-// AC: @trait-localhost-security ac-2 — N/A: covered by daemon-server.test.ts
-// AC: @trait-localhost-security ac-3 — N/A: covered by daemon-server.test.ts
+// AC: @trait-localhost-security ac-loopback-default — N/A: web-ui entry route tests do not invoke app.listen(); default loopback bind is exercised in tests/cli-serve.test.ts (daemon child startup).
+// AC: @trait-localhost-security ac-loopback-rejects-nonlocal — N/A: localhostOnly middleware is a server-level concern, exercised in tests/daemon-api/server.test.ts and tests/daemon-server.test.ts.
+// AC: @trait-localhost-security ac-external-host-explicit — N/A: explicit non-loopback bind is exercised in tests/cli-serve.test.ts where daemon.host is configured.
+// AC: @trait-localhost-security ac-external-warning — N/A: external-bind warning is surfaced from the CLI lifecycle path and exercised in tests/cli-serve.test.ts.
 // AC: @trait-websocket-protocol ac-1 — N/A: web UI entry routes are HTTP, not WebSocket
 // AC: @trait-websocket-protocol ac-2 — N/A: same as above
 // AC: @trait-websocket-protocol ac-3 — N/A: same as above
