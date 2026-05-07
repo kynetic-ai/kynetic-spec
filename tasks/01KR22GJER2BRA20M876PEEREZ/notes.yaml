@@ -46,3 +46,44 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-07T21:53:03.391Z
+  - _ulid: 01KR27Y7QRTE89P2YE5P5BYC2S
+    content: >-
+      Fix cycle 1: addressed reviewer blocker by removing the false @e2e-test-daemon-isolation
+      ac-uses-shared-fixture annotation at tests/e2e/fixtures/test-base.ts:430. The Playwright
+      daemon fixture spawns DAEMON_ENTRY directly (line 321) rather than delegating to a shared
+      daemon test fixture, so the annotation was claiming AC coverage for behavior intentionally
+      left in_progress on the rewritten spec.
+
+
+      Re-verified the remaining annotations on test-base.ts and tests/cli-serve.test.ts against the
+      rewritten ACs:
+
+      - ac-browser-endpoint-from-fixture: baseURL is supplied by the daemon fixture (line 182-185).
+
+      - ac-isolated-e2e-state: HOME/config dirs are isolated under tempDir (line 210-226).
+
+      - ac-e2e-scoped-cleanup: stopDaemon uses scoped 'kspec serve stop' against isolated HOME (line
+      442).
+
+      - ac-dynamic-port-propagation: dynamic port allocation and propagation through fixture context
+      (lines 119, 199, 414, 429).
+
+      - ac-readiness-diagnostics (cli-serve.test.ts:195): asserts last observation appears in
+      timeout error.
+
+      - ac-isolated-home-config (cli-serve.test.ts:309): uses createIsolatedKspecHome shared helper.
+
+      - ac-bounded-readiness (cli-serve.test.ts:1008): waitForDaemonHealth uses bounded
+      waitForStartup helper.
+
+
+      ac-uses-shared-fixture and ac-fixture-contract-tests remain unannotated; both rely on the
+      shared daemon test fixture path which is intentionally unimplemented in this branch (impl
+      status in_progress on both specs).
+
+
+      npm test passed: 2377 suites passed, 8722 tests passed, 5 skipped. kspec validate --refs
+      --warnings-ok passed (only pre-existing deprecation warnings).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-07T22:11:40.408Z
