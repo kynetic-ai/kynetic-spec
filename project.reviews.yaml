@@ -181520,7 +181520,94 @@ reviews:
     slugs: []
     title: "Plan re-review: Daemon Test Fixture Standardization (cycle 2)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The Specs section no longer names dist/daemon/index.js in guardrail ACs, no longer names
+          api_url/ws_url/daemon.connection.json in endpoint ACs, and readiness diagnostics now
+          requires a diagnostic bundle rather than enumerated fields. Exact implementation fields
+          remain only in task guidance.
+        name: Previous must-fix findings
+        required: true
+        runner: manual
+        created_at: 2026-05-07T20:03:51.118Z
+        completed_at: 2026-05-07T20:03:51.118Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/daemon-test-fixture-standardization.md --dry-run parsed the plan
+          successfully with no changes made.
+        name: Plan import dry-run
+        required: true
+        runner: kspec plan import --dry-run
+        created_at: 2026-05-07T20:03:54.150Z
+        completed_at: 2026-05-07T20:03:54.150Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation passed with reference warnings only for pre-existing deprecated refs unrelated
+          to this plan. Referenced parents/traits inspected: @daemon-server,
+          @daemon-network-endpoint-contract, @daemon-runtime-adapter,
+          @trait-daemon-endpoint-consumer, @daemon-sensitive-cli-test-determinism,
+          @e2e-test-daemon-isolation."
+        name: Reference validation
+        required: true
+        runner: kspec validate --refs --warnings-ok
+        created_at: 2026-05-07T20:03:57.244Z
+        completed_at: 2026-05-07T20:03:57.244Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: New plan spec ACs are behavioral and previous implementation-leak blockers are resolved.
+          Exact endpoint field names, build artifact paths, and detailed diagnostic field lists are
+          confined to task implementation guidance.
+        name: Spec language quality
+        required: true
+        runner: manual
+        created_at: 2026-05-07T20:04:01.428Z
+        completed_at: 2026-05-07T20:04:01.428Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Tasks include motivation, concrete files/helpers to inspect, implementation boundaries,
+          verification commands, and explicit Covers lines. No remaining task depends on chat-only
+          context.
+        name: Task standalone quality
+        required: true
+        runner: manual
+        created_at: 2026-05-07T20:04:04.549Z
+        completed_at: 2026-05-07T20:04:04.549Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Spec update and shared fixture core are first; Vitest/Playwright/mock/in-process
+          migrations depend only where needed; guardrails run after relevant migrations; final
+          validation waits on guardrails and in-process migration. No circular or priority-inverted
+          dependencies found.
+        name: Dependency ordering and scope control
+        required: true
+        runner: manual
+        created_at: 2026-05-07T20:04:07.641Z
+        completed_at: 2026-05-07T20:04:07.641Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All new plan ACs are claimed except @daemon-test-mode-boundaries
+          ac-cli-lifecycle-tests-use-cli-path, which appears only in the spec definition and not in
+          any task Covers list.
+        name: AC coverage mapping
+        required: true
+        runner: manual + parsed Covers scan
+        created_at: 2026-05-07T20:04:10.814Z
+        completed_at: 2026-05-07T20:04:10.814Z
     events:
       - _ulid: 01KR20JCW6XDSFBY0HMHQTJ8S6
         actor: Jacob Chapel
@@ -181528,17 +181615,120 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-05-07T20:02:52.422Z
+      - _ulid: 01KR20M1A5QKF4GS8176JKQCXJ
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-05-07T20:03:46.117Z
+      - _ulid: 01KR20M4AJRMJ88BXZZBS1HQRQ
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR20M35CFHP8BRF1QKCZT9YH
+        timestamp: 2026-05-07T20:03:49.202Z
+      - _ulid: 01KR20M7BSH8KXWJK35HK91SE4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Previous must-fix findings
+        timestamp: 2026-05-07T20:03:52.313Z
+      - _ulid: 01KR20MAAH97XWXC5QHDF0YW5F
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import dry-run
+        timestamp: 2026-05-07T20:03:55.345Z
+      - _ulid: 01KR20MDCYARW1R6SRNB7BT0J8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Reference validation
+        timestamp: 2026-05-07T20:03:58.494Z
+      - _ulid: 01KR20MHFCZC7K7AXX018HKAJF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec language quality
+        timestamp: 2026-05-07T20:04:02.668Z
+      - _ulid: 01KR20MMF86F448PMJ2M49408T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone quality
+        timestamp: 2026-05-07T20:04:05.736Z
+      - _ulid: 01KR20MQJDTZM7ENR2EZH9NH3V
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering and scope control
+        timestamp: 2026-05-07T20:04:08.909Z
+      - _ulid: 01KR20MTK0X0YAS9G8CT3F70YZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: AC coverage mapping
+        timestamp: 2026-05-07T20:04:12.000Z
+      - _ulid: 01KR20MXN27CW0MMJ28W2N6H33
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-07T20:04:15.138Z
+      - _ulid: 01KR20MXN2PCZK6DVCTVJCFC9S
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-07T20:04:15.138Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@plan-daemon-test-fixture-standardization"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KR20M35CFHP8BRF1QKCZT9YH
+        anchor:
+          type: structured
+          field: ac-cli-lifecycle-tests-use-cli-path
+          ref: "@daemon-test-mode-boundaries"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KR20M35CG4ZJXAKCGA9CQXAW
+            author: codex
+            body: "AC coverage mapping is still incomplete: @daemon-test-mode-boundaries
+              ac-cli-lifecycle-tests-use-cli-path is defined in the plan spec but no task Covers
+              list claims it. The real-daemon Vitest migration task describes preserving CLI
+              lifecycle tests on the CLI path, so either add this AC to that task Covers list or
+              assign it explicitly to another task. Without an exact Covers claim, this AC can be
+              orphaned during derivation."
+            created_at: 2026-05-07T20:03:48.012Z
+        kind: blocker
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-07T20:04:15.138Z
     created_at: 2026-05-07T20:02:52.423Z
-    updated_at: null
+    updated_at: 2026-05-07T20:04:15.138Z
     notes: []
