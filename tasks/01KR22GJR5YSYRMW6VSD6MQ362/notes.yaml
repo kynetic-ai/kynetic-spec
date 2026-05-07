@@ -1,1 +1,18 @@
-notes: []
+notes:
+  - _ulid: 01KR29ERKAR6W9RY720FMHV2D3
+    content: "Approach: Add tests/helpers/daemon.ts exporting createTestDaemonProject() (temp project +
+      isolated HOME via createIsolatedKspecHome + shadow worktree pointer + .kspec fixture copy) and
+      startTestDaemon(project, opts) (spawns dist/daemon/index.js with sanitized child env,
+      allocated port, resolveDaemonEndpoint URLs, waitForStartup-based readiness in
+      health-only/health-and-cache/custom modes, stop() that SIGTERM+SIGKILLs captured child only).
+      Reuses buildTestSubprocessEnv, createIsolatedKspecHome, waitForStartup, setupShadowDetection
+      from cli.ts. Strips ambient KSPEC_DAEMON_*, KSPEC_NO_DAEMON, KSPEC_SESSION_ID from child env.
+      On readiness failure, throws DaemonReadinessError with
+      endpoint/runtime/pid/exit/signal/stdout-tail/stderr-tail/last-health/last-cache diagnostic
+      bundle. registerCleanup option installs cleanup synchronously after spawn. Contract tests
+      cover: env stripping (unit), project isolation (unit), happy-path daemon (Node default,
+      127.0.0.1 URLs, dynamic port, health+cache, scoped cleanup), readiness timeout diagnostics
+      (bounded + full bundle)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-07T22:38:10.538Z
