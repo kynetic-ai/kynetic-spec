@@ -70,7 +70,7 @@ description: |
 spec_ref: "@daemon-backed-test-fixture-contract"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-update-daemon-test-specs"
@@ -90,7 +90,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
-session_id: 01KR2BNPSN671KTZQEZV2ZDGXR
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -196,6 +196,16 @@ history:
         previous: "@01KR2APDM1X2QE9GF27BM8ZPCW"
     command: review-link
     timestamp: 2026-05-07T23:38:03.046Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KR2BNPSN671KTZQEZV2ZDGXR
+    command: review-verdict-needs-work
+    timestamp: 2026-05-07T23:50:44.921Z
 created_at: 2026-05-07T20:36:50.053Z
 started_at: 2026-05-07T23:33:24.096Z
 submitted_at: 2026-05-07T23:33:27.215Z
