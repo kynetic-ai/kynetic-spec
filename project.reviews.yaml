@@ -182639,3 +182639,29 @@ reviews:
     created_at: 2026-05-07T22:59:50.017Z
     updated_at: 2026-05-07T23:32:50.474Z
     notes: []
+  - _ulid: 01KR2CW9BDCA88YH30WH03Q5ZM
+    slugs: []
+    title: Review shared daemon test fixture core (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR2CW9BCDEHX730555009JMV
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-07T23:37:59.405Z
+    examined_commit: ab433d4eaf96d6b421cfc89771e283a3a768fcb8
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR22GJR5YSYRMW6VSD6MQ362"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-07T23:37:59.405Z
+    updated_at: null
+    notes: []
