@@ -7071,7 +7071,7 @@ workspaces:
         head: c7d9793e06a7add0d934af912ecbb52e1cfe7969
         last_seen_at: 2026-05-06T18:25:16.087Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-endpoint-regression-tests-01kqwzzj
-  - active_role: null
+  - active_role: worker
     base_branch_point: 14c3b055382af3c44acb7cde4b292eec1257882d
     bootstrap:
       status: succeeded
@@ -7407,7 +7407,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-07T00:20:14.491Z
+      updated_at: 2026-05-07T00:20:40.238Z
     integration:
       status: pending
       detail: null
@@ -7416,16 +7416,16 @@ workspaces:
       target_branch: dev
       target_commit: 14c3b055382af3c44acb7cde4b292eec1257882d
       updated_at: 2026-05-07T00:20:14.491Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQZWWGPB8MCFYBKD8X66J867"
     task_slug: task-retag-localhost-security-ac-annotations
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-07T00:20:14.491Z
+      last_active_at: 2026-05-07T00:20:40.238Z
+      last_reconciled_at: 2026-05-07T00:20:40.238Z
       created_at: 2026-05-07T00:20:14.491Z
-      updated_at: 2026-05-07T00:20:39.403Z
+      updated_at: 2026-05-07T00:20:40.238Z
     workspace_id: dispatch-workspace-01KQZWWGPB8MCFYBKD8X66J867
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
