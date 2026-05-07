@@ -182224,6 +182224,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-07T21:53:01.374Z
+      - _ulid: 01KR27X5P442JY31GEJJ4HRWN9
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR26V62KKEEQ40H0CKRK104H
+        timestamp: 2026-05-07T22:11:05.540Z
     examined_commit: 8ca62d564f27ba9b3cf0dcbdb9ef529a42cafee4
     external_links: []
     lifecycle_state: closed
@@ -182254,6 +182260,18 @@ reviews:
               Remove this annotation until the Playwright wrapper actually uses the shared fixture,
               or implement and verify that shared fixture path behaviorally."
             created_at: 2026-05-07T21:52:31.828Z
+          - _ulid: 01KR27X4CDK4WH1E5GT4PKNTV3
+            author: "@claude"
+            body: "Fixed: removed the false ac-uses-shared-fixture annotation at
+              tests/e2e/fixtures/test-base.ts:430. Agree with the assessment — startDaemon() spawns
+              DAEMON_ENTRY directly in this fixture (line 321) rather than delegating to a separate
+              shared daemon test fixture, so the annotation created false coverage for behavior
+              intentionally left in_progress on @e2e-test-daemon-isolation. The remaining
+              annotations (ac-browser-endpoint-from-fixture, ac-isolated-e2e-state,
+              ac-e2e-scoped-cleanup, ac-dynamic-port-propagation) describe behaviors the Playwright
+              fixture genuinely supplies today and stay in place. ac-uses-shared-fixture will gain
+              coverage when the shared-fixture wrapper is implemented under a separate task."
+            created_at: 2026-05-07T22:11:04.204Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -182264,5 +182282,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-07T21:53:01.374Z
     created_at: 2026-05-07T21:41:12.163Z
-    updated_at: 2026-05-07T21:53:01.374Z
+    updated_at: 2026-05-07T22:11:04.204Z
     notes: []
