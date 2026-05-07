@@ -45638,7 +45638,8 @@ plans:
           ac-dynamic-port-propagation; @daemon-test-runtime-selection ac-node-default,
           ac-explicit-runtime-only, ac-runtime-matrix-parity,
           ac-missing-optional-runtime-skips, ac-runtime-degradation-assertions;
-          @daemon-test-mode-boundaries ac-full-process-tests-use-real-daemon.
+          @daemon-test-mode-boundaries ac-cli-lifecycle-tests-use-cli-path,
+          ac-full-process-tests-use-real-daemon.
 
       - title: Migrate Playwright daemon setup to the shared fixture core
         slug: task-migrate-playwright-daemon-fixture
@@ -45967,3 +45968,8 @@ plans:
           names, simplify readiness diagnostics AC"
         author: Jacob Chapel
         created_at: 2026-05-07T19:59:54.756Z
+      - _ulid: 01KR20PW76XW4C9BDWDVVENDEG
+        content: "Address review cycle 2: add missing coverage claim for daemon test mode boundary CLI
+          lifecycle AC"
+        author: Jacob Chapel
+        created_at: 2026-05-07T20:05:19.206Z
