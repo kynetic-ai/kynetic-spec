@@ -181326,6 +181326,17 @@ reviews:
         required: true
         created_at: 2026-05-07T19:57:42.091Z
         completed_at: 2026-05-07T19:57:42.091Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: task-update-daemon-test-specs names @daemon-sensitive-cli-test-determinism,
+          @e2e-test-daemon-isolation, and @daemon-network-endpoint-contract with concrete final
+          titles/descriptions/AC text.
+        name: Existing spec update precision
+        required: true
+        created_at: 2026-05-07T19:57:42.001Z
+        completed_at: 2026-05-07T19:57:42.001Z
     events:
       - _ulid: 01KR206B55B41CZS8ATC22BF9R
         actor: Jacob Chapel
@@ -181375,6 +181386,13 @@ reviews:
           status: pass
           name: Dependency and coverage review
         timestamp: 2026-05-07T19:57:45.121Z
+      - _ulid: 01KR2092M9EWWG43YWGPB3QMC4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec update precision
+        timestamp: 2026-05-07T19:57:47.017Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -181438,5 +181456,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-07T19:56:17.446Z
-    updated_at: 2026-05-07T19:57:42.091Z
+    updated_at: 2026-05-07T19:57:42.001Z
     notes: []
