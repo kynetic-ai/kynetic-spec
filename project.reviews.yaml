@@ -182757,6 +182757,13 @@ reviews:
           status: fail
           name: AC coverage completeness
         timestamp: 2026-05-07T23:50:19.756Z
+      - _ulid: 01KR2DK9MZ8PB38PT280BRK0ZY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR2DK8EQV25QQFGRERGSWZ0T
+        timestamp: 2026-05-07T23:50:33.375Z
     examined_commit: ab433d4eaf96d6b421cfc89771e283a3a768fcb8
     external_links: []
     lifecycle_state: open
@@ -183320,7 +183327,26 @@ reviews:
                       /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/cli-agent-commands.test.ts:1854 still reports both ACs as uncovered. Impact: the contract-test coverage promised by this task is not machine-parseable or enforced, so the task cannot advance until these ACs are annotated on behavioral tests that actually exercise the focused fixture contract.
             created_at: 2026-05-07T23:50:04.389Z
         kind: blocker
+      - _ulid: 01KR2DK8EQV25QQFGRERGSWZ0T
+        entries:
+          - _ulid: 01KR2DK8EQZ68XJ3CXX9VXAAEQ
+            author: Jacob Chapel
+            body: "Evidence log (non-blocking): Files read: kspec-agents.md, tests/helpers/daemon.ts,
+              tests/helpers/daemon.test.ts, tests/helpers/cli.ts, src/daemon-shared/endpoint.ts,
+              prior review @01KR2APDM1X2QE9GF27BM8ZPCW, task/spec context for
+              @01KR22GJR5YSYRMW6VSD6MQ362 plus related daemon fixture specs. Commands run: kspec
+              task get, kspec item get for main/related specs, kspec validate, kspec validate
+              --completeness -v targeted through rg, AC annotation searches with rg, helper suite,
+              full npm test -- --fresh, typecheck, package lint (repo-wide preexisting failures),
+              direct changed-file oxlint. Claims verified: custom readiness failures now sample
+              /api/health and /api/debug/cache-status, verified in daemon.ts catch block and helper
+              contract test; scoped cleanup uses the child handle only; default endpoint resolves
+              through resolveDaemonEndpoint and uses 127.0.0.1. Categories searched: correctness,
+              fix-cycle regression, AC coverage, test quality/source scanning, cleanup/error
+              handling, endpoint/runtime integration, and lint/type/test gates."
+            created_at: 2026-05-07T23:50:32.151Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-07T23:37:59.405Z
-    updated_at: 2026-05-07T23:50:18.502Z
+    updated_at: 2026-05-07T23:50:32.151Z
     notes: []
