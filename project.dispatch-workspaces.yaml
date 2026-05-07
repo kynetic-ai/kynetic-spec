@@ -7396,18 +7396,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-retag-localhost-security-ac-annotations/01kqzwwg
-    canonical_branch_head: 14c3b055382af3c44acb7cde4b292eec1257882d
+    canonical_branch_head: 31b8dee57e515a9af47b40682194c9550343c4c6
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-07T00:20:14.491Z
+      updated_at: 2026-05-07T00:32:05.801Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-07T00:20:40.238Z
+      updated_at: 2026-05-07T00:32:05.801Z
     integration:
       status: pending
       detail: null
@@ -7415,7 +7415,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 14c3b055382af3c44acb7cde4b292eec1257882d
-      updated_at: 2026-05-07T00:20:14.491Z
+      updated_at: 2026-05-07T00:32:05.801Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KQZWWGPB8MCFYBKD8X66J867"
@@ -7423,9 +7423,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-07T00:20:40.238Z
-      last_reconciled_at: 2026-05-07T00:20:40.238Z
+      last_reconciled_at: 2026-05-07T00:32:05.801Z
       created_at: 2026-05-07T00:20:14.491Z
-      updated_at: 2026-05-07T00:20:40.238Z
+      updated_at: 2026-05-07T00:32:05.801Z
     workspace_id: dispatch-workspace-01KQZWWGPB8MCFYBKD8X66J867
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
