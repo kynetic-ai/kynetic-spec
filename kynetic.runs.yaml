@@ -37513,7 +37513,7 @@ runs:
     started_at: 2026-05-07T00:40:21.875Z
     completed_at: 2026-05-07T00:41:37.091Z
   - _ulid: 01KQZYJ7CHD6TC9B7YE2DS90B3
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -37567,10 +37567,14 @@ runs:
           requiring user judgment: first-class review evidence log destination or convention so
           review-gates evidence does not have to be stored as an unresolved nit thread. No approval
           captured, so no item will be created."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-07T00:51:15.038Z
-        completed_at: 2026-05-07T00:51:15.038Z
+        completed_at: 2026-05-07T00:51:23.639Z
+        notes: No approved items to capture. Existing coverage found for detached reviewer merge helper
+          success and validation-warning noise; untracked evidence-log friction left uncaptured
+          pending explicit product decision.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-07T00:49:20.785Z
+    completed_at: 2026-05-07T00:51:23.639Z
