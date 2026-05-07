@@ -37514,9 +37514,23 @@ runs:
     completed_at: 2026-05-07T00:41:37.091Z
   - _ulid: 01KQZYJ7CHD6TC9B7YE2DS90B3
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-07T00:49:20.785Z
+        completed_at: 2026-05-07T00:50:03.792Z
+        notes: "What worked well: The review record workflow gave a clear audit trail for checks and
+          verdicts. The detached reviewer merge helper did exactly what dispatch mode needed: merged
+          the canonical branch into dev from the detached snapshot, refreshed the occupied worktree,
+          and avoided manual checkout/merge risk. The annotation-only diff was easy to validate with
+          a combination of trait lookup, stale-id grep, targeted validation grep, and a fresh full
+          test run."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-07T00:50:03.792Z
+        completed_at: 2026-05-07T00:50:03.792Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-07T00:49:20.785Z
