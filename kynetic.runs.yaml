@@ -37891,7 +37891,7 @@ runs:
     completed_at: 2026-05-07T22:57:09.621Z
   - _ulid: 01KR2BGMF2J71CEW2AMDVNCEHN
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -37916,7 +37916,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-07T23:14:41.921Z
-        completed_at: 2026-05-07T23:14:41.921Z
+        completed_at: 2026-05-07T23:15:30.041Z
+        notes: "Coverage search: workflow-next ambiguity is already specified by @workflow-step-navigation
+          ac-4: when multiple active runs exist and no run id is provided, the command errors with a
+          list to choose from. That makes today’s friction expected behavior, not an untracked gap.
+          Lint-noise search found existing lint-related work and an observation around changed-file
+          lint usage; no new tracking needed from this session. No untracked systemic friction
+          remains with enough confidence to capture."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-07T23:15:30.041Z
+        completed_at: 2026-05-07T23:15:30.041Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-07T23:14:08.994Z
