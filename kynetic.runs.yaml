@@ -37739,7 +37739,7 @@ runs:
     completed_at: 2026-05-07T22:16:05.875Z
   - _ulid: 01KR2908FE5GQTG2YZ0FA1MZNS
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -37818,7 +37818,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-07T22:31:28.035Z
-        completed_at: 2026-05-07T22:31:28.035Z
+        completed_at: 2026-05-07T22:31:37.504Z
+        notes: "Proposed improvement: update the kspec-reflect skill workflow command reference so `kspec
+          workflow show` examples include the required run ref, e.g. `kspec workflow show @run-ref`,
+          and keep the `workflow next` examples consistent. This is a small
+          documentation/source-template fix that would prevent a predictable retry during
+          reflection."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-07T22:31:37.504Z
+        completed_at: 2026-05-07T22:31:37.504Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-07T22:30:15.278Z
