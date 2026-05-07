@@ -1,0 +1,189 @@
+_ulid: 01KQZWWGPB8MCFYBKD8X66J867
+slugs:
+  - task-retag-localhost-security-ac-annotations
+title: Retag localhost-security tests to current AC ids
+type: task
+description: >
+  ## What
+
+
+  Update daemon localhost-security AC annotations so tests and N/A coverage use the current
+  `@trait-localhost-security` acceptance-criterion ids introduced by
+  `@plan-daemon-network-endpoint-contract`.
+
+
+  Current validation reports stale annotations for deleted AC ids:
+
+
+  - `@trait-localhost-security ac-1`
+
+  - `@trait-localhost-security ac-2`
+
+  - `@trait-localhost-security ac-3`
+
+
+  Those annotations currently appear in:
+
+
+  - `tests/daemon-api/projects.test.ts`
+
+  - `tests/daemon-api/reviews-list.test.ts`
+
+  - `tests/daemon-api/server.test.ts`
+
+  - `tests/daemon-automation-routes.test.ts`
+
+  - `tests/daemon-command-api.test.ts`
+
+  - `tests/daemon-debug-routes.test.ts`
+
+  - `tests/daemon-diff-api.test.ts`
+
+  - `tests/daemon-review-verdicts-api.test.ts`
+
+  - `tests/daemon-review-websocket.test.ts`
+
+  - `tests/daemon-server.test.ts`
+
+  - `tests/daemon-web-ui-bun-route-order.test.ts`
+
+  - `tests/daemon-web-ui-entry.test.ts`
+
+  - `tests/daemon-web-ui-startup-asset-coherence.test.ts`
+
+  - `tests/e2e/api-watcher.spec.ts`
+
+
+  Use the current trait AC ids:
+
+
+  - `ac-loopback-default` — default server bind stays loopback-only.
+
+  - `ac-loopback-rejects-nonlocal` — loopback-only mode rejects non-local Host/Origin/remote-address
+  requests.
+
+  - `ac-external-host-explicit` — non-loopback/wildcard binding is honored only when explicitly
+  configured.
+
+  - `ac-external-warning` — external/wildcard effective host surfaces unauthenticated-exposure
+  warning.
+
+
+  For tests that genuinely exercise behavior, retag the annotation to the specific current AC. For
+  route/API tests where localhost-security behavior is inherited from daemon server middleware
+  rather than directly exercised, use machine-parseable N/A annotations with explicit reasons for
+  every applicable current trait AC.
+
+
+  Do not claim coverage for `ac-external-host-explicit` or `ac-external-warning` unless the test
+  actually exercises configured external binding or the warning path; use N/A where that behavior is
+  not owned by that route test.
+
+
+  The task is complete only when `kspec validate --warnings-ok -v` no longer reports:
+
+
+  - missing AC ids for `@trait-localhost-security ac-1`, `ac-2`, or `ac-3` in the listed files;
+
+  - missing own AC coverage for `@trait-localhost-security` caused by stale daemon endpoint
+  annotations;
+
+  - missing trait AC coverage for the plan-relevant localhost-security consumers listed below,
+  unless a remaining warning is proven pre-existing and unrelated to this plan and documented in the
+  task note.
+
+
+  Plan-relevant consumers to check: `@daemon-server`, `@daemon-command-api`,
+  `@daemon-agent-dispatch`, `@review-records-daemon-api`, `@review-content-diff-api`,
+  `@multi-directory-daemon`, and `@automation-api`.
+
+
+  ## Why
+
+
+  `@plan-daemon-network-endpoint-contract` renamed/tightened localhost-security semantics from the
+  old three-id trait shape to explicit current AC ids. The implementation tests now contain stale AC
+  annotations that validation cannot resolve.
+
+
+  That leaves the completed daemon endpoint work looking under-covered even when behavior exists,
+  and it weakens the plan’s central goal: making loopback defaults, external binding, and warning
+  semantics explicit and verifiable.
+
+
+  ## How
+
+
+  1. Inspect the current trait definition:
+
+     ```bash
+     kspec item get @trait-localhost-security
+     ```
+
+  2. Search for stale annotations:
+
+     ```bash
+     rg '@trait-localhost-security ac-[123]' tests
+     ```
+
+  3. For each stale annotation:
+     - map old default-loopback coverage to `ac-loopback-default` only where the test starts/configures the daemon or validates loopback bind semantics;
+     - map old non-localhost rejection coverage to `ac-loopback-rejects-nonlocal` only where Host/Origin/remote-address rejection is exercised;
+     - map old external-warning coverage to `ac-external-warning` only where warning output is exercised;
+     - add `ac-external-host-explicit` coverage only for tests that exercise an explicitly configured non-loopback or wildcard bind host;
+     - otherwise write a machine-parseable N/A annotation with the exact current AC id and a reason explaining which server-level test owns that behavior.
+
+  4. Keep edits annotation-only unless a test is missing behavior needed to make an annotation
+  truthful. If behavior is missing, add the smallest focused test in the same area rather than
+  broadening product behavior.
+
+
+  5. Run validation and focused tests:
+
+     ```bash
+     kspec validate --warnings-ok -v
+     ```
+
+     ```bash
+     mise exec -- npm test --      tests/daemon-server.test.ts      tests/daemon-api/server.test.ts      tests/daemon-api/projects.test.ts      tests/daemon-api/reviews-list.test.ts      tests/daemon-automation-routes.test.ts      tests/daemon-command-api.test.ts      tests/daemon-debug-routes.test.ts      tests/daemon-diff-api.test.ts      tests/daemon-review-verdicts-api.test.ts      tests/daemon-review-websocket.test.ts      tests/daemon-web-ui-bun-route-order.test.ts      tests/daemon-web-ui-entry.test.ts      tests/daemon-web-ui-startup-asset-coherence.test.ts
+     ```
+
+  6. Because `tests/e2e/api-watcher.spec.ts` only needs annotation retagging, a Playwright/E2E run
+  is not required for that file unless executable test code changes. If code changes there, run the
+  appropriate E2E target and document it.
+
+
+  7. Add a task note summarizing which warnings were eliminated and any remaining validation
+  warnings that are unrelated baseline debt.
+
+
+  ## Acceptance / done criteria
+
+
+  - No stale `@trait-localhost-security ac-1`, `ac-2`, or `ac-3` annotations remain in `tests/`.
+
+  - Current `@trait-localhost-security` AC ids are used accurately and not as blanket claims.
+
+  - N/A annotations are machine-parseable and include reasons.
+
+  - `kspec validate --warnings-ok -v` passes and no longer reports the plan-relevant stale/missing
+  localhost-security warnings described above.
+
+  - Focused daemon/API tests touched by the retagging pass under the project toolchain.
+spec_ref: "@trait-localhost-security"
+meta_ref: null
+plan_ref: "@plan-daemon-network-endpoint-contract"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - test
+  - spec-hygiene
+  - daemon
+  - coverage
+vcs_refs: []
+created_at: 2026-05-07T00:20:00.841Z
+todos: []
+automation: eligible

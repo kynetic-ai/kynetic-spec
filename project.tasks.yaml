@@ -27822,3 +27822,43 @@
   submitted_at: 2026-05-06T00:52:22.380Z
   completed_at: 2026-05-06T01:06:45.937Z
   automation: eligible
+- _ulid: 01KQZWWGPB8MCFYBKD8X66J867
+  slugs:
+    - task-retag-localhost-security-ac-annotations
+  title: Retag localhost-security tests to current AC ids
+  type: task
+  spec_ref: "@trait-localhost-security"
+  plan_ref: "@plan-daemon-network-endpoint-contract"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - test
+    - spec-hygiene
+    - daemon
+    - coverage
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-07T00:20:00.841Z
+  automation: eligible
+- _ulid: 01KQZWWHRNK5D88YH52HV8V2HK
+  slugs:
+    - task-clean-daemon-endpoint-lint-findings
+  title: Clean daemon endpoint affected-file lint findings
+  type: infra
+  spec_ref: "@daemon-network-endpoint-contract"
+  plan_ref: "@plan-daemon-network-endpoint-contract"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - infra
+    - test
+    - lint
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-07T00:20:01.941Z
+  automation: eligible
