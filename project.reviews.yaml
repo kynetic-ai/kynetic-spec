@@ -182296,7 +182296,18 @@ reviews:
     slugs: []
     title: Review task-update-daemon-test-specs fix cycle 1
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --refs --warnings-ok passed. Schema OK, references OK. Only 6 pre-existing
+          deprecated-reference warnings; warnings allowed by command.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-07T22:27:48.025Z
+        completed_at: 2026-05-07T22:27:48.025Z
     events:
       - _ulid: 01KR289CT4CKNESGHXXD2WF9K8
         actor: Jacob Chapel
@@ -182311,6 +182322,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-07T22:17:57.898Z
+      - _ulid: 01KR28VSWXF1R2MDFV9FHXW801
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-07T22:27:49.277Z
     examined_commit: 052c3bc90d6ca0208cb97aa7650fe60ca5fee36b
     external_links: []
     lifecycle_state: open
@@ -182323,5 +182341,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-07T22:17:46.052Z
-    updated_at: 2026-05-07T22:17:56.608Z
+    updated_at: 2026-05-07T22:27:48.025Z
     notes: []
