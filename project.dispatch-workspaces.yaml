@@ -7071,7 +7071,7 @@ workspaces:
         head: c7d9793e06a7add0d934af912ecbb52e1cfe7969
         last_seen_at: 2026-05-06T18:25:16.087Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-endpoint-regression-tests-01kqwzzj
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 14c3b055382af3c44acb7cde4b292eec1257882d
     bootstrap:
       status: succeeded
@@ -7569,9 +7569,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-07T00:35:05.133Z
-      last_reconciled_at: 2026-05-07T00:49:02.094Z
+      last_reconciled_at: 2026-05-07T00:51:47.864Z
       created_at: 2026-05-07T00:20:14.491Z
-      updated_at: 2026-05-07T00:49:02.921Z
+      updated_at: 2026-05-07T00:51:47.864Z
     workspace_id: dispatch-workspace-01KQZWWGPB8MCFYBKD8X66J867
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
