@@ -45360,11 +45360,18 @@ plans:
         parent: "@daemon-server"
         tags: [testing, lint, daemon]
         description: |
-          Static and runtime guardrails keep new daemon tests on the standardized
-          helpers. Direct daemon child-process startup and detached serve commands
-          are allowed only inside the shared helper implementation or in explicitly
-          documented exception tests.
+          Focused fixture contract tests plus static and runtime guardrails keep new
+          daemon tests on the standardized helpers. Direct daemon child-process
+          startup and detached serve commands are allowed only inside the shared
+          helper implementation or in explicitly documented exception tests.
         acceptance_criteria:
+          - id: ac-fixture-contract-tests-run
+            given: |
+              Shared daemon fixture or helper behavior is implemented or changed
+            when: |
+              daemon test validation runs
+            then: |
+              Focused helper tests exercise the fixture contract directly
           - id: ac-direct-daemon-spawn-flagged
             given: |
               A test file starts a real daemon directly outside the shared daemon
@@ -45430,7 +45437,7 @@ plans:
               daemon state do not create flaky failures. Daemon-backed tests use
               shared helpers for isolated HOME/config state, bounded readiness waits,
               actionable diagnostics, and scoped cleanup."
-            - Replace the acceptance criteria with these four ACs, preserving the
+            - Replace the acceptance criteria with these five ACs, preserving the
               slug @daemon-sensitive-cli-test-determinism:
               - ac-readiness-diagnostics
                 given: A daemon-sensitive test waits for process or server readiness
@@ -45449,6 +45456,10 @@ plans:
                 given: a daemon-sensitive test starts a daemon process
                 when: the test finishes or fails
                 then: cleanup targets only the daemon owned by that test fixture
+              - ac-fixture-contract-tests
+                given: shared daemon test fixture behavior is implemented or changed
+                when: daemon-sensitive test validation runs
+                then: focused helper tests exercise the fixture contract directly
           - Update @e2e-test-daemon-isolation exactly as follows:
             - Change the title to "Browser E2E Daemon Fixture Integration".
             - Replace the description with:
@@ -45501,7 +45512,8 @@ plans:
           only where the test still truthfully covers the rewritten behavior.
 
           Covers: @daemon-sensitive-cli-test-determinism ac-readiness-diagnostics,
-          ac-bounded-readiness, ac-isolated-home-config, ac-scoped-daemon-cleanup;
+          ac-bounded-readiness, ac-isolated-home-config, ac-scoped-daemon-cleanup,
+          ac-fixture-contract-tests;
           @e2e-test-daemon-isolation ac-uses-shared-fixture,
           ac-browser-endpoint-from-fixture, ac-isolated-e2e-state,
           ac-e2e-scoped-cleanup, ac-dynamic-port-propagation;
@@ -45549,8 +45561,10 @@ plans:
             cache-status response in the thrown error.
           - Stop fixture-owned daemons by child process handle or scoped lifecycle
             metadata only. Do not kill by port number.
-          - Add unit tests for fixture runtime selection, environment isolation,
-            endpoint defaults, readiness timeout diagnostics, and cleanup behavior.
+          - Add tests/helpers/daemon.test.ts as the focused contract test suite for
+            the helper itself. Cover runtime selection, environment isolation,
+            endpoint defaults, dynamic port propagation, readiness timeout diagnostics,
+            and cleanup behavior without relying only on migrated product-flow tests.
 
           How:
           Reuse createTempDir, cleanupTempDir, initGitRepo, createIsolatedKspecHome,
@@ -45561,17 +45575,21 @@ plans:
           the core logic through a wrapper without depending on Vitest globals.
 
           Testing:
-          Run the new helper unit tests with mise exec -- npm test -- --fresh and the
-          helper test file path. Then run mise exec -- npm test -- --fresh
-          tests/daemon-api/websocket-protocol.test.ts after the websocket migration
-          task lands.
+          First run the helper contract suite directly:
+          - mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts
+
+          Then run the migrated websocket consumer after the websocket migration task
+          lands:
+          - mise exec -- npm test -- --fresh tests/daemon-api/websocket-protocol.test.ts
 
           Covers: @daemon-backed-test-fixture-contract
           ac-real-daemon-tests-use-shared-fixture, ac-isolated-home-config,
           ac-isolated-project-data, ac-scoped-cleanup, ac-readiness-diagnostics,
           ac-bounded-readiness, ac-no-ambient-daemon-control;
           @daemon-test-endpoint-consistency ac-no-localhost-by-default,
-          ac-dynamic-port-propagation; @daemon-test-runtime-selection ac-node-default.
+          ac-dynamic-port-propagation; @daemon-test-runtime-selection ac-node-default;
+          @daemon-test-harness-guardrails ac-fixture-contract-tests-run;
+          @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests.
 
       - title: Migrate real daemon Vitest process tests to the shared fixture
         slug: task-migrate-real-daemon-vitest-tests
@@ -45720,6 +45738,11 @@ plans:
             configurable bind host, and JSON first-line port reporting.
           - Provide a helper that writes canonical daemon.connection.json metadata
             into an IsolatedKspecHome using src/daemon-shared/endpoint.ts helpers.
+          - Add focused mock-helper contract tests, for example
+            tests/helpers/mock-daemon.test.ts, for metadata writing, request
+            recording, error/hang modes, endpoint formatting, and cleanup. These
+            tests should validate the mock fixture directly instead of relying only on
+            CLI client consumer tests.
           - Migrate duplicate mock setup in:
             - tests/cli-daemon-proxy.test.ts
             - tests/cli-daemon-endpoint-regression.test.ts
@@ -45743,6 +45766,7 @@ plans:
 
           Testing:
           Run:
+          - mise exec -- npm test -- --fresh tests/helpers/mock-daemon.test.ts
           - mise exec -- npm test -- --fresh tests/cli-daemon-proxy.test.ts
           - mise exec -- npm test -- --fresh tests/cli-daemon-endpoint-regression.test.ts
           - mise exec -- npm test -- --fresh tests/cli-task-event-endpoint.test.ts tests/daemon-status-endpoint.test.ts
@@ -45752,7 +45776,8 @@ plans:
           ac-mock-metadata-fidelity, ac-dynamic-port-propagation;
           @trait-daemon-endpoint-consumer ac-uses-reported-endpoint,
           ac-wildcard-not-destination; @daemon-network-endpoint-contract
-          ac-tests-use-resolved-endpoint.
+          ac-tests-use-resolved-endpoint; @daemon-test-harness-guardrails
+          ac-fixture-contract-tests-run.
 
       - title: Standardize in-process daemon API fixtures
         slug: task-standardize-in-process-daemon-api-fixtures
@@ -45779,6 +45804,9 @@ plans:
             in-process needs: project fixture setup, app creation with disabled
             watchers, request construction, JSON response parsing, and broadcast
             capture helpers for websocket-related route side effects.
+          - Add or update focused tests in tests/daemon-api/helpers.test.ts for any
+            new in-process helper behavior so route-level consumer tests are not the
+            only validation surface.
           - Migrate duplicate makeRequest, setupFixtures, and temporary project setup
             code to the shared in-process helpers.
           - Do not convert handler-level tests to real daemon process tests unless the
@@ -45800,7 +45828,8 @@ plans:
           - mise exec -- npm test -- --fresh tests/daemon-api/server.test.ts tests/daemon-api/tasks.test.ts
           - mise exec -- npm test -- --fresh tests/daemon-review-websocket.test.ts tests/daemon-review-verdicts-api.test.ts
 
-          Covers: @daemon-test-mode-boundaries ac-in-process-route-tests-no-child-process.
+          Covers: @daemon-test-mode-boundaries ac-in-process-route-tests-no-child-process;
+          @daemon-test-harness-guardrails ac-fixture-contract-tests-run.
 
       - title: Enforce daemon test fixture usage with guardrails
         slug: task-enforce-daemon-test-fixture-usage
@@ -45884,8 +45913,11 @@ plans:
             strings, or documented as a local exception.
           - Run kspec validate --refs --warnings-ok and fix any stale refs introduced
             by rewritten AC IDs or new annotations.
-          - Run focused test slices for real daemon, mock daemon, in-process API, lint
-            guardrail, and Playwright fixture coverage.
+          - Run focused test slices for fixture helper contracts, real daemon, mock
+            daemon, in-process API, lint guardrail, and Playwright fixture coverage.
+          - Confirm helper contract test files exist for each changed helper category
+            so migrated product-flow tests are not the only evidence for the testing
+            infrastructure specs.
           - Run the full Vitest suite with mise exec -- npm test -- --fresh after the
             focused slices pass.
           - If the full Playwright suite is too slow or environment-bound for the
@@ -45900,6 +45932,7 @@ plans:
           Testing:
           Required commands:
           - mise exec -- npm run build:daemon
+          - mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts tests/helpers/mock-daemon.test.ts
           - mise exec -- npm test -- --fresh tests/daemon-api/websocket-protocol.test.ts tests/daemon-build.test.ts
           - mise exec -- npm test -- --fresh tests/cli-daemon-proxy.test.ts tests/cli-daemon-endpoint-regression.test.ts tests/cli-task-event-endpoint.test.ts tests/daemon-status-endpoint.test.ts
           - mise exec -- npm test -- --fresh tests/daemon-api/helpers.test.ts tests/daemon-api/server.test.ts tests/daemon-api/tasks.test.ts
@@ -45909,8 +45942,9 @@ plans:
 
           Covers: verification for @daemon-backed-test-fixture-contract,
           @daemon-test-endpoint-consistency, @daemon-test-runtime-selection,
-          @daemon-test-mode-boundaries, @daemon-test-harness-guardrails,
-          @daemon-sensitive-cli-test-determinism, @e2e-test-daemon-isolation, and
+          @daemon-test-mode-boundaries, @daemon-test-harness-guardrails
+          ac-fixture-contract-tests-run, @daemon-sensitive-cli-test-determinism
+          ac-fixture-contract-tests, @e2e-test-daemon-isolation, and
           @daemon-network-endpoint-contract ac-tests-use-resolved-endpoint.
       ```
 
@@ -45935,6 +45969,21 @@ plans:
         process mock to accept requests.
       - In-process daemon API tests keep using app.handle because they are fast route
         tests and should not gain process-lifecycle flakiness.
+
+      The plan validates testing-related specs through three separate evidence types:
+
+      focused contract tests for the helper APIs, representative consumer tests that
+
+      prove migrated daemon flows still work, and static source-audit guardrails for
+
+      repo-wide structural rules that runtime tests cannot prove by themselves. Helper
+
+      contract tests are required for changed real-daemon, mock-daemon, and in-process
+
+      helper behavior so a fixture regression fails close to the fixture instead of
+
+      surfacing only as a broad product-flow failure.
+
 
       The first task is intentionally a concrete spec-update task. It rewrites two
 
@@ -45973,3 +46022,8 @@ plans:
           lifecycle AC"
         author: Jacob Chapel
         created_at: 2026-05-07T20:05:19.206Z
+      - _ulid: 01KR21YYAPNB5WPW6S7HCRAY9F
+        content: "Address validation concern: add explicit fixture/helper contract tests and validation
+          surfaces"
+        author: Jacob Chapel
+        created_at: 2026-05-07T20:27:12.086Z
