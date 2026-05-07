@@ -31,7 +31,6 @@ import { createServer as createNetServer } from "node:net";
 import {
   existsSync,
   mkdirSync,
-  readFileSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
@@ -44,6 +43,7 @@ import {
   createTempDir,
   initGitRepo,
   kspec,
+  readTestOutputSync,
   testUlid,
   type IsolatedKspecHome,
 } from "./helpers/cli.js";
@@ -118,7 +118,7 @@ function stopMockDaemon(mock: MockDaemon): Promise<void> {
 
 function readRecordedRequests(recordPath: string): RecordedRequest[] {
   if (!existsSync(recordPath)) return [];
-  const raw = readFileSync(recordPath, "utf8");
+  const raw = readTestOutputSync(recordPath, "utf-8");
   return raw
     .split("\n")
     .filter((line) => line.length > 0)
@@ -168,7 +168,7 @@ function writeKspecProject(
 
 function writeMetadata(home: IsolatedKspecHome, mock: MockDaemon): void {
   const apiUrl = formatUrl("http", mock.bindHost, mock.port);
-  const wsUrl = formatUrl("ws", mock.bindHost, mock.port) + "/ws";
+  const wsUrl = `${formatUrl("ws", mock.bindHost, mock.port)}/ws`;
 
   // PID file holds the test runner's pid so PidFileManager.isDaemonRunning()
   // reports running=true. The mock is a different process; it doesn't matter

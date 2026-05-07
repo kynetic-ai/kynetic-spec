@@ -23,7 +23,6 @@ import type { ConnectionData, ConnectedEvent } from "./websocket/types.js";
 import { PidFileManager } from "./pid.js";
 import {
   DEFAULT_BIND_HOST,
-  buildDaemonUrls,
   formatHostForUrl,
   isIpv6Literal,
   resolveDaemonEndpoint,
@@ -58,7 +57,6 @@ import {
   startShadowSyncForProject,
   stopShadowSyncForProject,
   stopAllShadowSync,
-  createShadowSyncOnPullHandler,
 } from "./shadow-sync-manager.js";
 import { registerWebUiEntryRoutes } from "./web-ui-entry.js";
 import { registerWebUiNodeStaticRoutes } from "./web-ui-static.js";
@@ -1059,14 +1057,16 @@ export async function createServer(options: ServerOptions) {
   // Both .kspec/ and .kspec-sessions/ changes flow through handleFileChange;
   // fileToDomain() maps YAML files to their domains and ULID-prefixed session
   // paths to the sessions domain.
-  projectContextManager.setCacheInvalidationCallback((projectPath, kspecDir, file, content) => {
-    const cache = entityCacheModule.getEntityCache(projectPath);
-    if (!cache) return;
+  projectContextManager.setCacheInvalidationCallback(
+    (projectPath, projectKspecDir, file, content) => {
+      const cache = entityCacheModule.getEntityCache(projectPath);
+      if (!cache) return;
 
-    cache.handleFileChange(kspecDir, file, content).catch((err: unknown) => {
-      console.error(`[entity-cache] Error handling file change for ${projectPath}:`, err);
-    });
-  });
+      cache.handleFileChange(projectKspecDir, file, content).catch((err: unknown) => {
+        console.error(`[entity-cache] Error handling file change for ${projectPath}:`, err);
+      });
+    },
+  );
 
   // AC: @daemon-entity-cache ac-unregister-cleanup — dispose cache on any unregister path
   // (including watcher permanent failure, not just API-driven unregister)
