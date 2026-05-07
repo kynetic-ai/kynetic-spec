@@ -8093,7 +8093,7 @@ workspaces:
         head: 62b969e107e4bdfb9c085d60585a385082c9fbfd
         last_seen_at: 2026-05-07T00:41:55.514Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-clean-daemon-endpoint-lint-findings-01kqzwwh
-  - active_role: worker
+  - active_role: null
     base_branch_point: 1ee4204a13801e4d7c03ee503b00570b0d0791d7
     bootstrap:
       status: succeeded
@@ -8424,12 +8424,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-07T20:50:02.630Z
+      updated_at: 2026-05-07T21:39:40.215Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-07T20:50:02.630Z
+      updated_at: 2026-05-07T21:39:40.215Z
     integration:
       status: pending
       detail: null
@@ -8437,17 +8437,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1ee4204a13801e4d7c03ee503b00570b0d0791d7
-      updated_at: 2026-05-07T20:50:02.630Z
-    lifecycle_state: active
+      updated_at: 2026-05-07T21:39:40.215Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KR22GJER2BRA20M876PEEREZ"
     task_slug: task-update-daemon-test-specs
     timestamps:
       closed_at: null
       last_active_at: 2026-05-07T20:39:34.520Z
-      last_reconciled_at: 2026-05-07T20:50:02.630Z
+      last_reconciled_at: 2026-05-07T21:39:40.215Z
       created_at: 2026-05-07T20:39:09.432Z
-      updated_at: 2026-05-07T20:50:02.630Z
+      updated_at: 2026-05-07T21:39:40.215Z
     workspace_id: dispatch-workspace-01KR22GJER2BRA20M876PEEREZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
