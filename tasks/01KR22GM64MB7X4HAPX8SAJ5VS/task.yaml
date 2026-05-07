@@ -64,5 +64,14 @@ tags:
   - lint
   - daemon
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-05-07T20:38:33.047Z
 created_at: 2026-05-07T20:36:51.524Z
 todos: []
+automation: eligible
