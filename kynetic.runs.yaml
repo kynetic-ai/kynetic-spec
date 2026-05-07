@@ -37847,9 +37847,22 @@ runs:
     completed_at: 2026-05-07T22:32:09.751Z
   - _ulid: 01KR2ADTHH0B4DGPQ7PM64Q79D
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-07T22:55:08.337Z
+        completed_at: 2026-05-07T22:56:01.817Z
+        notes: "Searched: 13 observations, 10 inbox items. Existing relevant items: @01KQYXP3 (spawn
+          dist/daemon/index.js directly pattern - documented), @01KQZ01G (websocket-protocol fixture
+          drift - this task addresses), @01KQZ3VH (KSPEC_NO_DAEMON defaults in kspec helper),
+          @01KQZ50F (daemon-fixture-heavy reviews - meta), @01KR272X (detached reviews mutate specs
+          - prior session). No duplicates of friction I observed in this session."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-07T22:56:01.817Z
+        completed_at: 2026-05-07T22:56:01.817Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-07T22:55:08.337Z
