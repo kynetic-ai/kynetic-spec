@@ -7918,12 +7918,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-07T00:41:49.116Z
+      updated_at: 2026-05-07T00:41:55.514Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-07T00:41:49.116Z
+      updated_at: 2026-05-07T00:41:55.514Z
     integration:
       status: pending
       detail: null
@@ -7931,24 +7931,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 14c3b055382af3c44acb7cde4b292eec1257882d
-      updated_at: 2026-05-07T00:41:49.116Z
-    lifecycle_state: ready
+      updated_at: 2026-05-07T00:41:55.514Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KQZWWHRNK5D88YH52HV8V2HK"
     task_slug: task-clean-daemon-endpoint-lint-findings
     timestamps:
       closed_at: null
       last_active_at: 2026-05-07T00:35:33.651Z
-      last_reconciled_at: 2026-05-07T00:41:49.116Z
+      last_reconciled_at: 2026-05-07T00:41:55.514Z
       created_at: 2026-05-07T00:35:09.186Z
-      updated_at: 2026-05-07T00:41:49.116Z
+      updated_at: 2026-05-07T00:41:55.514Z
     workspace_id: dispatch-workspace-01KQZWWHRNK5D88YH52HV8V2HK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 62b969e107e4bdfb9c085d60585a385082c9fbfd
+        last_seen_at: 2026-05-07T00:41:55.514Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-clean-daemon-endpoint-lint-findings-01kqzwwh-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-clean-daemon-endpoint-lint-findings/01kqzwwh
-        head: 14c3b055382af3c44acb7cde4b292eec1257882d
-        last_seen_at: 2026-05-07T00:35:09.186Z
+        head: 62b969e107e4bdfb9c085d60585a385082c9fbfd
+        last_seen_at: 2026-05-07T00:41:55.514Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-clean-daemon-endpoint-lint-findings-01kqzwwh
