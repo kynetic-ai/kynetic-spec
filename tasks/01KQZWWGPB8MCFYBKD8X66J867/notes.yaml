@@ -22,3 +22,42 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-07T00:23:35.440Z
+  - _ulid: 01KQZXJ9WN9GE6JZ553TNMPZ82
+    content: >-
+      Eliminated stale @trait-localhost-security ac-1/2/3 annotations across all 14 listed test
+      files plus tests/e2e/api-watcher.spec.ts. Replaced them with current trait ids
+      (ac-loopback-default, ac-loopback-rejects-nonlocal, ac-external-host-explicit,
+      ac-external-warning) where they exercise behavior, and machine-parseable N/A annotations
+      elsewhere referencing the server-level owners (cli-serve.test.ts, daemon-api/server.test.ts,
+      daemon-server.test.ts).
+
+
+      Behavioral coverage retagged (true coverage):
+
+      - tests/daemon-server.test.ts middleware tests now claim ac-loopback-rejects-nonlocal (accept
+      loopback + reject non-local Host).
+
+      - tests/daemon-api/server.test.ts Localhost Security suite now claims
+      ac-loopback-rejects-nonlocal via the production middleware on a real Elysia app.
+
+      - tests/cli-serve.test.ts: added ac-loopback-default to the default-detached-startup test
+      (proves 127.0.0.1 bind via metadata + direct fetch) and ac-external-host-explicit to the
+      configured non-default host (127.0.0.2) test. ac-external-warning was already covered.
+
+
+      Validation: kspec validate --warnings-ok -v passes; no remaining 'Missing AC' warnings for
+      @trait-localhost-security and no remaining 'Uncovered trait ACs' warnings for
+      @trait-localhost-security on the plan-relevant consumer specs (@daemon-server,
+      @daemon-command-api, @daemon-agent-dispatch, @review-records-daemon-api,
+      @review-content-diff-api, @multi-directory-daemon, @automation-api).
+
+
+      Tests: 234 daemon tests pass (focused suite); 40 cli-serve tests pass.
+
+
+      Remaining unrelated baseline warnings exist (deprecated refs to @session-summary-cache and
+      @task-activity-git-query, malformed @trait-filterable-list ac tokens in cli-agent-commands,
+      unresolved bare @ refs) — none are caused by this retag and none touch localhost-security.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-07T00:31:54.773Z
