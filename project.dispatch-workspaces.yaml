@@ -8055,11 +8055,11 @@ workspaces:
     canonical_branch: dispatch/task/task-clean-daemon-endpoint-lint-findings/01kqzwwh
     canonical_branch_head: 62b969e107e4bdfb9c085d60585a385082c9fbfd
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-07T00:56:02.924Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-07T00:56:03.558Z
     health:
       status: healthy
       issues: []
@@ -8073,7 +8073,7 @@ workspaces:
       target_branch: dev
       target_commit: 14c3b055382af3c44acb7cde4b292eec1257882d
       updated_at: 2026-05-07T00:56:02.924Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KQZWWHRNK5D88YH52HV8V2HK"
     task_slug: task-clean-daemon-endpoint-lint-findings
@@ -8082,7 +8082,7 @@ workspaces:
       last_active_at: 2026-05-07T00:42:22.461Z
       last_reconciled_at: 2026-05-07T00:56:02.924Z
       created_at: 2026-05-07T00:35:09.186Z
-      updated_at: 2026-05-07T00:56:02.924Z
+      updated_at: 2026-05-07T00:56:03.558Z
     workspace_id: dispatch-workspace-01KQZWWHRNK5D88YH52HV8V2HK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
