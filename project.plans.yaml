@@ -45027,7 +45027,7 @@ plans:
       This plan does not add daemon authentication, TLS, remote user management, or a
       LAN discovery workflow. It only makes configured external binding explicit,
       warned, and internally consistent with existing unauthenticated daemon APIs.
-    status: active
+    status: completed
     approved_at: 2026-05-05T21:15:25.993Z
     derived_specs:
       - "@trait-daemon-endpoint-consumer"
