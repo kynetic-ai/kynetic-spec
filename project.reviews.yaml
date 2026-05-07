@@ -181018,3 +181018,29 @@ reviews:
     created_at: 2026-05-07T00:36:06.167Z
     updated_at: 2026-05-07T00:36:17.698Z
     notes: []
+  - _ulid: 01KQZY7E3QBZMDWB6DZ1W7QMJP
+    slugs: []
+    title: Review task-clean-daemon-endpoint-lint-findings
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQZY7E3PJMAGJN5CKVMMR1YG
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-07T00:43:27.223Z
+    examined_commit: 62b969e107e4bdfb9c085d60585a385082c9fbfd
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQZWWHRNK5D88YH52HV8V2HK"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-07T00:43:27.223Z
+    updated_at: null
+    notes: []
