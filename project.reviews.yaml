@@ -182526,6 +182526,13 @@ reviews:
           status: pass
           name: changed-file lint
         timestamp: 2026-05-07T23:12:52.024Z
+      - _ulid: 01KR2BEVZ3171C88ERT7ZDQBA6
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR2BETNSVA6VNJ9EWP68H4BM
+        timestamp: 2026-05-07T23:13:11.139Z
     examined_commit: 6b1e1f472bd1d68ff10079cdd59eeebfca32bfe4
     external_links: []
     lifecycle_state: open
@@ -182558,7 +182565,26 @@ reviews:
               missing."
             created_at: 2026-05-07T23:11:32.000Z
         kind: blocker
+      - _ulid: 01KR2BETNSVA6VNJ9EWP68H4BM
+        entries:
+          - _ulid: 01KR2BETNSMY57YSET8M7SE0T9
+            author: Jacob Chapel
+            body: "Evidence log (non-blocking): Files read: tests/helpers/daemon.ts,
+              tests/helpers/daemon.test.ts, tests/helpers/cli.ts, src/daemon-shared/endpoint.ts,
+              src/cli/commands/serve.ts, packages/daemon/src/index.ts,
+              packages/daemon/src/server.ts, packages/daemon/src/routes/debug.ts,
+              packages/daemon/src/project-context.ts, src/parser/yaml.ts,
+              tests/e2e/fixtures/test-base.ts. Commands run: kspec task get, kspec item get for
+              linked daemon specs, kspec validate / --warnings-ok, AC annotation search, focused
+              helper tests, full npm test, typecheck, changed-file oxlint, ad hoc custom readiness
+              timeout reproduction. Claims verified: default runtime/endpoint/isolated
+              project/cleanup paths are covered by helper tests; custom readiness diagnostics
+              currently produce null lastHealth/lastCacheStatus. Categories searched: correctness,
+              AC alignment, readiness edge cases, cleanup scope, environment isolation, endpoint
+              consistency, test quality, and integration with daemon project-root handling."
+            created_at: 2026-05-07T23:13:09.817Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-07T22:59:50.017Z
-    updated_at: 2026-05-07T23:12:50.676Z
+    updated_at: 2026-05-07T23:13:09.817Z
     notes: []
