@@ -37738,7 +37738,7 @@ runs:
     started_at: 2026-05-07T22:12:17.663Z
     completed_at: 2026-05-07T22:16:05.875Z
   - _ulid: 01KR2908FE5GQTG2YZ0FA1MZNS
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -37835,7 +37835,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-07T22:31:52.137Z
-        completed_at: 2026-05-07T22:31:52.137Z
+        completed_at: 2026-05-07T22:32:09.751Z
+        notes: "Captured one inbox item: @01KR293G. It tracks updating the kspec-reflect skill workflow
+          command examples to include required run refs, especially `kspec workflow show @run-ref`.
+          No tasks were created. No additional friction items were captured because test
+          runtime/cache behavior is already documented and the shell quoting issue is covered by
+          existing command-payload conventions."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-07T22:30:15.278Z
+    completed_at: 2026-05-07T22:32:09.751Z
