@@ -182643,7 +182643,18 @@ reviews:
     slugs: []
     title: Review shared daemon test fixture core (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts: 6 tests passed; test
+          runner reported Tests passed."
+        name: helper contract tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-07T23:49:50.000Z
+        completed_at: 2026-05-07T23:49:50.000Z
     events:
       - _ulid: 01KR2CW9BCDEHX730555009JMV
         actor: Jacob Chapel
@@ -182658,6 +182669,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-07T23:38:23.715Z
+      - _ulid: 01KR2DJ0JPER2JV6F2GMFDQSMN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: helper contract tests
+        timestamp: 2026-05-07T23:49:51.319Z
     examined_commit: ab433d4eaf96d6b421cfc89771e283a3a768fcb8
     external_links: []
     lifecycle_state: open
@@ -182670,5 +182688,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-07T23:37:59.405Z
-    updated_at: 2026-05-07T23:38:22.415Z
+    updated_at: 2026-05-07T23:49:50.000Z
     notes: []
