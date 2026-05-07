@@ -116,8 +116,13 @@ description: >
 spec_ref: "@daemon-network-endpoint-contract"
 meta_ref: null
 plan_ref: "@plan-daemon-network-endpoint-contract"
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev via detached reviewer helper. Clean lint-only endpoint cleanup:
+  removed unused imports, renamed the cache invalidation callback parameter to avoid shadowing,
+  routed recording-daemon output reads through readTestOutputSync, and preserved daemon endpoint
+  behavior. Review @01KQZY7E approved with focused oxlint, targeted endpoint tests, full npm test,
+  validate, and diff whitespace checks passing."
 depends_on: []
 context: []
 priority: 3
@@ -178,8 +183,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-07T00:43:30.571Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev via detached reviewer helper. Clean lint-only endpoint cleanup: removed unused
+          imports, renamed the cache invalidation callback parameter to avoid shadowing, routed
+          recording-daemon output reads through readTestOutputSync, and preserved daemon endpoint
+          behavior. Review @01KQZY7E approved with focused oxlint, targeted endpoint tests, full npm
+          test, validate, and diff whitespace checks passing."
+        previous: null
+      completed_at:
+        new: 2026-05-07T00:55:38.654Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-07T00:55:38.662Z
 created_at: 2026-05-07T00:20:01.941Z
 started_at: 2026-05-07T00:35:52.382Z
 submitted_at: 2026-05-07T00:39:55.766Z
+completed_at: 2026-05-07T00:55:38.654Z
 todos: []
 automation: eligible
