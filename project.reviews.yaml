@@ -182230,6 +182230,12 @@ reviews:
         payload:
           thread_ulid: 01KR26V62KKEEQ40H0CKRK104H
         timestamp: 2026-05-07T22:11:05.540Z
+      - _ulid: 01KR27XEB28KNJNDXZ4NV7NTV1
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR26V62KKEEQ40H0CKRK104H
+        timestamp: 2026-05-07T22:11:14.402Z
     examined_commit: 8ca62d564f27ba9b3cf0dcbdb9ef529a42cafee4
     external_links: []
     lifecycle_state: closed
@@ -182273,6 +182279,8 @@ reviews:
               coverage when the shared-fixture wrapper is implemented under a separate task."
             created_at: 2026-05-07T22:11:04.204Z
         kind: blocker
+        resolved_at: 2026-05-07T22:11:12.977Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -182282,5 +182290,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-07T21:53:01.374Z
     created_at: 2026-05-07T21:41:12.163Z
-    updated_at: 2026-05-07T22:11:04.204Z
+    updated_at: 2026-05-07T22:11:12.977Z
     notes: []
