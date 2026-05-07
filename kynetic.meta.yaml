@@ -17134,6 +17134,28 @@ observations:
     resolved: false
     workflow_ref: "@01KQZ8EF"
     created_at: 2026-05-06T18:24:47.788Z
+  - _ulid: 01KR272WTT25VA9RVPSBSE9KYF
+    type: success
+    content: Reviewing AC-retag-only patches worked best when explicit AC annotation searches were
+      paired with surrounding behavior reads. In this session, kspec item get plus rg for old/new AC
+      IDs and direct fixture context review caught false AC coverage that validate and npm test
+      could not detect.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-07T21:56:44.506Z
+  - _ulid: 01KR272X2T2ZC94Q75JB2Z0CV7
+    type: friction
+    content: Detached reviews of tasks that mutate specs in shadow state require manual correlation
+      between task notes, kspec item get output, code diffs, and AC annotations. A review affordance
+      that surfaces spec-shadow deltas next to the code diff would reduce reviewer effort and lower
+      the chance of rubber-stamping retagged annotations.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-07T21:56:44.762Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
