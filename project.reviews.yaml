@@ -181304,7 +181304,18 @@ reviews:
     slugs: []
     title: "Plan review: Daemon Test Fixture Standardization"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/daemon-test-fixture-standardization.md --dry-run completed
+          successfully; stored content previewed without changes.
+        name: Plan import dry-run
+        required: true
+        runner: kspec
+        created_at: 2026-05-07T19:57:41.847Z
+        completed_at: 2026-05-07T19:57:41.847Z
     events:
       - _ulid: 01KR206B55B41CZS8ATC22BF9R
         actor: Jacob Chapel
@@ -181340,6 +181351,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR208EBXSXQS03C2QRZCYHYY
         timestamp: 2026-05-07T19:57:27.623Z
+      - _ulid: 01KR208YSZMAS35950FF4BRVXN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import dry-run
+        timestamp: 2026-05-07T19:57:43.103Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -181403,5 +181421,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-07T19:56:17.446Z
-    updated_at: 2026-05-07T19:57:26.269Z
+    updated_at: 2026-05-07T19:57:41.847Z
     notes: []
