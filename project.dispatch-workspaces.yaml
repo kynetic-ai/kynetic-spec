@@ -8093,7 +8093,7 @@ workspaces:
         head: 62b969e107e4bdfb9c085d60585a385082c9fbfd
         last_seen_at: 2026-05-07T00:41:55.514Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-clean-daemon-endpoint-lint-findings-01kqzwwh
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 1ee4204a13801e4d7c03ee503b00570b0d0791d7
     bootstrap:
       status: succeeded
@@ -8594,9 +8594,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-07T22:16:51.079Z
-      last_reconciled_at: 2026-05-07T22:30:03.509Z
+      last_reconciled_at: 2026-05-07T22:32:29.288Z
       created_at: 2026-05-07T20:39:09.432Z
-      updated_at: 2026-05-07T22:30:04.242Z
+      updated_at: 2026-05-07T22:32:29.288Z
     workspace_id: dispatch-workspace-01KR22GJER2BRA20M876PEEREZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
