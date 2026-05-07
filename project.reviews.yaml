@@ -181516,3 +181516,29 @@ reviews:
     created_at: 2026-05-07T19:56:17.446Z
     updated_at: 2026-05-07T19:58:24.366Z
     notes: []
+  - _ulid: 01KR20JCW7JPZYDZ55FKN4RKDD
+    slugs: []
+    title: "Plan re-review: Daemon Test Fixture Standardization (cycle 2)"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR20JCW6XDSFBY0HMHQTJ8S6
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-07T20:02:52.422Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-daemon-test-fixture-standardization"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-07T20:02:52.423Z
+    updated_at: null
+    notes: []
