@@ -180985,3 +180985,29 @@ reviews:
     created_at: 2026-05-06T18:26:13.126Z
     updated_at: 2026-05-06T18:37:44.208Z
     notes: []
+  - _ulid: 01KQZXSZCQF2FDJVPBWQPR9Y5K
+    slugs: []
+    title: Review retag localhost-security AC annotations
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KQZXSZCQBYDK97S17Q3VN5AH
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-07T00:36:06.167Z
+    examined_commit: 31b8dee57e515a9af47b40682194c9550343c4c6
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KQZWWGPB8MCFYBKD8X66J867"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-07T00:36:06.167Z
+    updated_at: null
+    notes: []
