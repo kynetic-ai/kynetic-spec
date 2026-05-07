@@ -182425,6 +182425,18 @@ reviews:
         runner: kspec
         created_at: 2026-05-07T23:12:07.961Z
         completed_at: 2026-05-07T23:12:07.961Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts: 6 tests passed in
+          tests/helpers/daemon.test.ts; 5 suites passed; log
+          /tmp/kspec-test-cache/01KR2AJVGVYQHBAG4JSHENEX32/928857f533548ed7.log"
+        name: helper contract tests
+        required: true
+        runner: npm
+        created_at: 2026-05-07T23:12:18.285Z
+        completed_at: 2026-05-07T23:12:18.285Z
     events:
       - _ulid: 01KR2APDM1DP6W32P8N06KVRPP
         actor: Jacob Chapel
@@ -182453,6 +182465,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-07T23:12:09.332Z
+      - _ulid: 01KR2BD9K6K57MDV8XFTSGGFZG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: helper contract tests
+        timestamp: 2026-05-07T23:12:19.558Z
     examined_commit: 6b1e1f472bd1d68ff10079cdd59eeebfca32bfe4
     external_links: []
     lifecycle_state: open
@@ -182487,5 +182506,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-07T22:59:50.017Z
-    updated_at: 2026-05-07T23:12:07.961Z
+    updated_at: 2026-05-07T23:12:18.285Z
     notes: []
