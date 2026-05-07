@@ -27927,6 +27927,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-07T20:36:50.341Z
+  automation: eligible
 - _ulid: 01KR22GKACR7PZYFXZS9KEYVMQ
   slugs:
     - task-migrate-playwright-daemon-fixture
