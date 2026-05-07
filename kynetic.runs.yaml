@@ -37699,7 +37699,7 @@ runs:
     completed_at: 2026-05-07T21:56:57.740Z
   - _ulid: 01KR27ZC3ZCYABNKQ6QG2E4PN6
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -37713,7 +37713,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-07T22:15:40.870Z
-        completed_at: 2026-05-07T22:15:40.870Z
+        completed_at: 2026-05-07T22:15:50.391Z
+        notes: "High-confidence candidate frictions: (1) needs_work→start→submit ceremony (already tracked:
+          @01KMR544, @01KP8BQ2); (2) review thread bodies truncated in text output requiring --json
+          (already tracked: @01KMNHAVK and success @01KMNK73). High-confidence success: clear
+          blocker thread with file:line + reasoning enabled fast targeted fix. Already-tracked
+          patterns dominated, no novel high-confidence items."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-07T22:15:50.391Z
+        completed_at: 2026-05-07T22:15:50.391Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-07T22:12:17.663Z
