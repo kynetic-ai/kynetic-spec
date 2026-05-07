@@ -934,6 +934,9 @@ features:
           contract applies to Vitest and Playwright tests that start a real daemon
           process, while allowing unit tests and in-process route tests to use
           narrower fixtures that do not start a daemon.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
