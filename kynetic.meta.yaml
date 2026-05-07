@@ -17156,6 +17156,20 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-07T21:56:44.762Z
+  - _ulid: 01KR2AHATZ17B12CVMZJJH048N
+    type: success
+    content: "Daemon-backed test fixtures get implicit HOME-isolation coverage from the daemon's
+      writePidFileExclusive on $HOME/.config/kspec/daemon.pid — when ambient daemon state isn't
+      isolated, the test child fails with EEXIST and 'Daemon already running'. Any successful test
+      daemon spawn therefore behaviorally proves HOME isolation works; no separate assertion is
+      needed. Confirmed in @task-implement-shared-daemon-test-fixture: a manual spawn without HOME
+      override failed with EEXIST, while the helper-driven spawn (HOME pointed at the temp .home via
+      createIsolatedKspecHome) succeeded in 378ms. Useful pattern for reviewers verifying isolation:
+      presence of a successful real-daemon test is itself the gate."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-07T22:57:03.327Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
