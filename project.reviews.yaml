@@ -181326,6 +181326,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR20790XMSJC2KFM5BXVA5WX
         timestamp: 2026-05-07T19:56:49.339Z
+      - _ulid: 01KR20850GK1J0M704ZJDNQRX3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR2083RCP53F7WJGC73PAAT4
+        timestamp: 2026-05-07T19:57:16.688Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -181354,7 +181361,24 @@ reviews:
               behavioral and timeless.
             created_at: 2026-05-07T19:56:48.029Z
         kind: blocker
+      - _ulid: 01KR2083RCP53F7WJGC73PAAT4
+        anchor:
+          type: structured
+          field: ac-resolved-endpoint-source
+          ref: "@daemon-test-endpoint-consistency"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KR2083RCAH1W4TTPSRC4WEGJ
+            author: Jacob Chapel
+            body: AC ac-resolved-endpoint-source exposes fixture field names (api_url/ws_url) in the Then
+              clause, and ac-mock-metadata-fidelity names daemon.connection.json. Per the spec
+              language rules, ACs should describe the observable endpoint behavior, not internal
+              field or file names. Rewrite these to say the request uses the fixture-provided HTTP
+              API endpoint or WebSocket endpoint, and mock metadata follows the canonical daemon
+              connection metadata contract; keep exact field/file names in task How/What details.
+            created_at: 2026-05-07T19:57:15.404Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-07T19:56:17.446Z
-    updated_at: 2026-05-07T19:56:48.029Z
+    updated_at: 2026-05-07T19:57:15.404Z
     notes: []
