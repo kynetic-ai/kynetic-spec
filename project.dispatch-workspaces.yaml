@@ -9087,12 +9087,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-07T23:54:04.320Z
+      updated_at: 2026-05-07T23:54:14.790Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-07T23:54:05.768Z
+      updated_at: 2026-05-07T23:54:14.790Z
     integration:
       status: pending
       detail: null
@@ -9100,7 +9100,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e590cfdcf82242754ed4ec1f135e0b909f774f4a
-      updated_at: 2026-05-07T23:54:04.320Z
+      updated_at: 2026-05-07T23:54:14.790Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KR22GJR5YSYRMW6VSD6MQ362"
@@ -9108,9 +9108,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-07T23:37:16.724Z
-      last_reconciled_at: 2026-05-07T23:54:05.768Z
+      last_reconciled_at: 2026-05-07T23:54:14.790Z
       created_at: 2026-05-07T22:30:17.720Z
-      updated_at: 2026-05-07T23:54:05.768Z
+      updated_at: 2026-05-07T23:54:14.790Z
     workspace_id: dispatch-workspace-01KR22GJR5YSYRMW6VSD6MQ362
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -9119,5 +9119,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
         head: ab433d4eaf96d6b421cfc89771e283a3a768fcb8
-        last_seen_at: 2026-05-07T23:36:50.144Z
+        last_seen_at: 2026-05-07T23:54:14.790Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj
