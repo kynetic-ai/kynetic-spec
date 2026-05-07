@@ -37699,9 +37699,21 @@ runs:
     completed_at: 2026-05-07T21:56:57.740Z
   - _ulid: 01KR27ZC3ZCYABNKQ6QG2E4PN6
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-07T22:12:17.663Z
+        completed_at: 2026-05-07T22:15:40.870Z
+        notes: "Worked well: reviewer's blocker was specific and actionable (file:line + reasoning +
+          suggested resolutions); --json route to read full review thread bodies; quick
+          re-verification of all surrounding annotations rather than narrow fix of just the flagged
+          one."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-07T22:15:40.870Z
+        completed_at: 2026-05-07T22:15:40.870Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-07T22:12:17.663Z
