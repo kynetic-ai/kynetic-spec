@@ -182549,6 +182549,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-07T23:13:21.225Z
+      - _ulid: 01KR2CJEZ2DEVJZGW3D541AHNQ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR2BBV50H8G7DAED3AYDRZAB
+        timestamp: 2026-05-07T23:32:37.474Z
     examined_commit: 6b1e1f472bd1d68ff10079cdd59eeebfca32bfe4
     external_links: []
     lifecycle_state: closed
@@ -182580,6 +182586,20 @@ reviews:
               diagnostics) and add assertions so the contract test would fail if either field is
               missing."
             created_at: 2026-05-07T23:11:32.000Z
+          - _ulid: 01KR2CJDN2RZ58CV1AYCNXED8Q
+            author: "@claude"
+            body: Fixed in ab433d4. The custom readiness branch no longer relies on per-probe state for
+              diagnostics — startTestDaemon's catch block now samples /api/health and
+              /api/debug/cache-status in parallel (2s per-call timeout) regardless of mode, so the
+              bundle is populated unconditionally. Dropped HealthProbeState/CacheProbeState plumbing
+              since it was only feeding diagnostics. The readiness-diagnostics contract test now
+              fails if either field comes back null or non-200 for a live daemon (it asserts
+              status=200, body contains '"status":"ok"' for health and 'projects' for cache-status),
+              and the error message is asserted to include 'last-health=' and 'last-cache-status='
+              so failure logs surface both observations. Verified the failing-probe scenario now
+              produces populated diagnostics via the contract test (passes after the fix; earlier
+              null-field path is no longer reachable).
+            created_at: 2026-05-07T23:32:36.129Z
         kind: blocker
       - _ulid: 01KR2BETNSVA6VNJ9EWP68H4BM
         entries:
@@ -182609,5 +182629,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-07T23:13:21.225Z
     created_at: 2026-05-07T22:59:50.017Z
-    updated_at: 2026-05-07T23:13:21.225Z
+    updated_at: 2026-05-07T23:32:36.129Z
     notes: []
