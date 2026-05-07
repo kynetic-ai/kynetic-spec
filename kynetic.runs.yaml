@@ -37989,9 +37989,554 @@ runs:
     completed_at: 2026-05-07T23:36:33.676Z
   - _ulid: 01KR2DMY7TXNTAEVMV7QAZTDF4
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-07T23:51:27.226Z
+        completed_at: 2026-05-07T23:52:37.652Z
+        notes: >-
+          What worked well: Reviewing from the diff first, then comparing against task notes,
+          exposed the fix-cycle claim without anchoring on it. ✓ Validation passed
+
+          ────────────────────────────────────────
+
+          Files checked: 1456
+
+          Items checked: 615
+
+          Tasks checked: 1448
+
+          Meta: 12 agents, 11 workflows, 11 conventions
+
+
+          Schema: OK
+
+          References: OK
+
+
+          Completeness warnings: 256
+            Missing own AC coverage: 237
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ! @slug-uniqueness - Slug Uniqueness
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5
+              ! @slug-resolution - Slug Resolution
+                Uncovered: ac-1, ac-2, ac-3, ac-4
+              ! @reference-system - Reference System
+                Uncovered: ac-ref-1, ac-ref-2, ac-ref-3
+              ! @ref-validation - Reference Validation
+                Uncovered: ac-1
+              ! @rel-depends-on - depends_on Relationship
+                Uncovered: ac-2, ac-3
+              ! @rel-implements - implements Relationship
+                Uncovered: ac-1, ac-2
+              ! @rel-relates-to - relates_to Relationship
+                Uncovered: ac-1, ac-2
+              ! @rel-blocks - blocks Relationship
+                Uncovered: ac-1, ac-2
+              ! @review-verdicts-and-resolution-lifecycle - Review Verdicts and Resolution Lifecycle
+                Uncovered: ac-3
+              ! @coverage-scan-config - Configurable AC Coverage Scanner
+                Uncovered: ac-explicit-opt-in, ac-unconfigured-guidance, ac-language-aware-parsing, ac-unrecognized-language, ac-no-silent-regression
+              ! @type-module - Module Type
+                Uncovered: ac-1, ac-2
+              ! @type-feature - Feature Type
+                Uncovered: ac-1, ac-2
+              ! @type-requirement - Requirement Type
+                Uncovered: ac-1, ac-2
+              ! @type-constraint - Constraint Type
+                Uncovered: ac-1, ac-2
+              ! @type-decision - Decision Type
+                Uncovered: ac-1, ac-2
+              ! @type-task - Task Type
+                Uncovered: ac-1
+              ! @status-cascade - Cascade Status Updates
+                Uncovered: ac-2, ac-3, ac-4, ac-5
+              ! @yaml-version - YAML 1.2 Required
+                Uncovered: ac-1, ac-2
+              ! @yaml-quoting - Quote Ambiguous Strings
+                Uncovered: ac-1, ac-2
+              ! @yaml-multiline - Multiline with Literal Blocks
+                Uncovered: ac-1, ac-2
+              ! @validation - Schema Validation
+                Uncovered: ac-valid-1, ac-valid-2
+              ! @validation-modes - Validation Modes
+                Uncovered: ac-mode-default-all, ac-mode-flag-isolation, ac-mode-flag-combination
+              ! @spec-completeness - Spec Completeness Validation
+                Uncovered: ac-1, ac-2, ac-3
+              ! @alignment-index - Bidirectional Spec-Task Mapping
+                Uncovered: ac-1, ac-2
+              ! @alignment-summaries - Implementation Progress Summaries
+                Uncovered: ac-1
+              ! @trait-cli - Trait CLI Commands
+                Uncovered: ac-9, ac-10, ac-11, ac-12
+              ! @task-type-task - Task Type - task
+                Uncovered: ac-1, ac-2
+              ! @task-type-epic - Task Type - epic
+                Uncovered: ac-1, ac-2
+              ! @task-type-bug - Task Type - bug
+                Uncovered: ac-1, ac-2
+              ! @task-type-spike - Task Type - spike
+                Uncovered: ac-1, ac-2
+              ! @task-type-infra - Task Type - infra
+                Uncovered: ac-1
+              ! @task-states - Task States
+                Uncovered: ac-state-1, ac-state-2, ac-state-3
+              ! @task-completion-guardrails - Task Completion Guardrails
+                Uncovered: ac-2, ac-3
+              ! @pending-review-state - Pending Review State
+                Uncovered: ac-5, ac-7, ac-8
+              ! @task-derivation - Task Derivation
+                Uncovered: ac-derive-1, ac-derive-2
+              ! @task-notes - Task Notes
+                Uncovered: ac-note-1, ac-note-2
+              ! @task-todos - Task Todos
+                Uncovered: ac-todo-1, ac-todo-2
+              ! @task-storage - Task Storage
+                Uncovered: ac-1
+              ! @task-storage-separate - Storage - Separate Directory
+                Uncovered: ac-1
+              ! @task-queries - Task Queries
+                Uncovered: ac-query-1, ac-query-2
+              ! @multi-value-status-filter - Multi-Value Status Filter
+                Uncovered: ac-repeated-flag
+              ! @task-activity-timeline - Task Activity Timeline
+                Uncovered: ac-3
+              ! @task-activity-git-query - Task Activity Git Query
+                Uncovered: ac-1, ac-2, ac-3, ac-4
+              ! @task-storage-activation - Task Storage Format Activation
+                Uncovered: ac-1
+              ! @task-storage-migration - Task Storage Migration
+                Uncovered: ac-9
+              ! @task-automation-eligibility - Task Automation Eligibility
+                Uncovered: ac-3, ac-4, ac-6, ac-7, ac-8, ac-9, ac-10, ac-15, ac-16, ac-22, ac-25
+              ! @spec-completion-enforcement - Task Completion State Enforcement
+                Uncovered: ac-author
+              ! @cli-design - CLI Design Principles
+                Uncovered: ac-1
+              ! @batch-allowed-commands - Batch Allowed Commands
+                Uncovered: ac-allowlist, ac-denylist
+              ! @cli-structure - Command Structure
+                Uncovered: ac-1
+              ! @cli-json-output - JSON Output Mode
+                Uncovered: ac-1
+              ! @cli-agent-features - Agent-Friendly Features
+                Uncovered: ac-1
+              ! @output-format-option - Output Format Option
+                Uncovered: ac-yaml-shorthand, ac-unsupported-format
+              ! @cli-version - CLI Version Display
+                Uncovered: ac-3
+              ! @item-commands - Item Commands
+                Uncovered: ac-item-cmd-1, ac-item-cmd-2
+              ! @item-get - kspec item get
+                Uncovered: ac-2, ac-3, ac-4
+              ! @item-list - kspec item list
+                Uncovered: ac-1
+              ! @item-delete - kspec item delete
+                Uncovered: ac-1
+              ! @item-ac - kspec item ac
+                Uncovered: ac-item-ac-add, ac-item-ac-add-id, ac-item-ac-add-dup, ac-item-ac-add-task, ac-item-ac-list, ac-item-ac-list-empty, ac-item-ac-set-notfound, ac-item-ac-remove, ac-item-ac-remove-confirm
+              ! @commit-guidance - Commit Message Guidance
+                Uncovered: ac-3
+              ! @task-add - kspec task add
+                Uncovered: ac-automation-invalid, ac-title-required, ac-spec-ref, ac-spec-ref-invalid, ac-priority-invalid, ac-slug-conflict, ac-automation
+              ! @task-start - kspec task start
+                Uncovered: ac-1
+              ! @task-complete - kspec task complete
+                Uncovered: ac-1
+              ! @task-block - kspec task block
+                Uncovered: ac-1
+              ! @task-cancel - kspec task cancel
+                Uncovered: ac-1
+              ! @task-get - kspec task get
+                Uncovered: ac-1
+              ! @task-note - kspec task note
+                Uncovered: ac-1
+              ! @task-notes-cmd - kspec task notes
+                Uncovered: ac-1
+              ! @task-todos-cmd - kspec task todos
+                Uncovered: ac-1
+              ! @task-todo - kspec task todo
+                Uncovered: ac-1
+              ! @query-commands - Query Commands
+                Uncovered: ac-1
+              ! @cmd-tasks-ready - kspec tasks ready
+                Uncovered: ac-1
+              ! @cmd-tasks-next - kspec tasks next
+                Uncovered: ac-1
+              ! @cmd-tasks-list - kspec tasks list
+                Uncovered: ac-1
+              ! @cmd-tasks-blocked - kspec tasks blocked
+                Uncovered: ac-1
+              ! @cmd-log - kspec log
+                Uncovered: ac-1, ac-2, ac-4
+              ! @task-list-verbose - Enhanced Verbose Output for Task Lists
+                Uncovered: ac-5
+              ! @link-commands - Link Commands
+                Uncovered: ac-1
+              ! @link-create - kspec link create
+                Uncovered: ac-1
+              ! @link-list - kspec link list
+                Uncovered: ac-1
+              ! @link-delete - kspec link delete
+                Uncovered: ac-1
+              ! @validate-commands - Validation Commands
+                Uncovered: ac-1
+              ! @cmd-validate - kspec validate
+                Uncovered: ac-1
+              ! @cmd-lint - kspec lint
+                Uncovered: ac-1
+              ! @derive-commands - Derive Commands
+                Uncovered: ac-1
+              ! @init-commands - Init and Config Commands
+                Uncovered: ac-1
+              ! @cmd-init - kspec init
+                Uncovered: ac-1
+              ! @cmd-hooks - kspec hooks
+                Uncovered: ac-1
+              ! @cmd-setup - kspec setup
+                Uncovered: ac-detect-existing-repo, ac-auto-worktree-flag, ac-worktree-already-exists
+              ! @inbox-commands - Inbox Commands
+                Uncovered: ac-1
+              ! @cmd-inbox-add - kspec inbox add
+                Uncovered: ac-3, ac-1, ac-2
+              ! @cmd-inbox-list - kspec inbox list
+                Uncovered: ac-5, ac-1, ac-2, ac-3, ac-4
+              ! @cmd-inbox-promote - kspec inbox promote
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-7, ac-5, ac-6
+              ! @cmd-inbox-delete - kspec inbox delete
+                Uncovered: ac-3, ac-1, ac-2
+              ! @cmd-inbox-get - kspec inbox get
+                Uncovered: ac-3, ac-1, ac-2
+              ! @cmd-inbox-set - kspec inbox set
+                Uncovered: ac-5, ac-3, ac-4
+              ! @cmd-inbox-note - kspec inbox note
+                Uncovered: ac-3, ac-2
+              ! @fuzzy-matching - Fuzzy Matching
+                Uncovered: ac-1
+              ! @fuzzy-command-suggest - CLI Command Suggestions on Error
+                Uncovered: ac-1
+              ! @cli-ralph - Ralph command - automated task loop
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-9, ac-10, ac-11, ac-12, ac-13, ac-14, ac-15, ac-16, ac-17, ac-18, ac-19, ac-20, ac-21, ac-22, ac-23, ac-24, ac-25, ac-26, ac-27
+              ! @ralph-end-loop - Explicit loop termination signal via CLI command
+                Uncovered: ac-cmd, ac-detect, ac-graceful, ac-reason, ac-cleanup, ac-noop-outside, ac-signal-cleanup
+              ! @ralph-per-role-adapters - Per-role adapter selection for ralph loop
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-9, ac-10, ac-11, ac-12
+              ! @ralph-adapter-aware-skill-invocation - Adapter-aware skill invocation formatting for ralph prompts
+                Uncovered: ac-2, ac-6, ac-3, ac-4
+              ! @ralph-output-formatting - Ralph Output Formatting
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5
+              ! @ralph-adapter-validation - Adapter validation on startup
+                Uncovered: ac-valid-adapter-proceeds, ac-invalid-adapter-error, ac-validation-before-spawn
+              ! @ralph-skill-delegation - Ralph Skill Delegation
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7
+              ! @ralph-subagent-spawning - Ralph Subagent Spawning
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-9, ac-10, ac-11, ac-12, ac-13
+              ! @ralph-task-limit - Ralph max-tasks-per-iteration limiting
+                Uncovered: ac-flag, ac-detection, ac-wrapup, ac-unlimited, ac-hook-block, ac-reset, ac-marker-format, ac-dryrun, ac-signal-cleanup
+              ! @01KHAP9P - Ralph wrap-up agent on loop exit
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5
+              ! @acp-client - ACP Protocol Client
+                Uncovered: ac-5
+              ! @session-log-list - Session Log List
+                Uncovered: ac-recompute-stats
+              ! @acp-handlers - ACP File/Terminal Handlers
+                Uncovered: ac-1
+              ! @ralph-orchestrator - Orchestrator Agent Mode
+                Uncovered: ac-1
+              ! @multi-ref-batch - Multi-ref batch operations
+                Uncovered: ac-human-output-format
+              ! @skill-loop-mode - Skill Loop Mode
+                Uncovered: ac-1, ac-2, ac-3, ac-4
+              ! @task-work-loop-skill - Task Work Loop Skill
+                Uncovered: ac-1, ac-2, ac-3, ac-4
+              ! @reflect-loop-skill - Reflect Loop Skill
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5
+              ! @pr-review-skill - PR Review Skill
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5
+              ! @loop-mode-error-handling - Loop Mode Error Handling
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-9
+              ! @plan-support - First-Party Plan Support
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-9, ac-10, ac-11, ac-12, ac-13, ac-14, ac-15, ac-16, ac-17, ac-18, ac-19, ac-20, ac-21, ac-22, ac-23, ac-24, ac-25, ac-26, ac-27, ac-28, ac-29, ac-30, ac-31, ac-32, ac-33
+              ! @plan-derive - Plan Derivation
+                Uncovered: ac-5, ac-6
+              ! @plan-import - Plan Document Import
+                Uncovered: ac-14, ac-15, ac-19, ac-20, ac-23, ac-24, ac-25, ac-26, ac-27, ac-28, ac-29, ac-32, ac-37
+              ! @session-end-loop-signal - Session end-loop signal
+                Uncovered: ac-detect, ac-session-close-normal, ac-session-close-signal, ac-session-close-error, ac-remove-markers
+              ! @ralph-session-budget-integration - Ralph session budget integration
+                Uncovered: ac-remove-marker-code, ac-session-close-all-paths
+              ! @agent-dispatch-engine - Agent Dispatch Engine
+                Uncovered: ac-22
+              ! @dispatch-shared-checkout-contract - Dispatch Shared-Checkout Contract
+                Uncovered: ac-1, ac-2
+              ! @ralph-replacement - Ralph Replacement
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7
+              ! @review-cli-commands - Review CLI Commands
+                Uncovered: ac-1
+              ! @cmd-session-checkpoint - kspec session checkpoint
+                Uncovered: ac-default-disabled, ac-install-when-enabled, ac-remove-when-disabled
+              ! @cmd-session-prompt-check - kspec session prompt-check
+                Uncovered: ac-1, ac-2, ac-3
+              ! @daemon-sensitive-cli-test-determinism - Daemon-Sensitive Test Determinism
+                Uncovered: ac-scoped-daemon-cleanup, ac-fixture-contract-tests
+              ! @cli-ac-backfill - CLI AC Backfill
+                Uncovered: ac-coverage, ac-testable
+              ! @skill-add - Skill Add Command
+                Uncovered: ac-2
+              ! @skill-rendering - Skill Rendering Pipeline
+                Uncovered: ac-6
+              ! @skill-render-cli - Skill Render CLI
+                Uncovered: ac-1
+              ! @consolidate-skill-render - Consolidate Skill Render Implementations
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5
+              ! @agent-instruction-gen - Agent Instruction Generation
+                Uncovered: ac-2
+              ! @agent-data-sections - Auto-Generated Data Sections
+                Uncovered: ac-1
+              ! @enhanced-setup - Enhanced Setup Command
+                Uncovered: ac-9
+              ! @full-hook-install - Full Hook Installation
+                Uncovered: ac-4, ac-5
+              ! @core-skill-install - Core Skill Installation
+                Uncovered: ac-6
+              ! @guard-script-and-diff-quality - Guard Script and Diff Quality
+                Uncovered: ac-1
+              ! @dispatch-composition-patterns - Dispatch Composition Patterns
+                Uncovered: ac-1, ac-4
+              ! @meta-manifest - Meta Manifest
+                Uncovered: ac-meta-manifest-1, ac-meta-manifest-2, ac-meta-manifest-3
+              ! @meta-manifest-format - Meta Manifest Format
+                Uncovered: ac-1, ac-2
+              ! @meta-includes - Meta Includes
+                Uncovered: ac-1, ac-2
+              ! @meta-validation - Meta Validation Integration
+                Uncovered: ac-1, ac-2
+              ! @agent-schema - Agent Schema
+                Uncovered: ac-1, ac-2
+              ! @agent-capabilities - Agent Capabilities
+                Uncovered: ac-1, ac-2
+              ! @agent-session-protocol - Agent Session Protocol
+                Uncovered: ac-1, ac-2
+              ! @guided-workflow-execution - Guided Workflow Execution
+                Uncovered: ac-1, ac-2
+              ! @task-work-loop-workflow - Task Work Loop Workflow
+                Uncovered: ac-1, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-9, ac-10, ac-11, ac-12, ac-13
+              ! @session-reflect-loop-workflow - Session Reflect Loop Workflow
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5, ac-6
+              ! @pr-review-loop-workflow - PR Review Loop Workflow
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-9, ac-10, ac-11, ac-12, ac-13, ac-14, ac-15, ac-16
+              ! @workflow-schema - Workflow Schema
+                Uncovered: ac-1, ac-2
+              ! @workflow-steps - Workflow Step Types
+                Uncovered: ac-1, ac-2
+              ! @workflow-execution-model - Workflow Execution Model
+                Uncovered: ac-1, ac-2
+              ! @workflow-triggers - Workflow Triggers
+                Uncovered: ac-1, ac-2
+              ! @convention-definitions - Convention Definitions
+                Uncovered: ac-conv-1, ac-conv-2, ac-conv-5
+              ! @convention-schema - Convention Schema
+                Uncovered: ac-1, ac-2
+              ! @convention-domains - Convention Domains
+                Uncovered: ac-1, ac-2
+              ! @convention-validation - Convention Validation Strategy
+                Uncovered: ac-1, ac-2
+              ! @observations - Observations
+                Uncovered: ac-obs-9
+              ! @observation-schema - Observation Schema
+                Uncovered: ac-1, ac-2
+              ! @observation-types - Observation Types
+                Uncovered: ac-1, ac-2
+              ! @observation-promotion - Observation Promotion
+                Uncovered: ac-1, ac-2
+              ! @observation-resolution - Observation Resolution
+                Uncovered: ac-1, ac-2
+              ! @observation-task-loop - Observation-Task Resolution Loop
+                Uncovered: ac-1, ac-2
+              ! @session-context - Session Context
+                Uncovered: ac-1, ac-2
+              ! @context-schema - Context Schema
+                Uncovered: ac-1, ac-2
+              ! @context-storage - Context Storage
+                Uncovered: ac-1, ac-2
+              ! @context-integration - Context Integration
+                Uncovered: ac-1, ac-2
+              ! @meta-commands - Meta CLI Commands
+                Uncovered: ac-1, ac-2
+              ! @meta-agents-cmd - kspec meta agents
+                Uncovered: ac-1, ac-2
+              ! @meta-conventions-cmd - kspec meta conventions
+                Uncovered: ac-1, ac-2
+              ! @meta-observations-cmd - kspec meta observations
+                Uncovered: ac-1, ac-2
+              ! @meta-resolve-cmd - kspec meta resolve
+                Uncovered: ac-1
+              ! @meta-list-cmd - kspec meta list
+                Uncovered: ac-1, ac-2
+              ! @meta-set-cmd - kspec meta set
+                Uncovered: ac-1, ac-2
+              ! @task-meta-ref - Task meta_ref Field
+                Uncovered: ac-1
+              ! @task-add-meta-ref - task add --meta-ref
+                Uncovered: ac-1
+              ! @meta-ref-queries - Meta Reference Queries
+                Uncovered: ac-1
+              ! @meta-ref-validation - Meta Reference Validation
+                Uncovered: ac-1, ac-2
+              ! @meta-shadow-ac-backfill - Meta System AC Backfill
+                Uncovered: ac-coverage, ac-testable
+              ! @test-annotation-sweep - AC Annotation Coverage Semantics
+                Uncovered: ac-explicit-mapping
+              ! @description-backfill - Missing Description Backfill
+                Uncovered: ac-coverage
+              ! @shadow-concept - Shadow Branch Concept
+                Uncovered: ac-1
+              ! @shadow-structure - Shadow Directory Structure
+                Uncovered: ac-1
+              ! @artifacts-directory - Artifacts Directory Convention
+                Uncovered: ac-setup-ensures, ac-naming-convention, ac-empty-dir-persistence
+              ! @shadow-autocommit - Auto-Commit on State Changes
+                Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5, ac-6
+              ! @shadow-read-path - Shadow Read Path
+                Uncovered: ac-1
+              ! @shadow-write-path - Shadow Write Path
+                Uncovered: ac-1
+              ! @shadow-errors - Shadow Error Messages
+                Uncovered: ac-1, ac-2, ac-3
+              ! @shadow-init - Shadow Initialization
+                Uncovered: ac-shadow-init-1, ac-shadow-init-2, ac-shadow-init-3, ac-shadow-init-4, ac-shadow-init-5, ac-shadow-init-6
+              ! @shadow-ci - CI/CD Integration
+                Uncovered: ac-1
+              ! @shadow-cli - Shadow CLI Commands
+                Uncovered: ac-1
+              ! @shadow-status-cmd - Shadow Status Command
+                Uncovered: ac-1
+              ! @shadow-log-cmd - Shadow Log Command
+                Uncovered: ac-1
+              ! @shadow-repair-cmd - Shadow Repair Command
+                Uncovered: ac-1
+              ! @shadow-validation - Shadow Branch Validation
+                Uncovered: ac-1
+              ! @shadow-sync - Shadow Remote Sync
+                Uncovered: ac-2, ac-3, ac-5, ac-7
+              ! @shadow-lazy-read-sync - Lazy Shadow Sync on Reads
+                Uncovered: ac-drift-check
+              ! @shadow-ac-backfill - Shadow Branch AC Backfill
+                Uncovered: ac-coverage, ac-testable
+              ! @daemon-server - Daemon Server Mode
+                Uncovered: ac-13, ac-14
+              ! @daemon-agent-dispatch - Daemon Agent Dispatch Integration
+                Uncovered: ac-8
+              ! @daemon-entity-cache - Daemon Entity Cache
+                Uncovered: ac-session-stats-persist
+              ! @review-records-daemon-api - Review Records Daemon API
+                Uncovered: ac-3, ac-4, ac-5
+              ! @daemon-network-endpoint-contract - Daemon Network Endpoint Contract
+                Uncovered: ac-tests-use-resolved-endpoint
+              ! @daemon-test-endpoint-consistency - Daemon Test Endpoint Consistency
+                Uncovered: ac-mock-metadata-fidelity
+              ! @daemon-test-mode-boundaries - Daemon Test Mode Boundaries
+                Uncovered: ac-in-process-route-tests-no-child-process, ac-cli-client-tests-use-mock-daemon, ac-cli-lifecycle-tests-use-cli-path, ac-full-process-tests-use-real-daemon
+              ! @daemon-test-harness-guardrails - Daemon Test Harness Guardrails
+                Uncovered: ac-fixture-contract-tests-run, ac-direct-daemon-spawn-flagged, ac-detached-serve-without-cleanup-flagged, ac-helper-internals-allowed, ac-exceptions-are-localized
+              ! @api-contract - REST and WebSocket API Contract
+                Uncovered: ac-8, ac-9, ac-10, ac-11, ac-12, ac-13, ac-14, ac-15, ac-16, ac-17, ac-18, ac-19, ac-20, ac-21, ac-32, ac-33
+              ! @session-summary-cache - Session Summary Cache
+                Uncovered: ac-cache-build, ac-cache-invalidate, ac-cache-graceful, ac-summary-stats, ac-active-refresh, ac-persist-on-close, ac-live-counter
+              ! @web-dashboard - Web Dashboard
+                Uncovered: ac-2
+              ! @markdown-ui-adoption - Markdown Adoption Across UI Surfaces
+                Uncovered: ac-6
+              ! @gh-pages-export - GitHub Pages Export
+                Uncovered: ac-8, ac-9, ac-10, ac-11, ac-12, ac-13, ac-14, ac-16, ac-17, ac-18, ac-19, ac-20, ac-24, ac-26
+              ! @cli-serve-commands - CLI Serve Commands
+                Uncovered: ac-8, ac-9
+              ! @multi-directory-daemon - Multi-Directory Daemon Architecture
+                Uncovered: ac-21, ac-21b, ac-22, ac-23, ac-24, ac-11b, ac-remote-auto-register-blocked, ac-project-registry-local-only
+              ! @ui-app-shell - App Shell and Navigation
+                Uncovered: ac-1, ac-2, ac-3, ac-4
+              ! @ui-session-stream - Session Stream View
+                Uncovered: ac-5
+              ! @session-list-infinite-scroll - Session List Infinite Scroll UI
+                Uncovered: ac-live-update-visible-position
+              ! @ui-dashboard-overview - Dashboard Overview
+                Uncovered: ac-2
+              ! @ui-settings-view - Settings View
+                Uncovered: ac-1
+              ! @ui-api-aggregation - API Aggregation and Enriched Events
+                Uncovered: ac-1, ac-2, ac-3
+              ! @ui-data-freshness - UI Data Freshness and Caching
+                Uncovered: ac-1, ac-2, ac-5, ac-6, ac-7, ac-8, ac-9
+              ! @ws-session-event-streaming - WebSocket Session Event Streaming
+                Uncovered: ac-live-session-catchup, ac-no-http-polling, ac-reconnect-recovery
+              ! @session-event-broadcast - Session Event Broadcasting
+                Uncovered: ac-phased-tool-input, ac-phased-dedup-format
+              ! @automation-event-stream - Automation Event Stream
+                Uncovered: ac-1, ac-2
+              ! @ui-automation-view - Automation View
+                Uncovered: ac-2, ac-3, ac-4, ac-6, ac-7
+              ! @daemon-runtime-adapter - Configurable Daemon Runtime
+                Uncovered: ac-config-surface
+              ! @daemon-test-runtime-selection - Daemon Test Runtime Selection
+                Uncovered: ac-explicit-runtime-only, ac-runtime-matrix-parity, ac-missing-optional-runtime-skips, ac-runtime-degradation-assertions
+              ! @e2e-test-daemon-isolation - Browser E2E Daemon Fixture Integration
+                Uncovered: ac-uses-shared-fixture
+              ! @review-records-web-ui - Review Records Web UI
+                Uncovered: ac-1
+              ! @review-structured-content-viewer - Review Structured Content Viewer
+                Uncovered: ac-1, ac-2, ac-3, ac-4
+            Invalid AC annotations: 19
+              Unresolved targets: 13
+                ! Unresolved target: '@' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/cli/session-start-format.test.ts:685
+                ! Unresolved target: '@' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/cli-agent-commands.test.ts:182
+                ! Unresolved target: '@' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/cli-schedule-commands.test.ts:644
+                ! Unresolved target: '@test-feature' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/e2e/fixtures/project-tests/coverage-test.test.ts:6
+                ! Unresolved target: '@' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/integration.test.ts:724
+                ! Unresolved target: '@' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/integration.test.ts:743
+                ! Unresolved target: '@' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/session-create.test.ts:1256
+                ! Unresolved target: '@' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/session-log-list.test.ts:854
+                ! Unresolved target: '@' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/task-add-depends-on.test.ts:111
+                ! Unresolved target: '@' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/task-add-depends-on.test.ts:128
+                ! Unresolved target: '@' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/task-clear-deps.test.ts:169
+                ! Unresolved target: '@test-trait' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/trait-ac-coverage.test.ts:158
+                ! Unresolved target: '@' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/web-ui/reference.test.ts:17
+              malformed_ac_token: 6
+                ! Malformed AC token: 'ac-1:' in annotation targeting '@trait-filterable-list' is not a valid ac-prefixed identifier
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/cli-agent-commands.test.ts:1848
+                ! Malformed AC token: 'ac-2/3/4/5/7:' in annotation targeting '@trait-filterable-list' is not a valid ac-prefixed identifier
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/cli-agent-commands.test.ts:1849
+                ! Malformed AC token: 'ac-2/3/4/5/7:' in annotation targeting '@trait-filterable-list' is not a valid ac-prefixed identifier
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/cli-agent-commands.test.ts:1850
+                ! Malformed AC token: 'ac-2/3/4/5/7:' in annotation targeting '@trait-filterable-list' is not a valid ac-prefixed identifier
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/cli-agent-commands.test.ts:1851
+                ! Malformed AC token: 'ac-2/3/4/5/7:' in annotation targeting '@trait-filterable-list' is not a valid ac-prefixed identifier
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/cli-agent-commands.test.ts:1852
+                ! Malformed AC token: 'ac-2/3/4/5/7:' in annotation targeting '@trait-filterable-list' is not a valid ac-prefixed identifier
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/cli-agent-commands.test.ts:1854 plus targeted  was effective at distinguishing real  annotations from header prose. The helper contract test and full fresh suite gave strong confidence that the previous readiness-diagnostics blocker was actually fixed.
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-07T23:52:37.652Z
+        completed_at: 2026-05-07T23:52:37.652Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-07T23:51:27.226Z
