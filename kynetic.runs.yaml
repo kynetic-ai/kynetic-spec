@@ -37739,9 +37739,23 @@ runs:
     completed_at: 2026-05-07T22:16:05.875Z
   - _ulid: 01KR2908FE5GQTG2YZ0FA1MZNS
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-07T22:30:15.278Z
+        completed_at: 2026-05-07T22:30:29.087Z
+        notes: "What worked well: The detached review flow was straightforward when kept local to the
+          assigned snapshot. Reading the diff before notes exposed the actual change shape, then the
+          previous review record focused the fix-cycle verification on the false AC annotation. The
+          supported merge helper handled integration cleanly and avoided checking out dev from the
+          detached snapshot. Recording required checks and an evidence log before verdict made the
+          review gate auditable."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-07T22:30:29.087Z
+        completed_at: 2026-05-07T22:30:29.087Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-07T22:30:15.278Z
