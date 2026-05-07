@@ -285,11 +285,40 @@ describe("startTestDaemon readiness diagnostics", { timeout: 60_000 }, () => {
     expect(typeof d.stderrTail).toBe("string");
     expect(d.cause).toContain("Timed out");
 
+    // ac-readiness-diagnostics — even custom probes must surface the last
+    // /api/health and /api/debug/cache-status responses in the bundle so
+    // diagnostics are not mode-dependent. The daemon itself is alive in this
+    // test (only the probe rejects), so both endpoints should respond 200.
+    expect(d.lastHealth).not.toBeNull();
+    if ("status" in d.lastHealth) {
+      expect(d.lastHealth.status).toBe(200);
+      expect(d.lastHealth.body).toContain('"status":"ok"');
+    } else {
+      throw new Error(
+        `lastHealth should have been a successful sample for a live daemon, ` +
+          `got error: ${d.lastHealth.error}`,
+      );
+    }
+    expect(d.lastCacheStatus).not.toBeNull();
+    if ("status" in d.lastCacheStatus) {
+      expect(d.lastCacheStatus.status).toBe(200);
+      // The /api/debug/cache-status response is JSON-shaped with a projects
+      // array; the fixture project should appear under "projects".
+      expect(d.lastCacheStatus.body).toContain("projects");
+    } else {
+      throw new Error(
+        `lastCacheStatus should have been a successful sample for a live daemon, ` +
+          `got error: ${d.lastCacheStatus.error}`,
+      );
+    }
+
     // The error message echoes the bundle so failure logs are actionable
     // without unwrapping the diagnostics object.
     expect(error.message).toContain("Test daemon failed to reach readiness");
     expect(error.message).toContain(`pid=${d.pid}`);
     expect(error.message).toContain(d.endpoint.apiUrl);
+    expect(error.message).toContain("last-health=");
+    expect(error.message).toContain("last-cache-status=");
 
     // The custom probe rejection message must be visible in the chained
     // waitForStartup error.

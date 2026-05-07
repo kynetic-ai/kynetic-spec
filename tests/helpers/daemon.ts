@@ -147,6 +147,10 @@ export interface StartedTestDaemon {
   stop: () => Promise<void>;
 }
 
+export type DaemonEndpointObservation =
+  | { status: number; body: string }
+  | { error: string };
+
 export interface DaemonReadinessDiagnostics {
   endpoint: {
     apiUrl: string;
@@ -161,14 +165,10 @@ export interface DaemonReadinessDiagnostics {
   signal: NodeJS.Signals | null;
   stdoutTail: string;
   stderrTail: string;
-  lastHealth:
-    | { status: number; body: string }
-    | { error: string }
-    | null;
-  lastCacheStatus:
-    | { status: number; cacheStatus: string | null; body: string }
-    | { error: string }
-    | null;
+  /** Final sample of `/api/health` taken at failure time. */
+  lastHealth: DaemonEndpointObservation;
+  /** Final sample of `/api/debug/cache-status` taken at failure time. */
+  lastCacheStatus: DaemonEndpointObservation;
   cause: string;
 }
 
@@ -375,15 +375,7 @@ function makeTailBuffer(maxBytes = TAIL_MAX_BYTES): OutputBuffer {
 
 // ── Readiness probes ──────────────────────────────────────────────────
 
-interface HealthProbeState {
-  observed: { status: number; body: string } | null;
-  errorMessage: string | null;
-}
-
-interface CacheProbeState {
-  observed: { status: number; cacheStatus: string | null; body: string } | null;
-  errorMessage: string | null;
-}
+const DIAGNOSTIC_SAMPLE_TIMEOUT_MS = 2_000;
 
 function describeChildExit(child: ChildProcess): string | null {
   if (child.exitCode !== null && child.exitCode !== undefined) {
@@ -395,10 +387,32 @@ function describeChildExit(child: ChildProcess): string | null {
   return null;
 }
 
-async function probeHealth(
-  ctx: ReadinessProbeContext,
-  state: HealthProbeState,
-): Promise<StartupProbeResult> {
+/**
+ * One-off diagnostic sample of a daemon endpoint. Bounded by an internal
+ * timeout so the readiness failure path cannot itself hang on an unresponsive
+ * daemon. Errors are captured into the observation rather than thrown so the
+ * caller can always assemble a complete diagnostic bundle.
+ */
+async function sampleEndpointDiagnostic(
+  url: string,
+): Promise<DaemonEndpointObservation> {
+  const controller = new AbortController();
+  const timer = setTimeout(
+    () => controller.abort(),
+    DIAGNOSTIC_SAMPLE_TIMEOUT_MS,
+  );
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    const body = await response.text();
+    return { status: response.status, body };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : String(error) };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function probeHealth(ctx: ReadinessProbeContext): Promise<StartupProbeResult> {
   const exited = describeChildExit(ctx.child);
   if (exited) {
     return {
@@ -409,8 +423,6 @@ async function probeHealth(
   try {
     const response = await fetch(`${ctx.endpoint.apiUrl}/api/health`);
     const body = await response.text();
-    state.observed = { status: response.status, body };
-    state.errorMessage = null;
     const ok = response.ok && body.includes('"status":"ok"');
     return {
       ok,
@@ -418,15 +430,11 @@ async function probeHealth(
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    state.errorMessage = message;
     return { ok: false, details: `health fetch error=${message}` };
   }
 }
 
-async function probeCacheReady(
-  ctx: ReadinessProbeContext,
-  state: CacheProbeState,
-): Promise<StartupProbeResult> {
+async function probeCacheReady(ctx: ReadinessProbeContext): Promise<StartupProbeResult> {
   const exited = describeChildExit(ctx.child);
   if (exited) {
     return {
@@ -444,15 +452,12 @@ async function probeCacheReady(
     } catch {
       cacheStatus = null;
     }
-    state.observed = { status: response.status, cacheStatus, body };
-    state.errorMessage = null;
     return {
       ok: response.ok && cacheStatus === "ready",
       details: `cache status=${response.status} cache_status=${cacheStatus ?? "<missing>"}`,
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    state.errorMessage = message;
     return { ok: false, details: `cache fetch error=${message}` };
   }
 }
@@ -618,9 +623,6 @@ export async function startTestDaemon(
   const timeoutMs = opts.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const intervalMs = opts.intervalMs ?? DEFAULT_INTERVAL_MS;
 
-  const healthState: HealthProbeState = { observed: null, errorMessage: null };
-  const cacheState: CacheProbeState = { observed: null, errorMessage: null };
-
   try {
     if (readiness.mode === "custom") {
       await waitForStartup(
@@ -631,19 +633,27 @@ export async function startTestDaemon(
     } else {
       await waitForStartup(
         `daemon health at ${endpoint.apiUrl}`,
-        () => probeHealth(probeContext, healthState),
+        () => probeHealth(probeContext),
         { timeoutMs, intervalMs },
       );
       if (readiness.mode === "health-and-cache") {
         await waitForStartup(
           `daemon cache ready at ${endpoint.apiUrl}`,
-          () => probeCacheReady(probeContext, cacheState),
+          () => probeCacheReady(probeContext),
           { timeoutMs, intervalMs },
         );
       }
     }
   } catch (error) {
     const cause = error instanceof Error ? error.message : String(error);
+    // Always sample the diagnostic endpoints once at failure time, regardless
+    // of which readiness mode ran. Custom probes never touch /api/health or
+    // /api/debug/cache-status during the wait, so the bundle would otherwise
+    // be empty for them — and ac-readiness-diagnostics requires both fields.
+    const [lastHealth, lastCacheStatus] = await Promise.all([
+      sampleEndpointDiagnostic(`${endpoint.apiUrl}/api/health`),
+      sampleEndpointDiagnostic(`${endpoint.apiUrl}/api/debug/cache-status`),
+    ]);
     const diagnostics: DaemonReadinessDiagnostics = {
       endpoint: {
         apiUrl: endpoint.apiUrl,
@@ -658,16 +668,8 @@ export async function startTestDaemon(
       signal: child.signalCode,
       stdoutTail: stdoutBuf.text(),
       stderrTail: stderrBuf.text(),
-      lastHealth: healthState.observed
-        ? healthState.observed
-        : healthState.errorMessage
-          ? { error: healthState.errorMessage }
-          : null,
-      lastCacheStatus: cacheState.observed
-        ? cacheState.observed
-        : cacheState.errorMessage
-          ? { error: cacheState.errorMessage }
-          : null,
+      lastHealth,
+      lastCacheStatus,
       cause,
     };
     await stop();
