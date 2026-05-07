@@ -8569,11 +8569,11 @@ workspaces:
     canonical_branch: dispatch/task/task-update-daemon-test-specs/01kr22gj
     canonical_branch_head: 052c3bc90d6ca0208cb97aa7650fe60ca5fee36b
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-07T22:30:03.509Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-07T22:30:04.242Z
     health:
       status: healthy
       issues: []
@@ -8587,7 +8587,7 @@ workspaces:
       target_branch: dev
       target_commit: 1ee4204a13801e4d7c03ee503b00570b0d0791d7
       updated_at: 2026-05-07T22:30:03.509Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR22GJER2BRA20M876PEEREZ"
     task_slug: task-update-daemon-test-specs
@@ -8596,7 +8596,7 @@ workspaces:
       last_active_at: 2026-05-07T22:16:51.079Z
       last_reconciled_at: 2026-05-07T22:30:03.509Z
       created_at: 2026-05-07T20:39:09.432Z
-      updated_at: 2026-05-07T22:30:03.509Z
+      updated_at: 2026-05-07T22:30:04.242Z
     workspace_id: dispatch-workspace-01KR22GJER2BRA20M876PEEREZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
