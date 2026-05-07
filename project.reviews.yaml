@@ -182428,6 +182428,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-07T23:00:01.897Z
+      - _ulid: 01KR2BBWEESCKNY3AGT58EDF0D
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR2BBV50H8G7DAED3AYDRZAB
+        timestamp: 2026-05-07T23:11:33.327Z
     examined_commit: 6b1e1f472bd1d68ff10079cdd59eeebfca32bfe4
     external_links: []
     lifecycle_state: open
@@ -182437,8 +182444,30 @@ reviews:
       content_hash: ""
       ref: "@01KR22GJR5YSYRMW6VSD6MQ362"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR2BBV50H8G7DAED3AYDRZAB
+        anchor:
+          type: code
+          commit: 6b1e1f472bd1d68ff10079cdd59eeebfca32bfe4
+          line_end: 630
+          line_start: 626
+          path: tests/helpers/daemon.ts
+          side: head
+        entries:
+          - _ulid: 01KR2BBV50WXVYNBG7NYFQ2GM5
+            author: Jacob Chapel
+            body: "MUST-FIX: custom readiness failures omit the required health/cache diagnostic observations.
+              The task requires readiness failures to include the last health response and last
+              cache-status response, but the custom readiness branch goes straight to the caller
+              probe and never samples either endpoint before building diagnostics. I verified this
+              with an ad hoc startTestDaemon custom-probe timeout: the thrown DaemonReadinessError
+              had lastHealth:null and lastCacheStatus:null. Please make the failure path populate
+              those diagnostics (for example by sampling health and /api/debug/cache-status for
+              diagnostics) and add assertions so the contract test would fail if either field is
+              missing."
+            created_at: 2026-05-07T23:11:32.000Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-07T22:59:50.017Z
-    updated_at: 2026-05-07T23:00:00.577Z
+    updated_at: 2026-05-07T23:11:32.000Z
     notes: []
