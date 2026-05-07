@@ -11515,31 +11515,41 @@ requirements:
   - _ulid: 01KJTPN4MJM1VZZ9PW00YX456V
     slugs:
       - daemon-sensitive-cli-test-determinism
-    title: Daemon-Sensitive CLI Test Determinism
+    title: Daemon-Sensitive Test Determinism
     type: requirement
-    description: Define deterministic testing patterns for daemon-sensitive CLI tests so parallel shard
-      execution and ambient machine daemon state do not create flaky failures.
+    description: Define deterministic testing patterns for daemon-sensitive CLI, Vitest, and Playwright
+      tests so parallel execution and ambient machine daemon state do not create flaky failures.
+      Daemon-backed tests use shared helpers for isolated HOME/config state, bounded readiness
+      waits, actionable diagnostics, and scoped cleanup.
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
     acceptance_criteria:
-      - given: a readiness wait exceeds its timeout
-        id: ac-1
-        then: the failing assertion includes actionable process output/context for diagnosis
-        when: a startup condition is not reached in time
-      - given: process or daemon tests need startup synchronization
-        id: ac-3
-        then: tests use bounded polling/wait helpers instead of fixed sleep delays
+      - given: A daemon-sensitive test waits for process or server readiness
+        id: ac-readiness-diagnostics
+        then: the failing assertion includes actionable process output and the last observed readiness state
+        when: the readiness wait exceeds its timeout
+      - given: daemon-sensitive tests need startup synchronization
+        id: ac-bounded-readiness
+        then: tests use bounded polling helpers instead of fixed sleep delays
         when: tests wait for server or foreground process readiness
-      - given: daemon-sensitive CLI tests run in parallel with ambient daemon state
-        id: ac-2
-        then: HOME/config is isolated so ambient daemon PID/port files do not affect outcomes
-        when: tests invoke CLI commands via shared helpers
+      - given: daemon-sensitive tests run in parallel with ambient daemon state
+        id: ac-isolated-home-config
+        then: HOME and daemon config state are isolated through shared helpers
+        when: the tests invoke CLI commands or start daemon processes
+      - given: a daemon-sensitive test starts a daemon process
+        id: ac-scoped-daemon-cleanup
+        then: cleanup targets only the daemon owned by that test fixture
+        when: the test finishes or fails
+      - given: shared daemon test fixture behavior is implemented or changed
+        id: ac-fixture-contract-tests
+        then: focused helper tests exercise the fixture contract directly
+        when: daemon-sensitive test validation runs
     tags:
       - cli
       - test
