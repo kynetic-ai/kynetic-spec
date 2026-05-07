@@ -37514,7 +37514,7 @@ runs:
     completed_at: 2026-05-07T00:41:37.091Z
   - _ulid: 01KQZYJ7CHD6TC9B7YE2DS90B3
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -37553,7 +37553,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-07T00:50:39.651Z
-        completed_at: 2026-05-07T00:50:39.651Z
+        completed_at: 2026-05-07T00:50:50.266Z
+        notes: "Proposed improvement: Add a first-class review evidence log destination, or an explicit
+          review-note/check convention that appears in review details without creating an unresolved
+          comment thread. This would preserve the required review-gates evidence log while keeping
+          approved reviews visually clean and gate-focused. Rough scope: small to medium, depending
+          on whether it is a CLI-only convention/docs update or a schema/UI addition."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-07T00:50:50.266Z
+        completed_at: 2026-05-07T00:50:50.266Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-07T00:49:20.785Z
