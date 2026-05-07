@@ -987,9 +987,10 @@ reviews:
 // AC: @trait-error-guidance ac-4 — N/A: Lifecycle transition errors show current state and valid transitions (covered by tests)
 // AC: @trait-error-guidance ac-5 — N/A: Validation errors indicate which field failed (covered by details array in tests)
 // AC: @trait-error-guidance ac-6 — N/A: API is always JSON; no --json flag distinction
-// AC: @trait-localhost-security ac-1 — N/A: Server binding is configured in server.ts, not in route handlers
-// AC: @trait-localhost-security ac-2 — N/A: Connection filtering is middleware in server.ts localhostOnly()
-// AC: @trait-localhost-security ac-3 — N/A: Configuration warnings are in server.ts
+// AC: @trait-localhost-security ac-loopback-default — N/A: review-verdicts route handler tests do not invoke app.listen(); default loopback bind is exercised in tests/cli-serve.test.ts (daemon child startup).
+// AC: @trait-localhost-security ac-loopback-rejects-nonlocal — N/A: localhostOnly middleware is a server-level concern, exercised in tests/daemon-api/server.test.ts and tests/daemon-server.test.ts.
+// AC: @trait-localhost-security ac-external-host-explicit — N/A: explicit non-loopback bind is exercised in tests/cli-serve.test.ts where daemon.host is configured.
+// AC: @trait-localhost-security ac-external-warning — N/A: external-bind warning is surfaced from the CLI lifecycle path and exercised in tests/cli-serve.test.ts.
 // AC: @trait-websocket-protocol ac-1 — N/A: WebSocket connection handling is in server.ts ws handler
 // AC: @trait-websocket-protocol ac-2 — N/A: Topic subscription is in websocket/handler.ts
 // AC: @trait-websocket-protocol ac-3 — N/A: Broadcast format is handled by PubSubManager (route just calls pubsub.broadcast)

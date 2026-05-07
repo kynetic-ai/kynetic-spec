@@ -818,12 +818,12 @@ describe("Automation API routes", () => {
 
   // ─── Trait: @trait-localhost-security ────────────────────────────────────
 
-  // AC: @trait-localhost-security ac-1, ac-2, ac-3
   // Localhost security is handled at the server level (localhostOnly middleware),
-  // not at the route level. These are infrastructure concerns tested in daemon-server.test.ts.
-  // AC: @trait-localhost-security ac-1 — N/A: Server binding is tested in daemon-server.test.ts
-  // AC: @trait-localhost-security ac-2 — N/A: Connection rejection is tested in daemon-server.test.ts
-  // AC: @trait-localhost-security ac-3 — N/A: Security warning is tested in daemon-server.test.ts
+  // not at the route level. These are infrastructure concerns tested elsewhere.
+  // AC: @trait-localhost-security ac-loopback-default — N/A: automation route handler tests do not invoke app.listen(); default loopback bind is exercised in tests/cli-serve.test.ts (daemon child startup).
+  // AC: @trait-localhost-security ac-loopback-rejects-nonlocal — N/A: localhostOnly middleware is a server-level concern, exercised in tests/daemon-api/server.test.ts and tests/daemon-server.test.ts.
+  // AC: @trait-localhost-security ac-external-host-explicit — N/A: explicit non-loopback bind is exercised in tests/cli-serve.test.ts where daemon.host is configured.
+  // AC: @trait-localhost-security ac-external-warning — N/A: external-bind warning is surfaced from the CLI lifecycle path and exercised in tests/cli-serve.test.ts.
 
   // ─── Trait: @trait-api-endpoint ac-6 ────────────────────────────────────
 

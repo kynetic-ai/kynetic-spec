@@ -1,12 +1,10 @@
 /**
  * Unit tests for daemon server localhost-only middleware logic
- * Spec: @daemon-server ac-3 / @trait-localhost-security
+ * Spec: @daemon-server ac-3 / @trait-localhost-security ac-loopback-rejects-nonlocal
  *
- * Behavioral middleware tests kept here after static analysis tests were
- * replaced with E2E tests in tests/e2e/api-server.spec.ts.
- *
- * These test the middleware logic directly without needing Bun runtime.
- * We recreate the middleware logic to test it as a pure function.
+ * These test the middleware logic directly without needing a running server.
+ * The middleware is what enforces ac-loopback-rejects-nonlocal: in loopback-only
+ * mode, requests with a non-local Host are rejected with 403.
  */
 
 import { describe, it, expect } from "vitest";
@@ -17,7 +15,7 @@ describe("Daemon Server - Localhost Middleware (ac-3)", () => {
   // We recreate the middleware logic to test it directly
 
   // AC: @daemon-server ac-3
-  // AC: @trait-localhost-security ac-1
+  // AC: @trait-localhost-security ac-loopback-rejects-nonlocal
   it("should allow localhost hostname", () => {
     const middleware = localhostOnly();
     const mockContext = {
@@ -32,7 +30,7 @@ describe("Daemon Server - Localhost Middleware (ac-3)", () => {
   });
 
   // AC: @daemon-server ac-3
-  // AC: @trait-localhost-security ac-1
+  // AC: @trait-localhost-security ac-loopback-rejects-nonlocal
   it("should allow 127.0.0.1 IPv4 address", () => {
     const middleware = localhostOnly();
     const mockContext = {
@@ -47,7 +45,7 @@ describe("Daemon Server - Localhost Middleware (ac-3)", () => {
   });
 
   // AC: @daemon-server ac-3
-  // AC: @trait-localhost-security ac-1
+  // AC: @trait-localhost-security ac-loopback-rejects-nonlocal
   it("should allow ::1 IPv6 address with port", () => {
     const middleware = localhostOnly();
     const mockContext = {
@@ -62,7 +60,7 @@ describe("Daemon Server - Localhost Middleware (ac-3)", () => {
   });
 
   // AC: @daemon-server ac-3
-  // AC: @trait-localhost-security ac-2
+  // AC: @trait-localhost-security ac-loopback-rejects-nonlocal
   it("should reject non-localhost hostname with 403", async () => {
     const middleware = localhostOnly();
     const mockContext = {
@@ -82,7 +80,7 @@ describe("Daemon Server - Localhost Middleware (ac-3)", () => {
   });
 
   // AC: @daemon-server ac-3
-  // AC: @trait-localhost-security ac-2
+  // AC: @trait-localhost-security ac-loopback-rejects-nonlocal
   it("should reject external IP address with 403", async () => {
     const middleware = localhostOnly();
     const mockContext = {
@@ -101,7 +99,9 @@ describe("Daemon Server - Localhost Middleware (ac-3)", () => {
     expect(body.error).toBe("Forbidden");
   });
 
-  // AC: @trait-localhost-security ac-3 — N/A: daemon does not support external binding configuration
+  // AC: @trait-localhost-security ac-loopback-default — N/A: middleware unit tests do not invoke app.listen(); default loopback bind semantics are exercised by the daemon child startup tests in tests/cli-serve.test.ts.
+  // AC: @trait-localhost-security ac-external-host-explicit — N/A: explicit non-loopback bind is exercised in tests/cli-serve.test.ts where daemon.host is set via kspec.config.yaml and the daemon child is started.
+  // AC: @trait-localhost-security ac-external-warning — N/A: external-bind warning surfaces from the CLI lifecycle path and is exercised in tests/cli-serve.test.ts.
 });
 
 describe("Daemon Server - Localhost Middleware (additionalAllowedHosts)", () => {

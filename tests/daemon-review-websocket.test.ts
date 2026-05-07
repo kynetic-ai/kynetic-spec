@@ -560,9 +560,10 @@ reviews:
 // AC: @trait-error-guidance ac-4 — N/A: Invalid lifecycle transitions are tested in daemon-review-verdicts-api.test.ts
 // AC: @trait-error-guidance ac-5 — N/A: Validation errors with field details are tested in daemon-review-verdicts-api.test.ts
 // AC: @trait-error-guidance ac-6 — N/A: API is always JSON; no --json flag distinction
-// AC: @trait-localhost-security ac-1 — N/A: Server binding is configured in server.ts, not in WebSocket event logic
-// AC: @trait-localhost-security ac-2 — N/A: Connection filtering is middleware in server.ts localhostOnly()
-// AC: @trait-localhost-security ac-3 — N/A: Configuration warnings are in server.ts
+// AC: @trait-localhost-security ac-loopback-default — N/A: WebSocket event-logic unit tests do not invoke app.listen(); default loopback bind is exercised in tests/cli-serve.test.ts (daemon child startup).
+// AC: @trait-localhost-security ac-loopback-rejects-nonlocal — N/A: localhostOnly middleware is a server-level concern, exercised in tests/daemon-api/server.test.ts and tests/daemon-server.test.ts.
+// AC: @trait-localhost-security ac-external-host-explicit — N/A: explicit non-loopback bind is exercised in tests/cli-serve.test.ts where daemon.host is configured.
+// AC: @trait-localhost-security ac-external-warning — N/A: external-bind warning is surfaced from the CLI lifecycle path and exercised in tests/cli-serve.test.ts.
 // AC: @trait-websocket-protocol ac-1 — N/A: WebSocket connection handling is in server.ts ws handler
 // AC: @trait-websocket-protocol ac-2 — N/A: Topic subscription is in websocket/handler.ts
 // AC: @trait-websocket-protocol ac-3 — Broadcast format is verified via pubsub spy assertions (topic, event, data structure)
