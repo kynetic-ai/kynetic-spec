@@ -192,7 +192,7 @@ describe("kspec serve commands", () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: @daemon-sensitive-cli-test-determinism ac-1
+  // AC: @daemon-sensitive-cli-test-determinism ac-readiness-diagnostics
   it("should include actionable context when readiness wait times out", async () => {
     await expect(
       waitForStartup(
@@ -306,7 +306,7 @@ describe("kspec serve commands", () => {
   });
 
   // AC: @cli-serve-commands ac-2
-  // AC: @daemon-sensitive-cli-test-determinism ac-2
+  // AC: @daemon-sensitive-cli-test-determinism ac-isolated-home-config
   it("should start in daemon mode and detach", async () => {
     if (!nodeAvailable) {
       console.log("  ⊘ Skipping test - Node runtime required");
@@ -1005,7 +1005,7 @@ describe("kspec serve commands", () => {
   });
 
   // AC: @multi-directory-daemon ac-12
-  // AC: @daemon-sensitive-cli-test-determinism ac-3
+  // AC: @daemon-sensitive-cli-test-determinism ac-bounded-readiness
   it("should show registered projects with paths in status output", async () => {
     if (!nodeAvailable) {
       console.log("  ⊘ Skipping test - Node runtime required");
