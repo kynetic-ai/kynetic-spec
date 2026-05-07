@@ -182555,6 +182555,12 @@ reviews:
         payload:
           thread_ulid: 01KR2BBV50H8G7DAED3AYDRZAB
         timestamp: 2026-05-07T23:32:37.474Z
+      - _ulid: 01KR2CJWZ1YSYYWAV3FD88HCEW
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR2BBV50H8G7DAED3AYDRZAB
+        timestamp: 2026-05-07T23:32:51.809Z
     examined_commit: 6b1e1f472bd1d68ff10079cdd59eeebfca32bfe4
     external_links: []
     lifecycle_state: closed
@@ -182601,6 +182607,8 @@ reviews:
               null-field path is no longer reachable).
             created_at: 2026-05-07T23:32:36.129Z
         kind: blocker
+        resolved_at: 2026-05-07T23:32:50.474Z
+        resolved_by: "@claude"
       - _ulid: 01KR2BETNSVA6VNJ9EWP68H4BM
         entries:
           - _ulid: 01KR2BETNSMY57YSET8M7SE0T9
@@ -182629,5 +182637,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-07T23:13:21.225Z
     created_at: 2026-05-07T22:59:50.017Z
-    updated_at: 2026-05-07T23:32:36.129Z
+    updated_at: 2026-05-07T23:32:50.474Z
     notes: []
