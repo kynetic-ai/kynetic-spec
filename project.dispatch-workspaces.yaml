@@ -8575,7 +8575,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-07T21:57:32.475Z
+      updated_at: 2026-05-07T21:57:33.970Z
     integration:
       status: pending
       detail: null
@@ -8584,25 +8584,20 @@ workspaces:
       target_branch: dev
       target_commit: 1ee4204a13801e4d7c03ee503b00570b0d0791d7
       updated_at: 2026-05-07T21:57:32.475Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KR22GJER2BRA20M876PEEREZ"
     task_slug: task-update-daemon-test-specs
     timestamps:
       closed_at: null
       last_active_at: 2026-05-07T21:40:13.192Z
-      last_reconciled_at: 2026-05-07T21:57:32.475Z
+      last_reconciled_at: 2026-05-07T21:57:33.970Z
       created_at: 2026-05-07T20:39:09.432Z
-      updated_at: 2026-05-07T21:57:32.475Z
+      updated_at: 2026-05-07T21:57:33.970Z
     workspace_id: dispatch-workspace-01KR22GJER2BRA20M876PEEREZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 8ca62d564f27ba9b3cf0dcbdb9ef529a42cafee4
-        last_seen_at: 2026-05-07T21:39:46.055Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-daemon-test-specs-01kr22gj-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-update-daemon-test-specs/01kr22gj
