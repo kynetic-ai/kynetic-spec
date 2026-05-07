@@ -37948,7 +37948,7 @@ runs:
     completed_at: 2026-05-07T23:16:00.510Z
   - _ulid: 01KR2CMQ253DXA1Z3RGZQTHE5T
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -37961,7 +37961,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-07T23:35:58.370Z
-        completed_at: 2026-05-07T23:35:58.370Z
+        completed_at: 2026-05-07T23:36:07.487Z
+        notes: "High confidence success: when the same diagnostic field (lastX) must appear in failure
+          output regardless of which code path ran, sampling X once in the catch block is simpler
+          and more robust than threading per-probe state through every code path. Demonstrated this
+          session: removed 77 lines of HealthProbeState/CacheProbeState plumbing while expanding
+          diagnostic coverage (custom-mode failures previously left lastHealth/lastCacheStatus
+          null). Concrete, systemic, and reusable for any startup-readiness helper. Other
+          observations were duplicates of existing tracking."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-07T23:36:07.487Z
+        completed_at: 2026-05-07T23:36:07.487Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-07T23:33:51.302Z
