@@ -37989,7 +37989,7 @@ runs:
     completed_at: 2026-05-07T23:36:33.676Z
   - _ulid: 01KR2DMY7TXNTAEVMV7QAZTDF4
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -38557,7 +38557,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-07T23:52:58.010Z
-        completed_at: 2026-05-07T23:52:58.010Z
+        completed_at: 2026-05-07T23:53:27.001Z
+        notes: "Proposed improvements: No new high-confidence capture. The AC annotation problem is already
+          covered by @test-annotation-sweep and was handled as the active task review blocker. The
+          scoped lint problem already has an observation, so duplicating it would add noise.
+          Possible future idea if the existing coverage proves insufficient: a validate subcommand
+          or flag that reports coverage for a specific spec or task only, but this needs triage
+          against current validation roadmap before capture."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-07T23:53:27.001Z
+        completed_at: 2026-05-07T23:53:27.001Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-07T23:51:27.226Z
