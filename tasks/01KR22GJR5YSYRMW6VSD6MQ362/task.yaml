@@ -70,7 +70,7 @@ description: |
 spec_ref: "@daemon-backed-test-fixture-contract"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-update-daemon-test-specs"
@@ -85,11 +85,11 @@ review_ref: "@01KR2APDM1X2QE9GF27BM8ZPCW"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
-  captured_at: 2026-05-07T22:54:25.988Z
-  commit: 6b1e1f472bd1d68ff10079cdd59eeebfca32bfe4
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-07T23:33:27.211Z
+  commit: ab433d4eaf96d6b421cfc89771e283a3a768fcb8
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
 session_id: 01KR2BNPSN671KTZQEZV2ZDGXR
 history:
   - author: Jacob Chapel
@@ -162,8 +162,35 @@ history:
         previous: 2026-05-07T22:32:20.931Z
     command: task-start
     timestamp: 2026-05-07T23:33:24.096Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
+          captured_at: 2026-05-07T23:33:27.211Z
+          commit: ab433d4eaf96d6b421cfc89771e283a3a768fcb8
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
+        previous:
+          review_url: null
+          branch: dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
+          captured_at: 2026-05-07T22:54:25.988Z
+          commit: 6b1e1f472bd1d68ff10079cdd59eeebfca32bfe4
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-07T23:33:27.215Z
+        previous: 2026-05-07T22:54:25.990Z
+    command: task-submit
+    timestamp: 2026-05-07T23:33:27.215Z
 created_at: 2026-05-07T20:36:50.053Z
 started_at: 2026-05-07T23:33:24.096Z
-submitted_at: 2026-05-07T22:54:25.990Z
+submitted_at: 2026-05-07T23:33:27.215Z
 todos: []
 automation: eligible
