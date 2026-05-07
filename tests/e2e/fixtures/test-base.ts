@@ -427,7 +427,6 @@ tasks: []
       }
 
       // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation — propagate port/URLs to all tests
-      // AC: @e2e-test-daemon-isolation ac-uses-shared-fixture — daemon startup flows through this fixture
       await use({
         tempDir,
         kspecDir,
