@@ -27870,3 +27870,158 @@
   submitted_at: 2026-05-07T00:39:55.766Z
   completed_at: 2026-05-07T00:55:38.654Z
   automation: eligible
+- _ulid: 01KR22GJER2BRA20M876PEEREZ
+  slugs:
+    - task-update-daemon-test-specs
+  title: Update existing daemon test specs for shared fixture standards
+  type: task
+  plan_ref: "@plan-daemon-test-fixture-standardization"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+    - testing
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-07T20:36:49.752Z
+- _ulid: 01KR22GJR5YSYRMW6VSD6MQ362
+  slugs:
+    - task-implement-shared-daemon-test-fixture
+  title: Implement shared daemon test fixture core
+  type: task
+  spec_ref: "@daemon-backed-test-fixture-contract"
+  plan_ref: "@plan-daemon-test-fixture-standardization"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-daemon-test-specs"
+  priority: 1
+  tags:
+    - testing
+    - daemon
+    - fixture
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-07T20:36:50.053Z
+- _ulid: 01KR22GK15YB0PRQ1RP3D88J5J
+  slugs:
+    - task-migrate-real-daemon-vitest-tests
+  title: Migrate real daemon Vitest process tests to the shared fixture
+  type: task
+  spec_ref: "@daemon-backed-test-fixture-contract"
+  plan_ref: "@plan-daemon-test-fixture-standardization"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-shared-daemon-test-fixture"
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - vitest
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-07T20:36:50.341Z
+- _ulid: 01KR22GKACR7PZYFXZS9KEYVMQ
+  slugs:
+    - task-migrate-playwright-daemon-fixture
+  title: Migrate Playwright daemon setup to the shared fixture core
+  type: task
+  spec_ref: "@e2e-test-daemon-isolation"
+  plan_ref: "@plan-daemon-test-fixture-standardization"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-shared-daemon-test-fixture"
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - e2e
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-07T20:36:50.636Z
+- _ulid: 01KR22GKM9P5DB6J6ZVXVE510F
+  slugs:
+    - task-standardize-mock-daemon-client-fixtures
+  title: Standardize mock daemon client fixtures
+  type: task
+  spec_ref: "@daemon-test-mode-boundaries"
+  plan_ref: "@plan-daemon-test-fixture-standardization"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-shared-daemon-test-fixture"
+  priority: 3
+  tags:
+    - testing
+    - daemon
+    - cli
+    - mock
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-07T20:36:50.953Z
+- _ulid: 01KR22GKWXB1G5Y4KFTC5RNE3X
+  slugs:
+    - task-standardize-in-process-daemon-api-fixtures
+  title: Standardize in-process daemon API fixtures
+  type: task
+  spec_ref: "@daemon-test-mode-boundaries"
+  plan_ref: "@plan-daemon-test-fixture-standardization"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-shared-daemon-test-fixture"
+  priority: 3
+  tags:
+    - testing
+    - daemon
+    - api
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-07T20:36:51.229Z
+- _ulid: 01KR22GM64MB7X4HAPX8SAJ5VS
+  slugs:
+    - task-enforce-daemon-test-fixture-usage
+  title: Enforce daemon test fixture usage with guardrails
+  type: task
+  spec_ref: "@daemon-test-harness-guardrails"
+  plan_ref: "@plan-daemon-test-fixture-standardization"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-migrate-real-daemon-vitest-tests"
+    - "@task-migrate-playwright-daemon-fixture"
+    - "@task-standardize-mock-daemon-client-fixtures"
+  priority: 4
+  tags:
+    - testing
+    - lint
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-07T20:36:51.524Z
+- _ulid: 01KR22GMEWSRD1K4K5JW3546HV
+  slugs:
+    - task-validate-daemon-test-fixture-standardization
+  title: Validate daemon fixture standardization across the suite
+  type: task
+  spec_ref: "@daemon-backed-test-fixture-contract"
+  plan_ref: "@plan-daemon-test-fixture-standardization"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-enforce-daemon-test-fixture-usage"
+    - "@task-standardize-in-process-daemon-api-fixtures"
+  priority: 5
+  tags:
+    - testing
+    - daemon
+    - validation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-07T20:36:51.804Z

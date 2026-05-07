@@ -1,0 +1,68 @@
+_ulid: 01KR22GKACR7PZYFXZS9KEYVMQ
+slugs:
+  - task-migrate-playwright-daemon-fixture
+title: Migrate Playwright daemon setup to the shared fixture core
+type: task
+description: |
+  Update the Playwright daemon fixture to reuse the same daemon setup core as
+  Vitest real-daemon process tests.
+
+  Why: tests/e2e/fixtures/test-base.ts already has better runtime-awareness
+  than the websocket Vitest test, but it still duplicates port selection,
+  environment preparation, readiness, endpoint propagation, and teardown
+  logic. Playwright should be a wrapper around the shared daemon fixture, not
+  a separate fixture implementation that can drift.
+
+  What:
+  - Refactor tests/e2e/fixtures/test-base.ts so daemon startup, runtime
+    resolution, environment isolation, endpoint construction, readiness, and
+    teardown come from the shared daemon fixture core.
+  - Preserve Playwright-specific fixture values such as page base URL,
+    worker-scoped lifetime, browser context integration, and any current web
+    UI setup required by existing e2e tests.
+  - Ensure browser navigation and API calls use the fixture-provided endpoint
+    rather than reconstructing localhost or port strings.
+  - Keep Node as the default runtime and preserve the existing
+    KSPEC_TEST_RUNTIME opt-in behavior through the shared runtime resolver.
+  - Update AC annotations in Playwright fixture tests to the rewritten
+    @e2e-test-daemon-isolation AC IDs and the new endpoint/runtime specs.
+
+  How:
+  Extract runtime-independent daemon setup into tests/helpers/daemon.ts first.
+  In Playwright, wrap that core in test.extend fixtures instead of importing
+  Vitest-only APIs. If Playwright requires worker-scoped cleanup semantics,
+  add a small adapter that registers cleanup with Playwright teardown while
+  keeping daemon process ownership in the core helper.
+
+  Testing:
+  Run a representative e2e slice that exercises daemon-backed browser flows,
+  then run the full e2e command if the focused slice passes:
+  - mise exec -- npm run test:e2e -- tests/e2e/api-websocket.spec.ts tests/e2e/connection.spec.ts
+  - mise exec -- npm run test:e2e
+
+  Covers: @e2e-test-daemon-isolation ac-uses-shared-fixture,
+  ac-browser-endpoint-from-fixture, ac-isolated-e2e-state,
+  ac-e2e-scoped-cleanup, ac-dynamic-port-propagation;
+  @daemon-backed-test-fixture-contract ac-real-daemon-tests-use-shared-fixture,
+  ac-isolated-home-config, ac-isolated-project-data, ac-scoped-cleanup,
+  ac-readiness-diagnostics, ac-bounded-readiness, ac-no-ambient-daemon-control;
+  @daemon-test-endpoint-consistency ac-resolved-endpoint-source,
+  ac-no-localhost-by-default, ac-dynamic-port-propagation;
+  @daemon-test-runtime-selection ac-node-default.
+spec_ref: "@e2e-test-daemon-isolation"
+plan_ref: "@plan-daemon-test-fixture-standardization"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-implement-shared-daemon-test-fixture"
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - e2e
+  - web-ui
+vcs_refs: []
+created_at: 2026-05-07T20:36:50.636Z
+todos: []

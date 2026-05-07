@@ -860,7 +860,241 @@ features:
             when: |
               The daemon starts or a lifecycle command reports the endpoint
         tags: []
+        requirements:
+          - _ulid: 01KR22GJ9F6RW5C6A97G46RKVD
+            slugs:
+              - daemon-test-endpoint-consistency
+            title: Daemon Test Endpoint Consistency
+            type: requirement
+            description: |
+              Tests that call a daemon use the same endpoint contract as production
+              daemon consumers. Real daemon fixtures, mock daemon fixtures, HTTP test
+              clients, WebSocket clients, browser page URLs, and CLI metadata setup all
+              receive endpoint information from one resolved fixture endpoint instead of
+              constructing localhost URLs independently.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-daemon-endpoint-consumer"
+            acceptance_criteria:
+              - given: |
+                  A daemon test fixture has resolved a daemon endpoint
+                id: ac-resolved-endpoint-source
+                then: |
+                  The request uses the fixture-provided client endpoint
+                when: |
+                  Test code makes an HTTP or WebSocket daemon request
+              - given: |
+                  A daemon test fixture uses the default loopback endpoint
+                id: ac-no-localhost-by-default
+                then: |
+                  The URLs use 127.0.0.1 rather than localhost
+                when: |
+                  The fixture reports client URLs
+              - given: |
+                  A test uses both HTTP and WebSocket daemon clients
+                id: ac-http-ws-same-endpoint
+                then: |
+                  Both clients address the same resolved daemon endpoint
+                when: |
+                  The fixture provides client URLs
+              - given: |
+                  A CLI client test uses a mock daemon instead of a real daemon
+                id: ac-mock-metadata-fidelity
+                then: |
+                  The metadata matches the canonical daemon connection contract
+                when: |
+                  The test records daemon connection metadata
+              - given: |
+                  A test daemon listens on a dynamic port
+                id: ac-dynamic-port-propagation
+                then: |
+                  The clients receive the port from the fixture endpoint
+                when: |
+                  Test clients are created
+            tags: []
+            created: 2026-05-07T20:36:49.583Z
+            notes: []
         created: 2026-05-05T21:16:19.922Z
+        notes: []
+      - _ulid: 01KR22GJ7QFR5J51EESC2BH09A
+        slugs:
+          - daemon-backed-test-fixture-contract
+        title: Daemon-Backed Test Fixture Contract
+        type: requirement
+        description: |
+          Daemon-backed tests use one shared fixture contract for process startup,
+          project setup, environment isolation, readiness, and teardown. The
+          contract applies to Vitest and Playwright tests that start a real daemon
+          process, while allowing unit tests and in-process route tests to use
+          narrower fixtures that do not start a daemon.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A Vitest or Playwright test needs a real daemon child process
+            id: ac-real-daemon-tests-use-shared-fixture
+            then: |
+              Startup flows through the shared daemon test fixture
+            when: |
+              The test starts the daemon
+          - given: |
+              A daemon-backed test prepares daemon lifecycle state
+            id: ac-isolated-home-config
+            then: |
+              The daemon HOME and kspec config directory are isolated from the
+              ambient user environment
+            when: |
+              The fixture builds the child process environment
+          - given: |
+              A daemon-backed test prepares kspec project data
+            id: ac-isolated-project-data
+            then: |
+              The daemon reads only fixture-owned project files
+            when: |
+              The fixture creates the project workspace
+          - given: |
+              A daemon-backed test has started a child daemon process
+            id: ac-scoped-cleanup
+            then: |
+              Cleanup targets only the daemon owned by that fixture
+            when: |
+              The test completes, fails, or times out
+          - given: |
+              A daemon-backed test waits for daemon readiness
+            id: ac-readiness-diagnostics
+            then: |
+              The failure output reports a diagnostic bundle for the failed startup
+              attempt
+            when: |
+              Readiness is not reached before the timeout
+          - given: |
+              A daemon-backed test needs startup synchronization
+            id: ac-bounded-readiness
+            then: |
+              The wait uses bounded polling rather than fixed sleep delays
+            when: |
+              The test waits for daemon readiness
+          - given: |
+              A developer or CI runner has an unrelated daemon running
+            id: ac-no-ambient-daemon-control
+            then: |
+              The tests do not stop, kill, or reuse the unrelated daemon
+            when: |
+              Daemon-backed tests run in parallel
+        tags: []
+        created: 2026-05-07T20:36:49.527Z
+        notes: []
+      - _ulid: 01KR22GJC5A5F1BX49PFR5C50K
+        slugs:
+          - daemon-test-mode-boundaries
+        title: Daemon Test Mode Boundaries
+        type: requirement
+        description: |
+          Daemon tests choose the lightest fixture mode that still exercises the
+          behavior under test. Route and API handler tests use in-process app
+          fixtures. CLI client routing tests use mock daemons with realistic
+          metadata. Daemon lifecycle, runtime adapter, and WebSocket protocol tests
+          use real child daemons through the shared fixture.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A daemon API test only needs route handler behavior
+            id: ac-in-process-route-tests-no-child-process
+            then: |
+              The test does not spawn a daemon child process
+            when: |
+              The test creates the daemon app
+          - given: |
+              A CLI test only needs to verify daemon client routing
+            id: ac-cli-client-tests-use-mock-daemon
+            then: |
+              The test uses a mock daemon with canonical connection metadata
+            when: |
+              The test prepares a reachable daemon endpoint
+          - given: |
+              A CLI test verifies serve start, stop, status, or restart behavior
+            id: ac-cli-lifecycle-tests-use-cli-path
+            then: |
+              The test invokes the CLI lifecycle path under test
+            when: |
+              The test manages a daemon process
+          - given: |
+              A test verifies daemon runtime, lifecycle, cache readiness, or
+              WebSocket protocol behavior
+            id: ac-full-process-tests-use-real-daemon
+            then: |
+              The test uses a real child daemon through the shared fixture
+            when: |
+              The behavior requires the daemon process boundary
+        tags: []
+        created: 2026-05-07T20:36:49.669Z
+        notes: []
+      - _ulid: 01KR22GJDE2613RTZDTFKATQBM
+        slugs:
+          - daemon-test-harness-guardrails
+        title: Daemon Test Harness Guardrails
+        type: requirement
+        description: |
+          Focused fixture contract tests plus static and runtime guardrails keep new
+          daemon tests on the standardized helpers. Direct daemon child-process
+          startup and detached serve commands are allowed only inside the shared
+          helper implementation or in explicitly documented exception tests.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              Shared daemon fixture or helper behavior is implemented or changed
+            id: ac-fixture-contract-tests-run
+            then: |
+              Focused helper tests exercise the fixture contract directly
+            when: |
+              daemon test validation runs
+          - given: |
+              A test file starts a real daemon directly outside the shared daemon
+              fixture
+            id: ac-direct-daemon-spawn-flagged
+            then: |
+              The check reports the direct daemon startup
+            when: |
+              the daemon-test guardrail check runs
+          - given: |
+              A test file starts a detached daemon through the CLI without scoped
+              cleanup
+            id: ac-detached-serve-without-cleanup-flagged
+            then: |
+              The check reports the unsafe detached daemon start
+            when: |
+              the daemon-test guardrail check runs
+          - given: |
+              The shared daemon fixture implementation starts a daemon process
+            id: ac-helper-internals-allowed
+            then: |
+              The check accepts the helper-owned startup code
+            when: |
+              the daemon-test guardrail check runs
+          - given: |
+              A test needs to exercise behavior that intentionally violates the
+              normal fixture pattern
+            id: ac-exceptions-are-localized
+            then: |
+              The check accepts only a local documented exception for that test case
+            when: |
+              the daemon-test guardrail check runs
+        tags: []
+        created: 2026-05-07T20:36:49.710Z
         notes: []
     created: 2026-01-22T01:18:09.314Z
     notes: []
@@ -4207,6 +4441,63 @@ features:
           daemon auto-start
         when: config is loaded before daemon startup
     tags: []
+    requirements:
+      - _ulid: 01KR22GJAVHP6NX05RQYK67807
+        slugs:
+          - daemon-test-runtime-selection
+        title: Daemon Test Runtime Selection
+        type: requirement
+        description: |
+          Daemon tests exercise the same runtime defaults and runtime-selection
+          behavior promised by the daemon runtime adapter. Generic daemon tests run
+          against Node by default. Runtime-specific or parity tests opt into a
+          runtime matrix explicitly and treat Bun as optional unless the test is
+          specifically validating a configured Bun environment.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A daemon-backed test does not opt into a specific runtime
+            id: ac-node-default
+            then: |
+              The daemon starts with Node
+            when: |
+              The shared daemon fixture starts the daemon
+          - given: |
+              A test starts the daemon with Bun
+            id: ac-explicit-runtime-only
+            then: |
+              The test declares that Bun runtime behavior is part of its subject
+            when: |
+              The test is authored or modified
+          - given: |
+              A test claims HTTP or WebSocket parity across daemon runtimes
+            id: ac-runtime-matrix-parity
+            then: |
+              The same daemon behavior is exercised for each available runtime
+            when: |
+              The parity suite runs on a machine with the configured runtimes
+          - given: |
+              A parity test includes an optional runtime that is not installed
+            id: ac-missing-optional-runtime-skips
+            then: |
+              The missing optional runtime is reported as a skipped runtime case
+            when: |
+              The parity suite starts
+          - given: |
+              A runtime lacks a daemon capability such as frame-level WebSocket
+              heartbeat support
+            id: ac-runtime-degradation-assertions
+            then: |
+              The test asserts the documented degraded behavior for that runtime
+            when: |
+              Runtime-specific daemon behavior is tested
+        tags: []
+        created: 2026-05-07T20:36:49.627Z
+        notes: []
     created: 2026-04-05T05:25:52.805Z
     notes: []
 requirements:

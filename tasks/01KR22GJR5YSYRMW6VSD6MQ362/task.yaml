@@ -1,0 +1,85 @@
+_ulid: 01KR22GJR5YSYRMW6VSD6MQ362
+slugs:
+  - task-implement-shared-daemon-test-fixture
+title: Implement shared daemon test fixture core
+type: task
+description: |
+  Implement the shared daemon test fixture core used by real daemon process
+  tests.
+
+  Why: Multiple tests currently duplicate daemon process setup, port
+  selection, environment isolation, readiness polling, runtime selection, and
+  cleanup. The duplicated code has already drifted: the websocket protocol
+  test hardcodes Bun, uses localhost URLs, and produces weak readiness
+  diagnostics compared with newer helper patterns.
+
+  What:
+  - Add a shared helper module for daemon-backed tests, for example
+    tests/helpers/daemon.ts.
+  - Provide a fixture creation API that prepares:
+    - a temp kspec project directory with .kspec data needed by the daemon;
+    - an isolated HOME/config directory using createIsolatedKspecHome from
+      tests/helpers/cli.ts;
+    - a sanitized child process env that does not inherit ambient daemon
+      PID/port/session state;
+    - a resolved daemon endpoint using src/daemon-shared/endpoint.ts;
+    - cleanup registration that is installed immediately after a daemon
+      child is spawned.
+  - Provide startTestDaemon options for:
+    - runtime: default node, explicit node, explicit bun, or runtime matrix
+      entry;
+    - bind host and connect host;
+    - readiness mode: health only, health plus cache ready, or custom probe;
+    - process startup mode: direct child process for daemon process tests.
+  - Build readiness on top of tests/helpers/cli.ts waitForStartup or an
+    equivalent shared polling helper that preserves the last observed state.
+  - On readiness failure, include endpoint, runtime, child pid, exit code or
+    signal if known, stdout tail, stderr tail, last health response, and last
+    cache-status response in the thrown error.
+  - Stop fixture-owned daemons by child process handle or scoped lifecycle
+    metadata only. Do not kill by port number.
+  - Add tests/helpers/daemon.test.ts as the focused contract test suite for
+    the helper itself. Cover runtime selection, environment isolation,
+    endpoint defaults, dynamic port propagation, readiness timeout diagnostics,
+    and cleanup behavior without relying only on migrated product-flow tests.
+
+  How:
+  Reuse createTempDir, cleanupTempDir, initGitRepo, createIsolatedKspecHome,
+  readTestOutputSync, and waitForStartup from tests/helpers/cli.ts instead of
+  copying their behavior. Import resolveDaemonEndpoint and canonical metadata
+  helpers from src/daemon-shared/endpoint.ts rather than formatting daemon
+  URLs independently. Keep the helper small enough that Playwright can import
+  the core logic through a wrapper without depending on Vitest globals.
+
+  Testing:
+  First run the helper contract suite directly:
+  - mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts
+
+  Then run the migrated websocket consumer after the websocket migration task
+  lands:
+  - mise exec -- npm test -- --fresh tests/daemon-api/websocket-protocol.test.ts
+
+  Covers: @daemon-backed-test-fixture-contract
+  ac-real-daemon-tests-use-shared-fixture, ac-isolated-home-config,
+  ac-isolated-project-data, ac-scoped-cleanup, ac-readiness-diagnostics,
+  ac-bounded-readiness, ac-no-ambient-daemon-control;
+  @daemon-test-endpoint-consistency ac-no-localhost-by-default,
+  ac-dynamic-port-propagation; @daemon-test-runtime-selection ac-node-default;
+  @daemon-test-harness-guardrails ac-fixture-contract-tests-run;
+  @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests.
+spec_ref: "@daemon-backed-test-fixture-contract"
+plan_ref: "@plan-daemon-test-fixture-standardization"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-daemon-test-specs"
+context: []
+priority: 1
+tags:
+  - testing
+  - daemon
+  - fixture
+vcs_refs: []
+created_at: 2026-05-07T20:36:50.053Z
+todos: []

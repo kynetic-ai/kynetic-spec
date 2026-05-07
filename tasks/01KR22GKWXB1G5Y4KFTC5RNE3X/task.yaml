@@ -1,0 +1,86 @@
+_ulid: 01KR22GKWXB1G5Y4KFTC5RNE3X
+slugs:
+  - task-standardize-in-process-daemon-api-fixtures
+title: Standardize in-process daemon API fixtures
+type: task
+description: >
+  Align in-process daemon API tests on shared app-handle and project fixture
+
+  helpers without converting them to child-process daemon tests.
+
+
+  Why: Most tests under tests/daemon-api already use tests/daemon-api/helpers.ts,
+
+  but older top-level daemon API and review tests still duplicate request
+
+  construction and fixture setup. These tests should remain fast in-process
+
+  tests, but their fixture setup should be standardized so they do not drift
+
+  from route-helper conventions.
+
+
+  What:
+
+  - Audit tests/daemon-api/*.test.ts and top-level daemon API/review tests
+    such as tests/daemon-review-websocket.test.ts and
+    tests/daemon-review-verdicts-api.test.ts.
+  - Extend tests/daemon-api/helpers.ts only where necessary to cover common
+    in-process needs: project fixture setup, app creation with disabled
+    watchers, request construction, JSON response parsing, and broadcast
+    capture helpers for websocket-related route side effects.
+  - Add or update focused tests in tests/daemon-api/helpers.test.ts for any
+    new in-process helper behavior so route-level consumer tests are not the
+    only validation surface.
+  - Migrate duplicate makeRequest, setupFixtures, and temporary project setup
+    code to the shared in-process helpers.
+  - Do not convert handler-level tests to real daemon process tests unless the
+    behavior under test requires a process boundary, runtime adapter, cache
+    readiness, lifecycle metadata, or an actual WebSocket network connection.
+  - Keep direct use of app.handle for route behavior where that is sufficient.
+
+  - Update AC annotations to @daemon-test-mode-boundaries and the relevant
+    daemon API product specs after migration.
+
+  How:
+
+  Start with one representative top-level duplicate test and make the helper
+
+  API adequate for it. Then migrate similar files mechanically. Preserve test
+
+  data values and expected API responses exactly unless an existing assertion
+
+  is proven stale by the current product spec.
+
+
+  Testing:
+
+  Run:
+
+  - mise exec -- npm test -- --fresh tests/daemon-api/helpers.test.ts
+
+  - mise exec -- npm test -- --fresh tests/daemon-api/server.test.ts tests/daemon-api/tasks.test.ts
+
+  - mise exec -- npm test -- --fresh tests/daemon-review-websocket.test.ts
+  tests/daemon-review-verdicts-api.test.ts
+
+
+  Covers: @daemon-test-mode-boundaries ac-in-process-route-tests-no-child-process;
+
+  @daemon-test-harness-guardrails ac-fixture-contract-tests-run.
+spec_ref: "@daemon-test-mode-boundaries"
+plan_ref: "@plan-daemon-test-fixture-standardization"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-implement-shared-daemon-test-fixture"
+context: []
+priority: 3
+tags:
+  - testing
+  - daemon
+  - api
+vcs_refs: []
+created_at: 2026-05-07T20:36:51.229Z
+todos: []

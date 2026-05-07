@@ -1,0 +1,81 @@
+_ulid: 01KR22GK15YB0PRQ1RP3D88J5J
+slugs:
+  - task-migrate-real-daemon-vitest-tests
+title: Migrate real daemon Vitest process tests to the shared fixture
+type: task
+description: |
+  Convert Vitest tests that start a real daemon child process to use the
+  shared daemon fixture.
+
+  Why: Real daemon process tests exercise the highest-risk path for flakiness:
+  child processes, readiness timing, dynamic ports, runtime selection, and
+  cleanup. Keeping those tests on bespoke fixtures allows the same localhost,
+  Bun-default, and weak-diagnostic drift to recur.
+
+  What:
+  - Migrate tests/daemon-api/websocket-protocol.test.ts to the shared helper.
+    The default run must use Node. WebSocket URLs must come from the fixture
+    ws_url. Cache readiness must use the shared readiness mode rather than a
+    local polling loop. Preserve the existing protocol assertions for
+    connected events, ping/ack, subscriptions, task_created flow, malformed
+    messages, unknown message types, and multiple clients.
+  - Add runtime parity coverage for the websocket protocol where it belongs:
+    either a small node-plus-installed-bun matrix inside the websocket test or
+    a focused runtime parity test that covers connect, subscribe, broadcast,
+    and documented heartbeat degradation. If Bun is not installed, report the
+    Bun case as skipped rather than failing generic Node coverage.
+  - Migrate tests/daemon-build.test.ts to use the shared dynamic endpoint,
+    runtime-selection helpers, and readiness diagnostics while preserving its
+    build-artifact smoke-test purpose.
+  - Migrate direct daemon child-process sections in tests/cli-serve.test.ts
+    that spawn dist/daemon/index.js outside the CLI lifecycle subject. Keep
+    tests that intentionally verify serve start, serve stop, serve status, or
+    serve restart on the CLI path.
+  - Audit tests/cli-no-daemon.test.ts and any other Vitest file that starts a
+    real daemon process. Convert real daemon setup to the helper or document a
+    narrow exception if the test must verify a lower-level process behavior.
+  - Remove duplicated getAvailablePort, waitForDaemonReady, spawn("bun"),
+    spawn("node"), baseUrl, and wsUrl construction from migrated tests.
+  - Update AC annotations in migrated tests to the rewritten existing specs
+    and new plan specs.
+
+  How:
+  Migrate one file at a time. After each file, run its focused test command
+  with mise exec -- npm test -- --fresh <file>. Keep route-level assertions
+  unchanged unless the helper changes only setup mechanics. Do not broaden the
+  product behavior under test while migrating fixtures.
+
+  Testing:
+  Run:
+  - mise exec -- npm run build:daemon
+  - mise exec -- npm test -- --fresh tests/daemon-api/websocket-protocol.test.ts
+  - mise exec -- npm test -- --fresh tests/daemon-build.test.ts
+  - mise exec -- npm test -- --fresh tests/cli-serve.test.ts tests/cli-no-daemon.test.ts
+
+  Covers: @daemon-backed-test-fixture-contract
+  ac-real-daemon-tests-use-shared-fixture, ac-isolated-home-config,
+  ac-isolated-project-data, ac-scoped-cleanup, ac-readiness-diagnostics,
+  ac-bounded-readiness, ac-no-ambient-daemon-control;
+  @daemon-test-endpoint-consistency ac-resolved-endpoint-source,
+  ac-no-localhost-by-default, ac-http-ws-same-endpoint,
+  ac-dynamic-port-propagation; @daemon-test-runtime-selection ac-node-default,
+  ac-explicit-runtime-only, ac-runtime-matrix-parity,
+  ac-missing-optional-runtime-skips, ac-runtime-degradation-assertions;
+  @daemon-test-mode-boundaries ac-cli-lifecycle-tests-use-cli-path,
+  ac-full-process-tests-use-real-daemon.
+spec_ref: "@daemon-backed-test-fixture-contract"
+plan_ref: "@plan-daemon-test-fixture-standardization"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-implement-shared-daemon-test-fixture"
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - vitest
+vcs_refs: []
+created_at: 2026-05-07T20:36:50.341Z
+todos: []

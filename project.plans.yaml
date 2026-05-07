@@ -46003,10 +46003,23 @@ plans:
       centralized, the port allocation strategy can be replaced in one helper without
 
       migrating tests again.
-    status: approved
+    status: active
     approved_at: 2026-05-07T20:36:27.165Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@daemon-backed-test-fixture-contract"
+      - "@daemon-test-endpoint-consistency"
+      - "@daemon-test-runtime-selection"
+      - "@daemon-test-mode-boundaries"
+      - "@daemon-test-harness-guardrails"
+    derived_tasks:
+      - "@task-update-daemon-test-specs"
+      - "@task-implement-shared-daemon-test-fixture"
+      - "@task-migrate-real-daemon-vitest-tests"
+      - "@task-migrate-playwright-daemon-fixture"
+      - "@task-standardize-mock-daemon-client-fixtures"
+      - "@task-standardize-in-process-daemon-api-fixtures"
+      - "@task-enforce-daemon-test-fixture-usage"
+      - "@task-validate-daemon-test-fixture-standardization"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/daemon-test-fixture-standardization.md
     created_at: 2026-05-07T19:53:55.956Z
@@ -46027,3 +46040,40 @@ plans:
           surfaces"
         author: Jacob Chapel
         created_at: 2026-05-07T20:27:12.086Z
+      - _ulid: 01KR22GMRNFPSW8DR2BA7XXHRZ
+        content: |-
+          This plan is a test-infrastructure hardening plan. It intentionally separates
+          fixture categories rather than forcing every daemon-related test into the same
+          runtime mode:
+
+          - Real daemon process tests use the new shared daemon fixture because they
+            exercise child process startup, runtime adapters, lifecycle state, cache
+            readiness, or actual WebSocket network behavior.
+          - Playwright tests wrap the same daemon fixture core because browser URL and
+            daemon endpoint propagation must match Vitest daemon-backed tests.
+          - CLI client routing tests use mock daemons because the CLI is often invoked
+            with spawnSync, which blocks the test runner event loop and requires a child
+            process mock to accept requests.
+          - In-process daemon API tests keep using app.handle because they are fast route
+            tests and should not gain process-lifecycle flakiness.
+
+          The plan validates testing-related specs through three separate evidence types:
+          focused contract tests for the helper APIs, representative consumer tests that
+          prove migrated daemon flows still work, and static source-audit guardrails for
+          repo-wide structural rules that runtime tests cannot prove by themselves. Helper
+          contract tests are required for changed real-daemon, mock-daemon, and in-process
+          helper behavior so a fixture regression fails close to the fixture instead of
+          surfacing only as a broad product-flow failure.
+
+          The first task is intentionally a concrete spec-update task. It rewrites two
+          existing test specs whose scope is too narrow and adds one endpoint-contract AC
+          that makes test endpoint behavior explicit. Agents implementing that task must
+          use kspec CLI commands rather than editing .kspec YAML directly.
+
+          The plan does not require immediate elimination of every ephemeral port probe.
+          The shared helper may initially centralize the current dynamic-port approach if
+          using daemon --port 0 plus metadata readback is too large for this slice. Once
+          centralized, the port allocation strategy can be replaced in one helper without
+          migrating tests again.
+        author: Jacob Chapel
+        created_at: 2026-05-07T20:36:52.117Z

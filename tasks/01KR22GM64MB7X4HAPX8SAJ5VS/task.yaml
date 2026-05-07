@@ -1,0 +1,68 @@
+_ulid: 01KR22GM64MB7X4HAPX8SAJ5VS
+slugs:
+  - task-enforce-daemon-test-fixture-usage
+title: Enforce daemon test fixture usage with guardrails
+type: task
+description: |
+  Update static guardrails so new daemon tests use the shared helpers instead
+  of reintroducing bespoke process startup or unsafe daemon cleanup.
+
+  Why: The repository already has tests for a no-leaky-test-daemon lint rule,
+  but the rule is not tied to a spec AC and it focuses on cleanup rather than
+  standard fixture usage. After migration, the guardrail should encode the new
+  standard so future tests do not drift back to direct daemon spawns,
+  hardcoded Bun startup, detached serve commands without scoped cleanup, or
+  localhost URL construction.
+
+  What:
+  - Add or update a daemon test guardrail rule so test files outside approved
+    helper implementations are flagged when they:
+    - spawn dist/daemon/index.js directly;
+    - call kspec serve start --detach without a shared scoped cleanup helper;
+    - hardcode spawn("bun") for a daemon process outside a runtime-specific
+      parity test;
+    - construct daemon HTTP or WebSocket URLs from localhost plus a raw port
+      outside endpoint-contract unit tests.
+  - Allow the shared daemon fixture implementation, mock daemon helper
+    implementation, and explicit lint-rule fixture strings to contain the
+    otherwise flagged patterns.
+  - Require any intentional exception to be documented locally in the test
+    file with a narrow reason that names the behavior under test.
+  - Update tests/lint-no-leaky-test-daemon.test.ts or add a new lint test file
+    so the guardrail behavior has AC annotations for
+    @daemon-test-harness-guardrails.
+  - Ensure the rule does not flag pure unit tests that use app.handle or
+    endpoint-contract tests that intentionally assert URL formatting.
+
+  How:
+  Reuse the existing no-leaky-test-daemon rule if extending it keeps the rule
+  understandable. If the new checks would make that rule too broad, create a
+  separate daemon-test-fixture guardrail rule with focused tests. Keep
+  allowlists path-based and minimal.
+
+  Testing:
+  Run the lint-rule tests with mise exec -- npm test -- --fresh
+  tests/lint-no-leaky-test-daemon.test.ts and any new guardrail test file.
+  Then run the repository lint command used by package scripts if present.
+
+  Covers: @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged,
+  ac-detached-serve-without-cleanup-flagged, ac-helper-internals-allowed,
+  ac-exceptions-are-localized.
+spec_ref: "@daemon-test-harness-guardrails"
+plan_ref: "@plan-daemon-test-fixture-standardization"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-migrate-real-daemon-vitest-tests"
+  - "@task-migrate-playwright-daemon-fixture"
+  - "@task-standardize-mock-daemon-client-fixtures"
+context: []
+priority: 4
+tags:
+  - testing
+  - lint
+  - daemon
+vcs_refs: []
+created_at: 2026-05-07T20:36:51.524Z
+todos: []

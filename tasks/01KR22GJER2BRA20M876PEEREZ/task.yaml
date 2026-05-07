@@ -1,0 +1,120 @@
+_ulid: 01KR22GJER2BRA20M876PEEREZ
+slugs:
+  - task-update-daemon-test-specs
+title: Update existing daemon test specs for shared fixture standards
+type: task
+description: |
+  Update the existing daemon-related test specs so they align with the new
+  shared fixture standards in this plan.
+
+  Why: The current spec catalog describes daemon-sensitive CLI tests and
+  Playwright daemon isolation, but the wording is narrower than the actual
+  daemon-backed test surface. It also leaves test-specific endpoint behavior
+  implicit in @daemon-network-endpoint-contract even though current tests
+  have independently constructed localhost URLs.
+
+  What:
+  - Update @daemon-sensitive-cli-test-determinism exactly as follows:
+    - Change the title to "Daemon-Sensitive Test Determinism".
+    - Replace the description with:
+      "Define deterministic testing patterns for daemon-sensitive CLI,
+      Vitest, and Playwright tests so parallel execution and ambient machine
+      daemon state do not create flaky failures. Daemon-backed tests use
+      shared helpers for isolated HOME/config state, bounded readiness waits,
+      actionable diagnostics, and scoped cleanup."
+    - Replace the acceptance criteria with these five ACs, preserving the
+      slug @daemon-sensitive-cli-test-determinism:
+      - ac-readiness-diagnostics
+        given: A daemon-sensitive test waits for process or server readiness
+        when: the readiness wait exceeds its timeout
+        then: the failing assertion includes actionable process output and
+        the last observed readiness state
+      - ac-bounded-readiness
+        given: daemon-sensitive tests need startup synchronization
+        when: tests wait for server or foreground process readiness
+        then: tests use bounded polling helpers instead of fixed sleep delays
+      - ac-isolated-home-config
+        given: daemon-sensitive tests run in parallel with ambient daemon state
+        when: the tests invoke CLI commands or start daemon processes
+        then: HOME and daemon config state are isolated through shared helpers
+      - ac-scoped-daemon-cleanup
+        given: a daemon-sensitive test starts a daemon process
+        when: the test finishes or fails
+        then: cleanup targets only the daemon owned by that test fixture
+      - ac-fixture-contract-tests
+        given: shared daemon test fixture behavior is implemented or changed
+        when: daemon-sensitive test validation runs
+        then: focused helper tests exercise the fixture contract directly
+  - Update @e2e-test-daemon-isolation exactly as follows:
+    - Change the title to "Browser E2E Daemon Fixture Integration".
+    - Replace the description with:
+      "Playwright tests that need daemon-backed browser behavior use the
+      shared daemon test fixture through a Playwright wrapper. Browser URLs,
+      API calls, isolated HOME/config state, dynamic ports, readiness, and
+      teardown are supplied by the same daemon fixture contract used by
+      Vitest daemon-backed tests."
+    - Replace the acceptance criteria with these five ACs, preserving the
+      slug @e2e-test-daemon-isolation:
+      - ac-uses-shared-fixture
+        given: a Playwright test needs a daemon for API or browser testing
+        when: the Playwright fixture starts a daemon
+        then: startup flows through the shared daemon test fixture
+      - ac-browser-endpoint-from-fixture
+        given: the Playwright daemon fixture reports an endpoint
+        when: browser pages navigate or make daemon API calls
+        then: the browser uses the endpoint supplied by the fixture
+      - ac-isolated-e2e-state
+        given: Playwright tests start a daemon in a temp project
+        when: the fixture creates the daemon environment
+        then: HOME and daemon config paths are isolated from the ambient system
+      - ac-e2e-scoped-cleanup
+        given: a Playwright test daemon has started
+        when: Playwright fixture teardown runs
+        then: teardown stops only the fixture-owned daemon
+      - ac-dynamic-port-propagation
+        given: the Playwright daemon listens on a dynamic port
+        when: Playwright tests make API calls or navigate browser pages
+        then: the port is propagated through the daemon fixture context
+  - Update @daemon-network-endpoint-contract by adding this AC without
+    changing the existing ACs:
+      - ac-tests-use-resolved-endpoint
+        given: a daemon-backed test starts or mocks a daemon
+        when: the test creates HTTP clients, WebSocket clients, browser URLs,
+        or daemon connection metadata
+        then: the test uses the canonical resolved daemon endpoint
+  - Set implementation status for each updated spec to in_progress unless
+    the same branch also migrates all behavior needed by the updated ACs.
+
+  How:
+  Use kspec item set and kspec item ac set/add/remove commands. Do not edit
+  .kspec YAML by hand. After updating each spec, run kspec item get on that
+  ref and verify the final title, description, AC IDs, and status match the
+  text above.
+
+  Testing:
+  Run kspec validate --refs --warnings-ok after the spec mutations. Also run
+  a focused grep for the old AC IDs in tests and update stale AC annotations
+  only where the test still truthfully covers the rewritten behavior.
+
+  Covers: @daemon-sensitive-cli-test-determinism ac-readiness-diagnostics,
+  ac-bounded-readiness, ac-isolated-home-config, ac-scoped-daemon-cleanup,
+  ac-fixture-contract-tests;
+  @e2e-test-daemon-isolation ac-uses-shared-fixture,
+  ac-browser-endpoint-from-fixture, ac-isolated-e2e-state,
+  ac-e2e-scoped-cleanup, ac-dynamic-port-propagation;
+  @daemon-network-endpoint-contract ac-tests-use-resolved-endpoint.
+spec_ref: null
+plan_ref: "@plan-daemon-test-fixture-standardization"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - testing
+  - daemon
+vcs_refs: []
+created_at: 2026-05-07T20:36:49.752Z
+todos: []
