@@ -37514,7 +37514,7 @@ runs:
     completed_at: 2026-05-07T00:41:37.091Z
   - _ulid: 01KQZYJ7CHD6TC9B7YE2DS90B3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -37530,7 +37530,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-07T00:50:03.792Z
-        completed_at: 2026-05-07T00:50:03.792Z
+        completed_at: 2026-05-07T00:50:13.029Z
+        notes: "Friction points: The review gates require a brief evidence log, but the review CLI has
+          checks and comment threads, not a first-class evidence-log field. Recording the evidence
+          as a nit thread preserves the audit trail but leaves an approved review showing one
+          unresolved thread, which is noisy for gate review. Minor friction: the final npm test
+          suite takes a long time, but the runner behaved correctly and this is expected for full
+          verification rather than a tooling defect."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-07T00:50:13.029Z
+        completed_at: 2026-05-07T00:50:13.029Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-07T00:49:20.785Z
