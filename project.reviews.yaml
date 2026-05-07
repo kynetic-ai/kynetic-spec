@@ -182123,3 +182123,29 @@ reviews:
     created_at: 2026-05-07T20:29:35.411Z
     updated_at: 2026-05-07T20:30:27.182Z
     notes: []
+  - _ulid: 01KR266EB3BDB9C7MW8PQ0P7PK
+    slugs: []
+    title: Review task-update-daemon-test-specs
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR266EB26FJT5CHDJZMC36X9
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-07T21:41:12.163Z
+    examined_commit: 8ca62d564f27ba9b3cf0dcbdb9ef529a42cafee4
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR22GJER2BRA20M876PEEREZ"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-07T21:41:12.163Z
+    updated_at: null
+    notes: []
