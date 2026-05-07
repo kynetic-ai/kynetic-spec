@@ -45196,8 +45196,8 @@ plans:
             when: |
               Readiness is not reached before the timeout
             then: |
-              The failure output includes endpoint, runtime, process state, recent
-              stdout, recent stderr, and the last readiness observation
+              The failure output reports a diagnostic bundle for the failed startup
+              attempt
           - id: ac-bounded-readiness
             given: |
               A daemon-backed test needs startup synchronization
@@ -45233,7 +45233,7 @@ plans:
             when: |
               Test code makes an HTTP or WebSocket daemon request
             then: |
-              The request uses the fixture-provided api_url or ws_url
+              The request uses the fixture-provided client endpoint
           - id: ac-no-localhost-by-default
             given: |
               A daemon test fixture uses the default loopback endpoint
@@ -45252,9 +45252,9 @@ plans:
             given: |
               A CLI client test uses a mock daemon instead of a real daemon
             when: |
-              The test writes daemon connection metadata
+              The test records daemon connection metadata
             then: |
-              The metadata follows the canonical daemon.connection.json shape
+              The metadata matches the canonical daemon connection contract
           - id: ac-dynamic-port-propagation
             given: |
               A test daemon listens on a dynamic port
@@ -45367,12 +45367,12 @@ plans:
         acceptance_criteria:
           - id: ac-direct-daemon-spawn-flagged
             given: |
-              A test file starts dist/daemon/index.js directly outside the shared
-              daemon fixture
+              A test file starts a real daemon directly outside the shared daemon
+              fixture
             when: |
               the daemon-test guardrail check runs
             then: |
-              The check reports the direct daemon spawn
+              The check reports the direct daemon startup
           - id: ac-detached-serve-without-cleanup-flagged
             given: |
               A test file starts a detached daemon through the CLI without scoped
@@ -45955,11 +45955,15 @@ plans:
       migrating tests again.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/daemon-test-fixture-standardization.md
     created_at: 2026-05-07T19:53:55.956Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KR20CZC3S0SFMC03EMBHJAGN
+        content: "Address review cycle 1: make guardrail AC behavioral, remove endpoint implementation field
+          names, simplify readiness diagnostics AC"
+        author: Jacob Chapel
+        created_at: 2026-05-07T19:59:54.756Z
