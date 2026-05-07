@@ -27969,6 +27969,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-07T20:36:50.953Z
+  automation: eligible
 - _ulid: 01KR22GKWXB1G5Y4KFTC5RNE3X
   slugs:
     - task-standardize-in-process-daemon-api-fixtures
