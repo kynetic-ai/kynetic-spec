@@ -37890,7 +37890,7 @@ runs:
     started_at: 2026-05-07T22:55:08.337Z
     completed_at: 2026-05-07T22:57:09.621Z
   - _ulid: 01KR2BGMF2J71CEW2AMDVNCEHN
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -37936,10 +37936,13 @@ runs:
         completed_at: 2026-05-07T23:15:46.061Z
         notes: No proposals to discuss because coverage search found the observed friction already tracked
           or below capture threshold.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-07T23:15:46.061Z
-        completed_at: 2026-05-07T23:15:46.061Z
+        completed_at: 2026-05-07T23:16:00.509Z
+        notes: No items captured. The only concrete friction was already tracked/expected behavior, and no
+          new high-confidence improvement was approved for capture in this reflection.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-07T23:14:08.994Z
+    completed_at: 2026-05-07T23:16:00.510Z
