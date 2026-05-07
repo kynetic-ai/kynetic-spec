@@ -37891,7 +37891,7 @@ runs:
     completed_at: 2026-05-07T22:57:09.621Z
   - _ulid: 01KR2BGMF2J71CEW2AMDVNCEHN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -37906,7 +37906,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-07T23:14:31.090Z
-        completed_at: 2026-05-07T23:14:31.090Z
+        completed_at: 2026-05-07T23:14:41.921Z
+        notes: "Friction: workflow commands are awkward when many active historical workflow runs exist.
+          After starting @01KR2BGM, running kspec workflow next without the run ref failed with a
+          long list of active runs, so every reflection step must manually include @01KR2BGM.
+          Secondary friction: whole-repo npm run lint is noisy with pre-existing unrelated
+          violations; changed-file oxlint was needed to get actionable signal for the reviewed
+          branch."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-07T23:14:41.921Z
+        completed_at: 2026-05-07T23:14:41.921Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-07T23:14:08.994Z
