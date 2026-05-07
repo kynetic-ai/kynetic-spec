@@ -181736,7 +181736,111 @@ reviews:
     slugs: []
     title: "Plan re-review: Daemon Test Fixture Standardization (cycle 3)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Cycle 1 language blockers remain resolved: guardrail ACs no longer name
+          dist/daemon/index.js, endpoint ACs no longer expose api_url/ws_url or
+          daemon.connection.json, and readiness diagnostics is a diagnostic-bundle behavior with
+          field details confined to task guidance. Cycle 2 coverage blocker is resolved by
+          task-migrate-real-daemon-vitest-tests claiming @daemon-test-mode-boundaries
+          ac-cli-lifecycle-tests-use-cli-path."
+        name: Previous must-fix findings
+        required: true
+        runner: manual
+        created_at: 2026-05-07T20:08:12.119Z
+        completed_at: 2026-05-07T20:08:12.119Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/daemon-test-fixture-standardization.md --dry-run parsed
+          successfully with no changes made.
+        name: Plan import dry-run
+        required: true
+        runner: kspec plan import --dry-run
+        created_at: 2026-05-07T20:08:15.241Z
+        completed_at: 2026-05-07T20:08:15.241Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed. Reference warnings are pre-existing deprecated refs unrelated to this
+          plan; parent/trait refs inspected include @daemon-server,
+          @daemon-network-endpoint-contract, @daemon-runtime-adapter,
+          @trait-daemon-endpoint-consumer, @daemon-sensitive-cli-test-determinism, and
+          @e2e-test-daemon-isolation.
+        name: Reference validation
+        required: true
+        runner: kspec validate --refs --warnings-ok
+        created_at: 2026-05-07T20:08:18.272Z
+        completed_at: 2026-05-07T20:08:18.272Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan specs have behavioral, testable ACs with clear daemon fixture, endpoint, runtime,
+          mode-boundary, and guardrail responsibilities. No remaining compound ACs, broken parent
+          placement, contradictory neighboring specs, or implementation details that block approval
+          were found.
+        name: Spec quality
+        required: true
+        runner: manual
+        created_at: 2026-05-07T20:08:21.383Z
+        completed_at: 2026-05-07T20:08:21.383Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Each task includes why/what/how/testing detail, concrete files or helpers to inspect,
+          migration boundaries, verification commands, and explicit Covers lines. Tasks are
+          executable without chat history.
+        name: Task standalone quality
+        required: true
+        runner: manual
+        created_at: 2026-05-07T20:08:24.496Z
+        completed_at: 2026-05-07T20:08:24.496Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Parsed the plan YAML and Covers blocks: all 25 new plan-spec ACs are claimed by at least
+          one task. Updated existing-spec ACs are claimed by task-update-daemon-test-specs. The
+          prior orphan @daemon-test-mode-boundaries ac-cli-lifecycle-tests-use-cli-path is now
+          claimed by task-migrate-real-daemon-vitest-tests."
+        name: AC coverage mapping
+        required: true
+        runner: parsed Covers scan
+        created_at: 2026-05-07T20:08:27.547Z
+        completed_at: 2026-05-07T20:08:27.547Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Eight-task dependency graph is acyclic with no unresolved dependencies or priority
+          inversions. Spec updates and shared fixture core precede migrations; guardrails follow
+          relevant migrations; final validation waits on guardrails and in-process fixture
+          standardization. Scope remains limited to daemon test fixture standardization and related
+          spec updates.
+        name: Dependency ordering and scope control
+        required: true
+        runner: manual + parsed dependency scan
+        created_at: 2026-05-07T20:08:30.667Z
+        completed_at: 2026-05-07T20:08:30.667Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: task-update-daemon-test-specs gives exact final title, description, AC IDs/text, and
+          status guidance for @daemon-sensitive-cli-test-determinism and @e2e-test-daemon-isolation,
+          and an additive AC for @daemon-network-endpoint-contract without changing existing ACs.
+        name: Existing spec update precision
+        required: true
+        runner: manual
+        created_at: 2026-05-07T20:08:33.828Z
+        completed_at: 2026-05-07T20:08:33.828Z
     events:
       - _ulid: 01KR20V9E77B7BGKXD7N5717K0
         actor: Jacob Chapel
@@ -181744,9 +181848,88 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-05-07T20:07:43.816Z
+      - _ulid: 01KR20W371FJ3M45D1MGYYHBAW
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-05-07T20:08:10.209Z
+      - _ulid: 01KR20W6870HYESQTXWAMJVR83
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Previous must-fix findings
+        timestamp: 2026-05-07T20:08:13.319Z
+      - _ulid: 01KR20W98ZDEZ7XVDAY15XKQ9V
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import dry-run
+        timestamp: 2026-05-07T20:08:16.415Z
+      - _ulid: 01KR20WC8RKPSD68MDQHCFQ7AF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Reference validation
+        timestamp: 2026-05-07T20:08:19.480Z
+      - _ulid: 01KR20WFA6QG8YNCQH5T1QZP76
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec quality
+        timestamp: 2026-05-07T20:08:22.598Z
+      - _ulid: 01KR20WJASN9QXZTD6BJB70J6F
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone quality
+        timestamp: 2026-05-07T20:08:25.689Z
+      - _ulid: 01KR20WNBCNVTD7D93XMVZ9PKV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage mapping
+        timestamp: 2026-05-07T20:08:28.780Z
+      - _ulid: 01KR20WRE4K856PFMMQY84HHVE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering and scope control
+        timestamp: 2026-05-07T20:08:31.940Z
+      - _ulid: 01KR20WVF14CN25J8EJEXJB3X2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec update precision
+        timestamp: 2026-05-07T20:08:35.041Z
+      - _ulid: 01KR20WYGEWQDTM9FMX5E1J7TT
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-07T20:08:38.158Z
+      - _ulid: 01KR20WYGFX4XN3TPQQQJ0NP8Z
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-07T20:08:38.159Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -181754,7 +181937,14 @@ reviews:
       ref: "@plan-daemon-test-fixture-standardization"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-07T20:08:38.158Z
     created_at: 2026-05-07T20:07:43.816Z
-    updated_at: null
+    updated_at: 2026-05-07T20:08:38.159Z
     notes: []
