@@ -37847,7 +37847,7 @@ runs:
     completed_at: 2026-05-07T22:32:09.751Z
   - _ulid: 01KR2ADTHH0B4DGPQ7PM64Q79D
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -37862,7 +37862,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-07T22:56:01.817Z
-        completed_at: 2026-05-07T22:56:01.817Z
+        completed_at: 2026-05-07T22:56:29.888Z
+        notes: "High-confidence success pattern identified: The daemon's exclusive-create lock on
+          $HOME/.config/kspec/daemon.pid (writePidFileExclusive uses O_CREAT|O_EXCL) makes HOME
+          isolation a behavioral prerequisite for test daemon startup — any ambient running daemon
+          causes EEXIST and a 'Daemon already running' error. This means a successful test daemon
+          spawn behaviorally proves HOME isolation, without needing a separate assertion. Confirmed
+          by direct experiment during this session (manual spawn without HOME override failed;
+          helper test with HOME override succeeded in 378ms). No friction items rose to high
+          confidence — most observed nits were already captured in inbox (e.g. @01KR293G workflow
+          show ergonomics)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-07T22:56:29.888Z
+        completed_at: 2026-05-07T22:56:29.888Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-07T22:55:08.337Z
