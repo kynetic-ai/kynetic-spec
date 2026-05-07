@@ -781,7 +781,7 @@ features:
           of constructing daemon URLs independently.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
@@ -859,6 +859,10 @@ features:
               network interface
             when: |
               The daemon starts or a lifecycle command reports the endpoint
+          - given: a daemon-backed test starts or mocks a daemon
+            id: ac-tests-use-resolved-endpoint
+            then: the test uses the canonical resolved daemon endpoint
+            when: the test creates HTTP clients, WebSocket clients, browser URLs, or daemon connection metadata
         tags: []
         requirements:
           - _ulid: 01KR22GJ9F6RW5C6A97G46RKVD
