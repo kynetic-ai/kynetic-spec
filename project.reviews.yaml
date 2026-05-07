@@ -182458,6 +182458,18 @@ reviews:
         runner: tsc
         created_at: 2026-05-07T23:12:40.480Z
         completed_at: 2026-05-07T23:12:40.480Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- oxlint tests/helpers/daemon.ts tests/helpers/daemon.test.ts: 0 warnings, 0
+          errors. Whole-repo npm run lint was also sampled and still fails on pre-existing
+          violations outside these changed files."
+        name: changed-file lint
+        required: true
+        runner: oxlint
+        created_at: 2026-05-07T23:12:50.676Z
+        completed_at: 2026-05-07T23:12:50.676Z
     events:
       - _ulid: 01KR2APDM1DP6W32P8N06KVRPP
         actor: Jacob Chapel
@@ -182507,6 +182519,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-05-07T23:12:41.756Z
+      - _ulid: 01KR2BE99RDYW6DGPG6SMXRSXC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file lint
+        timestamp: 2026-05-07T23:12:52.024Z
     examined_commit: 6b1e1f472bd1d68ff10079cdd59eeebfca32bfe4
     external_links: []
     lifecycle_state: open
@@ -182541,5 +182560,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-07T22:59:50.017Z
-    updated_at: 2026-05-07T23:12:40.480Z
+    updated_at: 2026-05-07T23:12:50.676Z
     notes: []
