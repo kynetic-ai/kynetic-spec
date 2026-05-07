@@ -106,7 +106,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -125,7 +125,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KR275BB5ABWABBARD1268W1X
 history:
   - author: Jacob Chapel
     changes:
@@ -184,8 +184,21 @@ history:
         previous: 01KR22NK95N6RNBAQDCM8Y9N73
     command: review-verdict-needs-work
     timestamp: 2026-05-07T21:53:03.391Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KR275BB5ABWABBARD1268W1X
+        previous: null
+      started_at:
+        new: 2026-05-07T22:11:51.494Z
+        previous: 2026-05-07T20:40:52.895Z
+    command: task-start
+    timestamp: 2026-05-07T22:11:51.495Z
 created_at: 2026-05-07T20:36:49.752Z
-started_at: 2026-05-07T20:40:52.895Z
+started_at: 2026-05-07T22:11:51.494Z
 submitted_at: 2026-05-07T20:50:56.057Z
 todos: []
 automation: eligible
