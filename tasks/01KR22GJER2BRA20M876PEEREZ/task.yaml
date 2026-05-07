@@ -116,7 +116,7 @@ tags:
   - testing
   - daemon
 vcs_refs: []
-review_ref: "@01KR266EB3BDB9C7MW8PQ0P7PK"
+review_ref: "@01KR289CT43V9KNCTMKBMDSY7N"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-update-daemon-test-specs/01kr22gj
@@ -224,6 +224,13 @@ history:
         previous: 2026-05-07T20:50:56.057Z
     command: task-submit
     timestamp: 2026-05-07T22:11:54.882Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KR289CT43V9KNCTMKBMDSY7N"
+        previous: "@01KR266EB3BDB9C7MW8PQ0P7PK"
+    command: review-link
+    timestamp: 2026-05-07T22:17:49.308Z
 created_at: 2026-05-07T20:36:49.752Z
 started_at: 2026-05-07T22:11:51.494Z
 submitted_at: 2026-05-07T22:11:54.882Z
