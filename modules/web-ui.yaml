@@ -4504,44 +4504,40 @@ requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:
       - e2e-test-daemon-isolation
-    title: E2E Test Daemon Isolation
+    title: Browser E2E Daemon Fixture Integration
     type: requirement
-    description: E2E (Playwright) tests must never interfere with user-invoked or other daemons. Tests
-      must use ephemeral ports, isolated HOME/config, and deterministic cleanup — never killing
-      processes by port number. This extends the vitest isolation patterns from
-      @daemon-sensitive-cli-test-determinism to the Playwright E2E test infrastructure.
+    description: Playwright tests that need daemon-backed browser behavior use the shared daemon test
+      fixture through a Playwright wrapper. Browser URLs, API calls, isolated HOME/config state,
+      dynamic ports, readiness, and teardown are supplied by the same daemon fixture contract used
+      by Vitest daemon-backed tests.
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
     acceptance_criteria:
-      - given: E2E tests need a daemon for API/browser testing
-        id: ac-1
-        then: the daemon binds to an ephemeral port (OS-assigned, port 0) so it never conflicts with user
-          daemons or parallel test runs
-        when: the Playwright test fixture starts a daemon
-      - given: a daemon is running on the default port (3456) before tests start
-        id: ac-2
-        then: the user's daemon is never killed, stopped, or interfered with — tests use their own isolated
-          port
-        when: E2E tests execute
-      - given: E2E tests start a daemon in a temp directory
-        id: ac-3
-        then: HOME and config paths are isolated so daemon PID/port state does not leak to or from the
-          ambient system
-        when: the test fixture sets up the daemon environment
-      - given: E2E tests complete (pass or fail)
-        id: ac-4
-        then: the test daemon is stopped via scoped kspec serve stop (not process killing) and temp
-          directories are cleaned up
-        when: the Playwright test fixture tears down
-      - given: the test daemon port is dynamically assigned
-        id: ac-5
-        then: the port is propagated to all test fixtures and page URLs via the daemon fixture context
+      - given: a Playwright test needs a daemon for API or browser testing
+        id: ac-uses-shared-fixture
+        then: startup flows through the shared daemon test fixture
+        when: the Playwright fixture starts a daemon
+      - given: the Playwright daemon fixture reports an endpoint
+        id: ac-browser-endpoint-from-fixture
+        then: the browser uses the endpoint supplied by the fixture
+        when: browser pages navigate or make daemon API calls
+      - given: Playwright tests start a daemon in a temp project
+        id: ac-isolated-e2e-state
+        then: HOME and daemon config paths are isolated from the ambient system
+        when: the fixture creates the daemon environment
+      - given: a Playwright test daemon has started
+        id: ac-e2e-scoped-cleanup
+        then: teardown stops only the fixture-owned daemon
+        when: Playwright fixture teardown runs
+      - given: the Playwright daemon listens on a dynamic port
+        id: ac-dynamic-port-propagation
+        then: the port is propagated through the daemon fixture context
         when: Playwright tests make API calls or navigate browser pages
     tags:
       - test
