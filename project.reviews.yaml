@@ -182178,6 +182178,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-07T21:52:21.109Z
+      - _ulid: 01KR26V7A3YJEQQX8WM7EZZ422
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR26V62KKEEQ40H0CKRK104H
+        timestamp: 2026-05-07T21:52:33.091Z
     examined_commit: 8ca62d564f27ba9b3cf0dcbdb9ef529a42cafee4
     external_links: []
     lifecycle_state: open
@@ -182187,8 +182194,29 @@ reviews:
       content_hash: ""
       ref: "@01KR22GJER2BRA20M876PEEREZ"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR26V62KKEEQ40H0CKRK104H
+        anchor:
+          type: code
+          commit: 8ca62d564f27ba9b3cf0dcbdb9ef529a42cafee4
+          line_end: 430
+          line_start: 430
+          path: tests/e2e/fixtures/test-base.ts
+          side: head
+        entries:
+          - _ulid: 01KR26V62MPS0W2H2C8Q4FZS95
+            author: Jacob Chapel
+            body: "MUST-FIX: This AC annotation is false. @e2e-test-daemon-isolation ac-uses-shared-fixture says
+              Playwright daemon startup flows through the shared daemon test fixture, but this file
+              still implements startup directly: startDaemon() spawns DAEMON_ENTRY in this same
+              fixture, and repository search found no shared daemon fixture path used here. The task
+              note says to update annotations only where tests still truthfully cover rewritten
+              behavior; this creates false AC coverage for behavior intentionally left in_progress.
+              Remove this annotation until the Playwright wrapper actually uses the shared fixture,
+              or implement and verify that shared fixture path behaviorally."
+            created_at: 2026-05-07T21:52:31.828Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-07T21:41:12.163Z
-    updated_at: 2026-05-07T21:52:19.856Z
+    updated_at: 2026-05-07T21:52:31.828Z
     notes: []
