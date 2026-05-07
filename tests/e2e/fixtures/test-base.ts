@@ -116,7 +116,7 @@ interface DaemonFixture {
   createSecondProject: () => Promise<string>;
 }
 
-// AC: @e2e-test-daemon-isolation ac-1 — ephemeral port allocation
+// AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation — allocate dynamic port for fixture
 async function getAvailablePort(): Promise<number> {
   return new Promise((resolve, reject) => {
     const server = createServer();
@@ -179,7 +179,7 @@ function buildDaemonChildEnv(runtime: DaemonRuntime, env: NodeJS.ProcessEnv): No
 }
 
 export const test = base.extend<{ daemon: DaemonFixture }>({
-  // AC: @e2e-test-daemon-isolation ac-5 — dynamic baseURL from daemon fixture
+  // AC: @e2e-test-daemon-isolation ac-browser-endpoint-from-fixture — Playwright baseURL supplied by daemon fixture
   baseURL: async ({ daemon }, use) => {
     await use(daemon.baseUrl);
   },
@@ -196,8 +196,7 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
         );
       }
 
-      // AC: @e2e-test-daemon-isolation ac-1 — use ephemeral port, never hardcoded
-      // AC: @e2e-test-daemon-isolation ac-2 — never kill user daemons
+      // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation — allocate dynamic port for fixture
       const port = await getAvailablePort();
       const baseUrl = `http://localhost:${port}`;
       const wsUrl = `ws://localhost:${port}`;
@@ -208,7 +207,7 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
       const kspecDir = join(tempDir, ".kspec");
       mkdirSync(kspecDir, { recursive: true });
 
-      // AC: @e2e-test-daemon-isolation ac-3 — isolated HOME/config
+      // AC: @e2e-test-daemon-isolation ac-isolated-e2e-state — isolated HOME/config
       const isolatedHome = join(tempDir, ".home");
       const configDir = join(isolatedHome, ".config", "kspec");
       mkdirSync(configDir, { recursive: true });
@@ -412,7 +411,7 @@ tasks: []
         );
         writeFileSync(join(secondGitWorktreesDir, "HEAD"), "ref: refs/heads/kspec-meta\n");
 
-        // AC: @e2e-test-daemon-isolation ac-5 — use dynamic port
+        // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation — use dynamic port via fixture baseUrl
         const response = await fetch(`${baseUrl}/api/projects`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -427,7 +426,8 @@ tasks: []
         return secondProjectPath;
       }
 
-      // AC: @e2e-test-daemon-isolation ac-5 — propagate port/URLs to all tests
+      // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation — propagate port/URLs to all tests
+      // AC: @e2e-test-daemon-isolation ac-uses-shared-fixture — daemon startup flows through this fixture
       await use({
         tempDir,
         kspecDir,
@@ -439,7 +439,7 @@ tasks: []
         createSecondProject,
       });
 
-      // AC: @e2e-test-daemon-isolation ac-4 — stop daemon via scoped `kspec serve stop`
+      // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup — stop daemon via scoped `kspec serve stop`
       await stopDaemon();
 
       // Remove temp directories
