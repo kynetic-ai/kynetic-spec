@@ -7587,7 +7587,7 @@ workspaces:
         head: 31b8dee57e515a9af47b40682194c9550343c4c6
         last_seen_at: 2026-05-07T00:34:38.463Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-retag-localhost-security-ac-annotations-01kqzwwg
-  - active_role: worker
+  - active_role: null
     base_branch_point: 14c3b055382af3c44acb7cde4b292eec1257882d
     bootstrap:
       status: succeeded
@@ -7918,12 +7918,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-07T00:40:04.159Z
+      updated_at: 2026-05-07T00:41:49.116Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-07T00:40:04.159Z
+      updated_at: 2026-05-07T00:41:49.116Z
     integration:
       status: pending
       detail: null
@@ -7931,17 +7931,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 14c3b055382af3c44acb7cde4b292eec1257882d
-      updated_at: 2026-05-07T00:40:04.159Z
-    lifecycle_state: active
+      updated_at: 2026-05-07T00:41:49.116Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KQZWWHRNK5D88YH52HV8V2HK"
     task_slug: task-clean-daemon-endpoint-lint-findings
     timestamps:
       closed_at: null
       last_active_at: 2026-05-07T00:35:33.651Z
-      last_reconciled_at: 2026-05-07T00:40:04.159Z
+      last_reconciled_at: 2026-05-07T00:41:49.116Z
       created_at: 2026-05-07T00:35:09.186Z
-      updated_at: 2026-05-07T00:40:04.159Z
+      updated_at: 2026-05-07T00:41:49.116Z
     workspace_id: dispatch-workspace-01KQZWWHRNK5D88YH52HV8V2HK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
