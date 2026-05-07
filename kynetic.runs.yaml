@@ -37580,7 +37580,7 @@ runs:
     completed_at: 2026-05-07T00:51:23.639Z
   - _ulid: 01KQZYZ0QAPPRFKAM5WDRGRKMK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -37596,7 +37596,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-07T00:58:05.229Z
-        completed_at: 2026-05-07T00:58:05.229Z
+        completed_at: 2026-05-07T00:58:13.973Z
+        notes: "Friction points: the full npm test gate took 1972.9s for a three-file lint-only cleanup
+          after focused oxlint and targeted endpoint suites already passed. That is an intentional
+          review gate today, but it is still a systemic cost for low-risk lint-only work. kspec
+          validate --warnings-ok -v produced very large repository-wide warning output, but search
+          showed this is already tracked by existing validation-noise observations, so it should not
+          be duplicated."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-07T00:58:13.973Z
+        completed_at: 2026-05-07T00:58:13.973Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-07T00:56:19.946Z
