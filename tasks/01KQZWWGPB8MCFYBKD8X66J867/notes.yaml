@@ -1,1 +1,24 @@
-notes: []
+notes:
+  - _ulid: 01KQZX328GA8BN7QY1NYS66YHF
+    content: >-
+      Approach: Retag stale ac-1/2/3 to current ids ac-loopback-default,
+      ac-loopback-rejects-nonlocal, ac-external-host-explicit, ac-external-warning.
+
+
+      Mapping:
+
+      - daemon-server.test.ts: middleware unit tests directly exercise ac-loopback-rejects-nonlocal
+      (both accept-loopback and reject-nonlocal cases). N/A for ac-loopback-default (no real
+      listen()), ac-external-host-explicit (covered in cli-serve), ac-external-warning (covered in
+      cli-serve).
+
+      - daemon-api/server.test.ts: real Elysia app test exercises ac-loopback-rejects-nonlocal via
+      Host header tests. N/A for ac-loopback-default, ac-external-host-explicit,
+      ac-external-warning.
+
+      - All other listed files (route handler, ws, debug, projects, reviews-list, automation routes,
+      web-ui, e2e api-watcher): N/A for all four — server-level behavior owned by
+      daemon-server.test.ts, daemon-api/server.test.ts, and cli-serve.test.ts.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-07T00:23:35.440Z
