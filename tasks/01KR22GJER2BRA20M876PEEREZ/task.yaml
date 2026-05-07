@@ -106,7 +106,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -120,11 +120,11 @@ review_ref: "@01KR266EB3BDB9C7MW8PQ0P7PK"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-update-daemon-test-specs/01kr22gj
-  captured_at: 2026-05-07T20:50:56.054Z
-  commit: 8ca62d564f27ba9b3cf0dcbdb9ef529a42cafee4
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-07T22:11:54.878Z
+  commit: 052c3bc90d6ca0208cb97aa7650fe60ca5fee36b
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-update-daemon-test-specs/01kr22gj
 session_id: 01KR275BB5ABWABBARD1268W1X
 history:
   - author: Jacob Chapel
@@ -197,8 +197,35 @@ history:
         previous: 2026-05-07T20:40:52.895Z
     command: task-start
     timestamp: 2026-05-07T22:11:51.495Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-update-daemon-test-specs/01kr22gj
+          captured_at: 2026-05-07T22:11:54.878Z
+          commit: 052c3bc90d6ca0208cb97aa7650fe60ca5fee36b
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-update-daemon-test-specs/01kr22gj
+        previous:
+          review_url: null
+          branch: dispatch/task/task-update-daemon-test-specs/01kr22gj
+          captured_at: 2026-05-07T20:50:56.054Z
+          commit: 8ca62d564f27ba9b3cf0dcbdb9ef529a42cafee4
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-07T22:11:54.882Z
+        previous: 2026-05-07T20:50:56.057Z
+    command: task-submit
+    timestamp: 2026-05-07T22:11:54.882Z
 created_at: 2026-05-07T20:36:49.752Z
 started_at: 2026-05-07T22:11:51.494Z
-submitted_at: 2026-05-07T20:50:56.057Z
+submitted_at: 2026-05-07T22:11:54.882Z
 todos: []
 automation: eligible
