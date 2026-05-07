@@ -181014,6 +181014,19 @@ reviews:
         runner: npm
         created_at: 2026-05-07T00:47:10.571Z
         completed_at: 2026-05-07T00:47:10.571Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: rg -n '@trait-localhost-security ac-[123](\b|[, ])' tests and repository-wide variant
+          returned no stale ac-1/ac-2/ac-3 annotations. Current AC ids are present as behavioral
+          coverage in cli-serve, daemon-api/server, daemon-server, and as explicit N/A line comments
+          in route-focused tests.
+        name: localhost annotation grep
+        required: true
+        runner: rg
+        created_at: 2026-05-07T00:47:22.237Z
+        completed_at: 2026-05-07T00:47:22.237Z
     events:
       - _ulid: 01KQZXSZCQBYDK97S17Q3VN5AH
         actor: Jacob Chapel
@@ -181042,6 +181055,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-07T00:47:12.087Z
+      - _ulid: 01KQZYEN0BH4988BXZ8DH395MQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: localhost annotation grep
+        timestamp: 2026-05-07T00:47:23.659Z
     examined_commit: 31b8dee57e515a9af47b40682194c9550343c4c6
     external_links: []
     lifecycle_state: open
@@ -181054,7 +181074,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-07T00:36:06.167Z
-    updated_at: 2026-05-07T00:47:10.571Z
+    updated_at: 2026-05-07T00:47:22.237Z
     notes: []
   - _ulid: 01KQZY7E3QBZMDWB6DZ1W7QMJP
     slugs: []
