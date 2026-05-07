@@ -21,3 +21,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-07T23:13:23.328Z
+  - _ulid: 01KR2CKHWF3PQAEXNYN811NRN6
+    content: "Fix cycle 1: addressed the readiness-diagnostics blocker. The catch block in
+      startTestDaemon now unconditionally samples /api/health and /api/debug/cache-status in
+      parallel (2s per-call timeout) so lastHealth and lastCacheStatus are populated regardless of
+      readiness mode — fixing the custom-mode null-field path the reviewer reproduced. Dropped
+      HealthProbeState/CacheProbeState (no longer needed once diagnostics moved out of probe state).
+      Tightened the readiness-diagnostics contract test to assert both fields are non-null with
+      status=200 and shape-checked bodies, plus that the error message includes
+      last-health=/last-cache-status= markers so failure logs surface both observations without
+      unwrapping diagnostics. Re-verified all spec ACs against the implementation — only this branch
+      was missing diagnostic population. Helper contract tests, full npm test (8728 passed),
+      typecheck, and changed-file lint all green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-07T23:33:13.231Z
