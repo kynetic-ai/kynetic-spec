@@ -28200,6 +28200,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-08T13:25:38.174Z
+  automation: eligible
 - _ulid: 01KR3W7RHFG659BH7VGSM69KCJ
   slugs:
     - task-add-mock-daemon-failure-contract-tests
