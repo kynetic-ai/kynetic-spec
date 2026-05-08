@@ -185859,3 +185859,29 @@ reviews:
     created_at: 2026-05-08T13:15:00.376Z
     updated_at: 2026-05-08T13:16:37.658Z
     notes: []
+  - _ulid: 01KR3X39J2RYCEMHH3C23YYW8A
+    slugs: []
+    title: Review task-add-guardrail-classification-regressions
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR3X39J2PMYB9NHN5VZXH69X
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-08T13:40:40.642Z
+    examined_commit: 9ff274ab87aa2948893aecf7bebcc9e14827572c
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR3W7PCMZ7KPMPJ9ZFBQXX7W"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-08T13:40:40.642Z
+    updated_at: null
+    notes: []
