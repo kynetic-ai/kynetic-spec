@@ -188701,6 +188701,17 @@ reviews:
         runner: npm test
         created_at: 2026-05-08T19:32:01.630Z
         completed_at: 2026-05-08T19:32:01.630Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 'Synthetic test with exec("node dist/daemon/index.js --port 0") and execSync("node
+          dist/daemon/index.js --port 0") returned exit 0: Found 0 warnings and 0 errors.'
+        name: custom exec daemon-entry probe
+        required: true
+        runner: npx oxlint
+        created_at: 2026-05-08T19:32:12.204Z
+        completed_at: 2026-05-08T19:32:12.204Z
     events:
       - _ulid: 01KR4GFJ4E4P21DBD9RRA6MTZT
         actor: Jacob Chapel
@@ -188736,6 +188747,13 @@ reviews:
           status: pass
           name: full test suite
         timestamp: 2026-05-08T19:32:02.956Z
+      - _ulid: 01KR4H703ESVW2A9MK1HFY4NQ2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: custom exec daemon-entry probe
+        timestamp: 2026-05-08T19:32:13.550Z
     examined_commit: 09c83cadfc2e708ff8727c4fbbc2e9126d50fb2e
     external_links: []
     lifecycle_state: open
@@ -188769,5 +188787,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-08T19:19:25.583Z
-    updated_at: 2026-05-08T19:32:01.630Z
+    updated_at: 2026-05-08T19:32:12.204Z
     notes: []
