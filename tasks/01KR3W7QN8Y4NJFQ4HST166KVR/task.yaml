@@ -46,7 +46,7 @@ description: |
 spec_ref: "@daemon-test-startup-failure-hygiene"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -64,7 +64,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KR40SK8PX3PR4A7ZNZNNSFJP
 history:
   - author: Jacob Chapel
     changes:
@@ -123,8 +123,21 @@ history:
         previous: 01KR3XYM5WPWVZP31VFVJFFTD5
     command: review-verdict-needs-work
     timestamp: 2026-05-08T14:24:04.631Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KR40SK8PX3PR4A7ZNZNNSFJP
+        previous: null
+      started_at:
+        new: 2026-05-08T15:01:33.104Z
+        previous: 2026-05-08T13:57:18.261Z
+    command: task-start
+    timestamp: 2026-05-08T15:01:33.104Z
 created_at: 2026-05-08T13:25:37.576Z
-started_at: 2026-05-08T13:57:18.261Z
+started_at: 2026-05-08T15:01:33.104Z
 submitted_at: 2026-05-08T14:07:23.274Z
 todos: []
 automation: eligible
