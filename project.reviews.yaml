@@ -185295,6 +185295,18 @@ reviews:
         runner: npm
         created_at: 2026-05-08T06:05:42.218Z
         completed_at: 2026-05-08T06:05:42.218Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Focused slices passed: helpers daemon/mock-daemon 21/21; websocket-protocol +
+          daemon-build 17/17; CLI endpoint/proxy/status/event 58/58; daemon-api helpers/server/tasks
+          76/76; lint-no-leaky-test-daemon 22/22."
+        name: focused daemon fixture slices
+        required: true
+        runner: npm-test
+        created_at: 2026-05-08T06:05:52.492Z
+        completed_at: 2026-05-08T06:05:52.492Z
     events:
       - _ulid: 01KR32AKXSCZ02R9VHTHPCAP25
         actor: Jacob Chapel
@@ -185323,6 +185335,13 @@ reviews:
           status: pass
           name: build daemon
         timestamp: 2026-05-08T06:05:43.410Z
+      - _ulid: 01KR332J6NQKG2TSZZ017QVF41
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused daemon fixture slices
+        timestamp: 2026-05-08T06:05:53.749Z
     examined_commit: 62bc34089817b52062bdf41483d0412bfd2ff84d
     external_links: []
     lifecycle_state: open
@@ -185335,5 +185354,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T05:52:49.082Z
-    updated_at: 2026-05-08T06:05:42.218Z
+    updated_at: 2026-05-08T06:05:52.492Z
     notes: []
