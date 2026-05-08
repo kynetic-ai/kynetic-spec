@@ -17113,18 +17113,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-harden-playwright-daemon-fixture-cleanup/01kr3w7r
-    canonical_branch_head: c7a614eb8c7ad29b53b498753046704475f181da
+    canonical_branch_head: 5ccd73404bb47e41462a02479dcbf5ebb1d0c90f
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T21:48:25.747Z
+      updated_at: 2026-05-08T22:03:22.454Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T21:48:58.770Z
+      updated_at: 2026-05-08T22:03:22.454Z
     integration:
       status: pending
       detail: null
@@ -17132,7 +17132,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c7a614eb8c7ad29b53b498753046704475f181da
-      updated_at: 2026-05-08T21:48:25.747Z
+      updated_at: 2026-05-08T22:03:22.454Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR3W7R7Y2JCNSJZGPNCM9QFA"
@@ -17140,9 +17140,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T21:48:58.770Z
-      last_reconciled_at: 2026-05-08T21:48:58.770Z
+      last_reconciled_at: 2026-05-08T22:03:22.454Z
       created_at: 2026-05-08T21:48:25.747Z
-      updated_at: 2026-05-08T21:48:58.770Z
+      updated_at: 2026-05-08T22:03:22.454Z
     workspace_id: dispatch-workspace-01KR3W7R7Y2JCNSJZGPNCM9QFA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
