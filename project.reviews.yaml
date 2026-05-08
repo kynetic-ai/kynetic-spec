@@ -187873,6 +187873,18 @@ reviews:
         runner: kspec
         created_at: 2026-05-08T18:00:26.819Z
         completed_at: 2026-05-08T18:00:26.819Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: mise exec -- npm run build:e2e passed; mise exec -- npx playwright test
+          tests/e2e/smoke.spec.ts passed 6/6. package script test:e2e:smoke is stale because it also
+          references missing tests/e2e/api-server.spec.ts.
+        name: playwright smoke
+        required: true
+        runner: playwright
+        created_at: 2026-05-08T18:00:30.764Z
+        completed_at: 2026-05-08T18:00:30.764Z
     events:
       - _ulid: 01KR4B6HNQWGTPP7MECX25QMXR
         actor: Jacob Chapel
@@ -187908,6 +187920,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-08T18:00:28.170Z
+      - _ulid: 01KR4BZ3M2R75PXM3MFC5VMTGG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: playwright smoke
+        timestamp: 2026-05-08T18:00:32.130Z
     examined_commit: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
     external_links: []
     lifecycle_state: open
@@ -187920,5 +187939,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T17:47:07.320Z
-    updated_at: 2026-05-08T18:00:26.819Z
+    updated_at: 2026-05-08T18:00:30.764Z
     notes: []
