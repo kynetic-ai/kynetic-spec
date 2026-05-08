@@ -888,3 +888,157 @@ describe("bun script harness", () => {
     });
   });
 });
+
+/**
+ * Daemon test guardrail precision tests.
+ *
+ * These tests cover @daemon-test-guardrail-precision: the classifier inside
+ * the no-leaky-test-daemon rule must be tied to daemon behavior rather than
+ * incidental token sequences. They are written as failing-before-fix
+ * regressions that capture today's known classifier gaps:
+ *
+ *   1. Direct daemon entrypoint invocation through child-process APIs
+ *      beyond `spawn` / `spawnSync`. The current `readDaemonSpawn`
+ *      implementation only inspects `spawn` / `spawnSync`, so
+ *      `fork("dist/daemon/index.js", ...)` and exec-file style calls that
+ *      launch the daemon entrypoint are silently allowed even though the
+ *      AC says any direct daemon-entrypoint start outside the approved
+ *      helper paths must be reported.
+ *
+ *   2. Detached-serve detection that fires on any subprocess whose argv
+ *      argument array happens to contain the words "serve", "start", and
+ *      "--detach", regardless of whether the executable is actually a
+ *      kspec lifecycle command. The AC requires the guardrail to ignore
+ *      unrelated subprocesses with coincidentally overlapping argv tokens.
+ *
+ * Each assertion checks the lint exit code AND the relevant rule name (and,
+ * for positive cases, a specific message fragment) so that a generic parser
+ * failure cannot satisfy the test by accident.
+ */
+describe("daemon test guardrail precision", () => {
+  // AC: @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged
+  // AC: @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged
+  describe("direct daemon entry via non-spawn child-process APIs is flagged", () => {
+    it("flags fork(\"dist/daemon/index.js\", ...) as a direct daemon entrypoint invocation", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { fork } from "child_process";
+
+describe("fork daemon entry literal", () => {
+  it("forks the daemon entrypoint", () => {
+    const child = fork("dist/daemon/index.js", ["--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags fork(DAEMON_ENTRY, ...) as a direct daemon entrypoint invocation", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { fork } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("fork daemon entry identifier", () => {
+  it("forks via DAEMON_ENTRY", () => {
+    const child = fork(DAEMON_ENTRY, ["--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execFile(\"node\", [\"dist/daemon/index.js\", ...]) as a direct daemon entry invocation", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { execFile } from "child_process";
+
+describe("execFile daemon entry literal", () => {
+  it("execFiles the daemon entrypoint", () => {
+    const child = execFile("node", ["dist/daemon/index.js", "--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execFileSync(\"node\", [DAEMON_ENTRY, ...]) as a direct daemon entry invocation", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execFileSync } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("execFileSync daemon entry identifier", () => {
+  it("execFileSyncs the daemon entrypoint", () => {
+    const stdout = execFileSync("node", [DAEMON_ENTRY, "--port", "0"]);
+    expect(stdout).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+  });
+
+  // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+  describe("non-kspec subprocesses are not reported as daemon lifecycle violations", () => {
+    it("does not flag spawn(\"echo\", [\"serve\", \"start\", \"--detach\"]) — argv tokens overlap but executable is unrelated", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawn } from "child_process";
+
+describe("non-kspec subprocess with overlapping argv tokens", () => {
+  it("runs echo with daemon-lifecycle words", () => {
+    const child = spawn("echo", ["serve", "start", "--detach"]);
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag spawnSync(\"git\", [\"log\", \"serve\", \"start\", \"--detach\"]) — git is not a kspec lifecycle command", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync } from "child_process";
+
+describe("git subprocess with overlapping argv tokens", () => {
+  it("runs git log with daemon-lifecycle words", () => {
+    const result = spawnSync("git", ["log", "serve", "start", "--detach"]);
+    expect(result.status).toBe(0);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+  });
+});
