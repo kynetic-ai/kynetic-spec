@@ -17185,6 +17185,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-07T23:36:23.066Z
+  - _ulid: 01KR2ER75SBQYA3HRT8MSB2CDZ
+    type: friction
+    content: "AC annotation placement inside JSDoc/block-comment headers caused a fix-cycle bounce on
+      @task-implement-shared-daemon-test-fixture. The kspec convention requires standalone line
+      comments, but the validator silently drops annotation-shaped text inside /** ... */ blocks
+      rather than flagging it. Pattern: an agent writes 'AC coverage:' as a JSDoc summary expecting
+      the listed refs to count; they don't, and the only signal is post-hoc reviewer or 'kspec
+      validate --completeness' output. Inbox @01KR2EQY proposes a validator-level warning to make
+      this loud."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T00:10:43.257Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
