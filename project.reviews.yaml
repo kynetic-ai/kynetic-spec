@@ -188353,6 +188353,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-08T18:44:25.433Z
+      - _ulid: 01KR4G5YY120AEAJV0JZ3KTBY2
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR4EEE2JYCGXM5AZSCF79XW3
+        timestamp: 2026-05-08T19:14:11.009Z
     examined_commit: 2f72e91ffd2596c10f1b626fa3676a06a8daf436
     external_links: []
     lifecycle_state: closed
@@ -188381,6 +188387,15 @@ reviews:
               @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged remains
               false for an exec-file API that directly launches the daemon entrypoint.'
             created_at: 2026-05-08T18:43:51.507Z
+          - _ulid: 01KR4G5XN5X64QNH1ZD75YGBQG
+            author: "@claude"
+            body: 'Fixed: readDaemonEntryInvocation now also matches spawn-likes whose first arg IS the daemon
+              entry — e.g. execFile(DAEMON_ENTRY, ["--port", "0"]) and spawn(DAEMON_ENTRY, [...]).
+              Added positive regressions for the direct-executable form across spawn / spawnSync /
+              execFile / execFileSync against both the DAEMON_ENTRY identifier and the
+              dist/daemon/index.js literal, plus the no-argv variant. The targeted suite (81 tests)
+              passes.'
+            created_at: 2026-05-08T19:14:09.701Z
         kind: blocker
       - _ulid: 01KR4EES4NV6WANQ4V2ZBAY074
         anchor:
@@ -188425,7 +188440,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T18:44:25.433Z
     created_at: 2026-05-08T18:30:52.605Z
-    updated_at: 2026-05-08T18:44:25.433Z
+    updated_at: 2026-05-08T19:14:09.701Z
     notes: []
   - _ulid: 01KR4F56WN75Z461F36PHXWKE6
     slugs: []
