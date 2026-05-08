@@ -184222,6 +184222,13 @@ reviews:
           status: pass
           name: diff hygiene
         timestamp: 2026-05-08T02:52:08.224Z
+      - _ulid: 01KR2R08GM2CZ8JCWWB2YVJYES
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR2R0795596K7VJN4D9N5YCM
+        timestamp: 2026-05-08T02:52:23.956Z
     examined_commit: 8d20791d210a11231ae0a56cf52ee117a4a5dc8d
     external_links: []
     lifecycle_state: open
@@ -184231,8 +184238,41 @@ reviews:
       content_hash: ""
       ref: "@01KR22GKWXB1G5Y4KFTC5RNE3X"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR2R0795596K7VJN4D9N5YCM
+        entries:
+          - _ulid: 01KR2R079524DQY10DFW4QQJM8
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: tests/daemon-api/helpers.ts; tests/daemon-api/helpers.test.ts;
+              tests/daemon-api-input-validation.test.ts; tests/daemon-review-verdicts-api.test.ts;
+              tests/daemon-review-websocket.test.ts; kspec-agents.md.
+
+
+              Commands run: git diff --stat/name-only/diff against dev
+              51f6c643d15e71ca6beacdfad29738523c310ab7; kspec task get @01KR22GKWXB1G5Y4KFTC5RNE3X;
+              kspec item get @daemon-test-mode-boundaries; kspec item get
+              @daemon-test-harness-guardrails; rg AC annotations and daemon child-process patterns
+              in changed files; kspec validate; targeted npm test; full npm test; npx tsc --noEmit;
+              git diff --check.
+
+
+              Claims verified: migrated tests remain in-process through createTestApp/app.handle
+              with no direct daemon spawn, app.listen, serve start, or WebSocket network connection
+              in the changed tests; helper fixture behavior has direct tests; migrated route
+              assertions still exercise review/input-validation behavior.
+
+
+              Categories searched: correctness, test coverage/AC annotations,
+              source-scanning/static-test risk, daemon process-boundary regressions, error handling
+              assertions, cache consistency helper propagation, and integration with existing route
+              helpers. No blocking findings.
+            created_at: 2026-05-08T02:52:22.693Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-08T02:40:16.632Z
-    updated_at: 2026-05-08T02:52:06.914Z
+    updated_at: 2026-05-08T02:52:22.693Z
     notes: []
