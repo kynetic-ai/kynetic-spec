@@ -17262,12 +17262,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T23:28:18.678Z
+      updated_at: 2026-05-08T23:28:31.213Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T23:28:18.678Z
+      updated_at: 2026-05-08T23:28:31.213Z
     integration:
       status: pending
       detail: null
@@ -17275,17 +17275,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c7a614eb8c7ad29b53b498753046704475f181da
-      updated_at: 2026-05-08T23:28:18.678Z
-    lifecycle_state: ready
+      updated_at: 2026-05-08T23:28:31.213Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KR3W7R7Y2JCNSJZGPNCM9QFA"
     task_slug: task-harden-playwright-daemon-fixture-cleanup
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T22:28:10.874Z
-      last_reconciled_at: 2026-05-08T23:28:18.678Z
+      last_reconciled_at: 2026-05-08T23:28:31.213Z
       created_at: 2026-05-08T21:48:25.747Z
-      updated_at: 2026-05-08T23:28:18.678Z
+      updated_at: 2026-05-08T23:28:31.213Z
     workspace_id: dispatch-workspace-01KR3W7R7Y2JCNSJZGPNCM9QFA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
