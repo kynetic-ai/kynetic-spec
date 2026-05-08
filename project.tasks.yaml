@@ -27972,7 +27972,7 @@
   type: task
   spec_ref: "@daemon-test-mode-boundaries"
   plan_ref: "@plan-daemon-test-fixture-standardization"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-implement-shared-daemon-test-fixture"
@@ -27983,7 +27983,7 @@
     - cli
     - mock
   review_ref: "@01KR2NEDR1B7V8W4K98Z5M5W0S"
-  notes_count: 3
+  notes_count: 4
   todos_count: 0
   created_at: 2026-05-07T20:36:50.953Z
   started_at: 2026-05-08T01:25:09.639Z
