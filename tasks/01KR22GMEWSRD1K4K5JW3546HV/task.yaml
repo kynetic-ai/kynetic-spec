@@ -89,7 +89,7 @@ description: >
 spec_ref: "@daemon-backed-test-fixture-contract"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-enforce-daemon-test-fixture-usage"
@@ -101,6 +101,14 @@ tags:
   - daemon
   - validation
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-validate-daemon-test-fixture-standardization/01kr22gm
+  captured_at: 2026-05-08T05:48:33.889Z
+  commit: 62bc34089817b52062bdf41483d0412bfd2ff84d
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR30TQ7NSPYRVD9HKKPY37W3
 history:
   - author: Jacob Chapel
@@ -123,7 +131,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-08T05:27:09.597Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-validate-daemon-test-fixture-standardization/01kr22gm
+          captured_at: 2026-05-08T05:48:33.889Z
+          commit: 62bc34089817b52062bdf41483d0412bfd2ff84d
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-08T05:48:33.892Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-08T05:48:33.892Z
 created_at: 2026-05-07T20:36:51.804Z
 started_at: 2026-05-08T05:27:09.597Z
+submitted_at: 2026-05-08T05:48:33.892Z
 todos: []
 automation: eligible
