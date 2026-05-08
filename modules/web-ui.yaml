@@ -1100,6 +1100,9 @@ features:
               In-process daemon API test helpers advertise the route and dependency
               boundary they provide. Tests that need full production-server behavior do
               not rely on a helper that only assembles a narrower route subset.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
