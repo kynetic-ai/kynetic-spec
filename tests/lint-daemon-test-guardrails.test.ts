@@ -1442,6 +1442,121 @@ describe("nodemon should not be confused with node runtime", () => {
       expect(result.exitCode).toBe(0);
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+    //
+    // Regression set covering the precision blocker from review cycle 4:
+    // a spawn-like (`spawn` / `spawnSync` / `execFile` / `execFileSync`)
+    // call whose argv array contains the daemon entry path as a data
+    // argument — but whose executable (args[0]) is not a recognised JS
+    // runtime — must not be reported as a daemon launch. The runtime
+    // form is only valid when args[0] is `node` or `bun` (bare or
+    // path-suffixed); anything else (e.g. `cat`, `grep`, `docker`) is an
+    // unrelated subprocess that consumes the path as data.
+    it("does not flag spawn(\"cat\", [DAEMON_ENTRY]) — cat reads the daemon file, does not launch the daemon", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawn } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("cat with daemon path argv", () => {
+  it("spawns cat to print the daemon file", () => {
+    const child = spawn("cat", [DAEMON_ENTRY]);
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag execFile(\"grep\", [\"dist/daemon/index.js\", \"src/\"]) — grep searches for the path string, does not launch the daemon", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execFile } from "child_process";
+
+describe("grep with daemon path argv", () => {
+  it("execFiles grep to find references to the daemon path", () => {
+    execFile("grep", ["dist/daemon/index.js", "src/"]);
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag spawnSync(\"nodemon\", [DAEMON_ENTRY, \"--watch\", \"src\"]) — nodemon is not the recognised node runtime executable", () => {
+      // Substring-of-runtime guard for the spawn-like form: an executable
+      // whose name contains `node` as a substring (e.g. `nodemon`) is NOT
+      // recognised as the node runtime. The argv form requires an exact
+      // match on `node`/`bun` or a path with that final segment.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("nodemon should not be confused with node runtime in argv form", () => {
+  it("spawnSyncs nodemon with the daemon path as argv", () => {
+    spawnSync("nodemon", [DAEMON_ENTRY, "--watch", "src"]);
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag execFileSync(\"docker\", [\"run\", \"image\", \"dist/daemon/index.js\"]) — docker is not a JS runtime", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execFileSync } from "child_process";
+
+describe("docker run with daemon path argv", () => {
+  it("execFileSyncs docker with the daemon path as a positional arg", () => {
+    execFileSync("docker", ["run", "image", "dist/daemon/index.js"]);
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("flags execFile(\"/usr/bin/node\", [DAEMON_ENTRY, ...]) — path-suffixed runtime is recognised", () => {
+      // Positive precision regression: the runtime gate must still match
+      // path-suffixed runtimes (`/usr/bin/node`, `./node_modules/.bin/bun`)
+      // — only substring confusables (`nodemon`, `bunyan`) are excluded.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { execFile } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("execFile path-suffixed node runtime", () => {
+  it("execFiles /usr/bin/node with the daemon entry as argv", () => {
+    const child = execFile("/usr/bin/node", [DAEMON_ENTRY, "--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
   });
 
   // Regression: exec/execSync of `kspec serve start --detach` must remain

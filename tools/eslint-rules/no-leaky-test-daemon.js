@@ -451,6 +451,36 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * True when an argument node statically resolves to a recognised JS
+     * runtime executable that takes a script-path argument (`node` or
+     * `bun`). Accepts the bare command (`"node"`, `"bun"`) or a path form
+     * whose final segment is the runtime (`"/usr/bin/node"`,
+     * `"./node_modules/.bin/bun"`). Tokens that merely contain the runtime
+     * name as a substring (e.g. `"nodemon"`, `"bunyan"`) are rejected.
+     *
+     * Used to gate the spawn-like runtime form: only when args[0] is a
+     * recognised runtime do we treat a daemon-entry argv element as a
+     * daemon launch. Without this guard, `spawn("cat", [DAEMON_ENTRY])` or
+     * `execFile("grep", [DAEMON_ENTRY, "src/"])` — where the daemon path
+     * is an argument to an unrelated subprocess — would be incorrectly
+     * reported as a daemon launch (false positive that violates
+     * `@daemon-test-guardrail-precision`
+     * `ac-unrelated-subprocesses-not-reported`).
+     */
+    function isRecognisedRuntimeArg(arg) {
+      if (!arg) return false;
+      const literal = literalString(arg);
+      if (literal !== null) {
+        return isRecognisedShellRuntimeToken(literal);
+      }
+      const tmpl = templateLiteralRaw(arg);
+      if (tmpl !== null) {
+        return isRecognisedShellRuntimeToken(tmpl);
+      }
+      return false;
+    }
+
+    /**
      * True when the leading whitespace-separated token of a shell command
      * string is the kspec CLI (bare `kspec` or a path ending in `/kspec`).
      */
@@ -537,15 +567,20 @@ const noLeakyTestDaemon = {
      * one of the recognised child-process APIs:
      *
      *   - `spawn` / `spawnSync` / `execFile` / `execFileSync`
-     *     Two daemon-entry shapes are accepted. The runtime form has a
-     *     non-daemon-entry executable (e.g. `node`, `bun`) and the daemon
-     *     entry as one of the argv array elements. The direct-executable
-     *     form passes the daemon entry as the first arg itself; argv may
-     *     be omitted or an array of forwarded flags. The direct-executable
-     *     form matters because a daemon entry built with a shebang is
-     *     directly invokable, and `execFile(DAEMON_ENTRY, [...])` /
-     *     `spawn(DAEMON_ENTRY, [...])` launches the compiled daemon the
-     *     same as the runtime form.
+     *     Two daemon-entry shapes are accepted. The runtime form requires
+     *     args[0] to be a recognised JS runtime (`node` / `bun`, bare or
+     *     path-suffixed) and the argv array (args[1]) to contain the
+     *     daemon entry. Restricting args[0] to a recognised runtime is
+     *     what stops false positives like `spawn("cat", [DAEMON_ENTRY])`
+     *     or `execFile("grep", [DAEMON_ENTRY, "src/"])` — those
+     *     subprocesses consume the daemon path as data, not as a script
+     *     to execute, and must not be reported as daemon launches.
+     *     The direct-executable form passes the daemon entry as the first
+     *     arg itself; argv may be omitted or an array of forwarded flags.
+     *     The direct-executable form matters because a daemon entry built
+     *     with a shebang is directly invokable, and
+     *     `execFile(DAEMON_ENTRY, [...])` / `spawn(DAEMON_ENTRY, [...])`
+     *     launches the compiled daemon the same as the runtime form.
      *   - `fork`
      *     First arg is the module path. The daemon entry must be that
      *     first arg directly — argv elements are forwarded, not executed.
@@ -595,6 +630,14 @@ const noLeakyTestDaemon = {
         }
         if (args.length < 2) return null;
         if (!arrayArgContainsDaemonEntry(args[1])) return null;
+        // Restrict the runtime form to recognised JS runtimes so that
+        // `spawn("cat", [DAEMON_ENTRY])` and `execFile("grep",
+        // [DAEMON_ENTRY, "src/"])` — where the daemon path is consumed as
+        // an argument to an unrelated subprocess, not executed as a script
+        // — are not reported. Mirrors the exec/execSync shell-string
+        // branch which requires the leading shell token to be `node` or
+        // `bun`.
+        if (!isRecognisedRuntimeArg(args[0])) return null;
         const runtimeLiteral = literalString(args[0]);
         const pattern =
           runtimeLiteral !== null
