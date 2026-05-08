@@ -40205,9 +40205,10 @@ runs:
     started_at: 2026-05-08T17:42:20.188Z
     completed_at: 2026-05-08T17:45:25.607Z
   - _ulid: 01KR4B12Z2GTER29ZHDVVBRS33
-    status: active
+    status: paused
     current_step: 4
     initiated_by: Jacob Chapel
+    paused_at: 2026-05-08T17:45:34.486Z
     step_results:
       - status: completed
         step_index: 0
