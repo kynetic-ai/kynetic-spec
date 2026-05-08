@@ -185319,6 +185319,18 @@ reviews:
         runner: npm-test
         created_at: 2026-05-08T06:06:03.932Z
         completed_at: 2026-05-08T06:06:03.932Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm run test:e2e -- tests/e2e/api-websocket.spec.ts
+          tests/e2e/connection.spec.ts passed: 11/11. Full e2e suite not run; task allowed
+          representative slice when full e2e is too slow/environment-bound."
+        name: playwright representative slice
+        required: true
+        runner: playwright
+        created_at: 2026-05-08T06:06:13.867Z
+        completed_at: 2026-05-08T06:06:13.867Z
     events:
       - _ulid: 01KR32AKXSCZ02R9VHTHPCAP25
         actor: Jacob Chapel
@@ -185361,6 +185373,13 @@ reviews:
           status: pass
           name: full vitest
         timestamp: 2026-05-08T06:06:05.239Z
+      - _ulid: 01KR3337259XH2E68M09XNSZVQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: playwright representative slice
+        timestamp: 2026-05-08T06:06:15.109Z
     examined_commit: 62bc34089817b52062bdf41483d0412bfd2ff84d
     external_links: []
     lifecycle_state: open
@@ -185373,5 +185392,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T05:52:49.082Z
-    updated_at: 2026-05-08T06:06:03.932Z
+    updated_at: 2026-05-08T06:06:13.867Z
     notes: []
