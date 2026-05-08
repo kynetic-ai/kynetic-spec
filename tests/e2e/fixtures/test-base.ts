@@ -1,30 +1,29 @@
 import { test as base, expect } from "@playwright/test";
-import { execSync, type ChildProcess, spawn } from "child_process";
+import { execSync } from "child_process";
 import {
-  mkdirSync,
-  mkdtempSync,
   cpSync,
-  rmSync,
   existsSync,
-  writeFileSync,
-  readFileSync,
+  mkdirSync,
   readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
 } from "fs";
-import { join, dirname } from "path";
-import { tmpdir } from "os";
+import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import { createServer } from "net";
 import { parse as parseYaml } from "yaml";
+
+import {
+  allocateTestDaemonPort,
+  createTestDaemonProject,
+  isDaemonRuntimeAvailable,
+  startTestDaemon,
+  type DaemonTestRuntime,
+  type StartedTestDaemon,
+} from "../../helpers/daemon.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-type DaemonRuntime = "bun" | "node";
-
-// Daemon entry point — spawned directly to avoid CLI PID-file timeout
-const DAEMON_ENTRY = join(__dirname, "../../../dist/daemon/index.js");
-// CLI entry point — used for scoped `kspec serve stop` teardown (ac-4)
-const KSPEC_CLI = join(__dirname, "../../../dist/cli/index.js");
 
 // E2E fixtures live alongside this file
 const E2E_FIXTURES = __dirname;
@@ -102,11 +101,11 @@ export function getFixtureTaskCounts(): FixtureTaskCounts {
 interface DaemonFixture {
   tempDir: string;
   kspecDir: string;
-  /** Ephemeral port the test daemon is listening on */
+  /** Ephemeral port the test daemon is listening on (from the shared fixture endpoint) */
   port: number;
-  /** Base URL for HTTP requests (http://localhost:<port>) */
+  /** Base URL for HTTP requests (resolved from the shared daemon fixture endpoint) */
   baseUrl: string;
-  /** Base URL for WebSocket connections (ws://localhost:<port>) */
+  /** Base URL for WebSocket connections (resolved from the shared daemon fixture endpoint) */
   wsUrl: string;
   /** Stop the isolated daemon while keeping fixture data intact */
   stop: () => Promise<void>;
@@ -116,70 +115,27 @@ interface DaemonFixture {
   createSecondProject: () => Promise<string>;
 }
 
-// AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation — allocate dynamic port for fixture
-async function getAvailablePort(): Promise<number> {
-  return new Promise((resolve, reject) => {
-    const server = createServer();
-    server.once("error", reject);
-    server.listen(0, "127.0.0.1", () => {
-      const address = server.address();
-      if (!address || typeof address === "string") {
-        server.close(() => reject(new Error("Failed to allocate ephemeral port")));
-        return;
-      }
-      const { port } = address;
-      server.close((error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve(port);
-      });
-    });
-  });
-}
-
-function resolveTestRuntime(env: NodeJS.ProcessEnv = process.env): DaemonRuntime {
+// AC: @daemon-test-runtime-selection ac-node-default — KSPEC_TEST_RUNTIME defaults to "node"
+function resolveTestRuntime(env: NodeJS.ProcessEnv = process.env): DaemonTestRuntime {
   const runtime = env.KSPEC_TEST_RUNTIME ?? "node";
   if (runtime === "bun" || runtime === "node") {
     return runtime;
   }
-
   throw new Error(`Invalid KSPEC_TEST_RUNTIME "${runtime}". Expected "bun" or "node".`);
 }
 
-async function checkRuntimeAvailable(runtime: DaemonRuntime): Promise<boolean> {
-  try {
-    // Use 'where' on Windows, 'which' on Unix
-    const cmd = process.platform === "win32" ? "where" : "which";
-    execSync(`${cmd} ${runtime}`, { stdio: "ignore" });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function getRuntimeInstallHint(runtime: DaemonRuntime): string {
+function getRuntimeInstallHint(runtime: DaemonTestRuntime): string {
   if (runtime === "node") {
     return "https://nodejs.org/en/download";
   }
-
   return process.platform === "win32"
     ? 'powershell -c "irm bun.sh/install.ps1 | iex"'
     : "curl -fsSL https://bun.sh/install | bash";
 }
 
-function buildDaemonChildEnv(runtime: DaemonRuntime, env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
-  const { BUN_ENV: _bunEnv, NODE_ENV: _nodeEnv, ...childEnv } = env;
-  if (runtime === "node") {
-    return { ...childEnv, NODE_ENV: "production" };
-  }
-
-  return { ...childEnv, BUN_ENV: "production" };
-}
-
 export const test = base.extend<{ daemon: DaemonFixture }>({
-  // AC: @e2e-test-daemon-isolation ac-browser-endpoint-from-fixture — Playwright baseURL supplied by daemon fixture
+  // AC: @e2e-test-daemon-isolation ac-browser-endpoint-from-fixture
+  // AC: @daemon-test-endpoint-consistency ac-resolved-endpoint-source
   baseURL: async ({ daemon }, use) => {
     await use(daemon.baseUrl);
   },
@@ -189,74 +145,12 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
     async ({}, use) => {
       const runtime = resolveTestRuntime();
 
-      if (!(await checkRuntimeAvailable(runtime))) {
+      if (!(await isDaemonRuntimeAvailable(runtime))) {
         const runtimeName = runtime === "bun" ? "Bun" : "Node";
         throw new Error(
           `${runtimeName} runtime required for E2E daemon tests. Install: ${getRuntimeInstallHint(runtime)}`,
         );
       }
-
-      // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation — allocate dynamic port for fixture
-      const port = await getAvailablePort();
-      const baseUrl = `http://localhost:${port}`;
-      const wsUrl = `ws://localhost:${port}`;
-
-      // Create temp directory with .kspec subdirectory
-      // Use mkdtempSync for atomic unique path — safe under parallel Playwright workers
-      const tempDir = mkdtempSync(join(tmpdir(), "kspec-e2e-"));
-      const kspecDir = join(tempDir, ".kspec");
-      mkdirSync(kspecDir, { recursive: true });
-
-      // AC: @e2e-test-daemon-isolation ac-isolated-e2e-state — isolated HOME/config
-      const isolatedHome = join(tempDir, ".home");
-      const configDir = join(isolatedHome, ".config", "kspec");
-      mkdirSync(configDir, { recursive: true });
-      const {
-        KSPEC_NO_DAEMON: _kspecNoDaemon,
-        KSPEC_SESSION_ID: _kspecSessionId,
-        ...baseEnv
-      } = process.env;
-      const isolatedEnv = {
-        ...baseEnv,
-        HOME: isolatedHome,
-        USERPROFILE: isolatedHome,
-        WEB_UI_DIR: WEB_UI_BUILD,
-        KSPEC_TEST: "1",
-        KSPEC_TEST_RUNTIME: runtime,
-      };
-
-      // Copy E2E test fixtures to .kspec subdirectory (simulating shadow worktree mode)
-      if (existsSync(E2E_FIXTURES)) {
-        cpSync(E2E_FIXTURES, kspecDir, {
-          recursive: true,
-          filter: (src) => !src.includes("test-base") && !src.includes("project-tests"),
-        });
-      } else {
-        throw new Error(`E2E test fixtures not found at ${E2E_FIXTURES}`);
-      }
-
-      // Copy project-level tests directory for AC coverage scanning
-      const projectTests = join(E2E_FIXTURES, "project-tests");
-      if (existsSync(projectTests)) {
-        cpSync(projectTests, join(tempDir, "tests"), { recursive: true });
-      }
-
-      // Configure coverage scanning for the copied project-tests directory.
-      // Coverage scanning is explicit opt-in (AC: @coverage-scan-config ac-explicit-opt-in)
-      // and the e2e items spec relies on AC coverage being detected for @test-feature ac-1.
-      writeFileSync(join(tempDir, "kspec.config.yaml"), "coverage:\n  scan_paths:\n    - tests\n");
-
-      // Initialize git repo in project root (required for kspec)
-      execSync("git init", { cwd: tempDir, stdio: "ignore" });
-      execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: "ignore" });
-      execSync('git config user.name "Test"', { cwd: tempDir, stdio: "ignore" });
-
-      // Set up shadow worktree simulation for kspec to detect .kspec/ as spec directory
-      const gitWorktreesDir = join(tempDir, ".git", "worktrees", "-kspec");
-      mkdirSync(gitWorktreesDir, { recursive: true });
-      writeFileSync(join(kspecDir, ".git"), `gitdir: ${gitWorktreesDir}\n`);
-      writeFileSync(join(gitWorktreesDir, "gitdir"), `${join(tempDir, ".git")}\n`);
-      writeFileSync(join(gitWorktreesDir, "HEAD"), "ref: refs/heads/kspec-meta\n");
 
       // Verify web UI is built (daemon serves it for E2E tests)
       if (!existsSync(WEB_UI_BUILD)) {
@@ -266,109 +160,70 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
         );
       }
 
-      let daemonProcess: ChildProcess | null = null;
-      let daemonStderr = "";
-      const maxAttempts = 150;
-      const pollInterval = 100;
+      // AC: @e2e-test-daemon-isolation ac-uses-shared-fixture
+      // AC: @e2e-test-daemon-isolation ac-isolated-e2e-state
+      // AC: @daemon-backed-test-fixture-contract ac-real-daemon-tests-use-shared-fixture
+      // AC: @daemon-backed-test-fixture-contract ac-isolated-home-config
+      // AC: @daemon-backed-test-fixture-contract ac-isolated-project-data
+      const project = await createTestDaemonProject({
+        fixturesSource: E2E_FIXTURES,
+        webUiDir: WEB_UI_BUILD,
+      });
 
-      async function waitForDaemonReady(): Promise<void> {
-        for (let i = 0; i < maxAttempts; i++) {
-          if (daemonProcess?.exitCode !== null) {
-            throw new Error(
-              `Daemon process exited with code ${daemonProcess.exitCode} before becoming ready.\n${daemonStderr}`,
-            );
-          }
-          try {
-            const response = await fetch(`${baseUrl}/api/health`);
-            if (response.ok) break;
-          } catch {
-            // Daemon not ready yet
-          }
-          if (i === maxAttempts - 1) {
-            throw new Error(
-              `Daemon failed to become ready after ${maxAttempts * pollInterval}ms.\n${daemonStderr}`,
-            );
-          }
-          await new Promise((r) => setTimeout(r, pollInterval));
-        }
-
-        // Wait for entity cache to finish loading (cache_status: "ready")
-        for (let i = 0; i < maxAttempts; i++) {
-          try {
-            const response = await fetch(`${baseUrl}/api/tasks`);
-            if (response.ok) {
-              const body = await response.json();
-              if (body?.meta?.cache_status === "ready") break;
-            }
-          } catch {
-            // Not ready yet
-          }
-          if (i === maxAttempts - 1) {
-            throw new Error(
-              `Daemon cache failed to become ready after ${maxAttempts * pollInterval}ms.\n${daemonStderr}`,
-            );
-          }
-          await new Promise((r) => setTimeout(r, pollInterval));
-        }
+      // Copy project-level tests directory for AC coverage scanning. The
+      // shared fixture only copies into .kspec/, so the e2e-only tests/
+      // tree (used by the @test-feature ac-1 coverage path) has to be
+      // staged here in the wrapper.
+      const projectTests = join(E2E_FIXTURES, "project-tests");
+      if (existsSync(projectTests)) {
+        cpSync(projectTests, join(project.tempDir, "tests"), { recursive: true });
       }
 
+      // Configure coverage scanning for the copied project-tests directory.
+      // Coverage scanning is explicit opt-in (AC: @coverage-scan-config ac-explicit-opt-in)
+      // and the e2e items spec relies on AC coverage being detected for @test-feature ac-1.
+      writeFileSync(
+        join(project.tempDir, "kspec.config.yaml"),
+        "coverage:\n  scan_paths:\n    - tests\n",
+      );
+
+      // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation
+      // AC: @daemon-test-endpoint-consistency ac-dynamic-port-propagation
+      // Pre-allocate the dynamic port so daemon.stop() / daemon.start()
+      // restart cycles re-bind to the same endpoint that the browser
+      // already loaded — losing the port across a restart would force
+      // every test that exercises reconnection behavior to reload.
+      const port = await allocateTestDaemonPort();
+      let started: StartedTestDaemon | null = null;
+
       async function startDaemon(): Promise<void> {
-        if (daemonProcess && daemonProcess.exitCode === null) {
+        if (started && started.child.exitCode === null && started.child.signalCode === null) {
           return;
         }
-
-        daemonStderr = "";
-        daemonProcess = spawn(
+        // AC: @e2e-test-daemon-isolation ac-uses-shared-fixture
+        // AC: @daemon-backed-test-fixture-contract ac-real-daemon-tests-use-shared-fixture
+        // AC: @daemon-backed-test-fixture-contract ac-bounded-readiness
+        // AC: @daemon-backed-test-fixture-contract ac-readiness-diagnostics
+        // AC: @daemon-test-endpoint-consistency ac-no-localhost-by-default
+        // AC: @daemon-test-runtime-selection ac-node-default
+        started = await startTestDaemon(project, {
           runtime,
-          [DAEMON_ENTRY, "--runtime", runtime, "--port", String(port), "--kspec-dir", tempDir],
-          {
-            cwd: tempDir,
-            stdio: "pipe",
-            env: buildDaemonChildEnv(runtime, isolatedEnv),
+          port,
+          extraEnv: {
+            // KSPEC_TEST=1 enables the daemon's test-only cache delay primitive
+            // (src/daemon/entity-cache.ts). Preserved from the prior fixture.
+            KSPEC_TEST: "1",
+            KSPEC_TEST_RUNTIME: runtime,
           },
-        );
-
-        daemonProcess.stderr?.on("data", (chunk: Buffer) => {
-          daemonStderr += chunk.toString();
         });
-
-        await waitForDaemonReady();
       }
 
       async function stopDaemon(): Promise<void> {
-        if (!daemonProcess || daemonProcess.exitCode !== null) {
-          return;
-        }
-
-        try {
-          execSync(`node ${KSPEC_CLI} serve stop`, {
-            cwd: tempDir,
-            stdio: "ignore",
-            timeout: 10000,
-            env: isolatedEnv,
-          });
-        } catch {
-          if (daemonProcess.pid && daemonProcess.exitCode === null) {
-            daemonProcess.kill("SIGTERM");
-          }
-        }
-
-        if (daemonProcess.exitCode === null) {
-          await new Promise<void>((resolve) => {
-            const timeout = setTimeout(() => {
-              if (daemonProcess?.exitCode === null) {
-                daemonProcess.kill("SIGKILL");
-              }
-              resolve();
-            }, 5000);
-            daemonProcess?.once("exit", () => {
-              clearTimeout(timeout);
-              resolve();
-            });
-          });
-        }
-
-        daemonProcess = null;
+        if (!started) return;
+        // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
+        // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+        // AC: @daemon-backed-test-fixture-contract ac-no-ambient-daemon-control
+        await started.stop();
       }
 
       await startDaemon();
@@ -376,7 +231,10 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
       // Helper to create a valid second project for multi-project tests
       // AC: @multi-directory-daemon ac-25 - Tests need multiple valid projects
       async function createSecondProject(): Promise<string> {
-        const secondProjectPath = `${tempDir}-second`;
+        if (!started) {
+          throw new Error("createSecondProject called before daemon was started");
+        }
+        const secondProjectPath = `${project.tempDir}-second`;
         const secondKspecDir = join(secondProjectPath, ".kspec");
 
         mkdirSync(secondKspecDir, { recursive: true });
@@ -411,8 +269,9 @@ tasks: []
         );
         writeFileSync(join(secondGitWorktreesDir, "HEAD"), "ref: refs/heads/kspec-meta\n");
 
-        // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation — use dynamic port via fixture baseUrl
-        const response = await fetch(`${baseUrl}/api/projects`, {
+        // AC: @e2e-test-daemon-isolation ac-browser-endpoint-from-fixture
+        // AC: @daemon-test-endpoint-consistency ac-resolved-endpoint-source
+        const response = await fetch(`${started.apiUrl}/api/projects`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ path: secondProjectPath }),
@@ -426,28 +285,34 @@ tasks: []
         return secondProjectPath;
       }
 
-      // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation — propagate port/URLs to all tests
+      // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation
+      // AC: @e2e-test-daemon-isolation ac-browser-endpoint-from-fixture
+      // AC: @daemon-test-endpoint-consistency ac-resolved-endpoint-source
+      // The shared fixture's wsUrl includes the /ws path suffix
+      // (ws://host:port/ws). Existing E2E tests treat fixture.wsUrl as a base
+      // URL and append "/ws" themselves (api-watcher, api-triage), so strip
+      // the suffix here to preserve that contract.
+      const wsBaseUrl = started!.wsUrl.replace(/\/ws$/, "");
       await use({
-        tempDir,
-        kspecDir,
-        port,
-        baseUrl,
-        wsUrl,
+        tempDir: project.tempDir,
+        kspecDir: project.kspecDir,
+        port: started!.port,
+        baseUrl: started!.apiUrl,
+        wsUrl: wsBaseUrl,
         stop: stopDaemon,
         start: startDaemon,
         createSecondProject,
       });
 
-      // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup — stop daemon via scoped `kspec serve stop`
+      // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
+      // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
       await stopDaemon();
-
-      // Remove temp directories
       try {
-        rmSync(tempDir, { recursive: true, force: true });
-        rmSync(`${tempDir}-second`, { recursive: true, force: true });
+        rmSync(`${project.tempDir}-second`, { recursive: true, force: true });
       } catch {
-        // Best effort cleanup
+        // Best effort: second project is only created by tests that opt in.
       }
+      await project.cleanup();
     },
     { scope: "test" },
   ],
