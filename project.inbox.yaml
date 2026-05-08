@@ -3339,3 +3339,18 @@ inbox:
       - dispatch
     added_by: "@claude"
     created_at: 2026-05-08T15:46:52.520Z
+  - _ulid: 01KR4B38NCD70R6PMAK8FP44N3
+    text: "Fix stale npm script: package.json:57 'test:e2e:smoke' invokes Playwright on
+      tests/e2e/smoke.spec.ts and tests/e2e/api-server.spec.ts, but api-server.spec.ts was deleted
+      in commit 8f281707c (migrated to vitest) without updating the script. Anyone running 'npm run
+      test:e2e:smoke' gets a missing-file error. Fix: drop the api-server.spec.ts reference from
+      line 57, or replace with another Playwright spec representative of the smoke surface (e.g.
+      tests/e2e/connection.spec.ts). Discovered while looking for a Playwright daemon-fixture slice
+      to run for @task-fix-real-daemon-startup-failure-handling."
+    tags:
+      - reflection
+      - testing
+      - e2e
+      - bug
+    added_by: "@claude"
+    created_at: 2026-05-08T17:45:19.788Z
