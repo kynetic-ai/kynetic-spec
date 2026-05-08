@@ -17537,6 +17537,34 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T16:15:18.240Z
+  - _ulid: 01KR4F09QP391X0GSZ828K4M9M
+    type: success
+    content: 'Forcing-wrapper pattern for regression-first task splits worked cleanly. The predecessor
+      task (@task-add-mock-daemon-failure-contract-tests) wrapped each post-fix assertion in
+      expectMockDaemonHygieneGap(assertPostFixBehavior, assertKnownGapShape): when the dependent fix
+      lands, assertPostFixBehavior succeeds, the wrapper throws a self-describing error telling the
+      dependent task exactly what to do ("Remove expectMockDaemonHygieneGap() and let the post-fix
+      assertions stand"). This is stronger than bare it.fails — under it.fails ANY thrown assertion
+      satisfies the regression, including unrelated helper errors. The forcing wrapper validates the
+      EXACT current gap shape, so a generic spawn or fs failure cannot satisfy by accident. Reusable
+      for any future regression-first/fix-second task pairs.'
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T18:53:36.886Z
+  - _ulid: 01KR4F09Z6JHMQHWX7YAS5472H
+    type: friction
+    content: "Lint warnings (oxlint) can accumulate silently across tasks because the worker quality
+      gate does not fail-on-warning. Found two pre-existing consistent-function-scoping warnings in
+      tests/helpers/mock-daemon.test.ts that landed in the predecessor task without surfacing.
+      Caught only because I happened to run npx oxlint on the changed files manually. A reviewer
+      following the same workflow would not necessarily notice either. Consider either: (a)
+      fail-on-warning in the worker quality gate, or (b) surface the warning count in the standard
+      test runner output so workers see it without an explicit lint step."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T18:53:37.126Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

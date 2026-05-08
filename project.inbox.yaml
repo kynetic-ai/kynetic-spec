@@ -3354,3 +3354,16 @@ inbox:
       - bug
     added_by: "@claude"
     created_at: 2026-05-08T17:45:19.788Z
+  - _ulid: 01KR4F09MMZH5BMB2CFA6KDKRY
+    text: "Consolidate AMBIENT_DAEMON_CONTROL_VARS into a single exported list in tests/helpers/cli.ts
+      and import it from tests/helpers/daemon.ts and tests/helpers/mock-daemon.ts. Today the two
+      helpers each maintain their own copy — daemon.ts has 6 keys, mock-daemon.ts has 8 (adds
+      KSPEC_DAEMON_API_URL/WS_URL twins). Drift is plausible and silent: a future addition could
+      land in only one helper, leaving one path leaky. Consolidation also forces a deliberate
+      decision on the canonical set (do the URL twins belong everywhere?). Small refactor."
+    tags:
+      - reflection
+      - testing
+      - daemon
+    added_by: "@claude"
+    created_at: 2026-05-08T18:53:36.788Z
