@@ -41249,7 +41249,7 @@ runs:
     completed_at: 2026-05-08T22:05:03.587Z
   - _ulid: 01KR4TVPDK4ABMSY4QRNF1PQKA
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -41291,10 +41291,17 @@ runs:
           file filters. This would help future convention or test-runner docs updates avoid
           misleading evidence. Scope: small documentation/convention clarification, not enough
           confidence for a direct task from this review alone."
-      - status: completed
+      - status: skipped
         step_index: 4
         started_at: 2026-05-08T22:22:05.297Z
-        completed_at: 2026-05-08T22:22:05.297Z
+        completed_at: 2026-05-08T22:22:24.200Z
+        notes: Skipped interactive approval because the invocation asked to run reflection in the current
+          dispatch-style context. Proceeding only with a high-confidence friction observation, not a
+          task or spec change.
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-08T22:22:24.200Z
+        completed_at: 2026-05-08T22:22:24.200Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T22:20:48.947Z
