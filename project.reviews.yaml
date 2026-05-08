@@ -184152,6 +184152,17 @@ reviews:
         runner: tsc
         created_at: 2026-05-08T02:51:44.229Z
         completed_at: 2026-05-08T02:51:44.229Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema and references OK. Command exited 6 due to existing repository-wide warnings; no
+          changed-file validation warning identified in reviewed files.
+        name: kspec validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-08T02:51:56.379Z
+        completed_at: 2026-05-08T02:51:56.379Z
     events:
       - _ulid: 01KR2QA27QK5K93H3D9KBFDSX8
         actor: Jacob Chapel
@@ -184187,6 +184198,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-05-08T02:51:45.569Z
+      - _ulid: 01KR2QZEWAGZ36X1Z372HJCKT3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-08T02:51:57.707Z
     examined_commit: 8d20791d210a11231ae0a56cf52ee117a4a5dc8d
     external_links: []
     lifecycle_state: open
@@ -184199,5 +184217,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T02:40:16.632Z
-    updated_at: 2026-05-08T02:51:44.229Z
+    updated_at: 2026-05-08T02:51:56.379Z
     notes: []
