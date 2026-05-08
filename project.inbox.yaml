@@ -3271,3 +3271,31 @@ inbox:
       - tooling
     added_by: "@claude"
     created_at: 2026-05-08T01:23:25.768Z
+  - _ulid: 01KR2ZYWF7FPZHDBF14S18RZB6
+    text: "Investigate whether oxlint JS plugins expose a scope manager (context.sourceCode.getScope or
+      equivalent) and, if so, refactor tools/eslint-rules/no-leaky-test-daemon.js to drop the manual
+      parent-walking + position-comparison machinery
+      (recordBinding/findApplicableBinding/functionScopeShadowsName, ~120 LOC). Surfaced during fix
+      cycle 2 of @task-enforce-daemon-test-fixture-usage when the file-global Set was replaced with
+      hand-rolled scope tracking. Scope: small investigation, refactor size depends on API
+      availability."
+    tags:
+      - reflection
+      - lint
+      - oxlint
+      - tech-debt
+    added_by: "@claude"
+    created_at: 2026-05-08T05:11:27.463Z
+  - _ulid: 01KR2ZYWSC0DZT9M2FBVRRCGH7
+    text: "Optimize tests/lint-no-leaky-test-daemon.test.ts and
+      tests/lint-daemon-test-guardrails.test.ts to avoid per-case npx oxlint subprocess overhead.
+      Current cost ~250ms/case × ~62 cases = ~14s for the focused suite, scaling linearly as the
+      rule and its tests grow. Options: in-process oxlint invocation if exposed, or batched fixtures
+      with line-numbered violation assertions per oxlint run. Lower priority than the scope-manager
+      refactor."
+    tags:
+      - reflection
+      - lint
+      - test-perf
+    added_by: "@claude"
+    created_at: 2026-05-08T05:11:27.788Z

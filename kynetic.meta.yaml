@@ -17341,6 +17341,20 @@ observations:
     resolved: false
     workflow_ref: "@01KR2Y9B"
     created_at: 2026-05-08T04:43:25.465Z
+  - _ulid: 01KR2ZYWJ4FFDAJ9GDF1GD66BC
+    type: friction
+    content: Identifier tracking in lint rules must be scope-aware from the start. The
+      no-leaky-test-daemon rule used a file-global Set<string> for localhost URL bindings and
+      produced silent false positives across distinct lexical scopes (separate it() blocks reusing
+      const url, inner-block shadowing, let reassignment, parameter shadowing). Took two review
+      cycles to fully surface — cycle 1 added variable-bound URL detection on top of the same flat
+      Set, cycle 2 had to replace the whole tracking layer. Future identifier-tracking rules should
+      default to per-scope binding records (scopeNode + position + value-property) rather than a
+      name-only Set, even when the first use case looks single-scope.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T05:11:27.556Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
