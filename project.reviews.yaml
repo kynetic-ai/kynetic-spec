@@ -186009,6 +186009,12 @@ reviews:
         payload:
           thread_ulid: 01KR3XRW8CWRGXPK4XHZX3WTRS
         timestamp: 2026-05-08T14:23:18.906Z
+      - _ulid: 01KR3ZHNWJES6YZ392KB1VTXJ6
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR3XRW8CWRGXPK4XHZX3WTRS
+        timestamp: 2026-05-08T14:23:29.170Z
     examined_commit: 9ff274ab87aa2948893aecf7bebcc9e14827572c
     external_links: []
     lifecycle_state: closed
@@ -186056,6 +186062,8 @@ reviews:
               68/68 pass; full npm test → 8803 passed, 5 skipped, 0 failed across 2402 suites."
             created_at: 2026-05-08T14:23:17.560Z
         kind: blocker
+        resolved_at: 2026-05-08T14:23:27.854Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -186065,7 +186073,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T13:53:01.070Z
     created_at: 2026-05-08T13:40:40.642Z
-    updated_at: 2026-05-08T14:23:17.560Z
+    updated_at: 2026-05-08T14:23:27.854Z
     notes: []
   - _ulid: 01KR3XZGFXDHARMXBFNVXZKEZH
     slugs: []
