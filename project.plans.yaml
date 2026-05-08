@@ -46871,8 +46871,8 @@ plans:
       - Fixing unrelated pre-existing kspec completeness warnings or deprecated-ref
         warnings outside daemon testing specs.
       ```
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-05-08T13:25:15.695Z
     derived_specs: []
     derived_tasks: []
     module_ref: null
