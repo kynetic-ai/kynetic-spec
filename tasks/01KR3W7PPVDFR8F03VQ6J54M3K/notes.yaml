@@ -326,3 +326,56 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T22:44:31.487Z
+  - _ulid: 01KR4ZSMXYCPQJ183BDSX9T3VA
+    content: >-
+      Fix cycle 6: closed both precision blockers via two narrow predicate changes.
+
+
+      Blocker 1 (line 727 — exec/execSync): the runtime form previously required the daemon entry to
+      be at exactly tokens[1]. exec("node --enable-source-maps dist/daemon/index.js --port 0")
+      therefore matched no rule and was silently accepted. Fix: in readDaemonEntryInvocation's
+      exec/execSync branch, after confirming tokens[0] is a recognised runtime, walk forward
+      skipping flag-shaped tokens (any token whose first char is `-`, including `--inspect=...`,
+      `-r`, and the `--` separator) and pick the first non-flag token. Match only when that token is
+      the daemon entry. Added isShellRuntimeFlagToken helper for the walk and updated the report
+      pattern to surface the flag segment for the diagnostic.
+
+
+      Blocker 2 (line 469 — process.execPath): isProcessExecPathExpression rejected all computed
+      access — process["execPath"] resolves to the same property at runtime but was silently
+      accepted. Fix: the predicate now accepts non-computed access with an Identifier-named property
+      AND computed access with a string Literal or a no-substitution TemplateLiteral whose value is
+      "execPath". Strictness preserved: dynamic property expressions, other property names, and
+      computed access on unrelated objects remain unrecognised.
+
+
+      Reviewer probes now emit diagnostics: exec("node --enable-source-maps dist/daemon/index.js
+      --port 0") -> directDaemonSpawn; spawn(process["execPath"], [DAEMON_ENTRY, "--port", "0"]) ->
+      directDaemonSpawn. Manual oxlint exits with 2 errors on a probe file containing both lines.
+      Precision probes (node ./other-script.js dist/daemon/index.js, node --inspect echo
+      dist/daemon/index.js, node --version, process[propName], process["argv0"],
+      customRuntime["execPath"]) exit clean.
+
+
+      Behavioral tests added (15 new in tests/lint-daemon-test-guardrails.test.ts):
+
+      - 6 positives for exec/execSync with runtime flags: --enable-source-maps, --inspect-brk=value,
+      /usr/bin/node + multiple flags, the `--` separator, bun --hot (hardcoded-bun message),
+      template literal with --enable-source-maps + interpolation
+
+      - 3 negatives for the runtime-flag walk: node ./other-script.js dist/daemon/index.js, node
+      --inspect echo dist/daemon/index.js, node --version
+
+      - 3 positives for process["execPath"]: spawn / execFile (literal daemon path) / spawnSync
+      no-substitution template literal
+
+      - 3 negatives for the computed-access form: dynamic propName, process["argv0"], unrelated
+      other["execPath"]
+
+
+      Verification: 121 targeted lint-rule tests pass (was 106 — 15 new tests). Full suite green:
+      8871 passed, 5 skipped, 0 failed (was 8856 plus the 15 new tests). Project lint count
+      unchanged at the dev baseline (13 errors, 721 warnings).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T23:47:04.766Z

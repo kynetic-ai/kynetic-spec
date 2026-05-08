@@ -190524,6 +190524,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-08T22:44:29.139Z
+      - _ulid: 01KR4ZS9J642DDJBDN6N10G08Z
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR4W4ZATJCYE4Z3GY96Q79N6
+        timestamp: 2026-05-08T23:46:53.126Z
+      - _ulid: 01KR4ZSCX5AM68HHTF7PGHQHT6
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR4W4ZATJCYE4Z3GY96Q79N6
+        timestamp: 2026-05-08T23:46:56.549Z
+      - _ulid: 01KR4ZSG9FDNQ78QE6XC16DYAM
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR4W537WW9ZMGG1M3ZHYBV16
+        timestamp: 2026-05-08T23:47:00.015Z
+      - _ulid: 01KR4ZSKJ1P8CYCCJRSY8S2PNM
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR4W537WW9ZMGG1M3ZHYBV16
+        timestamp: 2026-05-08T23:47:03.361Z
     examined_commit: 1459ff6696a65438ac6b64221407f751f7c4d3b8
     external_links: []
     lifecycle_state: closed
@@ -190555,7 +190579,21 @@ reviews:
               executable-position runtime options without reintroducing the echo/cat/grep false
               positives covered by the existing regressions.'
             created_at: 2026-05-08T22:43:21.562Z
+          - _ulid: 01KR4ZS882KRG55T5MZ7K3ATQF
+            author: "@claude"
+            body: "Fixed: readDaemonEntryInvocation's exec/execSync runtime form now walks past flag-shaped
+              tokens (any token starting with `-`, including the `--` separator) between the leading
+              runtime token and the script-path token. The first non-flag token after the runtime
+              must be the daemon entry. Reviewer's probe — exec(\"node --enable-source-maps
+              dist/daemon/index.js --port 0\") — now exits with the directDaemonSpawn diagnostic.
+              False-positive guards remain: echo/cat/grep/nodemon do not match because token[0] is
+              not a recognised runtime; node ./other-script.js dist/daemon/index.js does not match
+              because the first non-flag token after node is ./other-script.js, not the daemon
+              entry."
+            created_at: 2026-05-08T23:46:51.774Z
         kind: blocker
+        resolved_at: 2026-05-08T23:46:55.252Z
+        resolved_by: "@claude"
       - _ulid: 01KR4W537WW9ZMGG1M3ZHYBV16
         anchor:
           type: code
@@ -190577,7 +190615,21 @@ reviews:
               arbitrary object.execPath values, but exact computed process["execPath"] is statically
               knowable and should be treated as Node.'
             created_at: 2026-05-08T22:43:25.565Z
+          - _ulid: 01KR4ZSEYJKJ3M67QVSJV8Q4DP
+            author: "@claude"
+            body: "Fixed: isProcessExecPathExpression now also accepts the static-string computed form. The
+              predicate matches MemberExpressions whose object is the Identifier `process` and whose
+              property is either an Identifier named `execPath` (dot access) or a
+              Literal/no-substitution TemplateLiteral whose value is exactly \"execPath\" (bracket
+              access). Reviewer's probe — spawn(process[\"execPath\"], [DAEMON_ENTRY, \"--port\",
+              \"0\"]) — now exits with the directDaemonSpawn diagnostic. Strictness preserved:
+              dynamic property expressions (process[propName]), other static property names
+              (process[\"argv0\"]), and computed access on unrelated objects (other[\"execPath\"])
+              remain unrecognised."
+            created_at: 2026-05-08T23:46:58.642Z
         kind: blocker
+        resolved_at: 2026-05-08T23:47:02.059Z
+        resolved_by: "@claude"
       - _ulid: 01KR4W6BYDYP1284V3G350P5ZP
         entries:
           - _ulid: 01KR4W6BYEKNHX015JEQWYYN9Z
@@ -190604,7 +190656,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T22:44:29.139Z
     created_at: 2026-05-08T22:29:22.411Z
-    updated_at: 2026-05-08T22:44:29.139Z
+    updated_at: 2026-05-08T23:47:02.059Z
     notes: []
   - _ulid: 01KR4YTTN0NFBZ90VG1KNB2YQW
     slugs: []
