@@ -28032,7 +28032,7 @@
     - testing
     - lint
     - daemon
-  notes_count: 0
+  notes_count: 1
   todos_count: 0
   created_at: 2026-05-07T20:36:51.524Z
   started_at: 2026-05-08T03:12:07.174Z

@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KR2SP57YPR4W5RXS30JRB88A
+    content: 'Approach: Extend the existing no-leaky-test-daemon rule rather than create a separate one.
+      Adds: (1) path-based allowlist for helper internals (tests/helpers/, tools/eslint-rules/, lint
+      test fixture files), (2) a new check that flags direct spawn of DAEMON_ENTRY in non-helper
+      test files even when cleanup is registered (no cleanup escape hatch — must use shared fixture
+      or oxlint-disable), (3) a more specific check for hardcoded spawn("bun", [DAEMON_ENTRY])
+      outside parity tests, and (4) a new check that flags fetch()/new WebSocket() first-arg URLs
+      containing localhost:port outside helpers. Existing detached-serve check unchanged (keeps
+      cleanup escape hatch because cli-serve.test.ts tests --detach itself). Per-test exceptions use
+      oxlint-disable-next-line; oxlint already supports disable comments for JS plugin rules.
+      Pragma: keep allowlists minimal; add inline disables to cli-serve.test.ts (legitimately
+      fetches localhost:port for CLI-under-test) and websocket-protocol.test.ts:209 (intentionally
+      tests localhost-origin same-origin).'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T03:21:50.078Z
