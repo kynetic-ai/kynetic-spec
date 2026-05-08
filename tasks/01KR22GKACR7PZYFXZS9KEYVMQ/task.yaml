@@ -52,7 +52,7 @@ description: |
 spec_ref: "@e2e-test-daemon-isolation"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-implement-shared-daemon-test-fixture"
@@ -64,6 +64,14 @@ tags:
   - e2e
   - web-ui
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-migrate-playwright-daemon-fixture/01kr22gk
+  captured_at: 2026-05-08T01:20:55.115Z
+  commit: c753d124422282c19fc01bf891a34656a5feb29d
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR2HDJHK0S6NWP92HC3AM1XX
 history:
   - author: Jacob Chapel
@@ -86,7 +94,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-08T00:57:38.313Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-migrate-playwright-daemon-fixture/01kr22gk
+          captured_at: 2026-05-08T01:20:55.115Z
+          commit: c753d124422282c19fc01bf891a34656a5feb29d
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-08T01:20:55.117Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-08T01:20:55.117Z
 created_at: 2026-05-07T20:36:50.636Z
 started_at: 2026-05-08T00:57:38.313Z
+submitted_at: 2026-05-08T01:20:55.117Z
 todos: []
 automation: eligible
