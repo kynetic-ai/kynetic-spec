@@ -55,3 +55,59 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T19:33:00.807Z
+  - _ulid: 01KR4JRRPG1SNZ8ZT3JMWFBVP0
+    content: >-
+      Fix cycle 2: closed the exec/execSync shell-string blocker.
+
+
+      Blocker (line 503): readDaemonEntryInvocation now also handles exec and execSync. The first
+      argument is read via the existing literalString / templateLiteralRaw helpers and tokenised on
+      whitespace; if any token names the daemon entry path (literal `dist/daemon/index.js` or any
+      path ending in `/dist/daemon/index.js`), the call is reported with the directDaemonSpawn
+      message. Two new helpers — `isDaemonEntryShellToken` and `shellCommandTokens` — encapsulate
+      the token-shape check so the existing literal/template helpers stay reusable.
+
+
+      Runtime detection: when the daemon entry is the leading shell token (direct-executable form),
+      runtimeLiteral is null and the directDaemonSpawn message fires. When the daemon entry is
+      preceded by a token, that prev token is the runtime; if prev is `bun` (or a path ending in
+      `/bun`) the hardcodedBunRuntime message fires instead. Other prev tokens (e.g. `node`) route
+      through the directDaemonSpawn message.
+
+
+      Detached-serve preserved: the new exec/execSync direct-entry detector only matches when a
+      daemon entry token is present, so `exec("kspec serve start --detach")` still has no daemon
+      entry tokens and still routes through the existing detached-serve detector for the
+      missingCleanup message. Verified by a new regression test that asserts the missing-cleanup
+      message fires and the shared-fixture message does not.
+
+
+      Behavioral tests added (6 new in tests/lint-daemon-test-guardrails.test.ts):
+
+      - exec("node dist/daemon/index.js --port 0") and execSync(...) — runtime form
+
+      - execSync("dist/daemon/index.js --port 0") — direct-executable form
+
+      - exec("node /workspace/dist/daemon/index.js --port 0") — absolute path
+
+      - exec(`node dist/daemon/index.js --port ${port}`) — template literal with non-daemon
+      interpolation
+
+      - execSync("bun dist/daemon/index.js …") — hardcoded-bun-runtime message
+
+      Plus a precision regression for exec("echo --port 3456") (no daemon entry, no kspec — must not
+      flag) and a regression for exec("kspec serve start --detach") (must remain a missingCleanup,
+      not a directDaemonSpawn).
+
+
+      Manual verification of the reviewer's probe: a synthetic test file containing exec("node
+      dist/daemon/index.js --port 0") and execSync("node dist/daemon/index.js --port 0") now exits
+      with 2 errors and the directDaemonSpawn diagnostic on each line.
+
+
+      Verification: 90 targeted lint-rule tests pass (was 81 — 6 new positives + 3 new regressions).
+      Full suite green: 8831 passed, 5 skipped, 0 failed (was 8822 — same baseline plus the 9 new
+      tests). Project lint count unchanged at the dev baseline (13 errors, 724 warnings).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T19:59:24.368Z
