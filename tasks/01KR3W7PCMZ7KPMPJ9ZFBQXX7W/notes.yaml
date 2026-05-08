@@ -66,3 +66,47 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T13:53:03.116Z
+  - _ulid: 01KR3ZJFVNWS8VNEW47RFY4FJA
+    content: >-
+      Fix cycle 1: addressed reviewer's MUST-FIX (merge gate must stay green).
+
+
+      Change: converted the six new precision regression tests in
+      tests/lint-daemon-test-guardrails.test.ts from it() to it.fails(). This preserves the
+      regression-first design intent (the assertions still run and exercise oxlint against the
+      synthetic snippets that exhibit today's classifier gaps), but flips the pass/fail polarity so
+      a current assertion failure satisfies the test instead of breaking npm test on dev.
+
+
+      Forcing function: when @task-fix-guardrail-daemon-command-classification lands, each assertion
+      will succeed, the it.fails modifier will itself fail, and the dependent task is required to
+      remove .fails before merge. A new MERGE GATE NOTE comment block above the describe spells out
+      the contract for the next reviewer and the dependent fix worker (do not silence by deleting
+      tests — convert it.fails(...) back to it(...)).
+
+
+      Verified:
+
+      - npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 68/68 pass (46 in guardrails + 22 in
+      no-leaky-test-daemon).
+
+      - npm test (full suite): 2402/2402 suites pass, 8803 passed, 5 skipped, 0 failed (vs prior 6
+      failed tests, 4 failed suites).
+
+      - Branch is current with origin/dev (no rebase needed).
+
+
+      Re-verified ACs against the change:
+
+      - ac-direct-daemon-entry-invocations-flagged: still covered by the four fork/execFile cases
+      (now it.fails until rule-fix lands).
+
+      - ac-unrelated-subprocesses-not-reported: still covered by the spawn echo and spawnSync git
+      cases (now it.fails until rule-fix lands).
+
+      - @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged: covered by the same four
+      direct-entry cases.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T14:23:55.765Z
