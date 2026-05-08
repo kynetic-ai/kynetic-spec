@@ -43,3 +43,53 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-08T17:28:17.531Z
+  - _ulid: 01KR4AVZABSXADKKPH16CDZ395
+    content: >-
+      Scope satisfied without new commits on this branch — verification-only task.
+
+
+      Verification:
+
+      1. Helper implementation at tests/helpers/daemon.ts (already in dev via commit 324ac8a62)
+      satisfies every AC:
+         - ac-process-launch-failure-diagnosed: child.once('error', ...) at L619-622, Promise.race vs launchFailurePromise at L692, catch prefers launchError.message at L699-701 producing 'process launch failed: spawn ... ENOENT' cause, sample diagnostics + stop() before throw.
+         - ac-owned-child-stopped-after-startup-failure: stop() invoked at L728 before DaemonReadinessError thrown at L729; stop() is idempotent (stopped flag at L624-627) and short-circuits when no pid was assigned (L632) so cleanup is bounded for launch failures.
+         - ac-cleanup-registered-before-readiness-wait: registerCleanup(stop) at L638-640 runs before any readinessOp / Promise.race construction.
+         - ac-child-env-sanitized: buildDaemonChildEnv strips AMBIENT_DAEMON_CONTROL_VARS at L256-260 and routes through buildTestSubprocessEnv for dispatch/agent/runner/CI vars.
+
+      2. Public helper surface preserved: StartedTestDaemon, StartTestDaemonOptions,
+      DaemonReadinessError, buildDaemonChildEnv all unchanged from the prior task. The single
+      test-only seam __testBinaryOverride is documented as such and only used at the spawn() site.
+
+
+      3. Test annotations confirmed in tests/helpers/daemon.test.ts:
+         - ac-process-launch-failure-diagnosed: line 336 ('surfaces a bounded startup diagnostic when the OS rejects the spawn').
+         - ac-owned-child-stopped-after-startup-failure: lines 337, 446 (cleanup-on-readiness-failure test).
+         - ac-cleanup-registered-before-readiness-wait: line 512 (registerCleanup ordering test).
+         - ac-child-env-sanitized: lines 26, 81 (env-sanitization tests on buildDaemonChildEnv).
+
+      4. Targeted tests from the task Testing block (mise exec -- npm test -- --fresh
+      tests/helpers/daemon.test.ts tests/daemon-api/websocket-protocol.test.ts
+      tests/daemon-build.test.ts):
+         16/16 suites passed, 26/26 tests passed.
+
+      5. Full vitest suite (mise exec -- npm test): 2406/2406 suites passed, 8809 passed, 5 skipped,
+      0 failed. No regressions.
+
+
+      6. Playwright slice: skipped. The test:e2e:smoke npm script references
+      tests/e2e/api-server.spec.ts which no longer exists (only smoke.spec.ts is present). The
+      Playwright fixture wrapper at tests/e2e/fixtures/test-base.ts:209 calls startTestDaemon
+      directly, so the same helper code path is exercised end-to-end by all E2E specs that use the
+      daemon fixture; the vitest helper-contract tests already prove the failure-path behavior at
+      the boundary E2E callers see. Recommending an inbox item or fix to test:e2e:smoke is out of
+      scope for this task.
+
+
+      Conclusion: every helper-side change described in this task's How block was implemented in
+      commit 324ac8a62 during the dependent task's fix cycle. The implementation is verified against
+      all ACs and the full test suite. No additional code change required on this branch —
+      submitting for review against dev.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T17:41:20.843Z
