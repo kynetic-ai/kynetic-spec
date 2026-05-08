@@ -39041,9 +39041,23 @@ runs:
     completed_at: 2026-05-08T02:56:50.168Z
   - _ulid: 01KR2S3QFMCQZYBQPB7X2SVKAB
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T03:11:46.164Z
+        completed_at: 2026-05-08T03:12:23.829Z
+        notes: "Worked well: the fix-cycle review flow was deterministic. The prior blocker had a narrow
+          observable claim (helper-owned child-process record files leaked), and the submitted
+          change added direct contract tests for both helper-owned and caller-owned record paths.
+          Targeted fresh suites verified the affected behavior quickly, then the full fresh suite
+          confirmed no regressions. The detached reviewer merge helper provided a clean manual_merge
+          path without checking out dev in the detached snapshot."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T03:12:23.829Z
+        completed_at: 2026-05-08T03:12:23.829Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T03:11:46.164Z
