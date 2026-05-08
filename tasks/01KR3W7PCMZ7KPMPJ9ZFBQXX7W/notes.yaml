@@ -1,1 +1,32 @@
-notes: []
+notes:
+  - _ulid: 01KR3WMDHDKWA0K7M7KVWD01P3
+    content: >-
+      Approach: extend tests/lint-daemon-test-guardrails.test.ts with a new top-level describe for
+      @daemon-test-guardrail-precision.
+
+
+      Verified the three current rule gaps with a manual oxlint run:
+
+      - fork("dist/daemon/index.js", ...) → NOT flagged today (readDaemonSpawn only handles
+      spawn/spawnSync)
+
+      - execFile/execFileSync("node", ["dist/daemon/index.js", ...]) → NOT flagged today (same root
+      cause)
+
+      - spawn("echo", ["serve", "start", "--detach"]) → incorrectly FLAGGED today
+      (argsResolveToDetachedServe scans all args, not tied to kspec executable)
+
+
+      Test plan:
+
+      - ac-direct-daemon-entry-invocations-flagged: fork(literal), fork(DAEMON_ENTRY),
+      execFile(node, [literal]), execFileSync(node, [DAEMON_ENTRY])
+
+      - ac-unrelated-subprocesses-not-reported: spawn(echo, ...), spawnSync(git, ...) with
+      overlapping argv tokens
+
+      - All assertions check exit code + rule name + a specific message fragment so a parser failure
+      cannot pass the test by accident.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T13:32:33.198Z
