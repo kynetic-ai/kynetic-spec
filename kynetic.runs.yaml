@@ -41187,7 +41187,7 @@ runs:
     started_at: 2026-05-08T21:45:07.657Z
     completed_at: 2026-05-08T21:47:24.087Z
   - _ulid: 01KR4SVDV2HRW0FWM8C6FANNQ0
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -41236,10 +41236,14 @@ runs:
         notes: Skipped discussion because there are no untracked improvement proposals to ask about. The
           only concrete defect belongs in the already-created review blocker, and the repeatable
           success pattern already has an existing observation.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-08T22:04:53.171Z
-        completed_at: 2026-05-08T22:04:53.171Z
+        completed_at: 2026-05-08T22:05:03.587Z
+        notes: "No capture performed. Nothing new was approved or identified as high-confidence untracked
+          work. Existing tracking: review @01KR4S1W contains the process.execPath blocker;
+          observation 01KR2YBHN already covers the synthetic-probe review pattern."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T22:03:11.587Z
+    completed_at: 2026-05-08T22:05:03.587Z
