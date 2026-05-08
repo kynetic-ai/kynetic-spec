@@ -186643,6 +186643,20 @@ reviews:
         runner: npm test
         created_at: 2026-05-08T14:58:01.669Z
         completed_at: 2026-05-08T14:58:01.669Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exits 6 with warnings. Relevant warning: @daemon-test-guardrail-precision
+          still has missing own AC coverage for ac-direct-daemon-entry-invocations-flagged and
+          ac-unrelated-subprocesses-not-reported. rg confirms only
+          ac-detached-cleanup-before-observation, ac-local-exception-is-local, and
+          ac-exception-reason-states-subject are annotated for this spec."
+        name: kspec validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-08T14:58:12.250Z
+        completed_at: 2026-05-08T14:58:12.250Z
     events:
       - _ulid: 01KR40VMZ8TH8MPC7XD60S6872
         actor: Jacob Chapel
@@ -186671,6 +186685,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-08T14:58:02.950Z
+      - _ulid: 01KR41H9D52VV3BZZX90TSYEBH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-08T14:58:13.542Z
     examined_commit: 4d1685d39761743ea75f17d2bdf48faae89c1203
     external_links: []
     lifecycle_state: open
@@ -186683,5 +186704,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T14:46:24.488Z
-    updated_at: 2026-05-08T14:58:01.669Z
+    updated_at: 2026-05-08T14:58:12.250Z
     notes: []
