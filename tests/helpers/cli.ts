@@ -30,17 +30,25 @@ import { execSync, spawnSync } from "node:child_process";
 import * as fs from "node:fs/promises";
 import { readFileSync, writeFileSync, mkdirSync, statSync } from "node:fs";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import * as os from "node:os";
 
 type RemoveDirFn = typeof fs.rm;
 let cleanupRmImpl: RemoveDirFn = (...args) => fs.rm(...args);
 
+// Resolve helper dir under both CJS (vitest default) and ESM (Playwright,
+// which loads .ts files as ESM because package.json declares "type": "module").
+// Vitest internally transpiles to CJS where __dirname is provided; Playwright
+// preserves ESM semantics where __dirname is undefined.
+const HELPER_DIR =
+  typeof __dirname !== "undefined" ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+
 // Use built CLI for performance - requires `npm run build` before tests
-export const CLI_PATH = path.join(__dirname, "..", "..", "dist", "cli", "index.js");
+export const CLI_PATH = path.join(HELPER_DIR, "..", "..", "dist", "cli", "index.js");
 
 // Fixtures directory for test data
-export const FIXTURES_DIR = path.join(__dirname, "..", "fixtures");
+export const FIXTURES_DIR = path.join(HELPER_DIR, "..", "fixtures");
 
 /**
  * Env vars that signal "I'm running under a dispatch loop or legacy session."
