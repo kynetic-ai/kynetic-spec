@@ -70,7 +70,7 @@ description: |
 spec_ref: "@daemon-backed-test-fixture-contract"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-update-daemon-test-specs"
@@ -85,8 +85,8 @@ review_ref: "@01KR2CW9BDCA88YH30WH03Q5ZM"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
-  captured_at: 2026-05-07T23:33:27.211Z
-  commit: ab433d4eaf96d6b421cfc89771e283a3a768fcb8
+  captured_at: 2026-05-08T00:08:40.555Z
+  commit: a1772de24d6b4027dbf16f1ea2390771fb54045a
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
@@ -219,8 +219,35 @@ history:
         previous: 2026-05-07T23:33:24.096Z
     command: task-start
     timestamp: 2026-05-08T00:08:37.027Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
+          captured_at: 2026-05-08T00:08:40.555Z
+          commit: a1772de24d6b4027dbf16f1ea2390771fb54045a
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
+        previous:
+          review_url: null
+          branch: dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
+          captured_at: 2026-05-07T23:33:27.211Z
+          commit: ab433d4eaf96d6b421cfc89771e283a3a768fcb8
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
+      submitted_at:
+        new: 2026-05-08T00:08:40.560Z
+        previous: 2026-05-07T23:33:27.215Z
+    command: task-submit
+    timestamp: 2026-05-08T00:08:40.560Z
 created_at: 2026-05-07T20:36:50.053Z
 started_at: 2026-05-08T00:08:37.026Z
-submitted_at: 2026-05-07T23:33:27.215Z
+submitted_at: 2026-05-08T00:08:40.560Z
 todos: []
 automation: eligible
