@@ -37,3 +37,20 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T19:08:18.523Z
+  - _ulid: 01KR4HFN3R91VQECMYJ5J800ZZ
+    content: "Fix cycle 1: addressed the return-boundary blocker in @01KR4F56. Root cause:
+      cleanupChildOnStartupFailure sent SIGTERM and resolved null synchronously, so the helper's
+      promise to the caller resolved BEFORE the OS reaped the child — exactly what the reviewer's
+      process.kill(pid, 0) probe surfaced. Fix: cleanupChildOnStartupFailure now returns a Promise
+      that resolves only after child.once('exit', …) fires; failure-path callers (timeout,
+      malformed-stdout, child error) await it via a small failStartup helper before calling
+      finish(null). Edge cases: early-exit detection via child.exitCode/signalCode,
+      kill-returns-false handling for spawn-rejected handles, idempotent across cascading branches
+      via cleanup.done flag. Tests tightened to drop the 200ms grace window in the malformed-stdout
+      and timeout cases — reap must be observable on return, not 200ms later. Also independently
+      re-verified with the reviewer's exact probe shape: result=null, process.kill(pid,0) → ESRCH
+      immediately (both branches). Lint clean (oxlint), targeted suite green, full npm test 8819
+      passed / 5 skipped / 0 failed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T19:36:57.208Z
