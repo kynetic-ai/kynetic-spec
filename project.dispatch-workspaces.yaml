@@ -14199,11 +14199,11 @@ workspaces:
     canonical_branch: dispatch/task/task-add-mock-daemon-failure-contract-tests/01kr3w7r
     canonical_branch_head: 8d75d10c36ce5e7289f06e8d4f5ce654c281e8af
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-08T16:42:11.465Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-08T16:42:12.303Z
     health:
       status: healthy
       issues: []
@@ -14217,7 +14217,7 @@ workspaces:
       target_branch: dev
       target_commit: 227fcb7ef7d06f60567823111394bb2ec0506413
       updated_at: 2026-05-08T16:42:11.465Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR3W7RHFG659BH7VGSM69KCJ"
     task_slug: task-add-mock-daemon-failure-contract-tests
@@ -14226,7 +14226,7 @@ workspaces:
       last_active_at: 2026-05-08T16:26:03.671Z
       last_reconciled_at: 2026-05-08T16:42:11.465Z
       created_at: 2026-05-08T15:47:47.474Z
-      updated_at: 2026-05-08T16:42:11.465Z
+      updated_at: 2026-05-08T16:42:12.303Z
     workspace_id: dispatch-workspace-01KR3W7RHFG659BH7VGSM69KCJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
