@@ -13,3 +13,46 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-08T14:02:28.748Z
+  - _ulid: 01KR3YKW3GM8N2CAK6CCKP4K6J
+    content: >-
+      Implementation complete. Added 3 new test groups + 1 internal test seam:
+
+
+      - 'startTestDaemon process launch failure' — uses __testBinaryOverride='/nonexistent/...' to
+      simulate spawn ENOENT. Asserts thrown is DaemonReadinessError with launch-related cause and
+      bounded elapsed time.
+
+      - 'startTestDaemon scoped cleanup on readiness failure' — captures the child handle through
+      the probe context and asserts child.exitCode/signalCode is set after the throw, proving the
+      helper stopped the child before returning failure.
+
+      - 'startTestDaemon registerCleanup ordering' — synthetic registerCleanup hook records ordering
+      against probe invocations and asserts registerCleanup ran exactly once before any probe.
+
+
+      buildDaemonChildEnv tests extended with ac-child-env-sanitized annotation (the existing
+      assertions already cover ambient daemon-control + KSPEC_SESSION_ID stripping).
+
+
+      Test seam: added __testBinaryOverride?: string to StartTestDaemonOptions. Documented as
+      test-only with explicit 'production callers must not pass this' note. Used at spawn(...) site
+      only; runtime label still drives env construction and diagnostics so the diagnostic bundle
+      reports runtime='node' as expected.
+
+
+      Test results (npm test -- --fresh tests/helpers/daemon.test.ts):
+
+      - 8 of 9 pass
+
+      - 1 intentionally fails: 'surfaces a bounded startup diagnostic when the OS rejects the
+      spawn'. Current helper reports cause='Timed out waiting for daemon health... process exited
+      with code -2' rather than mentioning ENOENT/spawn/launch. This is the gap the follow-up
+      @task-fix-real-daemon-startup-failure-handling addresses by adding a child 'error' listener.
+
+
+      Verified backwards compatibility: tests/daemon-build.test.ts (2/2 pass) and
+      tests/daemon-api/websocket-protocol.test.ts (15/15 pass) still pass. tsc --noEmit and oxlint
+      clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T14:07:12.497Z
