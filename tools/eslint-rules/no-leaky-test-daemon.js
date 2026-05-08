@@ -67,17 +67,9 @@ const HELPER_PATH_PATTERNS = [
 const FETCH_LIKE_CALLEES = new Set(["fetch"]);
 const WEBSOCKET_LIKE_CONSTRUCTORS = new Set(["WebSocket"]);
 
-const SPAWN_LIKE_CALLEES = new Set([
-  "runKspec",
-  "kspec",
-  "exec",
-  "execSync",
-  "spawn",
-  "spawnSync",
-  "execFile",
-  "execFileSync",
-  "fork",
-]);
+const DAEMON_ENTRY_LITERAL = "dist/daemon/index.js";
+const DAEMON_ENTRY_IDENTIFIER = "DAEMON_ENTRY";
+const KSPEC_EXECUTABLE_PATTERN = /(^|\/)kspec$/;
 
 const noLeakyTestDaemon = {
   meta: {
@@ -89,18 +81,19 @@ const noLeakyTestDaemon = {
     },
     messages: {
       directDaemonSpawn:
-        'Direct daemon spawn via "{{pattern}}" bypasses the shared daemon ' +
-        "fixture. Use `startTestDaemon` from tests/helpers/daemon.ts (or the " +
-        "mock daemon helper) so the test inherits scoped cleanup, env " +
-        "isolation, and resolved endpoints. To intentionally bypass the " +
+        'Direct daemon entry launch via "{{pattern}}" bypasses the shared ' +
+        "daemon fixture. Use `startTestDaemon` from tests/helpers/daemon.ts " +
+        "(or the mock daemon helper) so the test inherits scoped cleanup, " +
+        "env isolation, and resolved endpoints. To intentionally bypass the " +
         "fixture, add `// oxlint-disable-next-line " +
         "no-leaky-test-daemon/no-leaky-test-daemon -- <reason naming the " +
         "behavior under test>` immediately above the offending statement.",
       hardcodedBunRuntime:
-        'Hardcoded `spawn("bun", [DAEMON_ENTRY])` outside a runtime parity ' +
-        "test. The shared fixture (`startTestDaemon`) defaults to Node and " +
-        "accepts an explicit `runtime` opt-in; tests that need Bun coverage " +
-        "should opt in there or run inside the parity matrix. Add a local " +
+        'Hardcoded `bun` runtime in a direct daemon entry launch via ' +
+        '"{{pattern}}" outside a runtime parity test. The shared fixture ' +
+        "(`startTestDaemon`) defaults to Node and accepts an explicit " +
+        "`runtime` opt-in; tests that need Bun coverage should opt in there " +
+        "or run inside the parity matrix. Add a local " +
         "oxlint-disable-next-line with a -- reason if Bun is genuinely the " +
         "behavior under test.",
       missingCleanup:
@@ -354,16 +347,19 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * True when the combined string contributions across a CallExpression's
-     * arguments name a detached serve invocation. Matches both the
-     * single-string form (`runKspec("serve start --detach …")`) and the
-     * argv form (`spawn("kspec", ["serve", "start", "--detach", …])`).
+     * True when the combined string contributions across the supplied
+     * argument list resolve to a detached serve invocation. Matches both the
+     * single-string form (`"serve start --detach …"`) and the argv form
+     * (`["serve", "start", "--detach", …]`). The caller is responsible for
+     * passing only the args that should contribute (e.g. argv array but not
+     * the executable for spawn-like callees) so unrelated tokens cannot
+     * satisfy the check.
      */
-    function argsResolveToDetachedServe(node) {
+    function argListResolvesToDetachedServe(args) {
       let hasServe = false;
       let hasStart = false;
       let hasDetach = false;
-      for (const arg of node.arguments) {
+      for (const arg of args) {
         const contributions = collectArgStringContributions(arg);
         for (const text of contributions) {
           if (typeof text !== "string") continue;
@@ -381,41 +377,80 @@ const noLeakyTestDaemon = {
       return hasServe && hasStart && hasDetach;
     }
 
-    /**
-     * spawn-like CallExpression whose argument list resolves to a daemon
-     * entry path (DAEMON_ENTRY identifier or the literal
-     * "dist/daemon/index.js"). The first argument is the runtime binary
-     * (returned alongside so the caller can recognise hardcoded "bun").
-     */
-    function readDaemonSpawn(node) {
-      if (node.type !== "CallExpression") return null;
-      const callee = node.callee;
+    function literalString(node) {
+      if (!node) return null;
+      if (node.type === "Literal" && typeof node.value === "string") {
+        return node.value;
+      }
+      return null;
+    }
 
-      const isSpawnCall =
-        (callee.type === "Identifier" &&
-          (callee.name === "spawn" || callee.name === "spawnSync")) ||
-        (callee.type === "MemberExpression" &&
-          callee.property.type === "Identifier" &&
-          (callee.property.name === "spawn" || callee.property.name === "spawnSync"));
-
-      if (!isSpawnCall) return null;
-
-      let argsCarryDaemonEntry = false;
-      for (const arg of node.arguments) {
-        const text = context.sourceCode.getText(arg);
-        if (text.includes("DAEMON_ENTRY") || text.includes("dist/daemon/index.js")) {
-          argsCarryDaemonEntry = true;
-          break;
+    function templateLiteralRaw(node) {
+      if (!node || node.type !== "TemplateLiteral") return null;
+      const parts = [];
+      for (let i = 0; i < node.quasis.length; i += 1) {
+        parts.push(node.quasis[i].value.raw);
+        if (i < node.expressions.length) {
+          parts.push("${...}");
         }
       }
-      if (!argsCarryDaemonEntry) return null;
+      return parts.join("");
+    }
 
-      const firstArg = node.arguments[0];
-      let runtimeLiteral = null;
-      if (firstArg && firstArg.type === "Literal" && typeof firstArg.value === "string") {
-        runtimeLiteral = firstArg.value;
+    /**
+     * True when an argument node is the daemon entry path — either the
+     * shared `DAEMON_ENTRY` identifier or a string literal that names
+     * `dist/daemon/index.js` (optionally inside a longer absolute path).
+     */
+    function isDaemonEntryArg(arg) {
+      if (!arg) return false;
+      if (arg.type === "Identifier" && arg.name === DAEMON_ENTRY_IDENTIFIER) {
+        return true;
       }
-      return { runtimeLiteral };
+      const literal = literalString(arg);
+      if (literal === null) return false;
+      return literal === DAEMON_ENTRY_LITERAL || literal.endsWith("/" + DAEMON_ENTRY_LITERAL);
+    }
+
+    function arrayArgContainsDaemonEntry(arrayArg) {
+      if (!arrayArg || arrayArg.type !== "ArrayExpression") return false;
+      for (const el of arrayArg.elements) {
+        if (el && isDaemonEntryArg(el)) return true;
+      }
+      return false;
+    }
+
+    /**
+     * True when an argument node names the kspec CLI executable. Accepts
+     * the bare `"kspec"` literal as well as path forms whose final segment
+     * is `kspec` (e.g. `"./node_modules/.bin/kspec"`,
+     * `\`${binDir}/kspec\``). Tokens that merely contain "kspec" as a
+     * substring (e.g. `"mockspec"`) are not considered kspec executables.
+     */
+    function isKspecExecutableArg(arg) {
+      if (!arg) return false;
+      const literal = literalString(arg);
+      if (literal !== null) {
+        return literal === "kspec" || KSPEC_EXECUTABLE_PATTERN.test(literal);
+      }
+      const tmpl = templateLiteralRaw(arg);
+      if (tmpl !== null) {
+        return tmpl === "kspec" || KSPEC_EXECUTABLE_PATTERN.test(tmpl);
+      }
+      return false;
+    }
+
+    /**
+     * True when the leading whitespace-separated token of a shell command
+     * string is the kspec CLI (bare `kspec` or a path ending in `/kspec`).
+     */
+    function shellCommandLeadsWithKspec(text) {
+      if (typeof text !== "string") return false;
+      const trimmed = text.trim();
+      if (trimmed.length === 0) return false;
+      const firstToken = trimmed.split(/\s+/)[0];
+      if (!firstToken) return false;
+      return firstToken === "kspec" || /\/kspec$/.test(firstToken);
     }
 
     function getCalleeName(node) {
@@ -430,21 +465,117 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * CLI-side detached daemon start: a spawn-like callee receives arguments
-     * that resolve to `serve start … --detach`. Recognises both the single
-     * command-string form (`runKspec("serve start --detach …")`) and the
-     * argv form (`spawn("kspec", ["serve", "start", "--detach", …])`). Used
-     * by the cleanup-aware check.
+     * Direct daemon entry launch detection.
+     *
+     * Returns a descriptor when the call directly launches the compiled
+     * daemon entrypoint (`dist/daemon/index.js` / `DAEMON_ENTRY`) through
+     * one of the recognised child-process APIs:
+     *
+     *   - `spawn` / `spawnSync` / `execFile` / `execFileSync`
+     *     First arg is the runtime executable; argv must carry the daemon
+     *     entry as one of its array elements.
+     *   - `fork`
+     *     First arg is the module path. The daemon entry must be that
+     *     first arg directly — argv elements are forwarded, not executed.
+     *
+     * The returned `pattern` is a short shape descriptor used in the
+     * reported message so authors see exactly which call shape was matched
+     * (e.g. `fork(DAEMON_ENTRY, ...)` vs `execFile(node, [DAEMON_ENTRY])`).
+     * `runtimeLiteral` carries the literal first-arg string so the caller
+     * can recognise hardcoded `bun` for the runtime parity message; it is
+     * `null` for `fork` (Node is implicit) and for non-literal first args.
+     */
+    function readDaemonEntryInvocation(node) {
+      if (node.type !== "CallExpression") return null;
+      const calleeName = getCalleeName(node);
+      const args = node.arguments;
+      if (!calleeName || args.length === 0) return null;
+
+      if (
+        calleeName === "spawn" ||
+        calleeName === "spawnSync" ||
+        calleeName === "execFile" ||
+        calleeName === "execFileSync"
+      ) {
+        if (args.length < 2) return null;
+        if (!arrayArgContainsDaemonEntry(args[1])) return null;
+        const runtimeLiteral = literalString(args[0]);
+        const pattern =
+          runtimeLiteral !== null
+            ? `${calleeName}("${runtimeLiteral}", [${DAEMON_ENTRY_IDENTIFIER}, ...])`
+            : `${calleeName}(<runtime>, [${DAEMON_ENTRY_IDENTIFIER}, ...])`;
+        return { runtimeLiteral, calleeName, pattern };
+      }
+
+      if (calleeName === "fork") {
+        if (!isDaemonEntryArg(args[0])) return null;
+        return {
+          runtimeLiteral: null,
+          calleeName,
+          pattern: `fork(${DAEMON_ENTRY_IDENTIFIER}, ...)`,
+        };
+      }
+
+      return null;
+    }
+
+    /**
+     * CLI-side detached daemon start detection.
+     *
+     * Returns true when the CallExpression launches the kspec CLI with
+     * `serve start --detach` arguments. The check is intentionally
+     * dispatched per-callee so that unrelated subprocesses whose argv
+     * tokens happen to overlap (e.g. `spawn("echo", ["serve", "start",
+     * "--detach"])`) are not reported:
+     *
+     *   - `runKspec` / `kspec`
+     *     Implicit kspec invocation. Every argument contributes to the
+     *     detach token scan.
+     *   - `exec` / `execSync`
+     *     Shell-string callee. The command string must lead with the
+     *     kspec executable; the same argument is then scanned for
+     *     `serve`/`start`/`--detach` tokens.
+     *   - `spawn` / `spawnSync` / `execFile` / `execFileSync`
+     *     First arg must be the kspec executable. Only the argv array
+     *     (second arg) is scanned for tokens — the executable itself is
+     *     excluded so the kspec name is not mis-counted as a token.
+     *   - `fork`
+     *     Not a kspec lifecycle entry point (fork executes JS modules,
+     *     not the kspec CLI bin).
      */
     function isDetachCallExpression(node) {
       if (node.type !== "CallExpression") return false;
-
       const calleeName = getCalleeName(node);
-      if (!calleeName || !SPAWN_LIKE_CALLEES.has(calleeName)) {
-        return false;
+      if (!calleeName) return false;
+      const args = node.arguments;
+      if (args.length === 0) return false;
+
+      if (calleeName === "runKspec" || calleeName === "kspec") {
+        return argListResolvesToDetachedServe(args);
       }
 
-      return argsResolveToDetachedServe(node);
+      if (calleeName === "exec" || calleeName === "execSync") {
+        const cmdArg = args[0];
+        const literal = literalString(cmdArg);
+        const tmpl = literal === null ? templateLiteralRaw(cmdArg) : null;
+        const cmdText = literal !== null ? literal : tmpl;
+        if (cmdText === null) return false;
+        if (!shellCommandLeadsWithKspec(cmdText)) return false;
+        return argListResolvesToDetachedServe([cmdArg]);
+      }
+
+      if (
+        calleeName === "spawn" ||
+        calleeName === "spawnSync" ||
+        calleeName === "execFile" ||
+        calleeName === "execFileSync"
+      ) {
+        if (!isKspecExecutableArg(args[0])) return false;
+        if (args.length < 2) return false;
+        return argListResolvesToDetachedServe([args[1]]);
+      }
+
+      return false;
     }
 
     /**
@@ -669,20 +800,21 @@ const noLeakyTestDaemon = {
           return;
         }
 
-        // Direct daemon spawn — always flagged outside helper paths,
+        // Direct daemon entry launch — always flagged outside helper paths,
         // including helper functions inside a non-helper test file.
-        const daemonSpawn = readDaemonSpawn(node);
-        if (daemonSpawn) {
-          if (daemonSpawn.runtimeLiteral === "bun") {
+        const daemonEntry = readDaemonEntryInvocation(node);
+        if (daemonEntry) {
+          if (daemonEntry.runtimeLiteral === "bun") {
             context.report({
               node,
               messageId: "hardcodedBunRuntime",
+              data: { pattern: daemonEntry.pattern },
             });
           } else {
             context.report({
               node,
               messageId: "directDaemonSpawn",
-              data: { pattern: "spawn(DAEMON_ENTRY, ...)" },
+              data: { pattern: daemonEntry.pattern },
             });
           }
           return;
