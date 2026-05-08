@@ -16092,12 +16092,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T20:33:20.163Z
+      updated_at: 2026-05-08T20:34:12.602Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T20:33:20.163Z
+      updated_at: 2026-05-08T20:34:12.602Z
     integration:
       status: pending
       detail: null
@@ -16105,24 +16105,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 80c3b249aff2a71e1af043e74234b892f2174471
-      updated_at: 2026-05-08T20:33:20.163Z
-    lifecycle_state: ready
+      updated_at: 2026-05-08T20:34:12.602Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KR3W7SD99V6PMBDTR5WW1TBX"
     task_slug: task-clarify-in-process-daemon-api-helper-boundary
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T20:03:57.073Z
-      last_reconciled_at: 2026-05-08T20:33:20.163Z
+      last_reconciled_at: 2026-05-08T20:34:12.602Z
       created_at: 2026-05-08T20:03:31.210Z
-      updated_at: 2026-05-08T20:33:20.163Z
+      updated_at: 2026-05-08T20:34:12.602Z
     workspace_id: dispatch-workspace-01KR3W7SD99V6PMBDTR5WW1TBX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: e0b6617b7baa8a96f4c13257621dfdc2a3c14a70
+        last_seen_at: 2026-05-08T20:34:12.602Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-clarify-in-process-daemon-api-helper-boundary-01kr3w7s-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-clarify-in-process-daemon-api-helper-boundary/01kr3w7s
-        head: 80c3b249aff2a71e1af043e74234b892f2174471
-        last_seen_at: 2026-05-08T20:03:31.210Z
+        head: e0b6617b7baa8a96f4c13257621dfdc2a3c14a70
+        last_seen_at: 2026-05-08T20:34:12.602Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-clarify-in-process-daemon-api-helper-boundary-01kr3w7s
