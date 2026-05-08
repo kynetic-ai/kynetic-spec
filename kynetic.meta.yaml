@@ -17221,6 +17221,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T00:56:06.702Z
+  - _ulid: 01KR2JD1P9MVTKGPH1QMN3K4VC
+    type: friction
+    content: Review evidence logs currently have no first-class place in review records. During clean
+      automated reviews, the required evidence log is best recorded through kspec review comment,
+      but that creates an unresolved nit thread on an otherwise approved review. This makes approved
+      review records look noisier than they are and repeats for every clean review that follows the
+      evidence-log rule. Consider a dedicated review note/evidence-log command or guidance to attach
+      evidence without creating an unresolved thread.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KR2J8Z"
+    created_at: 2026-05-08T01:14:31.497Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
