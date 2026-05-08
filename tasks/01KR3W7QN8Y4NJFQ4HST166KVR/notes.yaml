@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KR3YB70CAXNFV0A0JE0F7X9K
+    content: "Approach: Test-first contract tests for launch-failure path. Adding minimal internal test
+      seam '__testBinaryOverride?: string' to startTestDaemon options to simulate process launch
+      failure (ENOENT) without depending on a real missing system runtime. Tests will assert: (1)
+      launch failure surfaces a bounded DaemonReadinessError diagnostic, (2) the fixture-owned child
+      handle (captured via a custom probe context) is stopped before throw, (3) registerCleanup is
+      invoked before any readiness probe runs. Real-fixture env coverage: extending
+      buildDaemonChildEnv tests with the new ac-child-env-sanitized annotation since that AC targets
+      the helper that builds the child env. Per task plan, current code may not have a child error
+      listener — these tests are designed to fail/expose that gap so the follow-up fix task can
+      implement it."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T14:02:28.748Z
