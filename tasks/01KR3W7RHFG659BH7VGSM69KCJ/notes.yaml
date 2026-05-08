@@ -58,3 +58,36 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-08T16:07:05.277Z
+  - _ulid: 01KR45XWD5TBJK5WNF77KX6C4W
+    content: >-
+      Proactive cycle-prevention update: refactored bare it.fails() to selective expected-failure
+      pattern via expectMockDaemonHygieneGap helper.
+
+
+      Discovered while running /kspec:reflect that observation 01KR3ZR8 on the sister
+      regression-first task @task-add-guardrail-classification-regressions had been disproven in
+      cycle 2 review (resolved 2026-05-08T15:24Z). The disproof: bare it.fails() is non-selective
+      under Vitest — ANY thrown assertion in the body counts as the expected failure, so an
+      unrelated spawn / fs / parser failure can satisfy the marker by accident. The validated
+      cycle-3 pattern (success observation 01KR431R) is regular it() + a selective helper that
+      re-asserts the EXACT current bug shape on the catch path.
+
+
+      Refactor mirrors the expectClassifierGap helper from commit 84c897b69. Helper:
+
+      1. Runs assertPostFixBehavior — today throws on the missing cleanup / sanitisation
+
+      2. On throw, asserts assertKnownGapShape (child still alive, KSPEC_DAEMON_PID still '999999',
+      etc.) so unrelated failures re-throw
+
+      3. If post-fix passes, throws explicitly to force @task-fix-mock-daemon-cleanup-env-hygiene to
+      remove the wrapper
+
+
+      Selectivity verified locally: injected (a) a precondition failure outside the helper (forced
+      expect on childPid) — test fails as expected, (b) a gap-shape mismatch inside the helper —
+      test fails as expected. Both confirm unrelated failures are no longer swallowed by it.fails().
+      Focused suite tests/helpers/mock-daemon.test.ts: 18/18 passing. Full suite running.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T16:15:00.517Z
