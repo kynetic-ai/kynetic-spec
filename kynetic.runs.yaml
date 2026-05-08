@@ -40368,7 +40368,7 @@ runs:
     completed_at: 2026-05-08T18:06:44.432Z
   - _ulid: 01KR4DAD6FT8YY532Q7ZQZD3GG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -40383,7 +40383,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T18:25:23.201Z
-        completed_at: 2026-05-08T18:25:23.201Z
+        completed_at: 2026-05-08T18:25:35.781Z
+        notes: "Friction points: kspec validate still emits large repo-wide warning output, so confirming a
+          single target spec's AC coverage requires extra grep/search and reading for absence;
+          review evidence logs are stored as nit comments rather than a structured first-class
+          field; full npm test is long but appropriate for review gates. These were process friction
+          points, not blockers."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T18:25:35.781Z
+        completed_at: 2026-05-08T18:25:35.781Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T18:24:10.959Z
