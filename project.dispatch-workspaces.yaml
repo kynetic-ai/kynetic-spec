@@ -12184,7 +12184,7 @@ workspaces:
         head: 62bc34089817b52062bdf41483d0412bfd2ff84d
         last_seen_at: 2026-05-08T05:51:45.222Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-daemon-test-fixture-standardization-01kr22gm
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
     bootstrap:
       status: succeeded
@@ -12669,7 +12669,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T14:28:03.983Z
+      updated_at: 2026-05-08T14:28:30.604Z
     integration:
       status: pending
       detail: null
@@ -12684,10 +12684,10 @@ workspaces:
     task_slug: task-add-guardrail-classification-regressions
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-08T14:09:49.130Z
-      last_reconciled_at: 2026-05-08T14:28:03.983Z
+      last_active_at: 2026-05-08T14:28:30.604Z
+      last_reconciled_at: 2026-05-08T14:28:30.604Z
       created_at: 2026-05-08T13:27:14.798Z
-      updated_at: 2026-05-08T14:28:27.134Z
+      updated_at: 2026-05-08T14:28:30.604Z
     workspace_id: dispatch-workspace-01KR3W7PCMZ7KPMPJ9ZFBQXX7W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
