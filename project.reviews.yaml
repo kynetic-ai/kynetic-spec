@@ -186874,6 +186874,16 @@ reviews:
         runner: npm test
         created_at: 2026-05-08T15:17:09.245Z
         completed_at: 2026-05-08T15:17:09.245Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npx oxlint tests/helpers/daemon.ts tests/helpers/daemon.test.ts: 0 warnings, 0 errors"
+        name: changed-file lint
+        required: false
+        runner: oxlint
+        created_at: 2026-05-08T15:17:22.637Z
+        completed_at: 2026-05-08T15:17:22.637Z
     events:
       - _ulid: 01KR41ZE0XHPTSPYC4S8EDF545
         actor: Jacob Chapel
@@ -186916,6 +186926,13 @@ reviews:
           status: pass
           name: npm test focused daemon helper
         timestamp: 2026-05-08T15:17:10.528Z
+      - _ulid: 01KR42MCWC2WMNMRCZ62QD1K7X
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file lint
+        timestamp: 2026-05-08T15:17:23.980Z
     examined_commit: 324ac8a62aba4af96c2783d7b5da692419615644
     external_links: []
     lifecycle_state: open
@@ -186928,5 +186945,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T15:05:57.022Z
-    updated_at: 2026-05-08T15:17:09.245Z
+    updated_at: 2026-05-08T15:17:22.637Z
     notes: []
