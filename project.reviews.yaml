@@ -184498,6 +184498,16 @@ reviews:
         runner: npm test
         created_at: 2026-05-08T03:56:54.327Z
         completed_at: 2026-05-08T03:56:54.327Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: 2399 suites passed; 8776 tests passed, 5 skipped; duration 1893.1s."
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T03:57:04.326Z
+        completed_at: 2026-05-08T03:57:04.326Z
     events:
       - _ulid: 01KR2V04D1C3AZ1HNYTRKNQMR5
         actor: Jacob Chapel
@@ -184546,6 +184556,13 @@ reviews:
           status: pass
           name: focused lint-rule tests
         timestamp: 2026-05-08T03:56:55.634Z
+      - _ulid: 01KR2VPQ61AJ456EEC0QPXQRTZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-05-08T03:57:05.601Z
     examined_commit: 80326f51ed6858dab18923307b48c372f10622be
     external_links: []
     lifecycle_state: open
@@ -184621,5 +184638,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-08T03:44:45.473Z
-    updated_at: 2026-05-08T03:56:54.327Z
+    updated_at: 2026-05-08T03:57:04.326Z
     notes: []
