@@ -37,7 +37,7 @@ description: >-
 spec_ref: "@daemon-backed-test-fixture-contract"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -47,6 +47,14 @@ tags:
   - daemon
   - flaky
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/stabilize-flaky-daemon-startup-review-tests/01kr4awp
+  captured_at: 2026-05-08T21:22:50.775Z
+  commit: ac91faa584cbd9e594f72a9b057827721e06c4e9
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR4P142X06ZA3SSEHGR02HRK
 history:
   - author: "@claude"
@@ -69,7 +77,28 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-08T21:22:44.264Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/stabilize-flaky-daemon-startup-review-tests/01kr4awp
+          captured_at: 2026-05-08T21:22:50.775Z
+          commit: ac91faa584cbd9e594f72a9b057827721e06c4e9
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-08T21:22:50.779Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-08T21:22:50.779Z
 created_at: 2026-05-08T17:41:44.275Z
 started_at: 2026-05-08T20:56:51.027Z
+submitted_at: 2026-05-08T21:22:50.779Z
 todos: []
 automation: eligible
