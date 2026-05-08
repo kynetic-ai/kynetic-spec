@@ -40263,7 +40263,7 @@ runs:
     started_at: 2026-05-08T17:44:08.418Z
   - _ulid: 01KR4C36BHFPQDNWDEEYSD2HQM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -40278,7 +40278,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T18:03:58.773Z
-        completed_at: 2026-05-08T18:03:58.773Z
+        completed_at: 2026-05-08T18:04:09.405Z
+        notes: "Friction points: package.json test:e2e:smoke references deleted
+          tests/e2e/api-server.spec.ts, so the representative Playwright slice had to be run as npm
+          run build:e2e plus npx playwright test tests/e2e/smoke.spec.ts. The reflect guidance still
+          says kspec workflow show without a run ref, but the CLI requires one in this workspace.
+          Both are systemic command/documentation drift rather than task-specific bugs."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T18:04:09.405Z
+        completed_at: 2026-05-08T18:04:09.405Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T18:02:46.001Z
