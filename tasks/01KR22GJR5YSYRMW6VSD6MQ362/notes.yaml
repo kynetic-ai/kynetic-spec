@@ -41,3 +41,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-07T23:50:44.921Z
+  - _ulid: 01KR2EKYPXQQKXGX92VW5Z5AM6
+    content: "Fix cycle 2: addressed the AC-coverage-completeness blocker. Reviewer flagged that
+      @daemon-test-harness-guardrails ac-fixture-contract-tests-run and
+      @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests only appeared in the JSDoc
+      header at lines 21-22, not as standalone // AC: annotations the validator parses. Moved both
+      annotations out of the docstring into per-test line comments on the four primary
+      describe-block tests (buildDaemonChildEnv env-stripping, createTestDaemonProject isolation,
+      startTestDaemon happy path, startTestDaemon readiness diagnostics) so each contract group
+      carries explicit coverage. Updated header to point at the per-test annotations and explain why
+      line comments are required. kspec validate --completeness -v now reports both ACs as covered.
+      Helper contract tests (6 passed), full npm test (8728 passed, 5 skipped), typecheck, and
+      changed-file lint all green. Re-verified spec ACs against implementation — only the annotation
+      placement was the regression."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T00:08:23.518Z
