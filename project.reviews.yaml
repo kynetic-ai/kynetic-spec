@@ -189145,6 +189145,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T20:05:13.943Z
+      - _ulid: 01KR4M2V2C222W9W88PDJCQ090
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR4M2SK6YJ8QWXKPYWQNZHPG
+        timestamp: 2026-05-08T20:22:23.052Z
     examined_commit: f0d119a1f95ce93bafc5ea58c499ebd02865f260
     external_links: []
     lifecycle_state: open
@@ -189154,8 +189161,31 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR4M2SK6YJ8QWXKPYWQNZHPG
+        anchor:
+          type: code
+          commit: f0d119a1f95ce93bafc5ea58c499ebd02865f260
+          line_end: 610
+          line_start: 588
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR4M2SK74KA8V61MW9Z7VW2P
+            author: Jacob Chapel
+            body: 'MUST-FIX: exec/execSync direct-entry detection treats any shell token ending in
+              dist/daemon/index.js as a daemon launch, regardless of what the shell command actually
+              executes. That violates the precision requirement: an unrelated subprocess can merely
+              pass the daemon path as an argument and still get the direct-daemon diagnostic.
+              Evidence: a synthetic lint probe with exec("echo dist/daemon/index.js") exited 1 and
+              reported directDaemonSpawn at the echo call, even though echo does not start the
+              daemon. This will create false positives for harmless commands such as echo/cat/grep
+              that mention the path, undermining @daemon-test-guardrail-precision
+              ac-unrelated-subprocesses-not-reported and the task goal of matching daemon behavior
+              rather than incidental token sequences.'
+            created_at: 2026-05-08T20:22:21.543Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T20:05:01.439Z
-    updated_at: 2026-05-08T20:05:12.617Z
+    updated_at: 2026-05-08T20:22:21.543Z
     notes: []
