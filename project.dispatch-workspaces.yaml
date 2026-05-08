@@ -15218,7 +15218,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T19:37:06.184Z
+      updated_at: 2026-05-08T19:37:08.505Z
     integration:
       status: pending
       detail: null
@@ -15227,25 +15227,20 @@ workspaces:
       target_branch: dev
       target_commit: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
       updated_at: 2026-05-08T19:37:06.184Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
     task_slug: task-fix-guardrail-daemon-command-classification
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T19:18:13.489Z
-      last_reconciled_at: 2026-05-08T19:37:06.184Z
+      last_reconciled_at: 2026-05-08T19:37:08.505Z
       created_at: 2026-05-08T18:07:41.583Z
-      updated_at: 2026-05-08T19:37:06.184Z
+      updated_at: 2026-05-08T19:37:08.505Z
     workspace_id: dispatch-workspace-01KR3W7PPVDFR8F03VQ6J54M3K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 09c83cadfc2e708ff8727c4fbbc2e9126d50fb2e
-        last_seen_at: 2026-05-08T19:17:46.163Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-guardrail-daemon-command-classification-01kr3w7p-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
