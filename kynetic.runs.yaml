@@ -40623,7 +40623,7 @@ runs:
     started_at: 2026-05-08T19:09:04.005Z
     completed_at: 2026-05-08T19:10:58.353Z
   - _ulid: 01KR4H9J64SNEN62EJCBR716Z3
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -40672,7 +40672,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-08T19:35:19.369Z
-        completed_at: 2026-05-08T19:35:19.369Z
+        completed_at: 2026-05-08T19:35:35.357Z
+        notes: "Captured two observations via kspec batch: success pattern for custom synthetic lint-rule
+          probes catching AC gaps, and friction pattern for hand-rolled oxlint probe setup needing a
+          reusable helper or documented recipe."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T19:33:37.604Z
+    completed_at: 2026-05-08T19:35:35.357Z
