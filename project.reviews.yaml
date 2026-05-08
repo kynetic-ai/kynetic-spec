@@ -186692,6 +186692,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-08T14:58:13.542Z
+      - _ulid: 01KR41HPQ454SJMX8RW6ATBDQ7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR41HNDZRWT0WGEBQEBP2SHX
+        timestamp: 2026-05-08T14:58:27.172Z
     examined_commit: 4d1685d39761743ea75f17d2bdf48faae89c1203
     external_links: []
     lifecycle_state: open
@@ -186701,8 +186708,31 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7Q0H2FVXHDJ51WCFAVNN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR41HNDZRWT0WGEBQEBP2SHX
+        anchor:
+          type: code
+          commit: 4d1685d39761743ea75f17d2bdf48faae89c1203
+          line_end: 930
+          line_start: 930
+          path: tests/lint-daemon-test-guardrails.test.ts
+          side: head
+        entries:
+          - _ulid: 01KR41HNDZ4BT4R8DABP9DR6X0
+            author: Jacob Chapel
+            body: "MUST-FIX: The linked spec still lacks own AC annotations for two acceptance criteria.
+              Evidence: kspec validate reports @daemon-test-guardrail-precision uncovered for
+              ac-direct-daemon-entry-invocations-flagged and ac-unrelated-subprocesses-not-reported.
+              I also ran rg for AC annotations under tests/ and found this branch only annotates
+              @daemon-test-guardrail-precision for ac-detached-cleanup-before-observation,
+              ac-local-exception-is-local, and ac-exception-reason-states-subject. The task note
+              says the missing ACs are covered by an existing precision block, but without the
+              required annotations they do not count as AC coverage. Add matching AC annotations to
+              the existing behavioral tests or add behavioral coverage for those two ACs before
+              resubmitting."
+            created_at: 2026-05-08T14:58:25.855Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T14:46:24.488Z
-    updated_at: 2026-05-08T14:58:12.250Z
+    updated_at: 2026-05-08T14:58:25.855Z
     notes: []
