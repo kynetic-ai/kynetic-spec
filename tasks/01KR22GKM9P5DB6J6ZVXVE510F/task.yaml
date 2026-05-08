@@ -90,8 +90,11 @@ description: >
 spec_ref: "@daemon-test-mode-boundaries"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at d128008209d54186b74d3e9acb779daf7e615186 after approved review
+  @01KR2RB3. Standardized mock daemon client fixtures with shared helper, canonical metadata
+  writing, legacy-port helper, request recording cleanup, and migrated daemon client tests.
 depends_on:
   - "@task-implement-shared-daemon-test-fixture"
 context: []
@@ -217,8 +220,24 @@ history:
         previous: "@01KR2NEDR1B7V8W4K98Z5M5W0S"
     command: review-link
     timestamp: 2026-05-08T02:58:22.629Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at d128008209d54186b74d3e9acb779daf7e615186 after approved review @01KR2RB3.
+          Standardized mock daemon client fixtures with shared helper, canonical metadata writing,
+          legacy-port helper, request recording cleanup, and migrated daemon client tests.
+        previous: null
+      completed_at:
+        new: 2026-05-08T03:10:46.875Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-08T03:10:46.883Z
 created_at: 2026-05-07T20:36:50.953Z
 started_at: 2026-05-08T02:39:33.649Z
 submitted_at: 2026-05-08T02:54:14.605Z
+completed_at: 2026-05-08T03:10:46.875Z
 todos: []
 automation: eligible
