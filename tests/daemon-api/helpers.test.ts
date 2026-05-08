@@ -329,6 +329,87 @@ describe("createTestApp with getEntityCache", () => {
   });
 });
 
+// AC: @in-process-daemon-test-helper-boundary ac-helper-scope-is-explicit
+// AC: @in-process-daemon-test-helper-boundary ac-test-uses-helper-matching-behavior
+//
+// These tests pin the createTestApp() boundary documented in helpers.ts:
+// production server-level concerns (CORS, localhostOnly, /api/health,
+// /ws, web UI, plus the projects/refs/diff/command/automation/debug
+// route groups) are NOT reproduced by the helper. Tests that need any
+// of those concerns must build their own app (see
+// tests/daemon-api/server.test.ts and tests/daemon-api/projects.test.ts)
+// or use a real daemon child (see tests/daemon-api/websocket-protocol.test.ts).
+describe("createTestApp boundary", () => {
+  it("does not register the inline /api/health endpoint (server-level only)", async () => {
+    const response = await makeRequest(app, tempDir, "/api/health");
+
+    // /api/health is defined inline on the production app in
+    // packages/daemon/src/server.ts, not in any route module the helper
+    // composes — so the in-process app must surface a 404 here.
+    expect(response.status).toBe(404);
+  });
+
+  it("does not register createProjectsRoutes (/api/projects)", async () => {
+    const response = await makeRequest(app, tempDir, "/api/projects");
+
+    expect(response.status).toBe(404);
+  });
+
+  it("does not register createDebugRoutes (/api/debug/cache-status)", async () => {
+    const response = await makeRequest(app, tempDir, "/api/debug/cache-status");
+
+    expect(response.status).toBe(404);
+  });
+
+  it("does not register createDiffRoutes (/api/diff)", async () => {
+    const response = await makeRequest(app, tempDir, "/api/diff");
+
+    expect(response.status).toBe(404);
+  });
+
+  it("does not register createRefsRoutes (/api/refs)", async () => {
+    const response = await makeRequest(app, tempDir, "/api/refs");
+
+    expect(response.status).toBe(404);
+  });
+
+  it("does not register the WebSocket endpoint (/ws)", async () => {
+    const response = await makeRequest(app, tempDir, "/ws");
+
+    expect(response.status).toBe(404);
+  });
+
+  it("does not enforce the localhostOnly Host header (no server-level guard)", async () => {
+    // The production server installs localhostOnly() as middleware that
+    // rejects non-loopback Host headers with 403. The in-process app
+    // intentionally omits that guard, so a request with an external Host
+    // header reaches the handler and resolves to a normal response. We
+    // assert the 403 path is NOT taken — anything else is acceptable.
+    const response = await app.handle(
+      new Request("http://localhost/api/tasks", {
+        method: "GET",
+        headers: {
+          Host: "example.com",
+          "X-Kspec-Dir": tempDir,
+        },
+      }),
+    );
+
+    expect(response.status).not.toBe(403);
+  });
+
+  it("registers a route handler from the supported subset (smoke /api/tasks)", async () => {
+    // Pair to the 404 assertions above: the documented in-scope route
+    // groups DO reach a real handler. /api/tasks is registered via
+    // createTasksRoutes and resolves against the e2e fixture set.
+    const response = await makeRequest(app, tempDir, "/api/tasks");
+
+    expect(response.status).toBe(200);
+    const body = (await response.json()) as { data: unknown[] };
+    expect(Array.isArray(body.data)).toBe(true);
+  });
+});
+
 // Trait AC annotations
 // AC: @trait-json-output ac-1 — N/A: helpers are test infrastructure, not CLI commands
 // AC: @trait-json-output ac-2 — N/A: helpers do not produce human-readable output
