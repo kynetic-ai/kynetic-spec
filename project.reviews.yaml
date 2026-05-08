@@ -187353,6 +187353,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR453FRVXCEQ0N8P73C4ACTP
         timestamp: 2026-05-08T16:00:36.989Z
+      - _ulid: 01KR4541F4NPTTBW1CP481X6MB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR454069FS05CBR6Q69CNEBC
+        timestamp: 2026-05-08T16:00:53.732Z
     examined_commit: 500780baf6daf57dfb1a289e18052b22c9ab5ce3
     external_links: []
     lifecycle_state: open
@@ -187385,7 +187392,27 @@ reviews:
               terms and assert it is not reported.'
             created_at: 2026-05-08T16:00:35.611Z
         kind: blocker
+      - _ulid: 01KR454069FS05CBR6Q69CNEBC
+        entries:
+          - _ulid: 01KR454069X55GQZDGQMGK0YYQ
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: AGENTS.md context and kspec-agents.md, task metadata for
+              @01KR3W7Q0H2FVXHDJ51WCFAVNN, prior reviews @01KR3XZG and @01KR40VM,
+              @daemon-test-guardrail-precision ACs, full diff against dev,
+              tests/lint-daemon-test-guardrails.test.ts, and
+              tools/eslint-rules/no-leaky-test-daemon.js. Commands run: git diff/stat/log, kspec
+              task get, kspec review for-task/get/add/open, kspec item get, rg AC annotations, git
+              diff --check, kspec validate, kspec validate --warnings-ok, focused daemon lint tests,
+              and full npm test. Claims verified: the it.fails conversion keeps current tests green
+              while preserving expected-failing assertions; the previous missing-annotation warning
+              is absent from validation; the newly added direct-daemon annotation maps to real
+              daemon-entry spawn tests; the unrelated-subprocess annotation does not match its AC.
+              Categories searched: correctness/spec alignment, AC coverage quality, test integrity,
+              edge cases around expected-failing lint fixtures, and integration/regression suite
+              status."
+            created_at: 2026-05-08T16:00:52.425Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-08T15:48:58.736Z
-    updated_at: 2026-05-08T16:00:35.611Z
+    updated_at: 2026-05-08T16:00:52.425Z
     notes: []
