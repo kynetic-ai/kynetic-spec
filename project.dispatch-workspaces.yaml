@@ -13206,7 +13206,7 @@ workspaces:
         head: b2de194721262716c2ee5ddda26bb79b01cf030d
         last_seen_at: 2026-05-08T13:54:41.300Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-detached-cleanup-timing-regressions-01kr3w7q
-  - active_role: worker
+  - active_role: null
     base_branch_point: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
     bootstrap:
       status: succeeded
@@ -13537,12 +13537,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T14:07:10.457Z
+      updated_at: 2026-05-08T14:09:16.182Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T14:07:10.457Z
+      updated_at: 2026-05-08T14:09:16.182Z
     integration:
       status: pending
       detail: null
@@ -13550,17 +13550,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
-      updated_at: 2026-05-08T14:07:10.457Z
-    lifecycle_state: active
+      updated_at: 2026-05-08T14:09:16.182Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KR3W7QN8Y4NJFQ4HST166KVR"
     task_slug: task-add-real-daemon-startup-failure-tests
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T13:55:36.338Z
-      last_reconciled_at: 2026-05-08T14:07:10.457Z
+      last_reconciled_at: 2026-05-08T14:09:16.182Z
       created_at: 2026-05-08T13:55:12.012Z
-      updated_at: 2026-05-08T14:07:10.457Z
+      updated_at: 2026-05-08T14:09:16.182Z
     workspace_id: dispatch-workspace-01KR3W7QN8Y4NJFQ4HST166KVR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
