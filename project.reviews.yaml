@@ -185901,6 +185901,19 @@ reviews:
         runner: kspec
         created_at: 2026-05-08T13:52:08.497Z
         completed_at: 2026-05-08T13:52:08.497Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite failed because tests/lint-daemon-test-guardrails.test.ts has 6 failing tests
+          in the newly added daemon guardrail precision block: lines 937, 959, 979, 1000, 1022, and
+          1040. Summary: 4 failed suites, 2398 passed; 6 failed tests, 8797 passed, 5 skipped. Full
+          log: /tmp/kspec-test-cache/01KR3X2008KSRA9P2K8YPF6W95/1018cda58c0357e4.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-05-08T13:52:12.142Z
+        completed_at: 2026-05-08T13:52:12.142Z
     events:
       - _ulid: 01KR3X39J2PMYB9NHN5VZXH69X
         actor: Jacob Chapel
@@ -185936,6 +185949,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-08T13:52:09.721Z
+      - _ulid: 01KR3XRE3PZ1CQ8D5C07PFQEXN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test -- --fresh
+        timestamp: 2026-05-08T13:52:13.430Z
     examined_commit: 9ff274ab87aa2948893aecf7bebcc9e14827572c
     external_links: []
     lifecycle_state: open
@@ -185948,5 +185968,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T13:40:40.642Z
-    updated_at: 2026-05-08T13:52:08.497Z
+    updated_at: 2026-05-08T13:52:12.142Z
     notes: []
