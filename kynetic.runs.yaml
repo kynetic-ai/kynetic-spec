@@ -40775,7 +40775,7 @@ runs:
     started_at: 2026-05-08T20:00:14.132Z
     completed_at: 2026-05-08T20:02:38.135Z
   - _ulid: 01KR4M7AVBS33KH6BX656BEV6S
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -40826,7 +40826,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-08T20:26:37.354Z
-        completed_at: 2026-05-08T20:26:37.354Z
+        completed_at: 2026-05-08T20:26:52.657Z
+        notes: Captured success observation @01KR4MAT about adversarial negative probes for static
+          classifier reviews. No new friction item captured because daemon-build flake is already
+          tracked by @01KR4AWP and review evidence-log UX is already tracked by observation
+          @01KR2JD1.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T20:24:50.283Z
+    completed_at: 2026-05-08T20:26:52.657Z
