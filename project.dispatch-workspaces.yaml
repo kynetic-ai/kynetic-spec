@@ -16783,7 +16783,7 @@ workspaces:
         head: ac91faa584cbd9e594f72a9b057827721e06c4e9
         last_seen_at: 2026-05-08T21:26:39.879Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-daemon-startup-review-tests-01kr4awp
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: c7a614eb8c7ad29b53b498753046704475f181da
     bootstrap:
       status: succeeded
@@ -17268,7 +17268,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T23:29:00.935Z
+      updated_at: 2026-05-08T23:29:30.374Z
     integration:
       status: pending
       detail: null
@@ -17283,10 +17283,10 @@ workspaces:
     task_slug: task-harden-playwright-daemon-fixture-cleanup
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-08T22:28:10.874Z
-      last_reconciled_at: 2026-05-08T23:29:00.935Z
+      last_active_at: 2026-05-08T23:29:30.374Z
+      last_reconciled_at: 2026-05-08T23:29:30.374Z
       created_at: 2026-05-08T21:48:25.747Z
-      updated_at: 2026-05-08T23:29:26.281Z
+      updated_at: 2026-05-08T23:29:30.374Z
     workspace_id: dispatch-workspace-01KR3W7R7Y2JCNSJZGPNCM9QFA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
