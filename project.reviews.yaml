@@ -189664,9 +189664,25 @@ reviews:
           kind: nit
           thread_ulid: 01KR4PS0RSCAB41AHSC5MVA15V
         timestamp: 2026-05-08T21:09:28.214Z
+      - _ulid: 01KR4PSBDRS0BBFVDJ6XK5T343
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-08T21:09:37.848Z
+      - _ulid: 01KR4PSBDRKC22WBEWMZ8EX18F
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-08T21:09:37.848Z
     examined_commit: e23ece2eed929bad1e38d89cf824049e8aecf90b
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -189722,7 +189738,14 @@ reviews:
               existing guardrail allowlist."
             created_at: 2026-05-08T21:09:26.938Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-08T21:09:37.847Z
     created_at: 2026-05-08T20:56:27.409Z
-    updated_at: 2026-05-08T21:09:26.938Z
+    updated_at: 2026-05-08T21:09:37.848Z
     notes: []
