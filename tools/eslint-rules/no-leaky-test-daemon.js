@@ -15,16 +15,20 @@
  *        the executable arg or inside the argv array). For the runtime
  *        form (executable + argv), args[0] must be a recognised JS
  *        runtime: `node` / `bun` (bare or path-suffixed) or the
- *        `process.execPath` MemberExpression — anything else is treated
- *        as an unrelated subprocess that consumes the daemon path as data.
+ *        `process.execPath` MemberExpression in either dot
+ *        (`process.execPath`) or static-bracket (`process["execPath"]`,
+ *        `process[\`execPath\`]`) form — anything else is treated as an
+ *        unrelated subprocess that consumes the daemon path as data.
  *      - exec / execSync shell strings whose first token is the daemon
  *        entry path (direct-executable form) or whose first token is a
  *        recognised JS runtime (`node` / `bun`, bare or path-suffixed)
- *        followed immediately by the daemon entry path (runtime form,
- *        e.g. `exec("node dist/daemon/index.js --port 0")`). A shell
- *        string that merely passes the daemon path as an argument to an
- *        unrelated command (`echo`, `cat`, `grep`) is NOT a daemon launch
- *        and is not reported.
+ *        followed by the daemon entry as the first non-flag token
+ *        (runtime form, e.g. `exec("node dist/daemon/index.js --port
+ *        0")` or `exec("node --enable-source-maps dist/daemon/index.js
+ *        --port 0")`; runtime option flags between the runtime and the
+ *        script path are walked past). A shell string that merely passes
+ *        the daemon path as an argument to an unrelated command (`echo`,
+ *        `cat`, `grep`) is NOT a daemon launch and is not reported.
  *      - Hardcoded `bun` runtime variants (`spawn("bun", [DAEMON_ENTRY])`
  *        or `exec("bun dist/daemon/index.js")`) are reported with a more
  *        specific message because runtime selection belongs to the shared
@@ -455,26 +459,62 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * True when a node is the exact MemberExpression `process.execPath`
-     * (non-computed, both segments bare identifiers). `process.execPath`
-     * is the Node.js absolute path to the currently-running interpreter,
-     * so passing it as the executable argument to a child-process call
-     * launches Node — equivalent to `spawn("node", [...])`. Other shapes
-     * (computed access `process["execPath"]`, an aliased binding like
-     * `const node = process.execPath; spawn(node, ...)`, or unrelated
-     * MemberExpressions whose property name happens to be `execPath`) are
-     * NOT recognised — keeping the predicate strict avoids false positives
-     * on objects that merely share the property name.
+     * True when a node statically resolves to the `process.execPath`
+     * MemberExpression. `process.execPath` is the Node.js absolute path
+     * to the currently-running interpreter, so passing it as the
+     * executable argument to a child-process call launches Node —
+     * equivalent to `spawn("node", [...])`. Two shapes are recognised:
+     *
+     *   - Dot access: `process.execPath` — non-computed, with both
+     *     segments as bare identifiers.
+     *   - Bracket access with a static string: `process["execPath"]` /
+     *     `process[\`execPath\`]` — computed, with a string Literal or a
+     *     no-substitution TemplateLiteral whose value is `"execPath"`.
+     *     The two surface syntaxes resolve to the same property at
+     *     runtime, so they must classify the same way.
+     *
+     * Other shapes are NOT recognised — keeping the predicate strict
+     * avoids false positives on objects that merely share the property
+     * name:
+     *
+     *   - Unrelated `.execPath` properties (`customRuntime.execPath`,
+     *     `process.foo.execPath`).
+     *   - Other `process` properties (`process.argv0`, `process.cwd`,
+     *     `process.execArgv`).
+     *   - Computed accesses whose property is a non-string-literal
+     *     expression (`process[propName]`, `process[isFast ? "execPath"
+     *     : "argv0"]`) — those are not statically resolvable to
+     *     `execPath`.
+     *   - Aliased bindings (`const node = process.execPath; spawn(node,
+     *     …)`).
      */
     function isProcessExecPathExpression(node) {
       if (!node) return false;
       if (node.type !== "MemberExpression") return false;
-      if (node.computed) return false;
       if (!node.object || node.object.type !== "Identifier") return false;
       if (node.object.name !== "process") return false;
-      if (!node.property || node.property.type !== "Identifier") return false;
-      if (node.property.name !== "execPath") return false;
-      return true;
+      if (!node.property) return false;
+      if (!node.computed) {
+        if (node.property.type !== "Identifier") return false;
+        return node.property.name === "execPath";
+      }
+      // Computed access: only accept a static string Literal or a
+      // no-substitution TemplateLiteral whose resolved value is exactly
+      // "execPath". Dynamic property expressions are rejected.
+      if (
+        node.property.type === "Literal" &&
+        typeof node.property.value === "string"
+      ) {
+        return node.property.value === "execPath";
+      }
+      if (
+        node.property.type === "TemplateLiteral" &&
+        node.property.expressions.length === 0 &&
+        node.property.quasis.length === 1
+      ) {
+        return node.property.quasis[0].value.cooked === "execPath";
+      }
+      return false;
     }
 
     /**
@@ -577,6 +617,23 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * True when a shell-command token is shaped like a runtime option flag
+     * — a token whose first character is `-`. Covers long flags
+     * (`--enable-source-maps`, `--inspect`, `--inspect-brk=0.0.0.0:9229`),
+     * short flags (`-r`), and the `--` argument separator. Used to walk
+     * past Node/Bun runtime options between the runtime token and the
+     * script path token in shell-string detection. Tokens that consume a
+     * separate value (e.g. `--require ./preload.js`) are intentionally
+     * not modelled — if the next non-flag token is the daemon entry, that
+     * is exactly the launch we want to flag; if it is some other path
+     * (`./preload.js`), the daemon entry is not reached and the call is
+     * not a daemon launch.
+     */
+    function isShellRuntimeFlagToken(token) {
+      return typeof token === "string" && token.length > 0 && token[0] === "-";
+    }
+
+    /**
      * Tokenise a shell-command argument's text. Returns the
      * whitespace-separated tokens of a string Literal or a TemplateLiteral
      * with `${...}` placeholders preserved (so an interpolated value cannot
@@ -630,14 +687,20 @@ const noLeakyTestDaemon = {
      *     matched when the daemon entry is the FIRST token. The runtime
      *     form (`exec("node dist/daemon/index.js")`) is matched when the
      *     first token is a recognised JS runtime (`node` / `bun`, bare or
-     *     path-suffixed) and the daemon entry is the immediate next
-     *     token. Tokens at any other position do not satisfy the check —
-     *     a shell string that passes the daemon path as an argument to an
-     *     unrelated command (`echo`, `cat`, `grep …`) is not a daemon
-     *     launch and is not reported. When the leading runtime token is
-     *     `bun` (or a path ending in `/bun`), `runtimeLiteral` is set to
-     *     "bun" so the hardcoded-runtime message fires for shell-string
-     *     Bun launches too.
+     *     path-suffixed) and the daemon entry is the first non-flag token
+     *     after the runtime — runtime option flags (`--enable-source-maps`,
+     *     `--inspect`, `--inspect-brk=...`, short `-r`, the `--`
+     *     separator) between the runtime and the script path are walked
+     *     past so `exec("node --enable-source-maps dist/daemon/index.js
+     *     --port 0")` is reported the same as `exec("node
+     *     dist/daemon/index.js …")`. A shell string that passes the
+     *     daemon path as an argument to an unrelated command (`echo`,
+     *     `cat`, `grep …`) is not a daemon launch and is not reported,
+     *     because the leading executable token is not a recognised
+     *     runtime. When the leading runtime token is `bun` (or a path
+     *     ending in `/bun`), `runtimeLiteral` is set to "bun" so the
+     *     hardcoded-runtime message fires for shell-string Bun launches
+     *     too.
      *
      * The returned `pattern` is a short shape descriptor used in the
      * reported message so authors see exactly which call shape was matched
@@ -715,25 +778,39 @@ const noLeakyTestDaemon = {
         }
         // Runtime form: a recognised JS runtime token (`node` or `bun`,
         // bare or path-suffixed) at index 0, with the daemon entry as the
-        // immediate next token. Restricting the daemon-entry position to
-        // index 1 — and requiring index 0 to be a recognised runtime —
-        // keeps the classifier from reporting unrelated subprocesses
-        // (`echo dist/daemon/index.js`, `cat /…/dist/daemon/index.js`,
-        // `grep -r dist/daemon/index.js src/`) that merely pass the path
-        // as an argument. The trade-off is that more elaborate forms like
-        // `node --inspect dist/daemon/index.js` are not matched here; the
-        // shared fixture is the supported launch path, and unusual ad-hoc
-        // shell strings can still document a local exception.
+        // first non-flag token after the runtime. Walking past flag-shaped
+        // tokens (`--enable-source-maps`, `--inspect`, `--inspect-brk=...`,
+        // short flags like `-r`, the `--` separator) handles direct
+        // launches that pass Node runtime options before the script path —
+        // `exec("node --enable-source-maps dist/daemon/index.js --port 0")`
+        // is the same daemon launch as `exec("node dist/daemon/index.js
+        // --port 0")` and must be reported. Requiring index 0 to be a
+        // recognised runtime keeps the classifier from reporting unrelated
+        // subprocesses (`echo dist/daemon/index.js`, `cat /…/dist/daemon/
+        // index.js`, `grep -r dist/daemon/index.js src/`) that merely pass
+        // the path as an argument. The first non-flag token must be the
+        // daemon entry — if a different path appears first
+        // (`node script.js dist/daemon/index.js`), `node` is running
+        // `script.js`, not the daemon, so the call is not reported.
         if (tokens.length < 2) return null;
         if (!isRecognisedShellRuntimeToken(tokens[0])) return null;
-        if (!isDaemonEntryShellToken(tokens[1])) return null;
+        let scriptIdx = -1;
+        for (let i = 1; i < tokens.length; i += 1) {
+          if (isShellRuntimeFlagToken(tokens[i])) continue;
+          scriptIdx = i;
+          break;
+        }
+        if (scriptIdx === -1) return null;
+        if (!isDaemonEntryShellToken(tokens[scriptIdx])) return null;
         const prev = tokens[0];
         const runtimeLiteral =
           prev === "bun" || prev.endsWith("/bun") ? "bun" : null;
+        const flagSegment =
+          scriptIdx > 1 ? tokens.slice(1, scriptIdx).join(" ") + " " : "";
         return {
           runtimeLiteral,
           calleeName,
-          pattern: `${calleeName}("${prev} ${DAEMON_ENTRY_LITERAL} ...")`,
+          pattern: `${calleeName}("${prev} ${flagSegment}${DAEMON_ENTRY_LITERAL} ...")`,
         };
       }
 
