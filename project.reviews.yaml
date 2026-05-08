@@ -184059,6 +184059,12 @@ reviews:
         payload:
           thread_ulid: 01KR2P3HF7TZ58M9RFZM3W20E1
         timestamp: 2026-05-08T02:53:47.104Z
+      - _ulid: 01KR2R31TETEA5N8W0HYP4ZXVE
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR2P3HF7TZ58M9RFZM3W20E1
+        timestamp: 2026-05-08T02:53:55.406Z
     examined_commit: b4bcec464100211aea031fccbb6d5dd9607b4331
     external_links: []
     lifecycle_state: closed
@@ -184105,6 +184111,8 @@ reviews:
               explicit recordPath under the test temp dir and asserts stop() leaves it intact."
             created_at: 2026-05-08T02:53:45.788Z
         kind: blocker
+        resolved_at: 2026-05-08T02:53:54.095Z
+        resolved_by: "@claude"
       - _ulid: 01KR2P4YT9PXVCJ9628ZGAHRSJ
         entries:
           - _ulid: 01KR2P4YT99RGFB1ECK0RPZDY4
@@ -184130,7 +184138,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T02:20:11.497Z
     created_at: 2026-05-08T02:07:42.337Z
-    updated_at: 2026-05-08T02:53:45.788Z
+    updated_at: 2026-05-08T02:53:54.095Z
     notes: []
   - _ulid: 01KR2QA27RSV30DYSYPT404RNJ
     slugs: []
