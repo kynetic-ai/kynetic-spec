@@ -189548,6 +189548,17 @@ reviews:
         runner: npm test
         created_at: 2026-05-08T20:58:54.820Z
         completed_at: 2026-05-08T20:58:54.820Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate: schema/references OK but exits 6 due existing repository warnings
+          (deprecated references, alignment warnings, missing AC coverage, invalid annotations)."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-08T20:59:00.040Z
+        completed_at: 2026-05-08T20:59:00.040Z
     events:
       - _ulid: 01KR4P17GHQ3MYDGXPGENHCDS0
         actor: Jacob Chapel
@@ -189576,6 +189587,13 @@ reviews:
           status: pass
           name: targeted lint guardrail tests
         timestamp: 2026-05-08T20:58:56.841Z
+      - _ulid: 01KR4P5Y12YPJQ94HKVV8QAPG5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-08T20:59:01.539Z
     examined_commit: e23ece2eed929bad1e38d89cf824049e8aecf90b
     external_links: []
     lifecycle_state: open
@@ -189588,5 +189606,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T20:56:27.409Z
-    updated_at: 2026-05-08T20:58:54.820Z
+    updated_at: 2026-05-08T20:59:00.040Z
     notes: []
