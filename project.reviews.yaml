@@ -190174,7 +190174,18 @@ reviews:
     slugs: []
     title: Review harden Playwright daemon fixture cleanup registration
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2412 suites passed; 8830 tests passed, 5 skipped; duration 2189.6s.
+          Log: /tmp/kspec-test-cache/01KR4T07006EDRSDT40AZWSZTN/089d41143edecda1.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-08T22:19:23.054Z
+        completed_at: 2026-05-08T22:19:23.054Z
     events:
       - _ulid: 01KR4T22WE4YM1ZY0KSFD99GV4
         actor: Jacob Chapel
@@ -190196,6 +190207,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR4TRYRDVWZST921A71TJP7D
         timestamp: 2026-05-08T22:19:20.549Z
+      - _ulid: 01KR4TS3TZXDP4XQEWTVX4GKNC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-08T22:19:24.384Z
     examined_commit: 5ccd73404bb47e41462a02479dcbf5ebb1d0c90f
     external_links: []
     lifecycle_state: open
@@ -190230,5 +190248,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-08T22:06:49.743Z
-    updated_at: 2026-05-08T22:19:19.182Z
+    updated_at: 2026-05-08T22:19:23.054Z
     notes: []
