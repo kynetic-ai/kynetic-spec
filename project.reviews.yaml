@@ -185686,6 +185686,18 @@ reviews:
         required: true
         created_at: 2026-05-08T13:15:27.622Z
         completed_at: 2026-05-08T13:15:27.622Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/daemon-test-fixture-hardening.md --dry-run parsed the current
+          document; kspec validate --refs --warnings-ok passed with only existing deprecated-ref
+          warnings; kspec validate --alignment --warnings-ok passed with existing alignment
+          warnings.
+        name: Plan parse and references
+        required: true
+        created_at: 2026-05-08T13:15:36.922Z
+        completed_at: 2026-05-08T13:15:36.922Z
     events:
       - _ulid: 01KR3VM9CQQY1D1ZWDAS4HYBQB
         actor: Jacob Chapel
@@ -185707,6 +185719,13 @@ reviews:
           status: pass
           name: Prior blocker resolution
         timestamp: 2026-05-08T13:15:28.886Z
+      - _ulid: 01KR3VNEBNDJ0WTY4GA7R9H838
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan parse and references
+        timestamp: 2026-05-08T13:15:38.229Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -185719,5 +185738,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T13:15:00.376Z
-    updated_at: 2026-05-08T13:15:27.622Z
+    updated_at: 2026-05-08T13:15:36.922Z
     notes: []
