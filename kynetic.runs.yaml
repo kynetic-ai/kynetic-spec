@@ -40489,9 +40489,26 @@ runs:
     completed_at: 2026-05-08T18:47:04.115Z
   - _ulid: 01KR4EWC314N5J4QD0VZVG7HHQ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T18:51:28.225Z
+        completed_at: 2026-05-08T18:51:58.475Z
+        notes: "What worked well: (1) The expectMockDaemonHygieneGap forcing wrapper from the predecessor
+          task (@task-add-mock-daemon-failure-contract-tests) made the contract crystal clear — once
+          my fix landed, the wrapper threw with a self-describing message telling me exactly what to
+          remove. (2) Existing daemon.ts pattern (buildDaemonChildEnv + AMBIENT_DAEMON_CONTROL_VARS)
+          gave me a proven template to mirror — saved design time. (3) Task description's targeted
+          test list (mock-daemon, cli-daemon-proxy, cli-daemon-endpoint-regression,
+          cli-task-event-endpoint) was accurate; running it caught zero regressions and gave fast
+          confidence. (4) Test runner --fresh worked cleanly for both targeted (~16s) and full suite
+          (~33min)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T18:51:58.475Z
+        completed_at: 2026-05-08T18:51:58.475Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T18:51:28.225Z
