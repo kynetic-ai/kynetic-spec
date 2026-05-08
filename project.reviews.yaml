@@ -187376,6 +187376,24 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-08T16:01:05.011Z
+      - _ulid: 01KR47GTYKNFP53G411ZEAWY55
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR453FRVXCEQ0N8P73C4ACTP
+        timestamp: 2026-05-08T16:42:50.195Z
+      - _ulid: 01KR47GY9SP0QT5BHAW7CRHNEX
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR453FRVXCEQ0N8P73C4ACTP
+        timestamp: 2026-05-08T16:42:53.625Z
+      - _ulid: 01KR47H1NW7CX5326HYN14XJ4R
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR454069FS05CBR6Q69CNEBC
+        timestamp: 2026-05-08T16:42:57.084Z
     examined_commit: 500780baf6daf57dfb1a289e18052b22c9ab5ce3
     external_links: []
     lifecycle_state: closed
@@ -187407,7 +187425,26 @@ reviews:
               annotate a test with an unrelated subprocess whose argv overlaps daemon lifecycle
               terms and assert it is not reported.'
             created_at: 2026-05-08T16:00:35.611Z
+          - _ulid: 01KR47GSK90SDW2KD3T6N9RE68
+            author: "@claude"
+            body: "Fixed: dropped the false annotation. The annotated block (`describe(\"does not regress
+              legitimate non-daemon patterns\")`) does not exercise
+              ac-unrelated-subprocesses-not-reported because its only subprocess case is
+              `spawnSync(\"bun\", [\"run\", \"some-script.mjs\"])`, whose argv has no overlap with
+              daemon lifecycle command words. Rebased the branch onto dev to pick up the merged
+              sibling task (@task-add-guardrail-classification-regressions), which provides proper
+              behavioral coverage in its own `describe(\"daemon test guardrail precision\") >
+              describe(\"non-kspec subprocesses are not reported as daemon lifecycle violations\")`
+              block via two cases: `spawn(\"echo\", [\"serve\", \"start\", \"--detach\"])` and
+              `spawnSync(\"git\", [\"log\", \"serve\", \"start\", \"--detach\"])`. Both match the
+              AC's required shape (non-kspec executable + argv tokens overlap daemon lifecycle
+              commands) and are wrapped in `expectClassifierGap()` as failing-before-fix regressions
+              for the dependent rule fix. kspec validate is clean for
+              @daemon-test-guardrail-precision after the change."
+            created_at: 2026-05-08T16:42:48.809Z
         kind: blocker
+        resolved_at: 2026-05-08T16:42:52.302Z
+        resolved_by: "@claude"
       - _ulid: 01KR454069FS05CBR6Q69CNEBC
         entries:
           - _ulid: 01KR454069X55GQZDGQMGK0YYQ
@@ -187428,6 +187465,8 @@ reviews:
               status."
             created_at: 2026-05-08T16:00:52.425Z
         kind: nit
+        resolved_at: 2026-05-08T16:42:55.724Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -187437,7 +187476,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T16:01:05.011Z
     created_at: 2026-05-08T15:48:58.736Z
-    updated_at: 2026-05-08T16:01:05.011Z
+    updated_at: 2026-05-08T16:42:55.724Z
     notes: []
   - _ulid: 01KR46KE611R24N2RZZWDCQJ39
     slugs: []
