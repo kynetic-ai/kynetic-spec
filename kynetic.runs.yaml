@@ -40263,9 +40263,22 @@ runs:
     started_at: 2026-05-08T17:44:08.418Z
   - _ulid: 01KR4C36BHFPQDNWDEEYSD2HQM
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T18:02:46.001Z
+        completed_at: 2026-05-08T18:03:58.773Z
+        notes: "What worked well: detached reviewer workflow was clear once the review record existed.
+          Reading task/spec context, then verifying implementation against behavioral AC
+          annotations, produced a clean approval without code churn. The detached reviewer merge
+          helper handled the already-integrated branch correctly as a no-op, which let the task
+          complete without manual git operations."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T18:03:58.773Z
+        completed_at: 2026-05-08T18:03:58.773Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T18:02:46.001Z
