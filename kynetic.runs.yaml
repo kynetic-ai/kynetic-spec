@@ -40027,7 +40027,7 @@ runs:
     completed_at: 2026-05-08T15:46:59.361Z
   - _ulid: 01KR455X6PCJ1TBJF2VNXN14EA
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -40051,7 +40051,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-08T16:02:28.713Z
-        completed_at: 2026-05-08T16:02:28.713Z
+        completed_at: 2026-05-08T16:02:37.114Z
+        notes: "Coverage check: searched 'AC annotation coverage behavior', 'annotation scanner', and
+          'review evidence log'. Existing coverage found for annotation scanner limitations:
+          observations @01KQ127P, @01KQ15SKB, and @01KQ15SKK plus completed tasks
+          @task-enforce-ac-id-format and @task-align-ac-annotation-format-tests. Existing coverage
+          found for evidence-log friction: observation @01KR2JD1. The current task
+          @task-add-detached-cleanup-timing-regressions also now carries the concrete review finding
+          for the immediate AC mismatch."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-08T16:02:37.114Z
+        completed_at: 2026-05-08T16:02:37.114Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T16:01:54.902Z
