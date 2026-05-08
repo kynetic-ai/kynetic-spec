@@ -54,7 +54,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -73,7 +73,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-add-guardrail-classification-regressions/01kr3w7p
-session_id: null
+session_id: 01KR41VVFW9QVRVA7SRCZ4T42H
 history:
   - author: Jacob Chapel
     changes:
@@ -189,8 +189,21 @@ history:
         previous: 01KR3YRMWDQAHT98E125V2680A
     command: review-verdict-needs-work
     timestamp: 2026-05-08T14:42:42.869Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KR41VVFW9QVRVA7SRCZ4T42H
+        previous: null
+      started_at:
+        new: 2026-05-08T15:05:02.898Z
+        previous: 2026-05-08T14:24:09.351Z
+    command: task-start
+    timestamp: 2026-05-08T15:05:02.898Z
 created_at: 2026-05-08T13:25:36.276Z
-started_at: 2026-05-08T14:24:09.351Z
+started_at: 2026-05-08T15:05:02.898Z
 submitted_at: 2026-05-08T14:24:12.521Z
 todos: []
 automation: eligible
