@@ -52,8 +52,12 @@ description: |
 spec_ref: "@e2e-test-daemon-isolation"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved and merged to dev via detached-reviewer merge helper. Playwright daemon
+  fixture now wraps the shared daemon fixture core for project setup, isolated HOME/config, endpoint
+  resolution, bounded readiness, and scoped cleanup; focused daemon-backed browser/WebSocket slice
+  and full npm test suite passed.
 depends_on:
   - "@task-implement-shared-daemon-test-fixture"
 context: []
@@ -122,8 +126,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-08T01:25:03.438Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved and merged to dev via detached-reviewer merge helper. Playwright daemon fixture now
+          wraps the shared daemon fixture core for project setup, isolated HOME/config, endpoint
+          resolution, bounded readiness, and scoped cleanup; focused daemon-backed browser/WebSocket
+          slice and full npm test suite passed.
+        previous: null
+      completed_at:
+        new: 2026-05-08T01:37:52.084Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-08T01:37:52.091Z
 created_at: 2026-05-07T20:36:50.636Z
 started_at: 2026-05-08T00:57:38.313Z
 submitted_at: 2026-05-08T01:20:55.117Z
+completed_at: 2026-05-08T01:37:52.084Z
 todos: []
 automation: eligible
