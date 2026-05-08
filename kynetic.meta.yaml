@@ -17672,6 +17672,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T20:33:01.917Z
+  - _ulid: 01KR4QP3HPBNBPZAJMC9VGMWH9
+    type: friction
+    content: "Daemon test fixture readiness probes that poll user-facing API endpoints can be misled by
+      disk-fallback paths that mask cache state. /api/tasks returns cache_status=ready when the
+      entity cache is undefined (cacheDomainState undefined → toCacheStatus → ready), so polling it
+      during the daemon-startup window before registerEntityCache runs yields a premature match.
+      Fix: route fixture-internal readiness probes to /api/debug/cache-status which reports
+      domains=null until the cache is actually registered. Pattern: prefer cache-state-aware
+      diagnostic endpoints over user-facing list endpoints for readiness signals."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T21:25:20.055Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
