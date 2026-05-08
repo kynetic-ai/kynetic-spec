@@ -27972,7 +27972,7 @@
   type: task
   spec_ref: "@daemon-test-mode-boundaries"
   plan_ref: "@plan-daemon-test-fixture-standardization"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-implement-shared-daemon-test-fixture"
@@ -27986,7 +27986,7 @@
   notes_count: 4
   todos_count: 0
   created_at: 2026-05-07T20:36:50.953Z
-  started_at: 2026-05-08T01:25:09.639Z
+  started_at: 2026-05-08T02:39:33.649Z
   submitted_at: 2026-05-08T02:00:20.846Z
   automation: eligible
 - _ulid: 01KR22GKWXB1G5Y4KFTC5RNE3X
