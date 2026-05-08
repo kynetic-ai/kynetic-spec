@@ -184163,6 +184163,16 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-08T02:51:56.379Z
         completed_at: 2026-05-08T02:51:56.379Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: git diff --check 51f6c643d15e71ca6beacdfad29738523c310ab7..HEAD completed with exit 0
+        name: diff hygiene
+        required: true
+        runner: git
+        created_at: 2026-05-08T02:52:06.914Z
+        completed_at: 2026-05-08T02:52:06.914Z
     events:
       - _ulid: 01KR2QA27QK5K93H3D9KBFDSX8
         actor: Jacob Chapel
@@ -184205,6 +184215,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-08T02:51:57.707Z
+      - _ulid: 01KR2QZS50GH0P1E2GSX0TASG0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: diff hygiene
+        timestamp: 2026-05-08T02:52:08.224Z
     examined_commit: 8d20791d210a11231ae0a56cf52ee117a4a5dc8d
     external_links: []
     lifecycle_state: open
@@ -184217,5 +184234,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T02:40:16.632Z
-    updated_at: 2026-05-08T02:51:56.379Z
+    updated_at: 2026-05-08T02:52:06.914Z
     notes: []
