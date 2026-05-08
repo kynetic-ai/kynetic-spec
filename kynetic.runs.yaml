@@ -41356,7 +41356,7 @@ runs:
     completed_at: 2026-05-08T22:27:07.573Z
   - _ulid: 01KR4W89HBEW21Z3S5SSSQKB06
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -41371,7 +41371,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T22:45:55.824Z
-        completed_at: 2026-05-08T22:45:55.824Z
+        completed_at: 2026-05-08T22:46:03.895Z
+        notes: "Friction points: The manual synthetic oxlint probes required repetitive
+          mktemp/config/test-file shell setup. That is useful enough to repeat across static
+          lint-rule reviews but awkward enough to be error-prone. Full-tree lint is also noisy
+          because the project currently has a known baseline of lint errors, so review evidence
+          needs extra classification of baseline vs introduced failures."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T22:46:03.895Z
+        completed_at: 2026-05-08T22:46:03.895Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T22:45:10.315Z
