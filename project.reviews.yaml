@@ -189613,6 +189613,13 @@ reviews:
           status: fail
           name: custom unrelated argv daemon-path probe
         timestamp: 2026-05-08T20:59:07.623Z
+      - _ulid: 01KR4P6KGSBTN7YPXEK9P550T0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR4P6HY5S1EVX53W9575F4E6
+        timestamp: 2026-05-08T20:59:23.546Z
     examined_commit: e23ece2eed929bad1e38d89cf824049e8aecf90b
     external_links: []
     lifecycle_state: open
@@ -189622,8 +189629,34 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR4P6HY5S1EVX53W9575F4E6
+        anchor:
+          type: code
+          commit: e23ece2eed929bad1e38d89cf824049e8aecf90b
+          line_end: 603
+          line_start: 596
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR4P6HY69KWZYGE3BTT5SXYT
+            author: Jacob Chapel
+            body: "MUST-FIX: the spawn-like direct-entry detector still treats any executable with a
+              daemon-entry argv element as a daemon launch. In this block, after args[0] is not the
+              daemon entry, the code only checks arrayArgContainsDaemonEntry(args[1]) and returns a
+              directDaemonSpawn descriptor without verifying that args[0] is a JS runtime capable of
+              executing the script. I confirmed with an oxlint probe that spawn('cat',
+              ['dist/daemon/index.js']) and execFile('grep', ['dist/daemon/index.js', 'src/']) both
+              emit no-leaky-test-daemon direct-daemon diagnostics even though those subprocesses
+              only consume the path as data and do not start kspec's daemon. That violates
+              @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported and the task
+              requirement to avoid matching unrelated executables. Restrict the argv daemon-entry
+              form to actual runtime executables (for example node/bun/path-ending-in-node-or-bun,
+              consistent with the exec/execSync shell-token logic) and add behavioral regressions
+              for unrelated spawn/execFile argv cases."
+            created_at: 2026-05-08T20:59:21.926Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T20:56:27.409Z
-    updated_at: 2026-05-08T20:59:05.977Z
+    updated_at: 2026-05-08T20:59:21.926Z
     notes: []
