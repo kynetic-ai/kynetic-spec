@@ -209,3 +209,60 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T17:43:10.739Z
+  - _ulid: 01KR4C4KHK8RKPZCFV3W6K1D6Z
+    content: >-
+      Fix cycle 4: addressed the changes_requested review (@01KR4A2SCVG4W718Y9CZS3MG14).
+
+
+      Blocker (resolved): the four AC-bearing cleanup-timing regression cases used bare
+      `it.fails()`. The reviewer correctly noted that under `it.fails`, ANY thrown assertion in the
+      body counts as the expected failure — including a precondition failure caused by an unrelated
+      oxlint parser/helper crash. That meant the regression coverage could pass for reasons
+      unrelated to the detached-cleanup timing gap, and the same file already documents this
+      anti-pattern at lines 917-925 in the explanation of why classifier-gap regressions earlier in
+      the file use a different helper.
+
+
+      Fix: replaced the four bare `it.fails()` calls (the three unsafe-shape cases in the
+      cleanup-timing describe block and the wrong-line-disable suppression case) with the existing
+      `expectClassifierGap()` helper that already wraps the classifier-gap regressions earlier in
+      the file. Each case now:
+        1. Confirms oxlint ran cleanly (exit 0 or 1, no parser/helper/panic output) via `expectOxlintRanCleanly()` — the precondition bare `it.fails` could not enforce.
+        2. Runs the AC's required post-fix assertions inside `assertPostFixBehavior` (rule reports the unsafe shape, exits non-zero, mentions `no-leaky-test-daemon`, references safe-shape vocabulary).
+        3. On the expected throw today, asserts the EXACT current gap shape in `assertKnownGapShape` (oxlint exits 0, no `no-leaky-test-daemon` diagnostic). A generic parser/helper failure does not match this shape and re-throws.
+        4. Throws via the helper once post-fix assertions begin to succeed, forcing @task-fix-detached-cleanup-timing-analysis to drop the wrapper.
+
+      Also updated the file-level docblock above the `daemon test guardrail precision: detached
+      cleanup timing` describe block to document the new precondition-then-gap-shape contract
+      instead of the prior `it.fails` convention.
+
+
+      The nit thread (review evidence log) was informational only and was resolved without code
+      changes.
+
+
+      Rebase: branch is now rebased onto origin/dev (706fdefb) — the prior cycle 3 force-push
+      targeted the older base. Resolved no conflicts.
+
+
+      Verification:
+
+      - `mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts` -> 18 suites, 77/77 tests passed (23.1s).
+
+      - `mise exec -- npm test` (full) -> 2409 suites, 8818 passed / 5 skipped / 0 failed (2401.2s).
+
+      - `kspec validate` -> 0 missing-AC warnings for @daemon-test-guardrail-precision and
+      @daemon-test-harness-guardrails on this branch.
+
+
+      AC coverage on @daemon-test-guardrail-precision (post-fix-cycle-4) — all 5 ACs covered
+      behaviorally:
+        ac-direct-daemon-entry-invocations-flagged: lines ~114 (this branch, spawn(node|bun, [DAEMON_ENTRY])) and ~995 (dev, fork/execFile direct-entry classifier-gap regressions)
+        ac-detached-cleanup-before-observation: lines ~1227, ~1265, ~1295 (this branch — three failing-before-fix cases now wrapped in expectClassifierGap, plus two allowed-narrow cases)
+        ac-unrelated-subprocesses-not-reported: line ~1122 (dev, echo/git argv-overlap classifier-gap regressions)
+        ac-local-exception-is-local: line ~1366 (this branch — three suppression-contract cases including the wrong-line-disable case now in expectClassifierGap)
+        ac-exception-reason-states-subject: line ~1367 (this branch — same describe block, undocumented-disable case)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T18:03:32.275Z
