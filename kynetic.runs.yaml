@@ -40561,9 +40561,21 @@ runs:
     completed_at: 2026-05-08T18:53:47.322Z
   - _ulid: 01KR4FWK4576W0CXYDNM3AHTZW
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T19:09:04.005Z
+        completed_at: 2026-05-08T19:10:03.226Z
+        notes: "Worked well: reading the diff before task notes, then using a direct node --import tsx probe
+          against the exact malformed-startup path caught a return-boundary cleanup bug that the
+          full passing test suite missed. Review records were useful for preserving evidence: checks
+          captured full npm test, validate, changed-file lint, and the failing direct probe."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T19:10:03.226Z
+        completed_at: 2026-05-08T19:10:03.226Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T19:09:04.005Z
