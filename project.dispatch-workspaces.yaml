@@ -13697,7 +13697,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T15:19:11.003Z
+      updated_at: 2026-05-08T15:21:41.174Z
     integration:
       status: merged
       detail: integration:merged
@@ -13706,25 +13706,20 @@ workspaces:
       target_branch: dev
       target_commit: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
       updated_at: 2026-05-08T15:19:11.003Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KR3W7QN8Y4NJFQ4HST166KVR"
     task_slug: task-add-real-daemon-startup-failure-tests
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T15:04:27.933Z
-      last_reconciled_at: 2026-05-08T15:21:39.606Z
+      last_reconciled_at: 2026-05-08T15:21:41.174Z
       created_at: 2026-05-08T13:55:12.012Z
-      updated_at: 2026-05-08T15:21:39.606Z
+      updated_at: 2026-05-08T15:21:41.174Z
     workspace_id: dispatch-workspace-01KR3W7QN8Y4NJFQ4HST166KVR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 324ac8a62aba4af96c2783d7b5da692419615644
-        last_seen_at: 2026-05-08T15:04:02.860Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-real-daemon-startup-failure-tests-01kr3w7q-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-real-daemon-startup-failure-tests/01kr3w7q
