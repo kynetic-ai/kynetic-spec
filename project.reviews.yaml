@@ -185723,6 +185723,17 @@ reviews:
         required: true
         created_at: 2026-05-08T13:15:59.017Z
         completed_at: 2026-05-08T13:15:59.017Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Parsed current Specs/Tasks YAML and mapped Covers lines. All 14 new ACs are claimed by at
+          least one concrete test/fix task plus final validation where appropriate; no unknown new
+          AC references or orphan new ACs found.
+        name: AC coverage mapping
+        required: true
+        created_at: 2026-05-08T13:16:08.861Z
+        completed_at: 2026-05-08T13:16:08.861Z
     events:
       - _ulid: 01KR3VM9CQQY1D1ZWDAS4HYBQB
         actor: Jacob Chapel
@@ -185765,6 +185776,13 @@ reviews:
           status: pass
           name: Behavioral spec and AC quality
         timestamp: 2026-05-08T13:16:00.329Z
+      - _ulid: 01KR3VPDHMXFQS5DP570ZT5A01
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage mapping
+        timestamp: 2026-05-08T13:16:10.164Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -185777,5 +185795,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T13:15:00.376Z
-    updated_at: 2026-05-08T13:15:59.017Z
+    updated_at: 2026-05-08T13:16:08.861Z
     notes: []
