@@ -61,3 +61,50 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T14:24:04.631Z
+  - _ulid: 01KR41PXVP60SWV6PCNVR5EVN8
+    content: >-
+      Fix cycle 1: addressed review blocker by combining the contract tests with the matching helper
+      fix. Reviewer accepted either path — chose the combined path so the branch is mergeable on its
+      own.
+
+
+      Helper changes (tests/helpers/daemon.ts in commit 324ac8a62):
+
+      - child.once('error', ...) attached immediately after spawn — captures launch errors before
+      they propagate as uncaughtException.
+
+      - Promise.race(readinessOp, launchFailurePromise) so the readiness wait does not have to time
+      out when launch fails.
+
+      - catch block prefers launchError.message: cause becomes 'process launch failed: spawn
+      /nonexistent/... ENOENT' which matches the test regex /ENOENT|spawn|launch|nonexistent/i.
+
+      - stop() short-circuits when the OS never assigned a pid so cleanup of a never-started child
+      does not block on the 5s graceful kill timeout.
+
+
+      Re-verified ACs against the new implementation:
+
+      - ac-process-launch-failure-diagnosed: cause now mentions launch failure (was timeout) — PASS
+
+      - ac-owned-child-stopped-after-startup-failure: registerCleanup fires before readiness wait,
+      stop is safe to call — PASS
+
+      - ac-cleanup-registered-before-readiness-wait: registerCleanup ordering test still asserts
+      registerCleanup runs before any probe — PASS
+
+      - ac-child-env-sanitized: buildDaemonChildEnv unchanged — PASS
+
+
+      Test results:
+
+      - npm test -- --fresh tests/helpers/daemon.test.ts: 9/9 pass
+
+      - npm test -- --fresh: 2402/2402 suites pass, 8800 passed, 5 skipped, 0 failed
+
+
+      Note for dependent task @task-fix-real-daemon-startup-failure-handling: the helper-side fix it
+      described is now in this commit, so its scope is satisfied here.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T15:01:18.326Z
