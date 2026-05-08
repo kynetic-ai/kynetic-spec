@@ -51,7 +51,7 @@ description: |
 spec_ref: "@daemon-test-harness-guardrails"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-migrate-real-daemon-vitest-tests"
@@ -68,11 +68,11 @@ review_ref: "@01KR2V04D1W3CQ3SXCRNE3ZFE9"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
-  captured_at: 2026-05-08T03:40:26.286Z
-  commit: 80326f51ed6858dab18923307b48c372f10622be
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-08T04:26:07.137Z
+  commit: cffda7739392d5ad338da74ce52e12ff0db0a6bb
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
 session_id: 01KR2W0MA0QEP2TYSXHHMRK835
 history:
   - author: Jacob Chapel
@@ -145,8 +145,35 @@ history:
         previous: 2026-05-08T03:12:07.174Z
     command: task-start
     timestamp: 2026-05-08T04:26:03.829Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
+          captured_at: 2026-05-08T04:26:07.137Z
+          commit: cffda7739392d5ad338da74ce52e12ff0db0a6bb
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
+        previous:
+          review_url: null
+          branch: dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
+          captured_at: 2026-05-08T03:40:26.286Z
+          commit: 80326f51ed6858dab18923307b48c372f10622be
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-08T04:26:07.141Z
+        previous: 2026-05-08T03:40:26.289Z
+    command: task-submit
+    timestamp: 2026-05-08T04:26:07.141Z
 created_at: 2026-05-07T20:36:51.524Z
 started_at: 2026-05-08T04:26:03.828Z
-submitted_at: 2026-05-08T03:40:26.289Z
+submitted_at: 2026-05-08T04:26:07.141Z
 todos: []
 automation: eligible
