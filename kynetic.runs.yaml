@@ -39103,7 +39103,7 @@ runs:
     completed_at: 2026-05-08T03:13:15.195Z
   - _ulid: 01KR2TS2PCHXF6A12218X7BZ3N
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -39118,7 +39118,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T03:42:35.631Z
-        completed_at: 2026-05-08T03:42:35.631Z
+        completed_at: 2026-05-08T03:42:46.146Z
+        notes: "Identified candidates: (success/high-confidence) Path-based allowlist + per-statement
+          oxlint-disable-next-line --reason as a hybrid exception model for fixture-contract lint
+          rules — gave per-file blanket exemptions to canonical helpers while keeping case-by-case
+          exceptions narrow and documented. (success/high-confidence) git stash + npx oxlint to
+          compare pre-change vs post-change error counts is a fast way to verify a lint rule change
+          introduces zero new violations; cheaper than diffing full lint output.
+          (friction/medium-confidence) The localhost-port URL check only inspects
+          literal/template-literal first arguments to fetch()/new WebSocket(); URLs assigned to a
+          const and then fetch'd through that variable are not detected — a deliberate scope
+          tradeoff but a real coverage gap if a future test reverts to that pattern."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T03:42:46.146Z
+        completed_at: 2026-05-08T03:42:46.146Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T03:40:54.348Z
