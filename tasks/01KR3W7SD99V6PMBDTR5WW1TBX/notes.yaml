@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KR4K6TDQS02TP27VWDKKNRD0
+    content: "Approach: documentation correction (no rename). createTestApp overclaims 'all API routes';
+      production registers more route groups (projects, refs, diff, command, automation, debug,
+      web-ui), inline /api/health, /ws WebSocket, CORS + localhostOnly, heartbeat/dispatch wiring,
+      and onProjectRegistered (entity cache, shadow sync, session sync). Helper omits all of those
+      and disables the file watcher. Plan: rewrite file header + createTestApp docstring to
+      enumerate included route groups and excluded behaviors; add helpers.test.ts cases asserting
+      boundary (/api/health 404, /api/projects 404, /api/debug 404, /ws 404, non-localhost Host
+      accepted)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T20:07:04.887Z
