@@ -16821,8 +16821,15 @@ observations:
       daemon-build.test.ts should run in a serialised group / under exclusive lock so concurrent
       dist consumers do not see a missing-file window."
     author: "@claude"
-    resolution: null
-    resolved: false
+    resolution: Resolved by serializing tests/daemon-build.test.ts via vitest.config.ts
+      heavySerialSuites in commit 62bc34089. The build script's fs.rmSync(dist/daemon) window can no
+      longer race with concurrent dist/daemon/index.js spawns from the default pool because
+      heavy-serial runs after default drains. Atomic-rebuild (stage + rename) was the alternative,
+      but serialization matches the existing pattern used for other side-effecting suites and
+      required no build-script changes.
+    resolved: true
+    resolved_at: 2026-05-08T05:50:49.204Z
+    resolved_by: "@claude"
     created_at: 2026-05-06T08:53:57.431Z
   - _ulid: 01KQY7WVSNY97GVG6SF5DCK6X4
     type: success
