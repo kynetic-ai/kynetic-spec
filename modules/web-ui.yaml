@@ -919,6 +919,49 @@ features:
                 when: |
                   Test clients are created
             tags: []
+            requirements:
+              - _ulid: 01KR3W7P9VMXE3HRPBFYC7WKTP
+                slugs:
+                  - cli-lifecycle-test-endpoint-consumption
+                title: CLI Lifecycle Test Endpoint Consumption
+                type: requirement
+                description: |
+                  CLI lifecycle tests may start and stop the daemon through the CLI when the
+                  lifecycle command is the behavior under test. Once a CLI-started daemon has
+                  reported a client endpoint, lifecycle tests that make HTTP or WebSocket
+                  requests use that reported endpoint instead of constructing a localhost URL
+                  from a port number.
+                depends_on: []
+                implements: []
+                relates_to: []
+                tests: []
+                traits: []
+                acceptance_criteria:
+                  - given: |
+                      A CLI lifecycle test starts a daemon and the daemon reports a client endpoint
+                    id: ac-cli-started-daemon-requests-use-reported-endpoint
+                    then: |
+                      The request uses the reported client endpoint
+                    when: |
+                      The test makes an HTTP or WebSocket request to that daemon
+                  - given: |
+                      A CLI lifecycle test constructs a loopback daemon URL directly
+                    id: ac-direct-loopback-url-exception-is-endpoint-subject
+                    then: >
+                      The direct URL construction is tied to endpoint reporting, endpoint fallback,
+                      or missing-metadata behavior under test
+                    when: |
+                      The test is reviewed by guardrails or humans
+                  - given: |
+                      A CLI lifecycle test needs to call a daemon that was started through the CLI
+                    id: ac-lifecycle-helper-resolves-client-endpoint
+                    then: |
+                      Shared test code resolves a client endpoint for the test
+                    when: |
+                      A reported endpoint is available in daemon lifecycle state
+                tags: []
+                created: 2026-05-08T13:25:36.187Z
+                notes: []
             created: 2026-05-07T20:36:49.583Z
             notes: []
         created: 2026-05-05T21:16:19.922Z
@@ -1047,6 +1090,39 @@ features:
             when: |
               The behavior requires the daemon process boundary
         tags: []
+        requirements:
+          - _ulid: 01KR3W7PB4NP3C294N5TD7ERZ5
+            slugs:
+              - in-process-daemon-test-helper-boundary
+            title: In-Process Daemon Test Helper Boundary
+            type: requirement
+            description: |
+              In-process daemon API test helpers advertise the route and dependency
+              boundary they provide. Tests that need full production-server behavior do
+              not rely on a helper that only assembles a narrower route subset.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            acceptance_criteria:
+              - given: |
+                  A shared in-process daemon API helper is available to tests
+                id: ac-helper-scope-is-explicit
+                then: |
+                  The helper states the server behavior boundary it represents
+                when: |
+                  A test author reads or calls the helper
+              - given: |
+                  An in-process daemon API test relies on shared route or dependency behavior
+                id: ac-test-uses-helper-matching-behavior
+                then: |
+                  The helper boundary covers the behavior asserted by the test
+                when: |
+                  The test chooses a helper
+            tags: []
+            created: 2026-05-08T13:25:36.228Z
+            notes: []
         created: 2026-05-07T20:36:49.669Z
         notes: []
       - _ulid: 01KR22GJDE2613RTZDTFKATQBM
@@ -1107,7 +1183,111 @@ features:
             when: |
               the daemon-test guardrail check runs
         tags: []
+        requirements:
+          - _ulid: 01KR3W7P8CKZB2Y2YDP3HXYGV9
+            slugs:
+              - daemon-test-guardrail-precision
+            title: Daemon Test Guardrail Precision
+            type: requirement
+            description: |
+              Static guardrails report daemon-test patterns that can leak daemon
+              processes or bypass the shared fixture, while avoiding reports for
+              unrelated subprocesses that only happen to contain similar argument words.
+              Cleanup-based exceptions are accepted only when cleanup is associated with
+              the daemon that was just started before the test makes later observations.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            acceptance_criteria:
+              - given: |
+                  A test invokes the real daemon entrypoint directly outside an approved helper
+                id: ac-direct-daemon-entry-invocations-flagged
+                then: |
+                  The direct daemon startup is reported
+                when: |
+                  The guardrail scans the test file
+              - given: |
+                  A test starts a detached daemon through the kspec CLI
+                id: ac-detached-cleanup-before-observation
+                then: |
+                  The detached daemon startup is reported
+                when: >
+                  The test performs later awaits, assertions, or daemon observations before
+                  registering cleanup for that daemon
+              - given: |
+                  A test starts a subprocess that is not a kspec daemon command
+                id: ac-unrelated-subprocesses-not-reported
+                then: |
+                  The daemon guardrail does not report the subprocess
+                when: |
+                  The subprocess arguments contain words also used by daemon lifecycle commands
+              - given: |
+                  A test intentionally violates a daemon guardrail for behavior under test
+                id: ac-local-exception-is-local
+                then: |
+                  The suppression is local to the violating statement
+                when: |
+                  The test suppresses the guardrail
+              - given: |
+                  A test intentionally suppresses a daemon guardrail
+                id: ac-exception-reason-states-subject
+                then: |
+                  The suppression states the behavior being exercised
+                when: |
+                  The guardrail suppression is reviewed
+            tags: []
+            created: 2026-05-08T13:25:36.140Z
+            notes: []
         created: 2026-05-07T20:36:49.710Z
+        notes: []
+      - _ulid: 01KR3W7P6MX9E4VWY78PPBMSRC
+        slugs:
+          - daemon-test-startup-failure-hygiene
+        title: Daemon Test Startup Failure Hygiene
+        type: requirement
+        description: |
+          Test fixtures that start daemon-like child processes fail safely when
+          startup does not reach readiness. Startup failures produce bounded
+          diagnostics for the attempted child, and any child process already owned by
+          the fixture is stopped before the helper returns failure to the caller.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A daemon test fixture attempts to start a child process
+            id: ac-process-launch-failure-diagnosed
+            then: |
+              The caller receives a bounded startup diagnostic for that attempt
+            when: |
+              The operating system or runtime rejects the process launch
+          - given: |
+              A daemon test fixture has obtained a child process handle
+            id: ac-owned-child-stopped-after-startup-failure
+            then: |
+              The fixture stops the child process before returning failure
+            when: |
+              Startup fails before the fixture reports readiness
+          - given: |
+              A daemon test helper starts a child process for daemon-backed behavior
+            id: ac-child-env-sanitized
+            then: |
+              Ambient daemon-control and session variables are not inherited
+            when: |
+              The helper builds the child process environment
+          - given: |
+              A wrapper starts a fixture-owned daemon process
+            id: ac-cleanup-registered-before-readiness-wait
+            then: |
+              Cleanup is registered before the readiness wait can fail
+            when: |
+              The wrapper receives a cleanup registration hook
+        tags: []
+        created: 2026-05-08T13:25:36.084Z
         notes: []
     created: 2026-01-22T01:18:09.314Z
     notes: []

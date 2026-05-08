@@ -1,0 +1,68 @@
+_ulid: 01KR3W7PCMZ7KPMPJ9ZFBQXX7W
+slugs:
+  - task-add-guardrail-classification-regressions
+title: Add guardrail regression tests for precise daemon classification
+type: task
+description: >
+  What:
+
+  - Extend `tests/lint-daemon-test-guardrails.test.ts` and, where the
+    existing older suite is the better home, `tests/lint-no-leaky-test-daemon.test.ts`.
+  - Add failing-before-fix tests proving the guardrail reports direct daemon
+    entrypoint invocation through child-process APIs beyond the current
+    `spawn`/`spawnSync` happy path. Include at least `fork("dist/daemon/index.js", ...)`
+    and one exec-file style invocation that starts the daemon entrypoint.
+  - Add a negative test proving a non-kspec subprocess such as a harmless
+    command with arguments containing `serve`, `start`, and `--detach` is not
+    reported as a daemon lifecycle violation.
+  - Keep synthetic source snippets self-contained and avoid requiring a real
+    daemon process.
+
+  Why:
+
+  The guardrail currently has bypasses and false positives that make it less
+
+  trustworthy as repo-wide evidence for daemon test fixture usage. Capturing
+
+  those cases first prevents an implementation from silently weakening the
+
+  rule while making it pass existing examples.
+
+
+  How:
+
+  - Use the existing `runOxlint` test helper in
+    `tests/lint-daemon-test-guardrails.test.ts` for synthetic files.
+  - Anchor tests with `// AC:` comments for
+    @daemon-test-guardrail-precision and the existing
+    @daemon-test-harness-guardrails ACs they support.
+  - Assert on both exit code and the relevant rule message so that a generic
+    parser failure cannot satisfy the test.
+
+  Testing:
+
+  - First run the new test cases and observe they fail against the current
+    rule.
+  - After the implementation task, run:
+    `mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts`.
+
+  Covers: @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged,
+
+  ac-unrelated-subprocesses-not-reported; @daemon-test-harness-guardrails
+
+  ac-direct-daemon-spawn-flagged
+spec_ref: "@daemon-test-guardrail-precision"
+plan_ref: "@plan-daemon-test-fixture-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - testing
+  - lint
+  - daemon
+vcs_refs: []
+created_at: 2026-05-08T13:25:36.276Z
+todos: []

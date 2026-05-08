@@ -1,0 +1,63 @@
+_ulid: 01KR3W7RTYPWDJVCQFZD2042P2
+slugs:
+  - task-fix-mock-daemon-cleanup-env-hygiene
+title: Fix mock daemon helper cleanup and environment hygiene
+type: task
+description: >
+  What:
+
+  - Update `tests/helpers/mock-daemon.ts` so any child spawned during mock
+    daemon startup is killed on timeout, malformed startup output, or startup
+    failure before the helper returns failure to the caller.
+  - Build mock child process environments through the same sanitized
+    subprocess-env helper used by other test subprocesses, while preserving
+    explicit test-provided environment overrides.
+  - Keep mock daemon metadata fidelity unchanged: generated connection
+    metadata must continue to round-trip through production endpoint helpers.
+
+  Why:
+
+  Mock daemon helpers should be safe substitutes for real daemon clients.
+
+  Leaking a mock process or inheriting ambient daemon-control variables makes
+
+  CLI routing tests nondeterministic and undermines the standardized fixture
+
+  contract.
+
+
+  How:
+
+  - Add an idempotent internal child cleanup helper for startup-failure paths.
+
+  - Ensure cleanup runs before resolving `null` or throwing from a startup
+    helper.
+  - Use the existing test subprocess environment utility instead of passing
+    the parent process environment wholesale.
+
+  Testing:
+
+  - Run:
+    `mise exec -- npm test -- --fresh tests/helpers/mock-daemon.test.ts tests/cli-daemon-proxy.test.ts tests/cli-daemon-endpoint-regression.test.ts tests/cli-task-event-endpoint.test.ts`.
+
+  Covers: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure,
+
+  ac-child-env-sanitized; @daemon-test-endpoint-consistency
+
+  ac-mock-metadata-fidelity, ac-resolved-endpoint-source
+spec_ref: "@daemon-test-startup-failure-hygiene"
+plan_ref: "@plan-daemon-test-fixture-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-mock-daemon-failure-contract-tests"
+context: []
+priority: 1
+tags:
+  - testing
+  - daemon
+  - mock
+vcs_refs: []
+created_at: 2026-05-08T13:25:38.782Z
+todos: []

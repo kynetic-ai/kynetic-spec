@@ -1,0 +1,84 @@
+_ulid: 01KR3W7S3VS0QRZ26RGXS0F3C4
+slugs:
+  - task-resolve-cli-lifecycle-test-endpoints
+title: Resolve CLI lifecycle test daemon endpoints from reported metadata
+type: task
+description: >
+  What:
+
+  - Update CLI lifecycle tests in `tests/cli-serve.test.ts` that start the
+    daemon through `kspec serve start --detach` and then make HTTP requests to
+    that daemon.
+  - When daemon lifecycle metadata is available, resolve the client endpoint
+    from that metadata or the same production endpoint helpers used by daemon
+    clients instead of constructing `http://localhost:${port}` directly.
+  - Keep direct loopback URL construction only in tests whose asserted
+    behavior is endpoint reporting, endpoint fallback, legacy metadata
+    compatibility, or missing-metadata behavior. Each remaining direct URL
+    must have a local, behavior-specific guardrail suppression if the lint
+    rule would otherwise flag it.
+  - Do not convert CLI lifecycle tests to the shared daemon fixture when the
+    behavior under test is `serve start`, `serve stop`, `serve status`, or
+    `serve restart`; those tests must still exercise the CLI path.
+
+  Why:
+
+  The previous fixture standardization correctly preserved CLI lifecycle
+
+  tests, but some of those tests still address the daemon with localhost URLs
+
+  assembled from a port. That leaves the original hostname-resolution hazard
+
+  in a high-value regression area. CLI lifecycle tests should use the daemon's
+
+  reported endpoint once the CLI-started daemon has one.
+
+
+  How:
+
+  - Introduce a small helper in `tests/cli-serve.test.ts` or an existing test
+    helper module that reads the isolated daemon connection metadata and
+    returns an API base URL for the CLI-started daemon.
+  - Prefer production endpoint parsing/formatting helpers over ad hoc string
+    concatenation.
+  - Replace applicable fetch calls currently shaped like
+    ``fetch(`http://localhost:${port}/...`)`` with endpoint-derived URLs.
+  - Audit every remaining `localhost:${port}` occurrence in
+    `tests/cli-serve.test.ts` and document why each is endpoint-subject
+    coverage rather than generic daemon access.
+
+  Testing:
+
+  - Run:
+    `mise exec -- npm test -- --fresh tests/cli-serve.test.ts`.
+  - Run the guardrail suites:
+    `mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts`.
+  - Run a source audit for `localhost:${port}` in `tests/cli-serve.test.ts`
+    and include the remaining intentional exceptions in the task notes.
+
+  Covers: @cli-lifecycle-test-endpoint-consumption
+
+  ac-cli-started-daemon-requests-use-reported-endpoint,
+
+  ac-direct-loopback-url-exception-is-endpoint-subject,
+
+  ac-lifecycle-helper-resolves-client-endpoint; @daemon-test-endpoint-consistency
+
+  ac-resolved-endpoint-source, ac-no-localhost-by-default
+spec_ref: "@cli-lifecycle-test-endpoint-consumption"
+plan_ref: "@plan-daemon-test-fixture-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-fix-real-daemon-startup-failure-handling"
+  - "@task-fix-detached-cleanup-timing-analysis"
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - cli
+vcs_refs: []
+created_at: 2026-05-08T13:25:39.067Z
+todos: []

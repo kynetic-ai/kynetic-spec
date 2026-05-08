@@ -1,0 +1,59 @@
+_ulid: 01KR3W7QN8Y4NJFQ4HST166KVR
+slugs:
+  - task-add-real-daemon-startup-failure-tests
+title: Add real daemon fixture startup-failure contract tests
+type: task
+description: |
+  What:
+  - Extend `tests/helpers/daemon.test.ts` with focused contract tests for
+    real daemon fixture failure paths.
+  - Cover process launch failure from an unavailable runtime or invalid
+    executable path without relying on a real missing system dependency.
+  - Cover readiness failure after a child handle exists and assert the child
+    is stopped before the helper returns or throws.
+  - Cover the wrapper cleanup registration ordering by using a synthetic
+    `registerCleanup` hook that records whether cleanup was registered before
+    readiness failure completed.
+  - Update or add real-fixture environment contract coverage so ambient
+    daemon-control and session variables are stripped from the real daemon
+    child environment, with `// AC:` annotations for the new startup hygiene
+    AC.
+
+  Why:
+  The existing happy-path and readiness-timeout tests prove ordinary behavior,
+  but they do not fully protect launch errors or cleanup registration order.
+  These failure-path tests make the fixture contract explicit before code is
+  changed.
+
+  How:
+  - Prefer dependency injection already available in `startTestDaemon` options;
+    if the helper does not expose enough test seam, add the smallest internal
+    test seam needed without changing consumer-facing fixture behavior.
+  - Assert on `DaemonReadinessError` or the chosen diagnostic error type, and
+    verify the error includes the attempted runtime and endpoint context.
+  - Avoid using fixed sleep delays; use bounded polling or child exit events.
+
+  Testing:
+  - First run the new tests and observe the launch-error/cleanup-order case
+    fail or expose the missing diagnostic.
+  - After the implementation task, run:
+    `mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts`.
+
+  Covers: @daemon-test-startup-failure-hygiene ac-process-launch-failure-diagnosed,
+  ac-owned-child-stopped-after-startup-failure, ac-child-env-sanitized,
+  ac-cleanup-registered-before-readiness-wait; @daemon-backed-test-fixture-contract
+  ac-readiness-diagnostics, ac-scoped-cleanup, ac-no-ambient-daemon-control
+spec_ref: "@daemon-test-startup-failure-hygiene"
+plan_ref: "@plan-daemon-test-fixture-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - testing
+  - daemon
+vcs_refs: []
+created_at: 2026-05-08T13:25:37.576Z
+todos: []

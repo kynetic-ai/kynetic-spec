@@ -1,0 +1,62 @@
+_ulid: 01KR3W7SD99V6PMBDTR5WW1TBX
+slugs:
+  - task-clarify-in-process-daemon-api-helper-boundary
+title: Clarify in-process daemon API helper boundary
+type: task
+description: >
+  What:
+
+  - Update `tests/daemon-api/helpers.ts` so comments and exported helper
+    names accurately describe the route/dependency boundary provided by the
+    in-process daemon app helper.
+  - If tests need a full production-server in-process helper, add it as a
+    separate helper with explicit coverage. Otherwise, keep the existing
+    helper narrow and state that it covers the common daemon API route subset
+    used by current in-process tests.
+  - Update existing in-process daemon API tests only where their helper choice
+    or comments overclaim full production-server behavior.
+
+  Why:
+
+  A helper whose documentation says it registers all API routes can mislead
+
+  future agents into using it for behavior that actually depends on production
+
+  server wiring. The fixture boundary should be clear so tests choose the
+
+  lightest correct mode without hiding missing dependencies.
+
+
+  How:
+
+  - Compare `tests/daemon-api/helpers.ts` with production route registration
+    in `packages/daemon/src/server.ts`.
+  - Prefer a documentation/export-name correction if current tests only need
+    the common subset.
+  - Add focused helper tests in `tests/daemon-api/helpers.test.ts` for any
+    newly stated boundary behavior.
+
+  Testing:
+
+  - Run:
+    `mise exec -- npm test -- --fresh tests/daemon-api/helpers.test.ts tests/daemon-api-input-validation.test.ts tests/daemon-review-verdicts-api.test.ts tests/daemon-review-websocket.test.ts`.
+
+  Covers: @in-process-daemon-test-helper-boundary ac-helper-scope-is-explicit,
+
+  ac-test-uses-helper-matching-behavior; @daemon-test-mode-boundaries
+
+  ac-in-process-route-tests-no-child-process
+spec_ref: "@in-process-daemon-test-helper-boundary"
+plan_ref: "@plan-daemon-test-fixture-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+vcs_refs: []
+created_at: 2026-05-08T13:25:39.369Z
+todos: []

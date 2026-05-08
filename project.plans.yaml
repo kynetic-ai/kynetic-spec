@@ -46871,10 +46871,26 @@ plans:
       - Fixing unrelated pre-existing kspec completeness warnings or deprecated-ref
         warnings outside daemon testing specs.
       ```
-    status: approved
+    status: active
     approved_at: 2026-05-08T13:25:15.695Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@daemon-test-startup-failure-hygiene"
+      - "@daemon-test-guardrail-precision"
+      - "@cli-lifecycle-test-endpoint-consumption"
+      - "@in-process-daemon-test-helper-boundary"
+    derived_tasks:
+      - "@task-add-guardrail-classification-regressions"
+      - "@task-fix-guardrail-daemon-command-classification"
+      - "@task-add-detached-cleanup-timing-regressions"
+      - "@task-fix-detached-cleanup-timing-analysis"
+      - "@task-add-real-daemon-startup-failure-tests"
+      - "@task-fix-real-daemon-startup-failure-handling"
+      - "@task-harden-playwright-daemon-fixture-cleanup"
+      - "@task-add-mock-daemon-failure-contract-tests"
+      - "@task-fix-mock-daemon-cleanup-env-hygiene"
+      - "@task-resolve-cli-lifecycle-test-endpoints"
+      - "@task-clarify-in-process-daemon-api-helper-boundary"
+      - "@task-validate-daemon-test-hardening"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/daemon-test-fixture-hardening.md
     created_at: 2026-05-08T13:00:57.145Z
@@ -46885,3 +46901,68 @@ plans:
           add real-fixture env coverage, split/localize guardrail suppression ACs"
         author: Jacob Chapel
         created_at: 2026-05-08T13:12:30.068Z
+      - _ulid: 01KR3W7T18BHG9405E4E060R9X
+        content: |-
+          This plan is a follow-up hardening slice for daemon test infrastructure after
+          shared daemon fixtures, mock daemon fixtures, Playwright fixture integration,
+          and guardrail suites already landed. The prior plan is complete; this plan owns
+          only the remaining hardening gaps listed here.
+
+          The work is intentionally split into small tasks. Regression-test tasks precede
+          rule or helper fixes where behavior is subtle, so agents can validate one gap at
+          a time instead of broadening scope while debugging.
+
+          Spec gaps identified by the audit:
+
+          - Startup failure hygiene was not explicitly specified for launch-error events,
+            child cleanup after partial startup, mock child env sanitation, or wrapper
+            cleanup registration before readiness waits. The new
+            `@daemon-test-startup-failure-hygiene` requirement owns those behaviors.
+          - The existing guardrail specs required direct daemon starts and detached daemon
+            starts to be reported, but did not specify classifier precision, immediate
+            cleanup ordering, behavior-specific local suppressions, or non-daemon
+            false-positive avoidance. The new
+            `@daemon-test-guardrail-precision` requirement owns those behaviors.
+          - Existing endpoint consistency requirements covered fixture-provided endpoints,
+            but CLI lifecycle tests have a special path where the CLI must start the
+            daemon while subsequent HTTP requests should still use the daemon-reported
+            client endpoint. The new `@cli-lifecycle-test-endpoint-consumption`
+            requirement owns that behavior.
+          - In-process daemon API helper behavior needed an explicit boundary so a helper
+            that registers a route subset is not mistaken for a full production server
+            assembly. The new `@in-process-daemon-test-helper-boundary` requirement owns
+            that behavior.
+
+          Known source surfaces for workers to inspect:
+
+          - `tools/eslint-rules/no-leaky-test-daemon.js`: daemon-start guardrail
+            classifier and cleanup-order analysis.
+          - `tests/lint-daemon-test-guardrails.test.ts` and
+            `tests/lint-no-leaky-test-daemon.test.ts`: synthetic guardrail regression
+            suites.
+          - `tests/helpers/daemon.ts` and `tests/helpers/daemon.test.ts`: shared real
+            daemon fixture and focused contract tests.
+          - `tests/e2e/fixtures/test-base.ts`: Playwright wrapper around the shared real
+            daemon fixture.
+          - `tests/helpers/mock-daemon.ts` and `tests/helpers/mock-daemon.test.ts`: mock
+            daemon helper and focused contract tests.
+          - `tests/cli-serve.test.ts`: CLI lifecycle tests that intentionally exercise
+            `kspec serve start/stop/status/restart` and should not be blindly converted to
+            the shared daemon fixture.
+          - `tests/daemon-api/helpers.ts` and `tests/daemon-api/helpers.test.ts`:
+            in-process daemon API helper boundary.
+          - `packages/daemon/src/server.ts`: production route registration reference for
+            comparing in-process helper scope.
+
+          Out of scope:
+
+          - Replacing CLI lifecycle tests with the shared daemon fixture when the CLI
+            lifecycle command itself is the behavior under test.
+          - Redesigning production daemon endpoint selection or production daemon
+            metadata semantics beyond what tests need to consume already-reported
+            endpoints.
+          - Fixing unrelated pre-existing kspec completeness warnings or deprecated-ref
+            warnings outside daemon testing specs.
+          ```
+        author: Jacob Chapel
+        created_at: 2026-05-08T13:25:40.008Z

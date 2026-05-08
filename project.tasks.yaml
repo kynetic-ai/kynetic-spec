@@ -28065,3 +28065,231 @@
   submitted_at: 2026-05-08T05:48:33.892Z
   completed_at: 2026-05-08T06:07:03.817Z
   automation: eligible
+- _ulid: 01KR3W7PCMZ7KPMPJ9ZFBQXX7W
+  slugs:
+    - task-add-guardrail-classification-regressions
+  title: Add guardrail regression tests for precise daemon classification
+  type: task
+  spec_ref: "@daemon-test-guardrail-precision"
+  plan_ref: "@plan-daemon-test-fixture-hardening"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - testing
+    - lint
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-08T13:25:36.276Z
+- _ulid: 01KR3W7PPVDFR8F03VQ6J54M3K
+  slugs:
+    - task-fix-guardrail-daemon-command-classification
+  title: Fix guardrail daemon command classification
+  type: task
+  spec_ref: "@daemon-test-guardrail-precision"
+  plan_ref: "@plan-daemon-test-fixture-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-guardrail-classification-regressions"
+  priority: 1
+  tags:
+    - testing
+    - lint
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-08T13:25:36.603Z
+- _ulid: 01KR3W7Q0H2FVXHDJ51WCFAVNN
+  slugs:
+    - task-add-detached-cleanup-timing-regressions
+  title: Add guardrail regression tests for detached cleanup timing
+  type: task
+  spec_ref: "@daemon-test-guardrail-precision"
+  plan_ref: "@plan-daemon-test-fixture-hardening"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - testing
+    - lint
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-08T13:25:36.913Z
+- _ulid: 01KR3W7QAH8VZCH3A60NSB3HBN
+  slugs:
+    - task-fix-detached-cleanup-timing-analysis
+  title: Fix guardrail detached cleanup timing analysis
+  type: task
+  spec_ref: "@daemon-test-guardrail-precision"
+  plan_ref: "@plan-daemon-test-fixture-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-detached-cleanup-timing-regressions"
+    - "@task-fix-guardrail-daemon-command-classification"
+  priority: 1
+  tags:
+    - testing
+    - lint
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-08T13:25:37.233Z
+- _ulid: 01KR3W7QN8Y4NJFQ4HST166KVR
+  slugs:
+    - task-add-real-daemon-startup-failure-tests
+  title: Add real daemon fixture startup-failure contract tests
+  type: task
+  spec_ref: "@daemon-test-startup-failure-hygiene"
+  plan_ref: "@plan-daemon-test-fixture-hardening"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - testing
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-08T13:25:37.576Z
+- _ulid: 01KR3W7QYBRVY6SASCXWXNHFMZ
+  slugs:
+    - task-fix-real-daemon-startup-failure-handling
+  title: Fix real daemon fixture startup-failure handling
+  type: task
+  spec_ref: "@daemon-test-startup-failure-hygiene"
+  plan_ref: "@plan-daemon-test-fixture-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-real-daemon-startup-failure-tests"
+  priority: 1
+  tags:
+    - testing
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-08T13:25:37.867Z
+- _ulid: 01KR3W7R7Y2JCNSJZGPNCM9QFA
+  slugs:
+    - task-harden-playwright-daemon-fixture-cleanup
+  title: Harden Playwright daemon fixture cleanup registration
+  type: task
+  spec_ref: "@daemon-test-startup-failure-hygiene"
+  plan_ref: "@plan-daemon-test-fixture-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-fix-real-daemon-startup-failure-handling"
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - e2e
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-08T13:25:38.174Z
+- _ulid: 01KR3W7RHFG659BH7VGSM69KCJ
+  slugs:
+    - task-add-mock-daemon-failure-contract-tests
+  title: Add mock daemon helper failure-path contract tests
+  type: task
+  spec_ref: "@daemon-test-startup-failure-hygiene"
+  plan_ref: "@plan-daemon-test-fixture-hardening"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - testing
+    - daemon
+    - mock
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-08T13:25:38.479Z
+- _ulid: 01KR3W7RTYPWDJVCQFZD2042P2
+  slugs:
+    - task-fix-mock-daemon-cleanup-env-hygiene
+  title: Fix mock daemon helper cleanup and environment hygiene
+  type: task
+  spec_ref: "@daemon-test-startup-failure-hygiene"
+  plan_ref: "@plan-daemon-test-fixture-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-mock-daemon-failure-contract-tests"
+  priority: 1
+  tags:
+    - testing
+    - daemon
+    - mock
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-08T13:25:38.782Z
+- _ulid: 01KR3W7S3VS0QRZ26RGXS0F3C4
+  slugs:
+    - task-resolve-cli-lifecycle-test-endpoints
+  title: Resolve CLI lifecycle test daemon endpoints from reported metadata
+  type: task
+  spec_ref: "@cli-lifecycle-test-endpoint-consumption"
+  plan_ref: "@plan-daemon-test-fixture-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-fix-real-daemon-startup-failure-handling"
+    - "@task-fix-detached-cleanup-timing-analysis"
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-08T13:25:39.067Z
+- _ulid: 01KR3W7SD99V6PMBDTR5WW1TBX
+  slugs:
+    - task-clarify-in-process-daemon-api-helper-boundary
+  title: Clarify in-process daemon API helper boundary
+  type: task
+  spec_ref: "@in-process-daemon-test-helper-boundary"
+  plan_ref: "@plan-daemon-test-fixture-hardening"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - testing
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-08T13:25:39.369Z
+- _ulid: 01KR3W7SPKCKPWKXD8SJHNZVHT
+  slugs:
+    - task-validate-daemon-test-hardening
+  title: Validate daemon test hardening end to end
+  type: task
+  spec_ref: "@daemon-test-startup-failure-hygiene"
+  plan_ref: "@plan-daemon-test-fixture-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-fix-guardrail-daemon-command-classification"
+    - "@task-fix-detached-cleanup-timing-analysis"
+    - "@task-fix-real-daemon-startup-failure-handling"
+    - "@task-harden-playwright-daemon-fixture-cleanup"
+    - "@task-fix-mock-daemon-cleanup-env-hygiene"
+    - "@task-resolve-cli-lifecycle-test-endpoints"
+    - "@task-clarify-in-process-daemon-api-helper-boundary"
+  priority: 3
+  tags:
+    - testing
+    - daemon
+    - validation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-08T13:25:39.667Z

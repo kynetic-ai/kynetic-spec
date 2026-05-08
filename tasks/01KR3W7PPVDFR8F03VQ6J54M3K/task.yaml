@@ -1,0 +1,71 @@
+_ulid: 01KR3W7PPVDFR8F03VQ6J54M3K
+slugs:
+  - task-fix-guardrail-daemon-command-classification
+title: Fix guardrail daemon command classification
+type: task
+description: >
+  What:
+
+  - Update `tools/eslint-rules/no-leaky-test-daemon.js` so direct daemon
+    entrypoint detection applies to every child-process API that can launch
+    the daemon entrypoint, including `fork` and exec-file style calls.
+  - Update detached-serve detection so it is tied to a kspec daemon lifecycle
+    command rather than any subprocess whose arguments contain the words
+    `serve`, `start`, and `--detach`.
+  - Preserve existing allowlisted helper paths for the shared daemon fixture,
+    mock helper internals, and guardrail fixture-string tests.
+
+  Why:
+
+  A static guardrail is only useful if it reports the daemon-starting patterns
+
+  it claims to guard and avoids training contributors to ignore false
+
+  positives. This task makes the classifier match daemon behavior rather than
+
+  incidental token sequences.
+
+
+  How:
+
+  - Refactor the rule into small predicate helpers for direct daemon entry
+    launch, kspec lifecycle CLI launch, and approved helper paths.
+  - For `fork`, inspect the first module path argument as the daemon entry
+    candidate.
+  - For exec-file style calls, inspect the executable and argv together so a
+    direct daemon entrypoint and `kspec serve start --detach` are both covered
+    without matching unrelated executables.
+  - Keep the test-facing error messages actionable and specific to the
+    matched violation.
+
+  Testing:
+
+  - Run:
+    `mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts`.
+  - Run `mise exec -- npm run lint` or the project lint command that invokes
+    oxlint, if available.
+  - Run a source audit for remaining direct daemon entrypoint starts outside
+    the approved helper/test-fixture strings and document any intentional
+    exceptions.
+
+  Covers: @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged,
+
+  ac-unrelated-subprocesses-not-reported; @daemon-test-harness-guardrails
+
+  ac-direct-daemon-spawn-flagged, ac-helper-internals-allowed
+spec_ref: "@daemon-test-guardrail-precision"
+plan_ref: "@plan-daemon-test-fixture-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-guardrail-classification-regressions"
+context: []
+priority: 1
+tags:
+  - testing
+  - lint
+  - daemon
+vcs_refs: []
+created_at: 2026-05-08T13:25:36.603Z
+todos: []

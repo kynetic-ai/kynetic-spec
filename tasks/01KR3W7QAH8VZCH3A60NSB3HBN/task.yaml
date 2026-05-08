@@ -1,0 +1,67 @@
+_ulid: 01KR3W7QAH8VZCH3A60NSB3HBN
+slugs:
+  - task-fix-detached-cleanup-timing-analysis
+title: Fix guardrail detached cleanup timing analysis
+type: task
+description: >
+  What:
+
+  - Update `tools/eslint-rules/no-leaky-test-daemon.js` so detached daemon
+    starts are considered safe only when scoped cleanup is registered before
+    later awaits, assertions, or daemon observations can run.
+  - Stop treating the mere presence of an ancestor `afterEach` hook as proof
+    that the newly-started detached daemon is protected.
+  - Preserve and, where needed, tighten support for local disable comments so
+    each accepted suppression applies only to the violating statement and
+    states the behavior under test.
+
+  Why:
+
+  A detached daemon can leak if a test fails between startup and cleanup
+
+  registration. The guardrail should prevent that exact ordering bug instead
+
+  of allowing it because cleanup appears elsewhere in the file.
+
+
+  How:
+
+  - Reuse or extend the rule's existing statement-order scan instead of
+    introducing a second independent traversal.
+  - Treat cleanup registration as valid only when it appears in the same test
+    control flow before the next awaited operation, expectation, or daemon
+    request, unless the statement itself is a local documented exception.
+  - Keep helper internals and dedicated guardrail fixture strings allowlisted.
+
+
+  Testing:
+
+  - Run:
+    `mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts`.
+  - Run a targeted source audit of `tests/cli-serve.test.ts` for detached
+    startup cases and confirm every remaining exception is local and
+    behavior-specific.
+
+  Covers: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation,
+  ac-local-exception-is-local,
+
+  ac-exception-reason-states-subject; @daemon-test-harness-guardrails
+
+  ac-detached-serve-without-cleanup-flagged, ac-exceptions-are-localized
+spec_ref: "@daemon-test-guardrail-precision"
+plan_ref: "@plan-daemon-test-fixture-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-detached-cleanup-timing-regressions"
+  - "@task-fix-guardrail-daemon-command-classification"
+context: []
+priority: 1
+tags:
+  - testing
+  - lint
+  - daemon
+vcs_refs: []
+created_at: 2026-05-08T13:25:37.233Z
+todos: []
