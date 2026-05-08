@@ -183703,6 +183703,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-08T01:10:32.373Z
+      - _ulid: 01KR2J65H3D9GAFFYW20Y2YGGP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR2J649KPJ3M0ZZ2GBXY02CW
+        timestamp: 2026-05-08T01:10:46.051Z
     examined_commit: 1d4b63a3593e90e4cb5d47f32591973305344713
     external_links: []
     lifecycle_state: open
@@ -183712,8 +183719,25 @@ reviews:
       content_hash: ""
       ref: "@01KR22GK15YB0PRQ1RP3D88J5J"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR2J649KPJ3M0ZZ2GBXY02CW
+        entries:
+          - _ulid: 01KR2J649KFKAM4YTHTZ4YYXCC
+            author: Jacob Chapel
+            body: "Evidence log: Files read: tests/cli-serve.test.ts,
+              tests/daemon-api/websocket-protocol.test.ts, tests/daemon-build.test.ts,
+              tests/helpers/daemon.ts, tests/helpers/daemon.test.ts, src/cli/commands/serve.ts,
+              dist/daemon/server.js, dist/daemon/index.js. Commands run: kspec item get for linked
+              specs; rg direct daemon spawn/endpoint/AC annotations; kspec validate; mise exec --
+              npm run build:daemon; focused migrated npm tests; full npm test -- --fresh. Claims
+              verified: direct real daemon process starts in changed files now route through
+              startTestDaemon except CLI lifecycle subjects; websocket defaults to node and uses
+              fixture URLs; runtime parity covers node plus optional bun; cli-no-daemon has no
+              direct daemon spawn. Categories searched: correctness, endpoint/runtime edge cases,
+              cleanup/error handling, test quality, integration."
+            created_at: 2026-05-08T01:10:44.787Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-08T00:57:32.467Z
-    updated_at: 2026-05-08T01:10:31.126Z
+    updated_at: 2026-05-08T01:10:44.787Z
     notes: []
