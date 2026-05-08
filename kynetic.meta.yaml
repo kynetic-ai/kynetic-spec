@@ -17319,6 +17319,28 @@ observations:
     resolved: false
     workflow_ref: "@01KR2VSV"
     created_at: 2026-05-08T04:01:19.667Z
+  - _ulid: 01KR2YBHN3RTNV0HWKZ6X6N411
+    type: success
+    content: "Session reflection: For static lint-rule reviews, small synthetic oxlint probes against
+      temp files were highly effective. They exercised the actual rule outside the submitted fixture
+      tests and exposed both the scoped localhost identifier false positive and the broad
+      tests/helpers allowlist gap."
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KR2Y9B"
+    created_at: 2026-05-08T04:43:25.219Z
+  - _ulid: 01KR2YBHWSAFQHJEFQ5X87JXJ8
+    type: friction
+    content: "Session reflection: Review evidence/check recording is still manually assembled from
+      multiple command outputs and prose snippets. A helper that turns common review commands,
+      synthetic repro commands, and test/lint summaries into review check/comment payloads would
+      reduce reviewer bookkeeping while preserving audit detail."
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KR2Y9B"
+    created_at: 2026-05-08T04:43:25.465Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
