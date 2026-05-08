@@ -40127,9 +40127,27 @@ runs:
     completed_at: 2026-05-08T16:45:04.241Z
   - _ulid: 01KR4AXS8WHK854JJJJ87R7Y2Y
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T17:42:20.188Z
+        completed_at: 2026-05-08T17:42:45.740Z
+        notes: "Step 1 — Friction signal scan. Session was a verification-only task:
+          @task-fix-real-daemon-startup-failure-handling submitted with no new commits because the
+          prior task @task-add-real-daemon-startup-failure-tests bundled the test additions AND the
+          helper fix into one commit during its fix cycle. Two candidate friction signals: (1)
+          follow-on task left with nothing to implement when its scope is absorbed by a prior task's
+          combined fix — the prior task's reviewer accepted that path, but it leaves the dependent
+          task in an awkward 'verify only' state with no diff for the next reviewer. (2) The npm
+          script 'test:e2e:smoke' in package.json references tests/e2e/api-server.spec.ts which no
+          longer exists — bit-rot in the project's E2E entry script. Will check coverage in step 2
+          before proposing capture."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T17:42:45.740Z
+        completed_at: 2026-05-08T17:42:45.740Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T17:42:20.188Z
