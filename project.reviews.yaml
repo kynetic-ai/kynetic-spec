@@ -189657,6 +189657,13 @@ reviews:
           status: pass
           name: diff whitespace
         timestamp: 2026-05-08T21:09:24.361Z
+      - _ulid: 01KR4PS20PP5ZVDDEJPF8W8WBP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR4PS0RSCAB41AHSC5MVA15V
+        timestamp: 2026-05-08T21:09:28.214Z
     examined_commit: e23ece2eed929bad1e38d89cf824049e8aecf90b
     external_links: []
     lifecycle_state: open
@@ -189693,7 +189700,29 @@ reviews:
               for unrelated spawn/execFile argv cases."
             created_at: 2026-05-08T20:59:21.926Z
         kind: blocker
+      - _ulid: 01KR4PS0RSCAB41AHSC5MVA15V
+        entries:
+          - _ulid: 01KR4PS0RTDJSTSMRKYRVWW904
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; task/spec records for @01KR3W7PPVDFR8F03VQ6J54M3K,
+              @daemon-test-guardrail-precision, @daemon-test-harness-guardrails; prior review
+              @01KR4K31VZVTX1RA1RTBA9HFND; git diff for tools/eslint-rules/no-leaky-test-daemon.js
+              and tests/lint-daemon-test-guardrails.test.ts; surrounding code at
+              tools/eslint-rules/no-leaky-test-daemon.js:340-720 and
+              tests/lint-daemon-test-guardrails.test.ts:940-1857. Commands run: git status --short
+              --branch; git diff --stat/name-only/full diff; rg AC/source-scanning search; kspec
+              item get; kspec review get/for-task/add/open; custom oxlint probe for unrelated
+              spawn/execFile daemon-path argv; kspec validate; npm test -- --fresh
+              tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts; npm
+              run lint; git diff --check; npm test -- --fresh. Claims verified: cycle-3
+              exec/execSync shell false positive is fixed for echo/cat/grep/nodemon shell strings,
+              but the same unrelated-executable false-positive remains for spawn/execFile argv form.
+              Categories searched: correctness, AC alignment, false positives/edge cases, test
+              quality, source-scanning prohibition, lint/validation/test gates, integration with
+              existing guardrail allowlist."
+            created_at: 2026-05-08T21:09:26.938Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-08T20:56:27.409Z
-    updated_at: 2026-05-08T21:09:23.101Z
+    updated_at: 2026-05-08T21:09:26.938Z
     notes: []
