@@ -28115,7 +28115,7 @@
   type: task
   spec_ref: "@daemon-test-guardrail-precision"
   plan_ref: "@plan-daemon-test-fixture-hardening"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -28127,7 +28127,7 @@
   notes_count: 10
   todos_count: 0
   created_at: 2026-05-08T13:25:36.913Z
-  started_at: 2026-05-08T16:43:48.397Z
+  started_at: 2026-05-08T18:03:43.700Z
   submitted_at: 2026-05-08T16:43:55.023Z
   automation: eligible
 - _ulid: 01KR3W7QAH8VZCH3A60NSB3HBN
