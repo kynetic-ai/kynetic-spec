@@ -183803,6 +183803,18 @@ reviews:
         runner: playwright
         created_at: 2026-05-08T01:37:13.840Z
         completed_at: 2026-05-08T01:37:13.840Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exits 6 for existing repo-wide warnings only; kspec validate --warnings-ok
+          exits 0. No schema/reference errors; warnings are broad pre-existing
+          reference/alignment/coverage warnings, not introduced by this two-file task.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-08T01:37:17.477Z
+        completed_at: 2026-05-08T01:37:17.477Z
     events:
       - _ulid: 01KR2K07707E9PGPXNWZH5F2ZH
         actor: Jacob Chapel
@@ -183845,6 +183857,13 @@ reviews:
           status: pass
           name: focused e2e websocket
         timestamp: 2026-05-08T01:37:15.106Z
+      - _ulid: 01KR2KPRX6ZQCHXJ9W8QYJ4NDW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-08T01:37:18.758Z
     examined_commit: c753d124422282c19fc01bf891a34656a5feb29d
     external_links: []
     lifecycle_state: open
@@ -183889,5 +183908,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-08T01:24:59.745Z
-    updated_at: 2026-05-08T01:37:13.840Z
+    updated_at: 2026-05-08T01:37:17.477Z
     notes: []
