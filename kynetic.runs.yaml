@@ -39155,7 +39155,7 @@ runs:
     completed_at: 2026-05-08T03:43:27.361Z
   - _ulid: 01KR2VSVARQXVKJ8Z1HG2MSSP6
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -39169,7 +39169,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T04:00:29.358Z
-        completed_at: 2026-05-08T04:00:29.358Z
+        completed_at: 2026-05-08T04:00:39.445Z
+        notes: "Friction points: review evidence had to be stored as a nit thread because the review record
+          has no dedicated evidence-log field. Shell-passed review comments are still fragile when
+          bodies contain backticks or command-looking snippets; one blocker body lost quoted details
+          and needed a follow-up reply. These are systemic, not task-specific."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T04:00:39.445Z
+        completed_at: 2026-05-08T04:00:39.445Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T03:58:48.152Z
