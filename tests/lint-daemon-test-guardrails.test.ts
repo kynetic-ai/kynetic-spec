@@ -1337,6 +1337,111 @@ describe("non-daemon shell string", () => {
       expect(result.exitCode).toBe(0);
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+    //
+    // Regression set covering the precision blocker from review cycle 3:
+    // an unrelated shell command must not be reported just because one of
+    // its argument tokens happens to end in `dist/daemon/index.js`. The
+    // daemon-entry token is only a daemon launch when it sits in an
+    // executable position — either as the first shell token (direct
+    // executable) or as the immediate next token after a recognised JS
+    // runtime (`node` / `bun`).
+    it("does not flag exec(\"echo dist/daemon/index.js\") — daemon path is an argument to echo, not a launch", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { exec } from "child_process";
+
+describe("echo with daemon path argument", () => {
+  it("execs echo with the daemon path as an argument", () => {
+    exec("echo dist/daemon/index.js");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag execSync(\"cat /workspace/dist/daemon/index.js\") — cat reads the file, does not launch the daemon", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+describe("cat with absolute daemon path argument", () => {
+  it("execs cat to read the daemon file", () => {
+    const contents = execSync("cat /workspace/dist/daemon/index.js");
+    expect(contents).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag exec(\"grep -r dist/daemon/index.js src/\") — grep searches for the path string, does not launch the daemon", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { exec } from "child_process";
+
+describe("grep referencing daemon path", () => {
+  it("execs grep to find references to the daemon path", () => {
+    exec("grep -r dist/daemon/index.js src/");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag exec(`echo ${someFlag} dist/daemon/index.js`) template literal — daemon path is not in the executable position", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { exec } from "child_process";
+
+describe("template literal with daemon path argument", () => {
+  it("execs an unrelated shell command interpolating the daemon path", () => {
+    const someFlag = "--quiet";
+    exec(\`echo \${someFlag} dist/daemon/index.js\`);
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag execSync(\"nodemon dist/daemon/index.js\") — nodemon is not the recognised node runtime token", () => {
+      // Substring-of-runtime guard: a shell command whose first token
+      // contains `node` as a substring (e.g. `nodemon`) is NOT recognised
+      // as the JS runtime. Without this guard, `nodemon dist/daemon/index.js`
+      // would be reported. The runtime form requires an exact match on
+      // `node`/`bun` or a path with that final segment.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+describe("nodemon should not be confused with node runtime", () => {
+  it("execSyncs nodemon with the daemon path", () => {
+    execSync("nodemon dist/daemon/index.js --watch src");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
   });
 
   // Regression: exec/execSync of `kspec serve start --detach` must remain

@@ -13,8 +13,14 @@
  *      - spawn / spawnSync / execFile / execFileSync / fork targeting
  *        `dist/daemon/index.js` or the DAEMON_ENTRY identifier (either as
  *        the executable arg or inside the argv array).
- *      - exec / execSync shell strings whose tokens include the daemon
- *        entry path (e.g. `exec("node dist/daemon/index.js --port 0")`).
+ *      - exec / execSync shell strings whose first token is the daemon
+ *        entry path (direct-executable form) or whose first token is a
+ *        recognised JS runtime (`node` / `bun`, bare or path-suffixed)
+ *        followed immediately by the daemon entry path (runtime form,
+ *        e.g. `exec("node dist/daemon/index.js --port 0")`). A shell
+ *        string that merely passes the daemon path as an argument to an
+ *        unrelated command (`echo`, `cat`, `grep`) is NOT a daemon launch
+ *        and is not reported.
  *      - Hardcoded `bun` runtime variants (`spawn("bun", [DAEMON_ENTRY])`
  *        or `exec("bun dist/daemon/index.js")`) are reported with a more
  *        specific message because runtime selection belongs to the shared
@@ -485,6 +491,25 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * True when a shell-command token names a recognised JS runtime
+     * executable that takes a script-path argument (`node` or `bun`).
+     * Accepts the bare command (`node`, `bun`) or a path form whose final
+     * segment is the runtime (e.g. `/usr/bin/node`, `./node_modules/.bin/bun`).
+     * Tokens that merely contain the runtime name as a substring (e.g.
+     * `nodemon`, `bunyan`) are rejected — only an exact match or a
+     * `/<runtime>` suffix counts.
+     */
+    function isRecognisedShellRuntimeToken(token) {
+      if (typeof token !== "string") return false;
+      return (
+        token === "node" ||
+        token === "bun" ||
+        token.endsWith("/node") ||
+        token.endsWith("/bun")
+      );
+    }
+
+    /**
      * Tokenise a shell-command argument's text. Returns the
      * whitespace-separated tokens of a string Literal or a TemplateLiteral
      * with `${...}` placeholders preserved (so an interpolated value cannot
@@ -526,14 +551,19 @@ const noLeakyTestDaemon = {
      *     first arg directly — argv elements are forwarded, not executed.
      *   - `exec` / `execSync`
      *     Shell-string callee. The first argument is tokenised on
-     *     whitespace; if any token names the daemon entry path, the call
-     *     is reported as a direct daemon entry launch. Both the runtime
-     *     form (`exec("node dist/daemon/index.js")`) and the direct-
-     *     executable form (`exec("dist/daemon/index.js")`) are matched.
-     *     When the token preceding the daemon entry is `bun` (or a path
-     *     ending in `/bun`), `runtimeLiteral` is set to "bun" so the
-     *     hardcoded-runtime message fires for shell-string Bun launches
-     *     too.
+     *     whitespace and inspected at the executable position only. The
+     *     direct-executable form (`exec("dist/daemon/index.js")`) is
+     *     matched when the daemon entry is the FIRST token. The runtime
+     *     form (`exec("node dist/daemon/index.js")`) is matched when the
+     *     first token is a recognised JS runtime (`node` / `bun`, bare or
+     *     path-suffixed) and the daemon entry is the immediate next
+     *     token. Tokens at any other position do not satisfy the check —
+     *     a shell string that passes the daemon path as an argument to an
+     *     unrelated command (`echo`, `cat`, `grep …`) is not a daemon
+     *     launch and is not reported. When the leading runtime token is
+     *     `bun` (or a path ending in `/bun`), `runtimeLiteral` is set to
+     *     "bun" so the hardcoded-runtime message fires for shell-string
+     *     Bun launches too.
      *
      * The returned `pattern` is a short shape descriptor used in the
      * reported message so authors see exactly which call shape was matched
@@ -585,22 +615,32 @@ const noLeakyTestDaemon = {
       if (calleeName === "exec" || calleeName === "execSync") {
         const tokens = shellCommandTokens(args[0]);
         if (tokens === null || tokens.length === 0) return null;
-        const daemonEntryIndex = tokens.findIndex(isDaemonEntryShellToken);
-        if (daemonEntryIndex === -1) return null;
-        if (daemonEntryIndex === 0) {
-          // Direct-executable form: the daemon entry is the first shell
-          // token; it IS the runtime.
+        // Direct-executable form: the daemon entry is the FIRST shell
+        // token; it IS the runtime that the OS shell launches. A shebang'd
+        // daemon entry is invokable directly, so this is equivalent to
+        // `execFile(DAEMON_ENTRY, [...])`.
+        if (isDaemonEntryShellToken(tokens[0])) {
           return {
             runtimeLiteral: null,
             calleeName,
             pattern: `${calleeName}("${DAEMON_ENTRY_LITERAL} ...")`,
           };
         }
-        // Runtime form: the token preceding the daemon entry is the
-        // runtime executable (typically `node` or `bun`). Setting
-        // runtimeLiteral to "bun" routes the report through the
-        // hardcoded-runtime message.
-        const prev = tokens[daemonEntryIndex - 1];
+        // Runtime form: a recognised JS runtime token (`node` or `bun`,
+        // bare or path-suffixed) at index 0, with the daemon entry as the
+        // immediate next token. Restricting the daemon-entry position to
+        // index 1 — and requiring index 0 to be a recognised runtime —
+        // keeps the classifier from reporting unrelated subprocesses
+        // (`echo dist/daemon/index.js`, `cat /…/dist/daemon/index.js`,
+        // `grep -r dist/daemon/index.js src/`) that merely pass the path
+        // as an argument. The trade-off is that more elaborate forms like
+        // `node --inspect dist/daemon/index.js` are not matched here; the
+        // shared fixture is the supported launch path, and unusual ad-hoc
+        // shell strings can still document a local exception.
+        if (tokens.length < 2) return null;
+        if (!isRecognisedShellRuntimeToken(tokens[0])) return null;
+        if (!isDaemonEntryShellToken(tokens[1])) return null;
+        const prev = tokens[0];
         const runtimeLiteral =
           prev === "bun" || prev.endsWith("/bun") ? "bun" : null;
         return {
