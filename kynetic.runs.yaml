@@ -38927,7 +38927,7 @@ runs:
     started_at: 2026-05-08T02:35:05.799Z
   - _ulid: 01KR2R33183XQS2MR4GN8S5T68
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -38962,7 +38962,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-08T02:56:14.874Z
-        completed_at: 2026-05-08T02:56:14.874Z
+        completed_at: 2026-05-08T02:56:24.394Z
+        notes: "Proposal: update the command-payload quoting convention and/or reflection examples to
+          mention backticks as shell-interpolated syntax alongside dollar signs, angle brackets, and
+          multiline text. This would prevent kspec notes/comments from losing literal command
+          examples when passed through shell arguments. Scope: small documentation/convention
+          update; no code change required unless the team wants CLI support for file-based notes."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-08T02:56:24.394Z
+        completed_at: 2026-05-08T02:56:24.394Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T02:53:56.648Z
