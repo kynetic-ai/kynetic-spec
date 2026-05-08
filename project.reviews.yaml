@@ -186198,7 +186198,20 @@ reviews:
     slugs: []
     title: Review real daemon startup-failure contract tests
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/helpers/daemon.test.ts failed deterministically twice. Failing
+          assertion: tests/helpers/daemon.test.ts:415 expected d.cause to match
+          ENOENT|spawn|launch|nonexistent; actual cause was a readiness timeout. 8 passed, 1
+          failed."
+        name: npm test focused daemon helper
+        required: true
+        runner: npm
+        created_at: 2026-05-08T14:23:14.033Z
+        completed_at: 2026-05-08T14:23:14.033Z
     events:
       - _ulid: 01KR3YW0WYDRMJ8YQNKSSPD118
         actor: Jacob Chapel
@@ -186220,6 +186233,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR3ZGVBZ1EHSP31K40WHV2SF
         timestamp: 2026-05-08T14:23:03.264Z
+      - _ulid: 01KR3ZH8B2699A87GRFANKSAHK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test focused daemon helper
+        timestamp: 2026-05-08T14:23:15.298Z
     examined_commit: 976e8d35c50053fa437154d649a8412860aee5d4
     external_links: []
     lifecycle_state: open
@@ -186250,5 +186270,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-08T14:11:39.550Z
-    updated_at: 2026-05-08T14:23:02.015Z
+    updated_at: 2026-05-08T14:23:14.033Z
     notes: []
