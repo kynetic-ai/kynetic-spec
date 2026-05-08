@@ -1,1 +1,42 @@
-notes: []
+notes:
+  - _ulid: 01KR321KN9FGTYXFFE3V7YZXRC
+    content: >-
+      Audit complete. Source patterns checked across tests/: getAvailablePort(), localhost URL
+      construction, dist/daemon/index.js direct spawns, daemon.connection.json writes,
+      waitForStartup usage. Findings:
+
+
+      - localhost-port URLs in non-helper code: only in tests/cli-serve.test.ts (4 uses) and
+      tests/lint-daemon-test-guardrails.test.ts (rule fixture strings); each carries a documented
+      oxlint-disable-next-line annotation that names the CLI-lifecycle behavior under test.
+
+      - in-process app.handle() requests using http://localhost (no port) are fine — the lint rule
+      explicitly excludes plain 'localhost' (no :port) and treats them as request placeholders, not
+      daemon endpoint URLs.
+
+      - getAvailablePort() defined locally only in tests/cli-serve.test.ts (the CLI-lifecycle test
+      that exercises 'kspec serve start --detach'); shared fixture uses allocateTestDaemonPort() in
+      tests/helpers/daemon.ts.
+
+      - dist/daemon/index.js references outside helpers are: assertion-only (cli-no-daemon,
+      test-runner) or rule fixture strings (lint-* tests on the rule allowlist).
+
+      - daemon.connection.json writes outside helpers: tests/cli-daemon-client.test.ts writes raw
+      metadata to unit-test the client-side reader's tolerance for off-canonical fields — this is a
+      deliberate exception (testing the reader, not the writer).
+
+      - waitForStartup outside helpers: cli-no-daemon, cli-serve, cli-agent-watch-endpoint,
+      cli-agent-commands, agent-dispatch-engine — all polling client-side state (mock WS, dispatch
+      state, pid-file appearance) rather than spawning daemons.
+
+
+      Stale AC IDs: none. All annotations on @daemon-sensitive-cli-test-determinism,
+      @e2e-test-daemon-isolation, and @daemon-network-endpoint-contract use the new AC slugs.
+
+
+      Helper contract test files exist for each category: tests/helpers/daemon.test.ts,
+      tests/helpers/mock-daemon.test.ts, tests/daemon-api/helpers.test.ts,
+      tests/e2e/fixtures/test-base.ts.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T05:47:53.897Z
