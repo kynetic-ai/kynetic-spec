@@ -15715,18 +15715,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-fix-mock-daemon-cleanup-env-hygiene/01kr3w7r
-    canonical_branch_head: aa926674fe0cba6b2a10dea537674b4fb67a7fb4
+    canonical_branch_head: 16da0ce3d2b3e81217986e95b59d9c9051996698
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T19:17:16.528Z
+      updated_at: 2026-05-08T19:37:18.461Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T19:17:42.829Z
+      updated_at: 2026-05-08T19:37:18.461Z
     integration:
       status: pending
       detail: null
@@ -15734,7 +15734,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1148fad7662616a925c27654f1c01cb24f4544e3
-      updated_at: 2026-05-08T19:17:16.528Z
+      updated_at: 2026-05-08T19:37:18.461Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR3W7RTYPWDJVCQFZD2042P2"
@@ -15742,9 +15742,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T19:17:42.829Z
-      last_reconciled_at: 2026-05-08T19:17:42.829Z
+      last_reconciled_at: 2026-05-08T19:37:18.461Z
       created_at: 2026-05-08T18:30:14.056Z
-      updated_at: 2026-05-08T19:17:42.829Z
+      updated_at: 2026-05-08T19:37:18.461Z
     workspace_id: dispatch-workspace-01KR3W7RTYPWDJVCQFZD2042P2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
