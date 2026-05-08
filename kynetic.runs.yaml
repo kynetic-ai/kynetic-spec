@@ -39929,7 +39929,7 @@ runs:
     completed_at: 2026-05-08T15:21:18.568Z
   - _ulid: 01KR43WW406FT1DSJX0HDBGAPA
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -39945,7 +39945,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T15:40:03.552Z
-        completed_at: 2026-05-08T15:40:03.552Z
+        completed_at: 2026-05-08T15:40:14.418Z
+        notes: "Friction points: full npm test -- --fresh took 1952.8s, which is appropriate for a final
+          gate but expensive during review; kspec validate exits 6 for existing repository-wide
+          warnings, so reviewers need to know to distinguish warnings from task regressions or use
+          --warnings-ok for a passing check; workflow show without remembered run id was not
+          discoverable because kspec workflow show requires a run ref and the skill's shorthand
+          command was insufficient in this CLI version."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T15:40:14.418Z
+        completed_at: 2026-05-08T15:40:14.418Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T15:39:30.304Z
