@@ -14239,7 +14239,7 @@ workspaces:
         head: 8d75d10c36ce5e7289f06e8d4f5ce654c281e8af
         last_seen_at: 2026-05-08T16:25:35.551Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-mock-daemon-failure-contract-tests-01kr3w7r
-  - active_role: null
+  - active_role: worker
     base_branch_point: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
     bootstrap:
       status: succeeded
@@ -14572,7 +14572,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T17:26:18.855Z
+      updated_at: 2026-05-08T17:26:45.145Z
     integration:
       status: pending
       detail: null
@@ -14581,16 +14581,16 @@ workspaces:
       target_branch: dev
       target_commit: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
       updated_at: 2026-05-08T17:26:18.855Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR3W7QYBRVY6SASCXWXNHFMZ"
     task_slug: task-fix-real-daemon-startup-failure-handling
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-08T17:26:18.855Z
+      last_active_at: 2026-05-08T17:26:45.145Z
+      last_reconciled_at: 2026-05-08T17:26:45.145Z
       created_at: 2026-05-08T17:26:18.855Z
-      updated_at: 2026-05-08T17:26:44.373Z
+      updated_at: 2026-05-08T17:26:45.145Z
     workspace_id: dispatch-workspace-01KR3W7QYBRVY6SASCXWXNHFMZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
