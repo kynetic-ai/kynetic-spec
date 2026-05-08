@@ -432,6 +432,10 @@ describe("mock daemon helper — startup-failure hygiene contract", () => {
 
   // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
   // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // The helper must stop the child BEFORE returning failure, not "soon
+  // after" — sampling without a grace window catches a regression where
+  // cleanup sends SIGTERM but resolves null before the OS has reaped the
+  // child (the prior bug behind this task's first review cycle).
   it("stops the child process when the first stdout line is malformed", async () => {
     const pidFile = join(tempDir, "child-malformed.pid");
 
@@ -459,11 +463,10 @@ describe("mock daemon helper — startup-failure hygiene contract", () => {
       if (isProcessAlive(childPid)) ensureProcessReaped(childPid);
     });
 
-    // Give the OS a brief window to deliver SIGTERM before sampling.
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    // The helper stops the still-running child before returning failure
-    // to the caller.
+    // The helper stops the still-running child BEFORE returning failure
+    // — no grace window. Sampling immediately on return is what catches
+    // the prior bug where cleanup fired SIGTERM and resolved null without
+    // waiting for the child to actually exit.
     expect(isProcessAlive(childPid)).toBe(false);
   });
 
@@ -492,9 +495,8 @@ describe("mock daemon helper — startup-failure hygiene contract", () => {
       if (isProcessAlive(childPid)) ensureProcessReaped(childPid);
     });
 
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    // The helper stops the still-running child on timeout.
+    // No grace window — same return-boundary contract as the malformed-
+    // stdout case above.
     expect(isProcessAlive(childPid)).toBe(false);
   });
 

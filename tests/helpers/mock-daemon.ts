@@ -453,43 +453,80 @@ async function startChildMockDaemon(
     /**
      * Idempotent child cleanup for startup-failure paths.
      *
-     * Sends SIGTERM to the still-running mock daemon child and schedules a
-     * SIGKILL fallback so a child that ignores SIGTERM still gets reaped.
-     * Also removes the helper-allocated record file. Safe to call from any
-     * failure branch (timeout, malformed first-line stdout, spawn error,
-     * unexpected exit) — subsequent calls are no-ops, so cascading branches
-     * cannot double-kill or thrash the record file.
+     * Resolves only after the still-running mock daemon child has actually
+     * exited — the contract is that the helper must not return failure to
+     * the caller while the owned child is still alive. Sends SIGTERM,
+     * waits for the child's `exit` event, and schedules a SIGKILL fallback
+     * for children that ignore SIGTERM. Also removes the helper-allocated
+     * record file. Safe to call from any failure branch (timeout, malformed
+     * first-line stdout, spawn error) — subsequent calls return immediately
+     * with the prior outcome, so cascading branches cannot double-kill or
+     * thrash the record file.
      *
      * @see ac-owned-child-stopped-after-startup-failure in
      * @daemon-test-startup-failure-hygiene
      */
-    let startupCleanupRan = false;
-    const cleanupChildOnStartupFailure = (): void => {
-      if (startupCleanupRan) return;
-      startupCleanupRan = true;
-      try {
-        child.kill("SIGTERM");
-      } catch {
-        // already gone
-      }
-      const killTimer = setTimeout(() => {
-        try {
-          child.kill("SIGKILL");
-        } catch {
-          // already gone
+    let startupCleanupPromise: Promise<void> | undefined;
+    const cleanupChildOnStartupFailure = (): Promise<void> => {
+      if (startupCleanupPromise) return startupCleanupPromise;
+      startupCleanupPromise = new Promise<void>((resolveCleanup) => {
+        // Holder so `finalize` can reference the timer through a stable
+        // identifier even though the timer is created after `finalize` is
+        // attached as the exit listener.
+        const cleanup: { done: boolean; killTimer?: NodeJS.Timeout } = {
+          done: false,
+        };
+        const finalize = (): void => {
+          if (cleanup.done) return;
+          cleanup.done = true;
+          if (cleanup.killTimer) clearTimeout(cleanup.killTimer);
+          cleanupRecordFile();
+          resolveCleanup();
+        };
+
+        // If the child has already exited (e.g. spawn rejected, child
+        // crashed before we got here), there's nothing to wait on.
+        if (child.exitCode !== null || child.signalCode !== null) {
+          finalize();
+          return;
         }
-      }, CHILD_GRACEFUL_KILL_MS);
-      // Don't keep the test runner's event loop alive solely for the SIGKILL
-      // fallback — SIGTERM normally reaps the cjs child quickly, and a
-      // referenced timer would block vitest exit by CHILD_GRACEFUL_KILL_MS.
-      killTimer.unref?.();
-      cleanupRecordFile();
+
+        child.once("exit", finalize);
+
+        let signalled: boolean;
+        try {
+          signalled = child.kill("SIGTERM");
+        } catch {
+          signalled = false;
+        }
+
+        if (!signalled) {
+          // child.kill returns false when the child handle has no spawned
+          // process (e.g. spawn rejected with ENOENT) or has already been
+          // reaped. No exit event is coming, so don't wait — drop our
+          // listener and finalize now. If exit *does* fire later, finalize
+          // is idempotent.
+          child.removeListener("exit", finalize);
+          finalize();
+          return;
+        }
+
+        cleanup.killTimer = setTimeout(() => {
+          try {
+            child.kill("SIGKILL");
+          } catch {
+            // already gone — the exit handler will resolve us
+          }
+        }, CHILD_GRACEFUL_KILL_MS);
+      });
+      return startupCleanupPromise;
     };
 
-    const timeoutId = setTimeout(() => {
-      cleanupChildOnStartupFailure();
-      finish(null);
-    }, startupTimeoutMs);
+    const failStartup = (): void => {
+      cleanupChildOnStartupFailure().then(() => finish(null));
+    };
+
+    const timeoutId = setTimeout(failStartup, startupTimeoutMs);
 
     child.stdout!.on("data", (chunk: Buffer) => {
       stdout += chunk.toString();
@@ -500,8 +537,7 @@ async function startChildMockDaemon(
       try {
         parsed = JSON.parse(line) as { port: number; bindHost: string };
       } catch {
-        cleanupChildOnStartupFailure();
-        finish(null);
+        failStartup();
         return;
       }
       const { apiUrl, wsUrl } = buildDaemonUrls(parsed.bindHost, parsed.port);
@@ -543,10 +579,7 @@ async function startChildMockDaemon(
       });
     });
 
-    child.on("error", () => {
-      cleanupChildOnStartupFailure();
-      finish(null);
-    });
+    child.on("error", failStartup);
     child.on("exit", () => {
       if (!settled) {
         // Child exited on its own (e.g. mode/break arg validation failed).
