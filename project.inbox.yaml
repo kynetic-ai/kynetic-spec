@@ -3223,3 +3223,21 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-05-08T00:10:34.773Z
+  - _ulid: 01KR2HBAF0QABZKS1T2Y7CYJ16
+    text: "Shared daemon test fixture probeHealth/probeCacheReady fetch calls have no per-fetch timeout.
+      When a port is pre-bound by a non-HTTP TCP listener (e.g. blocker server in EADDRINUSE
+      regression tests), fetch connects, sends an HTTP request, and hangs forever waiting for a
+      response that never comes. waitForStartup's outer timeout never fires because the await is
+      inside fetch(). Concrete repro: I hit this migrating tests/cli-serve.test.ts EADDRINUSE; the
+      test timed out at vitest's default 45s. Workaround was to switch the test to a custom
+      child-exit probe, but that escape hatch only works if the test author knows the default probe
+      will hang. Fix: wrap probeHealth and probeCacheReady fetch() calls in AbortController bounded
+      by intervalMs (or a small per-fetch budget like DIAGNOSTIC_SAMPLE_TIMEOUT_MS) so the readiness
+      loop's timeout is honored end-to-end."
+    tags:
+      - testing
+      - daemon
+      - fixture
+      - robustness
+    added_by: "@claude"
+    created_at: 2026-05-08T00:56:06.368Z

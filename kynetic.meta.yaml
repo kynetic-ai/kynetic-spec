@@ -17198,6 +17198,29 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T00:10:43.257Z
+  - _ulid: 01KR2HBAHQBVGBGREKS4FE6RTJ
+    type: friction
+    content: Default readiness probes in tests/helpers/daemon.ts (probeHealth, probeCacheReady) await
+      fetch() without AbortController. A pre-bound non-HTTP TCP server on the daemon port (e.g.
+      EADDRINUSE regression scenario) causes fetch to hang indefinitely inside the readiness loop,
+      defeating the bounded-readiness contract. The escape hatch (custom child-exit probe) requires
+      the test author to know the default would hang. Caught this only after the cli-serve
+      EADDRINUSE migration timed out at 45s.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T00:56:06.456Z
+  - _ulid: 01KR2HBASE6QGQ5WNEE5EZ2R0Q
+    type: success
+    content: Shared daemon test fixture (tests/helpers/daemon.ts) made the websocket-protocol,
+      daemon-build, and cli-serve EADDRINUSE migrations straightforward. registerCleanup + extraEnv
+      + custom readiness probes covered every per-test variation needed. Default Node runtime +
+      isDaemonRuntimeAvailable for optional Bun made runtime parity trivial — node-required path
+      stays green on machines without Bun.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T00:56:06.702Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
