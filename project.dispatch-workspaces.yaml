@@ -9446,18 +9446,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-migrate-real-daemon-vitest-tests/01kr22gk
-    canonical_branch_head: 2b4dc4dfd1d3667d9100be4b8e6996b0f2ca1840
+    canonical_branch_head: 1d4b63a3593e90e4cb5d47f32591973305344713
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T00:25:13.595Z
+      updated_at: 2026-05-08T00:55:04.076Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T00:25:38.261Z
+      updated_at: 2026-05-08T00:55:04.076Z
     integration:
       status: pending
       detail: null
@@ -9465,7 +9465,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2b4dc4dfd1d3667d9100be4b8e6996b0f2ca1840
-      updated_at: 2026-05-08T00:25:13.595Z
+      updated_at: 2026-05-08T00:55:04.076Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR22GK15YB0PRQ1RP3D88J5J"
@@ -9473,9 +9473,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T00:25:38.261Z
-      last_reconciled_at: 2026-05-08T00:25:38.261Z
+      last_reconciled_at: 2026-05-08T00:55:04.076Z
       created_at: 2026-05-08T00:25:13.595Z
-      updated_at: 2026-05-08T00:25:38.261Z
+      updated_at: 2026-05-08T00:55:04.076Z
     workspace_id: dispatch-workspace-01KR22GK15YB0PRQ1RP3D88J5J
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
