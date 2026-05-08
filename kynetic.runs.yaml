@@ -40837,7 +40837,7 @@ runs:
     completed_at: 2026-05-08T20:26:52.657Z
   - _ulid: 01KR4MJ06EGVS64MA5Q22ABPAE
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -40862,7 +40862,13 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-08T20:32:25.876Z
-        completed_at: 2026-05-08T20:32:25.876Z
+        completed_at: 2026-05-08T20:32:53.372Z
+        notes: "Decision: 1 capture (success - test-helper boundary pinning pattern, no existing match in
+          observations/inbox). 0 skipped duplicates. 0 low-confidence."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-08T20:32:53.372Z
+        completed_at: 2026-05-08T20:32:53.372Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T20:30:39.822Z
