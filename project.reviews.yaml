@@ -187838,7 +187838,19 @@ reviews:
     slugs: []
     title: Review real daemon startup-failure handling
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts
+          tests/daemon-api/websocket-protocol.test.ts tests/daemon-build.test.ts: 16 suites passed,
+          26 tests passed."
+        name: targeted daemon tests
+        required: true
+        runner: npm-test
+        created_at: 2026-05-08T18:00:18.682Z
+        completed_at: 2026-05-08T18:00:18.682Z
     events:
       - _ulid: 01KR4B6HNQWGTPP7MECX25QMXR
         actor: Jacob Chapel
@@ -187853,6 +187865,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T17:47:36.797Z
+      - _ulid: 01KR4BYQWXNH1YEPAYAQC0ZCJW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon tests
+        timestamp: 2026-05-08T18:00:20.125Z
     examined_commit: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
     external_links: []
     lifecycle_state: open
@@ -187865,5 +187884,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T17:47:07.320Z
-    updated_at: 2026-05-08T17:47:35.522Z
+    updated_at: 2026-05-08T18:00:18.682Z
     notes: []
