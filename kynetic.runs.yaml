@@ -40876,9 +40876,21 @@ runs:
     completed_at: 2026-05-08T20:33:08.483Z
   - _ulid: 01KR4NM3FW6AYY0BCVEB5NPDJF
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T20:49:17.308Z
+        completed_at: 2026-05-08T20:49:50.778Z
+        notes: "Worked well: the detached reviewer merge helper handled manual_merge from the detached
+          snapshot cleanly, advancing dev and refreshing the occupied worktree without manual
+          checkout. Review records made it straightforward to attach targeted tests, full-suite
+          evidence, validation evidence, and the manual evidence log before approval."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T20:49:50.778Z
+        completed_at: 2026-05-08T20:49:50.778Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T20:49:17.308Z
