@@ -40876,7 +40876,7 @@ runs:
     completed_at: 2026-05-08T20:33:08.483Z
   - _ulid: 01KR4NM3FW6AYY0BCVEB5NPDJF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -40890,7 +40890,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T20:49:50.778Z
-        completed_at: 2026-05-08T20:49:50.778Z
+        completed_at: 2026-05-08T20:50:17.863Z
+        notes: "High-confidence observations: (1) Success: the detached reviewer merge helper kept
+          manual_merge safe in a detached snapshot; already covered by
+          @detached-reviewer-merge-helper and prior success observations @01KQ1273/@01KQ9AMHH. (2)
+          Success: pinning the helper boundary with executable 404/200 behavioral tests made the
+          documentation review concrete; already covered by observation @01KR4MPA. (3) Friction:
+          reflection-loop baseline commands produce very large mature-repo outputs and the skill
+          examples still mention workflow show without a run ref; already covered by inbox @01KQ8TTN
+          and @01KR293G. (4) Friction: review evidence logs have no first-class place beyond
+          optional checks; already covered by observation @01KR2JD1 and inbox @01KQEFTM. No new
+          untracked high-confidence item identified."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T20:50:17.863Z
+        completed_at: 2026-05-08T20:50:17.863Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T20:49:17.308Z
