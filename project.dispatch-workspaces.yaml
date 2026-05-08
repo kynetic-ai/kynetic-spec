@@ -14700,11 +14700,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-real-daemon-startup-failure-handling/01kr3w7q
     canonical_branch_head: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-08T18:02:12.214Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-08T18:02:14.885Z
     health:
       status: healthy
       issues: []
@@ -14718,7 +14718,7 @@ workspaces:
       target_branch: dev
       target_commit: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
       updated_at: 2026-05-08T18:02:12.214Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR3W7QYBRVY6SASCXWXNHFMZ"
     task_slug: task-fix-real-daemon-startup-failure-handling
@@ -14727,7 +14727,7 @@ workspaces:
       last_active_at: 2026-05-08T17:46:12.115Z
       last_reconciled_at: 2026-05-08T18:02:12.214Z
       created_at: 2026-05-08T17:26:18.855Z
-      updated_at: 2026-05-08T18:02:12.214Z
+      updated_at: 2026-05-08T18:02:14.885Z
     workspace_id: dispatch-workspace-01KR3W7QYBRVY6SASCXWXNHFMZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
