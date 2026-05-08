@@ -189525,7 +189525,18 @@ reviews:
     slugs: []
     title: Review fix guardrail daemon command classification (cycle 4)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run lint: exits 1 with known baseline 13 errors and 724 warnings; no changed-file
+          lint errors observed in task files."
+        name: lint
+        required: false
+        runner: oxlint
+        created_at: 2026-05-08T20:58:49.678Z
+        completed_at: 2026-05-08T20:58:49.678Z
     events:
       - _ulid: 01KR4P17GHQ3MYDGXPGENHCDS0
         actor: Jacob Chapel
@@ -189540,6 +189551,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T20:56:49.044Z
+      - _ulid: 01KR4P5KVK5H48WP7Y48EKKY02
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: lint
+        timestamp: 2026-05-08T20:58:51.124Z
     examined_commit: e23ece2eed929bad1e38d89cf824049e8aecf90b
     external_links: []
     lifecycle_state: open
@@ -189552,5 +189570,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T20:56:27.409Z
-    updated_at: 2026-05-08T20:56:47.595Z
+    updated_at: 2026-05-08T20:58:49.678Z
     notes: []
