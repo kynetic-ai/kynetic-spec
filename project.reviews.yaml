@@ -190606,3 +190606,29 @@ reviews:
     created_at: 2026-05-08T22:29:22.411Z
     updated_at: 2026-05-08T22:44:29.139Z
     notes: []
+  - _ulid: 01KR4YTTN0NFBZ90VG1KNB2YQW
+    slugs: []
+    title: Review harden Playwright daemon fixture cleanup registration (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR4YTTMYMYPWPJEWN47M03K1
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-08T23:30:14.814Z
+    examined_commit: e1d0800924872c4de07e819122cb4a2204430fda
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR3W7R7Y2JCNSJZGPNCM9QFA"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-08T23:30:14.816Z
+    updated_at: null
+    notes: []
