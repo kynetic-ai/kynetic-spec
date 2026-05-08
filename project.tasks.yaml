@@ -28340,6 +28340,7 @@
   slugs: []
   title: Stabilize flaky daemon startup review tests
   type: bug
+  spec_ref: "@daemon-backed-test-fixture-contract"
   status: in_progress
   blocked_by: []
   depends_on: []

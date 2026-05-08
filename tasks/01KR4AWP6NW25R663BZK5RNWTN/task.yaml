@@ -34,7 +34,7 @@ description: >-
 
   Goal: identify and fix the flaky readiness/cache or runtime setup behavior so these tests are
   deterministic under full-suite load.
-spec_ref: null
+spec_ref: "@daemon-backed-test-fixture-contract"
 meta_ref: null
 plan_ref: null
 status: in_progress
@@ -62,6 +62,13 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-08T20:56:51.029Z
+  - author: "@claude"
+    changes:
+      spec_ref:
+        new: "@daemon-backed-test-fixture-contract"
+        previous: null
+    command: task-set
+    timestamp: 2026-05-08T21:22:44.264Z
 created_at: 2026-05-08T17:41:44.275Z
 started_at: 2026-05-08T20:56:51.027Z
 todos: []
