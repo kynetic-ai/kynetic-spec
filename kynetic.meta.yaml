@@ -17272,6 +17272,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T02:56:43.871Z
+  - _ulid: 01KR2R8B10Q64WDT6NBY2QZ5T1
+    type: friction
+    content: During session reflection, a kspec workflow notes payload containing literal command
+      examples in backtick characters was subject to shell command substitution before reaching
+      kspec, stripping the intended text. Existing development convention warns about dollar signs,
+      angle brackets, and multiline payloads, but should also mention backtick command substitution
+      or recommend file-based payloads for literal command text.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-08T02:56:48.672Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
