@@ -40127,7 +40127,7 @@ runs:
     completed_at: 2026-05-08T16:45:04.241Z
   - _ulid: 01KR4AXS8WHK854JJJJ87R7Y2Y
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -40147,7 +40147,37 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T17:42:45.740Z
-        completed_at: 2026-05-08T17:42:45.740Z
+        completed_at: 2026-05-08T17:45:01.901Z
+        notes: >-
+          Step 2 — High-confidence friction identification.
+
+
+          Search results from existing state:
+
+          - 'absorbed task' / 'verification-only follow-on task' friction → ALREADY TRACKED as inbox
+          @01KQYSETM (added 2 days ago by @claude) covering 'when a fix-cycle review on task X
+          expands to implement work nominally scoped to dependent task Y, surface this absorption to
+          the downstream worker.' Same pattern; do not duplicate.
+
+          - 'verification-only iteration' success pattern → ALREADY TRACKED as observation
+          @01KF96T6E (success type) covering 'Verification-only iterations produce no commits -
+          efficient, avoids code churn, skipping PR is correct when working tree clean.' Same
+          pattern; do not duplicate.
+
+          - Stale 'test:e2e:smoke' npm script in package.json:57 → NOT TRACKED. The script invokes
+          'tests/e2e/api-server.spec.ts' which was deleted in commit 8f281707c (migrated to vitest).
+          package.json was not updated in that commit, leaving the smoke script broken. This is a
+          concrete, high-confidence, untracked bug. Searched 'smoke script', 'broken npm script',
+          'stale e2e', 'api-server.spec'; no matching coverage.
+
+
+          Only one item to capture: the broken test:e2e:smoke script. Will route to inbox per
+          loop-mode guidance (higher bar for direct task creation without user confirmation), even
+          though scope is clear (delete the api-server.spec.ts reference from package.json line 57).
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T17:45:01.901Z
+        completed_at: 2026-05-08T17:45:01.901Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T17:42:20.188Z
