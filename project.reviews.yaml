@@ -188723,6 +188723,18 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-08T19:32:22.190Z
         completed_at: 2026-05-08T19:32:22.190Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run lint exits 1 with the existing project baseline: 13 errors and 724 warnings, not
+          in the changed files. Focused oxlint of changed files still has a pre-existing
+          tools/no-leaky-test-daemon META_RULE_NAME error plus warnings."
+        name: lint
+        required: false
+        runner: npm run lint
+        created_at: 2026-05-08T19:32:32.168Z
+        completed_at: 2026-05-08T19:32:32.168Z
     events:
       - _ulid: 01KR4GFJ4E4P21DBD9RRA6MTZT
         actor: Jacob Chapel
@@ -188772,6 +188784,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-08T19:32:23.516Z
+      - _ulid: 01KR4H7KJ9M16231Q1FJPYAGG5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: lint
+        timestamp: 2026-05-08T19:32:33.481Z
     examined_commit: 09c83cadfc2e708ff8727c4fbbc2e9126d50fb2e
     external_links: []
     lifecycle_state: open
@@ -188805,5 +188824,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-08T19:19:25.583Z
-    updated_at: 2026-05-08T19:32:22.190Z
+    updated_at: 2026-05-08T19:32:32.168Z
     notes: []
