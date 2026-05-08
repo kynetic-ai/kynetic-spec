@@ -10109,12 +10109,12 @@ workspaces:
       detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
       reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-05-08T01:38:07.439Z
+      updated_at: 2026-05-08T01:41:07.527Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T01:40:13.444Z
+      updated_at: 2026-05-08T01:41:07.527Z
     integration:
       status: merged
       detail: integration:merged
@@ -10122,17 +10122,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2b4dc4dfd1d3667d9100be4b8e6996b0f2ca1840
-      updated_at: 2026-05-08T01:38:06.640Z
-    lifecycle_state: closing
+      updated_at: 2026-05-08T01:41:07.527Z
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR22GKACR7PZYFXZS9KEYVMQ"
     task_slug: task-migrate-playwright-daemon-fixture
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T01:24:16.918Z
-      last_reconciled_at: 2026-05-08T01:40:13.444Z
+      last_reconciled_at: 2026-05-08T01:41:07.527Z
       created_at: 2026-05-08T00:56:56.177Z
-      updated_at: 2026-05-08T01:40:13.444Z
+      updated_at: 2026-05-08T01:41:07.527Z
     workspace_id: dispatch-workspace-01KR22GKACR7PZYFXZS9KEYVMQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
