@@ -17415,8 +17415,12 @@ observations:
       route it through a dedicated validation path that cannot be approved for integration while
       tests fail."
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of @01KR3XY2, which already captures the same regression-test-only task
+      slicing conflict with review merge gates. Keeping @01KR3XY2 as the canonical unresolved
+      observation.
+    resolved: true
+    resolved_at: 2026-05-08T14:27:14.998Z
+    resolved_by: Jacob Chapel
     workflow_ref: "@01KR3ZMM"
     created_at: 2026-05-08T14:25:51.778Z
   - _ulid: 01KR3ZPYM0AZX4W09047MQDVNV
