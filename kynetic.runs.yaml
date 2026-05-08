@@ -41249,9 +41249,22 @@ runs:
     completed_at: 2026-05-08T22:05:03.587Z
   - _ulid: 01KR4TVPDK4ABMSY4QRNF1PQKA
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T22:20:48.947Z
+        completed_at: 2026-05-08T22:21:33.698Z
+        notes: "Worked well: the review workflow produced a durable review record with anchored blocker,
+          check evidence, and a final verdict; reading the diff before task notes exposed the
+          AC-coverage mismatch; full npm test provided strong regression evidence; the existing
+          shared-core daemon tests made it possible to separate shared fixture behavior from
+          Playwright wrapper behavior."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T22:21:33.698Z
+        completed_at: 2026-05-08T22:21:33.698Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T22:20:48.947Z
