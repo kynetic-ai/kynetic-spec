@@ -443,6 +443,22 @@ async function probeHealth(ctx: ReadinessProbeContext): Promise<StartupProbeResu
   }
 }
 
+/**
+ * Cache-readiness probe.
+ *
+ * Uses /api/debug/cache-status (not /api/tasks) so the probe reflects the
+ * actual entity-cache state per project. The disk-fallback in /api/tasks
+ * returns cache_status="ready" before registerEntityCache() runs (because
+ * cacheDomainState=undefined maps to "ready"); polling /api/tasks would
+ * therefore match prematurely during the daemon-startup window between
+ * server.listen() and onProjectRegistered() registering the cache. The
+ * test's first cache_status assertion would then race the subsequent
+ * loadAll() that flips the cache to "loading".
+ *
+ * /api/debug/cache-status reports `domains: null` until the cache is
+ * registered, so this probe rejects the premature-ready window and only
+ * accepts after the tasks domain has actually transitioned to "ready".
+ */
 async function probeCacheReady(ctx: ReadinessProbeContext): Promise<StartupProbeResult> {
   const exited = describeChildExit(ctx.child);
   if (exited) {
@@ -452,22 +468,59 @@ async function probeCacheReady(ctx: ReadinessProbeContext): Promise<StartupProbe
     };
   }
   try {
-    const response = await fetch(`${ctx.endpoint.apiUrl}/api/tasks`);
+    const response = await fetch(`${ctx.endpoint.apiUrl}/api/debug/cache-status`);
     const body = await response.text();
-    let cacheStatus: string | null = null;
+    if (!response.ok) {
+      return {
+        ok: false,
+        details: `cache-status http=${response.status} body=${body || "<empty>"}`,
+      };
+    }
+    let parsed: unknown;
     try {
-      const parsed = JSON.parse(body) as { meta?: { cache_status?: string } };
-      cacheStatus = parsed?.meta?.cache_status ?? null;
+      parsed = JSON.parse(body);
     } catch {
-      cacheStatus = null;
+      return {
+        ok: false,
+        details: `cache-status non-JSON body=${body || "<empty>"}`,
+      };
+    }
+    const projects = (parsed as { projects?: unknown }).projects;
+    if (!Array.isArray(projects) || projects.length === 0) {
+      return {
+        ok: false,
+        details: "cache-status reports no registered projects yet",
+      };
+    }
+    type CacheStatusProject = {
+      path?: string;
+      domains?: Record<string, { state?: string }> | null;
+    };
+    // Test daemons spawn exactly one startup project per child, so the
+    // first registered project is the one we polled for. If the daemon
+    // has not yet called registerEntityCache(), `domains` is null — that
+    // is the disk-fallback window the probe must reject.
+    const project = projects[0] as CacheStatusProject;
+    if (!project.domains) {
+      return {
+        ok: false,
+        details: `cache not yet registered for project=${project.path ?? "<unknown>"}`,
+      };
+    }
+    const tasksState = project.domains.tasks?.state;
+    if (tasksState !== "ready") {
+      return {
+        ok: false,
+        details: `cache tasks state=${tasksState ?? "<missing>"} project=${project.path ?? "<unknown>"}`,
+      };
     }
     return {
-      ok: response.ok && cacheStatus === "ready",
-      details: `cache status=${response.status} cache_status=${cacheStatus ?? "<missing>"}`,
+      ok: true,
+      details: `cache ready: project=${project.path ?? "<unknown>"} tasks=ready`,
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return { ok: false, details: `cache fetch error=${message}` };
+    return { ok: false, details: `cache-status fetch error=${message}` };
   }
 }
 

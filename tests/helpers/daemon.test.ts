@@ -210,6 +210,27 @@ describe("startTestDaemon happy path", { timeout: 60_000 }, () => {
     };
     expect(tasksBody.meta.cache_status).toBe("ready");
 
+    // ac-bounded-readiness (probe correctness) — when health-and-cache
+    // readiness resolves, the entity cache is genuinely registered with
+    // the tasks domain ready. Without this check the probe could match
+    // during the disk-fallback window between server.listen() and
+    // registerEntityCache(), where /api/tasks returns cache_status=ready
+    // because the cacheDomainState is undefined; the test's cache_status
+    // assertion above would then race a subsequent loadAll() that flips
+    // the tasks domain to "loading".
+    const cacheStatusResponse = await fetch(`${started.apiUrl}/api/debug/cache-status`);
+    expect(cacheStatusResponse.status).toBe(200);
+    const cacheStatusBody = (await cacheStatusResponse.json()) as {
+      projects: Array<{
+        path: string;
+        domains: Record<string, { state: string }> | null;
+      }>;
+    };
+    expect(cacheStatusBody.projects.length).toBeGreaterThan(0);
+    const cacheProject = cacheStatusBody.projects[0];
+    expect(cacheProject.domains).not.toBeNull();
+    expect(cacheProject.domains?.tasks?.state).toBe("ready");
+
     expect(started.child.exitCode).toBe(null);
 
     // ac-scoped-cleanup — stop targets only this child handle and exits the
