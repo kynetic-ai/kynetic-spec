@@ -39929,9 +39929,23 @@ runs:
     completed_at: 2026-05-08T15:21:18.568Z
   - _ulid: 01KR43WW406FT1DSJX0HDBGAPA
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T15:39:30.304Z
+        completed_at: 2026-05-08T15:40:03.552Z
+        notes: "What worked well: the detached-reviewer merge helper cleanly handled integration from the
+          detached snapshot and refreshed the occupied worktree; review records made prior cycle
+          blockers easy to verify; recording concrete check evidence before verdict made the merge
+          gate auditable; the selective expectClassifierGap pattern preserved failing-before-fix
+          intent while keeping the merge gate green and preventing parser/helper failures from
+          satisfying the regression."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T15:40:03.552Z
+        completed_at: 2026-05-08T15:40:03.552Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T15:39:30.304Z
