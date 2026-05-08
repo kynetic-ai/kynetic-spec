@@ -71,7 +71,7 @@ description: >
 spec_ref: "@daemon-test-mode-boundaries"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-implement-shared-daemon-test-fixture"
@@ -82,6 +82,14 @@ tags:
   - daemon
   - api
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-standardize-in-process-daemon-api-fixtures/01kr22gk
+  captured_at: 2026-05-08T02:34:42.867Z
+  commit: 8d20791d210a11231ae0a56cf52ee117a4a5dc8d
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR2NC3DJGDV58VEK3P1MB44Q
 history:
   - author: Jacob Chapel
@@ -104,7 +112,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-08T02:07:04.055Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-standardize-in-process-daemon-api-fixtures/01kr22gk
+          captured_at: 2026-05-08T02:34:42.867Z
+          commit: 8d20791d210a11231ae0a56cf52ee117a4a5dc8d
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-08T02:34:42.869Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-08T02:34:42.869Z
 created_at: 2026-05-07T20:36:51.229Z
 started_at: 2026-05-08T02:07:04.054Z
+submitted_at: 2026-05-08T02:34:42.869Z
 todos: []
 automation: eligible
