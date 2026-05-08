@@ -17419,6 +17419,17 @@ observations:
     resolved: false
     workflow_ref: "@01KR3ZMM"
     created_at: 2026-05-08T14:25:51.778Z
+  - _ulid: 01KR3ZPYM0AZX4W09047MQDVNV
+    type: success
+    content: "Review gate pattern worked well: reading the diff before notes, then running the focused
+      failing suite twice and the full suite produced clear evidence that the submitted branch
+      introduced a deterministic red test. Recording both failed checks plus an anchored blocker
+      made the needs_work transition unambiguous."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KR3ZMM"
+    created_at: 2026-05-08T14:26:21.952Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
