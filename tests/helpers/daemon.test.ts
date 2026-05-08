@@ -8,6 +8,7 @@
  * for why annotations must be line comments rather than docstring entries.
  */
 import { describe, expect, it, onTestFinished } from "vitest";
+import type { ChildProcess } from "node:child_process";
 import { existsSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 
@@ -22,6 +23,7 @@ import { readTestOutputSync } from "./cli.js";
 describe("buildDaemonChildEnv", () => {
   // AC: @daemon-backed-test-fixture-contract ac-no-ambient-daemon-control
   // AC: @daemon-backed-test-fixture-contract ac-isolated-home-config
+  // AC: @daemon-test-startup-failure-hygiene ac-child-env-sanitized
   // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
   // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
   it("strips ambient daemon-control vars and isolates HOME", () => {
@@ -76,6 +78,7 @@ describe("buildDaemonChildEnv", () => {
   });
 
   // AC: @daemon-backed-test-fixture-contract ac-no-ambient-daemon-control
+  // AC: @daemon-test-startup-failure-hygiene ac-child-env-sanitized
   it("honors caller-provided extraEnv overrides verbatim", () => {
     const env = buildDaemonChildEnv({
       runtime: "bun",
@@ -328,3 +331,238 @@ describe("startTestDaemon readiness diagnostics", { timeout: 60_000 }, () => {
     expect(registeredStop).not.toBeNull();
   });
 });
+
+describe("startTestDaemon process launch failure", { timeout: 30_000 }, () => {
+  // AC: @daemon-test-startup-failure-hygiene ac-process-launch-failure-diagnosed
+  // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+  // AC: @daemon-backed-test-fixture-contract ac-readiness-diagnostics
+  // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+  it("surfaces a bounded startup diagnostic when the OS rejects the spawn", async () => {
+    const project = await createTestDaemonProject();
+    onTestFinished(async () => {
+      await project.cleanup();
+    });
+
+    // Capture any unhandled child 'error' events for the duration of the
+    // test. Without a listener attached by startTestDaemon itself, an ENOENT
+    // 'error' event from spawn() would otherwise propagate as an
+    // uncaughtException and abort the test before assertions run. We assert
+    // separately that the failure surfaces as a DaemonReadinessError, so any
+    // captured uncaught error indicates a missing 'error' listener in the
+    // helper.
+    const capturedUncaught: unknown[] = [];
+    const onUncaught = (err: unknown): void => {
+      capturedUncaught.push(err);
+    };
+    process.on("uncaughtException", onUncaught);
+    onTestFinished(() => {
+      process.off("uncaughtException", onUncaught);
+    });
+
+    // A binary that cannot exist on any reasonable host. spawn() will return
+    // a child handle synchronously and emit 'error' (ENOENT) asynchronously.
+    const nonexistentBinary = join(
+      "/nonexistent",
+      "kspec-daemon-test-binary-xyz-",
+      `${Date.now()}-${process.pid}`,
+    );
+
+    let registeredStop: (() => Promise<void>) | null = null;
+    let thrown: unknown = null;
+    const startedAt = Date.now();
+    const failingTimeoutMs = 4_000;
+
+    try {
+      await startTestDaemon(project, {
+        __testBinaryOverride: nonexistentBinary,
+        timeoutMs: failingTimeoutMs,
+        intervalMs: 50,
+        registerCleanup: (stop) => {
+          registeredStop = stop;
+        },
+      });
+    } catch (error) {
+      thrown = error;
+    }
+    const elapsed = Date.now() - startedAt;
+
+    onTestFinished(async () => {
+      if (registeredStop) await registeredStop();
+    });
+
+    // ac-process-launch-failure-diagnosed — the helper must convert the
+    // spawn-time 'error' (ENOENT) into a structured DaemonReadinessError
+    // rather than hanging on the readiness wait or letting the error
+    // propagate as uncaughtException.
+    expect(capturedUncaught).toEqual([]);
+    expect(thrown).toBeInstanceOf(DaemonReadinessError);
+    const error = thrown as DaemonReadinessError;
+    const d = error.diagnostics;
+
+    // The diagnostic must include the runtime label, the resolved endpoint,
+    // and a cause string identifying the launch failure. The pid is allowed
+    // to be undefined since the OS never started the process.
+    expect(d.runtime).toBe("node");
+    expect(d.endpoint.apiUrl.startsWith("http://127.0.0.1:")).toBe(true);
+    expect(d.endpoint.wsUrl.startsWith("ws://127.0.0.1:")).toBe(true);
+    expect(d.endpoint.port).toBeGreaterThan(0);
+    expect(typeof d.cause).toBe("string");
+    expect(d.cause.length).toBeGreaterThan(0);
+    // The cause should mention the launch failure (ENOENT or the failed
+    // binary path) so the diagnostic is actionable.
+    expect(d.cause).toMatch(/ENOENT|spawn|launch|nonexistent/i);
+
+    // ac-readiness-diagnostics — the bundle is shaped consistently with the
+    // readiness-timeout case so consumers do not have to special-case launch
+    // failures.
+    expect(typeof d.stdoutTail).toBe("string");
+    expect(typeof d.stderrTail).toBe("string");
+    expect(d.lastHealth).not.toBeNull();
+    expect(d.lastCacheStatus).not.toBeNull();
+
+    // The error message echoes the bundle so failure logs are actionable
+    // without unwrapping the diagnostics object.
+    expect(error.message).toContain("Test daemon failed to reach readiness");
+
+    // Bounded — must not hang past a small multiple of the configured
+    // timeout. ENOENT is observable almost immediately, so the actual
+    // elapsed time should be well under the configured budget.
+    expect(elapsed).toBeLessThan(failingTimeoutMs * 2);
+
+    // ac-owned-child-stopped-after-startup-failure — registerCleanup was
+    // invoked synchronously after spawn even though the OS rejected the
+    // launch; the cleanup hook must be safe to call.
+    expect(registeredStop).not.toBeNull();
+    await (registeredStop as unknown as () => Promise<void>)();
+  });
+});
+
+describe(
+  "startTestDaemon scoped cleanup on readiness failure",
+  { timeout: 60_000 },
+  () => {
+    // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+    // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+    // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+    // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+    it("stops the fixture-owned child before reporting readiness failure", async () => {
+      const project = await createTestDaemonProject();
+      onTestFinished(async () => {
+        await project.cleanup();
+      });
+
+      // Capture the child handle via the probe context. The probe runs after
+      // the child is spawned but always rejects, forcing the readiness wait
+      // to fail. We then assert the captured child has terminated by the
+      // time startTestDaemon throws — proving the helper stops the child
+      // before returning failure to the caller.
+      let capturedChild: ChildProcess | null = null;
+      let registeredStop: (() => Promise<void>) | null = null;
+      let thrown: unknown = null;
+
+      try {
+        await startTestDaemon(project, {
+          readiness: {
+            mode: "custom",
+            probe: (ctx) => {
+              capturedChild = ctx.child;
+              return { ok: false, details: "always-fail" };
+            },
+          },
+          timeoutMs: 600,
+          intervalMs: 50,
+          registerCleanup: (stop) => {
+            registeredStop = stop;
+          },
+        });
+      } catch (error) {
+        thrown = error;
+      }
+
+      onTestFinished(async () => {
+        if (registeredStop) await registeredStop();
+      });
+
+      expect(thrown).toBeInstanceOf(DaemonReadinessError);
+      expect(capturedChild).not.toBeNull();
+      const child = capturedChild as unknown as ChildProcess;
+
+      // ac-owned-child-stopped-after-startup-failure — by the time
+      // startTestDaemon throws, the captured child must already be exited or
+      // signaled. The helper awaits stop() before throwing, so exit/signal
+      // state is observable on the handle when the catch block runs.
+      expect(child.exitCode !== null || child.signalCode !== null).toBe(true);
+
+      // ac-scoped-cleanup — the registered stop hook is safe to call again
+      // (idempotent stop). It must not throw, kill ambient processes, or
+      // re-fetch the global pid file.
+      expect(registeredStop).not.toBeNull();
+      await (registeredStop as unknown as () => Promise<void>)();
+      expect(child.exitCode !== null || child.signalCode !== null).toBe(true);
+    });
+  },
+);
+
+describe(
+  "startTestDaemon registerCleanup ordering",
+  { timeout: 60_000 },
+  () => {
+    // AC: @daemon-test-startup-failure-hygiene ac-cleanup-registered-before-readiness-wait
+    // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+    // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+    // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+    it("invokes registerCleanup before any readiness probe runs", async () => {
+      const project = await createTestDaemonProject();
+      onTestFinished(async () => {
+        await project.cleanup();
+      });
+
+      // Synthetic registerCleanup hook: record the order in which the helper
+      // invokes registerCleanup vs the first readiness probe. The contract
+      // is that registerCleanup MUST run first so a wrapper (Playwright,
+      // vitest onTestFinished) has a teardown hook in place before the
+      // readiness wait can fail.
+      const order: string[] = [];
+      let registeredStop: (() => Promise<void>) | null = null;
+      let thrown: unknown = null;
+
+      try {
+        await startTestDaemon(project, {
+          readiness: {
+            mode: "custom",
+            probe: () => {
+              order.push("probe");
+              return { ok: false, details: "always-fail" };
+            },
+          },
+          timeoutMs: 400,
+          intervalMs: 50,
+          registerCleanup: (stop) => {
+            order.push("registerCleanup");
+            registeredStop = stop;
+          },
+        });
+      } catch (error) {
+        thrown = error;
+      }
+
+      onTestFinished(async () => {
+        if (registeredStop) await registeredStop();
+      });
+
+      expect(thrown).toBeInstanceOf(DaemonReadinessError);
+      // ac-cleanup-registered-before-readiness-wait — registerCleanup is
+      // invoked exactly once, before the first probe call.
+      expect(order.filter((event) => event === "registerCleanup")).toHaveLength(1);
+      expect(order[0]).toBe("registerCleanup");
+      // The probe ran at least once after registration, so the test
+      // observed real ordering rather than a no-probe early exit.
+      expect(order).toContain("probe");
+      const firstProbeIndex = order.indexOf("probe");
+      const registerIndex = order.indexOf("registerCleanup");
+      expect(registerIndex).toBeLessThan(firstProbeIndex);
+    });
+  },
+);

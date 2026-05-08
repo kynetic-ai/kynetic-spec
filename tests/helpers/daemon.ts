@@ -126,6 +126,15 @@ export interface StartTestDaemonOptions {
    * any callback that survives assertion failures inside the readiness wait.
    */
   registerCleanup?: (stop: () => Promise<void>) => void;
+  /**
+   * Test-only seam: override the binary path passed to `spawn()` while keeping
+   * `runtime` for env construction (NODE_ENV vs BUN_ENV) and diagnostic
+   * reporting. Production callers must not pass this. Contract tests use it
+   * to simulate process launch failures (e.g. ENOENT from a nonexistent
+   * binary path) without depending on whether a real system runtime is
+   * actually missing on the host.
+   */
+  __testBinaryOverride?: string;
 }
 
 export interface StartedTestDaemon {
@@ -588,7 +597,8 @@ export async function startTestDaemon(
     extraArgs: opts.extraArgs ?? [],
   });
 
-  const child = spawn(runtime, args, {
+  const spawnBinary = opts.__testBinaryOverride ?? runtime;
+  const child = spawn(spawnBinary, args, {
     cwd: project.tempDir,
     stdio: ["ignore", "pipe", "pipe"],
     env,
@@ -599,10 +609,27 @@ export async function startTestDaemon(
   child.stdout?.on("data", (chunk: Buffer) => stdoutBuf.append(chunk));
   child.stderr?.on("data", (chunk: Buffer) => stderrBuf.append(chunk));
 
+  // Capture spawn-time errors (e.g. ENOENT from a bad runtime path) before
+  // they propagate as uncaughtException. The readiness orchestration races
+  // the readiness wait against this signal so launch failures surface as a
+  // structured DaemonReadinessError with a launch-related cause instead of
+  // a misleading "Timed out waiting for daemon health" message.
+  let launchError: Error | null = null;
+  let signalLaunchError: ((err: Error) => void) | null = null;
+  child.once("error", (err: Error) => {
+    launchError = err;
+    signalLaunchError?.(err);
+  });
+
   let stopped = false;
   const stop = async (): Promise<void> => {
     if (stopped) return;
     stopped = true;
+    // If the OS never started the child (spawn ENOENT / EACCES etc), there
+    // is no pid to signal and no 'exit' event will fire. killChildScoped
+    // would block for its graceful timeout before giving up — short-circuit
+    // instead so cleanup stays bounded for launch-failure callers.
+    if (launchError && child.pid === undefined) return;
     await killChildScoped(child);
   };
 
@@ -623,7 +650,7 @@ export async function startTestDaemon(
   const timeoutMs = opts.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const intervalMs = opts.intervalMs ?? DEFAULT_INTERVAL_MS;
 
-  try {
+  const readinessOp = async (): Promise<void> => {
     if (readiness.mode === "custom") {
       await waitForStartup(
         `daemon at ${endpoint.apiUrl}`,
@@ -644,8 +671,34 @@ export async function startTestDaemon(
         );
       }
     }
+  };
+
+  try {
+    const readinessPromise = readinessOp();
+    const launchFailurePromise = new Promise<never>((_, reject) => {
+      if (launchError) {
+        reject(launchError);
+        return;
+      }
+      signalLaunchError = reject;
+    });
+    // Suppress unhandled-rejection warnings on whichever promise loses the
+    // race: if launch fails first, readinessPromise will eventually time
+    // out; if readiness fails first, launchFailurePromise stays pending
+    // until the test exits. The race below still observes the original
+    // rejection because Promise.race watches the original promises.
+    readinessPromise.catch(() => {});
+    launchFailurePromise.catch(() => {});
+    await Promise.race([readinessPromise, launchFailurePromise]);
   } catch (error) {
-    const cause = error instanceof Error ? error.message : String(error);
+    const baseCause = error instanceof Error ? error.message : String(error);
+    // When the OS rejects the spawn (ENOENT, EACCES, ...), prefer the
+    // launch-error message so the diagnostic mentions the launch failure
+    // (spawn / ENOENT / the failed binary path) instead of falling back to
+    // the readiness timeout message that races alongside it.
+    const cause = launchError
+      ? `process launch failed: ${launchError.message}`
+      : baseCause;
     // Always sample the diagnostic endpoints once at failure time, regardless
     // of which readiness mode ran. Custom probes never touch /api/health or
     // /api/debug/cache-status during the wait, so the bundle would otherwise
