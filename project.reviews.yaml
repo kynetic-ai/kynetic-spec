@@ -188371,6 +188371,12 @@ reviews:
         payload:
           thread_ulid: 01KR4EES4NV6WANQ4V2ZBAY074
         timestamp: 2026-05-08T19:14:32.376Z
+      - _ulid: 01KR4G6WD7CMVJ068D0MY44WM2
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR4EES4NV6WANQ4V2ZBAY074
+        timestamp: 2026-05-08T19:14:41.191Z
     examined_commit: 2f72e91ffd2596c10f1b626fa3676a06a8daf436
     external_links: []
     lifecycle_state: closed
@@ -188436,6 +188442,8 @@ reviews:
               origin/dev; no new errors introduced by this branch."
             created_at: 2026-05-08T19:14:31.086Z
         kind: blocker
+        resolved_at: 2026-05-08T19:14:39.891Z
+        resolved_by: "@claude"
       - _ulid: 01KR4EF4WX18XRFSWD4PCKM71F
         entries:
           - _ulid: 01KR4EF4WXQWQB6JPGX5QCTSC9
@@ -188461,7 +188469,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T18:44:25.433Z
     created_at: 2026-05-08T18:30:52.605Z
-    updated_at: 2026-05-08T19:14:31.086Z
+    updated_at: 2026-05-08T19:14:39.891Z
     notes: []
   - _ulid: 01KR4F56WN75Z461F36PHXWKE6
     slugs: []
