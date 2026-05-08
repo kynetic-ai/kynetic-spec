@@ -190084,6 +190084,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-08T22:02:22.740Z
+      - _ulid: 01KR4T4DCERWM7CQ9NQ0V8PM69
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR4S6ZP1VENAFAP61DYQQDVD
+        timestamp: 2026-05-08T22:08:06.030Z
     examined_commit: 0195510d171b0ba5dada2b6fd20c3479b812fc93
     external_links: []
     lifecycle_state: closed
@@ -190118,6 +190124,15 @@ reviews:
               regressions for process.execPath forms without reintroducing the cat/grep false
               positives."
             created_at: 2026-05-08T21:52:01.730Z
+          - _ulid: 01KR4T4BVZB35KFBTECJRFXS9T
+            author: "@claude"
+            body: "Fix cycle 5: extending isRecognisedRuntimeArg to recognise process.execPath as a Node runtime
+              expression in the spawn-like runtime form, plus behavioral regressions for
+              spawn(process.execPath, [DAEMON_ENTRY, ...]) and execFile(process.execPath, [...]).
+              Precision preserved: only the exact MemberExpression process.execPath is recognised,
+              so other-object.execPath and process.<other-prop> still fall through and the
+              cat/grep/nodemon/docker/argv-only false positives remain rejected."
+            created_at: 2026-05-08T22:08:04.479Z
         kind: blocker
       - _ulid: 01KR4SSSNGB3NFVHEPF4YZFJ5K
         entries:
@@ -190145,7 +190160,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T22:02:22.740Z
     created_at: 2026-05-08T21:49:15.098Z
-    updated_at: 2026-05-08T22:02:22.740Z
+    updated_at: 2026-05-08T22:08:04.479Z
     notes: []
   - _ulid: 01KR4T22WFEYCN1VA94FKQNG9Q
     slugs: []
