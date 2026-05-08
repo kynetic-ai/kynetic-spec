@@ -39614,7 +39614,7 @@ runs:
     started_at: 2026-05-08T13:53:40.140Z
     completed_at: 2026-05-08T13:55:26.249Z
   - _ulid: 01KR3Y4GP220RMZ3GAPEKEJMM2
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -39651,3 +39651,4 @@ runs:
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T13:58:49.282Z
+    completed_at: 2026-05-08T14:00:24.664Z
