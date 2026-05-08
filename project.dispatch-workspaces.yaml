@@ -15721,12 +15721,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T19:40:06.035Z
+      updated_at: 2026-05-08T19:40:12.112Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T19:40:06.035Z
+      updated_at: 2026-05-08T19:40:12.112Z
     integration:
       status: pending
       detail: null
@@ -15734,17 +15734,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1148fad7662616a925c27654f1c01cb24f4544e3
-      updated_at: 2026-05-08T19:40:06.035Z
-    lifecycle_state: ready
+      updated_at: 2026-05-08T19:40:12.112Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KR3W7RTYPWDJVCQFZD2042P2"
     task_slug: task-fix-mock-daemon-cleanup-env-hygiene
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T19:17:42.829Z
-      last_reconciled_at: 2026-05-08T19:40:06.035Z
+      last_reconciled_at: 2026-05-08T19:40:12.112Z
       created_at: 2026-05-08T18:30:14.056Z
-      updated_at: 2026-05-08T19:40:06.035Z
+      updated_at: 2026-05-08T19:40:12.112Z
     workspace_id: dispatch-workspace-01KR3W7RTYPWDJVCQFZD2042P2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
