@@ -40776,7 +40776,7 @@ runs:
     completed_at: 2026-05-08T20:02:38.135Z
   - _ulid: 01KR4M7AVBS33KH6BX656BEV6S
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -40790,7 +40790,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T20:25:58.306Z
-        completed_at: 2026-05-08T20:25:58.306Z
+        completed_at: 2026-05-08T20:26:09.179Z
+        notes: "Friction points: full-suite review verification hit a daemon-build timeout after a long run,
+          requiring focused rerun triage before classification; this is already represented by the
+          flaky daemon startup stabilization task. Another small friction was review evidence being
+          captured as a nit thread rather than a first-class review field, which appears already
+          tracked by an existing observation."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T20:26:09.179Z
+        completed_at: 2026-05-08T20:26:09.179Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T20:24:50.283Z
