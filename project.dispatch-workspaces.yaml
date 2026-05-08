@@ -12657,18 +12657,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-add-guardrail-classification-regressions/01kr3w7p
-    canonical_branch_head: 9ff274ab87aa2948893aecf7bebcc9e14827572c
+    canonical_branch_head: 3f1ee8ce0d0da31add4c40b3ee09b11bb9f048ad
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T14:09:25.367Z
+      updated_at: 2026-05-08T14:23:09.866Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T14:09:49.130Z
+      updated_at: 2026-05-08T14:23:09.866Z
     integration:
       status: pending
       detail: null
@@ -12676,7 +12676,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
-      updated_at: 2026-05-08T14:09:25.367Z
+      updated_at: 2026-05-08T14:23:09.866Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR3W7PCMZ7KPMPJ9ZFBQXX7W"
@@ -12684,9 +12684,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T14:09:49.130Z
-      last_reconciled_at: 2026-05-08T14:09:49.130Z
+      last_reconciled_at: 2026-05-08T14:23:09.866Z
       created_at: 2026-05-08T13:27:14.798Z
-      updated_at: 2026-05-08T14:09:49.130Z
+      updated_at: 2026-05-08T14:23:09.866Z
     workspace_id: dispatch-workspace-01KR3W7PCMZ7KPMPJ9ZFBQXX7W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
