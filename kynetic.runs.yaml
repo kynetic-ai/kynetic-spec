@@ -39251,7 +39251,7 @@ runs:
     completed_at: 2026-05-08T04:43:25.935Z
   - _ulid: 01KR2ZTRPHCWCT6BVFRPR6E0XK
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -39373,10 +39373,19 @@ runs:
 
           I'll propose (A) and (B) for capture. (C) is real but lower priority — defer to inbox
           without a strong push.
-      - status: completed
+      - status: skipped
         step_index: 4
         started_at: 2026-05-08T05:10:57.270Z
-        completed_at: 2026-05-08T05:10:57.270Z
+        completed_at: 2026-05-08T05:11:08.775Z
+        notes: "Skipping interactive discussion: this session ran in autonomous dispatch mode with no
+          interactive user available. Applying loop-mode discipline for capture: only items with
+          clear scope and high confidence get persisted, prefer inbox over task add without user
+          confirmation, and skip the success-pattern observation in (B) as a borderline call without
+          sign-off."
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-08T05:11:08.775Z
+        completed_at: 2026-05-08T05:11:08.775Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T05:09:12.529Z
