@@ -72,3 +72,58 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T22:19:59.516Z
+  - _ulid: 01KR4WZTAF8ZNTKJHX2T6XC30J
+    content: >-
+      Fix cycle 1: addressed reviewer's MUST-FIX blocker by changing both the wrapper architecture
+      and the test.
+
+
+      What changed:
+
+      - daemon-fixture.ts: helper now takes a required registerCleanup callback from the caller and
+      forwards it directly to startTestDaemon. Removed the internal earlyStop capture and the
+      StartPlaywrightFixtureDaemonResult wrapper - the helper now returns StartedTestDaemon. This
+      lets the caller hold the captured stop even if the helper rejects.
+
+      - test-base.ts: passes its own registerCleanup to the helper so earlyStop is set inside the
+      wrapper's closure. The outer try/finally can now drive the registered stop on the
+      startup-failure path (finally calls earlyStop, with a defensive fallback to started.stop on
+      success).
+
+      - tests/e2e-fixture-daemon-cleanup.test.ts: rewrote test 2 as a behavioral assertion. The fake
+      startTestDaemon registers a recordable stop and throws to simulate a readiness failure; the
+      test mirrors the wrapper's setup/finally pattern and asserts stopCalls === ['stop-invoked'].
+      earlyStopAtFailure is snapshotted inside catch so a regression that registers post-failure
+      cannot mask itself by setting earlyStop in finally.
+
+
+      Why this addresses the blocker:
+
+      The reviewer noted that the prior test never observed the registered stop running on the
+      failure path. With the new architecture the wrapper actually invokes the registered stop in
+      finally on the failure path, and the test verifies it ran. A regression that drops either the
+      registration order or the finally-invocation would fail the stopCalls assertion.
+
+
+      Verification:
+
+      - npm test --fresh tests/e2e-fixture-daemon-cleanup.test.ts: 3/3 pass
+
+      - npm test --fresh tests/helpers/daemon.test.ts: 9/9 pass (no regression in shared core)
+
+      - npm test tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts:
+      77/77 pass
+
+      - npx playwright test tests/e2e/smoke.spec.ts: 6/6 pass
+
+      - npx playwright test tests/e2e/connection.spec.ts: 7/7 pass (exercises stop/start cycle
+      through the new wrapper plumbing)
+
+      - oxlint on changed files: 0 warnings, 0 errors
+
+      - npx tsc --noEmit: clean
+
+      - Full vitest suite: 2412 suites passed, 8830 tests passed, 5 skipped (~2487s)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T22:58:01.167Z
