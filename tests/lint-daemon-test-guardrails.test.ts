@@ -888,3 +888,296 @@ describe("bun script harness", () => {
     });
   });
 });
+
+/**
+ * Daemon test guardrail precision tests.
+ *
+ * These tests cover @daemon-test-guardrail-precision: the classifier inside
+ * the no-leaky-test-daemon rule must be tied to daemon behavior rather than
+ * incidental token sequences. They are written as failing-before-fix
+ * regressions that capture today's known classifier gaps:
+ *
+ *   1. Direct daemon entrypoint invocation through child-process APIs
+ *      beyond `spawn` / `spawnSync`. The current `readDaemonSpawn`
+ *      implementation only inspects `spawn` / `spawnSync`, so
+ *      `fork("dist/daemon/index.js", ...)` and exec-file style calls that
+ *      launch the daemon entrypoint are silently allowed even though the
+ *      AC says any direct daemon-entrypoint start outside the approved
+ *      helper paths must be reported.
+ *
+ *   2. Detached-serve detection that fires on any subprocess whose argv
+ *      argument array happens to contain the words "serve", "start", and
+ *      "--detach", regardless of whether the executable is actually a
+ *      kspec lifecycle command. The AC requires the guardrail to ignore
+ *      unrelated subprocesses with coincidentally overlapping argv tokens.
+ *
+ * Each test runs the AC's required post-fix assertions (exit code AND rule
+ * name AND, where appropriate, message fragment) inside the helper
+ * `expectClassifierGap`. Today those assertions throw, the helper validates
+ * the failure shape against the EXACT current classifier gap, and the test
+ * passes. A generic parser/helper failure does NOT match the known gap
+ * shape and re-throws — so an unrelated oxlint crash cannot satisfy the
+ * regression by accident (this is the explicit task contract, and it is
+ * what bare `it.fails()` could not enforce: under `it.fails`, ANY thrown
+ * assertion in the body counts as the expected failure, including a
+ * precondition failure caused by an unrelated parser crash).
+ *
+ * The plan deliberately splits regressions and the rule fix across two
+ * tasks (@task-add-guardrail-classification-regressions and
+ * @task-fix-guardrail-daemon-command-classification). The
+ * `expectClassifierGap` wrapper is the forcing function: once the rule fix
+ * lands, the post-fix assertions succeed, the catch block does not run,
+ * and the helper throws to force the dependent task to remove the wrapper
+ * and let the post-fix assertions stand on their own. Do not silence by
+ * deleting the test — remove `expectClassifierGap(...)` and inline its
+ * `assertPostFixBehavior` callback into the test body.
+ */
+
+/**
+ * Asserts that oxlint itself ran without a parser, helper, or internal
+ * failure. Used as the precondition for every classifier-gap regression so
+ * that an unrelated oxlint crash cannot satisfy the bug-shape assertions
+ * that follow. Exit code 0 means "no diagnostics" and exit code 1 means
+ * "rule diagnostics emitted"; any other exit code, or any error/panic
+ * fragment in the output, is treated as a parser/helper failure that
+ * invalidates the regression.
+ */
+function expectOxlintRanCleanly(result: OxlintResult): void {
+  expect([0, 1]).toContain(result.exitCode);
+  expect(result.output).not.toMatch(
+    /panic|panicked|internal error|failed to parse|parse error|cannot find|module not found|enoent/i,
+  );
+}
+
+/**
+ * Selective expected-failure helper for classifier-gap regressions.
+ *
+ * The test asserts the AC's post-fix behavior via `assertPostFixBehavior`.
+ * Today, the rule still has the classifier gap, so those assertions throw.
+ * This helper catches that failure and then re-asserts the EXACT current
+ * gap shape via `assertKnownGapShape` — so a generic parser/helper failure
+ * (which would also throw inside `assertPostFixBehavior`) cannot satisfy
+ * the regression by accident: such a failure would not match the known
+ * gap shape and would re-throw.
+ *
+ * When the dependent rule fix lands, `assertPostFixBehavior` succeeds, the
+ * catch block does not run, and this helper throws to force the dependent
+ * task (@task-fix-guardrail-daemon-command-classification) to remove the
+ * helper wrapper and let the post-fix assertions stand on their own.
+ */
+function expectClassifierGap(
+  result: OxlintResult,
+  assertPostFixBehavior: () => void,
+  assertKnownGapShape: () => void,
+): void {
+  expectOxlintRanCleanly(result);
+  let postFixPassed = false;
+  try {
+    assertPostFixBehavior();
+    postFixPassed = true;
+  } catch {
+    // Expected failure today. Verify the failure shape is the known
+    // classifier gap and not an unrelated oxlint or helper error — any
+    // assertion failure here re-throws and fails the test.
+    assertKnownGapShape();
+  }
+  if (postFixPassed) {
+    throw new Error(
+      "Classifier no longer exhibits the captured gap. " +
+        "Remove expectClassifierGap() and let the post-fix assertions stand " +
+        "(see @task-fix-guardrail-daemon-command-classification).",
+    );
+  }
+}
+
+describe("daemon test guardrail precision", () => {
+  // AC: @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged
+  // AC: @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged
+  describe("direct daemon entry via non-spawn child-process APIs is flagged", () => {
+    it("flags fork(\"dist/daemon/index.js\", ...) as a direct daemon entrypoint invocation", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { fork } from "child_process";
+
+describe("fork daemon entry literal", () => {
+  it("forks the daemon entrypoint", () => {
+    const child = fork("dist/daemon/index.js", ["--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expectClassifierGap(
+        result,
+        () => {
+          // Post-fix: the rule must report this fork() as a direct daemon
+          // entrypoint invocation outside the approved helper paths.
+          expect(result.exitCode).not.toBe(0);
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+        },
+        () => {
+          // Known gap today: readDaemonSpawn only handles spawn/spawnSync,
+          // so fork() is silently allowed. No diagnostic emitted.
+          expect(result.exitCode).toBe(0);
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
+    });
+
+    it("flags fork(DAEMON_ENTRY, ...) as a direct daemon entrypoint invocation", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { fork } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("fork daemon entry identifier", () => {
+  it("forks via DAEMON_ENTRY", () => {
+    const child = fork(DAEMON_ENTRY, ["--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expectClassifierGap(
+        result,
+        () => {
+          expect(result.exitCode).not.toBe(0);
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+        },
+        () => {
+          expect(result.exitCode).toBe(0);
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
+    });
+
+    it("flags execFile(\"node\", [\"dist/daemon/index.js\", ...]) as a direct daemon entry invocation", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { execFile } from "child_process";
+
+describe("execFile daemon entry literal", () => {
+  it("execFiles the daemon entrypoint", () => {
+    const child = execFile("node", ["dist/daemon/index.js", "--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expectClassifierGap(
+        result,
+        () => {
+          expect(result.exitCode).not.toBe(0);
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+        },
+        () => {
+          expect(result.exitCode).toBe(0);
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
+    });
+
+    it("flags execFileSync(\"node\", [DAEMON_ENTRY, ...]) as a direct daemon entry invocation", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execFileSync } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("execFileSync daemon entry identifier", () => {
+  it("execFileSyncs the daemon entrypoint", () => {
+    const stdout = execFileSync("node", [DAEMON_ENTRY, "--port", "0"]);
+    expect(stdout).toBeDefined();
+  });
+});
+`,
+      });
+      expectClassifierGap(
+        result,
+        () => {
+          expect(result.exitCode).not.toBe(0);
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+        },
+        () => {
+          expect(result.exitCode).toBe(0);
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
+    });
+  });
+
+  // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+  describe("non-kspec subprocesses are not reported as daemon lifecycle violations", () => {
+    it("does not flag spawn(\"echo\", [\"serve\", \"start\", \"--detach\"]) — argv tokens overlap but executable is unrelated", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawn } from "child_process";
+
+describe("non-kspec subprocess with overlapping argv tokens", () => {
+  it("runs echo with daemon-lifecycle words", () => {
+    const child = spawn("echo", ["serve", "start", "--detach"]);
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expectClassifierGap(
+        result,
+        () => {
+          // Post-fix: the rule must ignore this — echo is not a kspec
+          // lifecycle command, so the overlapping argv tokens are
+          // coincidental and must not produce a diagnostic.
+          expect(result.exitCode).toBe(0);
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+        () => {
+          // Known gap today: argsResolveToDetachedServe scans all argv
+          // tokens regardless of executable, so echo is incorrectly
+          // flagged.
+          expect(result.exitCode).not.toBe(0);
+          expect(result.output).toContain("no-leaky-test-daemon");
+        },
+      );
+    });
+
+    it("does not flag spawnSync(\"git\", [\"log\", \"serve\", \"start\", \"--detach\"]) — git is not a kspec lifecycle command", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync } from "child_process";
+
+describe("git subprocess with overlapping argv tokens", () => {
+  it("runs git log with daemon-lifecycle words", () => {
+    const result = spawnSync("git", ["log", "serve", "start", "--detach"]);
+    expect(result.status).toBe(0);
+  });
+});
+`,
+      });
+      expectClassifierGap(
+        result,
+        () => {
+          expect(result.exitCode).toBe(0);
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+        () => {
+          expect(result.exitCode).not.toBe(0);
+          expect(result.output).toContain("no-leaky-test-daemon");
+        },
+      );
+    });
+  });
+});
