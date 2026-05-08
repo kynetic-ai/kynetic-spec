@@ -186051,7 +186051,35 @@ reviews:
     slugs: []
     title: Review detached cleanup timing regressions
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Command: npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts. Result: exit 1.
+          tests/lint-no-leaky-test-daemon.test.ts passed 22/22;
+          tests/lint-daemon-test-guardrails.test.ts failed 4/49 at lines 951, 976, 1004, and 1164
+          with expected +0 not to be +0. Full log:
+          /tmp/kspec-test-cache/01KR3XXQW7623WJSPST21HZMN3/acbccf9438b70e65.log"
+        name: focused daemon lint tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T13:57:45.867Z
+        completed_at: 2026-05-08T13:57:45.867Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Command completed schema/reference checks, but exited 6 due existing project warnings:
+          deprecated references, orphaned specs, status mismatches, missing AC coverage, and invalid
+          AC annotations elsewhere. No new invalid annotations were observed in the changed test
+          file."
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-08T13:57:48.983Z
+        completed_at: 2026-05-08T13:57:48.983Z
     events:
       - _ulid: 01KR3XZGFW8YZ4NPFT6DGG098Q
         actor: Jacob Chapel
@@ -186066,17 +186094,103 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T13:56:34.276Z
+      - _ulid: 01KR3Y2GXEBPMTMVNHWDM3DC6Z
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR3Y2FPFRW8PZPQ67G75SE2F
+        timestamp: 2026-05-08T13:57:43.982Z
+      - _ulid: 01KR3Y2KYZSTFGWNDXZJJDE6EX
+        actor: codex
+        event_type: check_added
+        payload:
+          status: fail
+          name: focused daemon lint tests
+        timestamp: 2026-05-08T13:57:47.103Z
+      - _ulid: 01KR3Y2PYNNWY4XA2GT1FHWXVY
+        actor: codex
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-05-08T13:57:50.165Z
+      - _ulid: 01KR3Y2SYGF7DTZVRJDH2J90QZ
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR3Y2RRJS0BE50FWV9VE3NA4
+        timestamp: 2026-05-08T13:57:53.232Z
+      - _ulid: 01KR3Y2WZ4TNEG3YGEZQTHSKMS
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-08T13:57:56.325Z
+      - _ulid: 01KR3Y2WZ5C1P6CWFEM8E9NGKP
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-08T13:57:56.325Z
     examined_commit: b2de194721262716c2ee5ddda26bb79b01cf030d
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KR3W7Q0H2FVXHDJ51WCFAVNN"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KR3Y2FPFRW8PZPQ67G75SE2F
+        anchor:
+          type: code
+          commit: b2de194721262716c2ee5ddda26bb79b01cf030d
+          line_end: 951
+          line_start: 951
+          path: tests/lint-daemon-test-guardrails.test.ts
+          side: head
+        entries:
+          - _ulid: 01KR3Y2FPFPQTTZE0CK2VYD0BY
+            author: codex
+            body: "MUST-FIX: This submission introduces deterministic failing tests. The focused review run `npm
+              test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+              tests/lint-no-leaky-test-daemon.test.ts` exits 1 because the new regression assertions
+              at lines 951, 976, 1004, and 1164 expect the lint rule to report unsafe detached
+              starts, but `runOxlint` returns exit code 0. The task note describes these as
+              failing-before-fix cases, but merging them before the rule fix would make `npm test`
+              red on dev. Please include the rule fix in the submitted branch or otherwise submit
+              only tests that pass against the reviewed state."
+            created_at: 2026-05-08T13:57:42.735Z
+        kind: blocker
+      - _ulid: 01KR3Y2RRJS0BE50FWV9VE3NA4
+        entries:
+          - _ulid: 01KR3Y2RRJ447KP0402NV66HCM
+            author: codex
+            body: "Review evidence log: Files read: kspec-agents.md, task metadata for
+              @01KR3W7Q0H2FVXHDJ51WCFAVNN, @daemon-test-guardrail-precision,
+              @daemon-test-harness-guardrails, tests/lint-daemon-test-guardrails.test.ts,
+              tests/lint-no-leaky-test-daemon.test.ts, tools/eslint-rules/no-leaky-test-daemon.js.
+              Commands run: git diff/stat/log/status, kspec item get, kspec validate, AC annotation
+              search, focused npm test. Claims verified: worker claim that 4 new cases fail before
+              the lint rule fix was reproduced exactly. Categories searched: correctness, test
+              quality, AC coverage, integration/merge readiness, suppression behavior."
+            created_at: 2026-05-08T13:57:52.018Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-08T13:57:56.324Z
     created_at: 2026-05-08T13:56:05.245Z
-    updated_at: 2026-05-08T13:56:33.040Z
+    updated_at: 2026-05-08T13:57:56.325Z
     notes: []

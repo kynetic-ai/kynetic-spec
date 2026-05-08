@@ -55,7 +55,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -74,7 +74,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KR3X2T7CH0474K8H57SGAKSY
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -123,6 +123,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-08T13:56:08.522Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KR3X2T7CH0474K8H57SGAKSY
+    command: review-verdict-needs-work
+    timestamp: 2026-05-08T13:57:58.223Z
 created_at: 2026-05-08T13:25:36.913Z
 started_at: 2026-05-08T13:41:01.810Z
 submitted_at: 2026-05-08T13:52:39.453Z
