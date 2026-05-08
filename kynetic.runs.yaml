@@ -38816,7 +38816,7 @@ runs:
     completed_at: 2026-05-08T02:05:16.182Z
   - _ulid: 01KR2P6KTHT06DWMCEPYFC6JDH
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -38859,10 +38859,17 @@ runs:
           recordPath semantics if needed, and add contract coverage that proves cleanup. Scope:
           small, contained to tests/helpers/mock-daemon.ts and tests/helpers/mock-daemon.test.ts.
           Broader review evidence-log friction is already tracked by observation @01KR2JD1."
-      - status: completed
+      - status: skipped
         step_index: 4
         started_at: 2026-05-08T02:22:29.199Z
-        completed_at: 2026-05-08T02:22:29.199Z
+        completed_at: 2026-05-08T02:22:41.304Z
+        notes: "No separate user approval needed: no new inbox/task/observation capture is proposed. The
+          actionable cleanup fix is already recorded as a blocker on review @01KR2NED and will be
+          handled by the fix-cycle worker."
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-08T02:22:41.304Z
+        completed_at: 2026-05-08T02:22:41.304Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T02:20:54.993Z
