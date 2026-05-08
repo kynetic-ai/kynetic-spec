@@ -46,7 +46,7 @@ description: |
 spec_ref: "@daemon-test-startup-failure-hygiene"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -59,11 +59,11 @@ review_ref: "@01KR3YW0WY3FEPS8PGDR9D8VMN"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-add-real-daemon-startup-failure-tests/01kr3w7q
-  captured_at: 2026-05-08T14:07:23.272Z
-  commit: 976e8d35c50053fa437154d649a8412860aee5d4
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-08T15:01:36.517Z
+  commit: 324ac8a62aba4af96c2783d7b5da692419615644
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-add-real-daemon-startup-failure-tests/01kr3w7q
 session_id: 01KR40SK8PX3PR4A7ZNZNNSFJP
 history:
   - author: Jacob Chapel
@@ -136,8 +136,35 @@ history:
         previous: 2026-05-08T13:57:18.261Z
     command: task-start
     timestamp: 2026-05-08T15:01:33.104Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-real-daemon-startup-failure-tests/01kr3w7q
+          captured_at: 2026-05-08T15:01:36.517Z
+          commit: 324ac8a62aba4af96c2783d7b5da692419615644
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-add-real-daemon-startup-failure-tests/01kr3w7q
+        previous:
+          review_url: null
+          branch: dispatch/task/task-add-real-daemon-startup-failure-tests/01kr3w7q
+          captured_at: 2026-05-08T14:07:23.272Z
+          commit: 976e8d35c50053fa437154d649a8412860aee5d4
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-08T15:01:36.520Z
+        previous: 2026-05-08T14:07:23.274Z
+    command: task-submit
+    timestamp: 2026-05-08T15:01:36.521Z
 created_at: 2026-05-08T13:25:37.576Z
 started_at: 2026-05-08T15:01:33.104Z
-submitted_at: 2026-05-08T14:07:23.274Z
+submitted_at: 2026-05-08T15:01:36.520Z
 todos: []
 automation: eligible
