@@ -16277,7 +16277,7 @@ workspaces:
         head: e0b6617b7baa8a96f4c13257621dfdc2a3c14a70
         last_seen_at: 2026-05-08T20:34:12.602Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-clarify-in-process-daemon-api-helper-boundary-01kr3w7s
-  - active_role: null
+  - active_role: worker
     base_branch_point: e02650298e5c256049ae3ad06cf417da989e70ab
     bootstrap:
       status: succeeded
@@ -16613,7 +16613,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T20:55:54.648Z
+      updated_at: 2026-05-08T20:56:24.671Z
     integration:
       status: pending
       detail: null
@@ -16622,16 +16622,16 @@ workspaces:
       target_branch: dev
       target_commit: e02650298e5c256049ae3ad06cf417da989e70ab
       updated_at: 2026-05-08T20:55:54.648Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR4AWP6NW25R663BZK5RNWTN"
     task_slug: stabilize-flaky-daemon-startup-review-tests
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-08T20:55:54.648Z
+      last_active_at: 2026-05-08T20:56:24.671Z
+      last_reconciled_at: 2026-05-08T20:56:24.671Z
       created_at: 2026-05-08T20:55:54.648Z
-      updated_at: 2026-05-08T20:56:20.190Z
+      updated_at: 2026-05-08T20:56:24.671Z
     workspace_id: dispatch-workspace-01KR4AWP6NW25R663BZK5RNWTN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
