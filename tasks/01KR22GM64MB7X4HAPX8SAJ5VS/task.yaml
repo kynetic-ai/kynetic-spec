@@ -64,7 +64,7 @@ tags:
   - lint
   - daemon
 vcs_refs: []
-review_ref: "@01KR2XHY1S8PRC6ZM5V1TFRSSR"
+review_ref: "@01KR3027CCDD37P1VR23SEAC6P"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
@@ -229,6 +229,13 @@ history:
         previous: 2026-05-08T04:26:07.141Z
     command: task-submit
     timestamp: 2026-05-08T05:08:49.188Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KR3027CCDD37P1VR23SEAC6P"
+        previous: "@01KR2XHY1S8PRC6ZM5V1TFRSSR"
+    command: review-link
+    timestamp: 2026-05-08T05:13:20.171Z
 created_at: 2026-05-07T20:36:51.524Z
 started_at: 2026-05-08T04:45:08.162Z
 submitted_at: 2026-05-08T05:08:49.188Z
