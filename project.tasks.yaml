@@ -28207,7 +28207,7 @@
   type: task
   spec_ref: "@daemon-test-startup-failure-hygiene"
   plan_ref: "@plan-daemon-test-fixture-hardening"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-fix-real-daemon-startup-failure-handling"
@@ -28222,6 +28222,7 @@
   created_at: 2026-05-08T13:25:38.174Z
   started_at: 2026-05-08T22:58:16.970Z
   submitted_at: 2026-05-08T22:58:20.789Z
+  completed_at: 2026-05-08T23:42:51.400Z
   automation: eligible
 - _ulid: 01KR3W7RHFG659BH7VGSM69KCJ
   slugs:
