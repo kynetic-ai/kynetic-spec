@@ -184508,6 +184508,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR2VMEY7A91GPY90W31SBDMF
         timestamp: 2026-05-08T03:55:52.850Z
+      - _ulid: 01KR2VMVWTE05C0PMG8F6KAH7Z
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR2VMTPBYF14JBKQGPCSW05K
+        timestamp: 2026-05-08T03:56:04.890Z
     examined_commit: 80326f51ed6858dab18923307b48c372f10622be
     external_links: []
     lifecycle_state: open
@@ -184536,7 +184543,26 @@ reviews:
               because that is a detached daemon start through the CLI without scoped cleanup."
             created_at: 2026-05-08T03:55:51.623Z
         kind: blocker
+      - _ulid: 01KR2VMTPBYF14JBKQGPCSW05K
+        anchor:
+          type: code
+          commit: 80326f51ed6858dab18923307b48c372f10622be
+          line_end: 423
+          line_start: 418
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR2VMTPBFSN0RRAE259Z0ECR
+            author: Jacob Chapel
+            body: "MUST-FIX: The localhost URL guard only checks fetch()/WebSocket() when the first argument is
+              the literal/template URL, so URL construction assigned to a variable and then passed
+              to fetch is not reported. Repro: const url = `http://localhost:${port}/api/health`;
+              await fetch(url) produced 'Found 0 warnings and 0 errors.' The task requires flagging
+              daemon HTTP/WebSocket URLs constructed from localhost plus a raw port outside the
+              allowed endpoint-contract cases."
+            created_at: 2026-05-08T03:56:03.659Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T03:44:45.473Z
-    updated_at: 2026-05-08T03:55:51.623Z
+    updated_at: 2026-05-08T03:56:03.659Z
     notes: []
