@@ -188791,6 +188791,13 @@ reviews:
           status: fail
           name: lint
         timestamp: 2026-05-08T19:32:33.481Z
+      - _ulid: 01KR4H80ZQMH03YMH4K9T4J216
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR4H7ZQH5VV089ZMSHDHPWEE
+        timestamp: 2026-05-08T19:32:47.223Z
     examined_commit: 09c83cadfc2e708ff8727c4fbbc2e9126d50fb2e
     external_links: []
     lifecycle_state: open
@@ -188822,7 +188829,25 @@ reviews:
               detection and behavioral coverage for those shell-string shapes.'
             created_at: 2026-05-08T19:31:40.334Z
         kind: blocker
+      - _ulid: 01KR4H7ZQH5VV089ZMSHDHPWEE
+        entries:
+          - _ulid: 01KR4H7ZQH3CJXMPG2YBDB4W1N
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; task/spec/review records;
+              tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-daemon-test-guardrails.test.ts;
+              tests/lint-no-leaky-test-daemon.test.ts; package.json. Commands run: git
+              diff/log/status; kspec task get; kspec item get; kspec review for-task/get/add/open;
+              kspec validate; AC annotation rg; source-scanning rg; npm test focused; npm test full;
+              npm run lint; focused npx oxlint over changed rule/tests; custom oxlint probe for
+              exec/execSync direct daemon entry. Claims verified: prior direct-executable blocker is
+              fixed for spawn/spawnSync/execFile/execFileSync forms; prior string.endsWith lint
+              regression is gone; unrelated subprocess argv cases are covered; exec/execSync shell
+              direct-entry remains a gap. Categories searched: correctness, AC coverage, test
+              quality, lint/build hygiene, edge cases around child_process callee shapes,
+              pre-existing warnings."
+            created_at: 2026-05-08T19:32:45.937Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-08T19:19:25.583Z
-    updated_at: 2026-05-08T19:32:32.168Z
+    updated_at: 2026-05-08T19:32:45.937Z
     notes: []
