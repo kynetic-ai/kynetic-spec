@@ -39251,9 +39251,39 @@ runs:
     completed_at: 2026-05-08T04:43:25.935Z
   - _ulid: 01KR2ZTRPHCWCT6BVFRPR6E0XK
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T05:09:12.529Z
+        completed_at: 2026-05-08T05:09:32.579Z
+        notes: >-
+          What worked well in fix cycle 2:
+
+
+          (1) Reading the prior review (cycle 1) for context BEFORE designing the fix — informed
+          which behaviors were already being tested and which gaps were now revealed. Saved time vs.
+          reviewing the rule cold.
+
+
+          (2) Walking through the reviewer's exact synthetic repro mentally before coding — proved
+          the design handles cross-test scope isolation, and surfaced adjacent shadowing cases
+          (param shadow, reassignment) that I added preemptively rather than waiting for cycle 3.
+
+
+          (3) Verifying the narrowed allowlist was safe by grep'ing real helper test files
+          (mock-daemon.test.ts uses ${mock!.apiUrl}, daemon.test.ts uses ${started.apiUrl}) before
+          changing the code. The existing 'real codebase validation' test in
+          tests/lint-no-leaky-test-daemon.test.ts then served as backstop.
+
+
+          (4) Using kspec batch for the four review-thread reply+resolve calls — one atomic shadow
+          commit instead of four.
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T05:09:32.579Z
+        completed_at: 2026-05-08T05:09:32.579Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T05:09:12.529Z
