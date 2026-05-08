@@ -40975,7 +40975,7 @@ runs:
     completed_at: 2026-05-08T20:54:39.425Z
   - _ulid: 01KR4PTJ6W90ZRS3EHWPV4JV10
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -40989,7 +40989,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T21:10:54.153Z
-        completed_at: 2026-05-08T21:10:54.153Z
+        completed_at: 2026-05-08T21:11:03.433Z
+        notes: "Friction points: static classifier review still required hand-rolling a temporary oxlint
+          project/probe to test a near-miss negative case outside the committed regression matrix.
+          Review records also required several individual check/comment commands, and repo-level
+          kspec validate/npm run lint remain noisy as review gates because they fail on known
+          baseline warnings/errors unrelated to the task."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T21:11:03.433Z
+        completed_at: 2026-05-08T21:11:03.433Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T21:10:17.565Z
