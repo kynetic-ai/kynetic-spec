@@ -40776,7 +40776,7 @@ runs:
     completed_at: 2026-05-08T20:02:38.135Z
   - _ulid: 01KR4M7AVBS33KH6BX656BEV6S
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -40810,7 +40810,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-08T20:26:18.052Z
-        completed_at: 2026-05-08T20:26:18.052Z
+        completed_at: 2026-05-08T20:26:28.861Z
+        notes: "Proposed improvement/capture: no new friction task needed. Existing items cover the flake
+          and evidence-log UX. Capture one success observation instead: when reviewing static
+          classifier rules, add at least one adversarial negative probe that uses the suspicious
+          token in a command that should not trigger the rule. This helps distinguish behavior
+          detection from incidental token matching. Scope: documentation/process pattern, small."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-08T20:26:28.861Z
+        completed_at: 2026-05-08T20:26:28.861Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T20:24:50.283Z
