@@ -17430,6 +17430,22 @@ observations:
     resolved: false
     workflow_ref: "@01KR3ZMM"
     created_at: 2026-05-08T14:26:21.952Z
+  - _ulid: 01KR3ZR8K43HSFFVK1QP92A0SC
+    type: success
+    content: "Cross-task regression-first task splits (regression tests on one task, rule fix on a
+      dependent task) can keep the integration-branch merge gate green by encoding the
+      failing-before-fix tests as it.fails() in vitest. The assertions still execute live (so the
+      captured classifier gaps stay covered as evidence), but the modifier flips pass/fail polarity
+      so today's failures count as the expected outcome. When the dependent fix lands and assertions
+      succeed, the it.fails modifier itself fails, forcing the dependent task to remove .fails
+      before merge — preserving the plan's anti-silent-weakening intent without breaking npm test on
+      the regression-only branch. Validated end-to-end on
+      @task-add-guardrail-classification-regressions fix cycle 1: 6 failing tests → 6 passing as
+      expected-failure, full suite 2402/2402 suites pass."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T14:27:04.932Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
