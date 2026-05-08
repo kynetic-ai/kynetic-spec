@@ -185307,6 +185307,18 @@ reviews:
         runner: npm-test
         created_at: 2026-05-08T06:05:52.492Z
         completed_at: 2026-05-08T06:05:52.492Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh passed: 2399/2399 suites, 8797 passed, 5 skipped,
+          duration 1911.1s. Full log:
+          /tmp/kspec-test-cache/01KR329DXR54Z8RF8B0FBCCWZM/e3cd02bb8facb5c9.log"
+        name: full vitest
+        required: true
+        runner: npm-test
+        created_at: 2026-05-08T06:06:03.932Z
+        completed_at: 2026-05-08T06:06:03.932Z
     events:
       - _ulid: 01KR32AKXSCZ02R9VHTHPCAP25
         actor: Jacob Chapel
@@ -185342,6 +185354,13 @@ reviews:
           status: pass
           name: focused daemon fixture slices
         timestamp: 2026-05-08T06:05:53.749Z
+      - _ulid: 01KR332XDQPSF4WB9DMQ18H4DB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full vitest
+        timestamp: 2026-05-08T06:06:05.239Z
     examined_commit: 62bc34089817b52062bdf41483d0412bfd2ff84d
     external_links: []
     lifecycle_state: open
@@ -185354,5 +185373,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T05:52:49.082Z
-    updated_at: 2026-05-08T06:05:52.492Z
+    updated_at: 2026-05-08T06:06:03.932Z
     notes: []
