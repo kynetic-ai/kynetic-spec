@@ -189380,6 +189380,17 @@ reviews:
         runner: npm
         created_at: 2026-05-08T20:47:17.881Z
         completed_at: 2026-05-08T20:47:17.881Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --warnings-ok: schema OK, references OK, skills OK. Plain kspec validate
+          exits 6 due to existing repository-wide warnings outside this two-file diff."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-08T20:47:28.440Z
+        completed_at: 2026-05-08T20:47:28.440Z
     events:
       - _ulid: 01KR4MTFQ2J0Y8FETD294GGMXH
         actor: Jacob Chapel
@@ -189408,6 +189419,13 @@ reviews:
           status: pass
           name: full test suite
         timestamp: 2026-05-08T20:47:19.280Z
+      - _ulid: 01KR4NGTJ3N9H8YRX1ZH7FH1EC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-08T20:47:29.859Z
     examined_commit: e0b6617b7baa8a96f4c13257621dfdc2a3c14a70
     external_links: []
     lifecycle_state: open
@@ -189420,5 +189438,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T20:35:17.859Z
-    updated_at: 2026-05-08T20:47:17.881Z
+    updated_at: 2026-05-08T20:47:28.440Z
     notes: []
