@@ -90,7 +90,7 @@ description: >
 spec_ref: "@daemon-test-mode-boundaries"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-implement-shared-daemon-test-fixture"
@@ -102,6 +102,7 @@ tags:
   - cli
   - mock
 vcs_refs: []
+session_id: 01KR2JZSPEPJDER9QQTFH45MJF
 history:
   - author: Jacob Chapel
     changes:
@@ -110,6 +111,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-07T20:38:32.305Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KR2JZSPEPJDER9QQTFH45MJF
+        previous: null
+      started_at:
+        new: 2026-05-08T01:25:09.639Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-08T01:25:09.640Z
 created_at: 2026-05-07T20:36:50.953Z
+started_at: 2026-05-08T01:25:09.639Z
 todos: []
 automation: eligible
