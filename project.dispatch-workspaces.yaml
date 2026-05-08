@@ -12698,7 +12698,7 @@ workspaces:
         head: 3f1ee8ce0d0da31add4c40b3ee09b11bb9f048ad
         last_seen_at: 2026-05-08T14:28:03.983Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-guardrail-classification-regressions-01kr3w7p
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
     bootstrap:
       status: succeeded
@@ -13183,7 +13183,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T14:45:26.709Z
+      updated_at: 2026-05-08T14:45:52.358Z
     integration:
       status: pending
       detail: null
@@ -13198,10 +13198,10 @@ workspaces:
     task_slug: task-add-detached-cleanup-timing-regressions
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-08T14:28:00.889Z
-      last_reconciled_at: 2026-05-08T14:45:26.709Z
+      last_active_at: 2026-05-08T14:45:52.358Z
+      last_reconciled_at: 2026-05-08T14:45:52.358Z
       created_at: 2026-05-08T13:40:01.072Z
-      updated_at: 2026-05-08T14:45:49.508Z
+      updated_at: 2026-05-08T14:45:52.358Z
     workspace_id: dispatch-workspace-01KR3W7Q0H2FVXHDJ51WCFAVNN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
