@@ -17268,7 +17268,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T23:43:31.266Z
+      updated_at: 2026-05-08T23:46:27.339Z
     integration:
       status: merged
       detail: integration:merged
@@ -17277,25 +17277,20 @@ workspaces:
       target_branch: dev
       target_commit: c7a614eb8c7ad29b53b498753046704475f181da
       updated_at: 2026-05-08T23:43:31.266Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KR3W7R7Y2JCNSJZGPNCM9QFA"
     task_slug: task-harden-playwright-daemon-fixture-cleanup
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T23:29:30.374Z
-      last_reconciled_at: 2026-05-08T23:46:25.677Z
+      last_reconciled_at: 2026-05-08T23:46:27.339Z
       created_at: 2026-05-08T21:48:25.747Z
-      updated_at: 2026-05-08T23:46:25.677Z
+      updated_at: 2026-05-08T23:46:27.339Z
     workspace_id: dispatch-workspace-01KR3W7R7Y2JCNSJZGPNCM9QFA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: e1d0800924872c4de07e819122cb4a2204430fda
-        last_seen_at: 2026-05-08T23:29:00.935Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-harden-playwright-daemon-fixture-cleanup-01kr3w7r-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-harden-playwright-daemon-fixture-cleanup/01kr3w7r
