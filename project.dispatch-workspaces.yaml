@@ -16089,18 +16089,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-clarify-in-process-daemon-api-helper-boundary/01kr3w7s
-    canonical_branch_head: 80c3b249aff2a71e1af043e74234b892f2174471
+    canonical_branch_head: e0b6617b7baa8a96f4c13257621dfdc2a3c14a70
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T20:03:31.210Z
+      updated_at: 2026-05-08T20:23:13.343Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T20:03:57.073Z
+      updated_at: 2026-05-08T20:23:13.343Z
     integration:
       status: pending
       detail: null
@@ -16108,7 +16108,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 80c3b249aff2a71e1af043e74234b892f2174471
-      updated_at: 2026-05-08T20:03:31.210Z
+      updated_at: 2026-05-08T20:23:13.343Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR3W7SD99V6PMBDTR5WW1TBX"
@@ -16116,9 +16116,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T20:03:57.073Z
-      last_reconciled_at: 2026-05-08T20:03:57.073Z
+      last_reconciled_at: 2026-05-08T20:23:13.343Z
       created_at: 2026-05-08T20:03:31.210Z
-      updated_at: 2026-05-08T20:03:57.073Z
+      updated_at: 2026-05-08T20:23:13.343Z
     workspace_id: dispatch-workspace-01KR3W7SD99V6PMBDTR5WW1TBX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
