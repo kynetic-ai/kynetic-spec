@@ -248,3 +248,76 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T22:02:24.964Z
+  - _ulid: 01KR4V14EFFJ1FYVXARAPM01J4
+    content: >-
+      Fix cycle 5: closed precision blocker on direct daemon launches via process.execPath.
+
+
+      Blocker (line 640): readDaemonEntryInvocation's spawn-like runtime form only recognised
+      string/template literals as runtimes — process.execPath (a MemberExpression that resolves to
+      the absolute path of the currently-running Node interpreter) fell through, so
+      spawn(process.execPath, [DAEMON_ENTRY, '--port', '0']) and execFile(process.execPath,
+      ['dist/daemon/index.js', '--port', '0']) were silently accepted even though they directly
+      launch the compiled daemon entry. That violated @daemon-test-guardrail-precision
+      ac-direct-daemon-entry-invocations-flagged.
+
+
+      Fix: added isProcessExecPathExpression predicate and routed it through isRecognisedRuntimeArg.
+
+
+      - isProcessExecPathExpression matches the exact MemberExpression process.execPath:
+      non-computed, object is an Identifier named 'process', property is an Identifier named
+      'execPath'. Other shapes (computed access process['execPath'], aliased bindings like 'const
+      node = process.execPath; spawn(node, ...)', or unrelated MemberExpressions whose property name
+      happens to be execPath) are NOT recognised — keeping the predicate strict avoids false
+      positives on objects that share the property name.
+
+      - isRecognisedRuntimeArg now returns true for the MemberExpression first, then falls back to
+      the existing literal/template runtime-token check.
+
+      - The runtime descriptor in the report message reads 'process.execPath' (instead of
+      '<runtime>') for the new form so authors see exactly which call shape was matched.
+
+
+      Precision preserved: spawn('cat', [DAEMON_ENTRY]), execFile('grep', [DAEMON_ENTRY, 'src/']),
+      spawnSync('nodemon', [DAEMON_ENTRY, ...]), execFileSync('docker', ['run', 'image',
+      'dist/daemon/index.js']), spawn(other.execPath, [DAEMON_ENTRY]), and spawn(process.argv0,
+      [DAEMON_ENTRY]) all continue to pass clean — none are recognised JS runtimes.
+
+
+      Behavioral tests added (6 new in tests/lint-daemon-test-guardrails.test.ts under
+      ac-direct-daemon-entry-invocations-flagged / ac-unrelated-subprocesses-not-reported):
+
+      - spawn(process.execPath, [DAEMON_ENTRY, '--port', '0']) — positive (reviewer probe)
+
+      - execFile(process.execPath, ['dist/daemon/index.js', '--port', '0']) — positive (reviewer
+      probe with literal daemon path)
+
+      - spawnSync(process.execPath, [DAEMON_ENTRY, '--port', '0']) — positive sync variant
+
+      - execFileSync(process.execPath, [DAEMON_ENTRY, '--port', '0']) — positive sync variant
+
+      - spawn(customRuntime.execPath, [DAEMON_ENTRY]) — precision (other-object .execPath must not
+      flag)
+
+      - spawn(process.argv0, [DAEMON_ENTRY]) — precision (other process property must not flag)
+
+
+      Manual verification of the reviewer's probe: synthetic test file containing
+      spawn(process.execPath, [DAEMON_ENTRY, '--port', '0']) and execFile(process.execPath,
+      ['dist/daemon/index.js', '--port', '0']) now exits with 2 errors and emits 'Direct daemon
+      entry launch via "spawn(process.execPath, [DAEMON_ENTRY, ...])"' /
+      '"execFile(process.execPath, [DAEMON_ENTRY, ...])"' diagnostics. Synthetic precision probe
+      (customRuntime.execPath / process.argv0) still exits 0 with 0 diagnostics.
+
+
+      Verification:
+
+      - 106 targeted lint-rule tests pass (was 100 — 6 new tests).
+
+      - Full suite green: 8856 passed, 5 skipped, 0 failed (was 8850 plus the 6 new tests).
+
+      - Project lint count unchanged at the dev baseline (13 errors, 721 warnings).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T22:23:47.151Z
