@@ -41249,7 +41249,7 @@ runs:
     completed_at: 2026-05-08T22:05:03.587Z
   - _ulid: 01KR4TVPDK4ABMSY4QRNF1PQKA
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -41285,7 +41285,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-08T22:21:52.882Z
-        completed_at: 2026-05-08T22:21:52.882Z
+        completed_at: 2026-05-08T22:22:05.297Z
+        notes: "Proposed improvement: capture a small friction observation that focused test commands need
+          explicit npm script argument forwarding when combining script flags like --fresh with test
+          file filters. This would help future convention or test-runner docs updates avoid
+          misleading evidence. Scope: small documentation/convention clarification, not enough
+          confidence for a direct task from this review alone."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-08T22:22:05.297Z
+        completed_at: 2026-05-08T22:22:05.297Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T22:20:48.947Z
