@@ -17,3 +17,18 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-08T18:35:17.536Z
+  - _ulid: 01KR4EVGT28QPY4VM6WEQGEAD6
+    content: Fix landed. Mock daemon child startup-failure paths now run an idempotent
+      cleanupChildOnStartupFailure helper (SIGTERM + unref'd SIGKILL fallback + record-file cleanup)
+      before returning null on timeout, malformed-stdout, and spawn-error branches. Spawn env now
+      flows through buildTestSubprocessEnv plus a mock-daemon-local AMBIENT_DAEMON_CONTROL_VARS
+      strip list (mirrors daemon.ts), and accepts opt-in env overrides via the new opts.env. Removed
+      the expectMockDaemonHygieneGap forcing wrapper and inlined post-fix assertions in the three
+      failing-before-fix tests. Added a new test asserting overrides are preserved for keys that
+      would otherwise be stripped. Moved isProcessAlive/ensureProcessReaped to module scope.
+      Targeted suite (mock-daemon, cli-daemon-proxy, cli-daemon-endpoint-regression,
+      cli-task-event-endpoint) green, full npm test 8819 passed / 5 skipped / 0 failed (~33min).
+      Lint clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T18:51:00.290Z
