@@ -186933,6 +186933,13 @@ reviews:
           status: pass
           name: changed-file lint
         timestamp: 2026-05-08T15:17:23.980Z
+      - _ulid: 01KR42MYT6R6Y47EAC8H16BPN5
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR42MXG20XSV78XV2FKYE5PH
+        timestamp: 2026-05-08T15:17:42.342Z
     examined_commit: 324ac8a62aba4af96c2783d7b5da692419615644
     external_links: []
     lifecycle_state: open
@@ -186942,8 +186949,41 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7QN8Y4NJFQ4HST166KVR"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR42MXG20XSV78XV2FKYE5PH
+        entries:
+          - _ulid: 01KR42MXG2329VVTFTY4TJQKKP
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+
+              Files read: kspec-agents.md, tests/helpers/daemon.ts, tests/helpers/daemon.test.ts,
+              tests/helpers/cli.ts, prior review @01KR3YW0, specs
+              @daemon-test-startup-failure-hygiene and @daemon-backed-test-fixture-contract.
+
+
+              Commands run: git diff/stat/name-only against dev base, kspec task get, kspec review
+              for-task/get, kspec item get, rg AC annotations, kspec validate, kspec validate
+              --warnings-ok, npm test -- --fresh tests/helpers/daemon.test.ts, npm test -- --fresh,
+              npm run typecheck, npm run lint, npx oxlint changed daemon files, git diff --check.
+
+
+              Claims verified: prior failing launch-failure test now passes; full test suite passes;
+              helper now captures child spawn error, races readiness against launch failure,
+              preserves launch-related diagnostic cause, stops owned child on failure, and registers
+              cleanup before readiness probing.
+
+
+              Categories searched: correctness, startup/error handling, cleanup
+              ordering/idempotence, AC annotation coverage, source-scanning/test integrity,
+              integration with existing readiness diagnostics, and changed-file lint/type safety. No
+              blocking findings found. Repo-wide lint and kspec validate still report pre-existing
+              unrelated warnings/errors outside this task; changed files are clean and validation
+              has no schema/reference errors.
+            created_at: 2026-05-08T15:17:40.994Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-08T15:05:57.022Z
-    updated_at: 2026-05-08T15:17:22.637Z
+    updated_at: 2026-05-08T15:17:40.994Z
     notes: []
