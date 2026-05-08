@@ -38,8 +38,11 @@ description: |
 spec_ref: "@daemon-test-startup-failure-hygiene"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer merge helper. Added mock daemon failure-path
+  contract coverage for malformed stdout cleanup, startup timeout cleanup, and child env
+  sanitization, with focused and full test suite evidence recorded in review @01KR46KE.
 depends_on: []
 context: []
 priority: 1
@@ -106,8 +109,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-08T16:26:50.396Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer merge helper. Added mock daemon failure-path contract
+          coverage for malformed stdout cleanup, startup timeout cleanup, and child env
+          sanitization, with focused and full test suite evidence recorded in review @01KR46KE.
+        previous: null
+      completed_at:
+        new: 2026-05-08T16:41:32.799Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-08T16:41:32.808Z
 created_at: 2026-05-08T13:25:38.479Z
 started_at: 2026-05-08T15:53:35.293Z
 submitted_at: 2026-05-08T16:07:11.350Z
+completed_at: 2026-05-08T16:41:32.799Z
 todos: []
 automation: eligible
