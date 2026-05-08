@@ -3206,3 +3206,20 @@ inbox:
       - docs
     added_by: Jacob Chapel
     created_at: 2026-05-07T22:32:01.298Z
+  - _ulid: 01KR2EQYWMRZES7PY0F9TTZFTG
+    text: "AC validator silently ignores annotation-shaped text inside JSDoc/block comments. The
+      kspec-agents convention says line comments only, but when an agent places '// AC: @spec
+      ac-N'-shaped lines inside a /** ... */ JSDoc header, the validator drops them — no coverage
+      credit, no warning. This caused a direct fix-cycle bounce on
+      @task-implement-shared-daemon-test-fixture (cycle 2): two ACs in the task's Covers set
+      appeared in the test file's docstring header, validation reported them uncovered, reviewer
+      flagged the discrepancy. Proposed fix: extend @ac-annotation-integrity-reporting (or
+      @test-annotation-sweep) to detect AC-shaped patterns inside block comments and emit an
+      invalid-annotation finding so silent docstring placement becomes loud. Scope: small — same
+      scanner already walks files; needs a block-comment context check."
+    tags:
+      - validation
+      - ac-coverage
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-05-08T00:10:34.773Z
