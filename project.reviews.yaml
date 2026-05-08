@@ -189928,7 +189928,76 @@ reviews:
     slugs: []
     title: Review fix guardrail daemon command classification (cycle 5)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts: 19 suites passed, 100 tests passed in 30.6s."
+        name: targeted lint guardrail tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T22:01:58.239Z
+        completed_at: 2026-05-08T22:01:58.239Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: 2411 suites passed, 8850 tests passed, 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KR4S074JDNZG5D3S345ZAJS1/5f5cce0cf0527ced.log"
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T22:02:01.542Z
+        completed_at: 2026-05-08T22:02:01.542Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit 6 warnings-only baseline: schema OK, references OK; reference/alignment/completeness
+          warnings present. No validation errors."
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-08T22:02:04.909Z
+        completed_at: 2026-05-08T22:02:04.909Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run lint exits 1 with 13 errors and 721 warnings, matching the submitted note's known
+          baseline count; errors are outside the touched files.
+        name: project lint
+        required: false
+        runner: npm run lint
+        created_at: 2026-05-08T22:02:08.218Z
+        completed_at: 2026-05-08T22:02:08.218Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Synthetic test containing spawn(process.execPath, [DAEMON_ENTRY, '--port', '0']) and
+          execFile(process.execPath, ['dist/daemon/index.js', '--port', '0']) exited 0 with 'Found 0
+          warnings and 0 errors'; expected no-leaky-test-daemon diagnostics.
+        name: custom process.execPath daemon-entry probe
+        required: true
+        runner: npx oxlint synthetic fixture
+        created_at: 2026-05-08T22:02:11.494Z
+        completed_at: 2026-05-08T22:02:11.494Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Read AC annotations in tests/lint-daemon-test-guardrails.test.ts and
+          tests/lint-no-leaky-test-daemon.test.ts for @daemon-test-guardrail-precision and
+          @daemon-test-harness-guardrails. Coverage exists for the task-targeted ACs, but the
+          process.execPath false negative remains untested.
+        name: AC annotation review
+        required: false
+        runner: rg/read review
+        created_at: 2026-05-08T22:02:14.848Z
+        completed_at: 2026-05-08T22:02:14.848Z
     events:
       - _ulid: 01KR4S1WYTE5ZDR1EB955K164Z
         actor: Jacob Chapel
@@ -189950,9 +190019,74 @@ reviews:
           kind: blocker
           thread_ulid: 01KR4S6ZP1VENAFAP61DYQQDVD
         timestamp: 2026-05-08T21:52:03.264Z
+      - _ulid: 01KR4SS7EY1A8TKFJ3X81HZKHS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted lint guardrail tests
+        timestamp: 2026-05-08T22:01:59.519Z
+      - _ulid: 01KR4SSAP5R6E318Z20BGWC1KY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-05-08T22:02:02.821Z
+      - _ulid: 01KR4SSDYBRX8E6N98YRW58T5K
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-08T22:02:06.155Z
+      - _ulid: 01KR4SSH5KT9W2PMYTXY92YM6H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: project lint
+        timestamp: 2026-05-08T22:02:09.459Z
+      - _ulid: 01KR4SSMFDMRYWZY4X8FC3NFAW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: custom process.execPath daemon-entry probe
+        timestamp: 2026-05-08T22:02:12.845Z
+      - _ulid: 01KR4SSQQ48SB4C06JREP1NB8Y
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation review
+        timestamp: 2026-05-08T22:02:16.164Z
+      - _ulid: 01KR4SSTVZN4EJMDN2Z768HHMT
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR4SSSNGB3NFVHEPF4YZFJ5K
+        timestamp: 2026-05-08T22:02:19.391Z
+      - _ulid: 01KR4SSY4MXHNHZ9QF8N5G7KHX
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-08T22:02:22.740Z
+      - _ulid: 01KR4SSY4M274FC8C7V2HBE7CW
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-08T22:02:22.740Z
     examined_commit: 0195510d171b0ba5dada2b6fd20c3479b812fc93
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -189985,7 +190119,31 @@ reviews:
               positives."
             created_at: 2026-05-08T21:52:01.730Z
         kind: blocker
-    verdicts: []
+      - _ulid: 01KR4SSSNGB3NFVHEPF4YZFJ5K
+        entries:
+          - _ulid: 01KR4SSSNH5GK3XJK9N5BV4P3W
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; task @01KR3W7PPVDFR8F03VQ6J54M3K; specs
+              @daemon-test-guardrail-precision and @daemon-test-harness-guardrails; prior review
+              @01KR4P17; tools/eslint-rules/no-leaky-test-daemon.js;
+              tests/lint-daemon-test-guardrails.test.ts; tests/lint-no-leaky-test-daemon.test.ts.
+              Commands run: git status; git show/diff/merge-base; rg AC and classifier patterns;
+              kspec validate; npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+              tests/lint-no-leaky-test-daemon.test.ts; npm test -- --fresh; npm run lint; synthetic
+              oxlint probe for process.execPath. Claims verified: cycle 4 cat/grep/nodemon/docker
+              false positives are covered by tests and the runtime gate; direct process.execPath
+              daemon launches are not reported. Categories searched: correctness, edge cases, error
+              handling, test quality, AC coverage, integration/lint baseline."
+            created_at: 2026-05-08T22:02:18.161Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-08T22:02:22.740Z
     created_at: 2026-05-08T21:49:15.098Z
-    updated_at: 2026-05-08T21:52:01.730Z
+    updated_at: 2026-05-08T22:02:22.740Z
     notes: []
