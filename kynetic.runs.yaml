@@ -38776,7 +38776,7 @@ runs:
     completed_at: 2026-05-08T01:39:50.740Z
   - _ulid: 01KR2N1W5MAR3T37H5ZTCHX6J1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -38790,7 +38790,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T02:04:44.121Z
-        completed_at: 2026-05-08T02:04:44.121Z
+        completed_at: 2026-05-08T02:05:00.272Z
+        notes: "Step 2 (friction): No high-confidence systemic friction surfaced this session. The 'kspec
+          workflow show' command surfaces progress but not step content/criteria — minor UX gap, but
+          unclear if systemic. Searched 'workflow show steps' and 'workflow visibility' — no
+          existing tracking. Bar in loop mode is high; declining to capture as one-off observation
+          rather than systemic friction."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T02:05:00.272Z
+        completed_at: 2026-05-08T02:05:00.272Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T02:00:51.124Z
