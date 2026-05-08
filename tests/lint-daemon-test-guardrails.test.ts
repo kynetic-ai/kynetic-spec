@@ -834,7 +834,6 @@ describe("unrelated disable", () => {
 
   // AC: @daemon-test-harness-guardrails ac-helper-internals-allowed
   // AC: @daemon-test-harness-guardrails ac-exceptions-are-localized
-  // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
   describe("does not regress legitimate non-daemon patterns", () => {
     it("does not flag fetch(\"http://localhost/api/...\") with no port (in-process app.handle pattern)", () => {
       const result = runOxlint({
