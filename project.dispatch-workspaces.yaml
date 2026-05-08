@@ -13178,12 +13178,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T15:47:11.211Z
+      updated_at: 2026-05-08T15:47:19.010Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T15:47:11.211Z
+      updated_at: 2026-05-08T15:47:19.010Z
     integration:
       status: pending
       detail: null
@@ -13191,26 +13191,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
-      updated_at: 2026-05-08T15:47:11.211Z
-    lifecycle_state: ready
+      updated_at: 2026-05-08T15:47:19.010Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KR3W7Q0H2FVXHDJ51WCFAVNN"
     task_slug: task-add-detached-cleanup-timing-regressions
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T15:25:31.453Z
-      last_reconciled_at: 2026-05-08T15:47:11.211Z
+      last_reconciled_at: 2026-05-08T15:47:19.010Z
       created_at: 2026-05-08T13:40:01.072Z
-      updated_at: 2026-05-08T15:47:11.211Z
+      updated_at: 2026-05-08T15:47:19.010Z
     workspace_id: dispatch-workspace-01KR3W7Q0H2FVXHDJ51WCFAVNN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 500780baf6daf57dfb1a289e18052b22c9ab5ce3
+        last_seen_at: 2026-05-08T15:47:19.010Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-detached-cleanup-timing-regressions-01kr3w7q-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-detached-cleanup-timing-regressions/01kr3w7q
-        head: 4d1685d39761743ea75f17d2bdf48faae89c1203
-        last_seen_at: 2026-05-08T15:25:07.642Z
+        head: 500780baf6daf57dfb1a289e18052b22c9ab5ce3
+        last_seen_at: 2026-05-08T15:47:19.010Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-detached-cleanup-timing-regressions-01kr3w7q
   - active_role: null
     base_branch_point: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
