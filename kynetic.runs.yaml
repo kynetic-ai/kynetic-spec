@@ -39154,7 +39154,7 @@ runs:
     started_at: 2026-05-08T03:40:54.348Z
     completed_at: 2026-05-08T03:43:27.361Z
   - _ulid: 01KR2VSVARQXVKJ8Z1HG2MSSP6
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -39202,7 +39202,10 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-08T04:01:07.652Z
-        completed_at: 2026-05-08T04:01:07.652Z
+        completed_at: 2026-05-08T04:01:29.701Z
+        notes: "Captured one success observation: @01KR2VYF. Did not duplicate existing friction tracking
+          for evidence logs or shell-fragile review command bodies."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T03:58:48.152Z
+    completed_at: 2026-05-08T04:01:29.701Z
