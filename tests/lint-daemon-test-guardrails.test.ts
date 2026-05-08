@@ -109,6 +109,62 @@ function runOxlint({
   }
 }
 
+/**
+ * Asserts that oxlint itself ran without a parser, helper, or internal
+ * failure. Used as the precondition for every classifier-gap regression so
+ * that an unrelated oxlint crash cannot satisfy the bug-shape assertions
+ * that follow. Exit code 0 means "no diagnostics" and exit code 1 means
+ * "rule diagnostics emitted"; any other exit code, or any error/panic
+ * fragment in the output, is treated as a parser/helper failure that
+ * invalidates the regression.
+ */
+function expectOxlintRanCleanly(result: OxlintResult): void {
+  expect([0, 1]).toContain(result.exitCode);
+  expect(result.output).not.toMatch(
+    /panic|panicked|internal error|failed to parse|parse error|cannot find|module not found|enoent/i,
+  );
+}
+
+/**
+ * Selective expected-failure helper for classifier-gap regressions.
+ *
+ * The test asserts the AC's post-fix behavior via `assertPostFixBehavior`.
+ * Today, the rule still has the gap, so those assertions throw. This
+ * helper catches that failure and then re-asserts the EXACT current gap
+ * shape via `assertKnownGapShape` — so a generic parser/helper failure
+ * (which would also throw inside `assertPostFixBehavior`) cannot satisfy
+ * the regression by accident: such a failure would not match the known
+ * gap shape and would re-throw.
+ *
+ * When the dependent rule fix lands, `assertPostFixBehavior` succeeds, the
+ * catch block does not run, and this helper throws to force the dependent
+ * task to remove the helper wrapper and let the post-fix assertions stand
+ * on their own.
+ */
+function expectClassifierGap(
+  result: OxlintResult,
+  assertPostFixBehavior: () => void,
+  assertKnownGapShape: () => void,
+): void {
+  expectOxlintRanCleanly(result);
+  let postFixPassed = false;
+  try {
+    assertPostFixBehavior();
+    postFixPassed = true;
+  } catch {
+    // Expected failure today. Verify the failure shape is the known
+    // gap and not an unrelated oxlint or helper error — any assertion
+    // failure here re-throws and fails the test.
+    assertKnownGapShape();
+  }
+  if (postFixPassed) {
+    throw new Error(
+      "Classifier no longer exhibits the captured gap. " +
+        "Remove expectClassifierGap() and let the post-fix assertions stand.",
+    );
+  }
+}
+
 describe("daemon test harness guardrails", () => {
   // AC: @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged
   // AC: @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged
@@ -989,6 +1045,96 @@ describe("execFileSync daemon entry identifier", () => {
   it("execFileSyncs the daemon entrypoint", () => {
     const stdout = execFileSync("node", [DAEMON_ENTRY, "--port", "0"]);
     expect(stdout).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execFile(DAEMON_ENTRY, [...]) when the daemon entry IS the executable arg", () => {
+      // Direct-executable form: a daemon entry built with a shebang is
+      // directly invokable, so passing it as args[0] launches the compiled
+      // daemon the same as the runtime form. The classifier must report
+      // the daemon-entry-as-executable shape, not just the runtime form.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { execFile } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("execFile daemon-entry executable", () => {
+  it("execFiles the daemon entry directly", () => {
+    const child = execFile(DAEMON_ENTRY, ["--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execFileSync(\"dist/daemon/index.js\", [...]) when the daemon entry literal IS the executable arg", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execFileSync } from "child_process";
+
+describe("execFileSync daemon-entry literal executable", () => {
+  it("execFileSyncs the daemon entry literal directly", () => {
+    const stdout = execFileSync("dist/daemon/index.js", ["--port", "0"]);
+    expect(stdout).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags spawn(DAEMON_ENTRY, [...]) when the daemon entry IS the executable arg", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("spawn daemon-entry executable", () => {
+  it("spawns the daemon entry directly", () => {
+    const child = spawn(DAEMON_ENTRY, ["--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags spawnSync(DAEMON_ENTRY) with no argv when the daemon entry IS the executable arg", () => {
+      // Argv is optional for spawn-likes — the daemon entry alone is
+      // enough to launch the compiled daemon when args[0] is the entry.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("spawnSync daemon-entry executable, no argv", () => {
+  it("spawnSyncs the daemon entry with no extra args", () => {
+    const result = spawnSync(DAEMON_ENTRY);
+    expect(result.status).toBe(0);
   });
 });
 `,

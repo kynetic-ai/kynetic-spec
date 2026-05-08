@@ -450,7 +450,7 @@ const noLeakyTestDaemon = {
       if (trimmed.length === 0) return false;
       const firstToken = trimmed.split(/\s+/)[0];
       if (!firstToken) return false;
-      return firstToken === "kspec" || /\/kspec$/.test(firstToken);
+      return firstToken === "kspec" || firstToken.endsWith("/kspec");
     }
 
     function getCalleeName(node) {
@@ -472,18 +472,27 @@ const noLeakyTestDaemon = {
      * one of the recognised child-process APIs:
      *
      *   - `spawn` / `spawnSync` / `execFile` / `execFileSync`
-     *     First arg is the runtime executable; argv must carry the daemon
-     *     entry as one of its array elements.
+     *     Two daemon-entry shapes are accepted. The runtime form has a
+     *     non-daemon-entry executable (e.g. `node`, `bun`) and the daemon
+     *     entry as one of the argv array elements. The direct-executable
+     *     form passes the daemon entry as the first arg itself; argv may
+     *     be omitted or an array of forwarded flags. The direct-executable
+     *     form matters because a daemon entry built with a shebang is
+     *     directly invokable, and `execFile(DAEMON_ENTRY, [...])` /
+     *     `spawn(DAEMON_ENTRY, [...])` launches the compiled daemon the
+     *     same as the runtime form.
      *   - `fork`
      *     First arg is the module path. The daemon entry must be that
      *     first arg directly — argv elements are forwarded, not executed.
      *
      * The returned `pattern` is a short shape descriptor used in the
      * reported message so authors see exactly which call shape was matched
-     * (e.g. `fork(DAEMON_ENTRY, ...)` vs `execFile(node, [DAEMON_ENTRY])`).
-     * `runtimeLiteral` carries the literal first-arg string so the caller
-     * can recognise hardcoded `bun` for the runtime parity message; it is
-     * `null` for `fork` (Node is implicit) and for non-literal first args.
+     * (e.g. `fork(DAEMON_ENTRY, ...)` vs `execFile(node, [DAEMON_ENTRY])`
+     * vs `execFile(DAEMON_ENTRY, [...])`). `runtimeLiteral` carries the
+     * literal first-arg string so the caller can recognise hardcoded `bun`
+     * for the runtime parity message; it is `null` for `fork` (Node is
+     * implicit), for the direct-executable form (the daemon entry IS the
+     * runtime), and for non-literal first args.
      */
     function readDaemonEntryInvocation(node) {
       if (node.type !== "CallExpression") return null;
@@ -497,6 +506,13 @@ const noLeakyTestDaemon = {
         calleeName === "execFile" ||
         calleeName === "execFileSync"
       ) {
+        if (isDaemonEntryArg(args[0])) {
+          return {
+            runtimeLiteral: null,
+            calleeName,
+            pattern: `${calleeName}(${DAEMON_ENTRY_IDENTIFIER}, ...)`,
+          };
+        }
         if (args.length < 2) return null;
         if (!arrayArgContainsDaemonEntry(args[1])) return null;
         const runtimeLiteral = literalString(args[0]);
