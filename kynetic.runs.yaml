@@ -39251,7 +39251,7 @@ runs:
     completed_at: 2026-05-08T04:43:25.935Z
   - _ulid: 01KR2ZTRPHCWCT6BVFRPR6E0XK
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -39344,7 +39344,39 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-08T05:10:41.976Z
-        completed_at: 2026-05-08T05:10:41.976Z
+        completed_at: 2026-05-08T05:10:57.270Z
+        notes: >-
+          Proposed improvements for untracked friction:
+
+
+          (A) Inbox item: 'Investigate whether oxlint JS plugin context exposes a scope manager
+          (context.sourceCode.getScope or equivalent), and refactor no-leaky-test-daemon to use it
+          if available'. Scope: small (1-2h investigation, refactor depends on what's available).
+          Why it helps: would replace ~120 lines of manual parent-walking with a few API calls and
+          reduce the chance of the next identifier-tracking rule reinventing this same code.
+
+
+          (B) Meta observation (friction): 'Identifier tracking in lint rules must be scope-aware
+          from the start; a Set<string> of names produces silent false positives across distinct
+          lexical scopes (it() blocks, parameter shadows, inner-block reassignments). This took two
+          review cycles to surface.' Why it helps: future rules that want to follow data flow across
+          variable bindings have a documented baseline expectation rather than reaching cycle 1 with
+          a Set.
+
+
+          (C) Inbox item: 'Optimize lint-rule synthetic-repro tests to avoid per-case npx oxlint
+          subprocess overhead (currently ~250ms × ~40 cases = ~9s)'. Scope: medium (would need
+          either an in-process oxlint runner or batched fixtures with line-numbered assertions). Why
+          it helps: the lint-rule test files are growing as the rule grows; subprocess cost will
+          compound. Lower priority than (A)/(B).
+
+
+          I'll propose (A) and (B) for capture. (C) is real but lower priority — defer to inbox
+          without a strong push.
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-08T05:10:57.270Z
+        completed_at: 2026-05-08T05:10:57.270Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T05:09:12.529Z
