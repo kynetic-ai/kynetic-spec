@@ -189779,6 +189779,24 @@ reviews:
         runner: npm
         created_at: 2026-05-08T21:40:13.831Z
         completed_at: 2026-05-08T21:40:13.831Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/helpers/daemon.ts, tests/helpers/daemon.test.ts,
+          packages/daemon/src/routes/debug.ts, tests/daemon-debug-routes.test.ts,
+          tests/helpers/cli.ts. Commands run: kspec task get @01KR4AWP6NW25R663BZK5RNWTN; kspec item
+          get @daemon-backed-test-fixture-contract; git diff e026502...HEAD; rg AC
+          annotations/source-scan patterns; kspec validate; kspec validate --warnings-ok; npm test
+          -- --fresh. Claims verified: debug cache-status reports domains=null before cache
+          registration and per-domain states after registration; probe waits for tasks.state=ready;
+          full-suite flake did not reproduce. Categories searched: correctness, edge cases/startup
+          race, error handling/diagnostics, test quality/source scanning, integration."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-08T21:40:28.621Z
+        completed_at: 2026-05-08T21:40:28.621Z
     events:
       - _ulid: 01KR4QTX3S39J548B738FC81YS
         actor: Jacob Chapel
@@ -189807,6 +189825,13 @@ reviews:
           status: pass
           name: npm test -- --fresh
         timestamp: 2026-05-08T21:40:15.339Z
+      - _ulid: 01KR4RHW9KVM10J205C35253DM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-08T21:40:30.132Z
     examined_commit: ac91faa584cbd9e594f72a9b057827721e06c4e9
     external_links: []
     lifecycle_state: open
@@ -189819,5 +189844,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T21:27:57.305Z
-    updated_at: 2026-05-08T21:40:13.831Z
+    updated_at: 2026-05-08T21:40:28.621Z
     notes: []
