@@ -55,8 +55,11 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer merge helper after approved review @01KR4CFS.
+  Added behavioral guardrail regression coverage for detached cleanup timing, safe immediate cleanup
+  patterns, and localized/reasoned suppressions in tests/lint-daemon-test-guardrails.test.ts.
 depends_on: []
 context: []
 priority: 1
@@ -351,8 +354,25 @@ history:
         previous: "@01KR4A2SCVG4W718Y9CZS3MG14"
     command: review-link
     timestamp: 2026-05-08T18:09:42.192Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer merge helper after approved review @01KR4CFS. Added
+          behavioral guardrail regression coverage for detached cleanup timing, safe immediate
+          cleanup patterns, and localized/reasoned suppressions in
+          tests/lint-daemon-test-guardrails.test.ts.
+        previous: null
+      completed_at:
+        new: 2026-05-08T18:23:17.053Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-08T18:23:17.065Z
 created_at: 2026-05-08T13:25:36.913Z
 started_at: 2026-05-08T18:03:43.700Z
 submitted_at: 2026-05-08T18:03:47.181Z
+completed_at: 2026-05-08T18:23:17.053Z
 todos: []
 automation: eligible
