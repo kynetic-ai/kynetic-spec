@@ -17447,8 +17447,15 @@ observations:
       @task-add-guardrail-classification-regressions fix cycle 1: 6 failing tests → 6 passing as
       expected-failure, full suite 2402/2402 suites pass."
     author: "@claude"
-    resolution: null
-    resolved: false
+    resolution: "Cycle 2 review disproved this. Bare it.fails() is non-selective: under Vitest, ANY
+      thrown assertion in the body counts as the expected failure, so a generic parser/helper
+      failure (or any unrelated oxlint crash) satisfies the marker too. The validated pattern that
+      survives review (cycle 3) is selective expected-failure: regular it() + a helper that runs the
+      post-fix assertions, catches their throw, and re-asserts the EXACT current bug shape — so an
+      unrelated failure re-throws and fails the test. Captured as a new success observation."
+    resolved: true
+    resolved_at: 2026-05-08T15:24:41.988Z
+    resolved_by: "@claude"
     created_at: 2026-05-08T14:27:04.932Z
   - _ulid: 01KR41TDTZ5A4Z6T0VKMNAH9N7
     type: friction
@@ -17465,6 +17472,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T15:03:12.992Z
+  - _ulid: 01KR431RVS36BF4Q455BKCS4HF
+    type: success
+    content: "Selective expected-failure pattern for cross-task regression-first splits: instead of bare
+      it.fails(), use a helper like expectClassifierGap(result, assertPostFixBehavior,
+      assertKnownGapShape) that (1) runs an oxlint-ran-cleanly precondition rejecting non-{0,1} exit
+      codes and panic/parse-error/module-not-found output, (2) calls assertPostFixBehavior which
+      runs the AC's required post-fix assertions (exit code AND rule name AND message fragment) and
+      is expected to throw today, (3) on throw, runs assertKnownGapShape which re-asserts the EXACT
+      current bug shape; mismatched shapes (parser failure, partial fix) re-throw and fail the test,
+      and (4) if assertPostFixBehavior succeeds, the helper throws an explicit error directing the
+      dependent fix task to remove the wrapper. Validated on
+      task-add-guardrail-classification-regressions cycle 3: passes the 6-test selective regression
+      suite today, full suite 2402/2402 green, and the cycle-2 reviewer concern (it.fails too
+      permissive) is resolved by construction. Forcing function preserved without sacrificing test
+      selectivity."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T15:24:42.233Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
