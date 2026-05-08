@@ -9957,18 +9957,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-migrate-playwright-daemon-fixture/01kr22gk
-    canonical_branch_head: 2b4dc4dfd1d3667d9100be4b8e6996b0f2ca1840
+    canonical_branch_head: c753d124422282c19fc01bf891a34656a5feb29d
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T00:56:56.177Z
+      updated_at: 2026-05-08T01:20:08.126Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T00:57:20.255Z
+      updated_at: 2026-05-08T01:20:08.126Z
     integration:
       status: pending
       detail: null
@@ -9976,7 +9976,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2b4dc4dfd1d3667d9100be4b8e6996b0f2ca1840
-      updated_at: 2026-05-08T00:56:56.177Z
+      updated_at: 2026-05-08T01:20:08.126Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR22GKACR7PZYFXZS9KEYVMQ"
@@ -9984,9 +9984,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T00:57:20.255Z
-      last_reconciled_at: 2026-05-08T00:57:20.255Z
+      last_reconciled_at: 2026-05-08T01:20:08.126Z
       created_at: 2026-05-08T00:56:56.177Z
-      updated_at: 2026-05-08T00:57:20.255Z
+      updated_at: 2026-05-08T01:20:08.126Z
     workspace_id: dispatch-workspace-01KR22GKACR7PZYFXZS9KEYVMQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
