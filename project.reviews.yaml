@@ -190363,6 +190363,19 @@ reviews:
         runner: npm test
         created_at: 2026-05-08T22:43:33.934Z
         completed_at: 2026-05-08T22:43:33.934Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run lint exited 1 with the known project baseline: 13 errors, 721 warnings.
+          Additional changed-file oxlint also exits 1 on tools/eslint-rules/no-leaky-test-daemon.js
+          due pre-existing unused META_RULE_NAME in the integration target plus warnings; not
+          counted as the task blocker."
+        name: lint
+        required: false
+        runner: npm run lint / npx oxlint
+        created_at: 2026-05-08T22:44:03.282Z
+        completed_at: 2026-05-08T22:44:03.282Z
     events:
       - _ulid: 01KR4VBBVA7ZQCT1NB7Q4A8XSE
         actor: Jacob Chapel
@@ -190405,6 +190418,13 @@ reviews:
           status: pass
           name: targeted guardrail tests
         timestamp: 2026-05-08T22:43:35.363Z
+      - _ulid: 01KR4W69F251EFNY92KWFFTCDP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: lint
+        timestamp: 2026-05-08T22:44:04.706Z
     examined_commit: 1459ff6696a65438ac6b64221407f751f7c4d3b8
     external_links: []
     lifecycle_state: open
@@ -190461,5 +190481,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-08T22:29:22.411Z
-    updated_at: 2026-05-08T22:43:33.934Z
+    updated_at: 2026-05-08T22:44:03.282Z
     notes: []
