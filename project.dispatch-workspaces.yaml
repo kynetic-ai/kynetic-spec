@@ -11650,7 +11650,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T04:01:59.868Z
+      updated_at: 2026-05-08T04:02:01.410Z
     integration:
       status: pending
       detail: null
@@ -11659,25 +11659,20 @@ workspaces:
       target_branch: dev
       target_commit: d128008209d54186b74d3e9acb779daf7e615186
       updated_at: 2026-05-08T04:01:59.868Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KR22GM64MB7X4HAPX8SAJ5VS"
     task_slug: task-enforce-daemon-test-fixture-usage
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T03:44:12.785Z
-      last_reconciled_at: 2026-05-08T04:01:59.868Z
+      last_reconciled_at: 2026-05-08T04:02:01.410Z
       created_at: 2026-05-08T03:11:15.443Z
-      updated_at: 2026-05-08T04:01:59.868Z
+      updated_at: 2026-05-08T04:02:01.410Z
     workspace_id: dispatch-workspace-01KR22GM64MB7X4HAPX8SAJ5VS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 80326f51ed6858dab18923307b48c372f10622be
-        last_seen_at: 2026-05-08T03:43:47.601Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-enforce-daemon-test-fixture-usage-01kr22gm-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
