@@ -195,10 +195,14 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
       // every test that exercises reconnection behavior to reload.
       const port = await allocateTestDaemonPort();
       let started: StartedTestDaemon | null = null;
-      // Stop hook captured via the shared fixture's `registerCleanup`
-      // callback. Used by stopDaemon() so the wrapper drives teardown
-      // through the cleanup it registered before the readiness wait
-      // could fail, rather than reaching for `started.stop` directly.
+      // Stop hook captured via our own `registerCleanup` callback passed
+      // through to the shared core. Owning the captured reference here
+      // (rather than reading it back from the helper's return value) lets
+      // the `finally` block below drive teardown even when
+      // `startPlaywrightFixtureDaemon` itself rejects — the shared core
+      // invokes `registerCleanup` synchronously after spawn, BEFORE the
+      // readiness wait, so this variable is set whenever a child handle
+      // exists.
       let earlyStop: (() => Promise<void>) | null = null;
 
       async function startDaemon(): Promise<void> {
@@ -212,18 +216,21 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
         // AC: @daemon-test-endpoint-consistency ac-no-localhost-by-default
         // AC: @daemon-test-runtime-selection ac-node-default
         // AC: @daemon-test-startup-failure-hygiene ac-cleanup-registered-before-readiness-wait
-        const result = await startPlaywrightFixtureDaemon({
+        started = await startPlaywrightFixtureDaemon({
           project,
           runtime,
           port,
+          registerCleanup: (stop) => {
+            earlyStop = stop;
+          },
         });
-        started = result.started;
-        // Capture the stop hook the shared core registered for us. If a
-        // future regression dropped the registration, fall back to the
-        // canonical stop returned by the helper so the wrapper still has
-        // a stop function — the AC behavior is then enforced separately
-        // at the unit level (tests/e2e-fixture-daemon-cleanup.test.ts).
-        earlyStop = result.earlyStop ?? result.started.stop;
+        // Defensive fallback: if a future shared-core regression dropped
+        // the registerCleanup invocation on the success path, the wrapper
+        // still has a stop function via the canonical handle. The AC
+        // behavior is enforced separately at the unit level
+        // (tests/e2e-fixture-daemon-cleanup.test.ts) and at the shared
+        // core level (tests/helpers/daemon.test.ts).
+        earlyStop ??= started.stop;
       }
 
       async function stopDaemon(): Promise<void> {

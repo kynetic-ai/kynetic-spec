@@ -4,16 +4,18 @@
  *
  * The Playwright wrapper at `tests/e2e/fixtures/test-base.ts` delegates the
  * daemon-start step to `startPlaywrightFixtureDaemon`
- * (`tests/e2e/fixtures/daemon-fixture.ts`). That helper passes a
- * `registerCleanup` callback to the shared real-daemon fixture core so the
- * stop hook is captured synchronously after spawn and BEFORE the readiness
- * wait can fail. End-to-end ordering for the shared core itself is covered
- * in `tests/helpers/daemon.test.ts` ("startTestDaemon registerCleanup
- * ordering"); this suite proves the wrapper plumbs that contract through.
+ * (`tests/e2e/fixtures/daemon-fixture.ts`). The helper plumbs the caller's
+ * `registerCleanup` callback through to the shared real-daemon fixture
+ * core; the wrapper's outer `finally` block drives the captured stop on
+ * both the success path and the startup-failure path.
  *
  * No real daemon child is spawned — a fake `startTestDaemon` implementation
- * is injected through the helper's test seam and used to assert the
- * argument shape and captured-stop equivalence the wrapper relies on.
+ * is injected through the helper's test seam to drive the simulated
+ * startup-failure scenario the wrapper relies on. End-to-end ordering for
+ * the shared core itself is covered in `tests/helpers/daemon.test.ts`
+ * ("startTestDaemon registerCleanup ordering" and
+ * "startTestDaemon scoped cleanup on readiness failure"); this suite proves
+ * the wrapper plumbs that contract through behaviorally.
  */
 import { describe, expect, it } from "vitest";
 
@@ -73,88 +75,123 @@ function makeFakeStartedDaemon(stop: () => Promise<void>): StartedTestDaemon {
 describe("startPlaywrightFixtureDaemon — cleanup registration contract", () => {
   // AC: @daemon-test-startup-failure-hygiene ac-cleanup-registered-before-readiness-wait
   // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
-  it("passes a registerCleanup callback so the captured stop drives teardown", async () => {
+  it("plumbs the caller's registerCleanup so the wrapper captures the stop on the success path", async () => {
     const observed = {
-      registerCleanupReceived: false,
-      registerCleanupInvocations: 0,
+      registerCleanupReceivedFromCaller: false,
+      registerCleanupInvocationsByCore: 0,
+      callerCapturedStopMatchesStarted: false,
       stopInvocations: 0,
-      capturedStopMatchesStarted: false,
     };
     const recordedStop = async (): Promise<void> => {
       observed.stopInvocations += 1;
     };
 
     const fakeStart: StartTestDaemonImpl = (async (_project, opts) => {
-      // The wrapper's contract is that it provides a registerCleanup
-      // function. Verify the option arrived as a function before
-      // simulating the shared core's invocation order.
-      observed.registerCleanupReceived = typeof opts.registerCleanup === "function";
-      // Shared core invokes registerCleanup synchronously after spawn and
-      // BEFORE readiness — model that order so the wrapper sees the same
-      // sequencing as production.
+      // The helper's contract is that it forwards the caller's
+      // registerCleanup down to the shared core. Verify the callback
+      // arrived and simulate the shared core's invocation order:
+      // synchronously after spawn, BEFORE readiness.
+      observed.registerCleanupReceivedFromCaller = typeof opts.registerCleanup === "function";
       opts.registerCleanup?.(recordedStop);
-      observed.registerCleanupInvocations += 1;
+      observed.registerCleanupInvocationsByCore += 1;
       return makeFakeStartedDaemon(recordedStop);
     }) as StartTestDaemonImpl;
 
-    const result = await startPlaywrightFixtureDaemon({
+    // Mirror the wrapper's setup from test-base.ts: caller-owned
+    // `earlyStop` populated through its own registerCleanup callback.
+    let earlyStop: (() => Promise<void>) | null = null;
+    const started = await startPlaywrightFixtureDaemon({
       project: FAKE_PROJECT,
       runtime: "node",
       port: 1234,
+      registerCleanup: (stop) => {
+        earlyStop = stop;
+      },
       startTestDaemonImpl: fakeStart,
     });
 
-    // The wrapper passed a registerCleanup callback to the shared core,
-    // and the shared core invoked it once.
-    expect(observed.registerCleanupReceived).toBe(true);
-    expect(observed.registerCleanupInvocations).toBe(1);
+    // The helper passed the caller's callback down to the shared core,
+    // and the core invoked it once.
+    expect(observed.registerCleanupReceivedFromCaller).toBe(true);
+    expect(observed.registerCleanupInvocationsByCore).toBe(1);
 
-    // The captured early stop is the same function the helper handed
-    // back via registerCleanup. The wrapper's teardown drives this
-    // captured reference, not a separately-computed stop path.
-    expect(result.earlyStop).toBe(recordedStop);
-    observed.capturedStopMatchesStarted = result.earlyStop === result.started.stop;
-    expect(observed.capturedStopMatchesStarted).toBe(true);
+    // The caller's earlyStop is the same function the shared core
+    // registered AND the canonical stop on the started handle — the
+    // wrapper's teardown drives the same idempotent cleanup hook on
+    // both paths.
+    expect(earlyStop).toBe(recordedStop);
+    observed.callerCapturedStopMatchesStarted = earlyStop === started.stop;
+    expect(observed.callerCapturedStopMatchesStarted).toBe(true);
 
-    // Calling earlyStop drives the captured stop hook — the wrapper's
-    // teardown reaches the same daemon stop via the registered hook.
-    await result.earlyStop?.();
+    // Calling the captured stop drives the registered hook — the
+    // wrapper's `finally` reaches the same daemon stop on the success
+    // path that it would on the failure path.
+    await earlyStop!();
     expect(observed.stopInvocations).toBe(1);
   });
 
   // AC: @daemon-test-startup-failure-hygiene ac-cleanup-registered-before-readiness-wait
   // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
-  it("registers the cleanup hook before the simulated readiness failure surfaces", async () => {
-    let cleanupRegisteredBeforeFailure = false;
+  // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
+  it("lets the wrapper's finally block drive the registered stop when startup fails", async () => {
+    const stopCalls: string[] = [];
+    const recordedStop = async (): Promise<void> => {
+      stopCalls.push("stop-invoked");
+    };
 
+    // Simulate the shared core's contract on the readiness-failure path:
+    // registerCleanup runs synchronously after spawn, then the readiness
+    // wait fails and the helper rejects. With the helper plumbing
+    // registerCleanup through, the caller's earlyStop is already set
+    // when the rejection surfaces — exactly the condition the wrapper's
+    // finally block depends on.
     const fakeStart: StartTestDaemonImpl = (async (_project, opts) => {
-      // Shared core's contract — registerCleanup runs synchronously
-      // after spawn and BEFORE the readiness wait. Model that here so
-      // failure of the readiness wait still sees registerCleanup
-      // already invoked, exactly as production does.
-      opts.registerCleanup?.(NOOP_STOP);
-      cleanupRegisteredBeforeFailure = true;
+      opts.registerCleanup?.(recordedStop);
       throw new Error("simulated readiness failure");
     }) as StartTestDaemonImpl;
 
+    // Mirror the wrapper's setup/finally pattern from test-base.ts so
+    // we observe the actual teardown behavior on the failure path,
+    // not just the registration ordering.
+    let earlyStop: (() => Promise<void>) | null = null;
+    let earlyStopAtFailure: (() => Promise<void>) | null = null;
     let thrown: unknown = null;
     try {
       await startPlaywrightFixtureDaemon({
         project: FAKE_PROJECT,
         runtime: "node",
         port: 1234,
+        registerCleanup: (stop) => {
+          earlyStop = stop;
+        },
         startTestDaemonImpl: fakeStart,
       });
     } catch (error) {
       thrown = error;
+      // Snapshot at failure time so a later assignment cannot mask a
+      // missing pre-failure registration.
+      earlyStopAtFailure = earlyStop;
+    } finally {
+      if (earlyStop) await earlyStop();
     }
 
+    // The helper propagated the readiness failure (no swallow).
     expect(thrown).toBeInstanceOf(Error);
     expect((thrown as Error).message).toContain("simulated readiness failure");
-    // Cleanup was registered before the failure propagated. The wrapper
-    // therefore had a stop hook captured for any teardown path the
-    // Playwright fixture runs in its finally block.
-    expect(cleanupRegisteredBeforeFailure).toBe(true);
+
+    // ac-cleanup-registered-before-readiness-wait — registerCleanup ran
+    // BEFORE the failure surfaced. earlyStopAtFailure being non-null
+    // proves the caller already had the stop hook in hand by the time
+    // the rejection was observable.
+    expect(earlyStopAtFailure).toBe(recordedStop);
+
+    // ac-owned-child-stopped-after-startup-failure — the wrapper's
+    // `finally` block invoked the registered stop on the failure path,
+    // and the registered stop ran to completion. A regression where
+    // the wrapper lost startup-failure teardown — either by failing to
+    // capture earlyStop pre-failure or by not invoking it in finally —
+    // would leave stopCalls empty and fail this assertion.
+    expect(stopCalls).toEqual(["stop-invoked"]);
   });
 
   it("forwards the runtime, port, and KSPEC_TEST env contract to the shared core", async () => {
@@ -179,6 +216,7 @@ describe("startPlaywrightFixtureDaemon — cleanup registration contract", () =>
       project: FAKE_PROJECT,
       runtime: "node",
       port: 1234,
+      registerCleanup: () => {},
       startTestDaemonImpl: fakeStart,
     });
 
