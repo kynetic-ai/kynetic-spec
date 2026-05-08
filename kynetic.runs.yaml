@@ -40489,7 +40489,7 @@ runs:
     completed_at: 2026-05-08T18:47:04.115Z
   - _ulid: 01KR4EWC314N5J4QD0VZVG7HHQ
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -40530,7 +40530,21 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-08T18:52:55.136Z
-        completed_at: 2026-05-08T18:52:55.136Z
+        completed_at: 2026-05-08T18:53:06.847Z
+        notes: "Proposals: (1) Consolidate AMBIENT_DAEMON_CONTROL_VARS into a single exported list in
+          tests/helpers/cli.ts, then have tests/helpers/daemon.ts and tests/helpers/mock-daemon.ts
+          import it. Small refactor; eliminates drift. The mock-daemon list also includes URL twins
+          that daemon.ts omits — consolidation forces a deliberate decision on the canonical set.
+          (2) Friction observation: lint warnings can be merged with task work today
+          (consistent-function-scoping warnings in mock-daemon.test.ts predated my edits). Worth
+          observing as a quality-gate friction even if not actionable yet. (3) Success observation:
+          the expectMockDaemonHygieneGap forcing-wrapper pattern (a wrapper that throws when the
+          dependent fix lands, with a self-describing message) is a reusable technique for splitting
+          regression-first tests across two tasks — worth documenting."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-08T18:53:06.847Z
+        completed_at: 2026-05-08T18:53:06.847Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T18:51:28.225Z
