@@ -46102,7 +46102,6 @@ plans:
         slug: daemon-test-startup-failure-hygiene
         type: requirement
         parent: "@daemon-server"
-        tags: [testing, daemon, reliability]
         description: |
           Test fixtures that start daemon-like child processes fail safely when
           startup does not reach readiness. Startup failures produce bounded
@@ -46142,7 +46141,6 @@ plans:
         slug: daemon-test-guardrail-precision
         type: requirement
         parent: "@daemon-test-harness-guardrails"
-        tags: [testing, lint, daemon]
         description: |
           Static guardrails report daemon-test patterns that can leak daemon
           processes or bypass the shared fixture, while avoiding reports for
@@ -46171,19 +46169,25 @@ plans:
               The subprocess arguments contain words also used by daemon lifecycle commands
             then: |
               The daemon guardrail does not report the subprocess
-          - id: ac-local-exception-documents-subject
+          - id: ac-local-exception-is-local
             given: |
               A test intentionally violates a daemon guardrail for behavior under test
             when: |
               The test suppresses the guardrail
             then: |
-              The suppression is local to the violating statement and states the behavior being exercised
+              The suppression is local to the violating statement
+          - id: ac-exception-reason-states-subject
+            given: |
+              A test intentionally suppresses a daemon guardrail
+            when: |
+              The guardrail suppression is reviewed
+            then: |
+              The suppression states the behavior being exercised
 
       - title: CLI Lifecycle Test Endpoint Consumption
         slug: cli-lifecycle-test-endpoint-consumption
         type: requirement
         parent: "@daemon-test-endpoint-consistency"
-        tags: [testing, daemon, cli]
         description: |
           CLI lifecycle tests may start and stop the daemon through the CLI when the
           lifecycle command is the behavior under test. Once a CLI-started daemon has
@@ -46217,7 +46221,6 @@ plans:
         slug: in-process-daemon-test-helper-boundary
         type: requirement
         parent: "@daemon-test-mode-boundaries"
-        tags: [testing, daemon]
         description: |
           In-process daemon API test helpers advertise the route and dependency
           boundary they provide. Tests that need full production-server behavior do
@@ -46240,6 +46243,7 @@ plans:
       ```
 
 
+
       ## Tasks
 
 
@@ -46247,52 +46251,6 @@ plans:
 
 
       ```yaml
-
-      - title: Update daemon test hardening spec statuses and cross-links
-        slug: task-update-daemon-test-hardening-spec-status
-        priority: 1
-        tags: [testing, daemon, specs]
-        spec_ref: "@daemon-test-startup-failure-hygiene"
-        description: |
-          What:
-          - Inspect the current kspec items related to daemon test fixtures:
-            @daemon-backed-test-fixture-contract, @daemon-test-endpoint-consistency,
-            @daemon-test-runtime-selection, @daemon-test-mode-boundaries,
-            @daemon-test-harness-guardrails, @daemon-sensitive-cli-test-determinism,
-            and @daemon-network-endpoint-contract.
-          - Align implementation status for already-satisfied daemon testing specs
-            after the completed daemon fixture standardization work. At minimum,
-            resolve the known validation status mismatches where kspec alignment says
-            @daemon-sensitive-cli-test-determinism and @daemon-network-endpoint-contract
-            should be implemented because their linked tasks are complete.
-          - Add notes to the relevant existing daemon testing specs when a new
-            hardening spec in this plan intentionally narrows or extends the older
-            contract. Do not change behavioral AC wording in existing specs unless
-            the command supports an exact, reviewable edit and the resulting wording
-            remains compatible with the new specs in this plan.
-
-          Why:
-          Completed fixture work left a small amount of spec metadata drift. Closing
-          that drift before new hardening work starts prevents agents from treating
-          already-delivered behavior as open implementation scope, and makes this
-          follow-up plan the source of truth for the remaining gaps.
-
-          How:
-          - Run `mise exec -- kspec validate --alignment --warnings-ok` and capture
-            the daemon-related status mismatches.
-          - Use `mise exec -- kspec item get <ref>` before changing each item.
-          - Use the narrowest available kspec command for metadata updates; do not
-            rewrite unrelated spec bodies.
-          - If a status mismatch is not safe to change because active tasks still
-            cover the same ACs, add a note explaining the blocker instead of guessing.
-
-          Testing:
-          - Run `mise exec -- kspec validate --alignment --warnings-ok`.
-          - Run `mise exec -- kspec validate --refs --warnings-ok`.
-          - Show before/after snippets for any daemon-related status warning that
-            remains.
-
-          Covers: @daemon-test-startup-failure-hygiene ac-process-launch-failure-diagnosed
 
       - title: Add guardrail regression tests for precise daemon classification
         slug: task-add-guardrail-classification-regressions
@@ -46400,6 +46358,8 @@ plans:
             assigns the PID only after an assertion or awaited observation.
           - Include an allowed case where the test captures the PID or child handle
             and registers scoped cleanup immediately after the detached start returns.
+          - Include suppression tests proving a guardrail disable must be local to the
+            violating statement and must state the behavior being exercised.
           - Keep the allowed case narrow; do not make a broad `afterEach` hook alone
             sufficient evidence of safe cleanup.
 
@@ -46423,8 +46383,8 @@ plans:
           - After the implementation task, run:
             `mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts`.
 
-          Covers: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation,
-          ac-local-exception-documents-subject; @daemon-test-harness-guardrails
+          Covers: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation, ac-local-exception-is-local,
+          ac-exception-reason-states-subject; @daemon-test-harness-guardrails
           ac-detached-serve-without-cleanup-flagged, ac-exceptions-are-localized
 
       - title: Fix guardrail detached cleanup timing analysis
@@ -46442,8 +46402,9 @@ plans:
             later awaits, assertions, or daemon observations can run.
           - Stop treating the mere presence of an ancestor `afterEach` hook as proof
             that the newly-started detached daemon is protected.
-          - Preserve existing support for local, reasoned disable comments when the
-            behavior under test genuinely requires a direct exception.
+          - Preserve and, where needed, tighten support for local disable comments so
+            each accepted suppression applies only to the violating statement and
+            states the behavior under test.
 
           Why:
           A detached daemon can leak if a test fails between startup and cleanup
@@ -46465,8 +46426,8 @@ plans:
             startup cases and confirm every remaining exception is local and
             behavior-specific.
 
-          Covers: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation,
-          ac-local-exception-documents-subject; @daemon-test-harness-guardrails
+          Covers: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation, ac-local-exception-is-local,
+          ac-exception-reason-states-subject; @daemon-test-harness-guardrails
           ac-detached-serve-without-cleanup-flagged, ac-exceptions-are-localized
 
       - title: Add real daemon fixture startup-failure contract tests
@@ -46485,6 +46446,10 @@ plans:
           - Cover the wrapper cleanup registration ordering by using a synthetic
             `registerCleanup` hook that records whether cleanup was registered before
             readiness failure completed.
+          - Update or add real-fixture environment contract coverage so ambient
+            daemon-control and session variables are stripped from the real daemon
+            child environment, with `// AC:` annotations for the new startup hygiene
+            AC.
 
           Why:
           The existing happy-path and readiness-timeout tests prove ordinary behavior,
@@ -46507,9 +46472,9 @@ plans:
             `mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts`.
 
           Covers: @daemon-test-startup-failure-hygiene ac-process-launch-failure-diagnosed,
-          ac-owned-child-stopped-after-startup-failure,
+          ac-owned-child-stopped-after-startup-failure, ac-child-env-sanitized,
           ac-cleanup-registered-before-readiness-wait; @daemon-backed-test-fixture-contract
-          ac-readiness-diagnostics, ac-scoped-cleanup
+          ac-readiness-diagnostics, ac-scoped-cleanup, ac-no-ambient-daemon-control
 
       - title: Fix real daemon fixture startup-failure handling
         slug: task-fix-real-daemon-startup-failure-handling
@@ -46776,7 +46741,6 @@ plans:
         tags: [testing, daemon, validation]
         spec_ref: "@daemon-test-startup-failure-hygiene"
         depends_on:
-          - "@task-update-daemon-test-hardening-spec-status"
           - "@task-fix-guardrail-daemon-command-classification"
           - "@task-fix-detached-cleanup-timing-analysis"
           - "@task-fix-real-daemon-startup-failure-handling"
@@ -46824,7 +46788,8 @@ plans:
           ac-owned-child-stopped-after-startup-failure, ac-child-env-sanitized,
           ac-cleanup-registered-before-readiness-wait; @daemon-test-guardrail-precision
           ac-direct-daemon-entry-invocations-flagged, ac-detached-cleanup-before-observation,
-          ac-unrelated-subprocesses-not-reported, ac-local-exception-documents-subject;
+          ac-unrelated-subprocesses-not-reported, ac-local-exception-is-local,
+          ac-exception-reason-states-subject;
           @cli-lifecycle-test-endpoint-consumption ac-cli-started-daemon-requests-use-reported-endpoint,
           ac-direct-loopback-url-exception-is-endpoint-subject,
           ac-lifecycle-helper-resolves-client-endpoint; @in-process-daemon-test-helper-boundary
@@ -46860,7 +46825,8 @@ plans:
         `@daemon-test-startup-failure-hygiene` requirement owns those behaviors.
       - The existing guardrail specs required direct daemon starts and detached daemon
         starts to be reported, but did not specify classifier precision, immediate
-        cleanup ordering, or non-daemon false-positive avoidance. The new
+        cleanup ordering, behavior-specific local suppressions, or non-daemon
+        false-positive avoidance. The new
         `@daemon-test-guardrail-precision` requirement owns those behaviors.
       - Existing endpoint consistency requirements covered fixture-provided endpoints,
         but CLI lifecycle tests have a special path where the CLI must start the
@@ -46907,11 +46873,15 @@ plans:
       ```
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/daemon-test-fixture-hardening.md
     created_at: 2026-05-08T13:00:57.145Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KR3VFPKMYWNN4PFS4KKQFG3H
+        content: "Address review @01KR3V91: remove spec tags, remove non-behavioral status task coverage,
+          add real-fixture env coverage, split/localize guardrail suppression ACs"
+        author: Jacob Chapel
+        created_at: 2026-05-08T13:12:30.068Z
