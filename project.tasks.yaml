@@ -28219,7 +28219,7 @@
   type: task
   spec_ref: "@daemon-test-startup-failure-hygiene"
   plan_ref: "@plan-daemon-test-fixture-hardening"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -28231,6 +28231,7 @@
   todos_count: 0
   created_at: 2026-05-08T13:25:38.479Z
   started_at: 2026-05-08T15:53:35.293Z
+  submitted_at: 2026-05-08T16:07:11.350Z
   automation: eligible
 - _ulid: 01KR3W7RTYPWDJVCQFZD2042P2
   slugs:
