@@ -38927,7 +38927,7 @@ runs:
     started_at: 2026-05-08T02:35:05.799Z
   - _ulid: 01KR2R33183XQS2MR4GN8S5T68
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -38942,7 +38942,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T02:54:22.716Z
-        completed_at: 2026-05-08T02:54:22.716Z
+        completed_at: 2026-05-08T02:55:03.957Z
+        notes: "Friction points: (1) the reflect skill guidance says  without a run ref, but the CLI
+          requires ; this caused an avoidable failed command during reflection. (2) The required
+          review evidence log has no first-class record type, so I stored it as a nit review thread,
+          which leaves a visible unresolved non-blocking thread on an otherwise clean approval. Both
+          are systemic ergonomics issues rather than task-specific code issues."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T02:55:03.957Z
+        completed_at: 2026-05-08T02:55:03.957Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T02:53:56.648Z
