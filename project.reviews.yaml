@@ -186375,6 +186375,12 @@ reviews:
         payload:
           thread_ulid: 01KR3ZJBWWW85GQDQVXY92PTH5
         timestamp: 2026-05-08T15:00:41.423Z
+      - _ulid: 01KR41NZP1BCFHKREHPJ4V4HWS
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR3ZJBWWW85GQDQVXY92PTH5
+        timestamp: 2026-05-08T15:00:47.425Z
     examined_commit: 976e8d35c50053fa437154d649a8412860aee5d4
     external_links: []
     lifecycle_state: closed
@@ -186434,6 +186440,8 @@ reviews:
             body: Acknowledged. The reviewer evidence log is informational; no code change needed.
             created_at: 2026-05-08T15:00:40.160Z
         kind: nit
+        resolved_at: 2026-05-08T15:00:46.131Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -186443,7 +186451,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T14:24:02.682Z
     created_at: 2026-05-08T14:11:39.550Z
-    updated_at: 2026-05-08T15:00:40.160Z
+    updated_at: 2026-05-08T15:00:46.131Z
     notes: []
   - _ulid: 01KR3ZW5WY2YTA8PH9AXKKSJAK
     slugs: []
