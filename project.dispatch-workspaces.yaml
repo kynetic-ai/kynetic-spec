@@ -10979,18 +10979,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-standardize-in-process-daemon-api-fixtures/01kr22gk
-    canonical_branch_head: 51f6c643d15e71ca6beacdfad29738523c310ab7
+    canonical_branch_head: 8d20791d210a11231ae0a56cf52ee117a4a5dc8d
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T02:06:02.271Z
+      updated_at: 2026-05-08T02:35:06.392Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T02:06:26.326Z
+      updated_at: 2026-05-08T02:35:06.392Z
     integration:
       status: pending
       detail: null
@@ -10998,7 +10998,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 51f6c643d15e71ca6beacdfad29738523c310ab7
-      updated_at: 2026-05-08T02:06:02.271Z
+      updated_at: 2026-05-08T02:35:06.392Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR22GKWXB1G5Y4KFTC5RNE3X"
@@ -11006,9 +11006,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T02:06:26.326Z
-      last_reconciled_at: 2026-05-08T02:06:26.326Z
+      last_reconciled_at: 2026-05-08T02:35:06.392Z
       created_at: 2026-05-08T02:06:02.271Z
-      updated_at: 2026-05-08T02:06:26.326Z
+      updated_at: 2026-05-08T02:35:06.392Z
     workspace_id: dispatch-workspace-01KR22GKWXB1G5Y4KFTC5RNE3X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
