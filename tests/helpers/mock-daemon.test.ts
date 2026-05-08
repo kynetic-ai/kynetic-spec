@@ -387,44 +387,39 @@ describe("mock daemon helper — contract", () => {
 });
 
 /**
- * Failing-before-fix contract tests for the child-process mock daemon
- * helper's startup hygiene. These assertions describe the contract the
- * helper MUST satisfy when a child-process startup fails before
- * readiness:
+ * Contract tests for the child-process mock daemon helper's startup hygiene.
  *
- *   - When the helper observes a malformed first stdout line from a
- *     spawned child whose listener is still alive, it stops that child
- *     before returning failure to the caller. (ac-owned-child-stopped-
- *     after-startup-failure)
- *   - When the helper's startup wait times out while the spawned child
- *     is still running, it stops the child before returning failure.
+ *   - When the helper observes a malformed first stdout line from a spawned
+ *     child whose listener is still alive, it stops that child before
+ *     returning failure to the caller.
  *     (ac-owned-child-stopped-after-startup-failure)
- *   - The helper sanitises the child env so ambient daemon-control
- *     and dispatch session vars are not inherited by the mock daemon
- *     child. (ac-child-env-sanitized)
- *
- * Each test runs the AC's required post-fix assertions inside the helper
- * `expectMockDaemonHygieneGap`. Today those assertions throw, the helper
- * validates the failure shape against the EXACT current hygiene gap, and
- * the test passes. A generic spawn / setup failure does NOT match the
- * known gap shape and re-throws — so an unrelated helper or fs error
- * cannot satisfy the regression by accident. This is the explicit task
- * contract, and is what bare `it.fails()` could not enforce: under
- * `it.fails`, ANY thrown assertion in the body counts as the expected
- * failure (validated cycle 2 review of the sister regression-first task
- * @task-add-guardrail-classification-regressions).
- *
- * The plan deliberately splits regressions and the helper fix across two
- * tasks (@task-add-mock-daemon-failure-contract-tests and
- * @task-fix-mock-daemon-cleanup-env-hygiene). The
- * `expectMockDaemonHygieneGap` wrapper is the forcing function: once the
- * helper fix lands, the post-fix assertions succeed, the catch block does
- * not run, and the helper throws to force the dependent task to remove
- * the wrapper and let the post-fix assertions stand on their own. Do not
- * silence by deleting the test — remove `expectMockDaemonHygieneGap(...)`
- * and inline its `assertPostFixBehavior` callback into the test body.
+ *   - When the helper's startup wait times out while the spawned child is
+ *     still running, it stops the child before returning failure.
+ *     (ac-owned-child-stopped-after-startup-failure)
+ *   - The helper sanitises the child env so ambient daemon-control and
+ *     dispatch session vars are not inherited by the mock daemon child.
+ *     (ac-child-env-sanitized)
  */
-describe("mock daemon helper — failure-path contract (failing-before-fix)", () => {
+/** Probe whether a process is still alive without sending a real signal. */
+function isProcessAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Best-effort kill so a leaked child does not survive the test run. */
+function ensureProcessReaped(pid: number): void {
+  try {
+    process.kill(pid, "SIGKILL");
+  } catch {
+    // already gone
+  }
+}
+
+describe("mock daemon helper — startup-failure hygiene contract", () => {
   let tempDir: string;
 
   beforeEach(async () => {
@@ -435,67 +430,12 @@ describe("mock daemon helper — failure-path contract (failing-before-fix)", ()
     await cleanupTempDir(tempDir);
   });
 
-  /** Probe whether a process is still alive without sending a real signal. */
-  function isProcessAlive(pid: number): boolean {
-    try {
-      process.kill(pid, 0);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  /** Best-effort kill so a leaked child does not survive the test run. */
-  function ensureProcessReaped(pid: number): void {
-    try {
-      process.kill(pid, "SIGKILL");
-    } catch {
-      // already gone
-    }
-  }
-
-  /**
-   * Selective expected-failure helper for mock-daemon startup-hygiene
-   * regressions.
-   *
-   * The test asserts the AC's post-fix behavior via `assertPostFixBehavior`.
-   * Today, the helper still has the hygiene gap, so those assertions throw.
-   * This helper catches that failure and then re-asserts the EXACT current
-   * gap shape via `assertKnownGapShape` — so a generic spawn or fs failure
-   * (which would also throw inside `assertPostFixBehavior`) cannot satisfy
-   * the regression by accident: such a failure would not match the known
-   * gap shape and would re-throw.
-   *
-   * When the dependent helper fix lands, `assertPostFixBehavior` succeeds,
-   * the catch block does not run, and this helper throws to force the
-   * dependent task (@task-fix-mock-daemon-cleanup-env-hygiene) to remove
-   * the helper wrapper and let the post-fix assertions stand on their own.
-   */
-  function expectMockDaemonHygieneGap(
-    assertPostFixBehavior: () => void,
-    assertKnownGapShape: () => void,
-  ): void {
-    let postFixPassed = false;
-    try {
-      assertPostFixBehavior();
-      postFixPassed = true;
-    } catch {
-      // Expected failure today. Verify the failure shape is the known
-      // hygiene gap and not an unrelated helper error — any assertion
-      // failure here re-throws and fails the test.
-      assertKnownGapShape();
-    }
-    if (postFixPassed) {
-      throw new Error(
-        "Mock daemon helper no longer exhibits the captured hygiene gap. " +
-          "Remove expectMockDaemonHygieneGap() and let the post-fix " +
-          "assertions stand (see @task-fix-mock-daemon-cleanup-env-hygiene).",
-      );
-    }
-  }
-
   // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
   // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // The helper must stop the child BEFORE returning failure, not "soon
+  // after" — sampling without a grace window catches a regression where
+  // cleanup sends SIGTERM but resolves null before the OS has reaped the
+  // child (the prior bug behind this task's first review cycle).
   it("stops the child process when the first stdout line is malformed", async () => {
     const pidFile = join(tempDir, "child-malformed.pid");
 
@@ -511,38 +451,23 @@ describe("mock daemon helper — failure-path contract (failing-before-fix)", ()
       // stdout branch immediately, well before this fires.
       __testStartupTimeoutMs: 5_000,
     });
-    // Setup invariants — these must hold regardless of the cleanup gap;
-    // a failure here is a setup-shape mismatch, not the gap under test,
-    // so we assert them outside expectMockDaemonHygieneGap.
     expect(result).toBeNull();
     expect(existsSync(pidFile)).toBe(true);
     const childPid = Number.parseInt(readFileSync(pidFile, "utf8"), 10);
     expect(Number.isFinite(childPid)).toBe(true);
     expect(childPid).toBeGreaterThan(0);
 
-    // Reap on test exit even if the helper leaks the child today, so a
-    // failing assertion does not leave a daemon listening.
+    // Belt-and-suspenders: reap on test exit if SIGTERM didn't take, so
+    // an assertion regression doesn't leave a daemon listening.
     onTestFinished(() => {
       if (isProcessAlive(childPid)) ensureProcessReaped(childPid);
     });
 
-    // Give the OS a brief window to deliver any signal the helper sent
-    // before sampling. Well past CHILD_GRACEFUL_KILL_MS becoming relevant.
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    expectMockDaemonHygieneGap(
-      () => {
-        // Post-fix: the helper stops the still-running child before
-        // returning failure to the caller.
-        expect(isProcessAlive(childPid)).toBe(false);
-      },
-      () => {
-        // Known gap today: the malformed-stdout branch in
-        // startChildMockDaemon does not call child.kill(), so the child
-        // is still listening when the helper returns null.
-        expect(isProcessAlive(childPid)).toBe(true);
-      },
-    );
+    // The helper stops the still-running child BEFORE returning failure
+    // — no grace window. Sampling immediately on return is what catches
+    // the prior bug where cleanup fired SIGTERM and resolved null without
+    // waiting for the child to actually exit.
+    expect(isProcessAlive(childPid)).toBe(false);
   });
 
   // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
@@ -570,19 +495,9 @@ describe("mock daemon helper — failure-path contract (failing-before-fix)", ()
       if (isProcessAlive(childPid)) ensureProcessReaped(childPid);
     });
 
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    expectMockDaemonHygieneGap(
-      () => {
-        // Post-fix: the helper stops the still-running child on timeout.
-        expect(isProcessAlive(childPid)).toBe(false);
-      },
-      () => {
-        // Known gap today: the timeout branch in startChildMockDaemon
-        // does not call child.kill(), so the child is still listening.
-        expect(isProcessAlive(childPid)).toBe(true);
-      },
-    );
+    // No grace window — same return-boundary contract as the malformed-
+    // stdout case above.
+    expect(isProcessAlive(childPid)).toBe(false);
   });
 
   // AC: @daemon-test-startup-failure-hygiene ac-child-env-sanitized
@@ -637,30 +552,46 @@ describe("mock daemon helper — failure-path contract (failing-before-fix)", ()
     expect(existsSync(envFile)).toBe(true);
     const recorded = JSON.parse(readFileSync(envFile, "utf8")) as Record<string, string>;
 
-    expectMockDaemonHygieneGap(
-      () => {
-        // Post-fix: ambient daemon-control vars and session vars are
-        // stripped from the child env.
-        expect(recorded.KSPEC_DAEMON_PID).toBeUndefined();
-        expect(recorded.KSPEC_DAEMON_PORT).toBeUndefined();
-        expect(recorded.KSPEC_DAEMON_HOST).toBeUndefined();
-        expect(recorded.KSPEC_DAEMON_CONNECT_HOST).toBeUndefined();
-        expect(recorded.KSPEC_DAEMON_RUNTIME).toBeUndefined();
-        expect(recorded.KSPEC_NO_DAEMON).toBeUndefined();
-        expect(recorded.KSPEC_SESSION_ID).toBeUndefined();
+    // Ambient daemon-control vars and dispatch session vars are stripped
+    // from the child env by the sanitised subprocess-env builder.
+    expect(recorded.KSPEC_DAEMON_PID).toBeUndefined();
+    expect(recorded.KSPEC_DAEMON_PORT).toBeUndefined();
+    expect(recorded.KSPEC_DAEMON_HOST).toBeUndefined();
+    expect(recorded.KSPEC_DAEMON_CONNECT_HOST).toBeUndefined();
+    expect(recorded.KSPEC_DAEMON_RUNTIME).toBeUndefined();
+    expect(recorded.KSPEC_NO_DAEMON).toBeUndefined();
+    expect(recorded.KSPEC_SESSION_ID).toBeUndefined();
+  });
+
+  // AC: @daemon-test-startup-failure-hygiene ac-child-env-sanitized
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // The strip lists are an opt-out, not a hard ban — a test that explicitly
+  // passes a daemon-control or dispatch-session var via the helper's `env`
+  // option needs that value preserved in the child. Otherwise tests that
+  // specifically exercise daemon-control behavior could not configure the
+  // child at all.
+  it("preserves explicit env overrides for keys that would otherwise be stripped", async () => {
+    const envFile = join(tempDir, "child-env-overrides.json");
+
+    const child = await startMockDaemon({
+      asChildProcess: true,
+      __testInjectArgs: ["--env-record", envFile],
+      env: {
+        KSPEC_DAEMON_PID: "12345",
+        KSPEC_NO_DAEMON: "1",
+        KSPEC_SESSION_ID: "01OVERRIDESESSION0000000000",
       },
-      () => {
-        // Known gap today: the helper inherits process.env into the
-        // child without sanitisation, so each poisoned key arrives in
-        // the child verbatim.
-        expect(recorded.KSPEC_DAEMON_PID).toBe("999999");
-        expect(recorded.KSPEC_DAEMON_PORT).toBe("9999");
-        expect(recorded.KSPEC_DAEMON_HOST).toBe("leak.example");
-        expect(recorded.KSPEC_DAEMON_CONNECT_HOST).toBe("leak.example");
-        expect(recorded.KSPEC_DAEMON_RUNTIME).toBe("node");
-        expect(recorded.KSPEC_NO_DAEMON).toBe("1");
-        expect(recorded.KSPEC_SESSION_ID).toBe("leak-session");
-      },
-    );
+    });
+    expect(child).not.toBeNull();
+    onTestFinished(async () => {
+      if (child) await child.stop();
+    });
+
+    expect(existsSync(envFile)).toBe(true);
+    const recorded = JSON.parse(readFileSync(envFile, "utf8")) as Record<string, string>;
+
+    expect(recorded.KSPEC_DAEMON_PID).toBe("12345");
+    expect(recorded.KSPEC_NO_DAEMON).toBe("1");
+    expect(recorded.KSPEC_SESSION_ID).toBe("01OVERRIDESESSION0000000000");
   });
 });

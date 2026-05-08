@@ -48,7 +48,11 @@ import {
   type DaemonRuntime,
 } from "../../src/daemon-shared/endpoint.js";
 
-import { readTestOutputSync, type IsolatedKspecHome } from "./cli.js";
+import {
+  buildTestSubprocessEnv,
+  readTestOutputSync,
+  type IsolatedKspecHome,
+} from "./cli.js";
 
 // ── Paths ─────────────────────────────────────────────────────────────
 
@@ -120,6 +124,63 @@ export interface StartMockDaemonOptions {
    * out the production CHILD_STARTUP_TIMEOUT_MS default.
    */
   __testStartupTimeoutMs?: number;
+  /**
+   * Explicit env overrides for the spawned child (child-process mode only).
+   *
+   * The base env is built via `buildTestSubprocessEnv` so dispatch / agent /
+   * runner-mode vars are stripped, and ambient daemon-control vars (e.g.
+   * KSPEC_DAEMON_PID, KSPEC_NO_DAEMON) are stripped on top of that — keys
+   * present here are preserved regardless of the strip lists, so a test that
+   * needs to set (or pass through) a daemon-control var can do so explicitly.
+   */
+  env?: Record<string, string>;
+}
+
+/**
+ * Ambient daemon-control env vars that must NOT leak into the mock daemon
+ * child via the parent's `process.env`. Inheriting these would let a stale
+ * pid / port from the developer's local daemon — or from a parallel test —
+ * pin the mock child to an unrelated endpoint, undermining the standardized
+ * fixture contract for CLI routing tests. Mirrors the equivalent strip list
+ * in `tests/helpers/daemon.ts` (`buildDaemonChildEnv`); the URL twins are
+ * included here because the mock daemon child has no use for them and the
+ * helper's failure-path contract tests record them as part of the sanitised
+ * env snapshot.
+ */
+const AMBIENT_DAEMON_CONTROL_VARS = [
+  "KSPEC_DAEMON_PID",
+  "KSPEC_DAEMON_PORT",
+  "KSPEC_DAEMON_HOST",
+  "KSPEC_DAEMON_CONNECT_HOST",
+  "KSPEC_DAEMON_RUNTIME",
+  "KSPEC_DAEMON_API_URL",
+  "KSPEC_DAEMON_WS_URL",
+  "KSPEC_NO_DAEMON",
+] as const;
+
+/**
+ * Build the env passed to a spawned mock daemon child.
+ *
+ * Layers, in order:
+ *   1. `process.env` with dispatch / agent / runner-mode vars stripped
+ *      (delegated to `buildTestSubprocessEnv`).
+ *   2. Ambient daemon-control vars stripped on top so a stale local-daemon
+ *      pid / port cannot pin the mock child to an unrelated endpoint.
+ *   3. Caller `overrides` applied last — keys present here are preserved
+ *      regardless of either strip list (caller opts in explicitly).
+ *
+ * @see ac-child-env-sanitized in @daemon-test-startup-failure-hygiene
+ */
+function buildMockDaemonChildEnv(
+  overrides: Record<string, string> = {},
+): NodeJS.ProcessEnv {
+  const env = buildTestSubprocessEnv(overrides);
+  for (const key of AMBIENT_DAEMON_CONTROL_VARS) {
+    if (!(key in overrides)) {
+      delete env[key];
+    }
+  }
+  return env;
 }
 
 // ── Host probing ──────────────────────────────────────────────────────
@@ -347,6 +408,7 @@ async function startChildMockDaemon(
   ownsRecordPath: boolean,
   injectArgs: string[],
   startupTimeoutMs: number,
+  envOverrides: Record<string, string>,
 ): Promise<MockDaemonClient | null> {
   return new Promise((resolve) => {
     const child: ChildProcess = spawn(
@@ -361,7 +423,10 @@ async function startChildMockDaemon(
         recordPath,
         ...injectArgs,
       ],
-      { stdio: ["pipe", "pipe", "pipe"] },
+      {
+        stdio: ["pipe", "pipe", "pipe"],
+        env: buildMockDaemonChildEnv(envOverrides),
+      },
     );
 
     let settled = false;
@@ -385,10 +450,83 @@ async function startChildMockDaemon(
       }
     };
 
-    const timeoutId = setTimeout(() => {
-      cleanupRecordFile();
-      finish(null);
-    }, startupTimeoutMs);
+    /**
+     * Idempotent child cleanup for startup-failure paths.
+     *
+     * Resolves only after the still-running mock daemon child has actually
+     * exited — the contract is that the helper must not return failure to
+     * the caller while the owned child is still alive. Sends SIGTERM,
+     * waits for the child's `exit` event, and schedules a SIGKILL fallback
+     * for children that ignore SIGTERM. Also removes the helper-allocated
+     * record file. Safe to call from any failure branch (timeout, malformed
+     * first-line stdout, spawn error) — subsequent calls return immediately
+     * with the prior outcome, so cascading branches cannot double-kill or
+     * thrash the record file.
+     *
+     * @see ac-owned-child-stopped-after-startup-failure in
+     * @daemon-test-startup-failure-hygiene
+     */
+    let startupCleanupPromise: Promise<void> | undefined;
+    const cleanupChildOnStartupFailure = (): Promise<void> => {
+      if (startupCleanupPromise) return startupCleanupPromise;
+      startupCleanupPromise = new Promise<void>((resolveCleanup) => {
+        // Holder so `finalize` can reference the timer through a stable
+        // identifier even though the timer is created after `finalize` is
+        // attached as the exit listener.
+        const cleanup: { done: boolean; killTimer?: NodeJS.Timeout } = {
+          done: false,
+        };
+        const finalize = (): void => {
+          if (cleanup.done) return;
+          cleanup.done = true;
+          if (cleanup.killTimer) clearTimeout(cleanup.killTimer);
+          cleanupRecordFile();
+          resolveCleanup();
+        };
+
+        // If the child has already exited (e.g. spawn rejected, child
+        // crashed before we got here), there's nothing to wait on.
+        if (child.exitCode !== null || child.signalCode !== null) {
+          finalize();
+          return;
+        }
+
+        child.once("exit", finalize);
+
+        let signalled: boolean;
+        try {
+          signalled = child.kill("SIGTERM");
+        } catch {
+          signalled = false;
+        }
+
+        if (!signalled) {
+          // child.kill returns false when the child handle has no spawned
+          // process (e.g. spawn rejected with ENOENT) or has already been
+          // reaped. No exit event is coming, so don't wait — drop our
+          // listener and finalize now. If exit *does* fire later, finalize
+          // is idempotent.
+          child.removeListener("exit", finalize);
+          finalize();
+          return;
+        }
+
+        cleanup.killTimer = setTimeout(() => {
+          try {
+            child.kill("SIGKILL");
+          } catch {
+            // already gone — the exit handler will resolve us
+          }
+        }, CHILD_GRACEFUL_KILL_MS);
+      });
+      return startupCleanupPromise;
+    };
+
+    const failStartup = (): void => {
+      cleanupChildOnStartupFailure().then(() => finish(null));
+    };
+
+    const timeoutId = setTimeout(failStartup, startupTimeoutMs);
 
     child.stdout!.on("data", (chunk: Buffer) => {
       stdout += chunk.toString();
@@ -399,8 +537,7 @@ async function startChildMockDaemon(
       try {
         parsed = JSON.parse(line) as { port: number; bindHost: string };
       } catch {
-        cleanupRecordFile();
-        finish(null);
+        failStartup();
         return;
       }
       const { apiUrl, wsUrl } = buildDaemonUrls(parsed.bindHost, parsed.port);
@@ -442,12 +579,11 @@ async function startChildMockDaemon(
       });
     });
 
-    child.on("error", () => {
-      cleanupRecordFile();
-      finish(null);
-    });
+    child.on("error", failStartup);
     child.on("exit", () => {
       if (!settled) {
+        // Child exited on its own (e.g. mode/break arg validation failed).
+        // The OS already reaped it, so we only need the record-file cleanup.
         cleanupRecordFile();
         finish(null);
       }
@@ -479,6 +615,7 @@ export async function startMockDaemon(
     const recordPath = opts.recordPath ?? allocateRecordPath(bindHost);
     const injectArgs = opts.__testInjectArgs ?? [];
     const startupTimeoutMs = opts.__testStartupTimeoutMs ?? CHILD_STARTUP_TIMEOUT_MS;
+    const envOverrides = opts.env ?? {};
     return startChildMockDaemon(
       bindHost,
       mode,
@@ -486,6 +623,7 @@ export async function startMockDaemon(
       ownsRecordPath,
       injectArgs,
       startupTimeoutMs,
+      envOverrides,
     );
   }
   return startInProcessMockDaemon(bindHost, mode);
