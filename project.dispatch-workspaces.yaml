@@ -13726,7 +13726,7 @@ workspaces:
         head: 324ac8a62aba4af96c2783d7b5da692419615644
         last_seen_at: 2026-05-08T15:04:02.860Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-real-daemon-startup-failure-tests-01kr3w7q
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 227fcb7ef7d06f60567823111394bb2ec0506413
     bootstrap:
       status: succeeded
@@ -14224,9 +14224,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T16:26:03.671Z
-      last_reconciled_at: 2026-05-08T16:42:11.465Z
+      last_reconciled_at: 2026-05-08T16:45:32.747Z
       created_at: 2026-05-08T15:47:47.474Z
-      updated_at: 2026-05-08T16:42:12.303Z
+      updated_at: 2026-05-08T16:45:32.747Z
     workspace_id: dispatch-workspace-01KR3W7RHFG659BH7VGSM69KCJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
