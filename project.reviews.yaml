@@ -188902,3 +188902,29 @@ reviews:
     created_at: 2026-05-08T19:19:25.583Z
     updated_at: 2026-05-08T19:32:58.625Z
     notes: []
+  - _ulid: 01KR4HSW4RBR9R7JJQ6ERGC740
+    slugs: []
+    title: Review task-fix-mock-daemon-cleanup-env-hygiene cycle 2
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR4HSW4E176XJFY993QC8P0F
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-08T19:42:32.078Z
+    examined_commit: 16da0ce3d2b3e81217986e95b59d9c9051996698
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR3W7RTYPWDJVCQFZD2042P2"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-08T19:42:32.088Z
+    updated_at: null
+    notes: []
