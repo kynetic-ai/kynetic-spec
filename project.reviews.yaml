@@ -189154,6 +189154,18 @@ reviews:
         runner: npx oxlint
         created_at: 2026-05-08T20:22:45.740Z
         completed_at: 2026-05-08T20:22:45.740Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh ran 8836 tests: 8830 passed, 5 skipped, 1 failed. Failure was
+          tests/daemon-build.test.ts timeout after 180000ms; immediate focused rerun passed 2/2 in
+          911ms, so classified as flaky and noted on existing task @01KR4AWP."
+        name: full test suite
+        required: false
+        runner: npm test
+        created_at: 2026-05-08T20:23:02.762Z
+        completed_at: 2026-05-08T20:23:02.762Z
     events:
       - _ulid: 01KR4K31VYTF1G9TCCAQ936BF7
         actor: Jacob Chapel
@@ -189189,6 +189201,13 @@ reviews:
           status: fail
           name: custom unrelated shell probe
         timestamp: 2026-05-08T20:22:47.226Z
+      - _ulid: 01KR4M4393V38R751GCQZY5DF8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: full test suite
+        timestamp: 2026-05-08T20:23:04.228Z
     examined_commit: f0d119a1f95ce93bafc5ea58c499ebd02865f260
     external_links: []
     lifecycle_state: open
@@ -189224,5 +189243,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-08T20:05:01.439Z
-    updated_at: 2026-05-08T20:22:45.740Z
+    updated_at: 2026-05-08T20:23:02.762Z
     notes: []
