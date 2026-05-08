@@ -188323,6 +188323,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR4EEE2JYCGXM5AZSCF79XW3
         timestamp: 2026-05-08T18:43:52.816Z
+      - _ulid: 01KR4EETCR29T4M9ASCBJJ697P
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR4EES4NV6WANQ4V2ZBAY074
+        timestamp: 2026-05-08T18:44:04.120Z
     examined_commit: 2f72e91ffd2596c10f1b626fa3676a06a8daf436
     external_links: []
     lifecycle_state: open
@@ -188352,7 +188359,25 @@ reviews:
               false for an exec-file API that directly launches the daemon entrypoint.'
             created_at: 2026-05-08T18:43:51.507Z
         kind: blocker
+      - _ulid: 01KR4EES4NV6WANQ4V2ZBAY074
+        anchor:
+          type: code
+          commit: 2f72e91ffd2596c10f1b626fa3676a06a8daf436
+          line_end: 453
+          line_start: 453
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR4EES4P57VZ3YRE0M87FGCA
+            author: Jacob Chapel
+            body: "MUST-FIX: this branch introduces an oxlint error in the changed rule file. Head reports
+              eslint-plugin-unicorn(prefer-string-starts-ends-with) here: prefer String#endsWith
+              over /\\/kspec$/. Evidence: linting the base versions of the reviewed files had 1
+              error; linting the head versions has 2 errors, with this head-only error added.
+              Impact: the required lint gate now has a new changed-file regression."
+            created_at: 2026-05-08T18:44:02.838Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T18:30:52.605Z
-    updated_at: 2026-05-08T18:43:51.507Z
+    updated_at: 2026-05-08T18:44:02.838Z
     notes: []
