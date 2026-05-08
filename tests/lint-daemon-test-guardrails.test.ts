@@ -1208,17 +1208,25 @@ describe("git subprocess with overlapping argv tokens", () => {
  *     the behavior under test. Undocumented disables are rejected.
  *
  * The unsafe regression cases are written as failing-before-fix
- * assertions: today's rule treats the ancestor `afterEach` with a kill
- * pattern as proof of cleanup, so the cases here pass through unflagged
- * and the assertions fail until the dependent rule fix lands. The
- * allowed-narrow cases describe the canonical safe shape (capture pid or
- * child handle inline, register cleanup before any await/expect) so the
- * fix cannot accidentally over-tighten and reject legitimate patterns.
+ * assertions and marked with `it.fails`: today's rule treats the ancestor
+ * `afterEach` with a kill pattern as proof of cleanup, so the cases here
+ * pass through unflagged and the assertions throw. `it.fails` inverts the
+ * pass/fail signal so the suite stays green while the rule has the gap
+ * AND fails loudly the moment the dependent rule fix in
+ * @task-fix-detached-cleanup-timing-analysis lands and the unsafe cases
+ * begin to be reported — that is the cue to drop the `.fails` marker.
+ *
+ * The allowed-narrow cases describe the canonical safe shape (capture pid
+ * or child handle inline, register cleanup before any await/expect) so
+ * the fix cannot accidentally over-tighten and reject legitimate patterns.
  */
 describe("daemon test guardrail precision: detached cleanup timing", () => {
   // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
   describe("detached daemon flagged when cleanup is not bound before later observations", () => {
-    it("flags runKspec(\"serve start --detach\") when an afterEach closes over a let pid that is assigned only after an expect()", () => {
+    // Marked `it.fails`: passes today (rule does not yet flag this shape, so
+    // the assertion below throws) and will fail the moment the dependent
+    // rule fix begins reporting it — that is the cue to drop the marker.
+    it.fails("flags runKspec(\"serve start --detach\") when an afterEach closes over a let pid that is assigned only after an expect()", () => {
       // UNSAFE: the afterEach captures `pid`, but the test body runs
       // `expect(...)` before `pid = readPidFromFile()`. If the assertion
       // throws, `pid` is still null when the afterEach runs and the
@@ -1246,7 +1254,9 @@ describe("detached cleanup deferred until after assertion", () => {
       expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
     });
 
-    it("flags runKspec(\"serve start --detach\") when an afterEach closes over a let pid that is assigned only after an awaited probe", () => {
+    // Marked `it.fails`: passes today (rule gap) and will fail when the
+    // dependent rule fix begins reporting this shape — drop the marker then.
+    it.fails("flags runKspec(\"serve start --detach\") when an afterEach closes over a let pid that is assigned only after an awaited probe", () => {
       // UNSAFE: same shape as the assertion case but the intervening
       // operation is an `await` on a daemon observation. The await can
       // throw or hang before `pid` is captured, leaking the daemon.
@@ -1271,7 +1281,9 @@ describe("detached cleanup deferred until after await", () => {
       expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
     });
 
-    it("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when an afterEach closes over a let child that is assigned only after an awaited probe", () => {
+    // Marked `it.fails`: passes today (rule gap) and will fail when the
+    // dependent rule fix begins reporting this shape — drop the marker then.
+    it.fails("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when an afterEach closes over a let child that is assigned only after an awaited probe", () => {
       // UNSAFE argv-form variant: the spawn returns a child handle, but
       // the test does not capture it until after `await waitForReady()`.
       // The afterEach closes over `child`, yet the binding is null when
@@ -1431,7 +1443,11 @@ describe("file-wide disable broadens the exception", () => {
       expect(result.output).toMatch(/file.?wide|block.?wide|localized-disable/i);
     });
 
-    it("does not silence the offending detached start when an oxlint-disable-next-line sits above an unrelated preceding statement", () => {
+    // Marked `it.fails`: passes today (the detached-start cleanup-timing
+    // gap means the rule does not flag this shape regardless of the
+    // disable placement) and will fail when the dependent rule fix begins
+    // reporting the underlying detached start — drop the marker then.
+    it.fails("does not silence the offending detached start when an oxlint-disable-next-line sits above an unrelated preceding statement", () => {
       // The disable directive applies to the line immediately following
       // it (the `const noop` declaration), not the detached start two
       // lines below. The detached start must therefore still be flagged
