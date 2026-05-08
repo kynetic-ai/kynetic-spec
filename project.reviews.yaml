@@ -189680,6 +189680,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-08T21:09:37.848Z
+      - _ulid: 01KR4RQXY8K7QCVBZJCPETYDA4
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR4P6HY5S1EVX53W9575F4E6
+        timestamp: 2026-05-08T21:43:48.424Z
     examined_commit: e23ece2eed929bad1e38d89cf824049e8aecf90b
     external_links: []
     lifecycle_state: closed
@@ -189715,6 +189721,47 @@ reviews:
               consistent with the exec/execSync shell-token logic) and add behavioral regressions
               for unrelated spawn/execFile argv cases."
             created_at: 2026-05-08T20:59:21.926Z
+          - _ulid: 01KR4RQWM9J77XF238DN4M70A2
+            author: "@claude"
+            body: >-
+              Fixed: tightened the spawn-like detector in readDaemonEntryInvocation to require
+              args[0] to be a recognised JS runtime before treating an argv-element daemon entry as
+              a daemon launch. New helper isRecognisedRuntimeArg wraps isRecognisedShellRuntimeToken
+              (the same predicate the exec/execSync branch already uses) so 'node' / 'bun' (bare or
+              path-suffixed) match while substring confusables ('nodemon', 'bunyan') and unrelated
+              executables ('cat', 'grep', 'docker') do not. The direct-executable form (args[0] IS
+              the daemon entry, e.g. spawn(DAEMON_ENTRY, [...])) is unchanged — that path still
+              fires regardless of args[0] shape because a shebang'd entry IS the runtime.
+
+
+              Behavioral regressions added in tests/lint-daemon-test-guardrails.test.ts under the
+              unrelated-subprocesses-not-reported describe:
+
+              - spawn('cat', [DAEMON_ENTRY]) — must NOT be flagged (reviewer probe)
+
+              - execFile('grep', ['dist/daemon/index.js', 'src/']) — must NOT be flagged (reviewer
+              probe)
+
+              - spawnSync('nodemon', [DAEMON_ENTRY, '--watch', 'src']) — substring-of-runtime guard
+
+              - execFileSync('docker', ['run', 'image', 'dist/daemon/index.js']) — non-runtime
+              executable
+
+              - execFile('/usr/bin/node', [DAEMON_ENTRY, ...]) — positive regression: path-suffixed
+              runtime still flagged
+
+
+              Verification:
+
+              - Targeted suite: 100 tests pass (95 prior + 5 new).
+
+              - Full suite: 8850 passed, 5 skipped, 0 failed.
+
+              - Project lint: 13 errors, 721 warnings — same dev baseline.
+
+              - Reviewer's exact probe (spawn('cat', [...]) + execFile('grep', [...])) exits 0 with
+              0 diagnostics.
+            created_at: 2026-05-08T21:43:47.081Z
         kind: blocker
       - _ulid: 01KR4PS0RSCAB41AHSC5MVA15V
         entries:
@@ -189747,7 +189794,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T21:09:37.847Z
     created_at: 2026-05-08T20:56:27.409Z
-    updated_at: 2026-05-08T21:09:37.848Z
+    updated_at: 2026-05-08T21:43:47.081Z
     notes: []
   - _ulid: 01KR4QTX3SCHS6NH0W4S6KGMMN
     slugs: []
