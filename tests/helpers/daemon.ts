@@ -126,6 +126,15 @@ export interface StartTestDaemonOptions {
    * any callback that survives assertion failures inside the readiness wait.
    */
   registerCleanup?: (stop: () => Promise<void>) => void;
+  /**
+   * Test-only seam: override the binary path passed to `spawn()` while keeping
+   * `runtime` for env construction (NODE_ENV vs BUN_ENV) and diagnostic
+   * reporting. Production callers must not pass this. Contract tests use it
+   * to simulate process launch failures (e.g. ENOENT from a nonexistent
+   * binary path) without depending on whether a real system runtime is
+   * actually missing on the host.
+   */
+  __testBinaryOverride?: string;
 }
 
 export interface StartedTestDaemon {
@@ -588,7 +597,8 @@ export async function startTestDaemon(
     extraArgs: opts.extraArgs ?? [],
   });
 
-  const child = spawn(runtime, args, {
+  const spawnBinary = opts.__testBinaryOverride ?? runtime;
+  const child = spawn(spawnBinary, args, {
     cwd: project.tempDir,
     stdio: ["ignore", "pipe", "pipe"],
     env,
