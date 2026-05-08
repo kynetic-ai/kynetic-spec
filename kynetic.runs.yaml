@@ -40203,7 +40203,7 @@ runs:
     started_at: 2026-05-08T17:42:20.188Z
   - _ulid: 01KR4B12Z2GTER29ZHDVVBRS33
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -40242,7 +40242,18 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-08T17:45:05.875Z
-        completed_at: 2026-05-08T17:45:05.875Z
+        completed_at: 2026-05-08T17:45:15.508Z
+        notes: "Proposed improvement: add a small testing guideline or helper for expected-failure guardrail
+          regressions. It would require expected-failure tests to assert a precondition that the
+          runner/linter executed cleanly and to verify the exact known gap shape, similar to
+          expectClassifierGap, instead of relying on bare it.fails. Benefit: prevents AC-bearing
+          regression tests from passing on unrelated parser/helper failures. Scope: small if
+          documented in work-gates/testing convention plus optional reusable helper; medium if
+          enforced by a lint rule."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-08T17:45:15.508Z
+        completed_at: 2026-05-08T17:45:15.508Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T17:44:08.418Z
