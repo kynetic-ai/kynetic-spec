@@ -39800,7 +39800,7 @@ runs:
     started_at: 2026-05-08T14:43:25.314Z
     completed_at: 2026-05-08T14:45:00.073Z
   - _ulid: 01KR41KTSNRMMD3J8NKRAVPNAB
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -39857,7 +39857,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-08T15:01:37.932Z
-        completed_at: 2026-05-08T15:01:37.932Z
+        completed_at: 2026-05-08T15:01:58.833Z
+        notes: "Captured inbox item @01KR41QV for the untracked improvement: surface linked-spec AC coverage
+          gaps during task submit/review. Did not duplicate evidence-log friction because search
+          found existing observation @01KR2JD1. No additional success/friction observations
+          captured; the session produced one actionable, high-confidence improvement."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T14:59:36.885Z
+    completed_at: 2026-05-08T15:01:58.833Z
