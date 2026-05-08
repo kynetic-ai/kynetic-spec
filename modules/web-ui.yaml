@@ -1010,7 +1010,7 @@ features:
           use real child daemons through the shared fixture.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
