@@ -46,7 +46,7 @@ description: |
 spec_ref: "@daemon-test-startup-failure-hygiene"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -55,6 +55,14 @@ tags:
   - testing
   - daemon
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-add-real-daemon-startup-failure-tests/01kr3w7q
+  captured_at: 2026-05-08T14:07:23.272Z
+  commit: 976e8d35c50053fa437154d649a8412860aee5d4
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR3XYM5WPWVZP31VFVJFFTD5
 history:
   - author: Jacob Chapel
@@ -77,7 +85,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-08T13:57:18.262Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-real-daemon-startup-failure-tests/01kr3w7q
+          captured_at: 2026-05-08T14:07:23.272Z
+          commit: 976e8d35c50053fa437154d649a8412860aee5d4
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-08T14:07:23.274Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-08T14:07:23.274Z
 created_at: 2026-05-08T13:25:37.576Z
 started_at: 2026-05-08T13:57:18.261Z
+submitted_at: 2026-05-08T14:07:23.274Z
 todos: []
 automation: eligible
