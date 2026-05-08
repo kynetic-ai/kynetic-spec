@@ -12184,7 +12184,7 @@ workspaces:
         head: 62bc34089817b52062bdf41483d0412bfd2ff84d
         last_seen_at: 2026-05-08T05:51:45.222Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-daemon-test-fixture-standardization-01kr22gm
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
     bootstrap:
       status: succeeded
@@ -12664,12 +12664,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-08T15:38:34.458Z
+      updated_at: 2026-05-08T15:39:09.990Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T15:38:34.458Z
+      updated_at: 2026-05-08T15:39:09.990Z
     integration:
       status: merged
       detail: integration:merged
@@ -12677,7 +12677,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
-      updated_at: 2026-05-08T15:38:34.458Z
+      updated_at: 2026-05-08T15:39:09.990Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KR3W7PCMZ7KPMPJ9ZFBQXX7W"
@@ -12685,9 +12685,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T15:26:00.801Z
-      last_reconciled_at: 2026-05-08T15:38:34.458Z
+      last_reconciled_at: 2026-05-08T15:39:09.990Z
       created_at: 2026-05-08T13:27:14.798Z
-      updated_at: 2026-05-08T15:38:34.458Z
+      updated_at: 2026-05-08T15:39:09.990Z
     workspace_id: dispatch-workspace-01KR3W7PCMZ7KPMPJ9ZFBQXX7W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
