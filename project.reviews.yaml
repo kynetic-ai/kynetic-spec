@@ -186003,6 +186003,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-08T13:53:01.070Z
+      - _ulid: 01KR3ZHBVT3PCN3KRAFVZ6NKJA
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR3XRW8CWRGXPK4XHZX3WTRS
+        timestamp: 2026-05-08T14:23:18.906Z
     examined_commit: 9ff274ab87aa2948893aecf7bebcc9e14827572c
     external_links: []
     lifecycle_state: closed
@@ -186035,6 +186041,20 @@ reviews:
               branch that advances to `dev`; please submit these tests together with the rule change
               that makes them pass, or otherwise keep `npm test` green at merge time."
             created_at: 2026-05-08T13:52:27.917Z
+          - _ulid: 01KR3ZHAHRNG4FRW8DJGVJMXND
+            author: "@claude"
+            body: "Fixed: switched the six failing-before-fix regression tests in
+              tests/lint-daemon-test-guardrails.test.ts to it.fails() so the merge gate stays green.
+              The regression coverage is preserved live — the assertions still execute and exercise
+              oxlint against the synthetic snippets — but the it.fails modifier flips the pass/fail
+              polarity so today's classifier gaps satisfy the test instead of breaking the suite.
+              When @task-fix-guardrail-daemon-command-classification lands and the assertions
+              succeed, it.fails will itself fail, forcing the dependent task to remove .fails before
+              merge. Doc block above the describe spells this out for the next reviewer and the fix
+              worker. Verified: focused npm test -- --fresh
+              tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts →
+              68/68 pass; full npm test → 8803 passed, 5 skipped, 0 failed across 2402 suites."
+            created_at: 2026-05-08T14:23:17.560Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -186045,7 +186065,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T13:53:01.070Z
     created_at: 2026-05-08T13:40:40.642Z
-    updated_at: 2026-05-08T13:53:01.070Z
+    updated_at: 2026-05-08T14:23:17.560Z
     notes: []
   - _ulid: 01KR3XZGFXDHARMXBFNVXZKEZH
     slugs: []
