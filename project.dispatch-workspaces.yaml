@@ -17119,12 +17119,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T22:05:10.157Z
+      updated_at: 2026-05-08T22:05:18.434Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T22:05:10.157Z
+      updated_at: 2026-05-08T22:05:18.434Z
     integration:
       status: pending
       detail: null
@@ -17132,24 +17132,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c7a614eb8c7ad29b53b498753046704475f181da
-      updated_at: 2026-05-08T22:05:10.157Z
-    lifecycle_state: ready
+      updated_at: 2026-05-08T22:05:18.434Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KR3W7R7Y2JCNSJZGPNCM9QFA"
     task_slug: task-harden-playwright-daemon-fixture-cleanup
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T21:48:58.770Z
-      last_reconciled_at: 2026-05-08T22:05:10.157Z
+      last_reconciled_at: 2026-05-08T22:05:18.434Z
       created_at: 2026-05-08T21:48:25.747Z
-      updated_at: 2026-05-08T22:05:10.157Z
+      updated_at: 2026-05-08T22:05:18.434Z
     workspace_id: dispatch-workspace-01KR3W7R7Y2JCNSJZGPNCM9QFA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 5ccd73404bb47e41462a02479dcbf5ebb1d0c90f
+        last_seen_at: 2026-05-08T22:05:18.434Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-harden-playwright-daemon-fixture-cleanup-01kr3w7r-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-harden-playwright-daemon-fixture-cleanup/01kr3w7r
-        head: c7a614eb8c7ad29b53b498753046704475f181da
-        last_seen_at: 2026-05-08T21:48:25.747Z
+        head: 5ccd73404bb47e41462a02479dcbf5ebb1d0c90f
+        last_seen_at: 2026-05-08T22:05:18.434Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-harden-playwright-daemon-fixture-cleanup-01kr3w7r
