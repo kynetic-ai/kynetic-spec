@@ -40624,7 +40624,7 @@ runs:
     completed_at: 2026-05-08T19:10:58.353Z
   - _ulid: 01KR4H9J64SNEN62EJCBR716Z3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -40638,7 +40638,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T19:34:43.419Z
-        completed_at: 2026-05-08T19:34:43.419Z
+        completed_at: 2026-05-08T19:34:51.753Z
+        notes: "Friction: the useful edge-case validation required hand-building a temporary oxlint config
+          and synthetic test file in shell. That is repeatable for lint-rule reviews but not
+          currently packaged as an easy probe helper. Full npm test also took about 34 minutes after
+          the blocker was already confirmed, which is costly but consistent with current review
+          gates."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T19:34:51.753Z
+        completed_at: 2026-05-08T19:34:51.753Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T19:33:37.604Z
