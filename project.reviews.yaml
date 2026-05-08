@@ -185273,7 +185273,18 @@ reviews:
     slugs: []
     title: Review daemon fixture standardization validation
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --refs --warnings-ok passed; 6 deprecated-reference warnings reported,
+          matching worker note and unrelated to this task.
+        name: kspec validate refs
+        required: true
+        runner: kspec
+        created_at: 2026-05-08T06:05:33.352Z
+        completed_at: 2026-05-08T06:05:33.352Z
     events:
       - _ulid: 01KR32AKXSCZ02R9VHTHPCAP25
         actor: Jacob Chapel
@@ -185288,6 +185299,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T05:53:00.837Z
+      - _ulid: 01KR331ZGVKXV35DCMG2585GK3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate refs
+        timestamp: 2026-05-08T06:05:34.619Z
     examined_commit: 62bc34089817b52062bdf41483d0412bfd2ff84d
     external_links: []
     lifecycle_state: open
@@ -185300,5 +185318,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T05:52:49.082Z
-    updated_at: 2026-05-08T05:52:59.591Z
+    updated_at: 2026-05-08T06:05:33.352Z
     notes: []
