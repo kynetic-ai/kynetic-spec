@@ -28348,7 +28348,7 @@
     - testing
     - daemon
     - flaky
-  notes_count: 1
+  notes_count: 2
   todos_count: 0
   created_at: 2026-05-08T17:41:44.275Z
   started_at: 2026-05-08T20:56:51.027Z
