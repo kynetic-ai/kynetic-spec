@@ -185331,6 +185331,26 @@ reviews:
         runner: playwright
         created_at: 2026-05-08T06:06:13.867Z
         completed_at: 2026-05-08T06:06:13.867Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, task record, git diff, vitest.config.ts,
+          tests/daemon-api/websocket-protocol.test.ts, tests/daemon-build.test.ts,
+          tests/helpers/daemon.ts references, tests/lint-no-leaky-test-daemon.test.ts,
+          tests/cli-serve.test.ts, web-ui/daemon endpoint test excerpts. Commands run: git
+          diff/name-status/log, kspec item get, kspec validate, rg source/AC audits, build daemon,
+          focused Vitest slices, full Vitest, Playwright slice. Claims verified: daemon-build runs
+          in heavy-serial after default pool; hookTimeout widening fixes setup timeout without
+          reducing test coverage; AC annotations use current refs; source audit occurrences are
+          helper, endpoint/runtime unit tests, lint fixtures, or documented CLI lifecycle
+          exceptions. Categories searched: correctness, edge cases, error handling/readiness
+          diagnostics, test quality, integration, source-scanning risk."
+        name: review evidence log
+        required: false
+        runner: manual-review
+        created_at: 2026-05-08T06:06:25.950Z
+        completed_at: 2026-05-08T06:06:25.950Z
     events:
       - _ulid: 01KR32AKXSCZ02R9VHTHPCAP25
         actor: Jacob Chapel
@@ -185380,6 +185400,13 @@ reviews:
           status: pass
           name: playwright representative slice
         timestamp: 2026-05-08T06:06:15.109Z
+      - _ulid: 01KR333JWDGK0J2T26DGH04MF0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-08T06:06:27.213Z
     examined_commit: 62bc34089817b52062bdf41483d0412bfd2ff84d
     external_links: []
     lifecycle_state: open
@@ -185392,5 +185419,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T05:52:49.082Z
-    updated_at: 2026-05-08T06:06:13.867Z
+    updated_at: 2026-05-08T06:06:25.950Z
     notes: []
