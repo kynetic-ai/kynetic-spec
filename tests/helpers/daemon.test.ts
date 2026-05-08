@@ -3,23 +3,9 @@
  *
  * These tests exercise the fixture core directly so that helper changes are
  * caught before they ripple into product-flow tests (websocket protocol,
- * Playwright e2e, runtime parity).
- *
- * AC coverage:
- *   - @daemon-backed-test-fixture-contract ac-real-daemon-tests-use-shared-fixture
- *   - @daemon-backed-test-fixture-contract ac-isolated-home-config
- *   - @daemon-backed-test-fixture-contract ac-isolated-project-data
- *   - @daemon-backed-test-fixture-contract ac-scoped-cleanup
- *   - @daemon-backed-test-fixture-contract ac-readiness-diagnostics
- *   - @daemon-backed-test-fixture-contract ac-bounded-readiness
- *   - @daemon-backed-test-fixture-contract ac-no-ambient-daemon-control
- *   - @daemon-test-endpoint-consistency ac-resolved-endpoint-source
- *   - @daemon-test-endpoint-consistency ac-no-localhost-by-default
- *   - @daemon-test-endpoint-consistency ac-http-ws-same-endpoint
- *   - @daemon-test-endpoint-consistency ac-dynamic-port-propagation
- *   - @daemon-test-runtime-selection ac-node-default
- *   - @daemon-test-harness-guardrails ac-fixture-contract-tests-run
- *   - @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+ * Playwright e2e, runtime parity). AC coverage is recorded as standalone
+ * `// AC:` line annotations on each test below — see kspec-agents conventions
+ * for why annotations must be line comments rather than docstring entries.
  */
 import { describe, expect, it, onTestFinished } from "vitest";
 import { existsSync, statSync } from "node:fs";
@@ -36,6 +22,8 @@ import { readTestOutputSync } from "./cli.js";
 describe("buildDaemonChildEnv", () => {
   // AC: @daemon-backed-test-fixture-contract ac-no-ambient-daemon-control
   // AC: @daemon-backed-test-fixture-contract ac-isolated-home-config
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
   it("strips ambient daemon-control vars and isolates HOME", () => {
     const previous = {
       KSPEC_DAEMON_PID: process.env.KSPEC_DAEMON_PID,
@@ -109,6 +97,8 @@ describe("buildDaemonChildEnv", () => {
 describe("createTestDaemonProject", () => {
   // AC: @daemon-backed-test-fixture-contract ac-isolated-home-config
   // AC: @daemon-backed-test-fixture-contract ac-isolated-project-data
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
   it("creates an isolated temp project with HOME, .kspec, and shadow worktree pointer", async () => {
     const project = await createTestDaemonProject();
     onTestFinished(async () => {
@@ -161,6 +151,8 @@ describe("startTestDaemon happy path", { timeout: 60_000 }, () => {
   // AC: @daemon-test-endpoint-consistency ac-http-ws-same-endpoint
   // AC: @daemon-test-endpoint-consistency ac-dynamic-port-propagation
   // AC: @daemon-test-runtime-selection ac-node-default
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
   it("spawns a Node daemon on a dynamic 127.0.0.1 endpoint and stops cleanly", async () => {
     if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
       throw new Error(
@@ -233,6 +225,8 @@ describe("startTestDaemon readiness diagnostics", { timeout: 60_000 }, () => {
   // AC: @daemon-backed-test-fixture-contract ac-readiness-diagnostics
   // AC: @daemon-backed-test-fixture-contract ac-bounded-readiness
   // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
   it("reports a diagnostic bundle when readiness times out", async () => {
     const project = await createTestDaemonProject();
     onTestFinished(async () => {
