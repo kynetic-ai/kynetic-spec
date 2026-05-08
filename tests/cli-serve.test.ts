@@ -114,6 +114,7 @@ describe("kspec serve commands", () => {
       async () => {
         const url = `http://localhost:${port}/api/health`;
         try {
+          // oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon -- polls the CLI-started daemon's health: the daemon was launched by kspec serve start --detach (not the shared fixture) and waitForDaemonHealth must reach it on the CLI-configured port without a fixture-resolved endpoint
           const response = await fetch(url);
           const body = (await response.text()).trim();
           const bodyReportsHealthy = body.includes('"status":"ok"');

@@ -79,6 +79,7 @@ function runOxlint({
         jsPlugins: [RULE_PATH],
         rules: {
           "no-leaky-test-daemon/no-leaky-test-daemon": "error",
+          "no-leaky-test-daemon/localized-disable": "error",
         },
       },
     ],
@@ -211,6 +212,77 @@ describe("manual websocket URL", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
       expect(result.output).toMatch(/localhost|fixture endpoint/i);
     });
+
+    it("flags fetch(url) when url is a const bound to a localhost:<port> template literal", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("variable-bound localhost url", () => {
+  it("fetches health via a hoisted url variable", async () => {
+    const port = 3456;
+    const url = \`http://localhost:\${port}/api/health\`;
+    const response = await fetch(url);
+    expect(response.status).toBe(200);
+  });
+});
+`,
+      });
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/localhost|fixture endpoint/i);
+    });
+
+    it("flags fetch(url) when url is a const bound to a literal http://localhost:<port>/... string", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("literal-bound localhost url", () => {
+  it("fetches health via a literal url variable", async () => {
+    const url = "http://localhost:3456/api/health";
+    const response = await fetch(url);
+    expect(response.status).toBe(200);
+  });
+});
+`,
+      });
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    it("flags new WebSocket(url) when url is a variable bound to a ws://localhost:<port> URL", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("variable-bound websocket url", () => {
+  it("opens a websocket via a variable", () => {
+    const port = 3456;
+    const wsUrl = \`ws://localhost:\${port}/ws\`;
+    const ws = new WebSocket(wsUrl);
+    expect(ws).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag fetch(url) when url is bound to a non-localhost URL", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("non-localhost url variable", () => {
+  it("fetches a remote endpoint", async () => {
+    const url = "https://example.com/api/health";
+    const response = await fetch(url);
+    expect(response.status).toBe(200);
+  });
+});
+`,
+      });
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
   });
 
   // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
@@ -246,6 +318,60 @@ describe("execSync detached serve", () => {
 `,
       });
       expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    it("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when argv carries the detach flag separately", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawn } from "child_process";
+
+describe("argv-style detached serve without cleanup", () => {
+  it("starts the daemon detached via argv array", () => {
+    spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|cleanup/i);
+    });
+
+    it("flags spawnSync(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when argv carries the detach flag separately", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync } from "child_process";
+
+describe("argv-style detached serve via spawnSync", () => {
+  it("starts the daemon detached via spawnSync argv", () => {
+    spawnSync("kspec", ["serve", "start", "--detach"]);
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when followed by scoped cleanup", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("argv detached serve with scoped cleanup", () => {
+  it("starts the daemon detached via argv and cleans up", () => {
+    spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
     it("does not flag runKspec(\"serve start --detach\") when the test reads the pid file and registers killPid via onTestFinished", () => {
@@ -418,6 +544,110 @@ describe("disable on the wrong line", () => {
 `,
       });
       expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    it("flags oxlint-disable-next-line for the rule when the directive omits the `-- reason`", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("undocumented disable-next-line", () => {
+  it("requires every per-line disable to document the behavior under test", () => {
+    // oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon
+    const child = spawn("node", [DAEMON_ENTRY, "--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/reason|behavior under test|localized-disable/i);
+    });
+
+    it("flags oxlint-disable-line for the rule when the directive omits the `-- reason`", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("undocumented disable-line", () => {
+  it("requires every per-line disable to document the behavior under test", () => {
+    const child = spawn("node", [DAEMON_ENTRY, "--port", "0"]); // oxlint-disable-line no-leaky-test-daemon/no-leaky-test-daemon
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/reason|behavior under test|localized-disable/i);
+    });
+
+    it("flags a file-wide oxlint-disable for the rule even when individual statements are silenced", () => {
+      const result = runOxlint({
+        source: `
+/* oxlint-disable no-leaky-test-daemon/no-leaky-test-daemon */
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("file-wide disable broad", () => {
+  it("starts a daemon directly under a broad disable", () => {
+    const child = spawn("node", [DAEMON_ENTRY, "--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/file.?wide|block.?wide|localized-disable/i);
+    });
+
+    it("flags a file-wide oxlint-disable that targets the plugin name (no rule suffix)", () => {
+      const result = runOxlint({
+        source: `
+/* oxlint-disable no-leaky-test-daemon */
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("plugin-wide file disable", () => {
+  it("starts a daemon directly under a plugin-wide disable", () => {
+    const child = spawn("node", [DAEMON_ENTRY, "--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/file.?wide|block.?wide|localized-disable/i);
+    });
+
+    it("does not flag oxlint-disable-next-line that targets only an unrelated rule", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("unrelated disable", () => {
+  it("uses an unrelated disable", () => {
+    // oxlint-disable-next-line jest/valid-expect
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      // The unrelated disable should not trigger localized-disable for our rule.
+      expect(result.output).not.toContain("localized-disable");
     });
   });
 

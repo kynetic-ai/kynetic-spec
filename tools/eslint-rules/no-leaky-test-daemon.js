@@ -21,7 +21,8 @@
  *
  *   2. CLI detached serve startup (flagged when no scoped cleanup)
  *      - `runKspec("serve start --detach …")`, raw `execSync(...)`, or
- *        a bare `spawn("kspec", …)` carrying the `--detach` argument.
+ *        a `spawn("kspec", [...])` whose argv argument array carries
+ *        `"serve"`, `"start"`, and `"--detach"` as separate elements.
  *      - The cleanup escape hatch is preserved here because tests of the
  *        CLI's own detach behavior have to use this path. Cleanup must
  *        be registered before the next `await` or `expect()`.
@@ -30,8 +31,11 @@
  *      outside helper paths)
  *      - `fetch(...)` and `new WebSocket(...)` first arguments whose
  *        string contains `localhost:` followed by digits or a `${`
- *        port interpolation. Tests that use the shared fixture should
- *        read URLs from `daemon.apiUrl` / `daemon.wsUrl` instead.
+ *        port interpolation. Variables initialised from a localhost:port
+ *        URL string are tracked so `const url = ...; fetch(url)` is
+ *        flagged the same way as the inline form. Tests that use the
+ *        shared fixture should read URLs from `daemon.apiUrl` /
+ *        `daemon.wsUrl` instead.
  *      - String literals used purely as assertion targets, mock data,
  *        or Origin headers are not flagged because the call is not a
  *        fetch/WebSocket entry point.
@@ -294,12 +298,81 @@ const noLeakyTestDaemon = {
       );
     }
 
-    function isServeStartDetach(value) {
-      return (
-        typeof value === "string" &&
-        value.includes("serve start") &&
-        value.includes("--detach")
-      );
+    /**
+     * Collect string-shaped contributions from a CallExpression argument.
+     * Returns the literal and template-string text plus, for ArrayExpression
+     * arguments (the argv form of `spawn("kspec", ["serve", "start", "--detach"])`),
+     * the joined element strings. Non-string elements contribute a sentinel
+     * (`<expr>`) so a detected interpolation does not falsely glue two
+     * adjacent flag fragments together.
+     */
+    function collectArgStringContributions(arg) {
+      const out = [];
+      if (!arg) return out;
+      if (arg.type === "Literal" && typeof arg.value === "string") {
+        out.push(arg.value);
+        return out;
+      }
+      if (arg.type === "TemplateLiteral") {
+        const parts = [];
+        for (let i = 0; i < arg.quasis.length; i += 1) {
+          parts.push(arg.quasis[i].value.raw);
+          if (i < arg.expressions.length) {
+            parts.push("<expr>");
+          }
+        }
+        out.push(parts.join(""));
+        return out;
+      }
+      if (arg.type === "ArrayExpression") {
+        for (const el of arg.elements) {
+          if (!el) continue;
+          if (el.type === "Literal" && typeof el.value === "string") {
+            out.push(el.value);
+          } else if (el.type === "TemplateLiteral") {
+            const parts = [];
+            for (let i = 0; i < el.quasis.length; i += 1) {
+              parts.push(el.quasis[i].value.raw);
+              if (i < el.expressions.length) {
+                parts.push("<expr>");
+              }
+            }
+            out.push(parts.join(""));
+          } else {
+            out.push("<expr>");
+          }
+        }
+        return out;
+      }
+      return out;
+    }
+
+    /**
+     * True when the combined string contributions across a CallExpression's
+     * arguments name a detached serve invocation. Matches both the
+     * single-string form (`runKspec("serve start --detach …")`) and the
+     * argv form (`spawn("kspec", ["serve", "start", "--detach", …])`).
+     */
+    function argsResolveToDetachedServe(node) {
+      let hasServe = false;
+      let hasStart = false;
+      let hasDetach = false;
+      for (const arg of node.arguments) {
+        const contributions = collectArgStringContributions(arg);
+        for (const text of contributions) {
+          if (typeof text !== "string") continue;
+          if (text.includes("serve start") && text.includes("--detach")) {
+            return true;
+          }
+          const tokens = text.split(/\s+/).filter(Boolean);
+          for (const token of tokens) {
+            if (token === "serve") hasServe = true;
+            else if (token === "start") hasStart = true;
+            else if (token === "--detach") hasDetach = true;
+          }
+        }
+      }
+      return hasServe && hasStart && hasDetach;
     }
 
     /**
@@ -351,9 +424,11 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * CLI-side detached daemon start: a spawn-like callee receives a string
-     * (literal or template) containing `serve start … --detach`. Used by
-     * the cleanup-aware check.
+     * CLI-side detached daemon start: a spawn-like callee receives arguments
+     * that resolve to `serve start … --detach`. Recognises both the single
+     * command-string form (`runKspec("serve start --detach …")`) and the
+     * argv form (`spawn("kspec", ["serve", "start", "--detach", …])`). Used
+     * by the cleanup-aware check.
      */
     function isDetachCallExpression(node) {
       if (node.type !== "CallExpression") return false;
@@ -363,18 +438,7 @@ const noLeakyTestDaemon = {
         return false;
       }
 
-      for (const arg of node.arguments) {
-        if (arg.type === "Literal" && isServeStartDetach(arg.value)) {
-          return true;
-        }
-        if (arg.type === "TemplateLiteral") {
-          const fullText = arg.quasis.map((q) => q.value.raw).join("");
-          if (isServeStartDetach(fullText)) {
-            return true;
-          }
-        }
-      }
-      return false;
+      return argsResolveToDetachedServe(node);
     }
 
     /**
@@ -415,23 +479,66 @@ const noLeakyTestDaemon = {
       return false;
     }
 
+    /**
+     * Identifiers whose declared initializer is a localhost:<port> URL.
+     * Tracked so a `const url = `http://localhost:${port}/...`; fetch(url)`
+     * pattern is still flagged — passing the URL through a variable does
+     * not bypass the guardrail.
+     */
+    const localhostUrlIdentifiers = new Set();
+
+    function isLocalhostUrlIdentifier(node) {
+      return (
+        node &&
+        node.type === "Identifier" &&
+        localhostUrlIdentifiers.has(node.name)
+      );
+    }
+
+    function firstArgIsLocalhostUrl(node) {
+      const firstArg = node.arguments[0];
+      if (!firstArg) return false;
+      if (carriesLocalhostPortUrl(firstArg)) return true;
+      return isLocalhostUrlIdentifier(firstArg);
+    }
+
     function isFetchOfLocalhostUrl(node) {
       if (node.type !== "CallExpression") return false;
       if (node.callee.type !== "Identifier") return false;
       if (!FETCH_LIKE_CALLEES.has(node.callee.name)) return false;
-      const firstArg = node.arguments[0];
-      return carriesLocalhostPortUrl(firstArg);
+      return firstArgIsLocalhostUrl(node);
     }
 
     function isWebSocketCtorOfLocalhostUrl(node) {
       if (node.type !== "NewExpression") return false;
       if (node.callee.type !== "Identifier") return false;
       if (!WEBSOCKET_LIKE_CONSTRUCTORS.has(node.callee.name)) return false;
-      const firstArg = node.arguments[0];
-      return carriesLocalhostPortUrl(firstArg);
+      return firstArgIsLocalhostUrl(node);
     }
 
     return {
+      VariableDeclarator(node) {
+        if (
+          node.id &&
+          node.id.type === "Identifier" &&
+          node.init &&
+          carriesLocalhostPortUrl(node.init)
+        ) {
+          localhostUrlIdentifiers.add(node.id.name);
+        }
+      },
+
+      AssignmentExpression(node) {
+        if (
+          node.operator === "=" &&
+          node.left &&
+          node.left.type === "Identifier" &&
+          carriesLocalhostPortUrl(node.right)
+        ) {
+          localhostUrlIdentifiers.add(node.left.name);
+        }
+      },
+
       CallExpression(node) {
         if (
           node.callee.type === "Identifier" &&
@@ -518,10 +625,143 @@ const noLeakyTestDaemon = {
   },
 };
 
+/**
+ * Companion rule that prevents the no-leaky-test-daemon escape hatch from
+ * being misused. The main rule's escape hatch is `// oxlint-disable-next-line
+ * no-leaky-test-daemon/no-leaky-test-daemon -- <reason naming the behavior
+ * under test>`. This rule rejects the two ways the escape hatch could
+ * silently broaden:
+ *
+ *   - File- or block-wide `oxlint-disable no-leaky-test-daemon/no-leaky-test-daemon`
+ *     directives (the directive must be local to the offending statement).
+ *   - Per-line `oxlint-disable-line` / `oxlint-disable-next-line` directives
+ *     for our rule with no `-- <reason>` text after the rule name.
+ *
+ * Because this rule is a separate rule in the same plugin, disabling
+ * `no-leaky-test-daemon/no-leaky-test-daemon` (the main rule) does NOT
+ * disable this one — the meta-check still fires and reports.
+ *
+ * False positives are again worse than false negatives: the rule only
+ * inspects comments and only fires when a directive textually targets
+ * `no-leaky-test-daemon/no-leaky-test-daemon`.
+ */
+const TARGET_RULE_NAME = "no-leaky-test-daemon/no-leaky-test-daemon";
+const META_RULE_NAME = "no-leaky-test-daemon/localized-disable";
+const ALL_RULE_DIRECTIVE = /^\s*oxlint-(disable(?:-line|-next-line)?)(?=$|\s)\s*(.*?)\s*$/s;
+
+function findDisableDirective(rawValue) {
+  // Block comments may span multiple lines (e.g. /* eslint-disable rule */).
+  // Disable directives appear at the start of the comment text only.
+  const match = rawValue.match(ALL_RULE_DIRECTIVE);
+  if (!match) return null;
+  return { directive: match[1], rest: match[2] || "" };
+}
+
+function parseDisableBody(rest) {
+  // Format: "<rule>[, <rule>...] [-- <reason>]"
+  // Supports ESLint-style ` -- ` reason markers and a trailing ` --` with
+  // an empty reason (treated as "no reason supplied").
+  let ruleList = rest;
+  let reason = null;
+  const dashSep = rest.match(/(.*?)\s+--\s*(.*)/s);
+  if (dashSep) {
+    ruleList = dashSep[1].trim();
+    reason = dashSep[2].trim();
+  }
+  const rules = ruleList.length === 0
+    ? []
+    : ruleList.split(/\s*,\s*/).map((r) => r.trim()).filter(Boolean);
+  return { rules, reason };
+}
+
+function directiveTargetsTargetRule(rules) {
+  // Empty rule list means "all rules" — that disables our main rule too.
+  if (rules.length === 0) return true;
+  for (const rule of rules) {
+    if (rule === TARGET_RULE_NAME) return true;
+    // Plugin-name-only forms (e.g., `oxlint-disable-next-line
+    // no-leaky-test-daemon`) cover every rule in the plugin.
+    if (rule === "no-leaky-test-daemon") return true;
+  }
+  return false;
+}
+
+const localizedDisable = {
+  meta: {
+    type: "problem",
+    docs: {
+      description:
+        "Disables of no-leaky-test-daemon must be local to a single " +
+        "statement and include a `-- <reason>` describing the behavior " +
+        "under test. File- or block-wide disables are not allowed.",
+    },
+    messages: {
+      missingReason:
+        "`oxlint-disable-{{scope}} {{ruleSpec}}` must include a `-- " +
+        "<reason>` after the rule name explaining the behavior under " +
+        "test (e.g., `-- testing the CLI-launched daemon's health " +
+        "endpoint`). Undocumented per-line disables silently bypass the " +
+        "daemon test guardrail.",
+      fileWideDisable:
+        "File- or block-wide `oxlint-disable {{ruleSpec}}` is not " +
+        "allowed. Use a per-statement `oxlint-disable-next-line " +
+        TARGET_RULE_NAME +
+        " -- <reason>` immediately above the offending line so the " +
+        "exception stays scoped and documented.",
+    },
+    schema: [],
+  },
+
+  create(context) {
+    const filename = context.physicalFilename || context.filename || "";
+    if (HELPER_PATH_PATTERNS.some((pattern) => pattern.test(filename))) {
+      return {};
+    }
+
+    const sourceCode = context.sourceCode;
+    if (!sourceCode || typeof sourceCode.getAllComments !== "function") {
+      return {};
+    }
+
+    function reportComment(comment, messageId, data) {
+      const reportTarget = comment.loc
+        ? { loc: comment.loc, messageId, data }
+        : { node: comment, messageId, data };
+      context.report(reportTarget);
+    }
+
+    return {
+      Program() {
+        for (const comment of sourceCode.getAllComments()) {
+          const parsed = findDisableDirective(comment.value);
+          if (!parsed) continue;
+          const { directive, rest } = parsed;
+          const body = parseDisableBody(rest);
+          if (!directiveTargetsTargetRule(body.rules)) continue;
+
+          const ruleSpec =
+            body.rules.length > 0 ? body.rules.join(", ") : TARGET_RULE_NAME;
+
+          if (directive === "disable") {
+            reportComment(comment, "fileWideDisable", { ruleSpec });
+            continue;
+          }
+          // disable-line or disable-next-line: must have a non-empty reason.
+          if (body.reason === null || body.reason.length === 0) {
+            const scope = directive === "disable-line" ? "line" : "next-line";
+            reportComment(comment, "missingReason", { scope, ruleSpec });
+          }
+        }
+      },
+    };
+  },
+};
+
 const plugin = {
   meta: { name: "no-leaky-test-daemon" },
   rules: {
     "no-leaky-test-daemon": noLeakyTestDaemon,
+    "localized-disable": localizedDisable,
   },
 };
 
