@@ -41412,7 +41412,7 @@ runs:
     completed_at: 2026-05-08T22:46:40.701Z
   - _ulid: 01KR4ZKA7RPSRZVAB8FY13NWY0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -41426,7 +41426,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T23:44:57.676Z
-        completed_at: 2026-05-08T23:44:57.676Z
+        completed_at: 2026-05-08T23:45:09.554Z
+        notes: "Friction points: (1) reflection guidance still suggests kspec workflow show without a run
+          ref, but the CLI requires one; this is already tracked by workflow UX items. (2) npm test
+          --fresh tests/... looks plausible but npm consumes --fresh unless passed after --; this
+          exact issue is already captured as observation @01KR4TYY from this review session. (3)
+          kspec validate emits substantial repo-wide warning noise during review, making it
+          necessary to separate existing warnings from task-specific regressions; this is already
+          tracked by observation @01KNTPX4T."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T23:45:09.554Z
+        completed_at: 2026-05-08T23:45:09.554Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T23:43:37.209Z
