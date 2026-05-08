@@ -187067,7 +187067,71 @@ reviews:
     slugs: []
     title: Review task-add-guardrail-classification-regressions cycle 3
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts: 15/15 suites passed, 68/68 tests passed."
+        name: focused guardrail tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T15:37:45.431Z
+        completed_at: 2026-05-08T15:37:45.431Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2402/2402 suites, 8803 passed, 5 skipped, 0 failed. Log:
+          /tmp/kspec-test-cache/01KR43453T8GJQF4ZC4TGSBZXW/b2fb6d01a28df8da.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T15:37:48.644Z
+        completed_at: 2026-05-08T15:37:48.644Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: git diff --check
+          706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f..84c897b69738a6c580619de1a04dcfdf7d023c2b
+          produced no output.
+        name: git diff --check
+        required: true
+        runner: git
+        created_at: 2026-05-08T15:37:51.816Z
+        completed_at: 2026-05-08T15:37:51.816Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Schema, references, and skills OK. Existing project-wide warnings remain: deprecated
+          references, orphaned specs/status mismatches, and legacy AC annotation/completeness
+          warnings."
+        name: kspec validate --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-05-08T15:37:55.080Z
+        completed_at: 2026-05-08T15:37:55.080Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md; tests/lint-daemon-test-guardrails.test.ts;
+          tests/lint-no-leaky-test-daemon.test.ts. Commands run: kspec task get, kspec review
+          for-task/get/add/open, kspec item get @daemon-test-guardrail-precision and
+          @daemon-test-harness-guardrails, git diff/stat/name-only/log/show, rg AC
+          annotations/source-scan patterns, kspec validate, kspec validate --warnings-ok, focused
+          npm test, full npm test, git diff --check. Claims verified: prior it.fails blocker
+          addressed by expectClassifierGap validating exact current classifier-gap shape; task ACs
+          have behavioral oxlint tests for fork, execFile, echo, and git subprocess cases.
+          Categories searched: correctness, edge cases, error handling/parser failure handling, test
+          quality, integration, source-scanning check."
+        name: review evidence log
+        required: true
+        created_at: 2026-05-08T15:37:58.283Z
+        completed_at: 2026-05-08T15:37:58.283Z
     events:
       - _ulid: 01KR435F27EMBWYT0YC2C7K4VN
         actor: Jacob Chapel
@@ -187082,9 +187146,60 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T15:27:03.923Z
+      - _ulid: 01KR43SPYJ3FQP95AE17C4GFBR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused guardrail tests
+        timestamp: 2026-05-08T15:37:46.706Z
+      - _ulid: 01KR43ST01MRQ0ZNM82D3J8EFX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-08T15:37:49.825Z
+      - _ulid: 01KR43SX42VP8YJECE6X63728B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: git diff --check
+        timestamp: 2026-05-08T15:37:53.026Z
+      - _ulid: 01KR43T0B6TCJ49HG3WQFBZBH6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-05-08T15:37:56.327Z
+      - _ulid: 01KR43T3DCYN27EZXVPAFDAYN3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-08T15:37:59.468Z
+      - _ulid: 01KR43T6EBCT011P3Y79024KTF
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-08T15:38:02.571Z
+      - _ulid: 01KR43T6EBE661XMHQNK77GD8J
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-08T15:38:02.571Z
     examined_commit: 84c897b69738a6c580619de1a04dcfdf7d023c2b
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -187092,7 +187207,14 @@ reviews:
       ref: "@01KR3W7PCMZ7KPMPJ9ZFBQXX7W"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-08T15:38:02.571Z
     created_at: 2026-05-08T15:26:43.271Z
-    updated_at: 2026-05-08T15:27:02.686Z
+    updated_at: 2026-05-08T15:38:02.571Z
     notes: []
