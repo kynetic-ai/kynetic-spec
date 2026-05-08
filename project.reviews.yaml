@@ -188918,6 +188918,19 @@ reviews:
         runner: npm
         created_at: 2026-05-08T19:54:01.578Z
         completed_at: 2026-05-08T19:54:01.578Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/helpers/mock-daemon.test.ts tests/cli-daemon-proxy.test.ts
+          tests/cli-daemon-endpoint-regression.test.ts tests/cli-task-event-endpoint.test.ts passed:
+          14 suites, 72 tests, duration 16.0s; log
+          /tmp/kspec-test-cache/01KR4HQEE714WCP5KH3JVNK32B/33620db7e9c46df1.log"
+        name: targeted daemon/mock suite
+        required: true
+        runner: npm
+        created_at: 2026-05-08T19:54:14.569Z
+        completed_at: 2026-05-08T19:54:14.569Z
     events:
       - _ulid: 01KR4HSW4E176XJFY993QC8P0F
         actor: Jacob Chapel
@@ -188946,6 +188959,13 @@ reviews:
           status: pass
           name: npm test -- --fresh
         timestamp: 2026-05-08T19:54:02.881Z
+      - _ulid: 01KR4JFBE7AH5EQHN97DAWZMMF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon/mock suite
+        timestamp: 2026-05-08T19:54:15.879Z
     examined_commit: 16da0ce3d2b3e81217986e95b59d9c9051996698
     external_links: []
     lifecycle_state: open
@@ -188976,5 +188996,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-08T19:42:32.088Z
-    updated_at: 2026-05-08T19:54:01.578Z
+    updated_at: 2026-05-08T19:54:14.569Z
     notes: []
