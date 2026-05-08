@@ -187443,7 +187443,52 @@ reviews:
     slugs: []
     title: Review task-add-mock-daemon-failure-contract-tests
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/helpers/mock-daemon.test.ts: 3 suites passed, 18 tests passed,
+          duration 1.3s"
+        name: focused mock daemon tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T16:40:28.572Z
+        completed_at: 2026-05-08T16:40:28.572Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: 2406 suites passed, 8809 passed / 5 skipped, duration 2368.2s; log
+          /tmp/kspec-test-cache/01KR46J3JGRJES2M89P5BAWX2M/19bff54bd85246fa.log"
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T16:40:32.112Z
+        completed_at: 2026-05-08T16:40:32.112Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate: schema OK and references OK; exited 6 for existing repository warnings.
+          Task-specific AC annotations verified with rg, including related daemon.test.ts coverage
+          for out-of-scope startup hygiene ACs."
+        name: kspec validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-08T16:40:35.465Z
+        completed_at: 2026-05-08T16:40:35.465Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "./node_modules/.bin/oxlint tests/helpers/mock-daemon.test.ts: 0 errors, 3 warnings
+          (consistent-function-scoping only)."
+        name: changed-file oxlint
+        required: true
+        runner: oxlint
+        created_at: 2026-05-08T16:40:38.852Z
+        completed_at: 2026-05-08T16:40:38.852Z
     events:
       - _ulid: 01KR46KE61AYSEGJK5FZ5QKWWA
         actor: Jacob Chapel
@@ -187458,6 +187503,41 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T16:26:59.460Z
+      - _ulid: 01KR47CJ14XE3KPBFCEM7D2C2E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused mock daemon tests
+        timestamp: 2026-05-08T16:40:29.988Z
+      - _ulid: 01KR47CNCERAE7A5JQ5Q8TQW0C
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-05-08T16:40:33.423Z
+      - _ulid: 01KR47CRNN2ERM8TWA5DCGM6MX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-08T16:40:36.789Z
+      - _ulid: 01KR47CVY36241VGKW6G3MZXPE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file oxlint
+        timestamp: 2026-05-08T16:40:40.131Z
+      - _ulid: 01KR47CZ69DNT07PEMKBZ9K5V4
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR47CXYQQ6GYR665S399KYKG
+        timestamp: 2026-05-08T16:40:43.465Z
     examined_commit: 8d75d10c36ce5e7289f06e8d4f5ce654c281e8af
     external_links: []
     lifecycle_state: open
@@ -187467,8 +187547,36 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7RHFG659BH7VGSM69KCJ"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR47CXYQQ6GYR665S399KYKG
+        entries:
+          - _ulid: 01KR47CXYQ6R2PFRNW2VED9QJE
+            author: codex
+            body: >-
+              Review evidence log:
+
+              Files read: kspec-agents.md, .agents/skills/kspec-review/SKILL.md,
+              .agents/skills/kspec-merge/SKILL.md, .agents/skills/review-gates/SKILL.md,
+              tests/helpers/mock-daemon.test.ts, tests/helpers/mock-daemon.ts,
+              tests/helpers/mock-daemon.cjs, tests/helpers/daemon.test.ts, tests/helpers/cli.ts,
+              scripts/test.cjs.
+
+              Commands run: kspec task get @01KR3W7RHFG659BH7VGSM69KCJ; kspec item get
+              @daemon-test-startup-failure-hygiene; kspec item get
+              @daemon-test-endpoint-consistency; kspec validate; rg AC annotations; git diff/log;
+              npm test -- --fresh tests/helpers/mock-daemon.test.ts; ./node_modules/.bin/oxlint
+              tests/helpers/mock-daemon.test.ts; npm test -- --fresh.
+
+              Claims verified: focused mock-daemon suite passes; full suite passes; new tests cover
+              malformed stdout, timeout, and env inheritance through child-process behavior; related
+              daemon.test.ts covers the broader startup hygiene ACs outside this task scope.
+
+              Categories searched: correctness, AC/spec alignment, failure-path cleanup behavior,
+              environment isolation, source-scanning/test integrity, integration with existing mock
+              helper API. No blocking findings.
+            created_at: 2026-05-08T16:40:42.199Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-08T16:26:46.849Z
-    updated_at: 2026-05-08T16:26:58.087Z
+    updated_at: 2026-05-08T16:40:42.199Z
     notes: []
