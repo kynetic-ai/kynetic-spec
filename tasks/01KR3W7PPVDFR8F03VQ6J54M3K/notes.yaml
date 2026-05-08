@@ -19,3 +19,34 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T18:44:27.608Z
+  - _ulid: 01KR4G884XP550H5K5CQ5YNQX3
+    content: >-
+      Fix cycle 1: addressed both review blockers and re-verified ACs.
+
+
+      Blocker 1 (line 500): readDaemonEntryInvocation now also reports spawn-likes whose first arg
+      IS the daemon entry — execFile(DAEMON_ENTRY, ["--port", "0"]), spawn(DAEMON_ENTRY, [...]),
+      execFileSync('dist/daemon/index.js', [...]), and spawn-likes with no argv. The prior cycle
+      only matched the runtime form (executable + DAEMON_ENTRY in argv). Added 4 positive
+      regressions for the direct-executable shape covering spawn / spawnSync / execFile /
+      execFileSync, both DAEMON_ENTRY identifier and dist/daemon/index.js literal, plus the no-argv
+      variant.
+
+
+      Blocker 2 (line 453): shellCommandLeadsWithKspec uses String#endsWith instead of
+      /\/kspec$/.test. Lint regression (eslint-plugin-unicorn prefer-string-starts-ends-with) is
+      gone — full-tree lint count returns to the dev baseline (13 errors, all pre-existing).
+
+
+      Also restored expectOxlintRanCleanly / expectClassifierGap test helpers in
+      tests/lint-daemon-test-guardrails.test.ts. The rebase onto origin/dev pulled in cleanup-timing
+      regression tests from @task-add-detached-cleanup-timing-regressions that depend on these
+      helpers, but my prior commit had removed them — this caused 4 'expectClassifierGap is not
+      defined' failures even before my new fix landed.
+
+
+      Verified targeted suite (81 tests pass), full suite (8822 passed, 5 skipped, 0 failed), and
+      full-tree lint (13 errors — same as dev baseline).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T19:15:25.981Z
