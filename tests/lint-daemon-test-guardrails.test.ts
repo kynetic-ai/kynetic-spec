@@ -1181,3 +1181,282 @@ describe("git subprocess with overlapping argv tokens", () => {
     });
   });
 });
+
+/**
+ * Daemon test guardrail precision: detached cleanup timing.
+ *
+ * These tests cover @daemon-test-guardrail-precision for the detached-serve
+ * cleanup-timing analysis the rule performs:
+ *
+ *   ac-detached-cleanup-before-observation
+ *     A detached daemon start is reported when the test performs later
+ *     awaits, assertions, or daemon observations before registering
+ *     cleanup for that daemon. The mere presence of an ancestor
+ *     `afterEach` hook with a `process.kill` / `child.kill("SIGTERM")`
+ *     pattern is not proof that the just-started daemon is owned by
+ *     cleanup — if the captured pid/handle is assigned only AFTER an
+ *     intervening `expect()` or `await`, an assertion failure leaves
+ *     the binding null and the daemon leaks.
+ *
+ *   ac-local-exception-is-local
+ *     Suppressions of the rule must be local to the violating statement.
+ *     File- or block-wide disables and disables that target an unrelated
+ *     preceding statement are rejected.
+ *
+ *   ac-exception-reason-states-subject
+ *     A per-line suppression must include a `-- <reason>` text describing
+ *     the behavior under test. Undocumented disables are rejected.
+ *
+ * The unsafe regression cases are written as failing-before-fix
+ * assertions: today's rule treats the ancestor `afterEach` with a kill
+ * pattern as proof of cleanup, so the cases here pass through unflagged
+ * and the assertions fail until the dependent rule fix lands. The
+ * allowed-narrow cases describe the canonical safe shape (capture pid or
+ * child handle inline, register cleanup before any await/expect) so the
+ * fix cannot accidentally over-tighten and reject legitimate patterns.
+ */
+describe("daemon test guardrail precision: detached cleanup timing", () => {
+  // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+  describe("detached daemon flagged when cleanup is not bound before later observations", () => {
+    it("flags runKspec(\"serve start --detach\") when an afterEach closes over a let pid that is assigned only after an expect()", () => {
+      // UNSAFE: the afterEach captures `pid`, but the test body runs
+      // `expect(...)` before `pid = readPidFromFile()`. If the assertion
+      // throws, `pid` is still null when the afterEach runs and the
+      // detached daemon process is leaked. The presence of an afterEach
+      // with a `process.kill` pattern must not exempt the detached start
+      // because the binding is not complete until after the observation.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, afterEach } from "vitest";
+
+describe("detached cleanup deferred until after assertion", () => {
+  let pid: number | null = null;
+  afterEach(() => { if (pid !== null) process.kill(pid, "SIGTERM"); });
+
+  it("starts daemon and asserts before capturing pid", () => {
+    runKspec("serve start --detach --port 3456");
+    expect(true).toBe(true);
+    pid = readPidFromFile();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
+    });
+
+    it("flags runKspec(\"serve start --detach\") when an afterEach closes over a let pid that is assigned only after an awaited probe", () => {
+      // UNSAFE: same shape as the assertion case but the intervening
+      // operation is an `await` on a daemon observation. The await can
+      // throw or hang before `pid` is captured, leaking the daemon.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, afterEach } from "vitest";
+
+describe("detached cleanup deferred until after await", () => {
+  let pid: number | null = null;
+  afterEach(() => { if (pid !== null) process.kill(pid, "SIGTERM"); });
+
+  it("starts daemon and awaits readiness before capturing pid", async () => {
+    runKspec("serve start --detach --port 3456");
+    await waitForReady("http://127.0.0.1:3456/api/health");
+    pid = readPidFromFile();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
+    });
+
+    it("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when an afterEach closes over a let child that is assigned only after an awaited probe", () => {
+      // UNSAFE argv-form variant: the spawn returns a child handle, but
+      // the test does not capture it until after `await waitForReady()`.
+      // The afterEach closes over `child`, yet the binding is null when
+      // the await runs. The detached start is unsafe regardless of the
+      // child-handle vs pid-file flavor.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, afterEach } from "vitest";
+import { spawn } from "child_process";
+
+describe("detached child handle deferred until after await", () => {
+  let child: { pid: number; kill: (sig: string) => void } | null = null;
+  afterEach(() => { if (child) child.kill("SIGTERM"); });
+
+  it("spawns daemon and awaits readiness before capturing the child handle", async () => {
+    spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    await waitForReady("http://127.0.0.1:3456/api/health");
+    child = readChildFromPidFile();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // (allowed narrow case)
+    it("does not flag runKspec(\"serve start --detach\") when the pid is read and onTestFinished cleanup is registered before any await/expect", () => {
+      // ALLOWED narrow: the canonical safe shape — capture pid inline,
+      // register `onTestFinished` cleanup, then run assertions. Cleanup
+      // is bound to this specific daemon before any operation that could
+      // throw or suspend the test.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("detached cleanup registered immediately", () => {
+  it("starts daemon, captures pid, registers cleanup, then asserts", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // (allowed narrow case, child handle flavor)
+    it("does not flag spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when the child handle is captured inline and onTestFinished kills it before any await/expect", () => {
+      // ALLOWED narrow: the child-handle flavor of the safe shape — the
+      // spawn return value is captured by the same statement, the kill
+      // closure binds to the just-spawned handle, and only then does the
+      // test perform observations.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("detached child handle cleanup registered immediately", () => {
+  it("starts daemon via spawn, registers handle cleanup, then asserts", () => {
+    const child = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    onTestFinished(() => child.kill("SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+  });
+
+  // AC: @daemon-test-guardrail-precision ac-local-exception-is-local
+  // AC: @daemon-test-guardrail-precision ac-exception-reason-states-subject
+  describe("detached cleanup suppressions stay local and state subject", () => {
+    it("accepts a per-line oxlint-disable-next-line with -- reason on the offending detached start", () => {
+      // ALLOWED suppression: the disable sits immediately above the
+      // offending statement and names the behavior under test (the CLI's
+      // own --detach exit ordering when a bind race is in flight). Tests
+      // of the CLI's own detach behavior need this hatch.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, afterEach } from "vitest";
+
+describe("intentional unsafe ordering with localized disable", () => {
+  let pid: number | null = null;
+  afterEach(() => { if (pid !== null) process.kill(pid, "SIGTERM"); });
+
+  it("verifies serve start --detach exits non-zero when port is in use", () => {
+    // oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon -- exercising CLI exit ordering when --detach loses the bind race
+    runKspec("serve start --detach --port 3456");
+    expect(true).toBe(true);
+    pid = readPidFromFile();
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("flags a per-line oxlint-disable-next-line on the offending detached start that omits the -- reason", () => {
+      // The directive names the rule but supplies no `-- <reason>`. The
+      // localized-disable companion rule reports it so undocumented
+      // suppressions cannot silently bypass the cleanup-timing check.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, afterEach } from "vitest";
+
+describe("undocumented detached disable", () => {
+  let pid: number | null = null;
+  afterEach(() => { if (pid !== null) process.kill(pid, "SIGTERM"); });
+
+  it("disables without stating the behavior under test", () => {
+    // oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon
+    runKspec("serve start --detach --port 3456");
+    expect(true).toBe(true);
+    pid = readPidFromFile();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/reason|behavior under test|localized-disable/i);
+    });
+
+    it("flags a file-wide oxlint-disable for the rule when the file would otherwise rely on it to silence an unsafe detached start", () => {
+      // A file-wide directive disables the rule across every statement in
+      // the file. The localized-disable companion rule rejects it: the
+      // suppression must be scoped to the violating line, not the file.
+      const result = runOxlint({
+        source: `
+/* oxlint-disable no-leaky-test-daemon/no-leaky-test-daemon */
+import { describe, it, expect, afterEach } from "vitest";
+
+describe("file-wide disable broadens the exception", () => {
+  let pid: number | null = null;
+  afterEach(() => { if (pid !== null) process.kill(pid, "SIGTERM"); });
+
+  it("starts daemon under a broad disable directive", () => {
+    runKspec("serve start --detach --port 3456");
+    expect(true).toBe(true);
+    pid = readPidFromFile();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/file.?wide|block.?wide|localized-disable/i);
+    });
+
+    it("does not silence the offending detached start when an oxlint-disable-next-line sits above an unrelated preceding statement", () => {
+      // The disable directive applies to the line immediately following
+      // it (the `const noop` declaration), not the detached start two
+      // lines below. The detached start must therefore still be flagged
+      // as if no disable were present.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, afterEach } from "vitest";
+
+describe("disable on the wrong line", () => {
+  let pid: number | null = null;
+  afterEach(() => { if (pid !== null) process.kill(pid, "SIGTERM"); });
+
+  it("places the disable two lines above the offending detached start", () => {
+    // oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon -- this disable applies only to the literal below
+    const noop = "harmless";
+    runKspec("serve start --detach --port 3456");
+    expect(noop).toBe("harmless");
+    pid = readPidFromFile();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
+    });
+  });
+});
