@@ -188,3 +188,58 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T21:09:39.984Z
+  - _ulid: 01KR4RS7EH3JD76QADVKGGB5TW
+    content: >-
+      Fix cycle 4: addressed precision blocker on the spawn-like runtime form.
+
+
+      Blocker (line 596): readDaemonEntryInvocation's spawn/spawnSync/execFile/execFileSync runtime
+      form treated any executable with a daemon-entry argv element as a daemon launch — so
+      spawn('cat', ['dist/daemon/index.js']) and execFile('grep', ['dist/daemon/index.js', 'src/'])
+      were reported as direct daemon launches even though those subprocesses consume the path as
+      data. That violated @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported.
+
+
+      Fix: added isRecognisedRuntimeArg helper that wraps the existing isRecognisedShellRuntimeToken
+      predicate (already used by the exec/execSync shell-string branch). The spawn-like runtime form
+      now requires args[0] to statically resolve to 'node' or 'bun' (bare or path-suffixed),
+      mirroring the shell-token branch. The direct-executable form (args[0] IS the daemon entry) is
+      unchanged — that still fires for spawn(DAEMON_ENTRY, [...]) and
+      execFile('dist/daemon/index.js', [...]) regardless of any executable check, because a
+      shebang'd entry IS the runtime.
+
+
+      Behavioral tests added (5 new in tests/lint-daemon-test-guardrails.test.ts under the
+      unrelated-subprocesses-not-reported describe):
+
+      - spawn('cat', [DAEMON_ENTRY]) — argv contains daemon path, executable is unrelated (reviewer
+      probe)
+
+      - execFile('grep', ['dist/daemon/index.js', 'src/']) — daemon path passed as grep arg
+      (reviewer probe)
+
+      - spawnSync('nodemon', [DAEMON_ENTRY, '--watch', 'src']) — substring-of-runtime guard
+
+      - execFileSync('docker', ['run', 'image', 'dist/daemon/index.js']) — non-runtime executable
+
+      - execFile('/usr/bin/node', [DAEMON_ENTRY, ...]) — positive regression: path-suffixed runtime
+      still flagged with directDaemonSpawn
+
+
+      All existing positive tests for the runtime form (spawn(node, [DAEMON_ENTRY]) / execFile(node,
+      [...]) / spawn(bun, [DAEMON_ENTRY])) continue to fire because 'node' and 'bun' are recognised
+      runtimes. Direct-executable tests (execFile(DAEMON_ENTRY) / spawn(DAEMON_ENTRY) /
+      execFileSync('dist/daemon/index.js')) continue to fire via the unchanged direct-executable
+      branch.
+
+
+      Verification:
+
+      - 100 targeted lint-rule tests pass (was 95 — 5 new false-positive regressions).
+
+      - Full suite green: 8850 passed, 5 skipped, 0 failed.
+
+      - Project lint count unchanged at the dev baseline (13 errors, 721 warnings).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T21:44:30.929Z
