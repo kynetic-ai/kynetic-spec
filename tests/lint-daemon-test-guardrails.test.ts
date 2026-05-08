@@ -111,6 +111,7 @@ function runOxlint({
 
 describe("daemon test harness guardrails", () => {
   // AC: @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged
+  // AC: @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged
   describe("direct daemon spawn is flagged outside the shared fixture", () => {
     it("flags spawn(node, [DAEMON_ENTRY]) in a test even when afterEach kills the child", () => {
       const result = runOxlint({
@@ -833,6 +834,7 @@ describe("unrelated disable", () => {
 
   // AC: @daemon-test-harness-guardrails ac-helper-internals-allowed
   // AC: @daemon-test-harness-guardrails ac-exceptions-are-localized
+  // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
   describe("does not regress legitimate non-daemon patterns", () => {
     it("does not flag fetch(\"http://localhost/api/...\") with no port (in-process app.handle pattern)", () => {
       const result = runOxlint({
