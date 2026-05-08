@@ -14743,3 +14743,79 @@ workspaces:
         head: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
         last_seen_at: 2026-05-08T17:45:44.592Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-real-daemon-startup-failure-handling-01kr3w7q
+  - active_role: null
+    base_branch_point: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
+    canonical_branch_head: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-08T18:07:41.583Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-08T18:07:41.583Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
+      updated_at: 2026-05-08T18:07:41.583Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
+    task_slug: task-fix-guardrail-daemon-command-classification
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-08T18:07:41.583Z
+      created_at: 2026-05-08T18:07:41.583Z
+      updated_at: 2026-05-08T18:07:41.583Z
+    workspace_id: dispatch-workspace-01KR3W7PPVDFR8F03VQ6J54M3K
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
+        head: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
+        last_seen_at: 2026-05-08T18:07:41.583Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-guardrail-daemon-command-classification-01kr3w7p
