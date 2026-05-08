@@ -64,7 +64,7 @@ tags:
   - lint
   - daemon
 vcs_refs: []
-review_ref: "@01KR3ZW5WY2YTA8PH9AXKKSJAK"
+review_ref: "@01KR435F2757C7R5WQGS33MRY7"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-add-guardrail-classification-regressions/01kr3w7p
@@ -229,6 +229,13 @@ history:
         previous: 2026-05-08T14:24:12.521Z
     command: task-submit
     timestamp: 2026-05-08T15:22:06.015Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KR435F2757C7R5WQGS33MRY7"
+        previous: "@01KR3ZW5WY2YTA8PH9AXKKSJAK"
+    command: review-link
+    timestamp: 2026-05-08T15:26:46.991Z
 created_at: 2026-05-08T13:25:36.276Z
 started_at: 2026-05-08T15:05:02.898Z
 submitted_at: 2026-05-08T15:22:06.015Z
