@@ -1008,6 +1008,9 @@ features:
           fixtures. CLI client routing tests use mock daemons with realistic
           metadata. Daemon lifecycle, runtime adapter, and WebSocket protocol tests
           use real child daemons through the shared fixture.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
