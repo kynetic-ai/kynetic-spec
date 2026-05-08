@@ -41,7 +41,8 @@
         "vitest/no-standalone-expect": "error",
         "no-source-scanning/no-source-file-reads": "error",
         "no-daemon-ts-imports/no-daemon-ts-imports": "error",
-        "no-leaky-test-daemon/no-leaky-test-daemon": "error"
+        "no-leaky-test-daemon/no-leaky-test-daemon": "error",
+        "no-leaky-test-daemon/localized-disable": "error"
       }
     }
   ]

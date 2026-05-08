@@ -1,46 +1,138 @@
 /**
  * ESLint-compatible rule for oxlint JS Plugins Alpha.
  *
- * Detects daemon-spawning patterns in test files that lack cleanup
- * registration (onTestFinished, afterEach with kill/stop, or try/finally).
+ * Enforces the daemon test fixture contract for kspec test files. The rule
+ * keeps test daemons routed through `tests/helpers/daemon.ts` (the shared
+ * fixture) and `tests/helpers/mock-daemon.ts` (the mock helper), surfacing
+ * patterns that would silently re-introduce bespoke startup, leaked
+ * processes, or hand-rolled daemon URLs.
  *
- * Two anti-patterns are detected:
- *   1. Calls containing "serve start" + "--detach" string arguments without
- *      cleanup registration in the same scope.
- *   2. spawn() calls where the first argument resolves to a path containing
- *      "dist/daemon/index.js" without cleanup registration.
+ * Three families of checks:
  *
- * Only flags spawns that are directly in test callbacks (it/test) or
- * beforeEach callbacks. Spawns inside named helper functions are assumed
- * to be called by cleanup-aware callers and are not flagged.
+ *   1. Direct daemon spawn (always flagged outside helper paths)
+ *      - spawn() / spawnSync() targeting `dist/daemon/index.js` or the
+ *        DAEMON_ENTRY identifier with arguments resolving to that path.
+ *      - Hardcoded `spawn("bun", [DAEMON_ENTRY])` is reported with a
+ *        more specific message because runtime selection belongs to the
+ *        shared fixture.
+ *      - The escape hatch is a path allowlist (helpers, the rule itself,
+ *        and the rule's own fixture-string test files) or a local
+ *        `oxlint-disable-next-line` with a "-- reason" comment.
  *
- * False positives are worse than false negatives — if cleanup can't be
- * statically proven missing, the rule passes.
+ *   2. CLI detached serve startup (flagged when no scoped cleanup)
+ *      - `runKspec("serve start --detach …")`, raw `execSync(...)`, or
+ *        a `spawn("kspec", [...])` whose argv argument array carries
+ *        `"serve"`, `"start"`, and `"--detach"` as separate elements.
+ *      - The cleanup escape hatch is preserved here because tests of the
+ *        CLI's own detach behavior have to use this path. Cleanup must
+ *        be registered before the next `await` or `expect()`.
+ *
+ *   3. Daemon URL construction from `localhost:<port>` (always flagged
+ *      outside helper paths)
+ *      - `fetch(...)` and `new WebSocket(...)` first arguments whose
+ *        string contains `localhost:` followed by digits or a `${`
+ *        port interpolation. Variables initialised from a localhost:port
+ *        URL string are tracked so `const url = ...; fetch(url)` is
+ *        flagged the same way as the inline form. Tests that use the
+ *        shared fixture should read URLs from `daemon.apiUrl` /
+ *        `daemon.wsUrl` instead.
+ *      - String literals used purely as assertion targets, mock data,
+ *        or Origin headers are not flagged because the call is not a
+ *        fetch/WebSocket entry point.
+ *
+ * Path allowlist (rule does not run at all in these locations). The list is
+ * narrow on purpose: only the approved helper implementations and the
+ * lint-rule fixture-string test files are exempt. New `tests/helpers/*` files
+ * do NOT inherit the allowlist — generic helpers must use the shared
+ * fixture or carry a local documented exception just like any other test.
+ *   - tests/helpers/daemon.ts        — shared daemon fixture implementation
+ *   - tests/helpers/mock-daemon.ts   — mock daemon helper implementation
+ *   - tools/eslint-rules/            — the rule source itself
+ *   - tests/lint-no-leaky-test-daemon.test.ts
+ *   - tests/lint-daemon-test-guardrails.test.ts
+ *
+ * False positives are worse than false negatives — when the static checks
+ * cannot prove a violation, the rule passes and authors are expected to
+ * either use the shared fixture or annotate a localized exception.
  */
+
+const HELPER_PATH_PATTERNS = [
+  /[\\/]tests[\\/]helpers[\\/]daemon\.ts$/,
+  /[\\/]tests[\\/]helpers[\\/]mock-daemon\.ts$/,
+  /[\\/]tools[\\/]eslint-rules[\\/]/,
+  /[\\/]tests[\\/]lint-no-leaky-test-daemon\.test\.ts$/,
+  /[\\/]tests[\\/]lint-daemon-test-guardrails\.test\.ts$/,
+];
+
+const FETCH_LIKE_CALLEES = new Set(["fetch"]);
+const WEBSOCKET_LIKE_CONSTRUCTORS = new Set(["WebSocket"]);
+
+const SPAWN_LIKE_CALLEES = new Set([
+  "runKspec",
+  "kspec",
+  "exec",
+  "execSync",
+  "spawn",
+  "spawnSync",
+  "execFile",
+  "execFileSync",
+  "fork",
+]);
 
 const noLeakyTestDaemon = {
   meta: {
     type: "problem",
     docs: {
-      description: "Require cleanup registration for daemon-spawning patterns in test files",
+      description:
+        "Daemon test guardrails: route daemon startup, cleanup, and URL " +
+        "construction through the shared fixture in tests/helpers/.",
     },
     messages: {
+      directDaemonSpawn:
+        'Direct daemon spawn via "{{pattern}}" bypasses the shared daemon ' +
+        "fixture. Use `startTestDaemon` from tests/helpers/daemon.ts (or the " +
+        "mock daemon helper) so the test inherits scoped cleanup, env " +
+        "isolation, and resolved endpoints. To intentionally bypass the " +
+        "fixture, add `// oxlint-disable-next-line " +
+        "no-leaky-test-daemon/no-leaky-test-daemon -- <reason naming the " +
+        "behavior under test>` immediately above the offending statement.",
+      hardcodedBunRuntime:
+        'Hardcoded `spawn("bun", [DAEMON_ENTRY])` outside a runtime parity ' +
+        "test. The shared fixture (`startTestDaemon`) defaults to Node and " +
+        "accepts an explicit `runtime` opt-in; tests that need Bun coverage " +
+        "should opt in there or run inside the parity matrix. Add a local " +
+        "oxlint-disable-next-line with a -- reason if Bun is genuinely the " +
+        "behavior under test.",
       missingCleanup:
-        'Daemon spawn via "{{pattern}}" has no cleanup registration. ' +
-        "Register cleanup via `onTestFinished(() => killPid(pid))` or " +
-        "`onTestFinished(() => process.kill(pid, 'SIGTERM'))` immediately after the spawn returns.",
+        'Detached daemon start via "{{pattern}}" has no scoped cleanup ' +
+        "registration. Read the pid file and register " +
+        "`onTestFinished(() => killPid(pid))` (or `process.kill(pid, " +
+        "'SIGTERM')`) immediately after the start returns and before the " +
+        "next await/expect — otherwise an assertion failure leaves the " +
+        "daemon running. Tests that do not need the CLI's --detach path " +
+        "should use `startTestDaemon` from tests/helpers/daemon.ts.",
+      localhostDaemonUrl:
+        "Daemon connection URL constructed from `localhost:<port>` in a " +
+        "{{pattern}} call. Read URLs from the fixture endpoint " +
+        "(`daemon.apiUrl` / `daemon.wsUrl` returned by `startTestDaemon`) " +
+        "so HTTP and WebSocket clients share the resolved endpoint and the " +
+        "default 127.0.0.1 host. To intentionally test localhost-as-host " +
+        "behavior, add a local oxlint-disable-next-line with a -- reason.",
     },
     schema: [],
   },
 
   create(context) {
-    // Track whether we've seen afterEach with cleanup in the current describe scope
+    const filename = context.physicalFilename || context.filename || "";
+    if (HELPER_PATH_PATTERNS.some((pattern) => pattern.test(filename))) {
+      return {};
+    }
+
+    // Track whether we've seen afterEach with cleanup in the current describe
+    // scope (for the detached-serve cleanup check).
     const describeStack = [];
     let hasTopLevelAfterEachCleanup = false;
 
-    /**
-     * Check if a node is inside a function passed to afterEach or beforeEach.
-     */
     function isInLifecycleHook(node, hookName) {
       let current = node.parent;
       while (current) {
@@ -57,22 +149,19 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * Check if a node is inside a named function declaration or named
-     * function expression (a helper function). Spawns in helpers are not
-     * flagged because the caller is expected to manage cleanup.
-     *
-     * Does not count arrow functions or anonymous functions passed directly
-     * to it()/test()/beforeEach() — those ARE test bodies.
+     * True when a node is inside a named function declaration or named
+     * function expression (a helper function). Direct daemon spawn calls
+     * inside helper functions are still flagged — even helpers in the
+     * test file itself bypass the shared fixture — but the cleanup-based
+     * detached-serve check uses this to avoid flagging spawn calls that
+     * the caller is responsible for cleaning up.
      */
     function isInHelperFunction(node) {
       let current = node.parent;
       while (current) {
-        // Named function declaration: function startDaemon() { ... }
         if (current.type === "FunctionDeclaration" && current.id) {
           return true;
         }
-        // Named function expression in a variable: const startDaemon = function() { ... }
-        // or const startDaemon = async function() { ... }
         if (
           current.type === "VariableDeclarator" &&
           current.id &&
@@ -83,8 +172,6 @@ const noLeakyTestDaemon = {
         ) {
           return true;
         }
-        // Stop climbing at test framework boundaries — if we hit an it/test/describe
-        // callback, the spawn is in a test body, not a helper
         if (
           current.type === "CallExpression" &&
           current.callee.type === "Identifier" &&
@@ -104,18 +191,8 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * Check if source text contains daemon-specific cleanup patterns.
-     *
-     * Only matches patterns that are unambiguously daemon cleanup:
-     * - process.kill() — sends a signal to a PID (daemon cleanup)
-     * - .kill("SIG...") — child process signal (e.g., child.kill("SIGTERM"))
-     * - SIGTERM/SIGKILL/SIGINT signal names (only used for process signals)
-     * - killPid helper (project-specific daemon kill utility)
-     * - stopDaemon/stopMockDaemon helpers (explicit daemon stop functions)
-     * - "serve stop" CLI command pattern
-     *
-     * Generic "kill" or "stop" alone do NOT qualify — they could be
-     * stopping unrelated fixtures (e.g., stopUnrelatedFixture()).
+     * Daemon-specific cleanup signals. Generic `kill` or `stop` alone do
+     * NOT qualify because they could be stopping unrelated fixtures.
      */
     function hasDaemonCleanupPattern(text) {
       return (
@@ -131,10 +208,6 @@ const noLeakyTestDaemon = {
       );
     }
 
-    /**
-     * Check if a CallExpression is afterEach(...) and its callback body
-     * contains daemon-specific cleanup.
-     */
     function isAfterEachWithCleanup(node) {
       if (node.type !== "CallExpression") return false;
       if (node.callee.type !== "Identifier" || node.callee.name !== "afterEach") {
@@ -144,15 +217,6 @@ const noLeakyTestDaemon = {
       return hasDaemonCleanupPattern(text);
     }
 
-    /**
-     * Check whether a node has cleanup registered in the statements
-     * that follow it within the same block/function body, BEFORE any
-     * await expression or assertion (expect call).
-     *
-     * The task requires cleanup to be registered before the next
-     * expect, await, or scope exit — so cleanup after an await or
-     * assertion is too late (the test could fail before reaching it).
-     */
     function hasCleanupAfter(node) {
       const body = findContainingBody(node);
       if (!body) return false;
@@ -161,26 +225,16 @@ const noLeakyTestDaemon = {
       if (nodeIndex === -1) return false;
 
       for (let i = nodeIndex + 1; i < body.length; i++) {
-        // Cleanup found before any await/expect — safe
         if (statementContainsCleanup(body[i])) {
           return true;
         }
-        // If this statement contains an await or expect, cleanup
-        // registered after it is too late — the test can fail here
         if (statementContainsAwaitOrExpect(body[i])) {
           return false;
         }
       }
-
       return false;
     }
 
-    /**
-     * Check if a node is inside a try block that has a finally with
-     * daemon-specific cleanup. Uses the same daemon-specific pattern
-     * matching as afterEach to avoid false negatives from generic
-     * "kill"/"stop" substrings matching unrelated teardown helpers.
-     */
     function isInTryWithFinallyCleanup(node) {
       let current = node.parent;
       while (current) {
@@ -195,9 +249,6 @@ const noLeakyTestDaemon = {
       return false;
     }
 
-    /**
-     * Find the body (array of statements) containing this node.
-     */
     function findContainingBody(node) {
       let current = node.parent;
       while (current) {
@@ -212,9 +263,6 @@ const noLeakyTestDaemon = {
       return null;
     }
 
-    /**
-     * Find the index of the statement containing the given node.
-     */
     function findNodeIndex(body, targetNode) {
       for (let i = 0; i < body.length; i++) {
         if (containsNode(body[i], targetNode)) {
@@ -224,9 +272,6 @@ const noLeakyTestDaemon = {
       return -1;
     }
 
-    /**
-     * Check if parent contains the target node (by position).
-     */
     function containsNode(parent, target) {
       if (parent === target) return true;
       if (!parent.range || !target.range) {
@@ -238,9 +283,6 @@ const noLeakyTestDaemon = {
       return parent.range[0] <= target.range[0] && parent.range[1] >= target.range[1];
     }
 
-    /**
-     * Check if a statement contains an onTestFinished or cleanup call.
-     */
     function statementContainsCleanup(stmt) {
       const text = context.sourceCode.getText(stmt);
       return (
@@ -250,37 +292,103 @@ const noLeakyTestDaemon = {
       );
     }
 
-    /**
-     * Check if a statement contains an await expression or expect() call.
-     * These represent points where the test can fail or pause, so cleanup
-     * must be registered before them.
-     */
     function statementContainsAwaitOrExpect(stmt) {
       const text = context.sourceCode.getText(stmt);
       return text.includes("await ") || text.includes("expect(");
     }
 
-    /**
-     * Check if any describe ancestor has an afterEach with cleanup.
-     */
     function hasAncestorAfterEachCleanup() {
-      return hasTopLevelAfterEachCleanup || describeStack.some((d) => d.hasAfterEachCleanup);
-    }
-
-    /**
-     * Check if a string contains the serve-start-detach pattern.
-     */
-    function isServeStartDetach(value) {
       return (
-        typeof value === "string" && value.includes("serve start") && value.includes("--detach")
+        hasTopLevelAfterEachCleanup ||
+        describeStack.some((d) => d.hasAfterEachCleanup)
       );
     }
 
     /**
-     * Check if a node is a spawn-like call targeting the daemon entry.
+     * Collect string-shaped contributions from a CallExpression argument.
+     * Returns the literal and template-string text plus, for ArrayExpression
+     * arguments (the argv form of `spawn("kspec", ["serve", "start", "--detach"])`),
+     * the joined element strings. Non-string elements contribute a sentinel
+     * (`<expr>`) so a detected interpolation does not falsely glue two
+     * adjacent flag fragments together.
      */
-    function isDaemonSpawnCall(node) {
-      if (node.type !== "CallExpression") return false;
+    function collectArgStringContributions(arg) {
+      const out = [];
+      if (!arg) return out;
+      if (arg.type === "Literal" && typeof arg.value === "string") {
+        out.push(arg.value);
+        return out;
+      }
+      if (arg.type === "TemplateLiteral") {
+        const parts = [];
+        for (let i = 0; i < arg.quasis.length; i += 1) {
+          parts.push(arg.quasis[i].value.raw);
+          if (i < arg.expressions.length) {
+            parts.push("<expr>");
+          }
+        }
+        out.push(parts.join(""));
+        return out;
+      }
+      if (arg.type === "ArrayExpression") {
+        for (const el of arg.elements) {
+          if (!el) continue;
+          if (el.type === "Literal" && typeof el.value === "string") {
+            out.push(el.value);
+          } else if (el.type === "TemplateLiteral") {
+            const parts = [];
+            for (let i = 0; i < el.quasis.length; i += 1) {
+              parts.push(el.quasis[i].value.raw);
+              if (i < el.expressions.length) {
+                parts.push("<expr>");
+              }
+            }
+            out.push(parts.join(""));
+          } else {
+            out.push("<expr>");
+          }
+        }
+        return out;
+      }
+      return out;
+    }
+
+    /**
+     * True when the combined string contributions across a CallExpression's
+     * arguments name a detached serve invocation. Matches both the
+     * single-string form (`runKspec("serve start --detach …")`) and the
+     * argv form (`spawn("kspec", ["serve", "start", "--detach", …])`).
+     */
+    function argsResolveToDetachedServe(node) {
+      let hasServe = false;
+      let hasStart = false;
+      let hasDetach = false;
+      for (const arg of node.arguments) {
+        const contributions = collectArgStringContributions(arg);
+        for (const text of contributions) {
+          if (typeof text !== "string") continue;
+          if (text.includes("serve start") && text.includes("--detach")) {
+            return true;
+          }
+          const tokens = text.split(/\s+/).filter(Boolean);
+          for (const token of tokens) {
+            if (token === "serve") hasServe = true;
+            else if (token === "start") hasStart = true;
+            else if (token === "--detach") hasDetach = true;
+          }
+        }
+      }
+      return hasServe && hasStart && hasDetach;
+    }
+
+    /**
+     * spawn-like CallExpression whose argument list resolves to a daemon
+     * entry path (DAEMON_ENTRY identifier or the literal
+     * "dist/daemon/index.js"). The first argument is the runtime binary
+     * (returned alongside so the caller can recognise hardcoded "bun").
+     */
+    function readDaemonSpawn(node) {
+      if (node.type !== "CallExpression") return null;
       const callee = node.callee;
 
       const isSpawnCall =
@@ -290,40 +398,26 @@ const noLeakyTestDaemon = {
           callee.property.type === "Identifier" &&
           (callee.property.name === "spawn" || callee.property.name === "spawnSync"));
 
-      if (!isSpawnCall) return false;
+      if (!isSpawnCall) return null;
 
+      let argsCarryDaemonEntry = false;
       for (const arg of node.arguments) {
         const text = context.sourceCode.getText(arg);
         if (text.includes("DAEMON_ENTRY") || text.includes("dist/daemon/index.js")) {
-          return true;
+          argsCarryDaemonEntry = true;
+          break;
         }
       }
-      return false;
+      if (!argsCarryDaemonEntry) return null;
+
+      const firstArg = node.arguments[0];
+      let runtimeLiteral = null;
+      if (firstArg && firstArg.type === "Literal" && typeof firstArg.value === "string") {
+        runtimeLiteral = firstArg.value;
+      }
+      return { runtimeLiteral };
     }
 
-    /**
-     * Names of functions/methods that can actually spawn a process.
-     * Only these callees should trigger the detach-string check —
-     * arbitrary call sites like expect() or console.log() must be
-     * ignored to avoid false positives.
-     */
-    const SPAWN_LIKE_CALLEES = new Set([
-      "runKspec",
-      "kspec",
-      "exec",
-      "execSync",
-      "spawn",
-      "spawnSync",
-      "execFile",
-      "execFileSync",
-      "fork",
-    ]);
-
-    /**
-     * Extract the callee name from a CallExpression node.
-     * Handles both simple identifiers (runKspec(...)) and member
-     * expressions (child_process.execSync(...)).
-     */
     function getCalleeName(node) {
       const callee = node.callee;
       if (callee.type === "Identifier") {
@@ -336,10 +430,11 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * Check if a CallExpression passes a string containing the detach
-     * pattern AND the callee is an actual spawn-like API. Ignores
-     * calls like expect(cmd).toContain("serve start --detach") or
-     * console.log("serve start --detach").
+     * CLI-side detached daemon start: a spawn-like callee receives arguments
+     * that resolve to `serve start … --detach`. Recognises both the single
+     * command-string form (`runKspec("serve start --detach …")`) and the
+     * argv form (`spawn("kspec", ["serve", "start", "--detach", …])`). Used
+     * by the cleanup-aware check.
      */
     function isDetachCallExpression(node) {
       if (node.type !== "CallExpression") return false;
@@ -349,41 +444,214 @@ const noLeakyTestDaemon = {
         return false;
       }
 
-      for (const arg of node.arguments) {
-        if (arg.type === "Literal" && isServeStartDetach(arg.value)) {
-          return true;
-        }
-        if (arg.type === "TemplateLiteral") {
-          const fullText = arg.quasis.map((q) => q.value.raw).join("");
-          if (isServeStartDetach(fullText)) {
-            return true;
+      return argsResolveToDetachedServe(node);
+    }
+
+    /**
+     * Detached-serve check keeps the cleanup escape hatch — these tests
+     * exist to exercise the CLI's --detach behavior itself.
+     */
+    function detachWithoutCleanup(node) {
+      if (isInLifecycleHook(node, "afterEach")) return false;
+      if (hasAncestorAfterEachCleanup()) return false;
+      if (hasCleanupAfter(node)) return false;
+      if (isInTryWithFinallyCleanup(node)) return false;
+      return true;
+    }
+
+    /**
+     * Inspect string-shaped arguments for a `localhost:<port>` daemon URL.
+     * `localhost` alone (no `:port`) is not flagged because in-process
+     * `app.handle(new Request("http://localhost/api/..."))` tests use it.
+     */
+    function carriesLocalhostPortUrl(node) {
+      if (!node) return false;
+      if (node.type === "Literal" && typeof node.value === "string") {
+        return /\/\/localhost:(\d|\$\{)/.test(node.value);
+      }
+      if (node.type === "TemplateLiteral") {
+        // Reconstruct the raw text including `${…}` placeholders so we
+        // can detect `localhost:${…}` interpolation patterns.
+        const parts = [];
+        for (let i = 0; i < node.quasis.length; i += 1) {
+          parts.push(node.quasis[i].value.raw);
+          if (i < node.expressions.length) {
+            parts.push("${...}");
           }
         }
+        const reconstructed = parts.join("");
+        return /\/\/localhost:(\d|\$\{)/.test(reconstructed);
       }
       return false;
     }
 
     /**
-     * Central check: is this daemon spawn properly covered by cleanup?
+     * Bindings whose declarator init or assignment RHS is a `localhost:<port>`
+     * URL string. Tracked per lexical scope and source position so a
+     * `const url = `http://localhost:${port}/...`; fetch(url)` pattern is
+     * flagged the same way as the inline form — without leaking across
+     * unrelated `it`/`test` blocks that happen to reuse the same identifier
+     * name. Walking outward from the use site picks the innermost binding
+     * whose source position is before the use; an inner non-localhost
+     * declaration shadows an outer localhost one, and a later non-localhost
+     * reassignment in the same scope overrides an earlier localhost binding.
+     *
+     * Map shape: identifier name → array of
+     *   { scopeNode, position, isLocalhost }.
      */
-    function isDaemonSpawnWithoutCleanup(node, _pattern) {
-      // Spawns in helper functions are assumed to have cleanup managed by callers
-      if (isInHelperFunction(node)) return false;
+    const localhostUrlBindings = new Map();
 
-      // Spawns in afterEach are cleanup themselves
-      if (isInLifecycleHook(node, "afterEach")) return false;
+    function getNodeStart(node) {
+      if (!node) return -1;
+      if (node.range && Number.isFinite(node.range[0])) return node.range[0];
+      if (typeof node.start === "number") return node.start;
+      return -1;
+    }
 
-      // Check all cleanup escape hatches
-      if (hasAncestorAfterEachCleanup()) return false;
-      if (hasCleanupAfter(node)) return false;
-      if (isInTryWithFinallyCleanup(node)) return false;
+    function isScopeNode(node) {
+      if (!node) return false;
+      switch (node.type) {
+        case "BlockStatement":
+        case "Program":
+        case "FunctionDeclaration":
+        case "FunctionExpression":
+        case "ArrowFunctionExpression":
+        case "StaticBlock":
+          return true;
+        default:
+          return false;
+      }
+    }
 
-      return true;
+    function getEnclosingScopeNode(node) {
+      let current = node.parent;
+      while (current) {
+        if (isScopeNode(current)) return current;
+        current = current.parent;
+      }
+      return null;
+    }
+
+    function paramBindsName(param, name) {
+      if (!param) return false;
+      if (param.type === "Identifier") return param.name === name;
+      if (param.type === "AssignmentPattern") {
+        return paramBindsName(param.left, name);
+      }
+      if (param.type === "RestElement") {
+        return paramBindsName(param.argument, name);
+      }
+      return false;
+    }
+
+    function functionScopeShadowsName(scopeNode, name) {
+      if (
+        scopeNode.type !== "FunctionDeclaration" &&
+        scopeNode.type !== "FunctionExpression" &&
+        scopeNode.type !== "ArrowFunctionExpression"
+      ) {
+        return false;
+      }
+      const params = scopeNode.params || [];
+      for (const param of params) {
+        if (paramBindsName(param, name)) return true;
+      }
+      return false;
+    }
+
+    function recordBinding(name, anchorNode, isLocalhost) {
+      const scopeNode = getEnclosingScopeNode(anchorNode);
+      if (!scopeNode) return;
+      const position = getNodeStart(anchorNode);
+      if (position < 0) return;
+      let entries = localhostUrlBindings.get(name);
+      if (!entries) {
+        entries = [];
+        localhostUrlBindings.set(name, entries);
+      }
+      entries.push({ scopeNode, position, isLocalhost });
+    }
+
+    /**
+     * Walk lexical scopes outward from `useNode` and return the most recent
+     * binding for `name` whose declaration position is before the use. If a
+     * function-scope parameter named `name` is encountered first, treat it
+     * as a non-localhost binding (parameters cannot be daemon-URL strings
+     * the rule has tracked). Returns null when no binding is in scope.
+     */
+    function findApplicableBinding(name, useNode) {
+      const usePos = getNodeStart(useNode);
+      if (usePos < 0) return null;
+      const entries = localhostUrlBindings.get(name);
+      let current = useNode.parent;
+      while (current) {
+        if (isScopeNode(current)) {
+          if (functionScopeShadowsName(current, name)) {
+            return { isLocalhost: false, viaParameter: true };
+          }
+          if (entries) {
+            let candidate = null;
+            for (const entry of entries) {
+              if (entry.scopeNode !== current) continue;
+              if (entry.position >= usePos) continue;
+              if (!candidate || entry.position > candidate.position) {
+                candidate = entry;
+              }
+            }
+            if (candidate) return candidate;
+          }
+        }
+        current = current.parent;
+      }
+      return null;
+    }
+
+    function isLocalhostUrlIdentifier(node, useNode) {
+      if (!node || node.type !== "Identifier") return false;
+      const binding = findApplicableBinding(node.name, useNode);
+      return binding !== null && binding.isLocalhost === true;
+    }
+
+    function firstArgIsLocalhostUrl(node) {
+      const firstArg = node.arguments[0];
+      if (!firstArg) return false;
+      if (carriesLocalhostPortUrl(firstArg)) return true;
+      return isLocalhostUrlIdentifier(firstArg, firstArg);
+    }
+
+    function isFetchOfLocalhostUrl(node) {
+      if (node.type !== "CallExpression") return false;
+      if (node.callee.type !== "Identifier") return false;
+      if (!FETCH_LIKE_CALLEES.has(node.callee.name)) return false;
+      return firstArgIsLocalhostUrl(node);
+    }
+
+    function isWebSocketCtorOfLocalhostUrl(node) {
+      if (node.type !== "NewExpression") return false;
+      if (node.callee.type !== "Identifier") return false;
+      if (!WEBSOCKET_LIKE_CONSTRUCTORS.has(node.callee.name)) return false;
+      return firstArgIsLocalhostUrl(node);
     }
 
     return {
+      VariableDeclarator(node) {
+        if (!node.id || node.id.type !== "Identifier" || !node.init) return;
+        recordBinding(node.id.name, node, carriesLocalhostPortUrl(node.init));
+      },
+
+      AssignmentExpression(node) {
+        if (
+          node.operator !== "=" ||
+          !node.left ||
+          node.left.type !== "Identifier" ||
+          !node.right
+        ) {
+          return;
+        }
+        recordBinding(node.left.name, node, carriesLocalhostPortUrl(node.right));
+      },
+
       CallExpression(node) {
-        // Track describe() scope entry
         if (
           node.callee.type === "Identifier" &&
           node.callee.name === "describe" &&
@@ -392,7 +660,6 @@ const noLeakyTestDaemon = {
           describeStack.push({ hasAfterEachCleanup: false });
         }
 
-        // Track afterEach with cleanup at any level
         if (isAfterEachWithCleanup(node)) {
           if (describeStack.length > 0) {
             describeStack[describeStack.length - 1].hasAfterEachCleanup = true;
@@ -402,9 +669,32 @@ const noLeakyTestDaemon = {
           return;
         }
 
-        // Detect: calls with "serve start --detach" pattern
+        // Direct daemon spawn — always flagged outside helper paths,
+        // including helper functions inside a non-helper test file.
+        const daemonSpawn = readDaemonSpawn(node);
+        if (daemonSpawn) {
+          if (daemonSpawn.runtimeLiteral === "bun") {
+            context.report({
+              node,
+              messageId: "hardcodedBunRuntime",
+            });
+          } else {
+            context.report({
+              node,
+              messageId: "directDaemonSpawn",
+              data: { pattern: "spawn(DAEMON_ENTRY, ...)" },
+            });
+          }
+          return;
+        }
+
+        // Detached serve via the CLI — cleanup escape hatch preserved.
         if (isDetachCallExpression(node)) {
-          if (isDaemonSpawnWithoutCleanup(node, "serve start --detach")) {
+          if (
+            !isInHelperFunction(node) &&
+            !isInLifecycleHook(node, "afterEach") &&
+            detachWithoutCleanup(node)
+          ) {
             context.report({
               node,
               messageId: "missingCleanup",
@@ -414,15 +704,23 @@ const noLeakyTestDaemon = {
           return;
         }
 
-        // Detect: spawn()/spawnSync() targeting daemon entry
-        if (isDaemonSpawnCall(node)) {
-          if (isDaemonSpawnWithoutCleanup(node, "spawn(DAEMON_ENTRY, ...)")) {
-            context.report({
-              node,
-              messageId: "missingCleanup",
-              data: { pattern: "spawn(DAEMON_ENTRY, ...)" },
-            });
-          }
+        // Daemon URL constructed from localhost:<port> in fetch().
+        if (isFetchOfLocalhostUrl(node)) {
+          context.report({
+            node,
+            messageId: "localhostDaemonUrl",
+            data: { pattern: "fetch()" },
+          });
+        }
+      },
+
+      NewExpression(node) {
+        if (isWebSocketCtorOfLocalhostUrl(node)) {
+          context.report({
+            node,
+            messageId: "localhostDaemonUrl",
+            data: { pattern: "new WebSocket()" },
+          });
         }
       },
 
@@ -439,10 +737,143 @@ const noLeakyTestDaemon = {
   },
 };
 
+/**
+ * Companion rule that prevents the no-leaky-test-daemon escape hatch from
+ * being misused. The main rule's escape hatch is `// oxlint-disable-next-line
+ * no-leaky-test-daemon/no-leaky-test-daemon -- <reason naming the behavior
+ * under test>`. This rule rejects the two ways the escape hatch could
+ * silently broaden:
+ *
+ *   - File- or block-wide `oxlint-disable no-leaky-test-daemon/no-leaky-test-daemon`
+ *     directives (the directive must be local to the offending statement).
+ *   - Per-line `oxlint-disable-line` / `oxlint-disable-next-line` directives
+ *     for our rule with no `-- <reason>` text after the rule name.
+ *
+ * Because this rule is a separate rule in the same plugin, disabling
+ * `no-leaky-test-daemon/no-leaky-test-daemon` (the main rule) does NOT
+ * disable this one — the meta-check still fires and reports.
+ *
+ * False positives are again worse than false negatives: the rule only
+ * inspects comments and only fires when a directive textually targets
+ * `no-leaky-test-daemon/no-leaky-test-daemon`.
+ */
+const TARGET_RULE_NAME = "no-leaky-test-daemon/no-leaky-test-daemon";
+const META_RULE_NAME = "no-leaky-test-daemon/localized-disable";
+const ALL_RULE_DIRECTIVE = /^\s*oxlint-(disable(?:-line|-next-line)?)(?=$|\s)\s*(.*?)\s*$/s;
+
+function findDisableDirective(rawValue) {
+  // Block comments may span multiple lines (e.g. /* eslint-disable rule */).
+  // Disable directives appear at the start of the comment text only.
+  const match = rawValue.match(ALL_RULE_DIRECTIVE);
+  if (!match) return null;
+  return { directive: match[1], rest: match[2] || "" };
+}
+
+function parseDisableBody(rest) {
+  // Format: "<rule>[, <rule>...] [-- <reason>]"
+  // Supports ESLint-style ` -- ` reason markers and a trailing ` --` with
+  // an empty reason (treated as "no reason supplied").
+  let ruleList = rest;
+  let reason = null;
+  const dashSep = rest.match(/(.*?)\s+--\s*(.*)/s);
+  if (dashSep) {
+    ruleList = dashSep[1].trim();
+    reason = dashSep[2].trim();
+  }
+  const rules = ruleList.length === 0
+    ? []
+    : ruleList.split(/\s*,\s*/).map((r) => r.trim()).filter(Boolean);
+  return { rules, reason };
+}
+
+function directiveTargetsTargetRule(rules) {
+  // Empty rule list means "all rules" — that disables our main rule too.
+  if (rules.length === 0) return true;
+  for (const rule of rules) {
+    if (rule === TARGET_RULE_NAME) return true;
+    // Plugin-name-only forms (e.g., `oxlint-disable-next-line
+    // no-leaky-test-daemon`) cover every rule in the plugin.
+    if (rule === "no-leaky-test-daemon") return true;
+  }
+  return false;
+}
+
+const localizedDisable = {
+  meta: {
+    type: "problem",
+    docs: {
+      description:
+        "Disables of no-leaky-test-daemon must be local to a single " +
+        "statement and include a `-- <reason>` describing the behavior " +
+        "under test. File- or block-wide disables are not allowed.",
+    },
+    messages: {
+      missingReason:
+        "`oxlint-disable-{{scope}} {{ruleSpec}}` must include a `-- " +
+        "<reason>` after the rule name explaining the behavior under " +
+        "test (e.g., `-- testing the CLI-launched daemon's health " +
+        "endpoint`). Undocumented per-line disables silently bypass the " +
+        "daemon test guardrail.",
+      fileWideDisable:
+        "File- or block-wide `oxlint-disable {{ruleSpec}}` is not " +
+        "allowed. Use a per-statement `oxlint-disable-next-line " +
+        TARGET_RULE_NAME +
+        " -- <reason>` immediately above the offending line so the " +
+        "exception stays scoped and documented.",
+    },
+    schema: [],
+  },
+
+  create(context) {
+    const filename = context.physicalFilename || context.filename || "";
+    if (HELPER_PATH_PATTERNS.some((pattern) => pattern.test(filename))) {
+      return {};
+    }
+
+    const sourceCode = context.sourceCode;
+    if (!sourceCode || typeof sourceCode.getAllComments !== "function") {
+      return {};
+    }
+
+    function reportComment(comment, messageId, data) {
+      const reportTarget = comment.loc
+        ? { loc: comment.loc, messageId, data }
+        : { node: comment, messageId, data };
+      context.report(reportTarget);
+    }
+
+    return {
+      Program() {
+        for (const comment of sourceCode.getAllComments()) {
+          const parsed = findDisableDirective(comment.value);
+          if (!parsed) continue;
+          const { directive, rest } = parsed;
+          const body = parseDisableBody(rest);
+          if (!directiveTargetsTargetRule(body.rules)) continue;
+
+          const ruleSpec =
+            body.rules.length > 0 ? body.rules.join(", ") : TARGET_RULE_NAME;
+
+          if (directive === "disable") {
+            reportComment(comment, "fileWideDisable", { ruleSpec });
+            continue;
+          }
+          // disable-line or disable-next-line: must have a non-empty reason.
+          if (body.reason === null || body.reason.length === 0) {
+            const scope = directive === "disable-line" ? "line" : "next-line";
+            reportComment(comment, "missingReason", { scope, ruleSpec });
+          }
+        }
+      },
+    };
+  },
+};
+
 const plugin = {
   meta: { name: "no-leaky-test-daemon" },
   rules: {
     "no-leaky-test-daemon": noLeakyTestDaemon,
+    "localized-disable": localizedDisable,
   },
 };
 
