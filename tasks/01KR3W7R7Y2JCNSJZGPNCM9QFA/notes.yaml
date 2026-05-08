@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KR4SFY935B2ECR4M15NRMT49
+    content: "Approach: Extract a small testable helper startPlaywrightFixtureDaemon to
+      tests/e2e/fixtures/daemon-fixture.ts that wraps startTestDaemon with a registerCleanup
+      callback. The Playwright wrapper in test-base.ts uses it and wraps setup/use/teardown in
+      try/finally so cleanup runs even on setup failure. Add a Vitest unit test that injects a fake
+      startTestDaemon to verify the wrapper passes registerCleanup and exposes the captured stop.
+      Behavioral coverage at the unit level avoids spawning real daemon children for the
+      cleanup-registration AC; ordering is already covered in tests/helpers/daemon.test.ts."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T21:56:55.203Z
