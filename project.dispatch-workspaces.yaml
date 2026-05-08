@@ -9087,12 +9087,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T00:10:55.555Z
+      updated_at: 2026-05-08T00:11:00.678Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T00:10:55.555Z
+      updated_at: 2026-05-08T00:11:00.678Z
     integration:
       status: pending
       detail: null
@@ -9100,24 +9100,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e590cfdcf82242754ed4ec1f135e0b909f774f4a
-      updated_at: 2026-05-08T00:10:55.555Z
-    lifecycle_state: ready
+      updated_at: 2026-05-08T00:11:00.678Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KR22GJR5YSYRMW6VSD6MQ362"
     task_slug: task-implement-shared-daemon-test-fixture
     timestamps:
       closed_at: null
       last_active_at: 2026-05-07T23:54:39.164Z
-      last_reconciled_at: 2026-05-08T00:10:55.555Z
+      last_reconciled_at: 2026-05-08T00:11:00.678Z
       created_at: 2026-05-07T22:30:17.720Z
-      updated_at: 2026-05-08T00:10:55.555Z
+      updated_at: 2026-05-08T00:11:00.678Z
     workspace_id: dispatch-workspace-01KR22GJR5YSYRMW6VSD6MQ362
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: a1772de24d6b4027dbf16f1ea2390771fb54045a
+        last_seen_at: 2026-05-08T00:11:00.678Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
-        head: ab433d4eaf96d6b421cfc89771e283a3a768fcb8
-        last_seen_at: 2026-05-07T23:54:14.790Z
+        head: a1772de24d6b4027dbf16f1ea2390771fb54045a
+        last_seen_at: 2026-05-08T00:11:00.678Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj
