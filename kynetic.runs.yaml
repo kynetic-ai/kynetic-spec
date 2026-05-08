@@ -41312,9 +41312,22 @@ runs:
     completed_at: 2026-05-08T22:22:44.358Z
   - _ulid: 01KR4V2M3FPS3A0KSR8GE26GZQ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T22:24:35.952Z
+        completed_at: 2026-05-08T22:26:26.537Z
+        notes: "Step 1 — review what worked: structured pattern of (1) identify precise predicate to extend,
+          (2) add positive behavioral regressions for the new shape, (3) add precision regressions
+          for adjacent confusables, (4) verify with reviewer's own synthetic probe, (5) confirm full
+          suite + lint baseline unchanged. The runOxlint helper made each new shape addition
+          trivial."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T22:26:26.537Z
+        completed_at: 2026-05-08T22:26:26.537Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T22:24:35.952Z
