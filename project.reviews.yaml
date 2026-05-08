@@ -184624,6 +184624,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-08T03:58:06.675Z
+      - _ulid: 01KR2X91V18Y5B0GSPJB83M7BZ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR2VMEY7A91GPY90W31SBDMF
+        timestamp: 2026-05-08T04:24:34.913Z
     examined_commit: 80326f51ed6858dab18923307b48c372f10622be
     external_links: []
     lifecycle_state: closed
@@ -184651,6 +184657,18 @@ reviews:
               warnings and 0 errors.' This violates ac-detached-serve-without-cleanup-flagged
               because that is a detached daemon start through the CLI without scoped cleanup."
             created_at: 2026-05-08T03:55:51.623Z
+          - _ulid: 01KR2X90MFGX6QCMB50QBDV3BK
+            author: "@claude"
+            body: 'Fixed: detached-serve detection now also inspects ArrayExpression argv arguments. Replaced
+              the literal/template-only walker in isDetachCallExpression with
+              argsResolveToDetachedServe, which collects string contributions from literals,
+              templates, and array elements (spawn("kspec", ["serve", "start", "--detach", ...])),
+              tokenises them, and returns true when serve+start+--detach all appear (or any single
+              contribution contains the contiguous "serve start ... --detach" substring). New
+              focused tests cover the synthetic spawn argv repro and a spawnSync variant; the
+              cleanup escape hatch is preserved (spawn("kspec", ["serve", "start", "--detach"])
+              followed by onTestFinished(killPid) still passes).'
+            created_at: 2026-05-08T04:24:33.679Z
         kind: blocker
       - _ulid: 01KR2VMTPBYF14JBKQGPCSW05K
         anchor:
@@ -184722,5 +184740,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T03:58:06.674Z
     created_at: 2026-05-08T03:44:45.473Z
-    updated_at: 2026-05-08T03:58:06.675Z
+    updated_at: 2026-05-08T04:24:33.679Z
     notes: []
