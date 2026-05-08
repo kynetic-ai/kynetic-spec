@@ -186461,6 +186461,19 @@ reviews:
         runner: kspec
         created_at: 2026-05-08T14:41:54.264Z
         completed_at: 2026-05-08T14:41:54.264Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The new precision tests use it.fails around desired-behavior assertions. Because Vitest
+          treats any thrown assertion as the expected outcome for it.fails, a generic parser/helper
+          failure still satisfies these tests, contrary to the task requirement that generic parser
+          failure must not satisfy them.
+        name: test quality review
+        required: true
+        runner: reviewer
+        created_at: 2026-05-08T14:42:04.304Z
+        completed_at: 2026-05-08T14:42:04.304Z
     events:
       - _ulid: 01KR3ZW5WXWH7SYF6TF6YXBF0B
         actor: Jacob Chapel
@@ -186503,6 +186516,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-08T14:41:55.466Z
+      - _ulid: 01KR40KR456QYTPAME7PX0P19E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: test quality review
+        timestamp: 2026-05-08T14:42:05.573Z
     examined_commit: 3f1ee8ce0d0da31add4c40b3ee09b11bb9f048ad
     external_links: []
     lifecycle_state: open
@@ -186515,5 +186535,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T14:29:13.246Z
-    updated_at: 2026-05-08T14:41:54.264Z
+    updated_at: 2026-05-08T14:42:04.304Z
     notes: []
