@@ -39251,7 +39251,7 @@ runs:
     completed_at: 2026-05-08T04:43:25.935Z
   - _ulid: 01KR2ZTRPHCWCT6BVFRPR6E0XK
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -39316,7 +39316,35 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-08T05:09:48.520Z
-        completed_at: 2026-05-08T05:09:48.520Z
+        completed_at: 2026-05-08T05:10:41.976Z
+        notes: >-
+          Coverage check (kspec search):
+
+
+          (1) 'oxlint scope', 'lint rule scope', 'scope manager', 'ESLint scope' — no matches. The
+          friction around manually re-implementing scope tracking in oxlint JS plugins is NOT
+          tracked anywhere.
+
+
+          (2) 'oxlint subprocess', 'lint test fixture' — no matches. The synthetic-repro test cost
+          (~250ms/case) is NOT tracked.
+
+
+          (3) 'oxlint' returned the original install/migration tasks (all completed) plus this
+          current task. None capture the post-migration developer-experience gaps.
+
+
+          (4) 'scope-aware' matches only the note I just wrote on this task. Nothing pre-existing.
+
+
+          Conclusion: both friction points (1) and (4) from step 2 are untracked. Pattern from (2) —
+          'when introducing identifier tracking in a lint rule, default to scope-aware from the
+          start' — is also untracked and is the kind of cross-cycle insight worth recording as a
+          meta observation.
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-08T05:10:41.976Z
+        completed_at: 2026-05-08T05:10:41.976Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T05:09:12.529Z
