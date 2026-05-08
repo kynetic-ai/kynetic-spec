@@ -9963,12 +9963,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T01:23:44.702Z
+      updated_at: 2026-05-08T01:23:51.103Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T01:23:44.702Z
+      updated_at: 2026-05-08T01:23:51.103Z
     integration:
       status: pending
       detail: null
@@ -9976,24 +9976,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2b4dc4dfd1d3667d9100be4b8e6996b0f2ca1840
-      updated_at: 2026-05-08T01:23:44.702Z
-    lifecycle_state: ready
+      updated_at: 2026-05-08T01:23:51.103Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KR22GKACR7PZYFXZS9KEYVMQ"
     task_slug: task-migrate-playwright-daemon-fixture
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T00:57:20.255Z
-      last_reconciled_at: 2026-05-08T01:23:44.702Z
+      last_reconciled_at: 2026-05-08T01:23:51.103Z
       created_at: 2026-05-08T00:56:56.177Z
-      updated_at: 2026-05-08T01:23:44.702Z
+      updated_at: 2026-05-08T01:23:51.103Z
     workspace_id: dispatch-workspace-01KR22GKACR7PZYFXZS9KEYVMQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: c753d124422282c19fc01bf891a34656a5feb29d
+        last_seen_at: 2026-05-08T01:23:51.103Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-playwright-daemon-fixture-01kr22gk-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-migrate-playwright-daemon-fixture/01kr22gk
-        head: 2b4dc4dfd1d3667d9100be4b8e6996b0f2ca1840
-        last_seen_at: 2026-05-08T00:56:56.177Z
+        head: c753d124422282c19fc01bf891a34656a5feb29d
+        last_seen_at: 2026-05-08T01:23:51.103Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-playwright-daemon-fixture-01kr22gk
