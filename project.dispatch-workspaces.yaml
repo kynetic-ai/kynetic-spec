@@ -15727,7 +15727,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T19:56:10.982Z
+      updated_at: 2026-05-08T19:58:05.409Z
     integration:
       status: merged
       detail: integration:merged
@@ -15736,25 +15736,20 @@ workspaces:
       target_branch: dev
       target_commit: 1148fad7662616a925c27654f1c01cb24f4544e3
       updated_at: 2026-05-08T19:56:10.982Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KR3W7RTYPWDJVCQFZD2042P2"
     task_slug: task-fix-mock-daemon-cleanup-env-hygiene
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T19:41:13.170Z
-      last_reconciled_at: 2026-05-08T19:58:03.769Z
+      last_reconciled_at: 2026-05-08T19:58:05.409Z
       created_at: 2026-05-08T18:30:14.056Z
-      updated_at: 2026-05-08T19:58:03.769Z
+      updated_at: 2026-05-08T19:58:05.409Z
     workspace_id: dispatch-workspace-01KR3W7RTYPWDJVCQFZD2042P2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 16da0ce3d2b3e81217986e95b59d9c9051996698
-        last_seen_at: 2026-05-08T19:40:45.682Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-mock-daemon-cleanup-env-hygiene-01kr3w7r-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-mock-daemon-cleanup-env-hygiene/01kr3w7r
