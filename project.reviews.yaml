@@ -188712,6 +188712,17 @@ reviews:
         runner: npx oxlint
         created_at: 2026-05-08T19:32:12.204Z
         completed_at: 2026-05-08T19:32:12.204Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exited 6 with warnings only: schema/references OK, validation passed,
+          existing reference/alignment/completeness warnings remain."
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-08T19:32:22.190Z
+        completed_at: 2026-05-08T19:32:22.190Z
     events:
       - _ulid: 01KR4GFJ4E4P21DBD9RRA6MTZT
         actor: Jacob Chapel
@@ -188754,6 +188765,13 @@ reviews:
           status: fail
           name: custom exec daemon-entry probe
         timestamp: 2026-05-08T19:32:13.550Z
+      - _ulid: 01KR4H79TWJBHTT1WWVAT7KPNQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-08T19:32:23.516Z
     examined_commit: 09c83cadfc2e708ff8727c4fbbc2e9126d50fb2e
     external_links: []
     lifecycle_state: open
@@ -188787,5 +188805,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-08T19:19:25.583Z
-    updated_at: 2026-05-08T19:32:12.204Z
+    updated_at: 2026-05-08T19:32:22.190Z
     notes: []
