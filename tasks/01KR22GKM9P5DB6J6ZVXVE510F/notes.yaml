@@ -25,3 +25,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T01:36:53.773Z
+  - _ulid: 01KR2N00PTBNDFRR7TXGYC4WMX
+    content: Implementation complete. Built tests/helpers/mock-daemon.ts as canonical mock daemon helper
+      for CLI client tests, supporting in-process and child-process modes with
+      normal/error/hang/refuse modes for /api/command. writeMockDaemonMetadata +
+      writeLegacyDaemonPort helpers route through writeDaemonConnectionMetadata for canonical
+      schema. Collapsed mock-daemon.cjs and recording-daemon.cjs into a single unified script
+      (refuse mode preserves the recording-daemon use case). Migrated mock-daemon.test.ts contract
+      tests, cli-task-event-endpoint, daemon-status-endpoint, cli-daemon-proxy,
+      cli-daemon-endpoint-regression, cli-agent-watch-endpoint. Removed obsolete
+      recording-daemon.cjs. cli-daemon-client.test.ts left as-is - its local helpers compose
+      granular partial-state metadata for parser unit tests, not duplicate mock-daemon setup. All
+      8745 tests pass; no new lint/type errors.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T01:59:50.235Z
