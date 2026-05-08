@@ -28250,7 +28250,7 @@
   type: task
   spec_ref: "@daemon-test-startup-failure-hygiene"
   plan_ref: "@plan-daemon-test-fixture-hardening"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-add-mock-daemon-failure-contract-tests"
@@ -28263,7 +28263,7 @@
   notes_count: 4
   todos_count: 0
   created_at: 2026-05-08T13:25:38.782Z
-  started_at: 2026-05-08T18:34:49.569Z
+  started_at: 2026-05-08T19:37:08.019Z
   submitted_at: 2026-05-08T18:51:07.197Z
   automation: eligible
 - _ulid: 01KR3W7S3VS0QRZ26RGXS0F3C4
