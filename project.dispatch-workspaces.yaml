@@ -15761,7 +15761,7 @@ workspaces:
         head: 16da0ce3d2b3e81217986e95b59d9c9051996698
         last_seen_at: 2026-05-08T19:40:45.682Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-mock-daemon-cleanup-env-hygiene-01kr3w7r
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 80c3b249aff2a71e1af043e74234b892f2174471
     bootstrap:
       status: succeeded
@@ -16243,7 +16243,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T20:34:12.602Z
+      updated_at: 2026-05-08T20:34:42.588Z
     integration:
       status: pending
       detail: null
@@ -16258,10 +16258,10 @@ workspaces:
     task_slug: task-clarify-in-process-daemon-api-helper-boundary
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-08T20:03:57.073Z
-      last_reconciled_at: 2026-05-08T20:34:12.602Z
+      last_active_at: 2026-05-08T20:34:42.588Z
+      last_reconciled_at: 2026-05-08T20:34:42.588Z
       created_at: 2026-05-08T20:03:31.210Z
-      updated_at: 2026-05-08T20:34:39.238Z
+      updated_at: 2026-05-08T20:34:42.588Z
     workspace_id: dispatch-workspace-01KR3W7SD99V6PMBDTR5WW1TBX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
