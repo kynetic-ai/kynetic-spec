@@ -40322,9 +40322,23 @@ runs:
     completed_at: 2026-05-08T18:04:51.158Z
   - _ulid: 01KR4C69P79SGSAB97S9FWCNYE
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T18:04:27.719Z
+        completed_at: 2026-05-08T18:06:14.099Z
+        notes: "Step 1 (search existing): searched it.fails, classifierGap, failing-before-fix. Both
+          candidate themes from this session are already captured: friction observation @01KR45YDC
+          ('Submitted task using bare it.fails() ... re-check meta observations on sister tasks at
+          submission time') and success observation @01KR431R ('Selective expected-failure pattern
+          using expectClassifierGap'). No new captures warranted — would duplicate existing
+          observations."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T18:06:14.099Z
+        completed_at: 2026-05-08T18:06:14.099Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T18:04:27.719Z
