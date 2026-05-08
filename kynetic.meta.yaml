@@ -17630,6 +17630,23 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T19:39:45.117Z
+  - _ulid: 01KR4JYFCDP6N5TY457MNPMGR4
+    type: friction
+    content: "Daemon-entry classifier in tools/eslint-rules/no-leaky-test-daemon.js shipped through 3
+      sequential fix cycles for one task — each cycle the reviewer probed a child-process API family
+      the rule didn't cover (cycle 1: missed the direct-executable spawn-like form
+      spawn(DAEMON_ENTRY, …); cycle 2: missed the exec/execSync shell-string form). The spec
+      phrasing 'every child-process API that can launch the daemon entrypoint' is generic, and
+      neither the spec ACs nor tests/lint-daemon-test-guardrails.test.ts enumerates the Node
+      child_process families the rule must handle (spawn, spawnSync, execFile, execFileSync, fork,
+      exec, execSync), so each missing family was discovered incrementally instead of up front.
+      Future classifier extensions that claim to cover 'every X that does Y' would benefit from an
+      explicit family enumeration in the spec or a coverage matrix in the test file so missing
+      entries fail at submission time, not at review."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T20:02:31.437Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
