@@ -184515,6 +184515,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR2VMTPBYF14JBKQGPCSW05K
         timestamp: 2026-05-08T03:56:04.890Z
+      - _ulid: 01KR2VN7B9Z7MEM5YJWQXK6BFW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR2VN63Q359GE2G4GRXYZM5N
+        timestamp: 2026-05-08T03:56:16.617Z
     examined_commit: 80326f51ed6858dab18923307b48c372f10622be
     external_links: []
     lifecycle_state: open
@@ -184562,7 +184569,25 @@ reviews:
               allowed endpoint-contract cases."
             created_at: 2026-05-08T03:56:03.659Z
         kind: blocker
+      - _ulid: 01KR2VN63Q359GE2G4GRXYZM5N
+        anchor:
+          type: code
+          commit: 80326f51ed6858dab18923307b48c372f10622be
+          line_end: 397
+          line_start: 359
+          path: tests/lint-daemon-test-guardrails.test.ts
+          side: head
+        entries:
+          - _ulid: 01KR2VN63Q23Z1DEVRB6MAFVCG
+            author: Jacob Chapel
+            body: "MUST-FIX: ac-exceptions-are-localized is only tested for the happy path with a documented
+              oxlint-disable-next-line; it does not prove that undocumented or broad exceptions are
+              rejected. I verified both  with no  reason and file-wide  suppress the rule with zero
+              diagnostics. That means intentional exceptions are not required to be locally
+              documented with a narrow reason, contrary to the task and AC."
+            created_at: 2026-05-08T03:56:15.351Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T03:44:45.473Z
-    updated_at: 2026-05-08T03:56:03.659Z
+    updated_at: 2026-05-08T03:56:15.351Z
     notes: []
