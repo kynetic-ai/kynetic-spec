@@ -17450,6 +17450,21 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T14:27:04.932Z
+  - _ulid: 01KR41TDTZ5A4Z6T0VKMNAH9N7
+    type: friction
+    content: Plan structures that pair an "add failing test" task with a separate "fix the helper" task
+      collide with the no-failing-tests merge gate. Plan @plan-daemon-test-fixture-hardening split
+      @task-add-real-daemon-startup-failure-tests (lands the contract test) from
+      @task-fix-real-daemon-startup-failure-handling (implements the fix), and the first task's
+      description told the worker to land a test that fails. Reviewer (correctly) blocked the first
+      branch on the failing test. Resolution required combining the two tasks into one branch.
+      Either plan templates need to mark the test-task as needing combined merge with the fix task,
+      or the project needs a convention for landing contract tests without regression (it.todo /
+      it.fails / skip-with-reason).
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T15:03:12.992Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

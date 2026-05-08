@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KR41TESWGB1FXGAA778PNYH6
+    content: Scope satisfied by combined fix in commit 324ac8a62 on branch
+      dispatch/task/task-add-real-daemon-startup-failure-tests/01kr3w7q. The helper-side changes
+      this task described (capture child error events, race readiness against launch failure,
+      idempotent stop, registerCleanup before readiness wait) were merged into the test-task branch
+      during fix-cycle 1 of @task-add-real-daemon-startup-failure-tests because the reviewer blocked
+      landing a failing test. After the test-task merges, this task can likely be closed without
+      code changes — the validation task will verify both ends. Recommend triage to confirm before
+      starting implementation work.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T15:03:13.980Z
