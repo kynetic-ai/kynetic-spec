@@ -18,15 +18,23 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Command } from "commander";
-import { createServer as createNetServer } from "node:net";
-import { mkdirSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
 
 import {
   registerAgentCommands,
   _setWebSocketCtor,
 } from "../src/cli/commands/agent.js";
-import { cleanupTempDir, createTempDir, waitForStartup } from "./helpers/cli.js";
+import {
+  cleanupTempDir,
+  createIsolatedKspecHome,
+  createTempDir,
+  waitForStartup,
+  type IsolatedKspecHome,
+} from "./helpers/cli.js";
+import {
+  probeHostAvailable,
+  writeMockDaemonMetadata,
+  type MockDaemonClient,
+} from "./helpers/mock-daemon.js";
 
 interface FakeWsInstance {
   send: ReturnType<typeof vi.fn>;
@@ -76,35 +84,23 @@ function createTestProgram(): Command {
   return program;
 }
 
-async function probeHost(host: string): Promise<boolean> {
-  return new Promise((resolve) => {
-    const probe = createNetServer();
-    probe.once("error", () => {
-      try {
-        probe.close(() => resolve(false));
-      } catch {
-        resolve(false);
-      }
-    });
-    probe.once("listening", () => probe.close(() => resolve(true)));
-    try {
-      probe.listen({ host, port: 0, exclusive: true });
-    } catch {
-      resolve(false);
-    }
-  });
-}
-
-function writeFakeDaemonState(
-  configDir: string,
-  metadata: Record<string, unknown>,
-): void {
-  mkdirSync(configDir, { recursive: true });
-  // PID file holds the test process pid so PidFileManager.isDaemonRunning()
-  // returns true. The recording is the URL the WebSocket constructor sees,
-  // which proves the URL came from the metadata we just wrote.
-  writeFileSync(join(configDir, "daemon.pid"), String(process.pid));
-  writeFileSync(join(configDir, "daemon.connection.json"), JSON.stringify(metadata));
+/**
+ * Build a synthetic MockDaemonClient that points at the desired host:port
+ * without actually starting a server. The watch command never opens a real
+ * WebSocket here (the test stubs the WS constructor); only the URL the
+ * constructor receives matters. The synthetic client lets the canonical
+ * metadata writer render snake_case fields and the proper bracket form.
+ */
+function fakeClient(host: string, port: number): MockDaemonClient {
+  const formatted = host.includes(":") ? `[${host}]` : host;
+  return {
+    port,
+    bindHost: host,
+    apiUrl: `http://${formatted}:${port}`,
+    wsUrl: `ws://${formatted}:${port}/ws`,
+    requests: () => [],
+    stop: async () => {},
+  };
 }
 
 /**
@@ -119,17 +115,17 @@ async function mockInitContextFast(): Promise<void> {
 }
 
 describe("`agent dispatch watch` opens the WebSocket at the metadata-advertised ws_url", () => {
-  let homeDir: string;
-  let configDir: string;
+  let tempDir: string;
+  let home: IsolatedKspecHome;
   let originalHome: string | undefined;
   let originalNoDaemon: string | undefined;
 
   beforeEach(async () => {
-    homeDir = await createTempDir("kspec-cli-agent-watch-home-");
-    configDir = join(homeDir, ".config", "kspec");
+    tempDir = await createTempDir("kspec-cli-agent-watch-");
+    home = await createIsolatedKspecHome(tempDir);
     originalHome = process.env.HOME;
     originalNoDaemon = process.env.KSPEC_NO_DAEMON;
-    process.env.HOME = homeDir;
+    process.env.HOME = home.homeDir;
     delete process.env.KSPEC_NO_DAEMON;
   });
 
@@ -143,7 +139,7 @@ describe("`agent dispatch watch` opens the WebSocket at the metadata-advertised 
     } else {
       process.env.KSPEC_NO_DAEMON = originalNoDaemon;
     }
-    await cleanupTempDir(homeDir);
+    await cleanupTempDir(tempDir);
   });
 
   // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
@@ -155,14 +151,9 @@ describe("`agent dispatch watch` opens the WebSocket at the metadata-advertised 
   // separately re-derived host or port.
   it("uses the advertised ws://127.0.0.1:<port>/ws verbatim", async () => {
     const advertisedPort = 41234;
-    writeFakeDaemonState(configDir, {
-      pid: process.pid,
-      port: advertisedPort,
-      bind_host: "127.0.0.1",
-      connect_host: "127.0.0.1",
-      api_url: `http://127.0.0.1:${advertisedPort}`,
-      ws_url: `ws://127.0.0.1:${advertisedPort}/ws`,
-      runtime: "node",
+    writeMockDaemonMetadata({
+      home,
+      client: fakeClient("127.0.0.1", advertisedPort),
     });
 
     await mockInitContextFast();
@@ -210,14 +201,11 @@ describe("`agent dispatch watch` opens the WebSocket at the metadata-advertised 
   // the URL the constructor saw — no socket binding needed.
   it("uses a non-default loopback alias ws://127.0.0.2:<port>/ws verbatim", async () => {
     const advertisedPort = 41235;
-    writeFakeDaemonState(configDir, {
-      pid: process.pid,
-      port: advertisedPort,
-      bind_host: "0.0.0.0",
-      connect_host: "127.0.0.2",
-      api_url: `http://127.0.0.2:${advertisedPort}`,
-      ws_url: `ws://127.0.0.2:${advertisedPort}/ws`,
-      runtime: "node",
+    writeMockDaemonMetadata({
+      home,
+      client: fakeClient("127.0.0.2", advertisedPort),
+      bindHost: "0.0.0.0",
+      connectHost: "127.0.0.2",
     });
 
     await mockInitContextFast();
@@ -263,19 +251,14 @@ describe("`agent dispatch watch` opens the WebSocket at the metadata-advertised 
   // bind_host alone would either lose the bracket syntax or pick a v4
   // host. URL parsing only — skip when IPv6 loopback is unreachable.
   it("uses a bracketed IPv6 ws://[::1]:<port>/ws verbatim", async () => {
-    if (!(await probeHost("::1"))) {
+    if (!(await probeHostAvailable("::1"))) {
       console.log("  ⊘ Skipping test - IPv6 loopback (::1) not available");
       return;
     }
     const advertisedPort = 41236;
-    writeFakeDaemonState(configDir, {
-      pid: process.pid,
-      port: advertisedPort,
-      bind_host: "::1",
-      connect_host: "::1",
-      api_url: `http://[::1]:${advertisedPort}`,
-      ws_url: `ws://[::1]:${advertisedPort}/ws`,
-      runtime: "node",
+    writeMockDaemonMetadata({
+      home,
+      client: fakeClient("::1", advertisedPort),
     });
 
     await mockInitContextFast();

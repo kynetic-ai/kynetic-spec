@@ -13,7 +13,9 @@
  * advertised URL — including bracketed IPv6 hosts and non-default
  * connect_host values — instead of re-deriving from a port number.
  *
- * The mock daemon listens on an ephemeral port and (when available) a
+ * The mock daemon (shared tests/helpers/mock-daemon.ts in `refuse` mode)
+ * runs as a child process so spawnSync inside kspec() does not block its
+ * event loop. It listens on an ephemeral port and (when available) a
  * non-default loopback alias. On Linux 127.0.0.0/8 routes to loopback
  * so 127.0.0.2 is reachable; on macOS / Windows the alias is not
  * configured by default — those cases skip the alias-strict assertion
@@ -22,18 +24,16 @@
  * AC: @daemon-network-endpoint-contract ac-clients-use-metadata
  * AC: @daemon-network-endpoint-contract ac-default-loopback-v4
  * AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+ * AC: @daemon-network-endpoint-contract ac-tests-use-resolved-endpoint
+ * AC: @daemon-test-mode-boundaries ac-cli-client-tests-use-mock-daemon
+ * AC: @daemon-test-endpoint-consistency ac-resolved-endpoint-source
+ * AC: @daemon-test-endpoint-consistency ac-mock-metadata-fidelity
+ * AC: @daemon-test-endpoint-consistency ac-dynamic-port-propagation
  * AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
  * AC: @trait-daemon-endpoint-consumer ac-wildcard-not-destination
  */
 
-import { ChildProcess, spawn } from "node:child_process";
-import { createServer as createNetServer } from "node:net";
-import {
-  existsSync,
-  mkdirSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { stringify as yamlStringify } from "yaml";
@@ -43,106 +43,17 @@ import {
   createTempDir,
   initGitRepo,
   kspec,
-  readTestOutputSync,
   testUlid,
   type IsolatedKspecHome,
 } from "./helpers/cli.js";
-
-const RECORDING_DAEMON_PATH = join(__dirname, "helpers", "recording-daemon.cjs");
-
-interface RecordedRequest {
-  method: string;
-  url: string;
-  host: string | null;
-  body: string;
-  receivedAt: number;
-}
-
-interface MockDaemon {
-  process: ChildProcess;
-  port: number;
-  bindHost: string;
-  recordPath: string;
-}
-
-function startRecordingDaemon(bindHost: string, recordPath: string): Promise<MockDaemon | null> {
-  return new Promise((resolve) => {
-    const child = spawn(
-      "node",
-      [RECORDING_DAEMON_PATH, "--bind-host", bindHost, "--record", recordPath],
-      { stdio: ["pipe", "pipe", "pipe"] },
-    );
-
-    let stdout = "";
-    let resolved = false;
-    const finish = (value: MockDaemon | null): void => {
-      if (resolved) return;
-      resolved = true;
-      resolve(value);
-    };
-
-    child.stdout!.on("data", (chunk: Buffer) => {
-      stdout += chunk.toString();
-      const newlineIdx = stdout.indexOf("\n");
-      if (newlineIdx === -1) return;
-      const line = stdout.slice(0, newlineIdx);
-      try {
-        const parsed = JSON.parse(line) as { port: number; bindHost: string };
-        finish({ process: child, port: parsed.port, bindHost: parsed.bindHost, recordPath });
-      } catch {
-        finish(null);
-      }
-    });
-
-    child.on("exit", () => finish(null));
-    child.on("error", () => finish(null));
-
-    setTimeout(() => finish(null), 5000);
-  });
-}
-
-function stopMockDaemon(mock: MockDaemon): Promise<void> {
-  return new Promise((resolve) => {
-    mock.process.once("exit", () => resolve());
-    mock.process.kill("SIGTERM");
-    setTimeout(() => {
-      try {
-        mock.process.kill("SIGKILL");
-      } catch {
-        // already gone
-      }
-      resolve();
-    }, 1500);
-  });
-}
-
-function readRecordedRequests(recordPath: string): RecordedRequest[] {
-  if (!existsSync(recordPath)) return [];
-  const raw = readTestOutputSync(recordPath, "utf-8");
-  return raw
-    .split("\n")
-    .filter((line) => line.length > 0)
-    .map((line) => JSON.parse(line) as RecordedRequest);
-}
-
-async function probeAlias(host: string): Promise<boolean> {
-  return new Promise((resolve) => {
-    const probe = createNetServer();
-    probe.once("error", () => {
-      try {
-        probe.close(() => resolve(false));
-      } catch {
-        resolve(false);
-      }
-    });
-    probe.once("listening", () => probe.close(() => resolve(true)));
-    try {
-      probe.listen({ host, port: 0, exclusive: true });
-    } catch {
-      resolve(false);
-    }
-  });
-}
+import {
+  expectedHostHeader,
+  probeHostAvailable,
+  startMockDaemon,
+  writeMockDaemonMetadata,
+  type MockDaemonClient,
+  type RecordedMockRequest,
+} from "./helpers/mock-daemon.js";
 
 function writeKspecProject(
   dir: string,
@@ -166,82 +77,57 @@ function writeKspecProject(
   );
 }
 
-function writeMetadata(home: IsolatedKspecHome, mock: MockDaemon): void {
-  const apiUrl = formatUrl("http", mock.bindHost, mock.port);
-  const wsUrl = `${formatUrl("ws", mock.bindHost, mock.port)}/ws`;
-
-  // PID file holds the test runner's pid so PidFileManager.isDaemonRunning()
-  // reports running=true. The mock is a different process; it doesn't matter
-  // because the gate only checks process liveness, not identity.
-  writeFileSync(home.daemonPidFilePath, String(process.pid));
-  writeFileSync(
-    join(home.configDir, "daemon.connection.json"),
-    JSON.stringify({
-      pid: process.pid,
-      port: mock.port,
-      bind_host: mock.bindHost,
-      connect_host: mock.bindHost,
-      api_url: apiUrl,
-      ws_url: wsUrl,
-      runtime: "node",
-    }),
-  );
-}
-
-function formatUrl(scheme: string, host: string, port: number): string {
-  const formatted = host.includes(":") ? `[${host}]` : host;
-  return `${scheme}://${formatted}:${port}`;
-}
-
-function expectedHostHeader(host: string, port: number): string {
-  return host.includes(":") ? `[${host}]:${port}` : `${host}:${port}`;
-}
-
 describe("CLI daemon clients use the metadata-advertised endpoint", () => {
   let tempDir: string;
-  let recordPath: string;
   let isolated: IsolatedKspecHome;
-  let mock: MockDaemon | undefined;
+  let mock: MockDaemonClient | undefined;
 
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-cli-endpoint-regression-");
     initGitRepo(tempDir);
-    recordPath = join(tempDir, "daemon-requests.jsonl");
     isolated = await createIsolatedKspecHome(tempDir);
     writeKspecProject(tempDir);
   });
 
   afterEach(async () => {
     if (mock) {
-      await stopMockDaemon(mock);
+      await mock.stop();
       mock = undefined;
-    }
-    try {
-      rmSync(recordPath, { force: true });
-    } catch {
-      // best-effort cleanup
     }
     await cleanupTempDir(tempDir);
   });
 
   /**
-   * Stand up the recording daemon on the strongest available host.
+   * Stand up the recording mock daemon on the strongest available host.
    * Linux: 127.0.0.2 (proves the URL came from metadata, not a hardcoded
    *   127.0.0.1 fallback).
    * Other platforms: fall back to 127.0.0.1 — still proves the port came
    *   from metadata even when host strictness can't be enforced.
+   *
+   * Uses `refuse` mode: /api/command returns a non-JSON 503. Read-only
+   * commands fall back to direct mode (so their inline handlers exercise
+   * the metadata-advertised URLs we record), and mutating commands
+   * surface the proxy attempt at /api/command for verification.
    */
-  async function startMock(): Promise<MockDaemon> {
-    if (await probeAlias("127.0.0.2")) {
-      const aliasMock = await startRecordingDaemon("127.0.0.2", recordPath);
+  async function startMock(): Promise<MockDaemonClient> {
+    if (await probeHostAvailable("127.0.0.2")) {
+      const aliasMock = await startMockDaemon({
+        asChildProcess: true,
+        mode: "refuse",
+        bindHost: "127.0.0.2",
+      });
       if (aliasMock) {
         mock = aliasMock;
         return aliasMock;
       }
     }
-    const fallbackMock = await startRecordingDaemon("127.0.0.1", recordPath);
+    const fallbackMock = await startMockDaemon({
+      asChildProcess: true,
+      mode: "refuse",
+      bindHost: "127.0.0.1",
+    });
     if (!fallbackMock) {
-      throw new Error("recording daemon failed to start on 127.0.0.1");
+      throw new Error("mock daemon failed to start on 127.0.0.1");
     }
     mock = fallbackMock;
     return fallbackMock;
@@ -262,18 +148,20 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
     });
   }
 
-  function findRequest(predicate: (r: RecordedRequest) => boolean): RecordedRequest | undefined {
-    return readRecordedRequests(recordPath).find(predicate);
+  function findRequest(
+    predicate: (r: RecordedMockRequest) => boolean,
+  ): RecordedMockRequest | undefined {
+    return mock!.requests().find(predicate);
   }
 
   function expectRequestAtAdvertisedHost(
-    request: RecordedRequest | undefined,
+    request: RecordedMockRequest | undefined,
     pathHint: string,
   ): void {
     expect(
       request,
       `expected a recorded request matching ${pathHint}; recorded: ${JSON.stringify(
-        readRecordedRequests(recordPath),
+        mock!.requests(),
       )}`,
     ).toBeDefined();
     expect(request!.host).toBe(expectedHostHeader(mock!.bindHost, mock!.port));
@@ -283,7 +171,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
   // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
   it("`event log` GETs /api/events/recent at the advertised api_url", async () => {
     await startMock();
-    writeMetadata(isolated, mock!);
+    writeMockDaemonMetadata({ home: isolated, client: mock! });
 
     const result = runCli("event log");
     expect(result.exitCode).toBe(0);
@@ -296,7 +184,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
   // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
   it("`event emit` POSTs /api/events/emit at the advertised api_url", async () => {
     await startMock();
-    writeMetadata(isolated, mock!);
+    writeMockDaemonMetadata({ home: isolated, client: mock! });
 
     const result = runCli('event emit task.ready --field task_id=abc --field task_ref=@x');
     expect(result.exitCode).toBe(0);
@@ -312,7 +200,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
   // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
   it("`agent dispatch start` POSTs /api/agent/dispatch/start at the advertised api_url", async () => {
     await startMock();
-    writeMetadata(isolated, mock!);
+    writeMockDaemonMetadata({ home: isolated, client: mock! });
 
     const result = runCli("agent dispatch start");
     expect(result.exitCode).toBe(0);
@@ -325,7 +213,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
   // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
   it("`agent dispatch stop` POSTs /api/agent/dispatch/stop at the advertised api_url", async () => {
     await startMock();
-    writeMetadata(isolated, mock!);
+    writeMockDaemonMetadata({ home: isolated, client: mock! });
 
     const result = runCli("agent dispatch stop");
     expect(result.exitCode).toBe(0);
@@ -338,7 +226,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
   // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
   it("`agent dispatch status` GETs /api/agent/dispatch/status at the advertised api_url", async () => {
     await startMock();
-    writeMetadata(isolated, mock!);
+    writeMockDaemonMetadata({ home: isolated, client: mock! });
 
     const result = runCli("agent dispatch status");
     expect(result.exitCode).toBe(0);
@@ -353,7 +241,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
   // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
   it("`agent status` GETs /api/agent/dispatch/status at the advertised api_url", async () => {
     await startMock();
-    writeMetadata(isolated, mock!);
+    writeMockDaemonMetadata({ home: isolated, client: mock! });
 
     const result = runCli("agent status");
     expect(result.exitCode).toBe(0);
@@ -368,7 +256,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
   // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
   it("`schedule list` GETs /api/schedules at the advertised api_url for daemon enrichment", async () => {
     await startMock();
-    writeMetadata(isolated, mock!);
+    writeMockDaemonMetadata({ home: isolated, client: mock! });
 
     // Schedule list is non-fatal when daemon is unreachable, but with a
     // running daemon it should attempt the enrichment fetch.
@@ -399,7 +287,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
   // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
   it("`schedule trigger` POSTs /api/schedules/<id>/trigger at the advertised api_url", async () => {
     await startMock();
-    writeMetadata(isolated, mock!);
+    writeMockDaemonMetadata({ home: isolated, client: mock! });
 
     const scheduleId = "trigger-target";
     writeKspecProject(tempDir, {
@@ -440,7 +328,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
   // metadata path from any port-only fallback.
   it("`serve status --json` renders the metadata-advertised endpoint fields verbatim", async () => {
     await startMock();
-    writeMetadata(isolated, mock!);
+    writeMockDaemonMetadata({ home: isolated, client: mock! });
 
     const result = runCli(`serve status --json --kspec-dir ${join(tempDir, ".kspec")}`);
     expect(result.exitCode).toBe(0);
@@ -478,7 +366,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
   // human readers.
   it("`serve status` (human output) prints the metadata-advertised bind_host / connect_host / port", async () => {
     await startMock();
-    writeMetadata(isolated, mock!);
+    writeMockDaemonMetadata({ home: isolated, client: mock! });
 
     const result = runCli(`serve status --kspec-dir ${join(tempDir, ".kspec")}`);
     expect(result.exitCode).toBe(0);
@@ -513,7 +401,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
   // metadata is asserted below as the single observable boundary check.
   it("`task start` (mutating) proxies through the metadata-advertised /api/command endpoint", async () => {
     await startMock();
-    writeMetadata(isolated, mock!);
+    writeMockDaemonMetadata({ home: isolated, client: mock! });
 
     // Seed a task to start.
     const taskUlid = testUlid("TSK", 1);
