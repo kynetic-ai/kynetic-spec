@@ -190363,6 +190363,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR4W4ZATJCYE4Z3GY96Q79N6
         timestamp: 2026-05-08T22:43:23.000Z
+      - _ulid: 01KR4W54JS2X4G05H7S1YVNS1E
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR4W537WW9ZMGG1M3ZHYBV16
+        timestamp: 2026-05-08T22:43:26.937Z
     examined_commit: 1459ff6696a65438ac6b64221407f751f7c4d3b8
     external_links: []
     lifecycle_state: open
@@ -190395,7 +190402,29 @@ reviews:
               positives covered by the existing regressions.'
             created_at: 2026-05-08T22:43:21.562Z
         kind: blocker
+      - _ulid: 01KR4W537WW9ZMGG1M3ZHYBV16
+        anchor:
+          type: code
+          commit: 1459ff6696a65438ac6b64221407f751f7c4d3b8
+          line_end: 477
+          line_start: 469
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR4W537XYQZQZBPC7CBM8NT3
+            author: Jacob Chapel
+            body: 'MUST-FIX: process.execPath recognition rejects all computed member access, so
+              spawn(process["execPath"], [DAEMON_ENTRY, "--port", "0"]) is silently accepted even
+              though it is the same current-Node runtime as process.execPath and directly launches
+              the daemon entrypoint. I verified this with a synthetic oxlint probe against this
+              rule: oxlint exited 0 with "Found 0 warnings and 0 errors." This is another false
+              negative for @daemon-test-guardrail-precision
+              ac-direct-daemon-entry-invocations-flagged. The strictness should still reject
+              arbitrary object.execPath values, but exact computed process["execPath"] is statically
+              knowable and should be treated as Node.'
+            created_at: 2026-05-08T22:43:25.565Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T22:29:22.411Z
-    updated_at: 2026-05-08T22:43:21.562Z
+    updated_at: 2026-05-08T22:43:25.565Z
     notes: []
