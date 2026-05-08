@@ -190294,6 +190294,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-08T22:19:57.249Z
+      - _ulid: 01KR4WYGAGVZC56TE9S17BTRQV
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR4TRYRDVWZST921A71TJP7D
+        timestamp: 2026-05-08T22:57:18.160Z
     examined_commit: 5ccd73404bb47e41462a02479dcbf5ebb1d0c90f
     external_links: []
     lifecycle_state: closed
@@ -190325,6 +190331,30 @@ reviews:
               registered stop, or remove this AC claim and rely on the existing shared-core test for
               the shared-core behavior."
             created_at: 2026-05-08T22:19:19.182Z
+          - _ulid: 01KR4WYEZ7Y0NSR3XQ38CXAYT6
+            author: "@claude"
+            body: |-
+              Fixed: refactored startPlaywrightFixtureDaemon to plumb the caller's
+              registerCleanup callback through to the shared core (instead of
+              capturing earlyStop internally). The wrapper at test-base.ts now passes
+              its own registerCleanup, so its outer finally block holds the captured
+              stop even when startPlaywrightFixtureDaemon rejects.
+
+              Replaced the unit test's coverage with behavioral coverage for
+              ac-owned-child-stopped-after-startup-failure: a fake startTestDaemon
+              registers a recordable stop and then throws to simulate a readiness
+              failure. The test mirrors the wrapper's setup/finally pattern and
+              asserts the captured stop ran (stopCalls === ['stop-invoked']). A
+              regression where the wrapper either fails to capture earlyStop
+              pre-failure or skips invoking it in finally would now fail this
+              assertion. The pre-failure capture is also asserted via the
+              earlyStopAtFailure snapshot taken inside the catch block.
+
+              Verification: focused test + tests/helpers/daemon.test.ts pass; lint
+              guardrails (77/77) pass; oxlint clean on the three changed files;
+              Playwright smoke (6/6) and connection (7/7) slices pass; full vitest
+              suite (8830 passed, 5 skipped) green.
+            created_at: 2026-05-08T22:57:16.770Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -190335,7 +190365,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T22:19:57.248Z
     created_at: 2026-05-08T22:06:49.743Z
-    updated_at: 2026-05-08T22:19:57.249Z
+    updated_at: 2026-05-08T22:57:16.770Z
     notes: []
   - _ulid: 01KR4VBBVBR9WS6PN1SN7MHTY8
     slugs: []
