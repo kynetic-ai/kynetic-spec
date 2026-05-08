@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KR4M266MNWMVTASPXCGE58R4
+    content: "Additional flaky evidence from review of @01KR3W7PPVDFR8F03VQ6J54M3K on 2026-05-08: full
+      npm test -- --fresh failed tests/daemon-build.test.ts after 180000ms timeout in 'compiled
+      daemon entrypoint starts and serves health checks and SPA routes under node and bun' (full log
+      /tmp/kspec-test-cache/01KR4K02B1FTKXJTQH2SJCBC2D/f38f29fddaf6fcaa.log). Immediate focused
+      rerun 'npm test -- --fresh tests/daemon-build.test.ts' passed 2/2 in 911ms (log
+      /tmp/kspec-test-cache/01KR4K02B1FTKXJTQH2SJCBC2D/6d0716cd0d2fe204.log)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-05-08T20:22:01.684Z
