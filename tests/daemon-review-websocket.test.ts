@@ -9,14 +9,22 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { execSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
-import * as path from "node:path";
-import { Elysia } from "elysia";
-import { createTempDir, cleanupTempDir, initGitRepo, testUlid } from "./helpers/cli";
-import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
-import { createReviewsRoutes } from "../dist/daemon/routes/reviews.js";
-import { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
+import type { Elysia } from "elysia";
+import {
+  captureBroadcasts,
+  cleanupTempDir,
+  createTempDir,
+  createTestApp,
+  initGitRepo,
+  LEGACY_INLINE_MANIFEST,
+  requestJson,
+  setupInlineFixtures,
+  testUlid,
+} from "./daemon-api/helpers.js";
+import type { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
+
+// AC: @daemon-test-mode-boundaries ac-in-process-route-tests-no-child-process
+// AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
 
 // Test ULIDs
 const REVIEW_OPEN_ULID = testUlid("RVOP", 1);
@@ -28,57 +36,9 @@ const THREAD_ULID = testUlid("THRD", 5);
 let tempDir: string;
 let app: Elysia;
 let pubsub: PubSubManager;
-let broadcastSpy: ReturnType<typeof vi.spyOn>;
+let broadcastSpy: ReturnType<typeof captureBroadcasts>;
 
-function makeRequest(method: string, urlPath: string, body?: unknown) {
-  const url = `http://localhost${urlPath}`;
-  const opts: RequestInit = {
-    method,
-    headers: {
-      Host: "localhost",
-      "X-Kspec-Dir": tempDir,
-      "Content-Type": "application/json",
-    },
-  };
-  if (body) {
-    opts.body = JSON.stringify(body);
-  }
-  return app.handle(new Request(url, opts));
-}
-
-function setupFixtures() {
-  mkdirSync(path.join(tempDir, ".kspec"), { recursive: true });
-  mkdirSync(path.join(tempDir, "modules"), { recursive: true });
-
-  writeFileSync(
-    path.join(tempDir, "kynetic.yaml"),
-    `kynetic: "1.0"
-project:
-  name: Test Project
-  version: "0.1.0"
-  status: draft
-includes:
-  - modules/test.yaml
-tasks_file: project.tasks.yaml
-`,
-  );
-
-  writeFileSync(
-    path.join(tempDir, "modules", "test.yaml"),
-    `features:
-  - _ulid: "${testUlid("SPEC", 1)}"
-    slugs:
-      - test-feature
-    title: "Test Feature"
-    type: feature
-    description: "A test feature"
-    created: "2026-01-01T00:00:00Z"
-`,
-  );
-
-  writeFileSync(
-    path.join(tempDir, "project.tasks.yaml"),
-    `tasks:
+const REVIEW_FIXTURES_TASK = `tasks:
   - _ulid: "${TASK_ULID}"
     slugs:
       - task-test
@@ -88,12 +48,10 @@ tasks_file: project.tasks.yaml
     spec_ref: "@test-feature"
     review_ref: "@review-open"
     created_at: "2026-01-01T00:00:00Z"
-`,
-  );
+`;
 
-  writeFileSync(
-    path.join(tempDir, "project.reviews.yaml"),
-    `kynetic_reviews: "1.0"
+function reviewFixturesYaml(): string {
+  return `kynetic_reviews: "1.0"
 reviews:
   - _ulid: "${REVIEW_OPEN_ULID}"
     slugs:
@@ -160,23 +118,35 @@ reviews:
     related_refs: []
     created_at: "2026-01-01T00:00:00Z"
     updated_at: "2026-01-01T00:00:00Z"
-`,
-  );
-
-  execSync('git add -A && git commit -m "kspec project setup"', { cwd: tempDir, stdio: "pipe" });
+`;
 }
+
+const REVIEW_FIXTURE_MODULES = {
+  "test.yaml": `features:
+  - _ulid: "${testUlid("SPEC", 1)}"
+    slugs:
+      - test-feature
+    title: "Test Feature"
+    type: feature
+    description: "A test feature"
+    created: "2026-01-01T00:00:00Z"
+`,
+};
 
 // AC: @review-records-daemon-api ac-9
 describe("Review WebSocket Broadcasts", () => {
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-review-ws-");
     initGitRepo(tempDir);
-    setupFixtures();
+    setupInlineFixtures(tempDir, {
+      manifest: LEGACY_INLINE_MANIFEST,
+      modules: REVIEW_FIXTURE_MODULES,
+      tasksFile: REVIEW_FIXTURES_TASK,
+      reviews: reviewFixturesYaml(),
+    });
 
-    pubsub = new PubSubManager();
-    broadcastSpy = vi.spyOn(pubsub, "broadcast");
-    const { middleware } = projectContextMiddleware();
-    app = new Elysia().use(middleware).use(createReviewsRoutes({ pubsub }));
+    ({ app, pubsub } = createTestApp());
+    broadcastSpy = captureBroadcasts(pubsub);
   });
 
   afterEach(async () => {
@@ -186,11 +156,17 @@ describe("Review WebSocket Broadcasts", () => {
 
   // AC: @review-records-daemon-api ac-9
   it("should broadcast thread_created when adding a comment thread", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/comments`, {
-      body: "Found an issue here",
-      kind: "blocker",
-      author: "reviewer@test.com",
-    });
+    const response = await requestJson(
+      app,
+      tempDir,
+      "POST",
+      `/api/reviews/${REVIEW_OPEN_ULID}/comments`,
+      {
+        body: "Found an issue here",
+        kind: "blocker",
+        author: "reviewer@test.com",
+      },
+    );
 
     expect(response.status).toBe(200);
     expect(broadcastSpy).toHaveBeenCalledOnce();
@@ -213,7 +189,9 @@ describe("Review WebSocket Broadcasts", () => {
 
   // AC: @review-records-daemon-api ac-9
   it("should broadcast thread_replied when adding a reply", async () => {
-    const response = await makeRequest(
+    const response = await requestJson(
+      app,
+      tempDir,
       "POST",
       `/api/reviews/${REVIEW_OPEN_ULID}/comments/${THREAD_ULID}/replies`,
       {
@@ -243,7 +221,9 @@ describe("Review WebSocket Broadcasts", () => {
 
   // AC: @review-records-daemon-api ac-9
   it("should broadcast thread_resolved when resolving a thread", async () => {
-    const response = await makeRequest(
+    const response = await requestJson(
+      app,
+      tempDir,
       "PATCH",
       `/api/reviews/${REVIEW_OPEN_ULID}/comments/${THREAD_ULID}/resolve`,
       {
@@ -268,18 +248,22 @@ describe("Review WebSocket Broadcasts", () => {
   // AC: @review-records-daemon-api ac-9
   it("should broadcast thread_reopened when reopening a resolved thread", async () => {
     // First resolve the thread
-    await makeRequest("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/comments/${THREAD_ULID}/resolve`, {
-      actor: "reviewer@test.com",
-    });
+    await requestJson(
+      app,
+      tempDir,
+      "PATCH",
+      `/api/reviews/${REVIEW_OPEN_ULID}/comments/${THREAD_ULID}/resolve`,
+      { actor: "reviewer@test.com" },
+    );
     broadcastSpy.mockClear();
 
     // Then reopen it
-    const response = await makeRequest(
+    const response = await requestJson(
+      app,
+      tempDir,
       "PATCH",
       `/api/reviews/${REVIEW_OPEN_ULID}/comments/${THREAD_ULID}/reopen`,
-      {
-        actor: "reviewer@test.com",
-      },
+      { actor: "reviewer@test.com" },
     );
 
     expect(response.status).toBe(200);
@@ -298,10 +282,16 @@ describe("Review WebSocket Broadcasts", () => {
 
   // AC: @review-records-daemon-api ac-9
   it("should broadcast verdict_submitted when recording a verdict", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
-      decision: "approve",
-      reviewer: "lead@test.com",
-    });
+    const response = await requestJson(
+      app,
+      tempDir,
+      "POST",
+      `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`,
+      {
+        decision: "approve",
+        reviewer: "lead@test.com",
+      },
+    );
 
     expect(response.status).toBe(200);
     expect(broadcastSpy).toHaveBeenCalledOnce();
@@ -321,12 +311,18 @@ describe("Review WebSocket Broadcasts", () => {
 
   // AC: @review-records-daemon-api ac-9
   it("should broadcast check_added when recording a check", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
-      name: "vitest",
-      status: "pass",
-      runner: "vitest",
-      evidence: "All 100 tests passed",
-    });
+    const response = await requestJson(
+      app,
+      tempDir,
+      "POST",
+      `/api/reviews/${REVIEW_OPEN_ULID}/checks`,
+      {
+        name: "vitest",
+        status: "pass",
+        runner: "vitest",
+        evidence: "All 100 tests passed",
+      },
+    );
 
     expect(response.status).toBe(200);
     expect(broadcastSpy).toHaveBeenCalledOnce();
@@ -345,10 +341,16 @@ describe("Review WebSocket Broadcasts", () => {
 
   // AC: @review-records-daemon-api ac-9
   it("should broadcast lifecycle_changed when transitioning lifecycle state", async () => {
-    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_DRAFT_ULID}/lifecycle`, {
-      target: "open",
-      actor: "reviewer@test.com",
-    });
+    const response = await requestJson(
+      app,
+      tempDir,
+      "PATCH",
+      `/api/reviews/${REVIEW_DRAFT_ULID}/lifecycle`,
+      {
+        target: "open",
+        actor: "reviewer@test.com",
+      },
+    );
 
     expect(response.status).toBe(200);
     expect(broadcastSpy).toHaveBeenCalledOnce();
@@ -367,10 +369,16 @@ describe("Review WebSocket Broadcasts", () => {
 
   // AC: @review-records-daemon-api ac-9
   it("should not broadcast when mutation fails with validation error", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
-      decision: "invalid_decision",
-      reviewer: "test@example.com",
-    });
+    const response = await requestJson(
+      app,
+      tempDir,
+      "POST",
+      `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`,
+      {
+        decision: "invalid_decision",
+        reviewer: "test@example.com",
+      },
+    );
 
     expect(response.status).toBe(400);
     expect(broadcastSpy).not.toHaveBeenCalled();
@@ -378,7 +386,7 @@ describe("Review WebSocket Broadcasts", () => {
 
   // AC: @review-records-daemon-api ac-9
   it("should not broadcast when review is not found", async () => {
-    const response = await makeRequest("POST", "/api/reviews/nonexistent/verdicts", {
+    const response = await requestJson(app, tempDir, "POST", "/api/reviews/nonexistent/verdicts", {
       decision: "approve",
       reviewer: "test@example.com",
     });
@@ -389,7 +397,7 @@ describe("Review WebSocket Broadcasts", () => {
 
   // AC: @review-records-daemon-api ac-9
   it("should include projectPath in all broadcasts", async () => {
-    await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/comments`, {
+    await requestJson(app, tempDir, "POST", `/api/reviews/${REVIEW_OPEN_ULID}/comments`, {
       body: "Test comment",
       kind: "nit",
     });
@@ -411,50 +419,17 @@ describe("Review WebSocket Event Data Shape", () => {
   let localTempDir: string;
   let localApp: Elysia;
   let localPubsub: PubSubManager;
-  let localSpy: ReturnType<typeof vi.spyOn>;
+  let localSpy: ReturnType<typeof captureBroadcasts>;
 
   beforeEach(async () => {
     localTempDir = await createTempDir("kspec-review-ws-shape-");
     initGitRepo(localTempDir);
 
-    mkdirSync(path.join(localTempDir, ".kspec"), { recursive: true });
-    mkdirSync(path.join(localTempDir, "modules"), { recursive: true });
-
-    writeFileSync(
-      path.join(localTempDir, "kynetic.yaml"),
-      `kynetic: "1.0"
-project:
-  name: Test Project
-  version: "0.1.0"
-  status: draft
-includes:
-  - modules/test.yaml
-tasks_file: project.tasks.yaml
-`,
-    );
-
-    writeFileSync(
-      path.join(localTempDir, "modules", "test.yaml"),
-      `features:
-  - _ulid: "${testUlid("SPEC", 1)}"
-    slugs:
-      - test-feature
-    title: "Test Feature"
-    type: feature
-    description: "A test feature"
-    created: "2026-01-01T00:00:00Z"
-`,
-    );
-
-    writeFileSync(
-      path.join(localTempDir, "project.tasks.yaml"),
-      `tasks: []
-`,
-    );
-
-    writeFileSync(
-      path.join(localTempDir, "project.reviews.yaml"),
-      `kynetic_reviews: "1.0"
+    setupInlineFixtures(localTempDir, {
+      manifest: LEGACY_INLINE_MANIFEST,
+      modules: REVIEW_FIXTURE_MODULES,
+      tasksFile: "tasks: []\n",
+      reviews: `kynetic_reviews: "1.0"
 reviews:
   - _ulid: "${testUlid("RVSH", 1)}"
     slugs:
@@ -475,14 +450,10 @@ reviews:
     created_at: "2026-01-01T00:00:00Z"
     updated_at: "2026-01-01T00:00:00Z"
 `,
-    );
+    });
 
-    execSync('git add -A && git commit -m "setup"', { cwd: localTempDir, stdio: "pipe" });
-
-    localPubsub = new PubSubManager();
-    localSpy = vi.spyOn(localPubsub, "broadcast");
-    const { middleware } = projectContextMiddleware();
-    localApp = new Elysia().use(middleware).use(createReviewsRoutes({ pubsub: localPubsub }));
+    ({ app: localApp, pubsub: localPubsub } = createTestApp());
+    localSpy = captureBroadcasts(localPubsub);
   });
 
   afterEach(async () => {
@@ -491,16 +462,12 @@ reviews:
   });
 
   it("should broadcast thread_created with ReviewThreadCreatedEventData shape", async () => {
-    const response = await localApp.handle(
-      new Request("http://localhost/api/reviews/review-shape-test/comments", {
-        method: "POST",
-        headers: {
-          Host: "localhost",
-          "X-Kspec-Dir": localTempDir,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ body: "Test", kind: "nit", author: "tester" }),
-      }),
+    const response = await requestJson(
+      localApp,
+      localTempDir,
+      "POST",
+      "/api/reviews/review-shape-test/comments",
+      { body: "Test", kind: "nit", author: "tester" },
     );
 
     expect(response.status).toBe(200);
@@ -519,16 +486,12 @@ reviews:
   });
 
   it("should broadcast check_added with ReviewCheckAddedEventData shape", async () => {
-    const response = await localApp.handle(
-      new Request(`http://localhost/api/reviews/review-shape-test/checks`, {
-        method: "POST",
-        headers: {
-          Host: "localhost",
-          "X-Kspec-Dir": localTempDir,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: "vitest", status: "pass", runner: "vitest" }),
-      }),
+    const response = await requestJson(
+      localApp,
+      localTempDir,
+      "POST",
+      `/api/reviews/review-shape-test/checks`,
+      { name: "vitest", status: "pass", runner: "vitest" },
     );
 
     expect(response.status).toBe(200);
