@@ -38723,7 +38723,7 @@ runs:
     started_at: 2026-05-08T01:21:35.175Z
     completed_at: 2026-05-08T01:23:31.763Z
   - _ulid: 01KR2KS2VA26BPDTYGX3A59PS7
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -38764,10 +38764,13 @@ runs:
         started_at: 2026-05-08T01:39:44.268Z
         completed_at: 2026-05-08T01:39:47.642Z
         notes: "Discussion skipped: no untracked proposals to present for approval."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-08T01:39:47.642Z
-        completed_at: 2026-05-08T01:39:47.642Z
+        completed_at: 2026-05-08T01:39:50.740Z
+        notes: "Capture skipped: no new high-confidence untracked items after search; no inbox, task, or
+          observation created."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T01:38:34.474Z
+    completed_at: 2026-05-08T01:39:50.740Z
