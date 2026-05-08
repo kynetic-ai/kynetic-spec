@@ -183625,6 +183625,18 @@ reviews:
         runner: npm
         created_at: 2026-05-08T01:09:59.823Z
         completed_at: 2026-05-08T01:09:59.823Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/daemon-api/websocket-protocol.test.ts: 15 passed;
+          tests/daemon-build.test.ts: 2 passed; tests/cli-serve.test.ts tests/cli-no-daemon.test.ts:
+          47 passed"
+        name: focused migrated tests
+        required: true
+        runner: npm
+        created_at: 2026-05-08T01:10:09.643Z
+        completed_at: 2026-05-08T01:10:09.643Z
     events:
       - _ulid: 01KR2HDYHKHZ4G1T49296609HM
         actor: Jacob Chapel
@@ -183646,6 +183658,13 @@ reviews:
           status: pass
           name: build:daemon
         timestamp: 2026-05-08T01:10:01.068Z
+      - _ulid: 01KR2J5388T3B9AAQ2W8WS11W7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused migrated tests
+        timestamp: 2026-05-08T01:10:10.952Z
     examined_commit: 1d4b63a3593e90e4cb5d47f32591973305344713
     external_links: []
     lifecycle_state: open
@@ -183658,5 +183677,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T00:57:32.467Z
-    updated_at: 2026-05-08T01:09:59.823Z
+    updated_at: 2026-05-08T01:10:09.643Z
     notes: []
