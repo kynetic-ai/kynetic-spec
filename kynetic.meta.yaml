@@ -17605,8 +17605,12 @@ observations:
       test files to probe edge-case classifier behavior. A reusable review probe helper or
       documented recipe would make these checks faster and more repeatable.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: "Resolved during reflection cleanup: duplicate of existing observations
+      @01KR2VYF/@01KR310Q for synthetic oxlint review probes and @01KR2YBHWS for review
+      evidence/probe helper friction."
+    resolved: true
+    resolved_at: 2026-05-08T19:36:49.313Z
+    resolved_by: Jacob Chapel
     created_at: 2026-05-08T19:35:28.404Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
