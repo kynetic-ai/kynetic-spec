@@ -38,7 +38,7 @@ description: |
 spec_ref: "@daemon-test-startup-failure-hygiene"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -48,6 +48,7 @@ tags:
   - daemon
   - mock
 vcs_refs: []
+session_id: 01KR44CR9EZZ5WBENZRVKRKTAN
 history:
   - author: Jacob Chapel
     changes:
@@ -56,6 +57,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-08T13:26:41.291Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KR44CR9EZZ5WBENZRVKRKTAN
+        previous: null
+      started_at:
+        new: 2026-05-08T15:53:35.293Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-08T15:53:35.294Z
 created_at: 2026-05-08T13:25:38.479Z
+started_at: 2026-05-08T15:53:35.293Z
 todos: []
 automation: eligible
