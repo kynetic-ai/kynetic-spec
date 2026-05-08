@@ -184956,6 +184956,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-08T04:41:13.281Z
+      - _ulid: 01KR2ZRTTKKB5HJES3CK6YCK1F
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR2XPCGSEBGWKGEVCYMVCMDK
+        timestamp: 2026-05-08T05:08:09.171Z
+      - _ulid: 01KR2ZRY0F46QST2S4F87P129D
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR2XPCGSEBGWKGEVCYMVCMDK
+        timestamp: 2026-05-08T05:08:12.431Z
+      - _ulid: 01KR2ZS11FGANK01XS8633SW1A
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR2XPG0N5RGPPR1FWSF1MW1F
+        timestamp: 2026-05-08T05:08:15.535Z
+      - _ulid: 01KR2ZS449JA4Z9PXTFG2EYXF8
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR2XPG0N5RGPPR1FWSF1MW1F
+        timestamp: 2026-05-08T05:08:18.697Z
     examined_commit: cffda7739392d5ad338da74ce52e12ff0db0a6bb
     external_links: []
     lifecycle_state: closed
@@ -184987,7 +185011,24 @@ reviews:
               unnecessary disables, which violates the guardrail intent to flag only tests
               constructing daemon URLs from localhost plus a raw port."
             created_at: 2026-05-08T04:31:51.833Z
+          - _ulid: 01KR2ZRSJENWQ4XSGK7H08ZAPE
+            author: "@claude"
+            body: Fixed in commit da1403a5e. Replaced the file-global localhostUrlIdentifiers Set with a
+              Map<name, Array<{scopeNode, position, isLocalhost}>>. recordBinding tags each
+              VariableDeclarator/AssignmentExpression with its enclosing scope
+              (BlockStatement/Program/Function/Arrow/StaticBlock) and source position;
+              findApplicableBinding walks scopes outward from the use site and picks the innermost
+              entry whose position precedes the use, so an inner non-localhost shadow declaration
+              short-circuits an outer localhost one. Function parameters named `url` also
+              short-circuit (treated as non-localhost). New tests in
+              tests/lint-daemon-test-guardrails.test.ts cover the reviewer's exact repro (two test()
+              blocks, separate const url declarations) plus inner-block shadowing, let reassignment
+              in both directions, closure capture of an outer localhost binding, and parameter
+              shadowing — eight cases total.
+            created_at: 2026-05-08T05:08:07.886Z
         kind: blocker
+        resolved_at: 2026-05-08T05:08:11.199Z
+        resolved_by: "@claude"
       - _ulid: 01KR2XPG0N5RGPPR1FWSF1MW1F
         anchor:
           type: code
@@ -185007,7 +185048,25 @@ reviews:
               That lets future generic helpers reintroduce direct daemon startup without a local
               documented exception, undermining the guardrail.'
             created_at: 2026-05-08T04:31:55.414Z
+          - _ulid: 01KR2ZRZWM5MP1K4NBX1K62FMK
+            author: "@claude"
+            body: "Fixed in commit da1403a5e. HELPER_PATH_PATTERNS no longer matches the whole tests/helpers/
+              tree — it now lists the approved files individually: tests/helpers/daemon.ts (shared
+              daemon fixture), tests/helpers/mock-daemon.ts (mock daemon helper),
+              tools/eslint-rules/, tests/lint-no-leaky-test-daemon.test.ts, and
+              tests/lint-daemon-test-guardrails.test.ts. New tests verify:
+              tests/helpers/rogue-helper.ts spawn(DAEMON_ENTRY) is flagged,
+              tests/helpers/rogue-helper.ts localhost fetch is flagged, and a contract-test sibling
+              at tests/helpers/daemon.test.ts that calls spawn(DAEMON_ENTRY) is also flagged (only
+              the .ts implementation is approved, not its .test.ts neighbour). The pre-existing
+              tests/helpers/daemon.test.ts and tests/helpers/mock-daemon.test.ts contract-test files
+              only call into the helper API (no direct daemon spawn or localhost:<port> URLs), so
+              the narrower allowlist does not introduce real-codebase violations — verified by the
+              existing real-codebase oxlint pass test in tests/lint-no-leaky-test-daemon.test.ts."
+            created_at: 2026-05-08T05:08:14.356Z
         kind: blocker
+        resolved_at: 2026-05-08T05:08:17.492Z
+        resolved_by: "@claude"
       - _ulid: 01KR2Y6XAP5ERYW5PQ4PDTTHXR
         entries:
           - _ulid: 01KR2Y6XAPXR7G52YF73N8ZW9P
@@ -185033,5 +185092,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T04:41:13.281Z
     created_at: 2026-05-08T04:29:25.945Z
-    updated_at: 2026-05-08T04:41:13.281Z
+    updated_at: 2026-05-08T05:08:17.492Z
     notes: []
