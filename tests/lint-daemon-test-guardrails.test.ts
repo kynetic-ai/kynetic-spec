@@ -1208,14 +1208,33 @@ describe("git subprocess with overlapping argv tokens", () => {
  *     A per-line suppression must include a `-- <reason>` text describing
  *     the behavior under test. Undocumented disables are rejected.
  *
- * The unsafe regression cases are written as failing-before-fix
- * assertions and marked with `it.fails`: today's rule treats the ancestor
- * `afterEach` with a kill pattern as proof of cleanup, so the cases here
- * pass through unflagged and the assertions throw. `it.fails` inverts the
- * pass/fail signal so the suite stays green while the rule has the gap
- * AND fails loudly the moment the dependent rule fix in
- * @task-fix-detached-cleanup-timing-analysis lands and the unsafe cases
- * begin to be reported — that is the cue to drop the `.fails` marker.
+ * The unsafe regression cases are written as failing-before-fix assertions
+ * inside `expectClassifierGap()` (the same helper used by the classifier
+ * regressions earlier in this file). The helper:
+ *
+ *   1. Calls `expectOxlintRanCleanly` to confirm oxlint exited with a
+ *      diagnostics-shaped exit code (0 or 1) and emitted no parser, helper,
+ *      or panic output. This is the precondition that bare `it.fails()`
+ *      cannot enforce — under `it.fails`, ANY thrown assertion in the body
+ *      counts as the expected failure, so an unrelated oxlint crash can
+ *      satisfy the regression by accident.
+ *
+ *   2. Runs the AC's required post-fix assertions (the rule MUST report
+ *      the unsafe cleanup-timing shape, exit non-zero, mention
+ *      no-leaky-test-daemon, and reference the safe-shape vocabulary).
+ *      Today these assertions throw because the rule still treats the
+ *      ancestor `afterEach` with a kill pattern as proof of cleanup.
+ *
+ *   3. On that throw, asserts the EXACT current gap shape (oxlint exits 0
+ *      and emits no `no-leaky-test-daemon` diagnostic). A generic
+ *      parser/helper failure does NOT match the known gap shape and
+ *      re-throws, so the regression cannot pass for reasons unrelated to
+ *      the cleanup-timing gap.
+ *
+ *   4. When @task-fix-detached-cleanup-timing-analysis lands and the
+ *      post-fix assertions begin to succeed, the helper itself throws to
+ *      force that task to remove the `expectClassifierGap()` wrapper and
+ *      let the post-fix assertions stand on their own.
  *
  * The allowed-narrow cases describe the canonical safe shape (capture pid
  * or child handle inline, register cleanup before any await/expect) so
@@ -1224,10 +1243,7 @@ describe("git subprocess with overlapping argv tokens", () => {
 describe("daemon test guardrail precision: detached cleanup timing", () => {
   // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
   describe("detached daemon flagged when cleanup is not bound before later observations", () => {
-    // Marked `it.fails`: passes today (rule does not yet flag this shape, so
-    // the assertion below throws) and will fail the moment the dependent
-    // rule fix begins reporting it — that is the cue to drop the marker.
-    it.fails("flags runKspec(\"serve start --detach\") when an afterEach closes over a let pid that is assigned only after an expect()", () => {
+    it("flags runKspec(\"serve start --detach\") when an afterEach closes over a let pid that is assigned only after an expect()", () => {
       // UNSAFE: the afterEach captures `pid`, but the test body runs
       // `expect(...)` before `pid = readPidFromFile()`. If the assertion
       // throws, `pid` is still null when the afterEach runs and the
@@ -1250,14 +1266,27 @@ describe("detached cleanup deferred until after assertion", () => {
 });
 `,
       });
-      expect(result.exitCode).not.toBe(0);
-      expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
+      expectClassifierGap(
+        result,
+        () => {
+          // Post-fix: the rule must report this detached start because
+          // pid capture (and therefore cleanup binding) does not happen
+          // until after the intervening expect().
+          expect(result.exitCode).not.toBe(0);
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
+        },
+        () => {
+          // Known gap today: the rule treats the ancestor afterEach with
+          // a process.kill pattern as proof of cleanup and silently
+          // accepts the detached start. No diagnostic emitted.
+          expect(result.exitCode).toBe(0);
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
     });
 
-    // Marked `it.fails`: passes today (rule gap) and will fail when the
-    // dependent rule fix begins reporting this shape — drop the marker then.
-    it.fails("flags runKspec(\"serve start --detach\") when an afterEach closes over a let pid that is assigned only after an awaited probe", () => {
+    it("flags runKspec(\"serve start --detach\") when an afterEach closes over a let pid that is assigned only after an awaited probe", () => {
       // UNSAFE: same shape as the assertion case but the intervening
       // operation is an `await` on a daemon observation. The await can
       // throw or hang before `pid` is captured, leaking the daemon.
@@ -1277,14 +1306,25 @@ describe("detached cleanup deferred until after await", () => {
 });
 `,
       });
-      expect(result.exitCode).not.toBe(0);
-      expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
+      expectClassifierGap(
+        result,
+        () => {
+          // Post-fix: the rule must report this detached start because
+          // the awaited probe runs before the pid binding is complete.
+          expect(result.exitCode).not.toBe(0);
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
+        },
+        () => {
+          // Known gap today: the rule accepts the ancestor afterEach as
+          // proof of cleanup despite the intervening await. No diagnostic.
+          expect(result.exitCode).toBe(0);
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
     });
 
-    // Marked `it.fails`: passes today (rule gap) and will fail when the
-    // dependent rule fix begins reporting this shape — drop the marker then.
-    it.fails("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when an afterEach closes over a let child that is assigned only after an awaited probe", () => {
+    it("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when an afterEach closes over a let child that is assigned only after an awaited probe", () => {
       // UNSAFE argv-form variant: the spawn returns a child handle, but
       // the test does not capture it until after `await waitForReady()`.
       // The afterEach closes over `child`, yet the binding is null when
@@ -1307,9 +1347,23 @@ describe("detached child handle deferred until after await", () => {
 });
 `,
       });
-      expect(result.exitCode).not.toBe(0);
-      expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
+      expectClassifierGap(
+        result,
+        () => {
+          // Post-fix: the rule must report this spawn() because the
+          // child-handle binding does not happen until after the await.
+          expect(result.exitCode).not.toBe(0);
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
+        },
+        () => {
+          // Known gap today: the rule accepts the ancestor afterEach
+          // closing over `child` as proof of cleanup, regardless of when
+          // the binding actually completes. No diagnostic emitted.
+          expect(result.exitCode).toBe(0);
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
     });
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
@@ -1444,11 +1498,7 @@ describe("file-wide disable broadens the exception", () => {
       expect(result.output).toMatch(/file.?wide|block.?wide|localized-disable/i);
     });
 
-    // Marked `it.fails`: passes today (the detached-start cleanup-timing
-    // gap means the rule does not flag this shape regardless of the
-    // disable placement) and will fail when the dependent rule fix begins
-    // reporting the underlying detached start — drop the marker then.
-    it.fails("does not silence the offending detached start when an oxlint-disable-next-line sits above an unrelated preceding statement", () => {
+    it("does not silence the offending detached start when an oxlint-disable-next-line sits above an unrelated preceding statement", () => {
       // The disable directive applies to the line immediately following
       // it (the `const noop` declaration), not the detached start two
       // lines below. The detached start must therefore still be flagged
@@ -1471,9 +1521,27 @@ describe("disable on the wrong line", () => {
 });
 `,
       });
-      expect(result.exitCode).not.toBe(0);
-      expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
+      expectClassifierGap(
+        result,
+        () => {
+          // Post-fix: the disable applies only to the next line (the
+          // `const noop` declaration). The detached start two lines down
+          // is unrelated to the directive and must still be reported by
+          // the cleanup-timing rule, so the disable misplacement cannot
+          // bypass enforcement.
+          expect(result.exitCode).not.toBe(0);
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
+        },
+        () => {
+          // Known gap today: the underlying cleanup-timing analysis does
+          // not report this shape at all (ancestor afterEach with kill
+          // pattern is treated as cleanup), so disable placement is moot
+          // and oxlint exits 0 with no diagnostic.
+          expect(result.exitCode).toBe(0);
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
     });
   });
 });
