@@ -90,7 +90,7 @@ description: >
 spec_ref: "@daemon-test-mode-boundaries"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-implement-shared-daemon-test-fixture"
@@ -106,8 +106,8 @@ review_ref: "@01KR2NEDR1B7V8W4K98Z5M5W0S"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-standardize-mock-daemon-client-fixtures/01kr22gk
-  captured_at: 2026-05-08T02:00:20.844Z
-  commit: b4bcec464100211aea031fccbb6d5dd9607b4331
+  captured_at: 2026-05-08T02:54:14.601Z
+  commit: fd4e6cb50da3ab226f50745a575f35056ae3bd51
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-standardize-mock-daemon-client-fixtures/01kr22gk
@@ -183,8 +183,35 @@ history:
         previous: 2026-05-08T01:25:09.639Z
     command: task-start
     timestamp: 2026-05-08T02:39:33.650Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-standardize-mock-daemon-client-fixtures/01kr22gk
+          captured_at: 2026-05-08T02:54:14.601Z
+          commit: fd4e6cb50da3ab226f50745a575f35056ae3bd51
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-standardize-mock-daemon-client-fixtures/01kr22gk
+        previous:
+          review_url: null
+          branch: dispatch/task/task-standardize-mock-daemon-client-fixtures/01kr22gk
+          captured_at: 2026-05-08T02:00:20.844Z
+          commit: b4bcec464100211aea031fccbb6d5dd9607b4331
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-standardize-mock-daemon-client-fixtures/01kr22gk
+      submitted_at:
+        new: 2026-05-08T02:54:14.605Z
+        previous: 2026-05-08T02:00:20.846Z
+    command: task-submit
+    timestamp: 2026-05-08T02:54:14.605Z
 created_at: 2026-05-07T20:36:50.953Z
 started_at: 2026-05-08T02:39:33.649Z
-submitted_at: 2026-05-08T02:00:20.846Z
+submitted_at: 2026-05-08T02:54:14.605Z
 todos: []
 automation: eligible
