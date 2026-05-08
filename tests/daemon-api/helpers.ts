@@ -1,11 +1,48 @@
 /**
- * Shared test helpers for daemon API integration tests.
+ * Shared test helpers for daemon API route-handler integration tests.
  *
- * These tests use Elysia's app.handle() to test API routes directly
- * without starting an HTTP server or requiring Chromium. This is the
- * vitest replacement for the Playwright-based e2e API tests.
+ * Scope (what these helpers cover):
+ *   - In-process Elysia app driven via app.handle() that registers a
+ *     curated subset of the daemon's API route handlers (see
+ *     {@link createTestApp} for the exact list). No HTTP listener is
+ *     started; tests assert request/response behavior on individual
+ *     route handlers and any in-process side effects (e.g. PubSub
+ *     broadcasts via {@link captureBroadcasts}).
+ *   - Project-context middleware with the file watcher disabled, so
+ *     tests do not leak Chokidar/inotify watchers across the suite.
+ *   - Two project-fixture builders: {@link setupFixtures} (e2e shadow
+ *     fixture set) and {@link setupInlineFixtures} (ad-hoc inline YAML).
  *
- * Pattern established in tests/daemon-api-input-validation.test.ts.
+ * Out of scope (what these helpers do NOT cover):
+ *   - Production server-level middleware: CORS, localhost-only host
+ *     enforcement, WebSocket origin checks, web UI static serving, the
+ *     inline /api/health endpoint, and the /ws WebSocket endpoint are
+ *     all wired by `createServer()` (packages/daemon/src/server.ts) and
+ *     are absent from {@link createTestApp}.
+ *   - Production routes that {@link createTestApp} does not register
+ *     (projects, refs, diff, command, automation, debug, plus the
+ *     KSPEC_TEST-only test-hooks group). Any test asserting these
+ *     routes must build its own app or use a real daemon child.
+ *   - Server lifecycle wiring: heartbeat, watcher health monitor,
+ *     dispatch-engine file change forwarding, entity-cache
+ *     load-on-register, shadow sync, session sync, and SIGTERM/SIGINT
+ *     graceful shutdown are all server-level concerns and are not
+ *     reproduced here.
+ *   - WebSocket protocol behavior (open/message/ping/pong/close,
+ *     heartbeat, reconnect). Use a real daemon child via
+ *     tests/helpers/daemon.ts (see tests/daemon-api/websocket-protocol.test.ts).
+ *
+ * Choosing a helper:
+ *   - Asserting an API route handler in the supported subset (route
+ *     handler logic, validation, response envelope, broadcast side
+ *     effects) → use {@link createTestApp}. Pattern established in
+ *     tests/daemon-api-input-validation.test.ts.
+ *   - Asserting CORS, localhost enforcement, /api/health, or any other
+ *     server-level middleware → build the production middleware in the
+ *     test (see tests/daemon-api/server.test.ts) or import the production
+ *     route under test directly (see tests/daemon-api/projects.test.ts).
+ *   - Asserting WebSocket protocol or daemon process boundary
+ *     behavior → spawn a real daemon (see tests/daemon-api/websocket-protocol.test.ts).
  */
 
 import { execSync } from "node:child_process";
@@ -280,9 +317,53 @@ export interface CreateTestAppOptions {
 }
 
 /**
- * Create an Elysia app instance with all API routes registered.
- * Uses the same route constructors as the production server but
- * without starting an HTTP listener.
+ * Build an in-process Elysia app that registers the curated subset of
+ * API route handlers used by route-handler integration tests. The app is
+ * exercised via `app.handle(Request)`; no HTTP listener is started.
+ *
+ * Registered route groups (each via the same constructor used by
+ * `createServer()` in packages/daemon/src/server.ts):
+ *   - createTasksRoutes        → /api/tasks/*
+ *   - createItemsRoutes        → /api/items/*
+ *   - createReviewsRoutes      → /api/reviews/*
+ *   - createTriageRoutes       → /api/triage/*
+ *   - createPlansRoutes        → /api/plans/*
+ *   - createSessionRoutes      → /api/sessions/*
+ *   - createValidationRoutes   → /api/validate, /api/search (prefix /api)
+ *   - createMetaRoutes         → /api/meta/*
+ *   - createInboxRoutes        → /api/inbox/*
+ *   - createAggregationRoutes  → /api/aggregation/*
+ *   - createAgentDispatchRoutes → /api/agent/*
+ *
+ * Production routes that this helper does NOT register (asserting
+ * these will return 404):
+ *   - Inline /api/health endpoint (defined inline on the production app)
+ *   - createProjectsRoutes      → /api/projects/*
+ *   - createRefsRoutes          → /api/refs/*
+ *   - createDiffRoutes          → /api/diff and related
+ *   - createCommandRoutes       → /api/command/*
+ *   - createAutomationRoutes    → /api/* automation actions
+ *   - createDebugRoutes         → /api/debug/*
+ *   - createTestHookRoutes      → /api/__test__/* (KSPEC_TEST-gated)
+ *   - WebSocket endpoint        → /ws
+ *   - Web UI static + entry routes (/, /assets/*, etc.)
+ *
+ * Production server-level wiring that this helper does NOT reproduce:
+ *   - CORS plugin and origin allow-list
+ *   - localhostOnly Host header enforcement
+ *   - Heartbeat and connection-state managers, watcher health monitor
+ *   - File watcher startup (the project-context manager's `startWatcher`
+ *     is overridden to a no-op so route-handler tests do not leak
+ *     filesystem watchers across the suite)
+ *   - Entity cache load-on-register / unregister cleanup callbacks
+ *   - Shadow sync and session sync schedulers
+ *   - Dispatch-engine file change forwarding
+ *   - SIGTERM/SIGINT graceful shutdown handlers
+ *
+ * Use this helper for tests that only need route-handler request /
+ * response behavior or in-process broadcast side effects. Tests that
+ * assert any of the omitted concerns must build their own app or use a
+ * real daemon child (see the file-level docstring for guidance).
  *
  * Includes a polyfill for Elysia's `error` context function which is
  * not available when using app.handle() (WebStandard adapter, Node.js).
