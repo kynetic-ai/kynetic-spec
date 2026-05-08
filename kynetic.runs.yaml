@@ -40924,9 +40924,24 @@ runs:
     completed_at: 2026-05-08T20:50:36.673Z
   - _ulid: 01KR4NRTPYXRBFHFVVJ8828NKG
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T20:51:52.158Z
+        completed_at: 2026-05-08T20:54:10.871Z
+        notes: "Step 1 — Identify successes/friction: Successes: (1) reproduced reviewer probe with
+          synthetic oxlint fixture before fixing — fast manual verification; (2) added behavioral
+          regressions for 5 false-positive shapes (echo / cat / grep / template prefix / nodemon
+          substring) before submitting; (3) targeted fix (positional check +
+          isRecognisedShellRuntimeToken predicate) instead of broader restructuring. Friction: cycle
+          3 was a precision regression introduced by cycle 2's exec/execSync recall extension — same
+          root pattern as observation @01KR4JYF (multi-cycle classifier extension on this task)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T20:54:10.871Z
+        completed_at: 2026-05-08T20:54:10.871Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T20:51:52.158Z
