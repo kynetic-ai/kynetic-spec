@@ -137,3 +137,65 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T16:01:07.007Z
+  - _ulid: 01KR47J9SRE7AGCE037WM763RR
+    content: >-
+      Fix cycle 3: addressed the changes_requested review (@01KR44E77GAV05113H9CHQY6R1).
+
+
+      Blocker (resolved): the `// AC: @daemon-test-guardrail-precision
+      ac-unrelated-subprocesses-not-reported` annotation on the "does not regress legitimate
+      non-daemon patterns" describe block claimed coverage but did not exercise the AC. The AC
+      requires a non-kspec subprocess whose argv contains words also used by daemon lifecycle
+      commands; the only subprocess case in that block is `spawnSync("bun", ["run",
+      "some-script.mjs"])`, whose argv has no overlap with `serve`, `start`, `--detach`, or other
+      daemon lifecycle words. The annotation satisfied the scanner without proving the behavior —
+      the same anti-pattern the spec calls out in the work-gates skill ("Tests that pass regardless
+      of whether the feature works").
+
+
+      Approach: rebased the branch onto origin/dev to pick up the merged sibling task
+      @task-add-guardrail-classification-regressions, which provides proper behavioral coverage for
+      the AC in its own `describe("daemon test guardrail precision") > describe("non-kspec
+      subprocesses are not reported as daemon lifecycle violations")` block (lines 1122-1183 on the
+      rebased file). That block has two failing-before-fix cases that match the AC's required shape
+      — `spawn("echo", ["serve", "start", "--detach"])` and `spawnSync("git", ["log", "serve",
+      "start", "--detach"])` — wrapped in `expectClassifierGap()` so the regression contract holds
+      against the dependent rule fix. After the rebase, the false annotation became redundant, so I
+      dropped it instead of trying to retrofit a different test for the AC; the proper coverage
+      already exists on dev and adding parallel tests here would just create merge conflicts and
+      duplicate the sibling task's contract.
+
+
+      Rebase mechanics: resolved one structural conflict in
+      tests/lint-daemon-test-guardrails.test.ts at the end-of-file describe block by accepting both
+      halves — origin/dev's `describe("daemon test guardrail precision")` block (with its
+      `expectClassifierGap` helpers and direct-entry/unrelated-subprocess regressions) and this
+      branch's `describe("daemon test guardrail precision: detached cleanup timing")` block (with
+      the cleanup-timing regressions and suppression-locality cases). Force-pushed the rebased
+      branch.
+
+
+      Verification:
+
+      - kspec validate: 0 missing-AC warnings for @daemon-test-guardrail-precision and
+      @daemon-test-harness-guardrails on this branch.
+
+      - mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts -> 18 suites, 77/77 tests pass.
+
+      - mise exec -- npm test (full): 2408 suites, 8815 passed / 5 skipped / 0 failed in 2372.8s.
+
+
+      AC coverage on @daemon-test-guardrail-precision (post-rebase) — all 5 ACs covered
+      behaviorally:
+        ac-direct-daemon-entry-invocations-flagged: lines 114 (this branch, spawn(node|bun, [DAEMON_ENTRY])) and 995 (dev, fork/execFile direct-entry classifier-gap regressions)
+        ac-detached-cleanup-before-observation: lines 1225, 1315, 1340 (this branch — three failing-before-fix it.fails cases plus two allowed-narrow cases)
+        ac-unrelated-subprocesses-not-reported: line 1122 (dev, echo/git argv-overlap classifier-gap regressions)
+        ac-local-exception-is-local: line 1366 (this branch — three suppression-contract cases)
+        ac-exception-reason-states-subject: line 1367 (this branch — same describe block, undocumented-disable case)
+
+      The nit thread (review evidence log) was informational only and was resolved without code
+      changes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T16:43:38.169Z
