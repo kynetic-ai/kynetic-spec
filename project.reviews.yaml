@@ -188207,7 +188207,19 @@ reviews:
     slugs: []
     title: Review fix guardrail daemon command classification
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Synthetic test file with execFile(DAEMON_ENTRY, ["--port", "0"]) returned exit 0 and
+          'Found 0 warnings and 0 errors', proving the guardrail misses an exec-file direct daemon
+          entrypoint launch.
+        name: custom execFile daemon-entry probe
+        required: true
+        runner: oxlint
+        created_at: 2026-05-08T18:43:12.712Z
+        completed_at: 2026-05-08T18:43:12.712Z
     events:
       - _ulid: 01KR4DPNDXJPAB7WYGNDZ6Z6DS
         actor: Jacob Chapel
@@ -188222,6 +188234,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T18:31:28.014Z
+      - _ulid: 01KR4ED9G4EZB30Y5C5KXP1EPJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: custom execFile daemon-entry probe
+        timestamp: 2026-05-08T18:43:14.052Z
     examined_commit: 2f72e91ffd2596c10f1b626fa3676a06a8daf436
     external_links: []
     lifecycle_state: open
@@ -188234,5 +188253,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T18:30:52.605Z
-    updated_at: 2026-05-08T18:31:26.659Z
+    updated_at: 2026-05-08T18:43:12.712Z
     notes: []
