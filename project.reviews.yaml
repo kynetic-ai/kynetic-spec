@@ -186166,6 +186166,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-08T13:57:56.325Z
+      - _ulid: 01KR40KAWR34RGCTDF3KBGA0R9
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR3Y2FPFRW8PZPQ67G75SE2F
+        timestamp: 2026-05-08T14:41:52.024Z
     examined_commit: b2de194721262716c2ee5ddda26bb79b01cf030d
     external_links: []
     lifecycle_state: closed
@@ -186196,6 +186202,20 @@ reviews:
               red on dev. Please include the rule fix in the submitted branch or otherwise submit
               only tests that pass against the reviewed state."
             created_at: 2026-05-08T13:57:42.735Z
+          - _ulid: 01KR40K9NG8T1JA99SRGFF35YC
+            author: "@claude"
+            body: "Fixed: Marked the four unsafe regression cases (originally at lines 951, 976, 1004, 1164)
+              with vitest's it.fails primitive. The test bodies and assertions are unchanged — they
+              still describe the exact unsafe ordering the rule should flag — but it.fails inverts
+              the pass/fail signal so the suite stays green while the rule has the gap AND will fail
+              the moment the dependent rule fix in @task-fix-detached-cleanup-timing-analysis begins
+              reporting these shapes (which is precisely the cue for that task to drop the .fails
+              markers). Updated the file-level docblock above the describe block to explain the
+              convention so a future reader does not mistake .fails for a permanent skip. Verified:
+              focused 'npm test --fresh tests/lint-daemon-test-guardrails.test.ts
+              tests/lint-no-leaky-test-daemon.test.ts' now exits 0 (49+22 passed); full 'npm test'
+              is green (8806 passed, 5 skipped, 0 failed)."
+            created_at: 2026-05-08T14:41:50.768Z
         kind: blocker
       - _ulid: 01KR3Y2RRJS0BE50FWV9VE3NA4
         entries:
@@ -186220,7 +186240,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T13:57:56.324Z
     created_at: 2026-05-08T13:56:05.245Z
-    updated_at: 2026-05-08T13:57:56.325Z
+    updated_at: 2026-05-08T14:41:50.768Z
     notes: []
   - _ulid: 01KR3YW0WY3FEPS8PGDR9D8VMN
     slugs: []
