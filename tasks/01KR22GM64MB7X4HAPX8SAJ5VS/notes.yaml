@@ -85,3 +85,10 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T04:41:15.158Z
+  - _ulid: 01KR2YMT16Z3JZ2HEQGN850JCK
+    content: '[AGENT-FAIL] Invocation failed: Internal error: API Error:
+      {"type":"error","error":{"details":null,"type":"api_error","message":"Internal server
+      error"},"request_id":"req_011CapVcsY15QqkSrfySBaDH"}'
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-05-08T04:48:28.710Z
