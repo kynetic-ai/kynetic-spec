@@ -116,3 +116,70 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T20:24:08.988Z
+  - _ulid: 01KR4NQH49GQQA835MT9MAHJQE
+    content: >-
+      Fix cycle 3: addressed precision blocker on exec/execSync direct-entry detection.
+
+
+      Blocker (line 588): the prior cycle's exec/execSync detector treated any shell token ending in
+      dist/daemon/index.js as a daemon launch — so exec("echo dist/daemon/index.js"), exec("cat
+      /…/dist/daemon/index.js"), and exec("grep -r dist/daemon/index.js src/") were all reported as
+      direct daemon launches even though those commands only consume the path as an argument. That
+      violated @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported.
+
+
+      Fix: tightened the detector in readDaemonEntryInvocation to require the daemon entry token in
+      an executable position. Two accepted shapes:
+
+      - Direct-executable: tokens[0] is the daemon entry (e.g. exec("dist/daemon/index.js --port
+      0")).
+
+      - Runtime form: tokens[0] is a recognised JS runtime (node / bun, bare or path-suffixed) AND
+      tokens[1] is the daemon entry (e.g. exec("node dist/daemon/index.js …"), execSync("bun
+      dist/daemon/index.js …"), exec("/usr/bin/node dist/daemon/index.js …")).
+
+
+      A new isRecognisedShellRuntimeToken helper encapsulates the runtime-token check (exact match
+      on node/bun, or path with that final segment). Substring-of-runtime tokens like nodemon and
+      bunyan are not recognised, so nodemon dist/daemon/index.js is not flagged. The runtime-form
+      report retains its bun-vs-node split: leading bun/path-ending-in-/bun routes through the
+      hardcoded-bun message; everything else uses the direct-spawn message.
+
+
+      Detached-serve preserved: exec("kspec serve start --detach") still has no daemon-entry token
+      in any position, so it goes through the existing detached-serve detector and the
+      missingCleanup message — verified by the existing regression test.
+
+
+      Behavioral tests added (5 new in tests/lint-daemon-test-guardrails.test.ts under the
+      unrelated-subprocesses-not-reported describe):
+
+      - exec("echo dist/daemon/index.js") — daemon path as argument to echo
+
+      - execSync("cat /workspace/dist/daemon/index.js") — absolute daemon path as argument to cat
+
+      - exec("grep -r dist/daemon/index.js src/") — daemon path as argument to grep
+
+      - exec(`echo ${someFlag} dist/daemon/index.js`) — template literal where daemon path is not in
+      the executable position
+
+      - execSync("nodemon dist/daemon/index.js") — substring-of-runtime token must not be confused
+      with node
+
+
+      Manual verification of the reviewer's probe: synthetic exec("echo dist/daemon/index.js") test
+      file now exits 0 with 0 diagnostics. Synthetic positive probes (node runtime / direct
+      executable / bun runtime) still emit the correct directDaemonSpawn or hardcodedBunRuntime
+      messages.
+
+
+      Verification:
+
+      - 95 targeted lint-rule tests pass (was 90 — 5 new false-positive regressions).
+
+      - Full suite green: 8836 passed, 5 skipped, 0 failed (was 8831 plus the 5 new tests).
+
+      - Project lint count unchanged at the dev baseline (13 errors, 724 warnings).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T20:51:09.577Z
