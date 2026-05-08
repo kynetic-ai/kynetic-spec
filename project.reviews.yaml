@@ -190337,3 +190337,29 @@ reviews:
     created_at: 2026-05-08T22:06:49.743Z
     updated_at: 2026-05-08T22:19:57.249Z
     notes: []
+  - _ulid: 01KR4VBBVBR9WS6PN1SN7MHTY8
+    slugs: []
+    title: Review fix guardrail daemon command classification (cycle 6)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR4VBBVA7ZQCT1NB7Q4A8XSE
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-08T22:29:22.411Z
+    examined_commit: 1459ff6696a65438ac6b64221407f751f7c4d3b8
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-08T22:29:22.411Z
+    updated_at: null
+    notes: []
