@@ -184117,7 +184117,20 @@ reviews:
     slugs: []
     title: Review standardize in-process daemon API fixtures
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/daemon-api/helpers.test.ts
+          tests/daemon-api/server.test.ts tests/daemon-api/tasks.test.ts
+          tests/daemon-review-websocket.test.ts tests/daemon-review-verdicts-api.test.ts
+          tests/daemon-api-input-validation.test.ts: 125/125 tests passed"
+        name: targeted daemon API tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T02:51:22.396Z
+        completed_at: 2026-05-08T02:51:22.396Z
     events:
       - _ulid: 01KR2QA27QK5K93H3D9KBFDSX8
         actor: Jacob Chapel
@@ -184132,6 +184145,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T02:40:50.507Z
+      - _ulid: 01KR2QYDKM912D6P4VQD2E68Z4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon API tests
+        timestamp: 2026-05-08T02:51:23.636Z
     examined_commit: 8d20791d210a11231ae0a56cf52ee117a4a5dc8d
     external_links: []
     lifecycle_state: open
@@ -184144,5 +184164,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T02:40:16.632Z
-    updated_at: 2026-05-08T02:40:49.133Z
+    updated_at: 2026-05-08T02:51:22.396Z
     notes: []
