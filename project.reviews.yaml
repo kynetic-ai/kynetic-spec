@@ -189765,6 +189765,20 @@ reviews:
         runner: kspec
         created_at: 2026-05-08T21:40:02.168Z
         completed_at: 2026-05-08T21:40:02.168Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full fresh suite passed: 2410/2410 suites, 8827/8832 tests passed, 5 skipped; duration
+          2168.0s; log /tmp/kspec-test-cache/01KR4QSFWNMCK5PWAF7BVVJ2Z4/03d240566e4762ef.log.
+          Changed tests/helpers/daemon.test.ts and prior flaky
+          tests/daemon-api/websocket-protocol.test.ts plus tests/daemon-build.test.ts passed
+          in-suite."
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-05-08T21:40:13.831Z
+        completed_at: 2026-05-08T21:40:13.831Z
     events:
       - _ulid: 01KR4QTX3S39J548B738FC81YS
         actor: Jacob Chapel
@@ -189786,6 +189800,13 @@ reviews:
           status: pass
           name: kspec validate --warnings-ok
         timestamp: 2026-05-08T21:40:03.617Z
+      - _ulid: 01KR4RHDVBBFG1W2W5EMWBXA8W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-08T21:40:15.339Z
     examined_commit: ac91faa584cbd9e594f72a9b057827721e06c4e9
     external_links: []
     lifecycle_state: open
@@ -189798,5 +189819,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T21:27:57.305Z
-    updated_at: 2026-05-08T21:40:02.168Z
+    updated_at: 2026-05-08T21:40:13.831Z
     notes: []
