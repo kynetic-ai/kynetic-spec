@@ -12,7 +12,11 @@
  *   1. Direct daemon spawn (always flagged outside helper paths)
  *      - spawn / spawnSync / execFile / execFileSync / fork targeting
  *        `dist/daemon/index.js` or the DAEMON_ENTRY identifier (either as
- *        the executable arg or inside the argv array).
+ *        the executable arg or inside the argv array). For the runtime
+ *        form (executable + argv), args[0] must be a recognised JS
+ *        runtime: `node` / `bun` (bare or path-suffixed) or the
+ *        `process.execPath` MemberExpression — anything else is treated
+ *        as an unrelated subprocess that consumes the daemon path as data.
  *      - exec / execSync shell strings whose first token is the daemon
  *        entry path (direct-executable form) or whose first token is a
  *        recognised JS runtime (`node` / `bun`, bare or path-suffixed)
@@ -451,12 +455,37 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * True when a node is the exact MemberExpression `process.execPath`
+     * (non-computed, both segments bare identifiers). `process.execPath`
+     * is the Node.js absolute path to the currently-running interpreter,
+     * so passing it as the executable argument to a child-process call
+     * launches Node — equivalent to `spawn("node", [...])`. Other shapes
+     * (computed access `process["execPath"]`, an aliased binding like
+     * `const node = process.execPath; spawn(node, ...)`, or unrelated
+     * MemberExpressions whose property name happens to be `execPath`) are
+     * NOT recognised — keeping the predicate strict avoids false positives
+     * on objects that merely share the property name.
+     */
+    function isProcessExecPathExpression(node) {
+      if (!node) return false;
+      if (node.type !== "MemberExpression") return false;
+      if (node.computed) return false;
+      if (!node.object || node.object.type !== "Identifier") return false;
+      if (node.object.name !== "process") return false;
+      if (!node.property || node.property.type !== "Identifier") return false;
+      if (node.property.name !== "execPath") return false;
+      return true;
+    }
+
+    /**
      * True when an argument node statically resolves to a recognised JS
      * runtime executable that takes a script-path argument (`node` or
-     * `bun`). Accepts the bare command (`"node"`, `"bun"`) or a path form
+     * `bun`). Accepts the bare command (`"node"`, `"bun"`), a path form
      * whose final segment is the runtime (`"/usr/bin/node"`,
-     * `"./node_modules/.bin/bun"`). Tokens that merely contain the runtime
-     * name as a substring (e.g. `"nodemon"`, `"bunyan"`) are rejected.
+     * `"./node_modules/.bin/bun"`), or the `process.execPath` MemberExpression
+     * (the absolute path to the currently-running Node interpreter).
+     * Tokens that merely contain the runtime name as a substring (e.g.
+     * `"nodemon"`, `"bunyan"`) are rejected.
      *
      * Used to gate the spawn-like runtime form: only when args[0] is a
      * recognised runtime do we treat a daemon-entry argv element as a
@@ -466,9 +495,17 @@ const noLeakyTestDaemon = {
      * reported as a daemon launch (false positive that violates
      * `@daemon-test-guardrail-precision`
      * `ac-unrelated-subprocesses-not-reported`).
+     *
+     * The `process.execPath` form is recognised because it is a definite
+     * Node runtime expression — tests that write
+     * `spawn(process.execPath, [DAEMON_ENTRY, "--port", "0"])` launch the
+     * compiled daemon entrypoint just as `spawn("node", [DAEMON_ENTRY,
+     * ...])` does, and must satisfy
+     * `ac-direct-daemon-entry-invocations-flagged`.
      */
     function isRecognisedRuntimeArg(arg) {
       if (!arg) return false;
+      if (isProcessExecPathExpression(arg)) return true;
       const literal = literalString(arg);
       if (literal !== null) {
         return isRecognisedShellRuntimeToken(literal);
@@ -569,18 +606,20 @@ const noLeakyTestDaemon = {
      *   - `spawn` / `spawnSync` / `execFile` / `execFileSync`
      *     Two daemon-entry shapes are accepted. The runtime form requires
      *     args[0] to be a recognised JS runtime (`node` / `bun`, bare or
-     *     path-suffixed) and the argv array (args[1]) to contain the
-     *     daemon entry. Restricting args[0] to a recognised runtime is
-     *     what stops false positives like `spawn("cat", [DAEMON_ENTRY])`
-     *     or `execFile("grep", [DAEMON_ENTRY, "src/"])` — those
-     *     subprocesses consume the daemon path as data, not as a script
-     *     to execute, and must not be reported as daemon launches.
-     *     The direct-executable form passes the daemon entry as the first
-     *     arg itself; argv may be omitted or an array of forwarded flags.
-     *     The direct-executable form matters because a daemon entry built
-     *     with a shebang is directly invokable, and
-     *     `execFile(DAEMON_ENTRY, [...])` / `spawn(DAEMON_ENTRY, [...])`
-     *     launches the compiled daemon the same as the runtime form.
+     *     path-suffixed, or the `process.execPath` MemberExpression for
+     *     the currently-running Node interpreter) and the argv array
+     *     (args[1]) to contain the daemon entry. Restricting args[0] to
+     *     a recognised runtime is what stops false positives like
+     *     `spawn("cat", [DAEMON_ENTRY])` or `execFile("grep",
+     *     [DAEMON_ENTRY, "src/"])` — those subprocesses consume the
+     *     daemon path as data, not as a script to execute, and must not
+     *     be reported as daemon launches. The direct-executable form
+     *     passes the daemon entry as the first arg itself; argv may be
+     *     omitted or an array of forwarded flags. The direct-executable
+     *     form matters because a daemon entry built with a shebang is
+     *     directly invokable, and `execFile(DAEMON_ENTRY, [...])` /
+     *     `spawn(DAEMON_ENTRY, [...])` launches the compiled daemon the
+     *     same as the runtime form.
      *   - `fork`
      *     First arg is the module path. The daemon entry must be that
      *     first arg directly — argv elements are forwarded, not executed.
@@ -639,10 +678,15 @@ const noLeakyTestDaemon = {
         // `bun`.
         if (!isRecognisedRuntimeArg(args[0])) return null;
         const runtimeLiteral = literalString(args[0]);
-        const pattern =
-          runtimeLiteral !== null
-            ? `${calleeName}("${runtimeLiteral}", [${DAEMON_ENTRY_IDENTIFIER}, ...])`
-            : `${calleeName}(<runtime>, [${DAEMON_ENTRY_IDENTIFIER}, ...])`;
+        let runtimeDescriptor;
+        if (runtimeLiteral !== null) {
+          runtimeDescriptor = `"${runtimeLiteral}"`;
+        } else if (isProcessExecPathExpression(args[0])) {
+          runtimeDescriptor = "process.execPath";
+        } else {
+          runtimeDescriptor = "<runtime>";
+        }
+        const pattern = `${calleeName}(${runtimeDescriptor}, [${DAEMON_ENTRY_IDENTIFIER}, ...])`;
         return { runtimeLiteral, calleeName, pattern };
       }
 

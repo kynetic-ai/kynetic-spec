@@ -1557,6 +1557,149 @@ describe("execFile path-suffixed node runtime", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
+
+    // AC: @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged
+    //
+    // Regression set covering the precision blocker from review cycle 5:
+    // `process.execPath` is the absolute path to the currently-running
+    // Node interpreter, so `spawn(process.execPath, [DAEMON_ENTRY, ...])`
+    // launches the compiled daemon entry just as `spawn("node",
+    // [DAEMON_ENTRY, ...])` does. The runtime gate must recognise this
+    // MemberExpression form so direct daemon launches via the current
+    // Node runtime are not silently accepted.
+    it("flags spawn(process.execPath, [DAEMON_ENTRY, ...]) — process.execPath is the current Node runtime", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("spawn process.execPath with daemon entry argv", () => {
+  it("spawns the current Node interpreter with the daemon entry as argv", () => {
+    const child = spawn(process.execPath, [DAEMON_ENTRY, "--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execFile(process.execPath, [\"dist/daemon/index.js\", ...]) — process.execPath with literal daemon path argv", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { execFile } from "child_process";
+
+describe("execFile process.execPath with literal daemon entry argv", () => {
+  it("execFiles the current Node interpreter with the literal daemon entry path", () => {
+    const child = execFile(process.execPath, ["dist/daemon/index.js", "--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags spawnSync(process.execPath, [DAEMON_ENTRY, ...]) — process.execPath in the synchronous spawn variant", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("spawnSync process.execPath with daemon entry argv", () => {
+  it("spawnSyncs the current Node interpreter with the daemon entry as argv", () => {
+    const result = spawnSync(process.execPath, [DAEMON_ENTRY, "--port", "0"]);
+    expect(result.status).toBe(0);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execFileSync(process.execPath, [DAEMON_ENTRY, ...]) — process.execPath in the synchronous execFile variant", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execFileSync } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("execFileSync process.execPath with daemon entry argv", () => {
+  it("execFileSyncs the current Node interpreter with the daemon entry as argv", () => {
+    execFileSync(process.execPath, [DAEMON_ENTRY, "--port", "0"]);
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+    //
+    // Negative precision regressions for the process.execPath recognition:
+    // only the exact `process.execPath` MemberExpression is recognised —
+    // unrelated objects that share the property name (`other.execPath`)
+    // and `process` accesses to other properties (`process.argv0`,
+    // `process.cwd`) must NOT be confused with a Node runtime expression.
+    // Without these guards, the recognition would over-broaden and start
+    // reporting unrelated subprocesses as daemon launches.
+    it("does not flag spawn(other.execPath, [DAEMON_ENTRY]) — only process.execPath is recognised, not arbitrary .execPath properties", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawn } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+const customRuntime = { execPath: "/custom/runtime" };
+
+describe("spawn other-object.execPath with daemon entry argv", () => {
+  it("spawns a custom-object .execPath with the daemon path as argv", () => {
+    const child = spawn(customRuntime.execPath, [DAEMON_ENTRY]);
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag spawn(process.argv0, [DAEMON_ENTRY]) — only process.execPath is recognised, not other process properties", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawn } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("spawn process.argv0 with daemon entry argv", () => {
+  it("spawns process.argv0 with the daemon path as argv", () => {
+    const child = spawn(process.argv0, [DAEMON_ENTRY]);
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
   });
 
   // Regression: exec/execSync of `kspec serve start --detach` must remain
