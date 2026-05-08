@@ -17234,6 +17234,31 @@ observations:
     resolved: false
     workflow_ref: "@01KR2J8Z"
     created_at: 2026-05-08T01:14:31.497Z
+  - _ulid: 01KR2Q5475RRXA4WQ1QCKDQP60
+    type: friction
+    content: 'The daemon manifest validator accepts kynetic 1.0 with tasks_file: project.tasks.yaml at
+      load time, but /api/tasks routes throw "monolithic task storage format has been removed" only
+      at runtime. Test authors writing in-process daemon API fixtures discover this incompatibility
+      by hitting a 500. Adding a manifest-load-time warning when 1.0 + tasks_file is detected, or
+      rejecting it outright with an upgrade hint, would prevent re-discovery on every new test that
+      touches task routes. Surfaced while writing tests/daemon-api/helpers.ts — captured the
+      constraint in a LEGACY_INLINE_MANIFEST docstring but a code-level signal would be stronger.'
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T02:37:34.821Z
+  - _ulid: 01KR2Q54FNSXZQKBA7BY7MWQM0
+    type: success
+    content: "For helper-extraction tasks, write one representative consumer test first (the most
+      complex one, e.g. the cache-consistency verdicts test), drive helper API design from it, then
+      mechanically migrate siblings. Prevents the helper-grows-to-fit-one-test antipattern where the
+      second consumer reveals an awkward API. Validated in tests/daemon-api/helpers.ts
+      standardization: verdicts test was hardest, drove getEntityCache option + setupInlineFixtures
+      shape, then websocket and input-validation migrations took minutes each."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T02:37:35.093Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
