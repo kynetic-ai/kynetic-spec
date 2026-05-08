@@ -9,20 +9,29 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { execSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
-import * as path from "node:path";
-import { Elysia } from "elysia";
-import { createTempDir, cleanupTempDir, initGitRepo, testUlid, seedSplitTask } from "./helpers/cli";
-import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
-import { createReviewsRoutes } from "../dist/daemon/routes/reviews.js";
-import { createTasksRoutes } from "../dist/daemon/routes/tasks.js";
-import { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
-import type { RouteEntityCache, EntityCacheAccessor } from "../dist/daemon/routes/entity-cache-types.js";
-import { initContext, resolveTaskDataManager, type LoadedTask, type TaskSummary } from "../dist/parser/index.js";
-// Register split backend in the dist module space (routes use dist, not src)
-import { ensureSplitBackendRegistered } from "../dist/parser/split-backend.js";
-ensureSplitBackendRegistered();
+import type { Elysia } from "elysia";
+import {
+  cleanupTempDir,
+  createTempDir,
+  createTestApp,
+  initGitRepo,
+  requestJson,
+  setupInlineFixtures,
+  testUlid,
+} from "./daemon-api/helpers.js";
+import type {
+  RouteEntityCache,
+  EntityCacheAccessor,
+} from "../dist/daemon/routes/entity-cache-types.js";
+import {
+  initContext,
+  resolveTaskDataManager,
+  type LoadedTask,
+  type TaskSummary,
+} from "../dist/parser/index.js";
+
+// AC: @daemon-test-mode-boundaries ac-in-process-route-tests-no-child-process
+// AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
 
 // Test ULIDs
 const REVIEW_DRAFT_ULID = testUlid("RVDR", 1);
@@ -34,33 +43,8 @@ const TASK_ULID = testUlid("TASK", 6);
 
 let tempDir: string;
 let app: Elysia;
-let pubsub: PubSubManager;
 
-function makeRequest(method: string, urlPath: string, body?: unknown) {
-  const url = `http://localhost${urlPath}`;
-  const opts: RequestInit = {
-    method,
-    headers: {
-      Host: "localhost",
-      "X-Kspec-Dir": tempDir,
-      "Content-Type": "application/json",
-    },
-  };
-  if (body) {
-    opts.body = JSON.stringify(body);
-  }
-  return app.handle(new Request(url, opts));
-}
-
-function setupFixtures() {
-  // Create .kspec/ so projectContextMiddleware accepts the directory
-  mkdirSync(path.join(tempDir, ".kspec"), { recursive: true });
-  mkdirSync(path.join(tempDir, "modules"), { recursive: true });
-
-  // Manifest
-  writeFileSync(
-    path.join(tempDir, "kynetic.yaml"),
-    `kynetic: "1.1"
+const SPLIT_MANIFEST = `kynetic: "1.1"
 task_storage:
   format: split
 project:
@@ -69,40 +53,20 @@ project:
   status: draft
 includes:
   - modules/test.yaml
-`,
-  );
+`;
 
-  // Spec item
-  writeFileSync(
-    path.join(tempDir, "modules", "test.yaml"),
-    `features:
-  - _ulid: "${testUlid("SPEC", 1)}"
+const SPEC_MODULE = (specUlid: string) => `features:
+  - _ulid: "${specUlid}"
     slugs:
       - test-feature
     title: "Test Feature"
     type: feature
     description: "A test feature"
     created: "2026-01-01T00:00:00Z"
-`,
-  );
+`;
 
-  // Tasks (split format)
-  seedSplitTask(tempDir, {
-    _ulid: TASK_ULID,
-    slugs: ["task-test"],
-    title: "Test Task",
-    description: "A test task",
-    status: "pending_review",
-    spec_ref: "@test-feature",
-    review_ref: "@review-open",
-    created_at: "2026-01-01T00:00:00Z",
-    notes: [],
-  });
-
-  // Reviews — various lifecycle states
-  writeFileSync(
-    path.join(tempDir, "project.reviews.yaml"),
-    `kynetic_reviews: "1.0"
+function reviewsFixtureYaml(): string {
+  return `kynetic_reviews: "1.0"
 reviews:
   - _ulid: "${REVIEW_DRAFT_ULID}"
     slugs:
@@ -193,21 +157,40 @@ reviews:
     related_refs: []
     created_at: "2026-01-01T00:00:00Z"
     updated_at: "2026-01-01T00:00:00Z"
-`,
-  );
+`;
+}
 
-  execSync('git add -A && git commit -m "kspec project setup"', { cwd: tempDir, stdio: "pipe" });
+function setupReviewFixtures(dir: string) {
+  setupInlineFixtures(dir, {
+    manifest: SPLIT_MANIFEST,
+    modules: { "test.yaml": SPEC_MODULE(testUlid("SPEC", 1)) },
+    splitTasks: [
+      {
+        _ulid: TASK_ULID,
+        slugs: ["task-test"],
+        title: "Test Task",
+        description: "A test task",
+        status: "pending_review",
+        spec_ref: "@test-feature",
+        review_ref: "@review-open",
+        created_at: "2026-01-01T00:00:00Z",
+        notes: [],
+      },
+    ],
+    reviews: reviewsFixtureYaml(),
+  });
+}
+
+function request(method: string, urlPath: string, body?: unknown) {
+  return requestJson(app, tempDir, method, urlPath, body);
 }
 
 describe("Review Verdicts API", () => {
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-review-verdicts-");
     initGitRepo(tempDir);
-    setupFixtures();
-
-    pubsub = new PubSubManager();
-    const { middleware } = projectContextMiddleware();
-    app = new Elysia().use(middleware).use(createReviewsRoutes({ pubsub }));
+    setupReviewFixtures(tempDir);
+    ({ app } = createTestApp());
   });
 
   afterEach(async () => {
@@ -216,7 +199,7 @@ describe("Review Verdicts API", () => {
 
   // AC: @review-records-daemon-api ac-6
   it("should record a verdict and return recomputed disposition", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
       decision: "approve",
       reviewer: "test@example.com",
     });
@@ -233,7 +216,7 @@ describe("Review Verdicts API", () => {
 
   // AC: @review-records-daemon-api ac-6
   it("should record a comment verdict without auto-closing", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
       decision: "comment",
       reviewer: "test@example.com",
     });
@@ -249,7 +232,7 @@ describe("Review Verdicts API", () => {
 
   // AC: @review-records-daemon-api ac-6
   it("should auto-close on approve verdict", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
       decision: "approve",
       reviewer: "test@example.com",
     });
@@ -261,7 +244,7 @@ describe("Review Verdicts API", () => {
 
   // AC: @review-records-daemon-api ac-6
   it("should auto-close on request_changes verdict", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
       decision: "request_changes",
       reviewer: "test@example.com",
     });
@@ -274,7 +257,7 @@ describe("Review Verdicts API", () => {
 
   // AC: @review-records-daemon-api ac-6
   it("should record verdict by slug reference", async () => {
-    const response = await makeRequest("POST", "/api/reviews/review-open/verdicts", {
+    const response = await request("POST", "/api/reviews/review-open/verdicts", {
       decision: "approve",
       reviewer: "test@example.com",
     });
@@ -287,7 +270,7 @@ describe("Review Verdicts API", () => {
   // AC: @review-records-daemon-api ac-10
   // AC: @schema-derived-type-definitions ac-1
   it("should return 400 at the API boundary for invalid decision", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
       decision: "invalid_decision",
       reviewer: "test@example.com",
     });
@@ -301,7 +284,7 @@ describe("Review Verdicts API", () => {
 
   // AC: @review-records-daemon-api ac-10
   it("should return 400 for missing reviewer", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
       decision: "approve",
       reviewer: "",
     });
@@ -314,7 +297,7 @@ describe("Review Verdicts API", () => {
 
   // AC: @review-records-daemon-api ac-10
   it("should return 404 for non-existent review", async () => {
-    const response = await makeRequest("POST", "/api/reviews/nonexistent/verdicts", {
+    const response = await request("POST", "/api/reviews/nonexistent/verdicts", {
       decision: "approve",
       reviewer: "test@example.com",
     });
@@ -327,7 +310,7 @@ describe("Review Verdicts API", () => {
 
   // AC: @review-records-daemon-api ac-10
   it("should return 400 for verdict on archived review", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_ARCHIVED_ULID}/verdicts`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_ARCHIVED_ULID}/verdicts`, {
       decision: "approve",
       reviewer: "test@example.com",
     });
@@ -341,7 +324,7 @@ describe("Review Verdicts API", () => {
 
   // AC: @review-records-daemon-api ac-10
   it("should return 400 for comment verdict on archived review", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_ARCHIVED_ULID}/verdicts`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_ARCHIVED_ULID}/verdicts`, {
       decision: "comment",
       reviewer: "test@example.com",
     });
@@ -356,11 +339,8 @@ describe("Review Checks API", () => {
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-review-checks-api-");
     initGitRepo(tempDir);
-    setupFixtures();
-
-    pubsub = new PubSubManager();
-    const { middleware } = projectContextMiddleware();
-    app = new Elysia().use(middleware).use(createReviewsRoutes({ pubsub }));
+    setupReviewFixtures(tempDir);
+    ({ app } = createTestApp());
   });
 
   afterEach(async () => {
@@ -369,7 +349,7 @@ describe("Review Checks API", () => {
 
   // AC: @review-records-daemon-api ac-7
   it("should record a passing check and return gate evaluation", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
       name: "vitest",
       status: "pass",
       runner: "vitest",
@@ -390,7 +370,7 @@ describe("Review Checks API", () => {
 
   // AC: @review-records-daemon-api ac-7
   it("should record a failing check and report failing gate state", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
       name: "lint",
       status: "fail",
       runner: "eslint",
@@ -405,7 +385,7 @@ describe("Review Checks API", () => {
 
   // AC: @review-records-daemon-api ac-7
   it("should record a non-required (informational) check", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
       name: "coverage",
       status: "pass",
       required: false,
@@ -421,7 +401,7 @@ describe("Review Checks API", () => {
 
   // AC: @review-records-daemon-api ac-7
   it("should record check by slug reference", async () => {
-    const response = await makeRequest("POST", "/api/reviews/review-open/checks", {
+    const response = await request("POST", "/api/reviews/review-open/checks", {
       name: "test-suite",
       status: "pass",
     });
@@ -434,7 +414,7 @@ describe("Review Checks API", () => {
   // AC: @review-records-daemon-api ac-7
   it("should derive applies_to_version from review subject", async () => {
     // Code review has code_compare version
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_CODE_ULID}/checks`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_CODE_ULID}/checks`, {
       name: "build",
       status: "pass",
     });
@@ -449,7 +429,7 @@ describe("Review Checks API", () => {
 
   // AC: @review-records-daemon-api ac-10
   it("should return 400 at the API boundary for invalid check status", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
       name: "test",
       status: "invalid_status",
     });
@@ -463,7 +443,7 @@ describe("Review Checks API", () => {
 
   // AC: @review-records-daemon-api ac-10
   it("should return 400 for missing name", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
       name: "",
       status: "pass",
     });
@@ -476,7 +456,7 @@ describe("Review Checks API", () => {
 
   // AC: @review-records-daemon-api ac-10
   it("should return 404 for non-existent review", async () => {
-    const response = await makeRequest("POST", "/api/reviews/nonexistent/checks", {
+    const response = await request("POST", "/api/reviews/nonexistent/checks", {
       name: "test",
       status: "pass",
     });
@@ -488,7 +468,7 @@ describe("Review Checks API", () => {
 
   // AC: @review-records-daemon-api ac-10
   it("should return 400 for check on archived review", async () => {
-    const response = await makeRequest("POST", `/api/reviews/${REVIEW_ARCHIVED_ULID}/checks`, {
+    const response = await request("POST", `/api/reviews/${REVIEW_ARCHIVED_ULID}/checks`, {
       name: "vitest",
       status: "pass",
     });
@@ -505,11 +485,8 @@ describe("Review Lifecycle API", () => {
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-review-lifecycle-api-");
     initGitRepo(tempDir);
-    setupFixtures();
-
-    pubsub = new PubSubManager();
-    const { middleware } = projectContextMiddleware();
-    app = new Elysia().use(middleware).use(createReviewsRoutes({ pubsub }));
+    setupReviewFixtures(tempDir);
+    ({ app } = createTestApp());
   });
 
   afterEach(async () => {
@@ -518,7 +495,7 @@ describe("Review Lifecycle API", () => {
 
   // AC: @review-records-daemon-api ac-8
   it("should transition draft → open", async () => {
-    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_DRAFT_ULID}/lifecycle`, {
+    const response = await request("PATCH", `/api/reviews/${REVIEW_DRAFT_ULID}/lifecycle`, {
       target: "open",
       actor: "test@example.com",
     });
@@ -532,7 +509,7 @@ describe("Review Lifecycle API", () => {
 
   // AC: @review-records-daemon-api ac-8
   it("should transition draft → closed", async () => {
-    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_DRAFT_ULID}/lifecycle`, {
+    const response = await request("PATCH", `/api/reviews/${REVIEW_DRAFT_ULID}/lifecycle`, {
       target: "closed",
       actor: "test@example.com",
     });
@@ -545,7 +522,7 @@ describe("Review Lifecycle API", () => {
 
   // AC: @review-records-daemon-api ac-8
   it("should transition open → closed", async () => {
-    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
+    const response = await request("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
       target: "closed",
       actor: "test@example.com",
     });
@@ -558,7 +535,7 @@ describe("Review Lifecycle API", () => {
 
   // AC: @review-records-daemon-api ac-8
   it("should transition closed → open (reopen)", async () => {
-    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_CLOSED_ULID}/lifecycle`, {
+    const response = await request("PATCH", `/api/reviews/${REVIEW_CLOSED_ULID}/lifecycle`, {
       target: "open",
       actor: "test@example.com",
     });
@@ -571,7 +548,7 @@ describe("Review Lifecycle API", () => {
 
   // AC: @review-records-daemon-api ac-8
   it("should transition closed → archived", async () => {
-    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_CLOSED_ULID}/lifecycle`, {
+    const response = await request("PATCH", `/api/reviews/${REVIEW_CLOSED_ULID}/lifecycle`, {
       target: "archived",
       actor: "test@example.com",
     });
@@ -584,7 +561,7 @@ describe("Review Lifecycle API", () => {
 
   // AC: @review-records-daemon-api ac-8
   it("should transition by slug reference", async () => {
-    const response = await makeRequest("PATCH", "/api/reviews/review-draft/lifecycle", {
+    const response = await request("PATCH", "/api/reviews/review-draft/lifecycle", {
       target: "open",
     });
 
@@ -595,7 +572,7 @@ describe("Review Lifecycle API", () => {
 
   // AC: @review-records-daemon-api ac-8, ac-10 - invalid transition returns 400
   it("should return 400 at the API boundary for invalid transition target open → draft", async () => {
-    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
+    const response = await request("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
       target: "draft",
     });
 
@@ -608,7 +585,7 @@ describe("Review Lifecycle API", () => {
 
   // AC: @review-records-daemon-api ac-8, ac-10 - invalid transition returns 400
   it("should return 400 for invalid transition open → archived (skip closed)", async () => {
-    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
+    const response = await request("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
       target: "archived",
     });
 
@@ -622,7 +599,7 @@ describe("Review Lifecycle API", () => {
 
   // AC: @review-records-daemon-api ac-8, ac-10
   it("should return 400 for transitions from archived (terminal state)", async () => {
-    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_ARCHIVED_ULID}/lifecycle`, {
+    const response = await request("PATCH", `/api/reviews/${REVIEW_ARCHIVED_ULID}/lifecycle`, {
       target: "open",
     });
 
@@ -636,7 +613,7 @@ describe("Review Lifecycle API", () => {
 
   // AC: @review-records-daemon-api ac-10
   it("should return 400 for missing target", async () => {
-    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
+    const response = await request("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
       actor: "test@example.com",
     });
 
@@ -648,7 +625,7 @@ describe("Review Lifecycle API", () => {
 
   // AC: @review-records-daemon-api ac-10
   it("should return 400 at the API boundary for invalid target value", async () => {
-    const response = await makeRequest("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
+    const response = await request("PATCH", `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
       target: "invalid_state",
     });
 
@@ -661,7 +638,7 @@ describe("Review Lifecycle API", () => {
 
   // AC: @review-records-daemon-api ac-10
   it("should return 404 for non-existent review", async () => {
-    const response = await makeRequest("PATCH", "/api/reviews/nonexistent/lifecycle", {
+    const response = await request("PATCH", "/api/reviews/nonexistent/lifecycle", {
       target: "open",
     });
 
@@ -681,7 +658,6 @@ describe("Review Verdict Task Consistency", () => {
 
   let tempDir: string;
   let app: Elysia;
-  let pubsub: PubSubManager;
 
   /**
    * Build a mock RouteEntityCache whose writeThrough("tasks", { ulid })
@@ -776,12 +752,9 @@ describe("Review Verdict Task Consistency", () => {
   }
 
   function setupConsistencyFixtures() {
-    mkdirSync(path.join(tempDir, ".kspec"), { recursive: true });
-    mkdirSync(path.join(tempDir, "modules"), { recursive: true });
-
-    writeFileSync(
-      path.join(tempDir, "kynetic.yaml"),
-      `kynetic: "1.1"
+    const consistSpecUlid = testUlid("CVSP", 1);
+    setupInlineFixtures(tempDir, {
+      manifest: `kynetic: "1.1"
 task_storage:
   format: split
 project:
@@ -791,12 +764,9 @@ project:
 includes:
   - modules/test.yaml
 `,
-    );
-
-    writeFileSync(
-      path.join(tempDir, "modules", "test.yaml"),
-      `features:
-  - _ulid: "${testUlid("CVSP", 1)}"
+      modules: {
+        "test.yaml": `features:
+  - _ulid: "${consistSpecUlid}"
     slugs:
       - consist-feature
     title: "Consistency Feature"
@@ -804,31 +774,27 @@ includes:
     description: "Test feature for consistency"
     created: "2026-01-01T00:00:00Z"
 `,
-    );
-
-    // Task in pending_review with review_ref pointing to the open review
-    seedSplitTask(tempDir, {
-      _ulid: CONSIST_TASK_ULID,
-      slugs: ["consist-task"],
-      title: "Consistency Test Task",
-      description: "Task for testing verdict-then-read consistency",
-      status: "pending_review",
-      priority: 2,
-      spec_ref: "@consist-feature",
-      review_ref: `@${CONSIST_REVIEW_ULID}`,
-      depends_on: [],
-      blocked_by: [],
-      tags: [],
-      notes: [],
-      todos: [],
-      created_at: "2026-01-01T00:00:00Z",
-      started_at: "2026-01-01T00:00:00Z",
-    });
-
-    // Review in open state, linked to the task
-    writeFileSync(
-      path.join(tempDir, "project.reviews.yaml"),
-      `kynetic_reviews: "1.0"
+      },
+      splitTasks: [
+        {
+          _ulid: CONSIST_TASK_ULID,
+          slugs: ["consist-task"],
+          title: "Consistency Test Task",
+          description: "Task for testing verdict-then-read consistency",
+          status: "pending_review",
+          priority: 2,
+          spec_ref: "@consist-feature",
+          review_ref: `@${CONSIST_REVIEW_ULID}`,
+          depends_on: [],
+          blocked_by: [],
+          tags: [],
+          notes: [],
+          todos: [],
+          created_at: "2026-01-01T00:00:00Z",
+          started_at: "2026-01-01T00:00:00Z",
+        },
+      ],
+      reviews: `kynetic_reviews: "1.0"
 reviews:
   - _ulid: "${CONSIST_REVIEW_ULID}"
     slugs:
@@ -849,37 +815,13 @@ reviews:
     created_at: "2026-01-01T00:00:00Z"
     updated_at: "2026-01-01T00:00:00Z"
 `,
-    );
-
-    execSync('git add -A && git commit -m "consistency test setup"', {
-      cwd: tempDir,
-      stdio: "pipe",
     });
-  }
-
-  function makeConsistencyRequest(method: string, urlPath: string, body?: unknown) {
-    const url = `http://localhost${urlPath}`;
-    const opts: RequestInit = {
-      method,
-      headers: {
-        Host: "localhost",
-        "X-Kspec-Dir": tempDir,
-        "Content-Type": "application/json",
-      },
-    };
-    if (body) {
-      opts.body = JSON.stringify(body);
-    }
-    return app.handle(new Request(url, opts));
   }
 
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-verdict-consistency-");
     initGitRepo(tempDir);
     setupConsistencyFixtures();
-
-    pubsub = new PubSubManager();
-    const { middleware } = projectContextMiddleware();
 
     // Seed the cache with the task in pending_review state
     const initialSummary: TaskSummary = {
@@ -907,10 +849,7 @@ reviews:
     const cache = createConsistencyCache([initialSummary], initialDetails);
     const getEntityCache: EntityCacheAccessor = () => cache;
 
-    app = new Elysia()
-      .use(middleware)
-      .use(createReviewsRoutes({ pubsub, getEntityCache }))
-      .use(createTasksRoutes({ pubsub, getEntityCache }));
+    ({ app } = createTestApp({ getEntityCache }));
   });
 
   afterEach(async () => {
@@ -919,7 +858,9 @@ reviews:
 
   it("should return needs_work on immediate task read after request_changes verdict", async () => {
     // Step 1: Submit request_changes verdict — this triggers task transition
-    const verdictResponse = await makeConsistencyRequest(
+    const verdictResponse = await requestJson(
+      app,
+      tempDir,
       "POST",
       `/api/reviews/${CONSIST_REVIEW_ULID}/verdicts`,
       {
@@ -933,7 +874,9 @@ reviews:
     expect(verdictBody.disposition).toBe("changes_requested");
 
     // Step 2: Immediately read the task through the cache-backed GET endpoint
-    const taskResponse = await makeConsistencyRequest(
+    const taskResponse = await requestJson(
+      app,
+      tempDir,
       "GET",
       `/api/tasks/${CONSIST_TASK_ULID}`,
     );
@@ -949,7 +892,9 @@ reviews:
   it("should return pending_review on immediate task read after approve verdict (no task transition)", async () => {
     // Approve verdict does NOT transition the task — verify the cache
     // still serves the original state correctly.
-    const verdictResponse = await makeConsistencyRequest(
+    const verdictResponse = await requestJson(
+      app,
+      tempDir,
       "POST",
       `/api/reviews/${CONSIST_REVIEW_ULID}/verdicts`,
       {
@@ -963,7 +908,9 @@ reviews:
     expect(verdictBody.disposition).toBe("approved");
 
     // Task should still be in pending_review — approve doesn't transition it
-    const taskResponse = await makeConsistencyRequest(
+    const taskResponse = await requestJson(
+      app,
+      tempDir,
       "GET",
       `/api/tasks/${CONSIST_TASK_ULID}`,
     );
