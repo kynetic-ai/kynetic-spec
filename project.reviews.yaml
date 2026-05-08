@@ -185711,6 +185711,18 @@ reviews:
         required: true
         created_at: 2026-05-08T13:15:46.825Z
         completed_at: 2026-05-08T13:15:46.825Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Reviewed 4 proposed requirements and 14 ACs. ACs are observable daemon-test behaviors, not
+          implementation instructions; prior compound suppression AC is split into
+          ac-local-exception-is-local and ac-exception-reason-states-subject; no gaps, duplicate AC
+          IDs, or compound AC blockers found.
+        name: Behavioral spec and AC quality
+        required: true
+        created_at: 2026-05-08T13:15:59.017Z
+        completed_at: 2026-05-08T13:15:59.017Z
     events:
       - _ulid: 01KR3VM9CQQY1D1ZWDAS4HYBQB
         actor: Jacob Chapel
@@ -185746,6 +185758,13 @@ reviews:
           status: pass
           name: Existing spec neighborhood
         timestamp: 2026-05-08T13:15:48.174Z
+      - _ulid: 01KR3VP3Y9CDJKX1HTYKGH6XH0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Behavioral spec and AC quality
+        timestamp: 2026-05-08T13:16:00.329Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -185758,5 +185777,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T13:15:00.376Z
-    updated_at: 2026-05-08T13:15:46.825Z
+    updated_at: 2026-05-08T13:15:59.017Z
     notes: []
