@@ -188051,3 +188051,29 @@ reviews:
     created_at: 2026-05-08T17:47:07.320Z
     updated_at: 2026-05-08T18:01:20.369Z
     notes: []
+  - _ulid: 01KR4CFS0HRYXADV15DAJRP7NC
+    slugs: []
+    title: Review detached cleanup timing regressions (cycle 5)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR4CFS0HVQR9BMJ7QVGMAF7N
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-08T18:09:38.321Z
+    examined_commit: e409d48e318367e4d1d9982664691c35ec5648bf
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR3W7Q0H2FVXHDJ51WCFAVNN"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-08T18:09:38.321Z
+    updated_at: null
+    notes: []
