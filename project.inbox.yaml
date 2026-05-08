@@ -3241,3 +3241,33 @@ inbox:
       - robustness
     added_by: "@claude"
     created_at: 2026-05-08T00:56:06.368Z
+  - _ulid: 01KR2JXBB6M8MJDKRH3K8TPTX5
+    text: Shared daemon test fixture (tests/helpers/daemon.ts) returns started.wsUrl with the /ws path
+      suffix already appended (ws://host:port/ws). Existing E2E test helpers
+      (api-watcher.spec.ts:109, api-triage.spec.ts:98) treat fixture.wsUrl as a BASE url and append
+      /ws themselves. The Playwright wrapper has to strip the suffix to keep both sides happy.
+      Decide which contract is canonical — either (a) document that started.wsUrl is the full ws
+      path and update test helpers to stop appending /ws, or (b) split started.wsUrl into wsBaseUrl
+      + wsPath so each consumer picks the shape it wants. Future consumers (mock-daemon fixtures,
+      in-process route fixtures) will hit this same friction.
+    tags:
+      - reflection
+      - testing
+      - daemon
+      - e2e
+    added_by: "@claude"
+    created_at: 2026-05-08T01:23:25.670Z
+  - _ulid: 01KR2JXBE8K2VT1EHRVDQM174A
+    text: tests/helpers/cli.ts is consumed by both vitest (CJS-transpiled) and Playwright (loads .ts as
+      native ESM because package.json type=module). The original CLI_PATH/FIXTURES_DIR used the
+      bareword __dirname which is undefined under ESM, so the Playwright fixture migration crashed
+      at module load. Fixed in tests/helpers/cli.ts with the typeof __dirname + import.meta.url
+      polyfill that tests/helpers/daemon.ts already used. Audit the rest of tests/helpers/ (and any
+      other shared test module) for the same CJS-only assumption before more Playwright fixtures
+      consume them.
+    tags:
+      - reflection
+      - testing
+      - tooling
+    added_by: "@claude"
+    created_at: 2026-05-08T01:23:25.768Z
