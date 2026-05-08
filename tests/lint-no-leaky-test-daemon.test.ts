@@ -1,28 +1,44 @@
 /**
  * Tests for the no-leaky-test-daemon oxlint rule.
  *
- * Verifies that the lint rule flags daemon-spawning patterns in test files
- * that lack cleanup registration (onTestFinished, afterEach, or try/finally),
- * while allowing properly cleaned-up daemon spawns.
+ * Covers the behavior shared with the daemon test harness guardrails:
+ *   - Detached CLI daemon starts (`runKspec("serve start --detach")`,
+ *     `execSync(...)`, etc.) without scoped cleanup are flagged. Tests
+ *     of the CLI's own --detach behavior keep the cleanup escape hatch.
+ *   - Direct daemon spawn (`spawn(_, [DAEMON_ENTRY, ...])`) is always
+ *     flagged in non-helper test paths regardless of cleanup, because
+ *     the shared fixture is the sanctioned startup path.
+ *
+ * The guardrail-specific semantics for the wider fixture contract live in
+ * tests/lint-daemon-test-guardrails.test.ts so the AC annotations for
+ * @daemon-test-harness-guardrails stay grouped there. The cases here that
+ * cover the same lint rule behavior reuse fixture strings that name a
+ * specific concrete scenario (e.g. cleanup placement, callee shape).
  */
 
 import { describe, expect, it } from "vitest";
 import { execSync } from "node:child_process";
+import * as fs from "node:fs";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import * as path from "node:path";
 import * as os from "node:os";
 
-// Coverage: lint-no-leaky-test-daemon (no spec AC exists yet) ac-3
+// AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
 function runOxlint(fileContent: string): { exitCode: number; output: string } {
   const tempDir = mkdtempSync(path.join(os.tmpdir(), "lint-test-"));
-  const testFile = path.join(tempDir, "test-file.ts");
+  // Place the synthetic test file under tests/ so the rule's path-based
+  // helper allowlist (tests/helpers/, tools/eslint-rules/, etc.) does not
+  // accidentally exempt the input — the override below only matches the
+  // tests/ glob and the file must therefore be under that root.
+  const testFile = path.join(tempDir, "tests", "synthetic-test.ts");
+  fs.mkdirSync(path.dirname(testFile), { recursive: true });
   const projectRoot = path.resolve(__dirname, "..");
   const pluginPath = path.resolve(projectRoot, "tools/eslint-rules/no-leaky-test-daemon.js");
   const config = {
     plugins: ["typescript"],
     overrides: [
       {
-        files: ["**/*.ts"],
+        files: ["tests/**/*.ts"],
         jsPlugins: [pluginPath],
         rules: {
           "no-leaky-test-daemon/no-leaky-test-daemon": "error",
@@ -52,8 +68,7 @@ function runOxlint(fileContent: string): { exitCode: number; output: string } {
 
 describe("no-leaky-test-daemon lint rule", () => {
   describe("positive cases (should flag)", () => {
-    // Coverage: lint-no-leaky-test-daemon (no spec AC exists yet) ac-2
-    // Coverage: lint-no-leaky-test-daemon (no spec AC exists yet) ac-6
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
     it("should flag runKspec with serve start --detach and no cleanup", () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
@@ -84,6 +99,7 @@ describe("test suite", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
     });
 
+    // AC: @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged
     it("should flag spawn with DAEMON_ENTRY and no cleanup", () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
@@ -116,6 +132,7 @@ describe("test suite", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
     });
 
+    // AC: @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged
     it("should flag spawn with dist/daemon/index.js string literal and no cleanup", () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
@@ -201,7 +218,8 @@ describe("test suite", () => {
   });
 
   describe("negative cases (should NOT flag)", () => {
-    // Coverage: lint-no-leaky-test-daemon (no spec AC exists yet) ac-2
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // (negative case: cleanup is registered, so the rule must not flag)
     it("should allow serve start --detach with onTestFinished cleanup", () => {
       const result = runOxlint(`
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -218,7 +236,11 @@ describe("test suite", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("should allow spawn with DAEMON_ENTRY when afterEach has cleanup", () => {
+    // AC: @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged
+    // Direct daemon spawn outside helper paths is flagged even when an
+    // afterEach hook stops the child. The new strict semantic requires
+    // tests to use the shared fixture or annotate a localized exception.
+    it("should flag spawn with DAEMON_ENTRY in a non-helper file even when afterEach stops the child", () => {
       const result = runOxlint(`
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { spawn } from "child_process";
@@ -237,10 +259,13 @@ describe("test suite", () => {
   });
 });
 `);
-      expect(result.output).not.toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("no-leaky-test-daemon");
     });
 
-    it("should allow spawn in a named helper function", () => {
+    // AC: @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged
+    // A named helper function declared in a non-helper test file does not
+    // exempt the spawn — the helper allowlist is path-based.
+    it("should flag spawn in a named helper function inside a non-helper test file", () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 import { spawn } from "child_process";
@@ -258,10 +283,11 @@ describe("test suite", () => {
   });
 });
 `);
-      expect(result.output).not.toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("no-leaky-test-daemon");
     });
 
-    it("should allow spawn in a named const arrow function", () => {
+    // AC: @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged
+    it("should flag spawn in a named const arrow function inside a non-helper test file", () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 import { spawn } from "child_process";
@@ -279,7 +305,7 @@ describe("test suite", () => {
   });
 });
 `);
-      expect(result.output).not.toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("no-leaky-test-daemon");
     });
 
     it("should allow spawn for non-daemon binaries", () => {
@@ -329,7 +355,11 @@ describe("test suite", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("should allow spawn with DAEMON_ENTRY and process.kill cleanup", () => {
+    // AC: @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged
+    // Direct daemon spawn is flagged regardless of cleanup placement —
+    // the escape hatch is the helper path allowlist or a localized
+    // oxlint-disable, not a process.kill onTestFinished registration.
+    it("should flag spawn with DAEMON_ENTRY even when paired with onTestFinished process.kill", () => {
       const result = runOxlint(`
 import { describe, it, expect, onTestFinished } from "vitest";
 import { spawn } from "child_process";
@@ -344,7 +374,7 @@ describe("test suite", () => {
   });
 });
 `);
-      expect(result.output).not.toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("no-leaky-test-daemon");
     });
 
     // Blocker (cycle 3): non-spawn callees with detach strings are not daemon spawns
@@ -417,7 +447,11 @@ describe("test suite", () => {
     });
   });
 
-  // Coverage: lint-no-leaky-test-daemon (no spec AC exists yet) ac-4
+  // AC: @daemon-test-harness-guardrails ac-helper-internals-allowed
+  // AC: @daemon-test-harness-guardrails ac-exceptions-are-localized
+  // The full tests/ tree is the ultimate validation that the helper
+  // allowlist and the localized-exception model leave no residual
+  // violations after the migration to the shared fixture.
   describe("real codebase validation", () => {
     it("should pass against the full tests/ directory with zero violations", () => {
       const projectRoot = path.resolve(__dirname, "..");

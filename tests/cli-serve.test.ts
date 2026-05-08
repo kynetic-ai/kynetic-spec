@@ -1023,6 +1023,7 @@ describe("kspec serve commands", () => {
 
     // Register a project via API
     const testProjectPath = tempDir;
+    // oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon -- exercises serve status against a CLI-started daemon: the daemon was launched by kspec serve start --detach (not the shared fixture) and is reached at the configured port, so a fixture-resolved endpoint is not available
     await fetch(`http://localhost:${port}/api/projects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -1060,6 +1061,7 @@ describe("kspec serve commands", () => {
 
     // Register a project via API
     const testProjectPath = tempDir;
+    // oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon -- exercises serve status --json against a CLI-started daemon: registration goes to the daemon launched by kspec serve start --detach, which has no fixture-resolved endpoint
     await fetch(`http://localhost:${port}/api/projects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -1289,6 +1291,7 @@ describe("kspec serve commands", () => {
       await waitForDaemonHealth(port);
 
       // Verify health endpoint responds (daemon is actually running with Elysia)
+      // oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon -- verifies the CLI-installed kspec serve start --detach actually serves /api/health on the configured port; no shared fixture endpoint is available because the daemon was launched by the installed CLI
       const healthResponse = await fetch(`http://localhost:${port}/api/health`);
       // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
       expect(healthResponse.ok, "daemon health endpoint should respond").toBe(true);
@@ -1500,6 +1503,7 @@ describe("kspec serve commands", () => {
 
     await waitForDaemonHealth(port);
 
+    // oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon -- verifies the bun-runtime CLI start path: the daemon is launched by kspec serve start --detach via spawnSync, so there is no shared fixture endpoint to reuse here
     const healthResponse = await fetch(`http://localhost:${port}/api/health`);
     expect(healthResponse.ok).toBe(true);
   });
