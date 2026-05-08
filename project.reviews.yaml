@@ -185269,3 +185269,29 @@ reviews:
     created_at: 2026-05-08T05:13:16.940Z
     updated_at: 2026-05-08T05:25:02.892Z
     notes: []
+  - _ulid: 01KR32AKXT7BAXX7MWP251KDVW
+    slugs: []
+    title: Review daemon fixture standardization validation
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR32AKXSCZ02R9VHTHPCAP25
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-08T05:52:49.081Z
+    examined_commit: 62bc34089817b52062bdf41483d0412bfd2ff84d
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR22GMEWSRD1K4K5JW3546HV"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-08T05:52:49.082Z
+    updated_at: null
+    notes: []
