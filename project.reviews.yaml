@@ -184811,7 +184811,65 @@ reviews:
     slugs: []
     title: Review task-enforce-daemon-test-fixture-usage cycle 2
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+          tests/lint-daemon-test-guardrails.test.ts: 12 suites passed, 53 tests passed. Log:
+          /tmp/kspec-test-cache/01KR2XGH9S7THPPZW54BT7M1XK/04b7624a421223c7.log"
+        name: focused lint-rule tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T04:40:56.531Z
+        completed_at: 2026-05-08T04:40:56.531Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: 2399 suites passed; 8788 tests passed, 5 skipped. Log:
+          /tmp/kspec-test-cache/01KR2XGH9S7THPPZW54BT7M1XK/a9db3942bb61895b.log"
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T04:40:59.556Z
+        completed_at: 2026-05-08T04:40:59.556Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation completed with warnings only (exit 6): schema/references OK; existing
+          reference/alignment/completeness warnings remain. No daemon-test-harness-guardrails AC
+          coverage gap found."
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-08T04:41:02.566Z
+        completed_at: 2026-05-08T04:41:02.566Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run lint exits 1 with the repository baseline count: 13 errors and 721 warnings. No
+          new no-leaky-test-daemon violations appeared."
+        name: npm run lint
+        required: false
+        runner: oxlint
+        created_at: 2026-05-08T04:41:05.579Z
+        completed_at: 2026-05-08T04:41:05.579Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: git diff --check
+          d128008209d54186b74d3e9acb779daf7e615186..cffda7739392d5ad338da74ce52e12ff0db0a6bb
+          produced no output.
+        name: diff hygiene
+        required: false
+        runner: git diff --check
+        created_at: 2026-05-08T04:41:08.878Z
+        completed_at: 2026-05-08T04:41:08.878Z
     events:
       - _ulid: 01KR2XHY1SHFVTHXTD6Y3YNJQP
         actor: Jacob Chapel
@@ -184840,9 +184898,67 @@ reviews:
           kind: blocker
           thread_ulid: 01KR2XPG0N5RGPPR1FWSF1MW1F
         timestamp: 2026-05-08T04:31:56.747Z
+      - _ulid: 01KR2Y6YJZNESFTXGWM2GVWEVP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR2Y6XAP5ERYW5PQ4PDTTHXR
+        timestamp: 2026-05-08T04:40:54.623Z
+      - _ulid: 01KR2Y71JXCCTBRVKQ32H7AEDR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused lint-rule tests
+        timestamp: 2026-05-08T04:40:57.693Z
+      - _ulid: 01KR2Y74HX5A1N6298MR50D5RJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-05-08T04:41:00.733Z
+      - _ulid: 01KR2Y77F38E6BMNHPZW4G2M3D
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-08T04:41:03.715Z
+      - _ulid: 01KR2Y7AHF11WAF84429YKA9ZN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm run lint
+        timestamp: 2026-05-08T04:41:06.864Z
+      - _ulid: 01KR2Y7DMR9JWS2JXEA5W03T84
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: diff hygiene
+        timestamp: 2026-05-08T04:41:10.040Z
+      - _ulid: 01KR2Y7GT154T4HEJ2BXMJFJJS
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-08T04:41:13.281Z
+      - _ulid: 01KR2Y7GT1NDVMFRQ8S2MWTQ6H
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-08T04:41:13.281Z
     examined_commit: cffda7739392d5ad338da74ce52e12ff0db0a6bb
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -184892,7 +185008,30 @@ reviews:
               documented exception, undermining the guardrail.'
             created_at: 2026-05-08T04:31:55.414Z
         kind: blocker
-    verdicts: []
+      - _ulid: 01KR2Y6XAP5ERYW5PQ4PDTTHXR
+        entries:
+          - _ulid: 01KR2Y6XAPXR7G52YF73N8ZW9P
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md, task/spec context, prior review
+              @01KR2V04D1W3CQ3SXCRNE3ZFE9, .oxlintrc.json,
+              tools/eslint-rules/no-leaky-test-daemon.js, tests/lint-daemon-test-guardrails.test.ts,
+              tests/lint-no-leaky-test-daemon.test.ts, tests/cli-serve.test.ts. Commands run: kspec
+              task get, kspec item get, kspec review get, rg AC annotations, kspec validate, focused
+              npm test, full npm test, npm run lint, git diff/stat/check, two synthetic oxlint
+              probes. Claims verified: prior blockers for argv detached serve, variable-bound
+              localhost URLs, and localized disables have direct tests; focused and full suites
+              pass. Categories searched: correctness, false positives, allowlist scope, test
+              quality, AC coverage, integration, lint behavior."
+            created_at: 2026-05-08T04:40:53.334Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-08T04:41:13.281Z
     created_at: 2026-05-08T04:29:25.945Z
-    updated_at: 2026-05-08T04:31:55.414Z
+    updated_at: 2026-05-08T04:41:13.281Z
     notes: []
