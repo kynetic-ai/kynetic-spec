@@ -186620,7 +186620,18 @@ reviews:
     slugs: []
     title: Review detached cleanup timing regressions (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts: 15 suites passed, 71 tests passed."
+        name: focused daemon lint tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T14:57:50.619Z
+        completed_at: 2026-05-08T14:57:50.619Z
     events:
       - _ulid: 01KR40VMZ8TH8MPC7XD60S6872
         actor: Jacob Chapel
@@ -186635,6 +186646,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T14:46:50.437Z
+      - _ulid: 01KR41GM9J35HQQP7V7F063TZG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused daemon lint tests
+        timestamp: 2026-05-08T14:57:51.922Z
     examined_commit: 4d1685d39761743ea75f17d2bdf48faae89c1203
     external_links: []
     lifecycle_state: open
@@ -186647,5 +186665,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T14:46:24.488Z
-    updated_at: 2026-05-08T14:46:49.169Z
+    updated_at: 2026-05-08T14:57:50.619Z
     notes: []
