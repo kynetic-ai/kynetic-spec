@@ -188316,6 +188316,13 @@ reviews:
           status: fail
           name: lint
         timestamp: 2026-05-08T18:43:29.005Z
+      - _ulid: 01KR4EEFBG1P11RC592BKG06RQ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR4EEE2JYCGXM5AZSCF79XW3
+        timestamp: 2026-05-08T18:43:52.816Z
     examined_commit: 2f72e91ffd2596c10f1b626fa3676a06a8daf436
     external_links: []
     lifecycle_state: open
@@ -188325,8 +188332,27 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR4EEE2JYCGXM5AZSCF79XW3
+        anchor:
+          type: code
+          commit: 2f72e91ffd2596c10f1b626fa3676a06a8daf436
+          line_end: 501
+          line_start: 500
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR4EEE2J4QXDN74A8R5XBC1K
+            author: Jacob Chapel
+            body: 'MUST-FIX: readDaemonEntryInvocation only treats execFile/execFileSync as direct daemon
+              launches when argv (args[1]) contains the daemon entry, so execFile(DAEMON_ENTRY,
+              ["--port", "0"]) is missed. Evidence: a synthetic oxlint probe for that exact shape
+              returned exit 0 with "Found 0 warnings and 0 errors." Impact:
+              @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged remains
+              false for an exec-file API that directly launches the daemon entrypoint.'
+            created_at: 2026-05-08T18:43:51.507Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T18:30:52.605Z
-    updated_at: 2026-05-08T18:43:27.726Z
+    updated_at: 2026-05-08T18:43:51.507Z
     notes: []
