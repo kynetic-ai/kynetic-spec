@@ -17612,6 +17612,24 @@ observations:
     resolved_at: 2026-05-08T19:36:49.313Z
     resolved_by: Jacob Chapel
     created_at: 2026-05-08T19:35:28.404Z
+  - _ulid: 01KR4HMS2XDEV9C05S4F9QKZNZ
+    type: friction
+    content: "Tests can claim AC coverage while asserting a weaker condition than the AC's wording,
+      especially for temporal/ordering ACs ('before X', 'while Y', 'after Z'). Concrete case:
+      @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure says
+      'fixture stops the child BEFORE returning failure'. The first-cycle test waited 200ms after
+      startMockDaemon returned null, then asserted isProcessAlive(pid)===false. That passes whether
+      the helper kills the child before OR up-to-200ms-after returning, so the bug (resolve null
+      synchronously after SIGTERM, child still alive on return) slipped through CI. The reviewer
+      caught it only via an independent process.kill(pid,0) probe with no grace window. Pattern to
+      watch for: 'await x; await sleep(N); expect(...)' — sleep before the assertion may indicate
+      the test is asserting an eventual-consistency property when the AC requires
+      synchronous-on-return. Mitigation: when AC contains 'before/while/on return', the assertion
+      should fire on the same tick as the boundary, not after a setTimeout/wait."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T19:39:45.117Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
