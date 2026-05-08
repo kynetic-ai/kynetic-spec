@@ -17284,6 +17284,30 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-08T02:56:48.672Z
+  - _ulid: 01KR2TXGP216XNQ684N2FWN0WS
+    type: success
+    content: "For fixture-contract lint rules (e.g. tools/eslint-rules/no-leaky-test-daemon.js), the
+      path-based allowlist + per-statement oxlint-disable-next-line --reason combo lets one rule
+      serve two distinct exception classes: canonical helpers and rule-fixture files get blanket
+      exemption by path (no annotations needed in growing helper code), while ad-hoc per-test
+      exceptions stay narrow and self-documenting at the offending line. Avoids the
+      cleanup-escape-hatch antipattern where a rule’s real intent (use the shared fixture) is
+      satisfied by an unrelated structural property (cleanup is registered)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T03:43:19.746Z
+  - _ulid: 01KR2TXGY4A3D6WRNQTC24S4X5
+    type: success
+    content: 'Quick verification trick for new oxlint rules: run npx oxlint --config .oxlintrc.json
+      tests/ 2>&1 | grep -E "Found .*errors" once with the rule, then git stash and rerun to capture
+      the pre-change count, then git stash pop. Identical totals prove the rule change introduced
+      zero new violations without parsing per-file diffs of the full lint output. Used on the
+      daemon-test-harness-guardrails rule extension.'
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T03:43:20.004Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
