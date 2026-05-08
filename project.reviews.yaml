@@ -189753,7 +189753,18 @@ reviews:
     slugs: []
     title: Review stabilize flaky daemon startup review tests
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Schema/references OK; warnings only: 7 reference, 39 alignment, 252 completeness warnings
+          from existing repo-wide state."
+        name: kspec validate --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-05-08T21:40:02.168Z
+        completed_at: 2026-05-08T21:40:02.168Z
     events:
       - _ulid: 01KR4QTX3S39J548B738FC81YS
         actor: Jacob Chapel
@@ -189768,6 +189779,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T21:28:20.597Z
+      - _ulid: 01KR4RH2D0K1DVJ13CK884VZX8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-05-08T21:40:03.617Z
     examined_commit: ac91faa584cbd9e594f72a9b057827721e06c4e9
     external_links: []
     lifecycle_state: open
@@ -189780,5 +189798,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T21:27:57.305Z
-    updated_at: 2026-05-08T21:28:19.207Z
+    updated_at: 2026-05-08T21:40:02.168Z
     notes: []
