@@ -40624,7 +40624,7 @@ runs:
     completed_at: 2026-05-08T19:10:58.353Z
   - _ulid: 01KR4H9J64SNEN62EJCBR716Z3
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -40656,7 +40656,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-08T19:35:00.362Z
-        completed_at: 2026-05-08T19:35:00.362Z
+        completed_at: 2026-05-08T19:35:08.840Z
+        notes: "Proposed improvement: add or document a reusable lint-rule review probe pattern for
+          no-leaky-test-daemon-style oxlint rules. It would take a synthetic source string and run
+          the project plugin config in a temp tests/ path, returning exit code/output. This would
+          reduce hand-rolled shell probes and make reviewer edge-case checks repeatable. Scope:
+          small to medium, likely test helper or docs/process task."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-08T19:35:08.840Z
+        completed_at: 2026-05-08T19:35:08.840Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T19:33:37.604Z
