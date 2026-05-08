@@ -184352,6 +184352,18 @@ reviews:
         runner: npm
         created_at: 2026-05-08T03:09:35.456Z
         completed_at: 2026-05-08T03:09:35.456Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fresh targeted suites passed: cli-daemon-proxy.test.ts 38 passed;
+          cli-daemon-endpoint-regression.test.ts 11 passed; cli-task-event-endpoint.test.ts +
+          daemon-status-endpoint.test.ts 9 passed"
+        name: migrated daemon client tests
+        required: true
+        runner: npm
+        created_at: 2026-05-08T03:09:39.064Z
+        completed_at: 2026-05-08T03:09:39.064Z
     events:
       - _ulid: 01KR2RB3M821C3JEBZ1BWGCP18
         actor: Jacob Chapel
@@ -184380,6 +184392,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-08T03:09:36.737Z
+      - _ulid: 01KR2RZWJFYZRB8Y0V5FSQQG5H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: migrated daemon client tests
+        timestamp: 2026-05-08T03:09:40.303Z
     examined_commit: fd4e6cb50da3ab226f50745a575f35056ae3bd51
     external_links: []
     lifecycle_state: open
@@ -184392,5 +184411,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T02:58:19.400Z
-    updated_at: 2026-05-08T03:09:35.456Z
+    updated_at: 2026-05-08T03:09:39.064Z
     notes: []
