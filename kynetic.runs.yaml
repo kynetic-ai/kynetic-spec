@@ -39461,7 +39461,7 @@ runs:
     started_at: 2026-05-08T05:27:04.970Z
     completed_at: 2026-05-08T05:30:10.390Z
   - _ulid: 01KR336Y76KKQ1H3AJ8R6BG857
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -39504,10 +39504,14 @@ runs:
         completed_at: 2026-05-08T06:09:57.944Z
         notes: "Skipped discussion: no untracked improvement is being proposed, so there is nothing to ask
           the user to approve."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-08T06:09:57.944Z
-        completed_at: 2026-05-08T06:09:57.944Z
+        completed_at: 2026-05-08T06:10:05.221Z
+        notes: No capture performed. Existing tracking already covers the review evidence-log friction
+          (@01KR2JD1) and detached reviewer merge-helper success; adding another observation would
+          duplicate signal.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T06:08:17.126Z
+    completed_at: 2026-05-08T06:10:05.221Z
