@@ -914,12 +914,25 @@ describe("bun script harness", () => {
  * Each assertion checks the lint exit code AND the relevant rule name (and,
  * for positive cases, a specific message fragment) so that a generic parser
  * failure cannot satisfy the test by accident.
+ *
+ * MERGE GATE NOTE — these cases use `it.fails()` so that today's rule gaps
+ * are captured as live regressions WITHOUT introducing a `npm test` failure
+ * on the branch that advances to `dev`. The plan deliberately splits
+ * regressions and the rule fix across two tasks
+ * (@task-add-guardrail-classification-regressions and
+ * @task-fix-guardrail-daemon-command-classification) so the rule cannot be
+ * silently weakened to make existing examples pass. The expected-failure
+ * markers act as the forcing function: once the rule fix lands, each
+ * assertion will succeed, the `it.fails()` modifier will itself fail, and
+ * the dependent task MUST remove the `.fails()` modifier from each `it`
+ * below to close the regression. Do not silence by deleting the test —
+ * convert `it.fails(...)` back to `it(...)`.
  */
 describe("daemon test guardrail precision", () => {
   // AC: @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged
   // AC: @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged
   describe("direct daemon entry via non-spawn child-process APIs is flagged", () => {
-    it("flags fork(\"dist/daemon/index.js\", ...) as a direct daemon entrypoint invocation", () => {
+    it.fails("flags fork(\"dist/daemon/index.js\", ...) as a direct daemon entrypoint invocation", () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -939,7 +952,7 @@ describe("fork daemon entry literal", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags fork(DAEMON_ENTRY, ...) as a direct daemon entrypoint invocation", () => {
+    it.fails("flags fork(DAEMON_ENTRY, ...) as a direct daemon entrypoint invocation", () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -961,7 +974,7 @@ describe("fork daemon entry identifier", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execFile(\"node\", [\"dist/daemon/index.js\", ...]) as a direct daemon entry invocation", () => {
+    it.fails("flags execFile(\"node\", [\"dist/daemon/index.js\", ...]) as a direct daemon entry invocation", () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -981,7 +994,7 @@ describe("execFile daemon entry literal", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execFileSync(\"node\", [DAEMON_ENTRY, ...]) as a direct daemon entry invocation", () => {
+    it.fails("flags execFileSync(\"node\", [DAEMON_ENTRY, ...]) as a direct daemon entry invocation", () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -1005,7 +1018,7 @@ describe("execFileSync daemon entry identifier", () => {
 
   // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
   describe("non-kspec subprocesses are not reported as daemon lifecycle violations", () => {
-    it("does not flag spawn(\"echo\", [\"serve\", \"start\", \"--detach\"]) — argv tokens overlap but executable is unrelated", () => {
+    it.fails("does not flag spawn(\"echo\", [\"serve\", \"start\", \"--detach\"]) — argv tokens overlap but executable is unrelated", () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -1023,7 +1036,7 @@ describe("non-kspec subprocess with overlapping argv tokens", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag spawnSync(\"git\", [\"log\", \"serve\", \"start\", \"--detach\"]) — git is not a kspec lifecycle command", () => {
+    it.fails("does not flag spawnSync(\"git\", [\"log\", \"serve\", \"start\", \"--detach\"]) — git is not a kspec lifecycle command", () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
