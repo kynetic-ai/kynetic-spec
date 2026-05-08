@@ -13169,11 +13169,11 @@ workspaces:
     canonical_branch: dispatch/task/task-add-detached-cleanup-timing-regressions/01kr3w7q
     canonical_branch_head: e409d48e318367e4d1d9982664691c35ec5648bf
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-08T18:24:13.404Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-08T18:24:14.305Z
     health:
       status: healthy
       issues: []
@@ -13187,7 +13187,7 @@ workspaces:
       target_branch: dev
       target_commit: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
       updated_at: 2026-05-08T18:24:13.404Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR3W7Q0H2FVXHDJ51WCFAVNN"
     task_slug: task-add-detached-cleanup-timing-regressions
@@ -13196,7 +13196,7 @@ workspaces:
       last_active_at: 2026-05-08T18:07:37.598Z
       last_reconciled_at: 2026-05-08T18:24:13.404Z
       created_at: 2026-05-08T13:40:01.072Z
-      updated_at: 2026-05-08T18:24:13.404Z
+      updated_at: 2026-05-08T18:24:14.305Z
     workspace_id: dispatch-workspace-01KR3W7Q0H2FVXHDJ51WCFAVNN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
