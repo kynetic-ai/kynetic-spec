@@ -41249,7 +41249,7 @@ runs:
     completed_at: 2026-05-08T22:05:03.587Z
   - _ulid: 01KR4TVPDK4ABMSY4QRNF1PQKA
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -41264,7 +41264,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T22:21:33.698Z
-        completed_at: 2026-05-08T22:21:33.698Z
+        completed_at: 2026-05-08T22:21:41.898Z
+        notes: "Friction: the focused verification command was run as npm test --fresh
+          tests/e2e-fixture-daemon-cleanup.test.ts, but npm treated --fresh as an npm config flag
+          and emitted warnings; the test still ran, but the evidence had to clarify that --fresh was
+          not forwarded. This is a repeatable command-shape pitfall because project conventions
+          mention npm test and --fresh, while npm requires argument forwarding syntax for script
+          args."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T22:21:41.898Z
+        completed_at: 2026-05-08T22:21:41.898Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T22:20:48.947Z
