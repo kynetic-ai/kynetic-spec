@@ -188431,7 +188431,53 @@ reviews:
     slugs: []
     title: Review task-fix-mock-daemon-cleanup-env-hygiene
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fresh full suite passed: 2409 test suites passed, 8819 tests passed, 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KR4F2YDG2BBJ7G6YZ2M262YS/d43bfea82d955677.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-05-08T19:07:58.964Z
+        completed_at: 2026-05-08T19:07:58.964Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema and references OK. Command exited 6 because validation produced existing
+          repository-wide warnings; changed files have the relevant AC annotations for
+          @daemon-test-startup-failure-hygiene and related daemon endpoint traits.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-08T19:08:02.269Z
+        completed_at: 2026-05-08T19:08:02.269Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npx oxlint tests/helpers/mock-daemon.ts tests/helpers/mock-daemon.test.ts: 0 warnings, 0
+          errors. Global npm run lint still fails on pre-existing unrelated repository lint debt."
+        name: changed-file lint
+        required: true
+        runner: oxlint
+        created_at: 2026-05-08T19:08:05.540Z
+        completed_at: 2026-05-08T19:08:05.540Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: node --import tsx probe called startMockDaemon with malformed-stdout + pid-file. It
+          returned null, then process.kill(pid, 0) succeeded immediately afterward, proving the
+          child was still alive at the return boundary.
+        name: startup cleanup return-boundary probe
+        required: true
+        runner: node
+        created_at: 2026-05-08T19:08:08.782Z
+        completed_at: 2026-05-08T19:08:08.782Z
     events:
       - _ulid: 01KR4F56WMNZBPHKR8BZ5SQCDW
         actor: Jacob Chapel
@@ -188453,9 +188499,60 @@ reviews:
           kind: blocker
           thread_ulid: 01KR4F82PSEMYZRBV151BQYDJA
         timestamp: 2026-05-08T18:57:53.394Z
+      - _ulid: 01KR4FTMVZ2AXKEX7M3D07WG2Z
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-08T19:08:00.255Z
+      - _ulid: 01KR4FTR228WRD3JHKJEBKTN94
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-08T19:08:03.522Z
+      - _ulid: 01KR4FTV8FNRB72C90X08T8X3D
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file lint
+        timestamp: 2026-05-08T19:08:06.799Z
+      - _ulid: 01KR4FTYC3SDF338ZZT065T8EH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: startup cleanup return-boundary probe
+        timestamp: 2026-05-08T19:08:09.987Z
+      - _ulid: 01KR4FV1HKKHQEXHAYXXJWP0CY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR4FV09VCPYCRA87MJD9RS1J
+        timestamp: 2026-05-08T19:08:13.235Z
+      - _ulid: 01KR4FV4NKJYACD35H83NKW02E
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-08T19:08:16.435Z
+      - _ulid: 01KR4FV4NK4JGXNHN70CRD1E65
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-08T19:08:16.435Z
     examined_commit: aa926674fe0cba6b2a10dea537674b4fb67a7fb4
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -188484,7 +188581,34 @@ reviews:
               test waits 200ms after return, so it misses this timing bug."
             created_at: 2026-05-08T18:57:51.833Z
         kind: blocker
-    verdicts: []
+      - _ulid: 01KR4FV09VCPYCRA87MJD9RS1J
+        entries:
+          - _ulid: 01KR4FV09V7MQKV4MW4KVKC0SN
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md, .agents/skills/kspec-review/SKILL.md,
+              .agents/skills/kspec-merge/SKILL.md, .agents/skills/review-gates/SKILL.md,
+              .agents/skills/work-gates/SKILL.md, tests/helpers/mock-daemon.ts,
+              tests/helpers/mock-daemon.test.ts, tests/helpers/mock-daemon.cjs,
+              tests/helpers/cli.ts, tests/helpers/daemon.ts, scripts/test.cjs, package.json.
+              Commands run: git diff/stat/name-status/log, kspec task get, kspec item get
+              @daemon-test-startup-failure-hygiene, kspec review add/open/comment/check/verdict,
+              kspec validate, rg AC annotation and helper searches, npm test -- --fresh, npm run
+              lint, npx oxlint changed files, git diff --check, node --import tsx startup probe.
+              Claims verified: full npm test passed; changed files are lint-clean; env builder
+              strips via buildTestSubprocessEnv plus local daemon strip list; cleanup-before-return
+              claim is false by direct probe. Categories searched: correctness, AC alignment,
+              return-boundary edge case, child process cleanup, env hygiene, test quality,
+              integration, lint/build config."
+            created_at: 2026-05-08T19:08:11.963Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-05-08T19:08:16.435Z
     created_at: 2026-05-08T18:56:17.813Z
-    updated_at: 2026-05-08T18:57:51.833Z
+    updated_at: 2026-05-08T19:08:16.435Z
     notes: []
