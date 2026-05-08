@@ -66,7 +66,7 @@ description: |
 spec_ref: "@daemon-backed-test-fixture-contract"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-implement-shared-daemon-test-fixture"
@@ -77,6 +77,14 @@ tags:
   - daemon
   - vitest
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-migrate-real-daemon-vitest-tests/01kr22gk
+  captured_at: 2026-05-08T00:54:28.699Z
+  commit: 1d4b63a3593e90e4cb5d47f32591973305344713
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR2FKGT5NMK9M6T17TGGK0DE
 history:
   - author: Jacob Chapel
@@ -99,7 +107,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-08T00:26:11.442Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-migrate-real-daemon-vitest-tests/01kr22gk
+          captured_at: 2026-05-08T00:54:28.699Z
+          commit: 1d4b63a3593e90e4cb5d47f32591973305344713
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-08T00:54:28.701Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-08T00:54:28.701Z
 created_at: 2026-05-07T20:36:50.341Z
 started_at: 2026-05-08T00:26:11.441Z
+submitted_at: 2026-05-08T00:54:28.701Z
 todos: []
 automation: eligible
