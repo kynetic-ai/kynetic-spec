@@ -17405,6 +17405,20 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-08T13:55:18.115Z
+  - _ulid: 01KR3ZP152B9CYGVTB6NNFGBKC
+    type: friction
+    content: "Review friction: this dispatch cycle had a test-only regression task whose submitted
+      branch intentionally left one new test failing until a dependent fix task. Review policy
+      correctly rejected the red branch, but the plan structure made that outcome predictable.
+      Consider a tracked convention or workflow support for regression-test-only tasks: either pair
+      the fix in the same mergeable branch, mark the task as expected-red and non-mergeable, or
+      route it through a dedicated validation path that cannot be approved for integration while
+      tests fail."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KR3ZMM"
+    created_at: 2026-05-08T14:25:51.778Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
