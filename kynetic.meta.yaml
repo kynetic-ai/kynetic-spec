@@ -17507,6 +17507,36 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T15:46:52.267Z
+  - _ulid: 01KR45YDCMDCHWS0C09X73D3T9
+    type: friction
+    content: "Submitted task using bare it.fails() for failing-before-fix regression tests, missing that
+      observation 01KR3ZR8 on the sister regression-first task
+      @task-add-guardrail-classification-regressions had been disproven in cycle 2 review hours
+      earlier. Default reading of the original commit 3f1ee8ce0 looked correct (it explicitly
+      endorsed it.fails() with a doc-block contract); the cycle-2 disproof and cycle-3 selective
+      replacement (commit 84c897b69 with expectClassifierGap helper) only became visible by reading
+      meta observations. Generalisable lesson: when adopting a precedent from a sister task,
+      re-check meta observations on that task at submission time, not just the originating commit —
+      review-cycle disproofs land as observations, not commit message reverts."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T16:15:17.908Z
+  - _ulid: 01KR45YDQ0PG9BABY978MQS44V
+    type: success
+    content: Refactor cycle saved one fix-cycle round trip. Caught the bare-it.fails() concern via
+      /kspec:reflect search before reviewer applied the same critique that bounced the sister task
+      to needs_work in cycle 2. The reflect skill workflow (search before propose) surfaced
+      observation 01KR431R recommending selective expected-failure; pattern was reusable verbatim
+      with the helper renamed to expectMockDaemonHygieneGap and gap-shape assertions matched to the
+      mock daemon hygiene gaps (child still alive after malformed-stdout/timeout; ambient
+      KSPEC_DAEMON_* still readable in child env). Validated selectivity locally by injecting
+      precondition + gap-shape mismatches, both of which correctly re-throw — so the reviewer
+      concern is resolved by construction before review.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T16:15:18.240Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
