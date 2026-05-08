@@ -86,3 +86,49 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T14:58:52.354Z
+  - _ulid: 01KR4459NGGVB5ZNMW533QV2WC
+    content: >-
+      Fix cycle 2: addressed the changes_requested review (@01KR40VMZ8VAC4AZBGMETV015V).
+
+
+      Blocker (resolved): kspec validate flagged @daemon-test-guardrail-precision as having two
+      uncovered ACs on this branch — ac-direct-daemon-entry-invocations-flagged and
+      ac-unrelated-subprocesses-not-reported. The reviewer offered two paths: 'add matching AC
+      annotations to the existing behavioral tests' OR 'add behavioral coverage for those two ACs'.
+      I took the annotation path because the failing-before-fix classifier-gap regressions that
+      would constitute behavioral coverage of those ACs (fork/execFile false-negatives and echo/git
+      argv-overlap false-positives) are explicitly assigned to the sibling task
+      @task-add-guardrail-classification-regressions (currently in pending_review on its own
+      branch). Adding them here would duplicate that work and guarantee a merge conflict at the same
+      end-of-file describe block.
+
+
+      Change: tests/lint-daemon-test-guardrails.test.ts now annotates two existing describe blocks
+      with the precision-spec AC tokens.
+        - Line 113 'direct daemon spawn is flagged outside the shared fixture' adds // AC: @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged. Existing tests in this block already invoke the real daemon entrypoint (DAEMON_ENTRY) directly outside the approved helper paths via spawn(node, ...) and spawn(bun, ...) and assert the rule flags those startups.
+        - Line 836 'does not regress legitimate non-daemon patterns' adds // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported. Existing tests in this block already exercise non-kspec subprocesses like spawnSync('bun', ['run', 'some-script.mjs']) and assert the rule does not flag them.
+
+      The nit thread (review evidence log) is informational only and was resolved without code
+      changes.
+
+
+      Verification:
+
+      - kspec validate: @daemon-test-guardrail-precision is no longer present under 'Missing own AC
+      coverage'.
+
+      - mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts -> 15 suites, 71/71 tests pass.
+
+      - mise exec -- npm test (full) -> 2402 suites, 8806 passed / 5 skipped / 0 failed in 1950.9s.
+
+
+      AC coverage on @daemon-test-guardrail-precision now includes all 5 ACs:
+        ac-direct-daemon-entry-invocations-flagged: line 113 describe block
+        ac-detached-cleanup-before-observation: line 932/1022/1047 describe blocks (this task)
+        ac-unrelated-subprocesses-not-reported: line 836 describe block
+        ac-local-exception-is-local: line 1072 describe block (this task)
+        ac-exception-reason-states-subject: line 1073 describe block (this task)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T15:44:06.321Z

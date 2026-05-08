@@ -186818,6 +186818,24 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-08T14:58:50.303Z
+      - _ulid: 01KR4452D2FDFTCF46ASAZWC61
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR41HNDZRWT0WGEBQEBP2SHX
+        timestamp: 2026-05-08T15:43:58.882Z
+      - _ulid: 01KR4455DS20YB0K50VY8TK08W
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR41HNDZRWT0WGEBQEBP2SHX
+        timestamp: 2026-05-08T15:44:01.978Z
+      - _ulid: 01KR4458F7V3Y7D8SFG8BCDFA0
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR41J33XJF8DVWS5W9MM1NNX
+        timestamp: 2026-05-08T15:44:05.095Z
     examined_commit: 4d1685d39761743ea75f17d2bdf48faae89c1203
     external_links: []
     lifecycle_state: closed
@@ -186850,7 +186868,43 @@ reviews:
               the existing behavioral tests or add behavioral coverage for those two ACs before
               resubmitting."
             created_at: 2026-05-08T14:58:25.855Z
+          - _ulid: 01KR44514TNXB5CPZ858HD4DTK
+            author: "@claude"
+            body: >-
+              Fixed: added matching `// AC: @daemon-test-guardrail-precision` annotations to two
+              existing behavioral describe blocks in tests/lint-daemon-test-guardrails.test.ts
+              (commit 500780baf):
+
+
+              - Line 113 'direct daemon spawn is flagged outside the shared fixture' now also
+              annotates ac-direct-daemon-entry-invocations-flagged. The block already exercises
+              spawn(node|bun, [DAEMON_ENTRY]) outside an approved helper and asserts the rule flags
+              the startup — that is exactly the AC's Given/When/Then.
+
+              - Line 836 'does not regress legitimate non-daemon patterns' now also annotates
+              ac-unrelated-subprocesses-not-reported. The block already exercises spawnSync('bun',
+              ['run', 'some-script.mjs']) and other non-daemon shapes that the rule must not flag.
+
+
+              Verification: `kspec validate` no longer reports @daemon-test-guardrail-precision
+              under 'Missing own AC coverage' — the two ACs are now covered. Focused tests (npm test
+              -- --fresh tests/lint-daemon-test-guardrails.test.ts
+              tests/lint-no-leaky-test-daemon.test.ts) pass at 71/71. Full npm test passes at 8806
+              passed / 5 skipped / 0 failed across 2402 suites (1950.9s).
+
+
+              Note on scope: I chose the 'add matching AC annotations to the existing behavioral
+              tests' path you offered rather than 'add behavioral coverage' because the
+              failing-before-fix classifier-gap regressions for fork/execFile and for the echo/git
+              argv-overlap false-positive are explicitly the scope of the sibling task
+              @task-add-guardrail-classification-regressions (which is in pending_review on its own
+              branch). Duplicating those it.fails-style regressions here would create a guaranteed
+              merge conflict and double-up the contract with
+              @task-fix-guardrail-daemon-command-classification.
+            created_at: 2026-05-08T15:43:57.594Z
         kind: blocker
+        resolved_at: 2026-05-08T15:44:00.825Z
+        resolved_by: "@claude"
       - _ulid: 01KR41J33XJF8DVWS5W9MM1NNX
         entries:
           - _ulid: 01KR41J33XH1KGDBCFKF6GHDZZ
@@ -186870,6 +186924,8 @@ reviews:
               suppressions/locality behavior, regression risk, integration/full-suite behavior."
             created_at: 2026-05-08T14:58:39.869Z
         kind: nit
+        resolved_at: 2026-05-08T15:44:03.880Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -186879,7 +186935,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T14:58:50.302Z
     created_at: 2026-05-08T14:46:24.488Z
-    updated_at: 2026-05-08T14:58:50.303Z
+    updated_at: 2026-05-08T15:44:03.880Z
     notes: []
   - _ulid: 01KR41ZE0YMRSMJQNPK7XQG3XX
     slugs: []
