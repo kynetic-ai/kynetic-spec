@@ -30,3 +30,34 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-08T13:32:33.198Z
+  - _ulid: 01KR3WSJ46MKVW2CFQ8MJWWMV0
+    content: >-
+      Tests added and verified failing-before-fix.
+
+
+      Verified test results (npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts):
+
+      - 6 new tests fail (as required by the spec — these are failing-before-fix regressions)
+
+      - 40 pre-existing tests still pass (no regression to existing coverage)
+
+      - Older tests/lint-no-leaky-test-daemon.test.ts: 22/22 pass (unaffected)
+
+
+      Failure shapes confirm the right gap was captured:
+
+      - 4 'should-flag' tests: assertion 'expected +0 not to be +0' — exit code is 0 because the
+      rule did not flag the fork/execFile call
+
+      - 2 'should-not-flag' tests: assertion 'expected 1 to be +0' — exit code is 1 because the rule
+      incorrectly flagged the unrelated subprocess
+
+
+      Reviewer note: Failing tests on this branch are INTENTIONAL per the plan
+      @plan-daemon-test-fixture-hardening. The dependent fix task
+      @task-fix-guardrail-daemon-command-classification will make them pass. The plan deliberately
+      splits regressions and rule fixes so an implementation cannot silently weaken the rule while
+      keeping existing examples passing.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T13:35:21.734Z
