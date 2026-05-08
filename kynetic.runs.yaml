@@ -40263,7 +40263,7 @@ runs:
     started_at: 2026-05-08T17:44:08.418Z
   - _ulid: 01KR4C36BHFPQDNWDEEYSD2HQM
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -40287,7 +40287,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-08T18:04:09.405Z
-        completed_at: 2026-05-08T18:04:09.405Z
+        completed_at: 2026-05-08T18:04:21.841Z
+        notes: "Coverage search completed with kspec search for: test:e2e:smoke, api-server.spec, Playwright
+          smoke, e2e smoke, workflow show, session-reflect, detached reviewer merge helper. Results:
+          stale e2e smoke script is already tracked as inbox @01KR4B38. Workflow show/run-ref
+          mismatch is already covered by pending tasks @01KKBD52 and @01KKBD55, inbox
+          @01KQ0RH7/@01KQBGKT/@01KR293G, and related observations. Detached merge-helper success is
+          already covered by @detached-reviewer-merge-helper and prior observations."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-08T18:04:21.841Z
+        completed_at: 2026-05-08T18:04:21.841Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T18:02:46.001Z
