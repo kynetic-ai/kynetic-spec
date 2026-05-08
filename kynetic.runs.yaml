@@ -41248,7 +41248,7 @@ runs:
     started_at: 2026-05-08T22:03:11.587Z
     completed_at: 2026-05-08T22:05:03.587Z
   - _ulid: 01KR4TVPDK4ABMSY4QRNF1PQKA
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -41301,7 +41301,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-08T22:22:24.200Z
-        completed_at: 2026-05-08T22:22:24.200Z
+        completed_at: 2026-05-08T22:22:44.358Z
+        notes: Captured friction observation @01KR4TYY about npm script argument forwarding for focused
+          fresh test runs. No task/spec was created because the scope is a small
+          documentation/convention improvement candidate and should be triaged with other
+          test-runner observations.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T22:20:48.947Z
+    completed_at: 2026-05-08T22:22:44.358Z
