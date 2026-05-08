@@ -17647,6 +17647,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T20:02:31.437Z
+  - _ulid: 01KR4MATBHJBY1TFGXQD99VTXX
+    type: success
+    content: 'Reviewing static classifier rules with an adversarial negative probe caught a false
+      positive that targeted positive regressions missed: exec("echo dist/daemon/index.js") proved
+      the daemon-entry detector was matching incidental shell tokens rather than launched behavior.
+      Repeat this pattern for future lint/classifier reviews: include a harmless command that
+      mentions the suspicious token and must not trigger.'
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-08T20:26:44.465Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
