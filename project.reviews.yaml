@@ -188906,7 +188906,18 @@ reviews:
     slugs: []
     title: Review task-fix-mock-daemon-cleanup-env-hygiene cycle 2
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full fresh test suite passed: 2409 suites passed; 8819 tests passed, 5 skipped; duration
+          2082.0s; log /tmp/kspec-test-cache/01KR4HQEE714WCP5KH3JVNK32B/04aae6d98a78ab7e.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-05-08T19:54:01.578Z
+        completed_at: 2026-05-08T19:54:01.578Z
     events:
       - _ulid: 01KR4HSW4E176XJFY993QC8P0F
         actor: Jacob Chapel
@@ -188928,6 +188939,13 @@ reviews:
           kind: nit
           thread_ulid: 01KR4JEJTJ2B2J26H2H6XV5G0F
         timestamp: 2026-05-08T19:53:51.969Z
+      - _ulid: 01KR4JEYR1SF84FXNQKSY55G53
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-08T19:54:02.881Z
     examined_commit: 16da0ce3d2b3e81217986e95b59d9c9051996698
     external_links: []
     lifecycle_state: open
@@ -188958,5 +188976,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-08T19:42:32.088Z
-    updated_at: 2026-05-08T19:53:50.674Z
+    updated_at: 2026-05-08T19:54:01.578Z
     notes: []
