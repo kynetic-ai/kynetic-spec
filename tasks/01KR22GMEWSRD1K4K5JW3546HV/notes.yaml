@@ -40,3 +40,57 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-08T05:47:53.897Z
+  - _ulid: 01KR322CKKP5T9MNT2EHGXN805
+    content: >-
+      Validation findings and fixes applied:
+
+
+      Two pre-existing issues surfaced when running task-prescribed test slices and were fixed in
+      this commit:
+
+
+      1. tests/daemon-api/websocket-protocol.test.ts beforeEach hookTimeout flake — the describe
+      block declares { timeout: 60_000 } but vitest's hookTimeout default (10s) does not inherit
+      that. Cold-starting the daemon (spawn child + load fixtures + cache-ready probe) plus copying
+      the e2e fixture set can exceed 10s under shared-worker contention, so the very first test's
+      beforeEach reproducibly timed out. Fix: pass 60_000 as the explicit timeout argument to both
+      the top-level beforeEach and the inner runtime-parity beforeEach to match suite-level intent.
+
+
+      2. tests/daemon-build.test.ts vs tests/daemon-api/websocket-protocol.test.ts dist/ rebuild
+      race — daemon-build.test.ts runs 'npm run build:daemon' which rewrites dist/daemon/* in place.
+      When that runs concurrently with any test that spawns dist/daemon/index.js, the spawned child
+      can hit ERR_MODULE_NOT_FOUND because module resolution lands on a half-rebuilt artifact. Fix:
+      move tests/daemon-build.test.ts into vitest.config.ts heavySerialSuites so it runs serially
+      after the default pool drains. The pattern is already used for other tests with side effects
+      on global state.
+
+
+      Test results after fixes:
+
+      - tests/helpers/daemon.test.ts + mock-daemon.test.ts: PASS (21/21)
+
+      - tests/daemon-api/websocket-protocol.test.ts + daemon-build.test.ts: PASS (17/17)
+
+      - tests/cli-daemon-proxy + endpoint-regression + task-event-endpoint + daemon-status-endpoint:
+      PASS (58/58)
+
+      - tests/daemon-api/helpers.test.ts + server.test.ts + tasks.test.ts: PASS (76/76)
+
+      - tests/lint-no-leaky-test-daemon.test.ts: PASS (22/22)
+
+      - Full Vitest suite (--fresh): PASS (8797 passed, 5 skipped, 2399 suites, 1911s)
+
+      - Playwright slice tests/e2e/api-websocket.spec.ts + tests/e2e/connection.spec.ts: 11/11 PASS
+      on second run.
+        First run flake on tests/e2e/connection.spec.ts:165 'skips duplicate events by sequence number' (got 6 refetches expected 4); reran in isolation and re-ran the slice — both green. The flake is pre-existing UI dedup test sensitivity to background cache invalidations during the 1s settle window, unrelated to fixture standardization. No code change needed here.
+
+      Full Playwright suite was not run — the representative slice is sufficient for this validation
+      pass and full e2e takes longer than the worker budget allows.
+
+
+      kspec validate --refs --warnings-ok: passes. The 6 reference warnings are pre-existing
+      deprecated spec_refs unrelated to this plan.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T05:48:19.443Z
