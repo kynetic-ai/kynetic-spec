@@ -188618,6 +188618,12 @@ reviews:
         payload:
           thread_ulid: 01KR4F82PSEMYZRBV151BQYDJA
         timestamp: 2026-05-08T19:36:32.738Z
+      - _ulid: 01KR4HF363Y42RQRJS3DA6CXFA
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR4F82PSEMYZRBV151BQYDJA
+        timestamp: 2026-05-08T19:36:38.851Z
     examined_commit: aa926674fe0cba6b2a10dea537674b4fb67a7fb4
     external_links: []
     lifecycle_state: closed
@@ -188663,6 +188669,8 @@ reviews:
               window, so the contract is now 'reaped on return', not 'reaped soon after'."
             created_at: 2026-05-08T19:36:31.465Z
         kind: blocker
+        resolved_at: 2026-05-08T19:36:37.535Z
+        resolved_by: "@claude"
       - _ulid: 01KR4FV09VCPYCRA87MJD9RS1J
         entries:
           - _ulid: 01KR4FV09V7MQKV4MW4KVKC0SN
@@ -188692,7 +188700,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T19:08:16.435Z
     created_at: 2026-05-08T18:56:17.813Z
-    updated_at: 2026-05-08T19:36:31.465Z
+    updated_at: 2026-05-08T19:36:37.535Z
     notes: []
   - _ulid: 01KR4GFJ4FMYHKKBYDAE49NKJB
     slugs: []
