@@ -184522,6 +184522,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KR2VN63Q359GE2G4GRXYZM5N
         timestamp: 2026-05-08T03:56:16.617Z
+      - _ulid: 01KR2VP38VPK9NPWPQT6SZV8SZ
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR2VN63Q359GE2G4GRXYZM5N
+        timestamp: 2026-05-08T03:56:45.211Z
     examined_commit: 80326f51ed6858dab18923307b48c372f10622be
     external_links: []
     lifecycle_state: open
@@ -184586,8 +184592,16 @@ reviews:
               diagnostics. That means intentional exceptions are not required to be locally
               documented with a narrow reason, contrary to the task and AC."
             created_at: 2026-05-08T03:56:15.351Z
+          - _ulid: 01KR2VP22M1DSSRRX3T012BK0P
+            author: Jacob Chapel
+            body: "Clarifying repro details: I verified both an oxlint-disable-next-line for
+              no-leaky-test-daemon/no-leaky-test-daemon without a double-dash reason and a file-wide
+              oxlint-disable for no-leaky-test-daemon/no-leaky-test-daemon. Each suppressed the
+              direct daemon spawn with zero diagnostics, so the guardrail currently accepts
+              undocumented and broad exceptions."
+            created_at: 2026-05-08T03:56:43.988Z
         kind: blocker
     verdicts: []
     created_at: 2026-05-08T03:44:45.473Z
-    updated_at: 2026-05-08T03:56:15.351Z
+    updated_at: 2026-05-08T03:56:43.988Z
     notes: []
