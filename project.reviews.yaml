@@ -189450,9 +189450,25 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-05-08T20:47:42.324Z
+      - _ulid: 01KR4NHG87VT6W17TC64SV8B32
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-08T20:47:52.072Z
+      - _ulid: 01KR4NHG88QB4V1F4VTJCM8067
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-08T20:47:52.072Z
     examined_commit: e0b6617b7baa8a96f4c13257621dfdc2a3c14a70
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -189460,7 +189476,14 @@ reviews:
       ref: "@01KR3W7SD99V6PMBDTR5WW1TBX"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-05-08T20:47:52.071Z
     created_at: 2026-05-08T20:35:17.859Z
-    updated_at: 2026-05-08T20:47:40.887Z
+    updated_at: 2026-05-08T20:47:52.072Z
     notes: []
