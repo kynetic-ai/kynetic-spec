@@ -185863,7 +185863,20 @@ reviews:
     slugs: []
     title: Review task-add-guardrail-classification-regressions
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts failed: tests/lint-no-leaky-test-daemon.test.ts
+          passed (22 tests); tests/lint-daemon-test-guardrails.test.ts failed with the same 6 new
+          precision tests."
+        name: focused guardrail tests
+        required: true
+        runner: npm
+        created_at: 2026-05-08T13:52:01.351Z
+        completed_at: 2026-05-08T13:52:01.351Z
     events:
       - _ulid: 01KR3X39J2PMYB9NHN5VZXH69X
         actor: Jacob Chapel
@@ -185878,6 +185891,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T13:41:00.215Z
+      - _ulid: 01KR3XR3H280XD3F97FHTTSD1E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: focused guardrail tests
+        timestamp: 2026-05-08T13:52:02.594Z
     examined_commit: 9ff274ab87aa2948893aecf7bebcc9e14827572c
     external_links: []
     lifecycle_state: open
@@ -185890,5 +185910,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T13:40:40.642Z
-    updated_at: 2026-05-08T13:40:58.945Z
+    updated_at: 2026-05-08T13:52:01.351Z
     notes: []
