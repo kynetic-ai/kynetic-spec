@@ -1,1 +1,27 @@
-notes: []
+notes:
+  - _ulid: 01KR44Q760MDDRSW6ZFQCR3AQK
+    content: >-
+      Plan: Add three failing-before-fix contract tests to tests/helpers/mock-daemon.test.ts:
+
+      1. malformed first stdout — owned child must be stopped
+      (ac-owned-child-stopped-after-startup-failure)
+
+      2. startup timeout (no stdout) — owned child must be stopped
+      (ac-owned-child-stopped-after-startup-failure)
+
+      3. ambient daemon-control + session vars — must NOT be inherited (ac-child-env-sanitized)
+
+
+      Following the precedent set by @task-add-real-daemon-startup-failure-tests (commit 976e8d35c)
+      and @task-add-guardrail-classification-regressions (commit 3f1ee8ce0): add minimal test seams
+      (__testInjectArgs, __testStartupTimeoutMs) to startMockDaemon, plus --break, --pid-file,
+      --env-record flags to mock-daemon.cjs. Mark new tests it.fails so npm test stays green on the
+      merge gate; the dependent fix task @task-fix-mock-daemon-cleanup-env-hygiene removes .fails
+      when the helper implements the missing cleanup/env behavior.
+
+
+      Existing mock-metadata-fidelity coverage (tests at lines 87 and 365) already passes against
+      the helper; no new test needed for that AC.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T15:53:53.600Z
