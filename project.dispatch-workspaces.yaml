@@ -13178,12 +13178,17 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T16:25:03.102Z
+      updated_at: 2026-05-08T16:27:10.854Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T16:25:30.519Z
+      status: stale
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-detached-cleanup-timing-regressions-01kr3w7q"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-05-08T16:27:10.854Z
     integration:
       status: pending
       detail: null
@@ -13191,17 +13196,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
-      updated_at: 2026-05-08T16:25:03.102Z
-    lifecycle_state: active
+      updated_at: 2026-05-08T16:27:10.854Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KR3W7Q0H2FVXHDJ51WCFAVNN"
     task_slug: task-add-detached-cleanup-timing-regressions
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T16:25:30.519Z
-      last_reconciled_at: 2026-05-08T16:25:30.519Z
+      last_reconciled_at: 2026-05-08T16:27:10.854Z
       created_at: 2026-05-08T13:40:01.072Z
-      updated_at: 2026-05-08T16:25:30.519Z
+      updated_at: 2026-05-08T16:27:10.854Z
     workspace_id: dispatch-workspace-01KR3W7Q0H2FVXHDJ51WCFAVNN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
