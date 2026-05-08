@@ -183420,7 +183420,74 @@ reviews:
     slugs: []
     title: Review shared daemon test fixture core (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/helpers/daemon.test.ts: 6 passed."
+        name: helper contract tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T00:24:06.139Z
+        completed_at: 2026-05-08T00:24:06.139Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: 2382 suites passed; 8728 passed, 5 skipped of 8733; duration
+          1901.3s."
+        name: npm test
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T00:24:09.334Z
+        completed_at: 2026-05-08T00:24:09.334Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run typecheck: tsc --noEmit completed successfully."
+        name: typecheck
+        required: true
+        runner: tsc
+        created_at: 2026-05-08T00:24:12.357Z
+        completed_at: 2026-05-08T00:24:12.357Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npx oxlint tests/helpers/daemon.ts tests/helpers/daemon.test.ts: 0 warnings, 0 errors."
+        name: changed-file lint
+        required: true
+        runner: oxlint
+        created_at: 2026-05-08T00:24:15.573Z
+        completed_at: 2026-05-08T00:24:15.573Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --warnings-ok: schema and references OK; existing repository warnings
+          remain but no validation errors."
+        name: kspec validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-08T00:24:18.654Z
+        completed_at: 2026-05-08T00:24:18.654Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Standalone // AC annotations now cover @daemon-backed-test-fixture-contract own ACs plus
+          targeted @daemon-test-endpoint-consistency, @daemon-test-runtime-selection
+          ac-node-default, @daemon-test-harness-guardrails ac-fixture-contract-tests-run, and
+          @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests. kspec validate
+          --completeness -v still reports unrelated global warnings but no missing coverage for the
+          task ACs.
+        name: targeted AC coverage
+        required: true
+        runner: kspec validate/rg
+        created_at: 2026-05-08T00:24:21.648Z
+        completed_at: 2026-05-08T00:24:21.648Z
     events:
       - _ulid: 01KR2EV128B2GZK6E7WQJC313F
         actor: Jacob Chapel
@@ -183435,17 +183502,111 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T00:12:29.743Z
+      - _ulid: 01KR2FGMAKX24MJW0SDDN4H6PX
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR2FGK2T4SMA08ZPSQ94AFQQ
+        timestamp: 2026-05-08T00:24:03.155Z
+      - _ulid: 01KR2FGRFT7VEPWW54QTDF380E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: helper contract tests
+        timestamp: 2026-05-08T00:24:07.418Z
+      - _ulid: 01KR2FGVFRJ5MGYWB78W7ZH34D
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-08T00:24:10.488Z
+      - _ulid: 01KR2FGYFMFZXNVVX2J4KN49AZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: typecheck
+        timestamp: 2026-05-08T00:24:13.556Z
+      - _ulid: 01KR2FH1KXQDRQ3KE4379JW0KG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file lint
+        timestamp: 2026-05-08T00:24:16.765Z
+      - _ulid: 01KR2FH4KMAT48VB2R4ZKAEK3V
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-08T00:24:19.829Z
+      - _ulid: 01KR2FH7J4TD8HENV3AZ5R5QXM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted AC coverage
+        timestamp: 2026-05-08T00:24:22.852Z
+      - _ulid: 01KR2FHAFFT5MADNA8FGNMC4TG
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-08T00:24:25.839Z
+      - _ulid: 01KR2FHAFF1V58EX4B6NFQ2N1C
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-08T00:24:25.839Z
     examined_commit: a1772de24d6b4027dbf16f1ea2390771fb54045a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KR22GJR5YSYRMW6VSD6MQ362"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KR2FGK2T4SMA08ZPSQ94AFQQ
+        entries:
+          - _ulid: 01KR2FGK2THTWM1Y10F5JBXXER
+            author: Jacob Chapel
+            body: "Evidence log (non-blocking): Files read: kspec-agents.md, tests/helpers/daemon.ts,
+              tests/helpers/daemon.test.ts, tests/helpers/cli.ts, src/daemon-shared/endpoint.ts,
+              packages/daemon/src/index.ts, packages/daemon/src/server.ts,
+              tests/e2e/fixtures/test-base.ts. Commands run: git status/rev-parse/diff/log, kspec
+              task get, kspec item get for linked daemon specs, kspec review get for prior cycles,
+              rg AC annotations/source-scanning/runtime/cleanup patterns, npm test -- --fresh
+              tests/helpers/daemon.test.ts, kspec validate --completeness -v, kspec validate
+              --warnings-ok, npm test -- --fresh, npm run typecheck, npx oxlint
+              tests/helpers/daemon.ts tests/helpers/daemon.test.ts. Claims verified: prior
+              custom-readiness diagnostics blocker now samples both /api/health and
+              /api/debug/cache-status on failure; prior annotation blocker fixed with standalone //
+              AC lines; helper uses shared endpoint resolution, isolated HOME/env stripping, bounded
+              waitForStartup polling, and child-handle cleanup. Categories searched: correctness,
+              readiness failure diagnostics, runtime/endpoint behavior, environment isolation,
+              cleanup scoping, test integrity/source scanning, AC coverage, integration regressions.
+              No blockers found."
+            created_at: 2026-05-08T00:24:01.882Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-08T00:24:25.839Z
     created_at: 2026-05-08T00:12:15.304Z
-    updated_at: 2026-05-08T00:12:28.484Z
+    updated_at: 2026-05-08T00:24:25.839Z
     notes: []
