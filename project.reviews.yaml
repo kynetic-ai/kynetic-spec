@@ -186252,6 +186252,18 @@ reviews:
         runner: npm
         created_at: 2026-05-08T14:23:24.228Z
         completed_at: 2026-05-08T14:23:24.228Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate reported schema/reference OK and no validation errors, but exited 6 due
+          existing repository warnings: deprecated refs, alignment warnings, completeness warnings,
+          and invalid AC annotations outside this task."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-08T14:23:34.346Z
+        completed_at: 2026-05-08T14:23:34.346Z
     events:
       - _ulid: 01KR3YW0WYDRMJ8YQNKSSPD118
         actor: Jacob Chapel
@@ -186287,6 +186299,13 @@ reviews:
           status: fail
           name: npm test full suite
         timestamp: 2026-05-08T14:23:25.613Z
+      - _ulid: 01KR3ZHW7V4GK3ZQP0CV6GXGWZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-08T14:23:35.675Z
     examined_commit: 976e8d35c50053fa437154d649a8412860aee5d4
     external_links: []
     lifecycle_state: open
@@ -186317,5 +186336,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-08T14:11:39.550Z
-    updated_at: 2026-05-08T14:23:24.228Z
+    updated_at: 2026-05-08T14:23:34.346Z
     notes: []
