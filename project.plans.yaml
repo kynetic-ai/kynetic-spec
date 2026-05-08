@@ -46077,3 +46077,11 @@ plans:
           migrating tests again.
         author: Jacob Chapel
         created_at: 2026-05-07T20:36:52.117Z
+      - _ulid: 01KR3TJB316T6AY8DY9ZFXYDED
+        content: "Closed after implementation validation: core daemon test fixture standardization landed,
+          all derived tasks completed, validation/review passed. Follow-up hardening is
+          intentionally tracked in a separate plan for guardrail precision, startup-failure cleanup
+          diagnostics, lifecycle endpoint exceptions, mock helper cleanup/env hygiene, and
+          in-process helper boundary clarity."
+        author: Jacob Chapel
+        created_at: 2026-05-08T12:56:28.001Z
