@@ -39654,9 +39654,23 @@ runs:
     completed_at: 2026-05-08T14:00:24.664Z
   - _ulid: 01KR3ZKYGDKDY4NVCAFY5JZY8W
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T14:24:43.533Z
+        completed_at: 2026-05-08T14:26:36.879Z
+        notes: "What worked well: chose it.fails() as the merge-gate-safe encoding for failing-before-fix
+          regression tests. The reviewer's blocker offered two paths (resubmit with fix, or keep npm
+          test green); .fails() preserved the regression-first design intent (assertions still
+          execute oxlint against synthetic snippets) while flipping pass/fail polarity so today's
+          classifier gaps satisfy the test instead of breaking the suite. The modifier becomes a
+          forcing function — when the dependent fix lands, .fails itself fails, requiring removal."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T14:26:36.879Z
+        completed_at: 2026-05-08T14:26:36.879Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T14:24:43.533Z
