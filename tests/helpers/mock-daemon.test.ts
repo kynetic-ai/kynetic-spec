@@ -23,7 +23,9 @@
  * AC: @trait-daemon-endpoint-consumer ac-wildcard-not-destination
  */
 
-import { existsSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import {
@@ -298,6 +300,66 @@ describe("mock daemon helper — contract", () => {
     expect(existsSync(home.daemonPortFilePath)).toBe(true);
     expect(existsSync(home.daemonPidFilePath)).toBe(true);
     expect(readDaemonConnectionMetadata(home.configDir)).toBeNull();
+  });
+
+  // AC: @daemon-test-mode-boundaries ac-cli-client-tests-use-mock-daemon
+  // Helper-allocated record files (no recordPath supplied) MUST be removed
+  // by stop() so child-process mock daemon runs do not leak request payloads
+  // under /tmp. Regression: prior teardown only killed the child and left
+  // kspec-mock-daemon-*.jsonl artifacts behind.
+  it("stop() removes helper-allocated record files in child-process mode", async () => {
+    const tmp = process.env.TMPDIR ?? process.env.TEMP ?? tmpdir();
+    const snapshot = (): Set<string> =>
+      new Set(
+        readdirSync(tmp).filter((name) => name.startsWith("kspec-mock-daemon-")),
+      );
+
+    const beforeStart = snapshot();
+
+    const child = await startMockDaemon({ asChildProcess: true });
+    expect(child).toBeDefined();
+
+    // Drive at least one request so the child writes the JSONL file before stop().
+    await fetch(`${child!.apiUrl}/api/health`);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    // The helper must have allocated and populated a new JSONL file.
+    const duringRun = snapshot();
+    const newFiles = [...duringRun].filter((name) => !beforeStart.has(name));
+    expect(newFiles.length).toBeGreaterThan(0);
+
+    await child!.stop();
+
+    // Every helper-allocated file from this run must be gone after stop().
+    const afterStop = snapshot();
+    for (const name of newFiles) {
+      expect(afterStop.has(name)).toBe(false);
+    }
+  });
+
+  // AC: @daemon-test-mode-boundaries ac-cli-client-tests-use-mock-daemon
+  // Caller-supplied record paths are NOT helper-owned. stop() must leave
+  // them in place so callers can inspect or clean up on their own schedule.
+  it("stop() leaves caller-supplied record paths intact in child-process mode", async () => {
+    const callerDir = join(tempDir, "caller-record");
+    mkdirSync(callerDir, { recursive: true });
+    const callerRecord = join(callerDir, "requests.jsonl");
+    // Pre-create the file so existence is unambiguous regardless of whether
+    // the child appended to it during the lifetime of the test.
+    writeFileSync(callerRecord, "");
+
+    const child = await startMockDaemon({
+      asChildProcess: true,
+      recordPath: callerRecord,
+    });
+    expect(child).toBeDefined();
+    await fetch(`${child!.apiUrl}/api/health`);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    await child!.stop();
+
+    // Caller owns the file — helper must not unlink it.
+    expect(existsSync(callerRecord)).toBe(true);
   });
 
   // AC: @daemon-test-endpoint-consistency ac-mock-metadata-fidelity

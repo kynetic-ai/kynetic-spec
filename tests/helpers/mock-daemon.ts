@@ -36,7 +36,7 @@
 import { ChildProcess, spawn } from "node:child_process";
 import http from "node:http";
 import { createServer as createNetServer } from "node:net";
-import { existsSync, writeFileSync } from "node:fs";
+import { existsSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -328,6 +328,7 @@ async function startChildMockDaemon(
   bindHost: string,
   mode: MockDaemonMode,
   recordPath: string,
+  ownsRecordPath: boolean,
 ): Promise<MockDaemonClient | null> {
   return new Promise((resolve) => {
     const child: ChildProcess = spawn(
@@ -353,7 +354,22 @@ async function startChildMockDaemon(
       resolve(value);
     };
 
-    const timeoutId = setTimeout(() => finish(null), CHILD_STARTUP_TIMEOUT_MS);
+    // Helper-allocated record files must be removed on stop() so child-process
+    // mock daemon runs do not leak request payloads under /tmp. Caller-supplied
+    // paths are left intact — the caller owns their own cleanup.
+    const cleanupRecordFile = (): void => {
+      if (!ownsRecordPath) return;
+      try {
+        rmSync(recordPath, { force: true });
+      } catch {
+        // best-effort: ignore unlink errors on teardown
+      }
+    };
+
+    const timeoutId = setTimeout(() => {
+      cleanupRecordFile();
+      finish(null);
+    }, CHILD_STARTUP_TIMEOUT_MS);
 
     child.stdout!.on("data", (chunk: Buffer) => {
       stdout += chunk.toString();
@@ -364,6 +380,7 @@ async function startChildMockDaemon(
       try {
         parsed = JSON.parse(line) as { port: number; bindHost: string };
       } catch {
+        cleanupRecordFile();
         finish(null);
         return;
       }
@@ -373,19 +390,27 @@ async function startChildMockDaemon(
         new Promise<void>((resolveStop) => {
           if (stopped) return resolveStop();
           stopped = true;
-          child.once("exit", () => resolveStop());
+          let finalized = false;
+          const finalize = (): void => {
+            if (finalized) return;
+            finalized = true;
+            clearTimeout(killTimer);
+            cleanupRecordFile();
+            resolveStop();
+          };
+          child.once("exit", finalize);
           try {
             child.kill("SIGTERM");
           } catch {
             // already gone
           }
-          setTimeout(() => {
+          const killTimer = setTimeout(() => {
             try {
               child.kill("SIGKILL");
             } catch {
               // already gone
             }
-            resolveStop();
+            finalize();
           }, CHILD_GRACEFUL_KILL_MS);
         });
       finish({
@@ -398,9 +423,15 @@ async function startChildMockDaemon(
       });
     });
 
-    child.on("error", () => finish(null));
+    child.on("error", () => {
+      cleanupRecordFile();
+      finish(null);
+    });
     child.on("exit", () => {
-      if (!settled) finish(null);
+      if (!settled) {
+        cleanupRecordFile();
+        finish(null);
+      }
     });
   });
 }
@@ -425,8 +456,9 @@ export async function startMockDaemon(
   const bindHost = opts.bindHost ?? "127.0.0.1";
   const mode: MockDaemonMode = opts.mode ?? "normal";
   if (opts.asChildProcess) {
+    const ownsRecordPath = opts.recordPath === undefined;
     const recordPath = opts.recordPath ?? allocateRecordPath(bindHost);
-    return startChildMockDaemon(bindHost, mode, recordPath);
+    return startChildMockDaemon(bindHost, mode, recordPath, ownsRecordPath);
   }
   return startInProcessMockDaemon(bindHost, mode);
 }
