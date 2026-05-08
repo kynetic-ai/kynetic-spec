@@ -1,0 +1,52 @@
+_ulid: 01KR4AWP6NW25R663BZK5RNWTN
+slugs: []
+title: Stabilize flaky daemon startup review tests
+type: bug
+description: >-
+  Full-suite review run for @01KR3W7Q0H2FVXHDJ51WCFAVNN on 2026-05-08 failed two tests that passed
+  on immediate focused rerun and are not in the task delta from origin/dev.
+
+
+  Observed failures:
+
+  - tests/helpers/daemon.test.ts: startTestDaemon happy path spawns a Node daemon on a dynamic
+  127.0.0.1 endpoint and stops cleanly. Failure: expected tasksBody.meta.cache_status to be ready
+  but received loading at line 211.
+
+  - tests/daemon-api/websocket-protocol.test.ts: daemon websocket protocol — runtime parity bun
+  runtime logs documented heartbeat degradation behavior for the runtime. Failure surfaced from
+  beforeEach at line 482 with STACK_TRACE_ERROR.
+
+
+  Triage evidence:
+
+  - npm test full run failed after 2403 suites passed / 5 failed suites reported, 2 failed tests,
+  8813 passed, 5 skipped. Full log:
+  /tmp/kspec-test-cache/01KR4A09P41PCQENX1KR0DCMRH/d20871c586d05f84.log
+
+  - npm test -- --fresh tests/helpers/daemon.test.ts tests/daemon-api/websocket-protocol.test.ts
+  immediately passed: 14 suites, 24 tests, duration 9.8s. Full log:
+  /tmp/kspec-test-cache/01KR4A09P41PCQENX1KR0DCMRH/20624f290e3494b7.log
+
+  - git diff --stat origin/dev..HEAD for those files was empty, so the review task did not modify
+  them relative to current dev.
+
+
+  Goal: identify and fix the flaky readiness/cache or runtime setup behavior so these tests are
+  deterministic under full-suite load.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - flaky
+vcs_refs: []
+created_at: 2026-05-08T17:41:44.275Z
+todos: []
+automation: eligible
