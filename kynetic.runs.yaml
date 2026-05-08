@@ -39251,7 +39251,7 @@ runs:
     completed_at: 2026-05-08T04:43:25.935Z
   - _ulid: 01KR2ZTRPHCWCT6BVFRPR6E0XK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -39283,7 +39283,40 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T05:09:32.579Z
-        completed_at: 2026-05-08T05:09:32.579Z
+        completed_at: 2026-05-08T05:09:48.520Z
+        notes: >-
+          Friction points observed:
+
+
+          (1) The lint rule's manual scope tracking (parent walking + position comparisons)
+          reimplements a fraction of an ESLint scope manager. If oxlint's JS plugin API exposed
+          context.sourceCode.getScope(node), this fix would have been ~40 LOC instead of ~120. Worth
+          checking whether that API is available — the rule does this same kind of name resolution
+          for any future identifier-based check.
+
+
+          (2) The original (cycle 0) implementation used a Set with no scope awareness, and cycle
+          1's variable-bound URL tracking inherited that. Each cycle revealed a deeper layer of the
+          same root issue (file-global tracking). A pre-implementation 'what if the same name
+          appears in two scopes' check would have surfaced this in cycle 0. Worth capturing as a
+          pattern: when introducing identifier tracking in a lint rule, default to scope-aware from
+          the start.
+
+
+          (3) Two test files cover the same lint rule (lint-no-leaky-test-daemon.test.ts and
+          lint-daemon-test-guardrails.test.ts) and both have their own runOxlint helper. Minor
+          duplication but they diverge in config (the guardrails file enables localized-disable, the
+          original doesn't), so consolidating now would be premature.
+
+
+          (4) The synthetic-repro tests pay ~250ms per case for npx oxlint subprocess overhead. With
+          40+ cases the file is ~9s. Adding more cases scales linearly. Not blocking, but a
+          candidate for future optimization (in-process oxlint invocation, or batched cases per
+          oxlint run).
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T05:09:48.520Z
+        completed_at: 2026-05-08T05:09:48.520Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T05:09:12.529Z
