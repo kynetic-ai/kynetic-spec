@@ -185448,7 +185448,54 @@ reviews:
     slugs: []
     title: "Plan review: Daemon Test Fixture Hardening"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Reviewed parent/related specs via kspec item get/search: @daemon-server,
+          @daemon-backed-test-fixture-contract, @daemon-test-harness-guardrails,
+          @daemon-test-endpoint-consistency, @daemon-test-mode-boundaries,
+          @daemon-sensitive-cli-test-determinism, @daemon-network-endpoint-contract. No placement
+          conflict found."
+        name: Existing spec neighborhood
+        required: true
+        created_at: 2026-05-08T13:10:42.034Z
+        completed_at: 2026-05-08T13:10:42.034Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Coverage is incomplete/overclaimed: ac-child-env-sanitized is broader than the
+          mock-helper tasks, task-update-daemon-test-hardening-spec-status claims
+          ac-process-launch-failure-diagnosed without implementing/testing it, and
+          ac-local-exception-documents-subject is claimed without explicit documented-subject
+          test/fix scope."
+        name: AC coverage map
+        required: true
+        created_at: 2026-05-08T13:10:45.238Z
+        completed_at: 2026-05-08T13:10:45.238Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Regression-test tasks precede matching fix tasks; final validation depends on all
+          implementation tasks; no circular dependency or P1-on-P2 priority inversion found.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-05-08T13:10:48.417Z
+        completed_at: 2026-05-08T13:10:48.417Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/daemon-test-fixture-hardening.md --dry-run stored the full
+          document without parse errors. plan derive --dry-run is gated until approval, so
+          derivation was reviewed manually from the stored plan content.
+        name: Plan parse preview
+        required: true
+        created_at: 2026-05-08T13:10:51.572Z
+        completed_at: 2026-05-08T13:10:51.572Z
     events:
       - _ulid: 01KR3V91XRH4B1TQ802TQW8QB2
         actor: Jacob Chapel
@@ -185463,17 +185510,162 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T13:09:07.662Z
+      - _ulid: 01KR3VC1ZPF6KWDQ59PNSXAFM0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR3VC0RQR9QJ35F4WQHEHNTA
+        timestamp: 2026-05-08T13:10:30.646Z
+      - _ulid: 01KR3VC541PYMMEVGNC5SCQV9R
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR3VC3WZXNSVSEM4FSJ4XYCQ
+        timestamp: 2026-05-08T13:10:33.857Z
+      - _ulid: 01KR3VC86VJB92GT01N1RF5RT9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR3VC6ZFJGN3QTSPF337YK3Q
+        timestamp: 2026-05-08T13:10:37.019Z
+      - _ulid: 01KR3VCB7PDX354ZTAADH4X7Y1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR3VCA0RABV4K8TN01Q2Z4J0
+        timestamp: 2026-05-08T13:10:40.119Z
+      - _ulid: 01KR3VCECC56MK5PZ101JC4RQJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec neighborhood
+        timestamp: 2026-05-08T13:10:43.340Z
+      - _ulid: 01KR3VCHDG0ZKMK3H4VEPQCX8G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: AC coverage map
+        timestamp: 2026-05-08T13:10:46.448Z
+      - _ulid: 01KR3VCMHKR81DDB5EZ92996BB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-05-08T13:10:49.651Z
+      - _ulid: 01KR3VCQK26215G0AX0NWWZVMR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan parse preview
+        timestamp: 2026-05-08T13:10:52.770Z
+      - _ulid: 01KR3VCTNXP86CTP050PR2PRX2
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-08T13:10:55.933Z
+      - _ulid: 01KR3VCTNXRCR489D63M8KHRD1
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-08T13:10:55.933Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@plan-daemon-test-fixture-hardening"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KR3VC0RQR9QJ35F4WQHEHNTA
+        anchor:
+          type: structured
+          field: ac-child-env-sanitized
+          ref: "@daemon-test-startup-failure-hygiene"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KR3VC0RRDFNJ44JY2453C7NH
+            author: Jacob Chapel
+            body: The AC is written for any daemon test helper that starts a child process, but the task
+              coverage only adds/fixes mock-daemon environment hygiene. The existing real-daemon
+              fixture already has env stripping in tests/helpers/daemon.ts and
+              tests/helpers/daemon.test.ts, yet this plan does not tell any task to add the new spec
+              annotation or otherwise make that existing coverage part of this plan. Either narrow
+              the AC to mock daemon children, or add explicit real-fixture validation/annotation
+              work so the plan is standalone and the AC is fully covered.
+            created_at: 2026-05-08T13:10:29.400Z
+        kind: blocker
+      - _ulid: 01KR3VC3WZXNSVSEM4FSJ4XYCQ
+        anchor:
+          type: structured
+          ref: "@task-update-daemon-test-hardening-spec-status"
+          section: tasks
+        entries:
+          - _ulid: 01KR3VC3X0EMW8PPRGCMZDSWN7
+            author: Jacob Chapel
+            body: "This metadata/status task claims `Covers: @daemon-test-startup-failure-hygiene
+              ac-process-launch-failure-diagnosed`, but its What/Why/How only inspect existing
+              specs, update implementation status, and add cross-link notes. It does not add or
+              verify startup launch-failure diagnostics. Remove that Covers claim or replace it with
+              coverage for the existing metadata/alignment concern it actually handles."
+            created_at: 2026-05-08T13:10:32.608Z
+        kind: blocker
+      - _ulid: 01KR3VC6ZFJGN3QTSPF337YK3Q
+        anchor:
+          type: structured
+          field: ac-local-exception-documents-subject
+          ref: "@daemon-test-guardrail-precision"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KR3VC6ZFRETB607AH8VTH316
+            author: Jacob Chapel
+            body: "This AC combines two independently testable requirements: the suppression must be local, and
+              it must state the behavior being exercised. The tasks that claim it do not explicitly
+              add a regression or rule change for the documented-subject part;
+              `task-add-detached-cleanup-timing-regressions` only describes cleanup ordering cases,
+              and `task-fix-detached-cleanup-timing-analysis` says to preserve existing local
+              reasoned disable comments. Split the AC or add explicit task/test scope for
+              behavior-specific suppression text."
+            created_at: 2026-05-08T13:10:35.759Z
+        kind: blocker
+      - _ulid: 01KR3VCA0RABV4K8TN01Q2Z4J0
+        anchor:
+          type: structured
+          field: tags
+          ref: "@plan-daemon-test-fixture-hardening"
+          section: specs
+        entries:
+          - _ulid: 01KR3VCA0R74MR21XRP8ADFV7S
+            author: Jacob Chapel
+            body: The spec YAML includes `tags`, but the current plan spec schema does not materialize spec
+              tags. If those labels are intentional, add import support separately; otherwise remove
+              them from spec blocks to avoid implying derived specs will carry them. Task tags are
+              supported.
+            created_at: 2026-05-08T13:10:38.872Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-08T13:10:55.933Z
     created_at: 2026-05-08T13:08:52.281Z
-    updated_at: 2026-05-08T13:09:06.370Z
+    updated_at: 2026-05-08T13:10:55.933Z
     notes: []
