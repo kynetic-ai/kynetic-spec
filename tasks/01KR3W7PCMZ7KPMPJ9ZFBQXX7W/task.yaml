@@ -54,7 +54,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -64,6 +64,14 @@ tags:
   - lint
   - daemon
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-add-guardrail-classification-regressions/01kr3w7p
+  captured_at: 2026-05-08T13:35:52.292Z
+  commit: 9ff274ab87aa2948893aecf7bebcc9e14827572c
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR3WBECC9TT2TCJ6MZHVRX5N
 history:
   - author: Jacob Chapel
@@ -86,7 +94,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-08T13:28:17.795Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-guardrail-classification-regressions/01kr3w7p
+          captured_at: 2026-05-08T13:35:52.292Z
+          commit: 9ff274ab87aa2948893aecf7bebcc9e14827572c
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-08T13:35:52.294Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-08T13:35:52.294Z
 created_at: 2026-05-08T13:25:36.276Z
 started_at: 2026-05-08T13:28:17.794Z
+submitted_at: 2026-05-08T13:35:52.294Z
 todos: []
 automation: eligible
