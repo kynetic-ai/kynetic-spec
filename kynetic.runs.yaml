@@ -39745,7 +39745,7 @@ runs:
     completed_at: 2026-05-08T14:27:43.092Z
   - _ulid: 01KR40P6023K1X415AA4ZYQRV6
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -39759,7 +39759,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T14:44:15.174Z
-        completed_at: 2026-05-08T14:44:15.174Z
+        completed_at: 2026-05-08T14:44:24.397Z
+        notes: "Friction points: regression-test-only task slicing conflicts with merge gates unless
+          expected failures are represented carefully. Plain it.fails keeps tests green but is too
+          broad because it treats any thrown assertion as success; reviewers must reason about
+          failure shape manually. Full npm test -- --fresh remains necessary review evidence but
+          takes a long time, so the focused suite is useful for fast localization while waiting for
+          full verification."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T14:44:24.397Z
+        completed_at: 2026-05-08T14:44:24.397Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T14:43:25.314Z
