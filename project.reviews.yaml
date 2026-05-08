@@ -188860,6 +188860,12 @@ reviews:
         payload:
           thread_ulid: 01KR4H7ZQH5VV089ZMSHDHPWEE
         timestamp: 2026-05-08T19:58:34.751Z
+      - _ulid: 01KR4JQPC9EEF456M6VQ3MKAAT
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR4H7ZQH5VV089ZMSHDHPWEE
+        timestamp: 2026-05-08T19:58:49.225Z
     examined_commit: 09c83cadfc2e708ff8727c4fbbc2e9126d50fb2e
     external_links: []
     lifecycle_state: closed
@@ -188932,6 +188938,8 @@ reviews:
               focus of this cycle's fix.
             created_at: 2026-05-08T19:58:33.408Z
         kind: nit
+        resolved_at: 2026-05-08T19:58:47.896Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -188941,7 +188949,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T19:32:58.624Z
     created_at: 2026-05-08T19:19:25.583Z
-    updated_at: 2026-05-08T19:58:33.408Z
+    updated_at: 2026-05-08T19:58:47.896Z
     notes: []
   - _ulid: 01KR4HSW4RBR9R7JJQ6ERGC740
     slugs: []
