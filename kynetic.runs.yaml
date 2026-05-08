@@ -40561,7 +40561,7 @@ runs:
     completed_at: 2026-05-08T18:53:47.322Z
   - _ulid: 01KR4FWK4576W0CXYDNM3AHTZW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -40575,7 +40575,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T19:10:03.226Z
-        completed_at: 2026-05-08T19:10:03.226Z
+        completed_at: 2026-05-08T19:10:14.634Z
+        notes: "Friction: the existing cleanup contract tests waited 200ms after startMockDaemon returned
+          before checking process liveness. That delay verified eventual cleanup, not the AC's
+          before-return guarantee, so the test suite passed while the helper still returned before
+          the child exited. This is a repeatable test-quality trap for lifecycle contracts that
+          mention before/after boundaries."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T19:10:14.634Z
+        completed_at: 2026-05-08T19:10:14.634Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T19:09:04.005Z
