@@ -30,6 +30,11 @@ const heavySerialSuites = [
   "tests/cli/session-start-notes.test.ts",
   "tests/cli/session-start-activity-timeline.test.ts",
   "tests/meta.test.ts",
+  // Rebuilds dist/daemon/ in-place via `npm run build:daemon`. Any other
+  // suite that spawns dist/daemon/index.js concurrently can hit
+  // ERR_MODULE_NOT_FOUND mid-rebuild, so this must run serially after the
+  // default pool drains.
+  "tests/daemon-build.test.ts",
 ];
 
 // On machines with many cores vitest spawns one worker per core by default.
