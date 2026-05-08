@@ -40924,7 +40924,7 @@ runs:
     completed_at: 2026-05-08T20:50:36.673Z
   - _ulid: 01KR4NRTPYXRBFHFVVJ8828NKG
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -40952,7 +40952,19 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-08T20:54:19.989Z
-        completed_at: 2026-05-08T20:54:19.989Z
+        completed_at: 2026-05-08T20:54:31.469Z
+        notes: "Step 3 — Decisions: SKIP capture. The candidate friction (precision-vs-recall on classifier
+          extensions) is a refinement of existing observation @01KR4JYF, not a new pattern. Searches
+          checked: 'guardrail precision', 'lint detector precision', 'false positive', 'fix cycle
+          blocker', 'reviewer probe', 'evidence probe', 'position match', 'executable position',
+          'precision recall', plus full observations list grep for
+          classifier/guardrail/precision/exec/daemon. The existing observation already prescribes
+          'explicit family enumeration / coverage matrix' which subsumes the precision lesson when
+          applied to per-shape ACs."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-08T20:54:31.469Z
+        completed_at: 2026-05-08T20:54:31.469Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T20:51:52.158Z
