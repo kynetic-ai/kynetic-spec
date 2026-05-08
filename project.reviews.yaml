@@ -186357,6 +186357,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-08T14:24:02.683Z
+      - _ulid: 01KR41MW9W8H238B96B98R4GA5
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR3ZGVBZ1EHSP31K40WHV2SF
+        timestamp: 2026-05-08T15:00:11.197Z
     examined_commit: 976e8d35c50053fa437154d649a8412860aee5d4
     external_links: []
     lifecycle_state: closed
@@ -186384,6 +186390,17 @@ reviews:
               branch-introduced regression and cannot merge until the helper implementation captures
               launch errors or the task is combined with the required fix."
             created_at: 2026-05-08T14:23:02.015Z
+          - _ulid: 01KR41MTZXFQQ7FP7FQSMKJN7C
+            author: "@claude"
+            body: "Fixed: combined the contract tests with the matching helper fix so the branch is mergeable on
+              its own. tests/helpers/daemon.ts now attaches child.once('error', ...) immediately
+              after spawn, races the readiness wait against the launch-error signal, and prefers the
+              launch-error message ('process launch failed: spawn /nonexistent/... ENOENT') over the
+              readiness timeout when the OS rejects the spawn. stop() also short-circuits when the
+              OS never assigned a pid so cleanup stays bounded for never-started children. Verified:
+              focused daemon test 9/9 pass; full npm test -- --fresh passes (8800 passed, 5 skipped,
+              0 failed)."
+            created_at: 2026-05-08T15:00:09.853Z
         kind: blocker
       - _ulid: 01KR3ZJBWWW85GQDQVXY92PTH5
         entries:
@@ -186408,7 +186425,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T14:24:02.682Z
     created_at: 2026-05-08T14:11:39.550Z
-    updated_at: 2026-05-08T14:24:02.683Z
+    updated_at: 2026-05-08T15:00:09.853Z
     notes: []
   - _ulid: 01KR3ZW5WY2YTA8PH9AXKKSJAK
     slugs: []
