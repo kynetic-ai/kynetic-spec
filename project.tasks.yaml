@@ -28180,6 +28180,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-08T13:25:37.867Z
+  automation: eligible
 - _ulid: 01KR3W7R7Y2JCNSJZGPNCM9QFA
   slugs:
     - task-harden-playwright-daemon-fixture-cleanup
