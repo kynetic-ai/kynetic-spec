@@ -185822,9 +185822,25 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-05-08T13:16:29.077Z
+      - _ulid: 01KR3VQ8CTF3NBSYYTD20QRE5F
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-08T13:16:37.658Z
+      - _ulid: 01KR3VQ8CT3CZ68N9BHMJM7N49
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-08T13:16:37.658Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -185832,7 +185848,14 @@ reviews:
       ref: "@plan-daemon-test-fixture-hardening"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-08T13:16:37.658Z
     created_at: 2026-05-08T13:15:00.376Z
-    updated_at: 2026-05-08T13:16:27.737Z
+    updated_at: 2026-05-08T13:16:37.658Z
     notes: []
