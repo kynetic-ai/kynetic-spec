@@ -189356,7 +189356,19 @@ reviews:
     slugs: []
     title: Review clarify in-process daemon API helper boundary
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/daemon-api/helpers.test.ts
+          tests/daemon-api-input-validation.test.ts tests/daemon-review-verdicts-api.test.ts
+          tests/daemon-review-websocket.test.ts: 17 suites passed; 68 tests passed."
+        name: targeted daemon helper tests
+        required: true
+        runner: npm
+        created_at: 2026-05-08T20:47:07.172Z
+        completed_at: 2026-05-08T20:47:07.172Z
     events:
       - _ulid: 01KR4MTFQ2J0Y8FETD294GGMXH
         actor: Jacob Chapel
@@ -189371,6 +189383,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T20:35:35.604Z
+      - _ulid: 01KR4NG5PF72AFF32JPTRCB786
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon helper tests
+        timestamp: 2026-05-08T20:47:08.495Z
     examined_commit: e0b6617b7baa8a96f4c13257621dfdc2a3c14a70
     external_links: []
     lifecycle_state: open
@@ -189383,5 +189402,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T20:35:17.859Z
-    updated_at: 2026-05-08T20:35:34.207Z
+    updated_at: 2026-05-08T20:47:07.172Z
     notes: []
