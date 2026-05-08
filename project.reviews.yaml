@@ -190610,7 +190610,70 @@ reviews:
     slugs: []
     title: Review harden Playwright daemon fixture cleanup registration (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2412 suites passed; 8830 tests passed; 5 skipped; duration 2217.4s."
+        name: npm test
+        required: true
+        runner: npm test
+        created_at: 2026-05-08T23:42:01.568Z
+        completed_at: 2026-05-08T23:42:01.568Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Focused cleanup-registration test passed: tests/e2e-fixture-daemon-cleanup.test.ts, 3
+          tests passed."
+        name: focused cleanup test
+        required: true
+        runner: npm test -- --fresh tests/e2e-fixture-daemon-cleanup.test.ts
+        created_at: 2026-05-08T23:42:04.987Z
+        completed_at: 2026-05-08T23:42:04.987Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Representative Playwright daemon fixture slice passed: 7 tests passed."
+        name: playwright connection slice
+        required: true
+        runner: npx playwright test tests/e2e/connection.spec.ts
+        created_at: 2026-05-08T23:42:08.304Z
+        completed_at: 2026-05-08T23:42:08.304Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema and references OK. Command exited 0 with existing repo-wide warnings; no warnings
+          pointed at the new files or reviewed task refs.
+        name: kspec validate
+        required: true
+        runner: kspec validate --warnings-ok
+        created_at: 2026-05-08T23:42:11.707Z
+        completed_at: 2026-05-08T23:42:11.707Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md; tests/e2e/fixtures/test-base.ts;
+          tests/e2e/fixtures/daemon-fixture.ts; tests/e2e-fixture-daemon-cleanup.test.ts;
+          tests/helpers/daemon.ts; tests/helpers/daemon.test.ts; prior review @01KR4T22. Commands
+          run: kspec task get; kspec item get @daemon-test-startup-failure-hygiene and
+          @e2e-test-daemon-isolation; kspec review get prior review; git diff/stat/log/show; rg AC
+          annotations; rg source-read scan; npm test -- --fresh
+          tests/e2e-fixture-daemon-cleanup.test.ts; npm test; npx playwright test
+          tests/e2e/connection.spec.ts; kspec validate and kspec validate --warnings-ok. Claims
+          verified: wrapper now passes caller-owned registerCleanup through to shared fixture,
+          captures earlyStop before readiness failure, and finally invokes that stop on the failure
+          path; verified by code inspection and focused behavioral test. Categories searched:
+          correctness, startup failure edge case, cleanup idempotence, test quality/source-scanning,
+          AC coverage, integration with shared daemon fixture and Playwright restart behavior."
+        name: review evidence log
+        required: false
+        created_at: 2026-05-08T23:42:15.062Z
+        completed_at: 2026-05-08T23:42:15.062Z
     events:
       - _ulid: 01KR4YTTMYMYPWPJEWN47M03K1
         actor: Jacob Chapel
@@ -190625,6 +190688,41 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T23:30:52.188Z
+      - _ulid: 01KR4ZGE4GT3HEPWSGSF9GRPV2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-08T23:42:02.896Z
+      - _ulid: 01KR4ZGHDPEYY30RBGXN44JYYS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused cleanup test
+        timestamp: 2026-05-08T23:42:06.263Z
+      - _ulid: 01KR4ZGMQB3RBZVH6C1XCBQ19W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: playwright connection slice
+        timestamp: 2026-05-08T23:42:09.643Z
+      - _ulid: 01KR4ZGQZSX3F33ETXZFC3RSJN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-08T23:42:12.985Z
+      - _ulid: 01KR4ZGV6FDMME2K9BM8TH4YHT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-08T23:42:16.271Z
     examined_commit: e1d0800924872c4de07e819122cb4a2204430fda
     external_links: []
     lifecycle_state: open
@@ -190637,5 +190735,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T23:30:14.816Z
-    updated_at: 2026-05-08T23:30:50.207Z
+    updated_at: 2026-05-08T23:42:15.062Z
     notes: []
