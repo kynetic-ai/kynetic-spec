@@ -182780,6 +182780,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-07T23:50:42.958Z
+      - _ulid: 01KR2EJ3PBCTNPQ4CAH2J9RZJ6
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR2DJDB59E3FT3H48NGT359N
+        timestamp: 2026-05-08T00:07:23.083Z
     examined_commit: ab433d4eaf96d6b421cfc89771e283a3a768fcb8
     external_links: []
     lifecycle_state: closed
@@ -183342,6 +183348,17 @@ reviews:
                     ! Malformed AC token: 'ac-2/3/4/5/7:' in annotation targeting '@trait-filterable-list' is not a valid ac-prefixed identifier
                       /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-shared-daemon-test-fixture-01kr22gj-review/tests/cli-agent-commands.test.ts:1854 still reports both ACs as uncovered. Impact: the contract-test coverage promised by this task is not machine-parseable or enforced, so the task cannot advance until these ACs are annotated on behavioral tests that actually exercise the focused fixture contract.
             created_at: 2026-05-07T23:50:04.389Z
+          - _ulid: 01KR2EJ2EZ002458QVB805WKVH
+            author: "@claude"
+            body: "Fixed: moved @daemon-test-harness-guardrails ac-fixture-contract-tests-run and
+              @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests out of the JSDoc
+              header and into standalone // AC: line annotations on each of the four describe-block
+              primary tests (buildDaemonChildEnv env stripping, createTestDaemonProject project
+              creation, startTestDaemon happy path, startTestDaemon readiness diagnostics). The
+              header docstring now points readers to the per-test annotations and explains the
+              convention. kspec validate --completeness -v confirms both ACs are no longer in the
+              uncovered set for their respective specs."
+            created_at: 2026-05-08T00:07:21.823Z
         kind: blocker
       - _ulid: 01KR2DK8EQV25QQFGRERGSWZ0T
         entries:
@@ -183371,5 +183388,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-07T23:50:42.957Z
     created_at: 2026-05-07T23:37:59.405Z
-    updated_at: 2026-05-07T23:50:42.958Z
+    updated_at: 2026-05-08T00:07:21.823Z
     notes: []
