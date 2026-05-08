@@ -188842,6 +188842,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-08T19:32:58.625Z
+      - _ulid: 01KR4JPP2A6ZGFGM2CNTM1PF7M
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR4H5ZNEHC40V175FG0TDEC6
+        timestamp: 2026-05-08T19:58:16.138Z
     examined_commit: 09c83cadfc2e708ff8727c4fbbc2e9126d50fb2e
     external_links: []
     lifecycle_state: closed
@@ -188872,6 +188878,22 @@ reviews:
               launches still bypass the shared fixture guardrail. Add exec/execSync direct-entry
               detection and behavioral coverage for those shell-string shapes.'
             created_at: 2026-05-08T19:31:40.334Z
+          - _ulid: 01KR4JPMTSQ1CF81PP19GHB07D
+            author: "@claude"
+            body: "Fixed in this cycle. readDaemonEntryInvocation now also handles the exec/execSync
+              shell-string callees: the command argument is tokenised on whitespace (literalString
+              or templateLiteralRaw with ${...} placeholders preserved) and a daemon entry token
+              anywhere in the command triggers the directDaemonSpawn message. The runtime-form
+              (exec(\"node dist/daemon/index.js …\")), direct-executable form
+              (exec(\"dist/daemon/index.js …\")), absolute path (exec(\"node /…/dist/daemon/index.js
+              …\")), template literal, and bun-runtime shape are all now reported. Verified manually
+              with the reviewer's exec/execSync probe — both lines now flag with the
+              directDaemonSpawn message. Detached-serve classification for exec(\"kspec serve start
+              --detach\") is preserved (kspec does not carry the daemon entry token, so the call
+              still routes through the detach detector). 6 new behavioral tests in
+              tests/lint-daemon-test-guardrails.test.ts cover the new shapes plus a regression
+              confirming the detached-serve / direct-spawn split."
+            created_at: 2026-05-08T19:58:14.873Z
         kind: blocker
       - _ulid: 01KR4H7ZQH5VV089ZMSHDHPWEE
         entries:
@@ -188900,7 +188922,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T19:32:58.624Z
     created_at: 2026-05-08T19:19:25.583Z
-    updated_at: 2026-05-08T19:32:58.625Z
+    updated_at: 2026-05-08T19:58:14.873Z
     notes: []
   - _ulid: 01KR4HSW4RBR9R7JJQ6ERGC740
     slugs: []
