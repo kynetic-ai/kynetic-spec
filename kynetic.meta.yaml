@@ -17659,6 +17659,19 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-08T20:26:44.465Z
+  - _ulid: 01KR4MPAYWJQ8EN0C2ZAAD7MM3
+    type: success
+    content: "Pinning a test-helper boundary with executable assertions (404 for routes outside helper
+      scope, smoke for routes inside) converts the docstring into a regression-checked contract.
+      Used in tests/daemon-api/helpers.test.ts createTestApp boundary block: /api/health,
+      /api/projects, /api/debug/cache-status, /api/diff, /api/refs, /ws -> 404; non-loopback Host ->
+      not 403; /api/tasks -> 200. Future drift (someone quietly adds a route to the helper, or
+      removes one) fails explicitly instead of silently invalidating the docstring. Pattern reusable
+      for other test helpers in the project."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T20:33:01.917Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
