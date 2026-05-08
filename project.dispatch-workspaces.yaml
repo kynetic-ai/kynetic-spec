@@ -10148,7 +10148,7 @@ workspaces:
         head: c753d124422282c19fc01bf891a34656a5feb29d
         last_seen_at: 2026-05-08T01:23:51.103Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-playwright-daemon-fixture-01kr22gk
-  - active_role: null
+  - active_role: worker
     base_branch_point: 18d77f97eb153c9bcf7e408557953f70c4f39688
     bootstrap:
       status: succeeded
@@ -10484,7 +10484,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T01:24:22.511Z
+      updated_at: 2026-05-08T01:24:45.971Z
     integration:
       status: pending
       detail: null
@@ -10493,16 +10493,16 @@ workspaces:
       target_branch: dev
       target_commit: 18d77f97eb153c9bcf7e408557953f70c4f39688
       updated_at: 2026-05-08T01:24:22.511Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR22GKM9P5DB6J6ZVXVE510F"
     task_slug: task-standardize-mock-daemon-client-fixtures
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-08T01:24:22.511Z
+      last_active_at: 2026-05-08T01:24:45.971Z
+      last_reconciled_at: 2026-05-08T01:24:45.971Z
       created_at: 2026-05-08T01:24:22.511Z
-      updated_at: 2026-05-08T01:24:45.164Z
+      updated_at: 2026-05-08T01:24:45.971Z
     workspace_id: dispatch-workspace-01KR22GKM9P5DB6J6ZVXVE510F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
