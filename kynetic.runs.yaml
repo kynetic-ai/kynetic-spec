@@ -39559,7 +39559,7 @@ runs:
     completed_at: 2026-05-08T13:39:13.538Z
   - _ulid: 01KR3XV2SCA3XMAA7MR33PJ8ET
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -39573,7 +39573,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T13:54:33.661Z
-        completed_at: 2026-05-08T13:54:33.661Z
+        completed_at: 2026-05-08T13:54:41.426Z
+        notes: "Friction: the plan intentionally split failing-before-fix guardrail regression tests from
+          the implementation task that makes them pass. That made the worker satisfy task text while
+          still producing a branch that cannot pass review/merge gates, requiring a fix cycle whose
+          only issue is process/task slicing rather than test quality."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T13:54:41.426Z
+        completed_at: 2026-05-08T13:54:41.426Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T13:53:40.140Z
