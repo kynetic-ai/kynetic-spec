@@ -1,1 +1,20 @@
-notes: []
+notes:
+  - _ulid: 01KR2K8EWXRR1FYBNN16J1R1MJ
+    content: "Approach: build tests/helpers/mock-daemon.ts as the single source for CLI mock daemon
+      setup. Unified API supports both in-process (http.createServer) and child-process (CJS script)
+      modes — child-process is required only when the test invokes the kspec CLI via spawnSync
+      (blocks the event loop). The CJS mock daemon collapses mock-daemon.cjs and
+      recording-daemon.cjs into one script with --mode (normal|error|hang for /api/command),
+      --bind-host, and --record JSONL. writeMockDaemonMetadata routes through
+      writeDaemonConnectionMetadata in src/daemon-shared/endpoint.ts to guarantee canonical schema.
+      writeLegacyDaemonPort is a separate, explicit helper so legacy fallback tests remain visible.
+      Add tests/helpers/mock-daemon.test.ts as a focused contract test for the helper (metadata
+      fidelity, request recording, modes, endpoint formatting, cleanup). Migrate
+      cli-daemon-proxy/cli-daemon-endpoint-regression/cli-task-event-endpoint/daemon-status-endpoint
+      test files to the new helper. Test plan: contract tests cover ac-mock-metadata-fidelity,
+      ac-dynamic-port-propagation, ac-resolved-endpoint-source, ac-fixture-contract-tests-run;
+      migrated tests cover ac-cli-client-tests-use-mock-daemon, ac-uses-reported-endpoint,
+      ac-wildcard-not-destination, ac-tests-use-resolved-endpoint."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T01:29:29.757Z
