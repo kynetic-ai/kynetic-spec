@@ -39654,7 +39654,7 @@ runs:
     completed_at: 2026-05-08T14:00:24.664Z
   - _ulid: 01KR3ZKYGDKDY4NVCAFY5JZY8W
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -39684,7 +39684,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-08T14:26:45.695Z
-        completed_at: 2026-05-08T14:26:45.695Z
+        completed_at: 2026-05-08T14:26:53.817Z
+        notes: "Coverage check: the it.fails() merge-gate pattern has no existing observation, idea, or task
+          tracking. Closest neighbors checked: @01KJN360KDR (success: single-task test-first,
+          different from cross-task regression-first split) and @01KP9WS9H (friction: chained start
+          && submit stale state, different pathway). Searches 'regression-first merge gate',
+          'failing-before-fix merge', 'it.fails' all returned no matches. Unique + high-confidence
+          pattern, eligible for capture."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-08T14:26:53.817Z
+        completed_at: 2026-05-08T14:26:53.817Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T14:24:43.533Z
