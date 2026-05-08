@@ -188255,6 +188255,18 @@ reviews:
         runner: npm test
         created_at: 2026-05-08T18:43:24.024Z
         completed_at: 2026-05-08T18:43:24.024Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm run lint: 13 errors total. Changed-file comparison shows base versions
+          of the reviewed files had 1 error, while head has 2 errors; new head-only error is
+          tools/eslint-rules/no-leaky-test-daemon.js:453 prefer-string-starts-ends-with."
+        name: lint
+        required: true
+        runner: oxlint
+        created_at: 2026-05-08T18:43:27.726Z
+        completed_at: 2026-05-08T18:43:27.726Z
     events:
       - _ulid: 01KR4DPNDXJPAB7WYGNDZ6Z6DS
         actor: Jacob Chapel
@@ -188297,6 +188309,13 @@ reviews:
           status: pass
           name: full test suite
         timestamp: 2026-05-08T18:43:25.278Z
+      - _ulid: 01KR4EDR3CYMJTZARPV9MJG90Y
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: lint
+        timestamp: 2026-05-08T18:43:29.005Z
     examined_commit: 2f72e91ffd2596c10f1b626fa3676a06a8daf436
     external_links: []
     lifecycle_state: open
@@ -188309,5 +188328,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T18:30:52.605Z
-    updated_at: 2026-05-08T18:43:24.024Z
+    updated_at: 2026-05-08T18:43:27.726Z
     notes: []
