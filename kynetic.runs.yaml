@@ -39040,7 +39040,7 @@ runs:
     started_at: 2026-05-08T02:54:39.938Z
     completed_at: 2026-05-08T02:56:50.168Z
   - _ulid: 01KR2S3QFMCQZYBQPB7X2SVKAB
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -39090,10 +39090,14 @@ runs:
         completed_at: 2026-05-08T03:13:06.188Z
         notes: Skipped discussion because there are no proposed new improvements after coverage search;
           existing tracking already covers the systemic friction found.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-08T03:13:06.188Z
-        completed_at: 2026-05-08T03:13:06.188Z
+        completed_at: 2026-05-08T03:13:15.195Z
+        notes: No capture performed. There were no approved or high-confidence new items to add; avoiding
+          duplicate observations for detached merge helper success and existing long-test-run
+          friction.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T03:11:46.164Z
+    completed_at: 2026-05-08T03:13:15.195Z
