@@ -188693,6 +188693,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T19:19:43.837Z
+      - _ulid: 01KR4H60Y3J1HTHCWQBTYT0JG6
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR4H5ZNEHC40V175FG0TDEC6
+        timestamp: 2026-05-08T19:31:41.635Z
     examined_commit: 09c83cadfc2e708ff8727c4fbbc2e9126d50fb2e
     external_links: []
     lifecycle_state: open
@@ -188702,8 +188709,29 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR4H5ZNEHC40V175FG0TDEC6
+        anchor:
+          type: code
+          commit: 09c83cadfc2e708ff8727c4fbbc2e9126d50fb2e
+          line_end: 535
+          line_start: 503
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR4H5ZNEHYQDT316T4XR7M92
+            author: Jacob Chapel
+            body: 'MUST-FIX: direct daemon entry detection still misses shell child-process APIs. The task and
+              @daemon-test-guardrail-precision require direct real daemon entrypoint starts outside
+              approved helpers to be reported, but this branch only checks
+              spawn/spawnSync/execFile/execFileSync and fork. A synthetic oxlint probe containing
+              exec("node dist/daemon/index.js --port 0") and execSync("node dist/daemon/index.js
+              --port 0") exited 0 with "Found 0 warnings and 0 errors", so those direct daemon
+              launches still bypass the shared fixture guardrail. Add exec/execSync direct-entry
+              detection and behavioral coverage for those shell-string shapes.'
+            created_at: 2026-05-08T19:31:40.334Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T19:19:25.583Z
-    updated_at: 2026-05-08T19:19:42.508Z
+    updated_at: 2026-05-08T19:31:40.334Z
     notes: []
