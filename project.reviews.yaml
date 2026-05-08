@@ -189264,6 +189264,13 @@ reviews:
           status: fail
           name: lint
         timestamp: 2026-05-08T20:23:37.382Z
+      - _ulid: 01KR4M5N4XE4QNTH5RYEQS4NWH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR4M5KW3ESEKFX17V3R7T5XB
+        timestamp: 2026-05-08T20:23:55.293Z
     examined_commit: f0d119a1f95ce93bafc5ea58c499ebd02865f260
     external_links: []
     lifecycle_state: open
@@ -189297,7 +189304,28 @@ reviews:
               rather than incidental token sequences.'
             created_at: 2026-05-08T20:22:21.543Z
         kind: blocker
+      - _ulid: 01KR4M5KW3ESEKFX17V3R7T5XB
+        entries:
+          - _ulid: 01KR4M5KW3Z1H0FK36BZSEXP30
+            author: Jacob Chapel
+            body: 'Evidence log: Files read: kspec-agents.md; task/spec/review records;
+              tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-daemon-test-guardrails.test.ts;
+              test runner log /tmp/kspec-test-cache/01KR4K02B1FTKXJTQH2SJCBC2D/f38f29fddaf6fcaa.log.
+              Commands run: git diff/stat/log/status; kspec task get; kspec item get
+              @daemon-test-guardrail-precision and @daemon-test-harness-guardrails; kspec review
+              get/for-task/add/open/comment/check; rg AC annotations; npm test -- --fresh
+              tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts;
+              custom npx oxlint probe for exec("echo dist/daemon/index.js"); npm test -- --fresh;
+              kspec validate; npm run lint; npm test -- --fresh tests/daemon-build.test.ts; kspec
+              search; kspec task note @01KR4AWP. Claims verified: prior blockers for
+              direct-executable and exec/execSync shell-string daemon entry detection are covered by
+              code and tests; found remaining false positive for unrelated shell commands that
+              mention the daemon path. Categories searched: correctness, false positives/precision,
+              AC coverage, test quality, lint/validation, flaky test triage, integration with
+              detached-serve classification.'
+            created_at: 2026-05-08T20:23:53.987Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-08T20:05:01.439Z
-    updated_at: 2026-05-08T20:23:36.018Z
+    updated_at: 2026-05-08T20:23:53.987Z
     notes: []
