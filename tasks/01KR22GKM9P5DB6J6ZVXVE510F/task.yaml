@@ -102,7 +102,7 @@ tags:
   - cli
   - mock
 vcs_refs: []
-review_ref: "@01KR2NEDR1B7V8W4K98Z5M5W0S"
+review_ref: "@01KR2RB3M839B05EZMQEF7XN6M"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-standardize-mock-daemon-client-fixtures/01kr22gk
@@ -210,6 +210,13 @@ history:
         previous: 2026-05-08T02:00:20.846Z
     command: task-submit
     timestamp: 2026-05-08T02:54:14.605Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KR2RB3M839B05EZMQEF7XN6M"
+        previous: "@01KR2NEDR1B7V8W4K98Z5M5W0S"
+    command: review-link
+    timestamp: 2026-05-08T02:58:22.629Z
 created_at: 2026-05-07T20:36:50.953Z
 started_at: 2026-05-08T02:39:33.649Z
 submitted_at: 2026-05-08T02:54:14.605Z

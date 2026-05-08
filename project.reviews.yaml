@@ -184326,3 +184326,29 @@ reviews:
     created_at: 2026-05-08T02:40:16.632Z
     updated_at: 2026-05-08T02:52:35.090Z
     notes: []
+  - _ulid: 01KR2RB3M839B05EZMQEF7XN6M
+    slugs: []
+    title: Review standardize mock daemon client fixtures (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR2RB3M821C3JEBZ1BWGCP18
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-08T02:58:19.400Z
+    examined_commit: fd4e6cb50da3ab226f50745a575f35056ae3bd51
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR22GKM9P5DB6J6ZVXVE510F"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-08T02:58:19.400Z
+    updated_at: null
+    notes: []
