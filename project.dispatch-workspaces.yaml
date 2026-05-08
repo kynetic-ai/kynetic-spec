@@ -16788,7 +16788,7 @@ workspaces:
         head: ac91faa584cbd9e594f72a9b057827721e06c4e9
         last_seen_at: 2026-05-08T21:26:39.879Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-daemon-startup-review-tests-01kr4awp
-  - active_role: worker
+  - active_role: null
     base_branch_point: c7a614eb8c7ad29b53b498753046704475f181da
     bootstrap:
       status: succeeded
@@ -17119,12 +17119,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T22:03:22.454Z
+      updated_at: 2026-05-08T22:05:10.157Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T22:03:22.454Z
+      updated_at: 2026-05-08T22:05:10.157Z
     integration:
       status: pending
       detail: null
@@ -17132,17 +17132,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c7a614eb8c7ad29b53b498753046704475f181da
-      updated_at: 2026-05-08T22:03:22.454Z
-    lifecycle_state: active
+      updated_at: 2026-05-08T22:05:10.157Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KR3W7R7Y2JCNSJZGPNCM9QFA"
     task_slug: task-harden-playwright-daemon-fixture-cleanup
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T21:48:58.770Z
-      last_reconciled_at: 2026-05-08T22:03:22.454Z
+      last_reconciled_at: 2026-05-08T22:05:10.157Z
       created_at: 2026-05-08T21:48:25.747Z
-      updated_at: 2026-05-08T22:03:22.454Z
+      updated_at: 2026-05-08T22:05:10.157Z
     workspace_id: dispatch-workspace-01KR3W7R7Y2JCNSJZGPNCM9QFA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
