@@ -38724,9 +38724,21 @@ runs:
     completed_at: 2026-05-08T01:23:31.763Z
   - _ulid: 01KR2KS2VA26BPDTYGX3A59PS7
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T01:38:34.474Z
+        completed_at: 2026-05-08T01:39:34.950Z
+        notes: "What worked well: the detached-reviewer merge helper gave a clean supported path from an
+          approved detached snapshot into dev; review records made the gate state explicit; the
+          focused E2E slice directly exercised the highest-risk daemon wrapper behavior, especially
+          restart/reconnect on a reused endpoint."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T01:39:34.950Z
+        completed_at: 2026-05-08T01:39:34.950Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T01:38:34.474Z
