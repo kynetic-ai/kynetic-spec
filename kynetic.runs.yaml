@@ -38880,9 +38880,22 @@ runs:
     completed_at: 2026-05-08T02:22:51.762Z
   - _ulid: 01KR2Q0JP68GYT876M17N7N15K
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T02:35:05.799Z
+        completed_at: 2026-05-08T02:36:36.518Z
+        notes: "What worked: starting from one representative consumer (websocket test) before mechanically
+          migrating others surfaced helper API gaps early; adding 11 helper unit tests caught the
+          missing modules/test.yaml placeholder before it broke consumer tests; default split
+          manifest plus opt-in LEGACY_INLINE_MANIFEST kept new tests on the modern format while
+          preserving legacy compatibility for tests that only hit non-task routes."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T02:36:36.518Z
+        completed_at: 2026-05-08T02:36:36.518Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T02:35:05.799Z
