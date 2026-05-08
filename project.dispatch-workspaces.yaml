@@ -9083,11 +9083,11 @@ workspaces:
     canonical_branch: dispatch/task/task-implement-shared-daemon-test-fixture/01kr22gj
     canonical_branch_head: a1772de24d6b4027dbf16f1ea2390771fb54045a
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-08T00:25:03.919Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-08T00:25:04.596Z
     health:
       status: healthy
       issues: []
@@ -9101,7 +9101,7 @@ workspaces:
       target_branch: dev
       target_commit: e590cfdcf82242754ed4ec1f135e0b909f774f4a
       updated_at: 2026-05-08T00:25:03.919Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR22GJR5YSYRMW6VSD6MQ362"
     task_slug: task-implement-shared-daemon-test-fixture
@@ -9110,7 +9110,7 @@ workspaces:
       last_active_at: 2026-05-08T00:11:26.437Z
       last_reconciled_at: 2026-05-08T00:25:03.919Z
       created_at: 2026-05-07T22:30:17.720Z
-      updated_at: 2026-05-08T00:25:03.919Z
+      updated_at: 2026-05-08T00:25:04.596Z
     workspace_id: dispatch-workspace-01KR22GJR5YSYRMW6VSD6MQ362
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
