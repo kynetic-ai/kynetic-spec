@@ -190189,6 +190189,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T22:07:09.102Z
+      - _ulid: 01KR4TS035MGTAT5B4JTY1N859
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR4TRYRDVWZST921A71TJP7D
+        timestamp: 2026-05-08T22:19:20.549Z
     examined_commit: 5ccd73404bb47e41462a02479dcbf5ebb1d0c90f
     external_links: []
     lifecycle_state: open
@@ -190198,8 +190205,30 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7R7Y2JCNSJZGPNCM9QFA"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR4TRYRDVWZST921A71TJP7D
+        anchor:
+          type: code
+          commit: 5ccd73404bb47e41462a02479dcbf5ebb1d0c90f
+          line_end: 156
+          line_start: 125
+          path: tests/e2e-fixture-daemon-cleanup.test.ts
+          side: head
+        entries:
+          - _ulid: 01KR4TRYRDM1YGM066WQYPCK49
+            author: Jacob Chapel
+            body: "MUST-FIX: This test claims coverage for @daemon-test-startup-failure-hygiene
+              ac-owned-child-stopped-after-startup-failure, but it never observes the child/stop
+              path. The fake start only calls registerCleanup with NOOP_STOP and throws; the test
+              asserts the registration flag and thrown error, not that the registered stop ran or
+              that an owned child was stopped before failure returned. A regression where the
+              wrapper lost startup-failure teardown would still pass this AC annotation. Replace
+              this with behavioral coverage that proves the wrapper/fixture failure path invokes the
+              registered stop, or remove this AC claim and rely on the existing shared-core test for
+              the shared-core behavior."
+            created_at: 2026-05-08T22:19:19.182Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T22:06:49.743Z
-    updated_at: 2026-05-08T22:07:07.752Z
+    updated_at: 2026-05-08T22:19:19.182Z
     notes: []
