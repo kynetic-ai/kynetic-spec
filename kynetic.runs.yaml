@@ -38583,9 +38583,21 @@ runs:
     completed_at: 2026-05-07T23:53:47.030Z
   - _ulid: 01KR2FKFSGVHNT7JYNSZY10SFE
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T00:25:36.817Z
+        completed_at: 2026-05-08T00:26:49.525Z
+        notes: "What worked well: The detached reviewer flow stayed clean end to end. Reading prior review
+          records first made the cycle-3 focus precise; the fresh review record captured checks and
+          evidence cleanly; the supported detached merge helper integrated the approved pinned
+          commit into dev without manual checkout or conflict handling."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T00:26:49.525Z
+        completed_at: 2026-05-08T00:26:49.525Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T00:25:36.817Z
