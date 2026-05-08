@@ -185747,6 +185747,18 @@ reviews:
         required: true
         created_at: 2026-05-08T13:16:18.575Z
         completed_at: 2026-05-08T13:16:18.575Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Reviewed task graph: P1 regression-test tasks precede matching P1 fix tasks; guardrail
+          cleanup fix waits for command-classification fix; P2 endpoint/Playwright tasks depend on
+          required fixture/guardrail fixes; P3 validation depends on all implementation tasks. No
+          cycle, missing prerequisite, or priority inversion found."
+        name: Dependency ordering
+        required: true
+        created_at: 2026-05-08T13:16:27.737Z
+        completed_at: 2026-05-08T13:16:27.737Z
     events:
       - _ulid: 01KR3VM9CQQY1D1ZWDAS4HYBQB
         actor: Jacob Chapel
@@ -185803,6 +185815,13 @@ reviews:
           status: pass
           name: Task standalone quality
         timestamp: 2026-05-08T13:16:19.823Z
+      - _ulid: 01KR3VQ00M5VGHHCEZHG831XB7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-05-08T13:16:29.077Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -185815,5 +185834,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T13:15:00.376Z
-    updated_at: 2026-05-08T13:16:18.575Z
+    updated_at: 2026-05-08T13:16:27.737Z
     notes: []
