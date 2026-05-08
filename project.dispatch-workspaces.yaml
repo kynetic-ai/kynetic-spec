@@ -13688,11 +13688,11 @@ workspaces:
     canonical_branch: dispatch/task/task-add-real-daemon-startup-failure-tests/01kr3w7q
     canonical_branch_head: 324ac8a62aba4af96c2783d7b5da692419615644
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-08T15:19:11.003Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-08T15:19:12.391Z
     health:
       status: healthy
       issues: []
@@ -13706,7 +13706,7 @@ workspaces:
       target_branch: dev
       target_commit: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
       updated_at: 2026-05-08T15:19:11.003Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR3W7QN8Y4NJFQ4HST166KVR"
     task_slug: task-add-real-daemon-startup-failure-tests
@@ -13715,7 +13715,7 @@ workspaces:
       last_active_at: 2026-05-08T15:04:27.933Z
       last_reconciled_at: 2026-05-08T15:19:11.003Z
       created_at: 2026-05-08T13:55:12.012Z
-      updated_at: 2026-05-08T15:19:11.003Z
+      updated_at: 2026-05-08T15:19:12.391Z
     workspace_id: dispatch-workspace-01KR3W7QN8Y4NJFQ4HST166KVR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
