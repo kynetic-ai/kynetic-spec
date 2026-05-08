@@ -1,1 +1,37 @@
-notes: []
+notes:
+  - _ulid: 01KR2GN8HE2KW7WMV225ADHZ13
+    content: >-
+      Migration approach:
+
+
+      - websocket-protocol: replaced bespoke port/readiness/spawn helpers with
+      createTestDaemonProject + startTestDaemon. Default runtime is now Node (was hardcoded Bun).
+      Added a runtime parity describe block that runs node + bun (when installed), exercising
+      connect/subscribe/broadcast plus the documented heartbeat-degradation startup warning per
+      @daemon-runtime-adapter ac-heartbeat-degradation. Bun is treated as optional (skipped via
+      isDaemonRuntimeAvailable) so generic Node coverage does not fail when Bun is missing.
+
+
+      - daemon-build: replaced manual port allocator and ad-hoc spawn loop with the shared fixture;
+      uses readiness mode 'health' to keep the build smoke focused on the build artifact, while
+      still asserting the runtime field on /api/health for both runtimes. Bun is optional and
+      reported as skipped.
+
+
+      - cli-serve: only the EADDRINUSE test spawned dist/daemon/index.js outside the CLI lifecycle
+      subject. Migrated it to the shared fixture using a custom readiness probe that watches for the
+      daemon's own exit (the default health probe would hang because the pre-bound TCP blocker
+      accepts the connection but never replies). All other cli-serve tests are CLI-lifecycle and
+      stay on the CLI path per @daemon-test-mode-boundaries ac-cli-lifecycle-tests-use-cli-path.
+
+
+      - cli-no-daemon: no direct daemon spawns. Auto-start tests drive the CLI's auto-start path and
+      stay on the CLI path.
+
+
+      - Audited every other tests/*.test.ts file for direct daemon spawns; none remain outside the
+      shared helper or canonical exceptions (lint-no-leaky-test-daemon fixtures, test-runner
+      artifact-existence checks).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T00:44:03.502Z
