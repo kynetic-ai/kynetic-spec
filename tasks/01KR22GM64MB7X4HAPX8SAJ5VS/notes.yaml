@@ -15,3 +15,22 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-08T03:21:50.078Z
+  - _ulid: 01KR2TR10R0D7WA45TQE9RTWX2
+    content: "Implementation summary: extended no-leaky-test-daemon rule with three new families of
+      checks. (1) Direct daemon spawn (spawn DAEMON_ENTRY) is now always flagged outside the helper
+      path allowlist — cleanup placement no longer whitelists the spawn. (2) Hardcoded
+      spawn(\"bun\", [DAEMON_ENTRY]) gets a specific message about routing runtime selection through
+      the shared fixture. (3) fetch() and new WebSocket() first-arg URLs carrying localhost:<port>
+      are flagged so clients use daemon.apiUrl/daemon.wsUrl. Detached CLI start keeps the existing
+      scoped-cleanup escape hatch because cli-serve.test.ts has to exercise --detach itself. Helper
+      paths (tests/helpers/, tools/eslint-rules/, the rule's two fixture-string test files) skip the
+      rule entirely. Per-test exceptions use the standard oxlint-disable-next-line with a -- reason;
+      the new tests/lint-daemon-test-guardrails.test.ts has the AC annotations and 19 tests covering
+      ac-direct-daemon-spawn-flagged, ac-detached-serve-without-cleanup-flagged,
+      ac-helper-internals-allowed, and ac-exceptions-are-localized. Added inline disable comments
+      with documented reasons to four fetches in cli-serve.test.ts that intentionally talk to the
+      CLI-started daemon. Repo lint count is unchanged from baseline (597 warnings, 13 errors). Full
+      test suite (8776 tests) passes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T03:40:19.864Z
