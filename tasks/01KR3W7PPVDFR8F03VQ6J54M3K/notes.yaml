@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KR4DGQEB25Z0QPR400R9794W
+    content: "Refactored classifier into precise predicates: readDaemonEntryInvocation handles
+      spawn/spawnSync/execFile/execFileSync (executable + argv array) and fork (first arg = module
+      path); isDetachCallExpression dispatches per-callee and only fires for runKspec/kspec,
+      exec/execSync with kspec-leading shell command, or spawn-likes whose first arg is the kspec
+      executable. Removed SPAWN_LIKE_CALLEES set; added isKspecExecutableArg, isDaemonEntryArg,
+      shellCommandLeadsWithKspec, literalString, templateLiteralRaw helpers. Updated
+      directDaemonSpawn/hardcodedBunRuntime messages to include callee-specific {{pattern}}. Helper
+      allowlist preserved verbatim. Removed expectClassifierGap/expectOxlintRanCleanly wrappers from
+      tests/lint-daemon-test-guardrails.test.ts and inlined the post-fix assertions. All 68
+      lint-rule tests and 8809 full-suite tests pass; no new lint errors introduced (baseline 13
+      errors unchanged)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T18:27:38.059Z
