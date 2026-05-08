@@ -38880,7 +38880,7 @@ runs:
     completed_at: 2026-05-08T02:22:51.762Z
   - _ulid: 01KR2Q0JP68GYT876M17N7N15K
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -38895,7 +38895,24 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T02:36:36.518Z
-        completed_at: 2026-05-08T02:36:36.518Z
+        completed_at: 2026-05-08T02:36:58.198Z
+        notes: >-
+          Friction (high confidence): the daemon's manifest validator silently accepts kynetic 1.0
+          with tasks_file: project.tasks.yaml but task routes throw 'monolithic task storage format
+          has been removed'. Test authors discover this only at runtime when they hit /api/tasks.
+          Searched for existing tracking — @task-remove-monolithic is completed, no current item
+          covers the test-author-facing diagnostic gap. The newly-added LEGACY_INLINE_MANIFEST
+          helper docstring captures the constraint, but a richer manifest-load warning (or removal
+          of legacy format acceptance entirely) would prevent re-discovery in future tests.
+
+
+          Success (high confidence): write a representative consumer test once, then make the helper
+          API support it before mechanically migrating siblings. Prevents the common 'helper grew to
+          fit one test, awkward for the others' anti-pattern.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T02:36:58.198Z
+        completed_at: 2026-05-08T02:36:58.198Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T02:35:05.799Z
