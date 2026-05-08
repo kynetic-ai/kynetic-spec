@@ -1,1 +1,19 @@
-notes: []
+notes:
+  - _ulid: 01KR4DYR50V7XXN6X2QA1K290F
+    content: "Approach: Add an idempotent cleanupChildOnStartupFailure() closure inside
+      startChildMockDaemon — sends SIGTERM, schedules SIGKILL fallback after CHILD_GRACEFUL_KILL_MS,
+      and removes the helper-allocated record file. Wire it into all three startup-failure paths
+      (timeout, malformed-stdout JSON.parse failure, child error event). For env hygiene, add an
+      env?: Record<string, string> option to StartMockDaemonOptions and route the spawn env through
+      buildTestSubprocessEnv (which already strips DISPATCH/AGENT/RUNNER vars including
+      KSPEC_SESSION_ID). Additionally strip the AMBIENT_DAEMON_CONTROL_VARS list
+      (KSPEC_DAEMON_PID/PORT/HOST/CONNECT_HOST/RUNTIME, KSPEC_NO_DAEMON, plus the URL twins
+      KSPEC_DAEMON_API_URL/WS_URL the cjs records) unless the caller opts in via overrides — same
+      pattern as buildDaemonChildEnv in tests/helpers/daemon.ts. Remove expectMockDaemonHygieneGap
+      wrapper from the three failing-before-fix tests; keep isProcessAlive/ensureProcessReaped as
+      belt-and-suspenders cleanup. Will export AMBIENT_DAEMON_CONTROL_VARS from a shared spot to
+      avoid duplication — likely tests/helpers/cli.ts since the testing convention is to route
+      subprocess env through that module."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T18:35:17.536Z
