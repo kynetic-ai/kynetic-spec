@@ -10619,11 +10619,11 @@ workspaces:
     canonical_branch: dispatch/task/task-standardize-mock-daemon-client-fixtures/01kr22gk
     canonical_branch_head: fd4e6cb50da3ab226f50745a575f35056ae3bd51
     cleanup:
-      status: blocked
+      status: completed
       detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
       reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-05-08T03:14:08.407Z
+      updated_at: 2026-05-08T03:14:11.429Z
     health:
       status: healthy
       issues: []
@@ -10637,16 +10637,16 @@ workspaces:
       target_branch: dev
       target_commit: 18d77f97eb153c9bcf7e408557953f70c4f39688
       updated_at: 2026-05-08T03:14:08.407Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KR22GKM9P5DB6J6ZVXVE510F"
     task_slug: task-standardize-mock-daemon-client-fixtures
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-08T03:14:11.429Z
       last_active_at: 2026-05-08T02:57:36.204Z
       last_reconciled_at: 2026-05-08T03:14:08.407Z
       created_at: 2026-05-08T01:24:22.511Z
-      updated_at: 2026-05-08T03:14:08.407Z
+      updated_at: 2026-05-08T03:14:11.429Z
     workspace_id: dispatch-workspace-01KR22GKM9P5DB6J6ZVXVE510F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
