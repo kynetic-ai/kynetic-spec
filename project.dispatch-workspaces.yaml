@@ -15718,11 +15718,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-mock-daemon-cleanup-env-hygiene/01kr3w7r
     canonical_branch_head: 16da0ce3d2b3e81217986e95b59d9c9051996698
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-08T19:56:10.982Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-08T19:56:12.077Z
     health:
       status: healthy
       issues: []
@@ -15736,7 +15736,7 @@ workspaces:
       target_branch: dev
       target_commit: 1148fad7662616a925c27654f1c01cb24f4544e3
       updated_at: 2026-05-08T19:56:10.982Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR3W7RTYPWDJVCQFZD2042P2"
     task_slug: task-fix-mock-daemon-cleanup-env-hygiene
@@ -15745,7 +15745,7 @@ workspaces:
       last_active_at: 2026-05-08T19:41:13.170Z
       last_reconciled_at: 2026-05-08T19:56:10.982Z
       created_at: 2026-05-08T18:30:14.056Z
-      updated_at: 2026-05-08T19:56:10.982Z
+      updated_at: 2026-05-08T19:56:12.077Z
     workspace_id: dispatch-workspace-01KR3W7RTYPWDJVCQFZD2042P2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
