@@ -104,6 +104,22 @@ export interface StartMockDaemonOptions {
    * When omitted, a temp file under the OS temp dir is allocated.
    */
   recordPath?: string;
+  /**
+   * Test-only seam: extra args appended verbatim to the spawn argv when
+   * starting the child mock daemon. Production callers must not pass this.
+   * The failure-path contract tests in mock-daemon.test.ts use it to drive
+   * the `--break`, `--pid-file`, and `--env-record` flags in mock-daemon.cjs
+   * without exposing those failure-injection seams as public helper API.
+   */
+  __testInjectArgs?: string[];
+  /**
+   * Test-only seam: override the child startup readiness timeout for the
+   * spawn-and-wait path. Production callers must not pass this. The
+   * failure-path contract tests use it to exercise the helper's timeout
+   * cleanup branch within a single per-test budget rather than waiting
+   * out the production CHILD_STARTUP_TIMEOUT_MS default.
+   */
+  __testStartupTimeoutMs?: number;
 }
 
 // ── Host probing ──────────────────────────────────────────────────────
@@ -329,6 +345,8 @@ async function startChildMockDaemon(
   mode: MockDaemonMode,
   recordPath: string,
   ownsRecordPath: boolean,
+  injectArgs: string[],
+  startupTimeoutMs: number,
 ): Promise<MockDaemonClient | null> {
   return new Promise((resolve) => {
     const child: ChildProcess = spawn(
@@ -341,6 +359,7 @@ async function startChildMockDaemon(
         mode,
         "--record",
         recordPath,
+        ...injectArgs,
       ],
       { stdio: ["pipe", "pipe", "pipe"] },
     );
@@ -369,7 +388,7 @@ async function startChildMockDaemon(
     const timeoutId = setTimeout(() => {
       cleanupRecordFile();
       finish(null);
-    }, CHILD_STARTUP_TIMEOUT_MS);
+    }, startupTimeoutMs);
 
     child.stdout!.on("data", (chunk: Buffer) => {
       stdout += chunk.toString();
@@ -458,7 +477,16 @@ export async function startMockDaemon(
   if (opts.asChildProcess) {
     const ownsRecordPath = opts.recordPath === undefined;
     const recordPath = opts.recordPath ?? allocateRecordPath(bindHost);
-    return startChildMockDaemon(bindHost, mode, recordPath, ownsRecordPath);
+    const injectArgs = opts.__testInjectArgs ?? [];
+    const startupTimeoutMs = opts.__testStartupTimeoutMs ?? CHILD_STARTUP_TIMEOUT_MS;
+    return startChildMockDaemon(
+      bindHost,
+      mode,
+      recordPath,
+      ownsRecordPath,
+      injectArgs,
+      startupTimeoutMs,
+    );
   }
   return startInProcessMockDaemon(bindHost, mode);
 }
