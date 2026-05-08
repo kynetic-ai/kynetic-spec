@@ -189943,6 +189943,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T21:49:36.475Z
+      - _ulid: 01KR4S7160YNB5GE15JET0VGP2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR4S6ZP1VENAFAP61DYQQDVD
+        timestamp: 2026-05-08T21:52:03.264Z
     examined_commit: 0195510d171b0ba5dada2b6fd20c3479b812fc93
     external_links: []
     lifecycle_state: open
@@ -189952,8 +189959,33 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR4S6ZP1VENAFAP61DYQQDVD
+        anchor:
+          type: code
+          commit: 0195510d171b0ba5dada2b6fd20c3479b812fc93
+          line_end: 640
+          line_start: 640
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR4S6ZP135D5736RMT2Q4HE1
+            author: Jacob Chapel
+            body: "MUST-FIX: Direct daemon launches through the current Node runtime are silently accepted. In
+              the spawn/execFile runtime-form branch, args[0] must satisfy isRecognisedRuntimeArg(),
+              but that helper only recognizes string/template values like 'node' or '/usr/bin/node'.
+              A common and definite Node runtime expression, process.execPath, falls through and the
+              call returns null even when argv contains DAEMON_ENTRY or 'dist/daemon/index.js'. I
+              verified this with a synthetic oxlint file containing spawn(process.execPath,
+              [DAEMON_ENTRY, '--port', '0']) and execFile(process.execPath, ['dist/daemon/index.js',
+              '--port', '0']); oxlint exited 0 with 0 diagnostics. Those calls launch the real
+              daemon entrypoint and should satisfy @daemon-test-guardrail-precision
+              ac-direct-daemon-entry-invocations-flagged. Add recognition plus behavioral
+              regressions for process.execPath forms without reintroducing the cat/grep false
+              positives."
+            created_at: 2026-05-08T21:52:01.730Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T21:49:15.098Z
-    updated_at: 2026-05-08T21:49:35.210Z
+    updated_at: 2026-05-08T21:52:01.730Z
     notes: []
