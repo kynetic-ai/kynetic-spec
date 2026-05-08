@@ -40489,7 +40489,7 @@ runs:
     completed_at: 2026-05-08T18:47:04.115Z
   - _ulid: 01KR4EWC314N5J4QD0VZVG7HHQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -40508,7 +40508,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T18:51:58.475Z
-        completed_at: 2026-05-08T18:51:58.475Z
+        completed_at: 2026-05-08T18:52:10.068Z
+        notes: "Friction points: (1) AMBIENT_DAEMON_CONTROL_VARS is now defined in both
+          tests/helpers/daemon.ts and tests/helpers/mock-daemon.ts. The two lists drifted slightly
+          (mock-daemon includes URL twins KSPEC_DAEMON_API_URL/WS_URL because the cjs records them;
+          daemon.ts does not). A future regression where one list is updated and the other isn't is
+          plausible. Could be consolidated to a single export in cli.ts since that's where
+          buildTestSubprocessEnv lives — but doing it in this task would expand scope. (2)
+          Pre-existing lint warnings (consistent-function-scoping on
+          isProcessAlive/ensureProcessReaped) had been merged in the predecessor task — the standard
+          worker quality gate doesn't appear to fail-on-warning, so warnings can accumulate silently
+          across tasks. Caught and fixed mine while editing the file."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T18:52:10.068Z
+        completed_at: 2026-05-08T18:52:10.068Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T18:51:28.225Z
