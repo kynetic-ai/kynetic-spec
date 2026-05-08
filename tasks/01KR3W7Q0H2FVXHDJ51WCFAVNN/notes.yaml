@@ -48,3 +48,36 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T13:57:58.223Z
+  - _ulid: 01KR40MNH4D9TTXG51D5RGVZSZ
+    content: >-
+      Fix cycle 1: addressed the changes_requested review (@01KR3XZGFXDHARMXBFNVXZKEZH).
+
+
+      Blocker (resolved): the four unsafe regression cases were authored as failing-before-fix
+      assertions, which the reviewer correctly noted would land 'npm test' on dev as red. Switched
+      those four it() calls to it.fails() (vitest's expected-to-fail primitive). The test bodies are
+      identical — same source snippets, same runOxlint invocations, same exitCode/output assertions
+      — but it.fails inverts the pass/fail signal:
+
+        - While the rule has the cleanup-timing gap, the assertion 'expect(result.exitCode).not.toBe(0)' throws (because the rule does not flag the unsafe shape and oxlint exits 0). it.fails treats that thrown assertion as the expected behavior, so the test passes.
+        - When @task-fix-detached-cleanup-timing-analysis tightens the rule and the unsafe shape begins to be reported, the assertion stops throwing and it.fails reports failure — which is the explicit cue for that task to drop the .fails markers. The regression contract is therefore preserved without making dev red.
+
+      Updated the file-level docblock above 'describe(daemon test guardrail precision: detached
+      cleanup timing)' to document the convention so future readers recognize .fails as
+      'expected-to-fail until the linked rule fix lands' rather than a permanent skip. Added
+      per-test comments above each .fails marker pointing to the same.
+
+
+      Verification:
+        - mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts -> exit 0; 49 + 22 = 71 tests passed (no .skipped, no .todo).
+        - Full npm test -> 8806 passed, 5 skipped, 0 failed across 2402 suites.
+
+      Re-verified AC coverage on @daemon-test-guardrail-precision after the change:
+        - ac-detached-cleanup-before-observation: cases 1-3 (now it.fails) + cases 4-5 (allowed-narrow, still it())
+        - ac-local-exception-is-local: cases 6, 8, 9 (case 9 now it.fails)
+        - ac-exception-reason-states-subject: cases 6, 7
+
+      The nit thread (review evidence log) is informational only and needs no code response.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T14:42:35.685Z
