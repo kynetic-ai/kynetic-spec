@@ -189391,6 +189391,23 @@ reviews:
         runner: kspec
         created_at: 2026-05-08T20:47:28.440Z
         completed_at: 2026-05-08T20:47:28.440Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/daemon-api/helpers.ts, tests/daemon-api/helpers.test.ts,
+          packages/daemon/src/server.ts, packages/daemon/src/routes/{automation,diff,refs,debug}.ts,
+          tests/daemon-api/server.test.ts, tests/daemon-api/projects.test.ts,
+          tests/daemon-review-websocket.test.ts. Claims verified: createTestApp registers a subset
+          and omits production server routes/middleware; existing callers do not use omitted routes
+          except boundary assertions. Categories searched: correctness, helper boundary/spec
+          alignment, test quality/source scanning, route integration, server-level error/security
+          boundaries."
+        name: review evidence log
+        required: false
+        runner: manual
+        created_at: 2026-05-08T20:47:40.887Z
+        completed_at: 2026-05-08T20:47:40.887Z
     events:
       - _ulid: 01KR4MTFQ2J0Y8FETD294GGMXH
         actor: Jacob Chapel
@@ -189426,6 +189443,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-08T20:47:29.859Z
+      - _ulid: 01KR4NH6QMQACM362P0X31QRRV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-08T20:47:42.324Z
     examined_commit: e0b6617b7baa8a96f4c13257621dfdc2a3c14a70
     external_links: []
     lifecycle_state: open
@@ -189438,5 +189462,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T20:35:17.859Z
-    updated_at: 2026-05-08T20:47:28.440Z
+    updated_at: 2026-05-08T20:47:40.887Z
     notes: []
