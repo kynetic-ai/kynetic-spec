@@ -187661,6 +187661,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T17:27:54.903Z
+      - _ulid: 01KR4A6VXN9WFSZR8HK83BHJDF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR4A6T4B3JV01M0WBG46VJSG
+        timestamp: 2026-05-08T17:29:49.237Z
     examined_commit: 372133334f5838871372cf48b8ce9cf6c3ddbf36
     external_links: []
     lifecycle_state: open
@@ -187670,8 +187677,31 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7Q0H2FVXHDJ51WCFAVNN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR4A6T4B3JV01M0WBG46VJSG
+        anchor:
+          type: code
+          commit: 372133334f5838871372cf48b8ce9cf6c3ddbf36
+          line_end: 1230
+          line_start: 1230
+          path: tests/lint-daemon-test-guardrails.test.ts
+          side: head
+        entries:
+          - _ulid: 01KR4A6T4BP489BC3Z3G3DTG31
+            author: Jacob Chapel
+            body: "MUST-FIX: The unsafe cleanup-timing regression cases use bare `it.fails()`. Vitest treats any
+              thrown assertion in an `it.fails` body as the expected failure; this same file
+              documents at lines 917-925 that bare `it.fails` cannot distinguish parser/helper
+              failures from the intended known gap. These AC-bearing cases can therefore pass if
+              `runOxlint` crashes or emits a different diagnostic, because the output assertions
+              throw and `it.fails` marks the test as passing. That means the regression coverage can
+              pass for reasons unrelated to the detached-cleanup timing gap. Replace these with a
+              helper like `expectClassifierGap` that first proves oxlint ran cleanly and then
+              verifies the exact current gap shape, or otherwise explicitly assert the known failure
+              mode. Affected cases: lines 1230, 1260, 1287, and 1451."
+            created_at: 2026-05-08T17:29:47.403Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T17:27:35.579Z
-    updated_at: 2026-05-08T17:27:53.493Z
+    updated_at: 2026-05-08T17:29:47.403Z
     notes: []
