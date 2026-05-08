@@ -183768,7 +183768,18 @@ reviews:
     slugs: []
     title: Review migrate Playwright daemon fixture
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test passed: 2382 suites passed; 8728 passed, 5 skipped of 8733; duration 1910.5s.
+          Full log /tmp/kspec-test-cache/01KR2JYWVZH61K8R33ZF55XX2Y/9575fedef73f2829.log."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-08T01:37:06.573Z
+        completed_at: 2026-05-08T01:37:06.573Z
     events:
       - _ulid: 01KR2K07707E9PGPXNWZH5F2ZH
         actor: Jacob Chapel
@@ -183790,6 +183801,13 @@ reviews:
           kind: nit
           thread_ulid: 01KR2KNTN7QFQM15WRBYZS014X
         timestamp: 2026-05-08T01:36:49.082Z
+      - _ulid: 01KR2KPE918J6W1CWHMDWRDVXX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-08T01:37:07.873Z
     examined_commit: c753d124422282c19fc01bf891a34656a5feb29d
     external_links: []
     lifecycle_state: open
@@ -183834,5 +183852,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-08T01:24:59.745Z
-    updated_at: 2026-05-08T01:36:47.783Z
+    updated_at: 2026-05-08T01:37:06.573Z
     notes: []
