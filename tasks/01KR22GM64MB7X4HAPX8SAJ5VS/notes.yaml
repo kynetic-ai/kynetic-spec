@@ -39,3 +39,44 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T03:58:08.652Z
+  - _ulid: 01KR2XBECSJY1K8Q3M3JRAH7N6
+    content: >-
+      Fix cycle 1: addressed all three review blockers from @01KR2V04D1W3CQ3SXCRNE3ZFE9.
+
+
+      Blocker 1 (detached serve argv) — replaced the literal/template-only walker in
+      isDetachCallExpression with argsResolveToDetachedServe. The new helper collects string
+      contributions across all CallExpression arguments (literals, templates, ArrayExpression
+      elements), tokenises them, and matches when serve+start+--detach appear together. Catches
+      spawn("kspec", ["serve", "start", "--detach", ...]) without cleanup. Cleanup escape hatch
+      preserved.
+
+
+      Blocker 2 (variable-bound localhost URL) — added localhostUrlIdentifiers Set tracked from
+      VariableDeclarator and AssignmentExpression nodes whose init carries a localhost:<port> URL
+      string. fetch() and new WebSocket() checks now also fail when the first argument is an
+      Identifier in that Set. Caught one true positive in cli-serve.test.ts:117
+      (waitForDaemonHealth) — annotated with a documented inline disable matching other
+      CLI-launched-daemon fetches in the file.
+
+
+      Blocker 3 (undocumented and file-wide disables) — added a companion rule
+      no-leaky-test-daemon/localized-disable in the same plugin. It scans Program-level comments and
+      reports (a) file/block-wide oxlint-disable directives referencing the main rule (or the bare
+      plugin name) and (b) per-line disable-line / disable-next-line directives with no -- <reason>
+      after the rule name. Because it's a separate rule, the disable directive that silences the
+      main rule does NOT silence the meta-check. Registered in .oxlintrc.json and the test config.
+
+
+      Tests: added 12 new tests in lint-daemon-test-guardrails.test.ts (3 argv-form, 4 variable-URL,
+      5 disable-directive). Reviewer's exact repros are all covered: argv spawn("kspec", [...]),
+      const url=...; fetch(url), oxlint-disable-next-line without --reason, file-wide
+      oxlint-disable, plugin-wide oxlint-disable.
+
+
+      Verification: focused tests pass (53/53 across both lint test files). Full suite passes (8788
+      tests, 5 skipped, 0 failed). npm run lint count back to baseline (13 errors, 721 warnings)
+      after the cli-serve.test.ts true-positive annotation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T04:25:53.305Z
