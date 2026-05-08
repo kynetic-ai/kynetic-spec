@@ -9632,7 +9632,7 @@ workspaces:
         head: 1d4b63a3593e90e4cb5d47f32591973305344713
         last_seen_at: 2026-05-08T00:56:28.869Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-real-daemon-vitest-tests-01kr22gk
-  - active_role: worker
+  - active_role: null
     base_branch_point: 2b4dc4dfd1d3667d9100be4b8e6996b0f2ca1840
     bootstrap:
       status: succeeded
@@ -9963,12 +9963,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T01:20:08.126Z
+      updated_at: 2026-05-08T01:23:44.702Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T01:20:08.126Z
+      updated_at: 2026-05-08T01:23:44.702Z
     integration:
       status: pending
       detail: null
@@ -9976,17 +9976,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2b4dc4dfd1d3667d9100be4b8e6996b0f2ca1840
-      updated_at: 2026-05-08T01:20:08.126Z
-    lifecycle_state: active
+      updated_at: 2026-05-08T01:23:44.702Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KR22GKACR7PZYFXZS9KEYVMQ"
     task_slug: task-migrate-playwright-daemon-fixture
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T00:57:20.255Z
-      last_reconciled_at: 2026-05-08T01:20:08.126Z
+      last_reconciled_at: 2026-05-08T01:23:44.702Z
       created_at: 2026-05-08T00:56:56.177Z
-      updated_at: 2026-05-08T01:20:08.126Z
+      updated_at: 2026-05-08T01:23:44.702Z
     workspace_id: dispatch-workspace-01KR22GKACR7PZYFXZS9KEYVMQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
