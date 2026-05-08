@@ -41355,7 +41355,7 @@ runs:
     started_at: 2026-05-08T22:24:35.952Z
     completed_at: 2026-05-08T22:27:07.573Z
   - _ulid: 01KR4W89HBEW21Z3S5SSSQKB06
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -41399,10 +41399,14 @@ runs:
         completed_at: 2026-05-08T22:46:31.504Z
         notes: No discussion needed because no new improvement proposals were produced; all candidate
           friction is already tracked.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-08T22:46:31.504Z
-        completed_at: 2026-05-08T22:46:31.504Z
+        completed_at: 2026-05-08T22:46:40.701Z
+        notes: No capture performed. Existing observations already cover the successful synthetic-probe
+          review pattern and the lint-baseline friction; this reflection intentionally avoids
+          duplicate inbox or observation items.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T22:45:10.315Z
+    completed_at: 2026-05-08T22:46:40.701Z
