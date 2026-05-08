@@ -189166,6 +189166,17 @@ reviews:
         runner: npm test
         created_at: 2026-05-08T20:23:02.762Z
         completed_at: 2026-05-08T20:23:02.762Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/daemon-build.test.ts passed: 2 tests, 0 failed. This disproved
+          treating the full-suite daemon-build timeout as introduced by this branch."
+        name: daemon-build focused rerun
+        required: false
+        runner: npm test
+        created_at: 2026-05-08T20:23:14.756Z
+        completed_at: 2026-05-08T20:23:14.756Z
     events:
       - _ulid: 01KR4K31VYTF1G9TCCAQ936BF7
         actor: Jacob Chapel
@@ -189208,6 +189219,13 @@ reviews:
           status: fail
           name: full test suite
         timestamp: 2026-05-08T20:23:04.228Z
+      - _ulid: 01KR4M4EZMWZMKHHDBAD3A6PM4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon-build focused rerun
+        timestamp: 2026-05-08T20:23:16.212Z
     examined_commit: f0d119a1f95ce93bafc5ea58c499ebd02865f260
     external_links: []
     lifecycle_state: open
@@ -189243,5 +189261,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-08T20:05:01.439Z
-    updated_at: 2026-05-08T20:23:02.762Z
+    updated_at: 2026-05-08T20:23:14.756Z
     notes: []
