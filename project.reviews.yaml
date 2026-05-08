@@ -187278,7 +187278,18 @@ reviews:
     slugs: []
     title: Review detached cleanup timing regressions (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exits 6 due pre-existing repo-wide warnings; kspec validate --warnings-ok
+          exits 0. @daemon-test-guardrail-precision is not listed under Missing own AC coverage.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-08T16:00:12.412Z
+        completed_at: 2026-05-08T16:00:12.412Z
     events:
       - _ulid: 01KR44E77GG0E010R2V40J5ZEM
         actor: Jacob Chapel
@@ -187293,6 +187304,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T15:49:11.146Z
+      - _ulid: 01KR452TG2PWYYKSXWA8YTXTT9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-08T16:00:13.827Z
     examined_commit: 500780baf6daf57dfb1a289e18052b22c9ab5ce3
     external_links: []
     lifecycle_state: open
@@ -187305,5 +187323,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T15:48:58.736Z
-    updated_at: 2026-05-08T15:49:09.774Z
+    updated_at: 2026-05-08T16:00:12.412Z
     notes: []
