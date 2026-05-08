@@ -190356,6 +190356,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T22:29:43.000Z
+      - _ulid: 01KR4W50QRDTQCBX5ZP22ENHKZ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR4W4ZATJCYE4Z3GY96Q79N6
+        timestamp: 2026-05-08T22:43:23.000Z
     examined_commit: 1459ff6696a65438ac6b64221407f751f7c4d3b8
     external_links: []
     lifecycle_state: open
@@ -190365,8 +190372,30 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR4W4ZATJCYE4Z3GY96Q79N6
+        anchor:
+          type: code
+          commit: 1459ff6696a65438ac6b64221407f751f7c4d3b8
+          line_end: 729
+          line_start: 727
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR4W4ZAT2RA55SZE0PC7MV9J
+            author: Jacob Chapel
+            body: 'MUST-FIX: exec/execSync shell-string detection only accepts the daemon entry as token 0 or
+              token 1. A direct launch with a normal Node runtime flag, for example exec("node
+              --enable-source-maps dist/daemon/index.js --port 0"), still starts the real daemon
+              entrypoint outside the helper but this rule emits zero diagnostics. I verified this
+              with a synthetic oxlint probe against this rule: oxlint exited 0 with "Found 0
+              warnings and 0 errors." This violates @daemon-test-guardrail-precision
+              ac-direct-daemon-entry-invocations-flagged; the detector needs to handle
+              executable-position runtime options without reintroducing the echo/cat/grep false
+              positives covered by the existing regressions.'
+            created_at: 2026-05-08T22:43:21.562Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T22:29:22.411Z
-    updated_at: 2026-05-08T22:29:41.551Z
+    updated_at: 2026-05-08T22:43:21.562Z
     notes: []
