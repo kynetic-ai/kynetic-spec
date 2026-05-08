@@ -55,7 +55,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -65,6 +65,14 @@ tags:
   - lint
   - daemon
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-add-detached-cleanup-timing-regressions/01kr3w7q
+  captured_at: 2026-05-08T13:52:39.450Z
+  commit: b2de194721262716c2ee5ddda26bb79b01cf030d
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR3X2T7CH0474K8H57SGAKSY
 history:
   - author: Jacob Chapel
@@ -87,7 +95,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-08T13:41:01.810Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-detached-cleanup-timing-regressions/01kr3w7q
+          captured_at: 2026-05-08T13:52:39.450Z
+          commit: b2de194721262716c2ee5ddda26bb79b01cf030d
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-08T13:52:39.453Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-08T13:52:39.453Z
 created_at: 2026-05-08T13:25:36.913Z
 started_at: 2026-05-08T13:41:01.810Z
+submitted_at: 2026-05-08T13:52:39.453Z
 todos: []
 automation: eligible
