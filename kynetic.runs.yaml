@@ -41033,7 +41033,7 @@ runs:
     completed_at: 2026-05-08T21:11:46.198Z
   - _ulid: 01KR4QJTW3Q07BY74YYDCWEA4F
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -41051,7 +41051,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T21:24:13.375Z
-        completed_at: 2026-05-08T21:24:13.375Z
+        completed_at: 2026-05-08T21:25:08.373Z
+        notes: Searched 'readiness probe cache', 'premature ready', 'disk fallback cache_status', 'flaky
+          daemon' — no existing observations or tasks track the disk-fallback-window race in
+          /api/tasks for readiness probes. The general 'flaky daemon' results are unrelated
+          cleanup/process tasks.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T21:25:08.373Z
+        completed_at: 2026-05-08T21:25:08.373Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T21:23:32.867Z
