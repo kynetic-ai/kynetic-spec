@@ -33,7 +33,6 @@
 import http from "node:http";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { ChildProcess, spawn } from "node:child_process";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   cleanupTempDir,
@@ -42,6 +41,12 @@ import {
   initGitRepo,
   kspec,
 } from "./helpers/cli.js";
+import {
+  startMockDaemon,
+  writeLegacyDaemonPort,
+  writeMockDaemonMetadata,
+  type MockDaemonClient,
+} from "./helpers/mock-daemon.js";
 
 import {
   detectDaemon,
@@ -54,6 +59,11 @@ import {
 import type { DaemonClientEndpoint } from "../src/cli/pid-utils.js";
 
 // ── Helper: Create a Node HTTP server and return its address ──────
+//
+// Used by proxyCommand unit tests that need very specific server behavior
+// (e.g. hung /api/projects, header capture) that the shared mock daemon
+// helper does not provide. Detection / E2E tests use the shared helper in
+// tests/helpers/mock-daemon.ts.
 
 function createTestServer(
   handler: (req: http.IncomingMessage, res: http.ServerResponse) => void,
@@ -102,52 +112,6 @@ function makeTestEndpoint(
     source: "legacy-port",
     ...overrides,
   };
-}
-
-// ── Helper: Start mock daemon in a child process ──────────────────
-// Uses a separate process so spawnSync in kspec() helper doesn't
-// block the event loop and prevent the mock server from accepting.
-
-const MOCK_DAEMON_SCRIPT = join(import.meta.dirname, "helpers", "mock-daemon.cjs");
-
-function startMockDaemon(mode: "normal" | "error" | "hang" = "normal"): Promise<{
-  process: ChildProcess;
-  port: number;
-}> {
-  return new Promise((resolve, reject) => {
-    const child = spawn("node", [MOCK_DAEMON_SCRIPT, "--mode", mode], {
-      stdio: ["pipe", "pipe", "pipe"],
-    });
-
-    let stdout = "";
-    child.stdout!.on("data", (chunk: Buffer) => {
-      stdout += chunk.toString();
-      // Port is the first line of stdout
-      const match = stdout.match(/^(\d+)\n/);
-      if (match) {
-        resolve({ process: child, port: parseInt(match[1], 10) });
-      }
-    });
-
-    child.on("error", reject);
-    child.on("exit", (code) => {
-      if (!stdout.includes("\n")) {
-        reject(new Error(`Mock daemon exited with code ${code} before reporting port`));
-      }
-    });
-  });
-}
-
-function stopMockDaemon(child: ChildProcess): Promise<void> {
-  return new Promise((resolve) => {
-    child.on("exit", () => resolve());
-    child.kill("SIGTERM");
-    // Force kill after 2s
-    setTimeout(() => {
-      child.kill("SIGKILL");
-      resolve();
-    }, 2000);
-  });
 }
 
 // ── Unit Tests: Detection ─────────────────────────────────────────
@@ -199,11 +163,10 @@ describe("daemon proxy detection", () => {
     const originalHome = process.env.HOME;
     const tempDir = await createTempDir();
     try {
-      process.env.HOME = tempDir;
-      // Write a port file pointing to a port that is not listening
-      const configDir = join(tempDir, ".config", "kspec");
-      mkdirSync(configDir, { recursive: true });
-      writeFileSync(join(configDir, "daemon.port"), "59999");
+      const isolatedHome = await createIsolatedKspecHome(tempDir);
+      process.env.HOME = isolatedHome.homeDir;
+      // Legacy port pointing at a port that is not listening
+      writeLegacyDaemonPort({ home: isolatedHome, port: 59999 });
 
       const result = await detectDaemon();
 
@@ -219,128 +182,79 @@ describe("daemon proxy detection", () => {
 
   // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
   // AC: @daemon-network-endpoint-contract ac-legacy-port-fallback
+  // AC: @daemon-network-endpoint-contract ac-tests-use-resolved-endpoint
   // AC: @daemon-proxy-detection ac-connection-metadata-check
   // AC: @cli-daemon-proxy ac-auto-detect
+  // AC: @daemon-test-mode-boundaries ac-cli-client-tests-use-mock-daemon
+  // AC: @daemon-test-endpoint-consistency ac-mock-metadata-fidelity
   // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
   it("uses the advertised api_url from daemon.connection.json when present", async () => {
     const originalHome = process.env.HOME;
     const tempDir = await createTempDir();
-    let server: http.Server | undefined;
+    let mock: MockDaemonClient | undefined;
     try {
-      process.env.HOME = tempDir;
+      const isolatedHome = await createIsolatedKspecHome(tempDir);
+      process.env.HOME = isolatedHome.homeDir;
 
-      // Stand up an in-process server bound to 127.0.0.1 with a known port
-      // that responds 200 to /api/health.
-      const started = await createTestServer((req, res) => {
-        if (req.url === "/api/health") {
-          res.writeHead(200, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ status: "ok" }));
-          return;
-        }
-        res.writeHead(404);
-        res.end();
-      });
-      server = started.server;
+      // Shared in-process mock daemon serves /api/health out of the box.
+      mock = (await startMockDaemon()) ?? undefined;
+      expect(mock).toBeDefined();
 
-      // Write metadata advertising the same api_url. The legacy port file
-      // points at an unrelated, non-listening port so a successful health
-      // check here proves detection used the metadata path, not legacy.
-      const configDir = join(tempDir, ".config", "kspec");
-      mkdirSync(configDir, { recursive: true });
-      writeFileSync(join(configDir, "daemon.port"), "1");
-      writeFileSync(
-        join(configDir, "daemon.connection.json"),
-        JSON.stringify({
-          pid: 4242,
-          port: started.port,
-          bind_host: "127.0.0.1",
-          connect_host: "127.0.0.1",
-          api_url: `http://127.0.0.1:${started.port}`,
-          ws_url: `ws://127.0.0.1:${started.port}/ws`,
-          runtime: "node",
-        }),
-      );
+      // Write canonical metadata advertising the mock's endpoint, then
+      // overwrite the legacy port file with an unrelated, non-listening
+      // port so a successful health check here proves detection used the
+      // metadata path rather than legacy fallback.
+      writeMockDaemonMetadata({ home: isolatedHome, client: mock! });
+      writeFileSync(isolatedHome.daemonPortFilePath, "1");
 
       const result = await detectDaemon();
       expect(result.available).toBe(true);
       if (result.available) {
-        expect(result.port).toBe(started.port);
+        expect(result.port).toBe(mock!.port);
         expect(result.endpoint.source).toBe("metadata");
-        expect(result.endpoint.apiUrl).toBe(`http://127.0.0.1:${started.port}`);
-        expect(result.endpoint.wsUrl).toBe(`ws://127.0.0.1:${started.port}/ws`);
+        expect(result.endpoint.apiUrl).toBe(`http://127.0.0.1:${mock!.port}`);
+        expect(result.endpoint.wsUrl).toBe(`ws://127.0.0.1:${mock!.port}/ws`);
       }
     } finally {
       process.env.HOME = originalHome!;
-      if (server) await closeServer(server);
+      if (mock) await mock.stop();
       await cleanupTempDir(tempDir);
     }
   });
 
   // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  // AC: @daemon-network-endpoint-contract ac-tests-use-resolved-endpoint
+  // AC: @daemon-test-mode-boundaries ac-cli-client-tests-use-mock-daemon
   // AC: @trait-daemon-endpoint-consumer ac-uses-reported-endpoint
   // Detection must honor the metadata's bracketed IPv6 api_url instead of
   // re-deriving a URL from port alone.
   it("honors bracketed IPv6 api_url advertised by daemon metadata", async () => {
     const originalHome = process.env.HOME;
     const tempDir = await createTempDir();
-    let server: http.Server | undefined;
+    let mock: MockDaemonClient | undefined;
     try {
-      process.env.HOME = tempDir;
+      const isolatedHome = await createIsolatedKspecHome(tempDir);
+      process.env.HOME = isolatedHome.homeDir;
 
-      const ipv6Started = await new Promise<{ server: http.Server; port: number } | null>(
-        (resolve) => {
-          const s = http.createServer((req, res) => {
-            if (req.url === "/api/health") {
-              res.writeHead(200, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ status: "ok" }));
-              return;
-            }
-            res.writeHead(404);
-            res.end();
-          });
-          s.once("error", () => resolve(null));
-          s.listen(0, "::1", () => {
-            const addr = s.address() as { port: number } | null;
-            if (!addr) {
-              s.close(() => resolve(null));
-              return;
-            }
-            resolve({ server: s, port: addr.port });
-          });
-        },
-      );
-      if (!ipv6Started) {
+      mock = (await startMockDaemon({ bindHost: "::1" })) ?? undefined;
+      if (!mock) {
         console.log("  ⊘ Skipping test - IPv6 loopback (::1) not available");
         return;
       }
-      server = ipv6Started.server;
 
-      const configDir = join(tempDir, ".config", "kspec");
-      mkdirSync(configDir, { recursive: true });
-      writeFileSync(
-        join(configDir, "daemon.connection.json"),
-        JSON.stringify({
-          pid: 4242,
-          port: ipv6Started.port,
-          bind_host: "::1",
-          connect_host: "::1",
-          api_url: `http://[::1]:${ipv6Started.port}`,
-          ws_url: `ws://[::1]:${ipv6Started.port}/ws`,
-          runtime: "node",
-        }),
-      );
+      writeMockDaemonMetadata({ home: isolatedHome, client: mock });
 
       const result = await detectDaemon();
       expect(result.available).toBe(true);
       if (result.available) {
         // Bracketed IPv6 host preserved verbatim — never re-derived.
-        expect(result.endpoint.apiUrl).toBe(`http://[::1]:${ipv6Started.port}`);
-        expect(result.endpoint.wsUrl).toBe(`ws://[::1]:${ipv6Started.port}/ws`);
+        expect(result.endpoint.apiUrl).toBe(`http://[::1]:${mock.port}`);
+        expect(result.endpoint.wsUrl).toBe(`ws://[::1]:${mock.port}/ws`);
         expect(result.endpoint.connectHost).toBe("::1");
       }
     } finally {
       process.env.HOME = originalHome!;
-      if (server) await closeServer(server);
+      if (mock) await mock.stop();
       await cleanupTempDir(tempDir);
     }
   });
@@ -349,35 +263,27 @@ describe("daemon proxy detection", () => {
   it("falls back to legacy daemon.port when connection metadata is absent", async () => {
     const originalHome = process.env.HOME;
     const tempDir = await createTempDir();
-    let server: http.Server | undefined;
+    let mock: MockDaemonClient | undefined;
     try {
-      process.env.HOME = tempDir;
+      const isolatedHome = await createIsolatedKspecHome(tempDir);
+      process.env.HOME = isolatedHome.homeDir;
 
-      const started = await createTestServer((req, res) => {
-        if (req.url === "/api/health") {
-          res.writeHead(200, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ status: "ok" }));
-          return;
-        }
-        res.writeHead(404);
-        res.end();
-      });
-      server = started.server;
+      mock = (await startMockDaemon()) ?? undefined;
+      expect(mock).toBeDefined();
 
-      const configDir = join(tempDir, ".config", "kspec");
-      mkdirSync(configDir, { recursive: true });
-      writeFileSync(join(configDir, "daemon.port"), String(started.port));
+      // Legacy fallback path: only daemon.port written, no metadata.
+      writeLegacyDaemonPort({ home: isolatedHome, port: mock!.port });
 
       const result = await detectDaemon();
       expect(result.available).toBe(true);
       if (result.available) {
-        expect(result.port).toBe(started.port);
+        expect(result.port).toBe(mock!.port);
         expect(result.endpoint.source).toBe("legacy-port");
-        expect(result.endpoint.apiUrl).toBe(`http://127.0.0.1:${started.port}`);
+        expect(result.endpoint.apiUrl).toBe(`http://127.0.0.1:${mock!.port}`);
       }
     } finally {
       process.env.HOME = originalHome!;
-      if (server) await closeServer(server);
+      if (mock) await mock.stop();
       await cleanupTempDir(tempDir);
     }
   });
@@ -996,7 +902,7 @@ describe("proxyCommand", () => {
 
 describe("CLI daemon proxy E2E", () => {
   let tempDir: string;
-  let mockDaemonProcess: ChildProcess | undefined;
+  let mock: MockDaemonClient | undefined;
 
   beforeEach(async () => {
     // Clean up KSPEC_NO_DAEMON that may leak from unit tests in same process
@@ -1015,9 +921,9 @@ describe("CLI daemon proxy E2E", () => {
   });
 
   afterEach(async () => {
-    if (mockDaemonProcess) {
-      await stopMockDaemon(mockDaemonProcess);
-      mockDaemonProcess = undefined;
+    if (mock) {
+      await mock.stop();
+      mock = undefined;
     }
     await cleanupTempDir(tempDir);
   });
@@ -1104,11 +1010,9 @@ describe("CLI daemon proxy E2E", () => {
     const isolatedHome = await createIsolatedKspecHome(tempDir);
 
     // Start mock daemon in a child process so spawnSync doesn't block it
-    const { process: daemon, port } = await startMockDaemon("normal");
-    mockDaemonProcess = daemon;
-
-    writeFileSync(isolatedHome.daemonPortFilePath, String(port));
-    writeFileSync(isolatedHome.daemonPidFilePath, String(process.pid));
+    mock = (await startMockDaemon({ asChildProcess: true, mode: "normal" })) ?? undefined;
+    expect(mock).toBeDefined();
+    writeLegacyDaemonPort({ home: isolatedHome, port: mock!.port });
 
     const result = kspec("task list", tempDir, {
       env: {
@@ -1126,11 +1030,9 @@ describe("CLI daemon proxy E2E", () => {
     const isolatedHome = await createIsolatedKspecHome(tempDir);
 
     // Start mock daemon in error mode
-    const { process: daemon, port } = await startMockDaemon("error");
-    mockDaemonProcess = daemon;
-
-    writeFileSync(isolatedHome.daemonPortFilePath, String(port));
-    writeFileSync(isolatedHome.daemonPidFilePath, String(process.pid));
+    mock = (await startMockDaemon({ asChildProcess: true, mode: "error" })) ?? undefined;
+    expect(mock).toBeDefined();
+    writeLegacyDaemonPort({ home: isolatedHome, port: mock!.port });
 
     const result = kspec("task get @nonexistent", tempDir, {
       expectFail: true,
@@ -1188,17 +1090,18 @@ describe("daemon proxy health check timeout", () => {
     const originalHome = process.env.HOME;
     const tempDir = await createTempDir();
 
-    // Start a server that never responds to health checks
+    // Start a server that never responds to health checks. Custom server
+    // used here because the shared mock daemon helper does not support a
+    // hang-on-/api/health mode (its `hang` mode targets /api/command).
     const { server, port } = await createTestServer((_req, _res) => {
       // Never respond — simulates unresponsive daemon
     });
     testServer = server;
 
     try {
-      process.env.HOME = tempDir;
-      const configDir = join(tempDir, ".config", "kspec");
-      mkdirSync(configDir, { recursive: true });
-      writeFileSync(join(configDir, "daemon.port"), String(port));
+      const isolatedHome = await createIsolatedKspecHome(tempDir);
+      process.env.HOME = isolatedHome.homeDir;
+      writeLegacyDaemonPort({ home: isolatedHome, port });
 
       const start = performance.now();
       const result = await detectDaemon();
@@ -1218,6 +1121,7 @@ describe("daemon proxy health check timeout", () => {
 
   // AC: @daemon-proxy-detection ac-health-timeout
   // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  // AC: @daemon-test-endpoint-consistency ac-mock-metadata-fidelity
   // Drive the 200ms health-check timeout against the metadata-advertised
   // api_url so the metadata-keyed variant of ac-health-timeout has direct
   // behavioral coverage.
@@ -1225,27 +1129,26 @@ describe("daemon proxy health check timeout", () => {
     const originalHome = process.env.HOME;
     const tempDir = await createTempDir();
 
+    // Custom hang server; helper does not hang on /api/health.
     const { server, port } = await createTestServer((_req, _res) => {
       // Hang — never respond to /api/health.
     });
     testServer = server;
 
     try {
-      process.env.HOME = tempDir;
-      const configDir = join(tempDir, ".config", "kspec");
-      mkdirSync(configDir, { recursive: true });
-      writeFileSync(
-        join(configDir, "daemon.connection.json"),
-        JSON.stringify({
-          pid: 4242,
-          port,
-          bind_host: "127.0.0.1",
-          connect_host: "127.0.0.1",
-          api_url: `http://127.0.0.1:${port}`,
-          ws_url: `ws://127.0.0.1:${port}/ws`,
-          runtime: "node",
-        }),
-      );
+      const isolatedHome = await createIsolatedKspecHome(tempDir);
+      process.env.HOME = isolatedHome.homeDir;
+      // Build a synthetic MockDaemonClient pointing at the hung server so
+      // the metadata writer renders the canonical schema for that endpoint.
+      const fakeClient: MockDaemonClient = {
+        port,
+        bindHost: "127.0.0.1",
+        apiUrl: `http://127.0.0.1:${port}`,
+        wsUrl: `ws://127.0.0.1:${port}/ws`,
+        requests: () => [],
+        stop: async () => {},
+      };
+      writeMockDaemonMetadata({ home: isolatedHome, client: fakeClient });
 
       const start = performance.now();
       const result = await detectDaemon();
@@ -1266,32 +1169,24 @@ describe("daemon proxy health check timeout", () => {
   it("detects running daemon via port file and health check", async () => {
     const originalHome = process.env.HOME;
     const tempDir = await createTempDir();
-
-    const { server, port } = await createTestServer((req, res) => {
-      const url = new URL(req.url!, `http://localhost:${port}`);
-      if (url.pathname === "/api/health") {
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ status: "ok" }));
-        return;
-      }
-      res.writeHead(404);
-      res.end("Not found");
-    });
-    testServer = server;
+    let mock: MockDaemonClient | undefined;
 
     try {
-      process.env.HOME = tempDir;
-      const configDir = join(tempDir, ".config", "kspec");
-      mkdirSync(configDir, { recursive: true });
-      writeFileSync(join(configDir, "daemon.port"), String(port));
+      const isolatedHome = await createIsolatedKspecHome(tempDir);
+      process.env.HOME = isolatedHome.homeDir;
+
+      mock = (await startMockDaemon()) ?? undefined;
+      expect(mock).toBeDefined();
+      writeLegacyDaemonPort({ home: isolatedHome, port: mock!.port });
 
       const result = await detectDaemon();
       expect(result.available).toBe(true);
       if (result.available) {
-        expect(result.port).toBe(port);
+        expect(result.port).toBe(mock!.port);
       }
     } finally {
       process.env.HOME = originalHome!;
+      if (mock) await mock.stop();
       await cleanupTempDir(tempDir);
     }
   });

@@ -1,89 +1,195 @@
 /**
- * Mock daemon server for E2E proxy routing tests.
+ * Unified mock daemon for CLI client tests.
  *
- * Runs as a child process to avoid blocking the vitest event loop
- * (spawnSync in the kspec() test helper blocks the parent, so an
- * in-process server can't accept connections during test execution).
+ * Used by tests/helpers/mock-daemon.ts when a test must exercise the real
+ * kspec CLI via spawnSync — that call blocks the test runner event loop, so
+ * an in-process http.createServer() cannot accept the CLI's requests. This
+ * child process owns the listener instead.
  *
  * Usage:
- *   node tests/helpers/mock-daemon.cjs [--mode normal|error|hang]
+ *   node tests/helpers/mock-daemon.cjs \
+ *     [--bind-host 127.0.0.1] \
+ *     [--mode normal|error|hang] \
+ *     [--record /path/to/requests.jsonl]
  *
- * Writes port to stdout on startup, then serves on that port.
- * Modes:
- *   normal — responds to health/projects/command normally
- *   error  — command endpoint returns non-zero exit code
- *   hang   — command endpoint never responds (for timeout tests)
+ * On `listening`, writes one JSON line `{"port":<n>,"bindHost":"<host>"}` to
+ * stdout so the parent can build daemon.connection.json pointing at the
+ * advertised endpoint. Each request is appended (best-effort, one JSON
+ * object per line) to the record file when --record is provided.
+ *
+ * Modes apply to /api/command:
+ *   normal — POST returns 200 with stdout/stderr/exitCode payload.
+ *   error  — POST returns 422 with non-zero exitCode.
+ *   hang   — POST never responds (timeout simulation).
+ *   refuse — POST returns a non-JSON 503. Used by endpoint-regression
+ *            tests that drive real CLI subcommands: non-mutating commands
+ *            fall back to direct mode (so the inline command handlers
+ *            exercise the metadata-advertised URLs we record), and
+ *            mutating commands surface the proxy attempt at /api/command
+ *            for verification.
+ *
+ * Other endpoints respond identically across modes so tests that only need
+ * a reachable daemon (e.g. /api/health, /api/agent/events) work uniformly.
  */
 
-const http = require("http");
+const http = require("node:http");
+const fs = require("node:fs");
 
-const mode = process.argv.includes("--mode")
-  ? process.argv[process.argv.indexOf("--mode") + 1]
-  : "normal";
+function getArg(name, fallback) {
+  const idx = process.argv.indexOf(`--${name}`);
+  if (idx === -1 || idx + 1 >= process.argv.length) return fallback;
+  return process.argv[idx + 1];
+}
 
-const server = http.createServer((req, res) => {
-  const url = new URL(req.url, `http://127.0.0.1`);
-  let body = "";
-  req.on("data", (chunk) => {
-    body += chunk;
+const bindHost = getArg("bind-host", "127.0.0.1");
+const mode = getArg("mode", "normal");
+const recordFile = getArg("record", null);
+
+if (
+  mode !== "normal" &&
+  mode !== "error" &&
+  mode !== "hang" &&
+  mode !== "refuse"
+) {
+  process.stderr.write(`mock daemon: unknown mode '${mode}'\n`);
+  process.exit(2);
+}
+
+function record(entry) {
+  if (!recordFile) return;
+  try {
+    fs.appendFileSync(recordFile, JSON.stringify(entry) + "\n", "utf8");
+  } catch {
+    // Best-effort: never crash the mock daemon over an audit log write
+    // failure during teardown.
+  }
+}
+
+function readBody(req) {
+  return new Promise((resolve) => {
+    let data = "";
+    req.on("data", (chunk) => {
+      data += chunk.toString();
+    });
+    req.on("end", () => resolve(data));
+    req.on("error", () => resolve(""));
   });
-  req.on("end", () => {
-    if (url.pathname === "/api/health") {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ status: "ok" }));
-      return;
+}
+
+function ok(res, payload) {
+  res.writeHead(200, { "Content-Type": "application/json" });
+  res.end(JSON.stringify(payload));
+}
+
+const server = http.createServer(async (req, res) => {
+  const body = await readBody(req);
+  record({
+    method: req.method,
+    url: req.url,
+    host: req.headers.host || null,
+    body,
+    receivedAt: Date.now(),
+  });
+
+  const url = new URL(req.url, `http://${req.headers.host || bindHost}`);
+  const path = url.pathname;
+  const method = req.method;
+
+  if (path === "/api/health") {
+    return ok(res, { status: "ok", uptime: 1, runtime: "node" });
+  }
+  if (path === "/api/projects") {
+    return ok(res, { status: "ok" });
+  }
+  if (path === "/api/events/recent") {
+    return ok(res, { items: [], total: 0 });
+  }
+  if (path === "/api/events/emit" && method === "POST") {
+    return ok(res, {
+      accepted: true,
+      event_id: "01EVTRECORDED0000000000000",
+      matched_hooks: [],
+    });
+  }
+  if (path === "/api/schedules" && method === "GET") {
+    return ok(res, { items: [] });
+  }
+  if (path.startsWith("/api/schedules/") && path.endsWith("/trigger") && method === "POST") {
+    return ok(res, { outcome: "executed", accepted: true, reason: null });
+  }
+  if (path === "/api/agent/dispatch/status") {
+    return ok(res, {
+      running: false,
+      activeInvocations: 0,
+      queuedInvocations: 0,
+      invocations: [],
+      queued: [],
+    });
+  }
+  if (path === "/api/agent/dispatch/start" && method === "POST") {
+    return ok(res, {
+      started: true,
+      status: { running: true, activeInvocations: 0, queuedInvocations: 0 },
+    });
+  }
+  if (path === "/api/agent/dispatch/stop" && method === "POST") {
+    return ok(res, { stopped: true });
+  }
+  if (path === "/api/agent/events" && method === "POST") {
+    return ok(res, { accepted: true });
+  }
+  if (path === "/api/command" && method === "POST") {
+    if (mode === "hang") {
+      return; // never respond — simulates timeout
     }
-
-    if (url.pathname === "/api/projects" && req.method === "POST") {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ status: "registered" }));
-      return;
-    }
-
-    if (url.pathname === "/api/command" && req.method === "POST") {
-      if (mode === "hang") {
-        // Never respond — simulates timeout
-        return;
-      }
-
-      const parsed = JSON.parse(body);
-
-      if (mode === "error") {
-        res.writeHead(422, { "Content-Type": "application/json" });
-        res.end(
-          JSON.stringify({
-            stdout: "",
-            stderr: "error: not found\n",
-            exitCode: 3,
-          }),
-        );
-        return;
-      }
-
-      // normal mode
-      res.writeHead(200, { "Content-Type": "application/json" });
+    if (mode === "error") {
+      res.writeHead(422, { "Content-Type": "application/json" });
       res.end(
         JSON.stringify({
-          stdout: `proxied: ${parsed.command}\n`,
-          stderr: "",
-          exitCode: 0,
+          stdout: "",
+          stderr: "error: not found\n",
+          exitCode: 3,
         }),
       );
       return;
     }
+    if (mode === "refuse") {
+      res.writeHead(503, { "Content-Type": "text/plain" });
+      res.end("mock daemon refuses /api/command");
+      return;
+    }
+    let parsed;
+    try {
+      parsed = JSON.parse(body || "{}");
+    } catch {
+      parsed = {};
+    }
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        stdout: `proxied: ${parsed.command || ""}\n`,
+        stderr: "",
+        exitCode: 0,
+      }),
+    );
+    return;
+  }
 
-    res.writeHead(404);
-    res.end("Not found");
-  });
+  res.writeHead(404);
+  res.end("Not found");
 });
 
-server.listen(0, "127.0.0.1", () => {
-  const port = server.address().port;
-  // Signal port to parent via stdout
-  process.stdout.write(String(port) + "\n");
+server.listen(0, bindHost, () => {
+  const addr = server.address();
+  const port = typeof addr === "object" && addr ? addr.port : 0;
+  process.stdout.write(JSON.stringify({ port, bindHost }) + "\n");
 });
 
-// Graceful shutdown
+server.on("error", (err) => {
+  process.stderr.write(`mock daemon error: ${err.message}\n`);
+  process.exit(1);
+});
+
 process.on("SIGTERM", () => {
   server.close(() => process.exit(0));
 });
