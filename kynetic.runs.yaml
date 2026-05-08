@@ -40682,9 +40682,23 @@ runs:
     completed_at: 2026-05-08T19:35:35.357Z
   - _ulid: 01KR4JJH88Q1WAWMNRP1DAH884
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T19:56:00.136Z
+        completed_at: 2026-05-08T19:56:36.058Z
+        notes: "What worked well: The detached reviewer merge helper handled the manual_merge publication
+          safely from the detached snapshot and refreshed the occupied dev worktree without manual
+          branch checkout. The review record workflow worked cleanly: created a fresh cycle review,
+          recorded checks/evidence, approved, then merged and completed the task. The targeted
+          daemon/mock suite gave quick feedback before the full fresh test run, and the immediate
+          process-liveness assertions directly verified the prior return-boundary blocker."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T19:56:36.058Z
+        completed_at: 2026-05-08T19:56:36.058Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T19:56:00.136Z
