@@ -13531,18 +13531,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-add-real-daemon-startup-failure-tests/01kr3w7q
-    canonical_branch_head: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
+    canonical_branch_head: 976e8d35c50053fa437154d649a8412860aee5d4
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T13:55:12.012Z
+      updated_at: 2026-05-08T14:07:10.457Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T13:55:36.338Z
+      updated_at: 2026-05-08T14:07:10.457Z
     integration:
       status: pending
       detail: null
@@ -13550,7 +13550,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f
-      updated_at: 2026-05-08T13:55:12.012Z
+      updated_at: 2026-05-08T14:07:10.457Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR3W7QN8Y4NJFQ4HST166KVR"
@@ -13558,9 +13558,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T13:55:36.338Z
-      last_reconciled_at: 2026-05-08T13:55:36.338Z
+      last_reconciled_at: 2026-05-08T14:07:10.457Z
       created_at: 2026-05-08T13:55:12.012Z
-      updated_at: 2026-05-08T13:55:36.338Z
+      updated_at: 2026-05-08T14:07:10.457Z
     workspace_id: dispatch-workspace-01KR3W7QN8Y4NJFQ4HST166KVR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
