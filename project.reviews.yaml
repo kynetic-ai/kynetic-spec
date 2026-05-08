@@ -187851,6 +187851,16 @@ reviews:
         runner: npm-test
         created_at: 2026-05-08T18:00:18.682Z
         completed_at: 2026-05-08T18:00:18.682Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test: 2406 suites passed; 8809 passed, 5 skipped, 0 failed."
+        name: full npm test
+        required: true
+        runner: npm-test
+        created_at: 2026-05-08T18:00:22.790Z
+        completed_at: 2026-05-08T18:00:22.790Z
     events:
       - _ulid: 01KR4B6HNQWGTPP7MECX25QMXR
         actor: Jacob Chapel
@@ -187872,6 +187882,13 @@ reviews:
           status: pass
           name: targeted daemon tests
         timestamp: 2026-05-08T18:00:20.125Z
+      - _ulid: 01KR4BYVTVWQR3PVPFKVDTXMSP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full npm test
+        timestamp: 2026-05-08T18:00:24.155Z
     examined_commit: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
     external_links: []
     lifecycle_state: open
@@ -187884,5 +187901,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T17:47:07.320Z
-    updated_at: 2026-05-08T18:00:18.682Z
+    updated_at: 2026-05-08T18:00:22.790Z
     notes: []
