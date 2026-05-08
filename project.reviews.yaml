@@ -189189,6 +189189,18 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-08T20:23:25.577Z
         completed_at: 2026-05-08T20:23:25.577Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run lint exited 1 with 13 errors and 724 warnings. The reported errors are existing
+          project-wide lint debt outside the changed files, matching the baseline categories from
+          prior cycles; no new changed-file lint failure observed.
+        name: lint
+        required: false
+        runner: npm run lint
+        created_at: 2026-05-08T20:23:36.018Z
+        completed_at: 2026-05-08T20:23:36.018Z
     events:
       - _ulid: 01KR4K31VYTF1G9TCCAQ936BF7
         actor: Jacob Chapel
@@ -189245,6 +189257,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-08T20:23:26.991Z
+      - _ulid: 01KR4M53N68QY3AKE4KZ5GB53S
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: lint
+        timestamp: 2026-05-08T20:23:37.382Z
     examined_commit: f0d119a1f95ce93bafc5ea58c499ebd02865f260
     external_links: []
     lifecycle_state: open
@@ -189280,5 +189299,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-08T20:05:01.439Z
-    updated_at: 2026-05-08T20:23:25.577Z
+    updated_at: 2026-05-08T20:23:36.018Z
     notes: []
