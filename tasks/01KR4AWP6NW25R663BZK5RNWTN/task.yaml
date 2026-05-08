@@ -37,8 +37,11 @@ description: >-
 spec_ref: "@daemon-backed-test-fixture-contract"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Reviewed and merged to dev via detached reviewer merge helper. Fix switches daemon
+  test cache readiness to /api/debug/cache-status so startup waits for registered tasks cache
+  readiness instead of the /api/tasks disk-fallback window; full npm test -- --fresh passed.
 depends_on: []
 context: []
 priority: 2
@@ -105,8 +108,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-08T21:28:00.886Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Reviewed and merged to dev via detached reviewer merge helper. Fix switches daemon test cache
+          readiness to /api/debug/cache-status so startup waits for registered tasks cache readiness
+          instead of the /api/tasks disk-fallback window; full npm test -- --fresh passed.
+        previous: null
+      completed_at:
+        new: 2026-05-08T21:41:09.147Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-08T21:41:09.156Z
 created_at: 2026-05-08T17:41:44.275Z
 started_at: 2026-05-08T20:56:51.027Z
 submitted_at: 2026-05-08T21:22:50.779Z
+completed_at: 2026-05-08T21:41:09.147Z
 todos: []
 automation: eligible

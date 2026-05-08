@@ -28341,7 +28341,7 @@
   title: Stabilize flaky daemon startup review tests
   type: bug
   spec_ref: "@daemon-backed-test-fixture-contract"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -28355,4 +28355,5 @@
   created_at: 2026-05-08T17:41:44.275Z
   started_at: 2026-05-08T20:56:51.027Z
   submitted_at: 2026-05-08T21:22:50.779Z
+  completed_at: 2026-05-08T21:41:09.147Z
   automation: eligible
