@@ -16234,11 +16234,11 @@ workspaces:
     canonical_branch: dispatch/task/task-clarify-in-process-daemon-api-helper-boundary/01kr3w7s
     canonical_branch_head: e0b6617b7baa8a96f4c13257621dfdc2a3c14a70
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-08T20:49:14.762Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-08T20:49:15.675Z
     health:
       status: healthy
       issues: []
@@ -16252,7 +16252,7 @@ workspaces:
       target_branch: dev
       target_commit: 80c3b249aff2a71e1af043e74234b892f2174471
       updated_at: 2026-05-08T20:49:14.762Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR3W7SD99V6PMBDTR5WW1TBX"
     task_slug: task-clarify-in-process-daemon-api-helper-boundary
@@ -16261,7 +16261,7 @@ workspaces:
       last_active_at: 2026-05-08T20:34:42.588Z
       last_reconciled_at: 2026-05-08T20:49:14.762Z
       created_at: 2026-05-08T20:03:31.210Z
-      updated_at: 2026-05-08T20:49:14.762Z
+      updated_at: 2026-05-08T20:49:15.675Z
     workspace_id: dispatch-workspace-01KR3W7SD99V6PMBDTR5WW1TBX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
