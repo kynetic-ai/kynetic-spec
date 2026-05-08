@@ -71,8 +71,12 @@ description: >
 spec_ref: "@daemon-test-mode-boundaries"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Reviewed and merged to dev via detached reviewer helper. Merge commit
+  a7635fc0074de03931817d4b48e54ec2985fa87f. Summary: standardized in-process daemon API fixtures
+  across helper, input-validation, review verdict, and review websocket tests; full npm test
+  passed."
 depends_on:
   - "@task-implement-shared-daemon-test-fixture"
 context: []
@@ -140,8 +144,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-08T02:40:20.207Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Reviewed and merged to dev via detached reviewer helper. Merge commit
+          a7635fc0074de03931817d4b48e54ec2985fa87f. Summary: standardized in-process daemon API
+          fixtures across helper, input-validation, review verdict, and review websocket tests; full
+          npm test passed."
+        previous: null
+      completed_at:
+        new: 2026-05-08T02:53:11.056Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-08T02:53:11.065Z
 created_at: 2026-05-07T20:36:51.229Z
 started_at: 2026-05-08T02:07:04.054Z
 submitted_at: 2026-05-08T02:34:42.869Z
+completed_at: 2026-05-08T02:53:11.056Z
 todos: []
 automation: eligible
