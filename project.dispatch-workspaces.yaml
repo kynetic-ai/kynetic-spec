@@ -9632,7 +9632,7 @@ workspaces:
         head: 1d4b63a3593e90e4cb5d47f32591973305344713
         last_seen_at: 2026-05-08T00:56:28.869Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-real-daemon-vitest-tests-01kr22gk
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 2b4dc4dfd1d3667d9100be4b8e6996b0f2ca1840
     bootstrap:
       status: succeeded
@@ -10105,34 +10105,34 @@ workspaces:
     canonical_branch: dispatch/task/task-migrate-playwright-daemon-fixture/01kr22gk
     canonical_branch_head: c753d124422282c19fc01bf891a34656a5feb29d
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-05-08T01:23:51.103Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-05-08T01:37:55.697Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T01:24:16.918Z
+      updated_at: 2026-05-08T01:37:55.697Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2b4dc4dfd1d3667d9100be4b8e6996b0f2ca1840
-      updated_at: 2026-05-08T01:23:51.103Z
-    lifecycle_state: integrating
+      updated_at: 2026-05-08T01:37:55.697Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KR22GKACR7PZYFXZS9KEYVMQ"
     task_slug: task-migrate-playwright-daemon-fixture
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T01:24:16.918Z
-      last_reconciled_at: 2026-05-08T01:24:16.918Z
+      last_reconciled_at: 2026-05-08T01:37:55.697Z
       created_at: 2026-05-08T00:56:56.177Z
-      updated_at: 2026-05-08T01:24:16.918Z
+      updated_at: 2026-05-08T01:37:55.697Z
     workspace_id: dispatch-workspace-01KR22GKACR7PZYFXZS9KEYVMQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
