@@ -40924,7 +40924,7 @@ runs:
     completed_at: 2026-05-08T20:50:36.673Z
   - _ulid: 01KR4NRTPYXRBFHFVVJ8828NKG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -40941,7 +40941,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T20:54:10.871Z
-        completed_at: 2026-05-08T20:54:10.871Z
+        completed_at: 2026-05-08T20:54:19.989Z
+        notes: "Step 2 — High confidence candidates: One systemic friction pattern matches the bar: 'when
+          extending a static classifier to a new call shape, recall coverage (token-anywhere
+          matching) without a precision check (token in executable position) creates false positives
+          that satisfy the new ACs but break the existing precision ACs.' This is a refinement of
+          @01KR4JYF, not a new pattern — same task, same root cause family. Successes from step 1
+          are concrete but task-local and don't generalise into systemic patterns worth durable
+          capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T20:54:19.989Z
+        completed_at: 2026-05-08T20:54:19.989Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T20:51:52.158Z
