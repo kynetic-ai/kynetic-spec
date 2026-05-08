@@ -190300,6 +190300,12 @@ reviews:
         payload:
           thread_ulid: 01KR4TRYRDVWZST921A71TJP7D
         timestamp: 2026-05-08T22:57:18.160Z
+      - _ulid: 01KR4WYX597MZK7CNPB4Q52K80
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR4TRYRDVWZST921A71TJP7D
+        timestamp: 2026-05-08T22:57:31.305Z
     examined_commit: 5ccd73404bb47e41462a02479dcbf5ebb1d0c90f
     external_links: []
     lifecycle_state: closed
@@ -190356,6 +190362,8 @@ reviews:
               suite (8830 passed, 5 skipped) green.
             created_at: 2026-05-08T22:57:16.770Z
         kind: blocker
+        resolved_at: 2026-05-08T22:57:29.884Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -190365,7 +190373,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T22:19:57.248Z
     created_at: 2026-05-08T22:06:49.743Z
-    updated_at: 2026-05-08T22:57:16.770Z
+    updated_at: 2026-05-08T22:57:29.884Z
     notes: []
   - _ulid: 01KR4VBBVBR9WS6PN1SN7MHTY8
     slugs: []
