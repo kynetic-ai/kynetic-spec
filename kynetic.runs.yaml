@@ -39928,7 +39928,7 @@ runs:
     started_at: 2026-05-08T15:19:00.440Z
     completed_at: 2026-05-08T15:21:18.568Z
   - _ulid: 01KR43WW406FT1DSJX0HDBGAPA
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -39976,10 +39976,13 @@ runs:
         completed_at: 2026-05-08T15:42:43.629Z
         notes: "No user discussion needed: no new untracked improvements were proposed, and duplicate
           capture would add noise."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-08T15:42:43.629Z
-        completed_at: 2026-05-08T15:42:43.629Z
+        completed_at: 2026-05-08T15:42:55.653Z
+        notes: No capture performed. All friction points from this reflection already have existing
+          tracking, and no new approved items remain.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T15:39:30.304Z
+    completed_at: 2026-05-08T15:42:55.653Z
