@@ -41312,7 +41312,7 @@ runs:
     completed_at: 2026-05-08T22:22:44.358Z
   - _ulid: 01KR4V2M3FPS3A0KSR8GE26GZQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -41327,7 +41327,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T22:26:26.537Z
-        completed_at: 2026-05-08T22:26:26.537Z
+        completed_at: 2026-05-08T22:26:45.202Z
+        notes: "Step 3 — friction search. Searched 'classifier precision', 'static classifier',
+          'process.execPath', 'MemberExpression', 'runtime arg'. Found existing observation
+          @01KR4MAT (success) from this same task: 'Reviewing static classifier rules with an
+          adversarial negative probe caught a false positive that targeted positive regressions
+          missed. Repeat this pattern for future lint/classifier reviews.' This already covers the
+          discipline that helped close the cycle 5 blocker (precision regressions for
+          spawn(other.execPath, [DAEMON_ENTRY]) and spawn(process.argv0, [DAEMON_ENTRY]) followed
+          exactly that pattern). No untracked friction worth capturing in loop mode — the marginal
+          value of an additional 'enumerate AST shapes for runtime predicates' observation would
+          duplicate existing tracking."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T22:26:45.202Z
+        completed_at: 2026-05-08T22:26:45.202Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T22:24:35.952Z
