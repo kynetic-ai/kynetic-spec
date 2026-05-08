@@ -1,1 +1,57 @@
-notes: []
+notes:
+  - _ulid: 01KR2JQYSVY2PXNS91Q0WNV19V
+    content: |-
+      Migrated Playwright fixture to wrap tests/helpers/daemon.ts. Now
+      runtime resolution, isolated HOME/config, dynamic-port allocation,
+      buildDaemonChildEnv strip lists, bounded readiness with diagnostic
+      bundling, and scoped cleanup all come from the shared fixture core.
+
+      Implementation notes:
+      - pre-allocated the port via allocateTestDaemonPort and threaded it
+        into every startTestDaemon call so daemon.stop()/daemon.start()
+        cycles reuse the same endpoint (browser-side ws would otherwise
+        drop after a restart)
+      - preserved the e2e-only project-tests/ copy + kspec.config.yaml
+        coverage opt-in in the wrapper because they are not part of the
+        daemon-visible .kspec/ tree and aren't shared-fixture concerns
+      - preserved KSPEC_TEST=1 for the daemon's test-only cache delay
+        primitive and KSPEC_TEST_RUNTIME so Bun opt-in still works
+      - stripped the /ws suffix the shared fixture appends to wsUrl: two
+        existing tests (api-watcher, api-triage) treat daemon.wsUrl as a
+        base URL and concatenate "/ws" themselves; flipping that contract
+        was out of scope and would have required edits to multiple specs
+
+      Required adjacent fix:
+      - tests/helpers/cli.ts now uses an ESM-safe __dirname polyfill
+        (typeof __dirname check + import.meta.url fallback). Playwright
+        loads .ts files as ESM because package.json declares
+        type=module, so the previous CJS bareword failed during fixture
+        setup. Vitest's CJS transpilation path is unchanged.
+
+      AC coverage rewrites in test-base.ts annotations cover:
+      - @e2e-test-daemon-isolation: ac-uses-shared-fixture,
+        ac-browser-endpoint-from-fixture, ac-isolated-e2e-state,
+        ac-e2e-scoped-cleanup, ac-dynamic-port-propagation
+      - @daemon-backed-test-fixture-contract:
+        ac-real-daemon-tests-use-shared-fixture, ac-isolated-home-config,
+        ac-isolated-project-data, ac-scoped-cleanup,
+        ac-readiness-diagnostics, ac-bounded-readiness,
+        ac-no-ambient-daemon-control
+      - @daemon-test-endpoint-consistency: ac-resolved-endpoint-source,
+        ac-no-localhost-by-default, ac-dynamic-port-propagation
+      - @daemon-test-runtime-selection: ac-node-default
+
+      Verification:
+      - npm run test:shard1 (vitest): 2611 tests pass, 1 skipped
+      - tests/helpers/daemon.test.ts (live shared-fixture contract):
+        6/6 pass
+      - npx playwright test (full e2e): 481 passed, 38 skipped, 2 flaky
+        (pre-existing timing flakes in connection.spec.ts and
+        inbox.spec.ts), 2 failed in docs.spec.ts. The docs failures
+        reproduce identically on origin/dev with the prior fixture
+        ("strict mode violation: docs-search-input resolved to 2
+        elements" — a UI duplicate-locator issue, unrelated to
+        daemon fixture lifecycle).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T01:20:28.987Z
