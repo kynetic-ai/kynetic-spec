@@ -45,6 +45,31 @@ const bindHost = getArg("bind-host", "127.0.0.1");
 const mode = getArg("mode", "normal");
 const recordFile = getArg("record", null);
 
+// ── Test-only failure-injection seams ─────────────────────────────────
+// These flags exist to drive the failure-path contract tests in
+// tests/helpers/mock-daemon.test.ts. Production mock-daemon usage never
+// passes them; the helper only relays them when a test sets the
+// __testInjectArgs option on startMockDaemon.
+//
+// --break <mode>     Skip the metadata stdout line (no-stdout) or replace
+//                    it with non-JSON garbage (malformed-stdout) while the
+//                    HTTP listener stays bound. The helper must then stop
+//                    the running child before returning failure.
+// --pid-file <path>  Write the child pid to <path> synchronously at startup
+//                    so the test can assert the child is no longer running
+//                    after the helper returns.
+// --env-record <path> Write a JSON snapshot of inherited daemon-control /
+//                    session env keys to <path> at startup so the test can
+//                    assert the helper sanitised the child's environment.
+const breakMode = getArg("break", null);
+const pidFile = getArg("pid-file", null);
+const envRecordFile = getArg("env-record", null);
+
+if (breakMode !== null && breakMode !== "malformed-stdout" && breakMode !== "no-stdout") {
+  process.stderr.write(`mock daemon: unknown break '${breakMode}'\n`);
+  process.exit(2);
+}
+
 if (
   mode !== "normal" &&
   mode !== "error" &&
@@ -53,6 +78,47 @@ if (
 ) {
   process.stderr.write(`mock daemon: unknown mode '${mode}'\n`);
   process.exit(2);
+}
+
+// Env-record snapshot is written before the listener binds so a malformed/
+// timeout failure path still produces an observation file. The recorded
+// keys are the union of the daemon-test ambient strip list and the
+// dispatch/agent strip lists in tests/helpers/cli.ts so a single test can
+// assert the helper sanitises both groups.
+if (envRecordFile) {
+  const TRACKED_KEYS = [
+    "KSPEC_DAEMON_PID",
+    "KSPEC_DAEMON_PORT",
+    "KSPEC_DAEMON_HOST",
+    "KSPEC_DAEMON_CONNECT_HOST",
+    "KSPEC_DAEMON_RUNTIME",
+    "KSPEC_DAEMON_API_URL",
+    "KSPEC_DAEMON_WS_URL",
+    "KSPEC_NO_DAEMON",
+    "KSPEC_SESSION_ID",
+    "KSPEC_RALPH_SESSION",
+    "KSPEC_DISPATCH_CANONICAL_HEAD",
+  ];
+  const snapshot = {};
+  for (const key of TRACKED_KEYS) {
+    if (key in process.env) snapshot[key] = process.env[key];
+  }
+  try {
+    fs.writeFileSync(envRecordFile, JSON.stringify(snapshot), "utf8");
+  } catch {
+    // Best-effort: never crash the mock daemon over a test seam write
+    // failure. The test asserts on file presence and parses missing keys
+    // as 'absent', so a write failure surfaces as a test assertion miss
+    // rather than a silent pass.
+  }
+}
+
+if (pidFile) {
+  try {
+    fs.writeFileSync(pidFile, String(process.pid), "utf8");
+  } catch {
+    // Same best-effort policy as env-record.
+  }
 }
 
 function record(entry) {
@@ -182,6 +248,17 @@ const server = http.createServer(async (req, res) => {
 server.listen(0, bindHost, () => {
   const addr = server.address();
   const port = typeof addr === "object" && addr ? addr.port : 0;
+  if (breakMode === "no-stdout") {
+    // Stay listening but never advertise the metadata line. The helper
+    // must time out and stop this still-running child.
+    return;
+  }
+  if (breakMode === "malformed-stdout") {
+    // Write a non-JSON line so the helper's JSON.parse fails and triggers
+    // its malformed-stdout failure path while this listener stays alive.
+    process.stdout.write("not-json garbage\n");
+    return;
+  }
   process.stdout.write(JSON.stringify({ port, bindHost }) + "\n");
 });
 

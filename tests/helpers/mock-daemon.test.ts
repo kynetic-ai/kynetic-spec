@@ -23,10 +23,10 @@
  * AC: @trait-daemon-endpoint-consumer ac-wildcard-not-destination
  */
 
-import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, onTestFinished } from "vitest";
 
 import {
   readDaemonConnectionMetadata,
@@ -384,4 +384,211 @@ describe("mock daemon helper — contract", () => {
     expect(parsed!.connect_host).toBe("127.0.0.2");
     expect(parsed!.api_url).toBe(`http://127.0.0.2:${mock!.port}`);
   });
+});
+
+/**
+ * Failing-before-fix contract tests for the child-process mock daemon
+ * helper's startup hygiene. These assertions describe the contract the
+ * helper MUST satisfy when a child-process startup fails before
+ * readiness:
+ *
+ *   - When the helper observes a malformed first stdout line from a
+ *     spawned child whose listener is still alive, it stops that child
+ *     before returning failure to the caller. (ac-owned-child-stopped-
+ *     after-startup-failure)
+ *   - When the helper's startup wait times out while the spawned child
+ *     is still running, it stops the child before returning failure.
+ *     (ac-owned-child-stopped-after-startup-failure)
+ *   - The helper sanitises the child env so ambient daemon-control
+ *     and dispatch session vars are not inherited by the mock daemon
+ *     child. (ac-child-env-sanitized)
+ *
+ * MERGE GATE NOTE — these cases use `it.fails()` so the failing-before-
+ * fix regressions stay live without breaking `npm test` on the merge
+ * to dev. The dependent fix task @task-fix-mock-daemon-cleanup-env-
+ * hygiene MUST remove `.fails` from each `it.fails(...)` below when the
+ * helper implements the missing cleanup/env behavior; once the helper
+ * passes these contracts the modifier itself will fail and the dependent
+ * task is responsible for converting `it.fails(...)` back to `it(...)`.
+ */
+describe("mock daemon helper — failure-path contract (failing-before-fix)", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-mock-daemon-failure-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  /** Probe whether a process is still alive without sending a real signal. */
+  function isProcessAlive(pid: number): boolean {
+    try {
+      process.kill(pid, 0);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /** Best-effort kill so a leaked child does not survive the test run. */
+  function ensureProcessReaped(pid: number): void {
+    try {
+      process.kill(pid, "SIGKILL");
+    } catch {
+      // already gone
+    }
+  }
+
+  // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  it.fails(
+    "stops the child process when the first stdout line is malformed",
+    async () => {
+      const pidFile = join(tempDir, "child-malformed.pid");
+
+      // The injected --break malformed-stdout flag makes the child write
+      // a non-JSON line so the helper's JSON.parse fails. The child stays
+      // bound to its HTTP listener so the OS does not reap it on its own.
+      // The pid is recorded synchronously before the malformed line is
+      // emitted, giving the test a stable handle to assert against.
+      const result = await startMockDaemon({
+        asChildProcess: true,
+        __testInjectArgs: ["--break", "malformed-stdout", "--pid-file", pidFile],
+        // Keep this generous — the helper should resolve to null on the
+        // malformed-stdout branch immediately, well before the timeout.
+        __testStartupTimeoutMs: 5_000,
+      });
+      expect(result).toBeNull();
+
+      expect(existsSync(pidFile)).toBe(true);
+      const childPid = Number.parseInt(readFileSync(pidFile, "utf8"), 10);
+      expect(Number.isFinite(childPid)).toBe(true);
+      expect(childPid).toBeGreaterThan(0);
+
+      // Reap on test exit even if the helper leaks the child today, so a
+      // failing assertion does not leave a daemon listening.
+      onTestFinished(() => {
+        if (isProcessAlive(childPid)) ensureProcessReaped(childPid);
+      });
+
+      // Give the OS a brief window to deliver any signal the helper sent
+      // before sampling. 200ms is well past CHILD_GRACEFUL_KILL_MS (1.5s)
+      // becoming relevant; this only smooths over scheduler jitter.
+      await new Promise((resolve) => setTimeout(resolve, 200));
+
+      // Contract: helper stops the still-running child before returning
+      // failure. Today this assertion fails because the malformed-stdout
+      // branch in startChildMockDaemon does not call child.kill().
+      expect(isProcessAlive(childPid)).toBe(false);
+    },
+  );
+
+  // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  it.fails(
+    "stops the child process when startup times out without stdout",
+    async () => {
+      const pidFile = join(tempDir, "child-timeout.pid");
+
+      // The injected --break no-stdout flag makes the child bind its
+      // listener but never write the metadata line, forcing the helper's
+      // setTimeout branch to fire while the child is still alive. The
+      // shortened __testStartupTimeoutMs keeps the case under the per-
+      // test budget (the production default is 5s).
+      const result = await startMockDaemon({
+        asChildProcess: true,
+        __testInjectArgs: ["--break", "no-stdout", "--pid-file", pidFile],
+        __testStartupTimeoutMs: 250,
+      });
+      expect(result).toBeNull();
+
+      expect(existsSync(pidFile)).toBe(true);
+      const childPid = Number.parseInt(readFileSync(pidFile, "utf8"), 10);
+      expect(Number.isFinite(childPid)).toBe(true);
+      expect(childPid).toBeGreaterThan(0);
+
+      onTestFinished(() => {
+        if (isProcessAlive(childPid)) ensureProcessReaped(childPid);
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 200));
+
+      // Contract: helper stops the still-running child on timeout.
+      // Today this assertion fails because the timeout branch in
+      // startChildMockDaemon does not call child.kill().
+      expect(isProcessAlive(childPid)).toBe(false);
+    },
+  );
+
+  // AC: @daemon-test-startup-failure-hygiene ac-child-env-sanitized
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  it.fails(
+    "does not inherit ambient daemon-control or session variables in the child env",
+    async () => {
+      const envFile = join(tempDir, "child-env.json");
+
+      // Snapshot then poison the parent process env with the exact keys
+      // the helper must strip. Using `tracked` for restoration so we put
+      // each var back to its prior value (or delete if not previously
+      // set), regardless of how the assertion ends.
+      const tracked: Record<string, string | undefined> = {
+        KSPEC_DAEMON_PID: process.env.KSPEC_DAEMON_PID,
+        KSPEC_DAEMON_PORT: process.env.KSPEC_DAEMON_PORT,
+        KSPEC_DAEMON_HOST: process.env.KSPEC_DAEMON_HOST,
+        KSPEC_DAEMON_CONNECT_HOST: process.env.KSPEC_DAEMON_CONNECT_HOST,
+        KSPEC_DAEMON_RUNTIME: process.env.KSPEC_DAEMON_RUNTIME,
+        KSPEC_NO_DAEMON: process.env.KSPEC_NO_DAEMON,
+        KSPEC_SESSION_ID: process.env.KSPEC_SESSION_ID,
+      };
+      process.env.KSPEC_DAEMON_PID = "999999";
+      process.env.KSPEC_DAEMON_PORT = "9999";
+      process.env.KSPEC_DAEMON_HOST = "leak.example";
+      process.env.KSPEC_DAEMON_CONNECT_HOST = "leak.example";
+      process.env.KSPEC_DAEMON_RUNTIME = "node";
+      process.env.KSPEC_NO_DAEMON = "1";
+      process.env.KSPEC_SESSION_ID = "leak-session";
+
+      onTestFinished(() => {
+        for (const [key, prior] of Object.entries(tracked)) {
+          if (prior === undefined) {
+            delete process.env[key];
+          } else {
+            process.env[key] = prior;
+          }
+        }
+      });
+
+      // Use --env-record so the child writes its inherited env snapshot
+      // to disk synchronously at startup, before the listener binds. The
+      // helper runs in normal mode so the child reaches readiness and we
+      // can stop() it cleanly afterwards.
+      const child = await startMockDaemon({
+        asChildProcess: true,
+        __testInjectArgs: ["--env-record", envFile],
+      });
+      expect(child).not.toBeNull();
+      onTestFinished(async () => {
+        if (child) await child.stop();
+      });
+
+      expect(existsSync(envFile)).toBe(true);
+      const recorded = JSON.parse(readFileSync(envFile, "utf8")) as Record<string, string>;
+
+      // Contract: ambient daemon-control vars must be stripped from the
+      // child env. Today these assertions fail because the helper passes
+      // process.env through unchanged.
+      expect(recorded.KSPEC_DAEMON_PID).toBeUndefined();
+      expect(recorded.KSPEC_DAEMON_PORT).toBeUndefined();
+      expect(recorded.KSPEC_DAEMON_HOST).toBeUndefined();
+      expect(recorded.KSPEC_DAEMON_CONNECT_HOST).toBeUndefined();
+      expect(recorded.KSPEC_DAEMON_RUNTIME).toBeUndefined();
+      expect(recorded.KSPEC_NO_DAEMON).toBeUndefined();
+      // Session variables must also be stripped — the dispatch engine
+      // sets KSPEC_SESSION_ID on the parent process and the mock daemon
+      // child must not observe it.
+      expect(recorded.KSPEC_SESSION_ID).toBeUndefined();
+    },
+  );
 });
