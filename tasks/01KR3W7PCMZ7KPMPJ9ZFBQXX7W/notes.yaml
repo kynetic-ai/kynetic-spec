@@ -115,3 +115,65 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T14:42:42.869Z
+  - _ulid: 01KR42WP4H8PRZGT7D014ACCVR
+    content: >-
+      Fix cycle 2: replaced bare it.fails() with selective classifier-gap regression.
+
+
+      What changed:
+
+      - Added expectClassifierGap(result, assertPostFixBehavior, assertKnownGapShape) helper.
+
+      - Each of the six precision tests now runs the AC's required post-fix assertions (exit code,
+      rule name, message fragment) inside the helper. Today those assertions throw, the helper
+      validates the failure shape against the EXACT known classifier gap, and the test passes. A
+      parser/helper failure does NOT match the known gap shape and re-throws.
+
+      - Added expectOxlintRanCleanly() precondition rejecting non-{0,1} exit codes and
+      panic/internal-error/parse-error/module-not-found output.
+
+      - Updated the merge-gate doc block to describe the new contract: when the rule fix lands, the
+      helper throws an explicit error instructing the dependent task to remove the wrapper rather
+      than delete the test.
+
+
+      Why:
+
+      - Cycle 2 reviewer (codex) identified that under it.fails(), ANY thrown assertion in the body
+      satisfies the marker — so a generic parser failure could pass the test even though it does not
+      match the targeted classifier gap. The task explicitly requires that a generic parser failure
+      cannot satisfy the test.
+
+      - The new helper enforces selectivity: today's pass requires the failure shape to exactly
+      match the captured gap; a parser/helper failure or any unexpected oxlint exit re-throws and
+      fails the test.
+
+
+      Forcing function preserved:
+
+      - When @task-fix-guardrail-daemon-command-classification lands, post-fix assertions succeed,
+      the catch block does not run, and the helper throws so the dependent task must remove the
+      wrapper.
+
+
+      Re-verified ACs:
+
+      - ac-direct-daemon-entry-invocations-flagged: covered by four fork/execFile cases (post-fix
+      assertions assert rule name + shared-fixture/startTestDaemon message fragment).
+
+      - ac-unrelated-subprocesses-not-reported: covered by spawn echo and spawnSync git cases.
+
+      - @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged: covered by the same four
+      direct-entry cases.
+
+
+      Verification:
+
+      - Focused: 68/68 pass.
+
+      - Full: 2402/2402 suites, 8803 passed, 5 skipped, 0 failed.
+
+      - git diff --check: clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T15:21:55.602Z
