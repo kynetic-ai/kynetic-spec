@@ -41033,9 +41033,25 @@ runs:
     completed_at: 2026-05-08T21:11:46.198Z
   - _ulid: 01KR4QJTW3Q07BY74YYDCWEA4F
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T21:23:32.867Z
+        completed_at: 2026-05-08T21:24:13.375Z
+        notes: "Step 1 - what worked: (a) systematically traced async startup path (server.listen →
+          middleware register → onProjectRegistered → registerEntityCache → loadAll) to identify the
+          disk-fallback window where /api/tasks returns cache_status=ready before cache exists; (b)
+          chose to use the existing /api/debug/cache-status endpoint (which exposes per-project
+          domain state including null when cache absent) rather than inventing a new readiness
+          signal; (c) added an explicit cache-status assertion in the happy-path test so a
+          regression to the buggy probe would fail deterministically rather than reintroduce a
+          flake."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T21:24:13.375Z
+        completed_at: 2026-05-08T21:24:13.375Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T21:23:32.867Z
