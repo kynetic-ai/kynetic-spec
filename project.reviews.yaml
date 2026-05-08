@@ -185698,6 +185698,19 @@ reviews:
         required: true
         created_at: 2026-05-08T13:15:36.922Z
         completed_at: 2026-05-08T13:15:36.922Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Reviewed @daemon-server, @daemon-backed-test-fixture-contract,
+          @daemon-test-harness-guardrails, @daemon-test-endpoint-consistency,
+          @daemon-test-mode-boundaries, @e2e-test-daemon-isolation, and
+          @daemon-network-endpoint-contract. New requirements refine uncovered hardening gaps under
+          the correct parents without contradicting existing ACs.
+        name: Existing spec neighborhood
+        required: true
+        created_at: 2026-05-08T13:15:46.825Z
+        completed_at: 2026-05-08T13:15:46.825Z
     events:
       - _ulid: 01KR3VM9CQQY1D1ZWDAS4HYBQB
         actor: Jacob Chapel
@@ -185726,6 +185739,13 @@ reviews:
           status: pass
           name: Plan parse and references
         timestamp: 2026-05-08T13:15:38.229Z
+      - _ulid: 01KR3VNR2DFQEZ7QPG0MSMM1Z4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec neighborhood
+        timestamp: 2026-05-08T13:15:48.174Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -185738,5 +185758,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T13:15:00.376Z
-    updated_at: 2026-05-08T13:15:36.922Z
+    updated_at: 2026-05-08T13:15:46.825Z
     notes: []
