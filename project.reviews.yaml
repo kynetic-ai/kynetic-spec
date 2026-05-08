@@ -184636,6 +184636,12 @@ reviews:
         payload:
           thread_ulid: 01KR2VMTPBYF14JBKQGPCSW05K
         timestamp: 2026-05-08T04:24:41.216Z
+      - _ulid: 01KR2X9FGNVE09K8SR121Z9XZG
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR2VN63Q359GE2G4GRXYZM5N
+        timestamp: 2026-05-08T04:24:48.917Z
     examined_commit: 80326f51ed6858dab18923307b48c372f10622be
     external_links: []
     lifecycle_state: closed
@@ -184733,6 +184739,22 @@ reviews:
               direct daemon spawn with zero diagnostics, so the guardrail currently accepts
               undocumented and broad exceptions."
             created_at: 2026-05-08T03:56:43.988Z
+          - _ulid: 01KR2X9EAGJRQYQ232YQCAB47B
+            author: "@claude"
+            body: "Fixed: added a companion rule no-leaky-test-daemon/localized-disable that scans Program-level
+              comments and reports two patterns. (1) File- or block-wide oxlint-disable referencing
+              no-leaky-test-daemon/no-leaky-test-daemon (or the bare plugin name
+              no-leaky-test-daemon) — fileWideDisable. (2) Per-line oxlint-disable-line /
+              oxlint-disable-next-line for the rule with no `-- <reason>` after the rule name —
+              missingReason. Because the meta-check is a separate rule in the same plugin, the
+              disable directive that silences no-leaky-test-daemon/no-leaky-test-daemon does NOT
+              silence localized-disable, so both undocumented and broad exceptions now produce
+              diagnostics. Registered the new rule in .oxlintrc.json and the lint test config so it
+              runs everywhere the main rule does. Four new tests cover both reviewer repros (bare
+              disable-next-line, file-wide disable, plugin-wide file disable, oxlint-disable-line
+              without reason) plus a negative case that an unrelated rule's disable directive does
+              not trigger localized-disable."
+            created_at: 2026-05-08T04:24:47.696Z
         kind: blocker
       - _ulid: 01KR2VR90PKD01P92CSS4MNJ99
         entries:
@@ -184759,5 +184781,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T03:58:06.674Z
     created_at: 2026-05-08T03:44:45.473Z
-    updated_at: 2026-05-08T04:24:39.965Z
+    updated_at: 2026-05-08T04:24:47.696Z
     notes: []
