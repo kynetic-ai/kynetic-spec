@@ -28047,7 +28047,7 @@
   type: task
   spec_ref: "@daemon-backed-test-fixture-contract"
   plan_ref: "@plan-daemon-test-fixture-standardization"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-enforce-daemon-test-fixture-usage"
@@ -28060,4 +28060,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-07T20:36:51.804Z
+  started_at: 2026-05-08T05:27:09.597Z
   automation: eligible
