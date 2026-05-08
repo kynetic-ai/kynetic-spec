@@ -46003,7 +46003,7 @@ plans:
       centralized, the port allocation strategy can be replaced in one helper without
 
       migrating tests again.
-    status: active
+    status: completed
     approved_at: 2026-05-07T20:36:27.165Z
     derived_specs:
       - "@daemon-backed-test-fixture-contract"
