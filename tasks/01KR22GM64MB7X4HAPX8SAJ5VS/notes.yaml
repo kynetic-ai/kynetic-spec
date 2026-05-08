@@ -92,3 +92,47 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-08T04:48:28.710Z
+  - _ulid: 01KR2ZSQNEBS1YG184G3JCDMJZ
+    content: >-
+      Fix cycle 2: addressed both blockers from @01KR2XHY1S8PRC6ZM5V1TFRSSR.
+
+
+      Blocker 1 (file-global localhost URL tracking) — replaced the localhostUrlIdentifiers Set with
+      a per-scope Map<name, Array<{scopeNode, position, isLocalhost}>>. Each VariableDeclarator and
+      AssignmentExpression records {scope, position, isLocalhost-bool}; the fetch/WebSocket lookup
+      walks scopes outward (BlockStatement/Program/Function/Arrow/StaticBlock) from the use site and
+      picks the innermost entry whose position precedes the use. Inner non-localhost decls shadow
+      outer localhost ones, and a later non-localhost reassignment in the same scope overrides an
+      earlier localhost binding. Function parameters named the same as the identifier short-circuit
+      the lookup as non-localhost. Caught the reviewer's exact repro and several adjacent shadowing
+      patterns.
+
+
+      Blocker 2 (over-broad helper allowlist) — narrowed HELPER_PATH_PATTERNS from /tests/helpers/
+      to specific approved files: tests/helpers/daemon.ts, tests/helpers/mock-daemon.ts,
+      tools/eslint-rules/, tests/lint-no-leaky-test-daemon.test.ts,
+      tests/lint-daemon-test-guardrails.test.ts. Future generic helpers
+      (tests/helpers/rogue-helper.ts) and contract-test siblings (tests/helpers/daemon.test.ts) are
+      no longer exempt and must use the shared fixture or carry a localized exception. Confirmed by
+      running oxlint over the real tests/ tree (the existing real-codebase validation test in
+      tests/lint-no-leaky-test-daemon.test.ts still passes — neither helper-side contract test
+      reintroduces direct daemon spawn or a localhost:<port> URL).
+
+
+      Tests: added 11 new cases in tests/lint-daemon-test-guardrails.test.ts. Eight cover
+      scope-aware tracking (cross-test isolation, inner-block shadowing, let reassignment in both
+      directions, closure captures of an outer localhost binding, parameter shadowing). Three cover
+      the narrowed allowlist (tests/helpers/rogue-helper.ts spawn flagged,
+      tests/helpers/rogue-helper.ts localhost fetch flagged, tests/helpers/daemon.test.ts
+      contract-test sibling spawn flagged). Existing helper-internals tests retargeted from
+      tests/helpers/sample-helper.ts to the approved tests/helpers/daemon.ts and
+      tests/helpers/mock-daemon.ts paths.
+
+
+      Verification: focused suite 62/62 pass (22 lint-no-leaky + 40 lint-daemon-test-guardrails).
+      Full suite 8797 pass / 5 skipped / 0 fail. npm run lint count unchanged from baseline (13
+      errors, 721 warnings — none from no-leaky-test-daemon). git diff --check clean. kspec validate
+      has only pre-existing warnings unrelated to this task.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T05:08:38.703Z
