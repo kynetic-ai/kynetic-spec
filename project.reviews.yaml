@@ -189352,3 +189352,29 @@ reviews:
     created_at: 2026-05-08T20:05:01.439Z
     updated_at: 2026-05-08T20:24:06.849Z
     notes: []
+  - _ulid: 01KR4MTFQ3GT7HS47QC0M0TMD2
+    slugs: []
+    title: Review clarify in-process daemon API helper boundary
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR4MTFQ2J0Y8FETD294GGMXH
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-08T20:35:17.859Z
+    examined_commit: e0b6617b7baa8a96f4c13257621dfdc2a3c14a70
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR3W7SD99V6PMBDTR5WW1TBX"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-08T20:35:17.859Z
+    updated_at: null
+    notes: []
