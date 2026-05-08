@@ -1,1 +1,39 @@
-notes: []
+notes:
+  - _ulid: 01KR2NPTR8A1TSFFGY03CH64CM
+    content: >-
+      Approach: extend tests/daemon-api/helpers.ts with three new exports while preserving existing
+      API.
+
+
+      1. setupInlineFixtures(tempDir, files) — writes ad-hoc YAML files at project root (traditional
+      mode, matching the daemon-api-input-validation.test.ts pattern). Supports custom manifest,
+      modules map, inline or split tasks, reviews, plans, inbox, triage, and meta files. This is the
+      parallel to the existing setupFixtures(), which copies the full e2e fixture set in shadow
+      mode.
+
+
+      2. requestJson(app, tempDir, method, urlPath, body?) — JSON-bodied request helper that
+      auto-stringifies the body and forwards to makeRequest(). Eliminates the makeRequest(method,
+      urlPath, body) duplication in top-level tests.
+
+
+      3. captureBroadcasts(pubsub) — thin vi.spyOn wrapper for verifying websocket broadcast side
+      effects without forcing each test to import vi.
+
+
+      4. Extend createTestApp(opts?) to accept an optional getEntityCache so cache-consistency tests
+      can wire a custom RouteEntityCache without rebuilding the app from scratch.
+
+
+      Migration order: daemon-review-websocket.test.ts first (representative), then
+      daemon-review-verdicts-api.test.ts, then daemon-api-input-validation.test.ts. Other top-level
+      daemon API tests (daemon-command-api, daemon-diff-api) can be migrated mechanically once
+      helper API is stable.
+
+
+      Test data values and assertions preserved exactly. AC annotations updated to reference
+      @daemon-test-mode-boundaries ac-in-process-route-tests-no-child-process and
+      @daemon-test-harness-guardrails ac-fixture-contract-tests-run.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T02:12:17.800Z
