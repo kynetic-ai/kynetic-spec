@@ -184501,6 +184501,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T03:45:05.957Z
+      - _ulid: 01KR2VMG4HGTXN72AK9S1N712D
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR2VMEY7A91GPY90W31SBDMF
+        timestamp: 2026-05-08T03:55:52.850Z
     examined_commit: 80326f51ed6858dab18923307b48c372f10622be
     external_links: []
     lifecycle_state: open
@@ -184510,8 +184517,26 @@ reviews:
       content_hash: ""
       ref: "@01KR22GM64MB7X4HAPX8SAJ5VS"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR2VMEY7A91GPY90W31SBDMF
+        anchor:
+          type: code
+          commit: 80326f51ed6858dab18923307b48c372f10622be
+          line_end: 376
+          line_start: 366
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR2VMEY77DCY6GFDJSP3V0W8
+            author: Jacob Chapel
+            body: "MUST-FIX: The detached serve check only inspects literal/template arguments, so spawn-style
+              argv calls are missed. Repro: a synthetic test with spawn(\"kspec\", [\"serve\",
+              \"start\", \"--detach\", \"--port\", \"3456\"]) and no cleanup produced 'Found 0
+              warnings and 0 errors.' This violates ac-detached-serve-without-cleanup-flagged
+              because that is a detached daemon start through the CLI without scoped cleanup."
+            created_at: 2026-05-08T03:55:51.623Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T03:44:45.473Z
-    updated_at: 2026-05-08T03:45:04.621Z
+    updated_at: 2026-05-08T03:55:51.623Z
     notes: []
