@@ -39517,9 +39517,25 @@ runs:
     completed_at: 2026-05-08T06:10:05.221Z
   - _ulid: 01KR3WVSKRAW4Z2BA7G45R1VPS
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-08T13:36:34.936Z
+        completed_at: 2026-05-08T13:38:18.748Z
+        notes: "What worked well: (1) Manual oxlint dry-run with synthetic test files BEFORE writing the
+          regression tests pinpointed exactly which patterns silently passed (fork/execFile) vs were
+          incorrectly flagged (echo with overlapping argv tokens). (2) Reading
+          tools/eslint-rules/no-leaky-test-daemon.js first identified the precise gap location
+          (readDaemonSpawn only inspects spawn/spawnSync; argsResolveToDetachedServe collects tokens
+          across all args without binding to a kspec executable). (3) Reusing the existing runOxlint
+          helper kept the 6 new tests structurally identical to the existing 40 tests in the same
+          file."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-08T13:38:18.748Z
+        completed_at: 2026-05-08T13:38:18.748Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T13:36:34.936Z
