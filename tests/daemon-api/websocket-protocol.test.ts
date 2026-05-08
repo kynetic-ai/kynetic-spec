@@ -123,6 +123,10 @@ describe("daemon websocket protocol", { timeout: 60_000 }, () => {
   let project: TestDaemonProject;
   let daemon: StartedTestDaemon;
 
+  // Vitest's hookTimeout default (10s) does not inherit the describe-level
+  // test timeout. Cold-starting the daemon (spawn child + load + cache-ready
+  // probe) plus copying the e2e fixture set can exceed 10s under shared-worker
+  // load, so widen this beforeEach explicitly to match the suite-level intent.
   beforeEach(async () => {
     project = await createTestDaemonProject();
     daemon = await startTestDaemon(project, {
@@ -132,7 +136,7 @@ describe("daemon websocket protocol", { timeout: 60_000 }, () => {
         });
       },
     });
-  });
+  }, 60_000);
 
   afterEach(async () => {
     await project.cleanup();
@@ -472,6 +476,9 @@ describe("daemon websocket protocol — runtime parity", { timeout: 90_000 }, ()
       let daemon: StartedTestDaemon;
       let runtimeAvailable = false;
 
+      // Same hookTimeout widening as the parent describe — daemon cold-start
+      // plus fixture copy can exceed Vitest's 10s default under shared-worker
+      // load.
       beforeEach(async () => {
         runtimeAvailable = await isDaemonRuntimeAvailable(runtimeName);
         if (!runtimeAvailable) {
@@ -495,7 +502,7 @@ describe("daemon websocket protocol — runtime parity", { timeout: 90_000 }, ()
             });
           },
         });
-      });
+      }, 60_000);
 
       afterEach(async () => {
         if (project) {
