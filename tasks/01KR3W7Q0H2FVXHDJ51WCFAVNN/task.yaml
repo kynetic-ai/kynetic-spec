@@ -65,6 +65,7 @@ tags:
   - lint
   - daemon
 vcs_refs: []
+review_ref: "@01KR3XZGFXDHARMXBFNVXZKEZH"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-add-detached-cleanup-timing-regressions/01kr3w7q
@@ -115,6 +116,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-05-08T13:52:39.453Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KR3XZGFXDHARMXBFNVXZKEZH"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-08T13:56:08.522Z
 created_at: 2026-05-08T13:25:36.913Z
 started_at: 2026-05-08T13:41:01.810Z
 submitted_at: 2026-05-08T13:52:39.453Z
