@@ -11129,11 +11129,11 @@ workspaces:
     canonical_branch: dispatch/task/task-standardize-in-process-daemon-api-fixtures/01kr22gk
     canonical_branch_head: 8d20791d210a11231ae0a56cf52ee117a4a5dc8d
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-08T02:54:07.184Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-08T02:54:09.143Z
     health:
       status: healthy
       issues: []
@@ -11147,7 +11147,7 @@ workspaces:
       target_branch: dev
       target_commit: 51f6c643d15e71ca6beacdfad29738523c310ab7
       updated_at: 2026-05-08T02:54:07.184Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR22GKWXB1G5Y4KFTC5RNE3X"
     task_slug: task-standardize-in-process-daemon-api-fixtures
@@ -11156,7 +11156,7 @@ workspaces:
       last_active_at: 2026-05-08T02:39:05.829Z
       last_reconciled_at: 2026-05-08T02:54:07.184Z
       created_at: 2026-05-08T02:06:02.271Z
-      updated_at: 2026-05-08T02:54:07.184Z
+      updated_at: 2026-05-08T02:54:09.143Z
     workspace_id: dispatch-workspace-01KR22GKWXB1G5Y4KFTC5RNE3X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
