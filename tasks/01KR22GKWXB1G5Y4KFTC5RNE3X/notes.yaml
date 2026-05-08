@@ -37,3 +37,76 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-08T02:12:17.800Z
+  - _ulid: 01KR2PZPQJVRKRS5Y7GCVMKRJ5
+    content: >-
+      Implementation complete.
+
+
+      Helper changes (tests/daemon-api/helpers.ts):
+
+      - Added setupInlineFixtures(tempDir, files) for ad-hoc inline YAML fixtures (traditional mode
+      at project root) — supports manifest, modules map, inline or split tasks, reviews, plans,
+      inbox, triage, meta. Auto-writes a placeholder modules/test.yaml when using the default
+      manifest. Throws when both tasksFile and splitTasks are provided.
+
+      - Added DEFAULT_INLINE_MANIFEST (1.1 split format) and LEGACY_INLINE_MANIFEST (1.0 inline
+      format) constants for callers to pick the format their routes need.
+
+      - Added requestJson(app, tempDir, method, urlPath, body?) for JSON-bodied requests,
+      eliminating per-test makeRequest duplicates.
+
+      - Added captureBroadcasts(pubsub) thin vi.spyOn wrapper for websocket broadcast assertions.
+
+      - Extended createTestApp({ getEntityCache }) so cache-consistency tests can wire a custom
+      RouteEntityCache without rebuilding the app from scratch.
+
+      - Re-exported testUlid/testUlids from helpers.ts for ergonomic single-import access.
+
+
+      Tests added (tests/daemon-api/helpers.test.ts): 11 focused fixture-contract tests covering
+      inline default manifest, legacy 1.0 + tasksFile path, split format + splitTasks path,
+      mutually-exclusive task storage error, skipCommit behavior, requestJson body shaping,
+      captureBroadcasts call recording + clearing, and getEntityCache propagation.
+
+
+      Tests migrated to shared helpers:
+
+      - tests/daemon-review-websocket.test.ts (12 tests) — WebSocket broadcast assertions now use
+      captureBroadcasts + requestJson + setupInlineFixtures with LEGACY_INLINE_MANIFEST.
+
+      - tests/daemon-review-verdicts-api.test.ts (33 tests) — Review verdict/check/lifecycle routes
+      plus the cache-consistency integration test now use createTestApp({ getEntityCache }) and
+      setupInlineFixtures with split manifest.
+
+      - tests/daemon-api-input-validation.test.ts (4 tests) — Mutation enum and query filter
+      validation tests now use setupInlineFixtures + requestJson.
+
+
+      Audit decision: tests/daemon-command-api.test.ts and tests/daemon-diff-api.test.ts have
+      specialized setups (custom cache snapshot + commander program injection; git diff fixtures
+      with bespoke history) that do not match the makeRequest/setupFixtures duplication pattern.
+      They use createCommandRoutes/createDiffRoutes directly rather than the full app. Migrating
+      them would expand scope without removing the targeted duplication.
+
+
+      AC annotations: Each migrated and helper test now carries // AC: @daemon-test-mode-boundaries
+      ac-in-process-route-tests-no-child-process and // AC: @daemon-test-harness-guardrails
+      ac-fixture-contract-tests-run.
+
+
+      Verification:
+
+      - mise exec -- npm test -- --fresh tests/daemon-api/helpers.test.ts
+      tests/daemon-api/server.test.ts tests/daemon-api/tasks.test.ts
+      tests/daemon-review-websocket.test.ts tests/daemon-review-verdicts-api.test.ts
+      tests/daemon-api-input-validation.test.ts → 125/125 pass
+
+      - mise exec -- npm test (full suite) → 8742 passed, 5 skipped, 0 failed
+
+      - npx tsc --noEmit → clean
+
+      - oxlint on changed files → 2 pre-existing shadow warnings (verdicts test outer +
+      describe-local tempDir/app); my changes reduce the count by 1 vs original.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-08T02:34:37.170Z
