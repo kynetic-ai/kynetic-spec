@@ -16597,18 +16597,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/stabilize-flaky-daemon-startup-review-tests/01kr4awp
-    canonical_branch_head: e02650298e5c256049ae3ad06cf417da989e70ab
+    canonical_branch_head: ac91faa584cbd9e594f72a9b057827721e06c4e9
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T20:55:54.648Z
+      updated_at: 2026-05-08T21:22:24.041Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T20:56:24.671Z
+      updated_at: 2026-05-08T21:22:24.041Z
     integration:
       status: pending
       detail: null
@@ -16616,7 +16616,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e02650298e5c256049ae3ad06cf417da989e70ab
-      updated_at: 2026-05-08T20:55:54.648Z
+      updated_at: 2026-05-08T21:22:24.041Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR4AWP6NW25R663BZK5RNWTN"
@@ -16624,9 +16624,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T20:56:24.671Z
-      last_reconciled_at: 2026-05-08T20:56:24.671Z
+      last_reconciled_at: 2026-05-08T21:22:24.041Z
       created_at: 2026-05-08T20:55:54.648Z
-      updated_at: 2026-05-08T20:56:24.671Z
+      updated_at: 2026-05-08T21:22:24.041Z
     workspace_id: dispatch-workspace-01KR4AWP6NW25R663BZK5RNWTN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
