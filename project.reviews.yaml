@@ -185673,7 +185673,19 @@ reviews:
     slugs: []
     title: "Plan re-review: Daemon Test Fixture Hardening"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Re-checked prior review @01KR3V91: spec tags are removed; the status-only metadata task
+          is gone; @daemon-test-guardrail-precision split local suppression and documented-subject
+          suppression into separate ACs; @task-add-real-daemon-startup-failure-tests now explicitly
+          covers real-fixture env sanitation/annotation for ac-child-env-sanitized."
+        name: Prior blocker resolution
+        required: true
+        created_at: 2026-05-08T13:15:27.622Z
+        completed_at: 2026-05-08T13:15:27.622Z
     events:
       - _ulid: 01KR3VM9CQQY1D1ZWDAS4HYBQB
         actor: Jacob Chapel
@@ -185688,6 +185700,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T13:15:14.069Z
+      - _ulid: 01KR3VN57PA9JB42BHJARSEY15
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Prior blocker resolution
+        timestamp: 2026-05-08T13:15:28.886Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -185700,5 +185719,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T13:15:00.376Z
-    updated_at: 2026-05-08T13:15:12.800Z
+    updated_at: 2026-05-08T13:15:27.622Z
     notes: []
