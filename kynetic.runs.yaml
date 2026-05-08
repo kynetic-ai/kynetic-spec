@@ -40262,7 +40262,7 @@ runs:
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T17:44:08.418Z
   - _ulid: 01KR4C36BHFPQDNWDEEYSD2HQM
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -40308,13 +40308,18 @@ runs:
         completed_at: 2026-05-08T18:04:41.497Z
         notes: Skipped discussion because there were no untracked improvement proposals requiring approval.
           All identified friction was already tracked, and no new capture decision was needed.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-08T18:04:41.497Z
-        completed_at: 2026-05-08T18:04:41.497Z
+        completed_at: 2026-05-08T18:04:51.157Z
+        notes: "No new items captured. Existing coverage: @01KR4B38 tracks the stale e2e smoke script;
+          workflow show/reflection documentation drift and detached merge-helper ergonomics already
+          have existing specs/tasks/inbox/observations. Avoided duplicate inbox or observation
+          entries."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T18:02:46.001Z
+    completed_at: 2026-05-08T18:04:51.158Z
   - _ulid: 01KR4C69P79SGSAB97S9FWCNYE
     status: active
     current_step: 0
