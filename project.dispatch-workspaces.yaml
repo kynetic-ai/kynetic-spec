@@ -8607,7 +8607,7 @@ workspaces:
         head: 052c3bc90d6ca0208cb97aa7650fe60ca5fee36b
         last_seen_at: 2026-05-07T22:16:25.488Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-daemon-test-specs-01kr22gj
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: e590cfdcf82242754ed4ec1f135e0b909f774f4a
     bootstrap:
       status: succeeded
@@ -9108,9 +9108,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T00:11:26.437Z
-      last_reconciled_at: 2026-05-08T00:25:03.919Z
+      last_reconciled_at: 2026-05-08T00:27:47.208Z
       created_at: 2026-05-07T22:30:17.720Z
-      updated_at: 2026-05-08T00:25:04.596Z
+      updated_at: 2026-05-08T00:27:47.208Z
     workspace_id: dispatch-workspace-01KR22GJR5YSYRMW6VSD6MQ362
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
