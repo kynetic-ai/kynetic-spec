@@ -39558,7 +39558,7 @@ runs:
     started_at: 2026-05-08T13:36:34.936Z
     completed_at: 2026-05-08T13:39:13.538Z
   - _ulid: 01KR3XV2SCA3XMAA7MR33PJ8ET
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -39606,7 +39606,10 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-08T13:55:07.676Z
-        completed_at: 2026-05-08T13:55:07.676Z
+        completed_at: 2026-05-08T13:55:26.249Z
+        notes: Captured friction observation @01KR3XY2 about regression-test-only task slicing conflicting
+          with review merge gates. No task was created because the right policy change needs triage.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T13:53:40.140Z
+    completed_at: 2026-05-08T13:55:26.249Z
