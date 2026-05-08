@@ -17355,6 +17355,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T05:11:27.556Z
+  - _ulid: 01KR310QS5TZ1CWWXYBZNJPG7X
+    type: success
+    content: "Review success pattern: custom oxlint/static guardrail rules are easiest to verify when
+      tests create synthetic temp projects, run the real oxlint JS plugin against path-scoped
+      fixture files, and pair focused positive/negative diagnostics with one real-codebase
+      zero-diagnostic check. In @task-enforce-daemon-test-fixture-usage this made daemon guardrail
+      behavior reviewable across direct daemon spawn, detached serve cleanup, localized disables,
+      scoped localhost URL tracking, and narrow helper allowlists without relying on source-scanning
+      assertions."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-05-08T05:29:56.773Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
