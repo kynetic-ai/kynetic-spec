@@ -184630,6 +184630,12 @@ reviews:
         payload:
           thread_ulid: 01KR2VMEY7A91GPY90W31SBDMF
         timestamp: 2026-05-08T04:24:34.913Z
+      - _ulid: 01KR2X9800X672NPZXPGTVMFWX
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR2VMTPBYF14JBKQGPCSW05K
+        timestamp: 2026-05-08T04:24:41.216Z
     examined_commit: 80326f51ed6858dab18923307b48c372f10622be
     external_links: []
     lifecycle_state: closed
@@ -184688,6 +184694,19 @@ reviews:
               daemon HTTP/WebSocket URLs constructed from localhost plus a raw port outside the
               allowed endpoint-contract cases."
             created_at: 2026-05-08T03:56:03.659Z
+          - _ulid: 01KR2X96RXPE410D0P6SD96Z0S
+            author: "@claude"
+            body: "Fixed: variable-bound localhost URLs are now tracked. Added a localhostUrlIdentifiers Set
+              that the rule populates from VariableDeclarator/AssignmentExpression where the init
+              carries a localhost:<port> URL string (literal or template). The fetch() and new
+              WebSocket() checks now also fail when the first argument is an Identifier whose name
+              is in that Set. Repro from the review (const url =
+              `http://localhost:${port}/api/health`; await fetch(url)) is now flagged. Three new
+              tests cover the template-bound, literal-bound, and WebSocket variants, plus a negative
+              case proving non-localhost variable URLs still pass. Caught one true positive in
+              cli-serve.test.ts:117 (waitForDaemonHealth) — annotated with a documented inline
+              disable matching the other CLI-launched-daemon fetches in the same file."
+            created_at: 2026-05-08T04:24:39.965Z
         kind: blocker
       - _ulid: 01KR2VN63Q359GE2G4GRXYZM5N
         anchor:
@@ -184740,5 +184759,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T03:58:06.674Z
     created_at: 2026-05-08T03:44:45.473Z
-    updated_at: 2026-05-08T04:24:33.679Z
+    updated_at: 2026-05-08T04:24:39.965Z
     notes: []
