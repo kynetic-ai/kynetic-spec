@@ -186621,6 +186621,12 @@ reviews:
         payload:
           thread_ulid: 01KR40M49BX7Y474SXP5WMT9HK
         timestamp: 2026-05-08T15:21:12.968Z
+      - _ulid: 01KR42VN3BR0T155N0G558NW1S
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR40M49BX7Y474SXP5WMT9HK
+        timestamp: 2026-05-08T15:21:21.771Z
     examined_commit: 3f1ee8ce0d0da31add4c40b3ee09b11bb9f048ad
     external_links: []
     lifecycle_state: closed
@@ -186693,6 +186699,8 @@ reviews:
               - git diff --check 706fdefb...HEAD: no whitespace errors.
             created_at: 2026-05-08T15:21:11.682Z
         kind: blocker
+        resolved_at: 2026-05-08T15:21:20.467Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -186702,7 +186710,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T14:42:40.909Z
     created_at: 2026-05-08T14:29:13.246Z
-    updated_at: 2026-05-08T15:21:11.682Z
+    updated_at: 2026-05-08T15:21:20.467Z
     notes: []
   - _ulid: 01KR40VMZ8VAC4AZBGMETV015V
     slugs: []
