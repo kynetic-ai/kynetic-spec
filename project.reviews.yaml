@@ -189559,6 +189559,18 @@ reviews:
         runner: kspec
         created_at: 2026-05-08T20:59:00.040Z
         completed_at: 2026-05-08T20:59:00.040Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Synthetic test with spawn('cat', ['dist/daemon/index.js']) and execFile('grep',
+          ['dist/daemon/index.js', 'src/']) exited 1 with two no-leaky-test-daemon directDaemonSpawn
+          diagnostics; these commands consume the path as data and do not launch the daemon.
+        name: custom unrelated argv daemon-path probe
+        required: true
+        runner: oxlint
+        created_at: 2026-05-08T20:59:05.977Z
+        completed_at: 2026-05-08T20:59:05.977Z
     events:
       - _ulid: 01KR4P17GHQ3MYDGXPGENHCDS0
         actor: Jacob Chapel
@@ -189594,6 +189606,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-08T20:59:01.539Z
+      - _ulid: 01KR4P63Z605498X6A95B8B0GZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: custom unrelated argv daemon-path probe
+        timestamp: 2026-05-08T20:59:07.623Z
     examined_commit: e23ece2eed929bad1e38d89cf824049e8aecf90b
     external_links: []
     lifecycle_state: open
@@ -189606,5 +189625,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T20:56:27.409Z
-    updated_at: 2026-05-08T20:59:00.040Z
+    updated_at: 2026-05-08T20:59:05.977Z
     notes: []
