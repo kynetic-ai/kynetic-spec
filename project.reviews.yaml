@@ -184648,6 +184648,12 @@ reviews:
         payload:
           thread_ulid: 01KR2VMEY7A91GPY90W31SBDMF
         timestamp: 2026-05-08T04:25:00.386Z
+      - _ulid: 01KR2XA0J73BXS3R7QQGA5GMR6
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR2VMTPBYF14JBKQGPCSW05K
+        timestamp: 2026-05-08T04:25:06.376Z
     examined_commit: 80326f51ed6858dab18923307b48c372f10622be
     external_links: []
     lifecycle_state: closed
@@ -184722,6 +184728,8 @@ reviews:
               disable matching the other CLI-launched-daemon fetches in the same file."
             created_at: 2026-05-08T04:24:39.965Z
         kind: blocker
+        resolved_at: 2026-05-08T04:25:05.007Z
+        resolved_by: "@claude"
       - _ulid: 01KR2VN63Q359GE2G4GRXYZM5N
         anchor:
           type: code
@@ -184789,5 +184797,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T03:58:06.674Z
     created_at: 2026-05-08T03:44:45.473Z
-    updated_at: 2026-05-08T04:24:59.109Z
+    updated_at: 2026-05-08T04:25:05.007Z
     notes: []
