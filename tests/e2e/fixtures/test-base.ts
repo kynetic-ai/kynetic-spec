@@ -17,10 +17,10 @@ import {
   allocateTestDaemonPort,
   createTestDaemonProject,
   isDaemonRuntimeAvailable,
-  startTestDaemon,
   type DaemonTestRuntime,
   type StartedTestDaemon,
 } from "../../helpers/daemon.js";
+import { startPlaywrightFixtureDaemon } from "./daemon-fixture.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -195,6 +195,15 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
       // every test that exercises reconnection behavior to reload.
       const port = await allocateTestDaemonPort();
       let started: StartedTestDaemon | null = null;
+      // Stop hook captured via our own `registerCleanup` callback passed
+      // through to the shared core. Owning the captured reference here
+      // (rather than reading it back from the helper's return value) lets
+      // the `finally` block below drive teardown even when
+      // `startPlaywrightFixtureDaemon` itself rejects — the shared core
+      // invokes `registerCleanup` synchronously after spawn, BEFORE the
+      // readiness wait, so this variable is set whenever a child handle
+      // exists.
+      let earlyStop: (() => Promise<void>) | null = null;
 
       async function startDaemon(): Promise<void> {
         if (started && started.child.exitCode === null && started.child.signalCode === null) {
@@ -206,27 +215,35 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
         // AC: @daemon-backed-test-fixture-contract ac-readiness-diagnostics
         // AC: @daemon-test-endpoint-consistency ac-no-localhost-by-default
         // AC: @daemon-test-runtime-selection ac-node-default
-        started = await startTestDaemon(project, {
+        // AC: @daemon-test-startup-failure-hygiene ac-cleanup-registered-before-readiness-wait
+        started = await startPlaywrightFixtureDaemon({
+          project,
           runtime,
           port,
-          extraEnv: {
-            // KSPEC_TEST=1 enables the daemon's test-only cache delay primitive
-            // (src/daemon/entity-cache.ts). Preserved from the prior fixture.
-            KSPEC_TEST: "1",
-            KSPEC_TEST_RUNTIME: runtime,
+          registerCleanup: (stop) => {
+            earlyStop = stop;
           },
         });
+        // Defensive fallback: if a future shared-core regression dropped
+        // the registerCleanup invocation on the success path, the wrapper
+        // still has a stop function via the canonical handle. The AC
+        // behavior is enforced separately at the unit level
+        // (tests/e2e-fixture-daemon-cleanup.test.ts) and at the shared
+        // core level (tests/helpers/daemon.test.ts).
+        earlyStop ??= started.stop;
       }
 
       async function stopDaemon(): Promise<void> {
-        if (!started) return;
+        if (!earlyStop) return;
         // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
         // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
         // AC: @daemon-backed-test-fixture-contract ac-no-ambient-daemon-control
-        await started.stop();
+        // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+        // The captured stop is idempotent (see startTestDaemon's `stopped`
+        // guard) so calling it again from the finally block below after
+        // the test invoked daemon.stop() is safe.
+        await earlyStop();
       }
-
-      await startDaemon();
 
       // Helper to create a valid second project for multi-project tests
       // AC: @multi-directory-daemon ac-25 - Tests need multiple valid projects
@@ -285,34 +302,45 @@ tasks: []
         return secondProjectPath;
       }
 
-      // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation
-      // AC: @e2e-test-daemon-isolation ac-browser-endpoint-from-fixture
-      // AC: @daemon-test-endpoint-consistency ac-resolved-endpoint-source
-      // The shared fixture's wsUrl includes the /ws path suffix
-      // (ws://host:port/ws). Existing E2E tests treat fixture.wsUrl as a base
-      // URL and append "/ws" themselves (api-watcher, api-triage), so strip
-      // the suffix here to preserve that contract.
-      const wsBaseUrl = started!.wsUrl.replace(/\/ws$/, "");
-      await use({
-        tempDir: project.tempDir,
-        kspecDir: project.kspecDir,
-        port: started!.port,
-        baseUrl: started!.apiUrl,
-        wsUrl: wsBaseUrl,
-        stop: stopDaemon,
-        start: startDaemon,
-        createSecondProject,
-      });
-
-      // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
-      // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
-      await stopDaemon();
+      // The setup/use/teardown sequence runs inside a try/finally so the
+      // wrapper always tears down the fixture-owned daemon and the temp
+      // project tree, even when startDaemon() rejects (for example if the
+      // shared real-daemon fixture's readiness wait fails). The captured
+      // stop hook is registered before that wait can fail, so the finally
+      // block always has a stop available when one is needed.
       try {
-        rmSync(`${project.tempDir}-second`, { recursive: true, force: true });
-      } catch {
-        // Best effort: second project is only created by tests that opt in.
+        await startDaemon();
+
+        // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation
+        // AC: @e2e-test-daemon-isolation ac-browser-endpoint-from-fixture
+        // AC: @daemon-test-endpoint-consistency ac-resolved-endpoint-source
+        // The shared fixture's wsUrl includes the /ws path suffix
+        // (ws://host:port/ws). Existing E2E tests treat fixture.wsUrl as a base
+        // URL and append "/ws" themselves (api-watcher, api-triage), so strip
+        // the suffix here to preserve that contract.
+        const wsBaseUrl = started!.wsUrl.replace(/\/ws$/, "");
+        await use({
+          tempDir: project.tempDir,
+          kspecDir: project.kspecDir,
+          port: started!.port,
+          baseUrl: started!.apiUrl,
+          wsUrl: wsBaseUrl,
+          stop: stopDaemon,
+          start: startDaemon,
+          createSecondProject,
+        });
+      } finally {
+        // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
+        // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+        // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+        await stopDaemon();
+        try {
+          rmSync(`${project.tempDir}-second`, { recursive: true, force: true });
+        } catch {
+          // Best effort: second project is only created by tests that opt in.
+        }
+        await project.cleanup();
       }
-      await project.cleanup();
     },
     { scope: "test" },
   ],
