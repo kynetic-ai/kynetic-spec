@@ -41132,7 +41132,7 @@ runs:
     completed_at: 2026-05-08T21:43:35.391Z
   - _ulid: 01KR4RTBA96DTSV5HJGJ9Q64Z2
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -41147,7 +41147,31 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T21:46:41.500Z
-        completed_at: 2026-05-08T21:46:41.500Z
+        completed_at: 2026-05-08T21:47:06.317Z
+        notes: >-
+          Identified 2 candidate items, both duplicates of existing observations.
+
+
+          Candidate 1 (friction): @01KR3W7PP daemon-entry classifier is now on fix cycle 4 — each
+          cycle exposed a different precision dimension (cycles 1-3: under-coverage of API families;
+          cycle 4: over-coverage within an already-covered API — spawn-like runtime form treated
+          unrelated executables (cat/grep/docker) as daemon launches when their argv contained the
+          daemon path). Pattern: classifier specs phrased as 'every X that does Y' need both
+          must-fire and must-not-fire test matrices. -> Already covered by
+          @01KR4JYFCDP6N5TY457MNPMGR4 which prescribes 'coverage matrix in the test file so missing
+          entries fail at submission time, not at review.' Cycle 4 reinforces but doesn't refine the
+          existing capture.
+
+
+          Candidate 2 (success): Reviewer's hand-built synthetic oxlint probes caught the false
+          positive beyond the committed fixture tests; copying the probe into the test file as a
+          behavioral regression closed the cycle cleanly. -> Already covered by
+          @01KR4HCY41MAAGWEEFW372THDN which captures the same hand-built-probe pattern from a prior
+          review of this same task.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T21:47:06.317Z
+        completed_at: 2026-05-08T21:47:06.317Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T21:45:07.657Z
