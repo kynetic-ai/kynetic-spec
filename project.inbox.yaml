@@ -3324,3 +3324,18 @@ inbox:
       - ac-coverage
     added_by: Jacob Chapel
     created_at: 2026-05-08T15:01:48.630Z
+  - _ulid: 01KR44ABZ8DVTRJWAGVWSDYNY3
+    text: "Validate command should understand cross-branch AC coverage delegation. Today, kspec validate
+      on branch A reports ACs as uncovered if their annotations only exist on a sibling dispatch
+      branch B that hasn't merged yet. This produces review blockers on otherwise-correct work
+      whenever a spec's AC coverage is intentionally split across sibling tasks (a common dispatch
+      pattern). Possible angles: validate flag like --include-pending-branches that reads sibling
+      branches for coverage; per-task scoped validate that only checks the ACs the task explicitly
+      covers; or a task field that declares which ACs the task is responsible for vs which are
+      delegated. Out-of-scope ideas welcome — needs triage to settle the right shape."
+    tags:
+      - reflection
+      - validate
+      - dispatch
+    added_by: "@claude"
+    created_at: 2026-05-08T15:46:52.520Z

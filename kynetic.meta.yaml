@@ -17491,6 +17491,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T15:24:42.233Z
+  - _ulid: 01KR44ABQBYFMMW0RN45PBXCFE
+    type: friction
+    content: "kspec validate on a single dispatch branch reports ACs as uncovered when a sibling
+      dispatch task on a separate branch carries the matching annotations. This blocks review even
+      when the task description explicitly delegates that coverage to the sibling. Concrete repro:
+      cycle 2 review of @01KR3W7Q0H2FVXHDJ51WCFAVNN was blocked because validate flagged
+      @daemon-test-guardrail-precision missing ac-direct-daemon-entry-invocations-flagged and
+      ac-unrelated-subprocesses-not-reported, whose coverage was scoped to sibling task
+      @task-add-guardrail-classification-regressions (still in pending_review on its own branch).
+      Workers must either annotate existing behavioral tests on their own branch or duplicate the
+      sibling's failing-before-fix regressions (which then guarantees a merge conflict at the same
+      end-of-file describe block)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T15:46:52.267Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
