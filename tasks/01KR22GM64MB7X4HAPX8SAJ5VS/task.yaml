@@ -51,7 +51,7 @@ description: |
 spec_ref: "@daemon-test-harness-guardrails"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-migrate-real-daemon-vitest-tests"
@@ -64,6 +64,14 @@ tags:
   - lint
   - daemon
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
+  captured_at: 2026-05-08T03:40:26.286Z
+  commit: 80326f51ed6858dab18923307b48c372f10622be
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR2S3GGMRTFJ1B84KADAB294
 history:
   - author: Jacob Chapel
@@ -86,7 +94,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-08T03:12:07.174Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
+          captured_at: 2026-05-08T03:40:26.286Z
+          commit: 80326f51ed6858dab18923307b48c372f10622be
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-08T03:40:26.289Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-08T03:40:26.289Z
 created_at: 2026-05-07T20:36:51.524Z
 started_at: 2026-05-08T03:12:07.174Z
+submitted_at: 2026-05-08T03:40:26.289Z
 todos: []
 automation: eligible
