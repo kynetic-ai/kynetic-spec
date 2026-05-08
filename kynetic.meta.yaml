@@ -17685,6 +17685,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T21:25:20.055Z
+  - _ulid: 01KR4TYY9V8P01ADHV8KVGKM8G
+    type: friction
+    content: During review verification, running a focused test as 'npm test --fresh <file>' caused npm
+      to treat --fresh as an npm config flag, emitting warnings and not forwarding the flag to
+      scripts/test.cjs. Focused test evidence then needed caveats. Future testing guidance should
+      show the correct npm script argument-forwarding form when combining --fresh with file filters.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T22:22:35.323Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
