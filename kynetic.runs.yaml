@@ -40837,7 +40837,7 @@ runs:
     completed_at: 2026-05-08T20:26:52.657Z
   - _ulid: 01KR4MJ06EGVS64MA5Q22ABPAE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -40852,7 +40852,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T20:31:23.045Z
-        completed_at: 2026-05-08T20:31:23.045Z
+        completed_at: 2026-05-08T20:32:25.876Z
+        notes: "1 high-confidence success identified: pinning documented test-helper boundaries with
+          executable assertions (404 for routes outside scope, smoke for routes inside) converts the
+          docstring into a regression-checked contract. Verified during this session against
+          helpers.ts; pattern is reusable across other test helpers. No high-confidence friction
+          items: the Bun cold-start beforeEach timeout in websocket-protocol.test.ts is unclear
+          whether systemic or single-run flake — skipping per loop mode bar."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T20:32:25.876Z
+        completed_at: 2026-05-08T20:32:25.876Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T20:30:39.822Z
