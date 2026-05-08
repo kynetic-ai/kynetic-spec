@@ -188446,6 +188446,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T18:56:41.742Z
+      - _ulid: 01KR4F847JQMZ8QPYNWR7TQ0TD
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR4F82PSEMYZRBV151BQYDJA
+        timestamp: 2026-05-08T18:57:53.394Z
     examined_commit: aa926674fe0cba6b2a10dea537674b4fb67a7fb4
     external_links: []
     lifecycle_state: open
@@ -188455,8 +188462,29 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7RTYPWDJVCQFZD2042P2"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR4F82PSEMYZRBV151BQYDJA
+        anchor:
+          type: code
+          commit: aa926674fe0cba6b2a10dea537674b4fb67a7fb4
+          line_end: 491
+          line_start: 467
+          path: tests/helpers/mock-daemon.ts
+          side: head
+        entries:
+          - _ulid: 01KR4F82PSWXRAHCFSTZ0DVMG8
+            author: Jacob Chapel
+            body: "MUST-FIX: cleanupChildOnStartupFailure sends SIGTERM and immediately resolves null without
+              waiting for the child to exit, so the helper can return failure while the owned child
+              is still alive. Evidence: node --import tsx probe of startMockDaemon({ asChildProcess:
+              true, __testInjectArgs: ['--break','malformed-stdout','--pid-file', pidFile] })
+              returned null and process.kill(pid, 0) succeeded immediately afterward. This violates
+              @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure,
+              which requires the fixture to stop the child before returning failure. The updated
+              test waits 200ms after return, so it misses this timing bug."
+            created_at: 2026-05-08T18:57:51.833Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T18:56:17.813Z
-    updated_at: 2026-05-08T18:56:40.373Z
+    updated_at: 2026-05-08T18:57:51.833Z
     notes: []
