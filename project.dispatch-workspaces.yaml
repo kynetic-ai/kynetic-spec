@@ -16754,7 +16754,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T21:41:24.251Z
+      updated_at: 2026-05-08T21:43:55.728Z
     integration:
       status: merged
       detail: integration:merged
@@ -16763,25 +16763,20 @@ workspaces:
       target_branch: dev
       target_commit: e02650298e5c256049ae3ad06cf417da989e70ab
       updated_at: 2026-05-08T21:41:24.251Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KR4AWP6NW25R663BZK5RNWTN"
     task_slug: stabilize-flaky-daemon-startup-review-tests
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T21:27:11.815Z
-      last_reconciled_at: 2026-05-08T21:43:53.799Z
+      last_reconciled_at: 2026-05-08T21:43:55.728Z
       created_at: 2026-05-08T20:55:54.648Z
-      updated_at: 2026-05-08T21:43:53.799Z
+      updated_at: 2026-05-08T21:43:55.728Z
     workspace_id: dispatch-workspace-01KR4AWP6NW25R663BZK5RNWTN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: ac91faa584cbd9e594f72a9b057827721e06c4e9
-        last_seen_at: 2026-05-08T21:26:39.879Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-daemon-startup-review-tests-01kr4awp-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/stabilize-flaky-daemon-startup-review-tests/01kr4awp
