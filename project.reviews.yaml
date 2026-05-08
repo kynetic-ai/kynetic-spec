@@ -190376,6 +190376,17 @@ reviews:
         runner: npm run lint / npx oxlint
         created_at: 2026-05-08T22:44:03.282Z
         completed_at: 2026-05-08T22:44:03.282Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exited 6 due warnings only: Schema OK, References OK, Skills OK; warnings
+          are broad existing reference/alignment/completeness warnings."
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-08T22:44:11.329Z
+        completed_at: 2026-05-08T22:44:11.329Z
     events:
       - _ulid: 01KR4VBBVA7ZQCT1NB7Q4A8XSE
         actor: Jacob Chapel
@@ -190432,6 +190443,13 @@ reviews:
           kind: nit
           thread_ulid: 01KR4W6BYDYP1284V3G350P5ZP
         timestamp: 2026-05-08T22:44:08.594Z
+      - _ulid: 01KR4W6H92929WVB2JN0NN438K
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-08T22:44:12.706Z
     examined_commit: 1459ff6696a65438ac6b64221407f751f7c4d3b8
     external_links: []
     lifecycle_state: open
@@ -190505,5 +190523,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-08T22:29:22.411Z
-    updated_at: 2026-05-08T22:44:07.246Z
+    updated_at: 2026-05-08T22:44:11.329Z
     notes: []
