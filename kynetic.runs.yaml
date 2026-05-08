@@ -38683,7 +38683,7 @@ runs:
     completed_at: 2026-05-08T01:14:53.123Z
   - _ulid: 01KR2JSZE724JG6EYA94YA1WRB
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -38697,7 +38697,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-08T01:21:50.641Z
-        completed_at: 2026-05-08T01:21:50.641Z
+        completed_at: 2026-05-08T01:23:04.338Z
+        notes: "Searched: wsUrl, fixture wsUrl, ws path suffix, ESM CJS, test helper ESM, __dirname
+          polyfill, docs.spec, strict mode violation. Findings: (1) wsUrl base-vs-full contract
+          divergence between shared fixture and existing e2e tests is NOT tracked anywhere (worked
+          around with .replace(/\\/ws$/,'')); (2) Need for shared test helpers (tests/helpers/) to
+          support both CJS (vitest) and ESM (Playwright) is NOT tracked; (3) docs.spec.ts has 2
+          pre-existing strict-mode failures on origin/dev unrelated to fixture migration."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-08T01:23:04.338Z
+        completed_at: 2026-05-08T01:23:04.338Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-08T01:21:35.175Z
