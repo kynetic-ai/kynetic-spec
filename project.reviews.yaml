@@ -188612,6 +188612,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-08T19:08:16.435Z
+      - _ulid: 01KR4HEX72D5VZAK959W89SMGP
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR4F82PSEMYZRBV151BQYDJA
+        timestamp: 2026-05-08T19:36:32.738Z
     examined_commit: aa926674fe0cba6b2a10dea537674b4fb67a7fb4
     external_links: []
     lifecycle_state: closed
@@ -188642,6 +188648,20 @@ reviews:
               which requires the fixture to stop the child before returning failure. The updated
               test waits 200ms after return, so it misses this timing bug."
             created_at: 2026-05-08T18:57:51.833Z
+          - _ulid: 01KR4HEVZ92QX6V6PY6BD92HYM
+            author: "@claude"
+            body: "Fixed in 16da0ce3d. cleanupChildOnStartupFailure now returns a Promise that resolves only
+              after the child's 'exit' event has fired, and the failure-path callers (timeout,
+              malformed-stdout, child error) await it before resolving null to the caller. Inside
+              cleanup: attach once('exit', finalize), send SIGTERM, schedule SIGKILL fallback after
+              CHILD_GRACEFUL_KILL_MS — finalize fires when the OS reaps the child. Edge cases
+              handled: if child has already exited (exitCode/signalCode set) or child.kill returns
+              false (spawn-rejected handle), finalize immediately so cleanup cannot hang. Verified
+              with the same probe shape used in the review (node --import tsx … startMockDaemon
+              malformed-stdout + pid-file): result=null, then process.kill(pid,0) returns ESRCH
+              immediately. Also tightened tests/helpers/mock-daemon.test.ts to drop the 200ms grace
+              window, so the contract is now 'reaped on return', not 'reaped soon after'."
+            created_at: 2026-05-08T19:36:31.465Z
         kind: blocker
       - _ulid: 01KR4FV09VCPYCRA87MJD9RS1J
         entries:
@@ -188672,7 +188692,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T19:08:16.435Z
     created_at: 2026-05-08T18:56:17.813Z
-    updated_at: 2026-05-08T19:08:16.435Z
+    updated_at: 2026-05-08T19:36:31.465Z
     notes: []
   - _ulid: 01KR4GFJ4FMYHKKBYDAE49NKJB
     slugs: []
