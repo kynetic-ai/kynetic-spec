@@ -1255,6 +1255,9 @@ features:
           startup does not reach readiness. Startup failures produce bounded
           diagnostics for the attempted child, and any child process already owned by
           the fixture is stopped before the helper returns failure to the caller.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
