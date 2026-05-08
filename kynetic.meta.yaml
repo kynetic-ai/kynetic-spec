@@ -17565,6 +17565,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T18:53:37.126Z
+  - _ulid: 01KR4FZWR87V2W8B67GJE3E0T5
+    type: friction
+    content: Lifecycle cleanup tests can pass while missing the exact before-return contract if they
+      wait after the awaited call before checking process liveness. For ACs that say a fixture stops
+      a child before returning failure, tests should assert immediately at the return boundary and
+      only use delayed cleanup as a fallback, not as the main proof.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T19:10:52.168Z
+  - _ulid: 01KR4FZX0E5QCWRAXFH0KST514
+    type: success
+    content: During review of @task-fix-mock-daemon-cleanup-env-hygiene, a direct node --import tsx
+      probe against the malformed-startup path disproved a passing test suite by checking process
+      liveness immediately after startMockDaemon returned. Direct probes are useful review evidence
+      for lifecycle timing contracts.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T19:10:52.430Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
