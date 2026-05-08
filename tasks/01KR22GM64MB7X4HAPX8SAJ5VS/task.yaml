@@ -51,7 +51,7 @@ description: |
 spec_ref: "@daemon-test-harness-guardrails"
 plan_ref: "@plan-daemon-test-fixture-standardization"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-migrate-real-daemon-vitest-tests"
@@ -68,8 +68,8 @@ review_ref: "@01KR2XHY1S8PRC6ZM5V1TFRSSR"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
-  captured_at: 2026-05-08T04:26:07.137Z
-  commit: cffda7739392d5ad338da74ce52e12ff0db0a6bb
+  captured_at: 2026-05-08T05:08:49.183Z
+  commit: da1403a5e02c0c52c3376d334f448611c8bb058a
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
@@ -202,8 +202,35 @@ history:
         previous: 2026-05-08T04:26:03.828Z
     command: task-start
     timestamp: 2026-05-08T04:45:08.162Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
+          captured_at: 2026-05-08T05:08:49.183Z
+          commit: da1403a5e02c0c52c3376d334f448611c8bb058a
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
+        previous:
+          review_url: null
+          branch: dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
+          captured_at: 2026-05-08T04:26:07.137Z
+          commit: cffda7739392d5ad338da74ce52e12ff0db0a6bb
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-enforce-daemon-test-fixture-usage/01kr22gm
+      submitted_at:
+        new: 2026-05-08T05:08:49.188Z
+        previous: 2026-05-08T04:26:07.141Z
+    command: task-submit
+    timestamp: 2026-05-08T05:08:49.188Z
 created_at: 2026-05-07T20:36:51.524Z
 started_at: 2026-05-08T04:45:08.162Z
-submitted_at: 2026-05-08T04:26:07.141Z
+submitted_at: 2026-05-08T05:08:49.188Z
 todos: []
 automation: eligible
