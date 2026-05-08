@@ -190387,6 +190387,19 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-08T22:44:11.329Z
         completed_at: 2026-05-08T22:44:11.329Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Synthetic probes against this rule exited 0 with zero diagnostics for exec("node
+          --enable-source-maps dist/daemon/index.js --port 0") and spawn(process["execPath"],
+          [DAEMON_ENTRY, "--port", "0"]), both direct daemon-entry launches outside approved
+          helpers.
+        name: manual classifier probes
+        required: true
+        runner: synthetic oxlint
+        created_at: 2026-05-08T22:44:15.387Z
+        completed_at: 2026-05-08T22:44:15.387Z
     events:
       - _ulid: 01KR4VBBVA7ZQCT1NB7Q4A8XSE
         actor: Jacob Chapel
@@ -190450,6 +190463,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-08T22:44:12.706Z
+      - _ulid: 01KR4W6N8G6442KYTCKD19Y7VT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual classifier probes
+        timestamp: 2026-05-08T22:44:16.785Z
     examined_commit: 1459ff6696a65438ac6b64221407f751f7c4d3b8
     external_links: []
     lifecycle_state: open
@@ -190523,5 +190543,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-08T22:29:22.411Z
-    updated_at: 2026-05-08T22:44:11.329Z
+    updated_at: 2026-05-08T22:44:15.387Z
     notes: []
