@@ -38927,7 +38927,7 @@ runs:
     started_at: 2026-05-08T02:35:05.799Z
   - _ulid: 01KR2R33183XQS2MR4GN8S5T68
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -38971,7 +38971,15 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-05-08T02:56:24.394Z
-        completed_at: 2026-05-08T02:56:24.394Z
+        completed_at: 2026-05-08T02:56:36.249Z
+        notes: "Discussion decision: existing workflow-show and review-evidence frictions are already
+          tracked, so no new captures for those. The backtick shell-substitution issue is a
+          high-confidence documentation/convention gap observed directly in this reflection; capture
+          as a friction observation for later triage rather than creating a task directly."
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-08T02:56:36.249Z
+        completed_at: 2026-05-08T02:56:36.249Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-08T02:53:56.648Z
