@@ -184330,7 +184330,17 @@ reviews:
     slugs: []
     title: Review standardize mock daemon client fixtures (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/helpers/mock-daemon.test.ts: 15 passed"
+        name: mock daemon focused tests
+        required: true
+        runner: npm
+        created_at: 2026-05-08T03:09:31.918Z
+        completed_at: 2026-05-08T03:09:31.918Z
     events:
       - _ulid: 01KR2RB3M821C3JEBZ1BWGCP18
         actor: Jacob Chapel
@@ -184345,6 +184355,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T02:58:41.381Z
+      - _ulid: 01KR2RZNM0JSK5XBNH6HJHNVRF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: mock daemon focused tests
+        timestamp: 2026-05-08T03:09:33.184Z
     examined_commit: fd4e6cb50da3ab226f50745a575f35056ae3bd51
     external_links: []
     lifecycle_state: open
@@ -184357,5 +184374,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-08T02:58:19.400Z
-    updated_at: 2026-05-08T02:58:39.995Z
+    updated_at: 2026-05-08T03:09:31.918Z
     notes: []
