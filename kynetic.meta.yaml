@@ -17376,6 +17376,22 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-05-08T05:29:56.773Z
+  - _ulid: 01KR3281JW5N61XYYCVZ7VXFND
+    type: friction
+    content: "Vitest's describe-level { timeout: N } sets testTimeout only — it does not inherit into
+      hookTimeout (default 10s). Tests that build a heavy fixture in beforeEach (e.g. shared daemon:
+      spawn child + load + cache-ready probe) reproducibly hit the 10s hook timeout under
+      shared-worker contention even when describe declares 60_000. Symptom is a cryptic 'Hook timed
+      out in 10000ms' that points at the beforeEach line, not the slow operation. Fix is to pass
+      timeout as the second arg to beforeEach explicitly: beforeEach(async () => { ... }, 60_000).
+      Hit this on tests/daemon-api/websocket-protocol.test.ts during validation of the daemon
+      fixture standardization plan; the same gotcha will recur for any future test that
+      startTestDaemon() in a per-test hook. Worth noting in tests/ conventions or a comment in
+      tests/helpers/daemon.ts so the next author does not rediscover it."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-08T05:51:24.765Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
