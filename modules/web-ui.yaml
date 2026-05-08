@@ -1059,6 +1059,9 @@ features:
           daemon tests on the standardized helpers. Direct daemon child-process
           startup and detached serve commands are allowed only inside the shared
           helper implementation or in explicitly documented exception tests.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
