@@ -187538,9 +187538,25 @@ reviews:
           kind: nit
           thread_ulid: 01KR47CXYQQ6GYR665S399KYKG
         timestamp: 2026-05-08T16:40:43.465Z
+      - _ulid: 01KR47DC7RT87ZYT0V5XHM71SH
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-08T16:40:56.824Z
+      - _ulid: 01KR47DC7RC4QK8X38HZFCXNTQ
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-08T16:40:56.824Z
     examined_commit: 8d75d10c36ce5e7289f06e8d4f5ce654c281e8af
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -187576,7 +187592,14 @@ reviews:
               helper API. No blocking findings.
             created_at: 2026-05-08T16:40:42.199Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-08T16:40:56.824Z
     created_at: 2026-05-08T16:26:46.849Z
-    updated_at: 2026-05-08T16:40:42.199Z
+    updated_at: 2026-05-08T16:40:56.824Z
     notes: []
