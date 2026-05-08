@@ -10616,18 +10616,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-standardize-mock-daemon-client-fixtures/01kr22gk
-    canonical_branch_head: b4bcec464100211aea031fccbb6d5dd9607b4331
+    canonical_branch_head: fd4e6cb50da3ab226f50745a575f35056ae3bd51
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T02:38:13.334Z
+      updated_at: 2026-05-08T02:54:06.395Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T02:38:37.202Z
+      updated_at: 2026-05-08T02:54:06.395Z
     integration:
       status: pending
       detail: null
@@ -10635,7 +10635,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 18d77f97eb153c9bcf7e408557953f70c4f39688
-      updated_at: 2026-05-08T02:38:13.334Z
+      updated_at: 2026-05-08T02:54:06.395Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR22GKM9P5DB6J6ZVXVE510F"
@@ -10643,9 +10643,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T02:38:37.202Z
-      last_reconciled_at: 2026-05-08T02:38:37.202Z
+      last_reconciled_at: 2026-05-08T02:54:06.395Z
       created_at: 2026-05-08T01:24:22.511Z
-      updated_at: 2026-05-08T02:38:37.202Z
+      updated_at: 2026-05-08T02:54:06.395Z
     workspace_id: dispatch-workspace-01KR22GKM9P5DB6J6ZVXVE510F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
