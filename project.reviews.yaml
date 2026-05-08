@@ -189293,6 +189293,12 @@ reviews:
         payload:
           thread_ulid: 01KR4M2SK6YJ8QWXKPYWQNZHPG
         timestamp: 2026-05-08T20:50:14.272Z
+      - _ulid: 01KR4NP4N6ZS7D4SHW84JJBJAA
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR4M2SK6YJ8QWXKPYWQNZHPG
+        timestamp: 2026-05-08T20:50:24.038Z
     examined_commit: f0d119a1f95ce93bafc5ea58c499ebd02865f260
     external_links: []
     lifecycle_state: closed
@@ -189338,6 +189344,8 @@ reviews:
               absolute path, template literal, bun runtime) still flag correctly."
             created_at: 2026-05-08T20:50:12.881Z
         kind: blocker
+        resolved_at: 2026-05-08T20:50:22.480Z
+        resolved_by: "@claude"
       - _ulid: 01KR4M5KW3ESEKFX17V3R7T5XB
         entries:
           - _ulid: 01KR4M5KW3Z1H0FK36BZSEXP30
@@ -189368,7 +189376,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-08T20:24:06.849Z
     created_at: 2026-05-08T20:05:01.439Z
-    updated_at: 2026-05-08T20:50:12.881Z
+    updated_at: 2026-05-08T20:50:22.480Z
     notes: []
   - _ulid: 01KR4MTFQ3GT7HS47QC0M0TMD2
     slugs: []
