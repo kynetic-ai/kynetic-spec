@@ -184826,6 +184826,20 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-08T04:29:45.458Z
+      - _ulid: 01KR2XPDXJ080VWH04BGGRNEMB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR2XPCGSEBGWKGEVCYMVCMDK
+        timestamp: 2026-05-08T04:31:53.266Z
+      - _ulid: 01KR2XPHABCE5E5YNSZ52MPACA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR2XPG0N5RGPPR1FWSF1MW1F
+        timestamp: 2026-05-08T04:31:56.747Z
     examined_commit: cffda7739392d5ad338da74ce52e12ff0db0a6bb
     external_links: []
     lifecycle_state: open
@@ -184835,8 +184849,50 @@ reviews:
       content_hash: ""
       ref: "@01KR22GM64MB7X4HAPX8SAJ5VS"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR2XPCGSEBGWKGEVCYMVCMDK
+        anchor:
+          type: code
+          commit: cffda7739392d5ad338da74ce52e12ff0db0a6bb
+          line_end: 538
+          line_start: 488
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR2XPCGSV5JDJH2Z1AB8CQ3T
+            author: Jacob Chapel
+            body: "MUST-FIX: localhost URL tracking is file-global instead of scoped. Once any variable name is
+              initialized from a localhost:<port> URL, every later fetch(url) or new WebSocket(url)
+              using the same identifier name is reported even if that later variable is a
+              fixture-resolved endpoint. I verified with a synthetic file where one test only
+              asserts on const url = http://localhost:<port>/... and a later test does const url =
+              daemon.apiUrl; await fetch(url); oxlint reports the fixture-resolved fetch at line 13.
+              This creates false positives for legitimate shared-fixture tests and can force
+              unnecessary disables, which violates the guardrail intent to flag only tests
+              constructing daemon URLs from localhost plus a raw port."
+            created_at: 2026-05-08T04:31:51.833Z
+        kind: blocker
+      - _ulid: 01KR2XPG0N5RGPPR1FWSF1MW1F
+        anchor:
+          type: code
+          commit: cffda7739392d5ad338da74ce52e12ff0db0a6bb
+          line_end: 59
+          line_start: 54
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR2XPG0PYKF25XE1CKFBSPVW
+            author: Jacob Chapel
+            body: 'MUST-FIX: the helper allowlist is broader than the approved helper implementations. The rule
+              exits for every file under tests/helpers/, but the task only approves the shared
+              daemon fixture implementation, the mock daemon helper implementation, and explicit
+              lint-rule fixture strings. I verified a synthetic tests/helpers/rogue-helper.ts
+              containing spawn("node", [DAEMON_ENTRY, "--port", "0"]) passes with zero findings.
+              That lets future generic helpers reintroduce direct daemon startup without a local
+              documented exception, undermining the guardrail.'
+            created_at: 2026-05-08T04:31:55.414Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T04:29:25.945Z
-    updated_at: 2026-05-08T04:29:44.229Z
+    updated_at: 2026-05-08T04:31:55.414Z
     notes: []
