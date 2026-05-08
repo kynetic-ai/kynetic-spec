@@ -10114,7 +10114,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T01:38:06.640Z
+      updated_at: 2026-05-08T01:40:13.444Z
     integration:
       status: merged
       detail: integration:merged
@@ -10123,25 +10123,20 @@ workspaces:
       target_branch: dev
       target_commit: 2b4dc4dfd1d3667d9100be4b8e6996b0f2ca1840
       updated_at: 2026-05-08T01:38:06.640Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KR22GKACR7PZYFXZS9KEYVMQ"
     task_slug: task-migrate-playwright-daemon-fixture
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T01:24:16.918Z
-      last_reconciled_at: 2026-05-08T01:40:11.953Z
+      last_reconciled_at: 2026-05-08T01:40:13.444Z
       created_at: 2026-05-08T00:56:56.177Z
-      updated_at: 2026-05-08T01:40:11.953Z
+      updated_at: 2026-05-08T01:40:13.444Z
     workspace_id: dispatch-workspace-01KR22GKACR7PZYFXZS9KEYVMQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: c753d124422282c19fc01bf891a34656a5feb29d
-        last_seen_at: 2026-05-08T01:23:51.103Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-playwright-daemon-fixture-01kr22gk-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-migrate-playwright-daemon-fixture/01kr22gk
