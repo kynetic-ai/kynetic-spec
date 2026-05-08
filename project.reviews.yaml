@@ -185956,6 +185956,13 @@ reviews:
           status: fail
           name: npm test -- --fresh
         timestamp: 2026-05-08T13:52:13.430Z
+      - _ulid: 01KR3XRXJ06FANBXSSKAZ72M1Q
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR3XRW8CWRGXPK4XHZX3WTRS
+        timestamp: 2026-05-08T13:52:29.248Z
     examined_commit: 9ff274ab87aa2948893aecf7bebcc9e14827572c
     external_links: []
     lifecycle_state: open
@@ -185965,8 +185972,31 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7PCMZ7KPMPJ9ZFBQXX7W"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR3XRW8CWRGXPK4XHZX3WTRS
+        anchor:
+          type: code
+          commit: 9ff274ab87aa2948893aecf7bebcc9e14827572c
+          line_end: 1040
+          line_start: 937
+          path: tests/lint-daemon-test-guardrails.test.ts
+          side: head
+        entries:
+          - _ulid: 01KR3XRW8D2HQVQT21JAC75Y3E
+            author: Jacob Chapel
+            body: "MUST-FIX: This branch leaves the newly added regression tests active while the current rule
+              still fails them, so it cannot be merged without breaking the required project test
+              gate. I ran `npm test -- --fresh` and it failed only in this new block: the four
+              direct-entry cases still return oxlint exit code 0, and the two unrelated-subprocess
+              cases still return exit code 1. The focused command `npm test -- --fresh
+              tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts`
+              shows the same six failures. The plan's regression-first split is useful for
+              development, but the review/merge gate requires no introduced test regressions on the
+              branch that advances to `dev`; please submit these tests together with the rule change
+              that makes them pass, or otherwise keep `npm test` green at merge time."
+            created_at: 2026-05-08T13:52:27.917Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-08T13:40:40.642Z
-    updated_at: 2026-05-08T13:52:12.142Z
+    updated_at: 2026-05-08T13:52:27.917Z
     notes: []
