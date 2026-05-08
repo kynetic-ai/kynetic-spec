@@ -40,8 +40,13 @@
  *        or Origin headers are not flagged because the call is not a
  *        fetch/WebSocket entry point.
  *
- * Path allowlist (rule does not run at all in these locations):
- *   - tests/helpers/                 — shared fixture and mock helpers
+ * Path allowlist (rule does not run at all in these locations). The list is
+ * narrow on purpose: only the approved helper implementations and the
+ * lint-rule fixture-string test files are exempt. New `tests/helpers/*` files
+ * do NOT inherit the allowlist — generic helpers must use the shared
+ * fixture or carry a local documented exception just like any other test.
+ *   - tests/helpers/daemon.ts        — shared daemon fixture implementation
+ *   - tests/helpers/mock-daemon.ts   — mock daemon helper implementation
  *   - tools/eslint-rules/            — the rule source itself
  *   - tests/lint-no-leaky-test-daemon.test.ts
  *   - tests/lint-daemon-test-guardrails.test.ts
@@ -52,7 +57,8 @@
  */
 
 const HELPER_PATH_PATTERNS = [
-  /[\\/]tests[\\/]helpers[\\/]/,
+  /[\\/]tests[\\/]helpers[\\/]daemon\.ts$/,
+  /[\\/]tests[\\/]helpers[\\/]mock-daemon\.ts$/,
   /[\\/]tools[\\/]eslint-rules[\\/]/,
   /[\\/]tests[\\/]lint-no-leaky-test-daemon\.test\.ts$/,
   /[\\/]tests[\\/]lint-daemon-test-guardrails\.test\.ts$/,
@@ -480,26 +486,137 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * Identifiers whose declared initializer is a localhost:<port> URL.
-     * Tracked so a `const url = `http://localhost:${port}/...`; fetch(url)`
-     * pattern is still flagged — passing the URL through a variable does
-     * not bypass the guardrail.
+     * Bindings whose declarator init or assignment RHS is a `localhost:<port>`
+     * URL string. Tracked per lexical scope and source position so a
+     * `const url = `http://localhost:${port}/...`; fetch(url)` pattern is
+     * flagged the same way as the inline form — without leaking across
+     * unrelated `it`/`test` blocks that happen to reuse the same identifier
+     * name. Walking outward from the use site picks the innermost binding
+     * whose source position is before the use; an inner non-localhost
+     * declaration shadows an outer localhost one, and a later non-localhost
+     * reassignment in the same scope overrides an earlier localhost binding.
+     *
+     * Map shape: identifier name → array of
+     *   { scopeNode, position, isLocalhost }.
      */
-    const localhostUrlIdentifiers = new Set();
+    const localhostUrlBindings = new Map();
 
-    function isLocalhostUrlIdentifier(node) {
-      return (
-        node &&
-        node.type === "Identifier" &&
-        localhostUrlIdentifiers.has(node.name)
-      );
+    function getNodeStart(node) {
+      if (!node) return -1;
+      if (node.range && Number.isFinite(node.range[0])) return node.range[0];
+      if (typeof node.start === "number") return node.start;
+      return -1;
+    }
+
+    function isScopeNode(node) {
+      if (!node) return false;
+      switch (node.type) {
+        case "BlockStatement":
+        case "Program":
+        case "FunctionDeclaration":
+        case "FunctionExpression":
+        case "ArrowFunctionExpression":
+        case "StaticBlock":
+          return true;
+        default:
+          return false;
+      }
+    }
+
+    function getEnclosingScopeNode(node) {
+      let current = node.parent;
+      while (current) {
+        if (isScopeNode(current)) return current;
+        current = current.parent;
+      }
+      return null;
+    }
+
+    function paramBindsName(param, name) {
+      if (!param) return false;
+      if (param.type === "Identifier") return param.name === name;
+      if (param.type === "AssignmentPattern") {
+        return paramBindsName(param.left, name);
+      }
+      if (param.type === "RestElement") {
+        return paramBindsName(param.argument, name);
+      }
+      return false;
+    }
+
+    function functionScopeShadowsName(scopeNode, name) {
+      if (
+        scopeNode.type !== "FunctionDeclaration" &&
+        scopeNode.type !== "FunctionExpression" &&
+        scopeNode.type !== "ArrowFunctionExpression"
+      ) {
+        return false;
+      }
+      const params = scopeNode.params || [];
+      for (const param of params) {
+        if (paramBindsName(param, name)) return true;
+      }
+      return false;
+    }
+
+    function recordBinding(name, anchorNode, isLocalhost) {
+      const scopeNode = getEnclosingScopeNode(anchorNode);
+      if (!scopeNode) return;
+      const position = getNodeStart(anchorNode);
+      if (position < 0) return;
+      let entries = localhostUrlBindings.get(name);
+      if (!entries) {
+        entries = [];
+        localhostUrlBindings.set(name, entries);
+      }
+      entries.push({ scopeNode, position, isLocalhost });
+    }
+
+    /**
+     * Walk lexical scopes outward from `useNode` and return the most recent
+     * binding for `name` whose declaration position is before the use. If a
+     * function-scope parameter named `name` is encountered first, treat it
+     * as a non-localhost binding (parameters cannot be daemon-URL strings
+     * the rule has tracked). Returns null when no binding is in scope.
+     */
+    function findApplicableBinding(name, useNode) {
+      const usePos = getNodeStart(useNode);
+      if (usePos < 0) return null;
+      const entries = localhostUrlBindings.get(name);
+      let current = useNode.parent;
+      while (current) {
+        if (isScopeNode(current)) {
+          if (functionScopeShadowsName(current, name)) {
+            return { isLocalhost: false, viaParameter: true };
+          }
+          if (entries) {
+            let candidate = null;
+            for (const entry of entries) {
+              if (entry.scopeNode !== current) continue;
+              if (entry.position >= usePos) continue;
+              if (!candidate || entry.position > candidate.position) {
+                candidate = entry;
+              }
+            }
+            if (candidate) return candidate;
+          }
+        }
+        current = current.parent;
+      }
+      return null;
+    }
+
+    function isLocalhostUrlIdentifier(node, useNode) {
+      if (!node || node.type !== "Identifier") return false;
+      const binding = findApplicableBinding(node.name, useNode);
+      return binding !== null && binding.isLocalhost === true;
     }
 
     function firstArgIsLocalhostUrl(node) {
       const firstArg = node.arguments[0];
       if (!firstArg) return false;
       if (carriesLocalhostPortUrl(firstArg)) return true;
-      return isLocalhostUrlIdentifier(firstArg);
+      return isLocalhostUrlIdentifier(firstArg, firstArg);
     }
 
     function isFetchOfLocalhostUrl(node) {
@@ -518,25 +635,20 @@ const noLeakyTestDaemon = {
 
     return {
       VariableDeclarator(node) {
-        if (
-          node.id &&
-          node.id.type === "Identifier" &&
-          node.init &&
-          carriesLocalhostPortUrl(node.init)
-        ) {
-          localhostUrlIdentifiers.add(node.id.name);
-        }
+        if (!node.id || node.id.type !== "Identifier" || !node.init) return;
+        recordBinding(node.id.name, node, carriesLocalhostPortUrl(node.init));
       },
 
       AssignmentExpression(node) {
         if (
-          node.operator === "=" &&
-          node.left &&
-          node.left.type === "Identifier" &&
-          carriesLocalhostPortUrl(node.right)
+          node.operator !== "=" ||
+          !node.left ||
+          node.left.type !== "Identifier" ||
+          !node.right
         ) {
-          localhostUrlIdentifiers.add(node.left.name);
+          return;
         }
+        recordBinding(node.left.name, node, carriesLocalhostPortUrl(node.right));
       },
 
       CallExpression(node) {

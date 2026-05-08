@@ -283,6 +283,136 @@ describe("non-localhost url variable", () => {
       });
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
+
+    it("does not flag fetch(url) in one test() block when an unrelated earlier test() block declared a localhost-bound url with the same name", () => {
+      // Scope-aware tracking: a prior test's `const url = http://localhost:<port>/...`
+      // must not bleed into a later test that uses `const url = daemon.apiUrl`.
+      // The two consts are in distinct lexical scopes (each it() body is a
+      // separate BlockStatement) so the later fetch resolves to the local
+      // non-localhost binding and is not flagged.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+declare const daemon: { apiUrl: string };
+
+describe("scope isolation across tests", () => {
+  it("asserts on a localhost-bound url string only", () => {
+    const url = \`http://localhost:\${3456}/api/health\`;
+    expect(url).toContain("localhost");
+  });
+
+  it("uses the fixture-resolved endpoint", async () => {
+    const url = daemon.apiUrl + "/api/health";
+    const response = await fetch(url);
+    expect(response.status).toBe(200);
+  });
+});
+`,
+      });
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag fetch(url) when an inner block's const url shadows an outer localhost-bound declaration", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+declare const daemon: { apiUrl: string };
+
+const url = \`http://localhost:\${3456}/api/health\`; // module-level localhost binding
+
+describe("inner-scope shadowing", () => {
+  it("uses the fixture-resolved endpoint inside the test", async () => {
+    const url = daemon.apiUrl + "/api/health";
+    const response = await fetch(url);
+    expect(response.status).toBe(200);
+  });
+});
+`,
+      });
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag fetch(url) when a later non-localhost reassignment shadows an earlier localhost let binding in the same scope", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+declare const daemon: { apiUrl: string };
+
+describe("reassignment shadowing", () => {
+  it("uses a reassigned url variable", async () => {
+    let url = \`http://localhost:\${3456}/api/health\`;
+    url = daemon.apiUrl + "/api/health";
+    const response = await fetch(url);
+    expect(response.status).toBe(200);
+  });
+});
+`,
+      });
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("flags fetch(url) when a later localhost reassignment overrides an earlier non-localhost let binding in the same scope", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+declare const daemon: { apiUrl: string };
+
+describe("localhost reassignment", () => {
+  it("reassigns to a localhost url", async () => {
+    let url = daemon.apiUrl + "/api/health";
+    url = \`http://localhost:\${3456}/api/health\`;
+    const response = await fetch(url);
+    expect(response.status).toBe(200);
+  });
+});
+`,
+      });
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    it("flags fetch(url) inside a closure that captures a localhost-bound outer const", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("closure captures outer localhost", () => {
+  it("calls fetch via a captured closure", async () => {
+    const url = \`http://localhost:\${3456}/api/health\`;
+    const probe = async () => fetch(url);
+    const response = await probe();
+    expect(response.status).toBe(200);
+  });
+});
+`,
+      });
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag fetch(url) inside a function whose `url` parameter shadows an outer localhost binding", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+const url = \`http://localhost:\${3456}/api/health\`;
+
+async function probe(url: string) {
+  return fetch(url);
+}
+
+describe("parameter shadowing", () => {
+  it("calls probe with a fixture-resolved url", async () => {
+    const response = await probe("https://example.com/api/health");
+    expect(response.status).toBe(200);
+  });
+});
+`,
+      });
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
   });
 
   // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
@@ -395,9 +525,9 @@ describe("detached serve with scoped cleanup", () => {
 
   // AC: @daemon-test-harness-guardrails ac-helper-internals-allowed
   describe("helper internals are allowlisted by path", () => {
-    it("does not flag spawn(DAEMON_ENTRY) inside tests/helpers/", () => {
+    it("does not flag spawn(DAEMON_ENTRY) inside the shared daemon fixture (tests/helpers/daemon.ts)", () => {
       const result = runOxlint({
-        relPath: "tests/helpers/sample-helper.ts",
+        relPath: "tests/helpers/daemon.ts",
         source: `
 import { spawn } from "child_process";
 
@@ -411,9 +541,9 @@ export function startHelperDaemon(port) {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag hardcoded spawn(\"bun\", [DAEMON_ENTRY]) inside tests/helpers/", () => {
+    it("does not flag hardcoded spawn(\"bun\", [DAEMON_ENTRY]) inside the shared daemon fixture (tests/helpers/daemon.ts)", () => {
       const result = runOxlint({
-        relPath: "tests/helpers/sample-helper.ts",
+        relPath: "tests/helpers/daemon.ts",
         source: `
 import { spawn } from "child_process";
 
@@ -427,9 +557,9 @@ export function startBunDaemon(port) {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag fetch(\"http://localhost:<port>/...\") inside tests/helpers/", () => {
+    it("does not flag fetch(\"http://localhost:<port>/...\") inside the mock daemon helper (tests/helpers/mock-daemon.ts)", () => {
       const result = runOxlint({
-        relPath: "tests/helpers/sample-helper.ts",
+        relPath: "tests/helpers/mock-daemon.ts",
         source: `
 export async function probeHealth(port) {
   return fetch(\`http://localhost:\${port}/api/health\`);
@@ -437,6 +567,56 @@ export async function probeHealth(port) {
 `,
       });
       expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("flags spawn(DAEMON_ENTRY) in an unsanctioned tests/helpers/ file (allowlist is narrow, not the whole helpers/ tree)", () => {
+      const result = runOxlint({
+        relPath: "tests/helpers/rogue-helper.ts",
+        source: `
+import { spawn } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+export function startRogueDaemon(port) {
+  return spawn("node", [DAEMON_ENTRY, "--port", String(port)]);
+}
+`,
+      });
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags fetch(\"http://localhost:<port>/...\") in an unsanctioned tests/helpers/ file", () => {
+      const result = runOxlint({
+        relPath: "tests/helpers/rogue-helper.ts",
+        source: `
+export async function probeHealth(port) {
+  return fetch(\`http://localhost:\${port}/api/health\`);
+}
+`,
+      });
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/localhost|fixture endpoint/i);
+    });
+
+    it("flags spawn(DAEMON_ENTRY) inside a contract-test sibling of the shared fixture (tests/helpers/daemon.test.ts is not approved)", () => {
+      const result = runOxlint({
+        relPath: "tests/helpers/daemon.test.ts",
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawn } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("contract test", () => {
+  it("starts a daemon directly", () => {
+    const child = spawn("node", [DAEMON_ENTRY, "--port", "0"]);
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.output).toContain("no-leaky-test-daemon");
     });
 
     it("does not flag the explicit fixture strings inside tests/lint-no-leaky-test-daemon.test.ts", () => {
