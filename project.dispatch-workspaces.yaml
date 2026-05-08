@@ -14738,7 +14738,7 @@ workspaces:
         head: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
         last_seen_at: 2026-05-08T17:45:44.592Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-real-daemon-startup-failure-handling-01kr3w7q
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
     bootstrap:
       status: succeeded
@@ -15221,7 +15221,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T20:02:57.364Z
+      updated_at: 2026-05-08T20:03:23.928Z
     integration:
       status: pending
       detail: null
@@ -15236,10 +15236,10 @@ workspaces:
     task_slug: task-fix-guardrail-daemon-command-classification
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-08T19:40:42.448Z
-      last_reconciled_at: 2026-05-08T20:02:57.364Z
+      last_active_at: 2026-05-08T20:03:23.928Z
+      last_reconciled_at: 2026-05-08T20:03:23.928Z
       created_at: 2026-05-08T18:07:41.583Z
-      updated_at: 2026-05-08T20:03:21.361Z
+      updated_at: 2026-05-08T20:03:23.928Z
     workspace_id: dispatch-workspace-01KR3W7PPVDFR8F03VQ6J54M3K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
