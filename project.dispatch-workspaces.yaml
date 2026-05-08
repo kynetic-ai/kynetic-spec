@@ -15247,7 +15247,7 @@ workspaces:
         head: 09c83cadfc2e708ff8727c4fbbc2e9126d50fb2e
         last_seen_at: 2026-05-08T19:40:16.384Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-guardrail-daemon-command-classification-01kr3w7p
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 1148fad7662616a925c27654f1c01cb24f4544e3
     bootstrap:
       status: succeeded
@@ -15727,7 +15727,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T19:40:45.682Z
+      updated_at: 2026-05-08T19:41:13.170Z
     integration:
       status: pending
       detail: null
@@ -15742,10 +15742,10 @@ workspaces:
     task_slug: task-fix-mock-daemon-cleanup-env-hygiene
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-08T19:17:42.829Z
-      last_reconciled_at: 2026-05-08T19:40:45.682Z
+      last_active_at: 2026-05-08T19:41:13.170Z
+      last_reconciled_at: 2026-05-08T19:41:13.170Z
       created_at: 2026-05-08T18:30:14.056Z
-      updated_at: 2026-05-08T19:41:09.952Z
+      updated_at: 2026-05-08T19:41:13.170Z
     workspace_id: dispatch-workspace-01KR3W7RTYPWDJVCQFZD2042P2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
