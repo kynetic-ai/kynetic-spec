@@ -1143,6 +1143,141 @@ describe("spawnSync daemon-entry executable, no argv", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
+
+    // The shell-string forms (`exec`, `execSync`) are equivalent to a
+    // runtime-form spawn for the daemon entry — the OS shell still
+    // launches the compiled daemon. The classifier must report these the
+    // same as the spawn/execFile forms; otherwise contributors can
+    // sidestep the shared-fixture contract by typing the same launch as
+    // a single shell string.
+
+    it("flags exec(\"node dist/daemon/index.js --port 0\") as a direct daemon entry invocation", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec runtime-form shell string", () => {
+  it("execs the daemon entrypoint via the shell", () => {
+    const child = exec("node dist/daemon/index.js --port 0");
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execSync(\"node dist/daemon/index.js --port 0\") as a direct daemon entry invocation", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+describe("execSync runtime-form shell string", () => {
+  it("execSyncs the daemon entrypoint via the shell", () => {
+    const stdout = execSync("node dist/daemon/index.js --port 0");
+    expect(stdout).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execSync(\"dist/daemon/index.js --port 0\") when the daemon entry is the leading shell token", () => {
+      // Direct-executable form via shell — a shebang'd daemon entry is
+      // launched by name. The classifier reports this the same as
+      // `execFile(DAEMON_ENTRY, [...])`.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+describe("execSync direct-executable shell string", () => {
+  it("execSyncs the daemon entry as the leading token", () => {
+    const stdout = execSync("dist/daemon/index.js --port 0");
+    expect(stdout).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags exec with an absolute /…/dist/daemon/index.js path token in the shell command", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec absolute daemon entry path", () => {
+  it("execs the daemon entry via an absolute path", () => {
+    const child = exec("node /workspace/dist/daemon/index.js --port 0");
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags exec(`node dist/daemon/index.js --port ${port}`) template literal as a direct daemon entry invocation", () => {
+      // Template literals are tokenised the same way as plain string
+      // literals; an interpolation that does not contain the daemon entry
+      // path is preserved as a `${...}` placeholder so unrelated tokens
+      // cannot accidentally satisfy the daemon-entry check.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec template literal runtime form", () => {
+  it("execs via a template literal carrying the daemon entry token", () => {
+    const port = 0;
+    const child = exec(\`node dist/daemon/index.js --port \${port}\`);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execSync(\"bun dist/daemon/index.js …\") with the hardcoded-runtime message", () => {
+      // The hardcoded-bun message fires for shell-string Bun launches
+      // too: runtime selection belongs to the shared fixture, regardless
+      // of whether the spawn was expressed as argv or as a shell command.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+describe("execSync hardcoded bun runtime", () => {
+  it("execSyncs the daemon entry under bun via the shell", () => {
+    const stdout = execSync("bun dist/daemon/index.js --port 0");
+    expect(stdout).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/bun|runtime/i);
+    });
   });
 
   // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
@@ -1175,6 +1310,74 @@ describe("git subprocess with overlapping argv tokens", () => {
   it("runs git log with daemon-lifecycle words", () => {
     const result = spawnSync("git", ["log", "serve", "start", "--detach"]);
     expect(result.status).toBe(0);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag exec(\"echo --port 3456\") — no daemon entry, no kspec lifecycle command", () => {
+      // Regression: a shell string with overlapping tokens but no daemon
+      // entry path and no leading kspec executable must not be reported.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { exec } from "child_process";
+
+describe("non-daemon shell string", () => {
+  it("execs an unrelated shell command", () => {
+    exec("echo --port 3456");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+  });
+
+  // Regression: exec/execSync of `kspec serve start --detach` must remain
+  // classified as a detached-serve violation (cleanup escape hatch
+  // available), not as a direct daemon entry invocation. The new
+  // exec/execSync direct-entry detector must not steal calls that don't
+  // carry the daemon entry path token.
+  describe("exec/execSync of kspec lifecycle stays classified as detached-serve", () => {
+    it("flags exec(\"kspec serve start --detach\") with the missing-cleanup message, not the direct-spawn message", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { exec } from "child_process";
+
+describe("exec kspec serve start --detach", () => {
+  it("starts the daemon detached via exec", () => {
+    exec("kspec serve start --detach --port 3456");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/scoped cleanup|onTestFinished/i);
+      // The direct-spawn message is reserved for daemon-entry invocations.
+      expect(result.output).not.toMatch(/shared daemon fixture/i);
+    });
+
+    it("does not flag exec(\"kspec serve start --detach\") when scoped cleanup is registered", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec kspec serve start --detach with cleanup", () => {
+  it("starts the daemon detached via exec and registers cleanup", () => {
+    exec("kspec serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
   });
 });
 `,
