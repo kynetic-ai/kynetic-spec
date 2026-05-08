@@ -14051,18 +14051,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-add-mock-daemon-failure-contract-tests/01kr3w7r
-    canonical_branch_head: 227fcb7ef7d06f60567823111394bb2ec0506413
+    canonical_branch_head: 83abb119004fdabe040c7f1303fee78392d298d7
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-08T15:47:47.474Z
+      updated_at: 2026-05-08T16:07:10.774Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-08T15:48:10.833Z
+      updated_at: 2026-05-08T16:07:10.774Z
     integration:
       status: pending
       detail: null
@@ -14070,7 +14070,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 227fcb7ef7d06f60567823111394bb2ec0506413
-      updated_at: 2026-05-08T15:47:47.474Z
+      updated_at: 2026-05-08T16:07:10.774Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR3W7RHFG659BH7VGSM69KCJ"
@@ -14078,9 +14078,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-08T15:48:10.833Z
-      last_reconciled_at: 2026-05-08T15:48:10.833Z
+      last_reconciled_at: 2026-05-08T16:07:10.774Z
       created_at: 2026-05-08T15:47:47.474Z
-      updated_at: 2026-05-08T15:48:10.833Z
+      updated_at: 2026-05-08T16:07:10.774Z
     workspace_id: dispatch-workspace-01KR3W7RHFG659BH7VGSM69KCJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
