@@ -1,20 +1,17 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { execSync, spawn, type ChildProcess } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { createServer } from "node:net";
-import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { afterEach, beforeEach, describe, expect, it, onTestFinished } from "vitest";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
 import WebSocket from "ws";
+
 import { readTestOutputSync } from "../helpers/cli.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const DAEMON_ENTRY = join(__dirname, "../../dist/daemon/index.js");
-const KSPEC_CLI = join(__dirname, "../../dist/cli/index.js");
-const E2E_FIXTURES = join(__dirname, "../e2e/fixtures");
-const WEB_UI_BUILD = join(__dirname, "../../packages/web-ui/build");
+import {
+  createTestDaemonProject,
+  isDaemonRuntimeAvailable,
+  startTestDaemon,
+  type DaemonTestRuntime,
+  type StartedTestDaemon,
+  type TestDaemonProject,
+} from "../helpers/daemon.js";
 
 interface BroadcastMessage {
   msg_id: string;
@@ -36,194 +33,6 @@ interface AckMessage {
 interface ConnectedMessage {
   event: "connected";
   data: { session_id: string };
-}
-
-interface DaemonRuntime {
-  tempDir: string;
-  kspecDir: string;
-  port: number;
-  baseUrl: string;
-  wsUrl: string;
-  start: () => Promise<void>;
-  stop: () => Promise<void>;
-}
-
-let runtime: DaemonRuntime;
-let daemonProcess: ChildProcess | null = null;
-let isolatedEnv: Record<string, string>;
-let daemonStderr = "";
-
-async function getAvailablePort(): Promise<number> {
-  return new Promise((resolve, reject) => {
-    const server = createServer();
-    server.once("error", reject);
-    server.listen(0, "127.0.0.1", () => {
-      const address = server.address();
-      if (!address || typeof address === "string") {
-        server.close(() => reject(new Error("Failed to allocate ephemeral port")));
-        return;
-      }
-      const { port } = address;
-      server.close((error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve(port);
-      });
-    });
-  });
-}
-
-async function waitForDaemonReady(baseUrl: string): Promise<void> {
-  for (let i = 0; i < 150; i++) {
-    if (daemonProcess?.exitCode !== null) {
-      throw new Error(
-        `Daemon exited with code ${daemonProcess.exitCode} before becoming ready.\n${daemonStderr}`,
-      );
-    }
-
-    try {
-      const response = await fetch(`${baseUrl}/api/health`);
-      if (response.ok) {
-        break;
-      }
-    } catch {
-      // continue polling
-    }
-
-    if (i === 149) {
-      throw new Error(`Daemon failed to become ready.\n${daemonStderr}`);
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 100));
-  }
-
-  for (let i = 0; i < 150; i++) {
-    try {
-      const response = await fetch(`${baseUrl}/api/tasks`);
-      if (response.ok) {
-        const body = await response.json();
-        if (body?.meta?.cache_status === "ready") {
-          return;
-        }
-      }
-    } catch {
-      // continue polling
-    }
-
-    if (i === 149) {
-      throw new Error(`Daemon cache failed to become ready.\n${daemonStderr}`);
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 100));
-  }
-}
-
-async function startDaemon() {
-  if (daemonProcess && daemonProcess.exitCode === null) {
-    return;
-  }
-
-  daemonStderr = "";
-  daemonProcess = spawn(
-    "bun",
-    [DAEMON_ENTRY, "--port", String(runtime.port), "--kspec-dir", runtime.tempDir],
-    {
-      cwd: runtime.tempDir,
-      stdio: "pipe",
-      env: { ...isolatedEnv, BUN_ENV: "production" },
-    },
-  );
-
-  daemonProcess.stderr?.on("data", (chunk: Buffer) => {
-    daemonStderr += chunk.toString();
-  });
-
-  await waitForDaemonReady(runtime.baseUrl);
-}
-
-async function stopDaemon() {
-  if (!daemonProcess || daemonProcess.exitCode !== null) {
-    return;
-  }
-
-  try {
-    execSync(`node ${KSPEC_CLI} serve stop`, {
-      cwd: runtime.tempDir,
-      stdio: "ignore",
-      timeout: 10_000,
-      env: isolatedEnv,
-    });
-  } catch {
-    if (daemonProcess.pid && daemonProcess.exitCode === null) {
-      daemonProcess.kill("SIGTERM");
-    }
-  }
-
-  if (daemonProcess.exitCode === null) {
-    await new Promise<void>((resolve) => {
-      const timeout = setTimeout(() => {
-        if (daemonProcess?.exitCode === null) {
-          daemonProcess.kill("SIGKILL");
-        }
-        resolve();
-      }, 5_000);
-
-      daemonProcess?.once("exit", () => {
-        clearTimeout(timeout);
-        resolve();
-      });
-    });
-  }
-
-  daemonProcess = null;
-}
-
-async function createRuntime(): Promise<DaemonRuntime> {
-  const port = await getAvailablePort();
-  const tempDir = mkdtempSync(join(tmpdir(), "kspec-ws-protocol-"));
-  const kspecDir = join(tempDir, ".kspec");
-  mkdirSync(kspecDir, { recursive: true });
-
-  const isolatedHome = join(tempDir, ".home");
-  mkdirSync(join(isolatedHome, ".config", "kspec"), { recursive: true });
-  const {
-    KSPEC_NO_DAEMON: _kspecNoDaemon,
-    KSPEC_SESSION_ID: _kspecSessionId,
-    ...baseEnv
-  } = process.env;
-  isolatedEnv = {
-    ...baseEnv,
-    HOME: isolatedHome,
-    USERPROFILE: isolatedHome,
-    WEB_UI_DIR: WEB_UI_BUILD,
-  };
-
-  cpSync(E2E_FIXTURES, kspecDir, {
-    recursive: true,
-    filter: (src) => !src.includes("test-base") && !src.includes("project-tests"),
-  });
-
-  execSync("git init", { cwd: tempDir, stdio: "ignore" });
-  execSync('git config user.email "test@test.com"', { cwd: tempDir, stdio: "ignore" });
-  execSync('git config user.name "Test"', { cwd: tempDir, stdio: "ignore" });
-
-  const gitWorktreesDir = join(tempDir, ".git", "worktrees", "-kspec");
-  mkdirSync(gitWorktreesDir, { recursive: true });
-  writeFileSync(join(kspecDir, ".git"), `gitdir: ${gitWorktreesDir}\n`);
-  writeFileSync(join(gitWorktreesDir, "gitdir"), `${join(tempDir, ".git")}\n`);
-  writeFileSync(join(gitWorktreesDir, "HEAD"), "ref: refs/heads/kspec-meta\n");
-
-  return {
-    tempDir,
-    kspecDir,
-    port,
-    baseUrl: `http://localhost:${port}`,
-    wsUrl: `ws://localhost:${port}/ws`,
-    start: startDaemon,
-    stop: stopDaemon,
-  };
 }
 
 function waitForOpen(ws: WebSocket): Promise<void> {
@@ -279,8 +88,8 @@ function nextMessage<T>(
   });
 }
 
-async function connectClient() {
-  const ws = new WebSocket(runtime.wsUrl);
+async function connectClient(daemon: StartedTestDaemon) {
+  const ws = new WebSocket(daemon.wsUrl);
   const connectedPromise = nextMessage<ConnectedMessage>(
     ws,
     (message): message is ConnectedMessage =>
@@ -310,21 +119,53 @@ async function sendCommandAndWaitForAck(
   return ackPromise;
 }
 
-describe("daemon websocket protocol", () => {
+describe("daemon websocket protocol", { timeout: 60_000 }, () => {
+  let project: TestDaemonProject;
+  let daemon: StartedTestDaemon;
+
   beforeEach(async () => {
-    runtime = await createRuntime();
-    await runtime.start();
+    project = await createTestDaemonProject();
+    daemon = await startTestDaemon(project, {
+      registerCleanup: (stop) => {
+        onTestFinished(async () => {
+          await stop();
+        });
+      },
+    });
   });
 
   afterEach(async () => {
-    await runtime.stop();
-    rmSync(runtime.tempDir, { recursive: true, force: true });
+    await project.cleanup();
   });
 
   // AC: @api-contract ac-25
   // AC: @trait-websocket-protocol ac-1
+  // AC: @daemon-backed-test-fixture-contract ac-real-daemon-tests-use-shared-fixture
+  // AC: @daemon-backed-test-fixture-contract ac-isolated-home-config
+  // AC: @daemon-backed-test-fixture-contract ac-isolated-project-data
+  // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+  // AC: @daemon-backed-test-fixture-contract ac-bounded-readiness
+  // AC: @daemon-backed-test-fixture-contract ac-readiness-diagnostics
+  // AC: @daemon-backed-test-fixture-contract ac-no-ambient-daemon-control
+  // AC: @daemon-test-endpoint-consistency ac-resolved-endpoint-source
+  // AC: @daemon-test-endpoint-consistency ac-no-localhost-by-default
+  // AC: @daemon-test-endpoint-consistency ac-http-ws-same-endpoint
+  // AC: @daemon-test-endpoint-consistency ac-dynamic-port-propagation
+  // AC: @daemon-test-runtime-selection ac-node-default
+  // AC: @daemon-test-mode-boundaries ac-full-process-tests-use-real-daemon
   it("sends a connected event with a session_id when the client connects", async () => {
-    const { ws, connected } = await connectClient();
+    // Endpoint propagation: the daemon URL is fixture-resolved (127.0.0.1, no
+    // localhost, dynamic port) and HTTP and WS share the same endpoint.
+    expect(daemon.runtime).toBe("node");
+    expect(daemon.endpoint.connectHost).toBe("127.0.0.1");
+    expect(daemon.apiUrl).not.toContain("localhost");
+    expect(daemon.wsUrl).not.toContain("localhost");
+    const apiPortMatch = daemon.apiUrl.match(/:(\d+)/);
+    const wsPortMatch = daemon.wsUrl.match(/:(\d+)/);
+    expect(apiPortMatch?.[1]).toBe(String(daemon.port));
+    expect(wsPortMatch?.[1]).toBe(String(daemon.port));
+
+    const { ws, connected } = await connectClient(daemon);
 
     expect(connected.data.session_id).toMatch(/^[0-9A-HJKMNP-TV-Z]{26}$/);
 
@@ -338,7 +179,7 @@ describe("daemon websocket protocol", () => {
   // http://127.0.0.1:5173 and http://localhost:5173 for the dev
   // server, plus the same-origin daemon URL.
   it("accepts a WebSocket upgrade from an allowed Origin (dev server)", async () => {
-    const ws = new WebSocket(runtime.wsUrl, { origin: "http://127.0.0.1:5173" });
+    const ws = new WebSocket(daemon.wsUrl, { origin: "http://127.0.0.1:5173" });
     const connectedPromise = nextMessage<ConnectedMessage>(
       ws,
       (message): message is ConnectedMessage =>
@@ -364,8 +205,8 @@ describe("daemon websocket protocol", () => {
   // must be in the allow-list — otherwise opening
   // http://localhost:<daemon-port> in production breaks the WebSocket.
   it("accepts a WebSocket upgrade from the localhost daemon-port same-origin", async () => {
-    const ws = new WebSocket(runtime.wsUrl, {
-      origin: `http://localhost:${runtime.port}`,
+    const ws = new WebSocket(daemon.wsUrl, {
+      origin: `http://localhost:${daemon.port}`,
     });
     const connectedPromise = nextMessage<ConnectedMessage>(
       ws,
@@ -388,7 +229,7 @@ describe("daemon websocket protocol", () => {
   // step instead of being silently accepted (which would let any
   // cross-origin page subscribe to project state and run commands).
   it("rejects a WebSocket upgrade from a disallowed Origin", async () => {
-    const ws = new WebSocket(runtime.wsUrl, { origin: "http://evil.example.com" });
+    const ws = new WebSocket(daemon.wsUrl, { origin: "http://evil.example.com" });
     // The connection must close (or error) without a successful open —
     // either an error event or a non-1000 close before any 'open'.
     let opened = false;
@@ -413,7 +254,7 @@ describe("daemon websocket protocol", () => {
   // AC: @api-contract ac-26
   // AC: @api-contract ac-27
   it("acknowledges valid commands with correlated ack metadata", async () => {
-    const { ws } = await connectClient();
+    const { ws } = await connectClient(daemon);
 
     const ack = await sendCommandAndWaitForAck(ws, {
       action: "ping",
@@ -433,7 +274,7 @@ describe("daemon websocket protocol", () => {
 
   // AC: @api-contract ac-30
   it("returns a validation_error nack for malformed commands", async () => {
-    const { ws } = await connectClient();
+    const { ws } = await connectClient(daemon);
 
     const ackPromise = nextMessage<AckMessage>(
       ws,
@@ -458,7 +299,7 @@ describe("daemon websocket protocol", () => {
 
   // AC: @api-contract ac-30
   it("returns a validation_error nack for subscribe commands with invalid topics", async () => {
-    const { ws } = await connectClient();
+    const { ws } = await connectClient(daemon);
 
     const ack = await sendCommandAndWaitForAck(ws, {
       action: "subscribe",
@@ -480,7 +321,7 @@ describe("daemon websocket protocol", () => {
 
   // AC: @api-contract ac-30
   it("returns a validation_error nack for unsubscribe commands with invalid topics", async () => {
-    const { ws } = await connectClient();
+    const { ws } = await connectClient(daemon);
 
     const ack = await sendCommandAndWaitForAck(ws, {
       action: "unsubscribe",
@@ -506,7 +347,7 @@ describe("daemon websocket protocol", () => {
   // AC: @trait-websocket-protocol ac-3
   // AC: @daemon-server ac-4
   it("broadcasts file change events after a successful subscription", async () => {
-    const { ws } = await connectClient();
+    const { ws } = await connectClient(daemon);
 
     const subscribeAck = await sendCommandAndWaitForAck(ws, {
       action: "subscribe",
@@ -530,7 +371,7 @@ describe("daemon websocket protocol", () => {
         typeof (message as BroadcastMessage).msg_id === "string",
     );
 
-    const tasksYaml = join(runtime.kspecDir, "project.tasks.yaml");
+    const tasksYaml = join(project.kspecDir, "project.tasks.yaml");
     const original = readTestOutputSync(tasksYaml, "utf8");
     writeFileSync(tasksYaml, `${original}\n# websocket-protocol-test ${Date.now()}\n`);
 
@@ -553,26 +394,39 @@ describe("daemon websocket protocol", () => {
 
   // AC: @api-contract ac-31
   it("uses close code 1000 for a graceful daemon shutdown", async () => {
-    const { ws } = await connectClient();
+    const { ws } = await connectClient(daemon);
 
     const closePromise = waitForClose(ws);
-    await runtime.stop();
+    await daemon.stop();
     const close = await closePromise;
 
     expect(close.code).toBe(1000);
   });
+});
 
+describe("daemon websocket protocol — internal error close", { timeout: 60_000 }, () => {
   // AC: @api-contract ac-31
   // AC: @trait-websocket-protocol ac-7
+  // AC: @daemon-backed-test-fixture-contract ac-real-daemon-tests-use-shared-fixture
+  // AC: @daemon-backed-test-fixture-contract ac-no-ambient-daemon-control
   it("uses close code 1011 when command handling hits an internal server error", async () => {
-    await runtime.stop();
-    rmSync(runtime.tempDir, { recursive: true, force: true });
+    const project = await createTestDaemonProject();
+    onTestFinished(async () => {
+      await project.cleanup();
+    });
 
-    runtime = await createRuntime();
-    isolatedEnv.KSPEC_TEST_WS_FORCE_INTERNAL_ERROR_REQUEST_ID = "trigger-1011";
-    await runtime.start();
+    const daemon = await startTestDaemon(project, {
+      extraEnv: {
+        KSPEC_TEST_WS_FORCE_INTERNAL_ERROR_REQUEST_ID: "trigger-1011",
+      },
+      registerCleanup: (stop) => {
+        onTestFinished(async () => {
+          await stop();
+        });
+      },
+    });
 
-    const { ws } = await connectClient();
+    const { ws } = await connectClient(daemon);
     const closePromise = waitForClose(ws);
 
     const ack = await sendCommandAndWaitForAck(ws, {
@@ -592,7 +446,151 @@ describe("daemon websocket protocol", () => {
     const close = await closePromise;
     expect(close.code).toBe(1011);
     expect(close.reason).toBe("Internal error");
-
-    delete isolatedEnv.KSPEC_TEST_WS_FORCE_INTERNAL_ERROR_REQUEST_ID;
   });
+});
+
+// AC: @daemon-test-runtime-selection ac-runtime-matrix-parity
+// AC: @daemon-test-runtime-selection ac-missing-optional-runtime-skips
+// AC: @daemon-test-runtime-selection ac-runtime-degradation-assertions
+// AC: @daemon-test-runtime-selection ac-explicit-runtime-only
+// AC: @daemon-runtime-adapter ac-websocket-parity
+// AC: @daemon-runtime-adapter ac-heartbeat-degradation
+// AC: @daemon-test-mode-boundaries ac-full-process-tests-use-real-daemon
+//
+// Runtime parity for the WebSocket protocol. Node is required (the project's
+// canonical runtime); Bun is optional and reported as skipped when absent so
+// the suite does not fail generic Node coverage on machines without Bun.
+describe("daemon websocket protocol — runtime parity", { timeout: 90_000 }, () => {
+  const runtimes: Array<{ name: DaemonTestRuntime; required: boolean }> = [
+    { name: "node", required: true },
+    { name: "bun", required: false },
+  ];
+
+  for (const { name: runtimeName, required } of runtimes) {
+    describe(`${runtimeName} runtime`, () => {
+      let project: TestDaemonProject;
+      let daemon: StartedTestDaemon;
+      let runtimeAvailable = false;
+
+      beforeEach(async () => {
+        runtimeAvailable = await isDaemonRuntimeAvailable(runtimeName);
+        if (!runtimeAvailable) {
+          if (required) {
+            throw new Error(
+              `Required daemon runtime "${runtimeName}" is not available on PATH`,
+            );
+          }
+          // ac-missing-optional-runtime-skips — surface skip without failing
+          // the generic Node coverage path on machines that lack Bun.
+          console.log(`  ⊘ Skipping ${runtimeName} parity — runtime not installed`);
+          return;
+        }
+
+        project = await createTestDaemonProject();
+        daemon = await startTestDaemon(project, {
+          runtime: runtimeName,
+          registerCleanup: (stop) => {
+            onTestFinished(async () => {
+              await stop();
+            });
+          },
+        });
+      });
+
+      afterEach(async () => {
+        if (project) {
+          await project.cleanup();
+        }
+      });
+
+      // ac-runtime-matrix-parity — same connect/subscribe/broadcast behavior
+      // exercised against each available runtime.
+      it("connect, subscribe, and broadcast behave consistently", async () => {
+        if (!runtimeAvailable) return;
+
+        // Health endpoint advertises which runtime is in use.
+        const health = (await (
+          await fetch(`${daemon.apiUrl}/api/health`)
+        ).json()) as { runtime: string; status: string };
+        expect(health.runtime).toBe(runtimeName);
+        expect(health.status).toBe("ok");
+
+        const { ws, connected } = await connectClient(daemon);
+        expect(connected.data.session_id).toMatch(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+
+        const subscribeAck = await sendCommandAndWaitForAck(ws, {
+          action: "subscribe",
+          request_id: "parity-subscribe",
+          payload: { topics: ["files:updates"] },
+        });
+        expect(subscribeAck).toMatchObject({
+          ack: true,
+          request_id: "parity-subscribe",
+          success: true,
+        });
+
+        const broadcastPromise = nextMessage<BroadcastMessage>(
+          ws,
+          (message): message is BroadcastMessage =>
+            typeof message === "object" &&
+            message !== null &&
+            "topic" in message &&
+            (message as BroadcastMessage).topic === "files:updates" &&
+            typeof (message as BroadcastMessage).msg_id === "string",
+        );
+
+        const tasksYaml = join(project.kspecDir, "project.tasks.yaml");
+        const original = readTestOutputSync(tasksYaml, "utf8");
+        writeFileSync(
+          tasksYaml,
+          `${original}\n# parity-${runtimeName} ${Date.now()}\n`,
+        );
+
+        const broadcast = await broadcastPromise;
+        expect(broadcast.topic).toBe("files:updates");
+        expect(typeof broadcast.seq).toBe("number");
+        expect(broadcast.seq).toBeGreaterThan(0);
+
+        ws.close(1000, "parity complete");
+        await waitForClose(ws);
+      });
+
+      // ac-runtime-degradation-assertions — Node lacks frame-level WebSocket
+      // ping, so the daemon must log the documented heartbeat-degraded
+      // warning at startup and the connection still stays open. Bun supports
+      // frame-level ping and does NOT log this warning.
+      it("logs documented heartbeat degradation behavior for the runtime", async () => {
+        if (!runtimeAvailable) return;
+
+        // The daemon emits the warning before readiness, so it lives in the
+        // captured stdout/stderr tails by the time startTestDaemon resolves.
+        const startupLog = `${daemon.stdoutTail()}\n${daemon.stderrTail()}`;
+        const degradationMessage =
+          "WebSocket heartbeat ping/pong is unavailable. Dead connection detection is disabled.";
+
+        if (runtimeName === "node") {
+          expect(startupLog).toContain(degradationMessage);
+        } else {
+          // Bun supports frame-level ping; the degradation warning must NOT
+          // appear and the heartbeat is enabled normally.
+          expect(startupLog).not.toContain(degradationMessage);
+        }
+
+        // ac-heartbeat-degradation: the connection remains open without
+        // heartbeat enforcement when degraded — verify the WebSocket opens
+        // and stays connected long enough to exchange a ping/ack regardless
+        // of runtime.
+        const { ws } = await connectClient(daemon);
+        const ack = await sendCommandAndWaitForAck(ws, {
+          action: "ping",
+          request_id: "parity-ping",
+          payload: {},
+        });
+        expect(ack.ack).toBe(true);
+        expect(ack.success).toBe(true);
+        ws.close(1000, "degradation check complete");
+        await waitForClose(ws);
+      });
+    });
+  }
 });
