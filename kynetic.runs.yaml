@@ -41858,7 +41858,7 @@ runs:
     completed_at: 2026-05-09T03:37:07.596Z
   - _ulid: 01KR5DXBGH1JNMSHTVNV8T9ZZ3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -41874,7 +41874,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T03:54:56.197Z
-        completed_at: 2026-05-09T03:54:56.197Z
+        completed_at: 2026-05-09T03:55:06.133Z
+        notes: "Friction points: this task is now in its tenth review cycle because static-analysis
+          classifier work keeps missing command-shape permutations until reviewer probes reveal
+          them. In this cycle the missed shapes were shell tokenization with a quoted
+          value-containing runtime flag and parse-only Node flags such as --check. The full suite is
+          also very long, but the current vitest heavy-serial split kept it deterministic in this
+          run."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T03:55:06.133Z
+        completed_at: 2026-05-09T03:55:06.133Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T03:53:46.257Z
