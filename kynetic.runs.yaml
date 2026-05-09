@@ -42531,7 +42531,7 @@ runs:
     completed_at: 2026-05-09T08:47:46.916Z
   - _ulid: 01KR6126EB035ZMTTPZ67QYNZQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -42545,7 +42545,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T09:29:23.942Z
-        completed_at: 2026-05-09T09:29:23.942Z
+        completed_at: 2026-05-09T09:29:31.810Z
+        notes: "Friction: posting review findings through shell commands is still easy to corrupt when the
+          body includes code-like text; one blocker comment lost identifiers before I added a
+          clarifying reply. Full test execution is long but expected for review gates. The
+          daemon-observation gap itself is task-specific and already belongs in the review record,
+          not a separate process item."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T09:29:31.810Z
+        completed_at: 2026-05-09T09:29:31.810Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T09:28:27.852Z
