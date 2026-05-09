@@ -44184,7 +44184,7 @@ runs:
     started_at: 2026-05-09T21:35:32.258Z
     completed_at: 2026-05-09T21:37:32.589Z
   - _ulid: 01KR7C0P77VEJNZ4KT6EM48WA2
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -44220,10 +44220,14 @@ runs:
           warnings; @01KR786B covers auditing/bounding remaining real-daemon test fetches after the
           daemon-build timeout fix. The success pattern is useful but not unique enough to add
           another observation given the existing review success-pattern observations."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-05-09T22:00:48.019Z
-        completed_at: 2026-05-09T22:00:48.019Z
+        completed_at: 2026-05-09T22:00:56.354Z
+        notes: No captures made. All high-confidence friction candidates matched existing observations or
+          inbox items, and the remaining success pattern did not clear the loop-mode uniqueness bar.
+          Skipping capture per ac-2/ac-3 and preserving lower-volume reflection output.
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T21:59:07.239Z
+    completed_at: 2026-05-09T22:00:56.354Z
