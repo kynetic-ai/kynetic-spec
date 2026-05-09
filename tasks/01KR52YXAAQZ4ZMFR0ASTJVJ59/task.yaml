@@ -14,7 +14,7 @@ description: During review of @01KR3W7PPVDFR8F03VQ6J54M3K, full npm test -- --fr
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -24,6 +24,14 @@ tags:
   - daemon
   - flaky
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-stabilize-websocket-protocol-runtime-parity-test/01kr52yx
+  captured_at: 2026-05-09T01:16:23.794Z
+  commit: 716e31003b4155443bfddf1dfcc79d8a4f390513
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR5303RJGH4RQMJ6TTFPGG6R
 history:
   - author: "@claude"
@@ -39,7 +47,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-09T00:43:21.145Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-stabilize-websocket-protocol-runtime-parity-test/01kr52yx
+          captured_at: 2026-05-09T01:16:23.794Z
+          commit: 716e31003b4155443bfddf1dfcc79d8a4f390513
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-09T01:16:23.796Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-09T01:16:23.797Z
 created_at: 2026-05-09T00:42:22.922Z
 started_at: 2026-05-09T00:43:21.144Z
+submitted_at: 2026-05-09T01:16:23.796Z
 todos: []
 automation: eligible
