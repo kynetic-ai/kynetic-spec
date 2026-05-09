@@ -135,6 +135,19 @@ export interface StartTestDaemonOptions {
    * actually missing on the host.
    */
   __testBinaryOverride?: string;
+  /**
+   * Test-only seam: invoked synchronously immediately after the daemon
+   * child is spawned and before `registerCleanup` runs. Exposes the live
+   * child handle and resolved endpoint so contract tests can deterministically
+   * observe the just-spawned daemon (e.g. to assert it is stopped after a
+   * subsequent failure). Production callers must not pass this. The seam
+   * must remain non-behavioral: it must not catch the registration error,
+   * invoke `stop()`, alter startup ordering, or implement cleanup behavior.
+   */
+  __testObserveSpawn?: (observation: {
+    child: ChildProcess;
+    endpoint: DaemonResolvedEndpoint;
+  }) => void;
 }
 
 export interface StartedTestDaemon {
@@ -685,6 +698,15 @@ export async function startTestDaemon(
     if (launchError && child.pid === undefined) return;
     await killChildScoped(child);
   };
+
+  // Test-only observer seam: lets contract tests capture the live child
+  // handle and resolved endpoint immediately after spawn — before
+  // registerCleanup runs — so they can deterministically observe the
+  // just-spawned daemon when a later step fails. Kept purely synchronous
+  // and non-behavioral; production callers do not pass __testObserveSpawn.
+  if (opts.__testObserveSpawn) {
+    opts.__testObserveSpawn({ child, endpoint });
+  }
 
   // Register cleanup BEFORE the readiness wait so an assertion failure or
   // timeout inside readiness still tears down the spawned child.
