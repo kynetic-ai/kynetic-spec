@@ -42480,9 +42480,20 @@ runs:
     completed_at: 2026-05-09T08:30:56.070Z
   - _ulid: 01KR5YKQC1Z91J0G0FMRF3VN9D
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T08:45:36.513Z
+        completed_at: 2026-05-09T08:46:52.418Z
+        notes: "What worked well: adversarial synthetic oxlint probes against temp files were effective
+          again. They verified the prior unregistered-arrow fix and exposed additional
+          cleanup-control-flow gaps that targeted tests missed."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T08:46:52.418Z
+        completed_at: 2026-05-09T08:46:52.418Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T08:45:36.513Z
