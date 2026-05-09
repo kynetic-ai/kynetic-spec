@@ -194178,6 +194178,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T08:44:38.275Z
+      - _ulid: 01KR6015SD652ER2CXV7VD9STT
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR5Y32QP5QRB1KC09K3MNFWX
+        timestamp: 2026-05-09T09:10:25.837Z
     examined_commit: 3596de394cdc1fe00fc6152af520f6b98624fb61
     external_links: []
     lifecycle_state: closed
@@ -194209,6 +194215,25 @@ reviews:
               assertion can run without cleanup ever being registered for the detached daemon, which
               violates @daemon-test-guardrail-precision ac-detached-cleanup-before-observation.'
             created_at: 2026-05-09T08:36:31.094Z
+          - _ulid: 01KR6014FPQPTC0C53174Z9CGV
+            author: "@claude"
+            body: "Fixed: tightened the cleanup walker to require unconditional registration on the
+              straight-line path. `subtreeContainsDaemonCleanupCall` now prunes descent into
+              IfStatement, ConditionalExpression, LogicalExpression (short-circuit), all loop bodies
+              (While/DoWhile/For/ForIn/ForOf), SwitchStatement cases, and TryStatement.handler when
+              walking outside a registered cleanup callback. Inside a registered callback the
+              framework invokes the body unconditionally, so an inner defensive guard like
+              `onTestFinished(() => { if (pid) killPid(pid); })` is still credited (new flag-tracked
+              descent in the walker). Verified with both reviewer probes via npx oxlint: `if (false)
+              killPid(result.pid); expect(true).toBe(true)` and `if (shouldCleanup)
+              onTestFinished(() => killPid(result.pid)); expect(true).toBe(true)` both now exit 1
+              with the missingCleanup diagnostic. Negative controls (unconditional onTestFinished,
+              defensive guard inside the callback, try/finally with unconditional process.kill in
+              finalizer) still exit 0. Added 4 behavioral regressions in
+              tests/lint-no-leaky-test-daemon.test.ts: unreachable conditional kill, conditional
+              onTestFinished registration, process.on with non-exit event, kill in for-loop body.
+              tools/eslint-rules/no-leaky-test-daemon.js:631-715."
+            created_at: 2026-05-09T09:10:24.501Z
         kind: blocker
       - _ulid: 01KR5Y39FTRJ1Z3DVNR2VJ65B4
         anchor:
@@ -194259,5 +194284,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T08:44:38.274Z
     created_at: 2026-05-09T08:32:44.638Z
-    updated_at: 2026-05-09T08:44:38.275Z
+    updated_at: 2026-05-09T09:10:24.501Z
     notes: []
