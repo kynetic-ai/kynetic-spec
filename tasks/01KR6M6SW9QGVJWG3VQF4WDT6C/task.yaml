@@ -1,0 +1,232 @@
+_ulid: 01KR6M6SW9QGVJWG3VQF4WDT6C
+slugs:
+  - task-tighten-daemon-hardening-specs
+title: Tighten daemon hardening specs for cleanup binding and approved helpers
+type: task
+description: >-
+  ## Task 1 — Tighten daemon hardening specs for cleanup binding and approved helpers
+
+
+  Proposed slug: `task-tighten-daemon-hardening-specs`
+
+  Type: `task`
+
+  Priority: `P2`
+
+  Plan ref: `@plan-daemon-test-fixture-hardening`
+
+  Spec ref: `@daemon-test-startup-failure-hygiene`
+
+  Additional related spec: `@daemon-test-guardrail-precision`
+
+  Tags: `daemon-tests`, `specs`, `guardrails`, `follow-up`
+
+  Depends on: none
+
+  Automation: leave unassessed until Jacob approves.
+
+
+  ### Description
+
+
+  #### What
+
+  Update the daemon-test hardening behavioral specs so the current contracts explicitly cover two
+  validation gaps:
+
+
+  1. `@daemon-test-startup-failure-hygiene` must cover the case where a fixture has already spawned
+  or obtained a child process handle, then the caller-provided cleanup-registration hook throws
+  before readiness succeeds. The expected behavior is that the helper stops the owned child before
+  returning or surfacing the cleanup-registration failure.
+
+  2. `@daemon-test-guardrail-precision` must define cleanup binding and approved-helper boundaries
+  precisely enough that static guardrails cannot be satisfied by a cleanup callback that exists
+  before an observation but does not yet bind the just-started daemon's pid/child/stop handle, and
+  cannot be bypassed by wrapping an unsafe daemon start in an arbitrary local helper function.
+
+
+  Concretely, update the existing spec items rather than creating a new broad feature:
+
+
+  - Add or revise acceptance criteria under `@daemon-test-startup-failure-hygiene` for
+  cleanup-registration failure after child ownership exists.
+
+  - Add or revise acceptance criteria under `@daemon-test-guardrail-precision` so:
+    - cleanup for a detached daemon is considered registered only when it captures or otherwise owns the concrete pid, child handle, or stop handle for that just-started daemon before later awaits/assertions/daemon observations; and
+    - approved helpers are explicit shared daemon-test fixture utilities or documented guardrail internals, not arbitrary local functions in a test file.
+  - Because this task tightens currently overclaimed contracts before the regression/fix tasks land,
+  set each touched spec whose tightened AC lacks current source/test evidence from `implemented` to
+  `in_progress --no-cascade`. Leave a spec `implemented` only if the worker records exact existing
+  evidence proving every newly tightened AC is already covered.
+
+  - Add a task note or spec note summarizing the validation evidence that motivated the tightening.
+
+
+  #### Why
+
+  The daemon hardening work added useful specs, tests, and guardrails, but validation found that two
+  requirements were underspecified:
+
+
+  - A real daemon fixture can currently spawn a child, call `opts.registerCleanup(stop)`, and leak
+  the child if the registration callback throws before the readiness `try/catch` begins. The spec
+  says owned children are stopped on startup failure, but does not explicitly name this
+  cleanup-registration failure phase.
+
+  - The static guardrail can accept patterns where a cleanup callback is registered before an
+  assertion/await, but the pid/child binding happens after that assertion/await; if the observation
+  fails, the cleanup callback runs without owning the daemon. It can also miss unsafe starts hidden
+  behind arbitrary local helper functions. The spec says cleanup must be associated with the
+  just-started daemon and direct daemon startup outside approved helpers must be reported, but
+  workers need sharper wording to avoid implementing a weaker syntactic check.
+
+
+  Tightening the specs first prevents follow-up implementation tasks from playing whackamole against
+  ambiguous contracts.
+
+
+  #### Evidence
+
+  Current spec evidence:
+
+
+  - `@daemon-test-startup-failure-hygiene` currently reports `Implementation: implemented`. Existing
+  AC `ac-owned-child-stopped-after-startup-failure` requires a fixture that has obtained a child
+  process handle to stop that child before returning startup failure, but it does not explicitly
+  name cleanup-registration hook failure after child ownership exists. Existing AC
+  `ac-cleanup-registered-before-readiness-wait` requires cleanup to be registered before readiness
+  can fail, but it does not state what the helper must do if the registration hook itself throws.
+
+  - `@daemon-test-guardrail-precision` currently reports `Implementation: implemented`. Existing AC
+  `ac-detached-cleanup-before-observation` requires cleanup before later awaits/assertions/daemon
+  observations, but it does not define “registered cleanup” as cleanup bound to the concrete pid,
+  child handle, or stop handle for the just-started daemon. Existing AC
+  `ac-direct-daemon-entry-invocations-flagged` says direct daemon startup outside an approved helper
+  is reported, but it does not define the approved-helper boundary precisely enough to exclude
+  arbitrary local wrapper functions.
+
+
+  Current source evidence:
+
+
+  - `tests/helpers/daemon.ts:653-658` spawns the daemon child.
+
+  - `tests/helpers/daemon.ts:677-687` defines the scoped `stop()` function.
+
+  - `tests/helpers/daemon.ts:689-693` invokes `opts.registerCleanup(stop)` before the readiness
+  `try/catch`.
+
+  - `tests/helpers/daemon.ts:729-782` calls `await stop()` only from the later readiness/launch
+  failure catch path, so a synchronous `registerCleanup` throw before that block bypasses cleanup.
+
+  - `tools/eslint-rules/no-leaky-test-daemon.js:226-266` implements `isInHelperFunction`, which
+  classifies helper-shaped function scopes.
+
+  - `tools/eslint-rules/no-leaky-test-daemon.js:268-284` scans preceding statements for cleanup
+  before observations.
+
+  - `tools/eslint-rules/no-leaky-test-daemon.js:369-447` recognizes cleanup call shapes without
+  proving that the cleanup callback already owns the concrete pid/child/stop handle for the
+  just-started daemon.
+
+  - `tools/eslint-rules/no-leaky-test-daemon.js:656-789` walks cleanup registration/body shapes.
+
+  - `tools/eslint-rules/no-leaky-test-daemon.js:2193-2224` decides whether detached daemon cleanup
+  is present before reporting.
+
+  - `tools/eslint-rules/no-leaky-test-daemon.js:2598-2604` skips detached cleanup reports when
+  `isInHelperFunction(node)` is true, which is the local-wrapper escape hatch the tightened spec
+  must exclude or bound explicitly.
+
+
+  Concrete AC wording to consider:
+
+
+  - `ac-cleanup-registration-failure-stops-owned-child`: Given a daemon test fixture has spawned or
+  obtained a child process handle and constructed a cleanup/stop handle for that child; When the
+  caller-provided cleanup-registration hook fails before the fixture reports readiness; Then the
+  fixture stops the owned child before returning or surfacing the cleanup-registration failure.
+
+  - `ac-detached-cleanup-bound-before-observation`: Given a test starts a detached daemon and
+  registers cleanup before later awaits, assertions, or daemon observations; When the cleanup
+  callback does not yet own the concrete pid, child handle, or stop handle for that just-started
+  daemon before an intervening observation can fail; Then the guardrail reports the detached daemon
+  startup as missing scoped cleanup.
+
+  - `ac-approved-daemon-helper-boundary-explicit`: Given a test wraps daemon startup in a local
+  helper function or another helper-like abstraction; When that helper is not an explicit shared
+  daemon-test fixture utility or documented guardrail internal; Then the guardrail treats the
+  wrapped daemon startup the same as an inline unsafe daemon start and reports violations of the
+  fixture/cleanup contract.
+
+
+  #### How
+
+  1. Inspect current specs:
+     - `mise exec -- kspec item get @daemon-test-startup-failure-hygiene`
+     - `mise exec -- kspec item get @daemon-test-guardrail-precision`
+  2. Update the existing specs through the supported kspec CLI workflow. Use `kspec item ac add` or
+  `kspec item ac set`/`kspec item ac update` if supported for acceptance-criterion changes; use
+  `kspec item note` if supported for validation-evidence notes; use `kspec item set @ref --status
+  in_progress --no-cascade` for implementation-status corrections. Check `--help` for exact command
+  names before editing. Do not manually edit `.kspec` files unless the CLI has no supported way to
+  express the change.
+
+  3. Keep the new language behavioral and implementation-neutral:
+     - describe spawned/owned child processes and cleanup registration, not specific TypeScript function names, except in notes/evidence;
+     - describe approved helper boundary in terms of shared daemon-test fixture utilities and documented guardrail internals, not a broad pattern like “any helper function.”
+  4. If the new ACs are not implemented at the time this task lands, set the touched spec
+  implementation status to `in_progress --no-cascade`.
+
+  5. Run:
+     - `mise exec -- kspec validate --refs --warnings-ok`
+     - `mise exec -- kspec validate --alignment --warnings-ok`
+  6. Leave the root source tree unchanged unless the supported spec workflow requires a generated
+  file update. Verify:
+     - `git status --short --branch`
+     - `git -C .kspec status --short --branch`
+
+  #### In scope
+
+  - Tightening existing spec AC wording/status for the two identified gaps.
+
+  - Adding concise notes that preserve the validation evidence.
+
+
+  #### Out of scope
+
+  - Implementing fixture cleanup changes.
+
+  - Implementing lint rule changes.
+
+  - Adding regression tests.
+
+  - Marking any follow-up implementation task automation-eligible.
+
+
+  #### Validation
+
+  - `mise exec -- kspec item get @daemon-test-startup-failure-hygiene`
+
+  - `mise exec -- kspec item get @daemon-test-guardrail-precision`
+
+  - `mise exec -- kspec validate --refs --warnings-ok`
+
+  - `mise exec -- kspec validate --alignment --warnings-ok`
+
+
+  ---
+spec_ref: "@daemon-test-startup-failure-hygiene"
+meta_ref: null
+plan_ref: "@plan-daemon-test-fixture-hardening"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - daemon-tests
+vcs_refs: []
+created_at: 2026-05-09T15:03:01.767Z
+todos: []
