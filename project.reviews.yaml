@@ -198664,9 +198664,25 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-05-09T22:18:26.165Z
+      - _ulid: 01KR7D4BFFFNFVR6P6X95EZP53
+        actor: reviewer-agent
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-09T22:18:35.887Z
+      - _ulid: 01KR7D4BFFT3KXWTF6VB9FKA5T
+        actor: reviewer-agent
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T22:18:35.887Z
     examined_commit: 08328dee7a47f0c5c2a9b172770ef237860f8f6d
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -198706,7 +198722,14 @@ reviews:
               kill target for the just-started daemon.'
             created_at: 2026-05-09T22:10:10.688Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: reviewer-agent
+        role: reviewer
+        created_at: 2026-05-09T22:18:35.887Z
     created_at: 2026-05-09T22:05:38.337Z
-    updated_at: 2026-05-09T22:18:24.823Z
+    updated_at: 2026-05-09T22:18:35.887Z
     notes: []
