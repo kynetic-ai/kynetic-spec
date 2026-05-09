@@ -197234,9 +197234,25 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-05-09T18:52:58.888Z
+      - _ulid: 01KR71C5YC08X3V32W4Q8KSN4S
+        actor: reviewer-agent
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-09T18:53:09.452Z
+      - _ulid: 01KR71C5YCWWENE7FBAPPAJYP2
+        actor: reviewer-agent
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T18:53:09.452Z
     examined_commit: e21bfac48a49698d8ad5dbf05b9e907666203555
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -197275,7 +197291,14 @@ reviews:
               registration time, but it does not own the concrete pid for the just-started daemon.'
             created_at: 2026-05-09T18:42:56.222Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: reviewer-agent
+        role: reviewer
+        created_at: 2026-05-09T18:53:09.451Z
     created_at: 2026-05-09T18:40:06.555Z
-    updated_at: 2026-05-09T18:52:57.557Z
+    updated_at: 2026-05-09T18:53:09.452Z
     notes: []
