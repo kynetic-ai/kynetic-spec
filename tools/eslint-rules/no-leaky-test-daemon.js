@@ -75,7 +75,21 @@
  *          `serve` and `start`.
  *      - The cleanup escape hatch is preserved here because tests of the
  *        CLI's own detach behavior have to use this path. Cleanup must
- *        be registered before the next `await` or `expect()`.
+ *        be an actual CallExpression with a daemon-cleanup shape —
+ *        `process.kill(...)`, `<expr>.kill("SIGTERM"|"SIGKILL"|"SIGINT", …)`,
+ *        `killPid(...)`, `stopDaemon(...)`, `stopMockDaemon(...)`, or a
+ *        kspec-CLI invocation whose args resolve to the `serve stop`
+ *        subcommand — and must be registered in the same control flow
+ *        before the next `await` or `expect()`. Token-only text like
+ *        `console.log("SIGTERM docs")` or
+ *        `const cleanupDocs = "killPid should be used later"` is NOT
+ *        cleanup: the substrings are data, not a runtime call (the
+ *        cycle-2 false-negative blocker on
+ *        `@daemon-test-guardrail-precision`
+ *        `ac-detached-cleanup-before-observation`). The same AST-based
+ *        predicate gates the try/finally finalizer escape hatch, so a
+ *        finalizer whose only statement is `console.log("SIGTERM docs")`
+ *        is correctly rejected.
  *
  *   3. Daemon URL construction from `localhost:<port>` (always flagged
  *      outside helper paths)
@@ -228,24 +242,6 @@ const noLeakyTestDaemon = {
       return false;
     }
 
-    /**
-     * Daemon-specific cleanup signals. Generic `kill` or `stop` alone do
-     * NOT qualify because they could be stopping unrelated fixtures.
-     */
-    function hasDaemonCleanupPattern(text) {
-      return (
-        text.includes("process.kill") ||
-        /\.kill\(\s*["']SIG/.test(text) ||
-        text.includes("SIGTERM") ||
-        text.includes("SIGKILL") ||
-        text.includes("SIGINT") ||
-        text.includes("killPid") ||
-        text.includes("stopDaemon") ||
-        text.includes("stopMockDaemon") ||
-        text.includes("serve stop")
-      );
-    }
-
     function hasCleanupAfter(node) {
       const body = findContainingBody(node);
       if (!body) return false;
@@ -267,11 +263,12 @@ const noLeakyTestDaemon = {
     function isInTryWithFinallyCleanup(node) {
       let current = node.parent;
       while (current) {
-        if (current.type === "TryStatement" && current.finalizer) {
-          const text = context.sourceCode.getText(current.finalizer);
-          if (hasDaemonCleanupPattern(text)) {
-            return true;
-          }
+        if (
+          current.type === "TryStatement" &&
+          current.finalizer &&
+          subtreeContainsDaemonCleanupCall(current.finalizer)
+        ) {
+          return true;
         }
         current = current.parent;
       }
@@ -313,36 +310,243 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * True when an in-flow statement registers cleanup that targets the
-     * just-started detached daemon. The statement must carry a
-     * daemon-specific kill/stop pattern (`process.kill`, `SIGTERM`/
-     * `SIGKILL`/`SIGINT`, `killPid`, `stopDaemon`, `stopMockDaemon`, or
-     * `serve stop`) — the same set the try/finally finalizer check
-     * accepts. A bare `onTestFinished(...)` whose callback only stops an
-     * unrelated fixture (e.g.
-     * `onTestFinished(() => stopUnrelatedFixture())`) MUST NOT count: the
-     * AC requires cleanup scoped to the daemon that was just started, and
-     * a substring match on the registration name silently accepts
-     * unrelated teardown (the false-negative blocker on
-     * `@daemon-test-guardrail-precision`
-     * `ac-detached-cleanup-before-observation`).
+     * True when a CallExpression's static shape matches an actual daemon
+     * cleanup operation:
      *
-     * The predicate runs on the full statement text, so the kill pattern
-     * may live anywhere inside the registration callback (including a
-     * multi-line block body that performs other teardown alongside the
-     * daemon kill). False positives — a statement whose text only
-     * incidentally contains a kill pattern (e.g. a `console.log("SIGTERM
-     * docs")`) — are tolerated because the surrounding context already
-     * required a detached daemon start in the same control flow.
+     *   - `process.kill(...)`            (MemberExpression callee)
+     *   - `<expr>.kill("SIGTERM"|"SIGKILL"|"SIGINT", ...)`
+     *     (any `.kill(...)` call whose first argument is one of the three
+     *     daemon-relevant kill signal literals — this is the
+     *     `child.kill("SIGTERM")` shape used by spawn/exec child handles)
+     *   - `killPid(...)` / `stopDaemon(...)` / `stopMockDaemon(...)`
+     *     (Identifier callees that are the project-recognised cleanup
+     *     helpers from tests/cli-serve.test.ts and tests/helpers/)
+     *   - `runKspec(...)` / `kspec(...)` whose args resolve to the
+     *     `serve stop` lifecycle subcommand (first two non-flag positional
+     *     tokens are exactly `serve` then `stop`)
+     *   - `exec(...)` / `execSync(...)` shell-string forms whose leading
+     *     token is the kspec executable and whose remaining tokens resolve
+     *     to `serve stop`
+     *   - `spawn(...)` / `spawnSync(...)` / `execFile(...)` / `execFileSync(...)`
+     *     argv-array forms with a kspec executable and a `serve stop`
+     *     subcommand path
+     *
+     * Only an actual call whose CALLEE matches one of these shapes counts.
+     * String literals containing kill-token substrings (e.g.
+     * `console.log("SIGTERM docs")`, `const cleanupDocs = "killPid should be
+     * used later"`) are NOT cleanup — the substring is data, not a runtime
+     * call. The reviewer's cycle-2 blocker probes (1) `console.log("SIGTERM
+     * docs");` immediately after a detached start, (2) a `const cleanupDocs
+     * = "killPid should be used later"` declaration, and (3) a `try { …
+     * detached start … } finally { console.log("SIGTERM docs"); }` finalizer
+     * all relied on token-only text matching. They are now correctly
+     * rejected because none of them contain a CallExpression with a
+     * cleanup-shaped callee.
      */
-    function statementContainsCleanup(stmt) {
-      const text = context.sourceCode.getText(stmt);
-      return hasDaemonCleanupPattern(text);
+    function isDaemonCleanupCallExpression(node) {
+      if (!node || node.type !== "CallExpression") return false;
+      const callee = node.callee;
+      if (!callee) return false;
+
+      if (callee.type === "Identifier") {
+        const name = callee.name;
+        if (
+          name === "killPid" ||
+          name === "stopDaemon" ||
+          name === "stopMockDaemon"
+        ) {
+          return true;
+        }
+        if (name === "runKspec" || name === "kspec") {
+          const tokens = [];
+          for (const arg of node.arguments) {
+            for (const t of collectKspecHelperArgTokens(arg)) tokens.push(t);
+          }
+          return tokensResolveToServeStop(tokens);
+        }
+        if (name === "exec" || name === "execSync") {
+          const tokens = shellCommandTokens(node.arguments[0]);
+          if (!tokens || tokens.length === 0) return false;
+          const lead = tokens[0];
+          if (lead !== "kspec" && !lead.endsWith("/kspec")) return false;
+          return tokensResolveToServeStop(tokens.slice(1));
+        }
+        if (
+          name === "spawn" ||
+          name === "spawnSync" ||
+          name === "execFile" ||
+          name === "execFileSync"
+        ) {
+          if (!isKspecExecutableArg(node.arguments[0])) return false;
+          if (node.arguments.length < 2) return false;
+          return tokensResolveToServeStop(
+            collectArgvArrayTokens(node.arguments[1]),
+          );
+        }
+        return false;
+      }
+
+      if (
+        callee.type === "MemberExpression" &&
+        callee.property &&
+        callee.property.type === "Identifier"
+      ) {
+        const propName = callee.property.name;
+        // process.kill(...) — the canonical daemon-cleanup syscall in
+        // detached tests, called with the captured pid file contents.
+        if (
+          propName === "kill" &&
+          callee.object &&
+          callee.object.type === "Identifier" &&
+          callee.object.name === "process"
+        ) {
+          return true;
+        }
+        // <expr>.kill("SIG...") — typically a ChildProcess handle from
+        // `spawn(...)`. Require the first arg to be a daemon-relevant
+        // kill signal literal so unrelated `.kill("EVENT")` calls do
+        // NOT silently count as cleanup.
+        if (propName === "kill") {
+          const first = node.arguments[0];
+          if (
+            first &&
+            first.type === "Literal" &&
+            (first.value === "SIGTERM" ||
+              first.value === "SIGKILL" ||
+              first.value === "SIGINT")
+          ) {
+            return true;
+          }
+        }
+      }
+
+      return false;
     }
 
+    /**
+     * The serve-stop counterpart to `tokensResolveToDetachedServe`: walk
+     * the kspec-args token list and confirm the first two non-flag
+     * positional tokens are exactly `serve` then `stop`. Used by the
+     * cleanup classifier to recognise `runKspec("serve stop ...")`,
+     * `exec("kspec serve stop ...")`, and `spawn("kspec", ["serve",
+     * "stop", ...])` as the in-flow CLI cleanup path.
+     */
+    function tokensResolveToServeStop(tokens) {
+      let positional1 = null;
+      let positional2 = null;
+      for (const token of tokens) {
+        if (typeof token !== "string" || token.length === 0) continue;
+        if (token[0] === "-") continue;
+        if (positional1 === null) positional1 = token;
+        else if (positional2 === null) positional2 = token;
+      }
+      return positional1 === "serve" && positional2 === "stop";
+    }
+
+    /**
+     * Walk an AST subtree and return true when any descendant CallExpression
+     * matches `isDaemonCleanupCallExpression`. The walk descends into
+     * function/arrow expression bodies (so cleanup nested inside an
+     * `onTestFinished(() => process.kill(pid, "SIGTERM"))` callback is
+     * found), block statements, conditionals, and try/catch/finally
+     * children. Non-AST keys (`parent`, `loc`, `range`, `start`, `end`,
+     * `type`, `tokens`, `comments`) are skipped to keep the walk O(nodes)
+     * and avoid descending into source-position metadata.
+     */
+    function subtreeContainsDaemonCleanupCall(node) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") {
+        return false;
+      }
+      if (isDaemonCleanupCallExpression(node)) return true;
+      for (const key in node) {
+        if (
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        ) {
+          continue;
+        }
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (subtreeContainsDaemonCleanupCall(c)) return true;
+          }
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
+          if (subtreeContainsDaemonCleanupCall(child)) return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * True when a sibling statement (after a detached daemon start, before
+     * the next observation) registers cleanup that targets the just-started
+     * daemon. Cleanup must be an actual CallExpression with a
+     * daemon-cleanup shape (see `isDaemonCleanupCallExpression`) — token-
+     * only text matches like `console.log("SIGTERM docs")` or
+     * `const cleanupDocs = "killPid should be used later"` MUST NOT count.
+     *
+     * The walker descends into nested arrow/function expressions so cleanup
+     * registered through `onTestFinished(() => killPid(pid))` is detected
+     * even though the kill call is inside a callback body.
+     */
+    function statementContainsCleanup(stmt) {
+      return subtreeContainsDaemonCleanupCall(stmt);
+    }
+
+    /**
+     * True when a sibling statement contains an `await` expression or a
+     * direct `expect(...)` call — either is treated as the next "test
+     * observation" by `hasCleanupAfter`, so cleanup MUST be registered
+     * before this statement. The check is AST-based so kill-token text
+     * inside string literals and comments cannot mask it (the symmetric
+     * tightening to the cleanup predicate above).
+     */
     function statementContainsAwaitOrExpect(stmt) {
-      const text = context.sourceCode.getText(stmt);
-      return text.includes("await ") || text.includes("expect(");
+      return subtreeContainsAwaitOrExpect(stmt);
+    }
+
+    function subtreeContainsAwaitOrExpect(node) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") {
+        return false;
+      }
+      if (node.type === "AwaitExpression") return true;
+      if (
+        node.type === "CallExpression" &&
+        node.callee &&
+        node.callee.type === "Identifier" &&
+        node.callee.name === "expect"
+      ) {
+        return true;
+      }
+      for (const key in node) {
+        if (
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        ) {
+          continue;
+        }
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (subtreeContainsAwaitOrExpect(c)) return true;
+          }
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
+          if (subtreeContainsAwaitOrExpect(child)) return true;
+        }
+      }
+      return false;
     }
 
     /**

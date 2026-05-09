@@ -258,6 +258,74 @@ describe("test suite", () => {
 `);
       expect(result.output).toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-2 reviewer probe (1): a `console.log("SIGTERM docs")` between
+    // the detached start and the next observation contains the literal
+    // SIGTERM substring as DATA inside a string literal, but the only
+    // CallExpression is `console.log(...)`. Token-only text matching
+    // accepted this as cleanup — the AST-based predicate must reject it
+    // because no daemon-shaped CallExpression is registered.
+    it("should flag serve start --detach when the only later statement is console.log of a SIGTERM-text string", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    console.log("SIGTERM docs");
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-2 reviewer probe (2): a string-literal binding whose initializer
+    // text contains `killPid` is NOT a cleanup registration. The token-only
+    // text scan accepted this; the AST-based predicate rejects it because
+    // a VariableDeclaration with a string initializer has no daemon-shaped
+    // CallExpression.
+    it("should flag serve start --detach when the only later statement binds a string literal containing 'killPid'", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const cleanupDocs = "killPid should be used later";
+    expect(cleanupDocs).toBe("killPid should be used later");
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-2 reviewer probe (3): a try/finally finalizer whose only
+    // statement is a `console.log("SIGTERM docs")` does not actually kill
+    // the daemon — the SIGTERM substring is data inside a string literal.
+    // The text-based finalizer scan was accepting this; the AST-based
+    // walker must reject it because the finalizer subtree contains no
+    // daemon-cleanup CallExpression.
+    it("should flag serve start --detach in try/finally whose finalizer only logs a SIGTERM-text string", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    try {
+      runKspec("serve start --detach --port 3456");
+      expect(true).toBe(true);
+    } finally {
+      console.log("SIGTERM docs");
+    }
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {
