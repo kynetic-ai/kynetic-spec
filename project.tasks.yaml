@@ -28142,7 +28142,7 @@
   type: task
   spec_ref: "@daemon-test-guardrail-precision"
   plan_ref: "@plan-daemon-test-fixture-hardening"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-add-detached-cleanup-timing-regressions"
@@ -28157,7 +28157,7 @@
   todos_count: 0
   created_at: 2026-05-08T13:25:37.233Z
   started_at: 2026-05-09T09:12:25.945Z
-  submitted_at: 2026-05-09T08:27:12.738Z
+  submitted_at: 2026-05-09T09:12:29.452Z
   automation: eligible
 - _ulid: 01KR3W7QN8Y4NJFQ4HST166KVR
   slugs:
