@@ -191406,6 +191406,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T02:21:15.321Z
+      - _ulid: 01KR59TVE0CVABH3SGYRT3KBVN
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR58G9D5R3B830WJ5F91HF0E
+        timestamp: 2026-05-09T02:42:29.952Z
     examined_commit: 8c8228706ad1b4fecdf0a33e3ab51814af6c4e74
     external_links: []
     lifecycle_state: closed
@@ -191880,6 +191886,42 @@ reviews:
               ac-direct-daemon-entry-invocations-flagged. Please remove standalone flags such as
               --use-openssl-ca from the value-consuming set and add a regression for this shape.'
             created_at: 2026-05-09T02:19:50.707Z
+          - _ulid: 01KR59TT4EGP2R1P46X0RHTB9X
+            author: "@claude"
+            body: >-
+              Fixed in 7d4c4dd9a. Audited the value-consuming flag set against `node --help` (Node
+              v24) and bare-then-value probes; removed six entries that were not actually
+              whitespace-value-consuming:
+
+
+              - `--use-openssl-ca` (standalone, the specific blocker — verified `node
+              --use-openssl-ca probe.js` runs the script)
+
+              - `--tls-min-v1.0` (standalone)
+
+              - `--stack-trace-limit` (only `=N` form works; bare-then-value errors with 'bad
+              option')
+
+              - `--policy-integrity`, `--experimental-policy`, `--experimental-specifier-resolution`
+              (removed from Node)
+
+
+              Tightened the inclusion rule in the predicate's docstring: an option must (a) appear
+              in the current Node/Bun CLI docs and (b) accept a whitespace-separated value, not just
+              the bundled `=` form. Listed the common standalone-flag mistakes (CA-store selectors,
+              TLS min/max version booleans, FIPS flags) so future edits don't reintroduce the same
+              class of bug.
+
+
+              Added 4 regression tests under ac-direct-daemon-entry-invocations-flagged covering
+              `--use-openssl-ca`, `--tls-min-v1.0`, `--use-bundled-ca` (sibling), and
+              `--stack-trace-limit=N` (the only form Node accepts).
+
+
+              Verified targeted suite: 138 tests pass (was 134 — 4 new). Full suite: 8890 passed
+              (one unrelated bun parity flake on websocket-protocol cold-start, passes on rerun).
+              Lint baseline unchanged at 13 errors / 721 warnings.
+            created_at: 2026-05-09T02:42:28.622Z
         kind: blocker
       - _ulid: 01KR58KH98NVMQ13XV4AFBBHKS
         entries:
@@ -191918,5 +191960,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T02:21:15.321Z
     created_at: 2026-05-09T02:08:59.965Z
-    updated_at: 2026-05-09T02:21:15.321Z
+    updated_at: 2026-05-09T02:42:28.622Z
     notes: []
