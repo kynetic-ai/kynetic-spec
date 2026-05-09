@@ -195866,6 +195866,18 @@ reviews:
         runner: kspec
         created_at: 2026-05-09T15:57:51.540Z
         completed_at: 2026-05-09T15:57:51.540Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts failed: 9 passed, 1 failed.
+          The failing test is startTestDaemon registerCleanup failure cleanup stops the owned child
+          when registerCleanup throws after spawn at tests/helpers/daemon.test.ts:665."
+        name: focused-daemon-suite
+        required: true
+        runner: npm-test
+        created_at: 2026-05-09T15:58:02.430Z
+        completed_at: 2026-05-09T15:58:02.430Z
     events:
       - _ulid: 01KR6PNBHBG2ZC1H3A5CXFERZB
         actor: Jacob Chapel
@@ -195907,6 +195919,13 @@ reviews:
           status: pass
           name: completeness-validation
         timestamp: 2026-05-09T15:57:52.914Z
+      - _ulid: 01KR6QBJK26MXAKYSEJSJ00VPE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: focused-daemon-suite
+        timestamp: 2026-05-09T15:58:03.874Z
     examined_commit: 127e8024b36887d98349e8ccfd3c23bd1bd572cc
     external_links: []
     lifecycle_state: open
@@ -195956,5 +195975,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T15:45:55.756Z
-    updated_at: 2026-05-09T15:57:51.540Z
+    updated_at: 2026-05-09T15:58:02.430Z
     notes: []
