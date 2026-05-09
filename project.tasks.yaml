@@ -28454,7 +28454,8 @@
   plan_ref: "@plan-daemon-test-fixture-hardening"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@task-tighten-daemon-hardening-specs"
   priority: 2
   tags:
     - daemon-tests
