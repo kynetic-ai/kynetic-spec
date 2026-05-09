@@ -41780,9 +41780,23 @@ runs:
     completed_at: 2026-05-09T03:03:42.292Z
   - _ulid: 01KR5CN15TDY4SV0EJ9R036X21
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T03:31:44.954Z
+        completed_at: 2026-05-09T03:32:33.130Z
+        notes: "Worked well: 1) Reading review via 'kspec review get @ref --json' to get exact thread
+          anchors (file, line, body text) for surgical fixes — faster than parsing the line-numbered
+          text view; 2) Synthetic 'npx oxlint' probes mirroring the reviewer's verification approach
+          gave instant ground-truth on each fix before running the full vitest suite; 3) Atomic
+          'kspec batch' for the reply+resolve thread sequence kept the activity timeline coherent
+          and made the resubmit flow one transaction."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T03:32:33.130Z
+        completed_at: 2026-05-09T03:32:33.130Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T03:31:44.954Z
