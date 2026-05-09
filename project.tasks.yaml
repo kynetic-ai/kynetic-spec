@@ -28459,3 +28459,19 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-09T15:03:12.390Z
+- _ulid: 01KR6M77JA0S1EEVZX8KKRPY1V
+  slugs:
+    - task-fix-guardrail-binding-wrapper-analysis
+  title: Fix guardrail cleanup-binding and approved-helper analysis
+  type: task
+  spec_ref: "@daemon-test-guardrail-precision"
+  plan_ref: "@plan-daemon-test-fixture-hardening"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - daemon-tests
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-09T15:03:15.786Z

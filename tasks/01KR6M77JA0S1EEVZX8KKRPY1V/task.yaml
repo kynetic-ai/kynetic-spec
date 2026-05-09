@@ -1,0 +1,150 @@
+_ulid: 01KR6M77JA0S1EEVZX8KKRPY1V
+slugs:
+  - task-fix-guardrail-binding-wrapper-analysis
+title: Fix guardrail cleanup-binding and approved-helper analysis
+type: task
+description: >-
+  ## Task 5 — Fix guardrail cleanup-binding and approved-helper analysis
+
+
+  Proposed slug: `task-fix-guardrail-binding-wrapper-analysis`
+
+  Type: `task`
+
+  Priority: `P2`
+
+  Plan ref: `@plan-daemon-test-fixture-hardening`
+
+  Spec ref: `@daemon-test-guardrail-precision`
+
+  Tags: `daemon-tests`, `lint`, `guardrails`, `follow-up`
+
+  Depends on: `@task-add-guardrail-binding-wrapper-regressions`
+
+  Automation: leave unassessed until Jacob approves.
+
+
+  ### Description
+
+
+  #### What
+
+  Fix the `no-leaky-test-daemon` guardrail implementation so it catches the false negatives covered
+  by `@task-add-guardrail-binding-wrapper-regressions` while preserving the existing safe cases.
+
+
+  Target implementation file:
+
+
+  - `tools/eslint-rules/no-leaky-test-daemon.js`
+
+
+  Expected behavior:
+
+
+  - A cleanup callback counts as cleanup for a detached daemon only when the callback owns the
+  concrete pid, child handle, or stop handle for the daemon that was just started before later
+  awaits/assertions/daemon observations can run.
+
+  - A cleanup callback that closes over a `let`/mutable variable assigned only after an intervening
+  observation does not satisfy the cleanup-before-observation requirement.
+
+  - Local helper functions inside arbitrary test files do not hide unsafe detached starts or direct
+  daemon entrypoint invocations.
+
+  - Approved helper exceptions remain explicit and narrow to shared daemon-test fixture utilities
+  and documented guardrail internals.
+
+  - Unrelated subprocesses that merely contain words like `serve`, `start`, or `daemon` remain
+  unreported.
+
+
+  #### Why
+
+  The existing lint guardrail improved daemon test hygiene but still accepts patterns that can leak
+  detached daemons or bypass shared fixtures. If workers can silence the rule by registering an
+  unbound cleanup closure or by wrapping daemon startup in an arbitrary helper, the repository
+  returns to whackamole: unsafe tests can look superficially compliant while still leaking processes
+  under failure conditions.
+
+
+  #### How
+
+  1. Start from the regression tests in `@task-add-guardrail-binding-wrapper-regressions`.
+
+  2. Inspect the current rule implementation in `tools/eslint-rules/no-leaky-test-daemon.js`,
+  especially:
+     - daemon command detection;
+     - cleanup registration detection;
+     - observation ordering analysis;
+     - approved helper exemptions;
+     - suppression/localized-disable checks.
+  3. Tighten cleanup analysis so safe recognition requires a concrete owned value before
+  observation. For common patterns:
+     - allow `const pid = readPidFromFile(); onTestFinished(() => process.kill(pid, ...)); expect(...);`
+     - allow `const child = spawn(...); onTestFinished(() => child.kill(...)); expect(...);` when the spawn itself is the daemon start and cleanup is registered immediately;
+     - reject `let pid; onTestFinished(() => kill(pid)); expect(...); pid = readPidFromFile();` and equivalent await/fetch variants.
+  4. Tighten helper analysis so arbitrary local wrappers are inspected or reported rather than
+  automatically exempted. Keep an explicit allowlist for shared fixture internals that are supposed
+  to start daemon processes.
+
+  5. Keep diagnostics actionable. Messages should explain whether the issue is:
+     - direct daemon entrypoint outside approved helper;
+     - detached daemon cleanup not bound before observation;
+     - local wrapper hiding daemon startup; or
+     - non-local/undocumented suppression.
+  6. Run:
+     - `mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts`
+     - `mise exec -- kspec validate --refs --warnings-ok`
+     - `mise exec -- kspec validate --completeness --warnings-ok`
+  7. If the full lint command is run, classify pre-existing unrelated lint debt separately from this
+  task. Do not broaden this task into repository-wide lint cleanup.
+
+
+  #### In scope
+
+  - `no-leaky-test-daemon` rule logic and diagnostics.
+
+  - Tests needed to prove false negatives are fixed without new false positives.
+
+
+  #### Out of scope
+
+  - Fixing unrelated lint rules or warnings.
+
+  - Changing daemon runtime behavior.
+
+  - Changing test helpers except for allowed-helper naming exports if strictly necessary and covered
+  by tests.
+
+
+  #### Validation
+
+  - Regression tests from `@task-add-guardrail-binding-wrapper-regressions` pass.
+
+  - Existing daemon guardrail tests pass.
+
+  - Unrelated subprocess allowed cases remain accepted.
+
+  - `mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+  tests/lint-no-leaky-test-daemon.test.ts`
+
+  - `mise exec -- kspec validate --refs --warnings-ok`
+
+  - `mise exec -- kspec validate --completeness --warnings-ok`
+
+
+  ---
+spec_ref: "@daemon-test-guardrail-precision"
+meta_ref: null
+plan_ref: "@plan-daemon-test-fixture-hardening"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - daemon-tests
+vcs_refs: []
+created_at: 2026-05-09T15:03:15.786Z
+todos: []
