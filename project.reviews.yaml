@@ -198116,6 +198116,20 @@ reviews:
         runner: npm
         created_at: 2026-05-09T21:33:59.947Z
         completed_at: 2026-05-09T21:33:59.947Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Synthetic test with runKspec serve start --detach, const pid = undefined as number |
+          undefined, onTestFinished closure killing pid, then expect true produced OX_STATUS=0 and
+          Found 0 warnings and 0 errors. Null as-cast variant also produced OX_STATUS=0. This
+          violates ac-detached-cleanup-bound-before-observation because the captured binding has no
+          concrete pid or child handle at registration time.
+        name: manual oxlint AC probe
+        required: true
+        runner: oxlint
+        created_at: 2026-05-09T21:34:11.439Z
+        completed_at: 2026-05-09T21:34:11.439Z
     events:
       - _ulid: 01KR79SR9Q1JAWWKNFVDZDSXFW
         actor: Jacob Chapel
@@ -198171,6 +198185,13 @@ reviews:
           status: pass
           name: full npm test
         timestamp: 2026-05-09T21:34:01.300Z
+      - _ulid: 01KR7AK2SRG2QM6EB7R438CMCC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual oxlint AC probe
+        timestamp: 2026-05-09T21:34:12.792Z
     examined_commit: ce61a5635365f9e09bff5a3d3c59e9d937465605
     external_links: []
     lifecycle_state: open
@@ -198216,5 +198237,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T21:20:22.839Z
-    updated_at: 2026-05-09T21:33:59.947Z
+    updated_at: 2026-05-09T21:34:11.439Z
     notes: []
