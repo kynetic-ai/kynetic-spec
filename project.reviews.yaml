@@ -197384,6 +197384,24 @@ reviews:
         runner: kspec
         created_at: 2026-05-09T19:35:54.450Z
         completed_at: 2026-05-09T19:35:54.450Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md; task/spec/review records;
+          tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-daemon-test-guardrails.test.ts;
+          diff from dev..HEAD. Commands run: kspec task get; kspec item get; kspec review
+          for-task/get/add/open/comment/check; git diff/log; rg AC annotations; focused npm test
+          --fresh; full npm test; kspec validate refs/completeness; custom oxlint probes. Claims
+          verified: member-expression ownership regression tests exist and focused suite passes;
+          prior cycle blocker addressed for holder/state/member receivers. Categories searched:
+          correctness, safe-case false positives, edge cases around local callback bindings and TS
+          wrappers, test quality/AC annotations, integration with full suite."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-09T19:36:11.144Z
+        completed_at: 2026-05-09T19:36:11.144Z
     events:
       - _ulid: 01KR731KHHS95E5HB5FEWNW61N
         actor: Jacob Chapel
@@ -197440,6 +197458,13 @@ reviews:
           status: pass
           name: kspec validate completeness
         timestamp: 2026-05-09T19:35:55.845Z
+      - _ulid: 01KR73V0EGZ3PKARS5CGZDTCE8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-09T19:36:12.496Z
     examined_commit: 875a81d78c4b0c702a3d24d08789482c973d1584
     external_links: []
     lifecycle_state: open
@@ -197496,5 +197521,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T19:22:20.081Z
-    updated_at: 2026-05-09T19:35:54.450Z
+    updated_at: 2026-05-09T19:36:11.144Z
     notes: []
