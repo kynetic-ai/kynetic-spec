@@ -17861,6 +17861,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-09T09:13:56.597Z
+  - _ulid: 01KR62F016XVKBMG1RENGC5FFB
+    type: success
+    content: "Synthetic oxlint probe files (write minimal repro at /tmp/probe-<scenario>.ts, run 'npx
+      oxlint --config <plugin-config>' against the rule plugin path directly) gave per-blocker
+      feedback in <1 second during a fix cycle on tools/eslint-rules/no-leaky-test-daemon.js — vs
+      ~9s for the targeted vitest harness and ~30min for the full suite. Effective for any
+      AST-walker lint rule fix where the reviewer's blocker has a small concrete repro: run the
+      reviewer's exact probe against the rule first, then add the regression test, then run vitest.
+      Pattern applies to repeated fix cycles on the same rule."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T09:52:55.847Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
