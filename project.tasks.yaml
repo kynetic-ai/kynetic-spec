@@ -28565,7 +28565,7 @@
   title: Stabilize daemon build smoke timeout
   type: bug
   spec_ref: "@daemon-backed-test-fixture-contract"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 3
@@ -28577,4 +28577,5 @@
   todos_count: 0
   created_at: 2026-05-09T20:20:17.793Z
   started_at: 2026-05-09T20:37:00.768Z
+  submitted_at: 2026-05-09T20:50:12.432Z
   automation: eligible

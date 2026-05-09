@@ -13,7 +13,7 @@ description: During review of @01KR6M77JA0S1EEVZX8KKRPY1V, the full review gate 
 spec_ref: "@daemon-backed-test-fixture-contract"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -23,6 +23,14 @@ tags:
   - daemon
   - flaky
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-stabilize-daemon-build-smoke-timeout/01kr76bq
+  captured_at: 2026-05-09T20:50:12.430Z
+  commit: ca08b2f2a2e706eaa17eac7be21d48536a2c6407
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR76DM79K0QBEED13PDZ4E5B
 history:
   - author: "@claude"
@@ -38,7 +46,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-09T20:37:00.775Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-stabilize-daemon-build-smoke-timeout/01kr76bq
+          captured_at: 2026-05-09T20:50:12.430Z
+          commit: ca08b2f2a2e706eaa17eac7be21d48536a2c6407
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-09T20:50:12.432Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-09T20:50:12.432Z
 created_at: 2026-05-09T20:20:17.793Z
 started_at: 2026-05-09T20:37:00.768Z
+submitted_at: 2026-05-09T20:50:12.432Z
 todos: []
 automation: eligible
