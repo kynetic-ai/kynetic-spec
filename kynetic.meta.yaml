@@ -17834,6 +17834,17 @@ observations:
     resolved_by: codex
     workflow_ref: "@session-reflect"
     created_at: 2026-05-09T06:50:37.430Z
+  - _ulid: 01KR5XQ3TN2Q9Y5K8M0T8CXVGP
+    type: friction
+    content: kspec review get text output truncates thread bodies, so during every fix cycle I need
+      'kspec review for-task' + 'kspec review get' + 'kspec review get --json | head' (3 commands)
+      just to read the reviewer's actual blocker text. A --threads or --full flag (or just printing
+      full bodies in default text output, since the thread count is usually small) would shorten the
+      fix-cycle inheritance path.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T08:29:58.997Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
