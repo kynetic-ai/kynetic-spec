@@ -17710,6 +17710,23 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-09T00:47:02.117Z
+  - _ulid: 01KR57SK3S33CNR68NSY7MG29A
+    type: friction
+    content: When implementing static-analysis classifier rules that match runtime-invocation shapes
+      (e.g. tools/eslint-rules/no-leaky-test-daemon.js exec/execSync runtime form), prefer
+      enumerating the documented Node/Bun option classes (standalone flags, value-consuming flags
+      with separate-or-bundled values, eval-mode flags, -- separator, runtime-reference forms like
+      process.execPath / process['execPath']) before writing predicates. The
+      daemon-test-guardrail-precision rule converged in 7 review cycles, with each cycle revealing a
+      previously-unmodelled invocation shape (runtime-form, direct-executable, exec/execSync shell
+      strings, shell-token in unrelated executable position, process.execPath, process[execPath],
+      runtime flags, value-consuming flags + eval mode). Several of these were discoverable upfront
+      from Node CLI documentation; modelling them as a closed set first would compress fix cycles
+      for future classifier work.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T02:06:51.514Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
