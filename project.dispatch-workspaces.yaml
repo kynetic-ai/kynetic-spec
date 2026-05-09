@@ -20327,12 +20327,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-09T17:20:41.769Z
+      updated_at: 2026-05-09T17:20:48.596Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T17:20:41.769Z
+      updated_at: 2026-05-09T17:20:48.596Z
     integration:
       status: pending
       detail: null
@@ -20340,7 +20340,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
-      updated_at: 2026-05-09T17:20:41.769Z
+      updated_at: 2026-05-09T17:20:48.596Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KR6M6XARDRJ17BY20Z3BG66B"
@@ -20348,18 +20348,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T17:02:36.871Z
-      last_reconciled_at: 2026-05-09T17:20:41.769Z
+      last_reconciled_at: 2026-05-09T17:20:48.596Z
       created_at: 2026-05-09T15:34:46.996Z
-      updated_at: 2026-05-09T17:20:41.769Z
+      updated_at: 2026-05-09T17:20:48.596Z
     workspace_id: dispatch-workspace-01KR6M6XARDRJ17BY20Z3BG66B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 354731a684d7b55ebb1776e0f2751c2dc5e17071
+        last_seen_at: 2026-05-09T17:20:48.596Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-register-cleanup-failure-regression-01kr6m6x-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
-        head: 0233c88c3d5ce4e06f96e85fff9dc27b9fcbe66d
-        last_seen_at: 2026-05-09T17:02:10.437Z
+        head: 354731a684d7b55ebb1776e0f2751c2dc5e17071
+        last_seen_at: 2026-05-09T17:20:48.596Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-register-cleanup-failure-regression-01kr6m6x
   - active_role: null
     base_branch_point: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
