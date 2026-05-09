@@ -18014,6 +18014,27 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-09T20:24:33.542Z
+  - _ulid: 01KR79NXFCT754TWD2RFRKSSMK
+    type: friction
+    content: "Static-analysis fix cycles can introduce polarity errors via additive exemptions: each
+      cycle's reviewer probe surfaces a 'legitimate-looking' shape, the worker adds an exemption to
+      allow it, and the exemption itself re-opens the original AC violation. Cycle 4 of @01KR6M77
+      (no-leaky-test-daemon callback-local cleanup) added callbackLocalKillTargetIsDynamic on the
+      theory 'callback-local CallExpression init is a runtime read at cleanup time = valid
+      ownership'. That re-enabled the exact AC-violating shape: onTestFinished(() => { const pid =
+      readPidFromFile(); process.kill(pid, ...) }) — callback-local binding defers ownership
+      entirely to teardown, violating ac-detached-cleanup-bound-before-observation. Cycle 5 had to
+      remove the exemption AND its 197 lines of supporting helpers. Mitigation: when adding an
+      exemption to a precision lint, run the spec AC's negative-example shape through the production
+      toolchain (manual oxlint probe with the AC text's literal example) BEFORE submitting. If the
+      exemption accepts the AC's negative example, the exemption is wrong. This is distinct from the
+      shape-permutation friction in @01KR5CYKN (worker missing positive cases) — this is the
+      inverse: worker adding accommodations that re-introduce the failing case. Applies to any
+      precision classifier where exemptions accumulate across cycles."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T21:18:17.068Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
