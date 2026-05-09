@@ -982,7 +982,7 @@ features:
           narrower fixtures that do not start a daemon.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
