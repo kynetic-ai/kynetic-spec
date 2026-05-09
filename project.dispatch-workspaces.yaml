@@ -17628,12 +17628,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-09T01:43:08.156Z
+      updated_at: 2026-05-09T01:43:30.629Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T01:43:08.156Z
+      updated_at: 2026-05-09T01:43:30.629Z
     integration:
       status: pending
       detail: null
@@ -17641,17 +17641,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5538619f9b3a637365a38e313dcbc5dd7501b809
-      updated_at: 2026-05-09T01:43:08.156Z
-    lifecycle_state: ready
+      updated_at: 2026-05-09T01:43:30.629Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KR52YXAAQZ4ZMFR0ASTJVJ59"
     task_slug: task-stabilize-websocket-protocol-runtime-parity-test
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T00:43:02.385Z
-      last_reconciled_at: 2026-05-09T01:43:08.156Z
+      last_reconciled_at: 2026-05-09T01:43:30.629Z
       created_at: 2026-05-09T00:42:38.403Z
-      updated_at: 2026-05-09T01:43:08.156Z
+      updated_at: 2026-05-09T01:43:30.629Z
     workspace_id: dispatch-workspace-01KR52YXAAQZ4ZMFR0ASTJVJ59
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
