@@ -196916,6 +196916,12 @@ reviews:
           status: pass
           name: kspec validate refs
         timestamp: 2026-05-09T17:55:51.285Z
+      - _ulid: 01KR6Y6K4DTD6GRCV9SX05XEEC
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR6Y2XHAGPR7QN6YQAP5MZ7R
+        timestamp: 2026-05-09T17:57:40.621Z
     examined_commit: b9857b36c2ea8f9b2a93420865545743d74b58de
     external_links: []
     lifecycle_state: open
@@ -196946,8 +196952,15 @@ reviews:
               associated with the just-started daemon, because this cleanup can kill an unrelated
               process while the new detached daemon leaks."
             created_at: 2026-05-09T17:55:40.202Z
+          - _ulid: 01KR6Y6H8NHY33X1PSDKV49HRK
+            author: Jacob Chapel
+            body: 'Probe sample details omitted by shell quoting in the initial body: const pid = 12345;
+              runKspec("serve start --detach --port 3456"); onTestFinished(() => process.kill(pid,
+              "SIGTERM")); expect(true).toBe(true); The one-off oxlint run for that sample returned
+              exit=0 / Found 0 warnings and 0 errors.'
+            created_at: 2026-05-09T17:57:38.708Z
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T17:53:44.981Z
-    updated_at: 2026-05-09T17:55:47.184Z
+    updated_at: 2026-05-09T17:57:38.708Z
     notes: []
