@@ -42164,9 +42164,26 @@ runs:
     completed_at: 2026-05-09T05:52:40.112Z
   - _ulid: 01KR5NPJ756XKDVAXF8XCAXVYR
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T06:09:52.357Z
+        completed_at: 2026-05-09T06:10:25.259Z
+        notes: "What worked well: The detached reviewer merge helper cleanly handled integration from the
+          snapshot and refreshed the occupied dev worktree without manual checkout or merge
+          commands. Review records gave a durable gate: checks, evidence log, verdict, and task
+          completion were visible from kspec. Independent ad hoc oxlint probes were effective for
+          validating the cycle-12 fix beyond the checked-in tests: they confirmed prose/non-daemon
+          kspec invocations stayed clean while legitimate direct daemon and detached lifecycle
+          invocations still reported. Running the full suite before approval gave high confidence
+          because the changed guardrail, daemon helper, mock daemon, Playwright fixture wrapper, and
+          heavy WebSocket serial suite all passed in one run."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T06:10:25.259Z
+        completed_at: 2026-05-09T06:10:25.259Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T06:09:52.357Z
