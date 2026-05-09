@@ -195878,6 +195878,19 @@ reviews:
         runner: npm-test
         created_at: 2026-05-09T15:58:02.430Z
         completed_at: 2026-05-09T15:58:02.430Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh failed. Aggregate: 8966 passed, 5 skipped, 1 failed out
+          of 8972 tests; 2412 suites passed and 2 suite entries failed out of 2414. Only failing
+          assertion reported was tests/helpers/daemon.test.ts:665. Full log:
+          /tmp/kspec-test-cache/01KR6PKHFDJ51VERQFGP96FJZZ/bb2c4f584f2dc6d6.log"
+        name: full-test-suite
+        required: true
+        runner: npm-test
+        created_at: 2026-05-09T15:58:13.894Z
+        completed_at: 2026-05-09T15:58:13.894Z
     events:
       - _ulid: 01KR6PNBHBG2ZC1H3A5CXFERZB
         actor: Jacob Chapel
@@ -195926,6 +195939,13 @@ reviews:
           status: fail
           name: focused-daemon-suite
         timestamp: 2026-05-09T15:58:03.874Z
+      - _ulid: 01KR6QBXN6P9VH4WCJVJ6EWYEY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: full-test-suite
+        timestamp: 2026-05-09T15:58:15.206Z
     examined_commit: 127e8024b36887d98349e8ccfd3c23bd1bd572cc
     external_links: []
     lifecycle_state: open
@@ -195975,5 +195995,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T15:45:55.756Z
-    updated_at: 2026-05-09T15:58:02.430Z
+    updated_at: 2026-05-09T15:58:13.894Z
     notes: []
