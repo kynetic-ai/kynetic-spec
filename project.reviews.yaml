@@ -197113,6 +197113,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KR70RBZSXV6E0912HVY9KKAE
         timestamp: 2026-05-09T18:42:21.821Z
+      - _ulid: 01KR70SGMP57K73NGD3BRXWTNA
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR70RBZSXV6E0912HVY9KKAE
+        timestamp: 2026-05-09T18:42:57.814Z
     examined_commit: e21bfac48a49698d8ad5dbf05b9e907666203555
     external_links: []
     lifecycle_state: open
@@ -197143,8 +197149,18 @@ reviews:
               capture/ownership analysis for non-Identifier pid expressions (or conservatively
               reject them) so cleanup-shaped calls cannot bypass the binding check."
             created_at: 2026-05-09T18:42:20.281Z
+          - _ulid: 01KR70SF2YCD7D9HYEYE0NKXY2
+            author: Jacob Chapel
+            body: 'Clarification for the blocker body above: the skipped target is `process.kill(...)`, and the
+              accepted unsafe sample is `onTestFinished(() => { if (holder.pid !== undefined)
+              process.kill(holder.pid, "SIGTERM"); })` with `holder.pid` assigned only after
+              `expect(true).toBe(true)`. The independent oxlint probe exited 0 with "Found 0
+              warnings and 0 errors." This is the same ownership contract as
+              `ac-detached-cleanup-bound-before-observation`: the callback has an object at
+              registration time, but it does not own the concrete pid for the just-started daemon.'
+            created_at: 2026-05-09T18:42:56.222Z
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T18:40:06.555Z
-    updated_at: 2026-05-09T18:42:20.281Z
+    updated_at: 2026-05-09T18:42:56.222Z
     notes: []
