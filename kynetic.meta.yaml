@@ -17834,6 +17834,13 @@ observations:
     resolved_by: codex
     workflow_ref: "@session-reflect"
     created_at: 2026-05-09T06:50:37.430Z
+  - _ulid: 01KR5VA41K16AYMKVBX9K7958T
+    type: friction
+    content: list
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T07:47:56.084Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
