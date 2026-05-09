@@ -196048,7 +196048,40 @@ reviews:
     slugs: []
     title: Review guardrail binding wrapper regressions
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Passed with existing reference warnings only; exit code 0.
+        name: kspec validate --refs --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-09T16:04:26.521Z
+        completed_at: 2026-05-09T16:04:26.521Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Passed with existing completeness warnings only; exit code 0.
+        name: kspec validate --completeness --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-09T16:04:30.122Z
+        completed_at: 2026-05-09T16:04:30.122Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Command failed twice: npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts failed 8 tests; rerun npm test -- --fresh
+          tests/lint-daemon-test-guardrails.test.ts reproduced the same 8 failures. Each failure
+          expected runOxlint exitCode to be nonzero but received 0."
+        name: targeted guardrail tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-09T16:04:33.608Z
+        completed_at: 2026-05-09T16:04:33.608Z
     events:
       - _ulid: 01KR6QFSSFGJQC3R9N3X7H6A9H
         actor: Jacob Chapel
@@ -196063,17 +196096,116 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T16:00:43.836Z
+      - _ulid: 01KR6QQ9P84EY19Y42WYSZE193
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --refs --warnings-ok
+        timestamp: 2026-05-09T16:04:27.976Z
+      - _ulid: 01KR6QQD3E74NC4M6NA3ABEEST
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --completeness --warnings-ok
+        timestamp: 2026-05-09T16:04:31.470Z
+      - _ulid: 01KR6QQGFS417CGN30PZ9GBRB8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: targeted guardrail tests
+        timestamp: 2026-05-09T16:04:34.937Z
+      - _ulid: 01KR6QQKYXWQJAX1H5S23JM7JB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR6QQJJBNAANRNYZE9S2A4KF
+        timestamp: 2026-05-09T16:04:38.493Z
+      - _ulid: 01KR6QQQDGN1QHTXP6ZZBA720E
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR6QQP20CCBMGYR922HKVH91
+        timestamp: 2026-05-09T16:04:42.032Z
+      - _ulid: 01KR6QQTTNPBTRXPCTPC3GXWW2
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-09T16:04:45.525Z
+      - _ulid: 01KR6QQTTNNJGZTSAAXM663YWN
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T16:04:45.525Z
     examined_commit: f55e1f7acaf1cdea1f810f8f44083e6cc62c5a7c
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KR6M7486ECC1PMNH725GJ0HR"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KR6QQJJBNAANRNYZE9S2A4KF
+        anchor:
+          type: code
+          commit: f55e1f7acaf1cdea1f810f8f44083e6cc62c5a7c
+          line_end: 4098
+          line_start: 3806
+          path: tests/lint-daemon-test-guardrails.test.ts
+          side: head
+        entries:
+          - _ulid: 01KR6QQJJBSN1VVKK3234B291V
+            author: Jacob Chapel
+            body: "MUST-FIX: the submitted snapshot adds active assertions that still fail against the submitted
+              code. The targeted command `npm test -- --fresh
+              tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts`
+              failed with eight failures, all expecting `runOxlint` to report `no-leaky-test-daemon`
+              but receiving exit code 0. A second fresh run of `npm test -- --fresh
+              tests/lint-daemon-test-guardrails.test.ts` reproduced the same eight failures at lines
+              3806, 3832, 3860, 3887, 4014, 4043, 4071, and 4098. The base file at dev ends before
+              this new section, so this branch introduces deterministic required-suite failures.
+              This cannot merge as a standalone review snapshot; land the lint-rule behavior with
+              these active regressions or keep the red regressions out of the required suite until
+              the implementation lands."
+            created_at: 2026-05-09T16:04:37.067Z
+        kind: blocker
+      - _ulid: 01KR6QQP20CCBMGYR922HKVH91
+        entries:
+          - _ulid: 01KR6QQP204QAS5SM7ZAFY4AP9
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md, task @01KR6M7486ECC1PMNH725GJ0HR, spec
+              @daemon-test-guardrail-precision, git diff for
+              tests/lint-daemon-test-guardrails.test.ts, added test block around lines 3760-4138.
+              Commands run: kspec item get @daemon-test-guardrail-precision; kspec validate --refs
+              --warnings-ok; kspec validate --completeness --warnings-ok; npm test -- --fresh
+              tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts; npm
+              test -- --fresh tests/lint-daemon-test-guardrails.test.ts; git show base file
+              length/search. Claims verified: worker note said the eight unsafe regressions fail
+              pre-fix; verified they are still active failures in the submitted snapshot. Categories
+              searched: correctness, test quality, AC coverage, integration/test gate behavior, and
+              source-scanning shortcuts."
+            created_at: 2026-05-09T16:04:40.640Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-09T16:04:45.525Z
     created_at: 2026-05-09T16:00:22.320Z
-    updated_at: 2026-05-09T16:00:42.307Z
+    updated_at: 2026-05-09T16:04:45.525Z
     notes: []
