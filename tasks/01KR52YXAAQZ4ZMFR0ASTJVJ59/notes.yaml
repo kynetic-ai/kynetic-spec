@@ -1,1 +1,42 @@
-notes: []
+notes:
+  - _ulid: 01KR54X0GWRE14WCSFHHDSWBAJ
+    content: >-
+      Root cause: tests/daemon-api/websocket-protocol.test.ts was running in the default vitest
+      pool, where it spawned ~15 real daemon child processes (including bun) per file while
+      competing with the rest of the default pool's CLI-subprocess fan-out. Under that contention,
+      the bun runtime parity beforeEach (line 482) intermittently exceeded the 15s/stage
+      cache-readiness budget — surfacing as STACK_TRACE_ERROR even though the file passed
+      deterministically when re-run in isolation. The previous fix (ac91faa58) addressed the
+      cache-status race for the Node path, but the bun parity slot still flaked under the same load
+      profile reported in the parent review for @01KR3W7PPVDFR8F03VQ6J54M3K.
+
+
+      Fix: moved tests/daemon-api/websocket-protocol.test.ts into the heavySerialSuites list in
+      vitest.config.ts, alongside the other CLI-/daemon-spawn-heavy suites (integration.test.ts,
+      agent-dispatch-engine.test.ts, daemon-build.test.ts). The heavy-serial project runs after the
+      default pool drains with maxWorkers=1 / fileParallelism=false, eliminating cross-file
+      subprocess contention. Coverage is unchanged — all 15 tests still execute against real daemon
+      children, including both runtime parity slots, with the same AC annotations.
+
+
+      Verification: Two consecutive `npm test -- --fresh` (full-suite) runs passed cleanly:
+
+      - Run 1: 2412/2412 suites, 8830 of 8835 tests, 5 skipped, 1947.8s. websocket-protocol ran in
+      heavy-serial with all 4 runtime parity tests (node + bun × 2) green.
+
+      - Run 2: 2412/2412 suites, 8830 of 8835 tests, 5 skipped, 1949.1s. Same results, bun parity
+      975ms/570ms.
+
+
+      Targeted: `npm test -- --fresh tests/daemon-api/websocket-protocol.test.ts` also passed (15
+      tests, 7.1s) with the heavy-serial project tag visible in the per-test output.
+
+
+      Why this isn't weakening coverage: the change is purely test pool assignment in
+      vitest.config.ts — no production code, no test-body change, no AC removal. The test still
+      spawns real daemon children, exercises both runtimes, and asserts the documented
+      heartbeat-degradation behavior. The only effect is that it runs serially after the default
+      pool instead of contending with it.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T01:16:17.820Z
