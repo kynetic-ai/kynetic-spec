@@ -43453,7 +43453,7 @@ runs:
     completed_at: 2026-05-09T16:35:47.507Z
   - _ulid: 01KR6TC63FYKV5RABF19HEJYD3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -43469,7 +43469,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T16:53:11.052Z
-        completed_at: 2026-05-09T16:53:11.052Z
+        completed_at: 2026-05-09T16:53:23.878Z
+        notes: "Friction (high-confidence, both unique to my searches): (1) kspec review reply --body
+          \"...\" fails with daemon JSON parse error 'Unexpected token C, Cannot rea... is not valid
+          JSON' when body contains shell-interpolated characters (backticks, code blocks, quoted
+          text). Workaround: write body to a tmp file and use --body \"$(cat /tmp/file.txt)\". The
+          error message points to 'check daemon status' which is a misleading red herring — the real
+          cause is shell quoting before the daemon ever sees the input. (2) The 'it.fails()' pattern
+          (vitest) is the right tool for pre-fix regression tests in TDD-style 'lock in the false
+          negative' tasks: it keeps the assertion behavior verified end-to-end while inverting
+          today's red into green and preserving the flip-on-fix-landing signal. This pattern is not
+          yet documented in any kspec convention or skill — searching 'it.fails', 'regression test
+          pattern', 'TDD red pre-fix', and 'active red assertions' returned nothing relevant."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T16:53:23.878Z
+        completed_at: 2026-05-09T16:53:23.878Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T16:50:49.584Z
