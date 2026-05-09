@@ -41644,7 +41644,7 @@ runs:
     completed_at: 2026-05-09T02:24:27.261Z
   - _ulid: 01KR59YC5YCGR87CPSD7K9M1YW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -41660,7 +41660,31 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T02:46:19.386Z
-        completed_at: 2026-05-09T02:46:19.386Z
+        completed_at: 2026-05-09T02:46:31.499Z
+        notes: >-
+          Identified two candidate items, both refinements of existing captures.
+
+
+          CANDIDATE 1 (friction): Predicate-list entries for runtime CLI options can be silently
+          misclassified within an otherwise-correct enumeration of classes. Cycle 8 blocker:
+          --use-openssl-ca was placed in the value-consuming-flag list when it is actually a
+          standalone boolean. The class enumeration was correct, but per-entry arity was wrong. —
+          Refinement of existing 01KR57SK (cycle 7), which already says 'enumerate documented
+          Node/Bun option classes before writing predicates.' My refinement adds: 'and validate each
+          entry's arity by probing the runtime with bare-then-value invocations (node --flag VALUE
+          script.js).'
+
+
+          CANDIDATE 2 (success): Probing the underlying runtime (not the classifier) with
+          bare-then-value invocations gives a deterministic per-entry arity test. Used to audit 6
+          wrong entries in this cycle's value-consuming list. — Refinement of existing 01KR537D
+          (cycle 7), which says 'manual behavioral probes around adjacent parser/tokenization
+          boundary cases.' My refinement adds: 'probe the underlying runtime, not just the
+          classifier — the runtime is the canonical source of truth for option arity.'
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T02:46:31.499Z
+        completed_at: 2026-05-09T02:46:31.499Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T02:44:25.407Z
