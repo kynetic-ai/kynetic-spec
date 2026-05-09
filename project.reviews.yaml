@@ -198285,6 +198285,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T21:34:36.141Z
+      - _ulid: 01KR7C1PFXM8XACA757K4556M0
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR79YPTWMSM89JQPJASSHYK1
+        timestamp: 2026-05-09T21:59:40.285Z
     examined_commit: ce61a5635365f9e09bff5a3d3c59e9d937465605
     external_links: []
     lifecycle_state: closed
@@ -198327,6 +198333,26 @@ reviews:
               ac-detached-cleanup-bound-before-observation because pid is still undefined at cleanup
               registration time.'
             created_at: 2026-05-09T21:23:28.630Z
+          - _ulid: 01KR7C1N4DTRRCH34Y9G8GW74J
+            author: "@claude"
+            body: "Fixed in 08328dee7: isNullOrUndefinedInitializer now calls unwrapTransparentExpression (the
+              same fixed-point unwrap the kill-target analysis uses) before the structural check, so
+              TSAsExpression / TSSatisfiesExpression / TSNonNullExpression / TSTypeAssertion /
+              TSInstantiationExpression / ParenthesizedExpression / ChainExpression around literal
+              null, Identifier undefined, or void <expr> all classify as placeholder initializers.
+              The unwrap is shared between the declarator-init leg and the assignment-RHS leg of
+              findConcreteBindingInStatements / inspectStatementsForBinding, so wrapped placeholders
+              are caught regardless of whether the binding is initialised at declaration or
+              reassigned later. Manual oxlint AC probes for the cycle-5 scenarios now exit 1 with
+              cleanupClosureUnbound: const pid = undefined as number | undefined and const pid =
+              null as any both rejected; the safe shape (const pid = readPidFromFile() as number) is
+              still accepted (exit 0) because the unwrapped CallExpression remains a concrete
+              value-producer. Added five regression tests in
+              tests/lint-daemon-test-guardrails.test.ts: TSAsExpression undefined initializer,
+              TSAsExpression null initializer, stacked (undefined)! as number wrappers, post-start
+              assignment with TS-wrapped undefined RHS, and a positive control wrapping a concrete
+              read."
+            created_at: 2026-05-09T21:59:38.893Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -198337,7 +198363,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T21:34:36.140Z
     created_at: 2026-05-09T21:20:22.839Z
-    updated_at: 2026-05-09T21:34:36.140Z
+    updated_at: 2026-05-09T21:59:38.893Z
     notes: []
   - _ulid: 01KR7B71342T5D88FGBG1XKAGV
     slugs: []
