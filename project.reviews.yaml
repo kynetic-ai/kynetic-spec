@@ -195370,6 +195370,24 @@ reviews:
         runner: npm
         created_at: 2026-05-09T12:19:26.053Z
         completed_at: 2026-05-09T12:19:26.053Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/cli-serve.test.ts diff and endpoint sections;
+          src/daemon-shared/endpoint.ts; src/cli/commands/serve.ts; packages/daemon/src/server.ts;
+          relevant resolver tests. Commands run: kspec task get, kspec item get for
+          @cli-lifecycle-test-endpoint-consumption and @daemon-test-endpoint-consistency, kspec
+          validate, rg audits for localhost/direct loopback/AC annotations, git diff --check,
+          targeted tests, full npm test. Claims verified: replaced generic localhost fetches with
+          endpoint.apiUrl; remaining direct loopback fetches are endpoint-subject tests; production
+          resolver prefers metadata and falls back to legacy port. Categories searched: correctness,
+          edge cases, error handling, test quality, integration."
+        name: review evidence log
+        required: false
+        runner: codex-review
+        created_at: 2026-05-09T12:19:38.462Z
+        completed_at: 2026-05-09T12:19:38.462Z
     events:
       - _ulid: 01KR6A2X5TD95S7DME4TJPFWMD
         actor: Jacob Chapel
@@ -195412,6 +195430,13 @@ reviews:
           status: pass
           name: full npm test
         timestamp: 2026-05-09T12:19:27.318Z
+      - _ulid: 01KR6AVNMYZ0D6DBBTF6T4JVP5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-09T12:19:39.806Z
     examined_commit: c9e84cf090a02f85fdbba45cd9949d62bcfd8b44
     external_links: []
     lifecycle_state: open
@@ -195424,5 +195449,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-09T12:06:08.315Z
-    updated_at: 2026-05-09T12:19:26.053Z
+    updated_at: 2026-05-09T12:19:38.462Z
     notes: []
