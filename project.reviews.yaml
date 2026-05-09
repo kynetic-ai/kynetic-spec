@@ -192938,6 +192938,18 @@ reviews:
         runner: kspec
         created_at: 2026-05-09T05:21:07.255Z
         completed_at: 2026-05-09T05:21:07.255Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Synthetic oxlint probe with exec("kspec search \"serve start --detach\"") and
+          spawn("kspec", ["search", "serve start --detach"]) exited 1 and emitted
+          no-leaky-test-daemon diagnostics for both non-daemon search calls.
+        name: manual classifier probes
+        required: true
+        runner: oxlint
+        created_at: 2026-05-09T05:21:17.842Z
+        completed_at: 2026-05-09T05:21:17.842Z
     events:
       - _ulid: 01KR5J0ZA9ZADFNNSKFDF5T5GW
         actor: Jacob Chapel
@@ -192993,6 +193005,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-09T05:21:08.504Z
+      - _ulid: 01KR5JXN6X0JCJS7GYPSEXGB44
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual classifier probes
+        timestamp: 2026-05-09T05:21:19.069Z
     examined_commit: 74ab0ec544bc889c0aef25550ccb2d1e691b8f1c
     external_links: []
     lifecycle_state: open
@@ -193038,5 +193057,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T05:05:39.146Z
-    updated_at: 2026-05-09T05:21:07.255Z
+    updated_at: 2026-05-09T05:21:17.842Z
     notes: []
