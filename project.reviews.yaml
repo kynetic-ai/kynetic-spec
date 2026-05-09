@@ -198960,6 +198960,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T23:07:18.916Z
+      - _ulid: 01KR7J0X7JSN5MWST7CWW0EB0G
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR7FERRFS3TWFVX94V6SXF24
+        timestamp: 2026-05-09T23:44:05.875Z
     examined_commit: ede9e8e1893e0baf75dabc13217c450228399111
     external_links: []
     lifecycle_state: closed
@@ -199006,6 +199012,51 @@ reviews:
               accepted. The fix should keep rejecting assignments after an observation while
               allowing assignments before the first observation in the protected try body.'
             created_at: 2026-05-09T22:59:55.043Z
+          - _ulid: 01KR7J0VWJBQEDX94XB21JK2V0
+            author: "@claude"
+            body: >-
+              Fixed in fix cycle 8. Three changes in tools/eslint-rules/no-leaky-test-daemon.js:
+
+
+              1. findDirectCleanupRegistrationUseNode now takes the detached start node. When the
+              start is inside the try body, the implicit registration site is the FIRST observation
+              (await/expect/daemon URL fetch/WebSocket) in the try body after the start — not the
+              TryStatement itself. If no in-try observation exists, the call site itself is the
+              deadline. This matches the registered-callback semantic where ownership is checked at
+              the onTestFinished(...) registration call.
+
+
+              2. walkStatementsForBinding and walkStatementsForConcreteBinding descend into
+              TryStatement.block and TryStatement.finalizer on the unconditional execution path so
+              cross-scope shapes (let pid; declared outer, pid = ... assigned inside the try body)
+              resolve to the in-try assignment as the concrete binding. Without this, the
+              outer-scope walker only saw the let-with-no-init.
+
+
+              3. subtreeContainsDaemonCleanupCall now carries an inFinalizerContext flag (set by
+              isInTryWithFinallyCleanup and the TryStatement.finalizer recursion). When set, the
+              walker descends through defensive-guard conditionals so 'if (pid !== undefined)
+              process.kill(pid, ...)' inside a finalizer is recognised. Ownership analysis on each
+              daemon-cleanup CallExpression still gates whether the call counts as cleanup, so the
+              guard is hygiene rather than load-bearing.
+
+
+              Manual probe: cycle-8 unsafe shape (let pid; try { runKspec(detach); expect; pid =
+              readPidFromFile(); } finally { process.kill(pid as number, SIGTERM); }) exits 1 with
+              cleanupClosureUnbound on pid. Cycle-8 safe shape (assignment BEFORE expect inside try,
+              with the if guard) exits 0. Same safe shape without the guard also exits 0.
+
+
+              Five regression tests added in tests/lint-daemon-test-guardrails.test.ts under
+              cleanup-bound-before-observation describe: cycle-8 safe with guard (allowed), cycle-8
+              safe no-guard (allowed), no in-try observation (allowed), await-shaped unsafe variant
+              (rejected), conditional-assignment unsafe variant (rejected).
+
+
+              Validation: focused lint suites 255 -> 260 passing tests; full npm test 2419 suites /
+              9016 passing (5 pre-existing skips); kspec validate --refs and --completeness both
+              pass with --warnings-ok.
+            created_at: 2026-05-09T23:44:04.490Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -199016,5 +199067,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T23:07:18.916Z
     created_at: 2026-05-09T22:55:16.758Z
-    updated_at: 2026-05-09T23:07:18.916Z
+    updated_at: 2026-05-09T23:44:04.490Z
     notes: []
