@@ -41919,7 +41919,7 @@ runs:
     completed_at: 2026-05-09T03:55:45.984Z
   - _ulid: 01KR5FHQ07DSXVSSXD9KMDEPW7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -41935,7 +41935,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T04:24:24.879Z
-        completed_at: 2026-05-09T04:24:24.879Z
+        completed_at: 2026-05-09T04:25:28.636Z
+        notes: "Searched: kspec meta observations list, kspec inbox list, kspec tasks list, plus targeted
+          kspec search 'JSDoc', 'block comment', 'comment terminator', 'syntax error', 'oxlint
+          diagnostic', 'rule syntax check'. Existing coverage: observations 01KR57SK and 01KR5CYK
+          (both 2026-05-09) already cover the cycle-ping-pong pattern for static-analysis
+          classifiers — the cycle 11 work fits squarely under 01KR5CYK's shape-enumeration friction
+          (shell-token quote variant + parse-only Node flag class were two more permutations). Not
+          covered anywhere: a JSDoc comment containing the substring '*/' (e.g. '*/node' inside a
+          path-suffix description) closes the JS comment block prematurely, turning the rule file
+          into invalid JS — but the surface symptom is oxlint's generic 'Failed to parse oxlint
+          configuration file' which doesn't point at the offending rule file. This is a new,
+          concrete, recurrable friction not captured by prior observations."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T04:25:28.636Z
+        completed_at: 2026-05-09T04:25:28.636Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T04:22:21.960Z
