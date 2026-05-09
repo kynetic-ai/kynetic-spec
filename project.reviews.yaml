@@ -196194,6 +196194,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T16:04:45.525Z
+      - _ulid: 01KR6T92J0QBHT8VC0J6B82RKC
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR6QQJJBNAANRNYZE9S2A4KF
+        timestamp: 2026-05-09T16:49:07.648Z
     examined_commit: f55e1f7acaf1cdea1f810f8f44083e6cc62c5a7c
     external_links: []
     lifecycle_state: closed
@@ -196227,6 +196233,33 @@ reviews:
               these active regressions or keep the red regressions out of the required suite until
               the implementation lands."
             created_at: 2026-05-09T16:04:37.067Z
+          - _ulid: 01KR6T911GRTR1XF123756VP1F
+            author: "@claude"
+            body: >-
+              Fixed: converted the eight unsafe regression tests from `it(...)` to `it.fails(...)`,
+              taking the second of the two paths the blocker offered (keep red regressions out of
+              the required suite until the lint-rule fix lands).
+
+
+              Each `it.fails` test still runs against `runOxlint` and exercises the same
+              false-negative shape — the inversion just makes the suite green today: today the rule
+              produces no diagnostic, the inner `expect(result.exitCode).not.toBe(0)` assertions
+              throw, and `it.fails` turns that throw into a pass. When the follow-up lint-rule fix
+              lands and the rule starts producing the diagnostic, the assertions will pass,
+              `it.fails` will then fail, and that failure is the structured signal to flip those
+              specific tests back to `it(...)`.
+
+
+              The four allowed-narrow control tests stay as plain `it(...)` (they pass today and
+              must still pass after the fix). The two describe-block docstrings have been updated to
+              document the inversion contract and the flip-on-fix-landing protocol explicitly.
+
+
+              Targeted suite `npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+              tests/lint-no-leaky-test-daemon.test.ts` now reports 225 of 225 passing, and `kspec
+              validate --refs --warnings-ok` and `kspec validate --completeness --warnings-ok` both
+              still exit 0.
+            created_at: 2026-05-09T16:49:06.096Z
         kind: blocker
       - _ulid: 01KR6QQP20CCBMGYR922HKVH91
         entries:
@@ -196254,7 +196287,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T16:04:45.525Z
     created_at: 2026-05-09T16:00:22.320Z
-    updated_at: 2026-05-09T16:04:45.525Z
+    updated_at: 2026-05-09T16:49:06.096Z
     notes: []
   - _ulid: 01KR6T0XCPS3G9YRHMY2ZDRE6N
     slugs: []
