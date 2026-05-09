@@ -17808,6 +17808,29 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-05-09T04:42:54.959Z
+  - _ulid: 01KR5R15S2DGN8B005M3SSYV7J
+    type: success
+    content: "During review of @task-fix-detached-cleanup-timing-analysis, a small manual
+      negative-control oxlint probe (`serve start --detach` followed by unrelated `onTestFinished`)
+      exposed a false negative after targeted tests passed. Pattern to replicate: for static
+      guardrail reviews, supplement regression suites with one-off synthetic probes that try to
+      disprove the rule at the boundary of the claimed fix."
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-09T06:50:37.218Z
+  - _ulid: 01KR5R15ZP80PFF7T9ZWFA43PH
+    type: friction
+    content: The kspec-reflect skill says to run `kspec workflow show` without arguments, but the CLI
+      currently requires `kspec workflow show <run-ref>`. This creates avoidable command friction
+      during reflection; update the rendered/source skill example or CLI behavior so the instruction
+      matches the actual command contract.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-09T06:50:37.430Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
