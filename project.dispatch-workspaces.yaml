@@ -18285,7 +18285,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T08:06:10.405Z
+      updated_at: 2026-05-09T08:06:12.084Z
     integration:
       status: pending
       detail: null
@@ -18294,25 +18294,20 @@ workspaces:
       target_branch: dev
       target_commit: 3c3f6b705bb15386af34f7f66787a082e8a0be02
       updated_at: 2026-05-09T08:06:10.405Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
     task_slug: task-fix-detached-cleanup-timing-analysis
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T07:49:41.299Z
-      last_reconciled_at: 2026-05-09T08:06:10.405Z
+      last_reconciled_at: 2026-05-09T08:06:12.084Z
       created_at: 2026-05-09T06:09:47.395Z
-      updated_at: 2026-05-09T08:06:10.405Z
+      updated_at: 2026-05-09T08:06:12.084Z
     workspace_id: dispatch-workspace-01KR3W7QAH8VZCH3A60NSB3HBN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: bb5e4d849de64fa9d0b5b0b45cf9a63b833baa11
-        last_seen_at: 2026-05-09T07:49:15.075Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-detached-cleanup-timing-analysis-01kr3w7q-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-detached-cleanup-timing-analysis/01kr3w7q
