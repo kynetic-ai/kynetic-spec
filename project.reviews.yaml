@@ -190971,6 +190971,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T00:44:02.253Z
+      - _ulid: 01KR57J6G3AFQS2HC0J8EWE677
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR5313EASC2RXQ1BVG6W6QBS
+        timestamp: 2026-05-09T02:02:49.219Z
     examined_commit: 61bbafcec3d0b44cf2cd15f47f060f9bc1e0f507
     external_links: []
     lifecycle_state: closed
@@ -191012,6 +191018,54 @@ reviews:
               (`--require`, `-r`, `--eval`/`-e`, etc.) rather than treating every first non-dash
               token as the script.
             created_at: 2026-05-09T00:43:34.730Z
+          - _ulid: 01KR57J573BN1ZW856H6NNJ5SF
+            author: "@claude"
+            body: >-
+              Fixed: modelled both runtime-flag classes the prior walk missed.
+
+
+              Two new predicates in tools/eslint-rules/no-leaky-test-daemon.js:
+
+
+              - isShellRuntimeFlagConsumingValue (tools/eslint-rules/no-leaky-test-daemon.js:663) —
+              bare-form flags whose VALUE is the next whitespace-separated token. Curated set:
+              --require/-r, --conditions/-C, --input-type, the cpu/heap profile flags,
+              --diagnostic-dir, the report flags, --openssl-config, --max-http-header-size, --title,
+              --unhandled-rejections, --stack-trace-limit, the TLS flags,
+              --experimental-loader/--loader, --experimental-policy,
+              --experimental-specifier-resolution, --inspect-publish-uid, plus Bun's --preload and
+              --config. Walker skips BOTH the flag and the value, then keeps looking for the script.
+
+
+              - isShellRuntimeEvalFlag (tools/eslint-rules/no-leaky-test-daemon.js:730) — -e,
+              --eval, -p, --print, plus bundled --eval=... and --print=.... Walker aborts and
+              reports no daemon launch.
+
+
+              The bundled --require=value form is unchanged: it is one token that starts with '-' so
+              the standalone-flag branch already skips it.
+
+
+              Reviewer probes verified manually:
+
+              - exec('node --require ./register.js dist/daemon/index.js --port 0') →
+              directDaemonSpawn ✓
+
+              - execSync('node -r ./register.js dist/daemon/index.js --port 0') → directDaemonSpawn
+              ✓
+
+              - exec('node --eval dist/daemon/index.js') → 0 diagnostics ✓
+
+
+              13 new behavioral tests in tests/lint-daemon-test-guardrails.test.ts (6 positives
+              covering --require/-r/--conditions/mixed flag classes/--require=value/template
+              literal; 7 negatives covering --eval/-e/--print/-p/--eval=CODE/daemon-as-preload-value
+              with following script/daemon-as-preload-value alone).
+
+
+              Targeted suite 134 pass (was 121); full suite 8887 passed / 5 skipped / 0 failed;
+              project lint unchanged at dev baseline (13 errors, 721 warnings).
+            created_at: 2026-05-09T02:02:47.907Z
         kind: blocker
       - _ulid: 01KR5316RC0ZVBD2PXKXV658ZF
         entries:
@@ -191051,7 +191105,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T00:44:02.253Z
     created_at: 2026-05-09T00:30:10.687Z
-    updated_at: 2026-05-09T00:44:02.253Z
+    updated_at: 2026-05-09T02:02:47.907Z
     notes: []
   - _ulid: 01KR56H5ARP6G3F1JBQN02ZKRG
     slugs: []
