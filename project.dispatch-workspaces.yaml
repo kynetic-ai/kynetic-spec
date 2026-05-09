@@ -19855,3 +19855,79 @@ workspaces:
         head: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
         last_seen_at: 2026-05-09T15:21:07.895Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tighten-daemon-hardening-specs-01kr6m6s
+  - active_role: null
+    base_branch_point: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
+    canonical_branch_head: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-09T15:34:46.996Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-09T15:34:46.996Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
+      updated_at: 2026-05-09T15:34:46.996Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KR6M6XARDRJ17BY20Z3BG66B"
+    task_slug: task-add-register-cleanup-failure-regression
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-09T15:34:46.996Z
+      created_at: 2026-05-09T15:34:46.996Z
+      updated_at: 2026-05-09T15:34:46.996Z
+    workspace_id: dispatch-workspace-01KR6M6XARDRJ17BY20Z3BG66B
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
+        head: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
+        last_seen_at: 2026-05-09T15:34:46.996Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-register-cleanup-failure-regression-01kr6m6x
