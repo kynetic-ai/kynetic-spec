@@ -68,7 +68,7 @@ description: >
 spec_ref: "@cli-lifecycle-test-endpoint-consumption"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-fix-real-daemon-startup-failure-handling"
@@ -80,6 +80,7 @@ tags:
   - daemon
   - cli
 vcs_refs: []
+session_id: 01KR68KDTY4NE0RJ1AS700YEXA
 history:
   - author: Jacob Chapel
     changes:
@@ -88,6 +89,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-08T13:26:42.053Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KR68KDTY4NE0RJ1AS700YEXA
+        previous: null
+      started_at:
+        new: 2026-05-09T11:42:36.112Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-09T11:42:36.113Z
 created_at: 2026-05-08T13:25:39.067Z
+started_at: 2026-05-09T11:42:36.112Z
 todos: []
 automation: eligible
