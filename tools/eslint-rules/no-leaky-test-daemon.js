@@ -711,169 +711,6 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * True when `node` is a static literal expression — a value the
-     * compiler can fully resolve at write time, with no runtime read of
-     * any binding or call. Recognises:
-     *
-     *   - `Literal` (number / string / bool / null / regex / bigint)
-     *   - `TemplateLiteral` with no expressions (e.g. `` `12345` ``)
-     *   - `UnaryExpression` whose operand is itself static literal
-     *     (`-12345`, `+0`, `!false`, `~0xff`, `void 0`)
-     *
-     * Transparent wrappers (parens, TS assertions, optional-chain
-     * roots) are unwrapped first so a wrapped literal still resolves
-     * as static.
-     *
-     * Used by the callback-local cleanup-target analysis to detect
-     * shapes like `const pid = 12345` or `pid = -1` whose value can
-     * never represent the just-started daemon.
-     */
-    function isStaticLiteralExpression(node) {
-      const current = unwrapTransparentExpression(node);
-      if (!current || typeof current.type !== "string") return false;
-      if (current.type === "Literal") return true;
-      if (
-        current.type === "TemplateLiteral" &&
-        Array.isArray(current.expressions) &&
-        current.expressions.length === 0
-      ) {
-        return true;
-      }
-      if (
-        current.type === "UnaryExpression" &&
-        (current.operator === "-" ||
-          current.operator === "+" ||
-          current.operator === "~" ||
-          current.operator === "!" ||
-          current.operator === "void")
-      ) {
-        return isStaticLiteralExpression(current.argument);
-      }
-      return false;
-    }
-
-    /**
-     * Determine whether a callback-local kill-target binding plausibly
-     * derives from a runtime read at cleanup time, rather than a stale
-     * static value that cannot represent the just-started daemon.
-     *
-     * The cycle-3 reviewer probe disproved the previous "callback-local
-     * names are inherently dynamic" assumption with:
-     *
-     *   onTestFinished(() => {
-     *     const pid = 12345;                 // stale literal, not the daemon
-     *     process.kill(pid, "SIGTERM");
-     *   });
-     *
-     * The kill target `pid` is callback-local AND a literal — it can
-     * only kill an unrelated process at PID 12345 (or fail), so the
-     * detached daemon still leaks. Restricting acceptance to bindings
-     * whose RHS is plausibly dynamic (call expressions, member reads,
-     * outer-identifier reads, etc.) keeps the legitimate runtime-read
-     * shape working while rejecting the stale-literal trap.
-     *
-     * Decision logic:
-     *   1. If `name` is a callback parameter → reject. The cleanup
-     *      framework invokes the callback with no useful arguments, so
-     *      a parameter-rooted kill target cannot be the just-started
-     *      daemon.
-     *   2. Walk the callback body looking for:
-     *        - `VariableDeclarator` whose `id` binds `name` (`const`,
-     *          `let`, `var`)
-     *        - `AssignmentExpression` whose `left` is `name`
-     *      Each such occurrence with a non-null RHS is a value source.
-     *      Nested function bodies are skipped — their executions are
-     *      stored, not on the cleanup callback's straight-line path.
-     *   3. If at least one value source has a non-literal RHS → accept
-     *      (some assignment plausibly reads at runtime).
-     *   4. Otherwise (all sources are literal-only, or no source was
-     *      found) → reject.
-     *
-     * Returns true when the binding is plausibly dynamic, false when
-     * the binding is literal-only / parameter / unbound.
-     */
-    function callbackLocalKillTargetIsDynamic(name, callbackFn) {
-      if (!callbackFn) return false;
-      for (const param of callbackFn.params || []) {
-        if (patternBindsName(param, name)) return false;
-      }
-      const body = callbackFn.body;
-      if (!body || body.type !== "BlockStatement") return false;
-      let foundAssignment = false;
-      let allLiteralOnly = true;
-      const stack = [body];
-      while (stack.length > 0) {
-        const node = stack.pop();
-        if (!node || typeof node !== "object" || typeof node.type !== "string") {
-          continue;
-        }
-        if (
-          node !== body &&
-          (node.type === "FunctionDeclaration" ||
-            node.type === "FunctionExpression" ||
-            node.type === "ArrowFunctionExpression")
-        ) {
-          // Nested functions are stored, not on the cleanup callback's
-          // straight-line path. Their assignments don't affect the
-          // value of `name` at the kill site.
-          continue;
-        }
-        if (node.type === "VariableDeclaration") {
-          for (const d of node.declarations || []) {
-            if (patternBindsName(d.id, name)) {
-              if (d.init !== null && d.init !== undefined) {
-                foundAssignment = true;
-                if (!isStaticLiteralExpression(d.init)) {
-                  allLiteralOnly = false;
-                }
-              }
-            }
-          }
-        } else if (node.type === "AssignmentExpression") {
-          const target = unwrapTransparentExpression(node.left);
-          if (
-            target &&
-            target.type === "Identifier" &&
-            target.name === name &&
-            node.right !== null &&
-            node.right !== undefined
-          ) {
-            foundAssignment = true;
-            if (!isStaticLiteralExpression(node.right)) {
-              allLiteralOnly = false;
-            }
-          }
-        }
-        for (const key in node) {
-          if (
-            key === "parent" ||
-            key === "loc" ||
-            key === "range" ||
-            key === "start" ||
-            key === "end" ||
-            key === "type" ||
-            key === "tokens" ||
-            key === "comments"
-          ) {
-            continue;
-          }
-          const child = node[key];
-          if (Array.isArray(child)) {
-            for (const c of child) {
-              if (c && typeof c === "object" && typeof c.type === "string") {
-                stack.push(c);
-              }
-            }
-          } else if (child && typeof child === "object" && typeof child.type === "string") {
-            stack.push(child);
-          }
-        }
-      }
-      if (!foundAssignment) return false;
-      return !allLiteralOnly;
-    }
-
-    /**
      * True when `name` is locally declared (parameter or variable) inside
      * `callbackFn`'s body, so it is NOT a free identifier captured from
      * the surrounding scope. Used by the cleanup-binding analysis to
@@ -1537,18 +1374,28 @@ const noLeakyTestDaemon = {
             }
             if (isLocalToCallback(name, callbackFn)) {
               // The kill target is declared inside the cleanup callback,
-              // so it is not a captured outer binding. Accepting these
-              // unconditionally is unsafe — the cycle-3 reviewer probe
-              //   onTestFinished(() => { const pid = 12345; process.kill(pid, ...); })
-              // shows a callback-local literal that cannot represent
-              // the just-started daemon. Validate that the binding
-              // plausibly derives from a runtime read at cleanup time
-              // (a CallExpression, MemberExpression, outer Identifier,
-              // etc.) rather than a stale static literal.
-              if (!callbackLocalKillTargetIsDynamic(name, callbackFn)) {
-                return { bound: false, unboundIdentifier: name };
-              }
-              continue;
+              // not captured from outer scope, so the closure does not
+              // own a concrete pid / handle / token at registration
+              // time — the binding only acquires a value when the
+              // callback runs at teardown. The cycle-4 reviewer probe
+              //   runKspec("serve start --detach");
+              //   onTestFinished(() => {
+              //     const pid = readPidFromFile();
+              //     process.kill(pid, "SIGTERM");
+              //   });
+              //   expect(true).toBe(true);
+              // disproves the previous "dynamic RHS plausibly reads at
+              // cleanup time" exemption: per
+              // ac-detached-cleanup-bound-before-observation, ownership
+              // must hold AT REGISTRATION TIME so the cleanup contract
+              // survives an intervening assertion failure. A
+              // callback-local target can never satisfy that — even a
+              // CallExpression initializer (`readPidFromFile()`) is
+              // evaluated at teardown, not at registration. Always
+              // reject; the diagnostic asks the author to capture the
+              // pid (or spawn child handle) into an outer `const`
+              // before the registration call.
+              return { bound: false, unboundIdentifier: name };
             }
             if (!isIdentifierBoundConcretelyAt(name, registrationCall)) {
               return { bound: false, unboundIdentifier: name };

@@ -4270,17 +4270,25 @@ describe("cleanup closure body declares pid as a TS-asserted literal", () => {
     });
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
-    // (allowed-narrow: callback-local kill target derived from a
-    // runtime read at cleanup time)
-    it("does not flag runKspec(\"serve start --detach\") when onTestFinished body declares `const pid = readPidFromFile()` then process.kill(pid, ...) — call-expression initializer is plausibly dynamic", () => {
-      // ALLOWED narrow: the callback declares `const pid =
-      // readPidFromFile()` inside its own body. The initializer is a
-      // CallExpression — a runtime read at cleanup time. The
-      // tightened callback-local check accepts non-literal RHS so
-      // tests that intentionally read the pid file inside the
-      // cleanup hook keep compiling. A bare-Identifier kill target
-      // whose value comes from a real runtime source must continue
-      // to satisfy the cleanup contract.
+    // (cycle-4 reviewer probe: callback-local CallExpression init is
+    // still unsafe — the runtime read is deferred to teardown time)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished body declares `const pid = readPidFromFile()` then process.kill(pid, ...) — callback-local read is deferred to teardown, not owned at registration", () => {
+      // UNSAFE (cycle-4 reviewer probe): the cleanup callback declares
+      // `const pid = readPidFromFile()` inside its own body. The
+      // initializer is a CallExpression — but it is evaluated at
+      // teardown, not at registration. Per
+      // ac-detached-cleanup-bound-before-observation, the cleanup
+      // callback must "capture or otherwise own" the concrete pid AT
+      // REGISTRATION TIME so the cleanup contract survives an
+      // intervening assertion failure. A callback-local binding —
+      // literal OR dynamic — never owns anything at registration; the
+      // closure has no captured outer pid to fall back on if
+      // readPidFromFile() throws (file not yet written) or returns NaN
+      // at teardown. The earlier dynamic-RHS exemption was the bug:
+      // it accepted runtime-read shapes that defer ownership entirely.
+      // The correct pattern reads the pid OUTSIDE the callback after
+      // the start, then registers a closure that captures the outer
+      // const (covered by the next test).
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -4298,8 +4306,111 @@ describe("cleanup closure reads the pid file at cleanup time", () => {
 });
 `,
       });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (allowed-narrow: read pid OUTSIDE the callback after the start,
+    // then register a closure that captures the outer const — the
+    // safe alternative to the cycle-4 callback-local probe above)
+    it("does not flag runKspec(\"serve start --detach\") when pid is read OUTSIDE the callback after the start and onTestFinished closes over the outer const", () => {
+      // ALLOWED: the test reads `const pid = readPidFromFile()` after
+      // the daemon start completes but BEFORE registering cleanup.
+      // The cleanup closure captures the outer `pid` binding, which
+      // is owned at registration time — an intervening assertion
+      // failure cannot leave the cleanup with nothing to kill. The
+      // ownership predicate validates that `pid`'s declarator ends
+      // after the detached start begins, so this safe shape is
+      // accepted.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { readPidFromFile } from "./helpers/pid";
+
+describe("cleanup closure captures outer pid read after the start", () => {
+  it("reads pid outside the callback then registers the cleanup", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
       expect(result.exitCode).toBe(0);
       expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-4 reviewer probe: callback-local MemberExpression init
+    // via deferred read is still unsafe)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished body declares `const pid = state.lastPid` then process.kill(pid, ...) — callback-local member read is still deferred to teardown", () => {
+      // UNSAFE (cycle-4 reviewer probe variant): even when the
+      // callback-local initializer is a MemberExpression — a value
+      // that "looks like" it could come from runtime state — the
+      // read still happens at teardown. The cleanup closure has
+      // nothing concrete bound at registration time, so an
+      // intervening assertion failure cannot guarantee the cleanup
+      // has a usable target. The fix's blanket "callback-local kill
+      // targets are always rejected" rule covers all initializer
+      // shapes, not just literals.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure body declares pid as a callback-local member read", () => {
+  it("registers cleanup that reads pid from outer state inside the callback", () => {
+    const state: { lastPid?: number } = {};
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => {
+      const pid = state.lastPid as number;
+      process.kill(pid, "SIGTERM");
+    });
+    expect(true).toBe(true);
+    state.lastPid = 12345;
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-4 reviewer probe: callback-local let with later
+    // CallExpression assignment is still unsafe)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished body uses `let pid; pid = readPidFromFile();` then process.kill(pid, ...) — callback-local let + dynamic assign is still deferred", () => {
+      // UNSAFE (cycle-4 reviewer probe variant): a callback-local
+      // `let pid;` followed by a CallExpression assignment inside
+      // the same callback also fails the contract. Both the
+      // declaration and the assignment execute at teardown, not at
+      // registration. There is no concrete pid bound at registration,
+      // and the cleanup closure has no captured outer fallback.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { readPidFromFile } from "./helpers/pid";
+
+describe("cleanup closure body uses let + later dynamic assignment", () => {
+  it("declares pid then assigns from a runtime read inside the callback", () => {
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => {
+      let pid;
+      pid = readPidFromFile();
+      process.kill(pid, "SIGTERM");
+    });
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("pid");
     });
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation

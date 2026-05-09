@@ -480,19 +480,26 @@ describe("kspec serve commands", () => {
       { expectFail: true },
     );
 
-    // Best-effort PID cleanup in case the daemon child wrote a PID file
-    // before its listen() call failed. Cleanup must be REGISTERED
-    // unconditionally before any later observation; the conditional
-    // existence/parse checks belong inside the callback so the
-    // registration itself always happens. (Prior shape conditionally
-    // registered, leaving a leak window if the existsSync check ran
-    // before the daemon child wrote its pid.)
+    // Best-effort PID cleanup in case the daemon child wrote a PID
+    // file before its listen() call failed. Read the pid from the
+    // file BEFORE registering cleanup so the closure captures a
+    // concrete value at registration time (per
+    // ac-detached-cleanup-bound-before-observation: the cleanup
+    // callback must own the pid at registration so an intervening
+    // assertion failure cannot leave it without a target). The
+    // daemon parent does not return until either listen() succeeds
+    // or fails, and the PID file is written before listen() is
+    // attempted, so by the time runKspec returns above, the file
+    // either exists with a usable pid or does not — there is no
+    // post-return write window that would let a deferred read pick
+    // up a pid we miss here.
+    const stalePidText = existsSync(globalPidFilePath)
+      ? readTestOutputSync(globalPidFilePath).trim()
+      : "";
+    const stalePid = stalePidText ? parseInt(stalePidText, 10) : NaN;
     onTestFinished(() => {
-      if (!existsSync(globalPidFilePath)) return;
-      const pidText = readTestOutputSync(globalPidFilePath).trim();
-      const pid = parseInt(pidText, 10);
-      if (Number.isFinite(pid) && pid > 0) {
-        killPid(pid);
+      if (Number.isFinite(stalePid) && stalePid > 0) {
+        killPid(stalePid);
       }
     });
 
