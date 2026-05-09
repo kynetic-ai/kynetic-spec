@@ -20842,18 +20842,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-add-guardrail-binding-wrapper-regressions/01kr6m74
-    canonical_branch_head: f55e1f7acaf1cdea1f810f8f44083e6cc62c5a7c
+    canonical_branch_head: 6fa74f5c16c8e7400296a3351300001cc48524d8
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-09T16:42:51.220Z
+      updated_at: 2026-05-09T16:50:38.609Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T16:43:16.160Z
+      updated_at: 2026-05-09T16:50:38.609Z
     integration:
       status: pending
       detail: null
@@ -20861,7 +20861,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
-      updated_at: 2026-05-09T16:42:51.220Z
+      updated_at: 2026-05-09T16:50:38.609Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR6M7486ECC1PMNH725GJ0HR"
@@ -20869,9 +20869,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T16:43:16.160Z
-      last_reconciled_at: 2026-05-09T16:43:16.160Z
+      last_reconciled_at: 2026-05-09T16:50:38.609Z
       created_at: 2026-05-09T15:45:04.837Z
-      updated_at: 2026-05-09T16:43:16.160Z
+      updated_at: 2026-05-09T16:50:38.609Z
     workspace_id: dispatch-workspace-01KR6M7486ECC1PMNH725GJ0HR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
