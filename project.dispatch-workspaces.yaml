@@ -19850,7 +19850,7 @@ workspaces:
         head: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
         last_seen_at: 2026-05-09T15:21:07.895Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tighten-daemon-hardening-specs-01kr6m6s
-  - active_role: worker
+  - active_role: null
     base_branch_point: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
     bootstrap:
       status: succeeded
@@ -20181,12 +20181,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-09T15:42:36.821Z
+      updated_at: 2026-05-09T15:44:24.117Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T15:42:36.821Z
+      updated_at: 2026-05-09T15:44:24.117Z
     integration:
       status: pending
       detail: null
@@ -20194,17 +20194,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
-      updated_at: 2026-05-09T15:42:36.821Z
-    lifecycle_state: active
+      updated_at: 2026-05-09T15:44:24.117Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KR6M6XARDRJ17BY20Z3BG66B"
     task_slug: task-add-register-cleanup-failure-regression
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T15:35:12.086Z
-      last_reconciled_at: 2026-05-09T15:42:36.821Z
+      last_reconciled_at: 2026-05-09T15:44:24.117Z
       created_at: 2026-05-09T15:34:46.996Z
-      updated_at: 2026-05-09T15:42:36.821Z
+      updated_at: 2026-05-09T15:44:24.117Z
     workspace_id: dispatch-workspace-01KR6M6XARDRJ17BY20Z3BG66B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
