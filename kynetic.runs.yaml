@@ -44233,7 +44233,7 @@ runs:
     completed_at: 2026-05-09T22:00:56.354Z
   - _ulid: 01KR7C4ESGJNB49KW9YD8GX38A
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -44248,7 +44248,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T22:02:28.135Z
-        completed_at: 2026-05-09T22:02:28.135Z
+        completed_at: 2026-05-09T22:02:59.214Z
+        notes: "Step 2 (high-confidence friction): one observation worth capturing — the 6-cycle pattern on
+          this guardrail rule reflected an under-specified contract. Each cycle the reviewer found a
+          new AST shape of the same underlying defect (literal vs CallExpression vs MemberExpression
+          vs callback-local vs TS wrappers). That suggests either the AC could enumerate the AST
+          families that count as 'concrete pid' or the rule should treat 'placeholder' and 'kill
+          target' through a shared classifier. This is high-confidence because it manifested across
+          6 reviews against the same task. No matching observations exist (searched 'fix cycle
+          reviewer', 'guardrail false negative', 'AST shape coverage', 'unwrap')."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T22:02:59.214Z
+        completed_at: 2026-05-09T22:02:59.214Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T22:01:10.704Z
