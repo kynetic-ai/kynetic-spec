@@ -194656,6 +194656,13 @@ reviews:
           status: pass
           name: targeted guardrail tests
         timestamp: 2026-05-09T09:57:56.454Z
+      - _ulid: 01KR62RA13435G5VK2REGBX0R9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR62R8GMSN255VVK1H47S8V2
+        timestamp: 2026-05-09T09:58:00.995Z
     examined_commit: b1848893913ff9ca5e22b6ec20c23338f858d88a
     external_links: []
     lifecycle_state: open
@@ -194665,8 +194672,31 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR62R8GMSN255VVK1H47S8V2
+        anchor:
+          type: code
+          commit: b1848893913ff9ca5e22b6ec20c23338f858d88a
+          line_end: 473
+          line_start: 467
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR62R8GMMNKN87NMNQ7ZXYTT
+            author: Jacob Chapel
+            body: 'MUST-FIX: the cleanup walker treats lifecycle hook registrations as valid in-flow cleanup for
+              a daemon that was just started. Repro against this snapshot: runKspec("serve start
+              --detach --port 3456"); beforeEach(() => killPid(result.pid));
+              expect(true).toBe(true); and the same shape with afterEach both exit 0 with no
+              no-leaky-test-daemon diagnostic. Those hooks are not scoped cleanup for the
+              already-running current test; registering them after the detached start does not
+              guarantee the daemon is killed before the next assertion, and Vitest hook registration
+              inside a test is not a safe cleanup mechanism. This leaves
+              @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+              under-enforced.'
+            created_at: 2026-05-09T09:57:59.444Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T09:54:24.456Z
-    updated_at: 2026-05-09T09:57:54.851Z
+    updated_at: 2026-05-09T09:57:59.444Z
     notes: []
