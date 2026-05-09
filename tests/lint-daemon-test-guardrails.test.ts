@@ -3945,6 +3945,101 @@ describe("cleanup closure captures concrete child handle before observation", ()
       expect(result.exitCode).toBe(0);
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (ownership: pre-existing concrete value cannot represent the just-started daemon)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a const pid bound to a literal BEFORE the daemon start", () => {
+      // UNSAFE (cycle-7 reviewer probe): `pid` is concretely bound at
+      // registration — but to a literal `12345` set BEFORE the daemon
+      // was started. The cleanup closure has SOMETHING to kill, but
+      // not the just-started daemon — process.kill(12345, "SIGTERM")
+      // either kills nothing (no such pid) or kills an unrelated
+      // process while the new detached daemon leaks. The earlier
+      // binding-only check accepted this shape because the
+      // concretely-bound predicate did not look at the binding's
+      // position relative to the detached start. The ownership leg
+      // added in this fix rejects bindings whose source range ends
+      // before the detached-start begins.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures pid bound to a literal before the daemon start", () => {
+  it("binds pid before runKspec, registers cleanup over the stale literal", () => {
+    const pid = 12345;
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (ownership: child-handle variant)
+    it("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when onTestFinished captures a const child handle from an UNRELATED spawn that ran BEFORE the detached start", () => {
+      // UNSAFE: a child handle from an unrelated spawn (e.g. `spawn
+      // ("echo", ["ready"])`) is concretely bound BEFORE the daemon
+      // start. The cleanup closure has a concrete handle to call
+      // .kill("SIGTERM") on — but not the handle for the daemon this
+      // test just started. Same ownership defect as the literal-pid
+      // probe, surfaced through the child-handle daemon-kill shape.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("cleanup closure captures unrelated child handle from a pre-start spawn", () => {
+  it("spawns an unrelated process first, then starts the daemon, then kills the unrelated handle", () => {
+    const child = spawn("echo", ["ready"]);
+    spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    onTestFinished(() => child.kill("SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("child");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (ownership: imported / undeclared identifier captured)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a pid imported from another module (cannot represent the just-started daemon)", () => {
+      // UNSAFE: `pid` is an imported binding — a value defined in a
+      // different module, not derived from this test's daemon start.
+      // The earlier check treated undeclared identifiers as
+      // conservatively bound (to avoid false positives on globals like
+      // `console`). The ownership leg distinguishes "no visible
+      // declaration" from "binding produced by the just-started
+      // daemon": imports/globals cannot represent the daemon, so they
+      // are not owned and the cleanup is rejected.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { pid } from "./pid-from-other-module";
+
+describe("cleanup closure captures imported pid", () => {
+  it("uses an imported pid as the kill target", () => {
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
   });
 });
 

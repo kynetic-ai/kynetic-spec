@@ -312,7 +312,7 @@ const noLeakyTestDaemon = {
       if (nodeIndex === -1) return false;
 
       for (let i = nodeIndex + 1; i < body.length; i++) {
-        if (statementContainsCleanup(body[i])) {
+        if (statementContainsCleanup(body[i], node)) {
           return true;
         }
         if (statementContainsAwaitOrExpect(body[i])) {
@@ -328,7 +328,7 @@ const noLeakyTestDaemon = {
         if (
           current.type === "TryStatement" &&
           current.finalizer &&
-          subtreeContainsDaemonCleanupCall(current.finalizer, false)
+          subtreeContainsDaemonCleanupCall(current.finalizer, false, node)
         ) {
           return true;
         }
@@ -1006,22 +1006,206 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * Find the AST node that gave `name` its current concrete value at
+     * `useNode`. Returns the most recent VariableDeclarator (with a
+     * non-null/non-undefined initializer) or top-level AssignmentExpression
+     * (with a non-null/non-undefined RHS) that runs before `useNode` —
+     * the same predicates `isIdentifierBoundConcretelyAt` uses, but with
+     * the binding NODE returned for ownership analysis. Returns null
+     * when the binding is not a concrete value-producing statement
+     * (parameter slot, class declaration, function declaration,
+     * undeclared / global, or `let pid;` with no concrete assignment) —
+     * none of those represent a daemon handle for ownership purposes.
+     *
+     * The returned node's range is what the caller compares to the
+     * detached-start position: the binding is owned only when its
+     * source range ends at or after the detached-start begins. That
+     * captures the canonical safe shapes:
+     *   - `runKspec(...); const pid = readPidFromFile()` — declarator
+     *     ends after the detached start.
+     *   - `const child = spawn("kspec", ["serve", "start", "--detach"])` —
+     *     declarator's range ENCOMPASSES the detached-start expression
+     *     (the spawn IS the daemon launch and the binding's initializer
+     *     simultaneously).
+     * And rejects the cycle-7 reviewer probe `const pid = 12345;
+     * runKspec("serve start --detach"); onTestFinished(() => process.kill
+     * (pid, "SIGTERM"))` — the declarator ends BEFORE the detached
+     * start, so the captured `pid` cannot represent the just-started
+     * daemon.
+     */
+    function findConcreteBindingNodeAt(name, useNode) {
+      const usePos = getNodeStart(useNode);
+      if (usePos < 0) return null;
+      let current = useNode.parent;
+      while (current) {
+        if (
+          current.type === "FunctionDeclaration" ||
+          current.type === "FunctionExpression" ||
+          current.type === "ArrowFunctionExpression"
+        ) {
+          for (const param of current.params || []) {
+            if (patternBindsName(param, name)) return null;
+          }
+        }
+        if (current.type === "ClassDeclaration" || current.type === "ClassExpression") {
+          if (
+            current.id &&
+            current.id.type === "Identifier" &&
+            current.id.name === name &&
+            getNodeStart(current) < usePos
+          ) {
+            return null;
+          }
+        }
+        if (
+          (current.type === "BlockStatement" || current.type === "Program") &&
+          current.body
+        ) {
+          const result = findConcreteBindingInStatements(current.body, name, usePos);
+          if (result.declared) return result.node;
+        }
+        current = current.parent;
+      }
+      return null;
+    }
+
+    function findConcreteBindingInStatements(statements, name, usePos) {
+      let declared = false;
+      let lastConcreteNode = null;
+      for (const stmt of statements) {
+        if (!stmt) continue;
+        const stmtStart = getNodeStart(stmt);
+        if (stmtStart < 0 || stmtStart >= usePos) continue;
+        if (stmt.type === "VariableDeclaration") {
+          for (const declarator of stmt.declarations) {
+            if (!declarator || !declarator.id) continue;
+            if (declarator.id.type === "Identifier" && declarator.id.name === name) {
+              declared = true;
+              if (
+                declarator.init &&
+                !isNullOrUndefinedInitializer(declarator.init)
+              ) {
+                lastConcreteNode = declarator;
+              } else {
+                lastConcreteNode = null;
+              }
+            } else if (patternBindsName(declarator.id, name)) {
+              declared = true;
+              lastConcreteNode = declarator.init ? declarator : null;
+            }
+          }
+          continue;
+        }
+        if (
+          stmt.type === "FunctionDeclaration" &&
+          stmt.id &&
+          stmt.id.type === "Identifier" &&
+          stmt.id.name === name
+        ) {
+          // Function declarations are hoisted code, not daemon handles —
+          // declared but never a concrete daemon-handle binding.
+          declared = true;
+          lastConcreteNode = null;
+          continue;
+        }
+        if (
+          stmt.type === "ClassDeclaration" &&
+          stmt.id &&
+          stmt.id.type === "Identifier" &&
+          stmt.id.name === name
+        ) {
+          // Class declarations are not daemon handles either.
+          declared = true;
+          lastConcreteNode = null;
+          continue;
+        }
+        if (
+          stmt.type === "ExpressionStatement" &&
+          stmt.expression &&
+          stmt.expression.type === "AssignmentExpression" &&
+          stmt.expression.operator === "=" &&
+          stmt.expression.left &&
+          stmt.expression.left.type === "Identifier" &&
+          stmt.expression.left.name === name
+        ) {
+          if (declared) {
+            if (!isNullOrUndefinedInitializer(stmt.expression.right)) {
+              lastConcreteNode = stmt.expression;
+            } else {
+              lastConcreteNode = null;
+            }
+          }
+          continue;
+        }
+      }
+      return { declared, node: lastConcreteNode };
+    }
+
+    /**
+     * Ownership predicate: does `name` resolve at the registration site
+     * to a binding whose source range ends at or after the detached
+     * daemon start? Returns true only when there is a concrete
+     * value-producing binding (declarator with non-null/non-undefined
+     * init, or assignment with non-null/non-undefined RHS) AND the
+     * binding's range[1] >= detachedStartNode.range[0].
+     *
+     * The "ends at or after" comparison handles two safe shapes:
+     *   - The binding sits AFTER the detached start (`runKspec(...);
+     *     const pid = readPidFromFile()`) — declarator ends well past
+     *     the runKspec call.
+     *   - The binding's initializer IS the detached start (`const child
+     *     = spawn("kspec", ["serve", "start", "--detach"])`) — the
+     *     declarator's range encompasses the spawn CallExpression, so
+     *     the end is past the spawn's start.
+     * It rejects the probe shape `const pid = 12345; runKspec(...);
+     * onTestFinished(() => process.kill(pid, ...))` — `pid` has a
+     * concrete value but its declarator ends BEFORE the runKspec start,
+     * so the cleanup closes over a value that cannot be the
+     * just-started daemon.
+     */
+    function isCaptureOwnedByDetachedStart(name, useNode, detachedStartNode) {
+      const bindingNode = findConcreteBindingNodeAt(name, useNode);
+      if (!bindingNode) return false;
+      const bindingEnd = getNodeEnd(bindingNode);
+      const detachedStart = getNodeStart(detachedStartNode);
+      if (bindingEnd < 0 || detachedStart < 0) return false;
+      return bindingEnd >= detachedStart;
+    }
+
+    /**
      * Verify that the closure registered as a cleanup callback owns a
      * concrete pid / child-handle / stop-token at the registration site
      * for every daemon-kill call inside it. Returns true when every
      * captured outer identifier referenced by a recognised daemon-kill
-     * shape is concretely bound at registration; returns false when at
-     * least one capture is statically unbound, naming the offender via
-     * the `unboundIdentifier` field.
+     * shape is concretely bound at registration AND that binding
+     * represents the just-started detached daemon (its source range
+     * ends at or after `detachedStartNode` begins). Returns false when
+     * at least one capture is statically unbound OR is bound to a value
+     * that pre-dates the detached start, naming the offender via the
+     * `unboundIdentifier` field.
      *
-     * This is the static analogue of "the closure has something to kill":
-     * an `onTestFinished(() => process.kill(pid, …))` registered before
-     * the assignment that would set `pid` is no scoped cleanup at all,
-     * because the framework invoking the callback finds `pid` undefined
-     * and `process.kill(undefined, …)` cannot kill the just-started
-     * detached daemon.
+     * This is the static analogue of "the closure has something to kill,
+     * AND that something is the daemon this test just started":
+     *
+     *   - `onTestFinished(() => process.kill(pid, …))` registered before
+     *     the assignment that would set `pid` is no scoped cleanup at
+     *     all — the framework invoking the callback finds `pid`
+     *     undefined and `process.kill(undefined, …)` cannot kill the
+     *     just-started detached daemon (the unbound case).
+     *   - `const pid = 12345; runKspec("serve start --detach");
+     *     onTestFinished(() => process.kill(pid, "SIGTERM"))` IS
+     *     concretely bound, but `pid = 12345` was set BEFORE the daemon
+     *     start, so the cleanup can kill an unrelated process while the
+     *     new detached daemon leaks (the cycle-7 reviewer probe — the
+     *     ownership case).
+     *
+     * `detachedStartNode` is required for the ownership check; the
+     * caller passes the pending detached-start CallExpression. When it
+     * is not available (legacy callers or non-detached cleanup audits),
+     * pass `null` to skip the ownership leg and run only the
+     * concretely-bound check.
      */
-    function cleanupCallbackBindingStatus(callbackFn, registrationCall) {
+    function cleanupCallbackBindingStatus(callbackFn, registrationCall, detachedStartNode) {
       if (!callbackFn) return { bound: true, unboundIdentifier: null };
       const checked = new Set();
       const stack = [callbackFn.body];
@@ -1052,6 +1236,12 @@ const noLeakyTestDaemon = {
             checked.add(name);
             if (isLocalToCallback(name, callbackFn)) continue;
             if (!isIdentifierBoundConcretelyAt(name, registrationCall)) {
+              return { bound: false, unboundIdentifier: name };
+            }
+            if (
+              detachedStartNode &&
+              !isCaptureOwnedByDetachedStart(name, registrationCall, detachedStartNode)
+            ) {
               return { bound: false, unboundIdentifier: name };
             }
           }
@@ -1121,7 +1311,7 @@ const noLeakyTestDaemon = {
      * Identifier is `onTestFinished`, so the walker descends into the
      * arrow's body and finds the `killPid(pid)` call.
      */
-    function subtreeContainsDaemonCleanupCall(node, insideRegisteredCallback) {
+    function subtreeContainsDaemonCleanupCall(node, insideRegisteredCallback, detachedStartNode) {
       if (!node || typeof node !== "object" || typeof node.type !== "string") {
         return false;
       }
@@ -1147,13 +1337,15 @@ const noLeakyTestDaemon = {
         // daemon-kill CallExpression that the framework will invoke at
         // teardown, the kill is meaningless when the closure captures
         // an outer identifier that has no concrete pid/handle at
-        // registration time. The framework invokes the body, but the
-        // body sees `process.kill(undefined, ...)` (or `child.kill(...)`
-        // on a null binding) and the detached daemon stays running.
-        // Reject the callback as cleanup when any captured outer
-        // identifier referenced by a recognised daemon-kill shape is
-        // statically unbound at the registration site.
-        const status = cleanupCallbackBindingStatus(node, node.parent);
+        // registration time, OR has a concrete value that pre-dates
+        // the just-started daemon (cycle-7 ownership probe). The
+        // framework invokes the body, but the body sees `process.kill
+        // (undefined, ...)` on a null binding, or `process.kill(<stale
+        // pid>, ...)` on a literal-bound `const pid = 12345`, and the
+        // detached daemon stays running. Reject the callback as cleanup
+        // when any captured outer identifier is unbound or unowned at
+        // the registration site.
+        const status = cleanupCallbackBindingStatus(node, node.parent, detachedStartNode);
         if (!status.bound) {
           return false;
         }
@@ -1204,13 +1396,13 @@ const noLeakyTestDaemon = {
           // so it is conditional — do not descend.
           if (
             node.block &&
-            subtreeContainsDaemonCleanupCall(node.block, false)
+            subtreeContainsDaemonCleanupCall(node.block, false, detachedStartNode)
           ) {
             return true;
           }
           if (
             node.finalizer &&
-            subtreeContainsDaemonCleanupCall(node.finalizer, false)
+            subtreeContainsDaemonCleanupCall(node.finalizer, false, detachedStartNode)
           ) {
             return true;
           }
@@ -1234,12 +1426,12 @@ const noLeakyTestDaemon = {
         const child = node[key];
         if (Array.isArray(child)) {
           for (const c of child) {
-            if (subtreeContainsDaemonCleanupCall(c, insideRegisteredCallback)) {
+            if (subtreeContainsDaemonCleanupCall(c, insideRegisteredCallback, detachedStartNode)) {
               return true;
             }
           }
         } else if (child && typeof child === "object" && typeof child.type === "string") {
-          if (subtreeContainsDaemonCleanupCall(child, insideRegisteredCallback)) {
+          if (subtreeContainsDaemonCleanupCall(child, insideRegisteredCallback, detachedStartNode)) {
             return true;
           }
         }
@@ -1266,8 +1458,8 @@ const noLeakyTestDaemon = {
      * (e.g. `const cleanup = () => killPid(pid);` — the cycle-3 reviewer
      * blocker) are NOT cleanup.
      */
-    function statementContainsCleanup(stmt) {
-      return subtreeContainsDaemonCleanupCall(stmt, false);
+    function statementContainsCleanup(stmt, detachedStartNode) {
+      return subtreeContainsDaemonCleanupCall(stmt, false, detachedStartNode);
     }
 
     /**
@@ -2736,7 +2928,7 @@ const noLeakyTestDaemon = {
 
       for (let i = nodeIndex + 1; i < body.length; i += 1) {
         const stmt = body[i];
-        const found = scanForUnboundCleanupCallback(stmt);
+        const found = scanForUnboundCleanupCallback(stmt, detachedNode);
         if (found) return found;
         if (statementContainsAwaitOrExpect(stmt)) {
           break;
@@ -2745,7 +2937,7 @@ const noLeakyTestDaemon = {
       return null;
     }
 
-    function scanForUnboundCleanupCallback(node) {
+    function scanForUnboundCleanupCallback(node, detachedStartNode) {
       if (!node || typeof node !== "object" || typeof node.type !== "string") {
         return null;
       }
@@ -2756,7 +2948,7 @@ const noLeakyTestDaemon = {
       ) {
         if (!isCleanupRegistrationCallback(node)) return null;
         if (!subtreeContainsAnyDaemonKillShape(node.body)) return null;
-        const status = cleanupCallbackBindingStatus(node, node.parent);
+        const status = cleanupCallbackBindingStatus(node, node.parent, detachedStartNode);
         if (!status.bound) {
           return { identifier: status.unboundIdentifier };
         }
@@ -2779,7 +2971,7 @@ const noLeakyTestDaemon = {
         if (Array.isArray(child)) {
           for (const c of child) {
             if (c && typeof c === "object" && typeof c.type === "string") {
-              const found = scanForUnboundCleanupCallback(c);
+              const found = scanForUnboundCleanupCallback(c, detachedStartNode);
               if (found) return found;
             }
           }
@@ -2788,7 +2980,7 @@ const noLeakyTestDaemon = {
           typeof child === "object" &&
           typeof child.type === "string"
         ) {
-          const found = scanForUnboundCleanupCallback(child);
+          const found = scanForUnboundCleanupCallback(child, detachedStartNode);
           if (found) return found;
         }
       }
@@ -2897,6 +3089,13 @@ const noLeakyTestDaemon = {
       if (!node) return -1;
       if (node.range && Number.isFinite(node.range[0])) return node.range[0];
       if (typeof node.start === "number") return node.start;
+      return -1;
+    }
+
+    function getNodeEnd(node) {
+      if (!node) return -1;
+      if (node.range && Number.isFinite(node.range[1])) return node.range[1];
+      if (typeof node.end === "number") return node.end;
       return -1;
     }
 
