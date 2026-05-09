@@ -172,3 +172,49 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T20:21:49.418Z
+  - _ulid: 01KR79GM9BJMMNZNGEKR46MCFX
+    content: >-
+      Fix cycle 5: addressed the cycle-4 polarity blocker on callback-local kill targets in
+      tools/eslint-rules/no-leaky-test-daemon.js. Root cause was the cycle-4
+      callbackLocalKillTargetIsDynamic helper accepting non-literal RHS as 'plausibly dynamic'
+      ownership; per ac-detached-cleanup-bound-before-observation that defers ownership to teardown
+      and an intervening assertion failure leaves the cleanup with no captured target. The
+      reviewer's manual probe (runKspec('serve start --detach') + onTestFinished(() => { const pid =
+      readPidFromFile(); process.kill(pid, 'SIGTERM'); }) + expect) was accepted as cleanup; that
+      was the bug.
+
+
+      Implementation: removed the dynamic-RHS exemption from cleanupCallbackBindingStatus — when
+      isLocalToCallback(name, callbackFn) returns true, always emit cleanupClosureUnbound naming the
+      offender. Removed the now-dead callbackLocalKillTargetIsDynamic and isStaticLiteralExpression
+      helpers (197 lines). Diagnostic message already names the registration-time ownership
+      requirement and points at the right fix (capture into outer const before the registration
+      call).
+
+
+      Test updates: tests/lint-daemon-test-guardrails.test.ts:4275 flipped from expects-allowed to
+      expects-flagged with cycle-4 reviewer-probe wording. Added three regression tests —
+      callback-local MemberExpression init (state.lastPid as number, deferred read), callback-local
+      let + dynamic CallExpression assign, and the safe alternative (read pid OUTSIDE callback after
+      start, register closure that captures the outer const so ownership holds at registration
+      time).
+
+
+      Production test: tests/cli-serve.test.ts 'does NOT silently fall back to [::1]' restructured
+      to read the stale pid before registering cleanup. The daemon parent in --detach mode polls up
+      to 5s for the child's pid file before exiting, and the daemon child writes the pid file before
+      app.listen() is attempted, so by the time runKspec returns the pid file's existence is
+      determined and the read-outside-callback pattern catches the same pids the prior read-inside
+      pattern did.
+
+
+      Validation: focused lint suites 241 -> 244 passing tests with --fresh (3 net new regression
+      tests); full npm test 2418 suites / 8995 -> 8998 passing tests (5 pre-existing skips,
+      2042.6s); kspec validate --refs and --completeness both pass with --warnings-ok. Manual oxlint
+      AC probe against the cycle-4 reviewer source: runKspec('serve start --detach') +
+      onTestFinished callback-local readPidFromFile() + later expect now exits 1 with
+      cleanupClosureUnbound on 'pid' (was 0/no warnings). Safe alternative (read pid outside,
+      capture in closure) accepted (exit 0).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T21:15:23.819Z
