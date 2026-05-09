@@ -28451,8 +28451,29 @@
   type: task
   spec_ref: "@daemon-test-startup-failure-hygiene"
   plan_ref: "@plan-daemon-test-fixture-hardening"
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - |-
+      Dispatch bootstrap failed: Bootstrap step "install-workspace-dependencies" failed with exit code 1. Output: -review/node_modules/playwright-core/lib'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/@swc/helpers/esm'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/bun-types/docs'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/bits-ui/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/caniuse-lite/data'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/@lucide/svelte/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/playwright-core/lib'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/@swc/helpers/esm'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/bun-types/docs'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/bits-ui/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/caniuse-lite/data'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/@lucide/svelte/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/playwright-core/lib'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/@swc/helpers/esm'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/bun-types/docs'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/bits-ui/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/caniuse-lite/data'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/@lucide/svelte/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review/node_modules/playwright-core/lib'
+      npm warn tar TAR_ENTRY_ERROR EN
   depends_on:
     - "@task-add-register-cleanup-failure-regression"
   priority: 2
