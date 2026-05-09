@@ -43549,10 +43549,53 @@ runs:
     started_at: 2026-05-09T16:58:27.461Z
     completed_at: 2026-05-09T17:01:34.977Z
   - _ulid: 01KR6VERHR5S1WC0XM37H1SSNW
-    status: active
-    current_step: 0
+    status: completed
+    current_step: 5
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T17:09:42.585Z
+        completed_at: 2026-05-09T17:11:29.087Z
+        notes: "What worked well: detached reviewer merge helper gave a clean approved-review-to-dev path in
+          a detached snapshot; review checks and verdict were recorded atomically with kspec batch;
+          the fix-cycle pattern of converting known-red guardrail regressions to it.fails kept the
+          branch green while preserving future failure signal."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T17:11:29.087Z
+        completed_at: 2026-05-09T17:11:30.090Z
+        notes: "Friction points: the kspec-reflect skill command examples still say kspec workflow show
+          without a run ref even though the CLI requires one; this caused an immediate failed
+          command during reflection. No other systemic friction from the review/merge path stood
+          out."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T17:11:30.090Z
+        completed_at: 2026-05-09T17:11:31.044Z
+        notes: "Coverage search: searched workflow show run-ref, session-reflect workflow show, workflow
+          runs, workflow command examples, and detached reviewer merge helper. Merge-helper success
+          is already covered by existing specs/tasks/observations. The reflection command-example
+          friction is already tracked by inbox @01KR293G."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-09T17:11:31.044Z
+        completed_at: 2026-05-09T17:11:32.081Z
+        notes: "Proposed improvements: no new untracked proposal. Existing inbox @01KR293G already describes
+          updating kspec-reflect workflow command examples to include required workflow run refs,
+          especially kspec workflow show @run-ref."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-09T17:11:32.081Z
+        completed_at: 2026-05-09T17:11:33.057Z
+        notes: "Discussion: skipped new capture because the only concrete friction is already tracked. No
+          user decision needed for duplicate capture."
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-09T17:11:33.057Z
+        completed_at: 2026-05-09T17:11:34.022Z
+        notes: "Capture: no new inbox item, task, or observation created. Existing coverage: @01KR293G."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T17:09:42.585Z
+    completed_at: 2026-05-09T17:11:34.022Z
