@@ -18053,6 +18053,22 @@ observations:
     resolved_by: Jacob Chapel
     workflow_ref: "@session-reflect"
     created_at: 2026-05-09T21:36:36.283Z
+  - _ulid: 01KR7B0DVN2A5VSB66P1FXPK72
+    type: friction
+    content: "Fix-cycle work for test-flake hangs often misses the helper-internal hang class. Initial
+      fix attempts patch what's visible at the test surface (e.g. wrapping fetch() calls in the test
+      file with AbortSignal) while the same hang class still lives inside shared helpers used by
+      readiness/probe paths. Concrete evidence: @01KR76BQ first cycle bounded the test-file fetches
+      in tests/daemon-build.test.ts but left probeHealth/probeCacheReady fetches unbounded inside
+      tests/helpers/daemon.ts; reviewer correctly identified that startTestDaemon's readiness wait
+      could still hang past the outer vitest timeout. Mitigation pattern: when fixing test hangs,
+      audit the helper graph reached from the failing test for the same hang class, not just the
+      test body. waitForStartup-style polling helpers also benefit from racing each probe against
+      the remaining budget as defense in depth."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T21:41:30.102Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
