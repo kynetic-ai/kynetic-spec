@@ -198680,6 +198680,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T22:18:35.887Z
+      - _ulid: 01KR7EW1MCF2XAJ4E0BVZRANGJ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR7CK9ZEW901BQHEKNA673SF
+        timestamp: 2026-05-09T22:49:00.812Z
     examined_commit: 08328dee7a47f0c5c2a9b172770ef237860f8f6d
     external_links: []
     lifecycle_state: closed
@@ -198721,6 +198727,53 @@ reviews:
               even though a thrown assertion before assignment leaves the finalizer with no concrete
               kill target for the just-started daemon.'
             created_at: 2026-05-09T22:10:10.688Z
+          - _ulid: 01KR7EW087XMQ5MSKP98BPHEBP
+            author: "@claude"
+            body: >-
+              Fixed in commit ede9e8e18. Root cause: subtreeContainsDaemonCleanupCall only invoked
+              cleanupCallbackBindingStatus when descent crossed a registered-callback boundary, so a
+              direct daemon-kill in a try/finally finalizer (or any other position outside a
+              registered callback) reached `if (isDaemonCleanupCallExpression(node)) return true;`
+              on shape alone.
+
+
+              Fix in tools/eslint-rules/no-leaky-test-daemon.js: the direct-cleanup branch now calls
+              the new directCleanupCallOwnsDetachedDaemon helper, which mirrors
+              cleanupCallbackBindingStatus' rules — every captured outer identifier must be
+              concretely bound at the implicit registration site AND own the just-started daemon
+              (binding range[1] >= detachedStart). The "use position" is the enclosing TryStatement
+              (control crosses that boundary before any in-try throw can fire the finalizer); when
+              there is no enclosing try, the call itself is the registration.
+              UNVERIFIABLE_KILL_TARGET still rejects non-Identifier-rooted kill targets up front.
+
+
+              Diagnostic precision: extended findUnboundCleanupClosure with a parallel scanner
+              findUnboundDirectCleanupCapture so cleanupClosureUnbound names the offending capture
+              for the finalizer case too (matches the registered-callback path's wording).
+              Program:exit now consults both scanners before falling back to the generic
+              missingCleanup message.
+
+
+              Manual oxlint probe against the cycle-6 reviewer source:
+                let pid; try { runKspec("serve start --detach --port 3456"); expect(true).toBe(true); pid = readPidFromFile(); } finally { process.kill(pid as number, "SIGTERM"); }
+              exits 1 with cleanupClosureUnbound on `pid` (was 0/no warnings before the fix).
+
+
+              Six new regression tests in tests/lint-daemon-test-guardrails.test.ts cover the
+              cycle-6 probe, undeclared finalizer pid, stale pre-start literal, MemberExpression
+              root predating the start, and the two safe alternatives (pid bound after start before
+              try, const child = spawn before try). The pre-existing
+              tests/lint-no-leaky-test-daemon.test.ts case "should allow serve start --detach in
+              try/finally with cleanup" used an undeclared free `pid`; updated it to capture pid
+              into a const between the start and the try block (the canonical safe shape) since the
+              cycle-6 ownership leg correctly rejects undeclared captures.
+
+
+              Validation: focused lint suites 249 -> 255 passing tests with --fresh; full npm test
+              9011 passing tests (5 pre-existing skips, 2001.2s); kspec validate --refs and
+              --completeness both pass with --warnings-ok (warnings unchanged from pre-existing
+              repository debt).
+            created_at: 2026-05-09T22:48:59.398Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -198731,5 +198784,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T22:18:35.887Z
     created_at: 2026-05-09T22:05:38.337Z
-    updated_at: 2026-05-09T22:18:35.887Z
+    updated_at: 2026-05-09T22:48:59.398Z
     notes: []
