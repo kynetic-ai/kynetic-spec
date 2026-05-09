@@ -2301,6 +2301,245 @@ describe("node -r with daemon path as preload value, no script", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
+    // AC: @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged
+    //
+    // Regression set covering the false-negative blocker from review
+    // cycle 10: the previous shell tokeniser used a plain whitespace
+    // split, which broke when a value-consuming flag's value was a
+    // single-quoted or double-quoted string containing whitespace.
+    // The reviewer's failing probe was:
+    //
+    //     exec("node --require './pre load.js' dist/daemon/index.js --port 0")
+    //
+    // Plain whitespace split yielded
+    //   ["node", "--require", "'./pre", "load.js'", "dist/daemon/index.js",
+    //    "--port", "0"]
+    // so `--require` consumed only `'./pre` as its value and `load.js'`
+    // landed in the script position before the real daemon entry — the
+    // launch was silently accepted. The quote-aware tokeniser keeps the
+    // whole quoted value as one token (`'./pre load.js'` →
+    // `./pre load.js` after stripShellQuotes), so the walker advances
+    // past the value-consuming flag correctly and identifies
+    // `dist/daemon/index.js` as the script position.
+    it("flags exec(\"node --require './pre load.js' dist/daemon/index.js --port 0\") — single-quoted preload value with internal whitespace", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec node --require single-quoted preload then daemon entry", () => {
+  it("execs the daemon entry under node with a single-quoted preload value containing whitespace", () => {
+    const child = exec("node --require './pre load.js' dist/daemon/index.js --port 0");
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags exec(\"node --require \\\"./pre load.js\\\" dist/daemon/index.js --port 0\") — double-quoted preload value with internal whitespace", () => {
+      // Same false-negative shape as the single-quoted variant above,
+      // but using double quotes to verify the quote-aware tokeniser
+      // handles `"..."` pairs identically to `'...'`.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec node --require double-quoted preload then daemon entry", () => {
+  it("execs the daemon entry under node with a double-quoted preload value containing whitespace", () => {
+    const child = exec('node --require "./pre load.js" dist/daemon/index.js --port 0');
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execSync(`node --require '${preload}' dist/daemon/index.js`) template literal — quoted interpolated preload value", () => {
+      // Template-literal variant: the placeholder sentinel
+      // `\${...}` lives inside the single quotes, so the quote-aware
+      // tokeniser keeps the whole `'\${...}'` as one token and the
+      // value-consuming flag walker correctly skips it before reading
+      // the daemon entry.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+describe("execSync template literal with quoted interpolated preload value", () => {
+  it("execSyncs the daemon entry under node with a quoted interpolated preload value", () => {
+    const preload = "./pre load.js";
+    execSync(\`node --require '\${preload}' dist/daemon/index.js\`);
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+    //
+    // Regression set covering the false-positive blocker from review
+    // cycle 10: Node's parse-only flags (`--check`, `-c`, and the
+    // `--syntax-check` alias) cause the runtime to syntax-check the
+    // script and exit without ever executing it. The daemon never
+    // starts, so reporting `node --check dist/daemon/index.js` as a
+    // direct daemon launch is a false positive that violates
+    // ac-unrelated-subprocesses-not-reported. The walker must abort at
+    // the parse-only flag and report no launch.
+    //
+    // The short form `-c` is gated on `runtime === "node"` because Bun
+    // treats `-c` as `--config <path>` (value-consuming). The `bun -c`
+    // case is covered by the positive regression below to verify the
+    // short-flag classification flips per runtime.
+    it("does not flag execSync(\"node --check dist/daemon/index.js\") — --check parses the script but never executes it", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+describe("node --check syntax-checks the daemon path without running it", () => {
+  it("execSyncs node --check on the daemon entry path", () => {
+    execSync("node --check dist/daemon/index.js");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag exec(\"node -c dist/daemon/index.js\") — -c is the Node short form of --check (parse-only)", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { exec } from "child_process";
+
+describe("node -c (short for --check) syntax-checks the daemon path", () => {
+  it("execs node -c on the daemon entry path", () => {
+    exec("node -c dist/daemon/index.js");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag execSync(\"node --syntax-check dist/daemon/index.js\") — --syntax-check is the legacy parse-only alias", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+describe("node --syntax-check parses the daemon path without running it", () => {
+  it("execSyncs node --syntax-check on the daemon entry path", () => {
+    execSync("node --syntax-check dist/daemon/index.js");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag execFile(\"node\", [\"--check\", DAEMON_ENTRY]) — argv-array form of --check parses but does not execute", () => {
+      // Mirrors the spawn-like argv-array branch: the script-position
+      // walk receives the runtime tag from args[0] and recognises
+      // `--check` as a parse-only no-script flag the same way the
+      // shell-string walker does.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execFile } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("execFile node --check argv-array form", () => {
+  it("execFiles node --check on the daemon entry path", () => {
+    execFile("node", ["--check", DAEMON_ENTRY]);
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag spawn(process.execPath, [\"-c\", DAEMON_ENTRY]) — process.execPath is Node, so -c is parse-only", () => {
+      // The runtime tag derived from `process.execPath` must classify
+      // as Node so the runtime-ambiguous `-c` is recognised as
+      // parse-only and the call is not reported as a daemon launch.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawn } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("spawn process.execPath -c argv-array form", () => {
+  it("spawns the current Node interpreter to syntax-check the daemon path", () => {
+    spawn(process.execPath, ["-c", DAEMON_ENTRY]);
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("flags exec(\"bun -c bunfig.toml dist/daemon/index.js\") — Bun's -c is value-consuming (--config), not parse-only", () => {
+      // Runtime-disambiguation regression: `-c` means different things
+      // to Node and Bun. Node treats `-c` as `--check` (parse-only),
+      // but Bun treats it as `-c, --config <path>` (value-consuming,
+      // takes a bunfig.toml path). Treating Bun's `-c` as no-script
+      // would silently accept this real daemon launch. The walker must
+      // gate the short-flag classification on the leading runtime
+      // token and, for Bun, fall through to the standalone-flag /
+      // value-consuming-flag classes so the daemon entry token after
+      // the config path is reported.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec bun -c (--config) then daemon entry", () => {
+  it("execs the daemon entry under bun with a -c config flag", () => {
+    const child = exec("bun -c bunfig.toml dist/daemon/index.js");
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      // Bun's `-c` is value-consuming, so the walker skips both the
+      // flag and the next token (`bunfig.toml`), then reads
+      // `dist/daemon/index.js` from the script position. The launch
+      // must be reported as a daemon-runtime-parity violation
+      // (hardcoded bun) — i.e. the rule fires either via the daemon
+      // entry detection or the runtime parity message; the call is
+      // not silently accepted.
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
     // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
     //
     // Regression set covering the precision blocker from review cycle 4:
