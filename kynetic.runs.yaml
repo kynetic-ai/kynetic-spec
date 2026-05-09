@@ -43038,7 +43038,7 @@ runs:
     completed_at: 2026-05-09T12:23:03.475Z
   - _ulid: 01KR6BK2ZG7EHS95ZEYATT3QHP
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -43054,7 +43054,24 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T12:33:04.377Z
-        completed_at: 2026-05-09T12:33:04.377Z
+        completed_at: 2026-05-09T12:33:49.656Z
+        notes: >-
+          High-confidence friction (one): kspec task note <ref> <message> requires the message
+          inline; long structured validation summaries get composed in a tmp file then piped through
+          a shell variable. Searched 'task note message file', 'message-file', and 'stdin note' — no
+          existing tracking. Recurring pattern for validation/audit tasks where notes contain
+          multi-paragraph findings.
+
+
+          High-confidence success (one): the prior validation task
+          (@task-validate-daemon-test-fixture-standardization) recorded its full methodology and
+          Playwright slice as notes. That made re-running the equivalent slice deterministic this
+          session — no guessing at which spec files to look at. Worth surfacing as a success pattern
+          for validation-class tasks.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T12:33:49.656Z
+        completed_at: 2026-05-09T12:33:49.656Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T12:32:27.120Z
