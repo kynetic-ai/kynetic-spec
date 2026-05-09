@@ -192926,6 +192926,18 @@ reviews:
         runner: oxlint
         created_at: 2026-05-09T05:20:56.881Z
         completed_at: 2026-05-09T05:20:56.881Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate: schema and references OK; no validation errors. Command exited 6 because
+          the repository has existing warnings (reference/alignment/completeness warnings), not
+          because of this task."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-09T05:21:07.255Z
+        completed_at: 2026-05-09T05:21:07.255Z
     events:
       - _ulid: 01KR5J0ZA9ZADFNNSKFDF5T5GW
         actor: Jacob Chapel
@@ -192974,6 +192986,13 @@ reviews:
           status: pass
           name: changed-file oxlint
         timestamp: 2026-05-09T05:20:58.189Z
+      - _ulid: 01KR5JXAWR2SQ8RA439ADXVP7C
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-09T05:21:08.504Z
     examined_commit: 74ab0ec544bc889c0aef25550ccb2d1e691b8f1c
     external_links: []
     lifecycle_state: open
@@ -193019,5 +193038,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T05:05:39.146Z
-    updated_at: 2026-05-09T05:20:56.881Z
+    updated_at: 2026-05-09T05:21:07.255Z
     notes: []
