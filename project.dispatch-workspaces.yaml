@@ -15212,18 +15212,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
-    canonical_branch_head: 8c8228706ad1b4fecdf0a33e3ab51814af6c4e74
+    canonical_branch_head: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-09T02:24:50.087Z
+      updated_at: 2026-05-09T02:42:34.991Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T02:25:14.605Z
+      updated_at: 2026-05-09T02:42:34.991Z
     integration:
       status: pending
       detail: null
@@ -15231,7 +15231,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 67c242fc1cc087bb75bb1a945c9078ecfac65a39
-      updated_at: 2026-05-09T02:24:50.087Z
+      updated_at: 2026-05-09T02:42:34.991Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
@@ -15239,9 +15239,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T02:25:14.605Z
-      last_reconciled_at: 2026-05-09T02:25:14.605Z
+      last_reconciled_at: 2026-05-09T02:42:34.991Z
       created_at: 2026-05-08T18:07:41.583Z
-      updated_at: 2026-05-09T02:25:14.605Z
+      updated_at: 2026-05-09T02:42:34.991Z
     workspace_id: dispatch-workspace-01KR3W7PPVDFR8F03VQ6J54M3K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
