@@ -406,8 +406,14 @@ describe("test suite", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    // Blocker 1 (cycle 2): afterEach with process.kill is valid daemon cleanup
-    it("should allow serve start --detach when afterEach uses process.kill", () => {
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // The mere presence of an ancestor afterEach with a `process.kill`
+    // pattern is NOT proof that this specific detached daemon is owned by
+    // cleanup — the captured `pid` is bound only after `expect(...)`, so
+    // an assertion failure leaves `pid` unset and the daemon is leaked.
+    // Cleanup must be registered in the same control flow before the next
+    // await/expect.
+    it("should flag serve start --detach when afterEach closes over a pid bound only after a later expect()", () => {
       const result = runOxlint(`
 import { describe, it, expect, afterEach } from "vitest";
 
@@ -422,11 +428,15 @@ describe("test suite", () => {
   });
 });
 `);
-      expect(result.output).not.toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("no-leaky-test-daemon");
     });
 
-    // Blocker 1 variant: afterEach with child.kill("SIGTERM") is valid daemon cleanup
-    it("should allow serve start --detach when afterEach uses child.kill with signal", () => {
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Child-handle flavor of the same gap — afterEach closes over a
+    // `child` binding that is not assigned until after the detached start
+    // and a later expect(). The kill pattern in afterEach does not exempt
+    // the unsafe binding ordering.
+    it("should flag serve start --detach when afterEach closes over a child handle bound only after a later expect()", () => {
       const result = runOxlint(`
 import { describe, it, expect, afterEach } from "vitest";
 
@@ -443,7 +453,7 @@ describe("test suite", () => {
   });
 });
 `);
-      expect(result.output).not.toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("no-leaky-test-daemon");
     });
   });
 

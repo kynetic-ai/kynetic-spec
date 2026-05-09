@@ -171,11 +171,6 @@ const noLeakyTestDaemon = {
       return {};
     }
 
-    // Track whether we've seen afterEach with cleanup in the current describe
-    // scope (for the detached-serve cleanup check).
-    const describeStack = [];
-    let hasTopLevelAfterEachCleanup = false;
-
     function isInLifecycleHook(node, hookName) {
       let current = node.parent;
       while (current) {
@@ -249,15 +244,6 @@ const noLeakyTestDaemon = {
         text.includes("stopMockDaemon") ||
         text.includes("serve stop")
       );
-    }
-
-    function isAfterEachWithCleanup(node) {
-      if (node.type !== "CallExpression") return false;
-      if (node.callee.type !== "Identifier" || node.callee.name !== "afterEach") {
-        return false;
-      }
-      const text = context.sourceCode.getText(node);
-      return hasDaemonCleanupPattern(text);
     }
 
     function hasCleanupAfter(node) {
@@ -338,13 +324,6 @@ const noLeakyTestDaemon = {
     function statementContainsAwaitOrExpect(stmt) {
       const text = context.sourceCode.getText(stmt);
       return text.includes("await ") || text.includes("expect(");
-    }
-
-    function hasAncestorAfterEachCleanup() {
-      return (
-        hasTopLevelAfterEachCleanup ||
-        describeStack.some((d) => d.hasAfterEachCleanup)
-      );
     }
 
     /**
@@ -1590,10 +1569,31 @@ const noLeakyTestDaemon = {
     /**
      * Detached-serve check keeps the cleanup escape hatch — these tests
      * exist to exercise the CLI's --detach behavior itself.
+     *
+     * Cleanup is accepted only when registered in the SAME control flow
+     * before the next awaited operation, expectation, or daemon
+     * observation. The presence of an ancestor `afterEach` hook with a
+     * kill pattern is NOT proof that this specific detached daemon is
+     * cleaned up — when the captured pid/handle is bound only after an
+     * intervening `await` or `expect()`, an assertion failure leaves the
+     * binding null and the detached daemon is leaked. The two valid safe
+     * shapes are:
+     *
+     *   1. Register `onTestFinished` (or another in-flow cleanup
+     *      registration matching `hasCleanupAfter`) immediately after the
+     *      detached start and before any sibling await/expect.
+     *   2. Wrap the detached start in a `try { … } finally { kill … }`
+     *      whose finalizer carries a daemon-kill pattern, so the kill
+     *      runs even when an assertion or await throws.
+     *
+     * Tests that intentionally exercise the unsafe shape (e.g., the CLI's
+     * own --detach exit-ordering paths) must add a per-line
+     * `oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon
+     * -- <reason naming the behavior under test>` immediately above the
+     * offending statement (see the localized-disable companion rule).
      */
     function detachWithoutCleanup(node) {
       if (isInLifecycleHook(node, "afterEach")) return false;
-      if (hasAncestorAfterEachCleanup()) return false;
       if (hasCleanupAfter(node)) return false;
       if (isInTryWithFinallyCleanup(node)) return false;
       return true;
@@ -1792,23 +1792,6 @@ const noLeakyTestDaemon = {
       },
 
       CallExpression(node) {
-        if (
-          node.callee.type === "Identifier" &&
-          node.callee.name === "describe" &&
-          node.arguments.length >= 2
-        ) {
-          describeStack.push({ hasAfterEachCleanup: false });
-        }
-
-        if (isAfterEachWithCleanup(node)) {
-          if (describeStack.length > 0) {
-            describeStack[describeStack.length - 1].hasAfterEachCleanup = true;
-          } else {
-            hasTopLevelAfterEachCleanup = true;
-          }
-          return;
-        }
-
         // Direct daemon entry launch — always flagged outside helper paths,
         // including helper functions inside a non-helper test file.
         const daemonEntry = readDaemonEntryInvocation(node);
@@ -1865,15 +1848,6 @@ const noLeakyTestDaemon = {
         }
       },
 
-      "CallExpression:exit"(node) {
-        if (
-          node.callee.type === "Identifier" &&
-          node.callee.name === "describe" &&
-          node.arguments.length >= 2
-        ) {
-          describeStack.pop();
-        }
-      },
     };
   },
 };
