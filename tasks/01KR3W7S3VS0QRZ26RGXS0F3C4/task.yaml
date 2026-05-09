@@ -68,7 +68,7 @@ description: >
 spec_ref: "@cli-lifecycle-test-endpoint-consumption"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-fix-real-daemon-startup-failure-handling"
@@ -80,6 +80,14 @@ tags:
   - daemon
   - cli
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-resolve-cli-lifecycle-test-endpoints/01kr3w7s
+  captured_at: 2026-05-09T12:02:19.155Z
+  commit: c9e84cf090a02f85fdbba45cd9949d62bcfd8b44
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR68KDTY4NE0RJ1AS700YEXA
 history:
   - author: Jacob Chapel
@@ -102,7 +110,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-09T11:42:36.113Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-resolve-cli-lifecycle-test-endpoints/01kr3w7s
+          captured_at: 2026-05-09T12:02:19.155Z
+          commit: c9e84cf090a02f85fdbba45cd9949d62bcfd8b44
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-09T12:02:19.158Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-09T12:02:19.158Z
 created_at: 2026-05-08T13:25:39.067Z
 started_at: 2026-05-09T11:42:36.112Z
+submitted_at: 2026-05-09T12:02:19.158Z
 todos: []
 automation: eligible
