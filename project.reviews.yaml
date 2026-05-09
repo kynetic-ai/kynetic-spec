@@ -195857,6 +195857,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T15:46:15.028Z
+      - _ulid: 01KR6Q9AJDVYANH7D8BB3VNB9T
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR6Q99AMC96M1ETSVKGXNPEZ
+        timestamp: 2026-05-09T15:56:50.126Z
     examined_commit: 127e8024b36887d98349e8ccfd3c23bd1bd572cc
     external_links: []
     lifecycle_state: open
@@ -195866,8 +195873,38 @@ reviews:
       content_hash: ""
       ref: "@01KR6M6XARDRJ17BY20Z3BG66B"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR6Q99AMC96M1ETSVKGXNPEZ
+        anchor:
+          type: code
+          commit: 127e8024b36887d98349e8ccfd3c23bd1bd572cc
+          line_end: 665
+          line_start: 665
+          path: tests/helpers/daemon.test.ts
+          side: head
+        entries:
+          - _ulid: 01KR6Q99AMPEVFDDS3Z81X0JRB
+            author: Jacob Chapel
+            body: >-
+              MUST-FIX: this branch introduces an active failing required test. Both the focused
+              command and the full suite fail at this new assertion (), because the helper still
+              returns from a throwing  while the child is alive. That does prove the intended leak,
+              but in  this task would merge a red 
+
+              > @kynetic-ai/spec@0.13.0 test
+
+              > node scripts/test.cjs into  until a later task fixes the helper. Review gates
+              require no introduced test regressions before merge. Keep the regression signal while
+              preserving a green required suite (for example, stage it as an expected-failing
+              regression that the implementation task must flip/remove) or include the helper fix in
+              the same branch so 
+
+              > @kynetic-ai/spec@0.13.0 test
+
+              > node scripts/test.cjs passes before review approval.
+            created_at: 2026-05-09T15:56:48.852Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T15:45:55.756Z
-    updated_at: 2026-05-09T15:46:13.649Z
+    updated_at: 2026-05-09T15:56:48.852Z
     notes: []
