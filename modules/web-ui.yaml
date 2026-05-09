@@ -1203,7 +1203,7 @@ features:
               the daemon that was just started before the test makes later observations.
             status:
               maturity: draft
-              implementation: implemented
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
@@ -1246,9 +1246,43 @@ features:
                   The suppression states the behavior being exercised
                 when: |
                   The guardrail suppression is reviewed
+              - given: A test starts a detached daemon and registers cleanup before later awaits, assertions, or
+                  daemon observations
+                id: ac-detached-cleanup-bound-before-observation
+                then: The guardrail reports the detached daemon startup as missing scoped cleanup
+                when: The cleanup callback does not yet capture or otherwise own the concrete pid, child handle, or
+                  stop handle for that just-started daemon before an intervening observation can
+                  fail
+              - given: A test wraps daemon startup in a local helper function or another helper-like abstraction
+                  that is not an explicit shared daemon-test fixture utility or documented guardrail
+                  internal
+                id: ac-approved-daemon-helper-boundary-explicit
+                then: The guardrail treats the wrapped daemon startup the same as an inline unsafe daemon start and
+                  reports violations of the fixture and cleanup contract
+                when: The guardrail scans the test file
             tags: []
             created: 2026-05-08T13:25:36.140Z
-            notes: []
+            notes:
+              - _ulid: 01KR6N1RK0PXG2GCV3K6T4F6CP
+                content: Tightened ACs ac-detached-cleanup-bound-before-observation and
+                  ac-approved-daemon-helper-boundary-explicit lack current source/test evidence. (1)
+                  The cleanup classifier in tools/eslint-rules/no-leaky-test-daemon.js recognizes
+                  daemon-shaped cleanup CALL expressions (process.kill, child.kill('SIGTERM'),
+                  killPid(pid), runKspec serve stop, etc.) and gates on registration before the next
+                  observation, but it does not verify that the captured pid/child/stop handle was
+                  already bound to the just-started daemon at the registration site; a pattern that
+                  registers onTestFinished(() => killPid(pid)) before the detached start and then
+                  assigns pid only after an intervening await/expect satisfies the current rule yet
+                  leaves cleanup unbound on the failing path. (2) The Program:exit detached-cleanup
+                  check skips reports when isInHelperFunction(node) is true. isInHelperFunction
+                  classifies any named function declaration or variable-bound function expression as
+                  a helper, so an unsafe daemon start hidden inside an arbitrary local wrapper in a
+                  test file bypasses the rule even though the wrapper is not a shared fixture or
+                  documented guardrail internal. Implementation status moved to in_progress
+                  --no-cascade pending the follow-up rule fix and regression tests.
+                supersedes: null
+                author: "@claude"
+                created_at: 2026-05-09T15:17:45.184Z
         created: 2026-05-07T20:36:49.710Z
         notes: []
       - _ulid: 01KR3W7P6MX9E4VWY78PPBMSRC
@@ -1298,9 +1332,26 @@ features:
               Cleanup is registered before the readiness wait can fail
             when: |
               The wrapper receives a cleanup registration hook
+          - given: A daemon test fixture has obtained a child process handle and constructed a stop handle that
+              owns that child
+            id: ac-cleanup-registration-failure-stops-owned-child
+            then: The fixture stops the owned child before returning or surfacing the cleanup-registration
+              failure
+            when: The caller-provided cleanup-registration hook fails before the fixture reports readiness
         tags: []
         created: 2026-05-08T13:25:36.084Z
-        notes: []
+        notes:
+          - _ulid: 01KR6N1F5M7B9VNVD1D1ST29WZ
+            content: Tightened AC ac-cleanup-registration-failure-stops-owned-child lacks current source/test
+              evidence. tests/helpers/daemon.ts spawns the child, builds a scoped stop() that owns
+              the spawned child, and then calls opts.registerCleanup(stop) outside the readiness
+              try/catch. A synchronous throw inside the registration hook propagates without
+              invoking stop(), so the owned child is leaked. No regression test exercises this
+              cleanup-registration failure phase. Implementation status moved to in_progress
+              --no-cascade pending the follow-up fixture fix and regression test.
+            supersedes: null
+            author: "@claude"
+            created_at: 2026-05-09T15:17:35.540Z
     created: 2026-01-22T01:18:09.314Z
     notes: []
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
