@@ -18045,8 +18045,12 @@ observations:
       options for review comment, reply, verdict/check evidence, or documenting a safe file-payload
       workflow for review records.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate reflection capture. Broader search after capture found existing related
+      observations including @01KR6THZ, @01KMR88Z, @01KPQQKX, and @01KMNH8N covering shell-passed
+      review bodies and file-based payload friction.
+    resolved: true
+    resolved_at: 2026-05-09T21:38:09.429Z
+    resolved_by: Jacob Chapel
     workflow_ref: "@session-reflect"
     created_at: 2026-05-09T21:36:36.283Z
 schedules:
