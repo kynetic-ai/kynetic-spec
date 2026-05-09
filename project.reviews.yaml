@@ -197250,6 +197250,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T18:53:09.452Z
+      - _ulid: 01KR72R1V1D2CMF9T47ZB1Y19D
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR70RBZSXV6E0912HVY9KKAE
+        timestamp: 2026-05-09T19:17:07.041Z
     examined_commit: e21bfac48a49698d8ad5dbf05b9e907666203555
     external_links: []
     lifecycle_state: closed
@@ -197290,6 +197296,25 @@ reviews:
               `ac-detached-cleanup-bound-before-observation`: the callback has an object at
               registration time, but it does not own the concrete pid for the just-started daemon.'
             created_at: 2026-05-09T18:42:56.222Z
+          - _ulid: 01KR72R0GF8VKX73DVHNZCM5SH
+            author: "@claude"
+            body: "Fixed. Walk MemberExpression / ChainExpression kill-target chains down to their root
+              Identifier and feed the root through the same concrete-binding and ownership
+              predicates as the bare-Identifier case. The reviewer's probe shape (`const holder =
+              {}; runKspec('serve start --detach'); onTestFinished(() => { if (holder.pid !==
+              undefined) process.kill(holder.pid, 'SIGTERM'); }); expect(true).toBe(true);
+              holder.pid = 12345;`) now flags: the walk extracts root `holder`, the ownership
+              predicate sees that `const holder = {}` ends BEFORE the runKspec start, and
+              cleanupClosureUnbound is reported. The same walk applies to `<expr>.kill(...)` member
+              receivers and to `killPid/stopDaemon/stopMockDaemon` first arguments.
+              Non-Identifier-rooted targets (literal pids, CallExpressions, etc.) collapse to
+              UNVERIFIABLE_KILL_TARGET and are rejected as unbound. Allowed-narrow case (`const
+              child = spawn('kspec', ['serve', 'start', '--detach']); onTestFinished(() =>
+              process.kill(child.pid, 'SIGTERM'))`) still passes because the root `child`'s
+              declarator range encompasses the spawn that IS the detached start. Five new regression
+              tests cover member-expression target, deep member chain, member receiver,
+              call-expression target, and the allowed-narrow control."
+            created_at: 2026-05-09T19:17:05.679Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -197300,5 +197325,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T18:53:09.451Z
     created_at: 2026-05-09T18:40:06.555Z
-    updated_at: 2026-05-09T18:53:09.452Z
+    updated_at: 2026-05-09T19:17:05.679Z
     notes: []
