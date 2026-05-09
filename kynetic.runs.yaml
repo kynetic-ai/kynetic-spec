@@ -43282,9 +43282,20 @@ runs:
     completed_at: 2026-05-09T15:58:42.740Z
   - _ulid: 01KR6QET72RA8VHQ68WSHVKB30
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T15:59:49.986Z
+        completed_at: 2026-05-09T16:00:45.356Z
+        notes: "Worked well: review records provided a durable place to capture focused validation,
+          full-suite validation, an anchored blocker, and an evidence log. The detached review
+          snapshot made the merge boundary clear."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T16:00:45.356Z
+        completed_at: 2026-05-09T16:00:45.356Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T15:59:49.986Z
