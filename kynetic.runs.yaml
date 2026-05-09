@@ -43141,7 +43141,7 @@ runs:
     completed_at: 2026-05-09T12:54:41.630Z
   - _ulid: 01KR6P161VWZBDR0KXRHX75PD2
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -43155,7 +43155,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T15:35:45.415Z
-        completed_at: 2026-05-09T15:35:45.415Z
+        completed_at: 2026-05-09T15:35:52.685Z
+        notes: "Friction points: no new high-confidence systemic friction emerged. The only concrete snag
+          was the detached reviewer snapshot not having a .kspec directory while the task
+          verification text included git -C .kspec status; this was already tracked as observation
+          @01KR6N73. Review evidence logging remains verbose, but search showed it is already
+          tracked as an observation as well."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T15:35:52.685Z
+        completed_at: 2026-05-09T15:35:52.685Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T15:34:54.779Z
