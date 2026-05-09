@@ -195358,6 +195358,18 @@ reviews:
         runner: npm
         created_at: 2026-05-09T12:19:15.392Z
         completed_at: 2026-05-09T12:19:15.392Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh: 2413/2413 suites passed; 8966 passed, 5 skipped, 0
+          failed (2048.1s). Full log:
+          /tmp/kspec-test-cache/01KR6A1TQE1Z36G7NK6AY25BAJ/baaa6837624eb58f.log"
+        name: full npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-09T12:19:26.053Z
+        completed_at: 2026-05-09T12:19:26.053Z
     events:
       - _ulid: 01KR6A2X5TD95S7DME4TJPFWMD
         actor: Jacob Chapel
@@ -195393,6 +195405,13 @@ reviews:
           status: pass
           name: daemon guardrail tests
         timestamp: 2026-05-09T12:19:16.776Z
+      - _ulid: 01KR6AV9EP5D36XZ8PV3RME9PN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full npm test
+        timestamp: 2026-05-09T12:19:27.318Z
     examined_commit: c9e84cf090a02f85fdbba45cd9949d62bcfd8b44
     external_links: []
     lifecycle_state: open
@@ -195405,5 +195424,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-09T12:06:08.315Z
-    updated_at: 2026-05-09T12:19:15.392Z
+    updated_at: 2026-05-09T12:19:26.053Z
     notes: []
