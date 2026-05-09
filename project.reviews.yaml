@@ -191296,6 +191296,18 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-09T02:20:26.545Z
         completed_at: 2026-05-09T02:20:26.545Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Probe proved node --use-openssl-ca probe.js runs the script, but oxlint reported 0
+          diagnostics for exec("node --use-openssl-ca dist/daemon/index.js --port 0"). This confirms
+          the direct-daemon false negative recorded in the blocker.
+        name: manual classifier probe
+        required: true
+        runner: node + oxlint probe
+        created_at: 2026-05-09T02:20:36.949Z
+        completed_at: 2026-05-09T02:20:36.949Z
     events:
       - _ulid: 01KR57XGHWACQV9JZ9DXZGH4FN
         actor: Jacob Chapel
@@ -191344,6 +191356,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-09T02:20:27.855Z
+      - _ulid: 01KR58JTFJ0VXRW4G9MD7TF7A0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual classifier probe
+        timestamp: 2026-05-09T02:20:38.258Z
     examined_commit: 8c8228706ad1b4fecdf0a33e3ab51814af6c4e74
     external_links: []
     lifecycle_state: open
@@ -191821,5 +191840,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T02:08:59.965Z
-    updated_at: 2026-05-09T02:20:26.545Z
+    updated_at: 2026-05-09T02:20:36.949Z
     notes: []
