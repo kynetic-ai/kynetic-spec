@@ -193668,9 +193668,25 @@ reviews:
           kind: nit
           thread_ulid: 01KR5T00AJX0N82YGQGG3CMYF9
         timestamp: 2026-05-09T07:24:57.249Z
+      - _ulid: 01KR5T0DKFWT6SKJCH8DTXV0X8
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-09T07:25:09.615Z
+      - _ulid: 01KR5T0DKFVT9RZ5Q1Z4AJNCDV
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T07:25:09.615Z
     examined_commit: 269e3ea47db29e1de702da174c4f6e9f91d29620
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -193721,7 +193737,14 @@ reviews:
               with real cli-serve detached starts, and source-scanning risks."
             created_at: 2026-05-09T07:24:56.018Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-09T07:25:09.615Z
     created_at: 2026-05-09T07:12:43.448Z
-    updated_at: 2026-05-09T07:24:56.018Z
+    updated_at: 2026-05-09T07:25:09.615Z
     notes: []
