@@ -587,3 +587,132 @@ describe(
     });
   },
 );
+
+describe(
+  "startTestDaemon registerCleanup failure cleanup",
+  { timeout: 60_000 },
+  () => {
+    // AC: @daemon-test-startup-failure-hygiene ac-cleanup-registration-failure-stops-owned-child
+    // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+    // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+    // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+    // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+    it("stops the owned child when registerCleanup throws after spawn", async () => {
+      if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
+        throw new Error(
+          "dist/daemon/index.js missing — run 'npm run build:daemon' before tests",
+        );
+      }
+      const project = await createTestDaemonProject();
+      onTestFinished(async () => {
+        await project.cleanup();
+      });
+
+      // Capture the live child handle and resolved endpoint via the
+      // non-behavioral observer seam, BEFORE registerCleanup runs. The
+      // observer must not catch the cleanup-registration error or invoke
+      // stop(); it only exposes references so the test can deterministically
+      // assert post-rejection that the helper terminated the spawned daemon.
+      let observed: { child: ChildProcess; endpoint: string } | null = null;
+      let registerCalls = 0;
+      const sentinel = "intentional registerCleanup failure for regression";
+      let thrown: unknown = null;
+
+      try {
+        try {
+          await startTestDaemon(project, {
+            __testObserveSpawn: ({ child, endpoint }) => {
+              observed = { child, endpoint: endpoint.apiUrl };
+            },
+            registerCleanup: () => {
+              registerCalls += 1;
+              throw new Error(sentinel);
+            },
+            timeoutMs: 4_000,
+            intervalMs: 50,
+          });
+        } catch (error) {
+          thrown = error;
+        }
+
+        // The observer ran synchronously before registerCleanup, so the
+        // test has direct references to the just-spawned child and its
+        // resolved endpoint regardless of how the helper surfaces the
+        // cleanup-registration failure.
+        expect(observed).not.toBeNull();
+        expect(registerCalls).toBe(1);
+        const captured = observed as unknown as {
+          child: ChildProcess;
+          endpoint: string;
+        };
+
+        // The helper must reject — either with the cleanup-registration
+        // failure directly or with a wrapped diagnostic that surfaces the
+        // sentinel. Either form satisfies the contract because the AC is
+        // about cleanup behavior, not about how the failure is wrapped.
+        expect(thrown).not.toBeNull();
+        expect(thrown).toBeInstanceOf(Error);
+        const errorMessage =
+          thrown instanceof Error ? thrown.message : String(thrown);
+        expect(errorMessage).toContain(sentinel);
+
+        // ac-cleanup-registration-failure-stops-owned-child — by the time
+        // startTestDaemon rejects, the captured child handle must already
+        // be terminated. Pre-fix, the helper rethrows the registerCleanup
+        // error before calling stop(), so the spawned daemon stays alive.
+        // Post-fix, the helper awaits stop() before surfacing the failure.
+        const child = captured.child;
+        expect(child.exitCode !== null || child.signalCode !== null).toBe(true);
+
+        // ac-cleanup-registration-failure-stops-owned-child — the daemon
+        // endpoint must no longer be reachable after the rejection. A
+        // bounded fetch that rejects (ECONNREFUSED) or a non-2xx response
+        // both prove the listener is gone.
+        let endpointReachable = false;
+        try {
+          const probe = await fetch(`${captured.endpoint}/api/health`, {
+            signal: AbortSignal.timeout(750),
+          });
+          endpointReachable = probe.ok;
+        } catch {
+          endpointReachable = false;
+        }
+        expect(endpointReachable).toBe(false);
+      } finally {
+        // Safety net: the pre-fix helper leaks the daemon child because
+        // stop() is never invoked when registerCleanup throws. Force-kill
+        // whatever the observer captured so the failing regression cannot
+        // strand a daemon process between this test and the implementation
+        // fix landing on a downstream task.
+        if (observed) {
+          const ref = observed as unknown as { child: ChildProcess };
+          if (ref.child.exitCode === null && ref.child.signalCode === null) {
+            try {
+              ref.child.kill("SIGKILL");
+            } catch {
+              // Already dead — nothing to clean up.
+            }
+            await new Promise<void>((resolve) => {
+              if (
+                ref.child.exitCode !== null ||
+                ref.child.signalCode !== null
+              ) {
+                resolve();
+                return;
+              }
+              const onExit = (): void => {
+                ref.child.off("exit", onExit);
+                resolve();
+              };
+              ref.child.once("exit", onExit);
+              setTimeout(() => {
+                ref.child.off("exit", onExit);
+                resolve();
+              }, 5_000);
+            });
+          }
+        }
+      }
+    });
+  },
+);
