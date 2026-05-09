@@ -19310,7 +19310,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T12:52:35.569Z
+      updated_at: 2026-05-09T12:55:06.137Z
     integration:
       status: merged
       detail: integration:merged
@@ -19319,25 +19319,20 @@ workspaces:
       target_branch: dev
       target_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
       updated_at: 2026-05-09T12:52:35.569Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KR3W7SPKCKPWKXD8SJHNZVHT"
     task_slug: task-validate-daemon-test-hardening
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T12:35:01.508Z
-      last_reconciled_at: 2026-05-09T12:55:04.547Z
+      last_reconciled_at: 2026-05-09T12:55:06.137Z
       created_at: 2026-05-09T12:20:45.785Z
-      updated_at: 2026-05-09T12:55:04.547Z
+      updated_at: 2026-05-09T12:55:06.137Z
     workspace_id: dispatch-workspace-01KR3W7SPKCKPWKXD8SJHNZVHT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
-        last_seen_at: 2026-05-09T12:34:32.838Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-daemon-test-hardening-01kr3w7s-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-validate-daemon-test-hardening/01kr3w7s
