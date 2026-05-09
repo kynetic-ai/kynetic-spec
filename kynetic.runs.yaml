@@ -43653,7 +43653,7 @@ runs:
     completed_at: 2026-05-09T17:20:24.725Z
   - _ulid: 01KR6WY6VCRQ6WSNAGWPYC7EW5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -43666,7 +43666,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T17:37:07.063Z
-        completed_at: 2026-05-09T17:37:07.063Z
+        completed_at: 2026-05-09T17:37:15.442Z
+        notes: "Identified candidates: success from previous review records plus detached merge helper,
+          friction from long full-suite validation, and staged-regression expected-failure scoping.
+          All are concrete, but each appears already tracked or recently captured, so none clears
+          the no-duplicate capture bar."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T17:37:15.442Z
+        completed_at: 2026-05-09T17:37:15.442Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T17:35:37.324Z
