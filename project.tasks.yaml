@@ -28471,7 +28471,8 @@
   plan_ref: "@plan-daemon-test-fixture-hardening"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@task-add-guardrail-binding-wrapper-regressions"
   priority: 2
   tags:
     - daemon-tests
