@@ -197361,6 +197361,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR736TP4HKEARHNQBYQCEB04
         timestamp: 2026-05-09T19:25:12.612Z
+      - _ulid: 01KR736ZX2BZTHHZTNRXAWPJ7Q
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR736YG7ZNC1AZZVK78K1TT2
+        timestamp: 2026-05-09T19:25:16.578Z
     examined_commit: 875a81d78c4b0c702a3d24d08789482c973d1584
     external_links: []
     lifecycle_state: open
@@ -197393,7 +197400,29 @@ reviews:
               values must not satisfy cleanup.'
             created_at: 2026-05-09T19:25:11.236Z
         kind: blocker
+      - _ulid: 01KR736YG7ZNC1AZZVK78K1TT2
+        anchor:
+          type: code
+          commit: 875a81d78c4b0c702a3d24d08789482c973d1584
+          line_end: 847
+          line_start: 837
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR736YG7XNBWYRTWAC7ACHJQ
+            author: Jacob Chapel
+            body: 'MUST-FIX: extractRootCaptureIdentifierName treats transparent TypeScript wrappers as
+              unverifiable kill targets. A safe pattern that captures the pid before cleanup, then
+              uses a type assertion in the callback, is currently rejected: runKspec("serve start
+              --detach --port 3456"); const pid = readPidFromFile() as number; onTestFinished(() =>
+              process.kill(pid as number, "SIGTERM")); expect(true).toBe(true). I ran that oxlint
+              probe and it exited 1 with cleanupClosureUnbound for <unverifiable kill target>. This
+              violates the requirement to preserve safe cleanup cases;
+              TSAsExpression/TSNonNullExpression and similar transparent wrappers should be
+              unwrapped before falling back to UNVERIFIABLE_KILL_TARGET.'
+            created_at: 2026-05-09T19:25:15.143Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T19:22:20.081Z
-    updated_at: 2026-05-09T19:25:11.236Z
+    updated_at: 2026-05-09T19:25:15.143Z
     notes: []
