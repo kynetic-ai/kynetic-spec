@@ -389,3 +389,67 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T00:44:04.237Z
+  - _ulid: 01KR57KPKN6VF784T3DHJV9VPM
+    content: >-
+      Fix cycle 7: closed both halves of the exec/execSync precision blocker.
+
+
+      Blocker (line 797): the runtime-flag walk treated every first non-dash token as the script
+      path. Two real Node/Bun runtime-option classes broke that assumption:
+
+
+      - Value-consuming options like `--require ./preload.js`, `-r ./preload.js`, `--conditions
+      production`, `--input-type module` consume their next whitespace-separated token as the
+      option's VALUE, not as the script. The previous walk reported `./preload.js` as the script and
+      silently accepted real launches like `exec("node --require ./preload.js dist/daemon/index.js
+      --port 0")` (false negative).
+
+      - Eval-mode flags `-e`, `--eval`, `-p`, `--print` (and the bundled `--eval=...` /
+      `--print=...` forms) put the runtime in eval mode — there is no script; subsequent tokens are
+      the eval source string or argv to the eval'd code. The previous walk reported
+      `dist/daemon/index.js` as the script and emitted a false-positive directDaemonSpawn for
+      `exec("node --eval dist/daemon/index.js")`.
+
+
+      Fix: two new narrow predicates in tools/eslint-rules/no-leaky-test-daemon.js (lines 663 and
+      730), and three classes in the exec/execSync walker (eval / value-consuming / standalone-flag)
+      at lines 944-957. Eval-mode aborts. Value-consuming flag skips both flag AND value. Standalone
+      flag skips one token. The bundled `--require=value` form is one token starting with `-` and
+      falls through to standalone-flag.
+
+
+      The value-consuming set is curated to documented Node/Bun options. New runtime options added
+      in future versions are NOT modelled by default — false negatives are recoverable;
+      over-broadening would weaken precision.
+
+
+      Behavioral tests added (13 new in tests/lint-daemon-test-guardrails.test.ts): 6 positives
+      (--require, -r, --conditions, mixed flag classes, --require=value, template literal) and 7
+      negatives (--eval, -e, --print, -p, --eval=CODE, daemon as --require value with following
+      script, daemon as -r value alone). All address the reviewer's specific probes.
+
+
+      Manual probe verification:
+
+      - exec("node --require ./register.js dist/daemon/index.js --port 0") → directDaemonSpawn (was:
+      0 diagnostics)
+
+      - execSync("node -r ./register.js dist/daemon/index.js --port 0") → directDaemonSpawn (was: 0
+      diagnostics)
+
+      - exec("node --eval dist/daemon/index.js") → 0 diagnostics (was: directDaemonSpawn)
+
+
+      Verification:
+
+      - 134 targeted lint-rule tests pass (was 121 — 13 new tests).
+
+      - Full suite: 8887 passed, 5 skipped, 0 failed.
+
+      - Project lint: 13 errors / 721 warnings — unchanged dev baseline; no new errors in modified
+      files.
+
+      - Re-read all five precision and harness ACs against the implementation; behavior matches.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T02:03:38.485Z
