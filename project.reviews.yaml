@@ -191390,9 +191390,25 @@ reviews:
           kind: nit
           thread_ulid: 01KR58KH98NVMQ13XV4AFBBHKS
         timestamp: 2026-05-09T02:21:02.904Z
+      - _ulid: 01KR58KYNSG25BEKXKTSJFMK64
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-09T02:21:15.321Z
+      - _ulid: 01KR58KYNS3Q7XRBVSQ3PM3E06
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T02:21:15.321Z
     examined_commit: 8c8228706ad1b4fecdf0a33e3ab51814af6c4e74
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -191893,7 +191909,14 @@ reviews:
               validation, lint/test integration.
             created_at: 2026-05-09T02:21:01.608Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-09T02:21:15.321Z
     created_at: 2026-05-09T02:08:59.965Z
-    updated_at: 2026-05-09T02:21:01.608Z
+    updated_at: 2026-05-09T02:21:15.321Z
     notes: []
