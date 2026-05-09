@@ -3762,20 +3762,33 @@ describe("disable on the wrong line", () => {
  * Each unsafe example below is a CURRENT FALSE NEGATIVE in the
  * `no-leaky-test-daemon` rule — the rule sees an `onTestFinished(...)`
  * registration before the next observation and accepts it as cleanup,
- * even though the captured variable is unbound. These tests are
- * expected to FAIL until the rule is updated to verify that the
- * cleanup callback's captured variable is initialized to a concrete
- * pid/handle before the next observation.
+ * even though the captured variable is unbound. The unsafe-regression
+ * tests below are expressed with `it.fails(...)` because the
+ * assertions inside (`expect(result.exitCode).not.toBe(0)` etc.) do
+ * not yet hold against the unfixed rule. `it.fails` inverts the
+ * pass/fail polarity: today the rule produces no diagnostic and the
+ * inner assertions throw, so the test PASSES (the inversion is the
+ * point — it locks in the false negative). When the lint rule fix
+ * lands, the rule WILL produce the diagnostic, the inner assertions
+ * will start passing, and `it.fails` will then FAIL — that failure is
+ * the structured signal to the lint-rule-fix worker to flip these
+ * specific tests from `it.fails(...)` back to `it(...)`. This pattern
+ * keeps the regressions inside the required suite (so they run and
+ * verify behavior on every test invocation) without contributing red
+ * to a green branch, exactly as the review on this regression task
+ * required.
  *
  * Allowed-narrow cases describe the canonical safe shape (pid or child
  * handle is captured BEFORE the cleanup registration, so the closure
  * already owns a concrete value when registered) so the fix cannot
- * accidentally over-tighten and reject legitimate patterns.
+ * accidentally over-tighten and reject legitimate patterns. They use
+ * plain `it(...)` because they pass today and must still pass after
+ * the fix.
  */
 describe("daemon test guardrail precision: cleanup callback bound before observation", () => {
   // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
   describe("detached daemon flagged when cleanup closure is unbound at registration", () => {
-    it("flags runKspec(\"serve start --detach\") when onTestFinished closes over a let pid that is assigned only after an intervening expect()", () => {
+    it.fails("flags runKspec(\"serve start --detach\") when onTestFinished closes over a let pid that is assigned only after an intervening expect()", () => {
       // UNSAFE: cleanup IS registered before the expect(), but the closure
       // captures a `let pid` that is still undefined at registration time.
       // The pid file is read AFTER the expect() runs. If the assertion
@@ -3808,7 +3821,7 @@ describe("cleanup closure captures unbound pid", () => {
       expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished|bound|captured/i);
     });
 
-    it("flags runKspec(\"serve start --detach\") when onTestFinished closes over a let pid that is assigned only after an intervening await", () => {
+    it.fails("flags runKspec(\"serve start --detach\") when onTestFinished closes over a let pid that is assigned only after an intervening await", () => {
       // UNSAFE: same shape as the assertion variant but the intervening
       // operation is an `await waitForReady(...)` against the daemon. The
       // await can throw or hang before pid is captured. The rule currently
@@ -3834,7 +3847,7 @@ describe("cleanup closure captures unbound pid before await", () => {
       expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished|bound|captured/i);
     });
 
-    it("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when onTestFinished closes over a let child handle that is assigned only after an intervening await", () => {
+    it.fails("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when onTestFinished closes over a let child handle that is assigned only after an intervening await", () => {
       // UNSAFE child-handle variant: the spawn returns a child handle but
       // the test doesn't capture it inline — it reassigns `let child`
       // only after an `await waitForReady(...)` against the daemon. The
@@ -3862,7 +3875,7 @@ describe("cleanup closure captures unbound child handle", () => {
       expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished|bound|captured/i);
     });
 
-    it("flags runKspec(\"serve start --detach\") when onTestFinished captures pid before a daemon-host fetch observation but pid is bound only after the fetch", () => {
+    it.fails("flags runKspec(\"serve start --detach\") when onTestFinished captures pid before a daemon-host fetch observation but pid is bound only after the fetch", () => {
       // UNSAFE: the intervening observation is a `fetch` to the daemon
       // host (a recognised daemon network observation per the existing
       // observation gate). The cleanup registration sits before it, but
@@ -3965,15 +3978,21 @@ describe("cleanup closure captures concrete child handle before observation", ()
  * That predicate is too permissive: it treats the mere PRESENCE of a
  * helper-shaped function as proof that some caller will register
  * cleanup, but the rule never actually verifies cleanup at the call
- * site. This regression locks in the false negative so the lint rule
- * fix must teach the rule that arbitrary local wrappers are NOT
- * approved fixture utilities.
+ * site. The unsafe-regression tests below are expressed with
+ * `it.fails(...)` for the same reason as the cleanup-binding
+ * regressions above: the inner assertions do not hold against the
+ * unfixed rule, so today the inversion makes them pass; when the
+ * lint rule fix lands, `it.fails` will start failing and signal that
+ * these specific tests must be flipped from `it.fails(...)` to
+ * `it(...)`. The regressions stay locked in for any future change to
+ * the rule, but the suite stays green on this branch.
  *
  * Allowed-narrow cases describe the canonical safe shapes (the
  * shared `tests/helpers/daemon.ts` fixture, which is path-allowlisted
  * and therefore exempt from the rule entirely) so the fix cannot
  * accidentally over-tighten and reject the genuinely-approved fixture
- * implementations.
+ * implementations. They use plain `it(...)` because they pass today
+ * and must still pass after the fix.
  *
  * Note: direct daemon entrypoint launches (`spawn("node", [DAEMON_ENTRY,
  * ...])`) inside a local helper function are ALREADY flagged by the
@@ -3987,7 +4006,7 @@ describe("cleanup closure captures concrete child handle before observation", ()
 describe("daemon test guardrail precision: approved helper boundary is explicit", () => {
   // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
   describe("local wrappers around detached daemon starts are not approved helpers", () => {
-    it("flags a function declaration in a test file that wraps runKspec(\"serve start --detach\") with no caller cleanup", () => {
+    it.fails("flags a function declaration in a test file that wraps runKspec(\"serve start --detach\") with no caller cleanup", () => {
       // UNSAFE: the test file declares `function startDetachedDaemon()`
       // whose body calls `runKspec("serve start --detach ...")`. The
       // call site invokes the helper but registers no cleanup. The
@@ -4016,7 +4035,7 @@ describe("local function wrapper hides detached start", () => {
       expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
     });
 
-    it("flags a const arrow function in a test file that wraps spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) with no caller cleanup", () => {
+    it.fails("flags a const arrow function in a test file that wraps spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) with no caller cleanup", () => {
       // UNSAFE: the const-arrow form of the local wrapper (the rule's
       // `isInHelperFunction` predicate also matches
       // `VariableDeclarator` initialisers with arrow/function values).
@@ -4045,7 +4064,7 @@ describe("const arrow wrapper hides detached spawn", () => {
       expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
     });
 
-    it("flags a function declaration in a test file that wraps execSync(\"kspec serve start --detach\") with no caller cleanup", () => {
+    it.fails("flags a function declaration in a test file that wraps execSync(\"kspec serve start --detach\") with no caller cleanup", () => {
       // UNSAFE: shell-string CLI form of the wrapper. The execSync call
       // tokenises to `kspec serve start --detach`, the rule's detach
       // classifier recognises the lifecycle path, but the helper-
@@ -4073,7 +4092,7 @@ describe("execSync wrapper hides detached start", () => {
       expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
     });
 
-    it("flags a function expression assigned to a const in a test file that wraps spawnSync(\"kspec\", [\"serve\", \"start\", \"--detach\"]) with no caller cleanup", () => {
+    it.fails("flags a function expression assigned to a const in a test file that wraps spawnSync(\"kspec\", [\"serve\", \"start\", \"--detach\"]) with no caller cleanup", () => {
       // UNSAFE: function-expression-in-VariableDeclarator form (the
       // rule's `isInHelperFunction` matches `init.type ===
       // "FunctionExpression"` too). spawnSync argv-array form behind
