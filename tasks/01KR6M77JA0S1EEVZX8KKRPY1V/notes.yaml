@@ -223,3 +223,41 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T21:34:38.442Z
+  - _ulid: 01KR7C36F3YC422AHXVZC3TVW6
+    content: >-
+      Fix cycle 6: addressed the cycle-5 blocker on TS-wrapped null/undefined initializers in
+      tools/eslint-rules/no-leaky-test-daemon.js. Root cause: isNullOrUndefinedInitializer only
+      matched bare Literal null, Identifier undefined, and UnaryExpression void; TSAsExpression /
+      TSSatisfiesExpression / TSNonNullExpression / TSTypeAssertion / TSInstantiationExpression /
+      ParenthesizedExpression / ChainExpression around those nodes (e.g. const pid = undefined as
+      number | undefined) escaped the placeholder check, so the declarator was treated as concretely
+      value-producing and the cleanup closure was accepted even though the runtime value at
+      registration time was still undefined.
+
+
+      Fix: call unwrapTransparentExpression at the top of isNullOrUndefinedInitializer (same
+      fixed-point loop the kill-target analysis uses) before the structural classification. The
+      unwrap is shared between the declarator-init leg and the assignment-RHS leg of
+      findConcreteBindingInStatements / inspectStatementsForBinding, so wrapped placeholders are
+      caught regardless of whether the binding is initialised at declaration or reassigned later.
+      The hoisted nested-function-declaration order keeps the call site valid even though
+      unwrapTransparentExpression is defined later in the file.
+
+
+      Test changes: added five regression tests in tests/lint-daemon-test-guardrails.test.ts under
+      the cleanup-bound-before-observation describe — const pid = undefined as number | undefined
+      (rejected), const pid = null as any (rejected), const pid = (undefined)! as number (rejected,
+      stacked wrappers), let pid with post-start pid = undefined as any assignment (rejected), and a
+      positive control const pid = readPidFromFile() as number after the start (accepted — wrapped
+      concrete read stays concrete).
+
+
+      Validation: focused lint suites 244 -> 249 passing tests with --fresh; full npm test 2418
+      suites / 9003 passing tests (5 pre-existing skips, 2131.4s); kspec validate --refs and
+      --completeness both pass with --warnings-ok (warnings unchanged from pre-existing repository
+      debt). Manual oxlint AC probe against the cycle-5 reviewer source: const pid = undefined as
+      number | undefined exits 1 with cleanupClosureUnbound on pid; const pid = null as any same;
+      safe const pid = readPidFromFile() as number exits 0.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T22:00:29.411Z
