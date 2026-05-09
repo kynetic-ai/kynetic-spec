@@ -43693,7 +43693,7 @@ runs:
     completed_at: 2026-05-09T17:37:32.405Z
   - _ulid: 01KR6XQ4Z288MJKJHVDF14T7JP
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -43714,7 +43714,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T17:51:37.477Z
-        completed_at: 2026-05-09T17:51:37.477Z
+        completed_at: 2026-05-09T17:51:52.652Z
+        notes: "High-confidence friction patterns this session: NONE that aren't already tracked. The rule
+          file size (~2757 → ~3200 lines after this fix) is approaching the readability ceiling —
+          Read tool exceeded its max-tokens limit (46569 tokens) and required offset+limit chunked
+          reads. This is a single data point and a refactor would be a non-trivial design decision;
+          below the loop-mode bar for high-confidence capture. Search of existing observations
+          confirmed 4+ relevant tracked patterns already cover the surface area: @01KR6THZH
+          (it.fails contract), @01KR4F09Q (forcing-wrapper alternative), @01KR2TXGP
+          (path-allowlist-as-boundary), @01KR5CYKN (shape-enumeration to compress fix cycles)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T17:51:52.652Z
+        completed_at: 2026-05-09T17:51:52.652Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T17:49:14.595Z
