@@ -195854,6 +195854,18 @@ reviews:
         runner: kspec
         created_at: 2026-05-09T15:57:39.158Z
         completed_at: 2026-05-09T15:57:39.158Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: mise exec -- kspec validate --completeness --warnings-ok exited 0. Completeness completed
+          with existing project warnings; new AC annotation for @daemon-test-startup-failure-hygiene
+          ac-cleanup-registration-failure-stops-owned-child is present.
+        name: completeness-validation
+        required: true
+        runner: kspec
+        created_at: 2026-05-09T15:57:51.540Z
+        completed_at: 2026-05-09T15:57:51.540Z
     events:
       - _ulid: 01KR6PNBHBG2ZC1H3A5CXFERZB
         actor: Jacob Chapel
@@ -195888,6 +195900,13 @@ reviews:
           status: pass
           name: refs-validation
         timestamp: 2026-05-09T15:57:40.475Z
+      - _ulid: 01KR6QB7WJWZ65YHWV3YBMVV2W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: completeness-validation
+        timestamp: 2026-05-09T15:57:52.914Z
     examined_commit: 127e8024b36887d98349e8ccfd3c23bd1bd572cc
     external_links: []
     lifecycle_state: open
@@ -195937,5 +195956,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T15:45:55.756Z
-    updated_at: 2026-05-09T15:57:39.158Z
+    updated_at: 2026-05-09T15:57:51.540Z
     notes: []
