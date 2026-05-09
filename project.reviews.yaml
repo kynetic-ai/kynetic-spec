@@ -197675,6 +197675,20 @@ reviews:
         runner: npm
         created_at: 2026-05-09T20:21:11.063Z
         completed_at: 2026-05-09T20:21:11.063Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Synthetic test with runKspec('serve start --detach'), onTestFinished callback-local const
+          pid = readPidFromFile(); process.kill(pid, 'SIGTERM'), then expect(true) produced
+          OX_STATUS=0 / Found 0 warnings and 0 errors. This violates
+          ac-detached-cleanup-bound-before-observation because no concrete pid is owned at
+          registration time.
+        name: manual oxlint AC probe
+        required: true
+        runner: oxlint
+        created_at: 2026-05-09T20:21:22.800Z
+        completed_at: 2026-05-09T20:21:22.800Z
     events:
       - _ulid: 01KR75E7CQXBM956RK9M2QSH9R
         actor: Jacob Chapel
@@ -197724,6 +197738,13 @@ reviews:
           status: pass
           name: full npm test triage
         timestamp: 2026-05-09T20:21:12.590Z
+      - _ulid: 01KR76DRJV1H26WEC5V4WY3WTW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual oxlint AC probe
+        timestamp: 2026-05-09T20:21:24.187Z
     examined_commit: 9a21b6679bf51544740b432212bbf3002afd92b8
     external_links: []
     lifecycle_state: open
@@ -197759,5 +197780,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T20:04:10.775Z
-    updated_at: 2026-05-09T20:21:11.063Z
+    updated_at: 2026-05-09T20:21:22.800Z
     notes: []
