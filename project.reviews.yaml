@@ -191081,6 +191081,16 @@ reviews:
         runner: npm test
         created_at: 2026-05-09T01:56:37.832Z
         completed_at: 2026-05-09T01:56:37.832Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/daemon-api/websocket-protocol.test.ts: PASS, 15/15 tests, 7.0s."
+        name: targeted websocket protocol
+        required: true
+        runner: npm test
+        created_at: 2026-05-09T01:56:41.815Z
+        completed_at: 2026-05-09T01:56:41.815Z
     events:
       - _ulid: 01KR56H5ARMHVQWBM7ZSER6CSK
         actor: Jacob Chapel
@@ -191116,6 +191126,13 @@ reviews:
           status: pass
           name: full fresh test suite
         timestamp: 2026-05-09T01:56:39.178Z
+      - _ulid: 01KR5770Y0PM7R6YC5SE5Y3EAG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted websocket protocol
+        timestamp: 2026-05-09T01:56:43.072Z
     examined_commit: 716e31003b4155443bfddf1dfcc79d8a4f390513
     external_links: []
     lifecycle_state: open
@@ -191144,5 +191161,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-09T01:44:46.680Z
-    updated_at: 2026-05-09T01:56:37.832Z
+    updated_at: 2026-05-09T01:56:41.815Z
     notes: []
