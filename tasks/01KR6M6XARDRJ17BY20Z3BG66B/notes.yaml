@@ -1,1 +1,51 @@
-notes: []
+notes:
+  - _ulid: 01KR6PEMNRS424S26JT589Q49P
+    content: >-
+      Added regression test 'startTestDaemon registerCleanup failure cleanup' in
+      tests/helpers/daemon.test.ts targeting @daemon-test-startup-failure-hygiene
+      ac-cleanup-registration-failure-stops-owned-child.
+
+
+      Approach:
+
+      - Introduced a narrow non-behavioral test-only seam __testObserveSpawn on
+      StartTestDaemonOptions in tests/helpers/daemon.ts. It runs synchronously between spawn() and
+      registerCleanup, exposes only { child, endpoint }, and does not catch the registration error,
+      call stop(), or alter startup ordering. The seam was needed because registerCleanup's
+      signature only exposes 'stop' (not the child), so the test would otherwise have no
+      deterministic way to assert post-rejection that the spawned daemon was terminated.
+
+      - The test captures { child, endpoint } via the seam, drives registerCleanup to throw a
+      sentinel error, and asserts: the helper rejects with the sentinel (or a wrapped diagnostic
+      that contains it); the captured child has exited or been signaled by the time the helper
+      rejects; and the resolved endpoint is no longer reachable via a bounded fetch.
+
+      - A finally block SIGKILLs the captured child if it is still alive, so the intentionally
+      failing pre-fix regression cannot strand a daemon between this task and the dependent fix
+      task.
+
+
+      Validation results:
+
+      - mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts: 9/10 pass; the new test fails
+      only on the child-still-alive assertion (line 665), which is the intended regression assertion
+      proving the cleanup-registration leak. No unrelated failures.
+
+      - mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts: lint
+      guardrails (53 + 160 tests) all pass; only the new regression assertion still fails as
+      designed.
+
+      - mise exec -- kspec validate --refs --warnings-ok: exit 0 (only pre-existing deprecated-ref
+      warnings).
+
+      - mise exec -- kspec validate --completeness --warnings-ok: exit 0 (only pre-existing
+      malformed_ac_token warnings in unrelated test files).
+
+
+      This task is intentionally a pre-fix regression: the test must fail until
+      @task-fix-register-cleanup-failure-leak lands the helper-side fix that calls stop() before
+      surfacing a registerCleanup failure.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T15:42:15.736Z
