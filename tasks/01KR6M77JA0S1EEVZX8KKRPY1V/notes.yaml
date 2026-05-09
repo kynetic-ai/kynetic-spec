@@ -43,3 +43,36 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T18:06:21.722Z
+  - _ulid: 01KR70ATYQ21VY88HYHVDCY8H9
+    content: >-
+      Fix cycle 2: addressed the cleanup-binding ownership blocker. The previous concretely-bound
+      check accepted any non-null initializer (the reviewer's probe `const pid = 12345;
+      runKspec("serve start --detach"); onTestFinished(() => process.kill(pid, "SIGTERM"))` passed
+      because `pid` had a value, even though that value pre-dated the daemon start).
+
+
+      Added an ownership leg in tools/eslint-rules/no-leaky-test-daemon.js:
+      cleanupCallbackBindingStatus now takes the detached-start node and rejects captures whose most
+      recent concrete value-producing binding's source range ends BEFORE the detached-start begins.
+      Parameters, class declarations, function declarations, and undeclared/global identifiers are
+      not owned (they cannot represent the just-started daemon). The two safe shapes still pass:
+      declarator ending after the start, and declarator whose initializer IS the start (e.g. `const
+      child = spawn(...)` where the declarator's range encompasses the spawn). Threaded
+      detachedStartNode through subtreeContainsDaemonCleanupCall, statementContainsCleanup,
+      hasCleanupAfter, isInTryWithFinallyCleanup, findUnboundCleanupClosure, and
+      scanForUnboundCleanupCallback. Diagnostic stays cleanupClosureUnbound — its message already
+      names the ownership failure.
+
+
+      Added three regression tests in tests/lint-daemon-test-guardrails.test.ts
+      (literal-pid-before-start, unrelated-spawn-child-handle-before-start, imported-pid).
+      Re-verified the four existing safe shapes: pid captured AFTER the start, child handle captured
+      by the spawn statement, let assigned after start before registration, let still null at
+      registration with later assignment.
+
+
+      Validation: focused lint suites 225→228 tests pass. Full npm test 8982 passed (5 pre-existing
+      skips, 1996.7s). kspec validate --refs and --completeness both pass with --warnings-ok.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T18:34:56.855Z

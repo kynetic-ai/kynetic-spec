@@ -196980,6 +196980,18 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T18:06:19.490Z
+      - _ulid: 01KR70ANK0KD8FQRH98M8HN44E
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR6Y2XHAGPR7QN6YQAP5MZ7R
+        timestamp: 2026-05-09T18:34:51.360Z
+      - _ulid: 01KR70ASVNJ6Z8GXJZBDV4BG93
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR6Y2XHAGPR7QN6YQAP5MZ7R
+        timestamp: 2026-05-09T18:34:55.734Z
     examined_commit: b9857b36c2ea8f9b2a93420865545743d74b58de
     external_links: []
     lifecycle_state: closed
@@ -197017,7 +197029,53 @@ reviews:
               "SIGTERM")); expect(true).toBe(true); The one-off oxlint run for that sample returned
               exit=0 / Found 0 warnings and 0 errors.'
             created_at: 2026-05-09T17:57:38.708Z
+          - _ulid: 01KR70AM8V0904D6QKBGJPSNN8
+            author: "@claude"
+            body: >-
+              Fixed by adding an ownership leg to cleanupCallbackBindingStatus. The previous
+              concretely-bound check accepted any non-null/non-undefined initializer; the new check
+              additionally requires the captured identifier's most recent concrete value-producing
+              binding to end at or after the detached-start position. Parameters, class
+              declarations, function declarations, and undeclared/global identifiers are treated as
+              not owned (they cannot represent the daemon this test just started).
+
+
+              The reviewer's probe `const pid = 12345; runKspec("serve start --detach --port 3456");
+              onTestFinished(() => process.kill(pid, "SIGTERM")); expect(true).toBe(true);` now
+              flags via cleanupClosureUnbound, identifying `pid` as the offender. Verified through a
+              one-off oxlint run on a temp project (exit 1, message reproduced verbatim).
+
+
+              The canonical safe shapes still pass:
+
+              - `runKspec(...); const pid = readPidFromFile(); onTestFinished(() =>
+              process.kill(pid, ...))` (declarator ends after the detached start).
+
+              - `const child = spawn("kspec", ["serve", "start", "--detach"]); onTestFinished(() =>
+              child.kill("SIGTERM"))` (declarator's range encompasses the spawn — the binding's
+              initializer IS the detached start).
+
+              - `let pid; runKspec(...); pid = readPidFromFile(); onTestFinished(() =>
+              process.kill(pid, ...))` (assignment after the detached start re-binds).
+
+
+              Three new regression tests were added in tests/lint-daemon-test-guardrails.test.ts to
+              lock the fix in place: literal-pid-bound-before-start,
+              unrelated-spawn-child-handle-bound-before-start, and imported-pid (pre-existing module
+              binding cannot represent the just-started daemon). detachedStartNode is threaded
+              through subtreeContainsDaemonCleanupCall, statementContainsCleanup, hasCleanupAfter,
+              isInTryWithFinallyCleanup, findUnboundCleanupClosure, and
+              scanForUnboundCleanupCallback so the ownership comparison runs at every existing
+              binding-check call site.
+
+
+              Validation: focused lint suites pass (225 → 228 tests with the 3 new regressions).
+              Full npm test passes (8982 passed, 5 pre-existing skipped, 1996.7s). kspec validate
+              --refs --warnings-ok and --completeness --warnings-ok both pass.
+            created_at: 2026-05-09T18:34:50.011Z
         kind: blocker
+        resolved_at: 2026-05-09T18:34:54.425Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -197027,5 +197085,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T18:06:19.490Z
     created_at: 2026-05-09T17:53:44.981Z
-    updated_at: 2026-05-09T18:06:19.490Z
+    updated_at: 2026-05-09T18:34:54.425Z
     notes: []
