@@ -808,14 +808,78 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * Sentinel pushed by `collectDaemonKillCaptureNames` when a
+     * recognised daemon-kill shape's capture position is an expression
+     * that cannot be resolved to a captured outer Identifier — a
+     * literal pid, a CallExpression, a `this` expression, etc. The
+     * caller treats it as an unbound capture: such targets cannot be
+     * statically tied to the just-started daemon, so accepting them as
+     * scoped cleanup would silently re-introduce the leak the
+     * ownership predicate guards against. The string form is used in
+     * the diagnostic when no better name is available.
+     *
+     * Picked to be a non-Identifier-shaped string so it cannot collide
+     * with any real source-level identifier resolution.
+     */
+    const UNVERIFIABLE_KILL_TARGET = "<unverifiable kill target>";
+
+    /**
+     * Walk a kill-capture expression down to the root Identifier it
+     * resolves to. Bare `pid` / `child` returns its name; member chains
+     * `holder.pid` / `state.daemon.pid` return their leftmost
+     * Identifier (`holder` / `state`). Optional-access wrappers
+     * (`holder?.pid`, AST `ChainExpression`) are unwrapped before the
+     * walk. Returns null when the chain bottoms out in a non-Identifier
+     * (Literal, ThisExpression, CallExpression, TemplateLiteral, etc.)
+     * — the caller maps that to `UNVERIFIABLE_KILL_TARGET` so the
+     * cleanup-binding check rejects the closure.
+     */
+    function extractRootCaptureIdentifierName(node) {
+      if (!node) return null;
+      let current = node;
+      if (current.type === "ChainExpression" && current.expression) {
+        current = current.expression;
+      }
+      while (current && current.type === "MemberExpression" && current.object) {
+        current = current.object;
+      }
+      if (current && current.type === "Identifier") return current.name;
+      return null;
+    }
+
+    /**
      * Identify the identifiers that the cleanup-callback closure must own
      * concretely for the kill to actually run. For each recognised daemon-
      * kill shape inside the callback body, return the identifier whose
      * value at registration time gates the kill:
      *
-     *   - `process.kill(pid, "SIGTERM")` → `pid` (first arg, when Identifier)
-     *   - `<expr>.kill("SIGTERM")` → the MemberExpression's object (when Identifier)
-     *   - `killPid(pid)` / `stopDaemon(pid)` / `stopMockDaemon(pid)` → first arg
+     *   - `process.kill(<expr>, "SIGTERM")` → root identifier of `<expr>`
+     *     (e.g. `pid`, or `holder` for `holder.pid`, or `state` for
+     *     `state.daemon.pid`). Non-Identifier-rooted expressions such as
+     *     `process.kill(getPid(), …)` or `process.kill(12345, …)` resolve
+     *     to `UNVERIFIABLE_KILL_TARGET`, which the caller treats as
+     *     unbound so the cleanup is rejected.
+     *   - `<expr>.kill("SIGTERM")` → root identifier of the receiver
+     *     `<expr>` (e.g. `child` for a bare receiver, or `handle` for
+     *     `handle.child.kill("SIGTERM")`). Same fallthrough to
+     *     `UNVERIFIABLE_KILL_TARGET` when the receiver root is not an
+     *     Identifier.
+     *   - `killPid(<expr>)` / `stopDaemon(<expr>)` /
+     *     `stopMockDaemon(<expr>)` → root identifier of `<expr>` with the
+     *     same UNVERIFIABLE fallthrough.
+     *
+     * The earlier predicate only inspected bare-Identifier kill targets,
+     * so `process.kill(holder.pid, "SIGTERM")` and `holder.kill("SIGTERM")`
+     * were silently accepted as scoped cleanup — even when `holder` was
+     * declared BEFORE the daemon start (cycle-8 reviewer probe). Walking
+     * MemberExpression chains to the root identifier and feeding the
+     * root through the same ownership predicate (`holder`'s declarator
+     * ends before the detached-start begins, so it cannot represent the
+     * just-started daemon) closes that gap. Rejecting non-Identifier
+     * targets as unverifiable also handles `process.kill(12345, …)` and
+     * `process.kill(getPid(), …)`, which cannot be tied to the daemon
+     * statically and which the missing-cleanup contract still owes a
+     * diagnostic for.
      *
      * Identifiers that are locally declared in the callback (params,
      * inner `let`/`const`) are filtered out by the caller — those carry
@@ -837,13 +901,20 @@ const noLeakyTestDaemon = {
           callee.object.type === "Identifier" &&
           callee.object.name === "process"
         ) {
-          // process.kill(pid, "SIG...") — pid binding determines whether
-          // the call has anything to kill.
+          // process.kill(<expr>, "SIG...") — the kill target gates the
+          // kill. Bare Identifier and member chains rooted in an outer
+          // Identifier resolve to the root name; literals and call
+          // expressions fall through to UNVERIFIABLE_KILL_TARGET.
           const first = callExpr.arguments[0];
-          if (first && first.type === "Identifier") out.push(first.name);
-        } else if (callee.object && callee.object.type === "Identifier") {
-          // child.kill("SIG...") — the child handle must be bound.
-          out.push(callee.object.name);
+          const root = extractRootCaptureIdentifierName(first);
+          out.push(root === null ? UNVERIFIABLE_KILL_TARGET : root);
+        } else if (callee.object) {
+          // <expr>.kill("SIG...") — the receiver gates the kill. Bare
+          // Identifier and member chains rooted in an outer Identifier
+          // resolve to the root name; non-Identifier-rooted receivers
+          // fall through to UNVERIFIABLE_KILL_TARGET.
+          const root = extractRootCaptureIdentifierName(callee.object);
+          out.push(root === null ? UNVERIFIABLE_KILL_TARGET : root);
         }
         return out;
       }
@@ -854,7 +925,8 @@ const noLeakyTestDaemon = {
           callee.name === "stopMockDaemon"
         ) {
           const first = callExpr.arguments[0];
-          if (first && first.type === "Identifier") out.push(first.name);
+          const root = extractRootCaptureIdentifierName(first);
+          out.push(root === null ? UNVERIFIABLE_KILL_TARGET : root);
         }
         // runKspec/exec/spawn cleanup shapes resolve to "serve stop"
         // commands and don't need to capture an outer pid identifier —
@@ -1234,6 +1306,15 @@ const noLeakyTestDaemon = {
           for (const name of captures) {
             if (checked.has(name)) continue;
             checked.add(name);
+            if (name === UNVERIFIABLE_KILL_TARGET) {
+              // Non-Identifier-rooted kill target (literal pid, call
+              // expression, etc.) — cannot be statically tied to the
+              // just-started daemon, so reject as unbound. The
+              // diagnostic surfaces the sentinel so the author sees
+              // that the target is the problem rather than a real
+              // missing variable.
+              return { bound: false, unboundIdentifier: UNVERIFIABLE_KILL_TARGET };
+            }
             if (isLocalToCallback(name, callbackFn)) continue;
             if (!isIdentifierBoundConcretelyAt(name, registrationCall)) {
               return { bound: false, unboundIdentifier: name };
