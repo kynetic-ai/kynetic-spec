@@ -197402,6 +197402,20 @@ reviews:
         runner: reviewer
         created_at: 2026-05-09T19:36:11.144Z
         completed_at: 2026-05-09T19:36:11.144Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Custom oxlint probes against tools/eslint-rules/no-leaky-test-daemon.js found: (1) false
+          negative: runKspec serve start --detach + onTestFinished(() => { const pid = 12345;
+          process.kill(pid, SIGTERM); }) + expect exited 0 with no diagnostic; (2) false positive:
+          safe captured pid with process.kill(pid as number, SIGTERM) exited 1 with
+          cleanupClosureUnbound for <unverifiable kill target>."
+        name: reviewer ownership probes
+        required: true
+        runner: oxlint
+        created_at: 2026-05-09T19:36:14.973Z
+        completed_at: 2026-05-09T19:36:14.973Z
     events:
       - _ulid: 01KR731KHHS95E5HB5FEWNW61N
         actor: Jacob Chapel
@@ -197465,6 +197479,13 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-05-09T19:36:12.496Z
+      - _ulid: 01KR73V457W28J3CFRKBRFRR7B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: reviewer ownership probes
+        timestamp: 2026-05-09T19:36:16.295Z
     examined_commit: 875a81d78c4b0c702a3d24d08789482c973d1584
     external_links: []
     lifecycle_state: open
@@ -197521,5 +197542,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T19:22:20.081Z
-    updated_at: 2026-05-09T19:36:11.144Z
+    updated_at: 2026-05-09T19:36:14.973Z
     notes: []
