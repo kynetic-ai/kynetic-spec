@@ -198578,6 +198578,23 @@ reviews:
         runner: oxlint
         created_at: 2026-05-09T22:18:11.532Z
         completed_at: 2026-05-09T22:18:11.532Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, tools/eslint-rules/no-leaky-test-daemon.js,
+          tests/lint-daemon-test-guardrails.test.ts, tests/lint-no-leaky-test-daemon.test.ts,
+          tests/cli-serve.test.ts, tests/helpers/daemon.ts, tests/helpers/daemon.test.ts. Commands
+          run: task/spec/review lookups, AC annotation search, git diff/log checks, focused tests,
+          full npm test, kspec validate refs/completeness, manual oxlint probes. Claims verified:
+          TS-wrapped null/undefined fix present and covered; focused and full suites pass.
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          Finding: direct try/finally cleanup calls bypass ownership analysis."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-09T22:18:24.823Z
+        completed_at: 2026-05-09T22:18:24.823Z
     events:
       - _ulid: 01KR7CCM50ZZCAK8PNHADYVRQA
         actor: Jacob Chapel
@@ -198640,6 +198657,13 @@ reviews:
           status: fail
           name: manual finalizer ownership probe
         timestamp: 2026-05-09T22:18:12.920Z
+      - _ulid: 01KR7D41ZNZAQC0V6FHDPM2GVJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-09T22:18:26.165Z
     examined_commit: 08328dee7a47f0c5c2a9b172770ef237860f8f6d
     external_links: []
     lifecycle_state: open
@@ -198684,5 +198708,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T22:05:38.337Z
-    updated_at: 2026-05-09T22:18:11.532Z
+    updated_at: 2026-05-09T22:18:24.823Z
     notes: []
