@@ -28443,3 +28443,19 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-09T15:03:08.866Z
+- _ulid: 01KR6M7486ECC1PMNH725GJ0HR
+  slugs:
+    - task-add-guardrail-binding-wrapper-regressions
+  title: Add guardrail regressions for unbound cleanup callbacks and local wrappers
+  type: task
+  spec_ref: "@daemon-test-guardrail-precision"
+  plan_ref: "@plan-daemon-test-fixture-hardening"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - daemon-tests
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-09T15:03:12.390Z

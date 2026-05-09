@@ -1,0 +1,148 @@
+_ulid: 01KR6M7486ECC1PMNH725GJ0HR
+slugs:
+  - task-add-guardrail-binding-wrapper-regressions
+title: Add guardrail regressions for unbound cleanup callbacks and local wrappers
+type: task
+description: >-
+  ## Task 4 — Add guardrail regressions for unbound cleanup callbacks and local wrappers
+
+
+  Proposed slug: `task-add-guardrail-binding-wrapper-regressions`
+
+  Type: `task`
+
+  Priority: `P2`
+
+  Plan ref: `@plan-daemon-test-fixture-hardening`
+
+  Spec ref: `@daemon-test-guardrail-precision`
+
+  Tags: `daemon-tests`, `lint`, `guardrails`, `regression`, `follow-up`
+
+  Depends on: `@task-tighten-daemon-hardening-specs`
+
+  Automation: leave unassessed until Jacob approves.
+
+
+  ### Description
+
+
+  #### What
+
+  Add focused lint-rule regression tests proving the daemon-test guardrail reports two unsafe
+  patterns that validation found it can currently miss:
+
+
+  1. A detached daemon start followed by an `onTestFinished` cleanup callback before an observation,
+  where the callback closes over a pid/child variable that is assigned only after an intervening
+  `expect`, `await`, or daemon observation.
+
+  2. A detached daemon start hidden inside an arbitrary local helper function in a test file, where
+  that local helper is not one of the approved shared daemon-test fixture utilities or documented
+  guardrail internals. Add direct daemon entrypoint local-wrapper coverage only if a pre-fix check
+  proves that specific shape is still a false negative; otherwise treat existing direct-entry
+  local-helper coverage as a control, not as a new failing regression.
+
+
+  Target test files:
+
+
+  - `tests/lint-daemon-test-guardrails.test.ts`
+
+  - `tests/lint-no-leaky-test-daemon.test.ts` if that is where the existing rule self-check belongs
+  for repository-wide guardrail behavior.
+
+
+  #### Why
+
+  The guardrail is supposed to prevent daemon leaks and fixture bypasses, not only catch simple
+  inline examples. Validation found false negatives:
+
+
+  - Registering `onTestFinished(() => killPid(pid))` before `expect(...)` is not safe if `pid =
+  readPidFromFile()` happens after the `expect`; a thrown assertion leaves the cleanup callback
+  unbound to the daemon.
+
+  - Wrapping `runKspec("serve start --detach ...")` in a local `startDetachedDaemon()` helper must
+  not make the unsafe daemon start invisible. The approved-helper boundary should be explicit, not
+  inferred from the presence of any helper-looking function.
+
+
+  Regression tests must land before the lint rule fix so the false negatives are reproduced and
+  future workers cannot satisfy the task by changing unrelated code.
+
+
+  #### How
+
+  1. Inspect current guardrail tests around:
+     - daemon command classification;
+     - detached cleanup timing;
+     - local suppressions;
+     - repository-wide no-leaky-test-daemon checks.
+  2. Add failing examples for unbound cleanup callbacks, including at least:
+     - `let pid; runKspec("serve start --detach ..."); onTestFinished(() => killPid(pid)); expect(...); pid = readPidFromFile();`
+     - the same shape with an `await waitForReady(...)` or daemon fetch before `pid`/`child` assignment;
+     - a child-handle variant if the current rule supports child-handle cleanup recognition.
+  3. Add failing examples for arbitrary local wrappers that reproduce the current detached-start
+  false negative, including at least:
+     - a local function that calls `runKspec("serve start --detach ...")`, then a test calls that function without approved fixture cleanup;
+     - a local function or const-arrow wrapper that calls `spawn("kspec", ["serve", "start", "--detach", ...])`;
+     - assertions that the wrapper body or wrapper call produces a `no-leaky-test-daemon` diagnostic before any approved cleanup exemption can apply.
+     If direct daemon entrypoint wrappers are added, first verify they fail pre-fix; otherwise keep them as existing-pass/control coverage and do not count them toward the new regression requirement.
+  4. Add allowed examples only for genuinely safe/approved shapes:
+     - pid/child/stop handle is captured before the cleanup registration and before any later observation;
+     - shared daemon fixture utilities remain allowed when they are in approved helper paths/functions;
+     - unrelated subprocesses remain unreported.
+  5. Annotate tests with the tightened AC ids from `@daemon-test-guardrail-precision` once Task 1
+  has created them. If the exact AC ids differ, use the actual ids from `kspec item get`.
+
+  6. Run:
+     - `mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts`
+     - `mise exec -- kspec validate --refs --warnings-ok`
+     - `mise exec -- kspec validate --completeness --warnings-ok`
+
+  #### In scope
+
+  - Lint regression tests for false-negative patterns.
+
+  - Narrow allowed examples needed to prevent over-tightening.
+
+
+  #### Out of scope
+
+  - Implementing the lint rule fix.
+
+  - Changing real daemon fixture cleanup.
+
+  - Broad repository lint cleanup unrelated to no-leaky-test-daemon.
+
+
+  #### Validation
+
+  - New unsafe examples fail before the lint rule fix and pass after it by producing
+  `no-leaky-test-daemon` diagnostics.
+
+  - Existing allowed examples still pass after the lint rule fix.
+
+  - `mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+  tests/lint-no-leaky-test-daemon.test.ts`
+
+  - `mise exec -- kspec validate --refs --warnings-ok`
+
+  - `mise exec -- kspec validate --completeness --warnings-ok`
+
+
+  ---
+spec_ref: "@daemon-test-guardrail-precision"
+meta_ref: null
+plan_ref: "@plan-daemon-test-fixture-hardening"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - daemon-tests
+vcs_refs: []
+created_at: 2026-05-09T15:03:12.390Z
+todos: []
