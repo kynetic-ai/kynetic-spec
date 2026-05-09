@@ -44129,7 +44129,7 @@ runs:
     completed_at: 2026-05-09T21:09:22.168Z
   - _ulid: 01KR7ANGD22745SAN3KHVX9JPM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -44142,7 +44142,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T21:36:47.176Z
-        completed_at: 2026-05-09T21:36:47.176Z
+        completed_at: 2026-05-09T21:36:55.680Z
+        notes: "Friction: review comment bodies with code snippets had to be passed as inline shell
+          arguments. Backticks in the blocker body were evaluated by the shell and stripped/mangled
+          evidence before kspec received it. Manual oxlint probe creation was repetitive, but search
+          showed that pattern is already captured in existing observations, so no duplicate was
+          needed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T21:36:55.680Z
+        completed_at: 2026-05-09T21:36:55.680Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T21:35:32.258Z
