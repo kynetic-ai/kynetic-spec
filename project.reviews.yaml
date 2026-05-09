@@ -197339,7 +197339,17 @@ reviews:
     slugs: []
     title: Review task-fix-guardrail-binding-wrapper-analysis cycle 3
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test: 2418 suites passed; 8987 passed, 5 skipped; duration 2053.1s"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-09T19:35:42.805Z
+        completed_at: 2026-05-09T19:35:42.805Z
     events:
       - _ulid: 01KR731KHHS95E5HB5FEWNW61N
         actor: Jacob Chapel
@@ -197368,6 +197378,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR736YG7ZNC1AZZVK78K1TT2
         timestamp: 2026-05-09T19:25:16.578Z
+      - _ulid: 01KR73T4SC88T0KFE0XZMS5ECJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-09T19:35:44.172Z
     examined_commit: 875a81d78c4b0c702a3d24d08789482c973d1584
     external_links: []
     lifecycle_state: open
@@ -197424,5 +197441,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T19:22:20.081Z
-    updated_at: 2026-05-09T19:25:15.143Z
+    updated_at: 2026-05-09T19:35:42.805Z
     notes: []
