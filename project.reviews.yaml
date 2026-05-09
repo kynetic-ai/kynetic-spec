@@ -195347,6 +195347,17 @@ reviews:
         runner: npm
         created_at: 2026-05-09T12:19:02.257Z
         completed_at: 2026-05-09T12:19:02.257Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts: 19 suites passed, 213/213 tests passed (52.2s)."
+        name: daemon guardrail tests
+        required: true
+        runner: npm
+        created_at: 2026-05-09T12:19:15.392Z
+        completed_at: 2026-05-09T12:19:15.392Z
     events:
       - _ulid: 01KR6A2X5TD95S7DME4TJPFWMD
         actor: Jacob Chapel
@@ -195375,6 +195386,13 @@ reviews:
           status: pass
           name: cli serve endpoint tests
         timestamp: 2026-05-09T12:19:03.576Z
+      - _ulid: 01KR6ATZ5855VJKYD02CBVQBY9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon guardrail tests
+        timestamp: 2026-05-09T12:19:16.776Z
     examined_commit: c9e84cf090a02f85fdbba45cd9949d62bcfd8b44
     external_links: []
     lifecycle_state: open
@@ -195387,5 +195405,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-09T12:06:08.315Z
-    updated_at: 2026-05-09T12:19:02.257Z
+    updated_at: 2026-05-09T12:19:15.392Z
     notes: []
