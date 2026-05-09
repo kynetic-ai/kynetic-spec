@@ -21201,12 +21201,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-09T17:52:29.747Z
+      updated_at: 2026-05-09T17:52:36.901Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T17:52:29.747Z
+      updated_at: 2026-05-09T17:52:36.901Z
     integration:
       status: pending
       detail: null
@@ -21214,24 +21214,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 78586f8c763e828ea888ef220f6e319c15e4ce7e
-      updated_at: 2026-05-09T17:52:29.747Z
-    lifecycle_state: ready
+      updated_at: 2026-05-09T17:52:36.901Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
     task_slug: task-fix-guardrail-binding-wrapper-analysis
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T17:21:44.120Z
-      last_reconciled_at: 2026-05-09T17:52:29.747Z
+      last_reconciled_at: 2026-05-09T17:52:36.901Z
       created_at: 2026-05-09T17:21:19.154Z
-      updated_at: 2026-05-09T17:52:29.747Z
+      updated_at: 2026-05-09T17:52:36.901Z
     workspace_id: dispatch-workspace-01KR6M77JA0S1EEVZX8KKRPY1V
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: b9857b36c2ea8f9b2a93420865545743d74b58de
+        last_seen_at: 2026-05-09T17:52:36.901Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-guardrail-binding-wrapper-analysis-01kr6m77-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-guardrail-binding-wrapper-analysis/01kr6m77
-        head: 78586f8c763e828ea888ef220f6e319c15e4ce7e
-        last_seen_at: 2026-05-09T17:21:19.154Z
+        head: b9857b36c2ea8f9b2a93420865545743d74b58de
+        last_seen_at: 2026-05-09T17:52:36.901Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-guardrail-binding-wrapper-analysis-01kr6m77
