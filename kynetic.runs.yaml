@@ -42435,7 +42435,7 @@ runs:
     completed_at: 2026-05-09T08:05:50.166Z
   - _ulid: 01KR5XKA4Z1TW0BPSJBG7YW1BS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -42449,7 +42449,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T08:30:08.145Z
-        completed_at: 2026-05-09T08:30:08.145Z
+        completed_at: 2026-05-09T08:30:37.619Z
+        notes: "Searched: kspec inbox list, kspec meta observations, kspec search for 'review get threads',
+          'task note message argument', 'task submit needs_work', 'review thread body truncation',
+          'fix cycle ergonomics'. Existing coverage: (1) inbox already has 'fix-cycle ergonomics
+          mismatch' item covering needs_work→submit two-step requirement. (2) No existing item for
+          'kspec review get text output truncates thread bodies' — captured as friction observation
+          01KR5XQ3."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T08:30:37.619Z
+        completed_at: 2026-05-09T08:30:37.619Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T08:27:54.399Z
