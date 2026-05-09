@@ -156,7 +156,7 @@ description: >-
 spec_ref: "@daemon-test-startup-failure-hygiene"
 meta_ref: null
 plan_ref: "@plan-daemon-test-fixture-hardening"
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-tighten-daemon-hardening-specs"
@@ -177,7 +177,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
-session_id: null
+session_id: 01KR6V1RJXM0Z2HV067G9Q54R0
 history:
   - author: Jacob Chapel
     changes:
@@ -334,8 +334,21 @@ history:
         previous: 01KR6QM7EC6HEJQR1XJ9KCT487
     command: review-verdict-needs-work
     timestamp: 2026-05-09T16:57:11.805Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KR6V1RJXM0Z2HV067G9Q54R0
+        previous: null
+      started_at:
+        new: 2026-05-09T17:04:31.599Z
+        previous: 2026-05-09T16:04:06.279Z
+    command: task-start
+    timestamp: 2026-05-09T17:04:31.600Z
 created_at: 2026-05-09T15:03:05.304Z
-started_at: 2026-05-09T16:04:06.279Z
+started_at: 2026-05-09T17:04:31.599Z
 submitted_at: 2026-05-09T16:17:34.157Z
 todos: []
 automation: eligible
