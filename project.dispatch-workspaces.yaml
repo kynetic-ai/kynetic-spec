@@ -20323,18 +20323,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
-    canonical_branch_head: 239c4fb963073eb89ae1a7a51e56bdb310db7d66
+    canonical_branch_head: 0233c88c3d5ce4e06f96e85fff9dc27b9fcbe66d
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-09T16:17:39.785Z
+      updated_at: 2026-05-09T16:37:37.385Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T16:17:39.785Z
+      updated_at: 2026-05-09T16:37:37.385Z
     integration:
       status: pending
       detail: null
@@ -20342,7 +20342,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
-      updated_at: 2026-05-09T16:17:39.785Z
+      updated_at: 2026-05-09T16:37:37.385Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR6M6XARDRJ17BY20Z3BG66B"
@@ -20350,9 +20350,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T16:02:47.518Z
-      last_reconciled_at: 2026-05-09T16:17:39.785Z
+      last_reconciled_at: 2026-05-09T16:37:37.385Z
       created_at: 2026-05-09T15:34:46.996Z
-      updated_at: 2026-05-09T16:17:39.785Z
+      updated_at: 2026-05-09T16:37:37.385Z
     workspace_id: dispatch-workspace-01KR6M6XARDRJ17BY20Z3BG66B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
