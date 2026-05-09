@@ -195864,6 +195864,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KR6Q99AMC96M1ETSVKGXNPEZ
         timestamp: 2026-05-09T15:56:50.126Z
+      - _ulid: 01KR6QAH1JF2HRX7TNZQBGB8VT
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR6Q99AMC96M1ETSVKGXNPEZ
+        timestamp: 2026-05-09T15:57:29.522Z
     examined_commit: 127e8024b36887d98349e8ccfd3c23bd1bd572cc
     external_links: []
     lifecycle_state: open
@@ -195903,8 +195909,15 @@ reviews:
 
               > node scripts/test.cjs passes before review approval.
             created_at: 2026-05-09T15:56:48.852Z
+          - _ulid: 01KR6QAFR32GXZVBR8XZY55MK8
+            author: Jacob Chapel
+            body: "Correction to the blocker body: both focused daemon.test.ts and the full npm test run fail at
+              tests/helpers/daemon.test.ts:665 with AssertionError expected false to be true. The
+              failure is introduced by this branch and proves the leak, but it still makes the
+              required suite red in manual_merge before the follow-up helper fix lands."
+            created_at: 2026-05-09T15:57:28.195Z
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T15:45:55.756Z
-    updated_at: 2026-05-09T15:56:48.852Z
+    updated_at: 2026-05-09T15:57:28.195Z
     notes: []
