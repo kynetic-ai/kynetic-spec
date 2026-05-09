@@ -192131,6 +192131,54 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T03:01:00.410Z
+      - _ulid: 01KR5CGT1K74496GSHGA1H3FFJ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR5AV1XT865M9DM1Z8Q97AA9
+        timestamp: 2026-05-09T03:29:26.579Z
+      - _ulid: 01KR5CGX2Y1HC8K3WAYMN58J6K
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR5AV1XT865M9DM1Z8Q97AA9
+        timestamp: 2026-05-09T03:29:29.695Z
+      - _ulid: 01KR5CH0AMG3ZDC6HSW1QVGS52
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR5AV5FYXQ6NW4G6AYSPVY0A
+        timestamp: 2026-05-09T03:29:33.012Z
+      - _ulid: 01KR5CH3H5QZ65JNZPPTTDSQ5J
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR5AV5FYXQ6NW4G6AYSPVY0A
+        timestamp: 2026-05-09T03:29:36.294Z
+      - _ulid: 01KR5CH6T1B1KFWFE5R6ZBYX3N
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR5AV9F7CW13FP3V0M44QN8G
+        timestamp: 2026-05-09T03:29:39.650Z
+      - _ulid: 01KR5CH9ZRYKYPK0RE1K93ZSH4
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR5AV9F7CW13FP3V0M44QN8G
+        timestamp: 2026-05-09T03:29:42.904Z
+      - _ulid: 01KR5CHD6H3RH9TZXRKC440Y09
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR5AVD37EJJ8RVTRTNX5DARR
+        timestamp: 2026-05-09T03:29:46.193Z
+      - _ulid: 01KR5CHGAQ5YZ9KP12X5J2KQDJ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR5AVD37EJJ8RVTRTNX5DARR
+        timestamp: 2026-05-09T03:29:49.399Z
     examined_commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
     external_links: []
     lifecycle_state: closed
@@ -192159,7 +192207,20 @@ reviews:
               both are statically provable direct daemon-entry launches. This violates
               @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged.'
             created_at: 2026-05-09T03:00:05.178Z
+          - _ulid: 01KR5CGRS1VTKW6TW7FDRHM651
+            author: "@claude"
+            body: 'Fixed. isDaemonEntryArg now also accepts no-substitution template literals — both the strict
+              daemon-entry literal (`dist/daemon/index.js`) and any path-suffixed form ending in
+              `/dist/daemon/index.js`. Verified on the reviewer probes:
+              spawn(`dist/daemon/index.js`, ["--port", "0"]) and execFile("node",
+              [`dist/daemon/index.js`, "--port", "0"]) both emit directDaemonSpawn diagnostics now
+              (manual oxlint shows 4 errors on the probe file). Added 3 positive regressions
+              covering literal, argv-element, and absolute-path template-literal forms across
+              spawn/execFile/spawnSync.'
+            created_at: 2026-05-09T03:29:25.277Z
         kind: blocker
+        resolved_at: 2026-05-09T03:29:28.508Z
+        resolved_by: "@claude"
       - _ulid: 01KR5AV5FYXQ6NW4G6AYSPVY0A
         anchor:
           type: code
@@ -192181,7 +192242,25 @@ reviews:
               modelling like the exec/execSync shell-string path, including
               eval/version/value-consuming option cases, plus regression coverage.'
             created_at: 2026-05-09T03:00:08.830Z
+          - _ulid: 01KR5CGZ2CZAEPRQ3HN44BWQQC
+            author: "@claude"
+            body: Fixed. The spawn/spawnSync/execFile/execFileSync runtime branch now walks the argv
+              ArrayExpression with the same script-position model as the exec/execSync shell-string
+              walker — see the new findScriptPositionInArgvArray helper. Standalone flags skip one
+              element, value-consuming flags skip the flag AND its separately-passed value, and
+              no-script flags abort the walk entirely. The shared no-script predicate (renamed from
+              isShellRuntimeEvalFlag to isShellRuntimeNoScriptFlag) now also recognises -v /
+              --version / -h / --help so the reviewer probes spawn("node", ["--eval",
+              "dist/daemon/index.js"]) and execFile("node", ["--version", DAEMON_ENTRY]) no longer
+              emit direct-daemon diagnostics — both exit 0 cleanly under manual oxlint. Added 8
+              negative regressions (--eval / --version / -v / --help / -h / --print /
+              daemon-as-require-value / other-script-then-daemon) and 4 positive regressions to keep
+              real launches like spawn("node", ["--require", "./pre.js", DAEMON_ENTRY, "--port",
+              "0"]) flagged. Sibling shell-string negatives for --version and --help also added.
+            created_at: 2026-05-09T03:29:31.724Z
         kind: blocker
+        resolved_at: 2026-05-09T03:29:35.081Z
+        resolved_by: "@claude"
       - _ulid: 01KR5AV9F7CW13FP3V0M44QN8G
         anchor:
           type: code
@@ -192198,7 +192277,16 @@ reviews:
               the submitted change leaves a lint error in modified code even though the
               repository-wide lint script also has unrelated baseline failures elsewhere."
             created_at: 2026-05-09T03:00:12.903Z
+          - _ulid: 01KR5CH5HACE4CJAFC0QWQ32W7
+            author: "@claude"
+            body: "Fixed. Removed the unused META_RULE_NAME constant from the localizedDisable section — it was
+              a leftover from an earlier draft and never referenced anywhere in the rule file.
+              Verified with `npx oxlint` on the changed files: 0 errors (was 1 — `META_RULE_NAME is
+              declared but never used`)."
+            created_at: 2026-05-09T03:29:38.346Z
         kind: blocker
+        resolved_at: 2026-05-09T03:29:41.671Z
+        resolved_by: "@claude"
       - _ulid: 01KR5AVD37EJJ8RVTRTNX5DARR
         anchor:
           type: code
@@ -192217,7 +192305,22 @@ reviews:
               entry. This violates @daemon-test-guardrail-precision
               ac-direct-daemon-entry-invocations-flagged."
             created_at: 2026-05-09T03:00:16.615Z
+          - _ulid: 01KR5CHC03JE8W16S59B87EZ5K
+            author: "@claude"
+            body: "Fixed. Added a stripShellQuotes helper that strips a single matched pair of leading +
+              trailing single OR double quotes from a token, and applied it in both
+              shellCommandTokens (every tokenised shell argument) and shellCommandLeadsWithKspec
+              (the leading kspec-executable check). Mixed pairs and unbalanced quotes are
+              deliberately not stripped, so apostrophes mid-token (`script's`) remain unchanged.
+              Verified on the reviewer probes: exec(\"'dist/daemon/index.js' --port 0\") and
+              exec(\"node 'dist/daemon/index.js' --port 0\") now both emit directDaemonSpawn
+              diagnostics. Added 4 positive regressions covering single-quoted leading-token,
+              single-quoted runtime form, double-quoted runtime+entry, and single-quoted absolute
+              path."
+            created_at: 2026-05-09T03:29:44.963Z
         kind: blocker
+        resolved_at: 2026-05-09T03:29:48.147Z
+        resolved_by: "@claude"
       - _ulid: 01KR5AWCT0YX3XTY61JKKQD9VQ
         entries:
           - _ulid: 01KR5AWCT0F6F6V880ATJMYJYX
@@ -192255,5 +192358,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T03:01:00.409Z
     created_at: 2026-05-09T02:48:34.986Z
-    updated_at: 2026-05-09T03:01:00.410Z
+    updated_at: 2026-05-09T03:29:48.147Z
     notes: []
