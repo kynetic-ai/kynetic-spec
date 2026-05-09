@@ -198686,6 +198686,12 @@ reviews:
         payload:
           thread_ulid: 01KR7CK9ZEW901BQHEKNA673SF
         timestamp: 2026-05-09T22:49:00.812Z
+      - _ulid: 01KR7EWA7K22MQ621MQ2HE2N1T
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR7CK9ZEW901BQHEKNA673SF
+        timestamp: 2026-05-09T22:49:09.619Z
     examined_commit: 08328dee7a47f0c5c2a9b172770ef237860f8f6d
     external_links: []
     lifecycle_state: closed
@@ -198775,6 +198781,8 @@ reviews:
               repository debt).
             created_at: 2026-05-09T22:48:59.398Z
         kind: blocker
+        resolved_at: 2026-05-09T22:49:08.252Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -198784,5 +198792,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T22:18:35.887Z
     created_at: 2026-05-09T22:05:38.337Z
-    updated_at: 2026-05-09T22:48:59.398Z
+    updated_at: 2026-05-09T22:49:08.252Z
     notes: []
