@@ -41472,7 +41472,7 @@ runs:
     started_at: 2026-05-08T23:43:37.209Z
     completed_at: 2026-05-08T23:46:07.940Z
   - _ulid: 01KR533RZRAYG2NQTA2K0X3QF7
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -41525,7 +41525,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-09T00:46:51.950Z
-        completed_at: 2026-05-09T00:46:51.950Z
+        completed_at: 2026-05-09T00:47:10.449Z
+        notes: Captured success observation @01KR537D. No duplicate capture for batch review-check
+          optionality because inbox @01KQ1272 already tracks it. No duplicate capture for websocket
+          runtime-parity flake because task @01KR52YX was created during the review.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T00:45:02.329Z
+    completed_at: 2026-05-09T00:47:10.449Z
