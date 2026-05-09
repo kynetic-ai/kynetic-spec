@@ -41857,7 +41857,7 @@ runs:
     started_at: 2026-05-09T03:31:44.954Z
     completed_at: 2026-05-09T03:37:07.596Z
   - _ulid: 01KR5DXBGH1JNMSHTVNV8T9ZZ3
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -41906,10 +41906,14 @@ runs:
         completed_at: 2026-05-09T03:55:37.708Z
         notes: "Skipped interactive discussion: no untracked improvement remains after coverage search.
           Avoiding a duplicate capture of existing observation @01KR5CYKN."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-09T03:55:37.708Z
-        completed_at: 2026-05-09T03:55:37.708Z
+        completed_at: 2026-05-09T03:55:45.984Z
+        notes: No capture performed. Existing observation @01KR5CYKN already captures the systemic
+          static-analysis classifier shape-enumeration friction; active review @01KR5D1T captures
+          the concrete follow-up fixes.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T03:53:46.257Z
+    completed_at: 2026-05-09T03:55:45.984Z
