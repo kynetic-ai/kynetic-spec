@@ -193684,6 +193684,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T07:25:09.615Z
+      - _ulid: 01KR5V6V3ZHVZZBVX7RXK1PWQY
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR5SEJW8YPQ1K2RD2QEXX0H5
+        timestamp: 2026-05-09T07:46:08.639Z
+      - _ulid: 01KR5V6Y9K1PJXZX44JYWM39E4
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR5SEJW8YPQ1K2RD2QEXX0H5
+        timestamp: 2026-05-09T07:46:11.891Z
+      - _ulid: 01KR5V71EPCMVVFPFM4TGRCJJY
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR5T00AJX0N82YGQGG3CMYF9
+        timestamp: 2026-05-09T07:46:15.126Z
+      - _ulid: 01KR5V74HS1KR6FA045NJ70YB9
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR5T00AJX0N82YGQGG3CMYF9
+        timestamp: 2026-05-09T07:46:18.297Z
     examined_commit: 269e3ea47db29e1de702da174c4f6e9f91d29620
     external_links: []
     lifecycle_state: closed
@@ -193717,7 +193741,46 @@ reviews:
               suppress the detached-start report, so the fix needs to verify an actual cleanup call
               or registration shape, not just token presence.'
             created_at: 2026-05-09T07:15:25.193Z
+          - _ulid: 01KR5V6STZ7VH9PA00NQYEC1P2
+            author: "@claude"
+            body: >-
+              Fixed in bb5e4d849 by replacing the token-only `hasDaemonCleanupPattern(text)` scan
+              with an AST walker that requires a CallExpression whose callee statically resolves to
+              a daemon-cleanup operation: `process.kill(...)`,
+              `<expr>.kill('SIGTERM'|'SIGKILL'|'SIGINT', ...)`, the
+              `killPid`/`stopDaemon`/`stopMockDaemon` Identifier callees, or a kspec CLI invocation
+              whose first two non-flag positional tokens are `serve` then `stop` (covers the
+              `runKspec`/`kspec` helper, `exec`/`execSync` shell forms, and
+              `spawn`/`spawnSync`/`execFile`/`execFileSync` argv forms). The same walker gates the
+              try/finally finalizer escape hatch and the await/expect observation check.
+
+
+              Verified all three reviewer probes against the patched rule via direct `npx oxlint`
+              runs:
+
+              - `runKspec("serve start --detach --port 3456"); console.log("SIGTERM docs");
+              expect(true).toBe(true);` → exits 1 with `no-leaky-test-daemon` diagnostic
+
+              - `runKspec("serve start --detach --port 3456"); const cleanupDocs = "killPid should
+              be used later"; expect(...)` → exits 1 with diagnostic
+
+              - `try { runKspec("serve start --detach --port 3456"); expect(...); } finally {
+              console.log("SIGTERM docs"); }` → exits 1 with diagnostic
+
+              - Negative control with real cleanup `onTestFinished(() => killPid(pid))` still exits
+              0
+
+
+              Added three behavioral regression tests in tests/lint-no-leaky-test-daemon.test.ts
+              (one per probe) so the false-negative cannot return.
+
+
+              Targeted guardrail tests: 19/19 suites, 187/187 tests pass. Full suite: 2413/2413
+              suites, 8940 tests pass, 5 skipped (1968.1s).
+            created_at: 2026-05-09T07:46:07.327Z
         kind: blocker
+        resolved_at: 2026-05-09T07:46:10.665Z
+        resolved_by: "@claude"
       - _ulid: 01KR5T00AJX0N82YGQGG3CMYF9
         entries:
           - _ulid: 01KR5T00AJKYNYNK4JHVN8M1DX
@@ -193736,7 +193799,13 @@ reviews:
               correctness, edge cases, error handling/cleanup ordering, test quality, integration
               with real cli-serve detached starts, and source-scanning risks."
             created_at: 2026-05-09T07:24:56.018Z
+          - _ulid: 01KR5V709GQ9JG7FFEC2QE2DJC
+            author: "@claude"
+            body: Acknowledged — review evidence log is informational, no code change required.
+            created_at: 2026-05-09T07:46:13.936Z
         kind: nit
+        resolved_at: 2026-05-09T07:46:17.093Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -193746,5 +193815,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T07:25:09.615Z
     created_at: 2026-05-09T07:12:43.448Z
-    updated_at: 2026-05-09T07:25:09.615Z
+    updated_at: 2026-05-09T07:46:17.093Z
     notes: []

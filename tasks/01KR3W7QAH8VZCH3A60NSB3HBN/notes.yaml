@@ -39,3 +39,24 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T07:25:11.730Z
+  - _ulid: 01KR5V75M0E42Y1ET93X252A3Q
+    content: "Fix cycle 2: addressed reviewer's MUST-FIX blocker on
+      tools/eslint-rules/no-leaky-test-daemon.js:338 (statementContainsCleanup accepted token-only
+      text as cleanup). Replaced hasDaemonCleanupPattern(text) with an AST walker that requires a
+      CallExpression whose callee resolves to an actual daemon-cleanup operation: process.kill(...),
+      <expr>.kill('SIGTERM'|'SIGKILL'|'SIGINT', ...), killPid/stopDaemon/stopMockDaemon Identifier
+      callees, or a kspec CLI invocation whose first two non-flag positional tokens are 'serve' then
+      'stop' (covers runKspec/kspec helper, exec/execSync shell,
+      spawn/spawnSync/execFile/execFileSync argv). Same walker now gates the try/finally finalizer
+      check and the await/expect observation check (symmetric tightening). Verified all three
+      reviewer probes via direct `npx oxlint`: console.log SIGTERM, string-literal killPid,
+      try/finally console.log — each now exits 1 with the missingCleanup diagnostic; the negative
+      control onTestFinished(() => killPid(pid)) still exits 0. Added one behavioral regression test
+      per probe in tests/lint-no-leaky-test-daemon.test.ts. Re-verified all five spec ACs:
+      detached-cleanup-before-observation now correctly rejects token-only text;
+      direct-daemon-entry, unrelated-subprocesses-not-reported, local-exception-is-local, and
+      exception-reason-states-subject continue to pass. Targeted guardrail tests: 19/19 suites,
+      187/187 tests. Full suite: 2413/2413 suites, 8940 tests pass, 5 skipped (1968s)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T07:46:19.392Z

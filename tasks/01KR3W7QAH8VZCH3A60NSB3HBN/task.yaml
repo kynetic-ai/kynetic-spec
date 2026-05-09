@@ -51,7 +51,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: needs_work
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-detached-cleanup-timing-regressions"
@@ -67,12 +67,12 @@ review_ref: "@01KR5S9MXRGYWHM8Z8Q5TJMPGB"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fix-detached-cleanup-timing-analysis/01kr3w7q
-  captured_at: 2026-05-09T07:08:51.886Z
-  commit: 269e3ea47db29e1de702da174c4f6e9f91d29620
+  captured_at: 2026-05-09T07:46:20.148Z
+  commit: bb5e4d849de64fa9d0b5b0b45cf9a63b833baa11
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-fix-detached-cleanup-timing-analysis/01kr3w7q
-session_id: null
+session_id: 01KR5T5VGE0Y664VXNQ7KWH0TK
 history:
   - author: Jacob Chapel
     changes:
@@ -188,8 +188,48 @@ history:
         previous: 01KR5R4E7ZVX06A2J5HPX1EQPQ
     command: review-verdict-needs-work
     timestamp: 2026-05-09T07:25:11.730Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KR5T5VGE0Y664VXNQ7KWH0TK
+        previous: null
+      started_at:
+        new: 2026-05-09T07:46:05.633Z
+        previous: 2026-05-09T07:08:48.648Z
+    command: task-start
+    timestamp: 2026-05-09T07:46:05.634Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-fix-detached-cleanup-timing-analysis/01kr3w7q
+          captured_at: 2026-05-09T07:46:20.148Z
+          commit: bb5e4d849de64fa9d0b5b0b45cf9a63b833baa11
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-fix-detached-cleanup-timing-analysis/01kr3w7q
+        previous:
+          review_url: null
+          branch: dispatch/task/task-fix-detached-cleanup-timing-analysis/01kr3w7q
+          captured_at: 2026-05-09T07:08:51.886Z
+          commit: 269e3ea47db29e1de702da174c4f6e9f91d29620
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-fix-detached-cleanup-timing-analysis/01kr3w7q
+      submitted_at:
+        new: 2026-05-09T07:46:20.151Z
+        previous: 2026-05-09T07:08:51.889Z
+    command: task-submit
+    timestamp: 2026-05-09T07:46:20.151Z
 created_at: 2026-05-08T13:25:37.233Z
-started_at: 2026-05-09T07:08:48.648Z
-submitted_at: 2026-05-09T07:08:51.889Z
+started_at: 2026-05-09T07:46:05.633Z
+submitted_at: 2026-05-09T07:46:20.151Z
 todos: []
 automation: eligible
