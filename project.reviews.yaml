@@ -191383,6 +191383,13 @@ reviews:
           status: fail
           name: lint baseline
         timestamp: 2026-05-09T02:20:48.109Z
+      - _ulid: 01KR58KJHREJCRRP2DB1TBH4Q9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR58KH98NVMQ13XV4AFBBHKS
+        timestamp: 2026-05-09T02:21:02.904Z
     examined_commit: 8c8228706ad1b4fecdf0a33e3ab51814af6c4e74
     external_links: []
     lifecycle_state: open
@@ -191858,7 +191865,35 @@ reviews:
               --use-openssl-ca from the value-consuming set and add a regression for this shape.'
             created_at: 2026-05-09T02:19:50.707Z
         kind: blocker
+      - _ulid: 01KR58KH98NVMQ13XV4AFBBHKS
+        entries:
+          - _ulid: 01KR58KH98P755TCQM1VMYZTKM
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: kspec-agents.md; task/spec details for @01KR3W7PPVDFR8F03VQ6J54M3K,
+              @daemon-test-guardrail-precision, and @daemon-test-harness-guardrails; prior cycle
+              review @01KR528J; latest commit diff for tools/eslint-rules/no-leaky-test-daemon.js
+              and tests/lint-daemon-test-guardrails.test.ts; test helper runOxlint setup.
+
+              Commands run: git status/rev-parse/diff/log/show; kspec task get; kspec item get;
+              kspec review for-task/get/add/open/comment/reply/check; kspec validate and kspec
+              validate --warnings-ok; rg AC annotations and source-scan terms; node --help option
+              checks; node plus oxlint classifier probe; npm test -- --fresh targeted guardrail
+              tests; npm test -- --fresh full suite; npm run lint; npx oxlint changed files.
+
+              Claims verified: Worker claim that targeted and full tests pass was verified directly.
+              Worker claim that value-consuming and eval-mode regressions were covered was partially
+              verified; added probes found a remaining false negative for standalone runtime option
+              --use-openssl-ca.
+
+              Categories searched: correctness, edge cases around runtime option parsing, false
+              positives and false negatives, AC coverage annotations, source-scanning test risk,
+              validation, lint/test integration.
+            created_at: 2026-05-09T02:21:01.608Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-09T02:08:59.965Z
-    updated_at: 2026-05-09T02:20:46.789Z
+    updated_at: 2026-05-09T02:21:01.608Z
     notes: []
