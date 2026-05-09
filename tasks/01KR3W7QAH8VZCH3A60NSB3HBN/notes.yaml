@@ -17,3 +17,20 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T06:47:41.756Z
+  - _ulid: 01KR5S25D6SBA29FJ3ASGFKHE2
+    content: "Fix cycle 1: addressed reviewer blocker on tools/eslint-rules/no-leaky-test-daemon.js:318
+      (substring match on `onTestFinished` accepted unrelated cleanup). Tightened
+      statementContainsCleanup to defer to hasDaemonCleanupPattern, so in-flow cleanup must carry an
+      actual daemon kill/stop signal (process.kill, SIGTERM/SIGKILL/SIGINT, killPid, stopDaemon,
+      stopMockDaemon, serve stop). Re-ran the reviewer's synthetic probe (runKspec serve start
+      --detach; onTestFinished stopUnrelatedFixture; expect(...)) — oxlint now reports the
+      missingCleanup error. Added two behavioral regressions in
+      tests/lint-no-leaky-test-daemon.test.ts (unrelated-fixture and blocker.close() variants).
+      Targeted guardrail tests: 19 suites / 184 tests pass. Full suite: 2413 suites / 8937 pass, 5
+      skipped. Re-verified all five spec ACs against the implementation:
+      detached-cleanup-before-observation now correctly rejects unrelated cleanup;
+      direct-daemon-entry, unrelated-subprocesses-not-reported, local-exception-is-local, and
+      exception-reason-states-subject continue to pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T07:08:38.182Z
