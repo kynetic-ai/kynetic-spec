@@ -17770,11 +17770,11 @@ workspaces:
     canonical_branch: dispatch/task/task-stabilize-websocket-protocol-runtime-parity-test/01kr52yx
     canonical_branch_head: 716e31003b4155443bfddf1dfcc79d8a4f390513
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-09T01:58:31.433Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-09T01:58:32.873Z
     health:
       status: healthy
       issues: []
@@ -17788,7 +17788,7 @@ workspaces:
       target_branch: dev
       target_commit: 5538619f9b3a637365a38e313dcbc5dd7501b809
       updated_at: 2026-05-09T01:58:31.433Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR52YXAAQZ4ZMFR0ASTJVJ59"
     task_slug: task-stabilize-websocket-protocol-runtime-parity-test
@@ -17797,7 +17797,7 @@ workspaces:
       last_active_at: 2026-05-09T01:44:14.722Z
       last_reconciled_at: 2026-05-09T01:58:31.433Z
       created_at: 2026-05-09T00:42:38.403Z
-      updated_at: 2026-05-09T01:58:31.433Z
+      updated_at: 2026-05-09T01:58:32.873Z
     workspace_id: dispatch-workspace-01KR52YXAAQZ4ZMFR0ASTJVJ59
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
