@@ -18276,18 +18276,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-fix-detached-cleanup-timing-analysis/01kr3w7q
-    canonical_branch_head: 269e3ea47db29e1de702da174c4f6e9f91d29620
+    canonical_branch_head: bb5e4d849de64fa9d0b5b0b45cf9a63b833baa11
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-09T07:27:43.453Z
+      updated_at: 2026-05-09T07:45:36.184Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T07:28:07.832Z
+      updated_at: 2026-05-09T07:45:36.184Z
     integration:
       status: pending
       detail: null
@@ -18295,7 +18295,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3c3f6b705bb15386af34f7f66787a082e8a0be02
-      updated_at: 2026-05-09T07:27:43.453Z
+      updated_at: 2026-05-09T07:45:36.184Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
@@ -18303,9 +18303,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T07:28:07.832Z
-      last_reconciled_at: 2026-05-09T07:28:07.832Z
+      last_reconciled_at: 2026-05-09T07:45:36.184Z
       created_at: 2026-05-09T06:09:47.395Z
-      updated_at: 2026-05-09T07:28:07.832Z
+      updated_at: 2026-05-09T07:45:36.184Z
     workspace_id: dispatch-workspace-01KR3W7QAH8VZCH3A60NSB3HBN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
