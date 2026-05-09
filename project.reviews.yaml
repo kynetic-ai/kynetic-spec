@@ -198084,6 +198084,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T21:20:40.102Z
+      - _ulid: 01KR79YRA115P5MYS6XBY8KGNQ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR79YPTWMSM89JQPJASSHYK1
+        timestamp: 2026-05-09T21:23:06.689Z
     examined_commit: ce61a5635365f9e09bff5a3d3c59e9d937465605
     external_links: []
     lifecycle_state: open
@@ -198093,8 +198100,29 @@ reviews:
       content_hash: ""
       ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR79YPTWMSM89JQPJASSHYK1
+        anchor:
+          type: code
+          commit: ce61a5635365f9e09bff5a3d3c59e9d937465605
+          line_end: 673
+          line_start: 666
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR79YPTWFMKXTQE5AWQQVHM0
+            author: Jacob Chapel
+            body: "MUST-FIX: wrapped null/undefined initializers are treated as concrete bindings, so cleanup
+              can still be accepted without a usable pid at registration time.  only checks bare ,
+              bare , and , but it does not unwrap transparent TypeScript wrappers. I verified with
+              an oxlint probe against this snapshot:  exited 0 with 'Found 0 warnings and 0 errors'.
+              That violates : the closure captures a binding whose runtime value is still undefined
+              at registration, so an intervening assertion can leave the detached daemon without
+              scoped cleanup. The null/undefined classifier should use the same transparent unwrap
+              discipline as kill-target analysis, and tests should cover TS-wrapped / initializers."
+            created_at: 2026-05-09T21:23:05.180Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T21:20:22.839Z
-    updated_at: 2026-05-09T21:20:38.733Z
+    updated_at: 2026-05-09T21:23:05.180Z
     notes: []
