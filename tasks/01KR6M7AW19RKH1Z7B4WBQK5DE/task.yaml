@@ -1,0 +1,146 @@
+_ulid: 01KR6M7AW19RKH1Z7B4WBQK5DE
+slugs:
+  - task-validate-daemon-hardening-corrections
+title: Validate daemon hardening corrective work end to end
+type: task
+description: >-
+  ## Task 6 — Validate daemon hardening corrective work end to end
+
+
+  Proposed slug: `task-validate-daemon-hardening-corrections`
+
+  Type: `task`
+
+  Priority: `P3`
+
+  Plan ref: `@plan-daemon-test-fixture-hardening`
+
+  Spec ref: `@daemon-test-guardrail-precision`
+
+  Additional related spec: `@daemon-test-startup-failure-hygiene`
+
+  Tags: `daemon-tests`, `validation`, `follow-up`
+
+  Depends on: `@task-fix-register-cleanup-failure-leak`,
+  `@task-fix-guardrail-binding-wrapper-analysis`
+
+  Automation: leave unassessed until Jacob approves.
+
+
+  ### Description
+
+
+  #### What
+
+  Run an end-to-end validation pass for the corrective daemon hardening work, align only the
+  relevant spec implementation statuses when the tightened behavior is actually covered, and record
+  validation evidence in this task's notes.
+
+
+  This task verifies that:
+
+
+  - the real daemon fixture stops owned children on cleanup-registration failure;
+
+  - the static guardrail reports unbound cleanup callbacks and arbitrary local wrappers;
+
+  - existing safe daemon fixture and guardrail cases still pass;
+
+  - the tightened specs are no longer overclaiming `implemented` status once the fixes land;
+
+  - no new daemon process leaks are left behind by the focused suites.
+
+
+  #### Why
+
+  The corrective work changes spec text, real daemon fixture cleanup, and static lint guardrail
+  analysis. A final validation task prevents the same failure mode that motivated this follow-up:
+  several individually plausible changes can combine into a still-incomplete or overclaimed result.
+  Validation should explicitly check the tightened behavior and the original daemon-test fixture
+  standardization spirit: tests should be isolated, deterministic, endpoint-aware, and protected by
+  enforceable guardrails rather than relying on broad manual discipline.
+
+
+  #### How
+
+  1. Inspect the final specs:
+     - `mise exec -- kspec item get @daemon-test-startup-failure-hygiene`
+     - `mise exec -- kspec item get @daemon-test-guardrail-precision`
+  2. Confirm implementation/status alignment:
+     - specs with all tightened ACs covered must be aligned to `implemented`;
+     - specs with any remaining uncovered tightened ACs must stay or be set to `in_progress` or lower, with the uncovered ACs named in the task note;
+     - do not mark either spec `implemented` solely because focused suites passed; the note must tie passing evidence to the actual tightened AC ids from `kspec item get`.
+  3. Run focused suites:
+     - `mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts`
+     - `mise exec -- npm test -- --fresh tests/e2e-fixture-daemon-cleanup.test.ts`
+     - `mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts`
+  4. Run kspec validation:
+     - `mise exec -- kspec validate --refs --warnings-ok`
+     - `mise exec -- kspec validate --alignment --warnings-ok`
+     - `mise exec -- kspec validate --completeness --warnings-ok`
+  5. Run the full test suite if runtime budget allows:
+     - `mise exec -- npm test -- --fresh`
+     If the full suite is skipped due runtime budget, record that explicitly in the task notes and include focused suite evidence instead.
+  6. Check process hygiene around the focused daemon suites:
+     - capture a pre-suite daemon-process baseline;
+     - run the focused daemon suites;
+     - capture a post-suite daemon-process snapshot;
+     - compare for new `kspec`/daemon child processes tied to the test temp directories, isolated homes, pid files, or command lines used by these suites.
+     If existing unrelated daemon processes are present, classify them as pre-existing. Do not kill ambient user processes. If a new test-started daemon remains, record validation failure and keep statuses honest rather than fixing it in this task.
+  7. Verify worktree/shadow state:
+     - `git status --short --branch`
+     - `git -C .kspec status --short --branch`
+  8. Add a final task note summarizing exact commands, pass/fail status, any pre-existing unrelated
+  warnings, and whether the tightened specs can truthfully be marked `implemented`.
+
+
+  #### In scope
+
+  - Focused and optional full validation for the corrective daemon hardening tasks.
+
+  - Spec implementation status alignment for the tightened ACs in
+  `@daemon-test-startup-failure-hygiene` and `@daemon-test-guardrail-precision`.
+
+  - Recording validation evidence in this validation task's notes.
+
+  - Normal lifecycle submission/completion of this validation task after review.
+
+
+  #### Out of scope
+
+  - Implementing missing fixture or guardrail behavior discovered during validation. If validation
+  finds new failures, report them and leave the spec/task status honest rather than expanding this
+  task into implementation work.
+
+  - Changing the lifecycle status of prerequisite corrective tasks except through the normal
+  review/merge flow already associated with those tasks.
+
+  - Broad unrelated lint cleanup.
+
+  - Killing ambient user daemon processes not started by these tests.
+
+
+  #### Validation
+
+  - Focused daemon helper tests pass.
+
+  - Focused Playwright fixture cleanup tests pass.
+
+  - Focused guardrail tests pass.
+
+  - Kspec refs/alignment/completeness validations pass with only classified pre-existing warnings.
+
+  - No newly leaked daemon process remains after focused suites.
+spec_ref: "@daemon-test-guardrail-precision"
+meta_ref: null
+plan_ref: "@plan-daemon-test-fixture-hardening"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - daemon-tests
+vcs_refs: []
+created_at: 2026-05-09T15:03:19.169Z
+todos: []
