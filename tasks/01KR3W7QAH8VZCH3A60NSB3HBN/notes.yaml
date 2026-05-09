@@ -171,3 +171,71 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T09:27:43.602Z
+  - _ulid: 01KR629HDWKS2JVMJKMA5QXC7A
+    content: >-
+      Fix cycle 5: addressed both reviewer MUST-FIX blockers on subtreeContainsAwaitOrExpect.
+
+
+      Blocker 1 (line 756, walker descended into stored function/arrow bodies and treated stored
+      expects as same-statement observations): added function-body pruning symmetric to the cleanup
+      walker. subtreeContainsAwaitOrExpect now prunes descent into FunctionDeclaration /
+      FunctionExpression / ArrowFunctionExpression bodies unless the function is invoked immediately
+      as an IIFE (function in callee position of its parent CallExpression). New helper
+      isImmediatelyInvokedFunctionExpression(fnNode) gates descent. Stored arrows/functions are no
+      longer on the straight-line execution path of the declaring statement, so a later in-flow
+      onTestFinished(...) registration is correctly recognised as cleanup.
+
+
+      Blocker 2 (line 752, observation gate matched only AwaitExpression and direct expect()):
+      extended the gate to include bare fetch(...) Identifier callees (using existing
+      FETCH_LIKE_CALLEES set) and new WebSocket(...) NewExpression with WebSocket Identifier callee
+      (using existing WEBSOCKET_LIKE_CONSTRUCTORS set). The observation surface now matches the
+      rule's existing daemon-URL detection surface, keeping the rule self-consistent. Member-form
+      callees (http.get, axios.get, user probe helpers) intentionally NOT matched — would mass-fail
+      unrelated tests, and the URL-detection surface already excludes them.
+
+
+      Verified directly with npx oxlint:
+
+      - Reviewer probe 1 (stored arrow with expect, cleanup before later() invocation): EXIT 0, no
+      false positive.
+
+      - Reviewer probe 2 (unawaited fetch to daemon URL before cleanup): EXIT 1, missingCleanup
+      fires.
+
+      - WebSocket variant (unawaited new WebSocket before cleanup): EXIT 1, fires.
+
+      - IIFE expect (immediately invoked at the statement): EXIT 1, still fires (IIFE bodies are
+      descended into).
+
+      - Negative controls (cleanup before expect, awaited fetch, defensive guard inside callback,
+      process.on exit registration): all unchanged, EXIT 0 where appropriate.
+
+
+      Added 5 behavioral regressions in tests/lint-no-leaky-test-daemon.test.ts:
+
+      - positive: unawaited fetch before cleanup
+
+      - positive: unawaited new WebSocket before cleanup
+
+      - positive: IIFE expect at this statement
+
+      - negative: stored arrow with expect, invoked after cleanup
+
+      - negative: stored named function with expect, invoked after cleanup
+
+
+      Re-verified all 5 spec ACs: ac-direct-daemon-entry-invocations-flagged unchanged;
+      ac-detached-cleanup-before-observation now correctly handles stored callback bodies (no false
+      positives) AND unawaited daemon network observations (no false negatives);
+      ac-unrelated-subprocesses-not-reported unchanged; ac-local-exception-is-local and
+      ac-exception-reason-states-subject unchanged.
+
+
+      Targeted guardrail tests: 19/19 suites, 202/202 tests (was 197 — added 5 new regressions).
+      Full suite: 2413/2413 suites, 8955 tests pass / 5 skipped (1978s). Audit: npx oxlint --config
+      .oxlintrc.json tests/ shows 0 no-leaky-test-daemon violations. cli-serve.test.ts audit: 0 new
+      false positives.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T09:49:57.052Z
