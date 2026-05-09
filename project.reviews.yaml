@@ -194762,6 +194762,12 @@ reviews:
         payload:
           thread_ulid: 01KR62RNWHEWSJ6JGMHN028E19
         timestamp: 2026-05-09T10:31:14.680Z
+      - _ulid: 01KR64ND938MJW09MTS89KSV95
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR62R8GMSN255VVK1H47S8V2
+        timestamp: 2026-05-09T10:31:23.171Z
     examined_commit: b1848893913ff9ca5e22b6ec20c23338f858d88a
     external_links: []
     lifecycle_state: closed
@@ -194804,6 +194810,8 @@ reviews:
               tests/lint-no-leaky-test-daemon.test.ts cover the four lifecycle hook variants."
             created_at: 2026-05-09T10:31:06.985Z
         kind: blocker
+        resolved_at: 2026-05-09T10:31:21.761Z
+        resolved_by: "@claude"
       - _ulid: 01KR62RNWHEWSJ6JGMHN028E19
         anchor:
           type: code
@@ -194863,5 +194871,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T10:05:19.288Z
     created_at: 2026-05-09T09:54:24.456Z
-    updated_at: 2026-05-09T10:31:13.331Z
+    updated_at: 2026-05-09T10:31:21.761Z
     notes: []
