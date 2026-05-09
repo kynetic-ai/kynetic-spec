@@ -215,6 +215,49 @@ describe("test suite", () => {
 `);
       expect(result.output).toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle 13 blocker: an in-flow `onTestFinished(...)` whose callback
+    // only tears down an unrelated fixture is NOT cleanup for the
+    // detached daemon. The `onTestFinished` substring is present, but the
+    // callback never kills the daemon — a registration-name match would
+    // silently accept a leak. The cleanup-timing predicate must require a
+    // daemon-specific kill/stop pattern (`process.kill`, `SIGTERM`,
+    // `killPid`, `stopDaemon`, `serve stop`, etc.) inside the statement.
+    it("should flag serve start --detach when in-flow onTestFinished only tears down an unrelated fixture", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => stopUnrelatedFixture());
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Companion to the unrelated-fixture case: an in-flow afterEach-style
+    // registration whose callback closes a network blocker (no kill, no
+    // stop) is also not daemon cleanup, so the detached start must still
+    // be reported.
+    it("should flag serve start --detach when in-flow onTestFinished only closes a network blocker", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => blocker.close());
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {

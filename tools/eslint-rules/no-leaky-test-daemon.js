@@ -312,13 +312,32 @@ const noLeakyTestDaemon = {
       return parent.range[0] <= target.range[0] && parent.range[1] >= target.range[1];
     }
 
+    /**
+     * True when an in-flow statement registers cleanup that targets the
+     * just-started detached daemon. The statement must carry a
+     * daemon-specific kill/stop pattern (`process.kill`, `SIGTERM`/
+     * `SIGKILL`/`SIGINT`, `killPid`, `stopDaemon`, `stopMockDaemon`, or
+     * `serve stop`) — the same set the try/finally finalizer check
+     * accepts. A bare `onTestFinished(...)` whose callback only stops an
+     * unrelated fixture (e.g.
+     * `onTestFinished(() => stopUnrelatedFixture())`) MUST NOT count: the
+     * AC requires cleanup scoped to the daemon that was just started, and
+     * a substring match on the registration name silently accepts
+     * unrelated teardown (the false-negative blocker on
+     * `@daemon-test-guardrail-precision`
+     * `ac-detached-cleanup-before-observation`).
+     *
+     * The predicate runs on the full statement text, so the kill pattern
+     * may live anywhere inside the registration callback (including a
+     * multi-line block body that performs other teardown alongside the
+     * daemon kill). False positives — a statement whose text only
+     * incidentally contains a kill pattern (e.g. a `console.log("SIGTERM
+     * docs")`) — are tolerated because the surrounding context already
+     * required a detached daemon start in the same control flow.
+     */
     function statementContainsCleanup(stmt) {
       const text = context.sourceCode.getText(stmt);
-      return (
-        text.includes("onTestFinished") ||
-        text.includes("killPid") ||
-        (text.includes("process.kill") && text.includes("SIGTERM"))
-      );
+      return hasDaemonCleanupPattern(text);
     }
 
     function statementContainsAwaitOrExpect(stmt) {
