@@ -172,8 +172,8 @@ review_ref: "@01KR6PNBHC6B7XZ1VGYGYA4WB1"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
-  captured_at: 2026-05-09T16:17:34.153Z
-  commit: 239c4fb963073eb89ae1a7a51e56bdb310db7d66
+  captured_at: 2026-05-09T16:37:30.000Z
+  commit: 0233c88c3d5ce4e06f96e85fff9dc27b9fcbe66d
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
@@ -296,6 +296,27 @@ history:
         previous: 2026-05-09T15:42:21.734Z
     command: task-submit
     timestamp: 2026-05-09T16:17:34.157Z
+  - author: "@claude"
+    changes:
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
+          captured_at: 2026-05-09T16:37:30.000Z
+          commit: 0233c88c3d5ce4e06f96e85fff9dc27b9fcbe66d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
+        previous:
+          review_url: null
+          branch: dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
+          captured_at: 2026-05-09T16:17:34.153Z
+          commit: 239c4fb963073eb89ae1a7a51e56bdb310db7d66
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
+    command: task-patch
+    timestamp: 2026-05-09T16:37:32.063Z
 created_at: 2026-05-09T15:03:05.304Z
 started_at: 2026-05-09T16:04:06.279Z
 submitted_at: 2026-05-09T16:17:34.157Z
