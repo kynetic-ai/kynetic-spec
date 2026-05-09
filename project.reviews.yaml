@@ -199096,6 +199096,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T23:50:25.528Z
+      - _ulid: 01KR7JHJ0EZ6ABJQPXTW3YE153
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR7JHGEZ5JG65YRSW8W35ATF
+        timestamp: 2026-05-09T23:53:11.438Z
     examined_commit: d92bfe16704a1494aafb7a3c6e5468d3761bb7d8
     external_links: []
     lifecycle_state: open
@@ -199105,8 +199112,31 @@ reviews:
       content_hash: ""
       ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR7JHGEZ5JG65YRSW8W35ATF
+        anchor:
+          type: code
+          commit: d92bfe16704a1494aafb7a3c6e5468d3761bb7d8
+          line_end: 1392
+          line_start: 1386
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR7JHGEZ7FDV3TBFA733HFYE
+            author: Jacob Chapel
+            body: 'MUST-FIX: the ownership predicate still treats any concrete binding that appears after a
+              detached-start node as cleanup for that start, without checking whether another
+              detached daemon start occurs before the binding. Manual probe: a synthetic test with
+              runKspec("serve start --detach --port 3456"); runKspec("serve start --detach --port
+              3457"); const pid = readPidFromFile(); onTestFinished(() => process.kill(pid,
+              "SIGTERM")); expect(true).toBe(true); exits 0 with oxlint (Found 0 warnings and 0
+              errors). That single pid can only refer to one daemon, so the first detached start has
+              no scoped cleanup tied to it, violating @daemon-test-guardrail-precision
+              ac-detached-cleanup-bound-before-observation / the task requirement that cleanup own
+              the daemon that was just started.'
+            created_at: 2026-05-09T23:53:09.855Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T23:50:12.853Z
-    updated_at: 2026-05-09T23:50:24.185Z
+    updated_at: 2026-05-09T23:53:09.855Z
     notes: []
