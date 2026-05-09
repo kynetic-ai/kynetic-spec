@@ -192075,6 +192075,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR5AV5FYXQ6NW4G6AYSPVY0A
         timestamp: 2026-05-09T03:00:10.318Z
+      - _ulid: 01KR5AVAPYFW1M25TR1CEX3XQW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR5AV9F7CW13FP3V0M44QN8G
+        timestamp: 2026-05-09T03:00:14.174Z
     examined_commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
     external_links: []
     lifecycle_state: open
@@ -192126,7 +192133,24 @@ reviews:
               eval/version/value-consuming option cases, plus regression coverage.'
             created_at: 2026-05-09T03:00:08.830Z
         kind: blocker
+      - _ulid: 01KR5AV9F7CW13FP3V0M44QN8G
+        anchor:
+          type: code
+          commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
+          line_end: 1359
+          line_start: 1359
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR5AV9F78YP1CSQ3ECANPFEB
+            author: Jacob Chapel
+            body: "MUST-FIX: this changed rule file now declares `META_RULE_NAME` but never uses it. Targeted
+              lint on the 11 changed files reports this as `eslint(no-unused-vars)` at this line, so
+              the submitted change leaves a lint error in modified code even though the
+              repository-wide lint script also has unrelated baseline failures elsewhere."
+            created_at: 2026-05-09T03:00:12.903Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T02:48:34.986Z
-    updated_at: 2026-05-09T03:00:08.830Z
+    updated_at: 2026-05-09T03:00:12.903Z
     notes: []
