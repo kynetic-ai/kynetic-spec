@@ -198000,6 +198000,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T21:07:02.889Z
+      - _ulid: 01KR7ASC0R95RSHQCAYF7F5JED
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR79124XMTCJ5WAA8XVYHESW
+        timestamp: 2026-05-09T21:37:38.840Z
+      - _ulid: 01KR7ASFDYDJ1492DC1P949JD6
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR79124XMTCJ5WAA8XVYHESW
+        timestamp: 2026-05-09T21:37:42.335Z
+      - _ulid: 01KR7ASJPZ72H2T3ZKZ2F220K1
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR7915VY0FPGSSENXDX2MSXA
+        timestamp: 2026-05-09T21:37:45.695Z
+      - _ulid: 01KR7ASP0HD8RDM863G8XWABJX
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR7915VY0FPGSSENXDX2MSXA
+        timestamp: 2026-05-09T21:37:49.073Z
     examined_commit: ca08b2f2a2e706eaa17eac7be21d48536a2c6407
     external_links: []
     lifecycle_state: closed
@@ -198030,7 +198054,19 @@ reviews:
               hang. Handle timeout/signal before generic result.error, or include tails in the error
               branch."
             created_at: 2026-05-09T21:06:53.725Z
+          - _ulid: 01KR7ASAQ6DTR4F4ZC675J8ZN2
+            author: "@claude"
+            body: "Fixed: describeCommandFailure now classifies failures with tails always emitted. The new
+              logic detects ETIMEDOUT (or any error+signal combo) explicitly and prepends a `timed
+              out (... code=ETIMEDOUT)` summary while still appending stdout-tail and stderr-tail in
+              every non-success path. Added a behavioral regression test in
+              tests/daemon-build.test.ts that runs a real spawnSync against a 200ms timeout with a
+              node child that prints markers and sleeps 30s, then asserts describeCommandFailure
+              includes both marker-stdout-line and marker-stderr-line in the diagnostic message."
+            created_at: 2026-05-09T21:37:37.509Z
         kind: blocker
+        resolved_at: 2026-05-09T21:37:41.006Z
+        resolved_by: "@claude"
       - _ulid: 01KR7915VY0FPGSSENXDX2MSXA
         anchor:
           type: code
@@ -198053,7 +198089,23 @@ reviews:
               Bound the readiness probe or make waitForStartup race each probe against the remaining
               timeout."
             created_at: 2026-05-09T21:06:57.534Z
+          - _ulid: 01KR7ASHENDM8AKMJN483TQJ31
+            author: "@claude"
+            body: Fixed in two complementary ways. (1) probeHealth and probeCacheReady in
+              tests/helpers/daemon.ts now route their fetch+text through a new boundedProbeFetch
+              helper that uses AbortController with a 2s per-probe budget; an unresponsive daemon
+              will surface as a `health fetch error=...` observation rather than a hung probe. (2)
+              waitForStartup in tests/helpers/cli.ts now races each probe call against the remaining
+              wait budget — if a future probe forgets to bound itself the wait still fails within
+              timeoutMs with `probe did not settle within Nms remaining`. Added a behavioral
+              regression test in tests/cli-agent-commands.test.ts (AC-3 describe block) that calls
+              waitForStartup with a probe that resolves after 60s and asserts the wait throws within
+              ~5s with the new diagnostic. Verified focused tests pass and full suite still green
+              (2419 suites, 8981 passed).
+            created_at: 2026-05-09T21:37:44.405Z
         kind: blocker
+        resolved_at: 2026-05-09T21:37:47.752Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -198063,7 +198115,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T21:07:02.888Z
     created_at: 2026-05-09T20:54:19.738Z
-    updated_at: 2026-05-09T21:07:02.888Z
+    updated_at: 2026-05-09T21:37:47.752Z
     notes: []
   - _ulid: 01KR79SR9Q6Q4A1NYNSPH8EPK6
     slugs: []
