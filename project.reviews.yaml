@@ -198069,7 +198069,19 @@ reviews:
     slugs: []
     title: Review task-fix-guardrail-binding-wrapper-analysis cycle 5
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts: 23 suites passed, 244 tests passed, duration
+          57.8s."
+        name: focused lint guardrail tests
+        required: true
+        runner: npm
+        created_at: 2026-05-09T21:33:28.011Z
+        completed_at: 2026-05-09T21:33:28.011Z
     events:
       - _ulid: 01KR79SR9Q1JAWWKNFVDZDSXFW
         actor: Jacob Chapel
@@ -198097,6 +198109,13 @@ reviews:
         payload:
           thread_ulid: 01KR79YPTWMSM89JQPJASSHYK1
         timestamp: 2026-05-09T21:23:30.281Z
+      - _ulid: 01KR7AHRCTFEZFEFYX45ZJPYPB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused lint guardrail tests
+        timestamp: 2026-05-09T21:33:29.370Z
     examined_commit: ce61a5635365f9e09bff5a3d3c59e9d937465605
     external_links: []
     lifecycle_state: open
@@ -198142,5 +198161,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T21:20:22.839Z
-    updated_at: 2026-05-09T21:23:28.630Z
+    updated_at: 2026-05-09T21:33:28.011Z
     notes: []
