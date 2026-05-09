@@ -34,3 +34,36 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T21:07:05.671Z
+  - _ulid: 01KR7AT41N7CRX9DSX0GM8PH0G
+    content: >-
+      Fix cycle 1: addressed both review blockers.
+
+
+      Blocker 1 (describeCommandFailure dropped tails on ETIMEDOUT): rewrote describeCommandFailure
+      to always emit stdout-tail and stderr-tail, with the failure header classified by whichever
+      spawnSync signals are present (ETIMEDOUT vs signal-only kill vs non-zero status vs generic
+      error). The previous shape returned early on result.error and never reached the
+      tail-formatting branch for the timeout path this task was hardening.
+
+
+      Blocker 2 (unbounded readiness fetch in probeHealth): added boundedProbeFetch helper in
+      tests/helpers/daemon.ts that wraps fetch+text in an AbortController with a 2s per-probe
+      budget. probeHealth and probeCacheReady now use it. As defense in depth also updated
+      waitForStartup in tests/helpers/cli.ts to race each probe call against the remaining wait
+      budget — protects future probes that forget to bound themselves.
+
+
+      Regression tests added:
+
+      - tests/daemon-build.test.ts: real spawnSync ETIMEDOUT result must include stdout/stderr tails
+      in describeCommandFailure output.
+
+      - tests/cli-agent-commands.test.ts (AC-3 describe): waitForStartup against a 60s-resolving
+      probe must fail within ~5s.
+
+
+      Verification: focused suites pass; full suite passes (2419 suites, 8981 passed, 5 skipped,
+      2057s).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T21:38:03.446Z
