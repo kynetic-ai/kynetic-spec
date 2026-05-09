@@ -42590,7 +42590,7 @@ runs:
     completed_at: 2026-05-09T09:30:06.025Z
   - _ulid: 01KR62ARRYCSHMFZCJ2FMCEKVA
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -42607,7 +42607,37 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T09:51:51.183Z
-        completed_at: 2026-05-09T09:51:51.183Z
+        completed_at: 2026-05-09T09:52:35.743Z
+        notes: >-
+          Step 2 (high-confidence patterns observed):
+
+
+          SUCCESS pattern (high confidence): Building synthetic minimal oxlint test files at
+          /tmp/probe-tests/<scenario>.ts and running 'npx oxlint --config <plugin-config>' directly
+          on them gave per-blocker feedback in <1 second, vs ~9 seconds for the targeted vitest
+          harness or ~30 minutes for the full suite. This pattern is reusable for any of the cycle-N
+          fixes on no-leaky-test-daemon.js: run the reviewer's exact probe verbatim against the rule
+          before re-running tests. The rule has had 5+ fix cycles where this would apply.
+
+
+          FRICTION pattern (medium confidence — borderline): The no-leaky-test-daemon AST walker has
+          accumulated cycle-specific gating logic: cleanup walker prunes function bodies UNLESS
+          isCleanupRegistrationCallback (cycle 3); prunes
+          IfStatement/ConditionalExpression/loops/switch/handler outside registered callbacks (cycle
+          4); requires PROCESS_EXIT_EVENT_NAMES literal (cycle 4); observation walker now prunes
+          function bodies UNLESS IIFE (cycle 5); observation set extended to fetch+WebSocket (cycle
+          5). Each addition is principled, but the per-cycle accumulation suggests the rule's
+          bespoke walker design surfaces new edge cases iteratively. Borderline because: (a)
+          iterative refinement of a guardrail IS the design intent, (b) no obvious cleaner
+          architecture, (c) no clear user-visible friction beyond reviewer-worker latency.
+
+
+          NEUTRAL — not capturing: full test suite duration (~30min) is a known systemic concern
+          likely already tracked, no new information here.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T09:52:35.743Z
+        completed_at: 2026-05-09T09:52:35.743Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T09:50:37.342Z
