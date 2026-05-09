@@ -196316,6 +196316,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T16:44:52.589Z
+      - _ulid: 01KR6TNTXZWXA40N3HV0J7N3T2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR6TNSJW56S05VHY49FF0B5X
+        timestamp: 2026-05-09T16:56:05.823Z
     examined_commit: 0233c88c3d5ce4e06f96e85fff9dc27b9fcbe66d
     external_links: []
     lifecycle_state: open
@@ -196325,8 +196332,29 @@ reviews:
       content_hash: ""
       ref: "@01KR6M6XARDRJ17BY20Z3BG66B"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR6TNSJW56S05VHY49FF0B5X
+        anchor:
+          type: code
+          commit: 0233c88c3d5ce4e06f96e85fff9dc27b9fcbe66d
+          line_end: 737
+          line_start: 737
+          path: tests/helpers/daemon.test.ts
+          side: head
+        entries:
+          - _ulid: 01KR6TNSJWYJYE54RSHV3QW42V
+            author: Jacob Chapel
+            body: "MUST-FIX: the new regression never verifies that the daemon endpoint is unreachable after the
+              cleanup-registration rejection. The task explicitly required this check, and the test
+              captures endpoint.apiUrl at lines 688 and 696-719 but the staged assertion at this
+              line only checks child liveness. Impact: after the helper fix, this regression would
+              not prove the endpoint-level part of the requested behavior; an implementation could
+              leave a reachable daemon endpoint or related listener behavior untested. Keep the
+              current child-liveness check, but add a bounded endpoint-unreachable assertion in the
+              post-fix contract path rather than relying on the finally-block force kill."
+            created_at: 2026-05-09T16:56:04.444Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T16:44:40.214Z
-    updated_at: 2026-05-09T16:44:51.208Z
+    updated_at: 2026-05-09T16:56:04.444Z
     notes: []
