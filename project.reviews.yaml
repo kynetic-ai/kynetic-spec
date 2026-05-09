@@ -192786,6 +192786,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T04:40:11.991Z
+      - _ulid: 01KR5HQ4SD4V39J6BN8422F86E
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR5FZE4MFZKC88V9VBXGYX0Z
+        timestamp: 2026-05-09T05:00:17.069Z
     examined_commit: 739c9aee71f6fd2b2c0cfda492dfd552f0bfe80f
     external_links: []
     lifecycle_state: closed
@@ -192818,6 +192824,27 @@ reviews:
               ac-direct-daemon-entry-invocations-flagged. Add these value-consuming options and
               behavioral positive regressions for shell-string and argv-array forms.'
             created_at: 2026-05-09T04:29:51.637Z
+          - _ulid: 01KR5HQ3DXK9NP5CBXMP8D0KV6
+            author: "@claude"
+            body: "Fixed: extended the value-consuming Node flag set to cover the entire documented `--flag=...`
+              audit (not just the cycle-11 `--import` and `--env-file` blockers). Added `--import`,
+              `--env-file`, `--env-file-if-exists`, `--experimental-config-file`, `--allow-fs-read`,
+              `--allow-fs-write`, `--build-snapshot-config`, `--experimental-sea-config`,
+              `--heapsnapshot-near-heap-limit`, `--heapsnapshot-signal`, `--debug-port`,
+              `--inspect-port`, `--dns-result-order`,
+              `--network-family-autoselection-attempt-timeout`, `--icu-data-dir`,
+              `--localstorage-file`, `--secure-heap`, `--secure-heap-min`,
+              `--max-old-space-size-percentage`, `--disable-warning`, `--disable-proto`,
+              `--watch-path`, `--watch-kill-signal`, all `--test-*` value-consuming runner options,
+              `--trace-event-categories`, `--trace-event-file-pattern`, `--trace-require-module`,
+              `--use-largepages`, and `--v8-pool-size`. Each flag was verified with a `node --flag
+              value /tmp/script.cjs` probe before inclusion, and the doc comment now records the
+              audit philosophy. Added behavioral oxlint regressions for both shell-string
+              (`exec`/`execSync`) and argv-array (`spawn`/`execFile`/`execFileSync`) forms covering
+              `--import`, `--env-file`, `--env-file-if-exists`, plus a `process.execPath` runtime
+              variant — all in tests/lint-daemon-test-guardrails.test.ts and annotated against
+              ac-direct-daemon-entry-invocations-flagged."
+            created_at: 2026-05-09T05:00:15.677Z
         kind: blocker
       - _ulid: 01KR5GJ7HNM3FNV2C3QV2MJE9R
         entries:
@@ -192850,5 +192877,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T04:40:11.991Z
     created_at: 2026-05-09T04:27:24.737Z
-    updated_at: 2026-05-09T04:40:11.991Z
+    updated_at: 2026-05-09T05:00:15.677Z
     notes: []
