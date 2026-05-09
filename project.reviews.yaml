@@ -192507,6 +192507,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T03:52:53.249Z
+      - _ulid: 01KR5FF2X4SZM9VSN7K0GVBDWM
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR5DTX22TW8S6Y46N5CC980E
+        timestamp: 2026-05-09T04:20:55.845Z
+      - _ulid: 01KR5FF638XCGJEPH4A7SPZD8R
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR5DTX22TW8S6Y46N5CC980E
+        timestamp: 2026-05-09T04:20:59.112Z
+      - _ulid: 01KR5FF9BC1TP54DH652X678E9
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR5DV08MNMYMTZA7QJ5387AE
+        timestamp: 2026-05-09T04:21:02.444Z
+      - _ulid: 01KR5FFCE80F8P6E7V5VZF7RJ7
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR5DV08MNMYMTZA7QJ5387AE
+        timestamp: 2026-05-09T04:21:05.608Z
     examined_commit: f779610e0ae94922f64ca11cb04814507f8a6754
     external_links: []
     lifecycle_state: closed
@@ -192537,7 +192561,22 @@ reviews:
               @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged is not
               satisfied for a valid direct daemon-entry invocation shape."
             created_at: 2026-05-09T03:52:25.922Z
+          - _ulid: 01KR5FF1NCQVCSJZECFSG6TXAM
+            author: "@claude"
+            body: "Fixed: replaced the plain-whitespace shellCommandTokens split with a quote-aware
+              state-machine tokeniser (tokenizeShellCommand) that keeps `'...'` and `\"...\"` pairs
+              whole. The reviewer's failing probe `node --require './pre load.js'
+              dist/daemon/index.js --port 0` now tokenises to [node, --require, ./pre load.js,
+              dist/daemon/index.js, --port, 0] (after stripShellQuotes), the value-consuming-flag
+              walk advances past the quoted preload value, and the daemon entry is reported. Same
+              tokeniser is used by shellCommandLeadsWithKspec for the kspec-CLI detection path.
+              Tests added: single-quoted, double-quoted, and
+              template-literal-with-interpolated-value variants in
+              tests/lint-daemon-test-guardrails.test.ts."
+            created_at: 2026-05-09T04:20:54.572Z
         kind: blocker
+        resolved_at: 2026-05-09T04:20:57.870Z
+        resolved_by: "@claude"
       - _ulid: 01KR5DV08MNMYMTZA7QJ5387AE
         anchor:
           type: code
@@ -192557,7 +192596,23 @@ reviews:
               daemon-starting behavior and creates a false positive contributors would need to
               suppress for a non-daemon subprocess.'
             created_at: 2026-05-09T03:52:29.204Z
+          - _ulid: 01KR5FF8309MAH6E0592JM1RM7
+            author: "@claude"
+            body: "Fixed: extended isShellRuntimeNoScriptFlag to recognise --check, --syntax-check, and -c as
+              parse-only flags so `node --check dist/daemon/index.js` aborts the walk and reports no
+              launch. The short form -c is gated on runtime === \"node\" because Bun treats -c as
+              `--config <path>` (value-consuming) — silently accepting that as no-script would
+              create the symmetric false negative. New runtimeTagForToken/runtimeTagForArg helpers
+              thread the runtime classification from the leading shell token / args[0] through both
+              the exec/execSync walker and findScriptPositionInArgvArray. Bun's -c is also added to
+              the value-consuming set so `bun -c bunfig.toml dist/daemon/index.js` is correctly
+              reported (it was a latent false negative pre-fix). Tests added: shell-string and
+              argv-array forms of --check, -c (Node parse-only), --syntax-check, process.execPath
+              -c, and the Bun -c bunfig.toml positive regression."
+            created_at: 2026-05-09T04:21:01.152Z
         kind: blocker
+        resolved_at: 2026-05-09T04:21:04.400Z
+        resolved_by: "@claude"
       - _ulid: 01KR5DVKDEEE9KAMHACP0CR9YK
         entries:
           - _ulid: 01KR5DVKDEYJ9Y19GFK3CAECFQ
@@ -192587,5 +192642,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T03:52:53.249Z
     created_at: 2026-05-09T03:38:44.148Z
-    updated_at: 2026-05-09T03:52:53.249Z
+    updated_at: 2026-05-09T04:21:04.400Z
     notes: []
