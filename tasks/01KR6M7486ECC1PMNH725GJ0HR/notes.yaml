@@ -64,3 +64,60 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T16:04:47.692Z
+  - _ulid: 01KR6TAFYFW46HXCZS183FFN9C
+    content: >-
+      Fix cycle 1: addressed the blocker thread on review @01KR6QFSSGT6SZA00W662XTRM2.
+
+
+      The reviewer's blocker on the prior submission flagged that the eight new unsafe-regression
+      tests landed as active red assertions against the unfixed lint rule, so the targeted required
+      suite (`npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts`) failed eight tests and the branch could not merge as
+      a standalone snapshot. The reviewer offered two paths: land the lint-rule fix together (out of
+      scope per this task — the description explicitly excludes implementing the lint rule fix) or
+      keep the red regressions out of the required suite until the lint-rule fix lands.
+
+
+      Fix: took the second path by converting the eight unsafe regression tests from `it(...)` to
+      `it.fails(...)`. Each `it.fails` test still runs the same `runOxlint(...)` invocation and the
+      same inner `expect(...)` assertions, so the false-negative shape is still verified end-to-end.
+      The inversion just flips the today/tomorrow polarity:
+
+
+      - Today: the rule produces no diagnostic, `expect(result.exitCode).not.toBe(0)` throws,
+      `it.fails` turns the throw into a pass — the suite is green.
+
+      - After the lint-rule fix lands: the rule produces the diagnostic, the inner assertions pass,
+      and `it.fails` will then FAIL — that failure is the structured signal to the lint-rule-fix
+      worker to flip those specific eight tests from `it.fails(...)` back to `it(...)` as part of
+      their landing change.
+
+
+      This locks the regressions in (the false negatives cannot be silently lost; any future change
+      to the rule that doesn't address them will trip the it.fails inversion) without contributing
+      red to a green branch.
+
+
+      The four allowed-narrow control tests remain as plain `it(...)` — they pass today (the rule
+      does not flag the canonical safe shapes) and must still pass after the fix.
+
+
+      Both describe-block docstrings have been updated to document the it.fails inversion contract
+      and the flip-on-fix-landing protocol explicitly, so the next reviewer or worker can see the
+      contract without having to reconstruct it from the diff.
+
+
+      Verification:
+
+      - `mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts` → 225 of 225 tests pass (53 in the
+      no-leaky-test-daemon file, 172 in the guardrails file).
+
+      - `mise exec -- kspec validate --refs --warnings-ok` → exit 0 (existing reference warnings
+      only).
+
+      - `mise exec -- kspec validate --completeness --warnings-ok` → exit 0 (existing completeness
+      warnings only).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T16:49:54.128Z
