@@ -194068,6 +194068,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T08:33:08.331Z
+      - _ulid: 01KR5Y34AZR8R48NY0NV8NRBSJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR5Y32QP5QRB1KC09K3MNFWX
+        timestamp: 2026-05-09T08:36:32.735Z
     examined_commit: 3596de394cdc1fe00fc6152af520f6b98624fb61
     external_links: []
     lifecycle_state: open
@@ -194077,8 +194084,30 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR5Y32QP5QRB1KC09K3MNFWX
+        anchor:
+          type: code
+          commit: 3596de394cdc1fe00fc6152af520f6b98624fb61
+          line_end: 257
+          line_start: 252
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR5Y32QP9FSXTBFX95DXXJ7X
+            author: Jacob Chapel
+            body: 'MUST-FIX: `hasCleanupAfter` treats any later sibling statement containing a cleanup-shaped
+              call as guaranteed cleanup, without checking that the statement unconditionally
+              registers or executes cleanup on the straight-line path before the next observation. I
+              verified two synthetic tests with `npx oxlint`: `runKspec("serve start --detach --port
+              3456"); if (false) killPid(result.pid); expect(true).toBe(true);` exited 0 with no
+              `no-leaky-test-daemon` diagnostic, and `if (shouldCleanup) onTestFinished(() =>
+              killPid(result.pid)); expect(true).toBe(true);` also exited 0 clean. In both cases the
+              assertion can run without cleanup ever being registered for the detached daemon, which
+              violates @daemon-test-guardrail-precision ac-detached-cleanup-before-observation.'
+            created_at: 2026-05-09T08:36:31.094Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T08:32:44.638Z
-    updated_at: 2026-05-09T08:33:07.015Z
+    updated_at: 2026-05-09T08:36:31.094Z
     notes: []
