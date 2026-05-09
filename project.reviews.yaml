@@ -193833,6 +193833,17 @@ reviews:
         runner: kspec
         created_at: 2026-05-09T08:02:24.091Z
         completed_at: 2026-05-09T08:02:24.091Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts passed: 19 suites, 187 tests, duration 42.8s."
+        name: targeted guardrail tests
+        required: true
+        runner: npm
+        created_at: 2026-05-09T08:02:34.089Z
+        completed_at: 2026-05-09T08:02:34.089Z
     events:
       - _ulid: 01KR5VF3KYYYFYG8TW43AWVT94
         actor: Jacob Chapel
@@ -193861,6 +193872,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-09T08:02:25.438Z
+      - _ulid: 01KR5W4YT8QJGCTWWR32RB4AX1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted guardrail tests
+        timestamp: 2026-05-09T08:02:35.464Z
     examined_commit: bb5e4d849de64fa9d0b5b0b45cf9a63b833baa11
     external_links: []
     lifecycle_state: open
@@ -193896,5 +193914,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T07:50:39.486Z
-    updated_at: 2026-05-09T08:02:24.091Z
+    updated_at: 2026-05-09T08:02:34.089Z
     notes: []
