@@ -144,6 +144,10 @@ context: []
 priority: 2
 tags:
   - daemon-tests
+  - lint
+  - guardrails
+  - regression
+  - follow-up
 vcs_refs: []
 history:
   - author: Jacob Chapel
@@ -154,5 +158,18 @@ history:
         previous: []
     command: task-set
     timestamp: 2026-05-09T15:03:29.663Z
+  - author: Jacob Chapel
+    changes:
+      tags:
+        new:
+          - daemon-tests
+          - lint
+          - guardrails
+          - regression
+          - follow-up
+        previous:
+          - daemon-tests
+    command: task-set
+    timestamp: 2026-05-09T15:04:01.686Z
 created_at: 2026-05-09T15:03:12.390Z
 todos: []
