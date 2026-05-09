@@ -318,3 +318,55 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T23:07:21.013Z
+  - _ulid: 01KR7J2SHR4WC5HHR01970Z6E5
+    content: >-
+      Fix cycle 8: addressed the cycle-7 blocker on direct try/finally finalizer cleanup using the
+      enclosing TryStatement as the binding deadline in tools/eslint-rules/no-leaky-test-daemon.js.
+      Root cause: findDirectCleanupRegistrationUseNode returned the TryStatement, so the ownership
+      check required the binding to predate the try keyword and rejected the canonical safe shape
+      where pid is captured inside the try body before the first observation.
+
+
+      Fix in three parts:
+
+
+      1. findDirectCleanupRegistrationUseNode now takes the detached start node. When the start is
+      inside the try body, it locates the FIRST observation (await/expect/daemon URL
+      fetch/WebSocket) in the try body after the start and uses that as the implicit registration
+      deadline. If no in-try observation exists, the cleanup call itself is the deadline. This
+      matches the registered-callback shape where ownership is checked at the onTestFinished
+      registration call.
+
+
+      2. The binding analysis (walkStatementsForBinding and walkStatementsForConcreteBinding)
+      descends into TryStatement.block and TryStatement.finalizer on the unconditional execution
+      path so cross-scope shapes (let pid; declared outer, pid = ... assigned inside the try)
+      resolve to the in-try assignment as the concrete binding. Previously the outer-scope walker
+      only saw the let-with-no-init.
+
+
+      3. subtreeContainsDaemonCleanupCall now carries an inFinalizerContext flag (set by
+      isInTryWithFinallyCleanup and the TryStatement.finalizer recursion path). When set, the walker
+      descends through defensive-guard conditionals so "if (pid !== undefined) process.kill(pid,
+      SIGTERM)" inside a finalizer is recognised. Ownership analysis on each daemon-cleanup
+      CallExpression still gates whether the call counts as cleanup, so the guard is hygiene rather
+      than load-bearing safety.
+
+
+      Test changes: five regression tests added in tests/lint-daemon-test-guardrails.test.ts under
+      the cleanup-bound-before-observation describe -- cycle-8 safe-ordering with if guard
+      (allowed-narrow), cycle-8 safe-ordering no guard (allowed-narrow), no in-try observation
+      (allowed-narrow), await-shaped unsafe variant (rejected), conditional-assignment unsafe
+      variant (rejected). All cycle-7 reviewer's existing safe and unsafe probes still flag/accept
+      correctly.
+
+
+      Validation: focused lint suites 255 -> 260 passing tests with --fresh; full npm test 2419
+      suites / 9016 passing tests (5 pre-existing skips, 2003.3s); kspec validate --refs and
+      --completeness both pass with --warnings-ok (warnings unchanged from pre-existing repository
+      debt). Manual oxlint probe against the cycle-7 reviewer source: unsafe finalizer (assignment
+      AFTER expect) exits 1 with cleanupClosureUnbound on pid; safe finalizer with if guard
+      (assignment BEFORE expect) exits 0; safe finalizer without guard exits 0.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T23:45:07.641Z
