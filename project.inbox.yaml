@@ -3406,3 +3406,14 @@ inbox:
       - flaky
     added_by: "@claude"
     created_at: 2026-05-09T20:52:18.942Z
+  - _ulid: 01KR7G4EX49E1FFN3X80DZZ32G
+    text: Detached reviewer orientation should show the snapshot's original integration target SHA
+      alongside the current local target tip and recommended current-target diff or merge-base when
+      the canonical branch head or target branch has moved, so reviewers avoid reviewing dependency
+      changes already landed in the integration branch.
+    tags:
+      - reflection
+      - review
+      - dispatch
+    added_by: Jacob Chapel
+    created_at: 2026-05-09T23:11:05.125Z
