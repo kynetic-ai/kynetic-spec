@@ -42025,9 +42025,22 @@ runs:
     completed_at: 2026-05-09T04:43:03.422Z
   - _ulid: 01KR5HSTJ9P5PF4AFF6JSZSNQD
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T05:01:44.905Z
+        completed_at: 2026-05-09T05:03:30.343Z
+        notes: "What worked: broke the cycle-by-cycle pattern this iteration by auditing the entire Node
+          --help output for documented --flag=... options and verifying each with a node --flag
+          value /tmp/script.cjs probe. Added every confirmed value-consuming option (not just the
+          cycle-11 reviewer-named --import/--env-file). This is exactly the comprehensive
+          enumeration approach prescribed by the existing friction observations."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T05:03:30.343Z
+        completed_at: 2026-05-09T05:03:30.343Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T05:01:44.905Z
