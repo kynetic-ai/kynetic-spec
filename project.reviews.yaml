@@ -196482,7 +196482,62 @@ reviews:
     slugs: []
     title: Review guardrail binding wrapper regressions cycle 2
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit 0. Validation passed with existing reference warnings only: 1476 files, 619 items,
+          1468 tasks checked."
+        name: kspec validate --refs --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-09T17:07:56.724Z
+        completed_at: 2026-05-09T17:07:56.724Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit 0. Validation passed with existing completeness warnings only: 252 warnings,
+          warnings allowed."
+        name: kspec validate --completeness --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-09T17:08:00.643Z
+        completed_at: 2026-05-09T17:08:00.643Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts: 23 suites passed, 225 tests passed."
+        name: targeted guardrail tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-09T17:08:04.508Z
+        completed_at: 2026-05-09T17:08:04.508Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: 2417 suites passed; 8978 passed of 8983 tests, 5 skipped; duration
+          2114.4s."
+        name: full npm test
+        required: true
+        runner: npm test
+        created_at: 2026-05-09T17:08:08.233Z
+        completed_at: 2026-05-09T17:08:08.233Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: git diff --check 2ae8cbb56836d8e89dd71da20121ccffed0b615c...HEAD produced no whitespace
+          errors.
+        name: git diff --check
+        required: true
+        runner: git
+        created_at: 2026-05-09T17:08:12.006Z
+        completed_at: 2026-05-09T17:08:12.006Z
     events:
       - _ulid: 01KR6TPSFECECG06ZQPP83X2ZF
         actor: Jacob Chapel
@@ -196497,17 +196552,104 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T16:56:50.921Z
+      - _ulid: 01KR6VBJNZD75ES8W074TD61KN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --refs --warnings-ok
+        timestamp: 2026-05-09T17:07:58.271Z
+      - _ulid: 01KR6VBPE6NXTBVKP89XVV9F0H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --completeness --warnings-ok
+        timestamp: 2026-05-09T17:08:02.118Z
+      - _ulid: 01KR6VBT67EB1PAD5Z5JH2SMWR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted guardrail tests
+        timestamp: 2026-05-09T17:08:05.959Z
+      - _ulid: 01KR6VBXTP0GXQ1XP4J66GZ99B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full npm test
+        timestamp: 2026-05-09T17:08:09.686Z
+      - _ulid: 01KR6VC1HAAHTM7HNM4VRWX1D6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: git diff --check
+        timestamp: 2026-05-09T17:08:13.482Z
+      - _ulid: 01KR6VC58NC92A3JC8C4WHFGTY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR6VC3RVJPW9HG93CA74DA67
+        timestamp: 2026-05-09T17:08:17.301Z
+      - _ulid: 01KR6VC90DR93WYSV9FE8MKXB3
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-09T17:08:21.133Z
+      - _ulid: 01KR6VC90D1R7S55PKWDWAM4AS
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T17:08:21.133Z
     examined_commit: 6fa74f5c16c8e7400296a3351300001cc48524d8
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KR6M7486ECC1PMNH725GJ0HR"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KR6VC3RVJPW9HG93CA74DA67
+        entries:
+          - _ulid: 01KR6VC3RV931BZQMJCFP2JES4
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md, .agents/skills/kspec-review/SKILL.md,
+              .agents/skills/review-gates/SKILL.md, .agents/skills/kspec-merge/SKILL.md,
+              .agents/skills/work-gates/SKILL.md, task @01KR6M7486ECC1PMNH725GJ0HR, prior review
+              @01KR6QFSSGT6SZA00W662XTRM2, spec @daemon-test-guardrail-precision, git diff for
+              tests/lint-daemon-test-guardrails.test.ts, changed block lines 3745-4171, and relevant
+              no-leaky-test-daemon rule context around helper detection and deferred detach checks.
+              Commands run: git diff/stat/name-status/log/show; kspec item get
+              @daemon-test-guardrail-precision; kspec validate --refs --warnings-ok; kspec validate
+              --completeness --warnings-ok; rg AC annotation searches; targeted npm test; full npm
+              test -- --fresh; git diff --check. Claims verified: prior blocker is resolved by
+              converting only the eight active red unsafe regressions to it.fails while leaving four
+              allowed control tests active; targeted suite now passes; full suite passes. Categories
+              searched: correctness/spec alignment, edge cases for unbound pid/child and local
+              wrapper shapes, error/test-gate behavior, test integrity/source-scanning shortcuts,
+              and integration with existing no-leaky-test-daemon helper/path logic. No blocking
+              findings found."
+            created_at: 2026-05-09T17:08:15.771Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-09T17:08:21.133Z
     created_at: 2026-05-09T16:56:37.102Z
-    updated_at: 2026-05-09T16:56:49.532Z
+    updated_at: 2026-05-09T17:08:21.133Z
     notes: []
