@@ -1554,6 +1554,104 @@ describe("exec template literal with node --require flag", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
+
+    // Regression set covering the false-negative blocker from review cycle 8:
+    // standalone Node runtime flags that were previously mis-modelled as
+    // value-consuming. When a standalone flag (e.g. `--use-openssl-ca`,
+    // `--tls-min-v1.0`) is in the value-consuming set, the walker skips
+    // both the flag AND the next token — and when that next token is the
+    // daemon entry path, the real launch is silently accepted. The Node
+    // CLI documents these as boolean flags that take no value, so they
+    // must NOT consume the following token. Verified via `node --use-openssl-ca
+    // probe.js` which prints `script-ran` (the script ran, the flag did not
+    // consume the path).
+    it("flags exec(\"node --use-openssl-ca dist/daemon/index.js --port 0\") — --use-openssl-ca is standalone, not value-consuming", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec node --use-openssl-ca then daemon entry", () => {
+  it("execs the daemon entry under node with the --use-openssl-ca standalone flag", () => {
+    const child = exec("node --use-openssl-ca dist/daemon/index.js --port 0");
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execSync(\"node --tls-min-v1.0 dist/daemon/index.js --port 0\") — --tls-min-v1.0 is standalone, not value-consuming", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+describe("execSync node --tls-min-v1.0 then daemon entry", () => {
+  it("execSyncs the daemon entry under node with the --tls-min-v1.0 standalone flag", () => {
+    const stdout = execSync("node --tls-min-v1.0 dist/daemon/index.js --port 0");
+    expect(stdout).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags exec(\"node --use-bundled-ca dist/daemon/index.js\") — --use-bundled-ca is standalone, not value-consuming", () => {
+      // Sibling of --use-openssl-ca: another standalone CA-store selector
+      // that previously could have been mis-modelled in the same way.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec node --use-bundled-ca then daemon entry", () => {
+  it("execs the daemon entry under node with the --use-bundled-ca standalone flag", () => {
+    const child = exec("node --use-bundled-ca dist/daemon/index.js");
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags exec(\"node --stack-trace-limit=50 dist/daemon/index.js\") — --stack-trace-limit only takes a value via the bundled =N form, not whitespace", () => {
+      // --stack-trace-limit only accepts the bundled `=N` form; the bare
+      // `node --stack-trace-limit 50 script.js` errors out with `bad
+      // option: --stack-trace-limit`. So it MUST NOT be modelled as a
+      // whitespace-value-consuming flag — that would skip the daemon
+      // entry token after a bare appearance. The bundled form is one
+      // token starting with `-` and is correctly handled by the
+      // standalone-flag branch of the walker.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec node --stack-trace-limit=N then daemon entry", () => {
+  it("execs the daemon entry under node with a bundled-equals --stack-trace-limit flag", () => {
+    const child = exec("node --stack-trace-limit=50 dist/daemon/index.js");
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
   });
 
   // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported

@@ -654,11 +654,30 @@ const noLeakyTestDaemon = {
      * syntax and is not modelled either.
      *
      * The set is curated to Node and Bun options whose value-consuming
-     * semantics could shift which token is the script path. New runtime
-     * options added by future Node/Bun versions are not modelled — false
-     * negatives in the new-flag direction are recoverable (the rule
-     * continues to flag the runtime form via other test variants), but a
-     * false positive on a value would over-broaden the rule. Be conservative.
+     * semantics could shift which token is the script path. Inclusion
+     * requires that the option both (a) appears in the runtime's documented
+     * CLI options, and (b) accepts a value via whitespace separation
+     * (`--flag value`), not just the bundled `=` form. Standalone boolean
+     * flags MUST NOT be listed here — modelling them as value-consuming
+     * causes the walker to skip a real script path token, silently
+     * accepting daemon launches like `node --use-openssl-ca dist/daemon/
+     * index.js` (the false-negative blocker from review cycle 8).
+     *
+     * Common standalone-flag mistakes to avoid: `--use-openssl-ca`,
+     * `--use-bundled-ca`, `--use-system-ca`, `--use-env-proxy`,
+     * `--tls-min-v1.0`/v1.1/v1.2/v1.3, `--tls-max-v1.2`/v1.3,
+     * `--enable-fips`, `--force-fips`, `--openssl-legacy-provider`,
+     * `--openssl-shared-config` — all standalone in the runtime, none
+     * value-consuming. `--stack-trace-limit` is the special case of an
+     * option that works only in the `=` form (`--stack-trace-limit=N`);
+     * the bare-then-value form errors out, so it is NOT value-consuming
+     * by whitespace and must not be listed.
+     *
+     * New runtime options added by future Node/Bun versions are not
+     * modelled — false negatives in the new-flag direction are recoverable
+     * (the rule continues to flag the runtime form via other test
+     * variants), but a false positive on a value would over-broaden the
+     * rule. Be conservative.
      */
     function isShellRuntimeFlagConsumingValue(token) {
       if (typeof token !== "string") return false;
@@ -684,17 +703,11 @@ const noLeakyTestDaemon = {
         case "--max-http-header-size":
         case "--title":
         case "--unhandled-rejections":
-        case "--stack-trace-limit":
         case "--tls-cipher-list":
         case "--tls-keylog":
-        case "--tls-min-v1.0":
-        case "--use-openssl-ca":
         case "--redirect-warnings":
-        case "--policy-integrity":
         case "--experimental-loader":
         case "--loader":
-        case "--experimental-policy":
-        case "--experimental-specifier-resolution":
         case "--inspect-publish-uid":
           return true;
         case "--preload":
