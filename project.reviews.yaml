@@ -191133,6 +191133,12 @@ reviews:
           status: pass
           name: targeted websocket protocol
         timestamp: 2026-05-09T01:56:43.072Z
+      - _ulid: 01KR577XJJXN15X3A4DWK0E9R5
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR576M3ZAHG3NY53YBQTJQEX
+        timestamp: 2026-05-09T01:57:12.402Z
     examined_commit: 716e31003b4155443bfddf1dfcc79d8a4f390513
     external_links: []
     lifecycle_state: open
@@ -191159,7 +191165,9 @@ reviews:
               integration with existing heavy-serial project, validation warnings."
             created_at: 2026-05-09T01:56:29.952Z
         kind: nit
+        resolved_at: 2026-05-09T01:57:11.075Z
+        resolved_by: Jacob Chapel
     verdicts: []
     created_at: 2026-05-09T01:44:46.680Z
-    updated_at: 2026-05-09T01:56:41.815Z
+    updated_at: 2026-05-09T01:57:11.075Z
     notes: []
