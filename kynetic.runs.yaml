@@ -43282,7 +43282,7 @@ runs:
     completed_at: 2026-05-09T15:58:42.740Z
   - _ulid: 01KR6QET72RA8VHQ68WSHVKB30
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -43304,7 +43304,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-09T16:00:53.591Z
-        completed_at: 2026-05-09T16:00:53.591Z
+        completed_at: 2026-05-09T16:01:02.907Z
+        notes: "Coverage search: expected failing regression, red test regression, xfail, known failing
+          test, regression test must fail, and failing regression did not reveal an existing general
+          pattern for expected-failing regression staging. Search for shell interpolation found
+          multiple existing observations, including review comment body fragility, so no duplicate
+          capture for that issue."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-09T16:01:02.907Z
+        completed_at: 2026-05-09T16:01:02.907Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T15:59:49.986Z
