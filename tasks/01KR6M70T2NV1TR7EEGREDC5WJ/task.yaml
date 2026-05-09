@@ -1,0 +1,128 @@
+_ulid: 01KR6M70T2NV1TR7EEGREDC5WJ
+slugs:
+  - task-fix-register-cleanup-failure-leak
+title: Fix real daemon cleanup-registration failure cleanup
+type: task
+description: >-
+  ## Task 3 — Fix real daemon cleanup-registration failure cleanup
+
+
+  Proposed slug: `task-fix-register-cleanup-failure-leak`
+
+  Type: `task`
+
+  Priority: `P2`
+
+  Plan ref: `@plan-daemon-test-fixture-hardening`
+
+  Spec ref: `@daemon-test-startup-failure-hygiene`
+
+  Tags: `daemon-tests`, `fixtures`, `cleanup`, `follow-up`
+
+  Depends on: `@task-add-register-cleanup-failure-regression`
+
+  Automation: leave unassessed until Jacob approves.
+
+
+  ### Description
+
+
+  #### What
+
+  Fix `startTestDaemon` in `tests/helpers/daemon.ts` so a thrown cleanup-registration callback
+  cannot leak the daemon child that the helper just spawned.
+
+
+  Expected behavior:
+
+
+  - If `opts.registerCleanup(stop)` throws after the child process is spawned, `startTestDaemon`
+  stops the owned child before rejecting.
+
+  - The rejection preserves the cleanup-registration failure clearly enough for the caller to
+  diagnose it.
+
+  - The fix does not weaken existing launch-failure, readiness-failure, diagnostics, or success-path
+  cleanup behavior.
+
+
+  #### Why
+
+  The fixture is used by daemon-backed tests to avoid process leaks and ambient daemon coupling. A
+  cleanup-registration callback is caller-provided code, so it can throw because of a test framework
+  misuse, Playwright/Vitest lifecycle error, or future wrapper regression. Once `startTestDaemon`
+  has spawned a child, it owns that child until it either returns a handle or tears it down.
+  Returning a failure while the child remains alive recreates the daemon leakage class this
+  hardening work is intended to prevent.
+
+
+  #### How
+
+  1. Start from the regression added by `@task-add-register-cleanup-failure-regression`.
+
+  2. In `tests/helpers/daemon.ts`, protect the cleanup-registration call after `stop` is defined and
+  before readiness begins.
+
+  3. On registration failure:
+     - call `await stop()` or an equivalent bounded child cleanup path;
+     - preserve the original cleanup-registration error as the surfaced error, or as the explicit cause/message/diagnostic detail of a wrapper;
+     - if cleanup itself reports an error, include or log that secondary cleanup failure without replacing the original cleanup-registration failure as the primary rejection reason;
+     - do not wait for readiness after registration has failed.
+  4. Ensure this does not introduce unhandled promise rejections from the readiness/launch race.
+
+  5. Keep existing behavior intact for:
+     - `spawn`/`ENOENT` launch errors;
+     - health/cache readiness timeout diagnostics;
+     - successful startup and caller-owned stop;
+     - Playwright fixture cleanup registration.
+  6. Run:
+     - `mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts`
+     - `mise exec -- npm test -- --fresh tests/e2e-fixture-daemon-cleanup.test.ts`
+     - `mise exec -- kspec validate --refs --warnings-ok`
+     - `mise exec -- kspec validate --completeness --warnings-ok`
+
+  #### In scope
+
+  - Real daemon fixture cleanup-registration failure behavior.
+
+  - Bounded cleanup and diagnostic preservation for that failure path.
+
+
+  #### Out of scope
+
+  - Mock daemon fixture changes.
+
+  - Lint guardrail changes.
+
+  - New Playwright product-flow tests.
+
+
+  #### Validation
+
+  - The regression from `@task-add-register-cleanup-failure-regression` passes.
+
+  - Existing startup-failure and readiness diagnostics tests still pass.
+
+  - `mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts`
+
+  - `mise exec -- npm test -- --fresh tests/e2e-fixture-daemon-cleanup.test.ts`
+
+  - `mise exec -- kspec validate --refs --warnings-ok`
+
+  - `mise exec -- kspec validate --completeness --warnings-ok`
+
+
+  ---
+spec_ref: "@daemon-test-startup-failure-hygiene"
+meta_ref: null
+plan_ref: "@plan-daemon-test-fixture-hardening"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - daemon-tests
+vcs_refs: []
+created_at: 2026-05-09T15:03:08.866Z
+todos: []
