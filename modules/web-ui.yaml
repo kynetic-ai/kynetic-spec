@@ -931,6 +931,9 @@ features:
                   reported a client endpoint, lifecycle tests that make HTTP or WebSocket
                   requests use that reported endpoint instead of constructing a localhost URL
                   from a port number.
+                status:
+                  maturity: draft
+                  implementation: in_progress
                 depends_on: []
                 implements: []
                 relates_to: []
