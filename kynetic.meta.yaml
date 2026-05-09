@@ -17845,6 +17845,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-09T08:29:58.997Z
+  - _ulid: 01KR607KKNASNPV347Z4KAM17X
+    type: success
+    content: "When changing a static-analysis lint rule, run the reviewer's exact synthetic probes via
+      direct `npx oxlint` against the unmerged rule BEFORE writing the corresponding test fixtures
+      in tests/lint-*.test.ts. Two payoffs: (1) confirms the rule change actually flips diagnostic
+      state on the probe (cheap signal that the AST walker logic is correct); (2) discovers
+      real-world false positives in the existing test tree (e.g. tests/cli-serve.test.ts) before
+      they become CI failures or motivate a permissive rollback. The probe loop is sub-second per
+      file via `npx oxlint --config <synthetic config>` with a one-file plugins override. Done four
+      cycles in a row on no-leaky-test-daemon — each cycle the probe-first loop caught at least one
+      issue (false positive, missed shape, or test-code refactor needed) before tests/CI were
+      touched."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T09:13:56.597Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
