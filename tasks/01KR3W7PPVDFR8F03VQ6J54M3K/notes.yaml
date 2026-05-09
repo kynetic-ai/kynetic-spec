@@ -519,3 +519,72 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T03:01:02.515Z
+  - _ulid: 01KR5CK51QGT7Q06ZA62JMBZTC
+    content: >-
+      Fix cycle 9: closed all four blockers and re-verified ACs.
+
+
+      Blocker 1 (line 431, isDaemonEntryArg): added a no-substitution TemplateLiteral branch that
+      mirrors the existing Literal branch (strict equality OR `/dist/daemon/index.js` suffix).
+      Reviewer probes spawn(`dist/daemon/index.js`, [...]) and execFile("node",
+      [`dist/daemon/index.js`, ...]) now flag.
+
+
+      Blocker 2 (line 873, spawn-like argv-array runtime branch): replaced the loose
+      `arrayArgContainsDaemonEntry` check with a real script-position walk (new
+      findScriptPositionInArgvArray helper) that mirrors the exec/execSync shell-string walker —
+      standalone flags skip one element, value-consuming flags skip flag+value, no-script flags
+      abort. Renamed isShellRuntimeEvalFlag to isShellRuntimeNoScriptFlag and added -v / --version /
+      -h / --help so the broader info-exit family is recognised consistently. Reviewer probes
+      spawn("node", ["--eval", "dist/daemon/index.js"]) and execFile("node", ["--version",
+      DAEMON_ENTRY]) no longer flag, and existing positives like spawn("node", [DAEMON_ENTRY, ...])
+      and spawn("node", ["--require", "./pre.js", DAEMON_ENTRY]) continue to flag.
+
+
+      Blocker 3 (line 1359, META_RULE_NAME): removed the unused constant. Changed-file lint now
+      reports 0 errors on the rule file.
+
+
+      Blocker 4 (line 600, quoted shell tokens): added stripShellQuotes helper and applied it in
+      shellCommandTokens (per-token normalisation) and shellCommandLeadsWithKspec (leading-token
+      normalisation). Reviewer probes exec("'dist/daemon/index.js' --port 0") and exec("node
+      'dist/daemon/index.js' --port 0") now flag.
+
+
+      Also removed the now-unused arrayArgContainsDaemonEntry helper that was replaced by the
+      script-position walk.
+
+
+      Behavioral tests added (23 new in tests/lint-daemon-test-guardrails.test.ts): 6 positives for
+      template-literal daemon entry (literal/argv/absolute) and quoted shell tokens (single, double,
+      absolute); 4 positives for argv-array script-position walks (value-consuming flag, short -r
+      form, multiple standalone flags, bundled --require=, process.execPath runtime); 11 negatives
+      for argv-array no-script flags (--eval / --version / -v / --help / -h / --print) and ambiguous
+      argv shapes (daemon-as-require-value, daemon-as-forwarded-argv, other-script-then-daemon); 2
+      sibling shell-string negatives for --version/--help.
+
+
+      Re-read all 5 ACs (precision: 4, harness: 1) against the implementation:
+      ac-direct-daemon-entry-invocations-flagged now catches template-literal and quoted-token
+      daemon launches; ac-unrelated-subprocesses-not-reported now keeps no-script-flag runtimes
+      clean in the argv-array path; the other ACs are unaffected by the changes.
+
+
+      Verification:
+
+      - 161 targeted lint-rule tests pass (was 138 — 23 new tests).
+
+      - Full suite: 8914 passed, 5 skipped, 0 failed (was 8891 plus the 23 new tests).
+
+      - Changed-file lint: 0 errors (was 1 — META_RULE_NAME).
+
+      - Project lint: 13 errors / 721 warnings — matches dev baseline; no new errors in modified
+      files.
+
+      - Manual reviewer probes verified clean: 4 positives flag, 2 negatives clean.
+
+
+      Replied to and resolved all 4 blocker threads on @01KR5A5ZXA291EYMNY60ZMTVSY.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T03:30:43.383Z
