@@ -195154,7 +195154,19 @@ reviews:
     slugs: []
     title: Review task-fix-detached-cleanup-timing-analysis cycle 8
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Extra probes: assignment-bound loopback fetch before cleanup produced missingCleanup;
+          assignment-bound unrelated URL before cleanup produced zero no-leaky-test-daemon
+          diagnostics."
+        name: manual cleanup timing probes
+        required: true
+        runner: npx oxlint
+        created_at: 2026-05-09T11:38:11.664Z
+        completed_at: 2026-05-09T11:38:11.664Z
     events:
       - _ulid: 01KR67PDDH41SF12V980C48JSN
         actor: Jacob Chapel
@@ -195169,6 +195181,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T11:24:36.435Z
+      - _ulid: 01KR68FS4GXYRJS60ZGBBV3XY2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: manual cleanup timing probes
+        timestamp: 2026-05-09T11:38:13.008Z
     examined_commit: 2078e90d383db5dac67da2d33694cd1ab75e87ae
     external_links: []
     lifecycle_state: open
@@ -195181,5 +195200,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-09T11:24:21.809Z
-    updated_at: 2026-05-09T11:24:34.884Z
+    updated_at: 2026-05-09T11:38:11.664Z
     notes: []
