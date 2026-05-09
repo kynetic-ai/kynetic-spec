@@ -193156,7 +193156,18 @@ reviews:
     slugs: []
     title: Review fix guardrail daemon command classification (cycle 13)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts: 19 suites passed, 182 tests passed"
+        name: targeted guardrail tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-09T06:07:16.419Z
+        completed_at: 2026-05-09T06:07:16.419Z
     events:
       - _ulid: 01KR5MTN6G4PWXFMZGQQ5NB937
         actor: Jacob Chapel
@@ -193171,6 +193182,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T05:54:54.587Z
+      - _ulid: 01KR5NHV91QG6XF1V21H47V49B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted guardrail tests
+        timestamp: 2026-05-09T06:07:17.793Z
     examined_commit: 5222b9c23135599d6512dfbb867d3a219f5863f9
     external_links: []
     lifecycle_state: open
@@ -193183,5 +193201,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-09T05:54:37.904Z
-    updated_at: 2026-05-09T05:54:53.188Z
+    updated_at: 2026-05-09T06:07:16.419Z
     notes: []
