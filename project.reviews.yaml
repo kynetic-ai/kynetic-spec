@@ -193836,6 +193836,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T07:51:00.084Z
+      - _ulid: 01KR5VMHCR7HZR6MKGDYYANA7N
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR5VMFWS080WQ365KZ6ABVM9
+        timestamp: 2026-05-09T07:53:37.432Z
     examined_commit: bb5e4d849de64fa9d0b5b0b45cf9a63b833baa11
     external_links: []
     lifecycle_state: open
@@ -193845,8 +193852,31 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR5VMFWS080WQ365KZ6ABVM9
+        anchor:
+          type: code
+          commit: bb5e4d849de64fa9d0b5b0b45cf9a63b833baa11
+          line_end: 499
+          line_start: 498
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR5VMFWT7V39X06S3TVSF13A
+            author: Jacob Chapel
+            body: 'MUST-FIX: statementContainsCleanup accepts any descendant cleanup-shaped CallExpression as
+              registered cleanup. Because subtreeContainsDaemonCleanupCall descends into function
+              and arrow bodies without requiring an approved registration wrapper, an unsafe test
+              like runKspec("serve start --detach --port 3456"); const cleanup = () => killPid(pid);
+              expect(true).toBe(true); is accepted. I verified this with npx oxlint against a
+              synthetic tests/sample-test.ts: it exited 0 with only no-unused-vars and emitted 0
+              no-leaky-test-daemon errors. That violates @daemon-test-guardrail-precision
+              ac-detached-cleanup-before-observation because cleanup code merely stored in an
+              uncalled function is not registered before the later assertion, so the detached daemon
+              can still leak.'
+            created_at: 2026-05-09T07:53:35.898Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T07:50:39.486Z
-    updated_at: 2026-05-09T07:50:58.555Z
+    updated_at: 2026-05-09T07:53:35.898Z
     notes: []
