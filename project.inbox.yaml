@@ -3383,13 +3383,23 @@ inbox:
     added_by: "@claude"
     created_at: 2026-05-09T15:20:39.733Z
   - _ulid: 01KR786BVYC1YEAF3DXNDPBEQ5
-    text: Audit and bound real-daemon test fetches with AbortSignal.timeout. tests/cli-serve.test.ts
+    text: >-
+      Audit and bound real-daemon test fetches with AbortSignal.timeout. tests/cli-serve.test.ts
       (lines 1070, 1107, 1336, 1547) and likely tests/daemon-api/websocket-protocol.test.ts use raw
       fetch() against daemon apiUrls without timeouts — same pattern that caused the daemon-build
       smoke 180s silent-hang fixed in @01KR76BQ. When a daemon binds but stops responding
       mid-request, these probes hang until the outer vitest timeout, producing no actionable
       diagnostics. Same fix pattern (boundedFetch + daemon stdout/stderr tail dump) should be
       applied across daemon-backed test suites or extracted to a shared test helper.
+
+
+      ---
+
+
+      Update: @01KR76BQ landed bounded helpers in tests/helpers/daemon.ts (boundedProbeFetch, 2s
+      budget) and a defense-in-depth race in tests/helpers/cli.ts waitForStartup. Future audit work
+      should leverage these existing helpers rather than duplicating the boundedFetch pattern from
+      tests/daemon-build.test.ts.
     tags:
       - tests
       - daemon
