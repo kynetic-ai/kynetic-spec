@@ -156,8 +156,11 @@ description: >-
 spec_ref: "@daemon-test-startup-failure-hygiene"
 meta_ref: null
 plan_ref: "@plan-daemon-test-fixture-hardening"
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KR6W5V and merged to dev via detached reviewer helper. Added
+  staged real-daemon cleanup-registration failure regression with post-fix child-termination and
+  endpoint-unreachable contract checks.
 depends_on:
   - "@task-tighten-daemon-hardening-specs"
 context: []
@@ -381,8 +384,24 @@ history:
         previous: "@01KR6T0XCPS3G9YRHMY2ZDRE6N"
     command: review-link
     timestamp: 2026-05-09T17:22:22.148Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KR6W5V and merged to dev via detached reviewer helper. Added staged
+          real-daemon cleanup-registration failure regression with post-fix child-termination and
+          endpoint-unreachable contract checks.
+        previous: null
+      completed_at:
+        new: 2026-05-09T17:34:42.380Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-09T17:34:42.392Z
 created_at: 2026-05-09T15:03:05.304Z
 started_at: 2026-05-09T17:04:31.599Z
 submitted_at: 2026-05-09T17:16:38.435Z
+completed_at: 2026-05-09T17:34:42.380Z
 todos: []
 automation: eligible
