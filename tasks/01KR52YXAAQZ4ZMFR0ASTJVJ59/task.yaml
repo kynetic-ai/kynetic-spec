@@ -1,0 +1,29 @@
+_ulid: 01KR52YXAAQZ4ZMFR0ASTJVJ59
+slugs:
+  - task-stabilize-websocket-protocol-runtime-parity-test
+title: Stabilize websocket protocol runtime parity test
+type: bug
+description: During review of @01KR3W7PPVDFR8F03VQ6J54M3K, full npm test -- --fresh failed once in
+  tests/daemon-api/websocket-protocol.test.ts at beforeEach line 482 for 'daemon websocket protocol
+  — runtime parity bun runtime connect, subscribe, and broadcast behave consistently' with
+  STACK_TRACE_ERROR. An immediate fresh rerun of npm test -- --fresh
+  tests/daemon-api/websocket-protocol.test.ts passed all 15 tests in 7.2s, so this appears
+  flaky/load-sensitive rather than a deterministic regression from the reviewed branch. Investigate
+  the beforeEach/startTestDaemon setup under full-suite load, identify the root cause, and make the
+  websocket runtime-parity test deterministic without weakening coverage.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - daemon
+  - flaky
+vcs_refs: []
+created_at: 2026-05-09T00:42:22.922Z
+todos: []
+automation: eligible
