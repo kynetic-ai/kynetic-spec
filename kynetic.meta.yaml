@@ -17939,6 +17939,47 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-09T16:35:40.808Z
+  - _ulid: 01KR6THZ9BMVHJRNNH6DB6AHPG
+    type: friction
+    content: 'kspec review reply --body "..." (and likely other CLI write commands that take free-form
+      text bodies) fails with the daemon error "Unexpected token C, Cannot rea... is not valid JSON"
+      when the body contains shell-interpolated characters such as backticks, code-fence markdown,
+      or smart-quoted text. The daemon-side error message suggests checking daemon status, which is
+      a misleading red herring — the actual cause is the shell mangling the body before the CLI ever
+      sends it. Workaround: write the body to a temp file and pass it as --body "$(cat
+      /tmp/reply.txt)". Encountered while replying to a review blocker thread on
+      @01KR6QFSSGT6SZA00W662XTRM2; the agent had to discover the workaround by trial and error
+      because the error message points away from the real cause. Worth either: (a) documenting the
+      multi-line/special-char body pattern in the kspec-agents.md cli-lookups or testing convention;
+      (b) adding a --body-file flag to kspec review reply / comment / verdict so file-based payloads
+      work without shell interpolation gymnastics; (c) improving the daemon error message to surface
+      the parse failure cause when the request body fails to parse.'
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T16:53:59.211Z
+  - _ulid: 01KR6THZHM5ZJB0WRFCS4Y7FEC
+    type: success
+    content: 'vitest it.fails(...) is a clean fit for the kspec convention of landing regression tests
+      for an unfixed rule before the rule fix itself (the daemon-test-fixture-hardening plan splits
+      work into add-regressions tasks that land first and fix tasks that land second). The pattern:
+      each unsafe regression is written as it.fails("...", () => { /* assertions describing the
+      behavior the rule MUST report after the fix */ }). Today the rule does not produce the
+      diagnostic, the assertions throw, and it.fails turns the throw into a pass — the suite stays
+      green. When the lint-rule-fix worker lands their fix and the rule produces the diagnostic, the
+      assertions pass, it.fails fails, and that failure is the structured signal that those specific
+      tests must be flipped from it.fails(...) back to it(...). This locks the false negatives in
+      (any future regression to the rule re-trips them) without contributing red to a green branch.
+      The companion control tests stay as plain it(...) so they verify the safe shapes pass today
+      and continue to pass after the fix. Used to resolve the blocker on review
+      @01KR6QFSSGT6SZA00W662XTRM2 for @task-add-guardrail-binding-wrapper-regressions. Worth
+      surfacing in the kspec testing convention or the work-gates skill so future
+      regression-tests-before-fix tasks reach for this pattern instead of either landing red into
+      the required suite or skipping/todo-ing the regressions (which loses the lock-in).'
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T16:53:59.476Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
