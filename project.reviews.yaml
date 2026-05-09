@@ -198813,6 +198813,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T22:55:30.121Z
+      - _ulid: 01KR7FETB6V9XWAKEV63E2CPZ6
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR7FERRFS3TWFVX94V6SXF24
+        timestamp: 2026-05-09T22:59:15.943Z
     examined_commit: ede9e8e1893e0baf75dabc13217c450228399111
     external_links: []
     lifecycle_state: open
@@ -198822,8 +198829,31 @@ reviews:
       content_hash: ""
       ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR7FERRFS3TWFVX94V6SXF24
+        anchor:
+          type: code
+          commit: ede9e8e1893e0baf75dabc13217c450228399111
+          line_end: 1483
+          line_start: 1475
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR7FERRFB4R9FA3BPQ838RAR
+            author: Jacob Chapel
+            body: "MUST-FIX: the direct try/finally cleanup ownership check uses the enclosing TryStatement as
+              the binding site, so it rejects safe finalizer cleanup where the daemon pid is
+              captured immediately after the detached start and before any later
+              assertion/await/daemon observation. Manual probe:  exits 1 with cleanupClosureUnbound
+              on . That violates @daemon-test-guardrail-precision
+              ac-detached-cleanup-bound-before-observation: by the time the first observation can
+              fail, the finalizer target is already bound to the just-started daemon, matching the
+              allowed  ordering. The finalizer analysis needs to distinguish assignments before the
+              first in-try observation from assignments after an observation, rather than requiring
+              the capture to predate the  boundary."
+            created_at: 2026-05-09T22:59:14.319Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T22:55:16.758Z
-    updated_at: 2026-05-09T22:55:28.805Z
+    updated_at: 2026-05-09T22:59:14.319Z
     notes: []
