@@ -18828,7 +18828,7 @@ workspaces:
         head: c9e84cf090a02f85fdbba45cd9949d62bcfd8b44
         last_seen_at: 2026-05-09T12:05:04.983Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-resolve-cli-lifecycle-test-endpoints-01kr3w7s
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
     bootstrap:
       status: succeeded
@@ -19326,9 +19326,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T12:35:01.508Z
-      last_reconciled_at: 2026-05-09T12:52:35.569Z
+      last_reconciled_at: 2026-05-09T12:55:04.547Z
       created_at: 2026-05-09T12:20:45.785Z
-      updated_at: 2026-05-09T12:52:36.526Z
+      updated_at: 2026-05-09T12:55:04.547Z
     workspace_id: dispatch-workspace-01KR3W7SPKCKPWKXD8SJHNZVHT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
