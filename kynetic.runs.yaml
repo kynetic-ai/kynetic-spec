@@ -43282,7 +43282,7 @@ runs:
     completed_at: 2026-05-09T15:58:42.740Z
   - _ulid: 01KR6QET72RA8VHQ68WSHVKB30
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -43295,7 +43295,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T16:00:45.356Z
-        completed_at: 2026-05-09T16:00:45.356Z
+        completed_at: 2026-05-09T16:00:53.591Z
+        notes: "Friction: the task explicitly expected landing a failing pre-fix regression, while review
+          and merge gates correctly require the required npm test suite to stay green. There is no
+          obvious project pattern for staging expected-failing regressions without temporarily
+          breaking dev. Separate friction already tracked: shell interpolation can corrupt kspec
+          review comment bodies when passed inline."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T16:00:53.591Z
+        completed_at: 2026-05-09T16:00:53.591Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T15:59:49.986Z
