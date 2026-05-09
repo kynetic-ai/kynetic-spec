@@ -28471,7 +28471,7 @@
   type: task
   spec_ref: "@daemon-test-guardrail-precision"
   plan_ref: "@plan-daemon-test-fixture-hardening"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-tighten-daemon-hardening-specs"
@@ -28488,6 +28488,7 @@
   created_at: 2026-05-09T15:03:12.390Z
   started_at: 2026-05-09T16:44:08.582Z
   submitted_at: 2026-05-09T16:50:13.894Z
+  completed_at: 2026-05-09T17:08:53.502Z
   automation: eligible
 - _ulid: 01KR6M77JA0S1EEVZX8KKRPY1V
   slugs:
