@@ -593,3 +593,41 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T03:52:55.309Z
+  - _ulid: 01KR5FG9GW1Q47EXFHVNBCYXR1
+    content: >-
+      Fix cycle 11: closed cycle-10 blockers and re-verified ACs.
+
+
+      Blocker 1 (line 925, shellCommandTokens): replaced the plain whitespace split with
+      tokenizeShellCommand, a quote-aware state-machine tokeniser that keeps single- and
+      double-quoted segments whole. The reviewer's failing probe 'node --require ./pre load.js
+      dist/daemon/index.js --port 0' (with quoted preload) now tokenises correctly so the
+      value-consuming flag walk advances past the quoted preload value and reports the daemon entry.
+      Same tokeniser is reused by shellCommandLeadsWithKspec for the kspec lifecycle detection path.
+
+
+      Blocker 2 (line 897, isShellRuntimeNoScriptFlag): added --check, --syntax-check, and -c
+      (Node-only) to the parse-only no-script set so 'node --check dist/daemon/index.js' aborts the
+      walk and reports no launch. Added runtimeTagForToken / runtimeTagForArg helpers and threaded
+      the runtime classification through both the exec/execSync shell-string walker and
+      findScriptPositionInArgvArray so the runtime-ambiguous -c short flag classifies correctly per
+      leading runtime token. To preserve precision in the symmetric direction, Bun's -c is added to
+      isShellRuntimeFlagConsumingValue so 'bun -c bunfig.toml dist/daemon/index.js' is reported
+      (latent false negative pre-fix; Bun's -c is the --config short form).
+
+
+      Re-verified ACs against implementation: ac-direct-daemon-entry-invocations-flagged covered by
+      new flagging tests for the quoted-preload-value variants and the Bun -c bunfig.toml runtime
+      form; ac-unrelated-subprocesses-not-reported covered by new non-flagging tests for --check, -c
+      (Node), --syntax-check across exec/execSync/execFile/spawn shapes.
+
+
+      Verification: targeted tests 'mise exec -- npm test -- --fresh
+      tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts' 170/170
+      pass; full suite 'mise exec -- npm test' 8923/8928 pass (5 unrelated skipped, 0 failed);
+      changed-file oxlint 0 errors; manual probe replay reproduces the reviewer's two synthetic test
+      files (p1 with quoted preload value reports the daemon launch; p2 with --check exits 0 with no
+      diagnostic).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T04:21:35.388Z
