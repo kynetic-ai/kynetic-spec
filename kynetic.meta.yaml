@@ -17874,6 +17874,30 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-09T09:52:55.847Z
+  - _ulid: 01KR6BP6383BX0F49CF82RW0T0
+    type: friction
+    content: kspec task note <ref> <message> only accepts the message as an inline argument. Long
+      structured validation/audit notes (multi-paragraph test results, AC coverage tables,
+      source-audit classifications) get composed in a tmp file and shoved through a shell variable,
+      which is awkward and easy to mangle when content includes special chars. A --message-file path
+      or stdin input would let validation-class tasks attach long findings without shell-escaping
+      risk.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T12:34:08.616Z
+  - _ulid: 01KR6BP6B82358CZR2799WEJ7Y
+    type: success
+    content: "Validation-class tasks (e.g., @task-validate-daemon-test-fixture-standardization) recorded
+      their full methodology in task notes — exact Playwright slice path, classification of each
+      pre-existing kspec validate warning, source-audit grep patterns, and findings against each AC.
+      The next plan revalidation reproduced that workflow deterministically without re-deriving the
+      slice or rediscovering which warnings were pre-existing. Worth replicating: validation tasks
+      should embed their slice/classification in notes, not just outcomes."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T12:34:08.872Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
