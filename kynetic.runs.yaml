@@ -41535,9 +41535,22 @@ runs:
     completed_at: 2026-05-09T00:47:10.449Z
   - _ulid: 01KR57ARGH1JW8KRFEQCF1QWPC
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T01:58:45.521Z
+        completed_at: 2026-05-09T01:59:14.381Z
+        notes: "What worked well: the detached reviewer merge helper provided a clean, supported path from
+          approved detached snapshot to dev without checking out the integration branch. Recording
+          explicit review checks before verdict made the merge gate auditable. The full fresh test
+          run was especially useful because it verified the changed websocket protocol suite
+          actually executed in the heavy-serial phase, not just in isolation."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T01:59:14.381Z
+        completed_at: 2026-05-09T01:59:14.381Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T01:58:45.521Z
