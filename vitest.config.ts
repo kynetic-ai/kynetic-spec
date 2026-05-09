@@ -35,6 +35,14 @@ const heavySerialSuites = [
   // ERR_MODULE_NOT_FOUND mid-rebuild, so this must run serially after the
   // default pool drains.
   "tests/daemon-build.test.ts",
+  // Spawns ~15 real daemon child processes (Node + Bun) per file via the
+  // shared daemon fixture. Under full-suite concurrency these races against
+  // the default pool's CLI-subprocess fan-out cause the bun runtime parity
+  // beforeEach to intermittently exceed the cache-readiness budget — the
+  // failure surfaces as STACK_TRACE_ERROR from line 482 even though the
+  // test passes deterministically in isolation. Run serially after the
+  // default pool to remove cross-file contention.
+  "tests/daemon-api/websocket-protocol.test.ts",
 ];
 
 // On machines with many cores vitest spawns one worker per core by default.
