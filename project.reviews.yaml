@@ -193262,6 +193262,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-09T06:07:59.646Z
+      - _ulid: 01KR5NKM6HYAYMPTW8RW6GZ2ZM
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR5NKJYT0Q5QANES24GXHMC0
+        timestamp: 2026-05-09T06:08:16.081Z
     examined_commit: 5222b9c23135599d6512dfbb867d3a219f5863f9
     external_links: []
     lifecycle_state: open
@@ -193271,8 +193278,29 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR5NKJYT0Q5QANES24GXHMC0
+        entries:
+          - _ulid: 01KR5NKJYV04S5WC3ETS6KVM20
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: kspec-agents.md; task/spec context for
+              @01KR3W7PPVDFR8F03VQ6J54M3K and @daemon-test-guardrail-precision; prior cycle review
+              @01KR5J0Z; tools/eslint-rules/no-leaky-test-daemon.js;
+              tests/lint-daemon-test-guardrails.test.ts; tests/lint-no-leaky-test-daemon.test.ts;
+              daemon helper changes in tests/helpers/daemon.ts, tests/helpers/mock-daemon.ts,
+              tests/e2e/fixtures/test-base.ts, tests/e2e/fixtures/daemon-fixture.ts,
+              tests/daemon-api/helpers.ts, and related tests; src/cli/index.ts and
+              src/cli/commands/serve.ts for kspec CLI argument shape. Commands run: kspec task get;
+              kspec review for-task/get/add/open; kspec item get; rg AC annotations; kspec validate;
+              targeted guardrail npm test --fresh; ad hoc oxlint classifier probes; changed-file
+              oxlint; full npm test. Claims verified: cycle-12 kspec search/prose false positives
+              now exit clean; legitimate direct daemon entry and kspec serve start --detach calls
+              still report; full suite passes. Categories searched: correctness, edge cases around
+              shell/argv tokenization and runtime flags, error handling/cleanup helper changes, test
+              quality/AC annotations, integration with actual CLI option shape."
+            created_at: 2026-05-09T06:08:14.811Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-09T05:54:37.904Z
-    updated_at: 2026-05-09T06:07:58.314Z
+    updated_at: 2026-05-09T06:08:14.811Z
     notes: []
