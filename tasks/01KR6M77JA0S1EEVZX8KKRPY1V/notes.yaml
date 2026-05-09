@@ -1,1 +1,40 @@
-notes: []
+notes:
+  - _ulid: 01KR6XN4H2339ZQB169HEGBQ8G
+    content: >-
+      Approach: tightened the no-leaky-test-daemon rule on two fronts.
+
+
+      1) Cleanup-binding analysis: when a cleanup-registration callback (onTestFinished or
+      process.on(<exit-event>)) is descended into for cleanup detection, also verify that every
+      outer identifier the daemon-kill call captures (process.kill(pid, ...) /
+      <handle>.kill('SIGTERM') / killPid(pid) / stopDaemon(pid)) is concretely bound at the
+      registration site. A capture is bound when the binding is a parameter, a const/let/var
+      declaration with a non-null/non-undefined initializer, or a top-level assignment with a
+      non-null/non-undefined RHS that runs textually before the registration. Conditional/loop
+      assignments do not count. Unbound captures cause the cleanup walker to reject the callback as
+      cleanup, falling through to the missing-cleanup branch. A separate findUnboundCleanupClosure
+      scanner runs in Program:exit so the diagnostic message can name the offending identifier
+      (cleanupClosureUnbound).
+
+
+      2) Local wrapper boundary: removed the cleanup-timing exemption for detached starts nested
+      inside local FunctionDeclarations / arrows / FunctionExpressions in non-allowlisted test
+      files. The path allowlist (tests/helpers/daemon.ts, tests/helpers/mock-daemon.ts,
+      tools/eslint-rules/, the two lint test files) is now the sole approved-fixture boundary; any
+      detached start nested inside a local helper in an ordinary test file produces the
+      localWrapperUnsafe diagnostic. The rule continues to early-return for path-allowlisted files,
+      so the shared fixture remains exempt.
+
+
+      Test changes: flipped the eight it.fails(...) regressions in
+      tests/lint-daemon-test-guardrails.test.ts back to it(...) per the documented contract — they
+      pass now that the rule emits the expected diagnostics. The four allowed-narrow control tests
+      stayed plain it(...) and still pass. Updated both describe-block docstrings to document the
+      post-fix state.
+
+
+      Validation: full suite (8978 passed, 5 pre-existing skips); the focused lint suites pass with
+      --fresh. No new no-leaky-test-daemon violations surface in tests/.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T17:48:08.610Z
