@@ -14,3 +14,44 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-09T11:44:47.039Z
+  - _ulid: 01KR69VK63KAXY6YNR4NR5PYQZ
+    content: >-
+      Implementation complete. Added resolveCliLifecycleDaemonEndpoint(configDir) that wraps
+      production resolveDaemonClientEndpoint, plus refactored waitForDaemonHealth to consume the
+      resolved endpoint (and return it for downstream HTTP calls). All five direct localhost:${port}
+      fetches replaced with endpoint.apiUrl-based URLs.
+
+
+      Remaining direct loopback URLs audit (none flagged by lint, all endpoint-subject):
+
+      - L420-421, L533, L799, L896-897: assertion targets on metadata.api_url / ws_url (not fetch/WS
+      calls; not flagged)
+
+      - L427: fetch(http://127.0.0.1:${port}/api/health) — proves daemon binds at the resolved IPv4
+      endpoint (default-loopback-v4 regression, ac-default-loopback-v4)
+
+      - L507: fetch(http://[::1]:${port}/api/health) — proves NO silent IPv6 fallback over a port
+      collision (ac-default-ipv6-fallback)
+
+      - L768, L787: fetch(http://127.0.0.2:${port}/...) and fetch(http://127.0.0.1:${port}/...) —
+      configured non-default daemon.host reaches production listen + negative proof at default
+      loopback (ac-configured-bind-host)
+
+      - L877, L903: fetch(http://127.0.0.2:${port}/api/health) — advertised connect_host accepted by
+      middleware (ac-clients-use-metadata)
+
+
+      Lint rule only flags localhost: literal — 127.0.0.1 / [::1] / 127.0.0.2 are not flagged, so no
+      suppressions needed for endpoint-subject behavior.
+
+
+      Test results:
+
+      - cli-serve.test.ts: 40/40 passed
+
+      - lint-no-leaky-test-daemon.test.ts + lint-daemon-test-guardrails.test.ts: 213/213 passed
+
+      - Full suite: 8966 passed, 5 skipped, 0 failed (2009s)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T12:02:08.707Z
