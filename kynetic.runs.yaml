@@ -43601,7 +43601,7 @@ runs:
     completed_at: 2026-05-09T17:11:34.022Z
   - _ulid: 01KR6VW1WQEZDVF9AKDQW8C71G
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -43617,7 +43617,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T17:19:45.151Z
-        completed_at: 2026-05-09T17:19:45.151Z
+        completed_at: 2026-05-09T17:19:55.020Z
+        notes: "High-confidence friction (cycle 3, review @01KR6T0X blocker): when restructuring a test
+          under the selective expected-failure pattern (@01KR431R), I dropped the task-required
+          endpoint-unreachable assertion from BOTH paths instead of only excluding it from the
+          pre-fix bug-shape re-assertion. Cause: I conflated 'not a useful pre-fix differentiator'
+          with 'not required at all'. Effect: the cycle-2 helper passed locally but lost
+          task-mandated coverage; the reviewer correctly flagged that a partial fix could leak a
+          listener undetected. Rule: in selective expected-failure helpers, the post-fix contract
+          path must contain ALL task-required assertions; only the subset that distinguishes
+          bug-from-fix (because pre-fix state is deterministic) belongs in the bug-shape
+          re-assertion. Concrete, systemic, and not addressed by prior captures."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T17:19:55.020Z
+        completed_at: 2026-05-09T17:19:55.020Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T17:16:58.135Z
