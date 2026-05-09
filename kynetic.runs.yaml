@@ -42164,7 +42164,7 @@ runs:
     completed_at: 2026-05-09T05:52:40.112Z
   - _ulid: 01KR5NPJ756XKDVAXF8XCAXVYR
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -42183,7 +42183,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T06:10:25.259Z
-        completed_at: 2026-05-09T06:10:25.259Z
+        completed_at: 2026-05-09T06:11:10.846Z
+        notes: "Friction points: The reflection skill still documents 'kspec workflow show' without a run
+          ref, but the CLI requires the run ref; this was immediately visible when showing the
+          newly-started reflection run. This is systemic but already tracked in existing workflow
+          UX/docs items, so I will not duplicate it. Review evidence logs are currently stored as
+          nit threads, which leaves approved reviews showing one unresolved non-blocking thread;
+          existing observation @01KR2JD1 already covers this. kspec validate produced a useful
+          schema/reference OK result but exited 6 for unrelated project-wide warnings, requiring
+          reviewer interpretation when recording it as a passing check; no existing exact tracking
+          was found for this review-gate ambiguity. A positive pattern worth keeping: independent ad
+          hoc oxlint probes caught both the exact prior false-positive class and the positive
+          lifecycle/direct-entry paths without editing source files."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T06:11:10.846Z
+        completed_at: 2026-05-09T06:11:10.846Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T06:09:52.357Z
