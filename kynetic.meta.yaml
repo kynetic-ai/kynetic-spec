@@ -18035,6 +18035,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-09T21:18:17.068Z
+  - _ulid: 01KR7AQEXTYS43ZQ65YGZAREVS
+    type: friction
+    content: During review, kspec review comment and related review commands only accepted inline shell
+      arguments for long Markdown bodies and evidence. A blocker comment containing code-style
+      backticks and shell-sensitive snippets was mangled by command substitution before kspec
+      received it, requiring a follow-up reply to restore the evidence. Search found no existing
+      inbox/spec/task coverage for review body file payloads. Consider adding file-based payload
+      options for review comment, reply, verdict/check evidence, or documenting a safe file-payload
+      workflow for review records.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-09T21:36:36.283Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
