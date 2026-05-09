@@ -10,19 +10,69 @@
  * Three families of checks:
  *
  *   1. Direct daemon spawn (always flagged outside helper paths)
- *      - spawn() / spawnSync() targeting `dist/daemon/index.js` or the
- *        DAEMON_ENTRY identifier with arguments resolving to that path.
- *      - Hardcoded `spawn("bun", [DAEMON_ENTRY])` is reported with a
- *        more specific message because runtime selection belongs to the
- *        shared fixture.
+ *      - spawn / spawnSync / execFile / execFileSync / fork targeting
+ *        `dist/daemon/index.js` or the DAEMON_ENTRY identifier (either as
+ *        the executable arg or inside the argv array). For the runtime
+ *        form (executable + argv), args[0] must be a recognised JS
+ *        runtime: `node` / `bun` (bare or path-suffixed) or the
+ *        `process.execPath` MemberExpression in either dot
+ *        (`process.execPath`) or static-bracket (`process["execPath"]`,
+ *        `process[\`execPath\`]`) form — anything else is treated as an
+ *        unrelated subprocess that consumes the daemon path as data.
+ *      - exec / execSync shell strings whose first token is the daemon
+ *        entry path (direct-executable form) or whose first token is a
+ *        recognised JS runtime (`node` / `bun`, bare or path-suffixed)
+ *        followed by the daemon entry as the first script-path-position
+ *        token after the runtime (runtime form, e.g.
+ *        `exec("node dist/daemon/index.js --port 0")`,
+ *        `exec("node --enable-source-maps dist/daemon/index.js --port
+ *        0")`, or `exec("node --require ./preload.js dist/daemon/
+ *        index.js")`). The walker skips standalone flag tokens
+ *        (`--enable-source-maps`, `--inspect`), value-consuming option
+ *        flags AND their separately-passed values (`--require ./pre.js`,
+ *        `-r ./pre.js`, `--conditions production`), and the `--`
+ *        separator. Eval-mode flags (`-e`, `--eval`, `-p`, `--print` and
+ *        their `--eval=...` / `--print=...` forms) abort detection
+ *        because the runtime evaluates inline source instead of executing
+ *        a script file. A shell string that merely passes the daemon path
+ *        as an argument to an unrelated command (`echo`, `cat`, `grep`)
+ *        is NOT a daemon launch and is not reported.
+ *      - Hardcoded `bun` runtime variants (`spawn("bun", [DAEMON_ENTRY])`
+ *        or `exec("bun dist/daemon/index.js")`) are reported with a more
+ *        specific message because runtime selection belongs to the shared
+ *        fixture.
  *      - The escape hatch is a path allowlist (helpers, the rule itself,
  *        and the rule's own fixture-string test files) or a local
  *        `oxlint-disable-next-line` with a "-- reason" comment.
  *
  *   2. CLI detached serve startup (flagged when no scoped cleanup)
- *      - `runKspec("serve start --detach …")`, raw `execSync(...)`, or
- *        a `spawn("kspec", [...])` whose argv argument array carries
- *        `"serve"`, `"start"`, and `"--detach"` as separate elements.
+ *      - The classifier requires the call to actually reach the kspec
+ *        `serve start` lifecycle subcommand: the first two non-flag
+ *        positional argv tokens AFTER the `kspec` executable must be
+ *        `serve` then `start`, AND `--detach` (or `--detach=…`) must
+ *        appear as a flag token. Substring or unordered token-anywhere
+ *        matches are NOT sufficient — `kspec search "serve start
+ *        --detach"` (whether issued as `exec("kspec search \"serve start
+ *        --detach\"")` or `spawn("kspec", ["search", "serve start
+ *        --detach"])`) tokenises to argv `["search", "serve start
+ *        --detach"]`, whose subcommand is `search`, and is NOT reported.
+ *      - Recognised callee shapes:
+ *        - `runKspec("serve start --detach …")` /
+ *          `kspec("serve start --detach …")` — the helper signature
+ *          forwards a single shell-style args string (or, occasionally,
+ *          an argv array) directly to the kspec CLI, so per-arg tokens
+ *          are gathered with the same quote-aware shell tokeniser used
+ *          for `exec`/`execSync`.
+ *        - `exec("kspec serve start --detach …")` /
+ *          `execSync(...)` — shell-string callee. The first tokenised
+ *          token must name the kspec executable (bare `kspec` or a path
+ *          ending in `/kspec`); the remaining tokens are then checked
+ *          for the `serve start` subcommand path.
+ *        - `spawn("kspec", ["serve", "start", "--detach", …])` /
+ *          `spawnSync` / `execFile` / `execFileSync` — argv-array
+ *          callee. Each argv element is one OS argv slot (no whitespace
+ *          re-splitting), and the first two non-flag elements must be
+ *          `serve` and `start`.
  *      - The cleanup escape hatch is preserved here because tests of the
  *        CLI's own detach behavior have to use this path. Cleanup must
  *        be registered before the next `await` or `expect()`.
@@ -67,17 +117,9 @@ const HELPER_PATH_PATTERNS = [
 const FETCH_LIKE_CALLEES = new Set(["fetch"]);
 const WEBSOCKET_LIKE_CONSTRUCTORS = new Set(["WebSocket"]);
 
-const SPAWN_LIKE_CALLEES = new Set([
-  "runKspec",
-  "kspec",
-  "exec",
-  "execSync",
-  "spawn",
-  "spawnSync",
-  "execFile",
-  "execFileSync",
-  "fork",
-]);
+const DAEMON_ENTRY_LITERAL = "dist/daemon/index.js";
+const DAEMON_ENTRY_IDENTIFIER = "DAEMON_ENTRY";
+const KSPEC_EXECUTABLE_PATTERN = /(^|\/)kspec$/;
 
 const noLeakyTestDaemon = {
   meta: {
@@ -89,18 +131,19 @@ const noLeakyTestDaemon = {
     },
     messages: {
       directDaemonSpawn:
-        'Direct daemon spawn via "{{pattern}}" bypasses the shared daemon ' +
-        "fixture. Use `startTestDaemon` from tests/helpers/daemon.ts (or the " +
-        "mock daemon helper) so the test inherits scoped cleanup, env " +
-        "isolation, and resolved endpoints. To intentionally bypass the " +
+        'Direct daemon entry launch via "{{pattern}}" bypasses the shared ' +
+        "daemon fixture. Use `startTestDaemon` from tests/helpers/daemon.ts " +
+        "(or the mock daemon helper) so the test inherits scoped cleanup, " +
+        "env isolation, and resolved endpoints. To intentionally bypass the " +
         "fixture, add `// oxlint-disable-next-line " +
         "no-leaky-test-daemon/no-leaky-test-daemon -- <reason naming the " +
         "behavior under test>` immediately above the offending statement.",
       hardcodedBunRuntime:
-        'Hardcoded `spawn("bun", [DAEMON_ENTRY])` outside a runtime parity ' +
-        "test. The shared fixture (`startTestDaemon`) defaults to Node and " +
-        "accepts an explicit `runtime` opt-in; tests that need Bun coverage " +
-        "should opt in there or run inside the parity matrix. Add a local " +
+        'Hardcoded `bun` runtime in a direct daemon entry launch via ' +
+        '"{{pattern}}" outside a runtime parity test. The shared fixture ' +
+        "(`startTestDaemon`) defaults to Node and accepts an explicit " +
+        "`runtime` opt-in; tests that need Bun coverage should opt in there " +
+        "or run inside the parity matrix. Add a local " +
         "oxlint-disable-next-line with a -- reason if Bun is genuinely the " +
         "behavior under test.",
       missingCleanup:
@@ -305,117 +348,446 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * Collect string-shaped contributions from a CallExpression argument.
-     * Returns the literal and template-string text plus, for ArrayExpression
-     * arguments (the argv form of `spawn("kspec", ["serve", "start", "--detach"])`),
-     * the joined element strings. Non-string elements contribute a sentinel
-     * (`<expr>`) so a detected interpolation does not falsely glue two
-     * adjacent flag fragments together.
+     * Sentinel inserted into the kspec-args token list when an argument
+     * (or argv array element) does not statically resolve to a string —
+     * e.g. an Identifier reference, a SpreadElement, a BinaryExpression.
+     * The sentinel intentionally does NOT match `"serve"`, `"start"`, or
+     * `"--detach"`, so an opaque element that occupies a positional slot
+     * will defeat the kspec subcommand check (`positional1 === "serve" &&
+     * positional2 === "start"`). Preferring a false negative here over a
+     * false positive matches the rule's overall philosophy: when the
+     * classifier cannot prove the kspec subcommand path is `serve start`,
+     * it must NOT report the call as a detached daemon launch (the
+     * cycle-3 false-positive blocker on
+     * `@daemon-test-guardrail-precision`
+     * `ac-unrelated-subprocesses-not-reported`).
      */
-    function collectArgStringContributions(arg) {
+    const OPAQUE_ARG_SENTINEL = "<expr>";
+
+    /**
+     * True when a kspec-args token list resolves to a detached daemon
+     * lifecycle invocation: the first two non-flag positional tokens are
+     * `serve` then `start`, AND `--detach` (bare or `--detach=…` bundled
+     * form) appears as a flag token.
+     *
+     * Tokens are classified by shape — a token that begins with `-` is a
+     * flag (and may have a bundled `=value`); anything else is a
+     * positional. Only the first two positionals are inspected for the
+     * subcommand path; later positionals are subcommand arguments and do
+     * not change the classification.
+     *
+     * Critically, this is NOT a substring scan over the joined args. The
+     * cycle-12 reviewer's blocker case
+     * `exec("kspec search \"serve start --detach\"")` tokenises (quote-
+     * aware) to `["kspec", "search", "serve start --detach"]` — after
+     * dropping the kspec executable token the kspec subcommand is
+     * `search`, not `serve start`. The second positional is the literal
+     * three-word string `serve start --detach` (one OS argv slot, never
+     * re-split by the shell because of the inner quotes), and that
+     * single-token positional cannot satisfy `positional2 === "start"`.
+     * Likewise `spawn("kspec", ["search", "serve start --detach"])`
+     * walks two argv elements as two positionals (`search` and the
+     * three-word string) — kspec receives `argv[2] = "serve start
+     * --detach"` as an unknown subcommand and never reaches the daemon
+     * lifecycle path. Both cases must NOT be reported (cycle-12 blocker
+     * on `@daemon-test-guardrail-precision`
+     * `ac-unrelated-subprocesses-not-reported`).
+     *
+     * The caller is responsible for stripping the kspec executable token
+     * (for shell strings) or excluding `args[0]` (for spawn-like argv
+     * callees) so the executable name is not mis-counted as the first
+     * positional.
+     */
+    function tokensResolveToDetachedServe(tokens) {
+      let positional1 = null;
+      let positional2 = null;
+      let hasDetach = false;
+      for (const token of tokens) {
+        if (typeof token !== "string" || token.length === 0) continue;
+        if (token[0] === "-") {
+          if (token === "--detach" || token.startsWith("--detach=")) {
+            hasDetach = true;
+          }
+          continue;
+        }
+        if (positional1 === null) {
+          positional1 = token;
+        } else if (positional2 === null) {
+          positional2 = token;
+        }
+      }
+      return positional1 === "serve" && positional2 === "start" && hasDetach;
+    }
+
+    /**
+     * Collect the kspec-args token list contributed by an ArrayExpression
+     * argument (the spawn-like argv form). Each element produces exactly
+     * ONE token — the spawn-family child-process APIs preserve element
+     * boundaries, so a single argv element such as `"serve start --detach"`
+     * is a single OS argv slot the kspec CLI sees verbatim, NOT three
+     * separate args. Splitting that element on whitespace would silently
+     * reintroduce the cycle-12 false positive on
+     * `spawn("kspec", ["search", "serve start --detach"])`.
+     *
+     * Statically-readable elements (string Literal, no-substitution
+     * TemplateLiteral, TemplateLiteral with `${...}` placeholders
+     * preserved by `argvElementToString`) contribute their resolved
+     * string. Opaque elements (Identifier, SpreadElement, computed
+     * expressions) contribute the OPAQUE_ARG_SENTINEL so they cannot
+     * silently satisfy a positional-equality check while still occupying
+     * a positional slot.
+     */
+    function collectArgvArrayTokens(arrayArg) {
       const out = [];
-      if (!arg) return out;
-      if (arg.type === "Literal" && typeof arg.value === "string") {
-        out.push(arg.value);
-        return out;
-      }
-      if (arg.type === "TemplateLiteral") {
-        const parts = [];
-        for (let i = 0; i < arg.quasis.length; i += 1) {
-          parts.push(arg.quasis[i].value.raw);
-          if (i < arg.expressions.length) {
-            parts.push("<expr>");
-          }
+      if (!arrayArg || arrayArg.type !== "ArrayExpression") return out;
+      for (const el of arrayArg.elements) {
+        if (!el) continue;
+        if (el.type === "SpreadElement") {
+          out.push(OPAQUE_ARG_SENTINEL);
+          continue;
         }
-        out.push(parts.join(""));
-        return out;
-      }
-      if (arg.type === "ArrayExpression") {
-        for (const el of arg.elements) {
-          if (!el) continue;
-          if (el.type === "Literal" && typeof el.value === "string") {
-            out.push(el.value);
-          } else if (el.type === "TemplateLiteral") {
-            const parts = [];
-            for (let i = 0; i < el.quasis.length; i += 1) {
-              parts.push(el.quasis[i].value.raw);
-              if (i < el.expressions.length) {
-                parts.push("<expr>");
-              }
-            }
-            out.push(parts.join(""));
-          } else {
-            out.push("<expr>");
-          }
+        const tokenStr = argvElementToString(el);
+        if (tokenStr === null) {
+          out.push(OPAQUE_ARG_SENTINEL);
+          continue;
         }
-        return out;
+        out.push(tokenStr);
       }
       return out;
     }
 
     /**
-     * True when the combined string contributions across a CallExpression's
-     * arguments name a detached serve invocation. Matches both the
-     * single-string form (`runKspec("serve start --detach …")`) and the
-     * argv form (`spawn("kspec", ["serve", "start", "--detach", …])`).
+     * Collect the kspec-args token list contributed by a single argument
+     * to a `runKspec`/`kspec` helper call. The helper's contract (see
+     * `tests/helpers/cli.ts`'s `kspec(args: string, …)` and the
+     * `runKspec(args: string, …)` wrapper) is that the first parameter is
+     * a SHELL-STYLE space-separated args string forwarded to the kspec
+     * CLI through a shell, so a string argument is tokenised quote-aware
+     * via `tokenizeShellCommand` (the same tokeniser the shell-string
+     * `exec`/`execSync` callees use). An ArrayExpression argument is
+     * treated as the argv form (one token per element). Other argument
+     * shapes contribute one OPAQUE_ARG_SENTINEL so an opaque value
+     * occupying a positional slot defeats the subcommand match.
      */
-    function argsResolveToDetachedServe(node) {
-      let hasServe = false;
-      let hasStart = false;
-      let hasDetach = false;
-      for (const arg of node.arguments) {
-        const contributions = collectArgStringContributions(arg);
-        for (const text of contributions) {
-          if (typeof text !== "string") continue;
-          if (text.includes("serve start") && text.includes("--detach")) {
-            return true;
-          }
-          const tokens = text.split(/\s+/).filter(Boolean);
-          for (const token of tokens) {
-            if (token === "serve") hasServe = true;
-            else if (token === "start") hasStart = true;
-            else if (token === "--detach") hasDetach = true;
-          }
+    function collectKspecHelperArgTokens(arg) {
+      if (!arg) return [];
+      const literal = literalString(arg);
+      if (literal !== null) {
+        return tokenizeShellCommand(literal) || [];
+      }
+      const tmpl = templateLiteralRaw(arg);
+      if (tmpl !== null) {
+        return tokenizeShellCommand(tmpl) || [];
+      }
+      if (arg.type === "ArrayExpression") {
+        return collectArgvArrayTokens(arg);
+      }
+      return [OPAQUE_ARG_SENTINEL];
+    }
+
+    function literalString(node) {
+      if (!node) return null;
+      if (node.type === "Literal" && typeof node.value === "string") {
+        return node.value;
+      }
+      return null;
+    }
+
+    function templateLiteralRaw(node) {
+      if (!node || node.type !== "TemplateLiteral") return null;
+      const parts = [];
+      for (let i = 0; i < node.quasis.length; i += 1) {
+        parts.push(node.quasis[i].value.raw);
+        if (i < node.expressions.length) {
+          parts.push("${...}");
         }
       }
-      return hasServe && hasStart && hasDetach;
+      return parts.join("");
     }
 
     /**
-     * spawn-like CallExpression whose argument list resolves to a daemon
-     * entry path (DAEMON_ENTRY identifier or the literal
-     * "dist/daemon/index.js"). The first argument is the runtime binary
-     * (returned alongside so the caller can recognise hardcoded "bun").
+     * True when an argument node is the daemon entry path — the shared
+     * `DAEMON_ENTRY` identifier, a string literal that names
+     * `dist/daemon/index.js` (optionally inside a longer absolute path),
+     * or a no-substitution template literal (e.g.
+     * `` spawn(`dist/daemon/index.js`, …) ``,
+     * `` execFile("node", [`dist/daemon/index.js`, …]) ``) whose raw text
+     * resolves to the same daemon entry path. The template-literal form
+     * resolves to the same string value at runtime, so it must classify
+     * the same way as the plain literal — silently accepting it would
+     * leave a documented daemon launch out of the guardrail and violate
+     * @daemon-test-guardrail-precision
+     * ac-direct-daemon-entry-invocations-flagged.
      */
-    function readDaemonSpawn(node) {
-      if (node.type !== "CallExpression") return null;
-      const callee = node.callee;
+    function isDaemonEntryArg(arg) {
+      if (!arg) return false;
+      if (arg.type === "Identifier" && arg.name === DAEMON_ENTRY_IDENTIFIER) {
+        return true;
+      }
+      const literal = literalString(arg);
+      if (literal !== null) {
+        return literal === DAEMON_ENTRY_LITERAL || literal.endsWith("/" + DAEMON_ENTRY_LITERAL);
+      }
+      const tmpl = templateLiteralRaw(arg);
+      if (tmpl !== null) {
+        // Only no-substitution templates resolve statically — an
+        // interpolated `${…}` placeholder appears in the raw text as the
+        // literal `${...}` token and disqualifies the equality / suffix
+        // check, mirroring the literal branch's strictness.
+        return tmpl === DAEMON_ENTRY_LITERAL || tmpl.endsWith("/" + DAEMON_ENTRY_LITERAL);
+      }
+      return false;
+    }
 
-      const isSpawnCall =
-        (callee.type === "Identifier" &&
-          (callee.name === "spawn" || callee.name === "spawnSync")) ||
-        (callee.type === "MemberExpression" &&
-          callee.property.type === "Identifier" &&
-          (callee.property.name === "spawn" || callee.property.name === "spawnSync"));
+    /**
+     * Resolve a child-process argv ArrayExpression element to a string when
+     * the element is statically a string Literal or a TemplateLiteral
+     * (raw text with `${...}` placeholders preserved). Returns null for
+     * Identifier elements (e.g. `flag`, `DAEMON_ENTRY`), SpreadElement,
+     * and any other expression shape the rule cannot statically read.
+     *
+     * Used by the spawn-like argv-array script-position walk to classify
+     * each element by token shape (no-script flag / value-consuming flag /
+     * standalone flag / script position). Opaque elements that don't
+     * resolve to a string are treated as the script position by the
+     * walker — this is conservative because the script slot then fails
+     * the daemon-entry check unless the element itself is the DAEMON_ENTRY
+     * identifier or a daemon-entry literal/template (handled by
+     * `isDaemonEntryArg`).
+     */
+    function argvElementToString(el) {
+      if (!el) return null;
+      const literal = literalString(el);
+      if (literal !== null) return literal;
+      const tmpl = templateLiteralRaw(el);
+      if (tmpl !== null) return tmpl;
+      return null;
+    }
 
-      if (!isSpawnCall) return null;
-
-      let argsCarryDaemonEntry = false;
-      for (const arg of node.arguments) {
-        const text = context.sourceCode.getText(arg);
-        if (text.includes("DAEMON_ENTRY") || text.includes("dist/daemon/index.js")) {
-          argsCarryDaemonEntry = true;
-          break;
+    /**
+     * Walk the elements of a spawn/spawnSync/execFile/execFileSync argv
+     * ArrayExpression and return the index of the first element in the
+     * runtime's "script-position" — i.e. the element the runtime would
+     * treat as the script path to execute. Mirrors the
+     * `exec`/`execSync` shell-string walker so that
+     * `spawn("node", ["--require", "./pre.js", DAEMON_ENTRY, "--port", "0"])`
+     * classifies the same as
+     * `exec("node --require ./pre.js dist/daemon/index.js --port 0")`.
+     *
+     * Three classes of preceding elements are modelled:
+     *
+     *   1. No-script flags (`-e`, `--eval`, `-p`, `--print`,
+     *      `--eval=...`, `--print=...`, `-v`, `--version`, `-h`,
+     *      `--help`, `--check`, `--syntax-check`, plus `-c` when the
+     *      runtime is Node) → return -1 to abort. The runtime evaluates
+     *      inline source, prints info, exits, or only parses the script
+     *      — no script is ever executed, so a daemon-entry token after
+     *      them is not a daemon launch. Without modelling these, the
+     *      argv-array branch was reporting `spawn("node", ["--eval",
+     *      DAEMON_ENTRY])` and `execFile("node", ["--version",
+     *      DAEMON_ENTRY])` as direct daemon launches (the false-positive
+     *      blocker from review cycle 9), and `execSync("node --check
+     *      dist/daemon/index.js")` as a launch even though `--check`
+     *      only syntax-checks (the false-positive blocker from review
+     *      cycle 10).
+     *   2. Value-consuming option flags (`--require ./pre.js`,
+     *      `-r ./pre.js`, `--conditions production`, `--input-type
+     *      module`, etc., with whitespace-separated value) → skip the
+     *      flag AND the next element, then continue. Without this, the
+     *      walker would mistake the option's value (e.g. `./pre.js`)
+     *      for the script and silently accept real launches like
+     *      `spawn("node", ["--require", "./pre.js", DAEMON_ENTRY])`.
+     *   3. Standalone flag tokens (anything else starting with `-`,
+     *      including `--enable-source-maps`, `--inspect`,
+     *      `--inspect-brk=...`, the `--` argument separator, and the
+     *      bundled `--require=./pre.js` form) → skip the element and
+     *      continue.
+     *
+     * The first element that does NOT match a flag class is the script
+     * position. Opaque elements (identifiers, spreads, computed
+     * expressions whose static value the rule cannot read) also become
+     * the script position — the walker then defers to
+     * `isDaemonEntryArg` to decide whether that opaque element is the
+     * daemon entry. This conservative treatment prefers a missed launch
+     * (false negative) over a false-positive on a non-daemon argv that
+     * happens to follow a flag.
+     *
+     * The `runtime` parameter — `"node"`, `"bun"`, or `null` — gates
+     * runtime-ambiguous short flags (e.g. `-c`). Pass the runtime
+     * classification of args[0] from the spawn-like call so Node's
+     * parse-only `-c` is recognised but Bun's `-c, --config <path>`
+     * (value-consuming) is not silently treated as no-script.
+     */
+    function findScriptPositionInArgvArray(arrayArg, runtime) {
+      if (!arrayArg || arrayArg.type !== "ArrayExpression") return -1;
+      const elements = arrayArg.elements;
+      for (let i = 0; i < elements.length; i += 1) {
+        const el = elements[i];
+        if (!el) continue;
+        const tokenStr = argvElementToString(el);
+        if (tokenStr !== null) {
+          if (isShellRuntimeNoScriptFlag(tokenStr, runtime)) return -1;
+          if (isShellRuntimeFlagConsumingValue(tokenStr)) {
+            // Consume the flag's value; if there is no next element the
+            // walk simply ends.
+            i += 1;
+            continue;
+          }
+          if (isShellRuntimeFlagToken(tokenStr)) continue;
         }
+        return i;
       }
-      if (!argsCarryDaemonEntry) return null;
+      return -1;
+    }
 
-      const firstArg = node.arguments[0];
-      let runtimeLiteral = null;
-      if (firstArg && firstArg.type === "Literal" && typeof firstArg.value === "string") {
-        runtimeLiteral = firstArg.value;
+    /**
+     * True when an argument node names the kspec CLI executable. Accepts
+     * the bare `"kspec"` literal as well as path forms whose final segment
+     * is `kspec` (e.g. `"./node_modules/.bin/kspec"`,
+     * `\`${binDir}/kspec\``). Tokens that merely contain "kspec" as a
+     * substring (e.g. `"mockspec"`) are not considered kspec executables.
+     */
+    function isKspecExecutableArg(arg) {
+      if (!arg) return false;
+      const literal = literalString(arg);
+      if (literal !== null) {
+        return literal === "kspec" || KSPEC_EXECUTABLE_PATTERN.test(literal);
       }
-      return { runtimeLiteral };
+      const tmpl = templateLiteralRaw(arg);
+      if (tmpl !== null) {
+        return tmpl === "kspec" || KSPEC_EXECUTABLE_PATTERN.test(tmpl);
+      }
+      return false;
+    }
+
+    /**
+     * True when a node statically resolves to the `process.execPath`
+     * MemberExpression. `process.execPath` is the Node.js absolute path
+     * to the currently-running interpreter, so passing it as the
+     * executable argument to a child-process call launches Node —
+     * equivalent to `spawn("node", [...])`. Two shapes are recognised:
+     *
+     *   - Dot access: `process.execPath` — non-computed, with both
+     *     segments as bare identifiers.
+     *   - Bracket access with a static string: `process["execPath"]` /
+     *     `process[\`execPath\`]` — computed, with a string Literal or a
+     *     no-substitution TemplateLiteral whose value is `"execPath"`.
+     *     The two surface syntaxes resolve to the same property at
+     *     runtime, so they must classify the same way.
+     *
+     * Other shapes are NOT recognised — keeping the predicate strict
+     * avoids false positives on objects that merely share the property
+     * name:
+     *
+     *   - Unrelated `.execPath` properties (`customRuntime.execPath`,
+     *     `process.foo.execPath`).
+     *   - Other `process` properties (`process.argv0`, `process.cwd`,
+     *     `process.execArgv`).
+     *   - Computed accesses whose property is a non-string-literal
+     *     expression (`process[propName]`, `process[isFast ? "execPath"
+     *     : "argv0"]`) — those are not statically resolvable to
+     *     `execPath`.
+     *   - Aliased bindings (`const node = process.execPath; spawn(node,
+     *     …)`).
+     */
+    function isProcessExecPathExpression(node) {
+      if (!node) return false;
+      if (node.type !== "MemberExpression") return false;
+      if (!node.object || node.object.type !== "Identifier") return false;
+      if (node.object.name !== "process") return false;
+      if (!node.property) return false;
+      if (!node.computed) {
+        if (node.property.type !== "Identifier") return false;
+        return node.property.name === "execPath";
+      }
+      // Computed access: only accept a static string Literal or a
+      // no-substitution TemplateLiteral whose resolved value is exactly
+      // "execPath". Dynamic property expressions are rejected.
+      if (
+        node.property.type === "Literal" &&
+        typeof node.property.value === "string"
+      ) {
+        return node.property.value === "execPath";
+      }
+      if (
+        node.property.type === "TemplateLiteral" &&
+        node.property.expressions.length === 0 &&
+        node.property.quasis.length === 1
+      ) {
+        return node.property.quasis[0].value.cooked === "execPath";
+      }
+      return false;
+    }
+
+    /**
+     * True when an argument node statically resolves to a recognised JS
+     * runtime executable that takes a script-path argument (`node` or
+     * `bun`). Accepts the bare command (`"node"`, `"bun"`), a path form
+     * whose final segment is the runtime (`"/usr/bin/node"`,
+     * `"./node_modules/.bin/bun"`), or the `process.execPath` MemberExpression
+     * (the absolute path to the currently-running Node interpreter).
+     * Tokens that merely contain the runtime name as a substring (e.g.
+     * `"nodemon"`, `"bunyan"`) are rejected.
+     *
+     * Used to gate the spawn-like runtime form: only when args[0] is a
+     * recognised runtime do we treat a daemon-entry argv element as a
+     * daemon launch. Without this guard, `spawn("cat", [DAEMON_ENTRY])` or
+     * `execFile("grep", [DAEMON_ENTRY, "src/"])` — where the daemon path
+     * is an argument to an unrelated subprocess — would be incorrectly
+     * reported as a daemon launch (false positive that violates
+     * `@daemon-test-guardrail-precision`
+     * `ac-unrelated-subprocesses-not-reported`).
+     *
+     * The `process.execPath` form is recognised because it is a definite
+     * Node runtime expression — tests that write
+     * `spawn(process.execPath, [DAEMON_ENTRY, "--port", "0"])` launch the
+     * compiled daemon entrypoint just as `spawn("node", [DAEMON_ENTRY,
+     * ...])` does, and must satisfy
+     * `ac-direct-daemon-entry-invocations-flagged`.
+     */
+    function isRecognisedRuntimeArg(arg) {
+      if (!arg) return false;
+      if (isProcessExecPathExpression(arg)) return true;
+      const literal = literalString(arg);
+      if (literal !== null) {
+        return isRecognisedShellRuntimeToken(literal);
+      }
+      const tmpl = templateLiteralRaw(arg);
+      if (tmpl !== null) {
+        return isRecognisedShellRuntimeToken(tmpl);
+      }
+      return false;
+    }
+
+    /**
+     * Strip a single matched pair of leading + trailing single OR double
+     * quotes from a shell-command token. The Bourne-shell (and POSIX-sh)
+     * convention is that quoted tokens like `'dist/daemon/index.js'` and
+     * `"node"` resolve to the inner string when the shell executes the
+     * command, so static analysis must treat them the same as the bare
+     * forms when classifying script-path or executable positions.
+     *
+     * Only a fully-matched outer quote pair is stripped — `'foo` (just a
+     * leading quote) and `script's` (an apostrophe in the middle of a
+     * token) are returned unchanged. Mixed pairs (`"foo'`) are also not
+     * stripped because they would not parse as a single shell token in
+     * the first place.
+     *
+     * Without this normalisation,
+     * `exec("'dist/daemon/index.js' --port 0")` and
+     * `exec("node 'dist/daemon/index.js' --port 0")` are silently
+     * accepted (false negatives that violate
+     * @daemon-test-guardrail-precision
+     * ac-direct-daemon-entry-invocations-flagged).
+     */
+    function stripShellQuotes(token) {
+      if (typeof token !== "string" || token.length < 2) return token;
+      const first = token[0];
+      const last = token[token.length - 1];
+      if ((first === "'" || first === '"') && first === last) {
+        return token.slice(1, -1);
+      }
+      return token;
     }
 
     function getCalleeName(node) {
@@ -430,21 +802,789 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * CLI-side detached daemon start: a spawn-like callee receives arguments
-     * that resolve to `serve start … --detach`. Recognises both the single
-     * command-string form (`runKspec("serve start --detach …")`) and the
-     * argv form (`spawn("kspec", ["serve", "start", "--detach", …])`). Used
-     * by the cleanup-aware check.
+     * True when a shell-command token names the daemon entry path. Accepts
+     * the bare literal `dist/daemon/index.js` as well as path forms whose
+     * trailing segment is the daemon entry (e.g. an absolute path under a
+     * project root). Tokens that merely contain the literal as a substring
+     * (e.g. `dist/daemon/index.json`) are rejected — only an exact match or
+     * a `/<literal>` suffix counts.
+     */
+    function isDaemonEntryShellToken(token) {
+      if (typeof token !== "string") return false;
+      return (
+        token === DAEMON_ENTRY_LITERAL ||
+        token.endsWith("/" + DAEMON_ENTRY_LITERAL)
+      );
+    }
+
+    /**
+     * True when a shell-command token names a recognised JS runtime
+     * executable that takes a script-path argument (`node` or `bun`).
+     * Accepts the bare command (`node`, `bun`) or a path form whose final
+     * segment is the runtime (e.g. `/usr/bin/node`, `./node_modules/.bin/bun`).
+     * Tokens that merely contain the runtime name as a substring (e.g.
+     * `nodemon`, `bunyan`) are rejected — only an exact match or a
+     * `/<runtime>` suffix counts.
+     */
+    function isRecognisedShellRuntimeToken(token) {
+      if (typeof token !== "string") return false;
+      return (
+        token === "node" ||
+        token === "bun" ||
+        token.endsWith("/node") ||
+        token.endsWith("/bun")
+      );
+    }
+
+    /**
+     * True when a shell-command token is shaped like a runtime option flag
+     * — a token whose first character is `-`. Covers long flags
+     * (`--enable-source-maps`, `--inspect`, `--inspect-brk=0.0.0.0:9229`),
+     * short flags (`-r`), and the `--` argument separator. Used by the
+     * shell-string walk to recognise tokens that are not the script path.
+     */
+    function isShellRuntimeFlagToken(token) {
+      return typeof token === "string" && token.length > 0 && token[0] === "-";
+    }
+
+    /**
+     * True when a shell-command flag token is the bare form of a Node/Bun
+     * runtime option that consumes the NEXT token as its value (separated
+     * by whitespace, not bundled with `=`). Examples: `--require ./pre.js`,
+     * `-r ./pre.js`, `--conditions production`, `--input-type module`.
+     *
+     * When the walk sees one of these, it must skip BOTH the flag token
+     * and the next token before continuing to look for the script path —
+     * otherwise the value (e.g. `./pre.js`) is mistaken for the script and
+     * a real daemon launch like `node --require ./pre.js dist/daemon/index.js`
+     * is silently accepted (the false-negative blocker from review cycle 7).
+     *
+     * The `=` form (`--require=./pre.js`) bundles the value into the flag
+     * token, so the standard one-token flag walk handles it correctly and
+     * those forms are not modelled here. Short-flag forms (`-r`) only
+     * accept whitespace separation, so `-r=value` is not a recognised Node
+     * syntax and is not modelled either.
+     *
+     * The set covers every Node CLI option (and the Bun-specific options
+     * we recognise) documented as accepting a value via whitespace
+     * separation (`--flag value`). Inclusion requires that the option
+     * both (a) appears in the runtime's documented CLI options, and
+     * (b) accepts a value via whitespace separation (not just the bundled
+     * `=` form). Standalone boolean flags MUST NOT be listed here —
+     * modelling them as value-consuming causes the walker to skip a real
+     * script path token, silently accepting daemon launches like
+     * `node --use-openssl-ca dist/daemon/index.js` (the false-negative
+     * blocker from review cycle 8).
+     *
+     * Coverage philosophy: every documented value-consuming Node option
+     * is enumerated here. A "conservative" set leaves false negatives —
+     * each missing option silently accepts a real `node --flag value
+     * dist/daemon/index.js` daemon launch (cycle 7 blocker for
+     * `--require`, cycle 11 blocker for `--import` and `--env-file`).
+     * The audit was performed against `node --help` for every flag
+     * documented as `--flag=...` (the help syntax for value-consuming
+     * options), then verified with a `node --flag value /tmp/script.js`
+     * probe to confirm whitespace-separated value consumption. New
+     * runtime options added by future Node versions must be added here
+     * after running the same audit.
+     *
+     * Common standalone-flag mistakes to avoid: `--use-openssl-ca`,
+     * `--use-bundled-ca`, `--use-system-ca`, `--use-env-proxy`,
+     * `--tls-min-v1.0`/v1.1/v1.2/v1.3, `--tls-max-v1.2`/v1.3,
+     * `--enable-fips`, `--force-fips`, `--openssl-legacy-provider`,
+     * `--openssl-shared-config` — all standalone in the runtime, none
+     * value-consuming. `--stack-trace-limit` is the special case of an
+     * option that works only in the `=` form (`--stack-trace-limit=N`);
+     * the bare-then-value form errors out, so it is NOT value-consuming
+     * by whitespace and must not be listed. `--max-old-space-size` is
+     * a V8 option that only accepts the `=` form for the same reason;
+     * `--max-old-space-size-percentage` is a Node option that does
+     * accept whitespace separation and is included.
+     *
+     * `--inspect`, `--inspect-brk`, and `--inspect-wait` use the
+     * `--flag[=[host:]port]` syntax — the value is optional and bundled
+     * with `=` only; the bare form is standalone. They are NOT value-
+     * consuming via whitespace and must not be listed. `--debug-port`
+     * and `--inspect-port` (no `[` brackets in help) DO accept whitespace
+     * separation and are included.
+     */
+    function isShellRuntimeFlagConsumingValue(token) {
+      if (typeof token !== "string") return false;
+      switch (token) {
+        // Module loading and preload (--require, --import, --loader).
+        case "-r":
+        case "--require":
+        case "--import":
+        case "--experimental-loader":
+        case "--loader":
+        // Conditions and module resolution.
+        case "-C":
+        case "--conditions":
+        case "--input-type":
+        // Environment and config files.
+        case "--env-file":
+        case "--env-file-if-exists":
+        case "--experimental-config-file":
+        // Permissions (require --permission to actually take effect, but
+        // the value is consumed regardless).
+        case "--allow-fs-read":
+        case "--allow-fs-write":
+        // Snapshot and SEA.
+        case "--snapshot-blob":
+        case "--build-snapshot-config":
+        case "--experimental-sea-config":
+        case "--heapsnapshot-near-heap-limit":
+        case "--heapsnapshot-signal":
+        // CPU and heap profiler output paths.
+        case "--cpu-prof-dir":
+        case "--cpu-prof-interval":
+        case "--cpu-prof-name":
+        case "--heap-prof-dir":
+        case "--heap-prof-interval":
+        case "--heap-prof-name":
+        // Diagnostic report.
+        case "--diagnostic-dir":
+        case "--report-dir":
+        case "--report-directory":
+        case "--report-filename":
+        case "--report-signal":
+        // Inspector port (NOT --inspect / --inspect-brk / --inspect-wait,
+        // which are `=`-only optional-value flags).
+        case "--debug-port":
+        case "--inspect-port":
+        case "--inspect-publish-uid":
+        // Network and DNS.
+        case "--dns-result-order":
+        case "--network-family-autoselection-attempt-timeout":
+        // Locale and storage paths.
+        case "--icu-data-dir":
+        case "--localstorage-file":
+        // OpenSSL / TLS.
+        case "--openssl-config":
+        case "--tls-cipher-list":
+        case "--tls-keylog":
+        case "--secure-heap":
+        case "--secure-heap-min":
+        // HTTP, process, and warning behaviour.
+        case "--max-http-header-size":
+        case "--max-old-space-size-percentage":
+        case "--title":
+        case "--unhandled-rejections":
+        case "--redirect-warnings":
+        case "--disable-warning":
+        case "--disable-proto":
+        // Watch mode.
+        case "--watch-path":
+        case "--watch-kill-signal":
+        // Test runner.
+        case "--test-concurrency":
+        case "--test-coverage-branches":
+        case "--test-coverage-exclude":
+        case "--test-coverage-functions":
+        case "--test-coverage-include":
+        case "--test-coverage-lines":
+        case "--test-global-setup":
+        case "--test-isolation":
+        case "--experimental-test-isolation":
+        case "--test-name-pattern":
+        case "--test-reporter":
+        case "--test-reporter-destination":
+        case "--test-rerun-failures":
+        case "--test-shard":
+        case "--test-skip-pattern":
+        case "--test-timeout":
+        // Trace event categories and require-module tracing.
+        case "--trace-event-categories":
+        case "--trace-event-file-pattern":
+        case "--trace-require-module":
+        // V8 thread pool and large-page mapping.
+        case "--use-largepages":
+        case "--v8-pool-size":
+          return true;
+        case "--preload":
+        case "--config":
+        case "-c":
+          // Bun: `--preload <module>`, `-c, --config <path>` consume the
+          // next token. `-c` is also Node's `--check` short form
+          // (parse-only), but the no-script-flag check (with the
+          // walker's runtime tag) catches Node's `-c` before this
+          // value-consuming check is reached, so listing `-c` here only
+          // affects the Bun-runtime walk where it correctly takes the
+          // following bunfig.toml path as the option's value.
+          return true;
+        default:
+          return false;
+      }
+    }
+
+    /**
+     * True when a runtime option flag causes the JS runtime to NOT execute
+     * a script file — anything appearing after such a flag is either ignored
+     * by the runtime, consumed as inline source, parse-only-checked, or
+     * forwarded as argv to already-evaluated code. The shell-string walker
+     * and the spawn-like argv-array walker both use this predicate to abort
+     * at the flag and report no daemon launch, even when a daemon-entry-
+     * shaped token follows.
+     *
+     * Three classes are recognised:
+     *
+     *   1. Eval-mode flags: `-e` / `--eval` / `-p` / `--print` and the
+     *      bundled `--eval=...` / `--print=...` forms. The runtime
+     *      evaluates a JS source string instead of executing a script
+     *      file. A `dist/daemon/index.js` token after them is either the
+     *      eval source string (passing the path text to JS as code) or
+     *      an argv forwarded to the eval'd code via process.argv, never
+     *      a script the runtime launches. (Closed the false-positive half
+     *      of review cycle 7.)
+     *
+     *   2. Info-exit flags: `-v` / `--version` / `-h` / `--help`. The
+     *      runtime prints the requested info and exits with code 0
+     *      without executing any script. A daemon-entry token after them
+     *      is silently ignored by the runtime (Node's `--version` does
+     *      not even read its trailing argv positionally), so reporting
+     *      such a call as a direct daemon launch is a false positive.
+     *      (Closed the spawn/execFile argv-array half of review cycle 9
+     *      — the reviewer's probe was
+     *      `execFile("node", ["--version", DAEMON_ENTRY])`.)
+     *
+     *   3. Parse-only flags: `--check` and `--syntax-check` (long forms
+     *      common to Node), plus `-c` when the runtime is Node. The
+     *      runtime parses the script for syntax errors and exits without
+     *      ever executing it, so the daemon never starts. Reporting
+     *      `node --check dist/daemon/index.js` as a daemon launch is a
+     *      false positive. (Closed the parse-only blocker from review
+     *      cycle 10 — the reviewer's probe was `execSync("node --check
+     *      dist/daemon/index.js")`.)
+     *
+     *      The short form `-c` is gated on `runtime === "node"` because
+     *      it is ambiguous between runtimes: Node treats `-c` as the
+     *      short form of `--check` (parse-only), but Bun treats `-c` as
+     *      the short form of `--config` (value-consuming, takes a
+     *      bunfig.toml path). Treating Bun's `-c` as no-script would
+     *      silently accept a real `bun -c bunfig.toml dist/daemon/
+     *      index.js` daemon launch. The long forms `--check` and
+     *      `--syntax-check` are unambiguous (Bun has neither) and apply
+     *      regardless of runtime.
+     *
+     * The `runtime` parameter — `"node"`, `"bun"`, or `null` when the
+     * caller cannot determine the runtime statically — gates the
+     * runtime-ambiguous short flags. Pass the leading-token classification
+     * so the walker can correctly distinguish Node's `-c` from Bun's
+     * `-c`. Callers that walk an argv after a recognised runtime arg
+     * should always pass the runtime; callers that classify in isolation
+     * may pass `null` and miss the parse-only short-flag class.
+     */
+    function isShellRuntimeNoScriptFlag(token, runtime) {
+      if (typeof token !== "string") return false;
+      if (
+        token === "-e" ||
+        token === "--eval" ||
+        token === "-p" ||
+        token === "--print" ||
+        token.startsWith("--eval=") ||
+        token.startsWith("--print=") ||
+        token === "-v" ||
+        token === "--version" ||
+        token === "-h" ||
+        token === "--help" ||
+        token === "--check" ||
+        token === "--syntax-check"
+      ) {
+        return true;
+      }
+      // Runtime-ambiguous short flag: Node's parse-only `-c` vs Bun's
+      // value-consuming `-c, --config <path>`. Only treat as no-script when
+      // we know the runtime is Node.
+      if (token === "-c" && runtime === "node") return true;
+      return false;
+    }
+
+    /**
+     * Classify the leading shell-token (or argv arg[0]) into a runtime
+     * tag used by the flag predicates. Returns `"node"` for the bare
+     * `node` token or any path token whose final segment is `node`
+     * (also used for the `process.execPath` form by `runtimeTagForArg`).
+     * Returns `"bun"` for the bare `bun` token or any path token whose
+     * final segment is `bun`. Returns `null` otherwise. Used by both
+     * the exec/execSync shell-string walker and the spawn-like
+     * argv-array walker so runtime-ambiguous short flags (e.g. `-c`)
+     * classify correctly.
+     */
+    function runtimeTagForToken(token) {
+      if (typeof token !== "string") return null;
+      if (token === "node" || token.endsWith("/node")) return "node";
+      if (token === "bun" || token.endsWith("/bun")) return "bun";
+      return null;
+    }
+
+    /**
+     * Like `runtimeTagForToken` but accepts an AST argument node. Returns
+     * `"node"` for the `process.execPath` MemberExpression, the bare
+     * `node` literal/template, or a path-suffixed form (`/usr/bin/node`).
+     * Returns `"bun"` for the bun analogues. Returns `null` for anything
+     * the rule cannot statically recognise as a runtime.
+     */
+    function runtimeTagForArg(arg) {
+      if (!arg) return null;
+      if (isProcessExecPathExpression(arg)) return "node";
+      const literal = literalString(arg);
+      if (literal !== null) return runtimeTagForToken(literal);
+      const tmpl = templateLiteralRaw(arg);
+      if (tmpl !== null) return runtimeTagForToken(tmpl);
+      return null;
+    }
+
+    /**
+     * Tokenise a shell-command string into argv tokens, respecting POSIX
+     * single-quote and double-quote pairs so that a quoted value containing
+     * whitespace stays a single token. Returns the array of tokens with
+     * each token's outermost matched quote pair stripped (so quoted forms
+     * classify the same as bare equivalents at every downstream
+     * predicate).
+     *
+     * Quote handling:
+     *   - `'...'` — content is literal, no escape processing, until the
+     *     closing single quote. Whitespace inside stays in-token.
+     *   - `"..."` — content is literal until the closing double quote.
+     *     Whitespace inside stays in-token. (Backslash escapes inside
+     *     double quotes are not modelled — static analysis treats them
+     *     as bytes; this is conservative because no current Node/Bun
+     *     CLI form depends on them for the script-position decision.)
+     *   - Outside quotes — whitespace is a token boundary.
+     *
+     * Why a state machine rather than a plain whitespace split: the
+     * value of a value-consuming flag may contain whitespace when
+     * quoted, e.g. `node --require './pre load.js' dist/daemon/index.js`.
+     * A plain split tokenises the quoted value into TWO tokens (`'./pre`
+     * and `load.js'`), so the value-consuming-flag walker skips only
+     * one of them and the second-half token (`load.js'`) ends up in the
+     * script position before the real daemon entry — silently accepting
+     * a real direct daemon launch (the false-negative blocker from
+     * review cycle 10). Quote-aware tokenisation keeps the whole value
+     * as one token so the walker can advance past it correctly.
+     *
+     * Template-literal placeholders (`${...}`) are not re-expanded — the
+     * raw text from `templateLiteralRaw` already encodes them as the
+     * sentinel string `${...}`. The sentinel contains neither quote
+     * characters nor whitespace, so it stays in a single token and
+     * cannot accidentally satisfy a runtime/script/flag predicate.
+     */
+    function tokenizeShellCommand(text) {
+      if (typeof text !== "string") return null;
+      const tokens = [];
+      let buf = "";
+      let hasContent = false;
+      let inSingle = false;
+      let inDouble = false;
+      const flush = () => {
+        if (hasContent) {
+          tokens.push(buf);
+          buf = "";
+          hasContent = false;
+        }
+      };
+      for (let i = 0; i < text.length; i += 1) {
+        const ch = text[i];
+        if (!inSingle && !inDouble) {
+          if (ch === " " || ch === "\t" || ch === "\n" || ch === "\r") {
+            flush();
+            continue;
+          }
+          if (ch === "'") {
+            inSingle = true;
+            buf += ch;
+            hasContent = true;
+            continue;
+          }
+          if (ch === '"') {
+            inDouble = true;
+            buf += ch;
+            hasContent = true;
+            continue;
+          }
+          buf += ch;
+          hasContent = true;
+          continue;
+        }
+        if (inSingle) {
+          buf += ch;
+          hasContent = true;
+          if (ch === "'") inSingle = false;
+          continue;
+        }
+        // inDouble
+        buf += ch;
+        hasContent = true;
+        if (ch === '"') inDouble = false;
+      }
+      flush();
+      return tokens.map(stripShellQuotes);
+    }
+
+    /**
+     * Tokenise a shell-command argument's text. Returns the quote-aware
+     * argv tokens of a string Literal or a TemplateLiteral with `${...}`
+     * placeholders preserved (so an interpolated value cannot accidentally
+     * satisfy a token check). Each token is normalised via
+     * `stripShellQuotes` so quoted forms like `'dist/daemon/index.js'` and
+     * `"node"` classify the same as the bare equivalents — without this,
+     * `exec("'dist/daemon/index.js' --port 0")` and
+     * `exec("node 'dist/daemon/index.js'")` would be silently accepted.
+     * Returns null when the argument is not a string-shaped node the rule
+     * can read statically.
+     */
+    function shellCommandTokens(arg) {
+      if (!arg) return null;
+      const literal = literalString(arg);
+      if (literal !== null) return tokenizeShellCommand(literal);
+      const tmpl = templateLiteralRaw(arg);
+      if (tmpl !== null) return tokenizeShellCommand(tmpl);
+      return null;
+    }
+
+    /**
+     * Direct daemon entry launch detection.
+     *
+     * Returns a descriptor when the call directly launches the compiled
+     * daemon entrypoint (`dist/daemon/index.js` / `DAEMON_ENTRY`) through
+     * one of the recognised child-process APIs:
+     *
+     *   - `spawn` / `spawnSync` / `execFile` / `execFileSync`
+     *     Two daemon-entry shapes are accepted. The runtime form requires
+     *     args[0] to be a recognised JS runtime (`node` / `bun`, bare or
+     *     path-suffixed, or the `process.execPath` MemberExpression for
+     *     the currently-running Node interpreter) and the argv array
+     *     (args[1]) to contain the daemon entry in the runtime's script
+     *     position. The argv-array script-position walk mirrors the
+     *     exec/execSync shell-string walker (see
+     *     `findScriptPositionInArgvArray`): standalone flags are skipped,
+     *     value-consuming flags (`--require`, `-r`, `--conditions`, …)
+     *     skip the flag AND its separately-passed value, no-script flags
+     *     (`-e` / `--eval`, `-p` / `--print`, `-v` / `--version`, `-h` /
+     *     `--help` and the `--eval=…` / `--print=…` forms) abort the walk
+     *     and report no launch. Restricting args[0] to a recognised
+     *     runtime stops false positives like `spawn("cat", [DAEMON_ENTRY])`
+     *     or `execFile("grep", [DAEMON_ENTRY, "src/"])`; the
+     *     script-position walk additionally stops false positives like
+     *     `execFile("node", ["--version", DAEMON_ENTRY])` and
+     *     `spawn("node", ["--eval", "dist/daemon/index.js"])` where the
+     *     runtime is invoked but no script is launched (the false-positive
+     *     blocker from review cycle 9).
+     *
+     *     The direct-executable form passes the daemon entry as the first
+     *     arg itself; argv may be omitted or an array of forwarded flags.
+     *     The direct-executable form matters because a daemon entry built
+     *     with a shebang is directly invokable, and
+     *     `execFile(DAEMON_ENTRY, [...])` / `spawn(DAEMON_ENTRY, [...])`
+     *     launches the compiled daemon the same as the runtime form.
+     *   - `fork`
+     *     First arg is the module path. The daemon entry must be that
+     *     first arg directly — argv elements are forwarded, not executed.
+     *   - `exec` / `execSync`
+     *     Shell-string callee. The first argument is tokenised on
+     *     whitespace and inspected at the executable position only. The
+     *     direct-executable form (`exec("dist/daemon/index.js")`) is
+     *     matched when the daemon entry is the FIRST token. The runtime
+     *     form (`exec("node dist/daemon/index.js")`) is matched when the
+     *     first token is a recognised JS runtime (`node` / `bun`, bare or
+     *     path-suffixed) and the daemon entry is the first script-path-
+     *     position token after the runtime. The walker between the
+     *     runtime token and the script path classifies each intermediate
+     *     token by shape:
+     *
+     *       * Standalone flags (`--enable-source-maps`, `--inspect`,
+     *         `--inspect-brk=...`, the `--` separator) are skipped.
+     *       * Value-consuming option flags whose value is passed as a
+     *         SEPARATE next token (`--require ./pre.js`, `-r ./pre.js`,
+     *         `--conditions production`, `--input-type module`, etc.)
+     *         consume the flag AND the next token, then the walk
+     *         continues. Without this, `exec("node --require ./pre.js
+     *         dist/daemon/index.js …")` would be silently accepted
+     *         because `./pre.js` would be mistaken for the script path.
+     *         The bundled-equals form (`--require=./pre.js`) is one
+     *         token that starts with `-` and is handled by the
+     *         standalone-flag branch.
+     *       * Eval-mode flags (`-e`, `--eval`, `-p`, `--print`, plus
+     *         `--eval=...` / `--print=...`) abort the walk and report
+     *         no daemon launch — the runtime evaluates inline source,
+     *         no script file is executed, and any `dist/daemon/index.js`
+     *         token after them is either the eval source string or an
+     *         argv forwarded to the eval'd code via process.argv.
+     *
+     *     The first non-flag, non-flag-value token must be the daemon
+     *     entry; if a different path appears in that position
+     *     (`node ./other-script.js dist/daemon/index.js`), the runtime
+     *     is launching that path, not the daemon, and the call is not
+     *     reported. A shell string that passes the daemon path as an
+     *     argument to an unrelated command (`echo`, `cat`, `grep …`) is
+     *     not a daemon launch and is not reported, because the leading
+     *     executable token is not a recognised runtime. When the leading
+     *     runtime token is `bun` (or a path ending in `/bun`),
+     *     `runtimeLiteral` is set to "bun" so the hardcoded-runtime
+     *     message fires for shell-string Bun launches too.
+     *
+     * The returned `pattern` is a short shape descriptor used in the
+     * reported message so authors see exactly which call shape was matched
+     * (e.g. `fork(DAEMON_ENTRY, ...)` vs `execFile(node, [DAEMON_ENTRY])`
+     * vs `execFile(DAEMON_ENTRY, [...])`). `runtimeLiteral` carries the
+     * literal first-arg string so the caller can recognise hardcoded `bun`
+     * for the runtime parity message; it is `null` for `fork` (Node is
+     * implicit), for the direct-executable form (the daemon entry IS the
+     * runtime), and for non-literal first args.
+     */
+    function readDaemonEntryInvocation(node) {
+      if (node.type !== "CallExpression") return null;
+      const calleeName = getCalleeName(node);
+      const args = node.arguments;
+      if (!calleeName || args.length === 0) return null;
+
+      if (
+        calleeName === "spawn" ||
+        calleeName === "spawnSync" ||
+        calleeName === "execFile" ||
+        calleeName === "execFileSync"
+      ) {
+        if (isDaemonEntryArg(args[0])) {
+          return {
+            runtimeLiteral: null,
+            calleeName,
+            pattern: `${calleeName}(${DAEMON_ENTRY_IDENTIFIER}, ...)`,
+          };
+        }
+        if (args.length < 2) return null;
+        // Restrict the runtime form to recognised JS runtimes so that
+        // `spawn("cat", [DAEMON_ENTRY])` and `execFile("grep",
+        // [DAEMON_ENTRY, "src/"])` — where the daemon path is consumed as
+        // an argument to an unrelated subprocess, not executed as a script
+        // — are not reported. Mirrors the exec/execSync shell-string
+        // branch which requires the leading shell token to be `node` or
+        // `bun`.
+        if (!isRecognisedRuntimeArg(args[0])) return null;
+        // Walk the argv array's elements with the same script-position
+        // model as the exec/execSync shell-string walker: skip standalone
+        // flags, skip value-consuming flags AND their separately-passed
+        // values, abort on no-script flags (eval / version / help). The
+        // first element in the script position must be the daemon entry
+        // for this to count as a daemon launch — without the walk,
+        // `execFile("node", ["--version", DAEMON_ENTRY])` and
+        // `spawn("node", ["--eval", "dist/daemon/index.js"])` were
+        // silently mis-reported as direct daemon launches even though
+        // neither runs the daemon (the false-positive blocker from
+        // review cycle 9).
+        const arrayArg = args[1];
+        if (!arrayArg || arrayArg.type !== "ArrayExpression") return null;
+        // Pass the runtime tag so the script-position walk can classify
+        // runtime-ambiguous short flags (e.g. Node's parse-only `-c` vs
+        // Bun's value-consuming `-c, --config`).
+        const argvRuntime = runtimeTagForArg(args[0]);
+        const scriptIdx = findScriptPositionInArgvArray(arrayArg, argvRuntime);
+        if (scriptIdx === -1) return null;
+        if (!isDaemonEntryArg(arrayArg.elements[scriptIdx])) return null;
+        const runtimeLiteral = literalString(args[0]);
+        let runtimeDescriptor;
+        if (runtimeLiteral !== null) {
+          runtimeDescriptor = `"${runtimeLiteral}"`;
+        } else if (isProcessExecPathExpression(args[0])) {
+          runtimeDescriptor = "process.execPath";
+        } else {
+          runtimeDescriptor = "<runtime>";
+        }
+        const pattern = `${calleeName}(${runtimeDescriptor}, [${DAEMON_ENTRY_IDENTIFIER}, ...])`;
+        return { runtimeLiteral, calleeName, pattern };
+      }
+
+      if (calleeName === "fork") {
+        if (!isDaemonEntryArg(args[0])) return null;
+        return {
+          runtimeLiteral: null,
+          calleeName,
+          pattern: `fork(${DAEMON_ENTRY_IDENTIFIER}, ...)`,
+        };
+      }
+
+      if (calleeName === "exec" || calleeName === "execSync") {
+        const tokens = shellCommandTokens(args[0]);
+        if (tokens === null || tokens.length === 0) return null;
+        // Direct-executable form: the daemon entry is the FIRST shell
+        // token; it IS the runtime that the OS shell launches. A shebang'd
+        // daemon entry is invokable directly, so this is equivalent to
+        // `execFile(DAEMON_ENTRY, [...])`.
+        if (isDaemonEntryShellToken(tokens[0])) {
+          return {
+            runtimeLiteral: null,
+            calleeName,
+            pattern: `${calleeName}("${DAEMON_ENTRY_LITERAL} ...")`,
+          };
+        }
+        // Runtime form: a recognised JS runtime token (`node` or `bun`,
+        // bare or path-suffixed) at index 0, with the daemon entry as the
+        // first script-path-position token after the runtime. The walk
+        // models three classes of runtime tokens between the runtime and
+        // the script path:
+        //
+        //   1. Eval-mode flags (`-e`, `--eval`, `-p`, `--print`, and the
+        //      bundled `--eval=...` / `--print=...` forms) put the runtime
+        //      into eval mode. No script is executed — anything after is
+        //      either the eval source or an argv to the eval'd code, not
+        //      a script the runtime is launching. Abort and report no
+        //      daemon launch (`exec("node --eval dist/daemon/index.js")`
+        //      must NOT be flagged).
+        //   2. Value-consuming flags (`--require ./pre.js`, `-r ./pre.js`,
+        //      `--conditions production`, etc., with whitespace separation)
+        //      take the next token as the option's value, NOT as the
+        //      script path. Skip both the flag and the value, then keep
+        //      walking — `exec("node --require ./pre.js dist/daemon/
+        //      index.js")` is a real daemon launch and must be flagged
+        //      (the false-negative half of the review cycle 7 blocker).
+        //      The `=` form (`--require=./pre.js`) is a single token
+        //      starting with `-` and falls through to the standalone-flag
+        //      branch which also skips it.
+        //   3. Standalone flags (`--enable-source-maps`, `--inspect`,
+        //      `--inspect-brk=...`, the `--` separator). Skip the flag
+        //      token and continue.
+        //
+        // After the walk, the first non-flag, non-flag-value token must be
+        // the daemon entry. If a different path appears first
+        // (`node script.js dist/daemon/index.js`), `node` is running
+        // `script.js`, not the daemon, so the call is not reported.
+        // Requiring index 0 to be a recognised runtime keeps the classifier
+        // from reporting unrelated subprocesses (`echo dist/daemon/index.js`,
+        // `cat /…/dist/daemon/index.js`, `grep -r dist/daemon/index.js
+        // src/`) that merely pass the path as an argument.
+        if (tokens.length < 2) return null;
+        if (!isRecognisedShellRuntimeToken(tokens[0])) return null;
+        // Determine the runtime tag from the leading token so the walk
+        // can classify runtime-ambiguous short flags (Node's parse-only
+        // `-c` vs Bun's value-consuming `-c, --config <path>`).
+        const shellRuntime = runtimeTagForToken(tokens[0]);
+        let scriptIdx = -1;
+        for (let i = 1; i < tokens.length; i += 1) {
+          if (isShellRuntimeNoScriptFlag(tokens[i], shellRuntime)) {
+            // Eval-mode, info-exit, or parse-only flag: runtime evaluates
+            // inline source, prints info, exits, or only syntax-checks the
+            // script — no script is actually executed, so a daemon-entry
+            // token after it is not a daemon launch.
+            return null;
+          }
+          if (isShellRuntimeFlagConsumingValue(tokens[i])) {
+            // Skip the flag AND its separately-passed value.
+            i += 1;
+            continue;
+          }
+          if (isShellRuntimeFlagToken(tokens[i])) continue;
+          scriptIdx = i;
+          break;
+        }
+        if (scriptIdx === -1) return null;
+        if (!isDaemonEntryShellToken(tokens[scriptIdx])) return null;
+        const prev = tokens[0];
+        const runtimeLiteral =
+          prev === "bun" || prev.endsWith("/bun") ? "bun" : null;
+        const flagSegment =
+          scriptIdx > 1 ? tokens.slice(1, scriptIdx).join(" ") + " " : "";
+        return {
+          runtimeLiteral,
+          calleeName,
+          pattern: `${calleeName}("${prev} ${flagSegment}${DAEMON_ENTRY_LITERAL} ...")`,
+        };
+      }
+
+      return null;
+    }
+
+    /**
+     * CLI-side detached daemon start detection.
+     *
+     * Returns true when the CallExpression launches the kspec CLI with
+     * the `serve start --detach` lifecycle subcommand. Classification is
+     * dispatched per-callee so that unrelated subprocesses whose argv
+     * tokens happen to overlap (`spawn("echo", ["serve", "start",
+     * "--detach"])`) AND non-daemon kspec subcommands whose later
+     * positional values happen to spell the lifecycle path (`spawn(
+     * "kspec", ["search", "serve start --detach"])` — the cycle-12
+     * blocker case) are both correctly NOT reported. In every shape, the
+     * decision delegates to `tokensResolveToDetachedServe`, which
+     * requires the FIRST TWO non-flag positional tokens after the kspec
+     * executable to be exactly `serve` then `start` and `--detach` (or
+     * `--detach=…`) to appear as a flag token — not a substring scan.
+     *
+     *   - `runKspec` / `kspec`
+     *     Implicit kspec invocation. Per-arg tokens are concatenated in
+     *     source order via `collectKspecHelperArgTokens`, which uses the
+     *     quote-aware shell tokeniser for string args and the per-element
+     *     argv collector for ArrayExpression args.
+     *   - `exec` / `execSync`
+     *     Shell-string callee. The command string is tokenised
+     *     quote-aware, the leading token must be the kspec executable
+     *     (bare `kspec` or a path ending in `/kspec`), and the remainder
+     *     is checked for the `serve start` subcommand path. Quoted
+     *     multi-word tokens stay a single positional, so a non-daemon
+     *     kspec subcommand that quotes the string `"serve start
+     *     --detach"` as a single argv slot is not misreported.
+     *   - `spawn` / `spawnSync` / `execFile` / `execFileSync`
+     *     First arg must be the kspec executable. Only the argv array
+     *     (second arg) is scanned, with each element treated as one OS
+     *     argv slot — no whitespace re-splitting — so the same
+     *     non-daemon `["search", "serve start --detach"]` pattern is
+     *     not misreported.
+     *   - `fork`
+     *     Not a kspec lifecycle entry point (fork executes JS modules,
+     *     not the kspec CLI bin).
      */
     function isDetachCallExpression(node) {
       if (node.type !== "CallExpression") return false;
-
       const calleeName = getCalleeName(node);
-      if (!calleeName || !SPAWN_LIKE_CALLEES.has(calleeName)) {
-        return false;
+      if (!calleeName) return false;
+      const args = node.arguments;
+      if (args.length === 0) return false;
+
+      if (calleeName === "runKspec" || calleeName === "kspec") {
+        // Helper signature: forwards the kspec args directly. Concatenate
+        // the per-arg token contributions in source order so a variadic
+        // `runKspec("serve", "start", "--detach")` is classified the same
+        // as the typical single-string `runKspec("serve start --detach")`.
+        const tokens = [];
+        for (const arg of args) {
+          for (const t of collectKspecHelperArgTokens(arg)) tokens.push(t);
+        }
+        return tokensResolveToDetachedServe(tokens);
       }
 
-      return argsResolveToDetachedServe(node);
+      if (calleeName === "exec" || calleeName === "execSync") {
+        // Shell-string callee. `tokenizeShellCommand` is quote-aware, so
+        // a quoted multi-word token like `"serve start --detach"` stays
+        // a single positional after the `kspec` executable token is
+        // dropped — preventing the cycle-12 false positive on
+        // `exec("kspec search \"serve start --detach\"")`.
+        const cmdArg = args[0];
+        const literal = literalString(cmdArg);
+        const tmpl = literal === null ? templateLiteralRaw(cmdArg) : null;
+        const cmdText = literal !== null ? literal : tmpl;
+        if (cmdText === null) return false;
+        const cmdTokens = tokenizeShellCommand(cmdText);
+        if (!cmdTokens || cmdTokens.length === 0) return false;
+        const lead = cmdTokens[0];
+        if (lead !== "kspec" && !lead.endsWith("/kspec")) return false;
+        return tokensResolveToDetachedServe(cmdTokens.slice(1));
+      }
+
+      if (
+        calleeName === "spawn" ||
+        calleeName === "spawnSync" ||
+        calleeName === "execFile" ||
+        calleeName === "execFileSync"
+      ) {
+        if (!isKspecExecutableArg(args[0])) return false;
+        if (args.length < 2) return false;
+        // argv array — each element is one OS argv slot; no whitespace
+        // re-splitting. A single element like `"serve start --detach"`
+        // remains one positional and cannot satisfy the `serve`/`start`
+        // subcommand-path check (cycle-12 false-positive blocker on
+        // `spawn("kspec", ["search", "serve start --detach"])`).
+        return tokensResolveToDetachedServe(collectArgvArrayTokens(args[1]));
+      }
+
+      return false;
     }
 
     /**
@@ -669,20 +1809,21 @@ const noLeakyTestDaemon = {
           return;
         }
 
-        // Direct daemon spawn — always flagged outside helper paths,
+        // Direct daemon entry launch — always flagged outside helper paths,
         // including helper functions inside a non-helper test file.
-        const daemonSpawn = readDaemonSpawn(node);
-        if (daemonSpawn) {
-          if (daemonSpawn.runtimeLiteral === "bun") {
+        const daemonEntry = readDaemonEntryInvocation(node);
+        if (daemonEntry) {
+          if (daemonEntry.runtimeLiteral === "bun") {
             context.report({
               node,
               messageId: "hardcodedBunRuntime",
+              data: { pattern: daemonEntry.pattern },
             });
           } else {
             context.report({
               node,
               messageId: "directDaemonSpawn",
-              data: { pattern: "spawn(DAEMON_ENTRY, ...)" },
+              data: { pattern: daemonEntry.pattern },
             });
           }
           return;
@@ -758,7 +1899,6 @@ const noLeakyTestDaemon = {
  * `no-leaky-test-daemon/no-leaky-test-daemon`.
  */
 const TARGET_RULE_NAME = "no-leaky-test-daemon/no-leaky-test-daemon";
-const META_RULE_NAME = "no-leaky-test-daemon/localized-disable";
 const ALL_RULE_DIRECTIVE = /^\s*oxlint-(disable(?:-line|-next-line)?)(?=$|\s)\s*(.*?)\s*$/s;
 
 function findDisableDirective(rawValue) {
