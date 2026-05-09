@@ -196873,6 +196873,13 @@ reviews:
           status: pass
           name: kspec validate completeness
         timestamp: 2026-05-09T17:55:37.269Z
+      - _ulid: 01KR6Y2YZ1NY1Z34NJM7PKS5YJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR6Y2XHAGPR7QN6YQAP5MZ7R
+        timestamp: 2026-05-09T17:55:41.665Z
     examined_commit: b9857b36c2ea8f9b2a93420865545743d74b58de
     external_links: []
     lifecycle_state: open
@@ -196882,8 +196889,29 @@ reviews:
       content_hash: ""
       ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR6Y2XHAGPR7QN6YQAP5MZ7R
+        anchor:
+          type: code
+          commit: b9857b36c2ea8f9b2a93420865545743d74b58de
+          line_end: 953
+          line_start: 950
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR6Y2XHA5225G66XZHRP14B5
+            author: Jacob Chapel
+            body: "MUST-FIX: the cleanup-binding check treats any non-null initializer as a valid daemon cleanup
+              target. That proves the closure has some value, but not that it owns the
+              pid/child/stop handle for the detached daemon that was just started. I verified this
+              with an oxlint probe: a test containing  exits 0 with no no-leaky-test-daemon report.
+              That violates @daemon-test-guardrail-precision
+              ac-detached-cleanup-bound-before-observation and the task requirement that cleanup be
+              associated with the just-started daemon, because this cleanup can kill an unrelated
+              process while the new detached daemon leaks."
+            created_at: 2026-05-09T17:55:40.202Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T17:53:44.981Z
-    updated_at: 2026-05-09T17:55:35.696Z
+    updated_at: 2026-05-09T17:55:40.202Z
     notes: []
