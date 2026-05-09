@@ -2122,6 +2122,134 @@ describe("git subprocess with overlapping argv tokens", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
+    // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+    //
+    // Cycle-12 blocker: the prior classifier was a substring scan, so a
+    // non-daemon kspec subcommand whose ARGUMENT VALUE happened to spell
+    // "serve start --detach" was misreported as a daemon lifecycle launch.
+    // The shell tokeniser keeps the inner-quoted "serve start --detach" as
+    // a single argv slot — kspec receives `argv[2] = "serve start --detach"`
+    // as the second positional under the `search` subcommand, never the
+    // `serve start` lifecycle path. The fixed classifier requires the FIRST
+    // TWO non-flag positionals after `kspec` to be exactly `serve` then
+    // `start`, so this case must NOT be reported.
+    it("does not flag exec(\"kspec search 'serve start --detach'\") — kspec subcommand is search, not serve start (cycle-12 blocker)", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { exec } from "child_process";
+
+describe("kspec non-daemon subcommand whose argument quotes the lifecycle string", () => {
+  it("execs kspec search with a quoted argument that mentions serve start --detach", () => {
+    exec("kspec search \\"serve start --detach\\"");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+    //
+    // Cycle-12 blocker (argv form): each spawn argv element is one OS argv
+    // slot — the runtime does NOT re-split on whitespace, so the literal
+    // element "serve start --detach" is a single positional that kspec
+    // search receives as `argv[2]`. The fixed argv-array walker treats it
+    // as one positional after `search`; the subcommand is `search`, not
+    // `serve start`, so it must NOT be reported.
+    it("does not flag spawn(\"kspec\", [\"search\", \"serve start --detach\"]) — kspec subcommand is search (cycle-12 blocker)", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawn } from "child_process";
+
+describe("kspec non-daemon argv whose later element spells the lifecycle string", () => {
+  it("spawns kspec search with a single-element argument that mentions serve start --detach", () => {
+    const child = spawn("kspec", ["search", "serve start --detach"]);
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+    //
+    // Variant covering the runKspec helper shape: the helper forwards a
+    // shell-style space-separated args string to the kspec CLI through a
+    // shell, so quoted multi-word tokens stay one positional. A non-daemon
+    // kspec subcommand passed via the helper must not be reported even
+    // when the quoted argument mentions the lifecycle words.
+    it("does not flag runKspec(\"search 'serve start --detach'\") — kspec subcommand is search (cycle-12 variant)", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("runKspec helper with a non-daemon subcommand", () => {
+  it("runs kspec search via the helper with a quoted argument", () => {
+    runKspec("search \\"serve start --detach\\"");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+    //
+    // Variant covering execFile (and by extension execFileSync) — the
+    // executable arg must be `kspec` for the lifecycle check to engage,
+    // and even then the argv array is walked element-by-element with the
+    // first two non-flag positionals required to be `serve` then `start`.
+    it("does not flag execFile(\"kspec\", [\"search\", \"serve start --detach\"]) — kspec subcommand is search", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execFile } from "child_process";
+
+describe("execFile kspec non-daemon subcommand", () => {
+  it("execs kspec search via execFile", () => {
+    execFile("kspec", ["search", "serve start --detach"], () => {});
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+    //
+    // The classifier must also remain robust when the lifecycle string is
+    // genuinely a prose value (e.g. an inbox capture body or a search
+    // pattern). The kspec subcommand `inbox add` consumes the next
+    // positional as the inbox text; that text mentioning "serve start
+    // --detach" is content, not a lifecycle launch.
+    it("does not flag spawn(\"kspec\", [\"inbox\", \"add\", \"serve start --detach repro\"]) — subcommand is inbox add", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawn } from "child_process";
+
+describe("kspec inbox add with lifecycle words in the body", () => {
+  it("spawns kspec inbox add with a free-form text argument", () => {
+    const child = spawn("kspec", ["inbox", "add", "serve start --detach repro"]);
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
     it("does not flag exec(\"echo --port 3456\") — no daemon entry, no kspec lifecycle command", () => {
       // Regression: a shell string with overlapping tokens but no daemon
       // entry path and no leading kspec executable must not be reported.

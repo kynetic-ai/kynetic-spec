@@ -46,9 +46,33 @@
  *        `oxlint-disable-next-line` with a "-- reason" comment.
  *
  *   2. CLI detached serve startup (flagged when no scoped cleanup)
- *      - `runKspec("serve start --detach …")`, raw `execSync(...)`, or
- *        a `spawn("kspec", [...])` whose argv argument array carries
- *        `"serve"`, `"start"`, and `"--detach"` as separate elements.
+ *      - The classifier requires the call to actually reach the kspec
+ *        `serve start` lifecycle subcommand: the first two non-flag
+ *        positional argv tokens AFTER the `kspec` executable must be
+ *        `serve` then `start`, AND `--detach` (or `--detach=…`) must
+ *        appear as a flag token. Substring or unordered token-anywhere
+ *        matches are NOT sufficient — `kspec search "serve start
+ *        --detach"` (whether issued as `exec("kspec search \"serve start
+ *        --detach\"")` or `spawn("kspec", ["search", "serve start
+ *        --detach"])`) tokenises to argv `["search", "serve start
+ *        --detach"]`, whose subcommand is `search`, and is NOT reported.
+ *      - Recognised callee shapes:
+ *        - `runKspec("serve start --detach …")` /
+ *          `kspec("serve start --detach …")` — the helper signature
+ *          forwards a single shell-style args string (or, occasionally,
+ *          an argv array) directly to the kspec CLI, so per-arg tokens
+ *          are gathered with the same quote-aware shell tokeniser used
+ *          for `exec`/`execSync`.
+ *        - `exec("kspec serve start --detach …")` /
+ *          `execSync(...)` — shell-string callee. The first tokenised
+ *          token must name the kspec executable (bare `kspec` or a path
+ *          ending in `/kspec`); the remaining tokens are then checked
+ *          for the `serve start` subcommand path.
+ *        - `spawn("kspec", ["serve", "start", "--detach", …])` /
+ *          `spawnSync` / `execFile` / `execFileSync` — argv-array
+ *          callee. Each argv element is one OS argv slot (no whitespace
+ *          re-splitting), and the first two non-flag elements must be
+ *          `serve` and `start`.
  *      - The cleanup escape hatch is preserved here because tests of the
  *        CLI's own detach behavior have to use this path. Cleanup must
  *        be registered before the next `await` or `expect()`.
@@ -324,83 +348,141 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * Collect string-shaped contributions from a CallExpression argument.
-     * Returns the literal and template-string text plus, for ArrayExpression
-     * arguments (the argv form of `spawn("kspec", ["serve", "start", "--detach"])`),
-     * the joined element strings. Non-string elements contribute a sentinel
-     * (`<expr>`) so a detected interpolation does not falsely glue two
-     * adjacent flag fragments together.
+     * Sentinel inserted into the kspec-args token list when an argument
+     * (or argv array element) does not statically resolve to a string —
+     * e.g. an Identifier reference, a SpreadElement, a BinaryExpression.
+     * The sentinel intentionally does NOT match `"serve"`, `"start"`, or
+     * `"--detach"`, so an opaque element that occupies a positional slot
+     * will defeat the kspec subcommand check (`positional1 === "serve" &&
+     * positional2 === "start"`). Preferring a false negative here over a
+     * false positive matches the rule's overall philosophy: when the
+     * classifier cannot prove the kspec subcommand path is `serve start`,
+     * it must NOT report the call as a detached daemon launch (the
+     * cycle-3 false-positive blocker on
+     * `@daemon-test-guardrail-precision`
+     * `ac-unrelated-subprocesses-not-reported`).
      */
-    function collectArgStringContributions(arg) {
+    const OPAQUE_ARG_SENTINEL = "<expr>";
+
+    /**
+     * True when a kspec-args token list resolves to a detached daemon
+     * lifecycle invocation: the first two non-flag positional tokens are
+     * `serve` then `start`, AND `--detach` (bare or `--detach=…` bundled
+     * form) appears as a flag token.
+     *
+     * Tokens are classified by shape — a token that begins with `-` is a
+     * flag (and may have a bundled `=value`); anything else is a
+     * positional. Only the first two positionals are inspected for the
+     * subcommand path; later positionals are subcommand arguments and do
+     * not change the classification.
+     *
+     * Critically, this is NOT a substring scan over the joined args. The
+     * cycle-12 reviewer's blocker case
+     * `exec("kspec search \"serve start --detach\"")` tokenises (quote-
+     * aware) to `["kspec", "search", "serve start --detach"]` — after
+     * dropping the kspec executable token the kspec subcommand is
+     * `search`, not `serve start`. The second positional is the literal
+     * three-word string `serve start --detach` (one OS argv slot, never
+     * re-split by the shell because of the inner quotes), and that
+     * single-token positional cannot satisfy `positional2 === "start"`.
+     * Likewise `spawn("kspec", ["search", "serve start --detach"])`
+     * walks two argv elements as two positionals (`search` and the
+     * three-word string) — kspec receives `argv[2] = "serve start
+     * --detach"` as an unknown subcommand and never reaches the daemon
+     * lifecycle path. Both cases must NOT be reported (cycle-12 blocker
+     * on `@daemon-test-guardrail-precision`
+     * `ac-unrelated-subprocesses-not-reported`).
+     *
+     * The caller is responsible for stripping the kspec executable token
+     * (for shell strings) or excluding `args[0]` (for spawn-like argv
+     * callees) so the executable name is not mis-counted as the first
+     * positional.
+     */
+    function tokensResolveToDetachedServe(tokens) {
+      let positional1 = null;
+      let positional2 = null;
+      let hasDetach = false;
+      for (const token of tokens) {
+        if (typeof token !== "string" || token.length === 0) continue;
+        if (token[0] === "-") {
+          if (token === "--detach" || token.startsWith("--detach=")) {
+            hasDetach = true;
+          }
+          continue;
+        }
+        if (positional1 === null) {
+          positional1 = token;
+        } else if (positional2 === null) {
+          positional2 = token;
+        }
+      }
+      return positional1 === "serve" && positional2 === "start" && hasDetach;
+    }
+
+    /**
+     * Collect the kspec-args token list contributed by an ArrayExpression
+     * argument (the spawn-like argv form). Each element produces exactly
+     * ONE token — the spawn-family child-process APIs preserve element
+     * boundaries, so a single argv element such as `"serve start --detach"`
+     * is a single OS argv slot the kspec CLI sees verbatim, NOT three
+     * separate args. Splitting that element on whitespace would silently
+     * reintroduce the cycle-12 false positive on
+     * `spawn("kspec", ["search", "serve start --detach"])`.
+     *
+     * Statically-readable elements (string Literal, no-substitution
+     * TemplateLiteral, TemplateLiteral with `${...}` placeholders
+     * preserved by `argvElementToString`) contribute their resolved
+     * string. Opaque elements (Identifier, SpreadElement, computed
+     * expressions) contribute the OPAQUE_ARG_SENTINEL so they cannot
+     * silently satisfy a positional-equality check while still occupying
+     * a positional slot.
+     */
+    function collectArgvArrayTokens(arrayArg) {
       const out = [];
-      if (!arg) return out;
-      if (arg.type === "Literal" && typeof arg.value === "string") {
-        out.push(arg.value);
-        return out;
-      }
-      if (arg.type === "TemplateLiteral") {
-        const parts = [];
-        for (let i = 0; i < arg.quasis.length; i += 1) {
-          parts.push(arg.quasis[i].value.raw);
-          if (i < arg.expressions.length) {
-            parts.push("<expr>");
-          }
+      if (!arrayArg || arrayArg.type !== "ArrayExpression") return out;
+      for (const el of arrayArg.elements) {
+        if (!el) continue;
+        if (el.type === "SpreadElement") {
+          out.push(OPAQUE_ARG_SENTINEL);
+          continue;
         }
-        out.push(parts.join(""));
-        return out;
-      }
-      if (arg.type === "ArrayExpression") {
-        for (const el of arg.elements) {
-          if (!el) continue;
-          if (el.type === "Literal" && typeof el.value === "string") {
-            out.push(el.value);
-          } else if (el.type === "TemplateLiteral") {
-            const parts = [];
-            for (let i = 0; i < el.quasis.length; i += 1) {
-              parts.push(el.quasis[i].value.raw);
-              if (i < el.expressions.length) {
-                parts.push("<expr>");
-              }
-            }
-            out.push(parts.join(""));
-          } else {
-            out.push("<expr>");
-          }
+        const tokenStr = argvElementToString(el);
+        if (tokenStr === null) {
+          out.push(OPAQUE_ARG_SENTINEL);
+          continue;
         }
-        return out;
+        out.push(tokenStr);
       }
       return out;
     }
 
     /**
-     * True when the combined string contributions across the supplied
-     * argument list resolve to a detached serve invocation. Matches both the
-     * single-string form (`"serve start --detach …"`) and the argv form
-     * (`["serve", "start", "--detach", …]`). The caller is responsible for
-     * passing only the args that should contribute (e.g. argv array but not
-     * the executable for spawn-like callees) so unrelated tokens cannot
-     * satisfy the check.
+     * Collect the kspec-args token list contributed by a single argument
+     * to a `runKspec`/`kspec` helper call. The helper's contract (see
+     * `tests/helpers/cli.ts`'s `kspec(args: string, …)` and the
+     * `runKspec(args: string, …)` wrapper) is that the first parameter is
+     * a SHELL-STYLE space-separated args string forwarded to the kspec
+     * CLI through a shell, so a string argument is tokenised quote-aware
+     * via `tokenizeShellCommand` (the same tokeniser the shell-string
+     * `exec`/`execSync` callees use). An ArrayExpression argument is
+     * treated as the argv form (one token per element). Other argument
+     * shapes contribute one OPAQUE_ARG_SENTINEL so an opaque value
+     * occupying a positional slot defeats the subcommand match.
      */
-    function argListResolvesToDetachedServe(args) {
-      let hasServe = false;
-      let hasStart = false;
-      let hasDetach = false;
-      for (const arg of args) {
-        const contributions = collectArgStringContributions(arg);
-        for (const text of contributions) {
-          if (typeof text !== "string") continue;
-          if (text.includes("serve start") && text.includes("--detach")) {
-            return true;
-          }
-          const tokens = text.split(/\s+/).filter(Boolean);
-          for (const token of tokens) {
-            if (token === "serve") hasServe = true;
-            else if (token === "start") hasStart = true;
-            else if (token === "--detach") hasDetach = true;
-          }
-        }
+    function collectKspecHelperArgTokens(arg) {
+      if (!arg) return [];
+      const literal = literalString(arg);
+      if (literal !== null) {
+        return tokenizeShellCommand(literal) || [];
       }
-      return hasServe && hasStart && hasDetach;
+      const tmpl = templateLiteralRaw(arg);
+      if (tmpl !== null) {
+        return tokenizeShellCommand(tmpl) || [];
+      }
+      if (arg.type === "ArrayExpression") {
+        return collectArgvArrayTokens(arg);
+      }
+      return [OPAQUE_ARG_SENTINEL];
     }
 
     function literalString(node) {
@@ -706,22 +788,6 @@ const noLeakyTestDaemon = {
         return token.slice(1, -1);
       }
       return token;
-    }
-
-    /**
-     * True when the leading argv token of a shell command string is the
-     * kspec CLI (bare `kspec` or a path ending in `/kspec`). Uses the
-     * same quote-aware tokeniser as `shellCommandTokens` so that
-     * `exec("'kspec' serve start --detach")` classifies the same as the
-     * bare form, and so that a quoted leading token containing whitespace
-     * is not split apart by a plain whitespace split.
-     */
-    function shellCommandLeadsWithKspec(text) {
-      const tokens = tokenizeShellCommand(text);
-      if (!tokens || tokens.length === 0) return false;
-      const firstToken = tokens[0];
-      if (!firstToken) return false;
-      return firstToken === "kspec" || firstToken.endsWith("/kspec");
     }
 
     function getCalleeName(node) {
@@ -1430,22 +1496,37 @@ const noLeakyTestDaemon = {
      * CLI-side detached daemon start detection.
      *
      * Returns true when the CallExpression launches the kspec CLI with
-     * `serve start --detach` arguments. The check is intentionally
+     * the `serve start --detach` lifecycle subcommand. Classification is
      * dispatched per-callee so that unrelated subprocesses whose argv
-     * tokens happen to overlap (e.g. `spawn("echo", ["serve", "start",
-     * "--detach"])`) are not reported:
+     * tokens happen to overlap (`spawn("echo", ["serve", "start",
+     * "--detach"])`) AND non-daemon kspec subcommands whose later
+     * positional values happen to spell the lifecycle path (`spawn(
+     * "kspec", ["search", "serve start --detach"])` — the cycle-12
+     * blocker case) are both correctly NOT reported. In every shape, the
+     * decision delegates to `tokensResolveToDetachedServe`, which
+     * requires the FIRST TWO non-flag positional tokens after the kspec
+     * executable to be exactly `serve` then `start` and `--detach` (or
+     * `--detach=…`) to appear as a flag token — not a substring scan.
      *
      *   - `runKspec` / `kspec`
-     *     Implicit kspec invocation. Every argument contributes to the
-     *     detach token scan.
+     *     Implicit kspec invocation. Per-arg tokens are concatenated in
+     *     source order via `collectKspecHelperArgTokens`, which uses the
+     *     quote-aware shell tokeniser for string args and the per-element
+     *     argv collector for ArrayExpression args.
      *   - `exec` / `execSync`
-     *     Shell-string callee. The command string must lead with the
-     *     kspec executable; the same argument is then scanned for
-     *     `serve`/`start`/`--detach` tokens.
+     *     Shell-string callee. The command string is tokenised
+     *     quote-aware, the leading token must be the kspec executable
+     *     (bare `kspec` or a path ending in `/kspec`), and the remainder
+     *     is checked for the `serve start` subcommand path. Quoted
+     *     multi-word tokens stay a single positional, so a non-daemon
+     *     kspec subcommand that quotes the string `"serve start
+     *     --detach"` as a single argv slot is not misreported.
      *   - `spawn` / `spawnSync` / `execFile` / `execFileSync`
      *     First arg must be the kspec executable. Only the argv array
-     *     (second arg) is scanned for tokens — the executable itself is
-     *     excluded so the kspec name is not mis-counted as a token.
+     *     (second arg) is scanned, with each element treated as one OS
+     *     argv slot — no whitespace re-splitting — so the same
+     *     non-daemon `["search", "serve start --detach"]` pattern is
+     *     not misreported.
      *   - `fork`
      *     Not a kspec lifecycle entry point (fork executes JS modules,
      *     not the kspec CLI bin).
@@ -1458,17 +1539,33 @@ const noLeakyTestDaemon = {
       if (args.length === 0) return false;
 
       if (calleeName === "runKspec" || calleeName === "kspec") {
-        return argListResolvesToDetachedServe(args);
+        // Helper signature: forwards the kspec args directly. Concatenate
+        // the per-arg token contributions in source order so a variadic
+        // `runKspec("serve", "start", "--detach")` is classified the same
+        // as the typical single-string `runKspec("serve start --detach")`.
+        const tokens = [];
+        for (const arg of args) {
+          for (const t of collectKspecHelperArgTokens(arg)) tokens.push(t);
+        }
+        return tokensResolveToDetachedServe(tokens);
       }
 
       if (calleeName === "exec" || calleeName === "execSync") {
+        // Shell-string callee. `tokenizeShellCommand` is quote-aware, so
+        // a quoted multi-word token like `"serve start --detach"` stays
+        // a single positional after the `kspec` executable token is
+        // dropped — preventing the cycle-12 false positive on
+        // `exec("kspec search \"serve start --detach\"")`.
         const cmdArg = args[0];
         const literal = literalString(cmdArg);
         const tmpl = literal === null ? templateLiteralRaw(cmdArg) : null;
         const cmdText = literal !== null ? literal : tmpl;
         if (cmdText === null) return false;
-        if (!shellCommandLeadsWithKspec(cmdText)) return false;
-        return argListResolvesToDetachedServe([cmdArg]);
+        const cmdTokens = tokenizeShellCommand(cmdText);
+        if (!cmdTokens || cmdTokens.length === 0) return false;
+        const lead = cmdTokens[0];
+        if (lead !== "kspec" && !lead.endsWith("/kspec")) return false;
+        return tokensResolveToDetachedServe(cmdTokens.slice(1));
       }
 
       if (
@@ -1479,7 +1576,12 @@ const noLeakyTestDaemon = {
       ) {
         if (!isKspecExecutableArg(args[0])) return false;
         if (args.length < 2) return false;
-        return argListResolvesToDetachedServe([args[1]]);
+        // argv array — each element is one OS argv slot; no whitespace
+        // re-splitting. A single element like `"serve start --detach"`
+        // remains one positional and cannot satisfy the `serve`/`start`
+        // subcommand-path check (cycle-12 false-positive blocker on
+        // `spawn("kspec", ["search", "serve start --detach"])`).
+        return tokensResolveToDetachedServe(collectArgvArrayTokens(args[1]));
       }
 
       return false;
