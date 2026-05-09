@@ -193916,6 +193916,13 @@ reviews:
           status: fail
           name: manual cleanup-registration probe
         timestamp: 2026-05-09T08:02:55.870Z
+      - _ulid: 01KR5W5YWWXVVNSZCXHFJZSPHK
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR5W5XKYGFK1MW5E5S2SSZCX
+        timestamp: 2026-05-09T08:03:08.316Z
     examined_commit: bb5e4d849de64fa9d0b5b0b45cf9a63b833baa11
     external_links: []
     lifecycle_state: open
@@ -193949,7 +193956,22 @@ reviews:
               can still leak.'
             created_at: 2026-05-09T07:53:35.898Z
         kind: blocker
+      - _ulid: 01KR5W5XKYGFK1MW5E5S2SSZCX
+        entries:
+          - _ulid: 01KR5W5XKYVK1HHR3V82K0YEJJ
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: kspec-agents.md; tools/eslint-rules/no-leaky-test-daemon.js;
+              tests/lint-no-leaky-test-daemon.test.ts; tests/lint-daemon-test-guardrails.test.ts;
+              task @01KR3W7QAH8VZCH3A60NSB3HBN; specs @daemon-test-guardrail-precision and
+              @daemon-test-harness-guardrails; prior cycle review @01KR5S9M. Commands run: git
+              diff/stat/name-status/log; kspec item get; kspec review get/for-task; rg AC
+              annotations; kspec validate; targeted npm test -- --fresh; full npm test; synthetic
+              npx oxlint probe. Claims verified: prior token-only cleanup probes are now covered by
+              tests, but cleanup registration is still too broad. Categories searched: correctness,
+              edge cases, test quality, AC coverage, integration, and regression risk."
+            created_at: 2026-05-09T08:03:07.006Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-09T07:50:39.486Z
-    updated_at: 2026-05-09T08:02:54.535Z
+    updated_at: 2026-05-09T08:03:07.006Z
     notes: []
