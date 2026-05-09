@@ -192906,6 +192906,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T05:05:57.973Z
+      - _ulid: 01KR5JTTWG0E0Y75DBAQBW1767
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR5JTSF7N3RZK4B4J5NBC3YS
+        timestamp: 2026-05-09T05:19:46.576Z
     examined_commit: 74ab0ec544bc889c0aef25550ccb2d1e691b8f1c
     external_links: []
     lifecycle_state: open
@@ -192915,8 +192922,29 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR5JTSF7N3RZK4B4J5NBC3YS
+        anchor:
+          type: code
+          commit: 74ab0ec544bc889c0aef25550ccb2d1e691b8f1c
+          line_end: 403
+          line_start: 392
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR5JTSF7JA9ZHXSE7V2DTPPD
+            author: Jacob Chapel
+            body: "MUST-FIX: detached-serve classification still matches non-daemon kspec commands by
+              substring.  returns true when any string contribution contains  plus , so a command
+              like  or  is reported as a detached daemon start even though the kspec subcommand is ,
+              not . This violates @daemon-test-guardrail-precision
+              ac-unrelated-subprocesses-not-reported and the task's requirement that detached-serve
+              detection be tied to a kspec daemon lifecycle command. Evidence: a synthetic oxlint
+              probe against this snapshot exited 1 with two no-leaky-test-daemon diagnostics on
+              those two non-daemon search calls."
+            created_at: 2026-05-09T05:19:45.128Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T05:05:39.146Z
-    updated_at: 2026-05-09T05:05:56.292Z
+    updated_at: 2026-05-09T05:19:45.128Z
     notes: []
