@@ -43747,7 +43747,7 @@ runs:
     completed_at: 2026-05-09T17:52:13.933Z
   - _ulid: 01KR6YQMRAVJ44RZHDEWSTASRK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -43762,7 +43762,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T18:07:41.708Z
-        completed_at: 2026-05-09T18:07:41.708Z
+        completed_at: 2026-05-09T18:08:12.824Z
+        notes: "High-confidence success: minimized synthetic oxlint probes are effective for reviewing
+          static lint-rule classifier changes; this is already covered by existing
+          observations/inbox items such as @01KR62F0 and related recent lint-rule review successes,
+          so no new capture. High-confidence friction: shell-metacharacter-heavy review
+          comment/reply bodies are fragile when passed via --body through bash; this exact area is
+          already tracked by inbox @01KPPQNX and observation @01KR6THZ, so no duplicate capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T18:08:12.824Z
+        completed_at: 2026-05-09T18:08:12.824Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T18:06:59.338Z
