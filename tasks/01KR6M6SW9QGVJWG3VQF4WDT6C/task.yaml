@@ -220,8 +220,13 @@ description: >-
 spec_ref: "@daemon-test-startup-failure-hygiene"
 meta_ref: null
 plan_ref: "@plan-daemon-test-fixture-hardening"
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Approved in review @01KR6N9Q. Merge helper reported no-op because
+  dispatch/task/task-tighten-daemon-hardening-specs/01kr6m6s at
+  2ae8cbb56836d8e89dd71da20121ccffed0b615c was already integrated at dev. Spec tightening accepted:
+  added cleanup-registration failure AC, cleanup binding AC, and approved-helper boundary AC; both
+  touched specs remain in_progress for follow-up implementation."
 depends_on: []
 context: []
 priority: 2
@@ -301,8 +306,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-09T15:22:10.257Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Approved in review @01KR6N9Q. Merge helper reported no-op because
+          dispatch/task/task-tighten-daemon-hardening-specs/01kr6m6s at
+          2ae8cbb56836d8e89dd71da20121ccffed0b615c was already integrated at dev. Spec tightening
+          accepted: added cleanup-registration failure AC, cleanup binding AC, and approved-helper
+          boundary AC; both touched specs remain in_progress for follow-up implementation."
+        previous: null
+      completed_at:
+        new: 2026-05-09T15:34:00.820Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-09T15:34:00.835Z
 created_at: 2026-05-09T15:03:01.767Z
 started_at: 2026-05-09T15:14:50.061Z
 submitted_at: 2026-05-09T15:18:59.867Z
+completed_at: 2026-05-09T15:34:00.820Z
 todos: []
 automation: eligible
