@@ -1263,7 +1263,7 @@ features:
           the fixture is stopped before the helper returns failure to the caller.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
