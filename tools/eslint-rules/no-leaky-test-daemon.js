@@ -266,7 +266,7 @@ const noLeakyTestDaemon = {
         if (
           current.type === "TryStatement" &&
           current.finalizer &&
-          subtreeContainsDaemonCleanupCall(current.finalizer)
+          subtreeContainsDaemonCleanupCall(current.finalizer, false)
         ) {
           return true;
         }
@@ -473,16 +473,45 @@ const noLeakyTestDaemon = {
     ]);
 
     /**
-     * True when `callNode` is a `process.on("exit"|"beforeExit"|"SIGINT"|
-     * "SIGTERM", <callback>)` registration whose callback argument is the
-     * same node passed in `callbackArg`. Used by
-     * `isCleanupRegistrationCallback` to recognise the standard Node
+     * Set of Node `process` events whose callbacks WILL run when the
+     * process is shutting down or receiving a termination signal —
+     * registering a daemon-kill on one of these events does prevent the
+     * leak the rule is guarding against. Any other event (`message`,
+     * `disconnect`, `warning`, `unhandledRejection`, etc.) fires during
+     * normal IPC or error reporting and is not guaranteed to run before
+     * the test ends, so a kill registered there does NOT credit cleanup.
+     *
+     * The cycle-4 reviewer probe `process.on("message", () =>
+     * killPid(p))` previously credited cleanup because the predicate
+     * accepted any `process.on(...)` event. Constraining the event name
+     * to this set rejects that probe and keeps the legitimate
+     * `process.on("exit"|"SIGINT"|…)` patterns valid.
+     */
+    const PROCESS_EXIT_EVENT_NAMES = new Set([
+      "exit",
+      "beforeExit",
+      "SIGINT",
+      "SIGTERM",
+      "SIGHUP",
+      "SIGQUIT",
+      "SIGBREAK",
+    ]);
+
+    /**
+     * True when `callNode` is a `process.on(<exit-event>, <callback>)`
+     * registration whose callback argument is the same node passed in
+     * `callbackArg`, AND the event name is a string literal naming a
+     * process exit/signal event (see `PROCESS_EXIT_EVENT_NAMES`). Used
+     * by `isCleanupRegistrationCallback` to recognise the standard Node
      * process-lifecycle cleanup pattern alongside the vitest hook names.
      *
-     * The event name is not constrained to a specific signal because any
-     * process exit/signal handler that calls a daemon-cleanup syscall WILL
-     * run before the process exits — that is precisely the leak-prevention
-     * pattern the rule is trying to credit.
+     * The event name MUST be constrained — `process.on("message",
+     * killer)` is an IPC handler, not cleanup, and the callback may run
+     * during normal communication or never at all before the test ends.
+     * Crediting it as cleanup leaves the detached daemon leaking on the
+     * straight-line path to the next observation (cycle-4 reviewer
+     * blocker on `@daemon-test-guardrail-precision`
+     * `ac-detached-cleanup-before-observation`).
      */
     function isProcessOnExitRegistration(callNode, callbackArg) {
       if (!callNode || callNode.type !== "CallExpression") return false;
@@ -492,7 +521,11 @@ const noLeakyTestDaemon = {
       if (callee.object.name !== "process") return false;
       if (!callee.property || callee.property.type !== "Identifier") return false;
       if (callee.property.name !== "on") return false;
-      return callNode.arguments.includes(callbackArg);
+      if (!callNode.arguments.includes(callbackArg)) return false;
+      const eventArg = callNode.arguments[0];
+      if (!eventArg || eventArg.type !== "Literal") return false;
+      if (typeof eventArg.value !== "string") return false;
+      return PROCESS_EXIT_EVENT_NAMES.has(eventArg.value);
     }
 
     /**
@@ -575,7 +608,7 @@ const noLeakyTestDaemon = {
      * Identifier is `onTestFinished`, so the walker descends into the
      * arrow's body and finds the `killPid(pid)` call.
      */
-    function subtreeContainsDaemonCleanupCall(node) {
+    function subtreeContainsDaemonCleanupCall(node, insideRegisteredCallback) {
       if (!node || typeof node !== "object" || typeof node.type !== "string") {
         return false;
       }
@@ -587,10 +620,77 @@ const noLeakyTestDaemon = {
         if (!isCleanupRegistrationCallback(node)) {
           return false;
         }
-        // Fall through and descend into the body — registered callbacks
-        // will run, so a cleanup-shaped call inside DOES count.
+        // Inside a registered callback the framework invokes the body
+        // at the cleanup boundary, so the body executes — even if the
+        // body has its own internal conditionals. Conditional kill
+        // shapes inside a registered cleanup callback (a defensive
+        // guard like `if (pid) killPid(pid)`) ARE valid cleanup; the
+        // pruning below is therefore disabled once descent reaches a
+        // registered callback. The REGISTRATION itself, however, must
+        // still be unconditional in the surrounding scope (the cycle-4
+        // reviewer's `if (shouldCleanup) onTestFinished(...)` probe).
+        insideRegisteredCallback = true;
       }
       if (isDaemonCleanupCallExpression(node)) return true;
+
+      // Conditional control-flow shapes outside a registered callback:
+      // do NOT descend into branches whose execution is not guaranteed
+      // on the straight-line path between the detached daemon start
+      // and the next observation. Cleanup REGISTRATION that lives
+      // inside a conditional consequent/alternate, a loop body that
+      // may iterate zero times, a switch case, a logical short-circuit
+      // right-hand side, or a catch handler is not guaranteed to fire
+      // before the next test observation — semantically it is the
+      // same as no cleanup.
+      //
+      // The cycle-4 reviewer probes (`if (false) killPid(p)` and
+      // `if (shouldCleanup) onTestFinished(() => killPid(p))`) both
+      // relied on descent into a top-level conditional. Pruning here
+      // makes them flag, while the existing valid pattern of writing
+      // a defensive guard INSIDE a registered cleanup callback (e.g.
+      // `onTestFinished(() => { if (pid) killPid(pid); })`) keeps
+      // working because the `insideRegisteredCallback` flag flips when
+      // descent crosses the registration boundary.
+      if (!insideRegisteredCallback) {
+        if (node.type === "IfStatement") return false;
+        if (node.type === "ConditionalExpression") return false;
+        if (node.type === "LogicalExpression") {
+          // `a && b`, `a || b`, `a ?? b` — `b` may short-circuit. The
+          // left-hand side always runs, but cleanup written there
+          // would be deeply unidiomatic; skip the whole expression.
+          return false;
+        }
+        if (
+          node.type === "WhileStatement" ||
+          node.type === "DoWhileStatement" ||
+          node.type === "ForStatement" ||
+          node.type === "ForInStatement" ||
+          node.type === "ForOfStatement"
+        ) {
+          return false;
+        }
+        if (node.type === "SwitchStatement") return false;
+        if (node.type === "TryStatement") {
+          // The try block always begins executing, and the finalizer
+          // always runs, so cleanup in either is on the unconditional
+          // path. The handler runs only when an exception is thrown,
+          // so it is conditional — do not descend.
+          if (
+            node.block &&
+            subtreeContainsDaemonCleanupCall(node.block, false)
+          ) {
+            return true;
+          }
+          if (
+            node.finalizer &&
+            subtreeContainsDaemonCleanupCall(node.finalizer, false)
+          ) {
+            return true;
+          }
+          return false;
+        }
+      }
+
       for (const key in node) {
         if (
           key === "parent" ||
@@ -607,10 +707,14 @@ const noLeakyTestDaemon = {
         const child = node[key];
         if (Array.isArray(child)) {
           for (const c of child) {
-            if (subtreeContainsDaemonCleanupCall(c)) return true;
+            if (subtreeContainsDaemonCleanupCall(c, insideRegisteredCallback)) {
+              return true;
+            }
           }
         } else if (child && typeof child === "object" && typeof child.type === "string") {
-          if (subtreeContainsDaemonCleanupCall(child)) return true;
+          if (subtreeContainsDaemonCleanupCall(child, insideRegisteredCallback)) {
+            return true;
+          }
         }
       }
       return false;
@@ -634,7 +738,7 @@ const noLeakyTestDaemon = {
      * blocker) are NOT cleanup.
      */
     function statementContainsCleanup(stmt) {
-      return subtreeContainsDaemonCleanupCall(stmt);
+      return subtreeContainsDaemonCleanupCall(stmt, false);
     }
 
     /**

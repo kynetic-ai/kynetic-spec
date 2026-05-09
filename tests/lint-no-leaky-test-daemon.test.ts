@@ -421,6 +421,90 @@ describe("test suite", () => {
 `);
       expect(result.output).toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-4 variant (unreachable conditional kill): the only later
+    // statement is `if (false) killPid(result.pid)` — the kill is in a
+    // conditional consequent that never executes on the straight-line
+    // path. The walker must not descend into the consequent so the
+    // missing-cleanup violation fires before the next observation.
+    it("should flag serve start --detach when the only later statement is an unreachable conditional kill", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    if (false) killPid(result.pid);
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-4 variant (conditional registration): a registration that
+    // sits inside a conditional consequent — `if (shouldCleanup)
+    // onTestFinished(() => killPid(pid))` — is not guaranteed to
+    // register cleanup before the next observation. The walker must
+    // not descend into the IfStatement's branches.
+    it("should flag serve start --detach when onTestFinished is registered inside a conditional consequent", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    const shouldCleanup = true;
+    if (shouldCleanup) onTestFinished(() => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-4 variant (process.on with non-exit event): the cleanup
+    // arrow is passed to `process.on("message", ...)` rather than an
+    // exit/signal event. A `message` handler runs during normal IPC
+    // and is not guaranteed to fire before the test ends, so the
+    // detached daemon would still leak.
+    it("should flag serve start --detach when cleanup is registered via process.on with a non-exit event", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    process.on("message", () => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-4 variant (loop body cleanup): a kill that lives in a
+    // `for` loop body may never execute if the iterable is empty. The
+    // walker must not credit cleanup that depends on loop iteration.
+    it("should flag serve start --detach when the only later cleanup is inside a for loop body", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    const pids: number[] = [];
+    for (const pid of pids) killPid(pid);
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {
@@ -435,6 +519,47 @@ describe("test suite", () => {
     runKspec("serve start --detach --port 3456");
     const pid = 12345;
     onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // (negative case: defensive guard INSIDE a registered callback is
+    // valid — the callback runs at the cleanup boundary regardless of
+    // whether the test failed mid-flight, and the inner conditional
+    // just protects against running kill on an unset pid.)
+    it("should allow serve start --detach with a defensive guard inside the onTestFinished callback", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    onTestFinished(() => {
+      if (result.pid) killPid(result.pid);
+    });
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // (negative case: process.on with an exit/signal event is valid
+    // cleanup. The Node runtime fires the callback when the process
+    // is shutting down, so the kill DOES run before the test ends.)
+    it("should allow serve start --detach with cleanup registered via process.on(\"exit\", ...)", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    process.on("exit", () => killPid(result.pid));
     expect(true).toBe(true);
   });
 });
