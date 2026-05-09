@@ -18317,7 +18317,7 @@ workspaces:
         head: 2078e90d383db5dac67da2d33694cd1ab75e87ae
         last_seen_at: 2026-05-09T11:23:21.808Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-detached-cleanup-timing-analysis-01kr3w7q
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: e745f243f274b54155374e526d64a595837eef75
     bootstrap:
       status: succeeded
@@ -18799,7 +18799,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T12:05:04.983Z
+      updated_at: 2026-05-09T12:05:33.501Z
     integration:
       status: pending
       detail: null
@@ -18814,10 +18814,10 @@ workspaces:
     task_slug: task-resolve-cli-lifecycle-test-endpoints
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-09T11:40:12.629Z
-      last_reconciled_at: 2026-05-09T12:05:04.983Z
+      last_active_at: 2026-05-09T12:05:33.501Z
+      last_reconciled_at: 2026-05-09T12:05:33.501Z
       created_at: 2026-05-09T11:39:45.978Z
-      updated_at: 2026-05-09T12:05:29.502Z
+      updated_at: 2026-05-09T12:05:33.501Z
     workspace_id: dispatch-workspace-01KR3W7S3VS0QRZ26RGXS0F3C4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
