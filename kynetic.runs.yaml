@@ -42590,9 +42590,24 @@ runs:
     completed_at: 2026-05-09T09:30:06.025Z
   - _ulid: 01KR62ARRYCSHMFZCJ2FMCEKVA
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T09:50:37.342Z
+        completed_at: 2026-05-09T09:51:51.183Z
+        notes: "Step 1 (worked well): Synthetic oxlint probes BEFORE running the full suite caught both
+          blockers in seconds, much faster than the ~30min full test cycle. The existing rule code's
+          per-cycle inline doc comments (each cycle's reviewer blocker was named in the source) made
+          it easy to understand the symmetric gating principle (cleanup walker credits
+          registered-callback bodies; observation walker should credit IIFE bodies). Reusing
+          existing FETCH_LIKE_CALLEES and WEBSOCKET_LIKE_CONSTRUCTORS sets kept the rule
+          self-consistent."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T09:51:51.183Z
+        completed_at: 2026-05-09T09:51:51.183Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T09:50:37.342Z
