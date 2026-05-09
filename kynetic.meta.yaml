@@ -18003,6 +18003,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-09T17:20:18.551Z
+  - _ulid: 01KR76KHG6DXZHDFCAMT5PV4BV
+    type: success
+    content: During guardrail reviews, a small AC-shaped synthetic lint probe can reveal contract gaps
+      that focused regression suites miss. In this session the submitted focused tests passed, but a
+      one-file oxlint probe for callback-local readPidFromFile cleanup showed the rule still
+      accepted cleanup that did not own a concrete pid at registration time.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-09T20:24:33.542Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
