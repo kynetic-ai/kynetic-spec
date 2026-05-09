@@ -43601,9 +43601,23 @@ runs:
     completed_at: 2026-05-09T17:11:34.022Z
   - _ulid: 01KR6VW1WQEZDVF9AKDQW8C71G
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T17:16:58.135Z
+        completed_at: 2026-05-09T17:19:45.151Z
+        notes: "Searched: kspec meta observations (filtered for selective-expected-failure thread), kspec
+          inbox list patterns, kspec tasks list. Located prior captures: @01KR3ZR8 (bare it.fails
+          too permissive — disproved), @01KR431R (selective expected-failure pattern), @01KR45YDQ
+          (refactor cycle saved fix-cycle round trip), @01KR6SGE (pre-submit reflection timing).
+          Cycle-3 lesson is not covered by any: prior captures address WHY/HOW of the pattern but
+          not the post-fix-path scoping mistake that just occurred."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T17:19:45.151Z
+        completed_at: 2026-05-09T17:19:45.151Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T17:16:58.135Z
