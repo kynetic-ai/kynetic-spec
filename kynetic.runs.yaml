@@ -42930,9 +42930,24 @@ runs:
     completed_at: 2026-05-09T11:42:33.983Z
   - _ulid: 01KR69WQJZMKH4YM268DFWVK6N
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T12:02:45.983Z
+        completed_at: 2026-05-09T12:03:37.375Z
+        notes: "What worked well: (1) Production resolveDaemonClientEndpoint helper was already
+          well-factored, so the lifecycle helper became a thin wrapper rather than a parallel
+          implementation. (2) The no-leaky-test-daemon lint rule's narrow scope (only flagging
+          literal 'localhost:' constructions, not 127.0.0.1/[::1]) made the audit deterministic —
+          every remaining direct URL was either an assertion target or endpoint-subject behavior.
+          (3) The task description's explicit per-step audit requirement (list every remaining
+          occurrence, justify each) prevented missing any sites."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T12:03:37.375Z
+        completed_at: 2026-05-09T12:03:37.375Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T12:02:45.983Z
