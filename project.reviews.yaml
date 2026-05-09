@@ -192082,6 +192082,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR5AV9F7CW13FP3V0M44QN8G
         timestamp: 2026-05-09T03:00:14.174Z
+      - _ulid: 01KR5AVE8WTZB2VHVEEEMSE9XN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR5AVD37EJJ8RVTRTNX5DARR
+        timestamp: 2026-05-09T03:00:17.820Z
     examined_commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
     external_links: []
     lifecycle_state: open
@@ -192150,7 +192157,26 @@ reviews:
               repository-wide lint script also has unrelated baseline failures elsewhere."
             created_at: 2026-05-09T03:00:12.903Z
         kind: blocker
+      - _ulid: 01KR5AVD37EJJ8RVTRTNX5DARR
+        anchor:
+          type: code
+          commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
+          line_end: 605
+          line_start: 600
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR5AVD37JCTZY18BFJE2K1SA
+            author: Jacob Chapel
+            body: "MUST-FIX: shell-token daemon-entry matching does not handle simple quoted tokens, so direct
+              shell launches with quoted static paths are missed. Manual probe with `exec(\"node
+              'dist/daemon/index.js' --port 0\")` and `exec(\"'dist/daemon/index.js' --port 0\")`
+              exited 0 with no diagnostics, even though those shell commands execute the daemon
+              entry. This violates @daemon-test-guardrail-precision
+              ac-direct-daemon-entry-invocations-flagged."
+            created_at: 2026-05-09T03:00:16.615Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T02:48:34.986Z
-    updated_at: 2026-05-09T03:00:12.903Z
+    updated_at: 2026-05-09T03:00:16.615Z
     notes: []
