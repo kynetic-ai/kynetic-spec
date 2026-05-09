@@ -156,7 +156,7 @@ description: >-
 spec_ref: "@daemon-test-startup-failure-hygiene"
 meta_ref: null
 plan_ref: "@plan-daemon-test-fixture-hardening"
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-tighten-daemon-hardening-specs"
@@ -168,6 +168,14 @@ tags:
   - regression
   - follow-up
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
+  captured_at: 2026-05-09T15:42:21.731Z
+  commit: 127e8024b36887d98349e8ccfd3c23bd1bd572cc
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR6P1PV1V4YVZHCRJP355DB5
 history:
   - author: Jacob Chapel
@@ -210,7 +218,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-09T15:35:30.264Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
+          captured_at: 2026-05-09T15:42:21.731Z
+          commit: 127e8024b36887d98349e8ccfd3c23bd1bd572cc
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-09T15:42:21.734Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-09T15:42:21.735Z
 created_at: 2026-05-09T15:03:05.304Z
 started_at: 2026-05-09T15:35:30.263Z
+submitted_at: 2026-05-09T15:42:21.734Z
 todos: []
 automation: eligible
