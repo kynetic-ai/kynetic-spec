@@ -1,1 +1,57 @@
-notes: []
+notes:
+  - _ulid: 01KR6Y269Q7Q9FXSWPS2AD49AV
+    content: >-
+      Approach:
+
+
+      Fix in tests/helpers/daemon.ts:711-715: wrap opts.registerCleanup(stop) in try/catch. On
+      failure: await stop() (which calls killChildScoped → SIGTERM/wait/SIGKILL with bounded
+      timeout), then rethrow the original cleanup-registration error so the rejection clearly
+      preserves it. If stop() itself throws, append secondary cleanup failure detail to the error
+      message without replacing the registration error as the primary cause. Do not enter the
+      readiness wait when registration has failed.
+
+
+      Why preserve the original error directly (not wrap it):
+
+      - The regression test asserts errorMessage.toContain(sentinel) — wrapping would still pass IF
+      we include the message, but throwing the original Error keeps the stack and cause intact for
+      caller diagnosis.
+
+      - The task spec says 'preserve the original cleanup-registration error as the surfaced error,
+      OR as the explicit cause/message/diagnostic detail of a wrapper'. Direct rethrow is the
+      simplest form that satisfies this.
+
+
+      Why not enter readiness:
+
+      - We bail BEFORE the readiness try/catch by throwing inside the registerCleanup catch. This
+      avoids the readiness/launch race entirely.
+
+
+      Why bounded:
+
+      - killChildScoped uses a 5s SIGTERM grace then SIGKILL, so stop() is bounded.
+
+
+      Test update:
+
+      - The regression's expectCleanupRegistrationLeak wrapper exists explicitly to throw a 'remove
+      this wrapper' error post-fix. I will inline its post-fix assertions (child terminated AND
+      endpoint unreachable) at the call site and delete the helper, as the wrapper documents.
+
+
+      Test plan:
+
+      - mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts (focused suite must pass with
+      all 11 tests including the now-active regression)
+
+      - mise exec -- npm test (full suite — must remain green; only the regression test should
+      change behavior)
+
+      - mise exec -- kspec validate --refs --warnings-ok
+
+      - mise exec -- kspec validate --completeness --warnings-ok
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T17:55:16.407Z
