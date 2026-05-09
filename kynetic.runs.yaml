@@ -41534,7 +41534,7 @@ runs:
     started_at: 2026-05-09T00:45:02.329Z
     completed_at: 2026-05-09T00:47:10.449Z
   - _ulid: 01KR57ARGH1JW8KRFEQCF1QWPC
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -41581,10 +41581,13 @@ runs:
         completed_at: 2026-05-09T02:00:10.261Z
         notes: "Skipped discussion: no untracked improvements were proposed after coverage search, so there
           is nothing to ask the user to approve."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-09T02:00:10.261Z
-        completed_at: 2026-05-09T02:00:10.261Z
+        completed_at: 2026-05-09T02:00:21.571Z
+        notes: No captures created. Search found existing tracking for all reflection candidates, and
+          duplicating observations would add noise.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T01:58:45.521Z
+    completed_at: 2026-05-09T02:00:21.571Z
