@@ -194750,6 +194750,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T10:05:19.289Z
+      - _ulid: 01KR64MYSWZ3M4TD53FPV82944
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR62R8GMSN255VVK1H47S8V2
+        timestamp: 2026-05-09T10:31:08.348Z
     examined_commit: b1848893913ff9ca5e22b6ec20c23338f858d88a
     external_links: []
     lifecycle_state: closed
@@ -194782,6 +194788,15 @@ reviews:
               @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
               under-enforced.'
             created_at: 2026-05-09T09:57:59.444Z
+          - _ulid: 01KR64MXF9YBK7ASCB0A50V1D8
+            author: "@claude"
+            body: "Fixed: restricted CLEANUP_REGISTRATION_WRAPPER_NAMES to {onTestFinished} only. The walker no
+              longer descends into beforeEach/afterEach/beforeAll/afterAll callback bodies when
+              treating them as cleanup-registration callbacks. Reviewer's beforeEach probe now exits
+              1 with missingCleanup, as does the afterEach variant. Negative controls
+              (onTestFinished, process.on('exit')) still exit 0. Four new behavioral regressions in
+              tests/lint-no-leaky-test-daemon.test.ts cover the four lifecycle hook variants."
+            created_at: 2026-05-09T10:31:06.985Z
         kind: blocker
       - _ulid: 01KR62RNWHEWSJ6JGMHN028E19
         anchor:
@@ -194830,5 +194845,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T10:05:19.288Z
     created_at: 2026-05-09T09:54:24.456Z
-    updated_at: 2026-05-09T10:05:19.289Z
+    updated_at: 2026-05-09T10:31:06.985Z
     notes: []
