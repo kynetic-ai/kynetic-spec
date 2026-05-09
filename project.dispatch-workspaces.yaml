@@ -20873,7 +20873,7 @@ workspaces:
         head: 6fa74f5c16c8e7400296a3351300001cc48524d8
         last_seen_at: 2026-05-09T16:54:42.725Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-guardrail-binding-wrapper-regressions-01kr6m74
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 78586f8c763e828ea888ef220f6e319c15e4ce7e
     bootstrap:
       status: succeeded
@@ -21358,7 +21358,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T23:49:05.929Z
+      updated_at: 2026-05-09T23:49:32.735Z
     integration:
       status: pending
       detail: null
@@ -21373,10 +21373,10 @@ workspaces:
     task_slug: task-fix-guardrail-binding-wrapper-analysis
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-09T23:12:06.126Z
-      last_reconciled_at: 2026-05-09T23:49:05.929Z
+      last_active_at: 2026-05-09T23:49:32.735Z
+      last_reconciled_at: 2026-05-09T23:49:32.735Z
       created_at: 2026-05-09T17:21:19.154Z
-      updated_at: 2026-05-09T23:49:29.888Z
+      updated_at: 2026-05-09T23:49:32.735Z
     workspace_id: dispatch-workspace-01KR6M77JA0S1EEVZX8KKRPY1V
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
