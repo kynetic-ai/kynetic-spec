@@ -191072,6 +191072,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T01:45:07.252Z
+      - _ulid: 01KR576NG4ND2T8P6B53T761Z7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR576M3ZAHG3NY53YBQTJQEX
+        timestamp: 2026-05-09T01:56:31.364Z
     examined_commit: 716e31003b4155443bfddf1dfcc79d8a4f390513
     external_links: []
     lifecycle_state: open
@@ -191081,8 +191088,24 @@ reviews:
       content_hash: ""
       ref: "@01KR52YXAAQZ4ZMFR0ASTJVJ59"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR576M3ZAHG3NY53YBQTJQEX
+        entries:
+          - _ulid: 01KR576M3Z1B3DTG2MM9CYG378
+            author: Jacob Chapel
+            body: "Evidence log: Files read: vitest.config.ts; tests/daemon-api/websocket-protocol.test.ts;
+              kspec-agents.md. Commands run: kspec task get @01KR52YXAAQZ4ZMFR0ASTJVJ59; git diff
+              --stat/name-status/unified against dev base 5538619; kspec validate; npm test --
+              --fresh tests/daemon-api/websocket-protocol.test.ts; npm test -- --fresh. Claims
+              verified: worker claim that only vitest scheduling changed was verified by diff (one
+              file, 8 inserted lines); worker claim that coverage was preserved was verified by
+              targeted and full fresh tests, with websocket-protocol.test.ts passing 15/15 in the
+              heavy-serial phase. Categories searched: correctness/config behavior, test
+              quality/coverage weakening, edge cases around optional Bun runtime skip path,
+              integration with existing heavy-serial project, validation warnings."
+            created_at: 2026-05-09T01:56:29.952Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-09T01:44:46.680Z
-    updated_at: 2026-05-09T01:45:05.842Z
+    updated_at: 2026-05-09T01:56:29.952Z
     notes: []
