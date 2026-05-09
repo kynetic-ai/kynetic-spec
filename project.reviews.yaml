@@ -193331,7 +193331,19 @@ reviews:
     slugs: []
     title: Review task-fix-detached-cleanup-timing-analysis
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exited 6 with warnings only: schema/references OK; global pre-existing
+          reference/alignment/completeness warnings remain. No linked-spec coverage gap found for
+          @daemon-test-guardrail-precision annotations."
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-09T06:38:02.126Z
+        completed_at: 2026-05-09T06:38:02.126Z
     events:
       - _ulid: 01KR5Q3Y9W692JWB0FH5K3098K
         actor: Jacob Chapel
@@ -193353,6 +193365,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR5Q9F5XY88T4GM2N657XD7M
         timestamp: 2026-05-09T06:37:41.890Z
+      - _ulid: 01KR5QA5X97MD1CW4VXYWMWZV4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-09T06:38:03.689Z
     examined_commit: ba3231821d9a05b7dbe546f10d7bb1fa6242dcbc
     external_links: []
     lifecycle_state: open
@@ -193388,5 +193407,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T06:34:39.293Z
-    updated_at: 2026-05-09T06:37:40.413Z
+    updated_at: 2026-05-09T06:38:02.126Z
     notes: []
