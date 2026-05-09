@@ -17774,6 +17774,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-09T03:36:59.284Z
+  - _ulid: 01KR5FR30HC1KV2AB5M7Y17XDW
+    type: friction
+    content: "A JSDoc/block comment in tools/eslint-rules/*.js (or any oxlint JS plugin file) that
+      contains the substring '*/' anywhere in its body terminates the comment block prematurely,
+      leaving the trailing prose as invalid JS. The downstream symptom is oxlint reporting 'Failed
+      to parse oxlint configuration file. Failed to load JS plugin: ./tools/eslint-rules/<rule>.js'
+      with a SyntaxError pointing at a token several lines past the comment, and EVERY test that
+      exercises the rule via runOxlint() then fails with 'Failed to parse oxlint configuration ...'
+      as its assertion text — a single broken comment cascades into hundreds of meaningless test
+      failures with no diagnostic that points at the comment itself. Encountered today when
+      documenting a path-suffix matcher as '*/node' inside a JSDoc body. A pre-test 'node --check
+      tools/eslint-rules/<rule>.js' would surface the SyntaxError immediately and pinpoint the line,
+      but the test pipeline currently runs the rule through oxlint's plugin loader instead of node
+      directly. Mitigation pattern: when describing path-suffix patterns in rule-file JSDocs, escape
+      the slash (e.g. '<runtime>/node' or 'a path ending in node') or run 'node --check' on the rule
+      file before relying on test failures to diagnose a rule load problem."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T04:25:50.865Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
