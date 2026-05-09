@@ -196256,3 +196256,29 @@ reviews:
     created_at: 2026-05-09T16:00:22.320Z
     updated_at: 2026-05-09T16:04:45.525Z
     notes: []
+  - _ulid: 01KR6T0XCPS3G9YRHMY2ZDRE6N
+    slugs: []
+    title: Review cleanup-registration failure regression cycle 2
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR6T0XCPCX7ESFX7P2P94W7T
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-09T16:44:40.214Z
+    examined_commit: 0233c88c3d5ce4e06f96e85fff9dc27b9fcbe66d
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR6M6XARDRJ17BY20Z3BG66B"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-09T16:44:40.214Z
+    updated_at: null
+    notes: []
