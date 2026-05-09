@@ -77,7 +77,7 @@ description: >
 spec_ref: "@daemon-test-startup-failure-hygiene"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-fix-guardrail-daemon-command-classification"
@@ -94,6 +94,14 @@ tags:
   - daemon
   - validation
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-validate-daemon-test-hardening/01kr3w7s
+  captured_at: 2026-05-09T12:31:30.171Z
+  commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR6AYE33NE2CWYCPEXM553KE
 history:
   - author: Jacob Chapel
@@ -116,7 +124,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-09T12:21:37.371Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-validate-daemon-test-hardening/01kr3w7s
+          captured_at: 2026-05-09T12:31:30.171Z
+          commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-09T12:31:30.173Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-09T12:31:30.174Z
 created_at: 2026-05-08T13:25:39.667Z
 started_at: 2026-05-09T12:21:37.371Z
+submitted_at: 2026-05-09T12:31:30.173Z
 todos: []
 automation: eligible
