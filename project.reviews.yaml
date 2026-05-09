@@ -193168,6 +193168,16 @@ reviews:
         runner: npm test
         created_at: 2026-05-09T06:07:16.419Z
         completed_at: 2026-05-09T06:07:16.419Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test: 2413 suites passed; 8935 tests passed, 5 skipped; duration 1998.0s"
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-09T06:07:28.077Z
+        completed_at: 2026-05-09T06:07:28.077Z
     events:
       - _ulid: 01KR5MTN6G4PWXFMZGQQ5NB937
         actor: Jacob Chapel
@@ -193189,6 +193199,13 @@ reviews:
           status: pass
           name: targeted guardrail tests
         timestamp: 2026-05-09T06:07:17.793Z
+      - _ulid: 01KR5NJ6JMSNWB77ZBH34AQCJ7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-05-09T06:07:29.365Z
     examined_commit: 5222b9c23135599d6512dfbb867d3a219f5863f9
     external_links: []
     lifecycle_state: open
@@ -193201,5 +193218,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-09T05:54:37.904Z
-    updated_at: 2026-05-09T06:07:16.419Z
+    updated_at: 2026-05-09T06:07:28.077Z
     notes: []
