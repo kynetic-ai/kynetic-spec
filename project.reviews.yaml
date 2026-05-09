@@ -194479,6 +194479,12 @@ reviews:
         payload:
           thread_ulid: 01KR60MH9RY9239MQ13KTTDG91
         timestamp: 2026-05-09T09:49:04.313Z
+      - _ulid: 01KR62864D24QFCZBQRGXVVJTW
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR60MH9RY9239MQ13KTTDG91
+        timestamp: 2026-05-09T09:49:12.717Z
     examined_commit: a62471dde155c874df4a2c180e7877e6e55a5e4b
     external_links: []
     lifecycle_state: closed
@@ -194573,6 +194579,8 @@ reviews:
               tests/lint-no-leaky-test-daemon.test.ts (unawaited fetch, unawaited new WebSocket)."
             created_at: 2026-05-09T09:49:02.992Z
         kind: blocker
+        resolved_at: 2026-05-09T09:49:11.398Z
+        resolved_by: "@claude"
       - _ulid: 01KR610E9R17RDRSWHA8K6A76P
         entries:
           - _ulid: 01KR610E9SSE00GX073PFQE0JJ
@@ -194601,5 +194609,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T09:27:41.579Z
     created_at: 2026-05-09T09:16:53.608Z
-    updated_at: 2026-05-09T09:49:02.992Z
+    updated_at: 2026-05-09T09:49:11.398Z
     notes: []
