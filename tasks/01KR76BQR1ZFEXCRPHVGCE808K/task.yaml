@@ -13,7 +13,7 @@ description: During review of @01KR6M77JA0S1EEVZX8KKRPY1V, the full review gate 
 spec_ref: "@daemon-backed-test-fixture-contract"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -27,11 +27,11 @@ review_ref: "@01KR78A1TTWMP98EWA9RDPKFAJ"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-stabilize-daemon-build-smoke-timeout/01kr76bq
-  captured_at: 2026-05-09T20:50:12.430Z
-  commit: ca08b2f2a2e706eaa17eac7be21d48536a2c6407
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-09T21:38:28.288Z
+  commit: 35f51590178e093aaf3b8e6b4b9800aa8991db3f
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-stabilize-daemon-build-smoke-timeout/01kr76bq
 session_id: 01KR79QNN6D3T6Z13PEM9E88XS
 history:
   - author: "@claude"
@@ -97,8 +97,35 @@ history:
         previous: 2026-05-09T20:37:00.768Z
     command: task-start
     timestamp: 2026-05-09T21:38:22.071Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-stabilize-daemon-build-smoke-timeout/01kr76bq
+          captured_at: 2026-05-09T21:38:28.288Z
+          commit: 35f51590178e093aaf3b8e6b4b9800aa8991db3f
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-stabilize-daemon-build-smoke-timeout/01kr76bq
+        previous:
+          review_url: null
+          branch: dispatch/task/task-stabilize-daemon-build-smoke-timeout/01kr76bq
+          captured_at: 2026-05-09T20:50:12.430Z
+          commit: ca08b2f2a2e706eaa17eac7be21d48536a2c6407
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-09T21:38:28.291Z
+        previous: 2026-05-09T20:50:12.432Z
+    command: task-submit
+    timestamp: 2026-05-09T21:38:28.292Z
 created_at: 2026-05-09T20:20:17.793Z
 started_at: 2026-05-09T21:38:22.070Z
-submitted_at: 2026-05-09T20:50:12.432Z
+submitted_at: 2026-05-09T21:38:28.291Z
 todos: []
 automation: eligible
