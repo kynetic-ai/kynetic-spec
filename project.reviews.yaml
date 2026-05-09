@@ -195012,6 +195012,12 @@ reviews:
         payload:
           thread_ulid: 01KR655ZTZS0YR6WDFHF2YAYHG
         timestamp: 2026-05-09T11:17:05.448Z
+      - _ulid: 01KR679E3CRXBEHH8ES9H3BCK5
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR655ZTZS0YR6WDFHF2YAYHG
+        timestamp: 2026-05-09T11:17:16.524Z
     examined_commit: 968843210bc0b3e1680c4f76187a40d56f24e022
     external_links: []
     lifecycle_state: closed
@@ -195113,6 +195119,8 @@ reviews:
               audit: 0 no-leaky-test-daemon violations.
             created_at: 2026-05-09T11:17:03.945Z
         kind: blocker
+        resolved_at: 2026-05-09T11:17:14.955Z
+        resolved_by: "@claude"
       - _ulid: 01KR65SK7KE5B239970J0VRSYY
         entries:
           - _ulid: 01KR65SK7KW1B0XSKRPFFPSWDJ
@@ -195140,5 +195148,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T10:51:20.599Z
     created_at: 2026-05-09T10:38:01.880Z
-    updated_at: 2026-05-09T11:17:03.945Z
+    updated_at: 2026-05-09T11:17:14.955Z
     notes: []
