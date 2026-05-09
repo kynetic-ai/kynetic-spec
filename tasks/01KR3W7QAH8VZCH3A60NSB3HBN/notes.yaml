@@ -65,3 +65,47 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T08:03:20.863Z
+  - _ulid: 01KR5XHC9KDVBGNFHF50SX29P1
+    content: >-
+      Fix cycle 3: addressed reviewer's MUST-FIX blocker on
+      tools/eslint-rules/no-leaky-test-daemon.js (subtreeContainsDaemonCleanupCall accepted
+      descendant cleanup-shaped CallExpression inside an unregistered function/arrow body).
+      Reviewer's probe: runKspec("serve start --detach --port 3456"); const cleanup = () =>
+      killPid(pid); expect(true).toBe(true) — was passing because the walker descended into the
+      arrow body and matched killPid(pid), even though the arrow was bound to a const and never
+      invoked.
+
+
+      Tightened the walker to gate descent into FunctionDeclaration / FunctionExpression /
+      ArrowFunctionExpression bodies on isCleanupRegistrationCallback(fnNode). The function/arrow
+      must itself be an ARGUMENT to a recognised cleanup-registration wrapper: Identifier callee in
+      {onTestFinished, afterEach, afterAll, beforeEach, beforeAll}, OR a process.on(...)
+      MemberExpression call. The same predicate gates both the in-flow sibling check
+      (statementContainsCleanup) and the try/finally finalizer check (isInTryWithFinallyCleanup), so
+      unregistered arrows in finalizers are also rejected.
+
+
+      Verified directly with npx oxlint: reviewer's exact probe now exits 1 with the missingCleanup
+      diagnostic. Negative control onTestFinished(() => killPid(pid)) still exits 0. Adversarial
+      shapes correctly classified: array element callback (flagged), named function declaration
+      (flagged), console.log callback (flagged), object property arrow (flagged), process.on("exit",
+      ...) registration (NOT flagged — recognised as cleanup-registration).
+
+
+      Added 4 behavioral regressions in tests/lint-no-leaky-test-daemon.test.ts: const arrow cleanup
+      never registered, named function declaration never invoked, kill arrow passed to console.log,
+      try/finally finalizer with only unregistered arrow declaration.
+
+
+      Re-verified all 5 spec ACs against implementation: ac-direct-daemon-entry-invocations-flagged
+      unchanged; ac-detached-cleanup-before-observation now correctly rejects unregistered cleanup
+      arrows; ac-unrelated-subprocesses-not-reported unchanged; ac-local-exception-is-local and
+      ac-exception-reason-states-subject unchanged.
+
+
+      cli-serve.test.ts audit: npx oxlint shows 0 no-leaky-test-daemon violations under the
+      tightened rule. Targeted guardrail tests: 19/19 suites, 191/191 tests pass (was 187 — added 4
+      new regressions). Full suite: 2413/2413 suites, 8944 pass / 5 skipped (1973s).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T08:26:51.059Z
