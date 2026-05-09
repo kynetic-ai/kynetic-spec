@@ -43791,7 +43791,7 @@ runs:
     completed_at: 2026-05-09T18:08:38.908Z
   - _ulid: 01KR70FMRFRQPGQRFBG1YDXEPQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -43807,7 +43807,26 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T18:37:52.555Z
-        completed_at: 2026-05-09T18:37:52.555Z
+        completed_at: 2026-05-09T18:38:04.403Z
+        notes: >-
+          Identified high-confidence patterns:
+
+          1. SUCCESS — Reviewer's concrete probe sample (literal-pid case) made the gap immediately
+          reproducible via a one-off oxlint run on a temp project. Confirming the fix flagged the
+          exact probe text gave a verifiable acceptance criterion before re-running the full suite.
+
+          2. SUCCESS — Position-based ownership (binding.range[1] >= detachedStart.range[0]) handles
+          both safe shapes (declarator AFTER start, and declarator whose initializer IS the start)
+          with one comparison instead of two predicates.
+
+          3. FRICTION (already tracked by @01KR4JYFCDP6N5TY457MNPMGR4) — Cleanup-binding analysis
+          claimed ownership but only enumerated one failure mode (unbound), so the literal-pid probe
+          slipped through to cycle 7. Same generic-claim-without-explicit-coverage-matrix pattern
+          the existing observation already documents.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T18:38:04.403Z
+        completed_at: 2026-05-09T18:38:04.403Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T18:37:34.351Z
