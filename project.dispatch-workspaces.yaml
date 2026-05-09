@@ -19812,11 +19812,11 @@ workspaces:
     canonical_branch: dispatch/task/task-tighten-daemon-hardening-specs/01kr6m6s
     canonical_branch_head: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-09T15:34:36.898Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-09T15:34:37.839Z
     health:
       status: healthy
       issues: []
@@ -19830,7 +19830,7 @@ workspaces:
       target_branch: dev
       target_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
       updated_at: 2026-05-09T15:34:36.898Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR6M6SW9QGVJWG3VQF4WDT6C"
     task_slug: task-tighten-daemon-hardening-specs
@@ -19839,7 +19839,7 @@ workspaces:
       last_active_at: 2026-05-09T15:21:34.136Z
       last_reconciled_at: 2026-05-09T15:34:36.898Z
       created_at: 2026-05-09T15:13:43.100Z
-      updated_at: 2026-05-09T15:34:36.898Z
+      updated_at: 2026-05-09T15:34:37.839Z
     workspace_id: dispatch-workspace-01KR6M6SW9QGVJWG3VQF4WDT6C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
