@@ -19159,12 +19159,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-09T12:34:27.246Z
+      updated_at: 2026-05-09T12:34:32.838Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T12:34:27.246Z
+      updated_at: 2026-05-09T12:34:32.838Z
     integration:
       status: pending
       detail: null
@@ -19172,24 +19172,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
-      updated_at: 2026-05-09T12:34:27.246Z
-    lifecycle_state: ready
+      updated_at: 2026-05-09T12:34:32.838Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KR3W7SPKCKPWKXD8SJHNZVHT"
     task_slug: task-validate-daemon-test-hardening
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T12:21:10.489Z
-      last_reconciled_at: 2026-05-09T12:34:27.246Z
+      last_reconciled_at: 2026-05-09T12:34:32.838Z
       created_at: 2026-05-09T12:20:45.785Z
-      updated_at: 2026-05-09T12:34:27.246Z
+      updated_at: 2026-05-09T12:34:32.838Z
     workspace_id: dispatch-workspace-01KR3W7SPKCKPWKXD8SJHNZVHT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
+        last_seen_at: 2026-05-09T12:34:32.838Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-daemon-test-hardening-01kr3w7s-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-validate-daemon-test-hardening/01kr3w7s
         head: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
-        last_seen_at: 2026-05-09T12:20:45.785Z
+        last_seen_at: 2026-05-09T12:34:32.838Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-daemon-test-hardening-01kr3w7s
