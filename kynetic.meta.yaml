@@ -17695,6 +17695,21 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-08T22:22:35.323Z
+  - _ulid: 01KR537DZ529NV9FJYB1BR4TKC
+    type: success
+    content: Reviewing static classifier changes benefited from manual behavioral probes around adjacent
+      parser/tokenization boundary cases, not just the submitted regressions. In
+      @01KR3W7PPVDFR8F03VQ6J54M3K, targeted tests covered runtime flags and process["execPath"], but
+      small oxlint probes for Node options with separate values found that node --require
+      ./register.js dist/daemon/index.js and node -r ./register.js dist/daemon/index.js were still
+      accepted, while node --eval dist/daemon/index.js false-positive reported. For future
+      guardrail/classifier reviews, include a short manual probe matrix that checks neighboring
+      positive and negative executable-position shapes.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-09T00:47:02.117Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
