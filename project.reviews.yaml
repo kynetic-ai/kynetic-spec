@@ -197354,6 +197354,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T19:23:05.104Z
+      - _ulid: 01KR736W14ER132V2RHSY8AGW4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR736TP4HKEARHNQBYQCEB04
+        timestamp: 2026-05-09T19:25:12.612Z
     examined_commit: 875a81d78c4b0c702a3d24d08789482c973d1584
     external_links: []
     lifecycle_state: open
@@ -197363,8 +197370,30 @@ reviews:
       content_hash: ""
       ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR736TP4HKEARHNQBYQCEB04
+        anchor:
+          type: code
+          commit: 875a81d78c4b0c702a3d24d08789482c973d1584
+          line_end: 1318
+          line_start: 1318
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR736TP4PZ2M8QA6D0Y7DCD6
+            author: Jacob Chapel
+            body: 'MUST-FIX: cleanupCallbackBindingStatus skips any kill target that is declared inside the
+              cleanup callback, so an unsafe callback-local value counts as scoped cleanup. I
+              verified with a probe where a test does runKspec("serve start --detach --port 3456"),
+              registers onTestFinished(() => { const pid = 12345; process.kill(pid, "SIGTERM"); }),
+              then calls expect(true).toBe(true); oxlint exited 0 with no no-leaky-test-daemon
+              diagnostic. That cleanup can only kill a stale literal, not the just-started daemon,
+              so the detached start still violates ac-detached-cleanup-bound-before-observation.
+              Callback-local cleanup targets need ownership validation too, or non-owned local
+              values must not satisfy cleanup.'
+            created_at: 2026-05-09T19:25:11.236Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T19:22:20.081Z
-    updated_at: 2026-05-09T19:23:03.677Z
+    updated_at: 2026-05-09T19:25:11.236Z
     notes: []
