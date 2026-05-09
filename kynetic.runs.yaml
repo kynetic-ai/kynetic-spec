@@ -42977,7 +42977,7 @@ runs:
     completed_at: 2026-05-09T12:04:43.029Z
   - _ulid: 01KR6AY5S3P04Q2F03VNJKF84X
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -42994,7 +42994,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T12:21:21.279Z
-        completed_at: 2026-05-09T12:21:21.279Z
+        completed_at: 2026-05-09T12:21:35.187Z
+        notes: "Friction points: 1) kspec validate is noisy for scoped review work: it reported
+          schema/references/skills OK but exited 6 due repo-wide reference/alignment/completeness
+          warnings unrelated to the one-file review, so the review check needed a nuanced
+          pass-with-context evidence note. 2) Review evidence logging is required by review-gates
+          but there is no dedicated structured review command for it; I recorded it as an optional
+          review check, which works but makes the evidence log a long free-form shell argument. 3)
+          Full npm test is mandatory and useful, but it took about 34 minutes; acceptable for the
+          merge gate, but it dominates review latency."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T12:21:35.187Z
+        completed_at: 2026-05-09T12:21:35.187Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T12:21:01.860Z
