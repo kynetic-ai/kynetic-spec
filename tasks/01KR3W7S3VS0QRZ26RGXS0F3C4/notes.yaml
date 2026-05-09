@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KR68VSXZW0MJRZTVT4J67Y5E
+    content: "Approach: Add a lifecycle endpoint helper in tests/cli-serve.test.ts
+      (resolveCliLifecycleDaemonEndpoint(configDir)) that wraps the production
+      resolveDaemonClientEndpoint(configDir). Refactor waitForDaemonHealth to take an optional
+      config dir (default to outer test isolatedHome) and consume the resolved metadata URL. Update
+      all five direct localhost:${port} call sites: line 115 (waitForDaemonHealth poll URL), 1034 +
+      1072 (POST /api/projects in serve-status project tests), 1302 (npm-installed package health
+      check), 1514 (bun-runtime path health check). Each replaced site now uses endpoint.apiUrl from
+      the resolver. Remaining 127.0.0.1/[::1] direct URLs are all already endpoint-subject coverage
+      (default-loopback-v4, configured non-default host, IPv6 fallback regression, advertised
+      connect_host) and will keep their behavior-specific shape. Test plan: cli-serve.test.ts (full
+      file), lint-no-leaky-test-daemon.test.ts, lint-daemon-test-guardrails.test.ts."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T11:44:47.039Z
