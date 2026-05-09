@@ -193855,6 +193855,18 @@ reviews:
         runner: npm
         created_at: 2026-05-09T08:02:44.257Z
         completed_at: 2026-05-09T08:02:44.257Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Synthetic unsafe sample with runKspec(serve start --detach); const cleanup = () =>
+          killPid(pid); expect(true) exited 0 and emitted no no-leaky-test-daemon error, only
+          no-unused-vars warning. This proves an unregistered cleanup function is accepted.
+        name: manual cleanup-registration probe
+        required: true
+        runner: oxlint
+        created_at: 2026-05-09T08:02:54.535Z
+        completed_at: 2026-05-09T08:02:54.535Z
     events:
       - _ulid: 01KR5VF3KYYYFYG8TW43AWVT94
         actor: Jacob Chapel
@@ -193897,6 +193909,13 @@ reviews:
           status: pass
           name: full test suite
         timestamp: 2026-05-09T08:02:45.641Z
+      - _ulid: 01KR5W5JQYA5VWNJGK3NGE9XWN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual cleanup-registration probe
+        timestamp: 2026-05-09T08:02:55.870Z
     examined_commit: bb5e4d849de64fa9d0b5b0b45cf9a63b833baa11
     external_links: []
     lifecycle_state: open
@@ -193932,5 +193951,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T07:50:39.486Z
-    updated_at: 2026-05-09T08:02:44.257Z
+    updated_at: 2026-05-09T08:02:54.535Z
     notes: []
