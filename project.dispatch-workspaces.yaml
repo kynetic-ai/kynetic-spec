@@ -18283,12 +18283,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-09T10:36:19.850Z
+      updated_at: 2026-05-09T10:36:25.491Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T10:36:19.850Z
+      updated_at: 2026-05-09T10:36:25.491Z
     integration:
       status: pending
       detail: null
@@ -18296,24 +18296,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3c3f6b705bb15386af34f7f66787a082e8a0be02
-      updated_at: 2026-05-09T10:36:19.850Z
-    lifecycle_state: ready
+      updated_at: 2026-05-09T10:36:25.491Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
     task_slug: task-fix-detached-cleanup-timing-analysis
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T10:08:45.697Z
-      last_reconciled_at: 2026-05-09T10:36:19.850Z
+      last_reconciled_at: 2026-05-09T10:36:25.491Z
       created_at: 2026-05-09T06:09:47.395Z
-      updated_at: 2026-05-09T10:36:19.850Z
+      updated_at: 2026-05-09T10:36:25.491Z
     workspace_id: dispatch-workspace-01KR3W7QAH8VZCH3A60NSB3HBN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 968843210bc0b3e1680c4f76187a40d56f24e022
+        last_seen_at: 2026-05-09T10:36:25.491Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-detached-cleanup-timing-analysis-01kr3w7q-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-detached-cleanup-timing-analysis/01kr3w7q
-        head: b1848893913ff9ca5e22b6ec20c23338f858d88a
-        last_seen_at: 2026-05-09T10:08:20.643Z
+        head: 968843210bc0b3e1680c4f76187a40d56f24e022
+        last_seen_at: 2026-05-09T10:36:25.491Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-detached-cleanup-timing-analysis-01kr3w7q
