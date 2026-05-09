@@ -22187,7 +22187,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T21:09:35.511Z
+      updated_at: 2026-05-09T21:09:37.363Z
     integration:
       status: pending
       detail: null
@@ -22196,25 +22196,20 @@ workspaces:
       target_branch: dev
       target_commit: bd252f1ebdedef270f8ed908166d46eab1429f80
       updated_at: 2026-05-09T21:09:35.511Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KR76BQR1ZFEXCRPHVGCE808K"
     task_slug: task-stabilize-daemon-build-smoke-timeout
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T20:53:40.578Z
-      last_reconciled_at: 2026-05-09T21:09:35.511Z
+      last_reconciled_at: 2026-05-09T21:09:37.363Z
       created_at: 2026-05-09T20:20:51.485Z
-      updated_at: 2026-05-09T21:09:35.511Z
+      updated_at: 2026-05-09T21:09:37.363Z
     workspace_id: dispatch-workspace-01KR76BQR1ZFEXCRPHVGCE808K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: ca08b2f2a2e706eaa17eac7be21d48536a2c6407
-        last_seen_at: 2026-05-09T20:53:13.957Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-daemon-build-smoke-timeout-01kr76bq-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-stabilize-daemon-build-smoke-timeout/01kr76bq
