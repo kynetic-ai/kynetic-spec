@@ -1,1 +1,104 @@
-notes: []
+notes:
+  - _ulid: 01KR6BGSTQMGRC7XGJQ979Q4TH
+    content: >-
+      Validation summary — daemon test hardening end-to-end pass.
+
+
+      Test suite results (all from this worktree on
+      dispatch/task/task-validate-daemon-test-hardening/01kr3w7s, rebased on origin/dev @ 2ae8cbb):
+
+      - helpers/daemon.test.ts + helpers/mock-daemon.test.ts + daemon-api/helpers.test.ts: 47/47
+      pass (3.9s).
+
+      - lint-daemon-test-guardrails.test.ts + lint-no-leaky-test-daemon.test.ts: 213/213 pass
+      (48.3s).
+
+      - cli-serve.test.ts + daemon-api/websocket-protocol.test.ts + daemon-build.test.ts: 57/57 pass
+      (48.3s).
+
+      - Playwright slice (tests/e2e/api-websocket.spec.ts + tests/e2e/connection.spec.ts) — same
+      slice the prior daemon-fixture-standardization validation used: 11/11 pass first run (32.8s).
+      No flakes this pass.
+
+      - kspec validate --refs --warnings-ok and --alignment --warnings-ok: pass.
+
+
+      Validation warnings (classified):
+
+      - Reference warnings (6): all pre-existing deprecated spec_refs (@session-summary-cache,
+      @task-activity-git-query) on tasks unrelated to this plan.
+
+      - Alignment status mismatches (4):
+        - Task Set Batch Support (@spec-task-set-batch, ULID 01KFFG78) — unrelated, pre-existing.
+        - Daemon-Sensitive Test Determinism (@daemon-sensitive-cli-test-determinism, ULID 01KJTPN4) — pre-existing parent spec; predates this plan.
+        - Daemon Network Endpoint Contract (@daemon-network-endpoint-contract, ULID 01KQWZZF2) — pre-existing parent spec; predates this plan.
+        - Concurrent Read Command Execution — unrelated, pre-existing.
+      - The four new specs in this plan (@daemon-test-startup-failure-hygiene,
+      @daemon-test-guardrail-precision, @cli-lifecycle-test-endpoint-consumption,
+      @in-process-daemon-test-helper-boundary) do NOT appear in the mismatch list.
+      @daemon-test-startup-failure-hygiene reads in_progress only because this validation task was
+      the last in_progress derived task; it will close to implemented when this submit lands.
+
+      - Alignment also reports 34 orphaned specs unrelated to this plan.
+
+
+      AC coverage (all 14 ACs across the four new specs):
+
+      - @daemon-test-startup-failure-hygiene
+        - ac-process-launch-failure-diagnosed: tests/helpers/daemon.test.ts:357.
+        - ac-owned-child-stopped-after-startup-failure: tests/helpers/daemon.test.ts:358,467; tests/helpers/mock-daemon.test.ts:433,473; tests/e2e-fixture-daemon-cleanup.test.ts:134; tests/e2e/fixtures/test-base.ts:241,335.
+        - ac-child-env-sanitized: tests/helpers/daemon.test.ts:26,81; tests/helpers/mock-daemon.test.ts:503,566.
+        - ac-cleanup-registered-before-readiness-wait: tests/helpers/daemon.test.ts:533; tests/e2e-fixture-daemon-cleanup.test.ts:76,133; tests/e2e/fixtures/test-base.ts:218.
+      - @daemon-test-guardrail-precision
+        - ac-direct-daemon-entry-invocations-flagged: tests/lint-daemon-test-guardrails.test.ts (114, 915, 1226, 1362, 2534, 2888, 3031).
+        - ac-detached-cleanup-before-observation: tests/lint-no-leaky-test-daemon.test.ts (40+ cases) and tests/lint-daemon-test-guardrails.test.ts (3489, 3579, 3604).
+        - ac-unrelated-subprocesses-not-reported: tests/lint-daemon-test-guardrails.test.ts (2031, 2069, 2098, 2124, 2148, 2172, 2217, 2322, 2385, 2622, 2773, 2981, 3107).
+        - ac-local-exception-is-local: tests/lint-daemon-test-guardrails.test.ts:3630.
+        - ac-exception-reason-states-subject: tests/lint-daemon-test-guardrails.test.ts:3631.
+      - @cli-lifecycle-test-endpoint-consumption
+        - ac-cli-started-daemon-requests-use-reported-endpoint: tests/cli-serve.test.ts:1048.
+        - ac-direct-loopback-url-exception-is-endpoint-subject: tests/cli-serve.test.ts:438,709.
+        - ac-lifecycle-helper-resolves-client-endpoint: tests/cli-serve.test.ts:52,1049.
+      - @in-process-daemon-test-helper-boundary
+        - ac-helper-scope-is-explicit: tests/daemon-api/helpers.test.ts:332.
+        - ac-test-uses-helper-matching-behavior: tests/daemon-api/helpers.test.ts:333.
+
+      All annotations sit on behavioral tests (real CLI lifecycle commands, real fetches against the
+      in-process app, real spawn calls in fixture contract tests). No source-scanning style
+      coverage.
+
+
+      Source audit (remaining direct daemon entrypoint starts, detached lifecycle commands,
+      localhost:port URLs, guardrail disables):
+
+      - Direct daemon entrypoint references (dist/daemon/index.js) outside helpers — only:
+      tests/cli-no-daemon.test.ts:148 (assertion-only on ps output of CLI-spawned daemon) and
+      tests/test-runner.test.ts (string fixtures verifying the test runner's missing-artifact
+      detection). Neither spawns the daemon directly; both are subjects of their respective tests.
+
+      - "kspec serve start --detach" outside the lint test fixtures and lint comments — only
+      tests/cli-serve.test.ts (the CLI lifecycle suite where the command itself is the behavior
+      under test). The daemon-api/server.test.ts hit is a comment in an N/A trait AC annotation. All
+      cli-serve cases register pid-targeted onTestFinished cleanup immediately after detach.
+
+      - localhost:${port} URL constructions outside the shared fixture — only: (a)
+      tests/cli-daemon-proxy.test.ts (six in-test stub HTTP server URL parses on incoming req.url —
+      not outgoing daemon requests), and (b) tests/cli-serve.test.ts:427,787 — both anchored with
+      @cli-lifecycle-test-endpoint-consumption ac-direct-loopback-url-exception-is-endpoint-subject
+      and @daemon-network-endpoint-contract ac-default-ipv6-fallback annotations; the literal IPv4
+      URL is the test subject (binding host or IPv6-fallback negative proof). The remaining
+      tests/cli-serve.test.ts hit (line 48) is the helper docstring describing the contract.
+
+      - oxlint-disable comments naming no-leaky-test-daemon outside the lint suite — none. All
+      disables are inside tests/lint-daemon-test-guardrails.test.ts as rule fixtures.
+
+
+      Validation conclusion: every new spec AC has truthful behavioral coverage; every remaining
+      guardrail suppression, direct daemon entrypoint reference, and direct loopback URL
+      construction is either inside the lint rule's own fixtures or anchored to the behavior under
+      test by an AC annotation that ties it to ac-direct-loopback-url-exception-is-endpoint-subject
+      or to the immediately surrounding lifecycle/binding-host subject. No new daemon-testing spec
+      metadata mismatches were introduced by this plan.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T12:31:12.216Z
