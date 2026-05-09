@@ -44322,7 +44322,7 @@ runs:
     completed_at: 2026-05-09T22:21:38.495Z
   - _ulid: 01KR7EY95RG0DBYDCC0M45EGJG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -44334,7 +44334,23 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T22:50:49.020Z
-        completed_at: 2026-05-09T22:50:49.020Z
+        completed_at: 2026-05-09T22:52:04.284Z
+        notes: "Step 2: searched existing state. Friction patterns: this fix-cycle-7 cycle followed cycles
+          1-6 on the same task with each cycle catching a new manual reviewer probe that bypassed a
+          different code path (registered-callback vs callback-local vs member-expression vs
+          TS-wrapper vs null-init wrapper vs try/finally finalizer). High-confidence pattern: when
+          implementing static analysis, every code path that can grant a 'safe' verdict needs the
+          same security check — adding the check to ONE entry point (cleanupCallbackBindingStatus on
+          registered callbacks) leaves OTHER entry points (direct cleanup calls in finalizers) as
+          silent bypasses. This is a generalizable lesson, not one-off. Success: each cycle's
+          targeted fix landed correctly on the first attempt with focused regression tests, the
+          manual reviewer probes were precise enough to drive the fix without ambiguity. No
+          untracked friction worth capturing as a new observation — the pattern (incremental
+          hardening via reviewer probes) is well-served by the existing review-record system."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T22:52:04.284Z
+        completed_at: 2026-05-09T22:52:04.284Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T22:50:14.073Z
