@@ -17297,7 +17297,7 @@ workspaces:
         head: e1d0800924872c4de07e819122cb4a2204430fda
         last_seen_at: 2026-05-08T23:29:00.935Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-harden-playwright-daemon-fixture-cleanup-01kr3w7r
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 5538619f9b3a637365a38e313dcbc5dd7501b809
     bootstrap:
       status: succeeded
@@ -17779,7 +17779,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T01:43:48.437Z
+      updated_at: 2026-05-09T01:44:14.722Z
     integration:
       status: pending
       detail: null
@@ -17794,10 +17794,10 @@ workspaces:
     task_slug: task-stabilize-websocket-protocol-runtime-parity-test
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-09T00:43:02.385Z
-      last_reconciled_at: 2026-05-09T01:43:48.437Z
+      last_active_at: 2026-05-09T01:44:14.722Z
+      last_reconciled_at: 2026-05-09T01:44:14.722Z
       created_at: 2026-05-09T00:42:38.403Z
-      updated_at: 2026-05-09T01:44:12.107Z
+      updated_at: 2026-05-09T01:44:14.722Z
     workspace_id: dispatch-workspace-01KR52YXAAQZ4ZMFR0ASTJVJ59
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
