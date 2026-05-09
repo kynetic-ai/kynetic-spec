@@ -18279,11 +18279,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-detached-cleanup-timing-analysis/01kr3w7q
     canonical_branch_head: 2078e90d383db5dac67da2d33694cd1ab75e87ae
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-09T11:39:35.377Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-09T11:39:36.626Z
     health:
       status: healthy
       issues: []
@@ -18297,7 +18297,7 @@ workspaces:
       target_branch: dev
       target_commit: 3c3f6b705bb15386af34f7f66787a082e8a0be02
       updated_at: 2026-05-09T11:39:35.377Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
     task_slug: task-fix-detached-cleanup-timing-analysis
@@ -18306,7 +18306,7 @@ workspaces:
       last_active_at: 2026-05-09T11:23:49.285Z
       last_reconciled_at: 2026-05-09T11:39:35.377Z
       created_at: 2026-05-09T06:09:47.395Z
-      updated_at: 2026-05-09T11:39:35.377Z
+      updated_at: 2026-05-09T11:39:36.626Z
     workspace_id: dispatch-workspace-01KR3W7QAH8VZCH3A60NSB3HBN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
