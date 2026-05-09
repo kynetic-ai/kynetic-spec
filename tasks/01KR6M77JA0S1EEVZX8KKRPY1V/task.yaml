@@ -150,7 +150,7 @@ tags:
   - guardrails
   - follow-up
 vcs_refs: []
-review_ref: "@01KR75E7CQ40ZY9EFW27NYMXZ9"
+review_ref: "@01KR79SR9Q6Q4A1NYNSPH8EPK6"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fix-guardrail-binding-wrapper-analysis/01kr6m77
@@ -449,6 +449,13 @@ history:
         previous: 2026-05-09T19:59:42.696Z
     command: task-submit
     timestamp: 2026-05-09T21:15:40.801Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KR79SR9Q6Q4A1NYNSPH8EPK6"
+        previous: "@01KR75E7CQ40ZY9EFW27NYMXZ9"
+    command: review-link
+    timestamp: 2026-05-09T21:20:26.402Z
 created_at: 2026-05-09T15:03:15.786Z
 started_at: 2026-05-09T21:15:37.506Z
 submitted_at: 2026-05-09T21:15:40.800Z
