@@ -328,7 +328,7 @@ const noLeakyTestDaemon = {
         if (
           current.type === "TryStatement" &&
           current.finalizer &&
-          subtreeContainsDaemonCleanupCall(current.finalizer, false, node)
+          subtreeContainsDaemonCleanupCall(current.finalizer, false, node, true)
         ) {
           return true;
         }
@@ -1083,9 +1083,37 @@ const noLeakyTestDaemon = {
     }
 
     function inspectStatementsForBinding(statements, name, usePos) {
-      let foundDeclaration = false;
-      let bound = false;
-      let foundFunctionDeclaration = false;
+      const state = {
+        foundDeclaration: false,
+        bound: false,
+        foundFunctionDeclaration: false,
+      };
+      walkStatementsForBinding(statements, name, usePos, state);
+      if (!state.foundDeclaration && !state.foundFunctionDeclaration) return null;
+      if (state.foundFunctionDeclaration) return true;
+      return state.bound;
+    }
+
+    /**
+     * Recursive walker shared by `inspectStatementsForBinding`. Visits
+     * the supplied statement list in source order and updates `state`
+     * with declarations/assignments to `name` whose source position
+     * starts before `usePos`. Descends into `TryStatement.block` and
+     * `TryStatement.finalizer` because both run unconditionally on the
+     * straight-line execution path: the try body always begins, and
+     * the finalizer always fires when control crosses the try
+     * boundary. The catch handler is conditional (only runs on
+     * exception), so it is intentionally NOT descended.
+     *
+     * Cross-scope visibility: when an outer scope declares `let X;`
+     * with no concrete init and a nested try body assigns `X = ...;`
+     * before `usePos`, the descent surfaces the in-try assignment to
+     * the outer scope's verdict, so the binding is considered bound at
+     * `usePos`. This was the cycle-8 reviewer's finalizer safe-ordering
+     * blocker: the prior walker only inspected statements at the same
+     * level as the declaration and missed the in-try concrete write.
+     */
+    function walkStatementsForBinding(statements, name, usePos, state) {
       for (const stmt of statements) {
         if (!stmt) continue;
         const stmtStart = getNodeStart(stmt);
@@ -1094,14 +1122,14 @@ const noLeakyTestDaemon = {
           for (const declarator of stmt.declarations) {
             if (!declarator || !declarator.id) continue;
             if (declarator.id.type === "Identifier" && declarator.id.name === name) {
-              foundDeclaration = true;
+              state.foundDeclaration = true;
               if (
                 declarator.init &&
                 !isNullOrUndefinedInitializer(declarator.init)
               ) {
-                bound = true;
+                state.bound = true;
               } else {
-                bound = false;
+                state.bound = false;
               }
             } else if (patternBindsName(declarator.id, name)) {
               // Destructured binding (`const { kill } = …`) — the source
@@ -1109,8 +1137,8 @@ const noLeakyTestDaemon = {
               // the init exists at all (a null init would still bind
               // `kill` to undefined, but that case is uncommon and not
               // what the regression tests probe).
-              foundDeclaration = true;
-              bound = !!declarator.init;
+              state.foundDeclaration = true;
+              state.bound = !!declarator.init;
             }
           }
           continue;
@@ -1121,7 +1149,7 @@ const noLeakyTestDaemon = {
           stmt.id.type === "Identifier" &&
           stmt.id.name === name
         ) {
-          foundFunctionDeclaration = true;
+          state.foundFunctionDeclaration = true;
           continue;
         }
         if (
@@ -1130,8 +1158,8 @@ const noLeakyTestDaemon = {
           stmt.id.type === "Identifier" &&
           stmt.id.name === name
         ) {
-          foundDeclaration = true;
-          bound = true;
+          state.foundDeclaration = true;
+          state.bound = true;
           continue;
         }
         if (
@@ -1143,15 +1171,24 @@ const noLeakyTestDaemon = {
           stmt.expression.left.type === "Identifier" &&
           stmt.expression.left.name === name
         ) {
-          if (foundDeclaration) {
-            bound = !isNullOrUndefinedInitializer(stmt.expression.right);
+          // Update bound regardless of whether a declaration has been
+          // observed at this scope yet — when the declaration lives in
+          // an outer scope, the descent surfaces the assignment to the
+          // outer walker which then has both the declaration AND this
+          // assignment recorded.
+          state.bound = !isNullOrUndefinedInitializer(stmt.expression.right);
+          continue;
+        }
+        if (stmt.type === "TryStatement") {
+          if (stmt.block && Array.isArray(stmt.block.body)) {
+            walkStatementsForBinding(stmt.block.body, name, usePos, state);
+          }
+          if (stmt.finalizer && Array.isArray(stmt.finalizer.body)) {
+            walkStatementsForBinding(stmt.finalizer.body, name, usePos, state);
           }
           continue;
         }
       }
-      if (!foundDeclaration && !foundFunctionDeclaration) return null;
-      if (foundFunctionDeclaration) return true;
-      return bound;
     }
 
     /**
@@ -1219,8 +1256,26 @@ const noLeakyTestDaemon = {
     }
 
     function findConcreteBindingInStatements(statements, name, usePos) {
-      let declared = false;
-      let lastConcreteNode = null;
+      const state = { declared: false, node: null };
+      walkStatementsForConcreteBinding(statements, name, usePos, state);
+      return state;
+    }
+
+    /**
+     * Recursive walker shared by `findConcreteBindingInStatements`.
+     * Visits the supplied statement list in source order and updates
+     * `state` with the most recent concrete binding (declarator with
+     * non-null/non-undefined initializer or top-level assignment with
+     * non-null/non-undefined RHS) for `name` whose source position
+     * starts before `usePos`. Descent into `TryStatement.block` and
+     * `TryStatement.finalizer` matches `walkStatementsForBinding`'s
+     * unconditional-execution-path discipline so cross-scope
+     * declarations (`let pid;` in an outer scope, `pid = X;` inside a
+     * try block) resolve to the in-try assignment as the concrete
+     * binding node — the cycle-8 reviewer's finalizer safe-ordering
+     * blocker.
+     */
+    function walkStatementsForConcreteBinding(statements, name, usePos, state) {
       for (const stmt of statements) {
         if (!stmt) continue;
         const stmtStart = getNodeStart(stmt);
@@ -1229,18 +1284,18 @@ const noLeakyTestDaemon = {
           for (const declarator of stmt.declarations) {
             if (!declarator || !declarator.id) continue;
             if (declarator.id.type === "Identifier" && declarator.id.name === name) {
-              declared = true;
+              state.declared = true;
               if (
                 declarator.init &&
                 !isNullOrUndefinedInitializer(declarator.init)
               ) {
-                lastConcreteNode = declarator;
+                state.node = declarator;
               } else {
-                lastConcreteNode = null;
+                state.node = null;
               }
             } else if (patternBindsName(declarator.id, name)) {
-              declared = true;
-              lastConcreteNode = declarator.init ? declarator : null;
+              state.declared = true;
+              state.node = declarator.init ? declarator : null;
             }
           }
           continue;
@@ -1253,8 +1308,8 @@ const noLeakyTestDaemon = {
         ) {
           // Function declarations are hoisted code, not daemon handles —
           // declared but never a concrete daemon-handle binding.
-          declared = true;
-          lastConcreteNode = null;
+          state.declared = true;
+          state.node = null;
           continue;
         }
         if (
@@ -1264,8 +1319,8 @@ const noLeakyTestDaemon = {
           stmt.id.name === name
         ) {
           // Class declarations are not daemon handles either.
-          declared = true;
-          lastConcreteNode = null;
+          state.declared = true;
+          state.node = null;
           continue;
         }
         if (
@@ -1277,17 +1332,33 @@ const noLeakyTestDaemon = {
           stmt.expression.left.type === "Identifier" &&
           stmt.expression.left.name === name
         ) {
-          if (declared) {
-            if (!isNullOrUndefinedInitializer(stmt.expression.right)) {
-              lastConcreteNode = stmt.expression;
-            } else {
-              lastConcreteNode = null;
-            }
+          // Update node regardless of whether a declaration has been
+          // observed at this scope yet — when the declaration lives in
+          // an outer scope, the descent surfaces the assignment to the
+          // outer walker which has both the declaration AND this
+          // assignment recorded.
+          if (!isNullOrUndefinedInitializer(stmt.expression.right)) {
+            state.node = stmt.expression;
+          } else {
+            state.node = null;
+          }
+          continue;
+        }
+        if (stmt.type === "TryStatement") {
+          if (stmt.block && Array.isArray(stmt.block.body)) {
+            walkStatementsForConcreteBinding(stmt.block.body, name, usePos, state);
+          }
+          if (stmt.finalizer && Array.isArray(stmt.finalizer.body)) {
+            walkStatementsForConcreteBinding(
+              stmt.finalizer.body,
+              name,
+              usePos,
+              state,
+            );
           }
           continue;
         }
       }
-      return { declared, node: lastConcreteNode };
     }
 
     /**
@@ -1459,11 +1530,43 @@ const noLeakyTestDaemon = {
     /**
      * Find the implicit "registration site" for a direct daemon-cleanup
      * call that is NOT wrapped in a recognised cleanup-registration
-     * callback. Walks the parent chain from `callNode` and returns the
-     * first enclosing `TryStatement`; control crossing that `try`
-     * keyword is what installs the finalizer (or commits the test to
-     * running the in-flow cleanup), so the captured pid/handle must be
-     * concrete by that point. When no enclosing `TryStatement` is found
+     * callback. Walks the parent chain from `callNode` to the first
+     * enclosing `TryStatement`. When the detached daemon start lives
+     * inside that try block, the captured pid/handle must be concrete
+     * by the time the FIRST observation in the try body (after the
+     * detached start) can fire — if such an observation throws, the
+     * finalizer fires with the binding in its current state. The use
+     * node is therefore set to that first observation's containing
+     * statement; bindings written before that statement (including
+     * inside the try body) are owned by the detached start. When the
+     * try body has no observation after the detached start, the only
+     * way the finalizer fires is normal try-block completion (or an
+     * exception in a non-observation statement), and the binding only
+     * needs to be in scope at the cleanup call itself.
+     *
+     * The cycle-7 implementation incorrectly used the TryStatement
+     * itself as the use node, requiring the binding to predate the
+     * `try` keyword. That rejected the safe shape:
+     *
+     *   let pid;
+     *   try {
+     *     runKspec("serve start --detach --port 3456");
+     *     pid = readPidFromFile();         // assignment BEFORE observation
+     *     expect(true).toBe(true);          // first observation
+     *   } finally {
+     *     if (pid !== undefined) process.kill(pid, "SIGTERM");
+     *   }
+     *
+     * That ordering matches the allowed registered-callback shape
+     * `runKspec(...); const pid = readPidFromFile(); onTestFinished(...)`:
+     * by the time the first observation can fail, the cleanup target
+     * is already bound to the just-started daemon. The cycle-8
+     * reviewer's blocker.
+     *
+     * When the detached start is OUTSIDE the enclosing try block, the
+     * try-entry semantic still applies (the binding must predate the
+     * try keyword, since any in-try statement can throw at the very
+     * first instruction). When no enclosing TryStatement is found,
      * the call itself is the "registration" — sibling-scope direct
      * cleanup runs only if the test reaches that statement, and any
      * binding visible there is in scope.
@@ -1472,15 +1575,64 @@ const noLeakyTestDaemon = {
      * scanner `findUnboundDirectCleanupCapture` to keep both paths in
      * agreement on which AST position gates the capture's ownership.
      */
-    function findDirectCleanupRegistrationUseNode(callNode) {
+    function findDirectCleanupRegistrationUseNode(callNode, detachedStartNode) {
       let current = callNode && callNode.parent;
       while (current) {
         if (current.type === "TryStatement") {
+          if (detachedStartNode && current.block) {
+            const detachedPos = getNodeStart(detachedStartNode);
+            const tryBodyStart = getNodeStart(current.block);
+            const tryBodyEnd = getNodeEnd(current.block);
+            if (
+              detachedPos >= 0 &&
+              tryBodyStart >= 0 &&
+              tryBodyEnd >= 0 &&
+              detachedPos >= tryBodyStart &&
+              detachedPos < tryBodyEnd
+            ) {
+              const firstObservation = findFirstObservationInTryBody(
+                current.block,
+                detachedPos,
+              );
+              if (firstObservation) return firstObservation;
+              // No observation after the detached start in the try
+              // body — the binding only needs to be in scope at the
+              // cleanup call site itself.
+              return callNode;
+            }
+          }
           return current;
         }
         current = current.parent;
       }
       return callNode;
+    }
+
+    /**
+     * Walk a try block's direct statements and return the first one
+     * whose position is strictly after `afterPos` AND that contains an
+     * observation on its straight-line execution path
+     * (`subtreeContainsAwaitOrExpect`: `await`, `expect(...)`,
+     * `fetch(<daemon-url>)`, or `new WebSocket(<daemon-url>)`).
+     * Returns null when no such statement exists.
+     *
+     * Used by `findDirectCleanupRegistrationUseNode` to locate the
+     * earliest in-try observation that could throw and trigger the
+     * finalizer; the captured pid/handle must be concrete before that
+     * statement so the finalizer holds a valid kill target if the
+     * observation fails.
+     */
+    function findFirstObservationInTryBody(tryBlock, afterPos) {
+      if (!tryBlock || !Array.isArray(tryBlock.body)) return null;
+      for (const stmt of tryBlock.body) {
+        if (!stmt) continue;
+        const stmtStart = getNodeStart(stmt);
+        if (stmtStart < 0 || stmtStart <= afterPos) continue;
+        if (subtreeContainsAwaitOrExpect(stmt)) {
+          return stmt;
+        }
+      }
+      return null;
     }
 
     /**
@@ -1509,7 +1661,10 @@ const noLeakyTestDaemon = {
      */
     function directCleanupCallOwnsDetachedDaemon(callNode, detachedStartNode) {
       if (!detachedStartNode) return true;
-      const useNode = findDirectCleanupRegistrationUseNode(callNode);
+      const useNode = findDirectCleanupRegistrationUseNode(
+        callNode,
+        detachedStartNode,
+      );
       const captures = collectDaemonKillCaptureNames(callNode);
       for (const name of captures) {
         if (name === UNVERIFIABLE_KILL_TARGET) {
@@ -1565,7 +1720,12 @@ const noLeakyTestDaemon = {
      * Identifier is `onTestFinished`, so the walker descends into the
      * arrow's body and finds the `killPid(pid)` call.
      */
-    function subtreeContainsDaemonCleanupCall(node, insideRegisteredCallback, detachedStartNode) {
+    function subtreeContainsDaemonCleanupCall(
+      node,
+      insideRegisteredCallback,
+      detachedStartNode,
+      inFinalizerContext,
+    ) {
       if (!node || typeof node !== "object" || typeof node.type !== "string") {
         return false;
       }
@@ -1638,15 +1798,16 @@ const noLeakyTestDaemon = {
         return true;
       }
 
-      // Conditional control-flow shapes outside a registered callback:
-      // do NOT descend into branches whose execution is not guaranteed
-      // on the straight-line path between the detached daemon start
-      // and the next observation. Cleanup REGISTRATION that lives
-      // inside a conditional consequent/alternate, a loop body that
-      // may iterate zero times, a switch case, a logical short-circuit
-      // right-hand side, or a catch handler is not guaranteed to fire
-      // before the next test observation — semantically it is the
-      // same as no cleanup.
+      // Conditional control-flow shapes outside a registered callback
+      // AND outside a finalizer-walk context: do NOT descend into
+      // branches whose execution is not guaranteed on the straight-line
+      // path between the detached daemon start and the next
+      // observation. Cleanup REGISTRATION that lives inside a
+      // conditional consequent/alternate, a loop body that may iterate
+      // zero times, a switch case, a logical short-circuit right-hand
+      // side, or a catch handler is not guaranteed to fire before the
+      // next test observation — semantically it is the same as no
+      // cleanup.
       //
       // The cycle-4 reviewer probes (`if (false) killPid(p)` and
       // `if (shouldCleanup) onTestFinished(() => killPid(p))`) both
@@ -1656,7 +1817,24 @@ const noLeakyTestDaemon = {
       // `onTestFinished(() => { if (pid) killPid(pid); })`) keeps
       // working because the `insideRegisteredCallback` flag flips when
       // descent crosses the registration boundary.
-      if (!insideRegisteredCallback) {
+      //
+      // The `inFinalizerContext` flag flips on for finalizer walks
+      // initiated by `isInTryWithFinallyCleanup`. Inside a finalizer,
+      // the cleanup CALL may be defensively guarded (e.g. `if (pid !==
+      // undefined) process.kill(pid, "SIGTERM")`) — the guard does
+      // not change the cleanup intent, and the OWNERSHIP analysis on
+      // each daemon-cleanup CallExpression
+      // (`directCleanupCallOwnsDetachedDaemon`) still gates whether
+      // the call actually counts as cleanup for the just-started
+      // daemon. The cycle-8 reviewer's safe-ordering probe `let pid;
+      // try { runKspec("serve start --detach"); pid =
+      // readPidFromFile(); expect(...); } finally { if (pid !==
+      // undefined) process.kill(pid, "SIGTERM"); }` motivated this:
+      // refusing to descend into the IF guard left the cleanup
+      // unrecognised even though the binding ordering matched the
+      // accepted registered-callback shape `runKspec(); const pid =
+      // readPidFromFile(); onTestFinished(...)`.
+      if (!insideRegisteredCallback && !inFinalizerContext) {
         if (node.type === "IfStatement") return false;
         if (node.type === "ConditionalExpression") return false;
         if (node.type === "LogicalExpression") {
@@ -1682,13 +1860,13 @@ const noLeakyTestDaemon = {
           // so it is conditional — do not descend.
           if (
             node.block &&
-            subtreeContainsDaemonCleanupCall(node.block, false, detachedStartNode)
+            subtreeContainsDaemonCleanupCall(node.block, false, detachedStartNode, false)
           ) {
             return true;
           }
           if (
             node.finalizer &&
-            subtreeContainsDaemonCleanupCall(node.finalizer, false, detachedStartNode)
+            subtreeContainsDaemonCleanupCall(node.finalizer, false, detachedStartNode, true)
           ) {
             return true;
           }
@@ -1712,12 +1890,12 @@ const noLeakyTestDaemon = {
         const child = node[key];
         if (Array.isArray(child)) {
           for (const c of child) {
-            if (subtreeContainsDaemonCleanupCall(c, insideRegisteredCallback, detachedStartNode)) {
+            if (subtreeContainsDaemonCleanupCall(c, insideRegisteredCallback, detachedStartNode, inFinalizerContext)) {
               return true;
             }
           }
         } else if (child && typeof child === "object" && typeof child.type === "string") {
-          if (subtreeContainsDaemonCleanupCall(child, insideRegisteredCallback, detachedStartNode)) {
+          if (subtreeContainsDaemonCleanupCall(child, insideRegisteredCallback, detachedStartNode, inFinalizerContext)) {
             return true;
           }
         }
@@ -3277,7 +3455,10 @@ const noLeakyTestDaemon = {
         node.type === "CallExpression" &&
         isDaemonCleanupCallExpression(node)
       ) {
-        const useNode = findDirectCleanupRegistrationUseNode(node);
+        const useNode = findDirectCleanupRegistrationUseNode(
+          node,
+          detachedStartNode,
+        );
         const captures = collectDaemonKillCaptureNames(node);
         for (const name of captures) {
           if (name === UNVERIFIABLE_KILL_TARGET) {

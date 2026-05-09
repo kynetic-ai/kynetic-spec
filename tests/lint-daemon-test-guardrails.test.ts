@@ -4926,6 +4926,174 @@ describe("finalizer kills via child handle captured before the try block", () =>
       expect(result.exitCode).toBe(0);
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // The cycle-8 reviewer's safe-ordering probe. The cycle-7 fix
+    // tightened ownership for try/finally finalizer cleanup but used
+    // the enclosing TryStatement as the implicit registration site,
+    // requiring the binding to predate the `try` keyword. That
+    // rejected the canonical safe shape where the pid is captured
+    // immediately after the detached start and BEFORE the first
+    // in-try observation can fail. The fix moves the implicit
+    // registration site to the first observation in the try body
+    // after the detached start, matching the accepted registered-
+    // callback shape `runKspec(...); const pid = readPidFromFile();
+    // onTestFinished(...)` which also binds before observation.
+    it("does not flag try/finally finalizer process.kill(pid) when pid is assigned in the try body BEFORE the first in-try observation, with `if (pid !== undefined)` guard", () => {
+      // ALLOWED narrow: the cycle-8 reviewer's safe-ordering probe
+      // verbatim. The detached start runs, `pid = readPidFromFile()`
+      // sets the binding, THEN `expect(true).toBe(true)` is the first
+      // in-try observation. By the time the observation can throw,
+      // the finalizer's kill target is already concrete. The
+      // defensive `if (pid !== undefined)` guard is descended into
+      // because the cleanup walker treats finalizer-context
+      // conditionals as non-pruning (defensive null-checks are not
+      // load-bearing once ownership is verified — they are author
+      // hygiene).
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer reads pid BEFORE an intervening assertion (with if guard)", () => {
+  it("declares let pid, starts daemon, assigns pid, then asserts", () => {
+    let pid: number | undefined;
+    try {
+      runKspec("serve start --detach --port 3456");
+      pid = readPidFromFile();
+      expect(true).toBe(true);
+    } finally {
+      if (pid !== undefined) process.kill(pid, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    it("does not flag try/finally finalizer process.kill(pid as number) when pid is assigned in the try body BEFORE the first in-try observation, no guard", () => {
+      // ALLOWED narrow: the same safe-ordering shape but with no
+      // defensive `if` guard around the kill — exercises the binding
+      // analysis directly without relying on the finalizer-context
+      // conditional descent. Same registration-site semantics: the
+      // first in-try observation is the implicit registration site,
+      // and the `pid = readPidFromFile()` assignment ends before that
+      // observation begins.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer reads pid BEFORE an intervening assertion (no guard)", () => {
+  it("declares let pid, starts daemon, assigns pid, then asserts", () => {
+    let pid: number | undefined;
+    try {
+      runKspec("serve start --detach --port 3456");
+      pid = readPidFromFile();
+      expect(true).toBe(true);
+    } finally {
+      process.kill(pid as number, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    it("does not flag try/finally finalizer process.kill(pid) when there is no in-try observation and pid is assigned in the try body before the cleanup call", () => {
+      // ALLOWED narrow: when the try body has no observation after
+      // the detached start, the only way the finalizer fires is
+      // normal try-block completion (or an exception in a
+      // non-observation statement); in either case the binding
+      // assignment runs before the cleanup call. The implicit
+      // registration site falls back to the cleanup call itself.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer reads pid in try body, no in-try observation", () => {
+  it("declares let pid, starts daemon, assigns pid, finalizer kills", () => {
+    let pid: number | undefined;
+    try {
+      runKspec("serve start --detach --port 3456");
+      pid = readPidFromFile();
+    } finally {
+      process.kill(pid as number, "SIGTERM");
+    }
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    it("flags try/finally finalizer process.kill(pid) when an await in the try body comes BEFORE the assignment", () => {
+      // UNSAFE: the `await fetch(...)` in the try body is an
+      // observation that can throw before the `pid = ...` assignment
+      // runs. The first in-try observation is the await; the
+      // assignment sits AFTER it and therefore does not own the
+      // binding by the implicit registration site. This is the
+      // await-shaped variant of the cycle-7 unsafe probe.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer reads pid AFTER an intervening await", () => {
+  it("declares let pid, starts daemon, awaits a daemon URL, then assigns pid", async () => {
+    let pid: number | undefined;
+    try {
+      runKspec("serve start --detach --port 3456");
+      await fetch("http://127.0.0.1:3456/api/health");
+      pid = readPidFromFile();
+    } finally {
+      process.kill(pid as number, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    it("flags try/finally finalizer process.kill(pid) when the assignment sits inside a conditional in the try body before the observation", () => {
+      // UNSAFE: the `pid = readPidFromFile()` lives inside an
+      // `if (Math.random() > 0.5) ...` conditional. The walker does
+      // not credit conditional assignments as concrete bindings on
+      // the straight-line path — the assignment may not run, leaving
+      // the finalizer with no kill target.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer reads pid via conditional assignment", () => {
+  it("declares let pid, starts daemon, conditionally assigns pid before assertion", () => {
+    let pid: number | undefined;
+    try {
+      runKspec("serve start --detach --port 3456");
+      if (Math.random() > 0.5) {
+        pid = readPidFromFile();
+      }
+      expect(true).toBe(true);
+    } finally {
+      process.kill(pid as number, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
   });
 });
 
