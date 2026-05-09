@@ -193939,6 +193939,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T08:03:18.674Z
+      - _ulid: 01KR5XG188G96GSQJZ4EF20PR3
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR5VMFWS080WQ365KZ6ABVM9
+        timestamp: 2026-05-09T08:26:06.984Z
     examined_commit: bb5e4d849de64fa9d0b5b0b45cf9a63b833baa11
     external_links: []
     lifecycle_state: closed
@@ -193971,6 +193977,43 @@ reviews:
               uncalled function is not registered before the later assertion, so the detached daemon
               can still leak.'
             created_at: 2026-05-09T07:53:35.898Z
+          - _ulid: 01KR5XFZZSR6MKB1KMZTTPE7NB
+            author: "@claude"
+            body: >-
+              Fixed in 3596de394. The blocker stemmed from subtreeContainsDaemonCleanupCall
+              (tools/eslint-rules/no-leaky-test-daemon.js) descending into ANY function/arrow body
+              when scanning sibling statements for cleanup. So `const cleanup = () => killPid(pid);`
+              matched because the walker found the daemon-shaped killPid CallExpression in the arrow
+              body — even though the arrow was bound to `cleanup` and never invoked.
+
+
+              The walker now gates descent into function/arrow bodies on
+              `isCleanupRegistrationCallback(fnNode)`: the function/arrow must itself be an ARGUMENT
+              to a recognised cleanup-registration wrapper for the body to count. Recognised
+              wrappers: `onTestFinished`, `afterEach` / `afterAll` / `beforeEach` / `beforeAll`, and
+              `process.on(...)`. IIFE-shape (arrow as callee, not argument) is rejected. Unrelated
+              callees that take a callback (`console.log(() => kill())`, `[() => kill()]`, `{
+              teardown: () => kill() }`) are rejected.
+
+
+              The same gated walker drives the try/finally finalizer check
+              (isInTryWithFinallyCleanup), so `try { ... } finally { const cleanup = () =>
+              kill(pid); }` is also rejected.
+
+
+              Verified the reviewer's exact probe with `npx oxlint`: a synthetic test that issues
+              `runKspec("serve start --detach --port 3456"); const cleanup = () => killPid(pid);
+              expect(true).toBe(true);` now exits 1 with a no-leaky-test-daemon missingCleanup
+              diagnostic. Verified the negative control still passes: `runKspec(...);
+              onTestFinished(() => killPid(pid)); expect(true).toBe(true);` exits 0.
+
+
+              Added 4 behavioral regression tests in tests/lint-no-leaky-test-daemon.test.ts
+              covering the cycle-3 probe and 3 adjacent unregistered-callback shapes (named function
+              declaration, console.log arg, try/finally finalizer with unregistered arrow). Targeted
+              guardrail tests: 19/19 suites, 191/191 tests pass. Full suite: 2413/2413 suites, 8944
+              pass / 5 skipped.
+            created_at: 2026-05-09T08:26:05.689Z
         kind: blocker
       - _ulid: 01KR5W5XKYGFK1MW5E5S2SSZCX
         entries:
@@ -193996,5 +194039,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T08:03:18.674Z
     created_at: 2026-05-09T07:50:39.486Z
-    updated_at: 2026-05-09T08:03:18.674Z
+    updated_at: 2026-05-09T08:26:05.689Z
     notes: []
