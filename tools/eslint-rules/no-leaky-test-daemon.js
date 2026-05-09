@@ -131,6 +131,29 @@ const HELPER_PATH_PATTERNS = [
 const FETCH_LIKE_CALLEES = new Set(["fetch"]);
 const WEBSOCKET_LIKE_CONSTRUCTORS = new Set(["WebSocket"]);
 
+/**
+ * Loopback host+port URL pattern used by the cleanup-timing observation
+ * gate (`subtreeContainsAwaitOrExpect`). Matches the common host forms a
+ * test would use to talk to a locally-running daemon — `localhost`,
+ * `127.0.0.1`, or `[::1]` — followed by an explicit port (digits or a
+ * `${...}` template-literal interpolation).
+ *
+ * Broader than the rule's `localhostDaemonUrl` reporting predicate
+ * (`carriesLocalhostPortUrl`), which is intentionally narrow and only
+ * names `localhost:` because that is the canonical test-fixture host.
+ * The observation gate must additionally recognise `127.0.0.1:` and
+ * `[::1]:` because tests legitimately use those (`tests/cli-serve.test
+ * .ts`, the cycle-5 reviewer's daemon-fetch probe), and the gate is
+ * used only to decide whether a `fetch` / `new WebSocket` between a
+ * detached daemon start and a cleanup registration is a daemon
+ * observation that the cleanup-timing rule cares about. A bare
+ * `fetch("https://example.com/health")` between the two is not a
+ * daemon observation and must not be credited (cycle-6 reviewer
+ * blocker).
+ */
+const DAEMON_HOST_PORT_URL_PATTERN =
+  /\/\/(?:localhost|127\.0\.0\.1|\[::1\]):(\d|\$\{)/;
+
 const DAEMON_ENTRY_LITERAL = "dist/daemon/index.js";
 const DAEMON_ENTRY_IDENTIFIER = "DAEMON_ENTRY";
 const KSPEC_EXECUTABLE_PATTERN = /(^|\/)kspec$/;
@@ -444,21 +467,41 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * Set of recognised cleanup-registration wrapper names — function call
-     * names whose callback argument WILL be invoked by the test framework
-     * at a defined boundary (vitest's per-test cleanup, suite-level hooks).
+     * Set of recognised in-flow cleanup-registration wrapper names — call
+     * names whose callback argument is scoped to the CURRENT test and is
+     * guaranteed to run after the test body finishes (success or failure).
      * A daemon-cleanup-shaped CallExpression nested inside one of these
      * callbacks is counted as registered cleanup; a daemon-cleanup-shaped
      * CallExpression nested inside an arbitrary unregistered function or
      * arrow body is NOT — that body is just code stored in a binding or
      * passed to an unrelated callee, never invoked, so the kill never runs.
      *
-     * Coverage: vitest exposes per-test cleanup via `onTestFinished` and
-     * suite-level cleanup via `afterEach` / `afterAll`. The `beforeEach` /
-     * `beforeAll` setup hooks are also included because tests occasionally
-     * register cleanup imperatively in their setup body (e.g.
-     * `beforeEach(() => { onTestFinished(...) })` or
-     * `beforeEach(() => { process.on("exit", killPid) })`).
+     * Coverage is intentionally narrow: vitest exposes per-test cleanup
+     * via `onTestFinished`, which registers a teardown for the currently
+     * running test and is invoked once that test settles. That is the
+     * only test-framework hook that scopes cleanup to the just-started
+     * detached daemon.
+     *
+     * The lifecycle hooks (`afterEach`, `afterAll`, `beforeEach`,
+     * `beforeAll`) are NOT recognised here because registering them
+     * inside a test body does not give the current test scoped cleanup
+     * for a daemon that was just started:
+     *   - `afterEach` registered inside `it(...)` is added to the parent
+     *     describe scope at runtime; vitest does not retroactively run
+     *     newly-registered hooks for the test that just registered them,
+     *     and even when it did, the registration itself can be skipped if
+     *     an earlier statement in the same test throws.
+     *   - `beforeEach` / `beforeAll` are setup hooks; their callbacks fire
+     *     before subsequent tests, not after the current test, so they
+     *     cannot tear down the daemon this test just started.
+     *   - `afterAll` runs only when the whole describe block finishes, so
+     *     a leaked daemon survives every other test in the file.
+     * The cycle-6 reviewer probe `runKspec("serve start --detach");
+     * beforeEach(() => killPid(result.pid)); expect(true).toBe(true);`
+     * relied on these hooks being recognised — accepting them silently
+     * left a detached daemon leaking on the straight-line path to the
+     * next observation (`@daemon-test-guardrail-precision`
+     * `ac-detached-cleanup-before-observation`).
      *
      * Bare names only — process.on("exit", ...) is matched separately by
      * `isProcessOnExitRegistration` because it is a MemberExpression
@@ -466,10 +509,6 @@ const noLeakyTestDaemon = {
      */
     const CLEANUP_REGISTRATION_WRAPPER_NAMES = new Set([
       "onTestFinished",
-      "afterEach",
-      "afterAll",
-      "beforeEach",
-      "beforeAll",
     ]);
 
     /**
@@ -535,10 +574,16 @@ const noLeakyTestDaemon = {
      * the test framework at a defined cleanup boundary.
      *
      * Patterns recognised as registrations:
-     *   - `onTestFinished(<fn>)`
-     *   - `afterEach(<fn>)` / `afterAll(<fn>)` /
-     *     `beforeEach(<fn>)` / `beforeAll(<fn>)`
-     *   - `process.on("exit"|"SIGTERM"|…, <fn>)`
+     *   - `onTestFinished(<fn>)` — vitest per-test teardown, the only
+     *     hook that scopes cleanup to the current test.
+     *   - `process.on("exit"|"SIGTERM"|…, <fn>)` — Node process-lifecycle
+     *     teardown.
+     * Lifecycle hooks (`afterEach` / `afterAll` / `beforeEach` /
+     * `beforeAll`) are intentionally NOT recognised: registering one
+     * inside a test body does not give the current test scoped cleanup
+     * for a daemon that was just started (see
+     * `CLEANUP_REGISTRATION_WRAPPER_NAMES` for the rationale and the
+     * cycle-6 reviewer probe).
      *
      * The callback must occupy an ARGUMENT slot of the call (not the
      * callee position), so an IIFE-shaped node like `(() => kill())()`
@@ -728,8 +773,10 @@ const noLeakyTestDaemon = {
      * appear at a position that will execute — the walker descends into
      * function/arrow bodies only when the function/arrow is itself an
      * argument to a recognised cleanup-registration wrapper
-     * (`onTestFinished`, `afterEach`/`afterAll`/`beforeEach`/`beforeAll`,
-     * `process.on(…)`). See `subtreeContainsDaemonCleanupCall`.
+     * (`onTestFinished`, `process.on(<exit-event>, …)`). Lifecycle hooks
+     * (`afterEach`/`afterAll`/`beforeEach`/`beforeAll`) are intentionally
+     * not recognised; see `CLEANUP_REGISTRATION_WRAPPER_NAMES`. See
+     * `subtreeContainsDaemonCleanupCall`.
      *
      * Token-only text matches (e.g. `console.log("SIGTERM docs")`,
      * `const cleanupDocs = "killPid should be used later"`) and
@@ -754,20 +801,28 @@ const noLeakyTestDaemon = {
      *   - `AwaitExpression` — the next `await` is the closest synchronous
      *     suspension point and rejects propagate as test failures.
      *   - `expect(...)` — direct vitest expectation.
-     *   - `fetch(...)` — daemon network observation. Even an unawaited
-     *     fetch initiates an HTTP request to the daemon, so any error
-     *     (connection refused, abort) surfaces as a test failure before
-     *     a later cleanup registration can run (the cycle-5 reviewer
-     *     blocker on `@daemon-test-guardrail-precision`
+     *   - `fetch(<daemon-url>)` — daemon network observation. Even an
+     *     unawaited fetch initiates an HTTP request to the daemon, so any
+     *     error (connection refused, abort) surfaces as a test failure
+     *     before a later cleanup registration can run (the cycle-5
+     *     reviewer blocker on `@daemon-test-guardrail-precision`
      *     `ac-detached-cleanup-before-observation`: `fetch
      *     ("http://127.0.0.1:3456/api/health")` between the detached
      *     start and `onTestFinished` was not credited as an observation,
      *     leaving the AC under-implemented for non-await daemon
-     *     observation calls).
-     *   - `new WebSocket(...)` — daemon WebSocket observation. The
-     *     constructor opens a connection to the daemon synchronously, so
-     *     a connection failure surfaces before subsequent cleanup can
-     *     register.
+     *     observation calls). The cycle-6 reviewer blocker tightened this
+     *     gate to require a daemon URL — bare `fetch("https://example.com
+     *     /health")` between the detached start and `onTestFinished` is
+     *     NOT a daemon observation and must not trigger the cleanup-
+     *     timing report. URL detection reuses the rule's existing
+     *     `isFetchOfLocalhostUrl` predicate so the observation surface
+     *     stays aligned with the daemon-URL surface.
+     *   - `new WebSocket(<daemon-url>)` — daemon WebSocket observation.
+     *     The constructor opens a connection to the daemon synchronously,
+     *     so a connection failure surfaces before subsequent cleanup can
+     *     register. Same URL-filtered semantics as `fetch` — a
+     *     `new WebSocket("wss://example.com/...")` is not a daemon
+     *     observation.
      *
      * Stored function bodies are NOT on the straight-line path. The
      * walker prunes descent into `FunctionDeclaration`,
@@ -840,28 +895,33 @@ const noLeakyTestDaemon = {
         ) {
           return true;
         }
-        // Daemon network observation: bare `fetch(...)` Identifier
-        // callee. Member-form callees (`http.get(...)`, `axios.get(...)`,
-        // etc.) are not matched here because the rule's existing daemon
-        // URL detection only recognises Identifier `fetch` — keeping the
-        // observation surface aligned with the URL surface keeps the
-        // rule self-consistent and avoids mass false positives in tests
-        // that call unrelated `.get`/`.request` member chains.
-        if (
-          node.callee.type === "Identifier" &&
-          FETCH_LIKE_CALLEES.has(node.callee.name)
-        ) {
+        // Daemon network observation: a `fetch(<daemon-url>)` call where
+        // the first argument resolves to a loopback host+port URL. The
+        // URL filter is required (cycle-6 reviewer blocker) — a bare
+        // `fetch("https://example.com/health")` between the detached
+        // start and the cleanup registration is not a daemon
+        // observation, and crediting it produces a false positive on
+        // unrelated network calls. URL recognition uses the broader
+        // `isFetchOfDaemonHostUrl` predicate (matching `localhost:`,
+        // `127.0.0.1:`, and `[::1]:` host forms with explicit ports)
+        // because tests legitimately reach the daemon via
+        // `127.0.0.1:<port>` (the cycle-5 fetch regression test). The
+        // narrower `isFetchOfLocalhostUrl` reporting predicate is
+        // intentionally untouched. Member-form callees
+        // (`http.get(...)`, `axios.get(...)`, etc.) are not matched
+        // because the URL surface only recognises Identifier `fetch`.
+        if (isFetchOfDaemonHostUrl(node)) {
           return true;
         }
       }
-      // Daemon WebSocket observation: `new WebSocket(...)` opens a
-      // connection synchronously. Aligned with the URL detection
-      // surface (`isWebSocketCtorOfLocalhostUrl`).
+      // Daemon WebSocket observation: `new WebSocket(<daemon-url>)`
+      // opens a connection synchronously. URL-filtered against the
+      // broader loopback-host predicate so a
+      // `new WebSocket("wss://example.com/...")` does not register as a
+      // daemon observation.
       if (
         node.type === "NewExpression" &&
-        node.callee &&
-        node.callee.type === "Identifier" &&
-        WEBSOCKET_LIKE_CONSTRUCTORS.has(node.callee.name)
+        isWebSocketCtorOfDaemonHostUrl(node)
       ) {
         return true;
       }
@@ -2335,6 +2395,71 @@ const noLeakyTestDaemon = {
       if (node.callee.type !== "Identifier") return false;
       if (!WEBSOCKET_LIKE_CONSTRUCTORS.has(node.callee.name)) return false;
       return firstArgIsLocalhostUrl(node);
+    }
+
+    /**
+     * Inspect string-shaped arguments for a daemon URL where the host is
+     * any common loopback name (`localhost`, `127.0.0.1`, `[::1]`)
+     * paired with an explicit port. Used by the cleanup-timing
+     * observation gate (`subtreeContainsAwaitOrExpect`) which is
+     * intentionally broader than the rule's `localhostDaemonUrl`
+     * reporting predicate (`carriesLocalhostPortUrl`) — see
+     * `DAEMON_HOST_PORT_URL_PATTERN` for the rationale.
+     */
+    function carriesDaemonHostPortUrl(node) {
+      if (!node) return false;
+      if (node.type === "Literal" && typeof node.value === "string") {
+        return DAEMON_HOST_PORT_URL_PATTERN.test(node.value);
+      }
+      if (node.type === "TemplateLiteral") {
+        const parts = [];
+        for (let i = 0; i < node.quasis.length; i += 1) {
+          parts.push(node.quasis[i].value.raw);
+          if (i < node.expressions.length) {
+            parts.push("${...}");
+          }
+        }
+        return DAEMON_HOST_PORT_URL_PATTERN.test(parts.join(""));
+      }
+      return false;
+    }
+
+    /**
+     * True when the first argument of a `fetch(...)` or
+     * `new WebSocket(...)` call resolves to a daemon-host URL — either
+     * an inline literal/template literal carrying the loopback host+port
+     * pattern, or an Identifier whose tracked binding is a `localhost:`
+     * URL string. The Identifier surface is narrower than the literal
+     * surface because the rule only tracks `localhost:` bindings (the
+     * existing `localhostUrlBindings` map populated by
+     * `carriesLocalhostPortUrl`); broader-host bindings would require
+     * doubling the binding state and were not part of the cycle-6
+     * reviewer's request.
+     *
+     * Used only by the cleanup-timing observation gate. The
+     * `localhostDaemonUrl` reporting predicate keeps using its narrower
+     * `firstArgIsLocalhostUrl` so the existing reporting behavior is
+     * unchanged.
+     */
+    function firstArgIsDaemonObservation(node) {
+      const firstArg = node.arguments[0];
+      if (!firstArg) return false;
+      if (carriesDaemonHostPortUrl(firstArg)) return true;
+      return isLocalhostUrlIdentifier(firstArg, firstArg);
+    }
+
+    function isFetchOfDaemonHostUrl(node) {
+      if (node.type !== "CallExpression") return false;
+      if (!node.callee || node.callee.type !== "Identifier") return false;
+      if (!FETCH_LIKE_CALLEES.has(node.callee.name)) return false;
+      return firstArgIsDaemonObservation(node);
+    }
+
+    function isWebSocketCtorOfDaemonHostUrl(node) {
+      if (node.type !== "NewExpression") return false;
+      if (!node.callee || node.callee.type !== "Identifier") return false;
+      if (!WEBSOCKET_LIKE_CONSTRUCTORS.has(node.callee.name)) return false;
+      return firstArgIsDaemonObservation(node);
     }
 
     return {

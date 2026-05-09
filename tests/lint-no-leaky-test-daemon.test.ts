@@ -577,6 +577,85 @@ describe("test suite", () => {
 `);
       expect(result.output).toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-6 reviewer probe (lifecycle hook registered inside test body):
+    // a `beforeEach(() => killPid(...))` registered as a sibling of the
+    // detached daemon start does NOT scope cleanup to the current test.
+    // The hook is added to the parent describe scope at runtime; vitest
+    // does not retroactively run newly-registered hooks for the test that
+    // just registered them, and the registration itself can be skipped if
+    // an earlier statement in the same test throws. The cleanup walker
+    // must not credit `beforeEach` (or `afterEach`/`beforeAll`/`afterAll`)
+    // as in-flow cleanup for a daemon just started in the test body.
+    it("should flag serve start --detach when beforeEach is registered as in-test cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, beforeEach } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    beforeEach(() => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-6 reviewer probe (afterEach variant): same shape as the
+    // beforeEach probe — `afterEach` registered inside an `it` body is
+    // not scoped cleanup for the just-started daemon.
+    it("should flag serve start --detach when afterEach is registered as in-test cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, afterEach } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    afterEach(() => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Companion to the lifecycle-hook probes: `afterAll` and `beforeAll`
+    // are also rejected because they only fire at the suite boundary, so
+    // a leaked daemon can survive every other test in the file before
+    // the kill ever runs.
+    it("should flag serve start --detach when afterAll is registered as in-test cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, afterAll } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    afterAll(() => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    it("should flag serve start --detach when beforeAll is registered as in-test cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, beforeAll } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    beforeAll(() => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {
@@ -667,6 +746,52 @@ describe("test suite", () => {
     const pid = readPidFromFile();
     onTestFinished(() => killPid(pid));
     later();
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-6 reviewer probe (unrelated fetch URL between detached start
+    // and cleanup): a `fetch("https://example.com/...")` between the
+    // detached start and `onTestFinished` is not a daemon observation.
+    // The cycle-5 fix made every bare `fetch(...)` count as an observation,
+    // which produced a false positive on unrelated network calls. The
+    // observation gate must filter on URL — only fetches to a loopback
+    // host+port URL count as daemon observations.
+    it("should allow serve start --detach when an unrelated fetch URL precedes cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    fetch("https://example.com/health");
+    onTestFinished(() => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-6 reviewer probe (unrelated WebSocket URL between detached
+    // start and cleanup): same shape as the unrelated-fetch probe — a
+    // `new WebSocket("wss://example.com/...")` is not a daemon
+    // observation, so it must not block recognition of a later in-flow
+    // cleanup registration.
+    it("should allow serve start --detach when an unrelated WebSocket URL precedes cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    const ws = new WebSocket("wss://example.com/feed");
+    onTestFinished(() => killPid(result.pid));
+    expect(true).toBe(true);
   });
 });
 `);
