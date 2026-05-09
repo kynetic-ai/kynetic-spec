@@ -17302,3 +17302,79 @@ workspaces:
         head: e1d0800924872c4de07e819122cb4a2204430fda
         last_seen_at: 2026-05-08T23:29:00.935Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-harden-playwright-daemon-fixture-cleanup-01kr3w7r
+  - active_role: null
+    base_branch_point: 5538619f9b3a637365a38e313dcbc5dd7501b809
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-stabilize-websocket-protocol-runtime-parity-test/01kr52yx
+    canonical_branch_head: 5538619f9b3a637365a38e313dcbc5dd7501b809
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-09T00:42:38.403Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-09T00:42:38.403Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 5538619f9b3a637365a38e313dcbc5dd7501b809
+      updated_at: 2026-05-09T00:42:38.403Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KR52YXAAQZ4ZMFR0ASTJVJ59"
+    task_slug: task-stabilize-websocket-protocol-runtime-parity-test
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-09T00:42:38.403Z
+      created_at: 2026-05-09T00:42:38.403Z
+      updated_at: 2026-05-09T00:42:38.403Z
+    workspace_id: dispatch-workspace-01KR52YXAAQZ4ZMFR0ASTJVJ59
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-stabilize-websocket-protocol-runtime-parity-test/01kr52yx
+        head: 5538619f9b3a637365a38e313dcbc5dd7501b809
+        last_seen_at: 2026-05-09T00:42:38.403Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-websocket-protocol-runtime-parity-test-01kr52yx
