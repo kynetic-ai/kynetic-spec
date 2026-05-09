@@ -28521,7 +28521,7 @@
   type: task
   spec_ref: "@daemon-test-guardrail-precision"
   plan_ref: "@plan-daemon-test-fixture-hardening"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-add-guardrail-binding-wrapper-regressions"
@@ -28532,7 +28532,7 @@
     - guardrails
     - follow-up
   review_ref: "@01KR731KHH56WM9VRSTAMTWM88"
-  notes_count: 5
+  notes_count: 6
   todos_count: 0
   created_at: 2026-05-09T15:03:15.786Z
   started_at: 2026-05-09T19:18:16.515Z

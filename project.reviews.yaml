@@ -197486,9 +197486,25 @@ reviews:
           status: fail
           name: reviewer ownership probes
         timestamp: 2026-05-09T19:36:16.295Z
+      - _ulid: 01KR73VFVDCMJXSTX1AF9XFH23
+        actor: reviewer-agent
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-09T19:36:28.270Z
+      - _ulid: 01KR73VFVEW6MYZANVRCRQNRB1
+        actor: reviewer-agent
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T19:36:28.270Z
     examined_commit: 875a81d78c4b0c702a3d24d08789482c973d1584
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -197540,7 +197556,14 @@ reviews:
               unwrapped before falling back to UNVERIFIABLE_KILL_TARGET.'
             created_at: 2026-05-09T19:25:15.143Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: reviewer-agent
+        role: reviewer
+        created_at: 2026-05-09T19:36:28.269Z
     created_at: 2026-05-09T19:22:20.081Z
-    updated_at: 2026-05-09T19:36:14.973Z
+    updated_at: 2026-05-09T19:36:28.270Z
     notes: []
