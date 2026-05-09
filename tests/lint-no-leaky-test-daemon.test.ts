@@ -656,6 +656,104 @@ describe("test suite", () => {
 `);
       expect(result.output).toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-7 reviewer probe (identifier-bound 127.0.0.1 daemon URL
+    // observed before cleanup): `const url = "http://127.0.0.1:3456/..."`
+    // followed by `fetch(url)` is a daemon observation just like the
+    // inline-literal form. The cleanup-timing observation gate must
+    // resolve the identifier through the binding tracker; the
+    // identifier-bound binding tracker must record bindings whose RHS
+    // matches the broader loopback host+port pattern (127.0.0.1, [::1])
+    // — not just the narrower `localhost:` pattern that drives the
+    // `localhostDaemonUrl` reporting predicate.
+    it("should flag serve start --detach when an identifier-bound 127.0.0.1 URL fetch precedes cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    const url = "http://127.0.0.1:3456/api/health";
+    fetch(url);
+    onTestFinished(() => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-7 variant (identifier-bound IPv6 loopback URL): same shape
+    // as the 127.0.0.1 probe — `[::1]:<port>` is a legitimate IPv6
+    // loopback address tests use to talk to the local daemon, so an
+    // identifier-bound `[::1]` daemon URL observed before cleanup must
+    // also be recognised by the observation gate.
+    it("should flag serve start --detach when an identifier-bound [::1] URL fetch precedes cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    const url = "http://[::1]:3456/api/health";
+    fetch(url);
+    onTestFinished(() => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-7 variant (identifier-bound localhost URL): the
+    // identifier-bound case must trip `missingCleanup` symmetrically
+    // for the original `localhost:` host as well — without the
+    // Program:exit deferral introduced for cycle 7, the cleanup-timing
+    // analysis ran at the daemon-start CallExpression entry, BEFORE
+    // the later `const url = "http://localhost:..."` VariableDeclarator
+    // was visited, so the binding lookup returned null even for the
+    // host the existing binding tracker already supported.
+    it("should flag serve start --detach when an identifier-bound localhost URL fetch precedes cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    const url = "http://localhost:3456/api/health";
+    fetch(url);
+    onTestFinished(() => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("Detached daemon start");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-7 variant (identifier-bound 127.0.0.1 WebSocket URL): the
+    // observation surface includes `new WebSocket(...)` symmetric with
+    // `fetch(...)`, so an identifier-bound 127.0.0.1 WebSocket URL
+    // observed before cleanup must also be flagged.
+    it("should flag serve start --detach when an identifier-bound 127.0.0.1 WebSocket URL precedes cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    const url = "ws://127.0.0.1:3456/api/ws";
+    new WebSocket(url);
+    onTestFinished(() => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {
@@ -790,6 +888,30 @@ describe("test suite", () => {
   it("should start daemon", () => {
     const result = runKspec("serve start --detach --port 3456");
     const ws = new WebSocket("wss://example.com/feed");
+    onTestFinished(() => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-7 negative control: an identifier whose tracked binding
+    // RHS is an unrelated URL (not a loopback host+port) must NOT be
+    // recognised as a daemon observation by the broadened binding
+    // tracker. The broadening only adds `127.0.0.1:` and `[::1]:` to
+    // the observed-host set; arbitrary remote hosts must still be
+    // ignored by the cleanup-timing gate.
+    it("should allow serve start --detach when an identifier-bound unrelated URL precedes cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    const url = "https://example.com/health";
+    fetch(url);
     onTestFinished(() => killPid(result.pid));
     expect(true).toBe(true);
   });

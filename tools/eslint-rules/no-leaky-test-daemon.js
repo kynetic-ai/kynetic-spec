@@ -2250,18 +2250,40 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * Bindings whose declarator init or assignment RHS is a `localhost:<port>`
-     * URL string. Tracked per lexical scope and source position so a
+     * Bindings whose declarator init or assignment RHS is a daemon-shaped
+     * URL string. Two flags are tracked per binding so the narrower
+     * `localhostDaemonUrl` reporting predicate and the broader
+     * cleanup-timing observation gate can each ask the question they
+     * actually need:
+     *
+     *   - `isLocalhost` — true when the RHS matches the narrow
+     *     `localhost:<port>` pattern (`carriesLocalhostPortUrl`). Drives
+     *     the `localhostDaemonUrl` reporting at `fetch` / `new WebSocket`
+     *     call sites.
+     *   - `isDaemonHost` — true when the RHS matches the broader
+     *     loopback pattern (`carriesDaemonHostPortUrl`: `localhost:`,
+     *     `127.0.0.1:`, `[::1]:`). Drives the cleanup-timing observation
+     *     gate so a `const url = "http://127.0.0.1:3456/..."; fetch(url)`
+     *     between a detached daemon start and the cleanup registration
+     *     is recognised as a daemon observation (cycle-7 reviewer
+     *     blocker on @daemon-test-guardrail-precision
+     *     ac-detached-cleanup-before-observation). Without this the
+     *     observation gate would only see inline literals and
+     *     template-literal forms, missing the identifier-bound
+     *     127.0.0.1 / [::1] cases.
+     *
+     * Tracked per lexical scope and source position so a
      * `const url = `http://localhost:${port}/...`; fetch(url)` pattern is
      * flagged the same way as the inline form — without leaking across
-     * unrelated `it`/`test` blocks that happen to reuse the same identifier
-     * name. Walking outward from the use site picks the innermost binding
-     * whose source position is before the use; an inner non-localhost
-     * declaration shadows an outer localhost one, and a later non-localhost
-     * reassignment in the same scope overrides an earlier localhost binding.
+     * unrelated `it`/`test` blocks that happen to reuse the same
+     * identifier name. Walking outward from the use site picks the
+     * innermost binding whose source position is before the use; an
+     * inner non-loopback declaration shadows an outer loopback one, and
+     * a later non-loopback reassignment in the same scope overrides an
+     * earlier loopback binding.
      *
      * Map shape: identifier name → array of
-     *   { scopeNode, position, isLocalhost }.
+     *   { scopeNode, position, isLocalhost, isDaemonHost }.
      */
     const localhostUrlBindings = new Map();
 
@@ -2323,7 +2345,7 @@ const noLeakyTestDaemon = {
       return false;
     }
 
-    function recordBinding(name, anchorNode, isLocalhost) {
+    function recordBinding(name, anchorNode, isLocalhost, isDaemonHost) {
       const scopeNode = getEnclosingScopeNode(anchorNode);
       if (!scopeNode) return;
       const position = getNodeStart(anchorNode);
@@ -2333,14 +2355,14 @@ const noLeakyTestDaemon = {
         entries = [];
         localhostUrlBindings.set(name, entries);
       }
-      entries.push({ scopeNode, position, isLocalhost });
+      entries.push({ scopeNode, position, isLocalhost, isDaemonHost });
     }
 
     /**
      * Walk lexical scopes outward from `useNode` and return the most recent
      * binding for `name` whose declaration position is before the use. If a
      * function-scope parameter named `name` is encountered first, treat it
-     * as a non-localhost binding (parameters cannot be daemon-URL strings
+     * as a non-loopback binding (parameters cannot be daemon-URL strings
      * the rule has tracked). Returns null when no binding is in scope.
      */
     function findApplicableBinding(name, useNode) {
@@ -2351,7 +2373,7 @@ const noLeakyTestDaemon = {
       while (current) {
         if (isScopeNode(current)) {
           if (functionScopeShadowsName(current, name)) {
-            return { isLocalhost: false, viaParameter: true };
+            return { isLocalhost: false, isDaemonHost: false, viaParameter: true };
           }
           if (entries) {
             let candidate = null;
@@ -2374,6 +2396,21 @@ const noLeakyTestDaemon = {
       if (!node || node.type !== "Identifier") return false;
       const binding = findApplicableBinding(node.name, useNode);
       return binding !== null && binding.isLocalhost === true;
+    }
+
+    /**
+     * True when `node` is an Identifier whose tracked binding RHS matches
+     * the broader loopback host+port pattern (`localhost:`, `127.0.0.1:`,
+     * or `[::1]:`). Used by the cleanup-timing observation gate so an
+     * identifier-bound daemon URL is recognised as a daemon observation
+     * — symmetric with the inline literal/template-literal path through
+     * `carriesDaemonHostPortUrl`. The narrower `isLocalhostUrlIdentifier`
+     * keeps driving the `localhostDaemonUrl` reporting predicate.
+     */
+    function isDaemonHostUrlIdentifier(node, useNode) {
+      if (!node || node.type !== "Identifier") return false;
+      const binding = findApplicableBinding(node.name, useNode);
+      return binding !== null && binding.isDaemonHost === true;
     }
 
     function firstArgIsLocalhostUrl(node) {
@@ -2428,13 +2465,15 @@ const noLeakyTestDaemon = {
      * True when the first argument of a `fetch(...)` or
      * `new WebSocket(...)` call resolves to a daemon-host URL — either
      * an inline literal/template literal carrying the loopback host+port
-     * pattern, or an Identifier whose tracked binding is a `localhost:`
-     * URL string. The Identifier surface is narrower than the literal
-     * surface because the rule only tracks `localhost:` bindings (the
-     * existing `localhostUrlBindings` map populated by
-     * `carriesLocalhostPortUrl`); broader-host bindings would require
-     * doubling the binding state and were not part of the cycle-6
-     * reviewer's request.
+     * pattern (`localhost:`, `127.0.0.1:`, `[::1]:`), or an Identifier
+     * whose tracked binding RHS matches the same broader pattern. The
+     * Identifier surface mirrors the literal surface via
+     * `isDaemonHostUrlIdentifier` (cycle-7 reviewer blocker on
+     * @daemon-test-guardrail-precision
+     * ac-detached-cleanup-before-observation): without it, a test could
+     * assign `const url = "http://127.0.0.1:3456/api/health"` and
+     * `fetch(url)` between a detached daemon start and cleanup
+     * registration without tripping the cleanup-timing rule.
      *
      * Used only by the cleanup-timing observation gate. The
      * `localhostDaemonUrl` reporting predicate keeps using its narrower
@@ -2445,7 +2484,7 @@ const noLeakyTestDaemon = {
       const firstArg = node.arguments[0];
       if (!firstArg) return false;
       if (carriesDaemonHostPortUrl(firstArg)) return true;
-      return isLocalhostUrlIdentifier(firstArg, firstArg);
+      return isDaemonHostUrlIdentifier(firstArg, firstArg);
     }
 
     function isFetchOfDaemonHostUrl(node) {
@@ -2462,10 +2501,28 @@ const noLeakyTestDaemon = {
       return firstArgIsDaemonObservation(node);
     }
 
+    // Detached daemon-start CallExpressions found during traversal.
+    // The cleanup-timing analysis (`detachWithoutCleanup`) is deferred to
+    // `Program:exit` so that all `localhostUrlBindings` are recorded
+    // before forward statement scans resolve identifier-bound URL
+    // observations through `firstArgIsDaemonObservation`. Without
+    // deferral, the check at the daemon-start CallExpression entry
+    // would run before later `const url = "http://127.0.0.1:3456/..."`
+    // VariableDeclarator visits, leaving identifier-bound daemon URLs
+    // invisible to the observation gate (cycle-7 reviewer blocker on
+    // @daemon-test-guardrail-precision
+    // ac-detached-cleanup-before-observation).
+    const pendingDetachChecks = [];
+
     return {
       VariableDeclarator(node) {
         if (!node.id || node.id.type !== "Identifier" || !node.init) return;
-        recordBinding(node.id.name, node, carriesLocalhostPortUrl(node.init));
+        recordBinding(
+          node.id.name,
+          node,
+          carriesLocalhostPortUrl(node.init),
+          carriesDaemonHostPortUrl(node.init),
+        );
       },
 
       AssignmentExpression(node) {
@@ -2477,7 +2534,12 @@ const noLeakyTestDaemon = {
         ) {
           return;
         }
-        recordBinding(node.left.name, node, carriesLocalhostPortUrl(node.right));
+        recordBinding(
+          node.left.name,
+          node,
+          carriesLocalhostPortUrl(node.right),
+          carriesDaemonHostPortUrl(node.right),
+        );
       },
 
       CallExpression(node) {
@@ -2501,19 +2563,15 @@ const noLeakyTestDaemon = {
           return;
         }
 
-        // Detached serve via the CLI — cleanup escape hatch preserved.
+        // Detached serve via the CLI — defer the cleanup-timing check
+        // to `Program:exit` so identifier-bound daemon URLs in later
+        // statements are resolved through their fully-populated
+        // `localhostUrlBindings` entries. The cleanup escape hatch
+        // (an unconditional same-flow registration via
+        // `onTestFinished` or a `try { ... } finally { kill }` block,
+        // or an ancestor `afterEach` hook) is preserved unchanged.
         if (isDetachCallExpression(node)) {
-          if (
-            !isInHelperFunction(node) &&
-            !isInLifecycleHook(node, "afterEach") &&
-            detachWithoutCleanup(node)
-          ) {
-            context.report({
-              node,
-              messageId: "missingCleanup",
-              data: { pattern: "serve start --detach" },
-            });
-          }
+          pendingDetachChecks.push(node);
           return;
         }
 
@@ -2534,6 +2592,22 @@ const noLeakyTestDaemon = {
             messageId: "localhostDaemonUrl",
             data: { pattern: "new WebSocket()" },
           });
+        }
+      },
+
+      "Program:exit"() {
+        for (const node of pendingDetachChecks) {
+          if (
+            !isInHelperFunction(node) &&
+            !isInLifecycleHook(node, "afterEach") &&
+            detachWithoutCleanup(node)
+          ) {
+            context.report({
+              node,
+              messageId: "missingCleanup",
+              data: { pattern: "serve start --detach" },
+            });
+          }
         }
       },
 
