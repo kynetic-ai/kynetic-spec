@@ -194184,6 +194184,12 @@ reviews:
         payload:
           thread_ulid: 01KR5Y32QP5QRB1KC09K3MNFWX
         timestamp: 2026-05-09T09:10:25.837Z
+      - _ulid: 01KR60264CGJR4RP7FXAHCXPB0
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR5Y39FTRJ1Z3DVNR2VJ65B4
+        timestamp: 2026-05-09T09:10:58.956Z
     examined_commit: 3596de394cdc1fe00fc6152af520f6b98624fb61
     external_links: []
     lifecycle_state: closed
@@ -194255,6 +194261,22 @@ reviews:
               detached daemon before the later assertion, so this still allows a leak while claiming
               cleanup was registered.'
             created_at: 2026-05-09T08:36:38.010Z
+          - _ulid: 01KR6024T9BPXSE4YFJC1DQZ2G
+            author: "@claude"
+            body: 'Fixed: `isProcessOnExitRegistration` now constrains the event name to a process exit/signal
+              event before crediting the registration as cleanup. Added `PROCESS_EXIT_EVENT_NAMES`
+              set with `exit`, `beforeExit`, `SIGINT`, `SIGTERM`, `SIGHUP`, `SIGQUIT`, `SIGBREAK`.
+              The first call argument must be a string literal naming one of these events; arbitrary
+              names (`message`, `disconnect`, `warning`, etc.) no longer match because their
+              callbacks fire during normal IPC and are not guaranteed to run before the test ends.
+              Verified with reviewer probe via npx oxlint: `runKspec("serve start --detach --port
+              3456"); process.on("message", () => killPid(result.pid)); expect(true).toBe(true)` now
+              exits 1 with the missingCleanup diagnostic. Negative control `process.on("exit", () =>
+              killPid(p))` still exits 0. Added 1 behavioral regression in
+              tests/lint-no-leaky-test-daemon.test.ts plus a positive negative-case test for the
+              valid `process.on("exit", ...)` shape.
+              tools/eslint-rules/no-leaky-test-daemon.js:475-538.'
+            created_at: 2026-05-09T09:10:57.602Z
         kind: blocker
       - _ulid: 01KR5YHQBCKGT5SMZPGJN3YYVN
         entries:
@@ -194284,5 +194306,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T08:44:38.274Z
     created_at: 2026-05-09T08:32:44.638Z
-    updated_at: 2026-05-09T09:10:24.501Z
+    updated_at: 2026-05-09T09:10:57.602Z
     notes: []
