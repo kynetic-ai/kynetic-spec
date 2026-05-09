@@ -1,1 +1,61 @@
-notes: []
+notes:
+  - _ulid: 01KR6Q75B878E8CW4B0TZR0FWA
+    content: >-
+      Approach: added 12 regression tests at the end of tests/lint-daemon-test-guardrails.test.ts in
+      two new top-level describe blocks — 'cleanup callback bound before observation' (for
+      ac-detached-cleanup-bound-before-observation) and 'approved helper boundary is explicit' (for
+      ac-approved-daemon-helper-boundary-explicit).
+
+
+      Pre-fix probe (npx oxlint + temp project) confirmed 4 false negatives in the current rule:
+
+      1. onTestFinished closes over a let pid that is bound only after expect()
+
+      2. onTestFinished closes over a let pid that is bound only after await waitForReady(daemon
+      URL)
+
+      3. onTestFinished closes over a let child handle that is bound only after await
+
+      4. onTestFinished captures pid before a daemon-host fetch but pid is bound only after the
+      fetch (covers the daemon-fetch observation gate)
+
+
+      And 4 false negatives for arbitrary local wrappers:
+
+      1. function declaration wrapping runKspec(serve start --detach ...)
+
+      2. const arrow wrapping spawn(kspec, [serve, start, --detach, ...])
+
+      3. function declaration wrapping execSync(kspec serve start --detach ...)
+
+      4. function expression assigned to a const wrapping spawnSync(kspec, [serve, start, --detach,
+      ...])
+
+
+      Direct daemon entrypoint wrappers (spawn(node, [DAEMON_ENTRY, ...]) inside a local helper) are
+      ALREADY flagged by the existing CallExpression visitor (which fires before isInHelperFunction
+      is consulted), so per the task instructions I treated those as existing-pass control coverage
+      and did NOT add a new failing regression for that shape. A note in the new describe block
+      explains this explicitly.
+
+
+      Allowed/control cases added:
+
+      - pid captured as const before onTestFinished registration (canonical safe binding shape)
+
+      - child handle captured by the spawn statement and onTestFinished kills it before any
+      observation
+
+      - shared fixture wrapper inside tests/helpers/daemon.ts (path-allowlist boundary preserved)
+
+      - inline detached start with proper inline cleanup (baseline must not regress)
+
+
+      Tests verified: 8 unsafe regressions FAIL pre-fix (rule produces 0 errors / no diagnostic), 4
+      allowed control tests PASS, the existing 160 tests in the file PASS. Companion file
+      tests/lint-no-leaky-test-daemon.test.ts (53 tests) PASS unchanged. The failures are
+      intentional and reproduce the false negatives Task 1's tightened ACs codified — they will pass
+      once the lint rule fix in the follow-up task lands.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T15:55:39.241Z
