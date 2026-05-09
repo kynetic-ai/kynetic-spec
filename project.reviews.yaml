@@ -193019,9 +193019,25 @@ reviews:
           kind: nit
           thread_ulid: 01KR5JY3SNTJ1CFTY3XA2X2388
         timestamp: 2026-05-09T05:21:35.325Z
+      - _ulid: 01KR5JZJZF27MWGG5NC3XZ3DES
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-09T05:22:22.319Z
+      - _ulid: 01KR5JZJZFVSMJ888QNFHHFHAT
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T05:22:22.319Z
     examined_commit: 74ab0ec544bc889c0aef25550ccb2d1e691b8f1c
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -193083,7 +193099,14 @@ reviews:
               AC annotations, integration with helper allowlists and daemon fixtures."
             created_at: 2026-05-09T05:21:34.005Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-09T05:22:22.319Z
     created_at: 2026-05-09T05:05:39.146Z
-    updated_at: 2026-05-09T05:21:34.005Z
+    updated_at: 2026-05-09T05:22:22.319Z
     notes: []
