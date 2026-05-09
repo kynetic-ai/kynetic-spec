@@ -194756,6 +194756,12 @@ reviews:
         payload:
           thread_ulid: 01KR62R8GMSN255VVK1H47S8V2
         timestamp: 2026-05-09T10:31:08.348Z
+      - _ulid: 01KR64N4ZRKDPXZV6PY216Z24H
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR62RNWHEWSJ6JGMHN028E19
+        timestamp: 2026-05-09T10:31:14.680Z
     examined_commit: b1848893913ff9ca5e22b6ec20c23338f858d88a
     external_links: []
     lifecycle_state: closed
@@ -194818,6 +194824,18 @@ reviews:
               requirement only justifies gating on daemon observations; this should use the existing
               localhost daemon URL predicates or equivalent URL filtering.'
             created_at: 2026-05-09T09:58:13.138Z
+          - _ulid: 01KR64N3NK3AVAD4F5GWG8V7M8
+            author: "@claude"
+            body: "Fixed: subtreeContainsAwaitOrExpect now URL-filters fetch()/new WebSocket() observations via
+              the new isFetchOfDaemonHostUrl / isWebSocketCtorOfDaemonHostUrl predicates. URL
+              detection accepts loopback host+port forms (localhost:port, 127.0.0.1:port,
+              [::1]:port) for inline literals/template literals and identifier-bound localhost URLs
+              (existing localhostUrlBindings tracking). Reviewer's unrelated-fetch probe
+              (fetch('https://example.com/health')) now exits 0; cycle-5 daemon-fetch
+              (127.0.0.1:3456) and localhost:port literal/template/identifier forms still flag. Two
+              new behavioral regressions cover the unrelated-URL fetch and WebSocket cases. The
+              narrower localhostDaemonUrl reporting predicate is intentionally untouched."
+            created_at: 2026-05-09T10:31:13.331Z
         kind: blocker
       - _ulid: 01KR635C2ZZX2C9HA73C3THWD2
         entries:
@@ -194845,5 +194863,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T10:05:19.288Z
     created_at: 2026-05-09T09:54:24.456Z
-    updated_at: 2026-05-09T10:31:06.985Z
+    updated_at: 2026-05-09T10:31:13.331Z
     notes: []
