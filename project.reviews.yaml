@@ -195336,6 +195336,17 @@ reviews:
         runner: kspec
         created_at: 2026-05-09T12:18:49.336Z
         completed_at: 2026-05-09T12:18:49.336Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/cli-serve.test.ts: 5 suites passed, 40/40 tests
+          passed (47.0s)."
+        name: cli serve endpoint tests
+        required: true
+        runner: npm
+        created_at: 2026-05-09T12:19:02.257Z
+        completed_at: 2026-05-09T12:19:02.257Z
     events:
       - _ulid: 01KR6A2X5TD95S7DME4TJPFWMD
         actor: Jacob Chapel
@@ -195357,6 +195368,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-09T12:18:50.647Z
+      - _ulid: 01KR6ATJ8R9HBPDKP2PQDFJPS3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: cli serve endpoint tests
+        timestamp: 2026-05-09T12:19:03.576Z
     examined_commit: c9e84cf090a02f85fdbba45cd9949d62bcfd8b44
     external_links: []
     lifecycle_state: open
@@ -195369,5 +195387,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-09T12:06:08.315Z
-    updated_at: 2026-05-09T12:18:49.336Z
+    updated_at: 2026-05-09T12:19:02.257Z
     notes: []
