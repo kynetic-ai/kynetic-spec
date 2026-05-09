@@ -43282,7 +43282,7 @@ runs:
     completed_at: 2026-05-09T15:58:42.740Z
   - _ulid: 01KR6QET72RA8VHQ68WSHVKB30
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -43313,7 +43313,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-09T16:01:02.907Z
-        completed_at: 2026-05-09T16:01:02.907Z
+        completed_at: 2026-05-09T16:01:12.418Z
+        notes: "Proposal: add a project convention or helper workflow for regression-only tasks that need to
+          prove a bug before the fix lands. It should define whether to use an expected-failing
+          marker, pair the regression and fix in one merge unit, or block manual merge until the fix
+          branch is ready. Scope: small to medium, mostly process plus possibly test-runner
+          support."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-09T16:01:12.418Z
+        completed_at: 2026-05-09T16:01:12.418Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T15:59:49.986Z
