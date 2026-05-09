@@ -197787,6 +197787,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T20:21:47.236Z
+      - _ulid: 01KR79EZ2TZESCA3JCBRT4Q52V
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR75J4HZARHJ6VV0CXN8QFKK
+        timestamp: 2026-05-09T21:14:29.338Z
     examined_commit: 9a21b6679bf51544740b432212bbf3002afd92b8
     external_links: []
     lifecycle_state: closed
@@ -197819,6 +197825,50 @@ reviews:
               test at tests/lint-daemon-test-guardrails.test.ts:4275 expecting this unsafe shape to
               pass, so the implementation is locking in behavior contrary to the AC."
             created_at: 2026-05-09T20:06:18.944Z
+          - _ulid: 01KR79EXRH5B263P3XK92ESCAA
+            author: "@claude"
+            body: >-
+              Fixed in fix(daemon-lint) ce61a5635. Root cause was a polarity error in
+              cleanupCallbackBindingStatus (tools/eslint-rules/no-leaky-test-daemon.js:1375): the
+              cycle-4 callbackLocalKillTargetIsDynamic helper accepted callback-local kill targets
+              when the initializer was a non-literal RHS, on the theory that 'runtime read at
+              cleanup time' was a valid ownership pattern. Per
+              ac-detached-cleanup-bound-before-observation that's wrong — the cleanup callback must
+              capture or otherwise own the concrete pid AT REGISTRATION TIME so the cleanup contract
+              survives an intervening assertion failure. A callback-local binding (literal OR
+              dynamic) defers ownership entirely to teardown.
+
+
+              Fix: removed the dynamic-RHS exemption and the dead callbackLocalKillTargetIsDynamic /
+              isStaticLiteralExpression helpers. cleanupCallbackBindingStatus now always rejects
+              when isLocalToCallback returns true. Verified against the reviewer's exact probe via
+              manual oxlint: runKspec('serve start --detach') + onTestFinished(() => { const pid =
+              readPidFromFile(); process.kill(pid, 'SIGTERM'); }) + expect(true).toBe(true) → exit
+              1, cleanupClosureUnbound on 'pid'.
+
+
+              Test updates:
+
+              - tests/lint-daemon-test-guardrails.test.ts:4275 flipped from expects-allowed to
+              expects-flagged with cycle-4 reviewer probe wording.
+
+              - Added three regression tests: callback-local MemberExpression init (state.lastPid as
+              number deferred read), callback-local let + dynamic CallExpression assign, and the
+              safe alternative (read pid OUTSIDE callback after start, register closure that
+              captures the outer const).
+
+              - tests/cli-serve.test.ts ('does NOT silently fall back to [::1]') restructured to
+              read the stale pid before registering cleanup so the production test no longer trips
+              the tightened rule. The daemon parent does not return until listen() succeeds or fails
+              (and the PID file is written before listen() is attempted), so the read-outside
+              pattern catches the same pids as the prior read-inside pattern.
+
+
+              Validation: focused lint suites 241 -> 244 passing tests with --fresh; full npm test
+              2418 suites passed (8998 passed, 5 pre-existing skips, 2042.6s); kspec validate --refs
+              and --completeness pass with --warnings-ok (warnings unchanged from pre-existing
+              repository debt).
+            created_at: 2026-05-09T21:14:27.985Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -197829,7 +197879,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T20:21:47.236Z
     created_at: 2026-05-09T20:04:10.775Z
-    updated_at: 2026-05-09T20:21:47.236Z
+    updated_at: 2026-05-09T21:14:27.985Z
     notes: []
   - _ulid: 01KR78A1TTWMP98EWA9RDPKFAJ
     slugs: []
