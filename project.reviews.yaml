@@ -193012,6 +193012,13 @@ reviews:
           status: fail
           name: manual classifier probes
         timestamp: 2026-05-09T05:21:19.069Z
+      - _ulid: 01KR5JY52W074NZMFW8GKBR1Z7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR5JY3SNTJ1CFTY3XA2X2388
+        timestamp: 2026-05-09T05:21:35.325Z
     examined_commit: 74ab0ec544bc889c0aef25550ccb2d1e691b8f1c
     external_links: []
     lifecycle_state: open
@@ -193055,7 +193062,28 @@ reviews:
               no-leaky-test-daemon diagnostics for those two search calls.'
             created_at: 2026-05-09T05:20:23.852Z
         kind: blocker
+      - _ulid: 01KR5JY3SNTJ1CFTY3XA2X2388
+        entries:
+          - _ulid: 01KR5JY3SNMX2NDAAXV5DV9B9Q
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: kspec-agents.md; .agents/skills/kspec-review, kspec-merge,
+              review-gates, work-gates; task and spec context for @01KR3W7PPVDFR8F03VQ6J54M3K; prior
+              cycle-11 review; full diff summary; tools/eslint-rules/no-leaky-test-daemon.js;
+              tests/lint-daemon-test-guardrails.test.ts; tests/lint-no-leaky-test-daemon.test.ts;
+              tests/helpers/daemon.ts and tests/helpers/mock-daemon.ts plus their focused tests;
+              tests/e2e/fixtures/test-base.ts and daemon-fixture.ts; tests/daemon-api/helpers.ts and
+              helpers.test.ts; vitest.config.ts. Commands run: kspec task get, kspec item get for
+              @daemon-test-guardrail-precision and @daemon-test-harness-guardrails, kspec review
+              for-task/get, git diff/stat/name-status/log/status, rg AC annotation searches, kspec
+              validate, targeted guardrail npm test, full npm test, changed-file oxlint, two manual
+              synthetic oxlint classifier probes. Claims verified: --import and --env-file
+              regressions are covered by behavioral tests and targeted/full suites pass; independent
+              probe found detached-serve false positive for kspec search. Categories searched:
+              correctness, edge cases, error handling around runtime flag parsing, test quality and
+              AC annotations, integration with helper allowlists and daemon fixtures."
+            created_at: 2026-05-09T05:21:34.005Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-09T05:05:39.146Z
-    updated_at: 2026-05-09T05:21:17.842Z
+    updated_at: 2026-05-09T05:21:34.005Z
     notes: []
