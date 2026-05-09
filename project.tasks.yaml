@@ -28095,7 +28095,7 @@
   type: task
   spec_ref: "@daemon-test-guardrail-precision"
   plan_ref: "@plan-daemon-test-fixture-hardening"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-add-guardrail-classification-regressions"
@@ -28105,7 +28105,7 @@
     - lint
     - daemon
   review_ref: "@01KR528J7Z95Y5EZCGD60NB55C"
-  notes_count: 14
+  notes_count: 15
   todos_count: 0
   created_at: 2026-05-08T13:25:36.603Z
   started_at: 2026-05-08T23:29:36.944Z

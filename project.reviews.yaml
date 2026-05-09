@@ -190816,7 +190816,75 @@ reviews:
     slugs: []
     title: Review fix guardrail daemon command classification (cycle 7)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts: 121 passed of 121."
+        name: targeted guardrail tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-09T00:43:41.421Z
+        completed_at: 2026-05-09T00:43:41.421Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema and references OK; command exited 6 due existing project warnings
+          (reference/alignment/completeness warnings).
+        name: kspec validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-09T00:43:44.743Z
+        completed_at: 2026-05-09T00:43:44.743Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: exec("node --require ./register.js dist/daemon/index.js --port 0") and execSync("node -r
+          ./register.js dist/daemon/index.js --port 0") emitted no diagnostic; exec("node --eval
+          dist/daemon/index.js") emitted a false direct-daemon diagnostic.
+        name: manual classifier probes
+        required: true
+        runner: oxlint probe
+        created_at: 2026-05-09T00:43:47.995Z
+        completed_at: 2026-05-09T00:43:47.995Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: 8870 passed, 5 skipped, 1 failed in
+          tests/daemon-api/websocket-protocol.test.ts beforeEach; isolated rerun of that file passed
+          15/15. Follow-up flaky task created: @01KR52YX."
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-09T00:43:51.260Z
+        completed_at: 2026-05-09T00:43:51.260Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/daemon-api/websocket-protocol.test.ts: 15 passed of 15 after
+          the full-suite failure."
+        name: websocket protocol rerun
+        required: true
+        runner: npm test
+        created_at: 2026-05-09T00:43:54.575Z
+        completed_at: 2026-05-09T00:43:54.575Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run lint exits 1 with known baseline 13 errors and 721 warnings; no new reviewed-file
+          lint failures identified.
+        name: lint
+        required: true
+        runner: npm run lint
+        created_at: 2026-05-09T00:43:57.864Z
+        completed_at: 2026-05-09T00:43:57.864Z
     events:
       - _ulid: 01KR528J7ZDWA7T19WPXFSPV2R
         actor: Jacob Chapel
@@ -190831,17 +190899,157 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T00:30:35.016Z
+      - _ulid: 01KR5314SCCM79CDK4CVBEZN5P
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR5313EASC2RXQ1BVG6W6QBS
+        timestamp: 2026-05-09T00:43:36.108Z
+      - _ulid: 01KR5317YKBTWNFW6ZWJHDNHDR
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR5316RC0ZVBD2PXKXV658ZF
+        timestamp: 2026-05-09T00:43:39.347Z
+      - _ulid: 01KR531B7T3P5B41NGZ2AKF94M
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted guardrail tests
+        timestamp: 2026-05-09T00:43:42.714Z
+      - _ulid: 01KR531ED2Q4MNX39FQMCACXNJ
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-09T00:43:45.954Z
+      - _ulid: 01KR531HM0T4C5PBAP7823G9GN
+        actor: codex
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual classifier probes
+        timestamp: 2026-05-09T00:43:49.248Z
+      - _ulid: 01KR531MV91NBNYKKFB0B2CAY2
+        actor: codex
+        event_type: check_added
+        payload:
+          status: fail
+          name: full test suite
+        timestamp: 2026-05-09T00:43:52.554Z
+      - _ulid: 01KR531R0K9508Y98TG9G0ZS4B
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: websocket protocol rerun
+        timestamp: 2026-05-09T00:43:55.795Z
+      - _ulid: 01KR531V77Z0N9HM5SCG1BX804
+        actor: codex
+        event_type: check_added
+        payload:
+          status: fail
+          name: lint
+        timestamp: 2026-05-09T00:43:59.079Z
+      - _ulid: 01KR531YADFX85X4QV8F4E3XXC
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-09T00:44:02.253Z
+      - _ulid: 01KR531YADRHBJBZCW9X627SCK
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T00:44:02.253Z
     examined_commit: 61bbafcec3d0b44cf2cd15f47f060f9bc1e0f507
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KR5313EASC2RXQ1BVG6W6QBS
+        anchor:
+          type: code
+          commit: 61bbafcec3d0b44cf2cd15f47f060f9bc1e0f507
+          line_end: 804
+          line_start: 797
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR5313EAZ4WYGXE3S92ZGVCB
+            author: codex
+            body: >-
+              MUST-FIX: exec/execSync shell-string detection skips only flag-shaped tokens before
+              deciding the script path, so Node/Bun options that take a separate value hide a direct
+              daemon launch.
+
+
+              Evidence: I ran manual oxlint probes against this snapshot. `exec("node --require
+              ./register.js dist/daemon/index.js --port 0")` exited 0 with no no-leaky-test-daemon
+              diagnostic, and `execSync("node -r ./register.js dist/daemon/index.js --port 0")` also
+              exited 0. Both commands still launch `dist/daemon/index.js` directly through Node
+              after loading the preload module, so @daemon-test-guardrail-precision
+              ac-direct-daemon-entry-invocations-flagged is not satisfied.
+
+
+              Related precision issue from the same token walk: `exec("node --eval
+              dist/daemon/index.js")` is reported even though `dist/daemon/index.js` is the eval
+              string, not the script path. The fix should model runtime options that consume values
+              (`--require`, `-r`, `--eval`/`-e`, etc.) rather than treating every first non-dash
+              token as the script.
+            created_at: 2026-05-09T00:43:34.730Z
+        kind: blocker
+      - _ulid: 01KR5316RC0ZVBD2PXKXV658ZF
+        entries:
+          - _ulid: 01KR5316RC4QEEMF63GEX7VDX4
+            author: codex
+            body: >-
+              Review evidence log:
+
+              Files read: kspec-agents.md; task/spec details for @01KR3W7PPVDFR8F03VQ6J54M3K; prior
+              review @01KR4VBBVBR9WS6PN1SN7MHTY8; git diff for
+              tools/eslint-rules/no-leaky-test-daemon.js, tests/lint-daemon-test-guardrails.test.ts,
+              tests/helpers/daemon.ts, tests/helpers/mock-daemon.ts, tests/daemon-api/helpers.ts and
+              related tests.
+
+              Commands run: kspec item get @daemon-test-guardrail-precision; kspec item get
+              @daemon-test-harness-guardrails; rg AC annotations; manual oxlint probes for
+              --require/-r/--eval shell strings; kspec validate; npm test -- --fresh
+              tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts; npm
+              test -- --fresh; npm test -- --fresh tests/daemon-api/websocket-protocol.test.ts; npm
+              run lint.
+
+              Claims verified: prior cycle fixes for runtime flags and process["execPath"] were
+              covered by submitted tests; targeted guardrail suite passes; full suite failure in
+              websocket runtime parity passed on isolated rerun, so I created follow-up task
+              @01KR52YX for flake investigation.
+
+              Categories searched: correctness, edge cases, false positives, test quality, AC
+              coverage, helper allowlist/integration, lint/test regressions.
+            created_at: 2026-05-09T00:43:38.124Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-09T00:44:02.253Z
     created_at: 2026-05-09T00:30:10.687Z
-    updated_at: 2026-05-09T00:30:33.680Z
+    updated_at: 2026-05-09T00:44:02.253Z
     notes: []
