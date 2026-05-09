@@ -22,13 +22,21 @@
  *      - exec / execSync shell strings whose first token is the daemon
  *        entry path (direct-executable form) or whose first token is a
  *        recognised JS runtime (`node` / `bun`, bare or path-suffixed)
- *        followed by the daemon entry as the first non-flag token
- *        (runtime form, e.g. `exec("node dist/daemon/index.js --port
- *        0")` or `exec("node --enable-source-maps dist/daemon/index.js
- *        --port 0")`; runtime option flags between the runtime and the
- *        script path are walked past). A shell string that merely passes
- *        the daemon path as an argument to an unrelated command (`echo`,
- *        `cat`, `grep`) is NOT a daemon launch and is not reported.
+ *        followed by the daemon entry as the first script-path-position
+ *        token after the runtime (runtime form, e.g.
+ *        `exec("node dist/daemon/index.js --port 0")`,
+ *        `exec("node --enable-source-maps dist/daemon/index.js --port
+ *        0")`, or `exec("node --require ./preload.js dist/daemon/
+ *        index.js")`). The walker skips standalone flag tokens
+ *        (`--enable-source-maps`, `--inspect`), value-consuming option
+ *        flags AND their separately-passed values (`--require ./pre.js`,
+ *        `-r ./pre.js`, `--conditions production`), and the `--`
+ *        separator. Eval-mode flags (`-e`, `--eval`, `-p`, `--print` and
+ *        their `--eval=...` / `--print=...` forms) abort detection
+ *        because the runtime evaluates inline source instead of executing
+ *        a script file. A shell string that merely passes the daemon path
+ *        as an argument to an unrelated command (`echo`, `cat`, `grep`)
+ *        is NOT a daemon launch and is not reported.
  *      - Hardcoded `bun` runtime variants (`spawn("bun", [DAEMON_ENTRY])`
  *        or `exec("bun dist/daemon/index.js")`) are reported with a more
  *        specific message because runtime selection belongs to the shared
@@ -620,17 +628,115 @@ const noLeakyTestDaemon = {
      * True when a shell-command token is shaped like a runtime option flag
      * — a token whose first character is `-`. Covers long flags
      * (`--enable-source-maps`, `--inspect`, `--inspect-brk=0.0.0.0:9229`),
-     * short flags (`-r`), and the `--` argument separator. Used to walk
-     * past Node/Bun runtime options between the runtime token and the
-     * script path token in shell-string detection. Tokens that consume a
-     * separate value (e.g. `--require ./preload.js`) are intentionally
-     * not modelled — if the next non-flag token is the daemon entry, that
-     * is exactly the launch we want to flag; if it is some other path
-     * (`./preload.js`), the daemon entry is not reached and the call is
-     * not a daemon launch.
+     * short flags (`-r`), and the `--` argument separator. Used by the
+     * shell-string walk to recognise tokens that are not the script path.
      */
     function isShellRuntimeFlagToken(token) {
       return typeof token === "string" && token.length > 0 && token[0] === "-";
+    }
+
+    /**
+     * True when a shell-command flag token is the bare form of a Node/Bun
+     * runtime option that consumes the NEXT token as its value (separated
+     * by whitespace, not bundled with `=`). Examples: `--require ./pre.js`,
+     * `-r ./pre.js`, `--conditions production`, `--input-type module`.
+     *
+     * When the walk sees one of these, it must skip BOTH the flag token
+     * and the next token before continuing to look for the script path —
+     * otherwise the value (e.g. `./pre.js`) is mistaken for the script and
+     * a real daemon launch like `node --require ./pre.js dist/daemon/index.js`
+     * is silently accepted (the false-negative blocker from review cycle 7).
+     *
+     * The `=` form (`--require=./pre.js`) bundles the value into the flag
+     * token, so the standard one-token flag walk handles it correctly and
+     * those forms are not modelled here. Short-flag forms (`-r`) only
+     * accept whitespace separation, so `-r=value` is not a recognised Node
+     * syntax and is not modelled either.
+     *
+     * The set is curated to Node and Bun options whose value-consuming
+     * semantics could shift which token is the script path. New runtime
+     * options added by future Node/Bun versions are not modelled — false
+     * negatives in the new-flag direction are recoverable (the rule
+     * continues to flag the runtime form via other test variants), but a
+     * false positive on a value would over-broaden the rule. Be conservative.
+     */
+    function isShellRuntimeFlagConsumingValue(token) {
+      if (typeof token !== "string") return false;
+      switch (token) {
+        case "-r":
+        case "--require":
+        case "-C":
+        case "--conditions":
+        case "--input-type":
+        case "--cpu-prof-dir":
+        case "--cpu-prof-interval":
+        case "--cpu-prof-name":
+        case "--heap-prof-dir":
+        case "--heap-prof-interval":
+        case "--heap-prof-name":
+        case "--diagnostic-dir":
+        case "--report-dir":
+        case "--report-directory":
+        case "--report-filename":
+        case "--report-signal":
+        case "--snapshot-blob":
+        case "--openssl-config":
+        case "--max-http-header-size":
+        case "--title":
+        case "--unhandled-rejections":
+        case "--stack-trace-limit":
+        case "--tls-cipher-list":
+        case "--tls-keylog":
+        case "--tls-min-v1.0":
+        case "--use-openssl-ca":
+        case "--redirect-warnings":
+        case "--policy-integrity":
+        case "--experimental-loader":
+        case "--loader":
+        case "--experimental-policy":
+        case "--experimental-specifier-resolution":
+        case "--inspect-publish-uid":
+          return true;
+        case "--preload":
+        case "--config":
+          // Bun: `--preload <module>`, `--config <path>` consume the next token.
+          return true;
+        default:
+          return false;
+      }
+    }
+
+    /**
+     * True when a shell-command flag token puts the runtime into eval mode
+     * — the runtime evaluates a JavaScript source string instead of
+     * executing a script file. Recognises both bare forms (where the next
+     * token is the source string: `node --eval CODE`, `node -e CODE`) and
+     * the bundled `=` form (`node --eval=CODE`, `node --print=CODE`). When
+     * any of these appears in the runtime option position, NO script path
+     * will be executed by the runtime — `dist/daemon/index.js` after them
+     * is either the eval string (passing the path text to JS as code) or
+     * an argument forwarded to the eval'd code via process.argv, but not
+     * a script the runtime is launching.
+     *
+     * The walk must abort on these flags and report no daemon launch,
+     * which closes the false-positive half of the review cycle 7 blocker
+     * (`exec("node --eval dist/daemon/index.js")` was previously reported
+     * as a direct daemon launch).
+     *
+     * `-p` / `--print` are siblings of `-e` / `--eval`: print evaluates
+     * the source and writes the result to stdout, with the same "no script
+     * executed" semantics.
+     */
+    function isShellRuntimeEvalFlag(token) {
+      if (typeof token !== "string") return false;
+      return (
+        token === "-e" ||
+        token === "--eval" ||
+        token === "-p" ||
+        token === "--print" ||
+        token.startsWith("--eval=") ||
+        token.startsWith("--print=")
+      );
     }
 
     /**
@@ -687,20 +793,41 @@ const noLeakyTestDaemon = {
      *     matched when the daemon entry is the FIRST token. The runtime
      *     form (`exec("node dist/daemon/index.js")`) is matched when the
      *     first token is a recognised JS runtime (`node` / `bun`, bare or
-     *     path-suffixed) and the daemon entry is the first non-flag token
-     *     after the runtime — runtime option flags (`--enable-source-maps`,
-     *     `--inspect`, `--inspect-brk=...`, short `-r`, the `--`
-     *     separator) between the runtime and the script path are walked
-     *     past so `exec("node --enable-source-maps dist/daemon/index.js
-     *     --port 0")` is reported the same as `exec("node
-     *     dist/daemon/index.js …")`. A shell string that passes the
-     *     daemon path as an argument to an unrelated command (`echo`,
-     *     `cat`, `grep …`) is not a daemon launch and is not reported,
-     *     because the leading executable token is not a recognised
-     *     runtime. When the leading runtime token is `bun` (or a path
-     *     ending in `/bun`), `runtimeLiteral` is set to "bun" so the
-     *     hardcoded-runtime message fires for shell-string Bun launches
-     *     too.
+     *     path-suffixed) and the daemon entry is the first script-path-
+     *     position token after the runtime. The walker between the
+     *     runtime token and the script path classifies each intermediate
+     *     token by shape:
+     *
+     *       * Standalone flags (`--enable-source-maps`, `--inspect`,
+     *         `--inspect-brk=...`, the `--` separator) are skipped.
+     *       * Value-consuming option flags whose value is passed as a
+     *         SEPARATE next token (`--require ./pre.js`, `-r ./pre.js`,
+     *         `--conditions production`, `--input-type module`, etc.)
+     *         consume the flag AND the next token, then the walk
+     *         continues. Without this, `exec("node --require ./pre.js
+     *         dist/daemon/index.js …")` would be silently accepted
+     *         because `./pre.js` would be mistaken for the script path.
+     *         The bundled-equals form (`--require=./pre.js`) is one
+     *         token that starts with `-` and is handled by the
+     *         standalone-flag branch.
+     *       * Eval-mode flags (`-e`, `--eval`, `-p`, `--print`, plus
+     *         `--eval=...` / `--print=...`) abort the walk and report
+     *         no daemon launch — the runtime evaluates inline source,
+     *         no script file is executed, and any `dist/daemon/index.js`
+     *         token after them is either the eval source string or an
+     *         argv forwarded to the eval'd code via process.argv.
+     *
+     *     The first non-flag, non-flag-value token must be the daemon
+     *     entry; if a different path appears in that position
+     *     (`node ./other-script.js dist/daemon/index.js`), the runtime
+     *     is launching that path, not the daemon, and the call is not
+     *     reported. A shell string that passes the daemon path as an
+     *     argument to an unrelated command (`echo`, `cat`, `grep …`) is
+     *     not a daemon launch and is not reported, because the leading
+     *     executable token is not a recognised runtime. When the leading
+     *     runtime token is `bun` (or a path ending in `/bun`),
+     *     `runtimeLiteral` is set to "bun" so the hardcoded-runtime
+     *     message fires for shell-string Bun launches too.
      *
      * The returned `pattern` is a short shape descriptor used in the
      * reported message so authors see exactly which call shape was matched
@@ -778,24 +905,52 @@ const noLeakyTestDaemon = {
         }
         // Runtime form: a recognised JS runtime token (`node` or `bun`,
         // bare or path-suffixed) at index 0, with the daemon entry as the
-        // first non-flag token after the runtime. Walking past flag-shaped
-        // tokens (`--enable-source-maps`, `--inspect`, `--inspect-brk=...`,
-        // short flags like `-r`, the `--` separator) handles direct
-        // launches that pass Node runtime options before the script path —
-        // `exec("node --enable-source-maps dist/daemon/index.js --port 0")`
-        // is the same daemon launch as `exec("node dist/daemon/index.js
-        // --port 0")` and must be reported. Requiring index 0 to be a
-        // recognised runtime keeps the classifier from reporting unrelated
-        // subprocesses (`echo dist/daemon/index.js`, `cat /…/dist/daemon/
-        // index.js`, `grep -r dist/daemon/index.js src/`) that merely pass
-        // the path as an argument. The first non-flag token must be the
-        // daemon entry — if a different path appears first
+        // first script-path-position token after the runtime. The walk
+        // models three classes of runtime tokens between the runtime and
+        // the script path:
+        //
+        //   1. Eval-mode flags (`-e`, `--eval`, `-p`, `--print`, and the
+        //      bundled `--eval=...` / `--print=...` forms) put the runtime
+        //      into eval mode. No script is executed — anything after is
+        //      either the eval source or an argv to the eval'd code, not
+        //      a script the runtime is launching. Abort and report no
+        //      daemon launch (`exec("node --eval dist/daemon/index.js")`
+        //      must NOT be flagged).
+        //   2. Value-consuming flags (`--require ./pre.js`, `-r ./pre.js`,
+        //      `--conditions production`, etc., with whitespace separation)
+        //      take the next token as the option's value, NOT as the
+        //      script path. Skip both the flag and the value, then keep
+        //      walking — `exec("node --require ./pre.js dist/daemon/
+        //      index.js")` is a real daemon launch and must be flagged
+        //      (the false-negative half of the review cycle 7 blocker).
+        //      The `=` form (`--require=./pre.js`) is a single token
+        //      starting with `-` and falls through to the standalone-flag
+        //      branch which also skips it.
+        //   3. Standalone flags (`--enable-source-maps`, `--inspect`,
+        //      `--inspect-brk=...`, the `--` separator). Skip the flag
+        //      token and continue.
+        //
+        // After the walk, the first non-flag, non-flag-value token must be
+        // the daemon entry. If a different path appears first
         // (`node script.js dist/daemon/index.js`), `node` is running
         // `script.js`, not the daemon, so the call is not reported.
+        // Requiring index 0 to be a recognised runtime keeps the classifier
+        // from reporting unrelated subprocesses (`echo dist/daemon/index.js`,
+        // `cat /…/dist/daemon/index.js`, `grep -r dist/daemon/index.js
+        // src/`) that merely pass the path as an argument.
         if (tokens.length < 2) return null;
         if (!isRecognisedShellRuntimeToken(tokens[0])) return null;
         let scriptIdx = -1;
         for (let i = 1; i < tokens.length; i += 1) {
+          if (isShellRuntimeEvalFlag(tokens[i])) {
+            // Eval mode: runtime evaluates source, no script is launched.
+            return null;
+          }
+          if (isShellRuntimeFlagConsumingValue(tokens[i])) {
+            // Skip the flag AND its separately-passed value.
+            i += 1;
+            continue;
+          }
           if (isShellRuntimeFlagToken(tokens[i])) continue;
           scriptIdx = i;
           break;

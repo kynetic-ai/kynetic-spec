@@ -1414,6 +1414,146 @@ describe("exec template literal with node runtime flag", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
+
+    // AC: @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged
+    //
+    // Regression set covering the false-negative half of the review cycle 7
+    // blocker: Node/Bun runtime options that consume their value as a
+    // separately-passed next token (e.g. `--require ./preload.js`,
+    // `-r ./preload.js`, `--conditions production`) must not cause the
+    // value (`./preload.js`) to be mistaken for the script path. The
+    // walker must skip both the flag and the value, then continue
+    // checking subsequent tokens for the daemon entry.
+    it("flags exec(\"node --require ./register.js dist/daemon/index.js --port 0\") — separately-passed --require value is not the script", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec node --require preload then daemon entry", () => {
+  it("execs the daemon entry under node with a --require preload module", () => {
+    const child = exec("node --require ./register.js dist/daemon/index.js --port 0");
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execSync(\"node -r ./register.js dist/daemon/index.js --port 0\") — separately-passed -r value is not the script", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+describe("execSync node -r preload then daemon entry", () => {
+  it("execSyncs the daemon entry under node with a -r preload module", () => {
+    const stdout = execSync("node -r ./register.js dist/daemon/index.js --port 0");
+    expect(stdout).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags exec(\"node --conditions production dist/daemon/index.js\") — --conditions consumes its next token as a value", () => {
+      // Coverage for the broader value-consuming-flag set: --conditions
+      // (and -C) take a comma-separated condition string as a separate
+      // next token. The walker must skip both before reading the script
+      // path the same way it skips --require's value.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec node --conditions then daemon entry", () => {
+  it("execs the daemon entry under node with a --conditions value", () => {
+    const child = exec("node --conditions production dist/daemon/index.js");
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags exec(\"node --require ./preload.js --enable-source-maps dist/daemon/index.js\") — value-consuming and standalone flags interleaved", () => {
+      // Mixed flag classes between the runtime and the script path: the
+      // walker must skip the value-consuming flag's value AND the
+      // standalone flag, then read the daemon entry from the next token.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec node mixed-flag classes then daemon entry", () => {
+  it("execs the daemon entry under node with --require and --enable-source-maps", () => {
+    const child = exec("node --require ./preload.js --enable-source-maps dist/daemon/index.js");
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags exec(\"node --require=./preload.js dist/daemon/index.js\") — bundled-equals --require is one flag-shaped token", () => {
+      // The `--require=./preload.js` form is a single token that starts
+      // with `-`, so the standalone-flag branch of the walk skips it
+      // without needing to consume a separate value. The daemon entry is
+      // then the next non-flag token and must be flagged.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec node --require=value then daemon entry", () => {
+  it("execs the daemon entry under node with a bundled-equals --require", () => {
+    const child = exec("node --require=./preload.js dist/daemon/index.js");
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags exec(`node --require ./preload.js dist/daemon/index.js --port ${port}`) template literal with a value-consuming runtime flag", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec template literal with node --require flag", () => {
+  it("execs the daemon entry under node with --require and an interpolated port", () => {
+    const port = 0;
+    const child = exec(\`node --require ./preload.js dist/daemon/index.js --port \${port}\`);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
   });
 
   // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
@@ -1633,6 +1773,155 @@ import { exec } from "child_process";
 describe("node --version with no script path", () => {
   it("execs node --version", () => {
     exec("node --version");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+    //
+    // Regression set covering the false-positive half of the review cycle
+    // 7 blocker: Node/Bun eval-mode flags (`-e`, `--eval`, `-p`, `--print`
+    // and the bundled `--eval=...` / `--print=...` forms) put the runtime
+    // into eval mode. The runtime evaluates a JavaScript source string
+    // instead of executing a script file, so any `dist/daemon/index.js`
+    // token after them is either the eval source string or an argument
+    // forwarded to the eval'd code via process.argv — never a script the
+    // runtime is launching. The walker must abort and report no daemon
+    // launch.
+    it("does not flag exec(\"node --eval dist/daemon/index.js\") — --eval evaluates the next token as source, not as a script path", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { exec } from "child_process";
+
+describe("node --eval with daemon path as eval source", () => {
+  it("execs node evaluating the daemon path as a JavaScript expression", () => {
+    exec("node --eval dist/daemon/index.js");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag execSync(\"node -e dist/daemon/index.js\") — -e evaluates the next token as source", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+describe("node -e with daemon path as eval source", () => {
+  it("execSyncs node evaluating the daemon path as a JavaScript expression", () => {
+    execSync("node -e dist/daemon/index.js");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag exec(\"node --print dist/daemon/index.js\") — --print evaluates and prints, no script is executed", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { exec } from "child_process";
+
+describe("node --print with daemon path as eval source", () => {
+  it("execs node printing the eval result of the daemon path expression", () => {
+    exec("node --print dist/daemon/index.js");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag execSync(\"node -p dist/daemon/index.js\") — -p evaluates and prints", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+describe("node -p with daemon path as eval source", () => {
+  it("execSyncs node printing the eval result of the daemon path expression", () => {
+    execSync("node -p dist/daemon/index.js");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag exec(\"node --eval=console.log(1) dist/daemon/index.js\") — bundled --eval=CODE puts runtime in eval mode", () => {
+      // The `--eval=CODE` form is a single token. Without recognising it
+      // as eval mode, the standalone-flag branch would skip it and the
+      // walker would report `dist/daemon/index.js` as the script — a
+      // false positive. Recognising the prefix `--eval=` aborts the walk
+      // the same way the bare `--eval` form does.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { exec } from "child_process";
+
+describe("node --eval=CODE with daemon path as forwarded argv", () => {
+  it("execs node evaluating inline source with the daemon path as an argv token", () => {
+    exec("node --eval=console.log(1) dist/daemon/index.js");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // Negative regressions for the value-consuming-flag walk: when the
+    // daemon path is the value of a value-consuming flag (e.g.
+    // `--require dist/daemon/index.js`) and not in script-path position,
+    // the runtime is preloading it as a module, not executing it as the
+    // main entrypoint. The walker correctly skips both the flag and its
+    // value, leaves no script-path-position token holding the daemon
+    // entry, and the call must not be reported.
+    it("does not flag exec(\"node --require dist/daemon/index.js other-script.js\") — daemon path is the --require preload value, not the script", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { exec } from "child_process";
+
+describe("node --require with daemon path as preload value", () => {
+  it("execs node preloading the daemon module before running other-script.js", () => {
+    exec("node --require dist/daemon/index.js other-script.js");
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    it("does not flag execSync(\"node -r dist/daemon/index.js\") — daemon path is the -r preload value with no following script", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+describe("node -r with daemon path as preload value, no script", () => {
+  it("execSyncs node with the daemon path as a -r preload value", () => {
+    execSync("node -r dist/daemon/index.js");
     expect(true).toBe(true);
   });
 });
