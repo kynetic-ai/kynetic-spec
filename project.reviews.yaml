@@ -197623,3 +197623,29 @@ reviews:
     created_at: 2026-05-09T19:22:20.081Z
     updated_at: 2026-05-09T19:58:52.602Z
     notes: []
+  - _ulid: 01KR75E7CQ40ZY9EFW27NYMXZ9
+    slugs: []
+    title: Review task-fix-guardrail-binding-wrapper-analysis cycle 4
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR75E7CQXBM956RK9M2QSH9R
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-09T20:04:10.775Z
+    examined_commit: 9a21b6679bf51544740b432212bbf3002afd92b8
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-09T20:04:10.775Z
+    updated_at: null
+    notes: []
