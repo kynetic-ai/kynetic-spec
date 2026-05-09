@@ -799,15 +799,28 @@ const noLeakyTestDaemon = {
      * accept whitespace separation, so `-r=value` is not a recognised Node
      * syntax and is not modelled either.
      *
-     * The set is curated to Node and Bun options whose value-consuming
-     * semantics could shift which token is the script path. Inclusion
-     * requires that the option both (a) appears in the runtime's documented
-     * CLI options, and (b) accepts a value via whitespace separation
-     * (`--flag value`), not just the bundled `=` form. Standalone boolean
-     * flags MUST NOT be listed here — modelling them as value-consuming
-     * causes the walker to skip a real script path token, silently
-     * accepting daemon launches like `node --use-openssl-ca dist/daemon/
-     * index.js` (the false-negative blocker from review cycle 8).
+     * The set covers every Node CLI option (and the Bun-specific options
+     * we recognise) documented as accepting a value via whitespace
+     * separation (`--flag value`). Inclusion requires that the option
+     * both (a) appears in the runtime's documented CLI options, and
+     * (b) accepts a value via whitespace separation (not just the bundled
+     * `=` form). Standalone boolean flags MUST NOT be listed here —
+     * modelling them as value-consuming causes the walker to skip a real
+     * script path token, silently accepting daemon launches like
+     * `node --use-openssl-ca dist/daemon/index.js` (the false-negative
+     * blocker from review cycle 8).
+     *
+     * Coverage philosophy: every documented value-consuming Node option
+     * is enumerated here. A "conservative" set leaves false negatives —
+     * each missing option silently accepts a real `node --flag value
+     * dist/daemon/index.js` daemon launch (cycle 7 blocker for
+     * `--require`, cycle 11 blocker for `--import` and `--env-file`).
+     * The audit was performed against `node --help` for every flag
+     * documented as `--flag=...` (the help syntax for value-consuming
+     * options), then verified with a `node --flag value /tmp/script.js`
+     * probe to confirm whitespace-separated value consumption. New
+     * runtime options added by future Node versions must be added here
+     * after running the same audit.
      *
      * Common standalone-flag mistakes to avoid: `--use-openssl-ca`,
      * `--use-bundled-ca`, `--use-system-ca`, `--use-env-proxy`,
@@ -817,44 +830,110 @@ const noLeakyTestDaemon = {
      * value-consuming. `--stack-trace-limit` is the special case of an
      * option that works only in the `=` form (`--stack-trace-limit=N`);
      * the bare-then-value form errors out, so it is NOT value-consuming
-     * by whitespace and must not be listed.
+     * by whitespace and must not be listed. `--max-old-space-size` is
+     * a V8 option that only accepts the `=` form for the same reason;
+     * `--max-old-space-size-percentage` is a Node option that does
+     * accept whitespace separation and is included.
      *
-     * New runtime options added by future Node/Bun versions are not
-     * modelled — false negatives in the new-flag direction are recoverable
-     * (the rule continues to flag the runtime form via other test
-     * variants), but a false positive on a value would over-broaden the
-     * rule. Be conservative.
+     * `--inspect`, `--inspect-brk`, and `--inspect-wait` use the
+     * `--flag[=[host:]port]` syntax — the value is optional and bundled
+     * with `=` only; the bare form is standalone. They are NOT value-
+     * consuming via whitespace and must not be listed. `--debug-port`
+     * and `--inspect-port` (no `[` brackets in help) DO accept whitespace
+     * separation and are included.
      */
     function isShellRuntimeFlagConsumingValue(token) {
       if (typeof token !== "string") return false;
       switch (token) {
+        // Module loading and preload (--require, --import, --loader).
         case "-r":
         case "--require":
+        case "--import":
+        case "--experimental-loader":
+        case "--loader":
+        // Conditions and module resolution.
         case "-C":
         case "--conditions":
         case "--input-type":
+        // Environment and config files.
+        case "--env-file":
+        case "--env-file-if-exists":
+        case "--experimental-config-file":
+        // Permissions (require --permission to actually take effect, but
+        // the value is consumed regardless).
+        case "--allow-fs-read":
+        case "--allow-fs-write":
+        // Snapshot and SEA.
+        case "--snapshot-blob":
+        case "--build-snapshot-config":
+        case "--experimental-sea-config":
+        case "--heapsnapshot-near-heap-limit":
+        case "--heapsnapshot-signal":
+        // CPU and heap profiler output paths.
         case "--cpu-prof-dir":
         case "--cpu-prof-interval":
         case "--cpu-prof-name":
         case "--heap-prof-dir":
         case "--heap-prof-interval":
         case "--heap-prof-name":
+        // Diagnostic report.
         case "--diagnostic-dir":
         case "--report-dir":
         case "--report-directory":
         case "--report-filename":
         case "--report-signal":
-        case "--snapshot-blob":
+        // Inspector port (NOT --inspect / --inspect-brk / --inspect-wait,
+        // which are `=`-only optional-value flags).
+        case "--debug-port":
+        case "--inspect-port":
+        case "--inspect-publish-uid":
+        // Network and DNS.
+        case "--dns-result-order":
+        case "--network-family-autoselection-attempt-timeout":
+        // Locale and storage paths.
+        case "--icu-data-dir":
+        case "--localstorage-file":
+        // OpenSSL / TLS.
         case "--openssl-config":
-        case "--max-http-header-size":
-        case "--title":
-        case "--unhandled-rejections":
         case "--tls-cipher-list":
         case "--tls-keylog":
+        case "--secure-heap":
+        case "--secure-heap-min":
+        // HTTP, process, and warning behaviour.
+        case "--max-http-header-size":
+        case "--max-old-space-size-percentage":
+        case "--title":
+        case "--unhandled-rejections":
         case "--redirect-warnings":
-        case "--experimental-loader":
-        case "--loader":
-        case "--inspect-publish-uid":
+        case "--disable-warning":
+        case "--disable-proto":
+        // Watch mode.
+        case "--watch-path":
+        case "--watch-kill-signal":
+        // Test runner.
+        case "--test-concurrency":
+        case "--test-coverage-branches":
+        case "--test-coverage-exclude":
+        case "--test-coverage-functions":
+        case "--test-coverage-include":
+        case "--test-coverage-lines":
+        case "--test-global-setup":
+        case "--test-isolation":
+        case "--experimental-test-isolation":
+        case "--test-name-pattern":
+        case "--test-reporter":
+        case "--test-reporter-destination":
+        case "--test-rerun-failures":
+        case "--test-shard":
+        case "--test-skip-pattern":
+        case "--test-timeout":
+        // Trace event categories and require-module tracing.
+        case "--trace-event-categories":
+        case "--trace-event-file-pattern":
+        case "--trace-require-module":
+        // V8 thread pool and large-page mapping.
+        case "--use-largepages":
+        case "--v8-pool-size":
           return true;
         case "--preload":
         case "--config":

@@ -1555,6 +1555,164 @@ describe("exec template literal with node --require flag", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
+    // Regression set covering the false-negative blocker from review cycle 11:
+    // documented Node value-consuming options like `--import` (ESM preload)
+    // and `--env-file` / `--env-file-if-exists` (env loader) accept their
+    // value as a separately-passed next token. When the value-consuming set
+    // omits them, the walker treats the value (`./setup.mjs`, `.env`) as
+    // the script path and the real daemon entry that follows is silently
+    // accepted. Verified with `node --import ./setup.mjs probe.js` and
+    // `node --env-file .env probe.js` which both consume the next token
+    // as the option's value before running the script.
+    it("flags exec(\"node --import ./setup.mjs dist/daemon/index.js --port 0\") — --import consumes its next token as the ESM preload value", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec node --import preload then daemon entry", () => {
+  it("execs the daemon entry under node with an --import ESM preload module", () => {
+    const child = exec("node --import ./setup.mjs dist/daemon/index.js --port 0");
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execSync(\"node --env-file .env dist/daemon/index.js --port 0\") — --env-file consumes its next token as the env-file path", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+describe("execSync node --env-file then daemon entry", () => {
+  it("execSyncs the daemon entry under node with an --env-file path value", () => {
+    const stdout = execSync("node --env-file .env dist/daemon/index.js --port 0");
+    expect(stdout).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags exec(\"node --env-file-if-exists .env dist/daemon/index.js --port 0\") — --env-file-if-exists is a sibling value-consuming option of --env-file", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { exec } from "child_process";
+
+describe("exec node --env-file-if-exists then daemon entry", () => {
+  it("execs the daemon entry under node with an --env-file-if-exists path value", () => {
+    const child = exec("node --env-file-if-exists .env dist/daemon/index.js --port 0");
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags spawn(\"node\", [\"--import\", \"./setup.mjs\", DAEMON_ENTRY, \"--port\", \"0\"]) — --import value in spawn argv-array form", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("spawn node --import preload then daemon entry argv", () => {
+  it("spawns node with a separately-passed --import value and the daemon entry as the script", () => {
+    const child = spawn("node", ["--import", "./setup.mjs", DAEMON_ENTRY, "--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execFile(\"node\", [\"--env-file\", \".env\", \"dist/daemon/index.js\"]) — --env-file value in execFile argv-array form", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { execFile } from "child_process";
+
+describe("execFile node --env-file then daemon entry argv", () => {
+  it("execFiles node with a separately-passed --env-file value and the daemon entry literal as the script", () => {
+    const child = execFile("node", ["--env-file", ".env", "dist/daemon/index.js"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags execFileSync(\"node\", [\"--env-file-if-exists\", \".env\", DAEMON_ENTRY]) — --env-file-if-exists value in execFileSync argv-array form", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execFileSync } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("execFileSync node --env-file-if-exists then daemon entry argv", () => {
+  it("execFileSyncs node with a separately-passed --env-file-if-exists value and the daemon entry as the script", () => {
+    const stdout = execFileSync("node", ["--env-file-if-exists", ".env", DAEMON_ENTRY]);
+    expect(stdout).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
+    it("flags spawn(process.execPath, [\"--import\", \"./setup.mjs\", DAEMON_ENTRY]) — --import value with process.execPath runtime form", () => {
+      // Combines the cycle 5 process.execPath fix with cycle 11's
+      // --import value-consuming flag — every recognised runtime form
+      // (bare `node`, path-suffixed `node`, `process.execPath`) must
+      // skip the value-consuming flag's separately-passed value before
+      // reading the daemon entry from the next token.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+const DAEMON_ENTRY = "dist/daemon/index.js";
+
+describe("spawn process.execPath --import preload then daemon entry argv", () => {
+  it("spawns process.execPath with a separately-passed --import value and the daemon entry as the script", () => {
+    const child = spawn(process.execPath, ["--import", "./setup.mjs", DAEMON_ENTRY, "--port", "0"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
+    });
+
     // Regression set covering the false-negative blocker from review cycle 8:
     // standalone Node runtime flags that were previously mis-modelled as
     // value-consuming. When a standalone flag (e.g. `--use-openssl-ca`,
