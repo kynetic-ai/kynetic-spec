@@ -156,7 +156,7 @@ description: >-
 spec_ref: "@daemon-test-startup-failure-hygiene"
 meta_ref: null
 plan_ref: "@plan-daemon-test-fixture-hardening"
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-tighten-daemon-hardening-specs"
@@ -168,6 +168,7 @@ tags:
   - regression
   - follow-up
 vcs_refs: []
+session_id: 01KR6P1PV1V4YVZHCRJP355DB5
 history:
   - author: Jacob Chapel
     changes:
@@ -196,6 +197,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-09T15:12:46.138Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KR6P1PV1V4YVZHCRJP355DB5
+        previous: null
+      started_at:
+        new: 2026-05-09T15:35:30.263Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-09T15:35:30.264Z
 created_at: 2026-05-09T15:03:05.304Z
+started_at: 2026-05-09T15:35:30.263Z
 todos: []
 automation: eligible
