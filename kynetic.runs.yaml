@@ -43140,7 +43140,7 @@ runs:
     started_at: 2026-05-09T12:53:03.013Z
     completed_at: 2026-05-09T12:54:41.630Z
   - _ulid: 01KR6P161VWZBDR0KXRHX75PD2
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -43184,10 +43184,13 @@ runs:
         completed_at: 2026-05-09T15:36:18.300Z
         notes: "Skipped discussion: there were no untracked improvement proposals to ask about after
           coverage search."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-09T15:36:18.300Z
-        completed_at: 2026-05-09T15:36:18.300Z
+        completed_at: 2026-05-09T15:36:25.230Z
+        notes: "Skipped capture: no approved or untracked items. Existing coverage: @01KR6N73 for detached
+          reviewer .kspec-status friction and @01KR2JD1 for review evidence logs."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T15:34:54.779Z
+    completed_at: 2026-05-09T15:36:25.232Z
