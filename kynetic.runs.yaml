@@ -43791,9 +43791,23 @@ runs:
     completed_at: 2026-05-09T18:08:38.908Z
   - _ulid: 01KR70FMRFRQPGQRFBG1YDXEPQ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T18:37:34.351Z
+        completed_at: 2026-05-09T18:37:52.555Z
+        notes: "Session work: fix cycle 2 of @01KR6M77JA0S1EEVZX8KKRPY1V. Reviewer cited ownership defect in
+          cleanup-binding (literal pid probe). Added ownership leg to cleanupCallbackBindingStatus
+          (binding.range[1] >= detachedStart.range[0]) handling both safe shapes
+          (declarator-after-start and declarator-encompassing-start). Threaded detachedStartNode
+          through 6 functions. Three new regression tests. Full suite 8982 passed; focused lint
+          suites 225->228. Task transitioned needs_work -> in_progress -> pending_review."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T18:37:52.555Z
+        completed_at: 2026-05-09T18:37:52.555Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T18:37:34.351Z
