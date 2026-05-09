@@ -44436,9 +44436,26 @@ runs:
     completed_at: 2026-05-09T23:11:12.555Z
   - _ulid: 01KR7J4D9BCXF64T93D7WSRSHH
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T23:46:00.619Z
+        completed_at: 2026-05-09T23:48:07.861Z
+        notes: "Cycle 8 fix landed for @task-fix-guardrail-binding-wrapper-analysis. What worked well: (1)
+          reviewer's exact manual probe in the blocker text gave a deterministic repro — first
+          action was reproducing the unsafe and safe shapes locally before reading any code. (2)
+          Iteratively narrowing the failure: ran the safe shape WITHOUT the if-guard separately,
+          which isolated the IF-pruning bug from the binding-analysis bug. Without that bisect I
+          would have conflated the two and over-fixed. (3) walking subtreeContainsDaemonCleanupCall
+          and findUnboundDirectCleanupCapture in parallel revealed they had INCONSISTENT traversal
+          (the diagnostic scanner descended into IF, the cleanup detector pruned IF) — this would
+          have been hard to spot from one path alone."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T23:48:07.861Z
+        completed_at: 2026-05-09T23:48:07.861Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T23:46:00.619Z
