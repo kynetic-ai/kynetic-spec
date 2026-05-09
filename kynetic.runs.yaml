@@ -42479,7 +42479,7 @@ runs:
     started_at: 2026-05-09T08:27:54.399Z
     completed_at: 2026-05-09T08:30:56.070Z
   - _ulid: 01KR5YKQC1Z91J0G0FMRF3VN9D
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -42519,10 +42519,13 @@ runs:
         completed_at: 2026-05-09T08:47:37.477Z
         notes: Skipped discussion because no new untracked improvements were proposed; nothing requires user
           approval.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-09T08:47:37.477Z
-        completed_at: 2026-05-09T08:47:37.477Z
+        completed_at: 2026-05-09T08:47:46.916Z
+        notes: No approved items to capture. Existing observation @01KR2YBHN covers the success pattern;
+          active review @01KR5XW5 captures the concrete defects.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T08:45:36.513Z
+    completed_at: 2026-05-09T08:47:46.916Z
