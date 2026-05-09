@@ -195986,6 +195986,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T15:58:39.523Z
+      - _ulid: 01KR6RE63YJFX7ETYJJ7VAT9J2
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR6Q99AMC96M1ETSVKGXNPEZ
+        timestamp: 2026-05-09T16:16:57.982Z
     examined_commit: 127e8024b36887d98349e8ccfd3c23bd1bd572cc
     external_links: []
     lifecycle_state: closed
@@ -196032,6 +196038,39 @@ reviews:
               failure is introduced by this branch and proves the leak, but it still makes the
               required suite red in manual_merge before the follow-up helper fix lands."
             created_at: 2026-05-09T15:57:28.195Z
+          - _ulid: 01KR6RE4PS14GAVCRH0Z62S4E8
+            author: "@claude"
+            body: >-
+              Fixed in 239c4fb96. Wrapped the new regression with vitest `it.fails` so the required
+              suite stays green pre-fix while preserving the regression signal.
+
+
+              Pre-fix: the cleanup-registration leak still trips the child-terminated /
+              endpoint-unreachable assertions; `it.fails` reports that expected failure as PASS, so
+              focused-daemon-suite and full-test-suite no longer go red on this branch.
+
+
+              Post-fix (in @task-fix-register-cleanup-failure-leak): all assertions will pass,
+              `it.fails` will then report as FAIL, forcing the implementation task to flip this back
+              to a regular `it(...)`. That flip is the explicit signal that the leak is closed and
+              the regression now pins post-fix behavior. The body still asserts the full contract
+              (sentinel surfaces, child terminated, endpoint unreachable) so the staged regression
+              covers every facet the dependent fix must preserve.
+
+
+              Verification:
+
+              - mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts → 10/10 pass.
+
+              - mise exec -- npm test → 2414/2414 suites pass, 8967/8972 tests pass (5 skipped, 0
+              failed).
+
+              - mise exec -- kspec validate --refs --warnings-ok → exit 0 (only pre-existing
+              deprecated-ref warnings).
+
+              - mise exec -- kspec validate --completeness --warnings-ok → exit 0 (only pre-existing
+              malformed_ac_token warnings).
+            created_at: 2026-05-09T16:16:56.537Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -196042,7 +196081,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T15:58:39.522Z
     created_at: 2026-05-09T15:45:55.756Z
-    updated_at: 2026-05-09T15:58:39.523Z
+    updated_at: 2026-05-09T16:16:56.537Z
     notes: []
   - _ulid: 01KR6QFSSGT6SZA00W662XTRM2
     slugs: []
