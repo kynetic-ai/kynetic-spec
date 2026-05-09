@@ -198130,6 +198130,24 @@ reviews:
         runner: oxlint
         created_at: 2026-05-09T21:34:11.439Z
         completed_at: 2026-05-09T21:34:11.439Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md; tools/eslint-rules/no-leaky-test-daemon.js;
+          tests/lint-daemon-test-guardrails.test.ts; tests/lint-no-leaky-test-daemon.test.ts;
+          tests/cli-serve.test.ts; prior review @01KR75E7. Commands run: git status/log/diff; kspec
+          task get; kspec item get; kspec review for-task/get/add/open/comment/reply/check; rg AC
+          annotations; focused lint tests; kspec validate refs/completeness; full npm test; manual
+          oxlint probes. Claims verified: cycle-4 callback-local read probe now rejects;
+          focused/full tests pass; TS-wrapped null/undefined initializer probe still falsely passes.
+          Categories searched: correctness, AC alignment, edge cases around callback ownership and
+          TS wrappers, test quality, integration, validation."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-09T21:34:24.318Z
+        completed_at: 2026-05-09T21:34:24.318Z
     events:
       - _ulid: 01KR79SR9Q1JAWWKNFVDZDSXFW
         actor: Jacob Chapel
@@ -198192,6 +198210,13 @@ reviews:
           status: fail
           name: manual oxlint AC probe
         timestamp: 2026-05-09T21:34:12.792Z
+      - _ulid: 01KR7AKFAK9TE92VTH7PP1JBGG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-09T21:34:25.619Z
     examined_commit: ce61a5635365f9e09bff5a3d3c59e9d937465605
     external_links: []
     lifecycle_state: open
@@ -198237,5 +198262,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T21:20:22.839Z
-    updated_at: 2026-05-09T21:34:11.439Z
+    updated_at: 2026-05-09T21:34:24.318Z
     notes: []
