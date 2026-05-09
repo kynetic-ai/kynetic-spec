@@ -19339,7 +19339,7 @@ workspaces:
         head: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
         last_seen_at: 2026-05-09T12:34:32.838Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-daemon-test-hardening-01kr3w7s
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
     bootstrap:
       status: succeeded
@@ -19821,7 +19821,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T15:21:07.895Z
+      updated_at: 2026-05-09T15:21:34.136Z
     integration:
       status: pending
       detail: null
@@ -19836,10 +19836,10 @@ workspaces:
     task_slug: task-tighten-daemon-hardening-specs
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-09T15:14:07.797Z
-      last_reconciled_at: 2026-05-09T15:21:07.895Z
+      last_active_at: 2026-05-09T15:21:34.136Z
+      last_reconciled_at: 2026-05-09T15:21:34.136Z
       created_at: 2026-05-09T15:13:43.100Z
-      updated_at: 2026-05-09T15:21:31.351Z
+      updated_at: 2026-05-09T15:21:34.136Z
     workspace_id: dispatch-workspace-01KR6M6SW9QGVJWG3VQF4WDT6C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
