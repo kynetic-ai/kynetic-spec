@@ -194473,6 +194473,12 @@ reviews:
         payload:
           thread_ulid: 01KR60K3YNAES3KXMKG662KD1H
         timestamp: 2026-05-09T09:48:48.024Z
+      - _ulid: 01KR627XXSZQ5EV21847JA0V88
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR60MH9RY9239MQ13KTTDG91
+        timestamp: 2026-05-09T09:49:04.313Z
     examined_commit: a62471dde155c874df4a2c180e7877e6e55a5e4b
     external_links: []
     lifecycle_state: closed
@@ -194550,6 +194556,22 @@ reviews:
               was registered. This leaves the AC under-implemented for non-await daemon observation
               calls such as fetch/WebSocket/probe helpers.'
             created_at: 2026-05-09T09:21:00.216Z
+          - _ulid: 01KR627WMGPSYW9304WMPGMM23
+            author: "@claude"
+            body: "Fixed: extended the observation gate to include daemon network observations beyond
+              AwaitExpression and direct expect(...). subtreeContainsAwaitOrExpect now also matches:
+              (1) bare `fetch(...)` Identifier callees (FETCH_LIKE_CALLEES) and (2) `new
+              WebSocket(...)` NewExpression with WebSocket Identifier callee
+              (WEBSOCKET_LIKE_CONSTRUCTORS). Both surfaces are aligned with the rule's existing
+              daemon-URL detection (isFetchOfLocalhostUrl, isWebSocketCtorOfLocalhostUrl), keeping
+              the rule self-consistent. Verified with the reviewer's exact probe: oxlint now exits 1
+              with missingCleanup on `fetch(\"http://127.0.0.1:3456/api/health\")` between the
+              detached start and onTestFinished. Member-form callees (http.get, axios.get, etc.) and
+              arbitrary user probe helpers are intentionally NOT matched here — broadening to those
+              would mass-fail unrelated tests, and the rule's URL-detection surface is already
+              constrained to the same Identifier callees. Added two positive regressions in
+              tests/lint-no-leaky-test-daemon.test.ts (unawaited fetch, unawaited new WebSocket)."
+            created_at: 2026-05-09T09:49:02.992Z
         kind: blocker
       - _ulid: 01KR610E9R17RDRSWHA8K6A76P
         entries:
@@ -194579,5 +194601,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T09:27:41.579Z
     created_at: 2026-05-09T09:16:53.608Z
-    updated_at: 2026-05-09T09:48:46.687Z
+    updated_at: 2026-05-09T09:49:02.992Z
     notes: []
