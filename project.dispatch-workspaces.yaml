@@ -17803,7 +17803,7 @@ workspaces:
         head: 716e31003b4155443bfddf1dfcc79d8a4f390513
         last_seen_at: 2026-05-09T01:43:48.437Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-websocket-protocol-runtime-parity-test-01kr52yx
-  - active_role: null
+  - active_role: worker
     base_branch_point: 3c3f6b705bb15386af34f7f66787a082e8a0be02
     bootstrap:
       status: succeeded
@@ -18287,7 +18287,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T07:27:43.453Z
+      updated_at: 2026-05-09T07:28:07.832Z
     integration:
       status: pending
       detail: null
@@ -18296,16 +18296,16 @@ workspaces:
       target_branch: dev
       target_commit: 3c3f6b705bb15386af34f7f66787a082e8a0be02
       updated_at: 2026-05-09T07:27:43.453Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
     task_slug: task-fix-detached-cleanup-timing-analysis
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-09T07:11:56.699Z
-      last_reconciled_at: 2026-05-09T07:27:43.453Z
+      last_active_at: 2026-05-09T07:28:07.832Z
+      last_reconciled_at: 2026-05-09T07:28:07.832Z
       created_at: 2026-05-09T06:09:47.395Z
-      updated_at: 2026-05-09T07:28:07.050Z
+      updated_at: 2026-05-09T07:28:07.832Z
     workspace_id: dispatch-workspace-01KR3W7QAH8VZCH3A60NSB3HBN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
