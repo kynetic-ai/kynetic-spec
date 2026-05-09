@@ -194983,6 +194983,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-09T10:50:54.687Z
+      - _ulid: 01KR65SMJRXZP61ZR1FJDHSBK3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR65SK7KE5B239970J0VRSYY
+        timestamp: 2026-05-09T10:51:10.296Z
     examined_commit: 968843210bc0b3e1680c4f76187a40d56f24e022
     external_links: []
     lifecycle_state: open
@@ -195018,7 +195025,25 @@ reviews:
               cleanup is registered."
             created_at: 2026-05-09T10:40:26.463Z
         kind: blocker
+      - _ulid: 01KR65SK7KE5B239970J0VRSYY
+        entries:
+          - _ulid: 01KR65SK7KW1B0XSKRPFFPSWDJ
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: kspec-agents.md; task @01KR3W7QAH8VZCH3A60NSB3HBN; spec
+              @daemon-test-guardrail-precision; prior review @01KR62HP; diff and current contents
+              for tools/eslint-rules/no-leaky-test-daemon.js,
+              tests/lint-daemon-test-guardrails.test.ts, tests/lint-no-leaky-test-daemon.test.ts,
+              tests/cli-serve.test.ts. Commands run: git diff/stat/log against dev @3c3f6b7; kspec
+              item get; kspec review get/for-task; rg AC annotations; kspec validate; npm test --
+              --fresh targeted guardrail tests; manual npx oxlint probe matrices; npm test full
+              suite. Claims verified: cycle-6 fixes for in-test lifecycle hooks and unrelated
+              fetch/WebSocket URLs were verified by probes; full and targeted tests pass. Categories
+              searched: correctness, edge cases, error handling/leak timing, test quality/AC
+              coverage, integration with existing localhost URL binding tracking. Finding recorded:
+              identifier-bound 127.0.0.1/[::1] daemon URL observations are still missed."
+            created_at: 2026-05-09T10:51:08.915Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-09T10:38:01.880Z
-    updated_at: 2026-05-09T10:50:53.195Z
+    updated_at: 2026-05-09T10:51:08.915Z
     notes: []
