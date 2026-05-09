@@ -18648,12 +18648,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-09T12:04:56.271Z
+      updated_at: 2026-05-09T12:05:04.983Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T12:04:56.271Z
+      updated_at: 2026-05-09T12:05:04.983Z
     integration:
       status: pending
       detail: null
@@ -18661,24 +18661,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e745f243f274b54155374e526d64a595837eef75
-      updated_at: 2026-05-09T12:04:56.271Z
-    lifecycle_state: ready
+      updated_at: 2026-05-09T12:05:04.983Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KR3W7S3VS0QRZ26RGXS0F3C4"
     task_slug: task-resolve-cli-lifecycle-test-endpoints
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T11:40:12.629Z
-      last_reconciled_at: 2026-05-09T12:04:56.271Z
+      last_reconciled_at: 2026-05-09T12:05:04.983Z
       created_at: 2026-05-09T11:39:45.978Z
-      updated_at: 2026-05-09T12:04:56.271Z
+      updated_at: 2026-05-09T12:05:04.983Z
     workspace_id: dispatch-workspace-01KR3W7S3VS0QRZ26RGXS0F3C4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: c9e84cf090a02f85fdbba45cd9949d62bcfd8b44
+        last_seen_at: 2026-05-09T12:05:04.983Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-resolve-cli-lifecycle-test-endpoints-01kr3w7s-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-resolve-cli-lifecycle-test-endpoints/01kr3w7s
-        head: e745f243f274b54155374e526d64a595837eef75
-        last_seen_at: 2026-05-09T11:39:45.978Z
+        head: c9e84cf090a02f85fdbba45cd9949d62bcfd8b44
+        last_seen_at: 2026-05-09T12:05:04.983Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-resolve-cli-lifecycle-test-endpoints-01kr3w7s
