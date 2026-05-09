@@ -192068,6 +192068,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR5AV1XT865M9DM1Z8Q97AA9
         timestamp: 2026-05-09T03:00:06.442Z
+      - _ulid: 01KR5AV6YDDNZEEPAV5RD0Z4F2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR5AV5FYXQ6NW4G6AYSPVY0A
+        timestamp: 2026-05-09T03:00:10.318Z
     examined_commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
     external_links: []
     lifecycle_state: open
@@ -192097,7 +192104,29 @@ reviews:
               @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged.'
             created_at: 2026-05-09T03:00:05.178Z
         kind: blocker
+      - _ulid: 01KR5AV5FYXQ6NW4G6AYSPVY0A
+        anchor:
+          type: code
+          commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
+          line_end: 882
+          line_start: 873
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR5AV5FYMKW9JZ2449EK8B8M
+            author: Jacob Chapel
+            body: 'MUST-FIX: the spawn/execFile runtime branch treats any daemon-entry-looking argv element as a
+              daemon launch once args[0] is a recognized runtime. That over-reports runtime modes
+              where Node does not execute a script. Manual probe: `spawn("node", ["--eval",
+              "dist/daemon/index.js"])` and `execFile("node", ["--version", DAEMON_ENTRY])` both
+              produce direct-daemon diagnostics, but neither starts the daemon entry as the main
+              script. This violates @daemon-test-guardrail-precision
+              ac-unrelated-subprocesses-not-reported. The argv-array path needs script-position
+              modelling like the exec/execSync shell-string path, including
+              eval/version/value-consuming option cases, plus regression coverage.'
+            created_at: 2026-05-09T03:00:08.830Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T02:48:34.986Z
-    updated_at: 2026-05-09T03:00:05.178Z
+    updated_at: 2026-05-09T03:00:08.830Z
     notes: []
