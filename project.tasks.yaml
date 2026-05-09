@@ -28366,7 +28366,7 @@
     - task-stabilize-websocket-protocol-runtime-parity-test
   title: Stabilize websocket protocol runtime parity test
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 3
@@ -28377,4 +28377,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-09T00:42:22.922Z
+  started_at: 2026-05-09T00:43:21.144Z
   automation: eligible
