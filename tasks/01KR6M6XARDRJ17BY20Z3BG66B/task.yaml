@@ -1,0 +1,168 @@
+_ulid: 01KR6M6XARDRJ17BY20Z3BG66B
+slugs:
+  - task-add-register-cleanup-failure-regression
+title: Add real daemon cleanup-registration failure regression
+type: task
+description: >-
+  ## Task 2 — Add real daemon cleanup-registration failure regression
+
+
+  Proposed slug: `task-add-register-cleanup-failure-regression`
+
+  Type: `task`
+
+  Priority: `P2`
+
+  Plan ref: `@plan-daemon-test-fixture-hardening`
+
+  Spec ref: `@daemon-test-startup-failure-hygiene`
+
+  Tags: `daemon-tests`, `fixtures`, `regression`, `follow-up`
+
+  Depends on: `@task-tighten-daemon-hardening-specs`
+
+  Automation: leave unassessed until Jacob approves.
+
+
+  ### Description
+
+
+  #### What
+
+  Add focused regression coverage proving that the real daemon test fixture stops an owned daemon
+  child if cleanup registration fails after spawn but before readiness completes.
+
+
+  The target fixture is `startTestDaemon` in `tests/helpers/daemon.ts`. Add or extend tests in
+  `tests/helpers/daemon.test.ts` so they cover this sequence:
+
+
+  1. Create a valid temporary test daemon project using the existing helper setup.
+
+  2. Call `startTestDaemon(project, { registerCleanup })` with a `registerCleanup` callback that
+  throws a deliberate error when invoked.
+
+  3. Ensure the helper rejects with the cleanup-registration failure or a wrapped diagnostic that
+  includes the cleanup-registration failure.
+
+  4. Verify that any child process spawned by the helper is stopped before the helper returns the
+  rejection to the caller.
+
+  5. Verify the daemon endpoint is not still reachable after rejection.
+
+
+  #### Why
+
+  Validation found a real leak edge case in the current helper shape. The helper spawns the daemon
+  child and then calls `opts.registerCleanup(stop)` before entering the readiness `try/catch`. If
+  `registerCleanup` throws, the helper rejects immediately and does not call `stop()`, leaving the
+  child alive. This contradicts the intended startup-failure hygiene for any failure after the
+  fixture owns a child.
+
+
+  A regression test must land before the implementation fix so the bug is reproduced and the fix
+  cannot accidentally become a no-op.
+
+
+  #### Evidence
+
+  Current source behavior:
+
+
+  - `tests/helpers/daemon.ts:653-658` spawns the daemon child.
+
+  - `tests/helpers/daemon.ts:677-687` defines the scoped `stop()` function.
+
+  - `tests/helpers/daemon.ts:689-693` invokes `opts.registerCleanup(stop)` before the readiness
+  `try/catch`.
+
+  - `tests/helpers/daemon.ts:729-782` calls `await stop()` only from the later readiness/launch
+  failure catch path, so a synchronous `registerCleanup` throw bypasses cleanup.
+
+
+  Current spec evidence:
+
+
+  - `@daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure` requires a
+  fixture that has obtained a child process handle to stop that child before returning startup
+  failure.
+
+  - `@task-tighten-daemon-hardening-specs` is expected to tighten this spec or add a
+  cleanup-registration-specific AC. Annotate the regression with the actual resulting AC id from
+  `kspec item get @daemon-test-startup-failure-hygiene`.
+
+
+  #### How
+
+  1. Inspect the current helper and tests:
+     - `tests/helpers/daemon.ts`
+     - `tests/helpers/daemon.test.ts`
+  2. Prefer an existing test seam that starts a real daemon child with a bounded timeout and dynamic
+  port. Do not hardcode ports.
+
+  3. The test must deterministically observe the spawned child or pid before causing
+  `registerCleanup` to throw. Do not rely on endpoint-unreachable checks alone, because a child can
+  be alive but not ready yet. If needed, add a narrow non-behavioral test-only observer seam that
+  exposes `{ child, endpoint }` immediately after spawn and before cleanup registration; the seam
+  must not catch the registration error, call `stop()`, alter startup ordering, or implement cleanup
+  behavior.
+
+  4. Keep the test bounded and deterministic:
+     - use dynamic port allocation or fixture-provided endpoint data;
+     - use bounded fetch/wait helpers for endpoint checks;
+     - assert the captured child has exited or is no longer alive after the rejection is observed;
+     - always kill/wait for the captured child in a `finally` block if it is still alive, so the intentionally failing pre-fix regression cannot leak a daemon.
+  5. Annotate the test with the tightened AC from `@daemon-test-startup-failure-hygiene` once Task 1
+  has created it. If the exact AC id differs from this proposal, use the actual AC id from `kspec
+  item get`.
+
+  6. Run the focused test and relevant validation:
+     - `mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts`
+     - `mise exec -- kspec validate --refs --warnings-ok`
+     - `mise exec -- kspec validate --completeness --warnings-ok`
+
+  #### In scope
+
+  - Regression tests for `registerCleanup` throwing after the fixture owns a daemon child.
+
+  - Test-only helper seams if needed to observe process cleanup deterministically.
+
+
+  #### Out of scope
+
+  - Fixing `startTestDaemon` production test helper behavior. That belongs to the dependent
+  implementation task.
+
+  - Changing mock daemon fixture behavior.
+
+  - Changing static guardrail behavior.
+
+
+  #### Validation
+
+  - Before `@task-fix-register-cleanup-failure-leak`, the focused suite is expected to fail only on
+  the new regression assertion proving the cleanup-registration leak, with no unrelated failures.
+
+  - After `@task-fix-register-cleanup-failure-leak`, the same focused suite must pass.
+
+  - `mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts`
+
+  - `mise exec -- kspec validate --refs --warnings-ok`
+
+  - `mise exec -- kspec validate --completeness --warnings-ok`
+
+
+  ---
+spec_ref: "@daemon-test-startup-failure-hygiene"
+meta_ref: null
+plan_ref: "@plan-daemon-test-fixture-hardening"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - daemon-tests
+vcs_refs: []
+created_at: 2026-05-09T15:03:05.304Z
+todos: []
