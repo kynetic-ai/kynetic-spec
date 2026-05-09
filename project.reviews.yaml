@@ -197106,6 +197106,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T18:40:21.758Z
+      - _ulid: 01KR70RDFXK8S03T8HVC4KR7TY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR70RBZSXV6E0912HVY9KKAE
+        timestamp: 2026-05-09T18:42:21.821Z
     examined_commit: e21bfac48a49698d8ad5dbf05b9e907666203555
     external_links: []
     lifecycle_state: open
@@ -197115,8 +197122,29 @@ reviews:
       content_hash: ""
       ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR70RBZSXV6E0912HVY9KKAE
+        anchor:
+          type: code
+          commit: e21bfac48a49698d8ad5dbf05b9e907666203555
+          line_end: 843
+          line_start: 842
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR70RBZS8M3PH41R9WK61PAY
+            author: Jacob Chapel
+            body: "MUST-FIX: the cleanup ownership check only extracts  targets when the first argument is a
+              bare Identifier. A cleanup registered as  is accepted as scoped cleanup even when  is
+              assigned only after the intervening assertion. I verified with an oxlint probe in this
+              review: the sample exited 0 with 'Found 0 warnings and 0 errors.' That
+              violates  because the callback does not own a concrete pid for the just-started daemon
+              at registration time; it only owns an object whose pid field is still unset. Extend
+              capture/ownership analysis for non-Identifier pid expressions (or conservatively
+              reject them) so cleanup-shaped calls cannot bypass the binding check."
+            created_at: 2026-05-09T18:42:20.281Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T18:40:06.555Z
-    updated_at: 2026-05-09T18:40:20.437Z
+    updated_at: 2026-05-09T18:42:20.281Z
     notes: []
