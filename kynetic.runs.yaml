@@ -43385,7 +43385,7 @@ runs:
     completed_at: 2026-05-09T16:07:49.704Z
   - _ulid: 01KR6RYJCM54B896QC3QTT0TK4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -43400,7 +43400,31 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T16:33:39.724Z
-        completed_at: 2026-05-09T16:33:39.724Z
+        completed_at: 2026-05-09T16:33:54.345Z
+        notes: >-
+          Step 2: High-confidence findings.
+
+
+          FRICTION (high confidence): Reflection ran AFTER kspec task submit, not before. The
+          session-reflect-loop workflow caught that I had used the disproved bare it.fails pattern
+          (cycle 2 disprove @01KR3ZR8 + cycle 3 selective pattern @01KR431R) only after the task was
+          already in pending_review. If reflection had run between 'tests pass' and 'kspec task
+          submit', the worker would have caught and corrected the pattern in the original
+          submission, saving a likely fix-cycle 2. Pattern is concrete (specific workflow step
+          ordering), systemic (applies to every dispatch session that uses it.fails-style staging),
+          and validated by direct cause/effect this session.
+
+
+          SUCCESS CONFIRMED (medium-high confidence): The selective expected-failure pattern (per
+          @01KR431R) caught a real bug-shape subtlety — endpoint reachability is NOT a stable
+          pre-vs-post differentiator for this leak (rejection happens before readiness, so daemon
+          never binds). Bare it.fails would have hidden this. This is concrete validation of
+          @01KR431R from a new test-fixture context (not just oxlint exit codes). Worth noting to
+          strengthen that observation.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T16:33:54.345Z
+        completed_at: 2026-05-09T16:33:54.345Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T16:25:54.836Z
