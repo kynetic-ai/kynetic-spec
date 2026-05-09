@@ -136,7 +136,7 @@ description: >-
 spec_ref: "@daemon-test-guardrail-precision"
 meta_ref: null
 plan_ref: "@plan-daemon-test-fixture-hardening"
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-tighten-daemon-hardening-specs"
@@ -149,6 +149,14 @@ tags:
   - regression
   - follow-up
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-add-guardrail-binding-wrapper-regressions/01kr6m74
+  captured_at: 2026-05-09T15:56:07.629Z
+  commit: f55e1f7acaf1cdea1f810f8f44083e6cc62c5a7c
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR6PMHM9VGN4X69Z282389GY
 history:
   - author: Jacob Chapel
@@ -192,7 +200,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-09T15:46:16.773Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-guardrail-binding-wrapper-regressions/01kr6m74
+          captured_at: 2026-05-09T15:56:07.629Z
+          commit: f55e1f7acaf1cdea1f810f8f44083e6cc62c5a7c
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-09T15:56:07.632Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-09T15:56:07.633Z
 created_at: 2026-05-09T15:03:12.390Z
 started_at: 2026-05-09T15:46:16.772Z
+submitted_at: 2026-05-09T15:56:07.632Z
 todos: []
 automation: eligible
