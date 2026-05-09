@@ -1027,13 +1027,23 @@ describe("test suite", () => {
     });
 
     it("should allow serve start --detach in try/finally with cleanup", () => {
+      // The captured pid is concretely bound BEFORE the try block opens,
+      // so the finalizer's process.kill(pid, "SIGTERM") owns the just-
+      // started daemon at the moment control crosses the try keyword
+      // (the implicit registration site for direct-finalizer cleanup).
+      // The earlier shape relied on an undeclared `pid` free identifier,
+      // which the cycle-7 ownership leg correctly rejects (the closure
+      // cannot own a daemon handle when the binding does not exist).
+      // (@daemon-test-guardrail-precision
+      // ac-detached-cleanup-bound-before-observation)
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 
 describe("test suite", () => {
   it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
     try {
-      runKspec("serve start --detach --port 3456");
       expect(true).toBe(true);
     } finally {
       process.kill(pid, "SIGTERM");
