@@ -196301,7 +196301,18 @@ reviews:
     slugs: []
     title: Review cleanup-registration failure regression cycle 2
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts: passed; 9/9 suites, 10/10
+          tests, duration 2.4s."
+        name: focused-daemon-suite
+        required: true
+        runner: npm-test
+        created_at: 2026-05-09T16:56:14.770Z
+        completed_at: 2026-05-09T16:56:14.770Z
     events:
       - _ulid: 01KR6T0XCPCX7ESFX7P2P94W7T
         actor: Jacob Chapel
@@ -196323,6 +196334,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR6TNSJW56S05VHY49FF0B5X
         timestamp: 2026-05-09T16:56:05.823Z
+      - _ulid: 01KR6TP50RPSZ6Y37RKT1J546W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused-daemon-suite
+        timestamp: 2026-05-09T16:56:16.152Z
     examined_commit: 0233c88c3d5ce4e06f96e85fff9dc27b9fcbe66d
     external_links: []
     lifecycle_state: open
@@ -196356,5 +196374,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T16:44:40.214Z
-    updated_at: 2026-05-09T16:56:04.444Z
+    updated_at: 2026-05-09T16:56:14.770Z
     notes: []
