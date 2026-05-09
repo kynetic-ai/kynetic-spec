@@ -197502,6 +197502,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T19:36:28.270Z
+      - _ulid: 01KR75477QC7XDEMAW9HVM65C4
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR736TP4HKEARHNQBYQCEB04
+        timestamp: 2026-05-09T19:58:42.936Z
+      - _ulid: 01KR754AFXK99ABYQ8EJZGENDQ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR736TP4HKEARHNQBYQCEB04
+        timestamp: 2026-05-09T19:58:46.269Z
+      - _ulid: 01KR754DQQ5M13JJRE01PSA3EH
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR736YG7ZNC1AZZVK78K1TT2
+        timestamp: 2026-05-09T19:58:49.591Z
+      - _ulid: 01KR754HXKVZH8P2J65MEE4QPZ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR736YG7ZNC1AZZVK78K1TT2
+        timestamp: 2026-05-09T19:58:53.875Z
     examined_commit: 875a81d78c4b0c702a3d24d08789482c973d1584
     external_links: []
     lifecycle_state: closed
@@ -197533,7 +197557,24 @@ reviews:
               Callback-local cleanup targets need ownership validation too, or non-owned local
               values must not satisfy cleanup.'
             created_at: 2026-05-09T19:25:11.236Z
+          - _ulid: 01KR7545Y4ZA9RF5Q77MJDPTNH
+            author: "@claude"
+            body: "Fixed: tightened callbackLocalKillTargetIsDynamic. The cleanup-binding analysis no longer
+              skips callback-local kill targets unconditionally — it walks every VariableDeclarator
+              and AssignmentExpression in the callback body that targets `name`, applies the new
+              `isStaticLiteralExpression` classifier (which unwraps transparent wrappers), and
+              rejects the binding when every value source is literal-only. Parameters of the
+              callback are also rejected because the cleanup framework passes no useful arguments.
+              The cycle-3 reviewer probe (`onTestFinished(() => { const pid = 12345;
+              process.kill(pid, ...); })`) now produces `cleanupClosureUnbound`. Three regression
+              tests lock this in: callback-local const literal, callback-local let + literal assign,
+              and callback-local TS-asserted literal. The legitimate runtime-read shape (`const pid
+              = readPidFromFile()` inside the callback) is preserved and covered by an
+              allowed-narrow test."
+            created_at: 2026-05-09T19:58:41.604Z
         kind: blocker
+        resolved_at: 2026-05-09T19:58:44.997Z
+        resolved_by: "@claude"
       - _ulid: 01KR736YG7ZNC1AZZVK78K1TT2
         anchor:
           type: code
@@ -197555,7 +197596,22 @@ reviews:
               TSAsExpression/TSNonNullExpression and similar transparent wrappers should be
               unwrapped before falling back to UNVERIFIABLE_KILL_TARGET.'
             created_at: 2026-05-09T19:25:15.143Z
+          - _ulid: 01KR754CG8F9E80M2K40ZA8B4N
+            author: "@claude"
+            body: 'Fixed: extracted `unwrapTransparentExpression` and threaded it through
+              `extractRootCaptureIdentifierName`. The fixed-point loop now strips ChainExpression,
+              ParenthesizedExpression, TSAsExpression, TSSatisfiesExpression, TSNonNullExpression,
+              TSTypeAssertion, and TSInstantiationExpression at every step of the descent — both
+              before and between MemberExpression unwraps. The cycle-3 reviewer probe
+              (`onTestFinished(() => process.kill(pid as number, "SIGTERM"))` with `const pid =
+              readPidFromFile() as number` after the start) now passes oxlint clean. Five regression
+              tests cover: TS as-cast, TS non-null assertion, stacked `((pid as number)!)`, the safe
+              shape kept, and TS-cast on a member-expression target rooted in a pre-start binding
+              (still rejected via the recovered root identifier).'
+            created_at: 2026-05-09T19:58:48.328Z
         kind: blocker
+        resolved_at: 2026-05-09T19:58:52.602Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -197565,5 +197621,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T19:36:28.269Z
     created_at: 2026-05-09T19:22:20.081Z
-    updated_at: 2026-05-09T19:36:28.270Z
+    updated_at: 2026-05-09T19:58:52.602Z
     notes: []
