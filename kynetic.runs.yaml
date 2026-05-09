@@ -43963,7 +43963,7 @@ runs:
     completed_at: 2026-05-09T19:39:08.021Z
   - _ulid: 01KR7575SSJKY2HN0VVFX46P1C
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -43982,7 +43982,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T20:00:53.772Z
-        completed_at: 2026-05-09T20:00:53.772Z
+        completed_at: 2026-05-09T20:02:09.158Z
+        notes: "Step 2 (search before capture): Found @01KR5CYKNTCDWHFARY0G8HCKEH — friction observation
+          explicitly covering 'static-analysis precision rule fix cycles repeat because each cycle's
+          reviewer probes expose a SHAPE permutation' on this exact rule. Concludes 'applies to ANY
+          future precision-classifier task' — current cycle (cleanup-binding ownership × wrapper ×
+          scope) is the same pattern, just on a different sub-feature. Capturing a sibling
+          observation would duplicate, not add signal. Also found @01KR607KKNASNPV347Z4KAM17X
+          (success: run reviewer's synthetic oxlint probes BEFORE writing fixtures) and
+          @01KR62F016XVKBMG1RENGC5FFB (success: synthetic /tmp probe files give faster per-blocker
+          feedback than vitest harness). The fix cycle just executed is consistent with both. No new
+          high-confidence observations to add."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T20:02:09.158Z
+        completed_at: 2026-05-09T20:02:09.158Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T20:00:19.769Z
