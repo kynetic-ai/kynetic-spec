@@ -44378,7 +44378,7 @@ runs:
     completed_at: 2026-05-09T22:52:49.991Z
   - _ulid: 01KR7FZMK15WGTBD2EVC96B28Z
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -44392,7 +44392,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T23:10:25.408Z
-        completed_at: 2026-05-09T23:10:25.408Z
+        completed_at: 2026-05-09T23:10:32.917Z
+        notes: "Friction points: posting review bodies with backticks/command snippets through --body is
+          shell-fragile and caused the first blocker text to be mangled; this is already tracked by
+          existing inbox/observations. Detached review context also included a stale integration
+          target SHA while local dev had advanced, so the reviewer had to manually rediscover the
+          relevant diff to avoid inspecting already-integrated dependency changes."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T23:10:32.917Z
+        completed_at: 2026-05-09T23:10:32.917Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T23:08:27.105Z
