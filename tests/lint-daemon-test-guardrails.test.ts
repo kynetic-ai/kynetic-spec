@@ -3741,3 +3741,412 @@ describe("disable on the wrong line", () => {
     });
   });
 });
+
+/**
+ * Daemon test guardrail precision: cleanup callback must be bound to a
+ * concrete daemon handle before any later observation.
+ *
+ * These tests cover @daemon-test-guardrail-precision
+ * `ac-detached-cleanup-bound-before-observation`. The earlier
+ * `ac-detached-cleanup-before-observation` AC required cleanup to be
+ * REGISTERED before any later await/expect/daemon observation. The
+ * tightened AC additionally requires the registered cleanup callback
+ * to OWN a concrete pid, child handle, or stop handle for the
+ * just-started detached daemon at the moment of registration. A
+ * callback that closes over a `let` binding which is still null/undefined
+ * at registration time and only gets the real pid/handle AFTER an
+ * intervening observation is unsafe: an assertion failure or thrown
+ * await between the registration and the binding leaves the cleanup
+ * closure with no daemon to kill, and the detached process leaks.
+ *
+ * Each unsafe example below is a CURRENT FALSE NEGATIVE in the
+ * `no-leaky-test-daemon` rule — the rule sees an `onTestFinished(...)`
+ * registration before the next observation and accepts it as cleanup,
+ * even though the captured variable is unbound. These tests are
+ * expected to FAIL until the rule is updated to verify that the
+ * cleanup callback's captured variable is initialized to a concrete
+ * pid/handle before the next observation.
+ *
+ * Allowed-narrow cases describe the canonical safe shape (pid or child
+ * handle is captured BEFORE the cleanup registration, so the closure
+ * already owns a concrete value when registered) so the fix cannot
+ * accidentally over-tighten and reject legitimate patterns.
+ */
+describe("daemon test guardrail precision: cleanup callback bound before observation", () => {
+  // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+  describe("detached daemon flagged when cleanup closure is unbound at registration", () => {
+    it("flags runKspec(\"serve start --detach\") when onTestFinished closes over a let pid that is assigned only after an intervening expect()", () => {
+      // UNSAFE: cleanup IS registered before the expect(), but the closure
+      // captures a `let pid` that is still undefined at registration time.
+      // The pid file is read AFTER the expect() runs. If the assertion
+      // throws, the onTestFinished callback fires with `pid === undefined`
+      // and process.kill(undefined, ...) cannot kill the detached daemon.
+      // The current rule treats the registration-before-observation as
+      // sufficient cleanup and does NOT flag this — that is the false
+      // negative this regression locks in.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures unbound pid", () => {
+  it("registers cleanup over a pid let, then asserts, then captures pid", () => {
+    let pid: number | undefined;
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => { if (pid !== undefined) process.kill(pid, "SIGTERM"); });
+    expect(true).toBe(true);
+    pid = readPidFromFile();
+  });
+});
+`,
+      });
+      // The rule must report this detached start because the cleanup
+      // callback's captured `pid` is undefined at the moment of
+      // registration and only gets the real pid AFTER the intervening
+      // expect(). An assertion failure leaves the daemon orphaned.
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished|bound|captured/i);
+    });
+
+    it("flags runKspec(\"serve start --detach\") when onTestFinished closes over a let pid that is assigned only after an intervening await", () => {
+      // UNSAFE: same shape as the assertion variant but the intervening
+      // operation is an `await waitForReady(...)` against the daemon. The
+      // await can throw or hang before pid is captured. The rule currently
+      // accepts the early onTestFinished registration as cleanup despite
+      // the unbound capture.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures unbound pid before await", () => {
+  it("registers cleanup over a pid let, then awaits readiness, then captures pid", async () => {
+    let pid: number | undefined;
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => { if (pid !== undefined) process.kill(pid, "SIGTERM"); });
+    await waitForReady("http://127.0.0.1:3456/api/health");
+    pid = readPidFromFile();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished|bound|captured/i);
+    });
+
+    it("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when onTestFinished closes over a let child handle that is assigned only after an intervening await", () => {
+      // UNSAFE child-handle variant: the spawn returns a child handle but
+      // the test doesn't capture it inline — it reassigns `let child`
+      // only after an `await waitForReady(...)` against the daemon. The
+      // onTestFinished closure references `child` while it is still null,
+      // so a thrown await never hits the kill path. The rule currently
+      // misses this because the registration sits before the await.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("cleanup closure captures unbound child handle", () => {
+  it("spawns daemon, registers handle cleanup, awaits readiness, then captures child", async () => {
+    let child: { pid: number; kill: (sig: string) => void } | null = null;
+    spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    onTestFinished(() => { if (child) child.kill("SIGTERM"); });
+    await waitForReady("http://127.0.0.1:3456/api/health");
+    child = readChildFromPidFile();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished|bound|captured/i);
+    });
+
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures pid before a daemon-host fetch observation but pid is bound only after the fetch", () => {
+      // UNSAFE: the intervening observation is a `fetch` to the daemon
+      // host (a recognised daemon network observation per the existing
+      // observation gate). The cleanup registration sits before it, but
+      // the pid binding sits after — same unbound-closure leak as the
+      // expect/await variants.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures unbound pid before daemon fetch", () => {
+  it("registers cleanup, fetches health, then captures pid", async () => {
+    let pid: number | undefined;
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => { if (pid !== undefined) process.kill(pid, "SIGTERM"); });
+    const response = await fetch("http://127.0.0.1:3456/api/health");
+    expect(response.status).toBe(200);
+    pid = readPidFromFile();
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished|bound|captured/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (allowed narrow case)
+    it("does not flag runKspec(\"serve start --detach\") when pid is captured BEFORE the onTestFinished registration and BEFORE any observation", () => {
+      // ALLOWED narrow: the canonical safe shape — pid is bound to a
+      // concrete value by `const pid = readPidFromFile()` BEFORE the
+      // onTestFinished registration. The cleanup closure captures the
+      // already-resolved value, so an assertion failure two lines down
+      // still has a real pid to kill. The fix must continue to accept
+      // this shape without over-tightening.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures concrete pid before observation", () => {
+  it("starts daemon, captures pid as a const, registers cleanup, then asserts", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (allowed narrow case, child handle flavor)
+    it("does not flag spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when the child handle is captured by the spawn statement and onTestFinished kills it before any observation", () => {
+      // ALLOWED narrow: the spawn return value is captured by the same
+      // statement (`const child = spawn(...)`), so the onTestFinished
+      // closure binds to the concrete handle at registration time. No
+      // unbound let, no later reassignment.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("cleanup closure captures concrete child handle before observation", () => {
+  it("spawns daemon, captures child via const, registers cleanup, then asserts", () => {
+    const child = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    onTestFinished(() => child.kill("SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+  });
+});
+
+/**
+ * Daemon test guardrail precision: approved daemon helper boundary is
+ * explicit.
+ *
+ * These tests cover @daemon-test-guardrail-precision
+ * `ac-approved-daemon-helper-boundary-explicit`. The earlier helper
+ * coverage relied on the rule's path allowlist
+ * (`tests/helpers/daemon.ts`, `tests/helpers/mock-daemon.ts`,
+ * `tools/eslint-rules/`, the lint test files themselves) to identify
+ * approved daemon-test fixtures. The tightened AC requires the
+ * approved-helper boundary to be EXPLICIT: a local helper function
+ * declared inside an ordinary test file is NOT an approved helper,
+ * and wrapping a detached daemon start (via the kspec CLI) inside
+ * such a helper must NOT make the start invisible to the rule.
+ *
+ * The current `no-leaky-test-daemon` rule's `isInHelperFunction`
+ * predicate exempts ANY named function declaration or arrow assigned
+ * to a const/let from the cleanup-timing check as long as the
+ * function does not cross an it/test/describe/lifecycle boundary.
+ * That predicate is too permissive: it treats the mere PRESENCE of a
+ * helper-shaped function as proof that some caller will register
+ * cleanup, but the rule never actually verifies cleanup at the call
+ * site. This regression locks in the false negative so the lint rule
+ * fix must teach the rule that arbitrary local wrappers are NOT
+ * approved fixture utilities.
+ *
+ * Allowed-narrow cases describe the canonical safe shapes (the
+ * shared `tests/helpers/daemon.ts` fixture, which is path-allowlisted
+ * and therefore exempt from the rule entirely) so the fix cannot
+ * accidentally over-tighten and reject the genuinely-approved fixture
+ * implementations.
+ *
+ * Note: direct daemon entrypoint launches (`spawn("node", [DAEMON_ENTRY,
+ * ...])`) inside a local helper function are ALREADY flagged by the
+ * existing direct-daemon-spawn check, which runs at the CallExpression
+ * before the helper-function exemption applies. That shape is
+ * therefore existing-pass control coverage (see the `direct daemon
+ * spawn is flagged outside the shared fixture` describe block above)
+ * and is intentionally NOT duplicated here as a new failing
+ * regression.
+ */
+describe("daemon test guardrail precision: approved helper boundary is explicit", () => {
+  // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+  describe("local wrappers around detached daemon starts are not approved helpers", () => {
+    it("flags a function declaration in a test file that wraps runKspec(\"serve start --detach\") with no caller cleanup", () => {
+      // UNSAFE: the test file declares `function startDetachedDaemon()`
+      // whose body calls `runKspec("serve start --detach ...")`. The
+      // call site invokes the helper but registers no cleanup. The
+      // current rule sees the detached start INSIDE a named function
+      // declaration, treats it as inside a helper, and skips the
+      // missing-cleanup check entirely — even though the wrapper is
+      // not the approved shared fixture. The detached daemon leaks.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+function startDetachedDaemon() {
+  runKspec("serve start --detach --port 3456");
+}
+
+describe("local function wrapper hides detached start", () => {
+  it("calls the wrapper without cleanup", () => {
+    startDetachedDaemon();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    it("flags a const arrow function in a test file that wraps spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) with no caller cleanup", () => {
+      // UNSAFE: the const-arrow form of the local wrapper (the rule's
+      // `isInHelperFunction` predicate also matches
+      // `VariableDeclarator` initialisers with arrow/function values).
+      // The argv-array spawn form is wrapped behind the arrow, the
+      // call site calls the arrow without cleanup, and the rule
+      // currently misses the unsafe start.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawn } from "child_process";
+
+const startDetachedDaemon = () => {
+  spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+};
+
+describe("const arrow wrapper hides detached spawn", () => {
+  it("calls the arrow wrapper without cleanup", () => {
+    startDetachedDaemon();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    it("flags a function declaration in a test file that wraps execSync(\"kspec serve start --detach\") with no caller cleanup", () => {
+      // UNSAFE: shell-string CLI form of the wrapper. The execSync call
+      // tokenises to `kspec serve start --detach`, the rule's detach
+      // classifier recognises the lifecycle path, but the helper-
+      // function exemption swallows the report. The wrapper is not
+      // the approved fixture and the call site provides no cleanup.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { execSync } from "child_process";
+
+function startDetachedDaemon() {
+  execSync("kspec serve start --detach --port 3456");
+}
+
+describe("execSync wrapper hides detached start", () => {
+  it("calls the execSync wrapper without cleanup", () => {
+    startDetachedDaemon();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    it("flags a function expression assigned to a const in a test file that wraps spawnSync(\"kspec\", [\"serve\", \"start\", \"--detach\"]) with no caller cleanup", () => {
+      // UNSAFE: function-expression-in-VariableDeclarator form (the
+      // rule's `isInHelperFunction` matches `init.type ===
+      // "FunctionExpression"` too). spawnSync argv-array form behind
+      // the wrapper. Caller registers no cleanup.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync } from "child_process";
+
+const startDetachedDaemon = function () {
+  spawnSync("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+};
+
+describe("function expression wrapper hides detached spawnSync", () => {
+  it("calls the function-expression wrapper without cleanup", () => {
+    startDetachedDaemon();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    // (allowed narrow case: explicit shared fixture path)
+    it("does not flag a function declaration that wraps spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) inside the shared daemon fixture (tests/helpers/daemon.ts)", () => {
+      // ALLOWED narrow: the shared fixture implementation lives at
+      // `tests/helpers/daemon.ts`, which is on the rule's explicit
+      // path allowlist. The rule never runs in that file at all, so
+      // the wrapper there is genuinely an approved helper and the
+      // detached start is not flagged. This control test must keep
+      // passing after the fix — the boundary tightening is for
+      // arbitrary local wrappers in ordinary test files, not the
+      // approved fixture file.
+      const result = runOxlint({
+        relPath: "tests/helpers/daemon.ts",
+        source: `
+import { spawn } from "child_process";
+
+export function startTestDaemon(port: number) {
+  return spawn("kspec", ["serve", "start", "--detach", "--port", String(port)]);
+}
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    // (allowed narrow case: inline detached start with proper cleanup is unchanged)
+    it("does not flag an inline runKspec(\"serve start --detach\") in a test body when pid is captured and onTestFinished cleanup is registered before any observation", () => {
+      // ALLOWED narrow: the canonical safe inline shape — no wrapper,
+      // pid captured inline, cleanup registered before any observation.
+      // The fix to the wrapper boundary must not regress this baseline.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("inline detached start with proper cleanup", () => {
+  it("starts daemon, captures pid, registers cleanup, then asserts", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+  });
+});
