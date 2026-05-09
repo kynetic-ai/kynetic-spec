@@ -56,7 +56,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-guardrail-classification-regressions"
@@ -71,8 +71,8 @@ review_ref: "@01KR57XGHXEQ8FTVWDHGJJMXRM"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
-  captured_at: 2026-05-09T02:03:52.439Z
-  commit: 8c8228706ad1b4fecdf0a33e3ab51814af6c4e74
+  captured_at: 2026-05-09T02:43:47.681Z
+  commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
@@ -547,8 +547,35 @@ history:
         previous: 2026-05-09T02:03:48.907Z
     command: task-start
     timestamp: 2026-05-09T02:43:44.496Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
+          captured_at: 2026-05-09T02:43:47.681Z
+          commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
+        previous:
+          review_url: null
+          branch: dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
+          captured_at: 2026-05-09T02:03:52.439Z
+          commit: 8c8228706ad1b4fecdf0a33e3ab51814af6c4e74
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
+      submitted_at:
+        new: 2026-05-09T02:43:47.694Z
+        previous: 2026-05-09T02:03:52.450Z
+    command: task-submit
+    timestamp: 2026-05-09T02:43:47.694Z
 created_at: 2026-05-08T13:25:36.603Z
 started_at: 2026-05-09T02:43:44.495Z
-submitted_at: 2026-05-09T02:03:52.450Z
+submitted_at: 2026-05-09T02:43:47.694Z
 todos: []
 automation: eligible
