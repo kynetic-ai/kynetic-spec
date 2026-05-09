@@ -20369,7 +20369,7 @@ workspaces:
         head: 0233c88c3d5ce4e06f96e85fff9dc27b9fcbe66d
         last_seen_at: 2026-05-09T16:43:19.712Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-register-cleanup-failure-regression-01kr6m6x
-  - active_role: worker
+  - active_role: null
     base_branch_point: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
     bootstrap:
       status: succeeded
@@ -20848,12 +20848,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-09T16:50:38.609Z
+      updated_at: 2026-05-09T16:54:32.095Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T16:50:38.609Z
+      updated_at: 2026-05-09T16:54:32.095Z
     integration:
       status: pending
       detail: null
@@ -20861,17 +20861,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
-      updated_at: 2026-05-09T16:50:38.609Z
-    lifecycle_state: active
+      updated_at: 2026-05-09T16:54:32.095Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KR6M7486ECC1PMNH725GJ0HR"
     task_slug: task-add-guardrail-binding-wrapper-regressions
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T16:43:16.160Z
-      last_reconciled_at: 2026-05-09T16:50:38.609Z
+      last_reconciled_at: 2026-05-09T16:54:32.095Z
       created_at: 2026-05-09T15:45:04.837Z
-      updated_at: 2026-05-09T16:50:38.609Z
+      updated_at: 2026-05-09T16:54:32.095Z
     workspace_id: dispatch-workspace-01KR6M7486ECC1PMNH725GJ0HR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
