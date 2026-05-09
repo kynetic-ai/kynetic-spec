@@ -193457,6 +193457,12 @@ reviews:
         payload:
           thread_ulid: 01KR5Q9F5XY88T4GM2N657XD7M
         timestamp: 2026-05-09T07:07:59.726Z
+      - _ulid: 01KR5S17MZF8PM8AWFJ2SJ5FS7
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR5Q9F5XY88T4GM2N657XD7M
+        timestamp: 2026-05-09T07:08:07.711Z
     examined_commit: ba3231821d9a05b7dbe546f10d7bb1fa6242dcbc
     external_links: []
     lifecycle_state: closed
@@ -193503,6 +193509,8 @@ reviews:
               review, plus a network-blocker variant where the callback only calls blocker.close()."
             created_at: 2026-05-09T07:07:58.426Z
         kind: blocker
+        resolved_at: 2026-05-09T07:08:06.405Z
+        resolved_by: "@claude"
       - _ulid: 01KR5QVB9HXX8MRHYSZY0CQS7Q
         entries:
           - _ulid: 01KR5QVB9JZH9STYFBC9MG3TK7
@@ -193530,5 +193538,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T06:47:39.680Z
     created_at: 2026-05-09T06:34:39.293Z
-    updated_at: 2026-05-09T07:07:58.426Z
+    updated_at: 2026-05-09T07:08:06.405Z
     notes: []
