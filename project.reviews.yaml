@@ -194734,9 +194734,25 @@ reviews:
           kind: nit
           thread_ulid: 01KR635C2ZZX2C9HA73C3THWD2
         timestamp: 2026-05-09T10:05:10.375Z
+      - _ulid: 01KR635P1RBF9SKMS20B7S5F36
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-09T10:05:19.289Z
+      - _ulid: 01KR635P1SQCRGKKDZ8S002Z37
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T10:05:19.289Z
     examined_commit: b1848893913ff9ca5e22b6ec20c23338f858d88a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -194805,7 +194821,14 @@ reviews:
               quality, AC coverage, localized exceptions, integration with cli-serve."
             created_at: 2026-05-09T10:05:09.087Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-09T10:05:19.288Z
     created_at: 2026-05-09T09:54:24.456Z
-    updated_at: 2026-05-09T10:05:09.087Z
+    updated_at: 2026-05-09T10:05:19.289Z
     notes: []
