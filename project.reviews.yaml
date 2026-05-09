@@ -198833,6 +198833,18 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-09T23:00:33.198Z
         completed_at: 2026-05-09T23:00:33.198Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Unsafe finalizer probe with pid assigned after expect exits 1 as expected, but
+          safe-ordering probe with pid assigned immediately after runKspec and before expect also
+          exits 1 with cleanupClosureUnbound on pid; this is the recorded blocker.
+        name: manual finalizer safe-ordering probe
+        required: true
+        runner: manual oxlint probe
+        created_at: 2026-05-09T23:00:44.305Z
+        completed_at: 2026-05-09T23:00:44.305Z
     events:
       - _ulid: 01KR7F7GRKRXB7E2TQR4ZQPC71
         actor: Jacob Chapel
@@ -198881,6 +198893,13 @@ reviews:
           status: pass
           name: kspec validate completeness
         timestamp: 2026-05-09T23:00:34.576Z
+      - _ulid: 01KR7FHHZYKMC78FSKE21P8JY3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual finalizer safe-ordering probe
+        timestamp: 2026-05-09T23:00:45.694Z
     examined_commit: ede9e8e1893e0baf75dabc13217c450228399111
     external_links: []
     lifecycle_state: open
@@ -198930,5 +198949,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T22:55:16.758Z
-    updated_at: 2026-05-09T23:00:33.198Z
+    updated_at: 2026-05-09T23:00:44.305Z
     notes: []
