@@ -44378,7 +44378,7 @@ runs:
     completed_at: 2026-05-09T22:52:49.991Z
   - _ulid: 01KR7FZMK15WGTBD2EVC96B28Z
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -44410,7 +44410,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-09T23:10:41.282Z
-        completed_at: 2026-05-09T23:10:41.282Z
+        completed_at: 2026-05-09T23:10:50.723Z
+        notes: "Proposed improvement: detached reviewer orientation should show the snapshot's original
+          integration target SHA alongside the current local target tip and recommended
+          current-target diff/merge-base when the canonical branch head or target branch has moved.
+          This would keep reviewers focused on the submitted task changes and avoid reviewing
+          dependency changes already landed in dev. Rough scope: medium, likely dispatch
+          prompt/orientation generation plus tests."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-09T23:10:50.723Z
+        completed_at: 2026-05-09T23:10:50.723Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T23:08:27.105Z
