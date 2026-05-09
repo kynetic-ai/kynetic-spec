@@ -127,3 +127,43 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T19:36:30.432Z
+  - _ulid: 01KR755JMXF23ESRXDN4JHAT3S
+    content: >-
+      Fix cycle 4: addressed both cycle-3 blockers in tools/eslint-rules/no-leaky-test-daemon.js.
+
+
+      Blocker 1 (cleanupCallbackBindingStatus skipped callback-local targets): added
+      callbackLocalKillTargetIsDynamic which walks the cleanup callback body, applies
+      isStaticLiteralExpression to every VariableDeclarator init and AssignmentExpression RHS that
+      targets the kill identifier, and rejects when every source is literal-only. Parameters are
+      also rejected because the cleanup framework passes no useful arguments. The reviewer probe
+      (callback-local const pid = 12345 + process.kill(pid, ...)) now emits cleanupClosureUnbound.
+
+
+      Blocker 2 (extractRootCaptureIdentifierName left TS wrappers unverifiable): extracted
+      unwrapTransparentExpression as a fixed-point loop over ChainExpression,
+      ParenthesizedExpression, TSAsExpression, TSSatisfiesExpression, TSNonNullExpression,
+      TSTypeAssertion, and TSInstantiationExpression. The unwrap runs both before the
+      MemberExpression descent and between unwraps, so stacked wrappers and wrapped member chains
+      both resolve to the underlying root Identifier. The reviewer probe (process.kill(pid as
+      number, SIGTERM) over a pid captured after the start) is now accepted.
+
+
+      Same isStaticLiteralExpression and unwrapTransparentExpression helpers are used by both fixes,
+      so the AST treatment is consistent — wrapped literals on callback-local targets resolve as
+      static, wrapped identifiers on captured kill targets resolve to the root.
+
+
+      Added eight regression tests in tests/lint-daemon-test-guardrails.test.ts: literal const init
+      (rejected), let + literal assign (rejected), TS-asserted literal (rejected), CallExpression
+      init (allowed), TS as-cast (allowed), TS non-null assertion (allowed), stacked TS wrappers
+      (allowed), TS-cast over a pre-start member-expression root (rejected via recovered root). All
+      cycle-7/8/9 ownership probes still pass.
+
+
+      Validation: focused lint suites 233 -> 241 passing tests with --fresh; full npm test 2418
+      suites passed (8995 passed, 5 pre-existing skips, 2009.5s); kspec validate --refs and
+      --completeness pass with --warnings-ok (warnings unchanged from pre-existing repository debt).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T19:59:27.389Z
