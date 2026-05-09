@@ -81,3 +81,44 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T18:53:11.651Z
+  - _ulid: 01KR72SS7H65Z7M7F1FMQYR5ES
+    content: >-
+      Fix cycle 3: addressed the cycle-2 blocker on member-expression kill targets. The previous
+      ownership check in tools/eslint-rules/no-leaky-test-daemon.js only inspected bare-Identifier
+      targets in collectDaemonKillCaptureNames, so the reviewer probe `const holder = {};
+      runKspec("serve start --detach"); onTestFinished(() => { if (holder.pid !== undefined)
+      process.kill(holder.pid, "SIGTERM"); }); expect(true).toBe(true); holder.pid = 12345;` was
+      silently accepted as scoped cleanup.
+
+
+      Added extractRootCaptureIdentifierName(node) which unwraps ChainExpression and walks
+      MemberExpression chains down to a root Identifier; returns null when the chain bottoms out in
+      something that is not an Identifier (Literal, CallExpression, ThisExpression, TemplateLiteral,
+      etc.). Threaded the helper through collectDaemonKillCaptureNames so process.kill(<expr>, ...),
+      <expr>.kill("SIGTERM"), and killPid/stopDaemon/stopMockDaemon(<expr>, ...) all extract the
+      root identifier (or push the UNVERIFIABLE_KILL_TARGET sentinel when no root is reachable). The
+      cleanup-binding loop in cleanupCallbackBindingStatus rejects the sentinel up front so
+      non-Identifier-rooted kill targets cannot bypass the check.
+
+
+      Added five regression tests in tests/lint-daemon-test-guardrails.test.ts:
+      process.kill(holder.pid) where holder predates the start, deep state.daemon.pid chain rooted
+      in a pre-start binding, handle.child.kill("SIGTERM") member-receiver where handle predates the
+      start, process.kill(getStalePid()) call-expression target rejected as unverifiable, and an
+      allowed-narrow control where const child = spawn("kspec", ["serve", "start", "--detach"])
+      makes process.kill(child.pid, "SIGTERM") still accepted because the root child declarator
+      range encompasses the spawn that IS the detached start.
+
+
+      Re-verified the four existing safe shapes (pid bound after the start, child handle captured by
+      spawn, let-with-later-assign, and the path-allowlisted shared fixture) plus the prior cycle-7
+      ownership probes (literal-pid-before-start, unrelated-spawn-child-handle-before-start,
+      imported-pid).
+
+
+      Validation: focused lint suites 228 -> 233 passing tests with --fresh. Full npm test 8987
+      passing (5 pre-existing skips). kspec validate --refs and --completeness both pass with
+      --warnings-ok (warnings are pre-existing repository-wide debt unrelated to this task).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T19:18:03.761Z
