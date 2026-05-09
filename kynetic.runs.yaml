@@ -43339,7 +43339,7 @@ runs:
     completed_at: 2026-05-09T16:01:41.082Z
   - _ulid: 01KR6QSQEDBCST4S16PADR29SX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -43353,7 +43353,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T16:06:56.318Z
-        completed_at: 2026-05-09T16:06:56.318Z
+        completed_at: 2026-05-09T16:07:32.298Z
+        notes: "High-confidence observations: (1) Success: the detached review flow worked end-to-end: fresh
+          kspec review, anchored blocker, required checks, verdict auto-transitioned task to
+          needs_work. (2) Friction: session-reflect-loop baseline discovery asks for full
+          inbox/task/observation lists; in this mature repo that produced very large output and made
+          reflection noisier. Existing coverage found: inbox @01KQ8TTN tracks this exact
+          reflection-loop list-volume issue. (3) Friction: kspec batch --dry-run output looked close
+          enough to real execution that I had to verify the review record and rerun without
+          --dry-run; related existing inbox @01KPEPNGD already tracks batch dry-run
+          caveat/semantics, so no duplicate capture. (4) Workflow command docs friction is already
+          covered by @01KR293G/@01KQBGKT."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T16:07:32.298Z
+        completed_at: 2026-05-09T16:07:32.298Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T16:05:47.597Z
