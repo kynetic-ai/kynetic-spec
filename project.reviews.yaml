@@ -195699,6 +195699,18 @@ reviews:
         runner: kspec
         created_at: 2026-05-09T15:33:07.391Z
         completed_at: 2026-05-09T15:33:07.391Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --alignment --warnings-ok passed. @daemon-test-startup-failure-hygiene and
+          @daemon-test-guardrail-precision both report current status in_progress and expected
+          status in_progress.
+        name: kspec validate alignment
+        required: true
+        runner: kspec
+        created_at: 2026-05-09T15:33:11.141Z
+        completed_at: 2026-05-09T15:33:11.141Z
     events:
       - _ulid: 01KR6N9QQN1YWQV55MA52EER1A
         actor: Jacob Chapel
@@ -195720,6 +195732,13 @@ reviews:
           status: pass
           name: kspec validate refs
         timestamp: 2026-05-09T15:33:08.703Z
+      - _ulid: 01KR6NY277DGZDMC4GHYT147KT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate alignment
+        timestamp: 2026-05-09T15:33:12.551Z
     examined_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
     external_links: []
     lifecycle_state: open
@@ -195732,5 +195751,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-09T15:22:06.453Z
-    updated_at: 2026-05-09T15:33:07.391Z
+    updated_at: 2026-05-09T15:33:11.141Z
     notes: []
