@@ -194990,9 +194990,25 @@ reviews:
           kind: nit
           thread_ulid: 01KR65SK7KE5B239970J0VRSYY
         timestamp: 2026-05-09T10:51:10.296Z
+      - _ulid: 01KR65SYMQ69Y6WBW3A5M4A2FZ
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-09T10:51:20.599Z
+      - _ulid: 01KR65SYMQ5VC959GJ5D0J3KQH
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T10:51:20.599Z
     examined_commit: 968843210bc0b3e1680c4f76187a40d56f24e022
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -195043,7 +195059,14 @@ reviews:
               identifier-bound 127.0.0.1/[::1] daemon URL observations are still missed."
             created_at: 2026-05-09T10:51:08.915Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-09T10:51:20.599Z
     created_at: 2026-05-09T10:38:01.880Z
-    updated_at: 2026-05-09T10:51:08.915Z
+    updated_at: 2026-05-09T10:51:20.599Z
     notes: []
