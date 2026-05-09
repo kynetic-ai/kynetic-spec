@@ -43866,7 +43866,7 @@ runs:
     completed_at: 2026-05-09T18:38:26.083Z
   - _ulid: 01KR71DDCJHXK6Z55M81NRN21C
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -43881,7 +43881,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T18:55:19.111Z
-        completed_at: 2026-05-09T18:55:19.111Z
+        completed_at: 2026-05-09T18:55:22.642Z
+        notes: "Friction points: Review comment bodies with backticks and shell-sensitive syntax can be
+          damaged when passed directly via --body; this happened once and required a clarification
+          reply. Full npm test is slow but expected for review gates. No new code-edit friction
+          because this was review-only."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T18:55:22.642Z
+        completed_at: 2026-05-09T18:55:22.642Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T18:53:49.842Z
