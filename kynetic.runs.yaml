@@ -41644,7 +41644,7 @@ runs:
     completed_at: 2026-05-09T02:24:27.261Z
   - _ulid: 01KR59YC5YCGR87CPSD7K9M1YW
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -41684,7 +41684,34 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-09T02:46:31.499Z
-        completed_at: 2026-05-09T02:46:31.499Z
+        completed_at: 2026-05-09T02:46:55.308Z
+        notes: >-
+          Decisions:
+
+
+          CANDIDATE 1 (friction — per-entry arity validation): SKIP. The refinement is real but it's
+          a sub-case of 01KR57SK ('enumerate documented Node/Bun option classes before writing
+          predicates'). A reviewer reading 01KR57SK would naturally infer that getting the per-entry
+          classification right is part of the enumeration. Capturing a more specific child
+          observation would be noise per the loop-mode 'lower volume, higher quality' bar.
+
+
+          CANDIDATE 2 (success — runtime probing as per-entry arity test): SKIP. Same reasoning vs
+          01KR537D ('manual behavioral probes around adjacent parser/tokenization boundary cases').
+          The runtime-vs-classifier distinction is a useful refinement, but the parent observation
+          already endorses the underlying probe-driven approach. Adding a sibling observation
+          creates fragmentation, not new signal.
+
+
+          Net captures this cycle: 0. Existing observations from cycle 7 already cover the systemic
+          pattern; cycle 8 is another instance of the same class. The body of cycle-by-cycle
+          observations on this task (01KR4JYF, 01KR4MAT, 01KR4QP3, 01KR4TYY, 01KR537D, 01KR57SK)
+          collectively documents a strong pattern — adding cycle 8 captures would dilute that
+          signal.
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-09T02:46:55.308Z
+        completed_at: 2026-05-09T02:46:55.308Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T02:44:25.407Z
