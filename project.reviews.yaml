@@ -195687,7 +195687,18 @@ reviews:
     slugs: []
     title: Review task-tighten-daemon-hardening-specs
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --refs --warnings-ok passed. Existing reference warnings only; touched
+          specs were not implicated.
+        name: kspec validate refs
+        required: true
+        runner: kspec
+        created_at: 2026-05-09T15:33:07.391Z
+        completed_at: 2026-05-09T15:33:07.391Z
     events:
       - _ulid: 01KR6N9QQN1YWQV55MA52EER1A
         actor: Jacob Chapel
@@ -195702,6 +195713,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T15:22:32.253Z
+      - _ulid: 01KR6NXYEZA7GQWRMXXJNVPFEA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate refs
+        timestamp: 2026-05-09T15:33:08.703Z
     examined_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
     external_links: []
     lifecycle_state: open
@@ -195714,5 +195732,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-09T15:22:06.453Z
-    updated_at: 2026-05-09T15:22:30.661Z
+    updated_at: 2026-05-09T15:33:07.391Z
     notes: []
