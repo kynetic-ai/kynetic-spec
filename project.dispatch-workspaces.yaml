@@ -20321,11 +20321,11 @@ workspaces:
     canonical_branch: dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
     canonical_branch_head: 354731a684d7b55ebb1776e0f2751c2dc5e17071
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-09T17:35:38.135Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-09T17:35:40.291Z
     health:
       status: healthy
       issues: []
@@ -20339,7 +20339,7 @@ workspaces:
       target_branch: dev
       target_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
       updated_at: 2026-05-09T17:35:38.135Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR6M6XARDRJ17BY20Z3BG66B"
     task_slug: task-add-register-cleanup-failure-regression
@@ -20348,7 +20348,7 @@ workspaces:
       last_active_at: 2026-05-09T17:21:16.257Z
       last_reconciled_at: 2026-05-09T17:35:38.135Z
       created_at: 2026-05-09T15:34:46.996Z
-      updated_at: 2026-05-09T17:35:38.135Z
+      updated_at: 2026-05-09T17:35:40.291Z
     workspace_id: dispatch-workspace-01KR6M6XARDRJ17BY20Z3BG66B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
