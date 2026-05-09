@@ -194900,6 +194900,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T10:38:14.019Z
+      - _ulid: 01KR6561C058HZ91MTPZ55121J
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR655ZTZS0YR6WDFHF2YAYHG
+        timestamp: 2026-05-09T10:40:28.032Z
     examined_commit: 968843210bc0b3e1680c4f76187a40d56f24e022
     external_links: []
     lifecycle_state: open
@@ -194909,8 +194916,33 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR655ZTZS0YR6WDFHF2YAYHG
+        anchor:
+          type: code
+          commit: 968843210bc0b3e1680c4f76187a40d56f24e022
+          line_end: 2448
+          line_start: 2444
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR655ZTZSWT61SHH3J1BZM89
+            author: Jacob Chapel
+            body: "MUST-FIX: identifier-bound loopback daemon URLs are not treated as daemon observations. The
+              new observation gate matches inline 127.0.0.1/[::1] literals through
+              carriesDaemonHostPortUrl(), but firstArgIsDaemonObservation() falls back to
+              isLocalhostUrlIdentifier(), whose binding map only records localhost: URLs. A test can
+              therefore start a detached daemon, assign const url =
+              'http://127.0.0.1:3456/api/health' (or 'http://[::1]:3456/...'), call fetch(url)
+              before cleanup registration, and receive no missingCleanup diagnostic. I verified this
+              with oxlint probes: inline fetch('http://127.0.0.1:3456/...') flags, localhost
+              identifier flags, but 127.0.0.1 and [::1] identifier bindings both exit 0 with no
+              no-leaky-test-daemon diagnostic. That violates @daemon-test-guardrail-precision
+              ac-detached-cleanup-before-observation because the daemon observation happens before
+              cleanup is registered."
+            created_at: 2026-05-09T10:40:26.463Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T10:38:01.880Z
-    updated_at: 2026-05-09T10:38:12.697Z
+    updated_at: 2026-05-09T10:40:26.463Z
     notes: []
