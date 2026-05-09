@@ -143,6 +143,8 @@ context: []
 priority: 3
 tags:
   - daemon-tests
+  - validation
+  - follow-up
 vcs_refs: []
 history:
   - author: Jacob Chapel
@@ -154,5 +156,16 @@ history:
         previous: []
     command: task-set
     timestamp: 2026-05-09T15:03:36.765Z
+  - author: Jacob Chapel
+    changes:
+      tags:
+        new:
+          - daemon-tests
+          - validation
+          - follow-up
+        previous:
+          - daemon-tests
+    command: task-set
+    timestamp: 2026-05-09T15:04:08.666Z
 created_at: 2026-05-09T15:03:19.169Z
 todos: []
