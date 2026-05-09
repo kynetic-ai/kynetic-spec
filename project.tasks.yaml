@@ -28428,6 +28428,9 @@
   priority: 2
   tags:
     - daemon-tests
+    - fixtures
+    - regression
+    - follow-up
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-09T15:03:05.304Z
