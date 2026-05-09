@@ -41722,7 +41722,7 @@ runs:
     completed_at: 2026-05-09T02:47:02.371Z
   - _ulid: 01KR5AXYB3G77QWSNG7VTZ60QK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -41737,7 +41737,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T03:01:57.410Z
-        completed_at: 2026-05-09T03:01:57.410Z
+        completed_at: 2026-05-09T03:02:09.076Z
+        notes: "Friction points: manual classifier probing required repeatedly constructing temporary oxlint
+          projects/configs, which is error-prone and slow to repeat; repository-wide lint output is
+          very noisy because baseline failures obscure whether changed files introduced new errors,
+          so I had to run a separate changed-file oxlint command; the direct-daemon classifier has
+          parallel shell-string and argv-array semantics, and the existing regression tests did not
+          force parity across those paths."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T03:02:09.076Z
+        completed_at: 2026-05-09T03:02:09.076Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T03:01:39.811Z
