@@ -43693,9 +43693,28 @@ runs:
     completed_at: 2026-05-09T17:37:32.405Z
   - _ulid: 01KR6XQ4Z288MJKJHVDF14T7JP
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T17:49:14.595Z
+        completed_at: 2026-05-09T17:51:37.477Z
+        notes: "What worked: end-to-end validation of the it.fails contract from @01KR6THZH. The 8 it.fails
+          regression tests staged by @task-add-guardrail-binding-wrapper-regressions all
+          transitioned from 'passing via inverted polarity' to 'failing because inner assertions
+          hold' the moment the rule fix landed, providing a deterministic flip signal exactly as the
+          previous task's success observation predicted. Path-allowlist-as-sole-boundary
+          (@01KR2TXGP) made the local-wrapper fix straightforward — removing the isInHelperFunction
+          exemption from the cleanup-timing path was a one-line change because the allowlist already
+          early-returns at create() for approved files. No fix cycles needed; the regression +
+          control test pairs in tests/lint-daemon-test-guardrails.test.ts covered the shape space
+          ahead of time, validating the shape-enumeration friction note from @01KR5CYKN as the
+          inverse success path."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T17:51:37.477Z
+        completed_at: 2026-05-09T17:51:37.477Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T17:49:14.595Z
