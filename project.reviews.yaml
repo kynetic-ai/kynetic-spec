@@ -198857,6 +198857,24 @@ reviews:
         runner: npm test
         created_at: 2026-05-09T23:06:49.210Z
         completed_at: 2026-05-09T23:06:49.210Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, tools/eslint-rules/no-leaky-test-daemon.js,
+          tests/lint-daemon-test-guardrails.test.ts, tests/lint-no-leaky-test-daemon.test.ts,
+          tests/cli-serve.test.ts, src/cli/commands/serve.ts. Commands run: git diff/log against
+          dev, kspec task get, kspec item get, prior review get, rg AC annotations/source-scan
+          check, focused npm test, full npm test, kspec validate refs/completeness, manual oxlint
+          probes. Claims verified: prior cycle finalizer-after-observation probe now fails; safe
+          finalizer-before-try probe passes; local wrapper and cleanup-bound tests are behaviorally
+          exercised by focused suite. Categories searched: correctness, edge cases around finalizer
+          ordering, test quality/AC annotations, regression risk, integration with current dev."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-09T23:07:04.327Z
+        completed_at: 2026-05-09T23:07:04.327Z
     events:
       - _ulid: 01KR7F7GRKRXB7E2TQR4ZQPC71
         actor: Jacob Chapel
@@ -198919,6 +198937,13 @@ reviews:
           status: pass
           name: full npm test
         timestamp: 2026-05-09T23:06:50.536Z
+      - _ulid: 01KR7FX552S5192JTQCQZZPFXS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-09T23:07:05.762Z
     examined_commit: ede9e8e1893e0baf75dabc13217c450228399111
     external_links: []
     lifecycle_state: open
@@ -198968,5 +198993,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T22:55:16.758Z
-    updated_at: 2026-05-09T23:06:49.210Z
+    updated_at: 2026-05-09T23:07:04.327Z
     notes: []
