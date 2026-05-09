@@ -138,7 +138,7 @@ description: >-
 spec_ref: "@daemon-test-guardrail-precision"
 meta_ref: null
 plan_ref: "@plan-daemon-test-fixture-hardening"
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-guardrail-binding-wrapper-regressions"
@@ -154,8 +154,8 @@ review_ref: "@01KR79SR9Q6Q4A1NYNSPH8EPK6"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fix-guardrail-binding-wrapper-analysis/01kr6m77
-  captured_at: 2026-05-09T21:15:40.794Z
-  commit: ce61a5635365f9e09bff5a3d3c59e9d937465605
+  captured_at: 2026-05-09T22:00:43.082Z
+  commit: 08328dee7a47f0c5c2a9b172770ef237860f8f6d
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-fix-guardrail-binding-wrapper-analysis/01kr6m77
@@ -479,8 +479,35 @@ history:
         previous: 2026-05-09T21:15:37.506Z
     command: task-start
     timestamp: 2026-05-09T22:00:39.706Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-fix-guardrail-binding-wrapper-analysis/01kr6m77
+          captured_at: 2026-05-09T22:00:43.082Z
+          commit: 08328dee7a47f0c5c2a9b172770ef237860f8f6d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-fix-guardrail-binding-wrapper-analysis/01kr6m77
+        previous:
+          review_url: null
+          branch: dispatch/task/task-fix-guardrail-binding-wrapper-analysis/01kr6m77
+          captured_at: 2026-05-09T21:15:40.794Z
+          commit: ce61a5635365f9e09bff5a3d3c59e9d937465605
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-fix-guardrail-binding-wrapper-analysis/01kr6m77
+      submitted_at:
+        new: 2026-05-09T22:00:43.089Z
+        previous: 2026-05-09T21:15:40.800Z
+    command: task-submit
+    timestamp: 2026-05-09T22:00:43.089Z
 created_at: 2026-05-09T15:03:15.786Z
 started_at: 2026-05-09T22:00:39.705Z
-submitted_at: 2026-05-09T21:15:40.800Z
+submitted_at: 2026-05-09T22:00:43.089Z
 todos: []
 automation: eligible
