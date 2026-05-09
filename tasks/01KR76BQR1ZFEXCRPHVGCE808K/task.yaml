@@ -13,7 +13,7 @@ description: During review of @01KR6M77JA0S1EEVZX8KKRPY1V, the full review gate 
 spec_ref: "@daemon-backed-test-fixture-contract"
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -32,7 +32,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KR79QNN6D3T6Z13PEM9E88XS
 history:
   - author: "@claude"
     changes:
@@ -84,8 +84,21 @@ history:
         previous: 01KR76DM79K0QBEED13PDZ4E5B
     command: review-verdict-needs-work
     timestamp: 2026-05-09T21:07:05.672Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KR79QNN6D3T6Z13PEM9E88XS
+        previous: null
+      started_at:
+        new: 2026-05-09T21:38:22.070Z
+        previous: 2026-05-09T20:37:00.768Z
+    command: task-start
+    timestamp: 2026-05-09T21:38:22.071Z
 created_at: 2026-05-09T20:20:17.793Z
-started_at: 2026-05-09T20:37:00.768Z
+started_at: 2026-05-09T21:38:22.070Z
 submitted_at: 2026-05-09T20:50:12.432Z
 todos: []
 automation: eligible
