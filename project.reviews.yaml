@@ -194623,7 +194623,18 @@ reviews:
     slugs: []
     title: Review task-fix-detached-cleanup-timing-analysis cycle 6
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts passed: 19 suites, 202 tests, duration 54.4s."
+        name: targeted guardrail tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-09T09:57:54.851Z
+        completed_at: 2026-05-09T09:57:54.851Z
     events:
       - _ulid: 01KR62HPJ8AEHXEHG0YV6DB481
         actor: Jacob Chapel
@@ -194638,6 +194649,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T09:54:46.987Z
+      - _ulid: 01KR62R5K6HGGPE9Z3MXK0WX4P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted guardrail tests
+        timestamp: 2026-05-09T09:57:56.454Z
     examined_commit: b1848893913ff9ca5e22b6ec20c23338f858d88a
     external_links: []
     lifecycle_state: open
@@ -194650,5 +194668,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-09T09:54:24.456Z
-    updated_at: 2026-05-09T09:54:45.646Z
+    updated_at: 2026-05-09T09:57:54.851Z
     notes: []
