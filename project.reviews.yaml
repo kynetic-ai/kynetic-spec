@@ -197148,6 +197148,23 @@ reviews:
         runner: manual oxlint probe
         created_at: 2026-05-09T18:52:53.742Z
         completed_at: 2026-05-09T18:52:53.742Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, task/spec/review records,
+          tools/eslint-rules/no-leaky-test-daemon.js, tests/lint-daemon-test-guardrails.test.ts,
+          tests/lint-no-leaky-test-daemon.test.ts snippets. Commands run: git diff/log/merge-base,
+          kspec task get, kspec item get, kspec review get/add/open, AC annotation rg, focused npm
+          test, full npm test, kspec validate refs/completeness, custom oxlint probes. Claims
+          verified: previous ownership blocker fixed for literal pid/unrelated child/imported pid
+          tests, but member-expression pid probe remains false negative. Categories searched:
+          correctness, edge cases, error handling/diagnostics, test quality, integration."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-09T18:52:57.557Z
+        completed_at: 2026-05-09T18:52:57.557Z
     events:
       - _ulid: 01KR70M9CTMESV86BFQ9994QZC
         actor: Jacob Chapel
@@ -197210,6 +197227,13 @@ reviews:
           status: fail
           name: reviewer oxlint ownership probes
         timestamp: 2026-05-09T18:52:55.091Z
+      - _ulid: 01KR71BVM82CFTJY9EMR1TBQ2N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-09T18:52:58.888Z
     examined_commit: e21bfac48a49698d8ad5dbf05b9e907666203555
     external_links: []
     lifecycle_state: open
@@ -197253,5 +197277,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T18:40:06.555Z
-    updated_at: 2026-05-09T18:52:53.742Z
+    updated_at: 2026-05-09T18:52:57.557Z
     notes: []
