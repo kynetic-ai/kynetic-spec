@@ -193428,6 +193428,13 @@ reviews:
           status: pass
           name: full test suite
         timestamp: 2026-05-09T06:47:13.572Z
+      - _ulid: 01KR5QVCHZPDJ3DT9HCW5RK7BR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR5QVB9HXX8MRHYSZY0CQS7Q
+        timestamp: 2026-05-09T06:47:27.551Z
     examined_commit: ba3231821d9a05b7dbe546f10d7bb1fa6242dcbc
     external_links: []
     lifecycle_state: open
@@ -193461,7 +193468,25 @@ reviews:
               `onTestFinished` callback.'
             created_at: 2026-05-09T06:37:40.413Z
         kind: blocker
+      - _ulid: 01KR5QVB9HXX8MRHYSZY0CQS7Q
+        entries:
+          - _ulid: 01KR5QVB9JZH9STYFBC9MG3TK7
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: tools/eslint-rules/no-leaky-test-daemon.js;
+              tests/lint-daemon-test-guardrails.test.ts; tests/lint-no-leaky-test-daemon.test.ts;
+              tests/cli-serve.test.ts; kspec-agents.md. Commands run: kspec task get
+              @01KR3W7QAH8VZCH3A60NSB3HBN; kspec item get @daemon-test-guardrail-precision; kspec
+              item get @daemon-test-harness-guardrails; git diff/stat/name-only against dev; rg AC
+              annotations and cli-serve detach usages; kspec validate; targeted npm test; full npm
+              test; manual npx oxlint synthetic unrelated-cleanup probe. Claims verified: worker
+              removed ancestor-afterEach cleanup exemption and targeted guardrail tests pass;
+              cli-serve detach usages register local cleanup before awaits/expectations or use local
+              documented suppressions. Categories searched: correctness, edge cases, error handling,
+              test quality, AC coverage, integration. Finding: one blocker false negative for
+              unrelated onTestFinished cleanup."
+            created_at: 2026-05-09T06:47:26.258Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-09T06:34:39.293Z
-    updated_at: 2026-05-09T06:47:12.257Z
+    updated_at: 2026-05-09T06:47:26.258Z
     notes: []
