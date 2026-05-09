@@ -424,9 +424,18 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * True when an argument node is the daemon entry path — either the
-     * shared `DAEMON_ENTRY` identifier or a string literal that names
-     * `dist/daemon/index.js` (optionally inside a longer absolute path).
+     * True when an argument node is the daemon entry path — the shared
+     * `DAEMON_ENTRY` identifier, a string literal that names
+     * `dist/daemon/index.js` (optionally inside a longer absolute path),
+     * or a no-substitution template literal (e.g.
+     * `` spawn(`dist/daemon/index.js`, …) ``,
+     * `` execFile("node", [`dist/daemon/index.js`, …]) ``) whose raw text
+     * resolves to the same daemon entry path. The template-literal form
+     * resolves to the same string value at runtime, so it must classify
+     * the same way as the plain literal — silently accepting it would
+     * leave a documented daemon launch out of the guardrail and violate
+     * @daemon-test-guardrail-precision
+     * ac-direct-daemon-entry-invocations-flagged.
      */
     function isDaemonEntryArg(arg) {
       if (!arg) return false;
@@ -434,16 +443,109 @@ const noLeakyTestDaemon = {
         return true;
       }
       const literal = literalString(arg);
-      if (literal === null) return false;
-      return literal === DAEMON_ENTRY_LITERAL || literal.endsWith("/" + DAEMON_ENTRY_LITERAL);
-    }
-
-    function arrayArgContainsDaemonEntry(arrayArg) {
-      if (!arrayArg || arrayArg.type !== "ArrayExpression") return false;
-      for (const el of arrayArg.elements) {
-        if (el && isDaemonEntryArg(el)) return true;
+      if (literal !== null) {
+        return literal === DAEMON_ENTRY_LITERAL || literal.endsWith("/" + DAEMON_ENTRY_LITERAL);
+      }
+      const tmpl = templateLiteralRaw(arg);
+      if (tmpl !== null) {
+        // Only no-substitution templates resolve statically — an
+        // interpolated `${…}` placeholder appears in the raw text as the
+        // literal `${...}` token and disqualifies the equality / suffix
+        // check, mirroring the literal branch's strictness.
+        return tmpl === DAEMON_ENTRY_LITERAL || tmpl.endsWith("/" + DAEMON_ENTRY_LITERAL);
       }
       return false;
+    }
+
+    /**
+     * Resolve a child-process argv ArrayExpression element to a string when
+     * the element is statically a string Literal or a TemplateLiteral
+     * (raw text with `${...}` placeholders preserved). Returns null for
+     * Identifier elements (e.g. `flag`, `DAEMON_ENTRY`), SpreadElement,
+     * and any other expression shape the rule cannot statically read.
+     *
+     * Used by the spawn-like argv-array script-position walk to classify
+     * each element by token shape (no-script flag / value-consuming flag /
+     * standalone flag / script position). Opaque elements that don't
+     * resolve to a string are treated as the script position by the
+     * walker — this is conservative because the script slot then fails
+     * the daemon-entry check unless the element itself is the DAEMON_ENTRY
+     * identifier or a daemon-entry literal/template (handled by
+     * `isDaemonEntryArg`).
+     */
+    function argvElementToString(el) {
+      if (!el) return null;
+      const literal = literalString(el);
+      if (literal !== null) return literal;
+      const tmpl = templateLiteralRaw(el);
+      if (tmpl !== null) return tmpl;
+      return null;
+    }
+
+    /**
+     * Walk the elements of a spawn/spawnSync/execFile/execFileSync argv
+     * ArrayExpression and return the index of the first element in the
+     * runtime's "script-position" — i.e. the element the runtime would
+     * treat as the script path to execute. Mirrors the
+     * `exec`/`execSync` shell-string walker so that
+     * `spawn("node", ["--require", "./pre.js", DAEMON_ENTRY, "--port", "0"])`
+     * classifies the same as
+     * `exec("node --require ./pre.js dist/daemon/index.js --port 0")`.
+     *
+     * Three classes of preceding elements are modelled:
+     *
+     *   1. No-script flags (`-e`, `--eval`, `-p`, `--print`,
+     *      `--eval=...`, `--print=...`, `-v`, `--version`, `-h`,
+     *      `--help`) → return -1 to abort. The runtime evaluates inline
+     *      source, prints info, or exits without launching any script,
+     *      so a daemon-entry token after them is not a daemon launch.
+     *      Without modelling these, the argv-array branch was reporting
+     *      `spawn("node", ["--eval", DAEMON_ENTRY])` and
+     *      `execFile("node", ["--version", DAEMON_ENTRY])` as direct
+     *      daemon launches (the false-positive blocker from review
+     *      cycle 9).
+     *   2. Value-consuming option flags (`--require ./pre.js`,
+     *      `-r ./pre.js`, `--conditions production`, `--input-type
+     *      module`, etc., with whitespace-separated value) → skip the
+     *      flag AND the next element, then continue. Without this, the
+     *      walker would mistake the option's value (e.g. `./pre.js`)
+     *      for the script and silently accept real launches like
+     *      `spawn("node", ["--require", "./pre.js", DAEMON_ENTRY])`.
+     *   3. Standalone flag tokens (anything else starting with `-`,
+     *      including `--enable-source-maps`, `--inspect`,
+     *      `--inspect-brk=...`, the `--` argument separator, and the
+     *      bundled `--require=./pre.js` form) → skip the element and
+     *      continue.
+     *
+     * The first element that does NOT match a flag class is the script
+     * position. Opaque elements (identifiers, spreads, computed
+     * expressions whose static value the rule cannot read) also become
+     * the script position — the walker then defers to
+     * `isDaemonEntryArg` to decide whether that opaque element is the
+     * daemon entry. This conservative treatment prefers a missed launch
+     * (false negative) over a false-positive on a non-daemon argv that
+     * happens to follow a flag.
+     */
+    function findScriptPositionInArgvArray(arrayArg) {
+      if (!arrayArg || arrayArg.type !== "ArrayExpression") return -1;
+      const elements = arrayArg.elements;
+      for (let i = 0; i < elements.length; i += 1) {
+        const el = elements[i];
+        if (!el) continue;
+        const tokenStr = argvElementToString(el);
+        if (tokenStr !== null) {
+          if (isShellRuntimeNoScriptFlag(tokenStr)) return -1;
+          if (isShellRuntimeFlagConsumingValue(tokenStr)) {
+            // Consume the flag's value; if there is no next element the
+            // walk simply ends.
+            i += 1;
+            continue;
+          }
+          if (isShellRuntimeFlagToken(tokenStr)) continue;
+        }
+        return i;
+      }
+      return -1;
     }
 
     /**
@@ -566,14 +668,48 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * Strip a single matched pair of leading + trailing single OR double
+     * quotes from a shell-command token. The Bourne-shell (and POSIX-sh)
+     * convention is that quoted tokens like `'dist/daemon/index.js'` and
+     * `"node"` resolve to the inner string when the shell executes the
+     * command, so static analysis must treat them the same as the bare
+     * forms when classifying script-path or executable positions.
+     *
+     * Only a fully-matched outer quote pair is stripped — `'foo` (just a
+     * leading quote) and `script's` (an apostrophe in the middle of a
+     * token) are returned unchanged. Mixed pairs (`"foo'`) are also not
+     * stripped because they would not parse as a single shell token in
+     * the first place.
+     *
+     * Without this normalisation,
+     * `exec("'dist/daemon/index.js' --port 0")` and
+     * `exec("node 'dist/daemon/index.js' --port 0")` are silently
+     * accepted (false negatives that violate
+     * @daemon-test-guardrail-precision
+     * ac-direct-daemon-entry-invocations-flagged).
+     */
+    function stripShellQuotes(token) {
+      if (typeof token !== "string" || token.length < 2) return token;
+      const first = token[0];
+      const last = token[token.length - 1];
+      if ((first === "'" || first === '"') && first === last) {
+        return token.slice(1, -1);
+      }
+      return token;
+    }
+
+    /**
      * True when the leading whitespace-separated token of a shell command
      * string is the kspec CLI (bare `kspec` or a path ending in `/kspec`).
+     * The leading token is normalised through `stripShellQuotes` so that
+     * `exec("'kspec' serve start --detach")` classifies the same as the
+     * bare form.
      */
     function shellCommandLeadsWithKspec(text) {
       if (typeof text !== "string") return false;
       const trimmed = text.trim();
       if (trimmed.length === 0) return false;
-      const firstToken = trimmed.split(/\s+/)[0];
+      const firstToken = stripShellQuotes(trimmed.split(/\s+/)[0]);
       if (!firstToken) return false;
       return firstToken === "kspec" || firstToken.endsWith("/kspec");
     }
@@ -720,27 +856,45 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * True when a shell-command flag token puts the runtime into eval mode
-     * — the runtime evaluates a JavaScript source string instead of
-     * executing a script file. Recognises both bare forms (where the next
-     * token is the source string: `node --eval CODE`, `node -e CODE`) and
-     * the bundled `=` form (`node --eval=CODE`, `node --print=CODE`). When
-     * any of these appears in the runtime option position, NO script path
-     * will be executed by the runtime — `dist/daemon/index.js` after them
-     * is either the eval string (passing the path text to JS as code) or
-     * an argument forwarded to the eval'd code via process.argv, but not
-     * a script the runtime is launching.
+     * True when a runtime option flag causes the JS runtime to NOT execute
+     * a script file — anything appearing after such a flag is either ignored
+     * by the runtime, consumed as inline source, or forwarded as argv to
+     * already-evaluated code. The shell-string walker and the spawn-like
+     * argv-array walker both use this predicate to abort at the flag and
+     * report no daemon launch, even when a daemon-entry-shaped token follows.
      *
-     * The walk must abort on these flags and report no daemon launch,
-     * which closes the false-positive half of the review cycle 7 blocker
-     * (`exec("node --eval dist/daemon/index.js")` was previously reported
-     * as a direct daemon launch).
+     * Two classes are recognised:
      *
-     * `-p` / `--print` are siblings of `-e` / `--eval`: print evaluates
-     * the source and writes the result to stdout, with the same "no script
-     * executed" semantics.
+     *   1. Eval-mode flags: `-e` / `--eval` / `-p` / `--print` and the
+     *      bundled `--eval=...` / `--print=...` forms. The runtime
+     *      evaluates a JS source string instead of executing a script
+     *      file. A `dist/daemon/index.js` token after them is either the
+     *      eval source string (passing the path text to JS as code) or
+     *      an argv forwarded to the eval'd code via process.argv, never
+     *      a script the runtime launches. (Closed the false-positive half
+     *      of review cycle 7.)
+     *
+     *   2. Info-exit flags: `-v` / `--version` / `-h` / `--help`. The
+     *      runtime prints the requested info and exits with code 0
+     *      without executing any script. A daemon-entry token after them
+     *      is silently ignored by the runtime (Node's `--version` does
+     *      not even read its trailing argv positionally), so reporting
+     *      such a call as a direct daemon launch is a false positive.
+     *      (Closed the spawn/execFile argv-array half of review cycle 9
+     *      — the reviewer's probe was
+     *      `execFile("node", ["--version", DAEMON_ENTRY])`.)
+     *
+     * Other no-script-but-script-shaped flags (`--check` / `-c`,
+     * `--syntax-check`) are intentionally NOT modelled here — they
+     * accept a script positional but only parse it, which still requires
+     * the script path token. False positives on the parse-only forms are
+     * recoverable by the shared-fixture exception or a localized
+     * disable, so adding them would just trade one form of imprecision
+     * for another. Keep this set conservative; only add new entries when
+     * a documented runtime option both (a) appears in current Node/Bun
+     * CLI docs and (b) prevents script execution outright.
      */
-    function isShellRuntimeEvalFlag(token) {
+    function isShellRuntimeNoScriptFlag(token) {
       if (typeof token !== "string") return false;
       return (
         token === "-e" ||
@@ -748,7 +902,11 @@ const noLeakyTestDaemon = {
         token === "-p" ||
         token === "--print" ||
         token.startsWith("--eval=") ||
-        token.startsWith("--print=")
+        token.startsWith("--print=") ||
+        token === "-v" ||
+        token === "--version" ||
+        token === "-h" ||
+        token === "--help"
       );
     }
 
@@ -756,18 +914,23 @@ const noLeakyTestDaemon = {
      * Tokenise a shell-command argument's text. Returns the
      * whitespace-separated tokens of a string Literal or a TemplateLiteral
      * with `${...}` placeholders preserved (so an interpolated value cannot
-     * accidentally satisfy a token check). Returns null when the argument is
-     * not a string-shaped node the rule can read statically.
+     * accidentally satisfy a token check). Each token is normalised via
+     * `stripShellQuotes` so quoted forms like `'dist/daemon/index.js'` and
+     * `"node"` classify the same as the bare equivalents — without this,
+     * `exec("'dist/daemon/index.js' --port 0")` and
+     * `exec("node 'dist/daemon/index.js'")` would be silently accepted.
+     * Returns null when the argument is not a string-shaped node the rule
+     * can read statically.
      */
     function shellCommandTokens(arg) {
       if (!arg) return null;
       const literal = literalString(arg);
       if (literal !== null) {
-        return literal.trim().split(/\s+/).filter(Boolean);
+        return literal.trim().split(/\s+/).filter(Boolean).map(stripShellQuotes);
       }
       const tmpl = templateLiteralRaw(arg);
       if (tmpl !== null) {
-        return tmpl.trim().split(/\s+/).filter(Boolean);
+        return tmpl.trim().split(/\s+/).filter(Boolean).map(stripShellQuotes);
       }
       return null;
     }
@@ -784,18 +947,29 @@ const noLeakyTestDaemon = {
      *     args[0] to be a recognised JS runtime (`node` / `bun`, bare or
      *     path-suffixed, or the `process.execPath` MemberExpression for
      *     the currently-running Node interpreter) and the argv array
-     *     (args[1]) to contain the daemon entry. Restricting args[0] to
-     *     a recognised runtime is what stops false positives like
-     *     `spawn("cat", [DAEMON_ENTRY])` or `execFile("grep",
-     *     [DAEMON_ENTRY, "src/"])` — those subprocesses consume the
-     *     daemon path as data, not as a script to execute, and must not
-     *     be reported as daemon launches. The direct-executable form
-     *     passes the daemon entry as the first arg itself; argv may be
-     *     omitted or an array of forwarded flags. The direct-executable
-     *     form matters because a daemon entry built with a shebang is
-     *     directly invokable, and `execFile(DAEMON_ENTRY, [...])` /
-     *     `spawn(DAEMON_ENTRY, [...])` launches the compiled daemon the
-     *     same as the runtime form.
+     *     (args[1]) to contain the daemon entry in the runtime's script
+     *     position. The argv-array script-position walk mirrors the
+     *     exec/execSync shell-string walker (see
+     *     `findScriptPositionInArgvArray`): standalone flags are skipped,
+     *     value-consuming flags (`--require`, `-r`, `--conditions`, …)
+     *     skip the flag AND its separately-passed value, no-script flags
+     *     (`-e` / `--eval`, `-p` / `--print`, `-v` / `--version`, `-h` /
+     *     `--help` and the `--eval=…` / `--print=…` forms) abort the walk
+     *     and report no launch. Restricting args[0] to a recognised
+     *     runtime stops false positives like `spawn("cat", [DAEMON_ENTRY])`
+     *     or `execFile("grep", [DAEMON_ENTRY, "src/"])`; the
+     *     script-position walk additionally stops false positives like
+     *     `execFile("node", ["--version", DAEMON_ENTRY])` and
+     *     `spawn("node", ["--eval", "dist/daemon/index.js"])` where the
+     *     runtime is invoked but no script is launched (the false-positive
+     *     blocker from review cycle 9).
+     *
+     *     The direct-executable form passes the daemon entry as the first
+     *     arg itself; argv may be omitted or an array of forwarded flags.
+     *     The direct-executable form matters because a daemon entry built
+     *     with a shebang is directly invokable, and
+     *     `execFile(DAEMON_ENTRY, [...])` / `spawn(DAEMON_ENTRY, [...])`
+     *     launches the compiled daemon the same as the runtime form.
      *   - `fork`
      *     First arg is the module path. The daemon entry must be that
      *     first arg directly — argv elements are forwarded, not executed.
@@ -871,7 +1045,6 @@ const noLeakyTestDaemon = {
           };
         }
         if (args.length < 2) return null;
-        if (!arrayArgContainsDaemonEntry(args[1])) return null;
         // Restrict the runtime form to recognised JS runtimes so that
         // `spawn("cat", [DAEMON_ENTRY])` and `execFile("grep",
         // [DAEMON_ENTRY, "src/"])` — where the daemon path is consumed as
@@ -880,6 +1053,22 @@ const noLeakyTestDaemon = {
         // branch which requires the leading shell token to be `node` or
         // `bun`.
         if (!isRecognisedRuntimeArg(args[0])) return null;
+        // Walk the argv array's elements with the same script-position
+        // model as the exec/execSync shell-string walker: skip standalone
+        // flags, skip value-consuming flags AND their separately-passed
+        // values, abort on no-script flags (eval / version / help). The
+        // first element in the script position must be the daemon entry
+        // for this to count as a daemon launch — without the walk,
+        // `execFile("node", ["--version", DAEMON_ENTRY])` and
+        // `spawn("node", ["--eval", "dist/daemon/index.js"])` were
+        // silently mis-reported as direct daemon launches even though
+        // neither runs the daemon (the false-positive blocker from
+        // review cycle 9).
+        const arrayArg = args[1];
+        if (!arrayArg || arrayArg.type !== "ArrayExpression") return null;
+        const scriptIdx = findScriptPositionInArgvArray(arrayArg);
+        if (scriptIdx === -1) return null;
+        if (!isDaemonEntryArg(arrayArg.elements[scriptIdx])) return null;
         const runtimeLiteral = literalString(args[0]);
         let runtimeDescriptor;
         if (runtimeLiteral !== null) {
@@ -955,8 +1144,10 @@ const noLeakyTestDaemon = {
         if (!isRecognisedShellRuntimeToken(tokens[0])) return null;
         let scriptIdx = -1;
         for (let i = 1; i < tokens.length; i += 1) {
-          if (isShellRuntimeEvalFlag(tokens[i])) {
-            // Eval mode: runtime evaluates source, no script is launched.
+          if (isShellRuntimeNoScriptFlag(tokens[i])) {
+            // Eval-mode or info-exit flag: runtime evaluates inline
+            // source, prints info, or exits — no script is launched, so
+            // a daemon-entry token after it is not a daemon launch.
             return null;
           }
           if (isShellRuntimeFlagConsumingValue(tokens[i])) {
@@ -1356,7 +1547,6 @@ const noLeakyTestDaemon = {
  * `no-leaky-test-daemon/no-leaky-test-daemon`.
  */
 const TARGET_RULE_NAME = "no-leaky-test-daemon/no-leaky-test-daemon";
-const META_RULE_NAME = "no-leaky-test-daemon/localized-disable";
 const ALL_RULE_DIRECTIVE = /^\s*oxlint-(disable(?:-line|-next-line)?)(?=$|\s)\s*(.*?)\s*$/s;
 
 function findDisableDirective(rawValue) {
