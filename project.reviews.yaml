@@ -196044,3 +196044,29 @@ reviews:
     created_at: 2026-05-09T15:45:55.756Z
     updated_at: 2026-05-09T15:58:39.523Z
     notes: []
+  - _ulid: 01KR6QFSSGT6SZA00W662XTRM2
+    slugs: []
+    title: Review guardrail binding wrapper regressions
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR6QFSSFGJQC3R9N3X7H6A9H
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-09T16:00:22.319Z
+    examined_commit: f55e1f7acaf1cdea1f810f8f44083e6cc62c5a7c
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR6M7486ECC1PMNH725GJ0HR"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-09T16:00:22.320Z
+    updated_at: null
+    notes: []
