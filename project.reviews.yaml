@@ -194649,6 +194649,18 @@ reviews:
         runner: npx oxlint
         created_at: 2026-05-09T09:58:03.985Z
         completed_at: 2026-05-09T09:58:03.985Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exited 6 with repository-wide warnings only: schema OK, references OK;
+          warnings include deprecated refs, orphaned specs, status mismatches, missing AC coverage,
+          and invalid AC annotations. No task-specific schema/reference error observed."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-09T09:58:08.501Z
+        completed_at: 2026-05-09T09:58:08.501Z
     events:
       - _ulid: 01KR62HPJ8AEHXEHG0YV6DB481
         actor: Jacob Chapel
@@ -194684,6 +194696,13 @@ reviews:
           status: fail
           name: manual cleanup timing probes
         timestamp: 2026-05-09T09:58:05.490Z
+      - _ulid: 01KR62RJW2GHAVM25369QFTX68
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-09T09:58:10.050Z
     examined_commit: b1848893913ff9ca5e22b6ec20c23338f858d88a
     external_links: []
     lifecycle_state: open
@@ -194719,5 +194738,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T09:54:24.456Z
-    updated_at: 2026-05-09T09:58:03.985Z
+    updated_at: 2026-05-09T09:58:08.501Z
     notes: []
