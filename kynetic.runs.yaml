@@ -43281,7 +43281,7 @@ runs:
     started_at: 2026-05-09T15:56:51.399Z
     completed_at: 2026-05-09T15:58:42.740Z
   - _ulid: 01KR6QET72RA8VHQ68WSHVKB30
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -43329,7 +43329,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-09T16:01:21.571Z
-        completed_at: 2026-05-09T16:01:21.571Z
+        completed_at: 2026-05-09T16:01:41.082Z
+        notes: Captured friction observation @01KR6QHX about regression-only tasks conflicting with
+          green-suite merge gates. Did not capture shell interpolation because existing observations
+          already cover review CLI payload fragility.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T15:59:49.986Z
+    completed_at: 2026-05-09T16:01:41.082Z
