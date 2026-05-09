@@ -51,7 +51,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-add-detached-cleanup-timing-regressions"
@@ -72,7 +72,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-fix-detached-cleanup-timing-analysis/01kr3w7q
-session_id: null
+session_id: 01KR616TCS3TX7HNR1Q90N68KE
 history:
   - author: Jacob Chapel
     changes:
@@ -359,8 +359,21 @@ history:
         previous: 01KR5YS982Z0FBH3GD3MNH2TEA
     command: review-verdict-needs-work
     timestamp: 2026-05-09T09:27:43.602Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KR616TCS3TX7HNR1Q90N68KE
+        previous: null
+      started_at:
+        new: 2026-05-09T09:50:07.209Z
+        previous: 2026-05-09T09:12:25.945Z
+    command: task-start
+    timestamp: 2026-05-09T09:50:07.210Z
 created_at: 2026-05-08T13:25:37.233Z
-started_at: 2026-05-09T09:12:25.945Z
+started_at: 2026-05-09T09:50:07.209Z
 submitted_at: 2026-05-09T09:12:29.452Z
 todos: []
 automation: eligible
