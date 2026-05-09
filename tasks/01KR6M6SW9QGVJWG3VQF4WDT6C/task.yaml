@@ -220,7 +220,7 @@ description: >-
 spec_ref: "@daemon-test-startup-failure-hygiene"
 meta_ref: null
 plan_ref: "@plan-daemon-test-fixture-hardening"
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -231,6 +231,14 @@ tags:
   - guardrails
   - follow-up
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-tighten-daemon-hardening-specs/01kr6m6s
+  captured_at: 2026-05-09T15:18:59.862Z
+  commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KR6MV46BTX8AC00AWW6TRK2G
 history:
   - author: Jacob Chapel
@@ -265,7 +273,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-09T15:14:50.062Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-tighten-daemon-hardening-specs/01kr6m6s
+          captured_at: 2026-05-09T15:18:59.862Z
+          commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-09T15:18:59.867Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-09T15:18:59.867Z
 created_at: 2026-05-09T15:03:01.767Z
 started_at: 2026-05-09T15:14:50.061Z
+submitted_at: 2026-05-09T15:18:59.867Z
 todos: []
 automation: eligible
