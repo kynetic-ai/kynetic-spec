@@ -198542,6 +198542,17 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-09T22:17:36.338Z
         completed_at: 2026-05-09T22:17:36.338Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- kspec validate --completeness --warnings-ok: exited 0. Completeness warnings
+          are pre-existing repository-wide debt and allowed by --warnings-ok."
+        name: kspec validate completeness
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-09T22:17:47.046Z
+        completed_at: 2026-05-09T22:17:47.046Z
     events:
       - _ulid: 01KR7CCM50ZZCAK8PNHADYVRQA
         actor: Jacob Chapel
@@ -198583,6 +198594,13 @@ reviews:
           status: pass
           name: kspec validate refs
         timestamp: 2026-05-09T22:17:37.688Z
+      - _ulid: 01KR7D2X3F0HDGKBH3Q5V07PW9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate completeness
+        timestamp: 2026-05-09T22:17:48.399Z
     examined_commit: 08328dee7a47f0c5c2a9b172770ef237860f8f6d
     external_links: []
     lifecycle_state: open
@@ -198627,5 +198645,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T22:05:38.337Z
-    updated_at: 2026-05-09T22:17:36.338Z
+    updated_at: 2026-05-09T22:17:47.046Z
     notes: []
