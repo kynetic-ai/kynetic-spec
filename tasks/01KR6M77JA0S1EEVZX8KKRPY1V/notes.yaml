@@ -266,3 +266,50 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T22:18:38.078Z
+  - _ulid: 01KR7EWVJX8ANZY55TCZBREEE0
+    content: >-
+      Fix cycle 7: addressed the cycle-6 blocker on direct try/finally finalizer cleanup bypassing
+      ownership analysis in tools/eslint-rules/no-leaky-test-daemon.js. Root cause:
+      subtreeContainsDaemonCleanupCall only invoked cleanupCallbackBindingStatus when descent
+      crossed a registered-callback boundary, so a direct daemon-kill in a finalizer reached `if
+      (isDaemonCleanupCallExpression(node)) return true;` on shape alone. The reviewer's manual
+      probe (let pid; try { runKspec("serve start --detach"); expect(true).toBe(true); pid =
+      readPidFromFile(); } finally { process.kill(pid as number, "SIGTERM"); }) was accepted as
+      cleanup; that was the bug.
+
+
+      Implementation: added findDirectCleanupRegistrationUseNode and
+      directCleanupCallOwnsDetachedDaemon helpers. The direct-cleanup branch of
+      subtreeContainsDaemonCleanupCall now runs the same ownership rules as the registered-callback
+      path (concrete binding at registration site AND binding range[1] >= detachedStart), with the
+      implicit registration site set to the enclosing TryStatement (control crosses that boundary
+      before any in-try throw can fire the finalizer). When no enclosing try is found, the call
+      itself is the registration. UNVERIFIABLE_KILL_TARGET still rejects non-Identifier-rooted
+      targets up front.
+
+
+      Diagnostic: added findUnboundDirectCleanupCapture / scanFinalizerForUnboundDirectCleanup as a
+      parallel to findUnboundCleanupClosure so Program:exit emits cleanupClosureUnbound naming the
+      offending capture for the finalizer case too. The diagnostic message text already covers both
+      registration shapes since the underlying ownership rule is the same.
+
+
+      Test changes: added six regression tests in tests/lint-daemon-test-guardrails.test.ts under
+      the cleanup-bound-before-observation describe — cycle-6 probe (rejected), undeclared free pid
+      (rejected), stale pre-start literal pid (rejected), MemberExpression root predating start
+      (rejected), pid bound after start before try (allowed-narrow), const child = spawn before try
+      (allowed-narrow). The pre-existing tests/lint-no-leaky-test-daemon.test.ts "should allow serve
+      start --detach in try/finally with cleanup" used an undeclared free `pid`; the cycle-6
+      ownership leg correctly rejects that, so updated the test to capture pid into a const between
+      the start and the try block (the canonical safe shape).
+
+
+      Validation: focused lint suites 249 -> 255 passing tests with --fresh; full npm test 2419
+      suites / 9011 passing tests (5 pre-existing skips, 2001.2s); kspec validate --refs and
+      --completeness both pass with --warnings-ok (warnings unchanged from pre-existing repository
+      debt). Manual oxlint AC probe against the cycle-6 reviewer source: exit 1 with
+      cleanupClosureUnbound on `pid` (was 0/no warnings). Safe alternative (pid bound before try)
+      exits 0.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T22:49:27.389Z
