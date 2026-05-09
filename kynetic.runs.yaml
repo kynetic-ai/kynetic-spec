@@ -41603,7 +41603,7 @@ runs:
     completed_at: 2026-05-09T02:07:07.622Z
   - _ulid: 01KR58N7FKD43PBQKDZYBA361W
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -41616,7 +41616,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T02:23:48.554Z
-        completed_at: 2026-05-09T02:23:48.554Z
+        completed_at: 2026-05-09T02:24:09.487Z
+        notes: "Identified two high-confidence session observations: (1) shell-sensitive markdown/code in
+          review comment bodies is easy to corrupt when passed inline through the shell; (2)
+          adversarial manual probes are effective for reviewing static classifier changes even when
+          targeted and full suites pass. Both are repeatable patterns, not one-off guesses."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T02:24:09.487Z
+        completed_at: 2026-05-09T02:24:09.487Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T02:21:57.107Z
