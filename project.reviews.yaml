@@ -195538,6 +195538,18 @@ reviews:
         runner: npm-test
         created_at: 2026-05-09T12:50:47.197Z
         completed_at: 2026-05-09T12:50:47.197Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm run test:e2e -- tests/e2e/api-websocket.spec.ts
+          tests/e2e/connection.spec.ts passed: 11 tests. Build emitted existing Svelte warnings but
+          exited successfully."
+        name: Playwright daemon fixture slice
+        required: true
+        runner: playwright
+        created_at: 2026-05-09T12:50:59.229Z
+        completed_at: 2026-05-09T12:50:59.229Z
     events:
       - _ulid: 01KR6BS8YMS8VR7P8ZXH8E7VWN
         actor: Jacob Chapel
@@ -195587,6 +195599,13 @@ reviews:
           status: pass
           name: focused CLI lifecycle daemon tests
         timestamp: 2026-05-09T12:50:48.560Z
+      - _ulid: 01KR6CN2A7VHQ6Q2D4SC174QGG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Playwright daemon fixture slice
+        timestamp: 2026-05-09T12:51:00.551Z
     examined_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
     external_links: []
     lifecycle_state: open
@@ -195599,5 +195618,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-09T12:35:49.850Z
-    updated_at: 2026-05-09T12:50:47.197Z
+    updated_at: 2026-05-09T12:50:59.229Z
     notes: []
