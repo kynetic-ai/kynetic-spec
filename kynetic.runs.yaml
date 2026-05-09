@@ -43094,7 +43094,7 @@ runs:
     completed_at: 2026-05-09T12:34:14.766Z
   - _ulid: 01KR6CRSX5H5F503CMNM6TXQQX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -43109,7 +43109,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T12:53:53.180Z
-        completed_at: 2026-05-09T12:53:53.180Z
+        completed_at: 2026-05-09T12:54:22.419Z
+        notes: "Identified high-confidence items and checked against baseline/search results. Success:
+          validation-class review worked well when task text listed exact validation commands and
+          the reviewer recorded focused+full checks; already covered by existing success observation
+          @01KR6BP6 and related daemon validation observations, so no duplicate capture. Friction:
+          recording many review checks is repetitive; already covered by inbox @01KQEFTM and
+          @01KQ1272 plus observations @01KR2YBHW/@01KQ0FGC. Friction: reflect workflow baseline list
+          commands produce very large output in mature repos; already tracked by @01KQ8TTN.
+          Friction: workflow show examples missing run-ref is already tracked by
+          @01KR293G/@01KQ0RH7. No unique high-confidence new item."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T12:54:22.419Z
+        completed_at: 2026-05-09T12:54:22.419Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T12:53:03.013Z
