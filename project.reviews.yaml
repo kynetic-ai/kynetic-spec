@@ -195733,6 +195733,25 @@ reviews:
         runner: git
         created_at: 2026-05-09T15:33:31.314Z
         completed_at: 2026-05-09T15:33:31.314Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files/specs read: kspec-agents.md; task @01KR6M6SW9QGVJWG3VQF4WDT6C; specs
+          @daemon-test-startup-failure-hygiene and @daemon-test-guardrail-precision; spec notes for
+          both; tests/helpers/daemon.ts lines 640-790; tools/eslint-rules/no-leaky-test-daemon.js
+          lines 210-290, 360-455, 2180-2230, 2588-2608. Commands run: kspec task get; kspec item
+          get/status/notes; kspec validate --refs --warnings-ok; kspec validate --alignment
+          --warnings-ok; rg AC annotations; git diff --stat/name-only/check dev...HEAD; npm test.
+          Claims verified: new ACs present; both touched specs downgraded to in_progress; evidence
+          notes recorded; cited source gaps still match current code; no root source changes.
+          Categories searched: spec alignment, status/alignment, validation, test regression,
+          evidence quality, implementation/source context."
+        name: review evidence log
+        required: false
+        runner: codex
+        created_at: 2026-05-09T15:33:35.046Z
+        completed_at: 2026-05-09T15:33:35.046Z
     events:
       - _ulid: 01KR6N9QQN1YWQV55MA52EER1A
         actor: Jacob Chapel
@@ -195775,6 +195794,13 @@ reviews:
           status: pass
           name: git diff check
         timestamp: 2026-05-09T15:33:32.642Z
+      - _ulid: 01KR6NYSEZMBBZW1XH0DCP5WEV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-09T15:33:36.351Z
     examined_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
     external_links: []
     lifecycle_state: open
@@ -195787,5 +195813,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-09T15:22:06.453Z
-    updated_at: 2026-05-09T15:33:31.314Z
+    updated_at: 2026-05-09T15:33:35.046Z
     notes: []
