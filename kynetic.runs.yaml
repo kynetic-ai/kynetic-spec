@@ -44436,7 +44436,7 @@ runs:
     completed_at: 2026-05-09T23:11:12.555Z
   - _ulid: 01KR7J4D9BCXF64T93D7WSRSHH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -44455,7 +44455,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T23:48:07.861Z
-        completed_at: 2026-05-09T23:48:07.861Z
+        completed_at: 2026-05-09T23:48:18.865Z
+        notes: "Friction this cycle was a SPECIFIC INSTANCE of the existing observation @01KR7F2SW (Static
+          analysis security checks added to ONE code path silently bypass via OTHER paths): cycle-7
+          added the ownership check to direct try/finally cleanup but used the wrong
+          registration-site semantic (TryStatement instead of first in-try observation), AND left
+          subtreeContainsDaemonCleanupCall pruning IF inside finalizers. Two new bypasses on the
+          same predicate. No new friction observation warranted — this is more evidence for the
+          existing one. Multi-cycle reviewer-probe success pattern @01KR7F2SM also still applies
+          (now 8 cycles instead of 7)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T23:48:18.865Z
+        completed_at: 2026-05-09T23:48:18.865Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T23:46:00.619Z
