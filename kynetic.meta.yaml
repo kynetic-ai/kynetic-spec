@@ -18088,6 +18088,37 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-09T22:03:21.750Z
+  - _ulid: 01KR7F2SM2SZR9S1NY6BME41HE
+    type: success
+    content: "Multi-cycle reviewer-probe driven fix pattern (7 cycles on @01KR6M77
+      task-fix-guardrail-binding-wrapper-analysis). Each review cycle surfaced ONE precise manual
+      oxlint probe demonstrating a code path that bypassed the cleanup-binding ownership check
+      (registered-callback path, callback-local targets, member-expression roots, TS-wrapper unwrap,
+      null/undefined initializer unwrap, try/finally finalizer direct calls). The probe-driven
+      structure was high signal: each cycle the worker could land a targeted fix on the first
+      attempt with focused regression tests, and the cumulative result was a far more robust static
+      analysis than any single-pass implementation would have produced. Pattern: when the fix space
+      is unbounded (an AST analysis covering arbitrary user code), reviewer manual probes are more
+      effective than abstract review checklists."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T22:52:41.986Z
+  - _ulid: 01KR7F2SWC493H1V53WZ4Z0THN
+    type: friction
+    content: "Static analysis security checks added to ONE code path silently bypass via OTHER paths.
+      The no-leaky-test-daemon ownership check was originally added to cleanupCallbackBindingStatus
+      on the registered-callback entry, which left direct daemon-cleanup calls in try/finally
+      finalizers, member-expression kill targets, TS-wrapped initializers, and callback-local
+      targets as silent bypasses — each surfaced only via reviewer manual probes (cycles 1-7 on
+      @01KR6M77). Lesson for future static-analysis work: when a predicate grants a SAFE verdict,
+      audit every code path that can produce that verdict (every CallExpression site, every wrapper
+      unwrap, every binding-resolution branch) and apply the same security rule uniformly. Partial
+      enforcement is worse than visible omission because it gives false confidence."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T22:52:42.252Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
