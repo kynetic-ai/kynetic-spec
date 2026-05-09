@@ -194075,6 +194075,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR5Y32QP5QRB1KC09K3MNFWX
         timestamp: 2026-05-09T08:36:32.735Z
+      - _ulid: 01KR5Y3B0FGFPX3RVWZDT1TFN2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR5Y39FTRJ1Z3DVNR2VJ65B4
+        timestamp: 2026-05-09T08:36:39.567Z
     examined_commit: 3596de394cdc1fe00fc6152af520f6b98624fb61
     external_links: []
     lifecycle_state: open
@@ -194107,7 +194114,28 @@ reviews:
               violates @daemon-test-guardrail-precision ac-detached-cleanup-before-observation.'
             created_at: 2026-05-09T08:36:31.094Z
         kind: blocker
+      - _ulid: 01KR5Y39FTRJ1Z3DVNR2VJ65B4
+        anchor:
+          type: code
+          commit: 3596de394cdc1fe00fc6152af520f6b98624fb61
+          line_end: 495
+          line_start: 487
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR5Y39FTW6RGKYKGESMGCP15
+            author: Jacob Chapel
+            body: 'MUST-FIX: `isProcessOnExitRegistration` accepts any `process.on(...)` callback as cleanup
+              because it only checks that the function node is one of the call arguments; it does
+              not verify that the event is an exit or signal event. I verified a synthetic test with
+              `runKspec("serve start --detach --port 3456"); process.on("message", () =>
+              killPid(result.pid)); expect(true).toBe(true);` and oxlint exited 0 with no
+              `no-leaky-test-daemon` diagnostic. A `message` handler is not cleanup for the current
+              detached daemon before the later assertion, so this still allows a leak while claiming
+              cleanup was registered.'
+            created_at: 2026-05-09T08:36:38.010Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T08:32:44.638Z
-    updated_at: 2026-05-09T08:36:31.094Z
+    updated_at: 2026-05-09T08:36:38.010Z
     notes: []
