@@ -191282,6 +191282,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KR58G9D5R3B830WJ5F91HF0E
         timestamp: 2026-05-09T02:19:16.553Z
+      - _ulid: 01KR58HDB7JJDTWEWXNXQ2PPQF
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR58G9D5R3B830WJ5F91HF0E
+        timestamp: 2026-05-09T02:19:52.039Z
     examined_commit: 8c8228706ad1b4fecdf0a33e3ab51814af6c4e74
     external_links: []
     lifecycle_state: open
@@ -191744,8 +191750,20 @@ reviews:
               standalone runtime flags out of the value-consuming set and add a regression for at
               least this shape.
             created_at: 2026-05-09T02:19:15.237Z
+          - _ulid: 01KR58HC1MEBWDC0RN4T1369PX
+            author: Jacob Chapel
+            body: 'Corrected evidence for the blocker, after shell quoting mangled the initial entry: MUST-FIX:
+              the value-consuming flag table includes --use-openssl-ca, but Node treats that as a
+              standalone option. I verified with a temp script that node --use-openssl-ca probe.js
+              prints script-ran, so the next token is still the script path. A matching oxlint probe
+              containing exec("node --use-openssl-ca dist/daemon/index.js --port 0") returned status
+              0 with Found 0 warnings and 0 errors. This is a false negative for a direct daemon
+              entry launch and violates @daemon-test-guardrail-precision
+              ac-direct-daemon-entry-invocations-flagged. Please remove standalone flags such as
+              --use-openssl-ca from the value-consuming set and add a regression for this shape.'
+            created_at: 2026-05-09T02:19:50.707Z
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T02:08:59.965Z
-    updated_at: 2026-05-09T02:19:15.237Z
+    updated_at: 2026-05-09T02:19:50.707Z
     notes: []
