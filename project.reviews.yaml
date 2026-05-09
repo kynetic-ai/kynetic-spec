@@ -192364,7 +192364,63 @@ reviews:
     slugs: []
     title: Review fix guardrail daemon command classification (cycle 10)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts: 161 passed in 36.6s"
+        name: targeted guardrail tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-09T03:52:32.518Z
+        completed_at: 2026-05-09T03:52:32.518Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: 8914 passed, 5 skipped, 0 failed in 2000.8s"
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-09T03:52:35.846Z
+        completed_at: 2026-05-09T03:52:35.846Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npx oxlint tools/eslint-rules/no-leaky-test-daemon.js
+          tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts: 0
+          errors, 25 warnings"
+        name: changed-file oxlint
+        required: true
+        runner: oxlint
+        created_at: 2026-05-09T03:52:39.053Z
+        completed_at: 2026-05-09T03:52:39.053Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate: schema OK, references OK, skills OK; command exited 6 for repository-wide
+          warnings unrelated to this task"
+        name: kspec validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-09T03:52:42.301Z
+        completed_at: 2026-05-09T03:52:42.301Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: exec("node --require './pre load.js' dist/daemon/index.js --port 0") produced 0
+          diagnostics; execSync("node --check dist/daemon/index.js") produced a direct daemon launch
+          diagnostic. Both violate precision expectations.
+        name: manual classifier probes
+        required: true
+        runner: npx oxlint synthetic files
+        created_at: 2026-05-09T03:52:45.538Z
+        completed_at: 2026-05-09T03:52:45.538Z
     events:
       - _ulid: 01KR5D1THK5KZD1A2DQTXWPBCF
         actor: Jacob Chapel
@@ -192379,17 +192435,157 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T03:38:58.623Z
+      - _ulid: 01KR5DTY896FSQH3YXV8G5CBEN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR5DTX22TW8S6Y46N5CC980E
+        timestamp: 2026-05-09T03:52:27.146Z
+      - _ulid: 01KR5DV1F57TDCW9C2QA3VXY4K
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR5DV08MNMYMTZA7QJ5387AE
+        timestamp: 2026-05-09T03:52:30.437Z
+      - _ulid: 01KR5DV4V20TPFNF5CTHS664H9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted guardrail tests
+        timestamp: 2026-05-09T03:52:33.890Z
+      - _ulid: 01KR5DV7Y3Q9XRW5KBNXBSYN0G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-05-09T03:52:37.059Z
+      - _ulid: 01KR5DVB4B6QZDA9SX7X2RTV25
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file oxlint
+        timestamp: 2026-05-09T03:52:40.331Z
+      - _ulid: 01KR5DVE6B8ZN3GD04JY9HGE32
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-09T03:52:43.467Z
+      - _ulid: 01KR5DVHG9DW32V9HSMY8961C5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual classifier probes
+        timestamp: 2026-05-09T03:52:46.857Z
+      - _ulid: 01KR5DVMNKHGDH5P8R4EXWK2NC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR5DVKDEEE9KAMHACP0CR9YK
+        timestamp: 2026-05-09T03:52:50.099Z
+      - _ulid: 01KR5DVQR1QBEMZBRNMS236BE8
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-09T03:52:53.249Z
+      - _ulid: 01KR5DVQR1S9985WK1WQ2A3FSH
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T03:52:53.249Z
     examined_commit: f779610e0ae94922f64ca11cb04814507f8a6754
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KR5DTX22TW8S6Y46N5CC980E
+        anchor:
+          type: code
+          commit: f779610e0ae94922f64ca11cb04814507f8a6754
+          line_end: 934
+          line_start: 925
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR5DTX22S97NJQKM49YVHGB2
+            author: Jacob Chapel
+            body: "MUST-FIX: shellCommandTokens still tokenizes shell strings with a plain whitespace split, so
+              a direct daemon launch is missed whenever a value-consuming runtime flag has a quoted
+              value containing whitespace. Evidence: a synthetic oxlint file with exec(\"node
+              --require './pre load.js' dist/daemon/index.js --port 0\") exits 0 with no
+              no-leaky-test-daemon diagnostic, even though the shell runs node with the quoted
+              require value and then executes dist/daemon/index.js. Impact:
+              @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged is not
+              satisfied for a valid direct daemon-entry invocation shape."
+            created_at: 2026-05-09T03:52:25.922Z
+        kind: blocker
+      - _ulid: 01KR5DV08MNMYMTZA7QJ5387AE
+        anchor:
+          type: code
+          commit: f779610e0ae94922f64ca11cb04814507f8a6754
+          line_end: 910
+          line_start: 897
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR5DV08M9FTXF8ZR4Q7S8PEE
+            author: Jacob Chapel
+            body: 'MUST-FIX: the no-script flag classifier omits parse-only Node forms such as --check/-c, so
+              the rule reports a daemon launch for commands that only syntax-check the file and
+              never execute it. Evidence: a synthetic oxlint file with execSync("node --check
+              dist/daemon/index.js") exits 1 and reports Direct daemon entry launch, but node
+              --check only parses the script. Impact: the classifier no longer matches
+              daemon-starting behavior and creates a false positive contributors would need to
+              suppress for a non-daemon subprocess.'
+            created_at: 2026-05-09T03:52:29.204Z
+        kind: blocker
+      - _ulid: 01KR5DVKDEEE9KAMHACP0CR9YK
+        entries:
+          - _ulid: 01KR5DVKDEYJ9Y19GFK3CAECFQ
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: kspec-agents.md; task/spec context for
+              @01KR3W7PPVDFR8F03VQ6J54M3K, @daemon-test-guardrail-precision,
+              @daemon-test-harness-guardrails; prior review @01KR5A5ZXA291EYMNY60ZMTVSY;
+              tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-daemon-test-guardrails.test.ts;
+              tests/helpers/daemon.ts; tests/helpers/mock-daemon.ts;
+              tests/e2e/fixtures/test-base.ts; tests/e2e/fixtures/daemon-fixture.ts;
+              tests/daemon-api/helpers.ts; changed fixture tests and vitest.config.ts. Commands run:
+              git diff/name-status/stat; kspec validate; AC annotation rg; targeted npm test; full
+              npm test; changed-file oxlint; project lint; two synthetic oxlint probes. Claims
+              verified: worker's prior blocker fixes for template-literal daemon entries, argv
+              script-position walking, quoted simple shell tokens, and META_RULE_NAME removal were
+              checked against code/tests; targeted and full suites pass. Categories searched:
+              correctness, false positives, false negatives, shell-token edge cases, test quality,
+              fixture cleanup integration, config impact."
+            created_at: 2026-05-09T03:52:48.814Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-09T03:52:53.249Z
     created_at: 2026-05-09T03:38:44.148Z
-    updated_at: 2026-05-09T03:38:57.321Z
+    updated_at: 2026-05-09T03:52:53.249Z
     notes: []
