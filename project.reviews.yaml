@@ -194461,6 +194461,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T09:27:41.579Z
+      - _ulid: 01KR62748SZA9P0N8RP5BQ17D7
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR60K3YNAES3KXMKG662KD1H
+        timestamp: 2026-05-09T09:48:38.041Z
     examined_commit: a62471dde155c874df4a2c180e7877e6e55a5e4b
     external_links: []
     lifecycle_state: closed
@@ -194499,6 +194505,20 @@ reviews:
               expect call is inside a stored callback and cleanup is registered before later()
               executes.'
             created_at: 2026-05-09T09:20:45.544Z
+          - _ulid: 01KR6272Y9B19K7EE20F2M52YJ
+            author: "@claude"
+            body: "Fixed: subtreeContainsAwaitOrExpect now prunes descent into FunctionDeclaration /
+              FunctionExpression / ArrowFunctionExpression bodies unless the function is in callee
+              position of its parent CallExpression (an IIFE). Stored arrows like `const later = ()
+              => expect(true).toBe(true);` no longer count as straight-line observations, so an
+              in-flow onTestFinished registered before the actual invocation is correctly
+              recognised. Verified with the reviewer's exact probe: oxlint exits 0, the
+              missingCleanup false positive is gone. Symmetric to the cleanup walker's gating
+              (cleanup credits registered-callback bodies; observations credit IIFE bodies). Added
+              two negative regressions in tests/lint-no-leaky-test-daemon.test.ts (stored arrow with
+              expect, stored named function with expect) and one positive regression (IIFE expect
+              runs at this statement, must still flag)."
+            created_at: 2026-05-09T09:48:36.680Z
         kind: blocker
       - _ulid: 01KR60MH9RY9239MQ13KTTDG91
         anchor:
@@ -194551,5 +194571,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T09:27:41.579Z
     created_at: 2026-05-09T09:16:53.608Z
-    updated_at: 2026-05-09T09:27:41.579Z
+    updated_at: 2026-05-09T09:48:36.680Z
     notes: []
