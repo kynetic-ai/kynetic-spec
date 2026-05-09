@@ -28488,7 +28488,9 @@
   plan_ref: "@plan-daemon-test-fixture-hardening"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@task-fix-register-cleanup-failure-leak"
+    - "@task-fix-guardrail-binding-wrapper-analysis"
   priority: 3
   tags:
     - daemon-tests

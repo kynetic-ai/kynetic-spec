@@ -136,11 +136,23 @@ meta_ref: null
 plan_ref: "@plan-daemon-test-fixture-hardening"
 status: pending
 blocked_by: []
-depends_on: []
+depends_on:
+  - "@task-fix-register-cleanup-failure-leak"
+  - "@task-fix-guardrail-binding-wrapper-analysis"
 context: []
 priority: 3
 tags:
   - daemon-tests
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      depends_on:
+        new:
+          - "@task-fix-register-cleanup-failure-leak"
+          - "@task-fix-guardrail-binding-wrapper-analysis"
+        previous: []
+    command: task-set
+    timestamp: 2026-05-09T15:03:36.765Z
 created_at: 2026-05-09T15:03:19.169Z
 todos: []
