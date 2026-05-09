@@ -18833,7 +18833,7 @@ workspaces:
         head: c9e84cf090a02f85fdbba45cd9949d62bcfd8b44
         last_seen_at: 2026-05-09T12:05:04.983Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-resolve-cli-lifecycle-test-endpoints-01kr3w7s
-  - active_role: null
+  - active_role: worker
     base_branch_point: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
     bootstrap:
       status: succeeded
@@ -19169,7 +19169,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T12:20:45.785Z
+      updated_at: 2026-05-09T12:21:10.489Z
     integration:
       status: pending
       detail: null
@@ -19178,16 +19178,16 @@ workspaces:
       target_branch: dev
       target_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
       updated_at: 2026-05-09T12:20:45.785Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR3W7SPKCKPWKXD8SJHNZVHT"
     task_slug: task-validate-daemon-test-hardening
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-09T12:20:45.785Z
+      last_active_at: 2026-05-09T12:21:10.489Z
+      last_reconciled_at: 2026-05-09T12:21:10.489Z
       created_at: 2026-05-09T12:20:45.785Z
-      updated_at: 2026-05-09T12:21:09.688Z
+      updated_at: 2026-05-09T12:21:10.489Z
     workspace_id: dispatch-workspace-01KR3W7SPKCKPWKXD8SJHNZVHT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
