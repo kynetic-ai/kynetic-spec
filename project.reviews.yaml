@@ -194343,6 +194343,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T09:17:06.070Z
+      - _ulid: 01KR60K5J33W5C61YF94021TJ2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR60K3YNAES3KXMKG662KD1H
+        timestamp: 2026-05-09T09:20:15.427Z
     examined_commit: a62471dde155c874df4a2c180e7877e6e55a5e4b
     external_links: []
     lifecycle_state: open
@@ -194352,8 +194359,27 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR60K3YNAES3KXMKG662KD1H
+        anchor:
+          type: code
+          commit: a62471dde155c874df4a2c180e7877e6e55a5e4b
+          line_end: 789
+          line_start: 756
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR60K3YP40AFSQPPYBJSBCDG
+            author: Jacob Chapel
+            body: "MUST-FIX:  descends into unregistered function and arrow bodies, so  treats inert callback
+              code as an already-executed observation. Repro against this snapshot:  reports  even
+              though cleanup is registered before any executed observation. This violates the
+              precision requirement by rejecting a safe same-flow cleanup registration based on code
+              that has only been stored, not run. The cleanup walker already avoids this class of
+              false positive; the observation walker needs the same execution-position gating."
+            created_at: 2026-05-09T09:20:13.782Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T09:16:53.608Z
-    updated_at: 2026-05-09T09:17:04.732Z
+    updated_at: 2026-05-09T09:20:13.782Z
     notes: []
