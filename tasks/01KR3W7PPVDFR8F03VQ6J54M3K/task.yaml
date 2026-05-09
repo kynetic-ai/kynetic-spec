@@ -67,7 +67,7 @@ tags:
   - lint
   - daemon
 vcs_refs: []
-review_ref: "@01KR528J7Z95Y5EZCGD60NB55C"
+review_ref: "@01KR57XGHXEQ8FTVWDHGJJMXRM"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
@@ -517,6 +517,13 @@ history:
         previous: 2026-05-08T23:47:05.634Z
     command: task-submit
     timestamp: 2026-05-09T02:03:52.450Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KR57XGHXEQ8FTVWDHGJJMXRM"
+        previous: "@01KR528J7Z95Y5EZCGD60NB55C"
+    command: review-link
+    timestamp: 2026-05-09T02:09:03.332Z
 created_at: 2026-05-08T13:25:36.603Z
 started_at: 2026-05-09T02:03:48.907Z
 submitted_at: 2026-05-09T02:03:52.450Z
