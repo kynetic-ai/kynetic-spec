@@ -43865,7 +43865,7 @@ runs:
     started_at: 2026-05-09T18:37:34.351Z
     completed_at: 2026-05-09T18:38:26.083Z
   - _ulid: 01KR71DDCJHXK6Z55M81NRN21C
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -43906,10 +43906,13 @@ runs:
         started_at: 2026-05-09T18:55:29.629Z
         completed_at: 2026-05-09T18:55:32.711Z
         notes: "Discussion skipped: no untracked proposals to ask about."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-09T18:55:32.711Z
-        completed_at: 2026-05-09T18:55:32.711Z
+        completed_at: 2026-05-09T18:55:35.931Z
+        notes: "Capture skipped: no new observations or inbox items created because all high-confidence
+          reflection points were already covered."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T18:53:49.842Z
+    completed_at: 2026-05-09T18:55:35.931Z
