@@ -449,14 +449,20 @@ describe("kspec serve commands", () => {
     );
 
     // Best-effort PID cleanup in case the daemon child wrote a PID file
-    // before its listen() call failed.
-    if (existsSync(globalPidFilePath)) {
+    // before its listen() call failed. Cleanup must be REGISTERED
+    // unconditionally before any later observation; the conditional
+    // existence/parse checks belong inside the callback so the
+    // registration itself always happens. (Prior shape conditionally
+    // registered, leaving a leak window if the existsSync check ran
+    // before the daemon child wrote its pid.)
+    onTestFinished(() => {
+      if (!existsSync(globalPidFilePath)) return;
       const pidText = readTestOutputSync(globalPidFilePath).trim();
       const pid = parseInt(pidText, 10);
       if (Number.isFinite(pid) && pid > 0) {
-        onTestFinished(() => killPid(pid));
+        killPid(pid);
       }
-    }
+    });
 
     // Direct behavioral proof of the fix: nothing should ever come up on
     // the IPv6 loopback at this port. With the cycle-4 bug, the daemon

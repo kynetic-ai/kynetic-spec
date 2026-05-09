@@ -75,7 +75,21 @@
  *          `serve` and `start`.
  *      - The cleanup escape hatch is preserved here because tests of the
  *        CLI's own detach behavior have to use this path. Cleanup must
- *        be registered before the next `await` or `expect()`.
+ *        be an actual CallExpression with a daemon-cleanup shape —
+ *        `process.kill(...)`, `<expr>.kill("SIGTERM"|"SIGKILL"|"SIGINT", …)`,
+ *        `killPid(...)`, `stopDaemon(...)`, `stopMockDaemon(...)`, or a
+ *        kspec-CLI invocation whose args resolve to the `serve stop`
+ *        subcommand — and must be registered in the same control flow
+ *        before the next `await` or `expect()`. Token-only text like
+ *        `console.log("SIGTERM docs")` or
+ *        `const cleanupDocs = "killPid should be used later"` is NOT
+ *        cleanup: the substrings are data, not a runtime call (the
+ *        cycle-2 false-negative blocker on
+ *        `@daemon-test-guardrail-precision`
+ *        `ac-detached-cleanup-before-observation`). The same AST-based
+ *        predicate gates the try/finally finalizer escape hatch, so a
+ *        finalizer whose only statement is `console.log("SIGTERM docs")`
+ *        is correctly rejected.
  *
  *   3. Daemon URL construction from `localhost:<port>` (always flagged
  *      outside helper paths)
@@ -116,6 +130,29 @@ const HELPER_PATH_PATTERNS = [
 
 const FETCH_LIKE_CALLEES = new Set(["fetch"]);
 const WEBSOCKET_LIKE_CONSTRUCTORS = new Set(["WebSocket"]);
+
+/**
+ * Loopback host+port URL pattern used by the cleanup-timing observation
+ * gate (`subtreeContainsAwaitOrExpect`). Matches the common host forms a
+ * test would use to talk to a locally-running daemon — `localhost`,
+ * `127.0.0.1`, or `[::1]` — followed by an explicit port (digits or a
+ * `${...}` template-literal interpolation).
+ *
+ * Broader than the rule's `localhostDaemonUrl` reporting predicate
+ * (`carriesLocalhostPortUrl`), which is intentionally narrow and only
+ * names `localhost:` because that is the canonical test-fixture host.
+ * The observation gate must additionally recognise `127.0.0.1:` and
+ * `[::1]:` because tests legitimately use those (`tests/cli-serve.test
+ * .ts`, the cycle-5 reviewer's daemon-fetch probe), and the gate is
+ * used only to decide whether a `fetch` / `new WebSocket` between a
+ * detached daemon start and a cleanup registration is a daemon
+ * observation that the cleanup-timing rule cares about. A bare
+ * `fetch("https://example.com/health")` between the two is not a
+ * daemon observation and must not be credited (cycle-6 reviewer
+ * blocker).
+ */
+const DAEMON_HOST_PORT_URL_PATTERN =
+  /\/\/(?:localhost|127\.0\.0\.1|\[::1\]):(\d|\$\{)/;
 
 const DAEMON_ENTRY_LITERAL = "dist/daemon/index.js";
 const DAEMON_ENTRY_IDENTIFIER = "DAEMON_ENTRY";
@@ -170,11 +207,6 @@ const noLeakyTestDaemon = {
     if (HELPER_PATH_PATTERNS.some((pattern) => pattern.test(filename))) {
       return {};
     }
-
-    // Track whether we've seen afterEach with cleanup in the current describe
-    // scope (for the detached-serve cleanup check).
-    const describeStack = [];
-    let hasTopLevelAfterEachCleanup = false;
 
     function isInLifecycleHook(node, hookName) {
       let current = node.parent;
@@ -233,33 +265,6 @@ const noLeakyTestDaemon = {
       return false;
     }
 
-    /**
-     * Daemon-specific cleanup signals. Generic `kill` or `stop` alone do
-     * NOT qualify because they could be stopping unrelated fixtures.
-     */
-    function hasDaemonCleanupPattern(text) {
-      return (
-        text.includes("process.kill") ||
-        /\.kill\(\s*["']SIG/.test(text) ||
-        text.includes("SIGTERM") ||
-        text.includes("SIGKILL") ||
-        text.includes("SIGINT") ||
-        text.includes("killPid") ||
-        text.includes("stopDaemon") ||
-        text.includes("stopMockDaemon") ||
-        text.includes("serve stop")
-      );
-    }
-
-    function isAfterEachWithCleanup(node) {
-      if (node.type !== "CallExpression") return false;
-      if (node.callee.type !== "Identifier" || node.callee.name !== "afterEach") {
-        return false;
-      }
-      const text = context.sourceCode.getText(node);
-      return hasDaemonCleanupPattern(text);
-    }
-
     function hasCleanupAfter(node) {
       const body = findContainingBody(node);
       if (!body) return false;
@@ -281,11 +286,12 @@ const noLeakyTestDaemon = {
     function isInTryWithFinallyCleanup(node) {
       let current = node.parent;
       while (current) {
-        if (current.type === "TryStatement" && current.finalizer) {
-          const text = context.sourceCode.getText(current.finalizer);
-          if (hasDaemonCleanupPattern(text)) {
-            return true;
-          }
+        if (
+          current.type === "TryStatement" &&
+          current.finalizer &&
+          subtreeContainsDaemonCleanupCall(current.finalizer, false)
+        ) {
+          return true;
         }
         current = current.parent;
       }
@@ -326,25 +332,622 @@ const noLeakyTestDaemon = {
       return parent.range[0] <= target.range[0] && parent.range[1] >= target.range[1];
     }
 
+    /**
+     * True when a CallExpression's static shape matches an actual daemon
+     * cleanup operation:
+     *
+     *   - `process.kill(...)`            (MemberExpression callee)
+     *   - `<expr>.kill("SIGTERM"|"SIGKILL"|"SIGINT", ...)`
+     *     (any `.kill(...)` call whose first argument is one of the three
+     *     daemon-relevant kill signal literals — this is the
+     *     `child.kill("SIGTERM")` shape used by spawn/exec child handles)
+     *   - `killPid(...)` / `stopDaemon(...)` / `stopMockDaemon(...)`
+     *     (Identifier callees that are the project-recognised cleanup
+     *     helpers from tests/cli-serve.test.ts and tests/helpers/)
+     *   - `runKspec(...)` / `kspec(...)` whose args resolve to the
+     *     `serve stop` lifecycle subcommand (first two non-flag positional
+     *     tokens are exactly `serve` then `stop`)
+     *   - `exec(...)` / `execSync(...)` shell-string forms whose leading
+     *     token is the kspec executable and whose remaining tokens resolve
+     *     to `serve stop`
+     *   - `spawn(...)` / `spawnSync(...)` / `execFile(...)` / `execFileSync(...)`
+     *     argv-array forms with a kspec executable and a `serve stop`
+     *     subcommand path
+     *
+     * Only an actual call whose CALLEE matches one of these shapes counts.
+     * String literals containing kill-token substrings (e.g.
+     * `console.log("SIGTERM docs")`, `const cleanupDocs = "killPid should be
+     * used later"`) are NOT cleanup — the substring is data, not a runtime
+     * call. The reviewer's cycle-2 blocker probes (1) `console.log("SIGTERM
+     * docs");` immediately after a detached start, (2) a `const cleanupDocs
+     * = "killPid should be used later"` declaration, and (3) a `try { …
+     * detached start … } finally { console.log("SIGTERM docs"); }` finalizer
+     * all relied on token-only text matching. They are now correctly
+     * rejected because none of them contain a CallExpression with a
+     * cleanup-shaped callee.
+     */
+    function isDaemonCleanupCallExpression(node) {
+      if (!node || node.type !== "CallExpression") return false;
+      const callee = node.callee;
+      if (!callee) return false;
+
+      if (callee.type === "Identifier") {
+        const name = callee.name;
+        if (
+          name === "killPid" ||
+          name === "stopDaemon" ||
+          name === "stopMockDaemon"
+        ) {
+          return true;
+        }
+        if (name === "runKspec" || name === "kspec") {
+          const tokens = [];
+          for (const arg of node.arguments) {
+            for (const t of collectKspecHelperArgTokens(arg)) tokens.push(t);
+          }
+          return tokensResolveToServeStop(tokens);
+        }
+        if (name === "exec" || name === "execSync") {
+          const tokens = shellCommandTokens(node.arguments[0]);
+          if (!tokens || tokens.length === 0) return false;
+          const lead = tokens[0];
+          if (lead !== "kspec" && !lead.endsWith("/kspec")) return false;
+          return tokensResolveToServeStop(tokens.slice(1));
+        }
+        if (
+          name === "spawn" ||
+          name === "spawnSync" ||
+          name === "execFile" ||
+          name === "execFileSync"
+        ) {
+          if (!isKspecExecutableArg(node.arguments[0])) return false;
+          if (node.arguments.length < 2) return false;
+          return tokensResolveToServeStop(
+            collectArgvArrayTokens(node.arguments[1]),
+          );
+        }
+        return false;
+      }
+
+      if (
+        callee.type === "MemberExpression" &&
+        callee.property &&
+        callee.property.type === "Identifier"
+      ) {
+        const propName = callee.property.name;
+        // process.kill(...) — the canonical daemon-cleanup syscall in
+        // detached tests, called with the captured pid file contents.
+        if (
+          propName === "kill" &&
+          callee.object &&
+          callee.object.type === "Identifier" &&
+          callee.object.name === "process"
+        ) {
+          return true;
+        }
+        // <expr>.kill("SIG...") — typically a ChildProcess handle from
+        // `spawn(...)`. Require the first arg to be a daemon-relevant
+        // kill signal literal so unrelated `.kill("EVENT")` calls do
+        // NOT silently count as cleanup.
+        if (propName === "kill") {
+          const first = node.arguments[0];
+          if (
+            first &&
+            first.type === "Literal" &&
+            (first.value === "SIGTERM" ||
+              first.value === "SIGKILL" ||
+              first.value === "SIGINT")
+          ) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    /**
+     * The serve-stop counterpart to `tokensResolveToDetachedServe`: walk
+     * the kspec-args token list and confirm the first two non-flag
+     * positional tokens are exactly `serve` then `stop`. Used by the
+     * cleanup classifier to recognise `runKspec("serve stop ...")`,
+     * `exec("kspec serve stop ...")`, and `spawn("kspec", ["serve",
+     * "stop", ...])` as the in-flow CLI cleanup path.
+     */
+    function tokensResolveToServeStop(tokens) {
+      let positional1 = null;
+      let positional2 = null;
+      for (const token of tokens) {
+        if (typeof token !== "string" || token.length === 0) continue;
+        if (token[0] === "-") continue;
+        if (positional1 === null) positional1 = token;
+        else if (positional2 === null) positional2 = token;
+      }
+      return positional1 === "serve" && positional2 === "stop";
+    }
+
+    /**
+     * Set of recognised in-flow cleanup-registration wrapper names — call
+     * names whose callback argument is scoped to the CURRENT test and is
+     * guaranteed to run after the test body finishes (success or failure).
+     * A daemon-cleanup-shaped CallExpression nested inside one of these
+     * callbacks is counted as registered cleanup; a daemon-cleanup-shaped
+     * CallExpression nested inside an arbitrary unregistered function or
+     * arrow body is NOT — that body is just code stored in a binding or
+     * passed to an unrelated callee, never invoked, so the kill never runs.
+     *
+     * Coverage is intentionally narrow: vitest exposes per-test cleanup
+     * via `onTestFinished`, which registers a teardown for the currently
+     * running test and is invoked once that test settles. That is the
+     * only test-framework hook that scopes cleanup to the just-started
+     * detached daemon.
+     *
+     * The lifecycle hooks (`afterEach`, `afterAll`, `beforeEach`,
+     * `beforeAll`) are NOT recognised here because registering them
+     * inside a test body does not give the current test scoped cleanup
+     * for a daemon that was just started:
+     *   - `afterEach` registered inside `it(...)` is added to the parent
+     *     describe scope at runtime; vitest does not retroactively run
+     *     newly-registered hooks for the test that just registered them,
+     *     and even when it did, the registration itself can be skipped if
+     *     an earlier statement in the same test throws.
+     *   - `beforeEach` / `beforeAll` are setup hooks; their callbacks fire
+     *     before subsequent tests, not after the current test, so they
+     *     cannot tear down the daemon this test just started.
+     *   - `afterAll` runs only when the whole describe block finishes, so
+     *     a leaked daemon survives every other test in the file.
+     * The cycle-6 reviewer probe `runKspec("serve start --detach");
+     * beforeEach(() => killPid(result.pid)); expect(true).toBe(true);`
+     * relied on these hooks being recognised — accepting them silently
+     * left a detached daemon leaking on the straight-line path to the
+     * next observation (`@daemon-test-guardrail-precision`
+     * `ac-detached-cleanup-before-observation`).
+     *
+     * Bare names only — process.on("exit", ...) is matched separately by
+     * `isProcessOnExitRegistration` because it is a MemberExpression
+     * callee shape.
+     */
+    const CLEANUP_REGISTRATION_WRAPPER_NAMES = new Set([
+      "onTestFinished",
+    ]);
+
+    /**
+     * Set of Node `process` events whose callbacks WILL run when the
+     * process is shutting down or receiving a termination signal —
+     * registering a daemon-kill on one of these events does prevent the
+     * leak the rule is guarding against. Any other event (`message`,
+     * `disconnect`, `warning`, `unhandledRejection`, etc.) fires during
+     * normal IPC or error reporting and is not guaranteed to run before
+     * the test ends, so a kill registered there does NOT credit cleanup.
+     *
+     * The cycle-4 reviewer probe `process.on("message", () =>
+     * killPid(p))` previously credited cleanup because the predicate
+     * accepted any `process.on(...)` event. Constraining the event name
+     * to this set rejects that probe and keeps the legitimate
+     * `process.on("exit"|"SIGINT"|…)` patterns valid.
+     */
+    const PROCESS_EXIT_EVENT_NAMES = new Set([
+      "exit",
+      "beforeExit",
+      "SIGINT",
+      "SIGTERM",
+      "SIGHUP",
+      "SIGQUIT",
+      "SIGBREAK",
+    ]);
+
+    /**
+     * True when `callNode` is a `process.on(<exit-event>, <callback>)`
+     * registration whose callback argument is the same node passed in
+     * `callbackArg`, AND the event name is a string literal naming a
+     * process exit/signal event (see `PROCESS_EXIT_EVENT_NAMES`). Used
+     * by `isCleanupRegistrationCallback` to recognise the standard Node
+     * process-lifecycle cleanup pattern alongside the vitest hook names.
+     *
+     * The event name MUST be constrained — `process.on("message",
+     * killer)` is an IPC handler, not cleanup, and the callback may run
+     * during normal communication or never at all before the test ends.
+     * Crediting it as cleanup leaves the detached daemon leaking on the
+     * straight-line path to the next observation (cycle-4 reviewer
+     * blocker on `@daemon-test-guardrail-precision`
+     * `ac-detached-cleanup-before-observation`).
+     */
+    function isProcessOnExitRegistration(callNode, callbackArg) {
+      if (!callNode || callNode.type !== "CallExpression") return false;
+      const callee = callNode.callee;
+      if (!callee || callee.type !== "MemberExpression") return false;
+      if (!callee.object || callee.object.type !== "Identifier") return false;
+      if (callee.object.name !== "process") return false;
+      if (!callee.property || callee.property.type !== "Identifier") return false;
+      if (callee.property.name !== "on") return false;
+      if (!callNode.arguments.includes(callbackArg)) return false;
+      const eventArg = callNode.arguments[0];
+      if (!eventArg || eventArg.type !== "Literal") return false;
+      if (typeof eventArg.value !== "string") return false;
+      return PROCESS_EXIT_EVENT_NAMES.has(eventArg.value);
+    }
+
+    /**
+     * True when `fnNode` (a FunctionDeclaration, FunctionExpression, or
+     * ArrowFunctionExpression) is itself an argument to a recognised
+     * cleanup-registration wrapper call — i.e. its body WILL be invoked by
+     * the test framework at a defined cleanup boundary.
+     *
+     * Patterns recognised as registrations:
+     *   - `onTestFinished(<fn>)` — vitest per-test teardown, the only
+     *     hook that scopes cleanup to the current test.
+     *   - `process.on("exit"|"SIGTERM"|…, <fn>)` — Node process-lifecycle
+     *     teardown.
+     * Lifecycle hooks (`afterEach` / `afterAll` / `beforeEach` /
+     * `beforeAll`) are intentionally NOT recognised: registering one
+     * inside a test body does not give the current test scoped cleanup
+     * for a daemon that was just started (see
+     * `CLEANUP_REGISTRATION_WRAPPER_NAMES` for the rationale and the
+     * cycle-6 reviewer probe).
+     *
+     * The callback must occupy an ARGUMENT slot of the call (not the
+     * callee position), so an IIFE-shaped node like `(() => kill())()`
+     * — where the arrow is the callee, not an argument — is correctly
+     * NOT treated as a registration callback.
+     *
+     * Anything else — assignment to a binding, an element of an array,
+     * an argument to an unrelated callee like `console.log(() => …)` —
+     * means the function body is never invoked through this expression,
+     * so cleanup-shaped calls inside it MUST NOT count as registered
+     * cleanup. This is the cycle-3 reviewer's blocker case
+     * (`const cleanup = () => killPid(pid);` accepted as cleanup despite
+     * the arrow never being invoked).
+     */
+    function isCleanupRegistrationCallback(fnNode) {
+      if (!fnNode) return false;
+      const parent = fnNode.parent;
+      if (!parent || parent.type !== "CallExpression") return false;
+      // Argument-slot check: rejects IIFE callees, MemberExpression
+      // calls like obj.method(fn) where fn is metadata, etc.
+      if (!parent.arguments.includes(fnNode)) return false;
+      const callee = parent.callee;
+      if (!callee) return false;
+      if (
+        callee.type === "Identifier" &&
+        CLEANUP_REGISTRATION_WRAPPER_NAMES.has(callee.name)
+      ) {
+        return true;
+      }
+      return isProcessOnExitRegistration(parent, fnNode);
+    }
+
+    /**
+     * Walk an AST subtree and return true when any descendant CallExpression
+     * matches `isDaemonCleanupCallExpression` AT A POSITION THAT WILL
+     * ACTUALLY EXECUTE.
+     *
+     * Function and arrow bodies are descended ONLY when the function or
+     * arrow is itself an argument to a recognised cleanup-registration
+     * wrapper (see `isCleanupRegistrationCallback`). Bodies of unregistered
+     * functions, arrows assigned to a binding, callbacks passed to
+     * unrelated callees, methods on an unused object, etc. are NOT
+     * descended — code in them is stored, not executed, so a daemon-kill
+     * CallExpression inside is not registered cleanup.
+     *
+     * Non-AST keys (`parent`, `loc`, `range`, `start`, `end`, `type`,
+     * `tokens`, `comments`) are skipped so the walk is O(AST nodes) and
+     * does not recurse into source-position metadata.
+     *
+     * The cycle-3 reviewer's blocker case demonstrates the gating:
+     *
+     *   runKspec("serve start --detach --port 3456");
+     *   const cleanup = () => killPid(pid);   // unregistered arrow
+     *   expect(true).toBe(true);
+     *
+     * The arrow's body contains a `killPid(pid)` CallExpression that
+     * matches the cleanup shape, but the arrow is bound to `cleanup` and
+     * never invoked — so the detached daemon is left running when the
+     * assertion runs. The earlier walker descended into all function
+     * bodies and accepted the unregistered arrow as cleanup; this walker
+     * stops at the arrow because its parent is a VariableDeclarator, not
+     * a registration call, and correctly returns false so the missing-
+     * cleanup violation is reported.
+     *
+     * The valid `onTestFinished(() => killPid(pid))` shape still classifies
+     * as cleanup: the arrow's parent is a CallExpression whose callee
+     * Identifier is `onTestFinished`, so the walker descends into the
+     * arrow's body and finds the `killPid(pid)` call.
+     */
+    function subtreeContainsDaemonCleanupCall(node, insideRegisteredCallback) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") {
+        return false;
+      }
+      if (
+        node.type === "FunctionDeclaration" ||
+        node.type === "FunctionExpression" ||
+        node.type === "ArrowFunctionExpression"
+      ) {
+        if (!isCleanupRegistrationCallback(node)) {
+          return false;
+        }
+        // Inside a registered callback the framework invokes the body
+        // at the cleanup boundary, so the body executes — even if the
+        // body has its own internal conditionals. Conditional kill
+        // shapes inside a registered cleanup callback (a defensive
+        // guard like `if (pid) killPid(pid)`) ARE valid cleanup; the
+        // pruning below is therefore disabled once descent reaches a
+        // registered callback. The REGISTRATION itself, however, must
+        // still be unconditional in the surrounding scope (the cycle-4
+        // reviewer's `if (shouldCleanup) onTestFinished(...)` probe).
+        insideRegisteredCallback = true;
+      }
+      if (isDaemonCleanupCallExpression(node)) return true;
+
+      // Conditional control-flow shapes outside a registered callback:
+      // do NOT descend into branches whose execution is not guaranteed
+      // on the straight-line path between the detached daemon start
+      // and the next observation. Cleanup REGISTRATION that lives
+      // inside a conditional consequent/alternate, a loop body that
+      // may iterate zero times, a switch case, a logical short-circuit
+      // right-hand side, or a catch handler is not guaranteed to fire
+      // before the next test observation — semantically it is the
+      // same as no cleanup.
+      //
+      // The cycle-4 reviewer probes (`if (false) killPid(p)` and
+      // `if (shouldCleanup) onTestFinished(() => killPid(p))`) both
+      // relied on descent into a top-level conditional. Pruning here
+      // makes them flag, while the existing valid pattern of writing
+      // a defensive guard INSIDE a registered cleanup callback (e.g.
+      // `onTestFinished(() => { if (pid) killPid(pid); })`) keeps
+      // working because the `insideRegisteredCallback` flag flips when
+      // descent crosses the registration boundary.
+      if (!insideRegisteredCallback) {
+        if (node.type === "IfStatement") return false;
+        if (node.type === "ConditionalExpression") return false;
+        if (node.type === "LogicalExpression") {
+          // `a && b`, `a || b`, `a ?? b` — `b` may short-circuit. The
+          // left-hand side always runs, but cleanup written there
+          // would be deeply unidiomatic; skip the whole expression.
+          return false;
+        }
+        if (
+          node.type === "WhileStatement" ||
+          node.type === "DoWhileStatement" ||
+          node.type === "ForStatement" ||
+          node.type === "ForInStatement" ||
+          node.type === "ForOfStatement"
+        ) {
+          return false;
+        }
+        if (node.type === "SwitchStatement") return false;
+        if (node.type === "TryStatement") {
+          // The try block always begins executing, and the finalizer
+          // always runs, so cleanup in either is on the unconditional
+          // path. The handler runs only when an exception is thrown,
+          // so it is conditional — do not descend.
+          if (
+            node.block &&
+            subtreeContainsDaemonCleanupCall(node.block, false)
+          ) {
+            return true;
+          }
+          if (
+            node.finalizer &&
+            subtreeContainsDaemonCleanupCall(node.finalizer, false)
+          ) {
+            return true;
+          }
+          return false;
+        }
+      }
+
+      for (const key in node) {
+        if (
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        ) {
+          continue;
+        }
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (subtreeContainsDaemonCleanupCall(c, insideRegisteredCallback)) {
+              return true;
+            }
+          }
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
+          if (subtreeContainsDaemonCleanupCall(child, insideRegisteredCallback)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    /**
+     * True when a sibling statement (after a detached daemon start, before
+     * the next observation) registers cleanup that targets the just-started
+     * daemon. Cleanup must be an actual CallExpression with a
+     * daemon-cleanup shape (see `isDaemonCleanupCallExpression`) AND must
+     * appear at a position that will execute — the walker descends into
+     * function/arrow bodies only when the function/arrow is itself an
+     * argument to a recognised cleanup-registration wrapper
+     * (`onTestFinished`, `process.on(<exit-event>, …)`). Lifecycle hooks
+     * (`afterEach`/`afterAll`/`beforeEach`/`beforeAll`) are intentionally
+     * not recognised; see `CLEANUP_REGISTRATION_WRAPPER_NAMES`. See
+     * `subtreeContainsDaemonCleanupCall`.
+     *
+     * Token-only text matches (e.g. `console.log("SIGTERM docs")`,
+     * `const cleanupDocs = "killPid should be used later"`) and
+     * cleanup-shaped calls inside an unregistered function body
+     * (e.g. `const cleanup = () => killPid(pid);` — the cycle-3 reviewer
+     * blocker) are NOT cleanup.
+     */
     function statementContainsCleanup(stmt) {
-      const text = context.sourceCode.getText(stmt);
-      return (
-        text.includes("onTestFinished") ||
-        text.includes("killPid") ||
-        (text.includes("process.kill") && text.includes("SIGTERM"))
-      );
+      return subtreeContainsDaemonCleanupCall(stmt, false);
     }
 
+    /**
+     * True when a sibling statement contains an `await`, a direct
+     * `expect(...)` call, or a daemon network observation — any of these
+     * is treated as the next "test observation" by `hasCleanupAfter`, so
+     * cleanup MUST be registered before this statement. The check is
+     * AST-based so kill-token text inside string literals and comments
+     * cannot mask it (the symmetric tightening to the cleanup predicate
+     * above).
+     *
+     * Observations recognised on the straight-line execution path:
+     *   - `AwaitExpression` — the next `await` is the closest synchronous
+     *     suspension point and rejects propagate as test failures.
+     *   - `expect(...)` — direct vitest expectation.
+     *   - `fetch(<daemon-url>)` — daemon network observation. Even an
+     *     unawaited fetch initiates an HTTP request to the daemon, so any
+     *     error (connection refused, abort) surfaces as a test failure
+     *     before a later cleanup registration can run (the cycle-5
+     *     reviewer blocker on `@daemon-test-guardrail-precision`
+     *     `ac-detached-cleanup-before-observation`: `fetch
+     *     ("http://127.0.0.1:3456/api/health")` between the detached
+     *     start and `onTestFinished` was not credited as an observation,
+     *     leaving the AC under-implemented for non-await daemon
+     *     observation calls). The cycle-6 reviewer blocker tightened this
+     *     gate to require a daemon URL — bare `fetch("https://example.com
+     *     /health")` between the detached start and `onTestFinished` is
+     *     NOT a daemon observation and must not trigger the cleanup-
+     *     timing report. URL detection reuses the rule's existing
+     *     `isFetchOfLocalhostUrl` predicate so the observation surface
+     *     stays aligned with the daemon-URL surface.
+     *   - `new WebSocket(<daemon-url>)` — daemon WebSocket observation.
+     *     The constructor opens a connection to the daemon synchronously,
+     *     so a connection failure surfaces before subsequent cleanup can
+     *     register. Same URL-filtered semantics as `fetch` — a
+     *     `new WebSocket("wss://example.com/...")` is not a daemon
+     *     observation.
+     *
+     * Stored function bodies are NOT on the straight-line path. The
+     * walker prunes descent into `FunctionDeclaration`,
+     * `FunctionExpression`, and `ArrowFunctionExpression` bodies unless
+     * the function is invoked immediately as an IIFE
+     * (`(() => expect(true).toBe(true))()`). The cycle-5 reviewer's
+     * blocker case demonstrates the gating:
+     *
+     *   runKspec("serve start --detach --port 3456");
+     *   const later = () => expect(true).toBe(true);  // STORED
+     *   const pid = readPidFromFile();
+     *   onTestFinished(() => killPid(pid));
+     *   later();
+     *
+     * The arrow's body contains `expect(true).toBe(true)` but the arrow
+     * is bound to `later` and only invoked after cleanup is registered.
+     * The earlier walker descended into all function/arrow bodies and
+     * treated stored expects as observations, falsely reporting
+     * `missingCleanup` when cleanup IS registered before the function is
+     * actually invoked. This walker stops at the arrow because its
+     * parent is a `VariableDeclarator`, not an immediately-invoked
+     * CallExpression in callee position, and correctly continues so the
+     * later `onTestFinished(...)` registration is recognised as
+     * cleanup.
+     *
+     * Symmetric to the cleanup walker (`subtreeContainsDaemonCleanupCall`):
+     * cleanup gating accepts function bodies registered as cleanup
+     * callbacks (run at teardown); observation gating accepts function
+     * bodies invoked immediately (run at this statement).
+     */
     function statementContainsAwaitOrExpect(stmt) {
-      const text = context.sourceCode.getText(stmt);
-      return text.includes("await ") || text.includes("expect(");
+      return subtreeContainsAwaitOrExpect(stmt);
     }
 
-    function hasAncestorAfterEachCleanup() {
-      return (
-        hasTopLevelAfterEachCleanup ||
-        describeStack.some((d) => d.hasAfterEachCleanup)
-      );
+    /**
+     * True when a function/arrow node is in the callee position of its
+     * parent CallExpression — i.e. an IIFE such as `(() => …)()` whose
+     * body executes at this statement. Arrows or functions in argument
+     * slots, on the right-hand side of an assignment, in array elements,
+     * or anywhere else are stored, not invoked, and their bodies are
+     * NOT on the straight-line execution path.
+     */
+    function isImmediatelyInvokedFunctionExpression(fnNode) {
+      if (!fnNode) return false;
+      const parent = fnNode.parent;
+      if (!parent || parent.type !== "CallExpression") return false;
+      return parent.callee === fnNode;
+    }
+
+    function subtreeContainsAwaitOrExpect(node) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") {
+        return false;
+      }
+      // Function/arrow bodies are stored, not on the straight-line path
+      // — except IIFEs, where the body executes at this statement.
+      if (
+        node.type === "FunctionDeclaration" ||
+        node.type === "FunctionExpression" ||
+        node.type === "ArrowFunctionExpression"
+      ) {
+        if (!isImmediatelyInvokedFunctionExpression(node)) {
+          return false;
+        }
+      }
+      if (node.type === "AwaitExpression") return true;
+      if (node.type === "CallExpression" && node.callee) {
+        if (
+          node.callee.type === "Identifier" &&
+          node.callee.name === "expect"
+        ) {
+          return true;
+        }
+        // Daemon network observation: a `fetch(<daemon-url>)` call where
+        // the first argument resolves to a loopback host+port URL. The
+        // URL filter is required (cycle-6 reviewer blocker) — a bare
+        // `fetch("https://example.com/health")` between the detached
+        // start and the cleanup registration is not a daemon
+        // observation, and crediting it produces a false positive on
+        // unrelated network calls. URL recognition uses the broader
+        // `isFetchOfDaemonHostUrl` predicate (matching `localhost:`,
+        // `127.0.0.1:`, and `[::1]:` host forms with explicit ports)
+        // because tests legitimately reach the daemon via
+        // `127.0.0.1:<port>` (the cycle-5 fetch regression test). The
+        // narrower `isFetchOfLocalhostUrl` reporting predicate is
+        // intentionally untouched. Member-form callees
+        // (`http.get(...)`, `axios.get(...)`, etc.) are not matched
+        // because the URL surface only recognises Identifier `fetch`.
+        if (isFetchOfDaemonHostUrl(node)) {
+          return true;
+        }
+      }
+      // Daemon WebSocket observation: `new WebSocket(<daemon-url>)`
+      // opens a connection synchronously. URL-filtered against the
+      // broader loopback-host predicate so a
+      // `new WebSocket("wss://example.com/...")` does not register as a
+      // daemon observation.
+      if (
+        node.type === "NewExpression" &&
+        isWebSocketCtorOfDaemonHostUrl(node)
+      ) {
+        return true;
+      }
+      for (const key in node) {
+        if (
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        ) {
+          continue;
+        }
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (subtreeContainsAwaitOrExpect(c)) return true;
+          }
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
+          if (subtreeContainsAwaitOrExpect(child)) return true;
+        }
+      }
+      return false;
     }
 
     /**
@@ -1590,10 +2193,31 @@ const noLeakyTestDaemon = {
     /**
      * Detached-serve check keeps the cleanup escape hatch — these tests
      * exist to exercise the CLI's --detach behavior itself.
+     *
+     * Cleanup is accepted only when registered in the SAME control flow
+     * before the next awaited operation, expectation, or daemon
+     * observation. The presence of an ancestor `afterEach` hook with a
+     * kill pattern is NOT proof that this specific detached daemon is
+     * cleaned up — when the captured pid/handle is bound only after an
+     * intervening `await` or `expect()`, an assertion failure leaves the
+     * binding null and the detached daemon is leaked. The two valid safe
+     * shapes are:
+     *
+     *   1. Register `onTestFinished` (or another in-flow cleanup
+     *      registration matching `hasCleanupAfter`) immediately after the
+     *      detached start and before any sibling await/expect.
+     *   2. Wrap the detached start in a `try { … } finally { kill … }`
+     *      whose finalizer carries a daemon-kill pattern, so the kill
+     *      runs even when an assertion or await throws.
+     *
+     * Tests that intentionally exercise the unsafe shape (e.g., the CLI's
+     * own --detach exit-ordering paths) must add a per-line
+     * `oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon
+     * -- <reason naming the behavior under test>` immediately above the
+     * offending statement (see the localized-disable companion rule).
      */
     function detachWithoutCleanup(node) {
       if (isInLifecycleHook(node, "afterEach")) return false;
-      if (hasAncestorAfterEachCleanup()) return false;
       if (hasCleanupAfter(node)) return false;
       if (isInTryWithFinallyCleanup(node)) return false;
       return true;
@@ -1626,18 +2250,40 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * Bindings whose declarator init or assignment RHS is a `localhost:<port>`
-     * URL string. Tracked per lexical scope and source position so a
+     * Bindings whose declarator init or assignment RHS is a daemon-shaped
+     * URL string. Two flags are tracked per binding so the narrower
+     * `localhostDaemonUrl` reporting predicate and the broader
+     * cleanup-timing observation gate can each ask the question they
+     * actually need:
+     *
+     *   - `isLocalhost` — true when the RHS matches the narrow
+     *     `localhost:<port>` pattern (`carriesLocalhostPortUrl`). Drives
+     *     the `localhostDaemonUrl` reporting at `fetch` / `new WebSocket`
+     *     call sites.
+     *   - `isDaemonHost` — true when the RHS matches the broader
+     *     loopback pattern (`carriesDaemonHostPortUrl`: `localhost:`,
+     *     `127.0.0.1:`, `[::1]:`). Drives the cleanup-timing observation
+     *     gate so a `const url = "http://127.0.0.1:3456/..."; fetch(url)`
+     *     between a detached daemon start and the cleanup registration
+     *     is recognised as a daemon observation (cycle-7 reviewer
+     *     blocker on @daemon-test-guardrail-precision
+     *     ac-detached-cleanup-before-observation). Without this the
+     *     observation gate would only see inline literals and
+     *     template-literal forms, missing the identifier-bound
+     *     127.0.0.1 / [::1] cases.
+     *
+     * Tracked per lexical scope and source position so a
      * `const url = `http://localhost:${port}/...`; fetch(url)` pattern is
      * flagged the same way as the inline form — without leaking across
-     * unrelated `it`/`test` blocks that happen to reuse the same identifier
-     * name. Walking outward from the use site picks the innermost binding
-     * whose source position is before the use; an inner non-localhost
-     * declaration shadows an outer localhost one, and a later non-localhost
-     * reassignment in the same scope overrides an earlier localhost binding.
+     * unrelated `it`/`test` blocks that happen to reuse the same
+     * identifier name. Walking outward from the use site picks the
+     * innermost binding whose source position is before the use; an
+     * inner non-loopback declaration shadows an outer loopback one, and
+     * a later non-loopback reassignment in the same scope overrides an
+     * earlier loopback binding.
      *
      * Map shape: identifier name → array of
-     *   { scopeNode, position, isLocalhost }.
+     *   { scopeNode, position, isLocalhost, isDaemonHost }.
      */
     const localhostUrlBindings = new Map();
 
@@ -1699,7 +2345,7 @@ const noLeakyTestDaemon = {
       return false;
     }
 
-    function recordBinding(name, anchorNode, isLocalhost) {
+    function recordBinding(name, anchorNode, isLocalhost, isDaemonHost) {
       const scopeNode = getEnclosingScopeNode(anchorNode);
       if (!scopeNode) return;
       const position = getNodeStart(anchorNode);
@@ -1709,14 +2355,14 @@ const noLeakyTestDaemon = {
         entries = [];
         localhostUrlBindings.set(name, entries);
       }
-      entries.push({ scopeNode, position, isLocalhost });
+      entries.push({ scopeNode, position, isLocalhost, isDaemonHost });
     }
 
     /**
      * Walk lexical scopes outward from `useNode` and return the most recent
      * binding for `name` whose declaration position is before the use. If a
      * function-scope parameter named `name` is encountered first, treat it
-     * as a non-localhost binding (parameters cannot be daemon-URL strings
+     * as a non-loopback binding (parameters cannot be daemon-URL strings
      * the rule has tracked). Returns null when no binding is in scope.
      */
     function findApplicableBinding(name, useNode) {
@@ -1727,7 +2373,7 @@ const noLeakyTestDaemon = {
       while (current) {
         if (isScopeNode(current)) {
           if (functionScopeShadowsName(current, name)) {
-            return { isLocalhost: false, viaParameter: true };
+            return { isLocalhost: false, isDaemonHost: false, viaParameter: true };
           }
           if (entries) {
             let candidate = null;
@@ -1752,6 +2398,21 @@ const noLeakyTestDaemon = {
       return binding !== null && binding.isLocalhost === true;
     }
 
+    /**
+     * True when `node` is an Identifier whose tracked binding RHS matches
+     * the broader loopback host+port pattern (`localhost:`, `127.0.0.1:`,
+     * or `[::1]:`). Used by the cleanup-timing observation gate so an
+     * identifier-bound daemon URL is recognised as a daemon observation
+     * — symmetric with the inline literal/template-literal path through
+     * `carriesDaemonHostPortUrl`. The narrower `isLocalhostUrlIdentifier`
+     * keeps driving the `localhostDaemonUrl` reporting predicate.
+     */
+    function isDaemonHostUrlIdentifier(node, useNode) {
+      if (!node || node.type !== "Identifier") return false;
+      const binding = findApplicableBinding(node.name, useNode);
+      return binding !== null && binding.isDaemonHost === true;
+    }
+
     function firstArgIsLocalhostUrl(node) {
       const firstArg = node.arguments[0];
       if (!firstArg) return false;
@@ -1773,10 +2434,95 @@ const noLeakyTestDaemon = {
       return firstArgIsLocalhostUrl(node);
     }
 
+    /**
+     * Inspect string-shaped arguments for a daemon URL where the host is
+     * any common loopback name (`localhost`, `127.0.0.1`, `[::1]`)
+     * paired with an explicit port. Used by the cleanup-timing
+     * observation gate (`subtreeContainsAwaitOrExpect`) which is
+     * intentionally broader than the rule's `localhostDaemonUrl`
+     * reporting predicate (`carriesLocalhostPortUrl`) — see
+     * `DAEMON_HOST_PORT_URL_PATTERN` for the rationale.
+     */
+    function carriesDaemonHostPortUrl(node) {
+      if (!node) return false;
+      if (node.type === "Literal" && typeof node.value === "string") {
+        return DAEMON_HOST_PORT_URL_PATTERN.test(node.value);
+      }
+      if (node.type === "TemplateLiteral") {
+        const parts = [];
+        for (let i = 0; i < node.quasis.length; i += 1) {
+          parts.push(node.quasis[i].value.raw);
+          if (i < node.expressions.length) {
+            parts.push("${...}");
+          }
+        }
+        return DAEMON_HOST_PORT_URL_PATTERN.test(parts.join(""));
+      }
+      return false;
+    }
+
+    /**
+     * True when the first argument of a `fetch(...)` or
+     * `new WebSocket(...)` call resolves to a daemon-host URL — either
+     * an inline literal/template literal carrying the loopback host+port
+     * pattern (`localhost:`, `127.0.0.1:`, `[::1]:`), or an Identifier
+     * whose tracked binding RHS matches the same broader pattern. The
+     * Identifier surface mirrors the literal surface via
+     * `isDaemonHostUrlIdentifier` (cycle-7 reviewer blocker on
+     * @daemon-test-guardrail-precision
+     * ac-detached-cleanup-before-observation): without it, a test could
+     * assign `const url = "http://127.0.0.1:3456/api/health"` and
+     * `fetch(url)` between a detached daemon start and cleanup
+     * registration without tripping the cleanup-timing rule.
+     *
+     * Used only by the cleanup-timing observation gate. The
+     * `localhostDaemonUrl` reporting predicate keeps using its narrower
+     * `firstArgIsLocalhostUrl` so the existing reporting behavior is
+     * unchanged.
+     */
+    function firstArgIsDaemonObservation(node) {
+      const firstArg = node.arguments[0];
+      if (!firstArg) return false;
+      if (carriesDaemonHostPortUrl(firstArg)) return true;
+      return isDaemonHostUrlIdentifier(firstArg, firstArg);
+    }
+
+    function isFetchOfDaemonHostUrl(node) {
+      if (node.type !== "CallExpression") return false;
+      if (!node.callee || node.callee.type !== "Identifier") return false;
+      if (!FETCH_LIKE_CALLEES.has(node.callee.name)) return false;
+      return firstArgIsDaemonObservation(node);
+    }
+
+    function isWebSocketCtorOfDaemonHostUrl(node) {
+      if (node.type !== "NewExpression") return false;
+      if (!node.callee || node.callee.type !== "Identifier") return false;
+      if (!WEBSOCKET_LIKE_CONSTRUCTORS.has(node.callee.name)) return false;
+      return firstArgIsDaemonObservation(node);
+    }
+
+    // Detached daemon-start CallExpressions found during traversal.
+    // The cleanup-timing analysis (`detachWithoutCleanup`) is deferred to
+    // `Program:exit` so that all `localhostUrlBindings` are recorded
+    // before forward statement scans resolve identifier-bound URL
+    // observations through `firstArgIsDaemonObservation`. Without
+    // deferral, the check at the daemon-start CallExpression entry
+    // would run before later `const url = "http://127.0.0.1:3456/..."`
+    // VariableDeclarator visits, leaving identifier-bound daemon URLs
+    // invisible to the observation gate (cycle-7 reviewer blocker on
+    // @daemon-test-guardrail-precision
+    // ac-detached-cleanup-before-observation).
+    const pendingDetachChecks = [];
+
     return {
       VariableDeclarator(node) {
         if (!node.id || node.id.type !== "Identifier" || !node.init) return;
-        recordBinding(node.id.name, node, carriesLocalhostPortUrl(node.init));
+        recordBinding(
+          node.id.name,
+          node,
+          carriesLocalhostPortUrl(node.init),
+          carriesDaemonHostPortUrl(node.init),
+        );
       },
 
       AssignmentExpression(node) {
@@ -1788,27 +2534,15 @@ const noLeakyTestDaemon = {
         ) {
           return;
         }
-        recordBinding(node.left.name, node, carriesLocalhostPortUrl(node.right));
+        recordBinding(
+          node.left.name,
+          node,
+          carriesLocalhostPortUrl(node.right),
+          carriesDaemonHostPortUrl(node.right),
+        );
       },
 
       CallExpression(node) {
-        if (
-          node.callee.type === "Identifier" &&
-          node.callee.name === "describe" &&
-          node.arguments.length >= 2
-        ) {
-          describeStack.push({ hasAfterEachCleanup: false });
-        }
-
-        if (isAfterEachWithCleanup(node)) {
-          if (describeStack.length > 0) {
-            describeStack[describeStack.length - 1].hasAfterEachCleanup = true;
-          } else {
-            hasTopLevelAfterEachCleanup = true;
-          }
-          return;
-        }
-
         // Direct daemon entry launch — always flagged outside helper paths,
         // including helper functions inside a non-helper test file.
         const daemonEntry = readDaemonEntryInvocation(node);
@@ -1829,19 +2563,15 @@ const noLeakyTestDaemon = {
           return;
         }
 
-        // Detached serve via the CLI — cleanup escape hatch preserved.
+        // Detached serve via the CLI — defer the cleanup-timing check
+        // to `Program:exit` so identifier-bound daemon URLs in later
+        // statements are resolved through their fully-populated
+        // `localhostUrlBindings` entries. The cleanup escape hatch
+        // (an unconditional same-flow registration via
+        // `onTestFinished` or a `try { ... } finally { kill }` block,
+        // or an ancestor `afterEach` hook) is preserved unchanged.
         if (isDetachCallExpression(node)) {
-          if (
-            !isInHelperFunction(node) &&
-            !isInLifecycleHook(node, "afterEach") &&
-            detachWithoutCleanup(node)
-          ) {
-            context.report({
-              node,
-              messageId: "missingCleanup",
-              data: { pattern: "serve start --detach" },
-            });
-          }
+          pendingDetachChecks.push(node);
           return;
         }
 
@@ -1865,15 +2595,22 @@ const noLeakyTestDaemon = {
         }
       },
 
-      "CallExpression:exit"(node) {
-        if (
-          node.callee.type === "Identifier" &&
-          node.callee.name === "describe" &&
-          node.arguments.length >= 2
-        ) {
-          describeStack.pop();
+      "Program:exit"() {
+        for (const node of pendingDetachChecks) {
+          if (
+            !isInHelperFunction(node) &&
+            !isInLifecycleHook(node, "afterEach") &&
+            detachWithoutCleanup(node)
+          ) {
+            context.report({
+              node,
+              messageId: "missingCleanup",
+              data: { pattern: "serve start --detach" },
+            });
+          }
         }
       },
+
     };
   },
 };
