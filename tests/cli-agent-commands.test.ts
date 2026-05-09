@@ -3734,6 +3734,33 @@ describe("AC-3: waitFor timeout floor and diagnostic messages", () => {
     expect(elapsed).toBeLessThan(2000);
     expect(elapsed).toBeGreaterThanOrEqual(100);
   });
+
+  it("should not hang past timeout when probe never settles", async () => {
+    // Regression: an unbounded probe (e.g. a fetch with no AbortSignal) used
+    // to block inside `await probe()` forever, so the loop budget never
+    // re-evaluated. The only break was the outer test timeout. Each probe
+    // call must be raced against the remaining wait budget.
+    const start = Date.now();
+    const err = await waitForStartup(
+      "never-settling-probe",
+      // The probe promise resolves after 60s — far past the wait budget.
+      () =>
+        new Promise<{ ok: boolean; details: string }>((resolveProbe) => {
+          setTimeout(() => resolveProbe({ ok: true, details: "would never run" }), 60_000);
+        }),
+      { timeoutMs: 200, intervalMs: 10 },
+    ).catch((e: Error) => e);
+    const elapsed = Date.now() - start;
+
+    expect(err).toBeInstanceOf(Error);
+    expect((err as Error).message).toMatch(/timed out/i);
+    expect((err as Error).message).toContain("never-settling-probe");
+    expect((err as Error).message).toContain("did not settle");
+    // Generous upper bound to absorb scheduling jitter on shared CI runners
+    // while still proving the wait did not actually block on the 60s probe.
+    expect(elapsed).toBeLessThan(5_000);
+    expect(elapsed).toBeGreaterThanOrEqual(200);
+  });
 });
 
 // AC: @test-suite-perf-reliability ac-4

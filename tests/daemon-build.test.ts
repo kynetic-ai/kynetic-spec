@@ -34,22 +34,36 @@ interface CommandFailureContext {
   result: SpawnSyncReturns<string>;
 }
 
+// `spawnSync` populates `result.error` when the runtime times out (ETIMEDOUT)
+// AND `result.signal` AND captures stdout/stderr up to the kill point. The
+// previous shape returned only `result.error.message` for any non-null error,
+// so the timeout path that this test was hardening against silently dropped
+// the tails the diagnostic bundle exists to capture. Always emit the tails;
+// classify the failure header based on whichever signals are present.
 function describeCommandFailure(ctx: CommandFailureContext): string {
   const { step, command, args, result } = ctx;
   const head = `${step}: \`${command} ${args.join(" ")}\``;
-  if (result.error) {
-    return `${head} threw before completion: ${result.error.message}`;
-  }
-  if (result.signal) {
-    return (
-      `${head} was killed by signal ${result.signal} ` +
-      `(spawnSync timeout=${BUILD_TIMEOUT_MS}ms reached). ` +
-      `stdout-tail=\n${tail(result.stdout)}\n` +
-      `stderr-tail=\n${tail(result.stderr)}`
-    );
+  const errorCode =
+    result.error && typeof (result.error as NodeJS.ErrnoException).code === "string"
+      ? (result.error as NodeJS.ErrnoException).code
+      : undefined;
+  let summary: string;
+  if (errorCode === "ETIMEDOUT" || (result.error && result.signal)) {
+    const reason = result.error?.message ?? "spawn timeout";
+    summary =
+      `timed out (spawnSync timeout=${BUILD_TIMEOUT_MS}ms reached, ` +
+      `signal=${result.signal ?? "<none>"}, code=${errorCode ?? "<none>"}): ${reason}`;
+  } else if (result.error) {
+    summary = `threw before completion (code=${errorCode ?? "<none>"}): ${result.error.message}`;
+  } else if (result.signal) {
+    summary =
+      `was killed by signal ${result.signal} ` +
+      `(spawnSync timeout=${BUILD_TIMEOUT_MS}ms reached)`;
+  } else {
+    summary = `exited with status ${String(result.status)}`;
   }
   return (
-    `${head} exited with status ${String(result.status)}.\n` +
+    `${head} ${summary}.\n` +
     `stdout-tail=\n${tail(result.stdout)}\n` +
     `stderr-tail=\n${tail(result.stderr)}`
   );
@@ -125,6 +139,50 @@ function makeRuntimeWebUiDir(rootDir: string): string {
   fs.writeFileSync(path.join(webUiDir, "favicon-192.png"), "png192");
   return webUiDir;
 }
+
+describe("describeCommandFailure diagnostics", () => {
+  // Regression: the prior shape returned only `result.error.message` when
+  // `result.error` was set, so the spawnSync-timeout path that this test was
+  // hardening (error.code='ETIMEDOUT' AND signal='SIGTERM' AND captured
+  // stdout/stderr) silently dropped the tails the diagnostic exists to capture.
+  it("includes stdout and stderr tails when spawnSync hits its timeout", () => {
+    const result = spawnSync(
+      process.execPath,
+      [
+        "-e",
+        "console.log('marker-stdout-line'); console.error('marker-stderr-line'); setTimeout(() => {}, 30000);",
+      ],
+      { encoding: "utf8", timeout: 200 },
+    );
+
+    // Sanity-check Node's documented spawnSync timeout shape: error with
+    // code='ETIMEDOUT', a kill signal, and preserved captured output. If
+    // this assertion ever fails, the regression below would be moot.
+    const errorCode =
+      result.error && typeof (result.error as NodeJS.ErrnoException).code === "string"
+        ? (result.error as NodeJS.ErrnoException).code
+        : undefined;
+    expect(errorCode).toBe("ETIMEDOUT");
+    expect(result.signal).toBeTruthy();
+    expect(result.stdout).toContain("marker-stdout-line");
+    expect(result.stderr).toContain("marker-stderr-line");
+
+    const message = describeCommandFailure({
+      step: "diagnostic-regression",
+      command: process.execPath,
+      args: ["-e", "<inline>"],
+      result,
+    });
+
+    expect(message).toContain("diagnostic-regression");
+    expect(message).toContain("timed out");
+    expect(message).toContain("ETIMEDOUT");
+    expect(message).toContain("stdout-tail=");
+    expect(message).toContain("marker-stdout-line");
+    expect(message).toContain("stderr-tail=");
+    expect(message).toContain("marker-stderr-line");
+  });
+});
 
 describe("daemon build pipeline", { timeout: 180_000 }, () => {
   let project: TestDaemonProject | null = null;
