@@ -220,7 +220,7 @@ description: >-
 spec_ref: "@daemon-test-startup-failure-hygiene"
 meta_ref: null
 plan_ref: "@plan-daemon-test-fixture-hardening"
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -231,6 +231,7 @@ tags:
   - guardrails
   - follow-up
 vcs_refs: []
+session_id: 01KR6MV46BTX8AC00AWW6TRK2G
 history:
   - author: Jacob Chapel
     changes:
@@ -251,6 +252,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-09T15:12:45.715Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KR6MV46BTX8AC00AWW6TRK2G
+        previous: null
+      started_at:
+        new: 2026-05-09T15:14:50.061Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-09T15:14:50.062Z
 created_at: 2026-05-09T15:03:01.767Z
+started_at: 2026-05-09T15:14:50.061Z
 todos: []
 automation: eligible
