@@ -21709,12 +21709,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-09T18:10:01.923Z
+      updated_at: 2026-05-09T18:10:39.162Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T18:10:01.923Z
+      updated_at: 2026-05-09T18:10:39.162Z
     integration:
       status: pending
       detail: null
@@ -21722,24 +21722,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bd252f1ebdedef270f8ed908166d46eab1429f80
-      updated_at: 2026-05-09T18:10:01.923Z
-    lifecycle_state: ready
+      updated_at: 2026-05-09T18:10:39.162Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KR6M70T2NV1TR7EEGREDC5WJ"
     task_slug: task-fix-register-cleanup-failure-leak
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T17:53:35.028Z
-      last_reconciled_at: 2026-05-09T18:10:01.923Z
+      last_reconciled_at: 2026-05-09T18:10:39.162Z
       created_at: 2026-05-09T17:53:09.994Z
-      updated_at: 2026-05-09T18:10:01.923Z
+      updated_at: 2026-05-09T18:10:39.162Z
     workspace_id: dispatch-workspace-01KR6M70T2NV1TR7EEGREDC5WJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 07488494e8a3c2e26cf3ddc945e56b6a90826963
+        last_seen_at: 2026-05-09T18:10:39.162Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-register-cleanup-failure-leak/01kr6m70
-        head: bd252f1ebdedef270f8ed908166d46eab1429f80
-        last_seen_at: 2026-05-09T17:53:09.994Z
+        head: 07488494e8a3c2e26cf3ddc945e56b6a90826963
+        last_seen_at: 2026-05-09T18:10:39.162Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70
