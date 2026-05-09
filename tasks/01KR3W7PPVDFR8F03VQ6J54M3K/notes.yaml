@@ -657,3 +657,24 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T05:22:24.424Z
+  - _ulid: 01KR5MH35MJS4CP84HHH3A8B2C
+    content: "Fix cycle 13: closed cycle-12 blocker by replacing the substring-based detached-serve
+      classifier with a positional-aware one. The cycle-12 reviewer's repros (exec(\"kspec search
+      \\\"serve start --detach\\\"\") and spawn(\"kspec\", [\"search\", \"serve start --detach\"]))
+      now exit 0 with 0 lint errors against a synthetic oxlint probe. Approach: instead of patching
+      the substring check, refactored the classifier so it walks the actual kspec argv tokens
+      (quote-aware shell tokeniser for shell strings, per-element walk for argv arrays, helper-args
+      tokeniser for runKspec/kspec) and requires the first two non-flag positionals after the kspec
+      executable to be exactly `serve` then `start` with `--detach` (or `--detach=...`) appearing as
+      a flag token. Same root-cause fix applied symmetrically across all four call shapes
+      (runKspec/kspec, exec/execSync, spawn/spawnSync/execFile/execFileSync). Removed the now-unused
+      collectArgStringContributions and shellCommandLeadsWithKspec helpers. Added five behavioral
+      regression tests under @daemon-test-guardrail-precision
+      ac-unrelated-subprocesses-not-reported. Verification: targeted suite 182 tests passed (39.2s);
+      full suite 8935 tests passed, 5 skipped (1971.2s); changed-file oxlint 0 errors, 25 warnings
+      (pre-existing style); manual oxlint probe of both reviewer reproductions exits 0; positive
+      regression probe (legitimate `serve start --detach` via exec, spawn, runKspec) still flagged
+      with the missing-cleanup message."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T05:49:24.532Z

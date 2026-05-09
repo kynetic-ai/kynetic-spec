@@ -193035,6 +193035,24 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T05:22:22.319Z
+      - _ulid: 01KR5MGVVZC9W0JBF6Y6JPXBA6
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR5JTSF7N3RZK4B4J5NBC3YS
+        timestamp: 2026-05-09T05:49:17.055Z
+      - _ulid: 01KR5MGYYMXD4628H3N41HKEMK
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR5JTSF7N3RZK4B4J5NBC3YS
+        timestamp: 2026-05-09T05:49:20.212Z
+      - _ulid: 01KR5MH23PX97Q3BXA5S851KHB
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR5JY3SNTJ1CFTY3XA2X2388
+        timestamp: 2026-05-09T05:49:23.446Z
     examined_commit: 74ab0ec544bc889c0aef25550ccb2d1e691b8f1c
     external_links: []
     lifecycle_state: closed
@@ -193077,7 +193095,29 @@ reviews:
               Evidence: a synthetic oxlint probe against this snapshot exited 1 with two
               no-leaky-test-daemon diagnostics for those two search calls.'
             created_at: 2026-05-09T05:20:23.852Z
+          - _ulid: 01KR5MGTJEHAHCQJGTWBX1W6SH
+            author: "@claude"
+            body: 'Fixed in 5222b9c23. Replaced the substring-based argListResolvesToDetachedServe with a
+              positional-aware tokensResolveToDetachedServe that requires the FIRST TWO non-flag
+              positionals after the kspec executable to be exactly `serve` then `start` (and
+              `--detach` to appear as a flag token). All three call shapes were updated in lockstep:
+              exec/execSync now tokenises the shell string quote-aware and slices off the leading
+              `kspec`, then walks the rest; spawn/spawnSync/execFile/execFileSync walks each argv
+              element as one OS argv slot (no whitespace re-split); runKspec/kspec gathers per-arg
+              tokens via a helper that reuses the same shell tokeniser for strings and per-element
+              semantics for arrays. Both reviewer reproductions (`exec("kspec search \"serve start
+              --detach\"")` and `spawn("kspec", ["search", "serve start --detach"])`) now exit 0
+              with 0 errors against a synthetic oxlint probe. Added five behavioral regression tests
+              under @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported covering
+              exec/spawn/execFile/runKspec false-positive shapes plus a free-form `kspec inbox add`
+              shape whose body text mentions the lifecycle words. Targeted suite: 182 tests passed.
+              Full suite: 8935 tests passed (5 added). Changed-file oxlint: 0 errors, 25 warnings
+              (all pre-existing style; one fewer than cycle 11 because the old
+              collectArgStringContributions helper is now unused and was removed).'
+            created_at: 2026-05-09T05:49:15.726Z
         kind: blocker
+        resolved_at: 2026-05-09T05:49:19.022Z
+        resolved_by: "@claude"
       - _ulid: 01KR5JY3SNTJ1CFTY3XA2X2388
         entries:
           - _ulid: 01KR5JY3SNMX2NDAAXV5DV9B9Q
@@ -193099,6 +193139,8 @@ reviews:
               AC annotations, integration with helper allowlists and daemon fixtures."
             created_at: 2026-05-09T05:21:34.005Z
         kind: nit
+        resolved_at: 2026-05-09T05:49:22.227Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -193108,5 +193150,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T05:22:22.319Z
     created_at: 2026-05-09T05:05:39.146Z
-    updated_at: 2026-05-09T05:22:22.319Z
+    updated_at: 2026-05-09T05:49:22.227Z
     notes: []

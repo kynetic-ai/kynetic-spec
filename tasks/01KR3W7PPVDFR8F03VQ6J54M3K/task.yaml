@@ -56,7 +56,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-fixture-hardening"
 origin: derived
-status: needs_work
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-guardrail-classification-regressions"
@@ -71,12 +71,12 @@ review_ref: "@01KR5J0ZAAV52BFC9F11PWJ8MW"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
-  captured_at: 2026-05-09T05:01:07.844Z
-  commit: 74ab0ec544bc889c0aef25550ccb2d1e691b8f1c
+  captured_at: 2026-05-09T05:49:25.294Z
+  commit: 5222b9c23135599d6512dfbb867d3a219f5863f9
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
-session_id: null
+session_id: 01KR5K6SKBYXXEKB1RPTDP9QP5
 history:
   - author: Jacob Chapel
     changes:
@@ -762,8 +762,48 @@ history:
         previous: 01KR5GS4J0X7NMK6Z2Q6TGK9G0
     command: review-verdict-needs-work
     timestamp: 2026-05-09T05:22:24.424Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KR5K6SKBYXXEKB1RPTDP9QP5
+        previous: null
+      started_at:
+        new: 2026-05-09T05:49:14.070Z
+        previous: 2026-05-09T04:44:39.368Z
+    command: task-start
+    timestamp: 2026-05-09T05:49:14.071Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
+          captured_at: 2026-05-09T05:49:25.294Z
+          commit: 5222b9c23135599d6512dfbb867d3a219f5863f9
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
+        previous:
+          review_url: null
+          branch: dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
+          captured_at: 2026-05-09T05:01:07.844Z
+          commit: 74ab0ec544bc889c0aef25550ccb2d1e691b8f1c
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-fix-guardrail-daemon-command-classification/01kr3w7p
+      submitted_at:
+        new: 2026-05-09T05:49:25.307Z
+        previous: 2026-05-09T05:01:07.863Z
+    command: task-submit
+    timestamp: 2026-05-09T05:49:25.307Z
 created_at: 2026-05-08T13:25:36.603Z
-started_at: 2026-05-09T04:44:39.368Z
-submitted_at: 2026-05-09T05:01:07.863Z
+started_at: 2026-05-09T05:49:14.070Z
+submitted_at: 2026-05-09T05:49:25.307Z
 todos: []
 automation: eligible
