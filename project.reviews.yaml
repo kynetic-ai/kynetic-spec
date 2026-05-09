@@ -198339,3 +198339,29 @@ reviews:
     created_at: 2026-05-09T21:20:22.839Z
     updated_at: 2026-05-09T21:34:36.140Z
     notes: []
+  - _ulid: 01KR7B71342T5D88FGBG1XKAGV
+    slugs: []
+    title: Review daemon build smoke timeout stabilization (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR7B7131J2M3EJYC11007N2C
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-09T21:45:06.401Z
+    examined_commit: 35f51590178e093aaf3b8e6b4b9800aa8991db3f
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR76BQR1ZFEXCRPHVGCE808K"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-09T21:45:06.404Z
+    updated_at: null
+    notes: []
