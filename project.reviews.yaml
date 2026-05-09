@@ -194635,6 +194635,20 @@ reviews:
         runner: npm test
         created_at: 2026-05-09T09:57:54.851Z
         completed_at: 2026-05-09T09:57:54.851Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Synthetic probes against the submitted rule failed expected behavior:
+          beforeEach/afterEach cleanup registration after a detached start exited 0 with no
+          diagnostic; unrelated fetch('https://example.com/health') before cleanup produced
+          missingCleanup even though it is not a daemon observation. Stored-arrow false-positive
+          probe now exits 0, and daemon fetch before cleanup still reports as expected."
+        name: manual cleanup timing probes
+        required: true
+        runner: npx oxlint
+        created_at: 2026-05-09T09:58:03.985Z
+        completed_at: 2026-05-09T09:58:03.985Z
     events:
       - _ulid: 01KR62HPJ8AEHXEHG0YV6DB481
         actor: Jacob Chapel
@@ -194663,6 +194677,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KR62R8GMSN255VVK1H47S8V2
         timestamp: 2026-05-09T09:58:00.995Z
+      - _ulid: 01KR62REDJ7ND29223204QGAYA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual cleanup timing probes
+        timestamp: 2026-05-09T09:58:05.490Z
     examined_commit: b1848893913ff9ca5e22b6ec20c23338f858d88a
     external_links: []
     lifecycle_state: open
@@ -194698,5 +194719,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T09:54:24.456Z
-    updated_at: 2026-05-09T09:57:59.444Z
+    updated_at: 2026-05-09T09:58:03.985Z
     notes: []
