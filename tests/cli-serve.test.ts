@@ -16,6 +16,10 @@ import {
   type KspecOptions,
 } from "./helpers/cli";
 import { createTestDaemonProject, startTestDaemon } from "./helpers/daemon.js";
+import {
+  resolveDaemonClientEndpoint,
+  type DaemonClientEndpoint,
+} from "../src/daemon-shared/endpoint.js";
 import { spawn, spawnSync, execSync } from "child_process";
 import { once } from "events";
 import { dirname, join } from "path";
@@ -33,6 +37,31 @@ function killPid(pid: number, signal: NodeJS.Signals = "SIGTERM"): void {
   } catch {
     // Already gone — fine
   }
+}
+
+/**
+ * Resolve the daemon client endpoint reported by a CLI-started daemon.
+ *
+ * Reads daemon.connection.json (or the legacy daemon.port fallback) from the
+ * isolated kspec config dir using the same production resolver real clients
+ * use. Lifecycle tests that started a daemon via `kspec serve start --detach`
+ * call this helper instead of building `http://localhost:${port}` so HTTP and
+ * WebSocket fetches address the daemon at the URL it advertises (honoring
+ * IPv6 fallback, configured connect_host, and the default 127.0.0.1 host).
+ *
+ * AC: @cli-lifecycle-test-endpoint-consumption ac-lifecycle-helper-resolves-client-endpoint
+ * AC: @daemon-test-endpoint-consistency ac-resolved-endpoint-source
+ */
+function resolveCliLifecycleDaemonEndpoint(configDir: string): DaemonClientEndpoint {
+  const endpoint = resolveDaemonClientEndpoint(configDir);
+  if (!endpoint) {
+    throw new Error(
+      `No daemon connection metadata or legacy port file found at ${configDir}; ` +
+        `kspec serve start --detach must have written lifecycle state before ` +
+        `this helper resolves the client endpoint.`,
+    );
+  }
+  return endpoint;
 }
 
 /**
@@ -108,13 +137,14 @@ describe("kspec serve commands", () => {
     return execSync(`ps -p ${pid} -o command=`, { encoding: "utf-8" }).trim();
   }
 
-  async function waitForDaemonHealth(port: number): Promise<void> {
+  async function waitForDaemonHealth(configDir?: string): Promise<DaemonClientEndpoint> {
+    const dir = configDir ?? join(isolatedHome, ".config", "kspec");
+    const endpoint = resolveCliLifecycleDaemonEndpoint(dir);
     await waitForStartup(
-      `daemon health endpoint on port ${port}`,
+      `daemon health endpoint at ${endpoint.apiUrl}`,
       async () => {
-        const url = `http://localhost:${port}/api/health`;
+        const url = `${endpoint.apiUrl}/api/health`;
         try {
-          // oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon -- polls the CLI-started daemon's health: the daemon was launched by kspec serve start --detach (not the shared fixture) and waitForDaemonHealth must reach it on the CLI-configured port without a fixture-resolved endpoint
           const response = await fetch(url);
           const body = (await response.text()).trim();
           const bodyReportsHealthy = body.includes('"status":"ok"');
@@ -129,6 +159,7 @@ describe("kspec serve commands", () => {
       },
       { timeoutMs: 10_000 },
     );
+    return endpoint;
   }
 
   async function waitForDaemonUptime(minUptimeSeconds: number): Promise<void> {
@@ -375,7 +406,7 @@ describe("kspec serve commands", () => {
     const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
     onTestFinished(() => killPid(pid));
 
-    await waitForDaemonHealth(port);
+    await waitForDaemonHealth();
 
     const metadataPath = join(isolatedHome, ".config", "kspec", "daemon.connection.json");
     expect(existsSync(metadataPath)).toBe(true);
@@ -404,6 +435,7 @@ describe("kspec serve commands", () => {
   });
 
   // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+  // AC: @cli-lifecycle-test-endpoint-consumption ac-direct-loopback-url-exception-is-endpoint-subject
   // Regression guard for cycle-4 reviewer blocker: the IPv6 fallback must
   // distinguish "IPv4 loopback unavailable" (the only condition the spec
   // permits fallback for) from "this port is taken on 127.0.0.1". A naive
@@ -661,7 +693,7 @@ describe("kspec serve commands", () => {
     const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
     onTestFinished(() => killPid(pid));
 
-    await waitForDaemonHealth(port);
+    await waitForDaemonHealth();
 
     const status = runKspec(`serve status --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
     expect(status.stderr).toMatch(/WARNING/i);
@@ -674,6 +706,7 @@ describe("kspec serve commands", () => {
   // AC: @config-daemon ac-host-config
   // AC: @daemon-server ac-1
   // AC: @trait-localhost-security ac-external-host-explicit
+  // AC: @cli-lifecycle-test-endpoint-consumption ac-direct-loopback-url-exception-is-endpoint-subject
   //
   // Regression for the IPv4/IPv6 mismatch incident: configured daemon.host
   // values must reach the production app.listen() call. A configured
@@ -964,7 +997,7 @@ describe("kspec serve commands", () => {
     const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
     onTestFinished(() => killPid(pid));
 
-    await waitForDaemonHealth(port);
+    await waitForDaemonHealth();
 
     // Check status with --json flag
     const result = runKspec(`serve status --json --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
@@ -1000,7 +1033,7 @@ describe("kspec serve commands", () => {
     const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
     onTestFinished(() => killPid(pid));
 
-    await waitForDaemonHealth(port);
+    await waitForDaemonHealth();
 
     const result = runKspec(`serve status --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
     expect(result.stdout).toContain("Bind host: 127.0.0.1");
@@ -1012,6 +1045,10 @@ describe("kspec serve commands", () => {
 
   // AC: @multi-directory-daemon ac-12
   // AC: @daemon-sensitive-cli-test-determinism ac-bounded-readiness
+  // AC: @cli-lifecycle-test-endpoint-consumption ac-cli-started-daemon-requests-use-reported-endpoint
+  // AC: @cli-lifecycle-test-endpoint-consumption ac-lifecycle-helper-resolves-client-endpoint
+  // AC: @daemon-test-endpoint-consistency ac-resolved-endpoint-source
+  // AC: @daemon-test-endpoint-consistency ac-no-localhost-by-default
   it("should show registered projects with paths in status output", async () => {
     if (!nodeAvailable) {
       console.log("  ⊘ Skipping test - Node runtime required");
@@ -1026,12 +1063,11 @@ describe("kspec serve commands", () => {
     const pid = parseInt(readTestOutputSync(globalPidFilePath, "utf-8").trim(), 10);
     onTestFinished(() => killPid(pid));
 
-    await waitForDaemonHealth(port);
+    const daemonEndpoint = await waitForDaemonHealth();
 
     // Register a project via API
     const testProjectPath = tempDir;
-    // oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon -- exercises serve status against a CLI-started daemon: the daemon was launched by kspec serve start --detach (not the shared fixture) and is reached at the configured port, so a fixture-resolved endpoint is not available
-    await fetch(`http://localhost:${port}/api/projects`, {
+    await fetch(`${daemonEndpoint.apiUrl}/api/projects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: testProjectPath }),
@@ -1064,12 +1100,11 @@ describe("kspec serve commands", () => {
     const pid = parseInt(readTestOutputSync(globalPidFilePath, "utf-8").trim(), 10);
     onTestFinished(() => killPid(pid));
 
-    await waitForDaemonHealth(port);
+    const daemonEndpoint = await waitForDaemonHealth();
 
     // Register a project via API
     const testProjectPath = tempDir;
-    // oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon -- exercises serve status --json against a CLI-started daemon: registration goes to the daemon launched by kspec serve start --detach, which has no fixture-resolved endpoint
-    await fetch(`http://localhost:${port}/api/projects`, {
+    await fetch(`${daemonEndpoint.apiUrl}/api/projects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: testProjectPath }),
@@ -1121,7 +1156,7 @@ describe("kspec serve commands", () => {
       await cleanupTempDir(emptyTempDir);
     });
 
-    await waitForDaemonHealth(port);
+    await waitForDaemonHealth(isolated.configDir);
 
     // Check status - should indicate no projects
     const result = runKspec(`serve status`, emptyTempDir, { env });
@@ -1147,7 +1182,7 @@ describe("kspec serve commands", () => {
     const pid = parseInt(readTestOutputSync(globalPidFilePath, "utf-8").trim(), 10);
     onTestFinished(() => killPid(pid));
 
-    await waitForDaemonHealth(port);
+    await waitForDaemonHealth();
     await waitForDaemonUptime(1);
 
     // Check status - should show uptime
@@ -1295,11 +1330,10 @@ describe("kspec serve commands", () => {
       // Daemon should have started — output contains PID and port
       expect(result).toContain(`port ${port}`);
 
-      await waitForDaemonHealth(port);
+      const installedDaemonEndpoint = await waitForDaemonHealth(isolated.configDir);
 
       // Verify health endpoint responds (daemon is actually running with Elysia)
-      // oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon -- verifies the CLI-installed kspec serve start --detach actually serves /api/health on the configured port; no shared fixture endpoint is available because the daemon was launched by the installed CLI
-      const healthResponse = await fetch(`http://localhost:${port}/api/health`);
+      const healthResponse = await fetch(`${installedDaemonEndpoint.apiUrl}/api/health`);
       // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
       expect(healthResponse.ok, "daemon health endpoint should respond").toBe(true);
       const healthBody = (await healthResponse.json()) as { status: string; runtime: string };
@@ -1382,7 +1416,7 @@ describe("kspec serve commands", () => {
     onTestFinished(() => killPid(pid));
 
     expect(result.exitCode).toBe(0);
-    await waitForDaemonHealth(port);
+    await waitForDaemonHealth();
 
     const status = JSON.parse(
       runKspec(`serve status --json --kspec-dir ${join(tempDir, ".kspec")}`, tempDir).stdout,
@@ -1508,10 +1542,9 @@ describe("kspec serve commands", () => {
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain(`port ${port}`);
 
-    await waitForDaemonHealth(port);
+    const daemonEndpoint = await waitForDaemonHealth();
 
-    // oxlint-disable-next-line no-leaky-test-daemon/no-leaky-test-daemon -- verifies the bun-runtime CLI start path: the daemon is launched by kspec serve start --detach via spawnSync, so there is no shared fixture endpoint to reuse here
-    const healthResponse = await fetch(`http://localhost:${port}/api/health`);
+    const healthResponse = await fetch(`${daemonEndpoint.apiUrl}/api/health`);
     expect(healthResponse.ok).toBe(true);
   });
 
