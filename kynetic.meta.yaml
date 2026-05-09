@@ -17921,6 +17921,24 @@ observations:
     resolved: false
     workflow_ref: "@01KR6QET"
     created_at: 2026-05-09T16:01:31.692Z
+  - _ulid: 01KR6SGEM8ANMQ6EWH1PQ4SV5S
+    type: friction
+    content: "Dispatch worker submitted task @01KR6M6XARDRJ17BY20Z3BG66B before any pre-submit
+      reflection / observation-search, so it rediscovered the disproved bare it.fails staging
+      pattern (disproven cycle 2 @01KR3ZR8, validated selective form @01KR431R) only after submit —
+      would have caused a likely fix-cycle 2 had the next reviewer flagged it. The
+      session-reflect-loop workflow ran AFTER kspec task submit, not before. Existing spec @01KFR7M6
+      ac-10 calls for a pre-submit local-review subagent, but no local-review skill is currently
+      loaded under .claude/skills/ in this project, so the gate is not enforced for autonomous
+      workers. Distinct from @01KGQY72 (which is about reflection running too aggressively in Ralph
+      chains, not about timing relative to submit). Suggested fix shape: either (a) add a 'search
+      observations + critique' step into the autonomous task-work flow before kspec task submit, or
+      (b) ship and require a local-review skill that includes 'kspec meta observations list / kspec
+      search' against the just-applied pattern."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T16:35:40.808Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
