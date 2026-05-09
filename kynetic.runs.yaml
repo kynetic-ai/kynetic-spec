@@ -44016,7 +44016,7 @@ runs:
     completed_at: 2026-05-09T20:02:26.843Z
   - _ulid: 01KR76FQMGWBVAF1X43X9DC4GH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -44032,7 +44032,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T20:22:53.925Z
-        completed_at: 2026-05-09T20:22:53.925Z
+        completed_at: 2026-05-09T20:23:03.078Z
+        notes: "Friction points: (1) The full npm test review gate took a long time and surfaced a
+          daemon-build timeout only at the end; rerunning the file showed it was flaky, and I
+          created follow-up task @01KR76BQ for stabilization. (2) I accidentally embedded
+          backtick-delimited command text in a shell-quoted kspec task add description, causing
+          shell command substitution and an unintended npm test run; the process had to be killed
+          and the task creation retried with safer quoting. This is a repeatable command-payload
+          hazard, not specific to this task. (3) The review skill requires a full evidence log, but
+          assembling it manually across commands is still a lot of copy/paste bookkeeping."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T20:23:03.078Z
+        completed_at: 2026-05-09T20:23:03.078Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T20:22:28.752Z
