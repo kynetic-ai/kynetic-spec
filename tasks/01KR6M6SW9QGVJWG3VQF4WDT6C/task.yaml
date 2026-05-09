@@ -227,6 +227,22 @@ context: []
 priority: 2
 tags:
   - daemon-tests
+  - specs
+  - guardrails
+  - follow-up
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      tags:
+        new:
+          - daemon-tests
+          - specs
+          - guardrails
+          - follow-up
+        previous:
+          - daemon-tests
+    command: task-set
+    timestamp: 2026-05-09T15:03:51.202Z
 created_at: 2026-05-09T15:03:01.767Z
 todos: []
