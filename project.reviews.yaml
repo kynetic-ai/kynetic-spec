@@ -192792,6 +192792,12 @@ reviews:
         payload:
           thread_ulid: 01KR5FZE4MFZKC88V9VBXGYX0Z
         timestamp: 2026-05-09T05:00:17.069Z
+      - _ulid: 01KR5HQCST603XNPN4FJ4J43MR
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR5FZE4MFZKC88V9VBXGYX0Z
+        timestamp: 2026-05-09T05:00:25.274Z
     examined_commit: 739c9aee71f6fd2b2c0cfda492dfd552f0bfe80f
     external_links: []
     lifecycle_state: closed
@@ -192846,6 +192852,8 @@ reviews:
               ac-direct-daemon-entry-invocations-flagged."
             created_at: 2026-05-09T05:00:15.677Z
         kind: blocker
+        resolved_at: 2026-05-09T05:00:23.986Z
+        resolved_by: "@claude"
       - _ulid: 01KR5GJ7HNM3FNV2C3QV2MJE9R
         entries:
           - _ulid: 01KR5GJ7HPVSB7E0AYBEHZFKSR
@@ -192877,5 +192885,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T04:40:11.991Z
     created_at: 2026-05-09T04:27:24.737Z
-    updated_at: 2026-05-09T05:00:15.677Z
+    updated_at: 2026-05-09T05:00:23.986Z
     notes: []
