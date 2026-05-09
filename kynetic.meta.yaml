@@ -17727,6 +17727,53 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-09T02:06:51.514Z
+  - _ulid: 01KR5CYKNTCDWHFARY0G8HCKEH
+    type: friction
+    content: "Static-analysis precision rule fix cycles repeat because each cycle's reviewer probes
+      expose a SHAPE permutation the worker hadn't enumerated. Task @01KR3W7PPVDFR8F03VQ6J54M3K
+      (no-leaky-test-daemon classifier) went 9 fix cycles, each closing one shape: cycle 1 added
+      DAEMON_ENTRY-as-executable form; cycle 2 added exec/execSync shell strings; cycle 3 tightened
+      to executable-position only; cycle 4 required recognised runtime in argv; cycle 5 added
+      process.execPath; cycle 6 handled runtime flags + computed-access execPath; cycle 7 modelled
+      value-consuming + eval flags; cycle 8 dropped misclassified standalone flags; cycle 9 added
+      template-literal args, argv-array script-position walk, no-script flags (--version/--help),
+      and quoted shell tokens. Pattern: each cycle the worker thinks 'all done', the reviewer probes
+      one new permutation. A pre-submission shape-enumeration checklist for static-analysis
+      classifiers (per AST node × per literal/template/identifier × per flag class × per shell-quote
+      variant × per runtime-form vs direct-executable) would compress this to 1-2 cycles. Applies to
+      ANY future precision-classifier task."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T03:36:58.810Z
+  - _ulid: 01KR5CYKY2C82CH5J48005M7MN
+    type: friction
+    content: "Resubmit-after-fix in autonomous dispatch needs explicit 'task start' before 'task
+      submit'. The dispatch worker enters with task in needs_work; submit requires in_progress
+      (rejected with 'Cannot submit task with status: needs_work'). The Needs Work State spec
+      @01KHYRCWD9CNW9FSGPFNH3NK2Y ac-3 documents that 'kspec task start' is the transition, but the
+      task-work skill's Fix Cycle section step 7 ('Re-submit — kspec task submit @ref') doesn't
+      mention the start step. A worker batch like [task note, task submit] rolls back atomically
+      (had to retry as [task start, task note, task submit]). Two possible fixes: (a) auto-start
+      when submit sees source state needs_work, or (b) call out the start step in the Fix Cycle
+      section of the task-work skill. Hits every dispatch worker on every fix cycle."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T03:36:59.074Z
+  - _ulid: 01KR5CYM4KMPEPZ428WAKANCVZ
+    type: success
+    content: "Reading review records via 'kspec review get @ref --json' surfaces exact thread anchors
+      (file path, line_start/line_end, full body text, commit SHA) in one query. The text view
+      truncates body text and elides anchor commits. For fix-cycle workers, the JSON path is the
+      fastest way from review verdict to surgical fix locations: jump straight to the file:line,
+      read the unabridged review reasoning, and write a targeted fix without re-reading the diff.
+      Worth surfacing in the task-work skill's Fix Cycle section as the canonical first step after a
+      cycle starts."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T03:36:59.284Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
