@@ -92,3 +92,62 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-09T16:17:28.025Z
+  - _ulid: 01KR6SMG2YKCW6DNV82ZZ64B8M
+    content: >-
+      Pre-review proactive fix (commit 0233c88c3): replaced bare it.fails() with the validated
+      selective expected-failure pattern.
+
+
+      Why: /kspec:reflect ran after the initial submission and surfaced two prior observations the
+      worker missed during implementation:
+
+      - @01KR3ZR8 (resolved) — bare it.fails() was DISPROVED in cycle 2 review of
+      @task-add-guardrail-classification-regressions because ANY thrown assertion in the body
+      satisfies the marker (parser failure, oxlint crash, partial fix all count as 'expected
+      failure').
+
+      - @01KR431R (active) — the validated pattern is selective expected-failure: a helper that runs
+      post-fix assertions, on their throw re-asserts the EXACT current bug shape, and on their
+      success throws an explicit 'remove this wrapper' error.
+
+
+      What changed:
+
+      - Added expectCleanupRegistrationLeak(child) helper at tests/helpers/daemon.test.ts:616 that
+      implements the selective pattern.
+
+      - Helper now runs the child-terminated post-fix assertion; on throw re-asserts child still
+      alive (the EXACT bug shape); on success throws a 'remove wrapper' error directing
+      @task-fix-register-cleanup-failure-leak.
+
+      - Removed the endpoint-unreachable assertion from the bug-shape regression: rejection happens
+      before readiness so the daemon never binds a port pre-fix or post-fix; endpoint-unreachable is
+      identical on both sides and is not a valid differentiator. The selective re-assertion caught
+      this — bare it.fails() would have hidden the mismatch entirely.
+
+      - Updated describe-block and AC annotations preserved.
+
+
+      submission_linkage updated from 239c4fb96 to 0233c88c3 via kspec task patch (kspec task submit
+      refused because task is already pending_review).
+
+
+      Verification:
+
+      - mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts → 10/10 pass.
+
+      - mise exec -- kspec validate --refs --warnings-ok → exit 0.
+
+      - mise exec -- kspec validate --completeness --warnings-ok → exit 0.
+
+      - Full npm test in progress at commit time; will follow up if it reveals issues. The only test
+      changed is the regression itself; focused suite passes and the selective helper's logic is
+      bug-shape-specific.
+
+
+      Reflection-side capture: friction @01KR6SGE (worker submitted before any pre-submit
+      observation search; @01KR3ZR8/@01KR431R should have been surfaced during implementation, not
+      after submit).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T16:37:53.375Z
