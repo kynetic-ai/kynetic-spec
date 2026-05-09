@@ -379,3 +379,8 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-08T23:47:04.766Z
+  - _ulid: 01KR526DN65TM3YRFHGY6AB467
+    content: "[AGENT-TIMEOUT] Invocation timed out after 60 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-05-09T00:29:00.454Z
