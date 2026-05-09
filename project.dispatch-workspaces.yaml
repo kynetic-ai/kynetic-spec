@@ -20330,7 +20330,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T17:35:38.135Z
+      updated_at: 2026-05-09T17:37:52.119Z
     integration:
       status: merged
       detail: integration:merged
@@ -20339,25 +20339,20 @@ workspaces:
       target_branch: dev
       target_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
       updated_at: 2026-05-09T17:35:38.135Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KR6M6XARDRJ17BY20Z3BG66B"
     task_slug: task-add-register-cleanup-failure-regression
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T17:21:16.257Z
-      last_reconciled_at: 2026-05-09T17:37:50.321Z
+      last_reconciled_at: 2026-05-09T17:37:52.119Z
       created_at: 2026-05-09T15:34:46.996Z
-      updated_at: 2026-05-09T17:37:50.321Z
+      updated_at: 2026-05-09T17:37:52.119Z
     workspace_id: dispatch-workspace-01KR6M6XARDRJ17BY20Z3BG66B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 354731a684d7b55ebb1776e0f2751c2dc5e17071
-        last_seen_at: 2026-05-09T17:20:48.596Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-register-cleanup-failure-regression-01kr6m6x-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-register-cleanup-failure-regression/01kr6m6x
