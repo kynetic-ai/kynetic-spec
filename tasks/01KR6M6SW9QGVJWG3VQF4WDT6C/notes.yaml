@@ -1,1 +1,24 @@
-notes: []
+notes:
+  - _ulid: 01KR6N3VQA47Q9PRQJCZ3SSNTT
+    content: "Tightened both specs and recorded validation evidence. Changes (atomic batch): (1) Added
+      @daemon-test-startup-failure-hygiene/ac-cleanup-registration-failure-stops-owned-child
+      requiring the fixture to stop the owned child when the caller-provided cleanup-registration
+      hook throws before readiness. (2) Added
+      @daemon-test-guardrail-precision/ac-detached-cleanup-bound-before-observation requiring
+      cleanup to capture or otherwise own the concrete pid/child/stop handle for the just-started
+      daemon before any intervening await/assertion/observation. (3) Added
+      @daemon-test-guardrail-precision/ac-approved-daemon-helper-boundary-explicit defining the
+      approved helper boundary as explicit shared daemon-test fixture utilities or documented
+      guardrail internals; arbitrary local wrappers count as inline unsafe starts. (4) Set both
+      specs to status=in_progress --no-cascade because the tightened ACs lack source/test evidence:
+      tests/helpers/daemon.ts:691-693 calls opts.registerCleanup(stop) outside the readiness
+      try/catch (synchronous throw bypasses stop()); tools/eslint-rules/no-leaky-test-daemon.js
+      cleanup classifier recognizes cleanup-shaped CallExpressions but does not verify the captured
+      pid/handle was bound at registration time, and the Program:exit detached-cleanup check skips
+      reports when isInHelperFunction(node) is true (which classifies any named local function in a
+      test file as a helper). (5) Recorded the validation evidence as item notes on each spec.
+      Validation: kspec validate --refs and --alignment both pass with warnings-ok; touched specs do
+      not appear in any new warnings. No source tree changes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T15:18:53.930Z
