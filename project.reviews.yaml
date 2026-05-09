@@ -192115,9 +192115,25 @@ reviews:
           kind: nit
           thread_ulid: 01KR5AWCT0YX3XTY61JKKQD9VQ
         timestamp: 2026-05-09T03:00:50.368Z
+      - _ulid: 01KR5AWQVSF5V7KZNBB1C0X0GN
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-09T03:01:00.410Z
+      - _ulid: 01KR5AWQVT5Y4X3WEJ48YT3E4V
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T03:01:00.410Z
     examined_commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -192230,7 +192246,14 @@ reviews:
               detached-serve classification.
             created_at: 2026-05-09T03:00:49.088Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-09T03:01:00.409Z
     created_at: 2026-05-09T02:48:34.986Z
-    updated_at: 2026-05-09T03:00:49.088Z
+    updated_at: 2026-05-09T03:01:00.410Z
     notes: []
