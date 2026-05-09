@@ -194076,6 +194076,18 @@ reviews:
         runner: npm
         created_at: 2026-05-09T08:36:51.241Z
         completed_at: 2026-05-09T08:36:51.241Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 'Synthetic probes: prior unregistered arrow now flagged and valid onTestFinished cleanup
+          remains clean, but if(false) killPid(...), conditional onTestFinished registration, and
+          process.on("message", ...) cleanup all exited 0 with no no-leaky-test-daemon diagnostic.'
+        name: manual cleanup control-flow probes
+        required: true
+        runner: oxlint
+        created_at: 2026-05-09T08:36:58.136Z
+        completed_at: 2026-05-09T08:36:58.136Z
     events:
       - _ulid: 01KR5XW5JX0FWE3S486016NQ8X
         actor: Jacob Chapel
@@ -194118,6 +194130,13 @@ reviews:
           status: pass
           name: targeted guardrail tests
         timestamp: 2026-05-09T08:36:52.822Z
+      - _ulid: 01KR5Y3YQ9NHSMCXVNJ6E4H4QF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual cleanup control-flow probes
+        timestamp: 2026-05-09T08:36:59.753Z
     examined_commit: 3596de394cdc1fe00fc6152af520f6b98624fb61
     external_links: []
     lifecycle_state: open
@@ -194173,5 +194192,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T08:32:44.638Z
-    updated_at: 2026-05-09T08:36:51.241Z
+    updated_at: 2026-05-09T08:36:58.136Z
     notes: []
