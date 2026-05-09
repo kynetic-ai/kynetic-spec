@@ -306,6 +306,14 @@ export function kspecJson<T>(args: string, cwd: string, options: KspecOptions = 
  * Bounded polling helper for startup/readiness checks in daemon/process tests.
  *
  * Throws with the most recent probe details to make timeout failures actionable.
+ *
+ * Each probe call is itself raced against the remaining wait budget so a
+ * probe that hangs (e.g. an unbounded `fetch` against a daemon that bound the
+ * port but stopped responding) cannot stall the whole helper past its
+ * configured timeout. Without this race, an unbounded probe would block
+ * inside `await probe()` forever and the loop's `Date.now() - startedAt`
+ * check would never re-evaluate — the only break would be the outer test
+ * timeout, which is exactly the daemon-build hang class this guards against.
  */
 export async function waitForStartup(
   description: string,
@@ -317,13 +325,38 @@ export async function waitForStartup(
   const startedAt = Date.now();
   let lastDetails = "no observation collected";
 
-  while (Date.now() - startedAt < timeoutMs) {
-    const result = await probe();
+  while (true) {
+    const remaining = timeoutMs - (Date.now() - startedAt);
+    if (remaining <= 0) break;
+
+    let probeTimer: ReturnType<typeof setTimeout> | undefined;
+    const probeBudgetExceeded = new Promise<StartupProbeResult>((resolveBudget) => {
+      probeTimer = setTimeout(() => {
+        resolveBudget({
+          ok: false,
+          details: `probe did not settle within ${remaining}ms remaining`,
+        });
+      }, remaining);
+    });
+
+    let probePromise: Promise<StartupProbeResult>;
+    try {
+      probePromise = Promise.resolve(probe());
+    } catch (syncError) {
+      clearTimeout(probeTimer);
+      throw syncError;
+    }
+    // If the probe itself rejects (e.g. throws asynchronously), surface that
+    // error to the caller rather than treating it as a non-ok observation.
+    const result = await Promise.race([probePromise, probeBudgetExceeded]);
+    clearTimeout(probeTimer);
     lastDetails = result.details;
 
     if (result.ok) {
       return;
     }
+
+    if (Date.now() - startedAt >= timeoutMs) break;
 
     await new Promise((resolve) => setTimeout(resolve, intervalMs));
   }

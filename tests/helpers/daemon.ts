@@ -399,6 +399,31 @@ function makeTailBuffer(maxBytes = TAIL_MAX_BYTES): OutputBuffer {
 
 const DIAGNOSTIC_SAMPLE_TIMEOUT_MS = 2_000;
 
+// Per-probe HTTP budget. Each probe targets a freshly bound localhost
+// endpoint, so a healthy response should land in <100ms; bound to 2s so a
+// daemon that binds but stops responding mid-request fails the probe instead
+// of hanging the readiness wait — `waitForStartup` only re-checks its budget
+// between probe iterations.
+const PROBE_FETCH_TIMEOUT_MS = 2_000;
+
+interface BoundedProbeFetchResult {
+  ok: boolean;
+  status: number;
+  body: string;
+}
+
+async function boundedProbeFetch(url: string): Promise<BoundedProbeFetchResult> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), PROBE_FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    const body = await response.text();
+    return { ok: response.ok, status: response.status, body };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 function describeChildExit(child: ChildProcess): string | null {
   if (child.exitCode !== null && child.exitCode !== undefined) {
     return `process exited with code ${child.exitCode}`;
@@ -443,12 +468,11 @@ async function probeHealth(ctx: ReadinessProbeContext): Promise<StartupProbeResu
     };
   }
   try {
-    const response = await fetch(`${ctx.endpoint.apiUrl}/api/health`);
-    const body = await response.text();
-    const ok = response.ok && body.includes('"status":"ok"');
+    const response = await boundedProbeFetch(`${ctx.endpoint.apiUrl}/api/health`);
+    const ok = response.ok && response.body.includes('"status":"ok"');
     return {
       ok,
-      details: `health status=${response.status} body=${body || "<empty>"}`,
+      details: `health status=${response.status} body=${response.body || "<empty>"}`,
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -481,21 +505,22 @@ async function probeCacheReady(ctx: ReadinessProbeContext): Promise<StartupProbe
     };
   }
   try {
-    const response = await fetch(`${ctx.endpoint.apiUrl}/api/debug/cache-status`);
-    const body = await response.text();
+    const response = await boundedProbeFetch(
+      `${ctx.endpoint.apiUrl}/api/debug/cache-status`,
+    );
     if (!response.ok) {
       return {
         ok: false,
-        details: `cache-status http=${response.status} body=${body || "<empty>"}`,
+        details: `cache-status http=${response.status} body=${response.body || "<empty>"}`,
       };
     }
     let parsed: unknown;
     try {
-      parsed = JSON.parse(body);
+      parsed = JSON.parse(response.body);
     } catch {
       return {
         ok: false,
-        details: `cache-status non-JSON body=${body || "<empty>"}`,
+        details: `cache-status non-JSON body=${response.body || "<empty>"}`,
       };
     }
     const projects = (parsed as { projects?: unknown }).projects;
