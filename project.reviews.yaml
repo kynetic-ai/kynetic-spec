@@ -196347,6 +196347,23 @@ reviews:
         runner: npm-test
         created_at: 2026-05-09T16:56:45.649Z
         completed_at: 2026-05-09T16:56:45.649Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, tests/helpers/daemon.ts, tests/helpers/daemon.test.ts, prior
+          review @01KR6PNB, task/spec context. Commands run: kspec task get, kspec item get
+          @daemon-test-startup-failure-hygiene, kspec review for-task/get, git
+          diff/stat/name-only/log, rg AC and endpoint usages, focused daemon suite, full npm test,
+          refs/completeness validation. Claims verified: prior failing-test blocker was addressed by
+          making the suite green; selective wrapper still only asserts child liveness and omits
+          endpoint-unreachable verification. Categories searched: correctness, AC/task alignment,
+          edge cases around cleanup registration, test quality, integration/guardrail tests."
+        name: review-evidence-log
+        required: false
+        runner: codex-reviewer
+        created_at: 2026-05-09T16:56:58.041Z
+        completed_at: 2026-05-09T16:56:58.041Z
     events:
       - _ulid: 01KR6T0XCPCX7ESFX7P2P94W7T
         actor: Jacob Chapel
@@ -196396,6 +196413,13 @@ reviews:
           status: pass
           name: full-test-suite
         timestamp: 2026-05-09T16:56:47.055Z
+      - _ulid: 01KR6TQF9RTEV7R0NG4HDX7S40
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence-log
+        timestamp: 2026-05-09T16:56:59.448Z
     examined_commit: 0233c88c3d5ce4e06f96e85fff9dc27b9fcbe66d
     external_links: []
     lifecycle_state: open
@@ -196429,7 +196453,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T16:44:40.214Z
-    updated_at: 2026-05-09T16:56:45.649Z
+    updated_at: 2026-05-09T16:56:58.041Z
     notes: []
   - _ulid: 01KR6TPSFEPB5V6ZNHHH2HJBV0
     slugs: []
