@@ -42977,7 +42977,7 @@ runs:
     completed_at: 2026-05-09T12:04:43.029Z
   - _ulid: 01KR6AY5S3P04Q2F03VNJKF84X
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -43006,7 +43006,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-09T12:21:35.187Z
-        completed_at: 2026-05-09T12:21:35.187Z
+        completed_at: 2026-05-09T12:22:33.064Z
+        notes: "Coverage search results: validate warning noise is already tracked by observation 01KNTPX4T
+          (review signal noise from repo-wide kspec validate warnings). Review evidence log
+          ergonomics are already tracked by observation 01KR2JD1 (review evidence logs lack a
+          first-class place). Full-suite duration is already tracked by inbox item 01KNTB8Z4 (test
+          suite duration too long and trending worse). No new friction item needs capture from this
+          session."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-09T12:22:33.064Z
+        completed_at: 2026-05-09T12:22:33.064Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T12:21:01.860Z
