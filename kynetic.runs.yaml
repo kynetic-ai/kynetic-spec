@@ -41473,7 +41473,7 @@ runs:
     completed_at: 2026-05-08T23:46:07.940Z
   - _ulid: 01KR533RZRAYG2NQTA2K0X3QF7
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -41508,7 +41508,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-09T00:46:34.282Z
-        completed_at: 2026-05-09T00:46:34.282Z
+        completed_at: 2026-05-09T00:46:42.358Z
+        notes: "Proposed improvements: No new friction capture needed because concrete friction is already
+          tracked by @01KQ1272 and @01KR52YX. Capture one success observation instead: reviewers
+          should add a small set of manual behavioral probes around parser/tokenization boundary
+          conditions when reviewing static classifier fixes, because targeted tests can cover stated
+          regressions while still missing adjacent executable-position cases. Scope:
+          documentation/process guidance, small."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-09T00:46:42.358Z
+        completed_at: 2026-05-09T00:46:42.358Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T00:45:02.329Z
