@@ -195646,9 +195646,25 @@ reviews:
           status: pass
           name: AC coverage and source audit
         timestamp: 2026-05-09T12:51:23.085Z
+      - _ulid: 01KR6CP20NVYHSJRQ5H2ABNGZA
+        actor: jacob.chapel@gmail.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-09T12:51:33.013Z
+      - _ulid: 01KR6CP20NJW4VVSN7AX24JFH3
+        actor: jacob.chapel@gmail.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T12:51:33.013Z
     examined_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -195656,7 +195672,14 @@ reviews:
       ref: "@01KR3W7SPKCKPWKXD8SJHNZVHT"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: jacob.chapel@gmail.com
+        role: reviewer
+        created_at: 2026-05-09T12:51:33.013Z
     created_at: 2026-05-09T12:35:49.850Z
-    updated_at: 2026-05-09T12:51:21.754Z
+    updated_at: 2026-05-09T12:51:33.013Z
     notes: []
