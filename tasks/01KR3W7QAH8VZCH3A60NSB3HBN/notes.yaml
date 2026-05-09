@@ -319,3 +319,79 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T10:51:22.924Z
+  - _ulid: 01KR67BENCE6MWZ7FVJ181Q97B
+    content: >-
+      Fix cycle 7: addressed reviewer's MUST-FIX blocker on
+      tools/eslint-rules/no-leaky-test-daemon.js (identifier-bound 127.0.0.1/[::1] daemon URLs not
+      treated as daemon observations).
+
+
+      Two changes:
+
+
+      Change 1 (broadened binding tracker): localhostUrlBindings entries now carry both isLocalhost
+      (narrow localhost: pattern, drives the unchanged localhostDaemonUrl reporting) AND
+      isDaemonHost (broader localhost:/127.0.0.1:/[::1]: pattern, drives the cleanup-timing
+      observation gate). recordBinding takes both flags; new isDaemonHostUrlIdentifier(node,
+      useNode) consults the broader flag. firstArgIsDaemonObservation now calls
+      isDaemonHostUrlIdentifier instead of isLocalhostUrlIdentifier so an identifier whose binding
+      RHS matches the broader loopback pattern is treated as a daemon observation symmetric with the
+      inline literal/template-literal path through carriesDaemonHostPortUrl.
+
+
+      Change 2 (deferred detach check): the detach missingCleanup analysis is now deferred to
+      Program:exit. Without this, the visit-order bug meant cleanup-timing analysis ran at the
+      daemon-start CallExpression entry, BEFORE later const url = '...' VariableDeclarator visits,
+      leaving identifier-bound URLs (even localhost: ones the existing tracker already supported)
+      invisible to the observation gate. Detach CallExpressions are collected during traversal into
+      pendingDetachChecks and processed at Program:exit when all bindings are recorded and parent
+      pointers are set; the cleanup escape hatch (in-flow onTestFinished, try/finally with kill,
+      ancestor afterEach, scoped disable comments) is preserved unchanged. Verified Program:exit
+      fires after all VariableDeclarator visits via a synthetic oxlint plugin probe.
+
+
+      Verified directly with npx oxlint:
+
+      - Reviewer probes (identifier-bound 127.0.0.1 fetch and identifier-bound [::1] fetch): both
+      now exit 1 with missingCleanup.
+
+      - Inline 127.0.0.1 fetch (cycle-5 regression): still exits 1.
+
+      - Identifier-bound localhost fetch: now exits 1 with BOTH missingCleanup AND
+      localhostDaemonUrl.
+
+      - Identifier-bound 127.0.0.1 WebSocket: exits 1.
+
+      - Negative controls preserved: identifier-bound unrelated URL exits 0; identifier-bound
+      127.0.0.1 with cleanup BEFORE observation exits 0; identifier-bound URL inside stored arrow
+      body invoked after cleanup exits 0; sibling-it-block scope isolation preserved (no leak across
+      it blocks).
+
+      - Prior-cycle regressions preserved: in-test beforeEach/afterEach/beforeAll/afterAll flag;
+      process.on('exit', ...) exits 0; conditional onTestFinished flags; defensive guard inside
+      callback exits 0.
+
+
+      Added 5 behavioral regression tests in tests/lint-no-leaky-test-daemon.test.ts:
+
+      - 4 positive: identifier-bound 127.0.0.1 fetch, identifier-bound [::1] fetch, identifier-bound
+      localhost fetch (asserts on the missingCleanup message text specifically), identifier-bound
+      127.0.0.1 WebSocket.
+
+      - 1 negative: identifier-bound unrelated URL.
+
+
+      Re-verified all 5 spec ACs against implementation: ac-direct-daemon-entry-invocations-flagged
+      unchanged; ac-detached-cleanup-before-observation now correctly handles identifier-bound
+      127.0.0.1, [::1], and localhost daemon URLs (the cycle-7 fix);
+      ac-unrelated-subprocesses-not-reported unchanged; ac-local-exception-is-local and
+      ac-exception-reason-states-subject unchanged.
+
+
+      Targeted guardrail tests: 19/19 suites, 213/213 tests (was 208 — added 5 new regressions).
+      Full suite: 2413/2413 suites, 8971 total tests (8966 pass / 5 skipped, 2134s). Audit:
+      tests/cli-serve.test.ts shows 0 no-leaky-test-daemon violations; full tests/ tree shows 0
+      no-leaky-test-daemon violations under the broadened rule.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T11:18:22.637Z
