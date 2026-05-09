@@ -43196,9 +43196,26 @@ runs:
     completed_at: 2026-05-09T15:36:25.232Z
   - _ulid: 01KR6Q9BT6TCV6A3GQCS3YHDT3
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T15:56:51.399Z
+        completed_at: 2026-05-09T15:58:05.930Z
+        notes: "What worked well: (1) Built a tiny scratch oxlint probe (temp project + npx oxlint) to
+          empirically verify each unsafe shape was actually a false negative BEFORE writing the
+          regression tests. This converted the task instruction 'verify pre-fix' from speculation
+          into measured proof and let me confidently mark direct-entrypoint wrappers as control
+          coverage instead of adding redundant failing tests. (2) Mirrored the existing 'daemon test
+          guardrail precision: detached cleanup timing' describe-block layout for the two new ACs,
+          so the new precision blocks visually parallel the older ones for reviewers. (3) Followed
+          task's explicit guidance to NOT add speculative coverage for shapes the rule already
+          handles correctly."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T15:58:05.930Z
+        completed_at: 2026-05-09T15:58:05.930Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T15:56:51.399Z
