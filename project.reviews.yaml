@@ -192663,6 +192663,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T04:27:46.969Z
+      - _ulid: 01KR5FZFJAPDNSK6H0BV9TE5BS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR5FZE4MFZKC88V9VBXGYX0Z
+        timestamp: 2026-05-09T04:29:53.098Z
     examined_commit: 739c9aee71f6fd2b2c0cfda492dfd552f0bfe80f
     external_links: []
     lifecycle_state: open
@@ -192672,8 +192679,31 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR5FZE4MFZKC88V9VBXGYX0Z
+        anchor:
+          type: code
+          commit: 739c9aee71f6fd2b2c0cfda492dfd552f0bfe80f
+          line_end: 872
+          line_start: 828
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR5FZE4NX9V59WF2TZWBX73S
+            author: Jacob Chapel
+            body: 'MUST-FIX: the runtime option value-consuming set omits documented Node flags such as --import
+              and --env-file, so direct daemon launches with those pre-script options are silently
+              accepted. I verified with oxlint probes that both exec("node --import ./setup.mjs
+              dist/daemon/index.js --port 0") / spawn("node", ["--import", "./setup.mjs",
+              DAEMON_ENTRY, ...]) and exec("node --env-file .env dist/daemon/index.js --port 0") /
+              spawn("node", ["--env-file", ".env", DAEMON_ENTRY, ...]) exit 0 with 0 diagnostics.
+              These commands run Node with a preload/env option and then execute the daemon
+              entrypoint, so they violate @daemon-test-guardrail-precision
+              ac-direct-daemon-entry-invocations-flagged. Add these value-consuming options and
+              behavioral positive regressions for shell-string and argv-array forms.'
+            created_at: 2026-05-09T04:29:51.637Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T04:27:24.737Z
-    updated_at: 2026-05-09T04:27:45.453Z
+    updated_at: 2026-05-09T04:29:51.637Z
     notes: []
