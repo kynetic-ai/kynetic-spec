@@ -43509,7 +43509,7 @@ runs:
     completed_at: 2026-05-09T16:54:13.246Z
   - _ulid: 01KR6TT585YRA958P8ACKZH686
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -43523,7 +43523,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T17:00:28.576Z
-        completed_at: 2026-05-09T17:00:28.576Z
+        completed_at: 2026-05-09T17:01:16.266Z
+        notes: "High-confidence reflection candidates checked against baseline and targeted searches.
+          Success: diff-first review plus targeted/full test evidence caught a real missing task
+          requirement; already covered by observation @01KPA80N. Friction: endpoint-unreachable was
+          a task-body requirement but not a spec AC, so coverage depended on manual checklist
+          review; already covered by inbox @01KHRTEV for task-specific ephemeral ACs. Related
+          staged-regression friction is already covered by @01KR6QHX and @01KR6SGE. No new unique
+          capture candidate."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T17:01:16.266Z
+        completed_at: 2026-05-09T17:01:16.266Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T16:58:27.461Z
