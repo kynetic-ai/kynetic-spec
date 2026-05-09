@@ -17827,8 +17827,11 @@ observations:
       during reflection; update the rendered/source skill example or CLI behavior so the instruction
       matches the actual command contract.
     author: codex
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing inbox item @01KQBGKT covering session reflection workflow examples
+      matching current CLI command signatures.
+    resolved: true
+    resolved_at: 2026-05-09T06:51:27.153Z
+    resolved_by: codex
     workflow_ref: "@session-reflect"
     created_at: 2026-05-09T06:50:37.430Z
 schedules:
