@@ -42878,7 +42878,7 @@ runs:
     completed_at: 2026-05-09T11:22:59.349Z
   - _ulid: 01KR68K340WJ0Z66H0AQ91Q7RB
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -42893,7 +42893,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T11:40:38.848Z
-        completed_at: 2026-05-09T11:40:38.848Z
+        completed_at: 2026-05-09T11:42:02.183Z
+        notes: "High-confidence reflection candidates were searched before capture. Success: the detached
+          reviewer merge helper and review-record gate handled the approved detached snapshot
+          cleanly; existing coverage found under @detached-reviewer-merge-helper and related
+          observations from the detached merge-helper work. Friction: review evidence/check
+          recording still requires several manual commands and optional failed checks are awkward to
+          present; existing coverage includes 01KQEFTM for standard review-check recording, 01KPPQNX
+          for file/stdin review comment bodies, 01KQ1272 for optional check intent preservation, and
+          01KR2JD1 for first-class review evidence logs. Friction: reflection workflow
+          examples/baseline discovery remain noisy; existing coverage includes 01KR293G/01KQ0RH7 for
+          workflow run refs and 01KQ8TTN for avoiding unbounded full-list commands. No new
+          high-confidence untracked item identified."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T11:42:02.183Z
+        completed_at: 2026-05-09T11:42:02.183Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T11:40:01.536Z
