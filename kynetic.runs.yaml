@@ -42120,7 +42120,7 @@ runs:
     completed_at: 2026-05-09T05:25:26.282Z
   - _ulid: 01KR5MHYB7ZA37BCSFBYJJ5129
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -42136,7 +42136,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T05:52:17.007Z
-        completed_at: 2026-05-09T05:52:17.007Z
+        completed_at: 2026-05-09T05:52:25.961Z
+        notes: "Step 2 (search existing): @01KR5GQB friction observation already captures 'static daemon
+          guardrail classifier reviews repeatedly find misses, suggesting need for durable
+          taxonomy/redesign'. The cycle-12 substring-vs-token-list bug is another instance of that
+          same systemic pattern (different region of the rule, same iterative-fix-cycle dynamic).
+          Skill doc drift on 'kspec workflow show' is already tracked in @01KPWDWX, @01KQBGKTD,
+          @01KQY000 — no new observation needed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T05:52:25.961Z
+        completed_at: 2026-05-09T05:52:25.961Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T05:49:52.359Z
