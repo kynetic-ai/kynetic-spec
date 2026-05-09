@@ -44378,9 +44378,21 @@ runs:
     completed_at: 2026-05-09T22:52:49.991Z
   - _ulid: 01KR7FZMK15WGTBD2EVC96B28Z
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-09T23:08:27.105Z
+        completed_at: 2026-05-09T23:10:25.408Z
+        notes: "Worked well: manual behavior probes caught a cleanup-binding false positive that focused
+          tests and the full suite did not catch. Review checks captured both automated test
+          evidence and the manual failing probe, and checking the current dev diff avoided reviewing
+          dependency changes already integrated elsewhere."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-09T23:10:25.408Z
+        completed_at: 2026-05-09T23:10:25.408Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-09T23:08:27.105Z
