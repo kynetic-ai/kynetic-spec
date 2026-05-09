@@ -192108,6 +192108,13 @@ reviews:
           status: fail
           name: manual classifier probes
         timestamp: 2026-05-09T03:00:32.891Z
+      - _ulid: 01KR5AWE207HWYKJBWB06JCVJQ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR5AWCT0YX3XTY61JKKQD9VQ
+        timestamp: 2026-05-09T03:00:50.368Z
     examined_commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
     external_links: []
     lifecycle_state: open
@@ -192195,7 +192202,35 @@ reviews:
               ac-direct-daemon-entry-invocations-flagged."
             created_at: 2026-05-09T03:00:16.615Z
         kind: blocker
+      - _ulid: 01KR5AWCT0YX3XTY61JKKQD9VQ
+        entries:
+          - _ulid: 01KR5AWCT0F6F6V880ATJMYJYX
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: kspec-agents.md; task/spec context for @01KR3W7PPVDFR8F03VQ6J54M3K;
+              previous cycle review @01KR57XGHXEQ8FTVWDHGJJMXRM; git diff for
+              tools/eslint-rules/no-leaky-test-daemon.js, tests/lint-daemon-test-guardrails.test.ts,
+              daemon helper/fixture files; current line-numbered classifier and test sections.
+
+              Commands run: kspec task get; kspec review for-task/get/add/open/check/comment; kspec
+              item get @daemon-test-guardrail-precision and @daemon-test-harness-guardrails; git
+              diff/stat/name-only; kspec validate; npm test -- --fresh
+              tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts; npm
+              test -- --fresh; npm run lint; npx oxlint on changed files; manual npx oxlint probes
+              for argv eval/version, quoted shell paths, and template-literal daemon args.
+
+              Claims verified: latest standalone flag fix covers the submitted tests, but manual
+              probes found remaining classifier precision gaps; full test suite passes; changed-file
+              lint fails on an unused constant in the modified rule file.
+
+              Categories searched: correctness, false positives, false negatives, AC annotation
+              coverage, test quality, lint/build hygiene, integration with helper allowlists and
+              detached-serve classification.
+            created_at: 2026-05-09T03:00:49.088Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-09T02:48:34.986Z
-    updated_at: 2026-05-09T03:00:31.482Z
+    updated_at: 2026-05-09T03:00:49.088Z
     notes: []
