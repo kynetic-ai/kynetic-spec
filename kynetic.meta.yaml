@@ -17980,6 +17980,29 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-09T16:53:59.476Z
+  - _ulid: 01KR6W25KQHRA1BM1RX4Y8JFKH
+    type: friction
+    content: "Selective expected-failure pattern (@01KR431R) scoping: when restructuring a test from
+      inline assertions into a selective wrapper, the post-fix contract path of the wrapper must
+      contain ALL task-required assertions; only the subset that deterministically distinguishes
+      bug-from-fix today belongs in the bug-shape re-assertion path. Failure mode that motivated
+      this rule: on @task-add-register-cleanup-failure-regression cycle 2, when introducing
+      expectCleanupRegistrationLeak around a daemon cleanup-registration leak, I dropped the
+      task-mandated endpoint-unreachable assertion from BOTH paths under the rationale 'rejection is
+      synchronous, daemon never binds, so endpoint reachability is not a useful pre-fix
+      differentiator.' That rationale was correct for the bug-shape re-assertion but wrong for the
+      post-fix contract path: a partial fix that terminates the child but leaks a listener (orphan
+      port binding, watchdog timer, separate process group) would still pass child-terminated yet
+      leak the endpoint, and the staged regression would mask it. Cycle 3 review @01KR6T0X correctly
+      flagged this; fix shape (commit 354731a68): post-fix path asserts BOTH child-terminated AND
+      bounded endpoint-unreachable; bug-shape re-assertion stays as child-still-alive only. Rule for
+      future selective wrappers: enumerate all task-required assertions, put them all in the
+      post-fix contract path, then choose only the deterministic-pre-fix subset for bug-shape
+      re-assertion."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T17:20:18.551Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
