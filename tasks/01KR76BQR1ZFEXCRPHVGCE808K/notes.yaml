@@ -14,3 +14,18 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-09T20:37:26.428Z
+  - _ulid: 01KR782AWRT8MQ0B84MQTQ6A07
+    content: "Implementation. tests/daemon-build.test.ts now bounds every HTTP probe with
+      AbortSignal.timeout(5s) and dumps daemon stdout/stderr tails plus per-step labels (runtime,
+      step, url) on any failure. The build subprocess fails fast with stdout/stderr-tail dumps on
+      non-zero exit, signal-kill, or spawn error — previously expect(result.status).toBe(0)
+      discarded all output so a wedged build produced no diagnostics. Unbounded fetches were the
+      strongest hang candidate: with no AbortSignal, a daemon that bound but stopped responding
+      mid-request would only break on the outer 180s vitest timeout. Verified: focused run passes
+      2/2 in 862ms; full suite passes 8979 tests, daemon-build.test.ts ran in 791ms in heavy-serial
+      pool. AC coverage unchanged — same fixture contract, runtime adapter, endpoint consistency,
+      runtime selection, and mode boundary ACs remain annotated. No spec change needed: this is
+      implementation hardening of an existing test, not new behavior."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T20:50:06.872Z
