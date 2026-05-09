@@ -21706,18 +21706,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-fix-register-cleanup-failure-leak/01kr6m70
-    canonical_branch_head: bd252f1ebdedef270f8ed908166d46eab1429f80
+    canonical_branch_head: 07488494e8a3c2e26cf3ddc945e56b6a90826963
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-09T17:53:09.994Z
+      updated_at: 2026-05-09T18:08:39.239Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-09T17:53:35.028Z
+      updated_at: 2026-05-09T18:08:39.239Z
     integration:
       status: pending
       detail: null
@@ -21725,7 +21725,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bd252f1ebdedef270f8ed908166d46eab1429f80
-      updated_at: 2026-05-09T17:53:09.994Z
+      updated_at: 2026-05-09T18:08:39.239Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR6M70T2NV1TR7EEGREDC5WJ"
@@ -21733,9 +21733,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-09T17:53:35.028Z
-      last_reconciled_at: 2026-05-09T17:53:35.028Z
+      last_reconciled_at: 2026-05-09T18:08:39.239Z
       created_at: 2026-05-09T17:53:09.994Z
-      updated_at: 2026-05-09T17:53:35.028Z
+      updated_at: 2026-05-09T18:08:39.239Z
     workspace_id: dispatch-workspace-01KR6M70T2NV1TR7EEGREDC5WJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
