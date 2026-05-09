@@ -195150,3 +195150,29 @@ reviews:
     created_at: 2026-05-09T10:38:01.880Z
     updated_at: 2026-05-09T11:17:14.955Z
     notes: []
+  - _ulid: 01KR67PDDH75ZTGMPC9P1PPZAT
+    slugs: []
+    title: Review task-fix-detached-cleanup-timing-analysis cycle 8
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KR67PDDH41SF12V980C48JSN
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-09T11:24:21.809Z
+    examined_commit: 2078e90d383db5dac67da2d33694cd1ab75e87ae
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-09T11:24:21.809Z
+    updated_at: null
+    notes: []
