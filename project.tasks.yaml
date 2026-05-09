@@ -28565,7 +28565,7 @@
   title: Stabilize daemon build smoke timeout
   type: bug
   spec_ref: "@daemon-backed-test-fixture-contract"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 3
@@ -28574,7 +28574,7 @@
     - daemon
     - flaky
   review_ref: "@01KR78A1TTWMP98EWA9RDPKFAJ"
-  notes_count: 2
+  notes_count: 3
   todos_count: 0
   created_at: 2026-05-09T20:20:17.793Z
   started_at: 2026-05-09T20:37:00.768Z

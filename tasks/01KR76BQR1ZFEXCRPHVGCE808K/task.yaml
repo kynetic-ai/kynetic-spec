@@ -13,7 +13,7 @@ description: During review of @01KR6M77JA0S1EEVZX8KKRPY1V, the full review gate 
 spec_ref: "@daemon-backed-test-fixture-contract"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -32,7 +32,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KR76DM79K0QBEED13PDZ4E5B
+session_id: null
 history:
   - author: "@claude"
     changes:
@@ -74,6 +74,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-09T20:54:23.447Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KR76DM79K0QBEED13PDZ4E5B
+    command: review-verdict-needs-work
+    timestamp: 2026-05-09T21:07:05.672Z
 created_at: 2026-05-09T20:20:17.793Z
 started_at: 2026-05-09T20:37:00.768Z
 submitted_at: 2026-05-09T20:50:12.432Z
