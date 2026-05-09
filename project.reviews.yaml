@@ -197124,6 +197124,17 @@ reviews:
         runner: npm test
         created_at: 2026-05-09T18:52:29.754Z
         completed_at: 2026-05-09T18:52:29.754Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: mise exec -- kspec validate --refs --warnings-ok passed; warnings were pre-existing
+          deprecated reference warnings
+        name: kspec validate refs
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-09T18:52:33.648Z
+        completed_at: 2026-05-09T18:52:33.648Z
     events:
       - _ulid: 01KR70M9CTMESV86BFQ9994QZC
         actor: Jacob Chapel
@@ -197172,6 +197183,13 @@ reviews:
           status: pass
           name: focused lint guardrail tests
         timestamp: 2026-05-09T18:52:31.125Z
+      - _ulid: 01KR71B49K1DWSZ6XEN38WRN2V
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate refs
+        timestamp: 2026-05-09T18:52:34.996Z
     examined_commit: e21bfac48a49698d8ad5dbf05b9e907666203555
     external_links: []
     lifecycle_state: open
@@ -197215,5 +197233,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T18:40:06.555Z
-    updated_at: 2026-05-09T18:52:29.754Z
+    updated_at: 2026-05-09T18:52:33.648Z
     notes: []
