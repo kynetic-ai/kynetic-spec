@@ -192061,6 +192061,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-09T02:59:30.326Z
+      - _ulid: 01KR5AV35AKEFFVYE8294PZX2F
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR5AV1XT865M9DM1Z8Q97AA9
+        timestamp: 2026-05-09T03:00:06.442Z
     examined_commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
     external_links: []
     lifecycle_state: open
@@ -192070,8 +192077,27 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR5AV1XT865M9DM1Z8Q97AA9
+        anchor:
+          type: code
+          commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
+          line_end: 438
+          line_start: 431
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR5AV1XT0MCXS747TEDF3FYF
+            author: Jacob Chapel
+            body: 'MUST-FIX: `isDaemonEntryArg` only accepts identifiers and string literals, so static
+              template-literal daemon paths in spawn-like arguments are silently accepted. Manual
+              probe with `spawn(`dist/daemon/index.js`, ["--port", "0"])` and `execFile("node",
+              [`dist/daemon/index.js`, "--port", "0"])` exited 0 with no diagnostics even though
+              both are statically provable direct daemon-entry launches. This violates
+              @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged.'
+            created_at: 2026-05-09T03:00:05.178Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T02:48:34.986Z
-    updated_at: 2026-05-09T02:59:28.966Z
+    updated_at: 2026-05-09T03:00:05.178Z
     notes: []
