@@ -163,3 +163,42 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T16:57:11.805Z
+  - _ulid: 01KR6VV3N5QA038NG43924QBSC
+    content: >-
+      Fix cycle 2: addressed review @01KR6T0X blocker (endpoint-unreachable assertion missing).
+
+
+      Change (commit 354731a68): added a bounded endpoint-unreachable assertion to the post-fix
+      contract path of expectCleanupRegistrationLeak (tests/helpers/daemon.test.ts:634-646). The
+      wrapper is now async and accepts the captured endpoint; postFixSucceeded only flips true when
+      BOTH child-terminated AND endpoint-unreachable hold. Pre-fix bug-shape re-assertion is
+      unchanged (child still alive) — endpoint reachability is racy pre-fix because rejection is
+      synchronous and the daemon may not have finished binding before we observe state.
+
+
+      Why the prior cycle dropped this: cycle 2 (commit 0233c88c3) removed endpoint reachability
+      under the reasoning that it could not differentiate leak from fix when rejection is
+      synchronous. That argument applies only to the bug-shape pre-fix re-assertion. The reviewer
+      correctly identified that endpoint-unreachable IS still required as a post-fix contract check
+      — a partial helper fix could terminate the child but leave an orphan listener reachable, and
+      without this check the staged regression would not catch that shape post-fix. The new helper
+      now catches it: child-terminated + endpoint-reachable → endpoint assertion throws → bug-shape
+      re-assertion mismatches (child IS terminated, not still alive) → test fails loudly.
+
+
+      Re-verified ACs unchanged: ac-cleanup-registration-failure-stops-owned-child and
+      ac-owned-child-stopped-after-startup-failure. Annotations preserved.
+
+
+      Verification:
+
+      - mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts → 10/10 pass.
+
+      - mise exec -- npm test → 2414/2414 suites, 8967/8972 tests pass (5 skipped, 0 failed).
+
+      - mise exec -- kspec validate --refs --warnings-ok → exit 0.
+
+      - mise exec -- kspec validate --completeness --warnings-ok → exit 0.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T17:16:27.174Z
