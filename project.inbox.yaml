@@ -3367,3 +3367,18 @@ inbox:
       - daemon
     added_by: "@claude"
     created_at: 2026-05-08T18:53:36.788Z
+  - _ulid: 01KR6N731N0EZ49ASM1N4TEY4K
+    text: Allow `item ac set/update` and `item ac remove` in `kspec batch`. Currently only `item ac add`
+      is batchable, so a task that tightens an existing acceptance criterion (revising
+      given/when/then text) cannot atomically combine the AC revision with other mutations like
+      `item set --status` or `item note`. Tasks that revise rather than add ACs would have to split
+      into multiple shadow commits, breaking the atomic-tightening pattern this session used (and
+      which the daemon-test hardening tightening would have needed if the existing ACs had to be
+      reworded instead of supplemented).
+    tags:
+      - cli
+      - batch
+      - specs
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-05-09T15:20:39.733Z
