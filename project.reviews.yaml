@@ -193346,6 +193346,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T06:34:55.110Z
+      - _ulid: 01KR5Q9GM21CCVCWDK39WFJBAP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR5Q9F5XY88T4GM2N657XD7M
+        timestamp: 2026-05-09T06:37:41.890Z
     examined_commit: ba3231821d9a05b7dbe546f10d7bb1fa6242dcbc
     external_links: []
     lifecycle_state: open
@@ -193355,8 +193362,31 @@ reviews:
       content_hash: ""
       ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR5Q9F5XY88T4GM2N657XD7M
+        anchor:
+          type: code
+          commit: ba3231821d9a05b7dbe546f10d7bb1fa6242dcbc
+          line_end: 321
+          line_start: 318
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR5Q9F5XH3BJ4GKYT3Y8JK4B
+            author: Jacob Chapel
+            body: 'MUST-FIX: the cleanup timing check still treats any statement containing `onTestFinished` as
+              valid cleanup, even when the callback does not clean up the detached daemon that was
+              just started. I verified with a synthetic test containing `runKspec("serve start
+              --detach --port 3456"); onTestFinished(() => stopUnrelatedFixture());
+              expect(true).toBe(true);` and oxlint reported 0 errors. That violates
+              @daemon-test-guardrail-precision ac-detached-cleanup-before-observation / the task
+              requirement that cleanup be scoped to the started daemon before later observations.
+              Tighten this predicate so in-flow cleanup requires an actual daemon-kill/stop pattern
+              associated with the started process, and add a behavioral regression for an unrelated
+              `onTestFinished` callback.'
+            created_at: 2026-05-09T06:37:40.413Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T06:34:39.293Z
-    updated_at: 2026-05-09T06:34:53.767Z
+    updated_at: 2026-05-09T06:37:40.413Z
     notes: []
