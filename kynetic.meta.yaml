@@ -18069,6 +18069,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-09T21:41:30.102Z
+  - _ulid: 01KR7C8ERPPQB1CHBFHRHWRGVH
+    type: friction
+    content: "no-leaky-test-daemon rule went through 6 fix cycles, each cycle the reviewer found a new
+      AST shape of the same underlying defect: cycle-3 callback-local literal kill targets, cycle-3
+      TS-wrapped kill targets, cycle-3 MemberExpression kill targets, cycle-4 callback-local
+      CallExpression initializers, cycle-5 callback-local readPidFromFile, cycle-5 TS-wrapped
+      null/undefined initializers. The AC ac-detached-cleanup-bound-before-observation describes the
+      CONTRACT (callback must own the concrete pid at registration time) but does not enumerate the
+      AST families that satisfy or violate it. Each cycle the rule grew an ad hoc patch for the new
+      AST shape rather than a shared classifier, and the AST treatment between kill-target analysis
+      and placeholder-initializer analysis drifted (placeholder check stopped at
+      bare-Identifier-undefined while kill-target analysis already had a fixed-point
+      unwrapTransparentExpression helper). Suggests guardrails over AST shapes benefit from either
+      AC-level enumeration of the AST families that satisfy the contract OR a documented shared
+      classifier so symmetric checks share the same unwrap discipline."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-09T22:03:21.750Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
