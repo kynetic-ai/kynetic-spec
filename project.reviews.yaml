@@ -198533,6 +198533,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-09T22:06:07.376Z
+      - _ulid: 01KR7CKBG4MJDANECZE7RKX8PD
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR7CK9ZEW901BQHEKNA673SF
+        timestamp: 2026-05-09T22:09:18.852Z
     examined_commit: 08328dee7a47f0c5c2a9b172770ef237860f8f6d
     external_links: []
     lifecycle_state: open
@@ -198542,8 +198549,28 @@ reviews:
       content_hash: ""
       ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR7CK9ZEW901BQHEKNA673SF
+        anchor:
+          type: code
+          commit: 08328dee7a47f0c5c2a9b172770ef237860f8f6d
+          line_end: 1535
+          line_start: 1535
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR7CK9ZECWEWME2XAM0GGTSE
+            author: Jacob Chapel
+            body: "MUST-FIX: direct cleanup calls in try/finally finalizers bypass the new ownership
+              check.  only calls  after entering a cleanup-registration callback, then line 1535
+              accepts any  directly. Manual oxlint probe:  exits 0 with no report. If the assertion
+              throws before  is assigned, the finalizer runs with an undefined kill target and the
+              detached daemon leaks, violating @daemon-test-guardrail-precision
+              ac-detached-cleanup-bound-before-observation's requirement that cleanup own the
+              just-started daemon before an intervening observation can fail."
+            created_at: 2026-05-09T22:09:17.294Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-09T22:05:38.337Z
-    updated_at: 2026-05-09T22:06:05.958Z
+    updated_at: 2026-05-09T22:09:17.294Z
     notes: []
