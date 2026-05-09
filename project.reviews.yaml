@@ -193923,9 +193923,25 @@ reviews:
           kind: nit
           thread_ulid: 01KR5W5XKYGFK1MW5E5S2SSZCX
         timestamp: 2026-05-09T08:03:08.316Z
+      - _ulid: 01KR5W690J61RWNAP0MM74GGFX
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-09T08:03:18.674Z
+      - _ulid: 01KR5W690JV1BJQFRMDWFF12QG
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T08:03:18.674Z
     examined_commit: bb5e4d849de64fa9d0b5b0b45cf9a63b833baa11
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -193971,7 +193987,14 @@ reviews:
               edge cases, test quality, AC coverage, integration, and regression risk."
             created_at: 2026-05-09T08:03:07.006Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-09T08:03:18.674Z
     created_at: 2026-05-09T07:50:39.486Z
-    updated_at: 2026-05-09T08:03:07.006Z
+    updated_at: 2026-05-09T08:03:18.674Z
     notes: []
