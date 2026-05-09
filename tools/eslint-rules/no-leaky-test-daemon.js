@@ -444,18 +444,151 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * Set of recognised cleanup-registration wrapper names — function call
+     * names whose callback argument WILL be invoked by the test framework
+     * at a defined boundary (vitest's per-test cleanup, suite-level hooks).
+     * A daemon-cleanup-shaped CallExpression nested inside one of these
+     * callbacks is counted as registered cleanup; a daemon-cleanup-shaped
+     * CallExpression nested inside an arbitrary unregistered function or
+     * arrow body is NOT — that body is just code stored in a binding or
+     * passed to an unrelated callee, never invoked, so the kill never runs.
+     *
+     * Coverage: vitest exposes per-test cleanup via `onTestFinished` and
+     * suite-level cleanup via `afterEach` / `afterAll`. The `beforeEach` /
+     * `beforeAll` setup hooks are also included because tests occasionally
+     * register cleanup imperatively in their setup body (e.g.
+     * `beforeEach(() => { onTestFinished(...) })` or
+     * `beforeEach(() => { process.on("exit", killPid) })`).
+     *
+     * Bare names only — process.on("exit", ...) is matched separately by
+     * `isProcessOnExitRegistration` because it is a MemberExpression
+     * callee shape.
+     */
+    const CLEANUP_REGISTRATION_WRAPPER_NAMES = new Set([
+      "onTestFinished",
+      "afterEach",
+      "afterAll",
+      "beforeEach",
+      "beforeAll",
+    ]);
+
+    /**
+     * True when `callNode` is a `process.on("exit"|"beforeExit"|"SIGINT"|
+     * "SIGTERM", <callback>)` registration whose callback argument is the
+     * same node passed in `callbackArg`. Used by
+     * `isCleanupRegistrationCallback` to recognise the standard Node
+     * process-lifecycle cleanup pattern alongside the vitest hook names.
+     *
+     * The event name is not constrained to a specific signal because any
+     * process exit/signal handler that calls a daemon-cleanup syscall WILL
+     * run before the process exits — that is precisely the leak-prevention
+     * pattern the rule is trying to credit.
+     */
+    function isProcessOnExitRegistration(callNode, callbackArg) {
+      if (!callNode || callNode.type !== "CallExpression") return false;
+      const callee = callNode.callee;
+      if (!callee || callee.type !== "MemberExpression") return false;
+      if (!callee.object || callee.object.type !== "Identifier") return false;
+      if (callee.object.name !== "process") return false;
+      if (!callee.property || callee.property.type !== "Identifier") return false;
+      if (callee.property.name !== "on") return false;
+      return callNode.arguments.includes(callbackArg);
+    }
+
+    /**
+     * True when `fnNode` (a FunctionDeclaration, FunctionExpression, or
+     * ArrowFunctionExpression) is itself an argument to a recognised
+     * cleanup-registration wrapper call — i.e. its body WILL be invoked by
+     * the test framework at a defined cleanup boundary.
+     *
+     * Patterns recognised as registrations:
+     *   - `onTestFinished(<fn>)`
+     *   - `afterEach(<fn>)` / `afterAll(<fn>)` /
+     *     `beforeEach(<fn>)` / `beforeAll(<fn>)`
+     *   - `process.on("exit"|"SIGTERM"|…, <fn>)`
+     *
+     * The callback must occupy an ARGUMENT slot of the call (not the
+     * callee position), so an IIFE-shaped node like `(() => kill())()`
+     * — where the arrow is the callee, not an argument — is correctly
+     * NOT treated as a registration callback.
+     *
+     * Anything else — assignment to a binding, an element of an array,
+     * an argument to an unrelated callee like `console.log(() => …)` —
+     * means the function body is never invoked through this expression,
+     * so cleanup-shaped calls inside it MUST NOT count as registered
+     * cleanup. This is the cycle-3 reviewer's blocker case
+     * (`const cleanup = () => killPid(pid);` accepted as cleanup despite
+     * the arrow never being invoked).
+     */
+    function isCleanupRegistrationCallback(fnNode) {
+      if (!fnNode) return false;
+      const parent = fnNode.parent;
+      if (!parent || parent.type !== "CallExpression") return false;
+      // Argument-slot check: rejects IIFE callees, MemberExpression
+      // calls like obj.method(fn) where fn is metadata, etc.
+      if (!parent.arguments.includes(fnNode)) return false;
+      const callee = parent.callee;
+      if (!callee) return false;
+      if (
+        callee.type === "Identifier" &&
+        CLEANUP_REGISTRATION_WRAPPER_NAMES.has(callee.name)
+      ) {
+        return true;
+      }
+      return isProcessOnExitRegistration(parent, fnNode);
+    }
+
+    /**
      * Walk an AST subtree and return true when any descendant CallExpression
-     * matches `isDaemonCleanupCallExpression`. The walk descends into
-     * function/arrow expression bodies (so cleanup nested inside an
-     * `onTestFinished(() => process.kill(pid, "SIGTERM"))` callback is
-     * found), block statements, conditionals, and try/catch/finally
-     * children. Non-AST keys (`parent`, `loc`, `range`, `start`, `end`,
-     * `type`, `tokens`, `comments`) are skipped to keep the walk O(nodes)
-     * and avoid descending into source-position metadata.
+     * matches `isDaemonCleanupCallExpression` AT A POSITION THAT WILL
+     * ACTUALLY EXECUTE.
+     *
+     * Function and arrow bodies are descended ONLY when the function or
+     * arrow is itself an argument to a recognised cleanup-registration
+     * wrapper (see `isCleanupRegistrationCallback`). Bodies of unregistered
+     * functions, arrows assigned to a binding, callbacks passed to
+     * unrelated callees, methods on an unused object, etc. are NOT
+     * descended — code in them is stored, not executed, so a daemon-kill
+     * CallExpression inside is not registered cleanup.
+     *
+     * Non-AST keys (`parent`, `loc`, `range`, `start`, `end`, `type`,
+     * `tokens`, `comments`) are skipped so the walk is O(AST nodes) and
+     * does not recurse into source-position metadata.
+     *
+     * The cycle-3 reviewer's blocker case demonstrates the gating:
+     *
+     *   runKspec("serve start --detach --port 3456");
+     *   const cleanup = () => killPid(pid);   // unregistered arrow
+     *   expect(true).toBe(true);
+     *
+     * The arrow's body contains a `killPid(pid)` CallExpression that
+     * matches the cleanup shape, but the arrow is bound to `cleanup` and
+     * never invoked — so the detached daemon is left running when the
+     * assertion runs. The earlier walker descended into all function
+     * bodies and accepted the unregistered arrow as cleanup; this walker
+     * stops at the arrow because its parent is a VariableDeclarator, not
+     * a registration call, and correctly returns false so the missing-
+     * cleanup violation is reported.
+     *
+     * The valid `onTestFinished(() => killPid(pid))` shape still classifies
+     * as cleanup: the arrow's parent is a CallExpression whose callee
+     * Identifier is `onTestFinished`, so the walker descends into the
+     * arrow's body and finds the `killPid(pid)` call.
      */
     function subtreeContainsDaemonCleanupCall(node) {
       if (!node || typeof node !== "object" || typeof node.type !== "string") {
         return false;
+      }
+      if (
+        node.type === "FunctionDeclaration" ||
+        node.type === "FunctionExpression" ||
+        node.type === "ArrowFunctionExpression"
+      ) {
+        if (!isCleanupRegistrationCallback(node)) {
+          return false;
+        }
+        // Fall through and descend into the body — registered callbacks
+        // will run, so a cleanup-shaped call inside DOES count.
       }
       if (isDaemonCleanupCallExpression(node)) return true;
       for (const key in node) {
@@ -487,13 +620,18 @@ const noLeakyTestDaemon = {
      * True when a sibling statement (after a detached daemon start, before
      * the next observation) registers cleanup that targets the just-started
      * daemon. Cleanup must be an actual CallExpression with a
-     * daemon-cleanup shape (see `isDaemonCleanupCallExpression`) — token-
-     * only text matches like `console.log("SIGTERM docs")` or
-     * `const cleanupDocs = "killPid should be used later"` MUST NOT count.
+     * daemon-cleanup shape (see `isDaemonCleanupCallExpression`) AND must
+     * appear at a position that will execute — the walker descends into
+     * function/arrow bodies only when the function/arrow is itself an
+     * argument to a recognised cleanup-registration wrapper
+     * (`onTestFinished`, `afterEach`/`afterAll`/`beforeEach`/`beforeAll`,
+     * `process.on(…)`). See `subtreeContainsDaemonCleanupCall`.
      *
-     * The walker descends into nested arrow/function expressions so cleanup
-     * registered through `onTestFinished(() => killPid(pid))` is detected
-     * even though the kill call is inside a callback body.
+     * Token-only text matches (e.g. `console.log("SIGTERM docs")`,
+     * `const cleanupDocs = "killPid should be used later"`) and
+     * cleanup-shaped calls inside an unregistered function body
+     * (e.g. `const cleanup = () => killPid(pid);` — the cycle-3 reviewer
+     * blocker) are NOT cleanup.
      */
     function statementContainsCleanup(stmt) {
       return subtreeContainsDaemonCleanupCall(stmt);

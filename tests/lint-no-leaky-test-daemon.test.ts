@@ -326,6 +326,101 @@ describe("test suite", () => {
 `);
       expect(result.output).toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-3 reviewer probe: a `const cleanup = () => killPid(pid);`
+    // declaration between the detached start and the next observation
+    // contains a daemon-shaped `killPid(pid)` CallExpression in the arrow
+    // body — but the arrow is bound to `cleanup` and never invoked, so the
+    // detached daemon is leaked when the assertion runs. The cycle-2
+    // walker descended into all function/arrow bodies and accepted the
+    // unregistered arrow as cleanup; the gated walker must stop at the
+    // arrow because its parent is a VariableDeclarator (not a recognised
+    // cleanup-registration call) and report the missing-cleanup
+    // violation.
+    it("should flag serve start --detach when a later statement is a const arrow cleanup that is never registered", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    const cleanup = () => killPid(result.pid);
+    expect(cleanup).toBeDefined();
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-3 variant (named function declaration): a `function later() {
+    // killPid(pid); }` declaration after the detached start defines a kill
+    // call but never invokes it. The walker must stop at the
+    // FunctionDeclaration body (its parent is a BlockStatement, not a
+    // registration call) so the missing-cleanup violation fires.
+    it("should flag serve start --detach when a later statement is a named function that is never invoked", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    function later() {
+      killPid(result.pid);
+    }
+    expect(later).toBeDefined();
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-3 variant (callback to unrelated callee): an arrow passed to
+    // `console.log` is never invoked as cleanup — `console.log` does not
+    // run its argument as a teardown callback. The walker must stop at
+    // the arrow because its parent CallExpression's callee is `console`
+    // .log, not a recognised cleanup-registration wrapper.
+    it("should flag serve start --detach when the only later statement passes a kill arrow to an unrelated callee", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    console.log(() => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-3 variant (try/finally finalizer with unregistered arrow):
+    // the finalizer defines a `const cleanup = () => killPid(pid);` but
+    // never calls it — the kill is stored, not executed. The
+    // try/finally-finalizer subtree walker uses the same gated descent as
+    // the in-flow walker, so this must still report the missing cleanup.
+    it("should flag serve start --detach in try/finally whose finalizer only declares an unregistered cleanup arrow", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    try {
+      const result = runKspec("serve start --detach --port 3456");
+      expect(result).toBeDefined();
+    } finally {
+      const cleanup = () => killPid(result.pid);
+      expect(cleanup).toBeDefined();
+    }
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {
