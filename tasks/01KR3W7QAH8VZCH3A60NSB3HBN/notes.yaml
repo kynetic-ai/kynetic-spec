@@ -114,3 +114,55 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T08:44:40.390Z
+  - _ulid: 01KR6044WHBXE4NPNR946RYKD2
+    content: >-
+      Fix cycle 4: addressed both reviewer MUST-FIX blockers on
+      tools/eslint-rules/no-leaky-test-daemon.js.
+
+
+      Blocker 1 (line 252, hasCleanupAfter accepted conditional cleanup): tightened the cleanup
+      walker to require unconditional registration on the straight-line path.
+      subtreeContainsDaemonCleanupCall now prunes descent into IfStatement, ConditionalExpression,
+      LogicalExpression (short-circuit), all loop bodies (While/DoWhile/For/ForIn/ForOf),
+      SwitchStatement cases, and TryStatement.handler when walking OUTSIDE a registered cleanup
+      callback. Inside a registered callback the framework invokes the body unconditionally, so an
+      inner defensive guard like onTestFinished(() => { if (pid) killPid(pid); }) is still credited
+      — the walker tracks an insideRegisteredCallback flag that flips when descent crosses the
+      registration boundary, and pruning is disabled below that boundary.
+
+
+      Blocker 2 (line 487, isProcessOnExitRegistration accepted any event): added
+      PROCESS_EXIT_EVENT_NAMES set (exit, beforeExit, SIGINT, SIGTERM, SIGHUP, SIGQUIT, SIGBREAK).
+      The predicate now requires the first call argument to be a string literal naming one of those
+      events. Arbitrary names like 'message', 'disconnect', 'warning' no longer credit cleanup
+      because their callbacks fire during normal IPC and are not guaranteed to run before the test
+      ends.
+
+
+      Verified via npx oxlint: all three reviewer probes (if(false) killPid, conditional
+      onTestFinished, process.on('message')) now exit 1 with the missingCleanup diagnostic. Negative
+      controls (unconditional onTestFinished, process.on('exit'), defensive guard inside callback,
+      try/finally with unconditional process.kill in finalizer) still exit 0.
+      tests/cli-serve.test.ts had one conditional registration at line 453 that became a false
+      positive under the new strict rule; refactored it to register cleanup unconditionally with the
+      existence/parse logic moved inside the callback (the registration is what matters for the leak
+      guard; the inner conditional is a runtime safety net).
+
+
+      Added 6 behavioral regression tests in tests/lint-no-leaky-test-daemon.test.ts: 4 positive
+      (unreachable conditional kill, conditional onTestFinished registration, process.on with
+      non-exit event, kill in for-loop body) and 2 negative (defensive guard inside the callback,
+      process.on('exit') registration). Re-verified all 5 spec ACs against implementation:
+      ac-direct-daemon-entry-invocations-flagged unchanged; ac-detached-cleanup-before-observation
+      now correctly rejects conditional registration AND non-exit process.on;
+      ac-unrelated-subprocesses-not-reported unchanged; ac-local-exception-is-local and
+      ac-exception-reason-states-subject unchanged.
+
+
+      Targeted guardrail tests: 19/19 suites, 197/197 tests pass (was 191 — added 6 new
+      regressions). Full suite: 2413/2413 suites, 8950 tests pass / 5 skipped (1971s). Audit: npx
+      oxlint --config .oxlintrc.json tests/cli-serve.test.ts shows 0 no-leaky-test-daemon
+      violations; full tests/ tree shows 0 violations from this rule.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T09:12:03.217Z
