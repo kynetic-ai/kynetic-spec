@@ -4042,6 +4042,172 @@ describe("cleanup closure captures imported pid", () => {
     });
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-5 reviewer probe: TS-asserted `undefined` initializer must be
+    // recognised as a placeholder, not a concrete value-producing binding)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a const pid initialised to `undefined as number | undefined` (TS-wrapped undefined is still undefined at registration time)", () => {
+      // UNSAFE (cycle-5 reviewer probe): the test starts the detached
+      // daemon, then declares `const pid = undefined as number | undefined`
+      // AFTER the start, then registers `onTestFinished(() => { if (pid !==
+      // undefined) process.kill(pid, "SIGTERM"); })`. The declarator's
+      // source range ends AFTER the detached-start begins, so the
+      // declarator-position check alone says "owned". But the initializer
+      // is a TS-wrapped `undefined` — at registration time the closure
+      // captures a binding whose runtime value is still undefined, so an
+      // intervening assertion failure leaves the cleanup with no captured
+      // pid and the detached daemon leaks. The earlier
+      // `isNullOrUndefinedInitializer` only inspected bare Literal `null`,
+      // bare Identifier `undefined`, and `void <expr>` — it did NOT unwrap
+      // transparent TS wrappers, so the TSAsExpression node was treated as
+      // a concrete initializer. The fix unwraps the same set of
+      // transparent wrappers as the kill-target analysis
+      // (TSAsExpression / TSSatisfiesExpression / TSNonNullExpression /
+      // TSTypeAssertion / TSInstantiationExpression / parens / chain
+      // wrappers) before classifying the initializer, so wrapped
+      // `undefined` is correctly recognised as a placeholder and the
+      // cleanup is rejected.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures pid initialised to TS-wrapped undefined", () => {
+  it("declares const pid = undefined as number | undefined after the start, registers cleanup", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = undefined as number | undefined;
+    onTestFinished(() => { if (pid !== undefined) process.kill(pid, "SIGTERM"); });
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-5: TS-asserted `null` initializer is the same placeholder shape)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a const pid initialised to `null as any` (TS-wrapped null is still null at registration time)", () => {
+      // UNSAFE: `null as any` is the null counterpart of the cycle-5
+      // probe. The runtime value at registration is null; the closure has
+      // no concrete pid to kill at teardown if an intervening observation
+      // fails. The unwrap discipline must classify wrapped `null` the
+      // same way as wrapped `undefined`.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures pid initialised to TS-wrapped null", () => {
+  it("declares const pid = null as any after the start, registers cleanup", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = null as any;
+    onTestFinished(() => { if (pid !== null) process.kill(pid, "SIGTERM"); });
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-5: stacked transparent wrappers around `undefined` still resolve
+    // as a placeholder)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a const pid initialised to `(undefined)!` (non-null assertion over undefined unwraps to a placeholder)", () => {
+      // UNSAFE: stacking parens + non-null assertion over `undefined`
+      // produces a TS-coerced placeholder. The fixed-point unwrap loop
+      // strips ParenthesizedExpression, then TSNonNullExpression, then
+      // (some parsers wrap the non-null assertion in a ChainExpression)
+      // ChainExpression, until the underlying Identifier `undefined` is
+      // exposed. Without the unwrap, the rule would see the
+      // TSNonNullExpression and treat it as a concrete value.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures pid initialised to non-null-asserted undefined", () => {
+  it("declares const pid = (undefined)! after the start, registers cleanup", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = (undefined)! as number;
+    onTestFinished(() => { if (pid !== undefined) process.kill(pid, "SIGTERM"); });
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-5: assignment-RHS variant — TS-wrapped undefined as the RHS of a
+    // post-start assignment still leaves the binding placeholder-only)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a let pid that is later assigned `undefined as any` after the start (TS-wrapped placeholder RHS)", () => {
+      // UNSAFE: the assignment-RHS leg of the binding analysis must
+      // recognise TS-wrapped null/undefined the same way as the
+      // declarator-init leg. `let pid: number | undefined; runKspec(...);
+      // pid = undefined as any; onTestFinished(...);` reaches the
+      // AssignmentExpression branch of findConcreteBindingInStatements.
+      // Without the unwrap, the TSAsExpression RHS would mark the
+      // binding as concretely re-bound after the start, hiding the
+      // placeholder semantics.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures pid reassigned to TS-wrapped undefined", () => {
+  it("declares let pid, starts daemon, assigns TS-wrapped undefined, then registers cleanup", () => {
+    let pid: number | undefined;
+    runKspec("serve start --detach --port 3456");
+    pid = undefined as any;
+    onTestFinished(() => { if (pid !== undefined) process.kill(pid, "SIGTERM"); });
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-5: positive control — wrapped concrete value remains concrete)
+    it("does not flag runKspec(\"serve start --detach\") when const pid = (readPidFromFile() as number) is captured AFTER the start and onTestFinished kills it", () => {
+      // ALLOWED narrow: the unwrap discipline must NOT strip transparent
+      // wrappers around a real value-producing expression. Wrapping a
+      // `readPidFromFile()` CallExpression in a TS cast does not turn it
+      // into a placeholder — the runtime value at registration time is
+      // the daemon's pid. The unwrap classifier checks the underlying
+      // expression: CallExpression is neither Literal-null nor Identifier-
+      // undefined nor void, so the initializer is concrete and ownership
+      // holds (declarator ends after the start).
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { readPidFromFile } from "./helpers/pid";
+
+describe("cleanup closure captures TS-cast over a concrete read", () => {
+  it("declares const pid = readPidFromFile() as number after the start, registers cleanup", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile() as number;
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (ownership: kill target is a member expression on a binding that
     // pre-dates the daemon start)
     it("flags runKspec(\"serve start --detach\") when onTestFinished captures process.kill(holder.pid, ...) where holder was declared BEFORE the daemon start", () => {

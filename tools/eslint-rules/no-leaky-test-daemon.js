@@ -662,12 +662,32 @@ const noLeakyTestDaemon = {
      * `let pid = undefined;`, `let child = null;`,
      * `let child: T | null = null` — that mean the cleanup closure does
      * not yet own a concrete pid/handle for the just-started daemon.
+     *
+     * Transparent wrappers (TSAsExpression / TSSatisfiesExpression /
+     * TSNonNullExpression / TSTypeAssertion / TSInstantiationExpression /
+     * ParenthesizedExpression / ChainExpression) are stripped before the
+     * structural check so TS-coerced placeholders are recognised too:
+     * `let pid = undefined as number | undefined`, `let pid = null as any`,
+     * `let pid = (undefined)!`, etc. The cycle-5 reviewer probe motivated
+     * this: a captured binding initialised to a wrapped `undefined` was
+     * accepted as concrete, leaving the cleanup closure with no usable pid
+     * at registration time and violating
+     * `ac-detached-cleanup-bound-before-observation`. Using the same
+     * unwrap discipline as the kill-target analysis keeps both legs of the
+     * binding-status check on the same AST shape.
      */
     function isNullOrUndefinedInitializer(node) {
       if (!node) return true;
-      if (node.type === "Literal" && node.value === null) return true;
-      if (node.type === "Identifier" && node.name === "undefined") return true;
-      if (node.type === "UnaryExpression" && node.operator === "void") {
+      const unwrapped = unwrapTransparentExpression(node);
+      if (!unwrapped) return true;
+      if (unwrapped.type === "Literal" && unwrapped.value === null) return true;
+      if (unwrapped.type === "Identifier" && unwrapped.name === "undefined") {
+        return true;
+      }
+      if (
+        unwrapped.type === "UnaryExpression" &&
+        unwrapped.operator === "void"
+      ) {
         return true;
       }
       return false;
