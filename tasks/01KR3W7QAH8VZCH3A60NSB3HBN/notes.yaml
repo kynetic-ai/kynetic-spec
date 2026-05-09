@@ -244,3 +244,73 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T10:05:21.451Z
+  - _ulid: 01KR64PX1BK5V47FMNSN9AVRXY
+    content: >-
+      Fix cycle 6: addressed both reviewer MUST-FIX blockers on
+      tools/eslint-rules/no-leaky-test-daemon.js.
+
+
+      Blocker 1 (line 467 — lifecycle hook registrations credited as in-flow cleanup): restricted
+      CLEANUP_REGISTRATION_WRAPPER_NAMES from {onTestFinished, afterEach, afterAll, beforeEach,
+      beforeAll} down to {onTestFinished} only. Lifecycle hook callbacks registered as siblings of a
+      runKspec("serve start --detach") inside a test body are no longer descended into by
+      subtreeContainsDaemonCleanupCall and no longer credit cleanup. Vitest does not retroactively
+      run hooks newly registered during a test, so registering
+      beforeEach/afterEach/beforeAll/afterAll inside an it() body does not scope cleanup to the
+      just-started daemon. Updated comments in the wrapper-set declaration,
+      isCleanupRegistrationCallback, and statementContainsCleanup to reflect the narrower contract.
+      Verified all four lifecycle hook variants exit 1 with missingCleanup via npx oxlint;
+      onTestFinished and process.on("exit", ...) still exit 0.
+
+
+      Blocker 2 (line 850 — fetch/WebSocket counted regardless of URL): subtreeContainsAwaitOrExpect
+      now URL-filters fetch() / new WebSocket() observations. Added a top-level
+      DAEMON_HOST_PORT_URL_PATTERN regex matching loopback host+port forms (localhost, 127.0.0.1,
+      [::1] with explicit digits or ${...} interpolation) and three new helpers
+      (carriesDaemonHostPortUrl, firstArgIsDaemonObservation, isFetchOfDaemonHostUrl,
+      isWebSocketCtorOfDaemonHostUrl) used only by the cleanup-timing observation gate. The narrower
+      localhostDaemonUrl reporting predicate (carriesLocalhostPortUrl / isFetchOfLocalhostUrl /
+      isWebSocketCtorOfLocalhostUrl) is intentionally unchanged. Identifier-bound URLs still resolve
+      via the existing localhostUrlBindings tracking — narrower than literal forms because the
+      binding map only tracks localhost: URLs (broader-host bindings would require doubling state
+      and were not requested).
+
+
+      Verified directly with npx oxlint:
+
+      - Blocker 1: beforeEach repro exits 1 (missingCleanup); afterEach variant exits 1;
+      afterAll/beforeAll variants exit 1.
+
+      - Blocker 2: fetch("https://example.com/health") between detached start and cleanup exits 0
+      (no false positive); fetch("http://127.0.0.1:3456/api/health") between detached start and
+      cleanup exits 1 (cycle-5 regression preserved); fetch("http://localhost:3456/...") and
+      template-literal `http://localhost:${port}/...` and identifier-bound localhost URL all still
+      flag both missingCleanup AND localhostDaemonUrl. WebSocket("wss://example.com/feed") between
+      detached start and cleanup exits 0; new WebSocket("ws://127.0.0.1:3456/api/ws") still exits 1.
+
+      - Negative controls preserved: defensive guard inside onTestFinished callback exits 0;
+      process.on("exit", ...) registration exits 0; stored arrow with expect invoked after cleanup
+      exits 0.
+
+
+      Added 6 behavioral regressions in tests/lint-no-leaky-test-daemon.test.ts:
+
+      - 4 positive (lifecycle-hook in-test cleanup): beforeEach, afterEach, afterAll, beforeAll
+      variants
+
+      - 2 negative (URL-filtered observation): unrelated fetch URL, unrelated WebSocket URL
+
+
+      Re-verified all 5 spec ACs against implementation: ac-direct-daemon-entry-invocations-flagged
+      unchanged; ac-detached-cleanup-before-observation now correctly rejects in-test lifecycle-hook
+      registration AND unrelated network URLs (no false negatives or positives on those two
+      surfaces); ac-unrelated-subprocesses-not-reported unchanged; ac-local-exception-is-local and
+      ac-exception-reason-states-subject unchanged.
+
+
+      Targeted guardrail tests: 19/19 suites, 208/208 tests (was 202 — added 6 new regressions).
+      Full suite: 2413/2413 suites, 8966 tests (8961 pass / 5 skipped, 2030s). Audit: npx oxlint
+      --config .oxlintrc.json tests/ shows 0 no-leaky-test-daemon violations across the test tree.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T10:32:12.075Z
