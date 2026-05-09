@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KR77B48VF2DAZM7JZH5MKK1N
+    content: "Investigation. Original full-suite hang (180s timeout) on tests/daemon-build.test.ts could
+      not be reproduced locally on a clean run (took 794ms in full suite). Root cause analysis: (1)
+      Test calls plain fetch() against the just-spawned daemon with no AbortSignal; if a daemon is
+      alive but stops responding mid-request, fetch hangs forever and only the outer 180s vitest
+      timeout breaks it. (2) runCommand uses spawnSync with timeout 120s, but on timeout/non-zero
+      exit the assertion only checks status — stdout/stderr are silently discarded, so the hang
+      yields no diagnostics. (3) Whole describe wraps both runtimes in one big block with no
+      per-step bound. Plan: bound each fetch with AbortSignal.timeout, surface build stdout/stderr
+      on any non-success, and add per-step diagnostics so a hang fails fast with actionable output
+      (which runtime, which fetch, what the daemon stderr says). Tightens determinism without
+      weakening fixture coverage — same ACs still verified, just bounded."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-09T20:37:26.428Z
