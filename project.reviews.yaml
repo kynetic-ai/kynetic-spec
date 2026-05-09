@@ -192648,7 +192648,65 @@ reviews:
     slugs: []
     title: Review fix guardrail daemon command classification (cycle 11)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts: 19 suites passed, 170 tests passed, duration
+          39.4s"
+        name: targeted guardrail tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-09T04:39:50.166Z
+        completed_at: 2026-05-09T04:39:50.166Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh: 2413 suites passed; 8923 passed, 5 skipped, 0 failed;
+          duration 2009.7s"
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-09T04:39:53.432Z
+        completed_at: 2026-05-09T04:39:53.432Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npx oxlint tools/eslint-rules/no-leaky-test-daemon.js
+          tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts: 0
+          errors, 26 warnings"
+        name: changed-file oxlint
+        required: true
+        runner: oxlint
+        created_at: 2026-05-09T04:39:56.692Z
+        completed_at: 2026-05-09T04:39:56.692Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation schema/references passed; command exited 6 due repository-wide warnings already
+          present (deprecated refs, orphaned specs, existing coverage warnings), not introduced by
+          this task.
+        name: kspec validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-09T04:40:00.007Z
+        completed_at: 2026-05-09T04:40:00.007Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Synthetic oxlint files containing exec/spawn direct daemon launches with node --import and
+          node --env-file both exited 0 with 0 diagnostics, proving the recorded false negative.
+        name: manual classifier probes
+        required: true
+        runner: oxlint synthetic probes
+        created_at: 2026-05-09T04:40:04.251Z
+        completed_at: 2026-05-09T04:40:04.251Z
     events:
       - _ulid: 01KR5FTYP1499QBS73YJSYV9Y1
         actor: Jacob Chapel
@@ -192670,9 +192728,67 @@ reviews:
           kind: blocker
           thread_ulid: 01KR5FZE4MFZKC88V9VBXGYX0Z
         timestamp: 2026-05-09T04:29:53.098Z
+      - _ulid: 01KR5GHQWJGBFDCN5DK9ZE7F6K
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted guardrail tests
+        timestamp: 2026-05-09T04:39:51.443Z
+      - _ulid: 01KR5GHV03Q4MWF4BFQB7WAYT0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-05-09T04:39:54.627Z
+      - _ulid: 01KR5GHYAMNDJA38ZB5RYX72CX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file oxlint
+        timestamp: 2026-05-09T04:39:58.036Z
+      - _ulid: 01KR5GJ1DY8BFQZT7ABN64NGVK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-09T04:40:01.215Z
+      - _ulid: 01KR5GJ5M0Z39HPZYSHFYF9QM0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual classifier probes
+        timestamp: 2026-05-09T04:40:05.504Z
+      - _ulid: 01KR5GJ8QY7DCZJYRWFCJRPB69
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KR5GJ7HNM3FNV2C3QV2MJE9R
+        timestamp: 2026-05-09T04:40:08.702Z
+      - _ulid: 01KR5GJBYQHMR3TYQQS8BJX9VQ
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-09T04:40:11.991Z
+      - _ulid: 01KR5GJBYQ8BSMHNXCYWR6E08T
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-09T04:40:11.991Z
     examined_commit: 739c9aee71f6fd2b2c0cfda492dfd552f0bfe80f
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -192703,7 +192819,36 @@ reviews:
               behavioral positive regressions for shell-string and argv-array forms.'
             created_at: 2026-05-09T04:29:51.637Z
         kind: blocker
-    verdicts: []
+      - _ulid: 01KR5GJ7HNM3FNV2C3QV2MJE9R
+        entries:
+          - _ulid: 01KR5GJ7HPVSB7E0AYBEHZFKSR
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: kspec-agents.md; task/spec context for
+              @01KR3W7PPVDFR8F03VQ6J54M3K; prior review @01KR5D1THMAVSF1SWPW1S37AQ1;
+              tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-daemon-test-guardrails.test.ts;
+              tests/lint-no-leaky-test-daemon.test.ts; tests/helpers/daemon.ts and .test.ts;
+              tests/helpers/mock-daemon.ts and .test.ts; tests/e2e/fixtures/test-base.ts;
+              tests/e2e/fixtures/daemon-fixture.ts; tests/e2e-fixture-daemon-cleanup.test.ts;
+              tests/daemon-api/helpers.ts and .test.ts; vitest.config.ts. Commands run: kspec item
+              get for @daemon-test-guardrail-precision and @daemon-test-harness-guardrails; kspec
+              validate; rg AC annotations; targeted guardrail tests; full npm test fresh;
+              changed-file oxlint; node --help audit; synthetic oxlint probes for --import and
+              --env-file. Claims verified: worker's cycle-10 fixes for quoted preload values and
+              parse-only --check were covered by behavioral tests; worker's full-suite claim was
+              independently rerun. Categories searched: correctness, edge cases around runtime flags
+              and shell tokenization, false positives, error handling/cleanup helper changes, test
+              quality, integration/config. Finding recorded: direct daemon launches using documented
+              value-consuming Node options --import/--env-file are missed."
+            created_at: 2026-05-09T04:40:07.478Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-09T04:40:11.991Z
     created_at: 2026-05-09T04:27:24.737Z
-    updated_at: 2026-05-09T04:29:51.637Z
+    updated_at: 2026-05-09T04:40:11.991Z
     notes: []
