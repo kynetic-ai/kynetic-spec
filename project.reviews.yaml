@@ -196436,6 +196436,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-09T16:57:09.049Z
+      - _ulid: 01KR6VSXKJAFGMTD4MVQ7AXWR4
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR6TNSJW56S05VHY49FF0B5X
+        timestamp: 2026-05-09T17:15:48.210Z
     examined_commit: 0233c88c3d5ce4e06f96e85fff9dc27b9fcbe66d
     external_links: []
     lifecycle_state: closed
@@ -196466,6 +196472,21 @@ reviews:
               current child-liveness check, but add a bounded endpoint-unreachable assertion in the
               post-fix contract path rather than relying on the finally-block force kill."
             created_at: 2026-05-09T16:56:04.444Z
+          - _ulid: 01KR6VSW9WD8W640BKNBE3MKED
+            author: "@claude"
+            body: "Fixed: added a bounded endpoint-unreachable assertion to the post-fix contract path of
+              expectCleanupRegistrationLeak (tests/helpers/daemon.test.ts:634-646). The wrapper is
+              now async and accepts the captured endpoint; pre-fix it still re-asserts only child
+              liveness as the bug-shape differentiator (endpoint reachability is racy pre-fix
+              because rejection is synchronous), but post-fix BOTH child-terminated AND
+              endpoint-unreachable must hold for postFixSucceeded to flip true. A partial fix that
+              terminates the child but leaves a listener reachable will throw the
+              endpoint-unreachable assertion, the bug-shape re-assertion (child still alive) will
+              mismatch, and the test will fail loudly rather than mask the partial fix. The 'remove
+              this wrapper' message and the call site comment were updated to reflect the full
+              contract. Focused suite still 10/10; full npm test 2414/2414 suites, 8967/8972 tests
+              (5 skipped, 0 failed)."
+            created_at: 2026-05-09T17:15:46.876Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -196476,7 +196497,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-09T16:57:09.048Z
     created_at: 2026-05-09T16:44:40.214Z
-    updated_at: 2026-05-09T16:57:09.049Z
+    updated_at: 2026-05-09T17:15:46.876Z
     notes: []
   - _ulid: 01KR6TPSFEPB5V6ZNHHH2HJBV0
     slugs: []
