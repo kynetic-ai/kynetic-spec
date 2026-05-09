@@ -42237,7 +42237,7 @@ runs:
     started_at: 2026-05-09T06:09:52.357Z
   - _ulid: 01KR5PXHTXA90A5V2Q98D2KC4J
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -42247,7 +42247,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-09T06:31:24.237Z
-        completed_at: 2026-05-09T06:31:24.237Z
+        completed_at: 2026-05-09T06:32:55.630Z
+        notes: Surveyed 16+ existing friction/success observations. The session's notable patterns
+          (expectClassifierGap wrapper handoff, classifier-rule precision fixes,
+          regression-test-task slicing) are all already tracked under 01KR431R, 01KR4MAT, 01KR537D,
+          01KR3XY2, 01KR45YD. This fix completed in a single pass with no fix cycles, confirming the
+          regression-first pre-paved-handoff pattern works as designed — but that's confirmation,
+          not a new pattern. No new high-confidence systemic friction observed.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-09T06:32:55.630Z
+        completed_at: 2026-05-09T06:32:55.630Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-09T06:31:09.918Z
