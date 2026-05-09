@@ -194340,6 +194340,18 @@ reviews:
         runner: npm test
         created_at: 2026-05-09T09:21:18.567Z
         completed_at: 2026-05-09T09:21:18.567Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exited 6 with repository-wide warnings only: schema OK, references OK;
+          warnings include deprecated refs, orphaned specs, missing AC coverage, and invalid AC
+          annotations. No task-specific schema/reference error observed."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-09T09:21:22.331Z
+        completed_at: 2026-05-09T09:21:22.331Z
     events:
       - _ulid: 01KR60D0F8H4F18XVJVMDG47JE
         actor: Jacob Chapel
@@ -194381,6 +194393,13 @@ reviews:
           status: pass
           name: targeted guardrail tests
         timestamp: 2026-05-09T09:21:19.916Z
+      - _ulid: 01KR60N87CRS60SJTHTXQKR4WK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-09T09:21:23.692Z
     examined_commit: a62471dde155c874df4a2c180e7877e6e55a5e4b
     external_links: []
     lifecycle_state: open
@@ -194445,5 +194464,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-09T09:16:53.608Z
-    updated_at: 2026-05-09T09:21:18.567Z
+    updated_at: 2026-05-09T09:21:22.331Z
     notes: []
