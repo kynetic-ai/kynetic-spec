@@ -588,35 +588,88 @@ describe(
   },
 );
 
+/**
+ * Selective expected-failure helper for the cleanup-registration leak
+ * regression. See @01KR431R for the validated pattern this implements
+ * (and @01KR3ZR8 for why bare `it.fails()` was rejected as too permissive).
+ *
+ * Bug shape: registerCleanup throws synchronously after spawn but before
+ * readiness, so the helper rejects without ever calling stop() and the
+ * spawned child stays alive. Endpoint reachability is NOT a useful
+ * differentiator here — the rejection happens before readiness, so the
+ * daemon never binds a listener pre-fix or post-fix. Only child liveness
+ * distinguishes leak (alive) from fix (terminated).
+ *
+ * Behavior:
+ *  1. Run the post-fix assertion (captured child terminated).
+ *  2. If it throws today (expected pre-fix), re-assert the EXACT current
+ *     bug shape: child still alive (exitCode === null AND signalCode === null).
+ *     A different failure mode (e.g. spawn crash exiting the child early,
+ *     daemon SIGABRT) re-throws and fails the test, preserving selectivity.
+ *  3. If it succeeds (post-fix), throw an explicit "remove this wrapper"
+ *     error so @task-fix-register-cleanup-failure-leak is forced to inline
+ *     the assertion and delete the helper as part of the fix.
+ *
+ * The wrapper is intentionally bug-shape-specific (cleanup-registration
+ * leak only) — it must be removed when the helper fix lands, not reused.
+ */
+function expectCleanupRegistrationLeak(child: ChildProcess): void {
+  let postFixSucceeded = false;
+  try {
+    expect(
+      child.exitCode !== null || child.signalCode !== null,
+      "post-fix: captured child must be terminated by the time startTestDaemon rejects",
+    ).toBe(true);
+    postFixSucceeded = true;
+  } catch (postFixError) {
+    // Selective re-assertion of the EXACT current bug shape. If the failure
+    // mode differs (e.g. child died for an unrelated reason like a runtime
+    // crash, ENOENT, or partial fix that calls stop but the assertion still
+    // fails), this will throw and propagate the real failure.
+    expect(
+      child.exitCode === null && child.signalCode === null,
+      `bug-shape mismatch: pre-fix expects the child to still be alive, but exitCode=${child.exitCode} signalCode=${child.signalCode}. Underlying assertion: ${
+        postFixError instanceof Error ? postFixError.message : String(postFixError)
+      }`,
+    ).toBe(true);
+    return;
+  }
+
+  if (postFixSucceeded) {
+    throw new Error(
+      "STAGED REGRESSION CLOSED: startTestDaemon now stops the owned child " +
+        "after a registerCleanup failure. Inline the post-fix assertion and " +
+        "remove expectCleanupRegistrationLeak from tests/helpers/daemon.test.ts. " +
+        "See @task-fix-register-cleanup-failure-leak.",
+    );
+  }
+}
+
 describe(
   "startTestDaemon registerCleanup failure cleanup",
   { timeout: 60_000 },
   () => {
-    // STAGED REGRESSION (vitest `it.fails`): documents the cleanup-registration
-    // leak in startTestDaemon while keeping the required suite green so this
-    // task can merge ahead of the helper fix.
+    // STAGED REGRESSION (selective expected-failure via expectCleanupRegistrationLeak):
+    // documents the cleanup-registration leak in startTestDaemon while keeping
+    // the required suite green so this task can merge ahead of the helper fix
+    // in @task-fix-register-cleanup-failure-leak.
     //
-    // Pre-fix contract: at least one assertion below MUST fail (the spawned
-    // child stays alive after the helper rejects). `it.fails` reports that
-    // expected failure as PASS — no introduced red on the merge gate.
+    // The wrapper runs the post-fix assertion; on its expected pre-fix throw
+    // it re-asserts the EXACT current bug shape (child still alive). An
+    // unrelated failure mode (e.g. spawn ENOENT, daemon SIGABRT) re-throws
+    // and fails the test — bare `it.fails()` was disproved (@01KR3ZR8)
+    // because any thrown assertion satisfied it; this selective form
+    // (@01KR431R) is the validated pattern.
     //
-    // Post-fix contract: every assertion passes (helper stops the child
-    // before surfacing the cleanup-registration failure). `it.fails` then
-    // reports it as FAIL, forcing the implementation task to flip this back
-    // to a regular `it(...)` once the helper is fixed. That flip is the
-    // signal that the leak has been closed and the regression test now
-    // pins normal post-fix behavior.
-    //
-    // The body still asserts the full contract (rejection surfaces the
-    // sentinel, captured child terminated, endpoint unreachable) so the
-    // staged regression captures every facet the dependent fix must
-    // preserve.
+    // Post-fix: assertion passes → wrapper throws an explicit "remove this
+    // wrapper" error, forcing the implementation task to inline the
+    // post-fix assertion and delete the helper as part of the fix.
     // AC: @daemon-test-startup-failure-hygiene ac-cleanup-registration-failure-stops-owned-child
     // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
     // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
     // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
     // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
-    it.fails("stops the owned child when registerCleanup throws after spawn", async () => {
+    it("stops the owned child when registerCleanup throws after spawn", async () => {
       if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
         throw new Error(
           "dist/daemon/index.js missing — run 'npm run build:daemon' before tests",
@@ -654,8 +707,9 @@ describe(
           thrown = error;
         }
 
-        // The observer ran synchronously before registerCleanup, so the
-        // test has direct references to the just-spawned child and its
+        // Preconditions (must hold pre- AND post-fix; not part of the staged
+        // regression). The observer ran synchronously before registerCleanup,
+        // so the test has direct references to the just-spawned child and its
         // resolved endpoint regardless of how the helper surfaces the
         // cleanup-registration failure.
         expect(observed).not.toBeNull();
@@ -675,28 +729,12 @@ describe(
           thrown instanceof Error ? thrown.message : String(thrown);
         expect(errorMessage).toContain(sentinel);
 
-        // ac-cleanup-registration-failure-stops-owned-child — by the time
-        // startTestDaemon rejects, the captured child handle must already
-        // be terminated. Pre-fix, the helper rethrows the registerCleanup
-        // error before calling stop(), so the spawned daemon stays alive.
-        // Post-fix, the helper awaits stop() before surfacing the failure.
-        const child = captured.child;
-        expect(child.exitCode !== null || child.signalCode !== null).toBe(true);
-
-        // ac-cleanup-registration-failure-stops-owned-child — the daemon
-        // endpoint must no longer be reachable after the rejection. A
-        // bounded fetch that rejects (ECONNREFUSED) or a non-2xx response
-        // both prove the listener is gone.
-        let endpointReachable = false;
-        try {
-          const probe = await fetch(`${captured.endpoint}/api/health`, {
-            signal: AbortSignal.timeout(750),
-          });
-          endpointReachable = probe.ok;
-        } catch {
-          endpointReachable = false;
-        }
-        expect(endpointReachable).toBe(false);
+        // ac-cleanup-registration-failure-stops-owned-child — selective
+        // expected-failure: pre-fix asserts the bug shape (child still
+        // alive); post-fix asserts the contract (child terminated) and
+        // forces wrapper removal. See expectCleanupRegistrationLeak above
+        // for why endpoint reachability is not part of the bug shape here.
+        expectCleanupRegistrationLeak(captured.child);
       } finally {
         // Safety net: the pre-fix helper leaks the daemon child because
         // stop() is never invoked when registerCleanup throws. Force-kill
