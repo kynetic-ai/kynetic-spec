@@ -195503,6 +195503,18 @@ reviews:
         runner: kspec
         created_at: 2026-05-09T12:50:14.945Z
         completed_at: 2026-05-09T12:50:14.945Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts
+          tests/helpers/mock-daemon.test.ts tests/daemon-api/helpers.test.ts passed: 18 suites, 47
+          tests."
+        name: focused daemon helper/api tests
+        required: true
+        runner: npm-test
+        created_at: 2026-05-09T12:50:25.044Z
+        completed_at: 2026-05-09T12:50:25.044Z
     events:
       - _ulid: 01KR6BS8YMS8VR7P8ZXH8E7VWN
         actor: Jacob Chapel
@@ -195531,6 +195543,13 @@ reviews:
           status: pass
           name: kspec validate alignment
         timestamp: 2026-05-09T12:50:16.280Z
+      - _ulid: 01KR6CM0ZA67DQ0E4F4NRP4M1B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused daemon helper/api tests
+        timestamp: 2026-05-09T12:50:26.410Z
     examined_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
     external_links: []
     lifecycle_state: open
@@ -195543,5 +195562,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-09T12:35:49.850Z
-    updated_at: 2026-05-09T12:50:14.945Z
+    updated_at: 2026-05-09T12:50:25.044Z
     notes: []
