@@ -742,27 +742,126 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * True when a sibling statement contains an `await` expression or a
-     * direct `expect(...)` call — either is treated as the next "test
-     * observation" by `hasCleanupAfter`, so cleanup MUST be registered
-     * before this statement. The check is AST-based so kill-token text
-     * inside string literals and comments cannot mask it (the symmetric
-     * tightening to the cleanup predicate above).
+     * True when a sibling statement contains an `await`, a direct
+     * `expect(...)` call, or a daemon network observation — any of these
+     * is treated as the next "test observation" by `hasCleanupAfter`, so
+     * cleanup MUST be registered before this statement. The check is
+     * AST-based so kill-token text inside string literals and comments
+     * cannot mask it (the symmetric tightening to the cleanup predicate
+     * above).
+     *
+     * Observations recognised on the straight-line execution path:
+     *   - `AwaitExpression` — the next `await` is the closest synchronous
+     *     suspension point and rejects propagate as test failures.
+     *   - `expect(...)` — direct vitest expectation.
+     *   - `fetch(...)` — daemon network observation. Even an unawaited
+     *     fetch initiates an HTTP request to the daemon, so any error
+     *     (connection refused, abort) surfaces as a test failure before
+     *     a later cleanup registration can run (the cycle-5 reviewer
+     *     blocker on `@daemon-test-guardrail-precision`
+     *     `ac-detached-cleanup-before-observation`: `fetch
+     *     ("http://127.0.0.1:3456/api/health")` between the detached
+     *     start and `onTestFinished` was not credited as an observation,
+     *     leaving the AC under-implemented for non-await daemon
+     *     observation calls).
+     *   - `new WebSocket(...)` — daemon WebSocket observation. The
+     *     constructor opens a connection to the daemon synchronously, so
+     *     a connection failure surfaces before subsequent cleanup can
+     *     register.
+     *
+     * Stored function bodies are NOT on the straight-line path. The
+     * walker prunes descent into `FunctionDeclaration`,
+     * `FunctionExpression`, and `ArrowFunctionExpression` bodies unless
+     * the function is invoked immediately as an IIFE
+     * (`(() => expect(true).toBe(true))()`). The cycle-5 reviewer's
+     * blocker case demonstrates the gating:
+     *
+     *   runKspec("serve start --detach --port 3456");
+     *   const later = () => expect(true).toBe(true);  // STORED
+     *   const pid = readPidFromFile();
+     *   onTestFinished(() => killPid(pid));
+     *   later();
+     *
+     * The arrow's body contains `expect(true).toBe(true)` but the arrow
+     * is bound to `later` and only invoked after cleanup is registered.
+     * The earlier walker descended into all function/arrow bodies and
+     * treated stored expects as observations, falsely reporting
+     * `missingCleanup` when cleanup IS registered before the function is
+     * actually invoked. This walker stops at the arrow because its
+     * parent is a `VariableDeclarator`, not an immediately-invoked
+     * CallExpression in callee position, and correctly continues so the
+     * later `onTestFinished(...)` registration is recognised as
+     * cleanup.
+     *
+     * Symmetric to the cleanup walker (`subtreeContainsDaemonCleanupCall`):
+     * cleanup gating accepts function bodies registered as cleanup
+     * callbacks (run at teardown); observation gating accepts function
+     * bodies invoked immediately (run at this statement).
      */
     function statementContainsAwaitOrExpect(stmt) {
       return subtreeContainsAwaitOrExpect(stmt);
+    }
+
+    /**
+     * True when a function/arrow node is in the callee position of its
+     * parent CallExpression — i.e. an IIFE such as `(() => …)()` whose
+     * body executes at this statement. Arrows or functions in argument
+     * slots, on the right-hand side of an assignment, in array elements,
+     * or anywhere else are stored, not invoked, and their bodies are
+     * NOT on the straight-line execution path.
+     */
+    function isImmediatelyInvokedFunctionExpression(fnNode) {
+      if (!fnNode) return false;
+      const parent = fnNode.parent;
+      if (!parent || parent.type !== "CallExpression") return false;
+      return parent.callee === fnNode;
     }
 
     function subtreeContainsAwaitOrExpect(node) {
       if (!node || typeof node !== "object" || typeof node.type !== "string") {
         return false;
       }
-      if (node.type === "AwaitExpression") return true;
+      // Function/arrow bodies are stored, not on the straight-line path
+      // — except IIFEs, where the body executes at this statement.
       if (
-        node.type === "CallExpression" &&
+        node.type === "FunctionDeclaration" ||
+        node.type === "FunctionExpression" ||
+        node.type === "ArrowFunctionExpression"
+      ) {
+        if (!isImmediatelyInvokedFunctionExpression(node)) {
+          return false;
+        }
+      }
+      if (node.type === "AwaitExpression") return true;
+      if (node.type === "CallExpression" && node.callee) {
+        if (
+          node.callee.type === "Identifier" &&
+          node.callee.name === "expect"
+        ) {
+          return true;
+        }
+        // Daemon network observation: bare `fetch(...)` Identifier
+        // callee. Member-form callees (`http.get(...)`, `axios.get(...)`,
+        // etc.) are not matched here because the rule's existing daemon
+        // URL detection only recognises Identifier `fetch` — keeping the
+        // observation surface aligned with the URL surface keeps the
+        // rule self-consistent and avoids mass false positives in tests
+        // that call unrelated `.get`/`.request` member chains.
+        if (
+          node.callee.type === "Identifier" &&
+          FETCH_LIKE_CALLEES.has(node.callee.name)
+        ) {
+          return true;
+        }
+      }
+      // Daemon WebSocket observation: `new WebSocket(...)` opens a
+      // connection synchronously. Aligned with the URL detection
+      // surface (`isWebSocketCtorOfLocalhostUrl`).
+      if (
+        node.type === "NewExpression" &&
         node.callee &&
         node.callee.type === "Identifier" &&
-        node.callee.name === "expect"
+        WEBSOCKET_LIKE_CONSTRUCTORS.has(node.callee.name)
       ) {
         return true;
       }

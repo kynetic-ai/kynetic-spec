@@ -505,6 +505,78 @@ describe("test suite", () => {
 `);
       expect(result.output).toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-5 reviewer probe (unawaited fetch as daemon observation): the
+    // observation gate must include `fetch(...)` calls. An unawaited fetch
+    // initiates an HTTP request to the daemon synchronously; if the
+    // request errors (connection refused, abort, daemon not yet listening)
+    // the test fails before the later `onTestFinished` registration runs.
+    // The cycle-4 walker only matched `await` and `expect(...)`, so this
+    // detached start escaped the rule even though the daemon was observed
+    // before cleanup was registered.
+    it("should flag serve start --detach when an unawaited fetch observes the daemon before cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    fetch("http://127.0.0.1:3456/api/health");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-5 variant (unawaited new WebSocket as daemon observation): the
+    // WebSocket constructor opens a connection synchronously. The same
+    // cleanup-timing concern applies: a connection failure surfaces as a
+    // test error before the later `onTestFinished` registration runs.
+    it("should flag serve start --detach when an unawaited new WebSocket observes the daemon before cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    new WebSocket("ws://127.0.0.1:3456/api/ws");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-5 variant (IIFE expect as same-statement observation): an
+    // immediately-invoked arrow whose body contains `expect(...)` runs at
+    // this statement, so it IS an observation on the straight-line
+    // execution path — even though function bodies in general are stored.
+    // The walker must descend into IIFE callees (function in callee
+    // position of its parent CallExpression) but not into stored function
+    // bodies (function in argument or right-hand-side position).
+    it("should flag serve start --detach when an IIFE expect runs before cleanup is registered", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    (() => expect(true).toBe(true))();
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {
@@ -542,6 +614,59 @@ describe("test suite", () => {
       if (result.pid) killPid(result.pid);
     });
     expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-5 reviewer probe (stored arrow with expect, cleanup before
+    // invocation): a `const later = () => expect(true).toBe(true)`
+    // declaration between the detached start and `onTestFinished` is
+    // STORED, not on the straight-line execution path. The earlier
+    // walker descended into all function/arrow bodies and treated the
+    // inner expect as an observation, falsely reporting `missingCleanup`
+    // when cleanup IS registered before the function is actually
+    // invoked. The walker must stop at the arrow because its parent is a
+    // VariableDeclarator (not an IIFE in callee position) and continue
+    // forward so the later `onTestFinished(...)` registration is
+    // recognised as cleanup.
+    it("should allow serve start --detach when a stored arrow with expect is invoked after cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const later = () => expect(true).toBe(true);
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    later();
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-5 variant (stored function declaration with expect): a named
+    // function declared between the detached start and cleanup carries
+    // `expect(...)` in its body but is not invoked at the declaration
+    // site. The walker must not treat the body as an observation on the
+    // straight-line path — the FunctionDeclaration's parent is a
+    // BlockStatement, not a CallExpression callee, so descent is pruned.
+    it("should allow serve start --detach when a stored named function with expect is invoked after cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    function later() { expect(true).toBe(true); }
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    later();
   });
 });
 `);
