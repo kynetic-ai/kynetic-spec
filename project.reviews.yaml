@@ -199235,6 +199235,18 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-10T00:03:15.941Z
+      - _ulid: 01KR7MEJ00YJR9GV7KG047A61V
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR7JHGEZ5JG65YRSW8W35ATF
+        timestamp: 2026-05-10T00:26:30.272Z
+      - _ulid: 01KR7MEN83VTPR5QBX6CWX4NSJ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR7JHGEZ5JG65YRSW8W35ATF
+        timestamp: 2026-05-10T00:26:33.603Z
     examined_commit: d92bfe16704a1494aafb7a3c6e5468d3761bb7d8
     external_links: []
     lifecycle_state: closed
@@ -199267,7 +199279,27 @@ reviews:
               ac-detached-cleanup-bound-before-observation / the task requirement that cleanup own
               the daemon that was just started.'
             created_at: 2026-05-09T23:53:09.855Z
+          - _ulid: 01KR7MEGNQ72P7W0SYMST4FYKZ
+            author: "@claude"
+            body: "Fixed: tightened isCaptureOwnedByDetachedStart in tools/eslint-rules/no-leaky-test-daemon.js
+              to reject the binding when another detached daemon start sits between
+              detachedStartNode (exclusive) and bindingEnd (inclusive). A single pid/handle can only
+              own one daemon, so the intervening start invalidates the binding for the EARLIER
+              start. The same predicate flows through cleanupCallbackBindingStatus,
+              directCleanupCallOwnsDetachedDaemon, findUnboundCleanupClosure, and
+              findUnboundDirectCleanupCapture, so onTestFinished and try/finally finalizer shapes
+              are both covered. Manual oxlint probe against the cycle-8 reviewer source (two
+              consecutive runKspec(serve start --detach) + single const pid + single onTestFinished)
+              now exits 1 with cleanupClosureUnbound on pid, anchored to the FIRST start (port
+              3456). Added four regression tests in tests/lint-daemon-test-guardrails.test.ts:
+              cycle-8 onTestFinished probe (rejected), cycle-8 try/finally finalizer variant
+              (rejected), interleaved per-daemon cleanup with separate pidN bindings
+              (allowed-narrow), and two const child = spawn(...) per-daemon bindings
+              (allowed-narrow)."
+            created_at: 2026-05-10T00:26:28.919Z
         kind: blocker
+        resolved_at: 2026-05-10T00:26:32.335Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -199277,5 +199309,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-10T00:03:15.941Z
     created_at: 2026-05-09T23:50:12.853Z
-    updated_at: 2026-05-10T00:03:15.941Z
+    updated_at: 2026-05-10T00:26:32.335Z
     notes: []
