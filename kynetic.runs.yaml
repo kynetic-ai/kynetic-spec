@@ -44703,7 +44703,7 @@ runs:
     completed_at: 2026-05-10T01:12:52.900Z
   - _ulid: 01KR7R2P7P9SQS5RVYR7YWARBF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -44717,7 +44717,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-10T01:31:28.834Z
-        completed_at: 2026-05-10T01:31:28.834Z
+        completed_at: 2026-05-10T01:31:36.788Z
+        notes: "Friction points: clean reviews still require several separate kspec review check calls or a
+          hand-built batch payload after commands complete. Long full-suite npm test runs still
+          require polling and manual evidence extraction from large output. Both issues felt
+          systemic, but initial search suggests they may already be tracked."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-10T01:31:36.788Z
+        completed_at: 2026-05-10T01:31:36.788Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-10T01:29:55.702Z
