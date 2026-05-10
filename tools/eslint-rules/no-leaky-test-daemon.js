@@ -1364,10 +1364,16 @@ const noLeakyTestDaemon = {
     /**
      * Ownership predicate: does `name` resolve at the registration site
      * to a binding whose source range ends at or after the detached
-     * daemon start? Returns true only when there is a concrete
-     * value-producing binding (declarator with non-null/non-undefined
-     * init, or assignment with non-null/non-undefined RHS) AND the
-     * binding's range[1] >= detachedStartNode.range[0].
+     * daemon start AND no OTHER detached daemon start sits between
+     * `detachedStartNode` and the binding? Returns true only when:
+     *   1. There is a concrete value-producing binding (declarator with
+     *      non-null/non-undefined init, or assignment with
+     *      non-null/non-undefined RHS).
+     *   2. The binding's range[1] >= detachedStartNode.range[0].
+     *   3. No other detached-serve start in `pendingDetachChecks` has
+     *      its source position strictly between
+     *      `detachedStartNode.range[0]` (exclusive) and the binding's
+     *      range[1] (inclusive).
      *
      * The "ends at or after" comparison handles two safe shapes:
      *   - The binding sits AFTER the detached start (`runKspec(...);
@@ -1377,11 +1383,28 @@ const noLeakyTestDaemon = {
      *     = spawn("kspec", ["serve", "start", "--detach"])`) — the
      *     declarator's range encompasses the spawn CallExpression, so
      *     the end is past the spawn's start.
+     *
      * It rejects the probe shape `const pid = 12345; runKspec(...);
      * onTestFinished(() => process.kill(pid, ...))` — `pid` has a
      * concrete value but its declarator ends BEFORE the runKspec start,
      * so the cleanup closes over a value that cannot be the
      * just-started daemon.
+     *
+     * The intervening-start check rejects the cycle-8 reviewer probe:
+     *   runKspec("serve start --detach --port 3456");  // start A
+     *   runKspec("serve start --detach --port 3457");  // start B
+     *   const pid = readPidFromFile();
+     *   onTestFinished(() => process.kill(pid, "SIGTERM"));
+     *   expect(true).toBe(true);
+     * A single `pid` binding can only represent one daemon, so when
+     * checking ownership of A by `pid`, the intervening start B falls
+     * inside the (A.start, pid.end] window and the binding is rejected
+     * as not owning A. Checking ownership of B by the same `pid`
+     * binding still accepts (no other start sits between B and pid),
+     * so the missing-cleanup diagnostic fires only on the earlier,
+     * truly-unowned start. Per @daemon-test-guardrail-precision
+     * ac-detached-cleanup-bound-before-observation: the cleanup must
+     * own the daemon that was just started.
      */
     function isCaptureOwnedByDetachedStart(name, useNode, detachedStartNode) {
       const bindingNode = findConcreteBindingNodeAt(name, useNode);
@@ -1389,7 +1412,16 @@ const noLeakyTestDaemon = {
       const bindingEnd = getNodeEnd(bindingNode);
       const detachedStart = getNodeStart(detachedStartNode);
       if (bindingEnd < 0 || detachedStart < 0) return false;
-      return bindingEnd >= detachedStart;
+      if (bindingEnd < detachedStart) return false;
+      for (const other of pendingDetachChecks) {
+        if (other === detachedStartNode) continue;
+        const otherStart = getNodeStart(other);
+        if (otherStart < 0) continue;
+        if (otherStart > detachedStart && otherStart <= bindingEnd) {
+          return false;
+        }
+      }
+      return true;
     }
 
     /**

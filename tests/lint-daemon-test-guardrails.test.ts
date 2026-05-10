@@ -5094,6 +5094,136 @@ describe("finalizer reads pid via conditional assignment", () => {
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (multi-start ownership: cycle-8 reviewer probe — single binding cannot own two daemons)
+    it("flags the FIRST of two consecutive runKspec(\"serve start --detach\") calls when a single pid binding is captured by onTestFinished AFTER both starts", () => {
+      // UNSAFE (cycle-8 reviewer probe): two consecutive detached
+      // daemon starts share a SINGLE `const pid = readPidFromFile()`
+      // binding and a single `onTestFinished(() => process.kill(pid,
+      // ...))` cleanup. The pid file reflects the LAST start, so the
+      // cleanup can only ever own one daemon — the second one. The
+      // FIRST detached start is left without scoped cleanup and must
+      // be reported. Per ac-detached-cleanup-bound-before-observation
+      // the cleanup must own the daemon that was just started.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("two consecutive detached starts share a single pid binding", () => {
+  it("registers a single onTestFinished after both runKspec calls", () => {
+    runKspec("serve start --detach --port 3456");
+    runKspec("serve start --detach --port 3457");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("pid");
+      // First detached start (port 3456) is the one without scoped cleanup;
+      // its diagnostic anchor should mention port 3456.
+      expect(result.output).toContain("3456");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (multi-start ownership in try/finally finalizer)
+    it("flags the FIRST of two consecutive runKspec(\"serve start --detach\") calls inside a try block when the finalizer kills a single pid bound after both starts", () => {
+      // UNSAFE: same multi-start ownership shape but expressed via a
+      // try/finally finalizer instead of onTestFinished. The pid is
+      // assigned AFTER both detached starts inside the try body, so a
+      // single `process.kill(pid, ...)` finalizer cannot own the
+      // earlier start.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("try/finally with two detached starts and a single pid", () => {
+  it("declares let pid, two starts, single read, finalizer kills pid", () => {
+    let pid: number | undefined;
+    try {
+      runKspec("serve start --detach --port 3456");
+      runKspec("serve start --detach --port 3457");
+      pid = readPidFromFile();
+      expect(true).toBe(true);
+    } finally {
+      process.kill(pid as number, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("pid");
+      expect(result.output).toContain("3456");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (multi-start ownership: separate scoped cleanups for each start are still accepted)
+    it("does NOT flag two consecutive runKspec(\"serve start --detach\") calls when each has its own bound onTestFinished cleanup interleaved between the starts", () => {
+      // ALLOWED-NARROW: two detached starts each get their own scoped
+      // cleanup (separate const pidN bindings, separate onTestFinished
+      // registrations interleaved between the starts). The
+      // intervening-start ownership check accepts each binding as
+      // owning its own daemon: pid1 owns the first start (no
+      // intervening start between start1 and pid1's binding), pid2
+      // owns the second (start1 is BEFORE start2 and so doesn't fall
+      // in the (start2, pid2.end] window). Guards against
+      // over-tightening — interleaved per-daemon scoped cleanup is
+      // the canonical safe shape for two-daemon tests.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("two detached starts each with their own scoped cleanup", () => {
+  it("interleaves a const pidN read and onTestFinished between the two starts", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid1 = readPidFromFile();
+    onTestFinished(() => process.kill(pid1, "SIGTERM"));
+    runKspec("serve start --detach --port 3457");
+    const pid2 = readPidFromFile();
+    onTestFinished(() => process.kill(pid2, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (multi-start ownership: const child = spawn(...) per-daemon binding)
+    it("does NOT flag two const child = spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) calls when each has its own .kill cleanup", () => {
+      // ALLOWED-NARROW: each spawn binding's range encompasses its
+      // own spawn CallExpression (the binding IS the start). The
+      // other detached start sits OUTSIDE that binding's range, so
+      // the intervening-start check accepts each binding as owning
+      // its own daemon.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("two distinct spawn child handles each with own cleanup", () => {
+  it("each detached start has its own bound .kill cleanup", () => {
+    const child1 = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    onTestFinished(() => child1.kill("SIGTERM"));
+    const child2 = spawn("kspec", ["serve", "start", "--detach", "--port", "3457"]);
+    onTestFinished(() => child2.kill("SIGTERM"));
+    expect(child1.pid).toBeDefined();
+    expect(child2.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
   });
 });
 
