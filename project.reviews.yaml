@@ -199315,7 +199315,95 @@ reviews:
     slugs: []
     title: Review task-fix-guardrail-binding-wrapper-analysis cycle 9
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts => 23 suites passed; 264 tests passed; duration
+          62.2s
+        name: focused lint guardrail tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-10T00:45:13.752Z
+        completed_at: 2026-05-10T00:45:13.752Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: mise exec -- kspec validate --refs --warnings-ok => passed; 6 pre-existing
+          deprecated-reference warnings; exit 0
+        name: kspec validate refs
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-10T00:45:17.233Z
+        completed_at: 2026-05-10T00:45:17.233Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: mise exec -- kspec validate --completeness --warnings-ok => passed; 251 pre-existing
+          repository-wide completeness/annotation warnings; exit 0
+        name: kspec validate completeness
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-10T00:45:20.564Z
+        completed_at: 2026-05-10T00:45:20.564Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: mise exec -- npm test => 2419 suites passed; 9020 tests passed; 5 skipped; duration
+          2055.2s; log /tmp/kspec-test-cache/01KR7MPYQJ47E7Z4YSF30G596X/196d04679de743bc.log
+        name: full npm test
+        required: true
+        runner: npm test
+        created_at: 2026-05-10T00:45:23.936Z
+        completed_at: 2026-05-10T00:45:23.936Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Object-method local helper start() with runKspec serve start --detach, const pid read,
+          onTestFinished process.kill(pid), then daemonHelper.start(); expect(true) exited 0 with
+          Found 0 warnings and 0 errors. Expected a local helper boundary diagnostic for
+          ac-approved-daemon-helper-boundary-explicit.
+        name: manual object-method helper boundary probe
+        required: true
+        runner: manual oxlint probe
+        created_at: 2026-05-10T00:45:27.365Z
+        completed_at: 2026-05-10T00:45:27.365Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec item get @daemon-test-guardrail-precision showed 7 own ACs. rg found annotations for
+          all 7 in tests/lint-daemon-test-guardrails.test.ts and
+          tests/lint-no-leaky-test-daemon.test.ts. New tests are behavioral oxlint invocations
+          against synthetic test files, not implementation source scans.
+        name: AC annotation coverage spot-check
+        required: true
+        runner: rg + inspection
+        created_at: 2026-05-10T00:45:30.795Z
+        completed_at: 2026-05-10T00:45:30.795Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md; tools/eslint-rules/no-leaky-test-daemon.js;
+          tests/lint-daemon-test-guardrails.test.ts; tests/lint-no-leaky-test-daemon.test.ts;
+          tests/cli-serve.test.ts; task/spec/review records. Commands run: task get, item get,
+          review for-task/get/add/open, rg AC annotations, git diff/log/diff --check, focused npm
+          test fresh, kspec validate refs/completeness, full npm test, manual oxlint object-method
+          probe. Claims verified: cycle-8 multi-start regression covered by tests; focused and full
+          tests pass. Categories searched: correctness, helper-boundary edge cases, cleanup
+          ownership edge cases, diagnostics, test quality/source scanning, integration."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-10T00:45:34.060Z
+        completed_at: 2026-05-10T00:45:34.060Z
     events:
       - _ulid: 01KR7MRH0XDDXWCF0ZTM65N03B
         actor: Jacob Chapel
@@ -199343,9 +199431,74 @@ reviews:
         payload:
           thread_ulid: 01KR7MZP0C8E10R7MFCGDWSY0F
         timestamp: 2026-05-10T00:36:29.017Z
+      - _ulid: 01KR7NGWFSGEZN4PZJXFBSJPXG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused lint guardrail tests
+        timestamp: 2026-05-10T00:45:15.129Z
+      - _ulid: 01KR7NGZTNCA8XRTRW7JJ908WT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate refs
+        timestamp: 2026-05-10T00:45:18.549Z
+      - _ulid: 01KR7NH33C5KBJK3JT9Q6VW715
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate completeness
+        timestamp: 2026-05-10T00:45:21.900Z
+      - _ulid: 01KR7NH6EDRH9EA1WP4RH5G5RN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full npm test
+        timestamp: 2026-05-10T00:45:25.325Z
+      - _ulid: 01KR7NH9PC76SMN6CQ141FVEPT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual object-method helper boundary probe
+        timestamp: 2026-05-10T00:45:28.652Z
+      - _ulid: 01KR7NHD0HV688FQW4R51MHF3T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation coverage spot-check
+        timestamp: 2026-05-10T00:45:32.049Z
+      - _ulid: 01KR7NHG7XJY6QXYAN94KKBNZ2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-10T00:45:35.357Z
+      - _ulid: 01KR7NHKJV7TBN5MQWQ7V28Q9D
+        actor: reviewer-agent
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-10T00:45:38.779Z
+      - _ulid: 01KR7NHKJVNHK632RHFMJ2ZVTW
+        actor: reviewer-agent
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-10T00:45:38.779Z
     examined_commit: c3f48a086aec3b6407f563b68ce27785cd4b97ee
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -199386,7 +199539,14 @@ reviews:
               has a false negative for method/property helper wrappers.'
             created_at: 2026-05-10T00:36:27.439Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: reviewer-agent
+        role: reviewer
+        created_at: 2026-05-10T00:45:38.779Z
     created_at: 2026-05-10T00:31:56.957Z
-    updated_at: 2026-05-10T00:36:27.439Z
+    updated_at: 2026-05-10T00:45:38.779Z
     notes: []
