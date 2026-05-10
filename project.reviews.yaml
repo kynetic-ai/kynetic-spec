@@ -199337,6 +199337,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KR7MZP0C8E10R7MFCGDWSY0F
         timestamp: 2026-05-10T00:35:52.989Z
+      - _ulid: 01KR7N0TPSV9MH068G4KSPQDCG
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR7MZP0C8E10R7MFCGDWSY0F
+        timestamp: 2026-05-10T00:36:29.017Z
     examined_commit: c3f48a086aec3b6407f563b68ce27785cd4b97ee
     external_links: []
     lifecycle_state: open
@@ -199368,8 +199374,19 @@ reviews:
               helper-boundary detection needs to include method/property forms (and equivalent
               class/object helper shapes) or otherwise report these wrapped starts."
             created_at: 2026-05-10T00:35:51.436Z
+          - _ulid: 01KR7N0S5F5F3DKNE4EEY4B20V
+            author: Jacob Chapel
+            body: 'Correction to preserve the probe text after shell interpolation: the missing case is a local
+              object-method helper. Probe source shape: const daemonHelper = { start() {
+              runKspec("serve start --detach --port 3456"); const pid = readPidFromFile();
+              onTestFinished(() => process.kill(pid, "SIGTERM")); } }; then the test body calls
+              daemonHelper.start(); expect(true).toBe(true). The manual oxlint run exited 0 with
+              "Found 0 warnings and 0 errors." The helper is neither tests/helpers/daemon.ts nor a
+              documented guardrail internal, so ac-approved-daemon-helper-boundary-explicit still
+              has a false negative for method/property helper wrappers.'
+            created_at: 2026-05-10T00:36:27.439Z
         kind: blocker
     verdicts: []
     created_at: 2026-05-10T00:31:56.957Z
-    updated_at: 2026-05-10T00:35:51.436Z
+    updated_at: 2026-05-10T00:36:27.439Z
     notes: []
