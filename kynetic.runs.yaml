@@ -44595,7 +44595,7 @@ runs:
     completed_at: 2026-05-10T00:30:15.867Z
   - _ulid: 01KR7NK6GNP4NZGJ1ME892XZAC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -44610,7 +44610,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-10T00:47:29.094Z
-        completed_at: 2026-05-10T00:47:29.094Z
+        completed_at: 2026-05-10T00:47:37.000Z
+        notes: "Friction points: review comment bodies passed inline through the shell are still easy to
+          corrupt when they contain command substitution characters or backticks; I triggered this
+          and had to add a corrective reply. This is systemic CLI quoting friction. Secondary
+          friction: the guardrail rule has many shape-specific static-analysis branches, so
+          correctness depends on adversarial probes beyond the happy-path regression tests."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-10T00:47:37.000Z
+        completed_at: 2026-05-10T00:47:37.000Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-10T00:46:30.933Z
