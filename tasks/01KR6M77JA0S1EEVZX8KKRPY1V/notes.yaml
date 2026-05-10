@@ -375,3 +375,50 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-10T00:03:18.146Z
+  - _ulid: 01KR7MFXFY5P22BDVD3J4SV0P9
+    content: >-
+      Fix cycle 9: addressed the cycle-8 blocker on multi-start ownership in
+      tools/eslint-rules/no-leaky-test-daemon.js. Root cause: isCaptureOwnedByDetachedStart only
+      checked that the binding's range[1] >= detachedStartNode.range[0], so a single binding
+      satisfied ownership for EVERY detached start whose position predated it — the reviewer's probe
+      (runKspec("serve start --detach --port 3456"); runKspec("serve start --detach --port 3457");
+      const pid = readPidFromFile(); onTestFinished(() => process.kill(pid, "SIGTERM"));
+      expect(true).toBe(true);) was accepted as scoped cleanup for both starts even though a single
+      pid can only own one daemon.
+
+
+      Fix: added an intervening-start check inside isCaptureOwnedByDetachedStart. The predicate now
+      iterates pendingDetachChecks and rejects the binding if any other detached start node has its
+      source position strictly greater than detachedStart and less than or equal to bindingEnd. The
+      window is exclusive on detachedStart (so the start being checked doesn't disqualify itself)
+      and inclusive on bindingEnd (so an intervening start that ends right before the binding still
+      counts). pendingDetachChecks is fully populated at Program:exit, which is when the cleanup
+      analysis runs, so the lookup is sound.
+
+
+      Coverage: the same predicate flows through cleanupCallbackBindingStatus (registered
+      onTestFinished path) and directCleanupCallOwnsDetachedDaemon (try/finally finalizer path), and
+      the diagnostic scanners (findUnboundCleanupClosure, findUnboundDirectCleanupCapture) reuse it
+      to surface the offending capture name. The diagnostic message is unchanged because the
+      underlying ownership rule is the same — it just rejects more shapes now.
+
+
+      Added four regression tests in tests/lint-daemon-test-guardrails.test.ts under the
+      cleanup-bound-before-observation describe — cycle-8 reviewer probe (rejected, anchored to port
+      3456), try/finally finalizer multi-start variant (rejected, anchored to port 3456),
+      interleaved per-daemon onTestFinished cleanup with separate pidN bindings (allowed-narrow),
+      and two const child = spawn(...) per-daemon bindings (allowed-narrow). The allowed-narrow
+      tests guard against over-tightening: each declarator's range encompasses its own spawn or sits
+      between the per-daemon start and registration, so the intervening-start check correctly
+      accepts both bindings.
+
+
+      Validation: focused lint suites 260 -> 264 passing tests with --fresh; full npm test 2419
+      suites / 9020 passing tests (5 pre-existing skips, 2001.4s); kspec validate --refs and
+      --completeness both pass with --warnings-ok (warnings unchanged from pre-existing repository
+      debt). Manual oxlint probe against the cycle-8 reviewer source: exits 1 with
+      cleanupClosureUnbound on pid, anchored to the FIRST runKspec call (port 3456). Single-start
+      safe shape and per-daemon scoped cleanup shapes still exit 0.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-10T00:27:14.814Z
