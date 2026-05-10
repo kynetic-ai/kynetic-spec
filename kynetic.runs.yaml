@@ -44550,7 +44550,7 @@ runs:
     completed_at: 2026-05-10T00:06:01.285Z
   - _ulid: 01KR7MHAVCJTMZT238JJV2K8VX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -44566,7 +44566,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-10T00:29:38.144Z
-        completed_at: 2026-05-10T00:29:38.144Z
+        completed_at: 2026-05-10T00:29:58.404Z
+        notes: "Step 3 (high-confidence captures): Searched existing tracking via kspec search for
+          'no-leaky-test-daemon', 'static analysis fix cycle', 'ownership predicate ESLint', 'fix
+          cycle iterative reviewer', 'static rule probe', and 'AC enumerate evasion'. Existing
+          coverage of the no-leaky-test-daemon work is extensive (15+ tasks already track guardrail
+          hardening, regressions, fixture migration). No friction or success patterns from this
+          session reach the high-confidence + non-duplicate bar required by loop mode.
+          Single-session iterative reviewer-worker dance for static rule hardening is the expected
+          default workflow for this kind of rule, not a surprising friction pattern; capturing it
+          would be noise."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-10T00:29:58.404Z
+        completed_at: 2026-05-10T00:29:58.404Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-10T00:28:01.260Z
