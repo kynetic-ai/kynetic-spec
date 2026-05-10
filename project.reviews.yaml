@@ -199219,9 +199219,25 @@ reviews:
           status: pass
           name: full npm test
         timestamp: 2026-05-10T00:03:02.869Z
+      - _ulid: 01KR7K40B52ZE8NWYE49ZM4FXB
+        actor: reviewer-agent
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-10T00:03:15.941Z
+      - _ulid: 01KR7K40B5XY0QEMS5X45TX8MV
+        actor: reviewer-agent
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-10T00:03:15.941Z
     examined_commit: d92bfe16704a1494aafb7a3c6e5468d3761bb7d8
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -199252,7 +199268,14 @@ reviews:
               the daemon that was just started.'
             created_at: 2026-05-09T23:53:09.855Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: reviewer-agent
+        role: reviewer
+        created_at: 2026-05-10T00:03:15.941Z
     created_at: 2026-05-09T23:50:12.853Z
-    updated_at: 2026-05-10T00:03:01.582Z
+    updated_at: 2026-05-10T00:03:15.941Z
     notes: []
