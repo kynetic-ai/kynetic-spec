@@ -44703,9 +44703,21 @@ runs:
     completed_at: 2026-05-10T01:12:52.900Z
   - _ulid: 01KR7R2P7P9SQS5RVYR7YWARBF
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-10T01:29:55.702Z
+        completed_at: 2026-05-10T01:31:28.834Z
+        notes: "What worked well: detached review plus supported merge helper handled the review-to-merge
+          path cleanly. The review record had enough structure to capture focused tests, full npm
+          test, validate runs, diff check, AC annotation spot-checks, and verdict evidence. Focused
+          guardrail suites plus full npm test gave strong confidence before approval."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-10T01:31:28.834Z
+        completed_at: 2026-05-10T01:31:28.834Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-10T01:29:55.702Z
