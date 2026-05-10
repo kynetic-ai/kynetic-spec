@@ -199496,6 +199496,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-10T00:45:38.779Z
+      - _ulid: 01KR7PTMRNXV9AK4E863D93PNE
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KR7MZP0C8E10R7MFCGDWSY0F
+        timestamp: 2026-05-10T01:08:03.477Z
     examined_commit: c3f48a086aec3b6407f563b68ce27785cd4b97ee
     external_links: []
     lifecycle_state: closed
@@ -199538,6 +199544,20 @@ reviews:
               documented guardrail internal, so ac-approved-daemon-helper-boundary-explicit still
               has a false negative for method/property helper wrappers.'
             created_at: 2026-05-10T00:36:27.439Z
+          - _ulid: 01KR7PTKER61CJKJB8M36T97VR
+            author: "@claude"
+            body: Fixed in cycle 10. Extended isInHelperFunction in tools/eslint-rules/no-leaky-test-daemon.js
+              to recognize function/arrow expressions whose parent is a Property (object-method
+              shorthand and longhand value forms), MethodDefinition (class methods,
+              instance/static), PropertyDefinition (class-field arrows/functions), or a plain '='
+              AssignmentExpression whose LHS is an Identifier or MemberExpression. Manual oxlint
+              probe against the cycle-9 reviewer source (object shorthand daemonHelper.start with
+              internal cleanup) now exits 1 with localWrapperUnsafe; added regression tests for the
+              shorthand probe, longhand-fn property, arrow property, class instance method, static
+              class method, class-field arrow, and assignment-to-member shapes, plus an
+              allowed-narrow control proving the path-allowlisted shared fixture stays exempt.
+              Diagnostic message updated to name 'function, arrow, or method'.
+            created_at: 2026-05-10T01:08:02.127Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -199548,5 +199568,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-10T00:45:38.779Z
     created_at: 2026-05-10T00:31:56.957Z
-    updated_at: 2026-05-10T00:45:38.779Z
+    updated_at: 2026-05-10T01:08:02.127Z
     notes: []
