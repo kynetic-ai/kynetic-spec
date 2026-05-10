@@ -427,3 +427,49 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-10T00:45:40.908Z
+  - _ulid: 01KR7PWBY12QY1RVZ5ETT84VSQ
+    content: >-
+      Fix cycle 10: addressed the cycle-9 blocker on object-method and class-method helper boundary
+      coverage in tools/eslint-rules/no-leaky-test-daemon.js. Root cause: isInHelperFunction only
+      matched named FunctionDeclaration and
+      VariableDeclarator+(FunctionExpression|ArrowFunctionExpression) bindings, so the cycle-9
+      reviewer probe (const daemonHelper = { start() { runKspec("serve start --detach --port 3456");
+      const pid = readPidFromFile(); onTestFinished(() => process.kill(pid, "SIGTERM")); } };
+      daemonHelper.start(); expect(true).toBe(true);) exited oxlint with no diagnostic. The wrapper
+      hid the daemon startup behind an object shorthand method while satisfying the cleanup contract
+      internally — but the call site never registered cleanup tied to the daemon, which violates
+      ac-approved-daemon-helper-boundary-explicit.
+
+
+      Fix: when the walk encounters a FunctionExpression or ArrowFunctionExpression, the predicate
+      now inspects its immediate parent and returns true for: Property whose value === function
+      (object-property method bindings — shorthand and longhand), MethodDefinition whose value ===
+      function (class instance/static methods), PropertyDefinition whose value === function
+      (class-field arrows/functions), and plain '=' AssignmentExpression whose right === function
+      and left is Identifier or MemberExpression (assignment-to-binding helpers like helper.start =
+      function () {}). The path allowlist still gates rule entry, so the shared fixture
+      (tests/helpers/daemon.ts, mock-daemon.ts, the rule itself, and the lint test files) stays
+      exempt. The localWrapperUnsafe diagnostic message was updated from 'function/arrow' to
+      'function, arrow, or method (object property, class method, or function reassigned to a
+      binding)' so the message matches the AST shapes the predicate now covers.
+
+
+      Added eight regression tests in tests/lint-daemon-test-guardrails.test.ts under the existing
+      'local wrappers around detached daemon starts are not approved helpers' describe block:
+      cycle-9 object-shorthand probe (rejected), longhand FunctionExpression property (rejected),
+      arrow property (rejected), class instance method (rejected), static class method (rejected),
+      class-field arrow (rejected), assignment-to-member (rejected), and an allowed-narrow control
+      verifying that an object-shorthand method inside the path-allowlisted tests/helpers/daemon.ts
+      is still exempt.
+
+
+      Validation: focused lint suites 264 -> 272 passing tests with --fresh; full npm test 2419
+      suites / 9028 passing tests (5 pre-existing skips, 2008.1s); kspec validate --refs and
+      --completeness both pass with --warnings-ok (warnings unchanged from pre-existing repository
+      debt). Manual oxlint probes for object-method-shorthand, class-method, longhand-fn-property,
+      arrow-property, class-field-arrow, and assignment-to-member shapes all exit 1 with
+      localWrapperUnsafe; the canonical safe inline shape (no wrapper, pid captured, onTestFinished
+      registered) and the shared-fixture method shapes still exit 0.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-10T01:08:59.969Z
