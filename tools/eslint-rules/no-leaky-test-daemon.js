@@ -191,6 +191,27 @@ const noLeakyTestDaemon = {
         "next await/expect — otherwise an assertion failure leaves the " +
         "daemon running. Tests that do not need the CLI's --detach path " +
         "should use `startTestDaemon` from tests/helpers/daemon.ts.",
+      cleanupClosureUnbound:
+        'Detached daemon start via "{{pattern}}" registers a cleanup ' +
+        "callback that captures an unbound `{{identifier}}` — the closure " +
+        "does not yet own the concrete pid, child handle, or stop handle " +
+        "for the just-started daemon at registration time, so an " +
+        "intervening assertion, await, or daemon observation can fire " +
+        "before the binding is set and leave the daemon running. Capture " +
+        "the pid (or the spawn child handle) into a `const` BEFORE " +
+        "registering `onTestFinished(() => process.kill(pid, 'SIGTERM'))` " +
+        "so the cleanup closure binds to a concrete value.",
+      localWrapperUnsafe:
+        'Detached daemon start via "{{pattern}}" lives inside a local ' +
+        "helper function, arrow, or method (object property, class " +
+        "method, or function reassigned to a binding) in this test " +
+        "file. Local wrappers are not approved daemon-test fixtures — " +
+        "they hide the unsafe start from the cleanup contract because " +
+        "the call site never sees a scoped cleanup registration tied " +
+        "to the daemon. Move the daemon startup into the shared " +
+        "fixture (`startTestDaemon` from tests/helpers/daemon.ts) or " +
+        "inline the start in the test body with an immediate cleanup " +
+        "registration before the next await/expect.",
       localhostDaemonUrl:
         "Daemon connection URL constructed from `localhost:<port>` in a " +
         "{{pattern}} call. Read URLs from the fixture endpoint " +
@@ -224,12 +245,56 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * True when a node is inside a named function declaration or named
-     * function expression (a helper function). Direct daemon spawn calls
-     * inside helper functions are still flagged — even helpers in the
-     * test file itself bypass the shared fixture — but the cleanup-based
-     * detached-serve check uses this to avoid flagging spawn calls that
-     * the caller is responsible for cleaning up.
+     * True when a node is nested inside a local helper-like abstraction
+     * declared in the test file itself. Recognised helper shapes:
+     *
+     *   - Named FunctionDeclaration: `function start() { ... }`.
+     *   - VariableDeclarator with a function or arrow init:
+     *     `const start = function () {...}`,
+     *     `const start = () => {...}`.
+     *   - Object-property method bindings — both the shorthand-method
+     *     form `{ start() {...} }` and the longhand-property forms
+     *     `{ start: function () {...} }` /
+     *     `{ start: () => {...} }` (any Property whose `value` is a
+     *     FunctionExpression or ArrowFunctionExpression).
+     *   - Class methods and class-field functions:
+     *     `class C { start() {} }`, `class C { static start() {} }`,
+     *     `class C { start = () => {} }`,
+     *     `class C { start = function () {} }` (any MethodDefinition or
+     *     PropertyDefinition whose `value` is a function/arrow).
+     *   - Function/arrow expressions reassigned to a target binding:
+     *     `f = function () {}`, `helper.start = () => {}` (any plain
+     *     `=` AssignmentExpression whose right-hand side is a
+     *     function/arrow and whose left-hand side is an Identifier or
+     *     MemberExpression target).
+     *
+     * The walk stops at the first ancestor `it`/`test`/`describe`/
+     * `beforeEach`/`afterEach`/`beforeAll`/`afterAll` CallExpression,
+     * so a node directly inside a test body is NOT considered to be
+     * in a helper.
+     *
+     * The path-allowlisted approved-fixture files (`tests/helpers/
+     * daemon.ts`, `tests/helpers/mock-daemon.ts`,
+     * `tools/eslint-rules/`, the lint test files) return early at the
+     * top of `create()`, so this predicate fires only in ordinary test
+     * files — every "helper" it identifies is therefore an unapproved
+     * local wrapper.
+     *
+     * Used by the Program:exit detached-serve check to surface the
+     * `localWrapperUnsafe` diagnostic. The rule's approved-fixture
+     * boundary is the path allowlist, not the presence of a function
+     * declaration / method binding: wrapping a detached daemon start
+     * in a local helper inside an ordinary test file does not satisfy
+     * the cleanup contract because the call site never sees a scoped
+     * cleanup registration tied to the daemon. The cycle-9 reviewer
+     * probe (`const daemonHelper = { start() { runKspec("serve start
+     * --detach"); const pid = readPidFromFile();
+     * onTestFinished(() => process.kill(pid, "SIGTERM")); } };` then
+     * `daemonHelper.start();`) was accepted by the earlier predicate
+     * because object-method shorthand and class-method bindings did
+     * not match its FunctionDeclaration / VariableDeclarator-only
+     * checks; this is the regression covered by
+     * `ac-approved-daemon-helper-boundary-explicit`.
      */
     function isInHelperFunction(node) {
       let current = node.parent;
@@ -246,6 +311,41 @@ const noLeakyTestDaemon = {
             current.init.type === "ArrowFunctionExpression")
         ) {
           return true;
+        }
+        if (
+          (current.type === "FunctionExpression" ||
+            current.type === "ArrowFunctionExpression") &&
+          current.parent
+        ) {
+          const fnParent = current.parent;
+          if (
+            fnParent.type === "Property" &&
+            fnParent.value === current
+          ) {
+            return true;
+          }
+          if (
+            fnParent.type === "MethodDefinition" &&
+            fnParent.value === current
+          ) {
+            return true;
+          }
+          if (
+            fnParent.type === "PropertyDefinition" &&
+            fnParent.value === current
+          ) {
+            return true;
+          }
+          if (
+            fnParent.type === "AssignmentExpression" &&
+            fnParent.operator === "=" &&
+            fnParent.right === current &&
+            fnParent.left &&
+            (fnParent.left.type === "Identifier" ||
+              fnParent.left.type === "MemberExpression")
+          ) {
+            return true;
+          }
         }
         if (
           current.type === "CallExpression" &&
@@ -273,7 +373,7 @@ const noLeakyTestDaemon = {
       if (nodeIndex === -1) return false;
 
       for (let i = nodeIndex + 1; i < body.length; i++) {
-        if (statementContainsCleanup(body[i])) {
+        if (statementContainsCleanup(body[i], node)) {
           return true;
         }
         if (statementContainsAwaitOrExpect(body[i])) {
@@ -289,7 +389,7 @@ const noLeakyTestDaemon = {
         if (
           current.type === "TryStatement" &&
           current.finalizer &&
-          subtreeContainsDaemonCleanupCall(current.finalizer, false)
+          subtreeContainsDaemonCleanupCall(current.finalizer, false, node, true)
         ) {
           return true;
         }
@@ -617,6 +717,1066 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * True when a node statically resolves to the literal `null` /
+     * `undefined` (or `void <expr>`). Used by the cleanup-binding analysis
+     * to recognise placeholder initialisers — `let pid;`,
+     * `let pid = undefined;`, `let child = null;`,
+     * `let child: T | null = null` — that mean the cleanup closure does
+     * not yet own a concrete pid/handle for the just-started daemon.
+     *
+     * Transparent wrappers (TSAsExpression / TSSatisfiesExpression /
+     * TSNonNullExpression / TSTypeAssertion / TSInstantiationExpression /
+     * ParenthesizedExpression / ChainExpression) are stripped before the
+     * structural check so TS-coerced placeholders are recognised too:
+     * `let pid = undefined as number | undefined`, `let pid = null as any`,
+     * `let pid = (undefined)!`, etc. The cycle-5 reviewer probe motivated
+     * this: a captured binding initialised to a wrapped `undefined` was
+     * accepted as concrete, leaving the cleanup closure with no usable pid
+     * at registration time and violating
+     * `ac-detached-cleanup-bound-before-observation`. Using the same
+     * unwrap discipline as the kill-target analysis keeps both legs of the
+     * binding-status check on the same AST shape.
+     */
+    function isNullOrUndefinedInitializer(node) {
+      if (!node) return true;
+      const unwrapped = unwrapTransparentExpression(node);
+      if (!unwrapped) return true;
+      if (unwrapped.type === "Literal" && unwrapped.value === null) return true;
+      if (unwrapped.type === "Identifier" && unwrapped.name === "undefined") {
+        return true;
+      }
+      if (
+        unwrapped.type === "UnaryExpression" &&
+        unwrapped.operator === "void"
+      ) {
+        return true;
+      }
+      return false;
+    }
+
+    /**
+     * True when a binding pattern (FunctionDeclaration param, etc.) names
+     * `targetName` directly or through an AssignmentPattern / RestElement.
+     * Object/array destructuring patterns that include `targetName` as a
+     * property/element also count — the parameter slot binds the name
+     * even though the runtime value comes from a destructure.
+     */
+    function patternBindsName(pattern, targetName) {
+      if (!pattern) return false;
+      if (pattern.type === "Identifier") return pattern.name === targetName;
+      if (pattern.type === "AssignmentPattern") {
+        return patternBindsName(pattern.left, targetName);
+      }
+      if (pattern.type === "RestElement") {
+        return patternBindsName(pattern.argument, targetName);
+      }
+      if (pattern.type === "ArrayPattern") {
+        for (const el of pattern.elements || []) {
+          if (el && patternBindsName(el, targetName)) return true;
+        }
+        return false;
+      }
+      if (pattern.type === "ObjectPattern") {
+        for (const prop of pattern.properties || []) {
+          if (prop.type === "RestElement") {
+            if (patternBindsName(prop.argument, targetName)) return true;
+            continue;
+          }
+          if (prop.type === "Property" && prop.value) {
+            if (patternBindsName(prop.value, targetName)) return true;
+          }
+        }
+        return false;
+      }
+      return false;
+    }
+
+    /**
+     * True when `name` is locally declared (parameter or variable) inside
+     * `callbackFn`'s body, so it is NOT a free identifier captured from
+     * the surrounding scope. Used by the cleanup-binding analysis to
+     * filter out callback-local names before checking outer-scope
+     * bindings.
+     */
+    function isLocalToCallback(name, callbackFn) {
+      if (!callbackFn) return false;
+      for (const param of callbackFn.params || []) {
+        if (patternBindsName(param, name)) return true;
+      }
+      const body = callbackFn.body;
+      if (body && body.type === "BlockStatement") {
+        return blockDeclaresName(body, name);
+      }
+      return false;
+    }
+
+    /**
+     * Recursive walk of an AST subtree (a callback body) looking for any
+     * VariableDeclaration / FunctionDeclaration / nested function-param
+     * binding of `name`. Function/arrow nested deeper are not descended
+     * (their inner declarations don't shadow the outer body), but their
+     * own declarations don't bind `name` in the callback body either —
+     * we check direct declarations only.
+     */
+    function blockDeclaresName(block, name) {
+      if (!block) return false;
+      const stack = [block];
+      while (stack.length > 0) {
+        const node = stack.pop();
+        if (!node || typeof node !== "object" || typeof node.type !== "string") {
+          continue;
+        }
+        if (
+          node.type === "FunctionDeclaration" ||
+          node.type === "FunctionExpression" ||
+          node.type === "ArrowFunctionExpression"
+        ) {
+          if (node !== block) {
+            // Nested function — its declarations don't bind `name` in
+            // the outer block. Skip the body so we don't mis-attribute
+            // an inner local as outer-binding.
+            if (
+              node.type === "FunctionDeclaration" &&
+              node.id &&
+              node.id.type === "Identifier" &&
+              node.id.name === name
+            ) {
+              return true;
+            }
+            continue;
+          }
+        }
+        if (node.type === "VariableDeclaration") {
+          for (const d of node.declarations) {
+            if (patternBindsName(d.id, name)) return true;
+          }
+          continue;
+        }
+        if (
+          node.type === "FunctionDeclaration" &&
+          node.id &&
+          node.id.type === "Identifier" &&
+          node.id.name === name
+        ) {
+          return true;
+        }
+        for (const key in node) {
+          if (
+            key === "parent" ||
+            key === "loc" ||
+            key === "range" ||
+            key === "start" ||
+            key === "end" ||
+            key === "type" ||
+            key === "tokens" ||
+            key === "comments"
+          ) {
+            continue;
+          }
+          const child = node[key];
+          if (Array.isArray(child)) {
+            for (const c of child) {
+              if (c && typeof c === "object" && typeof c.type === "string") {
+                stack.push(c);
+              }
+            }
+          } else if (child && typeof child === "object" && typeof child.type === "string") {
+            stack.push(child);
+          }
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Sentinel pushed by `collectDaemonKillCaptureNames` when a
+     * recognised daemon-kill shape's capture position is an expression
+     * that cannot be resolved to a captured outer Identifier — a
+     * literal pid, a CallExpression, a `this` expression, etc. The
+     * caller treats it as an unbound capture: such targets cannot be
+     * statically tied to the just-started daemon, so accepting them as
+     * scoped cleanup would silently re-introduce the leak the
+     * ownership predicate guards against. The string form is used in
+     * the diagnostic when no better name is available.
+     *
+     * Picked to be a non-Identifier-shaped string so it cannot collide
+     * with any real source-level identifier resolution.
+     */
+    const UNVERIFIABLE_KILL_TARGET = "<unverifiable kill target>";
+
+    /**
+     * Strip wrapper nodes that are syntactically transparent — they
+     * neither change the expression's runtime value nor the underlying
+     * binding. The set:
+     *
+     *   - `ChainExpression` (optional-chain root)
+     *   - `ParenthesizedExpression`
+     *   - TS-side transparent assertions / coercions:
+     *       `TSAsExpression`        (`pid as number`)
+     *       `TSSatisfiesExpression` (`pid satisfies number`)
+     *       `TSNonNullExpression`   (`pid!`)
+     *       `TSTypeAssertion`       (`<number>pid`)
+     *       `TSInstantiationExpression` (`pid<T>`)
+     *
+     * Wrappers can stack (`((pid as number)!)`), so the unwrap is a
+     * fixed-point loop. Anything else — Literal, CallExpression,
+     * MemberExpression, etc. — is returned as-is for the caller's own
+     * structural analysis.
+     *
+     * The cycle-3 reviewer probe motivates the TS branches: a safe test
+     * that captured the pid before cleanup but used a type assertion
+     * inside the callback (`onTestFinished(() => process.kill(pid as
+     * number, "SIGTERM"))`) was rejected because the previous walker
+     * stopped at the TSAsExpression and fell through to
+     * UNVERIFIABLE_KILL_TARGET. Treating these wrappers as transparent
+     * preserves the safe shape — the underlying Identifier is still
+     * `pid`, which the ownership predicate validates against the
+     * detached-start node.
+     */
+    function unwrapTransparentExpression(node) {
+      let current = node;
+      while (current && typeof current.type === "string") {
+        if (current.type === "ChainExpression" && current.expression) {
+          current = current.expression;
+          continue;
+        }
+        if (current.type === "ParenthesizedExpression" && current.expression) {
+          current = current.expression;
+          continue;
+        }
+        if (
+          current.type === "TSAsExpression" ||
+          current.type === "TSSatisfiesExpression" ||
+          current.type === "TSNonNullExpression" ||
+          current.type === "TSTypeAssertion" ||
+          current.type === "TSInstantiationExpression"
+        ) {
+          if (current.expression) {
+            current = current.expression;
+            continue;
+          }
+        }
+        break;
+      }
+      return current;
+    }
+
+    /**
+     * Walk a kill-capture expression down to the root Identifier it
+     * resolves to. Bare `pid` / `child` returns its name; member chains
+     * `holder.pid` / `state.daemon.pid` return their leftmost
+     * Identifier (`holder` / `state`). Optional-access wrappers
+     * (`holder?.pid`, AST `ChainExpression`), parentheses, and
+     * transparent TS coercions (`pid as number`, `pid!`, `<number>pid`,
+     * `pid satisfies number`) are stripped at each step before
+     * descending. Returns null when the chain bottoms out in a
+     * non-Identifier (Literal, ThisExpression, CallExpression,
+     * TemplateLiteral, etc.) — the caller maps that to
+     * `UNVERIFIABLE_KILL_TARGET` so the cleanup-binding check rejects
+     * the closure.
+     */
+    function extractRootCaptureIdentifierName(node) {
+      if (!node) return null;
+      let current = unwrapTransparentExpression(node);
+      while (current && current.type === "MemberExpression" && current.object) {
+        current = unwrapTransparentExpression(current.object);
+      }
+      if (current && current.type === "Identifier") return current.name;
+      return null;
+    }
+
+    /**
+     * Identify the identifiers that the cleanup-callback closure must own
+     * concretely for the kill to actually run. For each recognised daemon-
+     * kill shape inside the callback body, return the identifier whose
+     * value at registration time gates the kill:
+     *
+     *   - `process.kill(<expr>, "SIGTERM")` → root identifier of `<expr>`
+     *     (e.g. `pid`, or `holder` for `holder.pid`, or `state` for
+     *     `state.daemon.pid`). Non-Identifier-rooted expressions such as
+     *     `process.kill(getPid(), …)` or `process.kill(12345, …)` resolve
+     *     to `UNVERIFIABLE_KILL_TARGET`, which the caller treats as
+     *     unbound so the cleanup is rejected.
+     *   - `<expr>.kill("SIGTERM")` → root identifier of the receiver
+     *     `<expr>` (e.g. `child` for a bare receiver, or `handle` for
+     *     `handle.child.kill("SIGTERM")`). Same fallthrough to
+     *     `UNVERIFIABLE_KILL_TARGET` when the receiver root is not an
+     *     Identifier.
+     *   - `killPid(<expr>)` / `stopDaemon(<expr>)` /
+     *     `stopMockDaemon(<expr>)` → root identifier of `<expr>` with the
+     *     same UNVERIFIABLE fallthrough.
+     *
+     * The earlier predicate only inspected bare-Identifier kill targets,
+     * so `process.kill(holder.pid, "SIGTERM")` and `holder.kill("SIGTERM")`
+     * were silently accepted as scoped cleanup — even when `holder` was
+     * declared BEFORE the daemon start (cycle-8 reviewer probe). Walking
+     * MemberExpression chains to the root identifier and feeding the
+     * root through the same ownership predicate (`holder`'s declarator
+     * ends before the detached-start begins, so it cannot represent the
+     * just-started daemon) closes that gap. Rejecting non-Identifier
+     * targets as unverifiable also handles `process.kill(12345, …)` and
+     * `process.kill(getPid(), …)`, which cannot be tied to the daemon
+     * statically and which the missing-cleanup contract still owes a
+     * diagnostic for.
+     *
+     * Identifiers that are locally declared in the callback (params,
+     * inner `let`/`const`) are filtered out by the caller — those carry
+     * a runtime-bound value, not a captured outer binding.
+     */
+    function collectDaemonKillCaptureNames(callExpr) {
+      const out = [];
+      if (!callExpr || callExpr.type !== "CallExpression") return out;
+      const callee = callExpr.callee;
+      if (!callee) return out;
+      if (
+        callee.type === "MemberExpression" &&
+        callee.property &&
+        callee.property.type === "Identifier" &&
+        callee.property.name === "kill"
+      ) {
+        if (
+          callee.object &&
+          callee.object.type === "Identifier" &&
+          callee.object.name === "process"
+        ) {
+          // process.kill(<expr>, "SIG...") — the kill target gates the
+          // kill. Bare Identifier and member chains rooted in an outer
+          // Identifier resolve to the root name; literals and call
+          // expressions fall through to UNVERIFIABLE_KILL_TARGET.
+          const first = callExpr.arguments[0];
+          const root = extractRootCaptureIdentifierName(first);
+          out.push(root === null ? UNVERIFIABLE_KILL_TARGET : root);
+        } else if (callee.object) {
+          // <expr>.kill("SIG...") — the receiver gates the kill. Bare
+          // Identifier and member chains rooted in an outer Identifier
+          // resolve to the root name; non-Identifier-rooted receivers
+          // fall through to UNVERIFIABLE_KILL_TARGET.
+          const root = extractRootCaptureIdentifierName(callee.object);
+          out.push(root === null ? UNVERIFIABLE_KILL_TARGET : root);
+        }
+        return out;
+      }
+      if (callee.type === "Identifier") {
+        if (
+          callee.name === "killPid" ||
+          callee.name === "stopDaemon" ||
+          callee.name === "stopMockDaemon"
+        ) {
+          const first = callExpr.arguments[0];
+          const root = extractRootCaptureIdentifierName(first);
+          out.push(root === null ? UNVERIFIABLE_KILL_TARGET : root);
+        }
+        // runKspec/exec/spawn cleanup shapes resolve to "serve stop"
+        // commands and don't need to capture an outer pid identifier —
+        // the kspec CLI re-reads the pid file itself.
+      }
+      return out;
+    }
+
+    /**
+     * True when `name` resolves at `useNode` to a binding whose stored
+     * value is a concrete (non-null/non-undefined) value at the
+     * registration site — so a cleanup callback that captures `name` has
+     * a real pid/handle/stop-token to kill if the framework invokes it.
+     *
+     * The walk inspects each enclosing scope outward from `useNode`:
+     *
+     *   - Function-scope parameters → bound (the parameter slot carries
+     *     a runtime value when the function is invoked).
+     *   - In the scope's body, the most recent VariableDeclaration of
+     *     `name` (textually before `useNode`) wins. A `const`/`let`/`var`
+     *     declarator with a non-null/non-undefined initializer counts as
+     *     bound. A declaration with no initializer or with a null /
+     *     undefined / `void <expr>` initializer is unbound.
+     *   - A subsequent assignment `name = <rhs>` (a top-level
+     *     ExpressionStatement) before `useNode` re-binds: a non-
+     *     null/undefined RHS sets bound, a null/undefined RHS clears it.
+     *   - When the name is declared in this scope, the verdict is
+     *     returned — outer scopes are not consulted (lexical shadowing).
+     *   - When the name is not declared anywhere we can see, the binding
+     *     is treated as bound. This is conservative: globals (`console`,
+     *     `process`, etc.) appear as unbound free identifiers but are not
+     *     unbound captures the rule cares about; treating them as unbound
+     *     would cause spurious flagging.
+     *
+     * Conditional/loop assignments are NOT credited — the rule's
+     * straight-line execution model only honours unconditional
+     * statement-level assignments. An assignment buried inside an if/loop
+     * cannot be relied on to bind the name before the registration runs.
+     */
+    function isIdentifierBoundConcretelyAt(name, useNode) {
+      const usePos = getNodeStart(useNode);
+      if (usePos < 0) return true;
+      let current = useNode.parent;
+      while (current) {
+        if (
+          current.type === "FunctionDeclaration" ||
+          current.type === "FunctionExpression" ||
+          current.type === "ArrowFunctionExpression"
+        ) {
+          for (const param of current.params || []) {
+            if (patternBindsName(param, name)) return true;
+          }
+        }
+        if (current.type === "ClassDeclaration" || current.type === "ClassExpression") {
+          if (
+            current.id &&
+            current.id.type === "Identifier" &&
+            current.id.name === name &&
+            getNodeStart(current) < usePos
+          ) {
+            return true;
+          }
+        }
+        if (
+          (current.type === "BlockStatement" || current.type === "Program") &&
+          current.body
+        ) {
+          const verdict = inspectStatementsForBinding(current.body, name, usePos);
+          if (verdict !== null) return verdict;
+        }
+        current = current.parent;
+      }
+      // Not declared in any scope we can see — treat as bound (likely a
+      // global or import). The rule does not care about captures of
+      // globals/imports for daemon-kill correctness.
+      return true;
+    }
+
+    function inspectStatementsForBinding(statements, name, usePos) {
+      const state = {
+        foundDeclaration: false,
+        bound: false,
+        foundFunctionDeclaration: false,
+      };
+      walkStatementsForBinding(statements, name, usePos, state);
+      if (!state.foundDeclaration && !state.foundFunctionDeclaration) return null;
+      if (state.foundFunctionDeclaration) return true;
+      return state.bound;
+    }
+
+    /**
+     * Recursive walker shared by `inspectStatementsForBinding`. Visits
+     * the supplied statement list in source order and updates `state`
+     * with declarations/assignments to `name` whose source position
+     * starts before `usePos`. Descends into `TryStatement.block` and
+     * `TryStatement.finalizer` because both run unconditionally on the
+     * straight-line execution path: the try body always begins, and
+     * the finalizer always fires when control crosses the try
+     * boundary. The catch handler is conditional (only runs on
+     * exception), so it is intentionally NOT descended.
+     *
+     * Cross-scope visibility: when an outer scope declares `let X;`
+     * with no concrete init and a nested try body assigns `X = ...;`
+     * before `usePos`, the descent surfaces the in-try assignment to
+     * the outer scope's verdict, so the binding is considered bound at
+     * `usePos`. This was the cycle-8 reviewer's finalizer safe-ordering
+     * blocker: the prior walker only inspected statements at the same
+     * level as the declaration and missed the in-try concrete write.
+     */
+    function walkStatementsForBinding(statements, name, usePos, state) {
+      for (const stmt of statements) {
+        if (!stmt) continue;
+        const stmtStart = getNodeStart(stmt);
+        if (stmtStart < 0 || stmtStart >= usePos) continue;
+        if (stmt.type === "VariableDeclaration") {
+          for (const declarator of stmt.declarations) {
+            if (!declarator || !declarator.id) continue;
+            if (declarator.id.type === "Identifier" && declarator.id.name === name) {
+              state.foundDeclaration = true;
+              if (
+                declarator.init &&
+                !isNullOrUndefinedInitializer(declarator.init)
+              ) {
+                state.bound = true;
+              } else {
+                state.bound = false;
+              }
+            } else if (patternBindsName(declarator.id, name)) {
+              // Destructured binding (`const { kill } = …`) — the source
+              // expression carries a runtime value, treat as bound when
+              // the init exists at all (a null init would still bind
+              // `kill` to undefined, but that case is uncommon and not
+              // what the regression tests probe).
+              state.foundDeclaration = true;
+              state.bound = !!declarator.init;
+            }
+          }
+          continue;
+        }
+        if (
+          stmt.type === "FunctionDeclaration" &&
+          stmt.id &&
+          stmt.id.type === "Identifier" &&
+          stmt.id.name === name
+        ) {
+          state.foundFunctionDeclaration = true;
+          continue;
+        }
+        if (
+          stmt.type === "ClassDeclaration" &&
+          stmt.id &&
+          stmt.id.type === "Identifier" &&
+          stmt.id.name === name
+        ) {
+          state.foundDeclaration = true;
+          state.bound = true;
+          continue;
+        }
+        if (
+          stmt.type === "ExpressionStatement" &&
+          stmt.expression &&
+          stmt.expression.type === "AssignmentExpression" &&
+          stmt.expression.operator === "=" &&
+          stmt.expression.left &&
+          stmt.expression.left.type === "Identifier" &&
+          stmt.expression.left.name === name
+        ) {
+          // Update bound regardless of whether a declaration has been
+          // observed at this scope yet — when the declaration lives in
+          // an outer scope, the descent surfaces the assignment to the
+          // outer walker which then has both the declaration AND this
+          // assignment recorded.
+          state.bound = !isNullOrUndefinedInitializer(stmt.expression.right);
+          continue;
+        }
+        if (stmt.type === "TryStatement") {
+          if (stmt.block && Array.isArray(stmt.block.body)) {
+            walkStatementsForBinding(stmt.block.body, name, usePos, state);
+          }
+          if (stmt.finalizer && Array.isArray(stmt.finalizer.body)) {
+            walkStatementsForBinding(stmt.finalizer.body, name, usePos, state);
+          }
+          continue;
+        }
+      }
+    }
+
+    /**
+     * Find the AST node that gave `name` its current concrete value at
+     * `useNode`. Returns the most recent VariableDeclarator (with a
+     * non-null/non-undefined initializer) or top-level AssignmentExpression
+     * (with a non-null/non-undefined RHS) that runs before `useNode` —
+     * the same predicates `isIdentifierBoundConcretelyAt` uses, but with
+     * the binding NODE returned for ownership analysis. Returns null
+     * when the binding is not a concrete value-producing statement
+     * (parameter slot, class declaration, function declaration,
+     * undeclared / global, or `let pid;` with no concrete assignment) —
+     * none of those represent a daemon handle for ownership purposes.
+     *
+     * The returned node's range is what the caller compares to the
+     * detached-start position: the binding is owned only when its
+     * source range ends at or after the detached-start begins. That
+     * captures the canonical safe shapes:
+     *   - `runKspec(...); const pid = readPidFromFile()` — declarator
+     *     ends after the detached start.
+     *   - `const child = spawn("kspec", ["serve", "start", "--detach"])` —
+     *     declarator's range ENCOMPASSES the detached-start expression
+     *     (the spawn IS the daemon launch and the binding's initializer
+     *     simultaneously).
+     * And rejects the cycle-7 reviewer probe `const pid = 12345;
+     * runKspec("serve start --detach"); onTestFinished(() => process.kill
+     * (pid, "SIGTERM"))` — the declarator ends BEFORE the detached
+     * start, so the captured `pid` cannot represent the just-started
+     * daemon.
+     */
+    function findConcreteBindingNodeAt(name, useNode) {
+      const usePos = getNodeStart(useNode);
+      if (usePos < 0) return null;
+      let current = useNode.parent;
+      while (current) {
+        if (
+          current.type === "FunctionDeclaration" ||
+          current.type === "FunctionExpression" ||
+          current.type === "ArrowFunctionExpression"
+        ) {
+          for (const param of current.params || []) {
+            if (patternBindsName(param, name)) return null;
+          }
+        }
+        if (current.type === "ClassDeclaration" || current.type === "ClassExpression") {
+          if (
+            current.id &&
+            current.id.type === "Identifier" &&
+            current.id.name === name &&
+            getNodeStart(current) < usePos
+          ) {
+            return null;
+          }
+        }
+        if (
+          (current.type === "BlockStatement" || current.type === "Program") &&
+          current.body
+        ) {
+          const result = findConcreteBindingInStatements(current.body, name, usePos);
+          if (result.declared) return result.node;
+        }
+        current = current.parent;
+      }
+      return null;
+    }
+
+    function findConcreteBindingInStatements(statements, name, usePos) {
+      const state = { declared: false, node: null };
+      walkStatementsForConcreteBinding(statements, name, usePos, state);
+      return state;
+    }
+
+    /**
+     * Recursive walker shared by `findConcreteBindingInStatements`.
+     * Visits the supplied statement list in source order and updates
+     * `state` with the most recent concrete binding (declarator with
+     * non-null/non-undefined initializer or top-level assignment with
+     * non-null/non-undefined RHS) for `name` whose source position
+     * starts before `usePos`. Descent into `TryStatement.block` and
+     * `TryStatement.finalizer` matches `walkStatementsForBinding`'s
+     * unconditional-execution-path discipline so cross-scope
+     * declarations (`let pid;` in an outer scope, `pid = X;` inside a
+     * try block) resolve to the in-try assignment as the concrete
+     * binding node — the cycle-8 reviewer's finalizer safe-ordering
+     * blocker.
+     */
+    function walkStatementsForConcreteBinding(statements, name, usePos, state) {
+      for (const stmt of statements) {
+        if (!stmt) continue;
+        const stmtStart = getNodeStart(stmt);
+        if (stmtStart < 0 || stmtStart >= usePos) continue;
+        if (stmt.type === "VariableDeclaration") {
+          for (const declarator of stmt.declarations) {
+            if (!declarator || !declarator.id) continue;
+            if (declarator.id.type === "Identifier" && declarator.id.name === name) {
+              state.declared = true;
+              if (
+                declarator.init &&
+                !isNullOrUndefinedInitializer(declarator.init)
+              ) {
+                state.node = declarator;
+              } else {
+                state.node = null;
+              }
+            } else if (patternBindsName(declarator.id, name)) {
+              state.declared = true;
+              state.node = declarator.init ? declarator : null;
+            }
+          }
+          continue;
+        }
+        if (
+          stmt.type === "FunctionDeclaration" &&
+          stmt.id &&
+          stmt.id.type === "Identifier" &&
+          stmt.id.name === name
+        ) {
+          // Function declarations are hoisted code, not daemon handles —
+          // declared but never a concrete daemon-handle binding.
+          state.declared = true;
+          state.node = null;
+          continue;
+        }
+        if (
+          stmt.type === "ClassDeclaration" &&
+          stmt.id &&
+          stmt.id.type === "Identifier" &&
+          stmt.id.name === name
+        ) {
+          // Class declarations are not daemon handles either.
+          state.declared = true;
+          state.node = null;
+          continue;
+        }
+        if (
+          stmt.type === "ExpressionStatement" &&
+          stmt.expression &&
+          stmt.expression.type === "AssignmentExpression" &&
+          stmt.expression.operator === "=" &&
+          stmt.expression.left &&
+          stmt.expression.left.type === "Identifier" &&
+          stmt.expression.left.name === name
+        ) {
+          // Update node regardless of whether a declaration has been
+          // observed at this scope yet — when the declaration lives in
+          // an outer scope, the descent surfaces the assignment to the
+          // outer walker which has both the declaration AND this
+          // assignment recorded.
+          if (!isNullOrUndefinedInitializer(stmt.expression.right)) {
+            state.node = stmt.expression;
+          } else {
+            state.node = null;
+          }
+          continue;
+        }
+        if (stmt.type === "TryStatement") {
+          if (stmt.block && Array.isArray(stmt.block.body)) {
+            walkStatementsForConcreteBinding(stmt.block.body, name, usePos, state);
+          }
+          if (stmt.finalizer && Array.isArray(stmt.finalizer.body)) {
+            walkStatementsForConcreteBinding(
+              stmt.finalizer.body,
+              name,
+              usePos,
+              state,
+            );
+          }
+          continue;
+        }
+      }
+    }
+
+    /**
+     * Ownership predicate: does `name` resolve at the registration site
+     * to a binding whose source range ends at or after the detached
+     * daemon start AND no OTHER detached daemon start sits between
+     * `detachedStartNode` and the binding? Returns true only when:
+     *   1. There is a concrete value-producing binding (declarator with
+     *      non-null/non-undefined init, or assignment with
+     *      non-null/non-undefined RHS).
+     *   2. The binding's range[1] >= detachedStartNode.range[0].
+     *   3. No other detached-serve start in `pendingDetachChecks` has
+     *      its source position strictly between
+     *      `detachedStartNode.range[0]` (exclusive) and the binding's
+     *      range[1] (inclusive).
+     *
+     * The "ends at or after" comparison handles two safe shapes:
+     *   - The binding sits AFTER the detached start (`runKspec(...);
+     *     const pid = readPidFromFile()`) — declarator ends well past
+     *     the runKspec call.
+     *   - The binding's initializer IS the detached start (`const child
+     *     = spawn("kspec", ["serve", "start", "--detach"])`) — the
+     *     declarator's range encompasses the spawn CallExpression, so
+     *     the end is past the spawn's start.
+     *
+     * It rejects the probe shape `const pid = 12345; runKspec(...);
+     * onTestFinished(() => process.kill(pid, ...))` — `pid` has a
+     * concrete value but its declarator ends BEFORE the runKspec start,
+     * so the cleanup closes over a value that cannot be the
+     * just-started daemon.
+     *
+     * The intervening-start check rejects the cycle-8 reviewer probe:
+     *   runKspec("serve start --detach --port 3456");  // start A
+     *   runKspec("serve start --detach --port 3457");  // start B
+     *   const pid = readPidFromFile();
+     *   onTestFinished(() => process.kill(pid, "SIGTERM"));
+     *   expect(true).toBe(true);
+     * A single `pid` binding can only represent one daemon, so when
+     * checking ownership of A by `pid`, the intervening start B falls
+     * inside the (A.start, pid.end] window and the binding is rejected
+     * as not owning A. Checking ownership of B by the same `pid`
+     * binding still accepts (no other start sits between B and pid),
+     * so the missing-cleanup diagnostic fires only on the earlier,
+     * truly-unowned start. Per @daemon-test-guardrail-precision
+     * ac-detached-cleanup-bound-before-observation: the cleanup must
+     * own the daemon that was just started.
+     */
+    function isCaptureOwnedByDetachedStart(name, useNode, detachedStartNode) {
+      const bindingNode = findConcreteBindingNodeAt(name, useNode);
+      if (!bindingNode) return false;
+      const bindingEnd = getNodeEnd(bindingNode);
+      const detachedStart = getNodeStart(detachedStartNode);
+      if (bindingEnd < 0 || detachedStart < 0) return false;
+      if (bindingEnd < detachedStart) return false;
+      for (const other of pendingDetachChecks) {
+        if (other === detachedStartNode) continue;
+        const otherStart = getNodeStart(other);
+        if (otherStart < 0) continue;
+        if (otherStart > detachedStart && otherStart <= bindingEnd) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    /**
+     * Verify that the closure registered as a cleanup callback owns a
+     * concrete pid / child-handle / stop-token at the registration site
+     * for every daemon-kill call inside it. Returns true when every
+     * captured outer identifier referenced by a recognised daemon-kill
+     * shape is concretely bound at registration AND that binding
+     * represents the just-started detached daemon (its source range
+     * ends at or after `detachedStartNode` begins). Returns false when
+     * at least one capture is statically unbound OR is bound to a value
+     * that pre-dates the detached start, naming the offender via the
+     * `unboundIdentifier` field.
+     *
+     * This is the static analogue of "the closure has something to kill,
+     * AND that something is the daemon this test just started":
+     *
+     *   - `onTestFinished(() => process.kill(pid, …))` registered before
+     *     the assignment that would set `pid` is no scoped cleanup at
+     *     all — the framework invoking the callback finds `pid`
+     *     undefined and `process.kill(undefined, …)` cannot kill the
+     *     just-started detached daemon (the unbound case).
+     *   - `const pid = 12345; runKspec("serve start --detach");
+     *     onTestFinished(() => process.kill(pid, "SIGTERM"))` IS
+     *     concretely bound, but `pid = 12345` was set BEFORE the daemon
+     *     start, so the cleanup can kill an unrelated process while the
+     *     new detached daemon leaks (the cycle-7 reviewer probe — the
+     *     ownership case).
+     *
+     * `detachedStartNode` is required for the ownership check; the
+     * caller passes the pending detached-start CallExpression. When it
+     * is not available (legacy callers or non-detached cleanup audits),
+     * pass `null` to skip the ownership leg and run only the
+     * concretely-bound check.
+     */
+    function cleanupCallbackBindingStatus(callbackFn, registrationCall, detachedStartNode) {
+      if (!callbackFn) return { bound: true, unboundIdentifier: null };
+      const checked = new Set();
+      const stack = [callbackFn.body];
+      while (stack.length > 0) {
+        const node = stack.pop();
+        if (!node || typeof node !== "object" || typeof node.type !== "string") {
+          continue;
+        }
+        if (
+          node !== callbackFn.body &&
+          (node.type === "FunctionDeclaration" ||
+            node.type === "FunctionExpression" ||
+            node.type === "ArrowFunctionExpression")
+        ) {
+          // Nested function bodies are not on the cleanup callback's
+          // straight-line execution path. They are stored, not invoked
+          // by the framework's cleanup hook, so a daemon-kill inside is
+          // not the cleanup we are validating.
+          continue;
+        }
+        if (
+          node.type === "CallExpression" &&
+          isDaemonCleanupCallExpression(node)
+        ) {
+          const captures = collectDaemonKillCaptureNames(node);
+          for (const name of captures) {
+            if (checked.has(name)) continue;
+            checked.add(name);
+            if (name === UNVERIFIABLE_KILL_TARGET) {
+              // Non-Identifier-rooted kill target (literal pid, call
+              // expression, etc.) — cannot be statically tied to the
+              // just-started daemon, so reject as unbound. The
+              // diagnostic surfaces the sentinel so the author sees
+              // that the target is the problem rather than a real
+              // missing variable.
+              return { bound: false, unboundIdentifier: UNVERIFIABLE_KILL_TARGET };
+            }
+            if (isLocalToCallback(name, callbackFn)) {
+              // The kill target is declared inside the cleanup callback,
+              // not captured from outer scope, so the closure does not
+              // own a concrete pid / handle / token at registration
+              // time — the binding only acquires a value when the
+              // callback runs at teardown. The cycle-4 reviewer probe
+              //   runKspec("serve start --detach");
+              //   onTestFinished(() => {
+              //     const pid = readPidFromFile();
+              //     process.kill(pid, "SIGTERM");
+              //   });
+              //   expect(true).toBe(true);
+              // disproves the previous "dynamic RHS plausibly reads at
+              // cleanup time" exemption: per
+              // ac-detached-cleanup-bound-before-observation, ownership
+              // must hold AT REGISTRATION TIME so the cleanup contract
+              // survives an intervening assertion failure. A
+              // callback-local target can never satisfy that — even a
+              // CallExpression initializer (`readPidFromFile()`) is
+              // evaluated at teardown, not at registration. Always
+              // reject; the diagnostic asks the author to capture the
+              // pid (or spawn child handle) into an outer `const`
+              // before the registration call.
+              return { bound: false, unboundIdentifier: name };
+            }
+            if (!isIdentifierBoundConcretelyAt(name, registrationCall)) {
+              return { bound: false, unboundIdentifier: name };
+            }
+            if (
+              detachedStartNode &&
+              !isCaptureOwnedByDetachedStart(name, registrationCall, detachedStartNode)
+            ) {
+              return { bound: false, unboundIdentifier: name };
+            }
+          }
+        }
+        for (const key in node) {
+          if (
+            key === "parent" ||
+            key === "loc" ||
+            key === "range" ||
+            key === "start" ||
+            key === "end" ||
+            key === "type" ||
+            key === "tokens" ||
+            key === "comments"
+          ) {
+            continue;
+          }
+          const child = node[key];
+          if (Array.isArray(child)) {
+            for (const c of child) {
+              if (c && typeof c === "object" && typeof c.type === "string") {
+                stack.push(c);
+              }
+            }
+          } else if (child && typeof child === "object" && typeof child.type === "string") {
+            stack.push(child);
+          }
+        }
+      }
+      return { bound: true, unboundIdentifier: null };
+    }
+
+    /**
+     * Find the implicit "registration site" for a direct daemon-cleanup
+     * call that is NOT wrapped in a recognised cleanup-registration
+     * callback. Walks the parent chain from `callNode` to the first
+     * enclosing `TryStatement`. When the detached daemon start lives
+     * inside that try block, the captured pid/handle must be concrete
+     * by the time the FIRST observation in the try body (after the
+     * detached start) can fire — if such an observation throws, the
+     * finalizer fires with the binding in its current state. The use
+     * node is therefore set to that first observation's containing
+     * statement; bindings written before that statement (including
+     * inside the try body) are owned by the detached start. When the
+     * try body has no observation after the detached start, the only
+     * way the finalizer fires is normal try-block completion (or an
+     * exception in a non-observation statement), and the binding only
+     * needs to be in scope at the cleanup call itself.
+     *
+     * The cycle-7 implementation incorrectly used the TryStatement
+     * itself as the use node, requiring the binding to predate the
+     * `try` keyword. That rejected the safe shape:
+     *
+     *   let pid;
+     *   try {
+     *     runKspec("serve start --detach --port 3456");
+     *     pid = readPidFromFile();         // assignment BEFORE observation
+     *     expect(true).toBe(true);          // first observation
+     *   } finally {
+     *     if (pid !== undefined) process.kill(pid, "SIGTERM");
+     *   }
+     *
+     * That ordering matches the allowed registered-callback shape
+     * `runKspec(...); const pid = readPidFromFile(); onTestFinished(...)`:
+     * by the time the first observation can fail, the cleanup target
+     * is already bound to the just-started daemon. The cycle-8
+     * reviewer's blocker.
+     *
+     * When the detached start is OUTSIDE the enclosing try block, the
+     * try-entry semantic still applies (the binding must predate the
+     * try keyword, since any in-try statement can throw at the very
+     * first instruction). When no enclosing TryStatement is found,
+     * the call itself is the "registration" — sibling-scope direct
+     * cleanup runs only if the test reaches that statement, and any
+     * binding visible there is in scope.
+     *
+     * Used by `directCleanupCallOwnsDetachedDaemon` and the diagnostic
+     * scanner `findUnboundDirectCleanupCapture` to keep both paths in
+     * agreement on which AST position gates the capture's ownership.
+     */
+    function findDirectCleanupRegistrationUseNode(callNode, detachedStartNode) {
+      let current = callNode && callNode.parent;
+      while (current) {
+        if (current.type === "TryStatement") {
+          if (detachedStartNode && current.block) {
+            const detachedPos = getNodeStart(detachedStartNode);
+            const tryBodyStart = getNodeStart(current.block);
+            const tryBodyEnd = getNodeEnd(current.block);
+            if (
+              detachedPos >= 0 &&
+              tryBodyStart >= 0 &&
+              tryBodyEnd >= 0 &&
+              detachedPos >= tryBodyStart &&
+              detachedPos < tryBodyEnd
+            ) {
+              const firstObservation = findFirstObservationInTryBody(
+                current.block,
+                detachedPos,
+              );
+              if (firstObservation) return firstObservation;
+              // No observation after the detached start in the try
+              // body — the binding only needs to be in scope at the
+              // cleanup call site itself.
+              return callNode;
+            }
+          }
+          return current;
+        }
+        current = current.parent;
+      }
+      return callNode;
+    }
+
+    /**
+     * Walk a try block's direct statements and return the first one
+     * whose position is strictly after `afterPos` AND that contains an
+     * observation on its straight-line execution path
+     * (`subtreeContainsAwaitOrExpect`: `await`, `expect(...)`,
+     * `fetch(<daemon-url>)`, or `new WebSocket(<daemon-url>)`).
+     * Returns null when no such statement exists.
+     *
+     * Used by `findDirectCleanupRegistrationUseNode` to locate the
+     * earliest in-try observation that could throw and trigger the
+     * finalizer; the captured pid/handle must be concrete before that
+     * statement so the finalizer holds a valid kill target if the
+     * observation fails.
+     */
+    function findFirstObservationInTryBody(tryBlock, afterPos) {
+      if (!tryBlock || !Array.isArray(tryBlock.body)) return null;
+      for (const stmt of tryBlock.body) {
+        if (!stmt) continue;
+        const stmtStart = getNodeStart(stmt);
+        if (stmtStart < 0 || stmtStart <= afterPos) continue;
+        if (subtreeContainsAwaitOrExpect(stmt)) {
+          return stmt;
+        }
+      }
+      return null;
+    }
+
+    /**
+     * True when a direct daemon-cleanup CallExpression (one that is NOT
+     * inside a recognised cleanup-registration callback) has every
+     * captured outer identifier concretely owned by the just-started
+     * detached daemon at the cleanup's implicit registration site
+     * (`findDirectCleanupRegistrationUseNode`). Mirrors the registered-
+     * callback path's `cleanupCallbackBindingStatus`, applied to the
+     * try/finally finalizer (and any other direct cleanup) instead of
+     * an `onTestFinished` callback body. The cycle-7 reviewer probe
+     * (`let pid; try { runKspec("serve start --detach"); expect(...);
+     * pid = readPidFromFile(); } finally { process.kill(pid as number,
+     * "SIGTERM"); }`) bypassed the binding-status check because the
+     * subtree walker matched the finalizer's `process.kill(pid, ...)`
+     * on shape only — accepting it crediting cleanup even though `pid`
+     * is set AFTER an intervening assertion that can throw, leaving
+     * the detached daemon to leak. This predicate closes that hole by
+     * applying the same ownership rules the registered-callback case
+     * uses.
+     *
+     * Returns true (call counts as cleanup) when there is no
+     * `detachedStartNode` to compare against — the ownership leg is
+     * informational only when the caller has not provided the
+     * just-started daemon node (legacy callers / non-detached audits).
+     */
+    function directCleanupCallOwnsDetachedDaemon(callNode, detachedStartNode) {
+      if (!detachedStartNode) return true;
+      const useNode = findDirectCleanupRegistrationUseNode(
+        callNode,
+        detachedStartNode,
+      );
+      const captures = collectDaemonKillCaptureNames(callNode);
+      for (const name of captures) {
+        if (name === UNVERIFIABLE_KILL_TARGET) {
+          // Non-Identifier-rooted kill target (literal pid, call
+          // expression, etc.) — cannot be statically tied to the just-
+          // started daemon. Reject.
+          return false;
+        }
+        if (!isIdentifierBoundConcretelyAt(name, useNode)) {
+          return false;
+        }
+        if (!isCaptureOwnedByDetachedStart(name, useNode, detachedStartNode)) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    /**
      * Walk an AST subtree and return true when any descendant CallExpression
      * matches `isDaemonCleanupCallExpression` AT A POSITION THAT WILL
      * ACTUALLY EXECUTE.
@@ -653,7 +1813,12 @@ const noLeakyTestDaemon = {
      * Identifier is `onTestFinished`, so the walker descends into the
      * arrow's body and finds the `killPid(pid)` call.
      */
-    function subtreeContainsDaemonCleanupCall(node, insideRegisteredCallback) {
+    function subtreeContainsDaemonCleanupCall(
+      node,
+      insideRegisteredCallback,
+      detachedStartNode,
+      inFinalizerContext,
+    ) {
       if (!node || typeof node !== "object" || typeof node.type !== "string") {
         return false;
       }
@@ -675,18 +1840,67 @@ const noLeakyTestDaemon = {
         // still be unconditional in the surrounding scope (the cycle-4
         // reviewer's `if (shouldCleanup) onTestFinished(...)` probe).
         insideRegisteredCallback = true;
+        // Cleanup-binding check: even if the callback contains a
+        // daemon-kill CallExpression that the framework will invoke at
+        // teardown, the kill is meaningless when the closure captures
+        // an outer identifier that has no concrete pid/handle at
+        // registration time, OR has a concrete value that pre-dates
+        // the just-started daemon (cycle-7 ownership probe). The
+        // framework invokes the body, but the body sees `process.kill
+        // (undefined, ...)` on a null binding, or `process.kill(<stale
+        // pid>, ...)` on a literal-bound `const pid = 12345`, and the
+        // detached daemon stays running. Reject the callback as cleanup
+        // when any captured outer identifier is unbound or unowned at
+        // the registration site.
+        const status = cleanupCallbackBindingStatus(node, node.parent, detachedStartNode);
+        if (!status.bound) {
+          return false;
+        }
       }
-      if (isDaemonCleanupCallExpression(node)) return true;
+      if (isDaemonCleanupCallExpression(node)) {
+        // Inside a registered callback the cleanupCallbackBindingStatus
+        // check at the callback's entry has already validated that every
+        // captured outer identifier owns a concrete pid/handle for the
+        // just-started daemon — the call here is on the framework's
+        // teardown path, so accept it.
+        if (insideRegisteredCallback) return true;
+        // Direct cleanup outside a registered callback (typically a
+        // try/finally finalizer; see `isInTryWithFinallyCleanup`). The
+        // finalizer fires when the surrounding `try` block exits,
+        // including via an exception thrown anywhere in that block, so
+        // the captured pid/handle must already be concrete at the
+        // moment the `try` is entered — same ownership semantic as the
+        // registered-callback case, but the implicit registration site
+        // is the enclosing `try` statement (the kill closure is
+        // installed when control crosses the `try` boundary). The
+        // cycle-7 reviewer probe `let pid; try { runKspec("serve start
+        // --detach"); expect(true).toBe(true); pid = readPidFromFile();
+        // } finally { process.kill(pid as number, "SIGTERM"); }`
+        // motivated this: the prior implementation accepted the
+        // finalizer's `process.kill(pid, ...)` purely on shape, even
+        // though `pid = readPidFromFile()` sits AFTER an intervening
+        // assertion — if the assertion threw, the finalizer would run
+        // with `pid` undefined and the detached daemon would leak,
+        // violating @daemon-test-guardrail-precision
+        // ac-detached-cleanup-bound-before-observation.
+        if (
+          !directCleanupCallOwnsDetachedDaemon(node, detachedStartNode)
+        ) {
+          return false;
+        }
+        return true;
+      }
 
-      // Conditional control-flow shapes outside a registered callback:
-      // do NOT descend into branches whose execution is not guaranteed
-      // on the straight-line path between the detached daemon start
-      // and the next observation. Cleanup REGISTRATION that lives
-      // inside a conditional consequent/alternate, a loop body that
-      // may iterate zero times, a switch case, a logical short-circuit
-      // right-hand side, or a catch handler is not guaranteed to fire
-      // before the next test observation — semantically it is the
-      // same as no cleanup.
+      // Conditional control-flow shapes outside a registered callback
+      // AND outside a finalizer-walk context: do NOT descend into
+      // branches whose execution is not guaranteed on the straight-line
+      // path between the detached daemon start and the next
+      // observation. Cleanup REGISTRATION that lives inside a
+      // conditional consequent/alternate, a loop body that may iterate
+      // zero times, a switch case, a logical short-circuit right-hand
+      // side, or a catch handler is not guaranteed to fire before the
+      // next test observation — semantically it is the same as no
+      // cleanup.
       //
       // The cycle-4 reviewer probes (`if (false) killPid(p)` and
       // `if (shouldCleanup) onTestFinished(() => killPid(p))`) both
@@ -696,7 +1910,24 @@ const noLeakyTestDaemon = {
       // `onTestFinished(() => { if (pid) killPid(pid); })`) keeps
       // working because the `insideRegisteredCallback` flag flips when
       // descent crosses the registration boundary.
-      if (!insideRegisteredCallback) {
+      //
+      // The `inFinalizerContext` flag flips on for finalizer walks
+      // initiated by `isInTryWithFinallyCleanup`. Inside a finalizer,
+      // the cleanup CALL may be defensively guarded (e.g. `if (pid !==
+      // undefined) process.kill(pid, "SIGTERM")`) — the guard does
+      // not change the cleanup intent, and the OWNERSHIP analysis on
+      // each daemon-cleanup CallExpression
+      // (`directCleanupCallOwnsDetachedDaemon`) still gates whether
+      // the call actually counts as cleanup for the just-started
+      // daemon. The cycle-8 reviewer's safe-ordering probe `let pid;
+      // try { runKspec("serve start --detach"); pid =
+      // readPidFromFile(); expect(...); } finally { if (pid !==
+      // undefined) process.kill(pid, "SIGTERM"); }` motivated this:
+      // refusing to descend into the IF guard left the cleanup
+      // unrecognised even though the binding ordering matched the
+      // accepted registered-callback shape `runKspec(); const pid =
+      // readPidFromFile(); onTestFinished(...)`.
+      if (!insideRegisteredCallback && !inFinalizerContext) {
         if (node.type === "IfStatement") return false;
         if (node.type === "ConditionalExpression") return false;
         if (node.type === "LogicalExpression") {
@@ -722,13 +1953,13 @@ const noLeakyTestDaemon = {
           // so it is conditional — do not descend.
           if (
             node.block &&
-            subtreeContainsDaemonCleanupCall(node.block, false)
+            subtreeContainsDaemonCleanupCall(node.block, false, detachedStartNode, false)
           ) {
             return true;
           }
           if (
             node.finalizer &&
-            subtreeContainsDaemonCleanupCall(node.finalizer, false)
+            subtreeContainsDaemonCleanupCall(node.finalizer, false, detachedStartNode, true)
           ) {
             return true;
           }
@@ -752,12 +1983,12 @@ const noLeakyTestDaemon = {
         const child = node[key];
         if (Array.isArray(child)) {
           for (const c of child) {
-            if (subtreeContainsDaemonCleanupCall(c, insideRegisteredCallback)) {
+            if (subtreeContainsDaemonCleanupCall(c, insideRegisteredCallback, detachedStartNode, inFinalizerContext)) {
               return true;
             }
           }
         } else if (child && typeof child === "object" && typeof child.type === "string") {
-          if (subtreeContainsDaemonCleanupCall(child, insideRegisteredCallback)) {
+          if (subtreeContainsDaemonCleanupCall(child, insideRegisteredCallback, detachedStartNode, inFinalizerContext)) {
             return true;
           }
         }
@@ -784,8 +2015,8 @@ const noLeakyTestDaemon = {
      * (e.g. `const cleanup = () => killPid(pid);` — the cycle-3 reviewer
      * blocker) are NOT cleanup.
      */
-    function statementContainsCleanup(stmt) {
-      return subtreeContainsDaemonCleanupCall(stmt, false);
+    function statementContainsCleanup(stmt, detachedStartNode) {
+      return subtreeContainsDaemonCleanupCall(stmt, false, detachedStartNode);
     }
 
     /**
@@ -2224,6 +3455,235 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * Scan the sibling statements between a detached daemon start and
+     * the next observation (await/expect/daemon-observation). When a
+     * cleanup-registration callback (`onTestFinished(...)` /
+     * `process.on(<exit-event>, ...)`) is found whose body contains a
+     * recognised daemon-kill CallExpression but whose closure captures
+     * an outer identifier that is statically unbound at the registration
+     * site, return the offender. Returns null when no such mismatch is
+     * found — the caller then falls back to the generic "missing
+     * cleanup" diagnostic.
+     *
+     * Used by `Program:exit` to pick the precise diagnostic when
+     * `detachWithoutCleanup` returns true: an unbound capture is reported
+     * via `cleanupClosureUnbound` (naming the offending identifier), so
+     * the author sees "your closure captures `pid` which is undefined at
+     * registration" rather than the generic missing-cleanup wording.
+     *
+     * Stored function bodies (arrows assigned to bindings, callbacks to
+     * unrelated callees) are NOT descended — they are not on the
+     * straight-line execution path and any cleanup-shaped call inside
+     * is irrelevant. The walker mirrors the rule's
+     * `subtreeContainsDaemonCleanupCall` discipline.
+     */
+    function findUnboundCleanupClosure(detachedNode) {
+      const body = findContainingBody(detachedNode);
+      if (!body) return null;
+      const nodeIndex = findNodeIndex(body, detachedNode);
+      if (nodeIndex === -1) return null;
+
+      for (let i = nodeIndex + 1; i < body.length; i += 1) {
+        const stmt = body[i];
+        const found = scanForUnboundCleanupCallback(stmt, detachedNode);
+        if (found) return found;
+        if (statementContainsAwaitOrExpect(stmt)) {
+          break;
+        }
+      }
+      return null;
+    }
+
+    /**
+     * Companion to `findUnboundCleanupClosure` that surfaces an unbound
+     * capture in a DIRECT try/finally finalizer cleanup call. The
+     * registered-callback scanner walks sibling statements after the
+     * detached start, but a try/finally finalizer hangs off the
+     * enclosing `TryStatement` rather than appearing as a sibling, so
+     * the regular scanner misses it. Walk the parent chain instead and,
+     * for each enclosing `TryStatement` whose finalizer contains a
+     * direct daemon-cleanup call, run the same ownership analysis used
+     * by `directCleanupCallOwnsDetachedDaemon`. Returns the offender's
+     * identifier so the diagnostic emits `cleanupClosureUnbound` with
+     * the precise capture rather than the generic missing-cleanup
+     * wording.
+     *
+     * The cycle-7 reviewer probe (`let pid; try { runKspec("serve start
+     * --detach"); expect(...); pid = readPidFromFile(); } finally {
+     * process.kill(pid as number, "SIGTERM"); }`) is the canonical
+     * case: the kill captures `pid` whose only concrete write sits
+     * AFTER an intervening assertion that can throw, so the finalizer
+     * may run with `pid` undefined and the daemon leaks.
+     */
+    function findUnboundDirectCleanupCapture(detachedNode) {
+      let current = detachedNode && detachedNode.parent;
+      while (current) {
+        if (current.type === "TryStatement" && current.finalizer) {
+          const found = scanFinalizerForUnboundDirectCleanup(
+            current.finalizer,
+            detachedNode,
+          );
+          if (found) return found;
+        }
+        current = current.parent;
+      }
+      return null;
+    }
+
+    function scanFinalizerForUnboundDirectCleanup(node, detachedStartNode) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") {
+        return null;
+      }
+      // Stop at a registered callback boundary — any cleanup-shaped
+      // call inside is governed by the callback's own binding-status
+      // check (mirrors `subtreeContainsDaemonCleanupCall`'s discipline).
+      if (
+        node.type === "FunctionDeclaration" ||
+        node.type === "FunctionExpression" ||
+        node.type === "ArrowFunctionExpression"
+      ) {
+        return null;
+      }
+      if (
+        node.type === "CallExpression" &&
+        isDaemonCleanupCallExpression(node)
+      ) {
+        const useNode = findDirectCleanupRegistrationUseNode(
+          node,
+          detachedStartNode,
+        );
+        const captures = collectDaemonKillCaptureNames(node);
+        for (const name of captures) {
+          if (name === UNVERIFIABLE_KILL_TARGET) {
+            return { identifier: UNVERIFIABLE_KILL_TARGET };
+          }
+          if (!isIdentifierBoundConcretelyAt(name, useNode)) {
+            return { identifier: name };
+          }
+          if (!isCaptureOwnedByDetachedStart(name, useNode, detachedStartNode)) {
+            return { identifier: name };
+          }
+        }
+        return null;
+      }
+      for (const key in node) {
+        if (
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        ) {
+          continue;
+        }
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (c && typeof c === "object" && typeof c.type === "string") {
+              const found = scanFinalizerForUnboundDirectCleanup(c, detachedStartNode);
+              if (found) return found;
+            }
+          }
+        } else if (
+          child &&
+          typeof child === "object" &&
+          typeof child.type === "string"
+        ) {
+          const found = scanFinalizerForUnboundDirectCleanup(child, detachedStartNode);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+
+    function scanForUnboundCleanupCallback(node, detachedStartNode) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") {
+        return null;
+      }
+      if (
+        node.type === "FunctionDeclaration" ||
+        node.type === "FunctionExpression" ||
+        node.type === "ArrowFunctionExpression"
+      ) {
+        if (!isCleanupRegistrationCallback(node)) return null;
+        if (!subtreeContainsAnyDaemonKillShape(node.body)) return null;
+        const status = cleanupCallbackBindingStatus(node, node.parent, detachedStartNode);
+        if (!status.bound) {
+          return { identifier: status.unboundIdentifier };
+        }
+        return null;
+      }
+      for (const key in node) {
+        if (
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        ) {
+          continue;
+        }
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (c && typeof c === "object" && typeof c.type === "string") {
+              const found = scanForUnboundCleanupCallback(c, detachedStartNode);
+              if (found) return found;
+            }
+          }
+        } else if (
+          child &&
+          typeof child === "object" &&
+          typeof child.type === "string"
+        ) {
+          const found = scanForUnboundCleanupCallback(child, detachedStartNode);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+
+    function subtreeContainsAnyDaemonKillShape(node) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") {
+        return false;
+      }
+      if (isDaemonCleanupCallExpression(node)) return true;
+      for (const key in node) {
+        if (
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        ) {
+          continue;
+        }
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (subtreeContainsAnyDaemonKillShape(c)) return true;
+          }
+        } else if (
+          child &&
+          typeof child === "object" &&
+          typeof child.type === "string"
+        ) {
+          if (subtreeContainsAnyDaemonKillShape(child)) return true;
+        }
+      }
+      return false;
+    }
+
+    /**
      * Inspect string-shaped arguments for a `localhost:<port>` daemon URL.
      * `localhost` alone (no `:port`) is not flagged because in-process
      * `app.handle(new Request("http://localhost/api/..."))` tests use it.
@@ -2291,6 +3751,13 @@ const noLeakyTestDaemon = {
       if (!node) return -1;
       if (node.range && Number.isFinite(node.range[0])) return node.range[0];
       if (typeof node.start === "number") return node.start;
+      return -1;
+    }
+
+    function getNodeEnd(node) {
+      if (!node) return -1;
+      if (node.range && Number.isFinite(node.range[1])) return node.range[1];
+      if (typeof node.end === "number") return node.end;
       return -1;
     }
 
@@ -2597,17 +4064,64 @@ const noLeakyTestDaemon = {
 
       "Program:exit"() {
         for (const node of pendingDetachChecks) {
-          if (
-            !isInHelperFunction(node) &&
-            !isInLifecycleHook(node, "afterEach") &&
-            detachWithoutCleanup(node)
-          ) {
+          // afterEach in an outer hook does not by itself prove this
+          // specific detached daemon is cleaned up (see the cleanup-
+          // binding analysis for the unbound-capture case), but a
+          // detached start INSIDE an `afterEach(...)` callback is a
+          // teardown shape and not the leak target. Preserve that
+          // historical escape hatch.
+          if (isInLifecycleHook(node, "afterEach")) continue;
+
+          // Local helper functions/arrows inside ordinary test files
+          // are NOT approved daemon-test fixtures. The approved-fixture
+          // boundary is the path allowlist (`tests/helpers/daemon.ts`,
+          // `tests/helpers/mock-daemon.ts`, `tools/eslint-rules/`, the
+          // lint test files). A detached start nested inside a local
+          // FunctionDeclaration / arrow / FunctionExpression in an
+          // ordinary test file hides the unsafe shape from the cleanup
+          // contract — the caller's `it(...)` body never sees a scoped
+          // cleanup registration tied to the daemon. Report the
+          // wrapper boundary explicitly so the diagnostic names what
+          // is wrong.
+          // (@daemon-test-guardrail-precision
+          // ac-approved-daemon-helper-boundary-explicit)
+          if (isInHelperFunction(node)) {
             context.report({
               node,
-              messageId: "missingCleanup",
+              messageId: "localWrapperUnsafe",
               data: { pattern: "serve start --detach" },
             });
+            continue;
           }
+
+          if (!detachWithoutCleanup(node)) continue;
+
+          // Differentiate the missing-cleanup diagnostic: if a cleanup
+          // registration callback was present but its closure captures
+          // an unbound outer identifier, surface the binding gap by
+          // name so the author sees which capture is the leak.
+          // (@daemon-test-guardrail-precision
+          // ac-detached-cleanup-bound-before-observation)
+          const unbound =
+            findUnboundCleanupClosure(node) ||
+            findUnboundDirectCleanupCapture(node);
+          if (unbound) {
+            context.report({
+              node,
+              messageId: "cleanupClosureUnbound",
+              data: {
+                pattern: "serve start --detach",
+                identifier: unbound.identifier || "<unknown>",
+              },
+            });
+            continue;
+          }
+
+          context.report({
+            node,
+            messageId: "missingCleanup",
+            data: { pattern: "serve start --detach" },
+          });
         }
       },
 

@@ -3759,24 +3759,16 @@ describe("disable on the wrong line", () => {
  * await between the registration and the binding leaves the cleanup
  * closure with no daemon to kill, and the detached process leaks.
  *
- * Each unsafe example below is a CURRENT FALSE NEGATIVE in the
- * `no-leaky-test-daemon` rule — the rule sees an `onTestFinished(...)`
- * registration before the next observation and accepts it as cleanup,
- * even though the captured variable is unbound. The unsafe-regression
- * tests below are expressed with `it.fails(...)` because the
- * assertions inside (`expect(result.exitCode).not.toBe(0)` etc.) do
- * not yet hold against the unfixed rule. `it.fails` inverts the
- * pass/fail polarity: today the rule produces no diagnostic and the
- * inner assertions throw, so the test PASSES (the inversion is the
- * point — it locks in the false negative). When the lint rule fix
- * lands, the rule WILL produce the diagnostic, the inner assertions
- * will start passing, and `it.fails` will then FAIL — that failure is
- * the structured signal to the lint-rule-fix worker to flip these
- * specific tests from `it.fails(...)` back to `it(...)`. This pattern
- * keeps the regressions inside the required suite (so they run and
- * verify behavior on every test invocation) without contributing red
- * to a green branch, exactly as the review on this regression task
- * required.
+ * Each unsafe example below WAS a false negative in the
+ * `no-leaky-test-daemon` rule — the rule used to see an
+ * `onTestFinished(...)` registration before the next observation and
+ * accept it as cleanup even though the captured variable was unbound.
+ * The lint-rule fix that closed
+ * `ac-detached-cleanup-bound-before-observation` now requires the
+ * cleanup closure to own a concrete pid/child handle/stop handle at
+ * registration time, so the unsafe shapes below all produce a
+ * `cleanupClosureUnbound` diagnostic and the assertions hold. The
+ * tests are therefore plain `it(...)` again.
  *
  * Allowed-narrow cases describe the canonical safe shape (pid or child
  * handle is captured BEFORE the cleanup registration, so the closure
@@ -3788,7 +3780,7 @@ describe("disable on the wrong line", () => {
 describe("daemon test guardrail precision: cleanup callback bound before observation", () => {
   // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
   describe("detached daemon flagged when cleanup closure is unbound at registration", () => {
-    it.fails("flags runKspec(\"serve start --detach\") when onTestFinished closes over a let pid that is assigned only after an intervening expect()", () => {
+    it("flags runKspec(\"serve start --detach\") when onTestFinished closes over a let pid that is assigned only after an intervening expect()", () => {
       // UNSAFE: cleanup IS registered before the expect(), but the closure
       // captures a `let pid` that is still undefined at registration time.
       // The pid file is read AFTER the expect() runs. If the assertion
@@ -3821,7 +3813,7 @@ describe("cleanup closure captures unbound pid", () => {
       expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished|bound|captured/i);
     });
 
-    it.fails("flags runKspec(\"serve start --detach\") when onTestFinished closes over a let pid that is assigned only after an intervening await", () => {
+    it("flags runKspec(\"serve start --detach\") when onTestFinished closes over a let pid that is assigned only after an intervening await", () => {
       // UNSAFE: same shape as the assertion variant but the intervening
       // operation is an `await waitForReady(...)` against the daemon. The
       // await can throw or hang before pid is captured. The rule currently
@@ -3847,7 +3839,7 @@ describe("cleanup closure captures unbound pid before await", () => {
       expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished|bound|captured/i);
     });
 
-    it.fails("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when onTestFinished closes over a let child handle that is assigned only after an intervening await", () => {
+    it("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when onTestFinished closes over a let child handle that is assigned only after an intervening await", () => {
       // UNSAFE child-handle variant: the spawn returns a child handle but
       // the test doesn't capture it inline — it reassigns `let child`
       // only after an `await waitForReady(...)` against the daemon. The
@@ -3875,7 +3867,7 @@ describe("cleanup closure captures unbound child handle", () => {
       expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished|bound|captured/i);
     });
 
-    it.fails("flags runKspec(\"serve start --detach\") when onTestFinished captures pid before a daemon-host fetch observation but pid is bound only after the fetch", () => {
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures pid before a daemon-host fetch observation but pid is bound only after the fetch", () => {
       // UNSAFE: the intervening observation is a `fetch` to the daemon
       // host (a recognised daemon network observation per the existing
       // observation gate). The cleanup registration sits before it, but
@@ -3953,6 +3945,1285 @@ describe("cleanup closure captures concrete child handle before observation", ()
       expect(result.exitCode).toBe(0);
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (ownership: pre-existing concrete value cannot represent the just-started daemon)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a const pid bound to a literal BEFORE the daemon start", () => {
+      // UNSAFE (cycle-7 reviewer probe): `pid` is concretely bound at
+      // registration — but to a literal `12345` set BEFORE the daemon
+      // was started. The cleanup closure has SOMETHING to kill, but
+      // not the just-started daemon — process.kill(12345, "SIGTERM")
+      // either kills nothing (no such pid) or kills an unrelated
+      // process while the new detached daemon leaks. The earlier
+      // binding-only check accepted this shape because the
+      // concretely-bound predicate did not look at the binding's
+      // position relative to the detached start. The ownership leg
+      // added in this fix rejects bindings whose source range ends
+      // before the detached-start begins.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures pid bound to a literal before the daemon start", () => {
+  it("binds pid before runKspec, registers cleanup over the stale literal", () => {
+    const pid = 12345;
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (ownership: child-handle variant)
+    it("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when onTestFinished captures a const child handle from an UNRELATED spawn that ran BEFORE the detached start", () => {
+      // UNSAFE: a child handle from an unrelated spawn (e.g. `spawn
+      // ("echo", ["ready"])`) is concretely bound BEFORE the daemon
+      // start. The cleanup closure has a concrete handle to call
+      // .kill("SIGTERM") on — but not the handle for the daemon this
+      // test just started. Same ownership defect as the literal-pid
+      // probe, surfaced through the child-handle daemon-kill shape.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("cleanup closure captures unrelated child handle from a pre-start spawn", () => {
+  it("spawns an unrelated process first, then starts the daemon, then kills the unrelated handle", () => {
+    const child = spawn("echo", ["ready"]);
+    spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    onTestFinished(() => child.kill("SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("child");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (ownership: imported / undeclared identifier captured)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a pid imported from another module (cannot represent the just-started daemon)", () => {
+      // UNSAFE: `pid` is an imported binding — a value defined in a
+      // different module, not derived from this test's daemon start.
+      // The earlier check treated undeclared identifiers as
+      // conservatively bound (to avoid false positives on globals like
+      // `console`). The ownership leg distinguishes "no visible
+      // declaration" from "binding produced by the just-started
+      // daemon": imports/globals cannot represent the daemon, so they
+      // are not owned and the cleanup is rejected.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { pid } from "./pid-from-other-module";
+
+describe("cleanup closure captures imported pid", () => {
+  it("uses an imported pid as the kill target", () => {
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-5 reviewer probe: TS-asserted `undefined` initializer must be
+    // recognised as a placeholder, not a concrete value-producing binding)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a const pid initialised to `undefined as number | undefined` (TS-wrapped undefined is still undefined at registration time)", () => {
+      // UNSAFE (cycle-5 reviewer probe): the test starts the detached
+      // daemon, then declares `const pid = undefined as number | undefined`
+      // AFTER the start, then registers `onTestFinished(() => { if (pid !==
+      // undefined) process.kill(pid, "SIGTERM"); })`. The declarator's
+      // source range ends AFTER the detached-start begins, so the
+      // declarator-position check alone says "owned". But the initializer
+      // is a TS-wrapped `undefined` — at registration time the closure
+      // captures a binding whose runtime value is still undefined, so an
+      // intervening assertion failure leaves the cleanup with no captured
+      // pid and the detached daemon leaks. The earlier
+      // `isNullOrUndefinedInitializer` only inspected bare Literal `null`,
+      // bare Identifier `undefined`, and `void <expr>` — it did NOT unwrap
+      // transparent TS wrappers, so the TSAsExpression node was treated as
+      // a concrete initializer. The fix unwraps the same set of
+      // transparent wrappers as the kill-target analysis
+      // (TSAsExpression / TSSatisfiesExpression / TSNonNullExpression /
+      // TSTypeAssertion / TSInstantiationExpression / parens / chain
+      // wrappers) before classifying the initializer, so wrapped
+      // `undefined` is correctly recognised as a placeholder and the
+      // cleanup is rejected.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures pid initialised to TS-wrapped undefined", () => {
+  it("declares const pid = undefined as number | undefined after the start, registers cleanup", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = undefined as number | undefined;
+    onTestFinished(() => { if (pid !== undefined) process.kill(pid, "SIGTERM"); });
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-5: TS-asserted `null` initializer is the same placeholder shape)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a const pid initialised to `null as any` (TS-wrapped null is still null at registration time)", () => {
+      // UNSAFE: `null as any` is the null counterpart of the cycle-5
+      // probe. The runtime value at registration is null; the closure has
+      // no concrete pid to kill at teardown if an intervening observation
+      // fails. The unwrap discipline must classify wrapped `null` the
+      // same way as wrapped `undefined`.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures pid initialised to TS-wrapped null", () => {
+  it("declares const pid = null as any after the start, registers cleanup", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = null as any;
+    onTestFinished(() => { if (pid !== null) process.kill(pid, "SIGTERM"); });
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-5: stacked transparent wrappers around `undefined` still resolve
+    // as a placeholder)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a const pid initialised to `(undefined)!` (non-null assertion over undefined unwraps to a placeholder)", () => {
+      // UNSAFE: stacking parens + non-null assertion over `undefined`
+      // produces a TS-coerced placeholder. The fixed-point unwrap loop
+      // strips ParenthesizedExpression, then TSNonNullExpression, then
+      // (some parsers wrap the non-null assertion in a ChainExpression)
+      // ChainExpression, until the underlying Identifier `undefined` is
+      // exposed. Without the unwrap, the rule would see the
+      // TSNonNullExpression and treat it as a concrete value.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures pid initialised to non-null-asserted undefined", () => {
+  it("declares const pid = (undefined)! after the start, registers cleanup", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = (undefined)! as number;
+    onTestFinished(() => { if (pid !== undefined) process.kill(pid, "SIGTERM"); });
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-5: assignment-RHS variant — TS-wrapped undefined as the RHS of a
+    // post-start assignment still leaves the binding placeholder-only)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a let pid that is later assigned `undefined as any` after the start (TS-wrapped placeholder RHS)", () => {
+      // UNSAFE: the assignment-RHS leg of the binding analysis must
+      // recognise TS-wrapped null/undefined the same way as the
+      // declarator-init leg. `let pid: number | undefined; runKspec(...);
+      // pid = undefined as any; onTestFinished(...);` reaches the
+      // AssignmentExpression branch of findConcreteBindingInStatements.
+      // Without the unwrap, the TSAsExpression RHS would mark the
+      // binding as concretely re-bound after the start, hiding the
+      // placeholder semantics.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures pid reassigned to TS-wrapped undefined", () => {
+  it("declares let pid, starts daemon, assigns TS-wrapped undefined, then registers cleanup", () => {
+    let pid: number | undefined;
+    runKspec("serve start --detach --port 3456");
+    pid = undefined as any;
+    onTestFinished(() => { if (pid !== undefined) process.kill(pid, "SIGTERM"); });
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-5: positive control — wrapped concrete value remains concrete)
+    it("does not flag runKspec(\"serve start --detach\") when const pid = (readPidFromFile() as number) is captured AFTER the start and onTestFinished kills it", () => {
+      // ALLOWED narrow: the unwrap discipline must NOT strip transparent
+      // wrappers around a real value-producing expression. Wrapping a
+      // `readPidFromFile()` CallExpression in a TS cast does not turn it
+      // into a placeholder — the runtime value at registration time is
+      // the daemon's pid. The unwrap classifier checks the underlying
+      // expression: CallExpression is neither Literal-null nor Identifier-
+      // undefined nor void, so the initializer is concrete and ownership
+      // holds (declarator ends after the start).
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { readPidFromFile } from "./helpers/pid";
+
+describe("cleanup closure captures TS-cast over a concrete read", () => {
+  it("declares const pid = readPidFromFile() as number after the start, registers cleanup", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile() as number;
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (ownership: kill target is a member expression on a binding that
+    // pre-dates the daemon start)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures process.kill(holder.pid, ...) where holder was declared BEFORE the daemon start", () => {
+      // UNSAFE (cycle-8 reviewer probe): the kill target is `holder.pid`,
+      // a MemberExpression. The earlier ownership check only inspected
+      // bare-Identifier kill targets, so a MemberExpression target was
+      // silently accepted as scoped cleanup even though `holder` was
+      // declared as `const holder = {}` BEFORE the daemon start AND the
+      // `holder.pid` field is assigned only AFTER the intervening
+      // assertion. The framework invokes the callback at teardown, but
+      // the callback's defensive guard keeps it from killing anything;
+      // even without the guard, `process.kill(undefined, ...)` cannot
+      // kill the just-started daemon. The fix walks MemberExpression
+      // chains to the root identifier and runs the same ownership
+      // predicate as the bare-Identifier case, so the root `holder` is
+      // rejected because its declarator's range ends BEFORE the
+      // detached-start begins.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures process.kill(holder.pid) where holder predates the start", () => {
+  it("declares holder before runKspec, registers cleanup over a stale member-expression target", () => {
+    const holder = {};
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => {
+      if (holder.pid !== undefined) process.kill(holder.pid, "SIGTERM");
+    });
+    expect(true).toBe(true);
+    holder.pid = 12345;
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("holder");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (ownership: kill target is a deep member chain, root predates start)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures process.kill(state.daemon.pid, ...) and `state` predates the daemon start", () => {
+      // UNSAFE: the kill target is a deep MemberExpression chain
+      // `state.daemon.pid`. Walking the chain to its root yields
+      // `state`, which is declared BEFORE the runKspec start. The
+      // closure has a structured object to read at teardown, but the
+      // root binding cannot represent the just-started daemon — it
+      // existed before the daemon did.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures a deep member chain rooted in a binding that predates the start", () => {
+  it("declares state before runKspec, registers cleanup over state.daemon.pid", () => {
+    const state = { daemon: {} };
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => process.kill(state.daemon.pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("state");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (ownership: kill receiver is a member chain, root predates start)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished captures handle.child.kill(\"SIGTERM\") and `handle` predates the daemon start", () => {
+      // UNSAFE: the kill RECEIVER (callee.object) is a MemberExpression
+      // `handle.child`. The earlier check only extracted bare-Identifier
+      // receivers, so a member-receiver was accepted silently. Walking
+      // the chain to the root `handle` and applying the ownership
+      // predicate rejects this shape because `handle` was declared
+      // before the daemon start.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure captures member-receiver kill where the receiver root predates the start", () => {
+  it("declares handle before runKspec, registers a deep .kill receiver", () => {
+    const handle = { child: { kill: () => {} } };
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => handle.child.kill("SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("handle");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (ownership: unverifiable kill target — call expression cannot be tied
+    // to the just-started daemon)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished registers process.kill(getStalePid(), ...) — call expression target cannot be statically tied to the daemon", () => {
+      // UNSAFE: `process.kill(getStalePid(), "SIGTERM")` — the kill
+      // target is a CallExpression. Static analysis cannot determine
+      // whether the function returns the just-started daemon's pid;
+      // the conservative answer is to reject the cleanup as unbound so
+      // the missing-cleanup contract still applies. A bare-literal
+      // target like `process.kill(12345, "SIGTERM")` falls under the
+      // same rejection: a literal cannot represent the just-started
+      // daemon's pid.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure registers a call-expression kill target", () => {
+  it("uses getStalePid() as the kill target", () => {
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => process.kill(getStalePid(), "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (callback-local literal kill target — cycle-3 reviewer probe)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished body declares `const pid = 12345` and process.kill(pid, ...) — callback-local literal cannot represent the daemon", () => {
+      // UNSAFE (cycle-3 reviewer probe): the cleanup callback declares
+      // its own `const pid = 12345` and calls process.kill(pid, ...).
+      // The earlier rule treated callback-local kill targets as
+      // inherently dynamic (a runtime read at cleanup time) and
+      // skipped the binding check entirely — but a literal pid is
+      // statically resolvable AT WRITE TIME and cannot have been
+      // chosen to match the daemon process the test just started.
+      // The cleanup hook fires, attempts to kill PID 12345 (which is
+      // either nonexistent or unrelated), and the just-started
+      // detached daemon leaks. The fix narrows the callback-local
+      // exemption: a callback-local kill target counts as cleanup
+      // only when its binding plausibly derives from a runtime read
+      // (CallExpression, MemberExpression, outer-Identifier read).
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure body declares its own pid as a stale literal", () => {
+  it("registers cleanup whose pid is a callback-local literal", () => {
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => {
+      const pid = 12345;
+      process.kill(pid, "SIGTERM");
+    });
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (callback-local literal via let + later assignment)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished body uses `let pid; pid = 99999;` then process.kill(pid, ...) — every assignment is literal", () => {
+      // UNSAFE: callback-local `let pid;` with a later literal
+      // assignment also fails the dynamic check. The rule walks all
+      // VariableDeclarators AND AssignmentExpressions inside the
+      // callback that target `name`; if every value source is a
+      // static literal, the binding is rejected. This locks in the
+      // generalised stale-literal rejection beyond just the const
+      // initializer shape.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure body declares pid as let then assigns a literal", () => {
+  it("uses let + literal assignment for the kill target", () => {
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => {
+      let pid;
+      pid = 99999;
+      process.kill(pid, "SIGTERM");
+    });
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (callback-local kill target wrapped in a TS assertion is still
+    // rejected when the binding is literal-only)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished body declares `const pid = 12345 as number` — wrapped literal still resolves as static", () => {
+      // UNSAFE: even with a TS `as number` cast, the binding's value
+      // is a literal — the cast does not introduce any runtime read.
+      // The static-literal classifier unwraps transparent TS wrappers
+      // before checking, so `12345 as number` is rejected the same
+      // as a bare `12345`.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure body declares pid as a TS-asserted literal", () => {
+  it("uses const pid = 12345 as number for the kill target", () => {
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => {
+      const pid = 12345 as number;
+      process.kill(pid, "SIGTERM");
+    });
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-4 reviewer probe: callback-local CallExpression init is
+    // still unsafe — the runtime read is deferred to teardown time)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished body declares `const pid = readPidFromFile()` then process.kill(pid, ...) — callback-local read is deferred to teardown, not owned at registration", () => {
+      // UNSAFE (cycle-4 reviewer probe): the cleanup callback declares
+      // `const pid = readPidFromFile()` inside its own body. The
+      // initializer is a CallExpression — but it is evaluated at
+      // teardown, not at registration. Per
+      // ac-detached-cleanup-bound-before-observation, the cleanup
+      // callback must "capture or otherwise own" the concrete pid AT
+      // REGISTRATION TIME so the cleanup contract survives an
+      // intervening assertion failure. A callback-local binding —
+      // literal OR dynamic — never owns anything at registration; the
+      // closure has no captured outer pid to fall back on if
+      // readPidFromFile() throws (file not yet written) or returns NaN
+      // at teardown. The earlier dynamic-RHS exemption was the bug:
+      // it accepted runtime-read shapes that defer ownership entirely.
+      // The correct pattern reads the pid OUTSIDE the callback after
+      // the start, then registers a closure that captures the outer
+      // const (covered by the next test).
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { readPidFromFile } from "./helpers/pid";
+
+describe("cleanup closure reads the pid file at cleanup time", () => {
+  it("registers cleanup that reads pid from disk inside the callback", () => {
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => {
+      const pid = readPidFromFile();
+      process.kill(pid, "SIGTERM");
+    });
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/own|just-started|concrete|registration time/i);
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (allowed-narrow: read pid OUTSIDE the callback after the start,
+    // then register a closure that captures the outer const — the
+    // safe alternative to the cycle-4 callback-local probe above)
+    it("does not flag runKspec(\"serve start --detach\") when pid is read OUTSIDE the callback after the start and onTestFinished closes over the outer const", () => {
+      // ALLOWED: the test reads `const pid = readPidFromFile()` after
+      // the daemon start completes but BEFORE registering cleanup.
+      // The cleanup closure captures the outer `pid` binding, which
+      // is owned at registration time — an intervening assertion
+      // failure cannot leave the cleanup with nothing to kill. The
+      // ownership predicate validates that `pid`'s declarator ends
+      // after the detached start begins, so this safe shape is
+      // accepted.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { readPidFromFile } from "./helpers/pid";
+
+describe("cleanup closure captures outer pid read after the start", () => {
+  it("reads pid outside the callback then registers the cleanup", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-4 reviewer probe: callback-local MemberExpression init
+    // via deferred read is still unsafe)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished body declares `const pid = state.lastPid` then process.kill(pid, ...) — callback-local member read is still deferred to teardown", () => {
+      // UNSAFE (cycle-4 reviewer probe variant): even when the
+      // callback-local initializer is a MemberExpression — a value
+      // that "looks like" it could come from runtime state — the
+      // read still happens at teardown. The cleanup closure has
+      // nothing concrete bound at registration time, so an
+      // intervening assertion failure cannot guarantee the cleanup
+      // has a usable target. The fix's blanket "callback-local kill
+      // targets are always rejected" rule covers all initializer
+      // shapes, not just literals.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure body declares pid as a callback-local member read", () => {
+  it("registers cleanup that reads pid from outer state inside the callback", () => {
+    const state: { lastPid?: number } = {};
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => {
+      const pid = state.lastPid as number;
+      process.kill(pid, "SIGTERM");
+    });
+    expect(true).toBe(true);
+    state.lastPid = 12345;
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-4 reviewer probe: callback-local let with later
+    // CallExpression assignment is still unsafe)
+    it("flags runKspec(\"serve start --detach\") when onTestFinished body uses `let pid; pid = readPidFromFile();` then process.kill(pid, ...) — callback-local let + dynamic assign is still deferred", () => {
+      // UNSAFE (cycle-4 reviewer probe variant): a callback-local
+      // `let pid;` followed by a CallExpression assignment inside
+      // the same callback also fails the contract. Both the
+      // declaration and the assignment execute at teardown, not at
+      // registration. There is no concrete pid bound at registration,
+      // and the cleanup closure has no captured outer fallback.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { readPidFromFile } from "./helpers/pid";
+
+describe("cleanup closure body uses let + later dynamic assignment", () => {
+  it("declares pid then assigns from a runtime read inside the callback", () => {
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => {
+      let pid;
+      pid = readPidFromFile();
+      process.kill(pid, "SIGTERM");
+    });
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-3 reviewer probe: TS as-cast on captured pid in the kill
+    // call must not be rejected when the underlying binding is owned)
+    it("does not flag runKspec(\"serve start --detach\") when pid is captured before cleanup and the callback uses process.kill(pid as number, \"SIGTERM\") — TS cast unwrapped to root identifier", () => {
+      // ALLOWED narrow (cycle-3 reviewer probe): the test captures
+      // `const pid = readPidFromFile() as number` AFTER the daemon
+      // start, then registers cleanup that uses `pid as number` in
+      // the kill call. The previous rule's
+      // extractRootCaptureIdentifierName stopped at the
+      // TSAsExpression and resolved the kill target to
+      // UNVERIFIABLE_KILL_TARGET — rejecting the safe shape and
+      // breaking the contract that legitimate cleanup must keep
+      // working. The fix unwraps transparent TS wrappers
+      // (TSAsExpression / TSNonNullExpression / TSTypeAssertion /
+      // TSSatisfiesExpression / parens / chain wrappers) before
+      // walking MemberExpression chains, so the root identifier is
+      // recovered and the ownership predicate validates `pid`'s
+      // declarator (which ends after the detached start begins).
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { readPidFromFile } from "./helpers/pid";
+
+describe("cleanup closure uses TS cast in the kill call", () => {
+  it("captures pid after the start and casts in the kill call", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile() as number;
+    onTestFinished(() => process.kill(pid as number, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-3: TS non-null assertion variant)
+    it("does not flag runKspec(\"serve start --detach\") when pid is captured before cleanup and the callback uses process.kill(pid!, \"SIGTERM\") — TS non-null assertion unwrapped to root identifier", () => {
+      // ALLOWED narrow: the TS non-null assertion `pid!` is another
+      // transparent wrapper. The unwrap fixed-point loop strips it
+      // (and the ChainExpression wrapper that some parsers emit
+      // around the non-null assertion) before resolving the root
+      // identifier. The capture-after-start ownership predicate then
+      // accepts the binding.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { readPidFromFile } from "./helpers/pid";
+
+describe("cleanup closure uses TS non-null assertion in the kill call", () => {
+  it("captures pid after the start and asserts non-null in the kill call", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid!, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-3: stacked transparent wrappers must all be unwrapped)
+    it("does not flag runKspec(\"serve start --detach\") when the kill call uses ((pid as number)!) — stacked TS wrappers unwrapped", () => {
+      // ALLOWED narrow: stacking TS assertion + non-null assertion
+      // in parentheses still resolves to the underlying `pid`
+      // identifier. The unwrap is a fixed-point loop precisely so
+      // that wrapped wrappers don't escape the root extractor.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { readPidFromFile } from "./helpers/pid";
+
+describe("cleanup closure uses stacked TS wrappers in the kill call", () => {
+  it("captures pid after the start and uses ((pid as number)!) in the kill call", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(((pid as number)!), "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (cycle-3: TS-cast on a member-expression kill target — root
+    // identifier still recovered and ownership validated)
+    it("flags runKspec(\"serve start --detach\") when the kill call uses (holder.pid as number) and `holder` predates the daemon start", () => {
+      // UNSAFE: combining a member-expression kill target with a TS
+      // cast must still resolve to the root identifier `holder`,
+      // which the ownership predicate rejects because `holder` is
+      // declared before the start. The fix unwraps the TS cast at
+      // every level of the descent, so a wrapped MemberExpression
+      // does not escape the chain walk.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("cleanup closure uses a TS-asserted member kill target rooted in a pre-start binding", () => {
+  it("declares holder before the start and asserts in the kill call", () => {
+    const holder = {} as { pid?: number };
+    runKspec("serve start --detach --port 3456");
+    onTestFinished(() => process.kill((holder.pid as number), "SIGTERM"));
+    expect(true).toBe(true);
+    holder.pid = 12345;
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("holder");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (allowed-narrow: member-expression kill target rooted in the spawn
+    // child handle whose declarator IS the detached daemon start)
+    it("does not flag spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when onTestFinished kills via process.kill(child.pid, \"SIGTERM\") and `child` is captured by the spawn statement", () => {
+      // ALLOWED narrow: the cleanup uses a MemberExpression kill target
+      // `child.pid`, but the root `child` is bound by `const child =
+      // spawn("kspec", ["serve", "start", "--detach"])` — the
+      // declarator's range encompasses the detached-start expression,
+      // so the ownership predicate accepts the binding. The fix must
+      // continue to accept this shape without over-tightening so the
+      // canonical spawn-handle cleanup pattern keeps working with
+      // either `child.kill("SIGTERM")` or `process.kill(child.pid,
+      // "SIGTERM")` as the call form.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("cleanup closure captures process.kill(child.pid) where child IS the spawn", () => {
+  it("captures child via const, registers process.kill(child.pid) cleanup, then asserts", () => {
+    const child = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    onTestFinished(() => process.kill(child.pid, "SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // The cycle-7 reviewer probe: a direct `process.kill(...)` in a
+    // try/finally finalizer used to bypass ownership analysis entirely.
+    // The earlier walker matched the finalizer's daemon-cleanup call on
+    // shape only and credited it as scoped cleanup, so the unsafe
+    // `let pid; try { runKspec("serve start --detach"); expect(...);
+    // pid = readPidFromFile(); } finally { process.kill(pid, ...); }`
+    // pattern silently passed even though an assertion failure between
+    // the start and the assignment would leave the finalizer with no
+    // concrete kill target. The fix runs the same ownership rules on
+    // direct-finalizer cleanup that already gate the registered-callback
+    // path, with the implicit registration site set to the enclosing
+    // try statement (control crosses that boundary before any in-try
+    // throw can fire the finalizer).
+    it("flags try/finally finalizer process.kill(pid) when pid is assigned inside the try after an intervening assertion", () => {
+      // UNSAFE: the cycle-7 reviewer's finalizer probe. `pid` is declared
+      // outside the try with no concrete value; its only concrete write
+      // sits AFTER `expect(true).toBe(true)` inside the try block. If
+      // the assertion throws (or any later observation does), the
+      // finalizer runs with `pid` undefined, `process.kill(undefined,
+      // ...)` raises ERR_INVALID_ARG_TYPE, and the detached daemon
+      // continues to run.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer reads pid AFTER an intervening assertion", () => {
+  it("declares let pid, starts daemon, asserts, then assigns pid before finalizer", () => {
+    let pid: number | undefined;
+    try {
+      runKspec("serve start --detach --port 3456");
+      expect(true).toBe(true);
+      pid = readPidFromFile();
+    } finally {
+      process.kill(pid as number, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    it("flags try/finally finalizer process.kill(pid) when pid is undeclared in the test scope", () => {
+      // UNSAFE: an undeclared free identifier in the finalizer cannot
+      // possibly own the just-started daemon (no binding exists at all,
+      // so the closure has nothing concrete to kill). The earlier rule
+      // accepted the shape because `subtreeContainsDaemonCleanupCall`
+      // matched the call structurally and never asked whether the
+      // capture resolved to anything real.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer kills an undeclared identifier", () => {
+  it("never declares pid yet uses it in the finalizer", () => {
+    try {
+      runKspec("serve start --detach --port 3456");
+      expect(true).toBe(true);
+    } finally {
+      process.kill(pid, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    it("flags try/finally finalizer process.kill(pid) when pid is bound to a stale literal before the start", () => {
+      // UNSAFE: `const pid = 12345` carries a concrete value but it
+      // pre-dates the detached start, so the finalizer's
+      // `process.kill(pid, ...)` would target an unrelated process while
+      // the just-started daemon leaks. Same ownership rule as the
+      // registered-callback case: the binding's range must end at or
+      // after the detached-start begins.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer kills a stale pre-start literal pid", () => {
+  it("declares pid as 12345 before the start and uses it in the finalizer", () => {
+    const pid = 12345;
+    try {
+      runKspec("serve start --detach --port 3456");
+      expect(true).toBe(true);
+    } finally {
+      process.kill(pid, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    it("flags try/finally finalizer process.kill(holder.pid) when holder predates the start", () => {
+      // UNSAFE: the kill target's MemberExpression root `holder` predates
+      // the detached start, so the finalizer captures a stale base. The
+      // ownership leg already rejects this shape for registered
+      // callbacks; it must reject the same shape in a direct finalizer.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer kills via holder.pid where holder predates the start", () => {
+  it("declares holder before the start and reads holder.pid in the finalizer", () => {
+    const holder = {} as { pid?: number };
+    try {
+      runKspec("serve start --detach --port 3456");
+      expect(true).toBe(true);
+      holder.pid = 12345;
+    } finally {
+      if (holder.pid !== undefined) process.kill(holder.pid, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("holder");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (allowed-narrow: pid captured BEFORE the try block, after the
+    // detached start)
+    it("does not flag try/finally finalizer process.kill(pid) when pid is read into a const BEFORE the try block opens", () => {
+      // ALLOWED narrow: the safe alternative to the cycle-7 probe. The
+      // detached start runs, then `const pid = readPidFromFile()`
+      // captures the pid, then the try block opens. By the time control
+      // crosses the try keyword (the implicit registration site for
+      // direct-finalizer cleanup) the pid is concrete, so any in-try
+      // throw still leaves the finalizer holding the just-started
+      // daemon's pid.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer kills pid captured before the try block", () => {
+  it("starts daemon, reads pid into a const, then enters try/finally", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    try {
+      expect(true).toBe(true);
+    } finally {
+      process.kill(pid, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (allowed-narrow: const child = spawn(...) BEFORE try, where the
+    // declarator's range encompasses the detached-start expression)
+    it("does not flag try/finally finalizer child.kill(\"SIGTERM\") when `child` is captured by `const child = spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"])` before the try block", () => {
+      // ALLOWED narrow: `const child = spawn(...)` IS the detached
+      // start; the declarator's range encompasses the spawn, so the
+      // ownership predicate accepts `child` even though the binding
+      // sits at the same source position as the start. The try block
+      // opens after the const declaration, so the finalizer holds a
+      // concrete child handle for the just-started daemon at the
+      // implicit registration site.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawn } from "child_process";
+
+describe("finalizer kills via child handle captured before the try block", () => {
+  it("captures child via const = spawn before entering try/finally", () => {
+    const child = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    try {
+      expect(child.pid).toBeDefined();
+    } finally {
+      child.kill("SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // The cycle-8 reviewer's safe-ordering probe. The cycle-7 fix
+    // tightened ownership for try/finally finalizer cleanup but used
+    // the enclosing TryStatement as the implicit registration site,
+    // requiring the binding to predate the `try` keyword. That
+    // rejected the canonical safe shape where the pid is captured
+    // immediately after the detached start and BEFORE the first
+    // in-try observation can fail. The fix moves the implicit
+    // registration site to the first observation in the try body
+    // after the detached start, matching the accepted registered-
+    // callback shape `runKspec(...); const pid = readPidFromFile();
+    // onTestFinished(...)` which also binds before observation.
+    it("does not flag try/finally finalizer process.kill(pid) when pid is assigned in the try body BEFORE the first in-try observation, with `if (pid !== undefined)` guard", () => {
+      // ALLOWED narrow: the cycle-8 reviewer's safe-ordering probe
+      // verbatim. The detached start runs, `pid = readPidFromFile()`
+      // sets the binding, THEN `expect(true).toBe(true)` is the first
+      // in-try observation. By the time the observation can throw,
+      // the finalizer's kill target is already concrete. The
+      // defensive `if (pid !== undefined)` guard is descended into
+      // because the cleanup walker treats finalizer-context
+      // conditionals as non-pruning (defensive null-checks are not
+      // load-bearing once ownership is verified — they are author
+      // hygiene).
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer reads pid BEFORE an intervening assertion (with if guard)", () => {
+  it("declares let pid, starts daemon, assigns pid, then asserts", () => {
+    let pid: number | undefined;
+    try {
+      runKspec("serve start --detach --port 3456");
+      pid = readPidFromFile();
+      expect(true).toBe(true);
+    } finally {
+      if (pid !== undefined) process.kill(pid, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    it("does not flag try/finally finalizer process.kill(pid as number) when pid is assigned in the try body BEFORE the first in-try observation, no guard", () => {
+      // ALLOWED narrow: the same safe-ordering shape but with no
+      // defensive `if` guard around the kill — exercises the binding
+      // analysis directly without relying on the finalizer-context
+      // conditional descent. Same registration-site semantics: the
+      // first in-try observation is the implicit registration site,
+      // and the `pid = readPidFromFile()` assignment ends before that
+      // observation begins.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer reads pid BEFORE an intervening assertion (no guard)", () => {
+  it("declares let pid, starts daemon, assigns pid, then asserts", () => {
+    let pid: number | undefined;
+    try {
+      runKspec("serve start --detach --port 3456");
+      pid = readPidFromFile();
+      expect(true).toBe(true);
+    } finally {
+      process.kill(pid as number, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    it("does not flag try/finally finalizer process.kill(pid) when there is no in-try observation and pid is assigned in the try body before the cleanup call", () => {
+      // ALLOWED narrow: when the try body has no observation after
+      // the detached start, the only way the finalizer fires is
+      // normal try-block completion (or an exception in a
+      // non-observation statement); in either case the binding
+      // assignment runs before the cleanup call. The implicit
+      // registration site falls back to the cleanup call itself.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer reads pid in try body, no in-try observation", () => {
+  it("declares let pid, starts daemon, assigns pid, finalizer kills", () => {
+    let pid: number | undefined;
+    try {
+      runKspec("serve start --detach --port 3456");
+      pid = readPidFromFile();
+    } finally {
+      process.kill(pid as number, "SIGTERM");
+    }
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    it("flags try/finally finalizer process.kill(pid) when an await in the try body comes BEFORE the assignment", () => {
+      // UNSAFE: the `await fetch(...)` in the try body is an
+      // observation that can throw before the `pid = ...` assignment
+      // runs. The first in-try observation is the await; the
+      // assignment sits AFTER it and therefore does not own the
+      // binding by the implicit registration site. This is the
+      // await-shaped variant of the cycle-7 unsafe probe.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer reads pid AFTER an intervening await", () => {
+  it("declares let pid, starts daemon, awaits a daemon URL, then assigns pid", async () => {
+    let pid: number | undefined;
+    try {
+      runKspec("serve start --detach --port 3456");
+      await fetch("http://127.0.0.1:3456/api/health");
+      pid = readPidFromFile();
+    } finally {
+      process.kill(pid as number, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("pid");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    it("flags try/finally finalizer process.kill(pid) when the assignment sits inside a conditional in the try body before the observation", () => {
+      // UNSAFE: the `pid = readPidFromFile()` lives inside an
+      // `if (Math.random() > 0.5) ...` conditional. The walker does
+      // not credit conditional assignments as concrete bindings on
+      // the straight-line path — the assignment may not run, leaving
+      // the finalizer with no kill target.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("finalizer reads pid via conditional assignment", () => {
+  it("declares let pid, starts daemon, conditionally assigns pid before assertion", () => {
+    let pid: number | undefined;
+    try {
+      runKspec("serve start --detach --port 3456");
+      if (Math.random() > 0.5) {
+        pid = readPidFromFile();
+      }
+      expect(true).toBe(true);
+    } finally {
+      process.kill(pid as number, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (multi-start ownership: cycle-8 reviewer probe — single binding cannot own two daemons)
+    it("flags the FIRST of two consecutive runKspec(\"serve start --detach\") calls when a single pid binding is captured by onTestFinished AFTER both starts", () => {
+      // UNSAFE (cycle-8 reviewer probe): two consecutive detached
+      // daemon starts share a SINGLE `const pid = readPidFromFile()`
+      // binding and a single `onTestFinished(() => process.kill(pid,
+      // ...))` cleanup. The pid file reflects the LAST start, so the
+      // cleanup can only ever own one daemon — the second one. The
+      // FIRST detached start is left without scoped cleanup and must
+      // be reported. Per ac-detached-cleanup-bound-before-observation
+      // the cleanup must own the daemon that was just started.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("two consecutive detached starts share a single pid binding", () => {
+  it("registers a single onTestFinished after both runKspec calls", () => {
+    runKspec("serve start --detach --port 3456");
+    runKspec("serve start --detach --port 3457");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("pid");
+      // First detached start (port 3456) is the one without scoped cleanup;
+      // its diagnostic anchor should mention port 3456.
+      expect(result.output).toContain("3456");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (multi-start ownership in try/finally finalizer)
+    it("flags the FIRST of two consecutive runKspec(\"serve start --detach\") calls inside a try block when the finalizer kills a single pid bound after both starts", () => {
+      // UNSAFE: same multi-start ownership shape but expressed via a
+      // try/finally finalizer instead of onTestFinished. The pid is
+      // assigned AFTER both detached starts inside the try body, so a
+      // single `process.kill(pid, ...)` finalizer cannot own the
+      // earlier start.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+describe("try/finally with two detached starts and a single pid", () => {
+  it("declares let pid, two starts, single read, finalizer kills pid", () => {
+    let pid: number | undefined;
+    try {
+      runKspec("serve start --detach --port 3456");
+      runKspec("serve start --detach --port 3457");
+      pid = readPidFromFile();
+      expect(true).toBe(true);
+    } finally {
+      process.kill(pid as number, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("pid");
+      expect(result.output).toContain("3456");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (multi-start ownership: separate scoped cleanups for each start are still accepted)
+    it("does NOT flag two consecutive runKspec(\"serve start --detach\") calls when each has its own bound onTestFinished cleanup interleaved between the starts", () => {
+      // ALLOWED-NARROW: two detached starts each get their own scoped
+      // cleanup (separate const pidN bindings, separate onTestFinished
+      // registrations interleaved between the starts). The
+      // intervening-start ownership check accepts each binding as
+      // owning its own daemon: pid1 owns the first start (no
+      // intervening start between start1 and pid1's binding), pid2
+      // owns the second (start1 is BEFORE start2 and so doesn't fall
+      // in the (start2, pid2.end] window). Guards against
+      // over-tightening — interleaved per-daemon scoped cleanup is
+      // the canonical safe shape for two-daemon tests.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("two detached starts each with their own scoped cleanup", () => {
+  it("interleaves a const pidN read and onTestFinished between the two starts", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid1 = readPidFromFile();
+    onTestFinished(() => process.kill(pid1, "SIGTERM"));
+    runKspec("serve start --detach --port 3457");
+    const pid2 = readPidFromFile();
+    onTestFinished(() => process.kill(pid2, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
+    // (multi-start ownership: const child = spawn(...) per-daemon binding)
+    it("does NOT flag two const child = spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) calls when each has its own .kill cleanup", () => {
+      // ALLOWED-NARROW: each spawn binding's range encompasses its
+      // own spawn CallExpression (the binding IS the start). The
+      // other detached start sits OUTSIDE that binding's range, so
+      // the intervening-start check accepts each binding as owning
+      // its own daemon.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("two distinct spawn child handles each with own cleanup", () => {
+  it("each detached start has its own bound .kill cleanup", () => {
+    const child1 = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    onTestFinished(() => child1.kill("SIGTERM"));
+    const child2 = spawn("kspec", ["serve", "start", "--detach", "--port", "3457"]);
+    onTestFinished(() => child2.kill("SIGTERM"));
+    expect(child1.pid).toBeDefined();
+    expect(child2.pid).toBeDefined();
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
   });
 });
 
@@ -3975,17 +5246,19 @@ describe("cleanup closure captures concrete child handle before observation", ()
  * predicate exempts ANY named function declaration or arrow assigned
  * to a const/let from the cleanup-timing check as long as the
  * function does not cross an it/test/describe/lifecycle boundary.
- * That predicate is too permissive: it treats the mere PRESENCE of a
- * helper-shaped function as proof that some caller will register
- * cleanup, but the rule never actually verifies cleanup at the call
- * site. The unsafe-regression tests below are expressed with
- * `it.fails(...)` for the same reason as the cleanup-binding
- * regressions above: the inner assertions do not hold against the
- * unfixed rule, so today the inversion makes them pass; when the
- * lint rule fix lands, `it.fails` will start failing and signal that
- * these specific tests must be flipped from `it.fails(...)` to
- * `it(...)`. The regressions stay locked in for any future change to
- * the rule, but the suite stays green on this branch.
+ * That predicate was too permissive: it treated the mere PRESENCE of a
+ * helper-shaped function as proof that some caller would register
+ * cleanup, but the rule never actually verified cleanup at the call
+ * site. The lint-rule fix that closed
+ * `ac-approved-daemon-helper-boundary-explicit` removes the local-
+ * helper exemption from the cleanup-timing path entirely: only the
+ * path allowlist (`tests/helpers/daemon.ts`,
+ * `tests/helpers/mock-daemon.ts`, `tools/eslint-rules/`, and the lint
+ * test files) marks an approved daemon-test fixture. A detached start
+ * inside a local function declaration / arrow / function expression in
+ * an ordinary test file now produces a `localWrapperUnsafe`
+ * diagnostic and the assertions hold. The tests are therefore plain
+ * `it(...)` again.
  *
  * Allowed-narrow cases describe the canonical safe shapes (the
  * shared `tests/helpers/daemon.ts` fixture, which is path-allowlisted
@@ -4006,7 +5279,7 @@ describe("cleanup closure captures concrete child handle before observation", ()
 describe("daemon test guardrail precision: approved helper boundary is explicit", () => {
   // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
   describe("local wrappers around detached daemon starts are not approved helpers", () => {
-    it.fails("flags a function declaration in a test file that wraps runKspec(\"serve start --detach\") with no caller cleanup", () => {
+    it("flags a function declaration in a test file that wraps runKspec(\"serve start --detach\") with no caller cleanup", () => {
       // UNSAFE: the test file declares `function startDetachedDaemon()`
       // whose body calls `runKspec("serve start --detach ...")`. The
       // call site invokes the helper but registers no cleanup. The
@@ -4035,7 +5308,7 @@ describe("local function wrapper hides detached start", () => {
       expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
     });
 
-    it.fails("flags a const arrow function in a test file that wraps spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) with no caller cleanup", () => {
+    it("flags a const arrow function in a test file that wraps spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) with no caller cleanup", () => {
       // UNSAFE: the const-arrow form of the local wrapper (the rule's
       // `isInHelperFunction` predicate also matches
       // `VariableDeclarator` initialisers with arrow/function values).
@@ -4064,7 +5337,7 @@ describe("const arrow wrapper hides detached spawn", () => {
       expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
     });
 
-    it.fails("flags a function declaration in a test file that wraps execSync(\"kspec serve start --detach\") with no caller cleanup", () => {
+    it("flags a function declaration in a test file that wraps execSync(\"kspec serve start --detach\") with no caller cleanup", () => {
       // UNSAFE: shell-string CLI form of the wrapper. The execSync call
       // tokenises to `kspec serve start --detach`, the rule's detach
       // classifier recognises the lifecycle path, but the helper-
@@ -4092,7 +5365,7 @@ describe("execSync wrapper hides detached start", () => {
       expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
     });
 
-    it.fails("flags a function expression assigned to a const in a test file that wraps spawnSync(\"kspec\", [\"serve\", \"start\", \"--detach\"]) with no caller cleanup", () => {
+    it("flags a function expression assigned to a const in a test file that wraps spawnSync(\"kspec\", [\"serve\", \"start\", \"--detach\"]) with no caller cleanup", () => {
       // UNSAFE: function-expression-in-VariableDeclarator form (the
       // rule's `isInHelperFunction` matches `init.type ===
       // "FunctionExpression"` too). spawnSync argv-array form behind
@@ -4162,6 +5435,256 @@ describe("inline detached start with proper cleanup", () => {
     expect(true).toBe(true);
   });
 });
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    it("flags an object shorthand-method wrapper that hides runKspec(\"serve start --detach\") even when the method body satisfies cleanup internally", () => {
+      // UNSAFE: cycle-9 reviewer probe. The detached start sits inside
+      // `daemonHelper.start()` — a shorthand-method Property whose
+      // `value` is a FunctionExpression. Even though the helper
+      // method's body captures pid and registers onTestFinished
+      // cleanup, the call site (`daemonHelper.start();` inside the
+      // `it(...)` body) never sees a scoped cleanup registration tied
+      // to the daemon — the wrapper hides it. The earlier predicate
+      // matched only FunctionDeclaration / VariableDeclarator+function
+      // bindings, so this exited the rule with no diagnostic. The
+      // updated predicate matches Property values that are
+      // FunctionExpression/ArrowFunctionExpression and reports the
+      // localWrapperUnsafe diagnostic.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+const daemonHelper = {
+  start() {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  }
+};
+
+describe("object shorthand method hides detached start", () => {
+  it("calls daemonHelper.start without caller cleanup", () => {
+    daemonHelper.start();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    it("flags a longhand object property whose value is a FunctionExpression wrapping runKspec(\"serve start --detach\")", () => {
+      // UNSAFE: longhand-property variant — `{ start: function () {...} }`.
+      // The Property is `method: false`, but `value` is still a
+      // FunctionExpression and the wrapper hides the same way as the
+      // shorthand form. The fix's Property/value check covers both
+      // shapes uniformly.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+const daemonHelper = {
+  start: function () {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  }
+};
+
+describe("object longhand function property hides detached start", () => {
+  it("calls daemonHelper.start without caller cleanup", () => {
+    daemonHelper.start();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    it("flags an arrow-function object property wrapping runKspec(\"serve start --detach\")", () => {
+      // UNSAFE: longhand-property variant where the value is an
+      // ArrowFunctionExpression. Same Property/value match path as the
+      // FunctionExpression variants.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+const daemonHelper = {
+  start: () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  }
+};
+
+describe("object arrow property hides detached start", () => {
+  it("calls daemonHelper.start without caller cleanup", () => {
+    daemonHelper.start();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    it("flags a class method wrapping runKspec(\"serve start --detach\") even when the method body satisfies cleanup internally", () => {
+      // UNSAFE: class-method variant. The detached start sits inside
+      // `class DaemonHelper { start() {...} }` — a MethodDefinition
+      // whose `value` is a FunctionExpression. The rule's predicate
+      // walks up from the start, hits the FunctionExpression, sees
+      // its parent is a MethodDefinition with the FunctionExpression
+      // as `value`, and reports localWrapperUnsafe.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+class DaemonHelper {
+  start() {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  }
+}
+
+describe("class method hides detached start", () => {
+  it("instantiates and calls .start without caller cleanup", () => {
+    const helper = new DaemonHelper();
+    helper.start();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    it("flags a static class method wrapping runKspec(\"serve start --detach\")", () => {
+      // UNSAFE: static class-method variant. Still a MethodDefinition
+      // whose `value` is a FunctionExpression — the static modifier
+      // does not change the AST shape that the predicate inspects.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+class DaemonHelper {
+  static start() {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  }
+}
+
+describe("static class method hides detached start", () => {
+  it("calls DaemonHelper.start without caller cleanup", () => {
+    DaemonHelper.start();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    it("flags a class field arrow wrapping runKspec(\"serve start --detach\")", () => {
+      // UNSAFE: class-field-arrow variant — `class C { start = () => {} }`.
+      // The PropertyDefinition has `value: ArrowFunctionExpression`,
+      // matched by the same predicate clause that handles MethodDefinition.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+class DaemonHelper {
+  start = () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  };
+}
+
+describe("class field arrow hides detached start", () => {
+  it("instantiates and calls .start without caller cleanup", () => {
+    const helper = new DaemonHelper();
+    helper.start();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    it("flags a function reassigned to a member-expression target that wraps runKspec(\"serve start --detach\")", () => {
+      // UNSAFE: assignment-to-member variant — `helper.start = function () {...}`.
+      // The walk hits the FunctionExpression and inspects its parent;
+      // the parent is an AssignmentExpression with a MemberExpression
+      // left-hand side and the FunctionExpression as the right-hand
+      // side, which the predicate now treats as a helper binding.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+const daemonHelper: { start?: () => void } = {};
+daemonHelper.start = function () {
+  runKspec("serve start --detach --port 3456");
+  const pid = readPidFromFile();
+  onTestFinished(() => process.kill(pid, "SIGTERM"));
+};
+
+describe("assigned member function hides detached start", () => {
+  it("calls daemonHelper.start without caller cleanup", () => {
+    daemonHelper.start!();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    // (allowed narrow control: object/class methods inside the path-allowlisted shared fixture stay exempt)
+    it("does not flag an object-shorthand method that wraps spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) inside the shared daemon fixture (tests/helpers/daemon.ts)", () => {
+      // ALLOWED narrow: the shared fixture is path-allowlisted, so
+      // method-shaped wrappers inside it remain exempt. The
+      // boundary-tightening for ordinary test files must not leak
+      // diagnostics into the approved fixture file.
+      const result = runOxlint({
+        relPath: "tests/helpers/daemon.ts",
+        source: `
+import { spawn } from "child_process";
+
+export const sharedFixture = {
+  start(port: number) {
+    return spawn("kspec", ["serve", "start", "--detach", "--port", String(port)]);
+  }
+};
 `,
       });
       expect(result.exitCode).toBe(0);
