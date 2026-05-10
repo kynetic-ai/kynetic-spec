@@ -199502,6 +199502,12 @@ reviews:
         payload:
           thread_ulid: 01KR7MZP0C8E10R7MFCGDWSY0F
         timestamp: 2026-05-10T01:08:03.477Z
+      - _ulid: 01KR7PV6W6XWX61FW5PTXZ13QB
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KR7MZP0C8E10R7MFCGDWSY0F
+        timestamp: 2026-05-10T01:08:22.022Z
     examined_commit: c3f48a086aec3b6407f563b68ce27785cd4b97ee
     external_links: []
     lifecycle_state: closed
@@ -199559,6 +199565,8 @@ reviews:
               Diagnostic message updated to name 'function, arrow, or method'.
             created_at: 2026-05-10T01:08:02.127Z
         kind: blocker
+        resolved_at: 2026-05-10T01:08:20.690Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -199568,5 +199576,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-10T00:45:38.779Z
     created_at: 2026-05-10T00:31:56.957Z
-    updated_at: 2026-05-10T01:08:02.127Z
+    updated_at: 2026-05-10T01:08:20.690Z
     notes: []
