@@ -5440,5 +5440,255 @@ describe("inline detached start with proper cleanup", () => {
       expect(result.exitCode).toBe(0);
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    it("flags an object shorthand-method wrapper that hides runKspec(\"serve start --detach\") even when the method body satisfies cleanup internally", () => {
+      // UNSAFE: cycle-9 reviewer probe. The detached start sits inside
+      // `daemonHelper.start()` — a shorthand-method Property whose
+      // `value` is a FunctionExpression. Even though the helper
+      // method's body captures pid and registers onTestFinished
+      // cleanup, the call site (`daemonHelper.start();` inside the
+      // `it(...)` body) never sees a scoped cleanup registration tied
+      // to the daemon — the wrapper hides it. The earlier predicate
+      // matched only FunctionDeclaration / VariableDeclarator+function
+      // bindings, so this exited the rule with no diagnostic. The
+      // updated predicate matches Property values that are
+      // FunctionExpression/ArrowFunctionExpression and reports the
+      // localWrapperUnsafe diagnostic.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+const daemonHelper = {
+  start() {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  }
+};
+
+describe("object shorthand method hides detached start", () => {
+  it("calls daemonHelper.start without caller cleanup", () => {
+    daemonHelper.start();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    it("flags a longhand object property whose value is a FunctionExpression wrapping runKspec(\"serve start --detach\")", () => {
+      // UNSAFE: longhand-property variant — `{ start: function () {...} }`.
+      // The Property is `method: false`, but `value` is still a
+      // FunctionExpression and the wrapper hides the same way as the
+      // shorthand form. The fix's Property/value check covers both
+      // shapes uniformly.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+const daemonHelper = {
+  start: function () {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  }
+};
+
+describe("object longhand function property hides detached start", () => {
+  it("calls daemonHelper.start without caller cleanup", () => {
+    daemonHelper.start();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    it("flags an arrow-function object property wrapping runKspec(\"serve start --detach\")", () => {
+      // UNSAFE: longhand-property variant where the value is an
+      // ArrowFunctionExpression. Same Property/value match path as the
+      // FunctionExpression variants.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+const daemonHelper = {
+  start: () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  }
+};
+
+describe("object arrow property hides detached start", () => {
+  it("calls daemonHelper.start without caller cleanup", () => {
+    daemonHelper.start();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    it("flags a class method wrapping runKspec(\"serve start --detach\") even when the method body satisfies cleanup internally", () => {
+      // UNSAFE: class-method variant. The detached start sits inside
+      // `class DaemonHelper { start() {...} }` — a MethodDefinition
+      // whose `value` is a FunctionExpression. The rule's predicate
+      // walks up from the start, hits the FunctionExpression, sees
+      // its parent is a MethodDefinition with the FunctionExpression
+      // as `value`, and reports localWrapperUnsafe.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+class DaemonHelper {
+  start() {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  }
+}
+
+describe("class method hides detached start", () => {
+  it("instantiates and calls .start without caller cleanup", () => {
+    const helper = new DaemonHelper();
+    helper.start();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    it("flags a static class method wrapping runKspec(\"serve start --detach\")", () => {
+      // UNSAFE: static class-method variant. Still a MethodDefinition
+      // whose `value` is a FunctionExpression — the static modifier
+      // does not change the AST shape that the predicate inspects.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+class DaemonHelper {
+  static start() {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  }
+}
+
+describe("static class method hides detached start", () => {
+  it("calls DaemonHelper.start without caller cleanup", () => {
+    DaemonHelper.start();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    it("flags a class field arrow wrapping runKspec(\"serve start --detach\")", () => {
+      // UNSAFE: class-field-arrow variant — `class C { start = () => {} }`.
+      // The PropertyDefinition has `value: ArrowFunctionExpression`,
+      // matched by the same predicate clause that handles MethodDefinition.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+class DaemonHelper {
+  start = () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  };
+}
+
+describe("class field arrow hides detached start", () => {
+  it("instantiates and calls .start without caller cleanup", () => {
+    const helper = new DaemonHelper();
+    helper.start();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    it("flags a function reassigned to a member-expression target that wraps runKspec(\"serve start --detach\")", () => {
+      // UNSAFE: assignment-to-member variant — `helper.start = function () {...}`.
+      // The walk hits the FunctionExpression and inspects its parent;
+      // the parent is an AssignmentExpression with a MemberExpression
+      // left-hand side and the FunctionExpression as the right-hand
+      // side, which the predicate now treats as a helper binding.
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+
+const daemonHelper: { start?: () => void } = {};
+daemonHelper.start = function () {
+  runKspec("serve start --detach --port 3456");
+  const pid = readPidFromFile();
+  onTestFinished(() => process.kill(pid, "SIGTERM"));
+};
+
+describe("assigned member function hides detached start", () => {
+  it("calls daemonHelper.start without caller cleanup", () => {
+    daemonHelper.start!();
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
+    // (allowed narrow control: object/class methods inside the path-allowlisted shared fixture stay exempt)
+    it("does not flag an object-shorthand method that wraps spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) inside the shared daemon fixture (tests/helpers/daemon.ts)", () => {
+      // ALLOWED narrow: the shared fixture is path-allowlisted, so
+      // method-shaped wrappers inside it remain exempt. The
+      // boundary-tightening for ordinary test files must not leak
+      // diagnostics into the approved fixture file.
+      const result = runOxlint({
+        relPath: "tests/helpers/daemon.ts",
+        source: `
+import { spawn } from "child_process";
+
+export const sharedFixture = {
+  start(port: number) {
+    return spawn("kspec", ["serve", "start", "--detach", "--port", String(port)]);
+  }
+};
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
   });
 });

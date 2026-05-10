@@ -203,14 +203,15 @@ const noLeakyTestDaemon = {
         "so the cleanup closure binds to a concrete value.",
       localWrapperUnsafe:
         'Detached daemon start via "{{pattern}}" lives inside a local ' +
-        "helper function/arrow in this test file. Local wrappers are not " +
-        "approved daemon-test fixtures — they hide the unsafe start from " +
-        "the cleanup contract because the call site never sees a scoped " +
-        "cleanup registration tied to the daemon. Move the daemon startup " +
-        "into the shared fixture (`startTestDaemon` from " +
-        "tests/helpers/daemon.ts) or inline the start in the test body " +
-        "with an immediate cleanup registration before the next " +
-        "await/expect.",
+        "helper function, arrow, or method (object property, class " +
+        "method, or function reassigned to a binding) in this test " +
+        "file. Local wrappers are not approved daemon-test fixtures — " +
+        "they hide the unsafe start from the cleanup contract because " +
+        "the call site never sees a scoped cleanup registration tied " +
+        "to the daemon. Move the daemon startup into the shared " +
+        "fixture (`startTestDaemon` from tests/helpers/daemon.ts) or " +
+        "inline the start in the test body with an immediate cleanup " +
+        "registration before the next await/expect.",
       localhostDaemonUrl:
         "Daemon connection URL constructed from `localhost:<port>` in a " +
         "{{pattern}} call. Read URLs from the fixture endpoint " +
@@ -244,13 +245,33 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * True when a node is nested inside a named FunctionDeclaration, an
-     * arrow / function expression assigned to a binding, or a
-     * FunctionExpression assigned to a binding — i.e. a local helper
-     * wrapper declared in the test file itself. The walk stops at the
-     * first ancestor `it`/`test`/`describe`/`beforeEach`/`afterEach`/
-     * `beforeAll`/`afterAll` CallExpression, so a node directly inside
-     * a test body is NOT considered to be in a helper.
+     * True when a node is nested inside a local helper-like abstraction
+     * declared in the test file itself. Recognised helper shapes:
+     *
+     *   - Named FunctionDeclaration: `function start() { ... }`.
+     *   - VariableDeclarator with a function or arrow init:
+     *     `const start = function () {...}`,
+     *     `const start = () => {...}`.
+     *   - Object-property method bindings — both the shorthand-method
+     *     form `{ start() {...} }` and the longhand-property forms
+     *     `{ start: function () {...} }` /
+     *     `{ start: () => {...} }` (any Property whose `value` is a
+     *     FunctionExpression or ArrowFunctionExpression).
+     *   - Class methods and class-field functions:
+     *     `class C { start() {} }`, `class C { static start() {} }`,
+     *     `class C { start = () => {} }`,
+     *     `class C { start = function () {} }` (any MethodDefinition or
+     *     PropertyDefinition whose `value` is a function/arrow).
+     *   - Function/arrow expressions reassigned to a target binding:
+     *     `f = function () {}`, `helper.start = () => {}` (any plain
+     *     `=` AssignmentExpression whose right-hand side is a
+     *     function/arrow and whose left-hand side is an Identifier or
+     *     MemberExpression target).
+     *
+     * The walk stops at the first ancestor `it`/`test`/`describe`/
+     * `beforeEach`/`afterEach`/`beforeAll`/`afterAll` CallExpression,
+     * so a node directly inside a test body is NOT considered to be
+     * in a helper.
      *
      * The path-allowlisted approved-fixture files (`tests/helpers/
      * daemon.ts`, `tests/helpers/mock-daemon.ts`,
@@ -262,13 +283,18 @@ const noLeakyTestDaemon = {
      * Used by the Program:exit detached-serve check to surface the
      * `localWrapperUnsafe` diagnostic. The rule's approved-fixture
      * boundary is the path allowlist, not the presence of a function
-     * declaration: wrapping a detached daemon start in a local helper
-     * inside an ordinary test file does not satisfy the cleanup
-     * contract because the call site never sees a scoped cleanup
-     * registration tied to the daemon (cycle's
-     * `ac-approved-daemon-helper-boundary-explicit` regression — the
-     * earlier rule used this predicate to EXEMPT helper-wrapped starts
-     * from the cleanup check, hiding the unsafe shape).
+     * declaration / method binding: wrapping a detached daemon start
+     * in a local helper inside an ordinary test file does not satisfy
+     * the cleanup contract because the call site never sees a scoped
+     * cleanup registration tied to the daemon. The cycle-9 reviewer
+     * probe (`const daemonHelper = { start() { runKspec("serve start
+     * --detach"); const pid = readPidFromFile();
+     * onTestFinished(() => process.kill(pid, "SIGTERM")); } };` then
+     * `daemonHelper.start();`) was accepted by the earlier predicate
+     * because object-method shorthand and class-method bindings did
+     * not match its FunctionDeclaration / VariableDeclarator-only
+     * checks; this is the regression covered by
+     * `ac-approved-daemon-helper-boundary-explicit`.
      */
     function isInHelperFunction(node) {
       let current = node.parent;
@@ -285,6 +311,41 @@ const noLeakyTestDaemon = {
             current.init.type === "ArrowFunctionExpression")
         ) {
           return true;
+        }
+        if (
+          (current.type === "FunctionExpression" ||
+            current.type === "ArrowFunctionExpression") &&
+          current.parent
+        ) {
+          const fnParent = current.parent;
+          if (
+            fnParent.type === "Property" &&
+            fnParent.value === current
+          ) {
+            return true;
+          }
+          if (
+            fnParent.type === "MethodDefinition" &&
+            fnParent.value === current
+          ) {
+            return true;
+          }
+          if (
+            fnParent.type === "PropertyDefinition" &&
+            fnParent.value === current
+          ) {
+            return true;
+          }
+          if (
+            fnParent.type === "AssignmentExpression" &&
+            fnParent.operator === "=" &&
+            fnParent.right === current &&
+            fnParent.left &&
+            (fnParent.left.type === "Identifier" ||
+              fnParent.left.type === "MemberExpression")
+          ) {
+            return true;
+          }
         }
         if (
           current.type === "CallExpression" &&
