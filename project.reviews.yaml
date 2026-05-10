@@ -199330,6 +199330,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-10T00:32:18.255Z
+      - _ulid: 01KR7MZQGXMYW31CFCFRY5642T
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KR7MZP0C8E10R7MFCGDWSY0F
+        timestamp: 2026-05-10T00:35:52.989Z
     examined_commit: c3f48a086aec3b6407f563b68ce27785cd4b97ee
     external_links: []
     lifecycle_state: open
@@ -199339,8 +199346,30 @@ reviews:
       content_hash: ""
       ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KR7MZP0C8E10R7MFCGDWSY0F
+        anchor:
+          type: code
+          commit: c3f48a086aec3b6407f563b68ce27785cd4b97ee
+          line_end: 304
+          line_start: 273
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KR7MZP0C0H99864RB0WDB0JY
+            author: Jacob Chapel
+            body: "MUST-FIX: local helper-like abstractions are still only partially covered.  recognizes
+              FunctionDeclaration and variable-bound function/arrow wrappers, but not object/class
+              method wrappers. I confirmed with a manual oxlint probe that an ordinary test file
+              containing  exits 0 with no  diagnostic. That is a local helper-like abstraction, not
+              an approved shared fixture or documented guardrail internal, and it hides the daemon
+              startup behind a wrapper while satisfying cleanup internally. This violates
+              @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit; the
+              helper-boundary detection needs to include method/property forms (and equivalent
+              class/object helper shapes) or otherwise report these wrapped starts."
+            created_at: 2026-05-10T00:35:51.436Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-10T00:31:56.957Z
-    updated_at: 2026-05-10T00:32:16.866Z
+    updated_at: 2026-05-10T00:35:51.436Z
     notes: []
