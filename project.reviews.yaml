@@ -200340,6 +200340,19 @@ reviews:
         runner: manual-plan-review
         created_at: 2026-05-11T23:34:29.423Z
         completed_at: 2026-05-11T23:34:29.423Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan covers non-terminating signals, liveness probes, helper-origin trust,
+          process-lifecycle-only cleanup, implicit CLI auto-start ownership, post-escalation
+          observation, hanging requests, setup-failure cleanup, bounded probes, and primary-error
+          preservation while keeping production endpoint/CLI redesign out of scope.
+        name: Scope and adversarial gap coverage
+        required: true
+        runner: manual-plan-review
+        created_at: 2026-05-11T23:34:39.018Z
+        completed_at: 2026-05-11T23:34:39.018Z
     events:
       - _ulid: 01KRCP66H55GDK0NHFR30JQ9KJ
         actor: Jacob Chapel
@@ -200403,6 +200416,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-05-11T23:34:30.800Z
+      - _ulid: 01KRCP930Q808R7PGN7ZZN41SF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Scope and adversarial gap coverage
+        timestamp: 2026-05-11T23:34:40.407Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -200476,5 +200496,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-11T23:33:05.707Z
-    updated_at: 2026-05-11T23:34:29.423Z
+    updated_at: 2026-05-11T23:34:39.018Z
     notes: []
