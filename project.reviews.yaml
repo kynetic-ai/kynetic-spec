@@ -200306,6 +200306,17 @@ reviews:
         runner: kspec
         created_at: 2026-05-11T23:34:00.074Z
         completed_at: 2026-05-11T23:34:00.074Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --refs --warnings-ok passed; existing reference warnings are pre-existing
+          deprecated refs unrelated to this draft plan.
+        name: Reference validation
+        required: true
+        runner: kspec
+        created_at: 2026-05-11T23:34:09.722Z
+        completed_at: 2026-05-11T23:34:09.722Z
     events:
       - _ulid: 01KRCP66H55GDK0NHFR30JQ9KJ
         actor: Jacob Chapel
@@ -200348,6 +200359,13 @@ reviews:
           status: pass
           name: Plan import parse
         timestamp: 2026-05-11T23:34:01.462Z
+      - _ulid: 01KRCP86FAYBD4V5SERSR8B0AH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Reference validation
+        timestamp: 2026-05-11T23:34:11.178Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -200421,5 +200439,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-11T23:33:05.707Z
-    updated_at: 2026-05-11T23:34:00.074Z
+    updated_at: 2026-05-11T23:34:09.722Z
     notes: []
