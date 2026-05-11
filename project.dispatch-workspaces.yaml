@@ -23092,7 +23092,7 @@ workspaces:
         head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
         last_seen_at: 2026-05-11T17:53:55.426Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
     bootstrap:
       status: succeeded
@@ -23585,9 +23585,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-11T18:56:47.952Z
-      last_reconciled_at: 2026-05-11T19:13:45.123Z
+      last_reconciled_at: 2026-05-11T19:16:56.980Z
       created_at: 2026-05-11T18:18:04.843Z
-      updated_at: 2026-05-11T19:13:46.670Z
+      updated_at: 2026-05-11T19:16:56.980Z
     workspace_id: dispatch-workspace-01KR6M7AW19RKH1Z7B4WBQK5DE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
