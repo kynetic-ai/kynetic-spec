@@ -23560,11 +23560,11 @@ workspaces:
     canonical_branch: dispatch/task/task-validate-daemon-hardening-corrections/01kr6m7a
     canonical_branch_head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
     cleanup:
-      status: blocked
+      status: completed
       detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
       reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-05-11T19:17:46.445Z
+      updated_at: 2026-05-11T19:17:50.479Z
     health:
       status: healthy
       issues: []
@@ -23578,16 +23578,16 @@ workspaces:
       target_branch: dev
       target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
       updated_at: 2026-05-11T19:17:46.445Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KR6M7AW19RKH1Z7B4WBQK5DE"
     task_slug: task-validate-daemon-hardening-corrections
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-11T19:17:50.479Z
       last_active_at: 2026-05-11T18:56:47.952Z
       last_reconciled_at: 2026-05-11T19:17:46.445Z
       created_at: 2026-05-11T18:18:04.843Z
-      updated_at: 2026-05-11T19:17:46.445Z
+      updated_at: 2026-05-11T19:17:50.479Z
     workspace_id: dispatch-workspace-01KR6M7AW19RKH1Z7B4WBQK5DE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
