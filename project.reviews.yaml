@@ -200068,7 +200068,114 @@ reviews:
     slugs: []
     title: Review task-validate-daemon-hardening-corrections
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Passed. 6 reference warnings, all deprecated-target warnings for pre-existing
+          @session-summary-cache/@task-activity-git-query task links.
+        name: kspec validate --refs --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-11T19:12:06.157Z
+        completed_at: 2026-05-11T19:12:06.157Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Passed with warnings. 34 orphan specs, 5 status mismatches. The
+          @daemon-test-guardrail-precision mismatch is a lifecycle artifact while this validation
+          task remains pending_review; it should clear when this task completes.
+        name: kspec validate --alignment --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-11T19:12:09.612Z
+        completed_at: 2026-05-11T19:12:09.612Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed with 252 pre-existing warnings: 232 missing own AC coverage, 1
+          automation-without-spec task, 19 invalid AC annotations. None block the tightened daemon
+          hardening ACs reviewed here."
+        name: kspec validate --completeness --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-11T19:12:12.986Z
+        completed_at: 2026-05-11T19:12:12.986Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/helpers/daemon.test.ts: 9 suites passed, 10/10 tests passed,
+          2.4s."
+        name: focused daemon helper suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-11T19:12:16.405Z
+        completed_at: 2026-05-11T19:12:16.405Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/e2e-fixture-daemon-cleanup.test.ts: 2 suites passed, 3/3 tests
+          passed."
+        name: focused Playwright fixture cleanup suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-11T19:12:19.866Z
+        completed_at: 2026-05-11T19:12:19.866Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts: 23 suites passed, 272/272 tests passed, 64.7s."
+        name: focused daemon guardrail suites
+        required: true
+        runner: npm test
+        created_at: 2026-05-11T19:12:23.311Z
+        completed_at: 2026-05-11T19:12:23.311Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: 2419 suites passed; 9028 passed, 5 skipped of 9033; duration
+          2064.2s."
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-11T19:12:26.729Z
+        completed_at: 2026-05-11T19:12:26.729Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Pre/post focused/full process snapshots showed the same ambient daemon processes from
+          other worktrees and the host dispatch daemon; no new daemon process tied to this review
+          workspace or focused suite temp dirs remained.
+        name: process hygiene
+        required: true
+        runner: ps
+        created_at: 2026-05-11T19:12:30.150Z
+        completed_at: 2026-05-11T19:12:30.150Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/helpers/daemon.ts, tests/helpers/daemon.test.ts,
+          tests/e2e-fixture-daemon-cleanup.test.ts, tests/lint-daemon-test-guardrails.test.ts,
+          tests/lint-no-leaky-test-daemon.test.ts, tools/eslint-rules/no-leaky-test-daemon.js.
+          Claims verified: cleanup-registration failure stops owned child; local wrappers/unbound
+          cleanup callbacks are reported; focused suites and full suite pass; no new daemon leak.
+          Categories searched: correctness, edge cases, error handling, test quality, integration,
+          process hygiene."
+        name: review evidence log
+        required: false
+        runner: manual review
+        created_at: 2026-05-11T19:12:33.516Z
+        completed_at: 2026-05-11T19:12:33.516Z
     events:
       - _ulid: 01KRC6E1W48TBQTT6D8YKSFQMV
         actor: Jacob Chapel
@@ -200083,9 +200190,88 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-11T18:58:10.605Z
+      - _ulid: 01KRC78BA2T8G5YMNZPS86ES51
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --refs --warnings-ok
+        timestamp: 2026-05-11T19:12:07.490Z
+      - _ulid: 01KRC78EMRQYS51Q2WV4VK2D5M
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --alignment --warnings-ok
+        timestamp: 2026-05-11T19:12:10.904Z
+      - _ulid: 01KRC78HZ3SHSDPRGXKRA3VZ0P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --completeness --warnings-ok
+        timestamp: 2026-05-11T19:12:14.308Z
+      - _ulid: 01KRC78NBN0HNWF0TSAZ0B7WHK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused daemon helper suite
+        timestamp: 2026-05-11T19:12:17.781Z
+      - _ulid: 01KRC78RR81PVXF2C8WW22D2W8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused Playwright fixture cleanup suite
+        timestamp: 2026-05-11T19:12:21.256Z
+      - _ulid: 01KRC78W1ZF9P3YGRKN96B9A2E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused daemon guardrail suites
+        timestamp: 2026-05-11T19:12:24.639Z
+      - _ulid: 01KRC78ZCJCW1F0MCAD0JZDC8H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-05-11T19:12:28.050Z
+      - _ulid: 01KRC792R1D5PT5JCEA87DBZC0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: process hygiene
+        timestamp: 2026-05-11T19:12:31.490Z
+      - _ulid: 01KRC795ZNKS80YFFK4AFFKQHB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-11T19:12:34.805Z
+      - _ulid: 01KRC799AHQN2QKVTANYENYN27
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-11T19:12:38.225Z
+      - _ulid: 01KRC799AHTADH67Z928TTQRH1
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-11T19:12:38.225Z
     examined_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -200093,7 +200279,14 @@ reviews:
       ref: "@01KR6M7AW19RKH1Z7B4WBQK5DE"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-11T19:12:38.225Z
     created_at: 2026-05-11T18:57:45.860Z
-    updated_at: 2026-05-11T18:58:09.202Z
+    updated_at: 2026-05-11T19:12:38.225Z
     notes: []
