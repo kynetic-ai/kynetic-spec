@@ -200353,6 +200353,17 @@ reviews:
         runner: manual-plan-review
         created_at: 2026-05-11T23:34:39.018Z
         completed_at: 2026-05-11T23:34:39.018Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded has a compound
+          Then clause: escalation plus bounded terminal outcome."
+        name: Spec language quality
+        required: true
+        runner: manual-plan-review
+        created_at: 2026-05-11T23:34:49.970Z
+        completed_at: 2026-05-11T23:34:49.970Z
     events:
       - _ulid: 01KRCP66H55GDK0NHFR30JQ9KJ
         actor: Jacob Chapel
@@ -200423,6 +200434,13 @@ reviews:
           status: pass
           name: Scope and adversarial gap coverage
         timestamp: 2026-05-11T23:34:40.407Z
+      - _ulid: 01KRCP9DP9M9AEW84D8PQ1GY3R
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Spec language quality
+        timestamp: 2026-05-11T23:34:51.337Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -200496,5 +200514,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-11T23:33:05.707Z
-    updated_at: 2026-05-11T23:34:39.018Z
+    updated_at: 2026-05-11T23:34:49.970Z
     notes: []
