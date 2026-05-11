@@ -18119,6 +18119,30 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-09T22:52:42.252Z
+  - _ulid: 01KRC2ZQ88YH2F4JT3ZH4SZHVF
+    type: friction
+    content: Detached reviewer prompt paths can be stale or disappear before follow-on commands. In this
+      session the review snapshot path from the prompt was missing, had to be reconstructed from git
+      worktree metadata, and later disappeared again before reflection. Consider dispatch/reviewer
+      workspace recovery or clearer lifecycle handling when the canonical branch and reviewed commit
+      are still available.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KRC2VW"
+    created_at: 2026-05-11T17:57:30.504Z
+  - _ulid: 01KRC2ZQHH0DG30PY9HVWEVHKK
+    type: friction
+    content: Concurrent npm test invocations in the same worktree can both trigger the test runner
+      self-build path and race on packages/web-ui/.svelte-kit/dist outputs. In this session two
+      focused test commands run in parallel both failed before tests with a SvelteKit
+      manifest-full.js ENOENT, while a single serial npm run build followed by serial tests passed.
+      Consider adding a per-worktree build lock or in-progress build reuse in scripts/test.cjs.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KRC2VW"
+    created_at: 2026-05-11T17:57:30.801Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
