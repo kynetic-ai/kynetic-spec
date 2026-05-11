@@ -200323,6 +200323,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRCP6SAPQ5SF9H2VTC878B72
         timestamp: 2026-05-11T23:33:30.645Z
+      - _ulid: 01KRCP7GTB8DG3H7BZ5S0H72C3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRCP7FENTXE7DMMB44MZTY7F
+        timestamp: 2026-05-11T23:33:49.003Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -200378,7 +200385,23 @@ reviews:
               Playwright command is required for this task."
             created_at: 2026-05-11T23:33:24.950Z
         kind: blocker
+      - _ulid: 01KRCP7FENTXE7DMMB44MZTY7F
+        anchor:
+          type: structured
+          field: Required commands
+          ref: "@task-validate-daemon-cleanup-contract-hardening"
+          section: tasks
+        entries:
+          - _ulid: 01KRCP7FENW04F83QCR68TKKY5
+            author: Jacob Chapel
+            body: "Final validation is not fully standalone/exact: the required commands include 'Run the
+              representative Playwright daemon fixture slice used by the prior daemon fixture
+              hardening validation' without naming the command. Since this is the end-to-end gate,
+              the plan needs the exact command or an explicit statement that the gate is
+              manual/documentation-only with acceptance criteria for when it can be skipped."
+            created_at: 2026-05-11T23:33:47.605Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-11T23:33:05.707Z
-    updated_at: 2026-05-11T23:33:24.950Z
+    updated_at: 2026-05-11T23:33:47.605Z
     notes: []
