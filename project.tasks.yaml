@@ -28568,7 +28568,7 @@
     - task-stabilize-bun-websocket-runtime-parity-startup-hook
   title: Stabilize Bun websocket runtime parity startup hook
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 3
@@ -28580,4 +28580,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-11T17:53:18.255Z
+  started_at: 2026-05-11T17:54:56.764Z
   automation: eligible
