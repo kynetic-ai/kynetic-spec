@@ -734,9 +734,35 @@ export async function startTestDaemon(
   }
 
   // Register cleanup BEFORE the readiness wait so an assertion failure or
-  // timeout inside readiness still tears down the spawned child.
+  // timeout inside readiness still tears down the spawned child. The
+  // caller-provided hook is foreign code (a Vitest/Playwright lifecycle
+  // wrapper or an ad-hoc test fixture), so it can throw — once spawn() has
+  // returned, the fixture owns the child and must stop it before surfacing
+  // a registration failure. Otherwise the child leaks: registerCleanup
+  // never registered the stop handle, the readiness try/catch below is
+  // never entered, and the caller has no reference to kill.
   if (opts.registerCleanup) {
-    opts.registerCleanup(stop);
+    try {
+      opts.registerCleanup(stop);
+    } catch (registrationError) {
+      try {
+        await stop();
+      } catch (stopError) {
+        // Surface the secondary cleanup failure as supplementary context on
+        // the original error — never replace the registration failure as
+        // the primary rejection cause, since that is what the caller needs
+        // to diagnose the misuse that triggered this path.
+        const primary =
+          registrationError instanceof Error
+            ? registrationError
+            : new Error(String(registrationError));
+        primary.message = `${primary.message} (cleanup after registerCleanup failure also failed: ${
+          stopError instanceof Error ? stopError.message : String(stopError)
+        })`;
+        throw primary;
+      }
+      throw registrationError;
+    }
   }
 
   const probeContext: ReadinessProbeContext = {
