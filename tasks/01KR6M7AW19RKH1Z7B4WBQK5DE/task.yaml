@@ -146,6 +146,7 @@ tags:
   - validation
   - follow-up
 vcs_refs: []
+review_ref: "@01KRC6E1W47W9Z8PAFNBVG0AFK"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-validate-daemon-hardening-corrections/01kr6m7a
@@ -216,6 +217,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-05-11T18:34:52.021Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KRC6E1W47W9Z8PAFNBVG0AFK"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-11T18:57:49.479Z
 created_at: 2026-05-09T15:03:19.169Z
 started_at: 2026-05-11T18:19:33.612Z
 submitted_at: 2026-05-11T18:34:52.021Z

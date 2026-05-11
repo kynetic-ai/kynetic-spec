@@ -200064,3 +200064,29 @@ reviews:
     created_at: 2026-05-11T17:38:11.543Z
     updated_at: 2026-05-11T17:54:51.307Z
     notes: []
+  - _ulid: 01KRC6E1W47W9Z8PAFNBVG0AFK
+    slugs: []
+    title: Review task-validate-daemon-hardening-corrections
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRC6E1W48TBQTT6D8YKSFQMV
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-11T18:57:45.860Z
+    examined_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KR6M7AW19RKH1Z7B4WBQK5DE"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-11T18:57:45.860Z
+    updated_at: null
+    notes: []
