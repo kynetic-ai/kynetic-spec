@@ -199844,6 +199844,17 @@ reviews:
         runner: reviewer
         created_at: 2026-05-11T17:53:00.154Z
         completed_at: 2026-05-11T17:53:00.154Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/e2e-fixture-daemon-cleanup.test.ts: 3/3 tests
+          passed"
+        name: focused e2e cleanup suite
+        required: true
+        runner: npm-test
+        created_at: 2026-05-11T17:53:54.889Z
+        completed_at: 2026-05-11T17:53:54.889Z
     events:
       - _ulid: 01KRC1WBEQYG5F4SCXEPGTXRRW
         actor: Jacob Chapel
@@ -199909,6 +199920,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-11T17:53:14.114Z
+      - _ulid: 01KRC2S6181D84X1KA9VH3M6NF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused e2e cleanup suite
+        timestamp: 2026-05-11T17:53:56.264Z
     examined_commit: 07488494e8a3c2e26cf3ddc945e56b6a90826963
     external_links: []
     lifecycle_state: closed
@@ -199928,5 +199946,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-11T17:53:14.113Z
     created_at: 2026-05-11T17:38:11.543Z
-    updated_at: 2026-05-11T17:53:14.114Z
+    updated_at: 2026-05-11T17:53:54.889Z
     notes: []
