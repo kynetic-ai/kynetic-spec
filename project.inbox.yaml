@@ -3417,3 +3417,12 @@ inbox:
       - dispatch
     added_by: Jacob Chapel
     created_at: 2026-05-09T23:11:05.125Z
+  - _ulid: 01KRC442ZGN9CD35QEZX777F0P
+    text: kspec task note has no --file/--from flag; multi-line note content currently requires shell
+      $(cat file) or heredoc wrappers. Common pattern when capturing approach notes or verification
+      summaries.
+    tags:
+      - cli
+      - ergonomics
+    added_by: "@claude"
+    created_at: 2026-05-11T18:17:22.160Z

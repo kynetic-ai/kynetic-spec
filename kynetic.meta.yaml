@@ -18156,6 +18156,20 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-11T17:58:58.354Z
+  - _ulid: 01KRC442PZ4T2781S7X4GEZDTY
+    type: friction
+    content: Daemon-backed test files that compose 10+ daemon spawns serially in one process accumulate
+      port-reuse and IO contention that compresses each beforeEach hook budget against the fixture
+      readiness budget. When the hook timeout barely exceeds cumulative readiness (e.g. 60s hook vs
+      30s readiness), the hook can preempt startTestDaemon before it surfaces a DaemonReadinessError
+      diagnostic — flake message becomes the bare hook timeout, not the actionable diagnostic bundle
+      required by @daemon-backed-test-fixture-contract ac-readiness-diagnostics. Observed in
+      tests/daemon-api/websocket-protocol.test.ts Bun parity beforeEach 2026-05-11; could recur in
+      any file that combines a multi-test parent describe with a runtime-matrix child describe.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-11T18:17:21.887Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
