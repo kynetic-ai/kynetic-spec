@@ -476,9 +476,24 @@ describe("daemon websocket protocol — runtime parity", { timeout: 90_000 }, ()
       let daemon: StartedTestDaemon;
       let runtimeAvailable = false;
 
-      // Same hookTimeout widening as the parent describe — daemon cold-start
-      // plus fixture copy can exceed Vitest's 10s default under shared-worker
-      // load.
+      // The parity describe runs after the parent describe's ~14 daemon
+      // spawn/teardown cycles in the same file, so by the time the second
+      // runtime's beforeEach fires the process has accumulated port-reuse
+      // pressure and disk IO contention from the prior daemons. Two budgets
+      // must coexist:
+      //   - The hook budget must exceed the fixture's combined readiness
+      //     budget so a stuck daemon surfaces as a DaemonReadinessError with
+      //     the full diagnostic bundle (per
+      //     @daemon-backed-test-fixture-contract ac-readiness-diagnostics)
+      //     instead of a bare "beforeEach timed out" that hides which stage
+      //     hung.
+      //   - The per-stage readiness budget must absorb cold-start jitter
+      //     under the file-level daemon churn without masking a daemon that
+      //     genuinely never reaches health or cache readiness.
+      // 90s hook + 25s per probe (50s combined readiness) keeps a 40s margin
+      // for fixture copy + spawn while still bounding the actual readiness
+      // wait to ~50s; a real launch failure (ENOENT/EACCES) still surfaces
+      // immediately via startTestDaemon's launch-error race.
       beforeEach(async () => {
         runtimeAvailable = await isDaemonRuntimeAvailable(runtimeName);
         if (!runtimeAvailable) {
@@ -496,13 +511,14 @@ describe("daemon websocket protocol — runtime parity", { timeout: 90_000 }, ()
         project = await createTestDaemonProject();
         daemon = await startTestDaemon(project, {
           runtime: runtimeName,
+          timeoutMs: 25_000,
           registerCleanup: (stop) => {
             onTestFinished(async () => {
               await stop();
             });
           },
         });
-      }, 60_000);
+      }, 90_000);
 
       afterEach(async () => {
         if (project) {
