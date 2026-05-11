@@ -28568,8 +28568,27 @@
     - task-stabilize-bun-websocket-runtime-parity-startup-hook
   title: Stabilize Bun websocket runtime parity startup hook
   type: bug
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - |-
+      Dispatch bootstrap failed: Bootstrap step "install-workspace-dependencies" failed with exit code 1. Output: ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/playwright-core/lib'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/caniuse-lite/data'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/bun-types/docs'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/@swc/helpers/cjs'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/bits-ui/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/@lucide/svelte/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/playwright-core/lib'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/caniuse-lite/data'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/bun-types/docs'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/@swc/helpers/cjs'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/bits-ui/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/@lucide/svelte/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/playwright-core/lib'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/caniuse-lite/data'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/bun-types/docs'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/bits-ui/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0-review/node_modules/@swc/helpers/cjs'
+      npm w
   depends_on: []
   priority: 3
   tags:
