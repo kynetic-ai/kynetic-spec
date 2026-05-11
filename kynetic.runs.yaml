@@ -44923,7 +44923,7 @@ runs:
     started_at: 2026-05-11T18:54:07.061Z
     completed_at: 2026-05-11T18:55:58.370Z
   - _ulid: 01KRC7BXFBKVM4ZA72KQZ388KV
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -44975,7 +44975,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-11T19:16:02.392Z
-        completed_at: 2026-05-11T19:16:02.392Z
+        completed_at: 2026-05-11T19:16:21.243Z
+        notes: Captured friction observation @01KRC7FS for the transient alignment warning lifecycle
+          artifact. Did not capture the detached .kspec snapshot issue because search found existing
+          inbox/observation coverage (@01KQ9AMH, @01KQ9AMHA, @01KR6N73).
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-11T19:14:04.395Z
+    completed_at: 2026-05-11T19:16:21.243Z
