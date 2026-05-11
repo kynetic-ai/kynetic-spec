@@ -18183,6 +18183,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-11T18:55:50.221Z
+  - _ulid: 01KRC7FSNAEVEZJK9TH1CG42GM
+    type: friction
+    content: During detached review of a validation task, kspec validate --alignment reported the linked
+      spec @daemon-test-guardrail-precision as implemented-but-should-be-in_progress while the
+      validation task was still pending_review, then the warning disappeared immediately after task
+      completion. This lifecycle artifact can look like real status drift during review; alignment
+      reporting or reviewer guidance should distinguish transient pending_review validation-task
+      effects from actionable mismatches.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KRC7BX"
+    created_at: 2026-05-11T19:16:11.562Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
