@@ -44817,7 +44817,7 @@ runs:
     completed_at: 2026-05-11T17:57:45.166Z
   - _ulid: 01KRC2XTB6BA3GP4Q51ZVZ1WTW
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -44845,7 +44845,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-11T17:57:28.943Z
-        completed_at: 2026-05-11T17:57:28.943Z
+        completed_at: 2026-05-11T17:58:18.819Z
+        notes: "Coverage search results: Bun websocket runtime parity timeout is already tracked as
+          @01KRC2R0 from this review. Concurrent npm test/build collision is already covered by
+          existing unresolved observations, including @01KMPVGY and @01KRC2ZQH. Detached reviewer
+          mechanics are broadly covered by @detached-reviewer-merge-helper and related completed
+          tasks, but the specific friction where a review snapshot disappears while the agent still
+          has post-approval completion work did not appear in searches for 'review snapshot removed'
+          or 'path not found review worktree'."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-11T17:58:18.819Z
+        completed_at: 2026-05-11T17:58:18.819Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-11T17:56:28.134Z
