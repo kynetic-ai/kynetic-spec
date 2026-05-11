@@ -44812,7 +44812,7 @@ runs:
     started_at: 2026-05-11T17:55:24.981Z
   - _ulid: 01KRC2XTB6BA3GP4Q51ZVZ1WTW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -44828,7 +44828,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-11T17:57:10.361Z
-        completed_at: 2026-05-11T17:57:10.361Z
+        completed_at: 2026-05-11T17:57:28.943Z
+        notes: "Friction points: The detached review snapshot was removed while the session was still
+          performing post-approval merge/completion work, which caused several path-not-found
+          command failures and forced recovery from the canonical task worktree. Running two fresh
+          focused test commands in parallel triggered both test runners to auto-build the same
+          worktree; one build failed in SvelteKit postbuild with missing manifest-full.js and had to
+          be rerun sequentially. The full suite also exposed a flaky Bun websocket runtime parity
+          beforeEach timeout; the file passed on immediate fresh reruns, so it was triaged
+          separately as @01KRC2R0."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-11T17:57:28.943Z
+        completed_at: 2026-05-11T17:57:28.943Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-11T17:56:28.134Z
