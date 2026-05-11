@@ -44757,7 +44757,7 @@ runs:
     started_at: 2026-05-10T01:29:55.702Z
     completed_at: 2026-05-10T01:32:22.666Z
   - _ulid: 01KRC2VWNNEDSQYK8QCF4SNNK1
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -44806,10 +44806,15 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-11T17:57:19.531Z
-        completed_at: 2026-05-11T17:57:19.531Z
+        completed_at: 2026-05-11T17:57:45.166Z
+        notes: "Captured two friction observations: (1) stale/missing detached reviewer prompt paths
+          requiring manual worktree reconstruction; (2) concurrent test-runner self-builds racing on
+          SvelteKit outputs, causing manifest-full.js ENOENT before tests. No tasks created; both
+          observations are for later triage."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-11T17:55:24.981Z
+    completed_at: 2026-05-11T17:57:45.166Z
   - _ulid: 01KRC2XTB6BA3GP4Q51ZVZ1WTW
     status: active
     current_step: 2
