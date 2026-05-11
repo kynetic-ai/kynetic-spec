@@ -200364,6 +200364,18 @@ reviews:
         runner: manual-plan-review
         created_at: 2026-05-11T23:34:49.970Z
         completed_at: 2026-05-11T23:34:49.970Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Three task testing sections require a representative Playwright daemon fixture slice
+          without naming the command, so fresh-session workers do not have exact verification
+          instructions.
+        name: Task standalone executability
+        required: true
+        runner: manual-plan-review
+        created_at: 2026-05-11T23:35:01.129Z
+        completed_at: 2026-05-11T23:35:01.129Z
     events:
       - _ulid: 01KRCP66H55GDK0NHFR30JQ9KJ
         actor: Jacob Chapel
@@ -200441,6 +200453,13 @@ reviews:
           status: fail
           name: Spec language quality
         timestamp: 2026-05-11T23:34:51.337Z
+      - _ulid: 01KRCP9RJJTQ6877QFCBAWN99P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Task standalone executability
+        timestamp: 2026-05-11T23:35:02.482Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -200514,5 +200533,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-11T23:33:05.707Z
-    updated_at: 2026-05-11T23:34:49.970Z
+    updated_at: 2026-05-11T23:35:01.129Z
     notes: []
