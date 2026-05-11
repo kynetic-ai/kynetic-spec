@@ -23092,3 +23092,79 @@ workspaces:
         head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
         last_seen_at: 2026-05-11T17:53:55.426Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0
+  - active_role: null
+    base_branch_point: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-validate-daemon-hardening-corrections/01kr6m7a
+    canonical_branch_head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-11T18:18:04.843Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-11T18:18:04.843Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
+      updated_at: 2026-05-11T18:18:04.843Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KR6M7AW19RKH1Z7B4WBQK5DE"
+    task_slug: task-validate-daemon-hardening-corrections
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-11T18:18:04.843Z
+      created_at: 2026-05-11T18:18:04.843Z
+      updated_at: 2026-05-11T18:18:04.843Z
+    workspace_id: dispatch-workspace-01KR6M7AW19RKH1Z7B4WBQK5DE
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-validate-daemon-hardening-corrections/01kr6m7a
+        head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
+        last_seen_at: 2026-05-11T18:18:04.843Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-daemon-hardening-corrections-01kr6m7a
