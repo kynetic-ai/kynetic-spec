@@ -22782,7 +22782,7 @@ workspaces:
         head: 07488494e8a3c2e26cf3ddc945e56b6a90826963
         last_seen_at: 2026-05-11T17:35:17.017Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-register-cleanup-failure-leak-01kr6m70
-  - active_role: worker
+  - active_role: null
     base_branch_point: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
     bootstrap:
       status: succeeded
@@ -23110,12 +23110,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-11T18:15:47.264Z
+      updated_at: 2026-05-11T18:17:36.094Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-11T18:15:47.264Z
+      updated_at: 2026-05-11T18:17:36.094Z
     integration:
       status: pending
       detail: null
@@ -23123,17 +23123,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
-      updated_at: 2026-05-11T18:15:47.264Z
-    lifecycle_state: active
+      updated_at: 2026-05-11T18:17:36.094Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KRC2R0XFZ9558AF3EN6DS6DK"
     task_slug: task-stabilize-bun-websocket-runtime-parity-startup-hook
     timestamps:
       closed_at: null
       last_active_at: 2026-05-11T17:54:30.140Z
-      last_reconciled_at: 2026-05-11T18:15:47.264Z
+      last_reconciled_at: 2026-05-11T18:17:36.094Z
       created_at: 2026-05-11T17:53:55.426Z
-      updated_at: 2026-05-11T18:15:47.264Z
+      updated_at: 2026-05-11T18:17:36.094Z
     workspace_id: dispatch-workspace-01KRC2R0XFZ9558AF3EN6DS6DK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
