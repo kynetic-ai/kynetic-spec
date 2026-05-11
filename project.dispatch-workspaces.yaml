@@ -22220,7 +22220,7 @@ workspaces:
         head: 35f51590178e093aaf3b8e6b4b9800aa8991db3f
         last_seen_at: 2026-05-09T21:42:29.995Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-daemon-build-smoke-timeout-01kr76bq
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: bd252f1ebdedef270f8ed908166d46eab1429f80
     bootstrap:
       status: succeeded
@@ -22553,7 +22553,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-11T17:35:17.017Z
+      updated_at: 2026-05-11T17:35:44.881Z
     integration:
       status: pending
       detail: null
@@ -22568,10 +22568,10 @@ workspaces:
     task_slug: task-fix-register-cleanup-failure-leak
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-11T17:35:17.017Z
+      last_active_at: 2026-05-11T17:35:44.881Z
+      last_reconciled_at: 2026-05-11T17:35:44.881Z
       created_at: 2026-05-11T17:35:17.017Z
-      updated_at: 2026-05-11T17:35:41.379Z
+      updated_at: 2026-05-11T17:35:44.881Z
     workspace_id: dispatch-workspace-task-fix-register-cleanup-failure-leak
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
