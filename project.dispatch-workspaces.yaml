@@ -23092,7 +23092,7 @@ workspaces:
         head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
         last_seen_at: 2026-05-11T17:53:55.426Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-bun-websocket-runtime-parity-startup-hook-01krc2r0
-  - active_role: null
+  - active_role: worker
     base_branch_point: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
     bootstrap:
       status: succeeded
@@ -23425,7 +23425,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-11T18:18:04.843Z
+      updated_at: 2026-05-11T18:18:30.844Z
     integration:
       status: pending
       detail: null
@@ -23434,16 +23434,16 @@ workspaces:
       target_branch: dev
       target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
       updated_at: 2026-05-11T18:18:04.843Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KR6M7AW19RKH1Z7B4WBQK5DE"
     task_slug: task-validate-daemon-hardening-corrections
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-11T18:18:04.843Z
+      last_active_at: 2026-05-11T18:18:30.844Z
+      last_reconciled_at: 2026-05-11T18:18:30.844Z
       created_at: 2026-05-11T18:18:04.843Z
-      updated_at: 2026-05-11T18:18:29.710Z
+      updated_at: 2026-05-11T18:18:30.844Z
     workspace_id: dispatch-workspace-01KR6M7AW19RKH1Z7B4WBQK5DE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
