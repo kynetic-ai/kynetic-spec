@@ -200562,7 +200562,104 @@ reviews:
     slugs: []
     title: "Plan review: Daemon Test Cleanup Contract Hardening (cycle 2)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "All four @01KRCP66 blockers are fixed in stored content:
+          ac-uncooperative-process-stop-is-bounded now has one Then outcome;
+          task-fix-active-request-teardown-and-observation-bounds,
+          task-fix-setup-failure-cleanup-error-preservation, and final validation include exact
+          Playwright command `mise exec -- npm run build:e2e && mise exec -- npx playwright test
+          tests/e2e/smoke.spec.ts`."
+        name: Prior blocker verification
+        required: true
+        runner: manual-plan-review
+        created_at: 2026-05-11T23:41:14.136Z
+        completed_at: 2026-05-11T23:41:14.136Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "`kspec plan import plans/daemon-test-cleanup-contract-hardening.md --dry-run` succeeded
+          and stored the full document; duplicate plan ref
+          @plan-daemon-test-cleanup-contract-hardening-1 does not resolve outside dry-run."
+        name: Plan import parse
+        required: true
+        runner: kspec
+        created_at: 2026-05-11T23:41:17.715Z
+        completed_at: 2026-05-11T23:41:17.715Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "`kspec validate --refs --warnings-ok` passed. Reported deprecated-reference warnings are
+          pre-existing and unrelated to this draft plan."
+        name: Reference validation
+        required: true
+        runner: kspec
+        created_at: 2026-05-11T23:41:21.141Z
+        completed_at: 2026-05-11T23:41:21.141Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: New @daemon-test-teardown-boundedness ACs are atomic and testable after the boundedness AC
+          simplification; no remaining compound Then clauses found in the new spec.
+        name: Spec language quality
+        required: true
+        runner: manual-plan-review
+        created_at: 2026-05-11T23:41:24.636Z
+        completed_at: 2026-05-11T23:41:24.636Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Tasks include concrete What/Why/How/Testing sections, named files or search scopes, exact
+          focused validation commands, and Covers mappings. The previously unnamed Playwright slice
+          is now an exact command.
+        name: Task standalone executability
+        required: true
+        runner: manual-plan-review
+        created_at: 2026-05-11T23:41:28.220Z
+        completed_at: 2026-05-11T23:41:28.220Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Every new guardrail AC and every @daemon-test-teardown-boundedness AC is claimed by at
+          least one regression or implementation task and by final validation.
+        name: Coverage mapping
+        required: true
+        runner: manual-plan-review
+        created_at: 2026-05-11T23:41:31.674Z
+        completed_at: 2026-05-11T23:41:31.674Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Spec update precedes guardrail regressions; regressions precede implementation fixes;
+          shared process-stop primitive is available before dependent teardown fixes; final
+          validation depends on all implementation tasks. No cycles or priority inversions found.
+        name: Dependency ordering
+        required: true
+        runner: manual-plan-review
+        created_at: 2026-05-11T23:41:35.151Z
+        completed_at: 2026-05-11T23:41:35.151Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan covers non-terminating signals, liveness probes, helper-origin trust, global/process
+          lifecycle cleanup, implicit CLI auto-start ownership, post-escalation termination
+          observation, hanging requests, setup-failure cleanup, bounded daemon probes, and
+          primary-error preservation while excluding production endpoint/CLI redesign.
+        name: Scope and adversarial gap coverage
+        required: true
+        runner: manual-plan-review
+        created_at: 2026-05-11T23:41:38.675Z
+        completed_at: 2026-05-11T23:41:38.675Z
     events:
       - _ulid: 01KRCPKRZWGWJW9TK4EV2CV3MN
         actor: Jacob Chapel
@@ -200570,9 +200667,81 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-05-11T23:40:30.589Z
+      - _ulid: 01KRCPN4XK80RR6VC7MXSJM8W0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Prior blocker verification
+        timestamp: 2026-05-11T23:41:15.571Z
+      - _ulid: 01KRCPN8ADNRBNHA9E3NG5QSPH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import parse
+        timestamp: 2026-05-11T23:41:19.054Z
+      - _ulid: 01KRCPNBNTN2N8PAWSNFW5T4Y7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Reference validation
+        timestamp: 2026-05-11T23:41:22.490Z
+      - _ulid: 01KRCPNF5C52C1M5P3XD2Y2RRD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec language quality
+        timestamp: 2026-05-11T23:41:26.060Z
+      - _ulid: 01KRCPNJJ5T91BDEXC7RTE3DGN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Task standalone executability
+        timestamp: 2026-05-11T23:41:29.541Z
+      - _ulid: 01KRCPNNYQ2296M9878FQVMNW0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Coverage mapping
+        timestamp: 2026-05-11T23:41:33.015Z
+      - _ulid: 01KRCPNSC6PECHPRV3NNMM7WCQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-05-11T23:41:36.518Z
+      - _ulid: 01KRCPNWSXK3R0KFMND3CFXKEG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Scope and adversarial gap coverage
+        timestamp: 2026-05-11T23:41:40.029Z
+      - _ulid: 01KRCPP06WVX7VRHNBCXE4ZCMH
+        actor: Jacob Chapel
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-11T23:41:43.516Z
+      - _ulid: 01KRCPP06WC6FJW1XFHNE5VPA4
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: closed
+        timestamp: 2026-05-11T23:41:43.516Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -200580,7 +200749,14 @@ reviews:
       ref: "@plan-daemon-test-cleanup-contract-hardening"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: Jacob Chapel
+        role: reviewer
+        created_at: 2026-05-11T23:41:43.516Z
     created_at: 2026-05-11T23:40:30.593Z
-    updated_at: null
+    updated_at: 2026-05-11T23:41:43.516Z
     notes: []
