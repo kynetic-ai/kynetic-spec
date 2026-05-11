@@ -200460,9 +200460,25 @@ reviews:
           status: fail
           name: Task standalone executability
         timestamp: 2026-05-11T23:35:02.482Z
+      - _ulid: 01KRCPA1DKEX4YC3G3NHJE0MQY
+        actor: Jacob Chapel
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-11T23:35:11.540Z
+      - _ulid: 01KRCPA1DMQWJBEAZWBXPRW0Z8
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: closed
+        timestamp: 2026-05-11T23:35:11.540Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -200531,7 +200547,14 @@ reviews:
               manual/documentation-only with acceptance criteria for when it can be skipped."
             created_at: 2026-05-11T23:33:47.605Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: Jacob Chapel
+        role: reviewer
+        created_at: 2026-05-11T23:35:11.539Z
     created_at: 2026-05-11T23:33:05.707Z
-    updated_at: 2026-05-11T23:35:01.129Z
+    updated_at: 2026-05-11T23:35:11.540Z
     notes: []
