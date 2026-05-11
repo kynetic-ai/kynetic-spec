@@ -199865,6 +199865,17 @@ reviews:
         runner: npm-test
         created_at: 2026-05-11T17:53:59.465Z
         completed_at: 2026-05-11T17:53:59.465Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- kspec validate --refs --warnings-ok: exit 0 with pre-existing deprecated-ref
+          warnings"
+        name: kspec validate refs
+        required: true
+        runner: kspec-validate
+        created_at: 2026-05-11T17:54:03.431Z
+        completed_at: 2026-05-11T17:54:03.431Z
     events:
       - _ulid: 01KRC1WBEQYG5F4SCXEPGTXRRW
         actor: Jacob Chapel
@@ -199944,6 +199955,13 @@ reviews:
           status: pass
           name: focused daemon helper suite
         timestamp: 2026-05-11T17:54:00.844Z
+      - _ulid: 01KRC2SEEGJNYPWA0N5112HK87
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate refs
+        timestamp: 2026-05-11T17:54:04.880Z
     examined_commit: 07488494e8a3c2e26cf3ddc945e56b6a90826963
     external_links: []
     lifecycle_state: closed
@@ -199963,5 +199981,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-11T17:53:14.113Z
     created_at: 2026-05-11T17:38:11.543Z
-    updated_at: 2026-05-11T17:53:59.465Z
+    updated_at: 2026-05-11T17:54:03.431Z
     notes: []
