@@ -44883,7 +44883,7 @@ runs:
     completed_at: 2026-05-11T17:59:09.003Z
   - _ulid: 01KRC67C6N56F91G69HZ6C4XPN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -44893,7 +44893,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-11T18:54:31.608Z
-        completed_at: 2026-05-11T18:54:31.608Z
+        completed_at: 2026-05-11T18:55:27.718Z
+        notes: "Searched existing observations and inbox: no prior coverage of pgrep self-match in daemon
+          process hygiene checks. One high-confidence friction identified: pgrep -af
+          'node.*dist/daemon/index.js' matches the zsh -c wrapper itself (because the wrapper
+          command line contains the regex pattern as a string argument), producing transient
+          false-positive 'new daemon' PIDs in pre/post snapshots. Required switching to 'ps -eo
+          pid,cmd | awk' with explicit field filter to get a clean signal. Will affect every
+          validation task that follows the daemon-leak-check step in task descriptions for daemon
+          hardening."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-11T18:55:27.718Z
+        completed_at: 2026-05-11T18:55:27.718Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-11T18:54:07.061Z
