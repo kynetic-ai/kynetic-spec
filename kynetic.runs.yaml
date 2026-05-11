@@ -44816,7 +44816,7 @@ runs:
     started_at: 2026-05-11T17:55:24.981Z
     completed_at: 2026-05-11T17:57:45.166Z
   - _ulid: 01KRC2XTB6BA3GP4Q51ZVZ1WTW
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -44872,7 +44872,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-11T17:58:50.197Z
-        completed_at: 2026-05-11T17:58:50.197Z
+        completed_at: 2026-05-11T17:59:09.003Z
+        notes: "Captured one high-confidence friction observation: @01KRC32D. Did not duplicate
+          already-tracked items: Bun websocket runtime timeout is @01KRC2R0, and concurrent npm
+          test/build collision is already covered by existing observations including @01KMPVGY and
+          @01KRC2ZQH."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-11T17:56:28.134Z
+    completed_at: 2026-05-11T17:59:09.003Z
