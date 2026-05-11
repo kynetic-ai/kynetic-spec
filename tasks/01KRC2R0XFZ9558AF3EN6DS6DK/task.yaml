@@ -13,7 +13,7 @@ description: "During review of @task-fix-register-cleanup-failure-leak on 2026-0
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -24,6 +24,14 @@ tags:
   - websocket
   - bun
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-stabilize-bun-websocket-runtime-parity-startup-hook/01krc2r0
+  captured_at: 2026-05-11T18:15:50.765Z
+  commit: 2c98d77b49c9a9ae0c827afe040b447fd97f2349
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KRC2T6KST2NJ50K2AARVV919
 history:
   - author: "@claude"
@@ -39,7 +47,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-11T17:54:56.764Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-stabilize-bun-websocket-runtime-parity-startup-hook/01krc2r0
+          captured_at: 2026-05-11T18:15:50.765Z
+          commit: 2c98d77b49c9a9ae0c827afe040b447fd97f2349
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-11T18:15:50.768Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-11T18:15:50.768Z
 created_at: 2026-05-11T17:53:18.255Z
 started_at: 2026-05-11T17:54:56.764Z
+submitted_at: 2026-05-11T18:15:50.768Z
 todos: []
 automation: eligible
