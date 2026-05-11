@@ -44817,7 +44817,7 @@ runs:
     completed_at: 2026-05-11T17:57:45.166Z
   - _ulid: 01KRC2XTB6BA3GP4Q51ZVZ1WTW
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -44856,7 +44856,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-11T17:58:18.819Z
-        completed_at: 2026-05-11T17:58:18.819Z
+        completed_at: 2026-05-11T17:58:38.269Z
+        notes: "Proposed improvement: Detached review snapshot cleanup should not remove the reviewer
+          worktree while the active reviewer process may still need to run supported post-approval
+          actions such as merge helper, task completion verification, or final task inspection. A
+          medium-scope fix would either defer snapshot deletion until the invoking reviewer process
+          exits, or provide a stable post-approval project path/context so helpers and finalization
+          commands do not fail with path-not-found after approval."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-11T17:58:38.269Z
+        completed_at: 2026-05-11T17:58:38.269Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-11T17:56:28.134Z
