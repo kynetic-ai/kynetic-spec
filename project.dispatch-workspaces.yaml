@@ -21857,11 +21857,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-register-cleanup-failure-leak/01kr6m70
     canonical_branch_head: 07488494e8a3c2e26cf3ddc945e56b6a90826963
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-11T17:54:46.678Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-11T17:54:48.355Z
     health:
       status: stale
       issues:
@@ -21880,7 +21880,7 @@ workspaces:
       target_branch: dev
       target_commit: bd252f1ebdedef270f8ed908166d46eab1429f80
       updated_at: 2026-05-11T17:54:46.678Z
-    lifecycle_state: stale
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KR6M70T2NV1TR7EEGREDC5WJ"
     task_slug: task-fix-register-cleanup-failure-leak
@@ -21889,7 +21889,7 @@ workspaces:
       last_active_at: 2026-05-11T17:36:21.053Z
       last_reconciled_at: 2026-05-11T17:54:46.678Z
       created_at: 2026-05-09T17:53:09.994Z
-      updated_at: 2026-05-11T17:54:46.678Z
+      updated_at: 2026-05-11T17:54:48.355Z
     workspace_id: dispatch-workspace-01KR6M70T2NV1TR7EEGREDC5WJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
