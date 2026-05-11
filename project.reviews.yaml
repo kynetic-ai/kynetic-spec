@@ -200316,6 +200316,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRCP6SABJM7MX35VVYV9STCZ
         timestamp: 2026-05-11T23:33:28.486Z
+      - _ulid: 01KRCP6YWNFE3WEDAWD8RF4P9Q
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRCP6SAPQ5SF9H2VTC878B72
+        timestamp: 2026-05-11T23:33:30.645Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -200356,7 +200363,22 @@ reviews:
               leave this AC with one observable outcome."
             created_at: 2026-05-11T23:33:24.940Z
         kind: blocker
+      - _ulid: 01KRCP6SAPQ5SF9H2VTC878B72
+        anchor:
+          type: structured
+          field: Testing
+          ref: "@task-fix-active-request-teardown-and-observation-bounds"
+          section: tasks
+        entries:
+          - _ulid: 01KRCP6SAPZ58JBW2E0NC5FVJH
+            author: Jacob Chapel
+            body: "Testing is not standalone/exact: it says to run a representative Playwright daemon fixture
+              cleanup test or document why unavailable, but does not name the command or test file.
+              The task must include the exact Playwright slice command, or explicitly state that no
+              Playwright command is required for this task."
+            created_at: 2026-05-11T23:33:24.950Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-11T23:33:05.707Z
-    updated_at: 2026-05-11T23:33:24.940Z
+    updated_at: 2026-05-11T23:33:24.950Z
     notes: []
