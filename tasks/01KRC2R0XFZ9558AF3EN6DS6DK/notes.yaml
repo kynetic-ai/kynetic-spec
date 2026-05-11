@@ -1,1 +1,87 @@
-notes: []
+notes:
+  - _ulid: 01KRC3BXQPSRBR25YES7SG2WGG
+    content: >-
+      Investigation:
+
+
+      Reproduced startup timing for both Node and Bun spawning dist/daemon/index.js with the fixture
+      flow (isolated HOME, .kspec/ + shadow-detection pointer, e2e fixtures copied). In isolation on
+      this host:
+
+      - Bun: health ~220ms, cache-ready ~280ms across 5 cold spawns
+
+      - Node: health ~270ms, cache-ready ~315ms across 3 cold spawns
+
+      - Even under simulated load (12 background workers churning node spawnSync), Bun stayed at
+      ~220ms/280ms
+
+
+      So the daemon itself is not slow. The flake is structural to how the suite drives the daemon:
+
+
+      tests/daemon-api/websocket-protocol.test.ts has two describes:
+        1. parent describe (lines 122-454) — 14 Node tests, each beforeEach spawns + tears down a real daemon
+        2. runtime-parity describe (line 467+) — 2 tests × 2 runtimes (Node + Bun) in that order
+
+      By the time the parity describe's Bun beforeEach runs, the same test process has already
+      cold-spawned/torn-down ~15-16 daemons. Process-table churn, port reuse, and IO contention pile
+      up. The Bun parity beforeEach inherits these effects on top of:
+        - createTestDaemonProject(): git init + fsCp recursive of e2e fixtures
+        - spawn('bun', [dist/daemon/index.js, ...]) cold-start
+        - startTestDaemon readiness: probeHealth 15s budget + probeCacheReady 15s budget (30s combined under default DEFAULT_TIMEOUT_MS)
+
+      The current beforeEach has hookTimeout=60_000 — only 30s of headroom above the readiness
+      budget. Under accumulated full-suite IO contention this can be eaten by
+      createTestDaemonProject + spawn cold-start, leaving the hook to fire before the readiness
+      probe times out. The failure surfaces as a bare "beforeEach hook timed out after 60000ms"
+      rather than a DaemonReadinessError with the diagnostic bundle
+      (stdout/stderr/health/cache-status) — masking the actual failure stage and violating the
+      spirit of @daemon-backed-test-fixture-contract ac-readiness-diagnostics.
+
+
+      Fix approach (test-only, no daemon code change):
+
+
+      1. Raise the parity beforeEach hook timeout from 60_000 → 90_000ms to match the parent
+      describe's { timeout: 90_000 } intent. This guarantees the readiness probe always has room to
+      surface DaemonReadinessError with diagnostics before the hook gets preempted.
+
+      2. Pass an explicit timeoutMs: 25_000 to startTestDaemon for parity tests (50s combined
+      readiness budget). A real startup failure still throws DaemonReadinessError within 50s with
+      full diagnostics; legitimate cold-start under contention (which empirically stays well under
+      30s) has ample headroom.
+
+      3. Update the inline comment to document why the budget is wider in the parity case
+      (cumulative file-level daemon churn).
+
+      4. Apply the same change to both Node and Bun runtimes within the parity describe — the same
+      structural issue affects whichever runtime runs later in the matrix; Bun happens to be it
+      today but Node could be next if matrix order changes.
+
+
+      Why this does NOT mask failures:
+
+      - Readiness is still bounded (25s per probe, 50s combined). A daemon that genuinely fails to
+      bind or load returns a DaemonReadinessError with the full diagnostic bundle (endpoint,
+      runtime, pid, exit code, stdout/stderr tail, last health + cache-status responses) per the
+      existing fixture contract.
+
+      - A spawn launch error (ENOENT / EACCES) still races readiness and surfaces immediately via
+      the launch-error race in startTestDaemon.
+
+      - The hook timeout only fires if readiness diagnostics themselves take >40s to assemble, which
+      would indicate a deeper process-level hang — that's exactly the kind of failure we want to
+      surface as "the test infrastructure itself broke" rather than confuse it with a daemon-startup
+      issue.
+
+
+      Test plan:
+
+      - npm test (full suite, fresh cache) — must pass cleanly; rerun multiple times to confirm Bun
+      parity is no longer flaky
+
+      - Confirm the Bun parity test still asserts the same behavior (health.runtime,
+      connect/subscribe/broadcast, heartbeat degradation log)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-11T18:04:10.359Z
