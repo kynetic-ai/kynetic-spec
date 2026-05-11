@@ -199824,6 +199824,26 @@ reviews:
         runner: npm
         created_at: 2026-05-11T17:52:41.984Z
         completed_at: 2026-05-11T17:52:41.984Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/helpers/daemon.ts, tests/helpers/daemon.test.ts, kspec-agents.md,
+          .agents/skills/kspec-review/SKILL.md, .agents/skills/review-gates/SKILL.md,
+          .agents/skills/kspec-merge/SKILL.md. Commands run: git diff/stat/log/status; kspec task
+          get; kspec review for-task/get; kspec item get for @daemon-test-startup-failure-hygiene,
+          @daemon-backed-test-fixture-contract, @daemon-test-harness-guardrails,
+          @daemon-sensitive-cli-test-determinism; rg AC annotations and source-scanning patterns;
+          kspec validate refs/completeness; npm ci; npm run build; focused npm tests; full npm test.
+          Claims verified: registerCleanup failure path stops the owned child before rethrowing and
+          the staged regression wrapper was removed; verified by reading implementation/test and by
+          focused/full test runs. Categories searched: correctness, edge cases, error handling, test
+          quality, integration. No blockers found."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-11T17:53:00.154Z
+        completed_at: 2026-05-11T17:53:00.154Z
     events:
       - _ulid: 01KRC1WBEQYG5F4SCXEPGTXRRW
         actor: Jacob Chapel
@@ -199866,6 +199886,13 @@ reviews:
           status: pass
           name: focused daemon fixture tests
         timestamp: 2026-05-11T17:52:43.345Z
+      - _ulid: 01KRC2QGHJ091QWVMN35Z8CNW2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-11T17:53:01.491Z
     examined_commit: 07488494e8a3c2e26cf3ddc945e56b6a90826963
     external_links: []
     lifecycle_state: open
@@ -199878,5 +199905,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-11T17:38:11.543Z
-    updated_at: 2026-05-11T17:52:41.984Z
+    updated_at: 2026-05-11T17:53:00.154Z
     notes: []
