@@ -44924,7 +44924,7 @@ runs:
     completed_at: 2026-05-11T18:55:58.370Z
   - _ulid: 01KRC7BXFBKVM4ZA72KQZ388KV
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -44965,10 +44965,17 @@ runs:
           implementation-status drift. It would reduce reviewer confusion and avoid recording false
           status findings before the task reaches completed. Rough scope: small-to-medium, depending
           on whether implemented as validation wording/filtering or documentation."
-      - status: completed
+      - status: skipped
         step_index: 4
         started_at: 2026-05-11T19:15:51.465Z
-        completed_at: 2026-05-11T19:15:51.465Z
+        completed_at: 2026-05-11T19:16:02.392Z
+        notes: "Direct end-of-session invocation: skipping interactive discussion and capturing only the
+          single high-confidence, searched friction observation. The already-tracked detached .kspec
+          issue is not being duplicated."
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-11T19:16:02.392Z
+        completed_at: 2026-05-11T19:16:02.392Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-11T19:14:04.395Z
