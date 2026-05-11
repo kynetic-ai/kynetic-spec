@@ -200558,3 +200558,29 @@ reviews:
     created_at: 2026-05-11T23:33:05.707Z
     updated_at: 2026-05-11T23:35:11.540Z
     notes: []
+  - _ulid: 01KRCPKS010Q2NPD1AQ369TJYE
+    slugs: []
+    title: "Plan review: Daemon Test Cleanup Contract Hardening (cycle 2)"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRCPKRZWGWJW9TK4EV2CV3MN
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-11T23:40:30.589Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-daemon-test-cleanup-contract-hardening"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-11T23:40:30.593Z
+    updated_at: null
+    notes: []
