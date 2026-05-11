@@ -199775,7 +199775,18 @@ reviews:
     slugs: []
     title: Review cleanup registration failure cleanup
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --refs --warnings-ok passed. Warnings were pre-existing deprecated-ref
+          warnings; exit 0.
+        name: kspec validate refs
+        required: true
+        runner: kspec
+        created_at: 2026-05-11T17:52:16.460Z
+        completed_at: 2026-05-11T17:52:16.460Z
     events:
       - _ulid: 01KRC1WBEQYG5F4SCXEPGTXRRW
         actor: Jacob Chapel
@@ -199790,6 +199801,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-11T17:38:24.804Z
+      - _ulid: 01KRC2P5WVKVC5HT87EK4TP697
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate refs
+        timestamp: 2026-05-11T17:52:17.819Z
     examined_commit: 07488494e8a3c2e26cf3ddc945e56b6a90826963
     external_links: []
     lifecycle_state: open
@@ -199802,5 +199820,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-11T17:38:11.543Z
-    updated_at: 2026-05-11T17:38:23.385Z
+    updated_at: 2026-05-11T17:52:16.460Z
     notes: []
