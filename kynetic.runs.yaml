@@ -44758,7 +44758,7 @@ runs:
     completed_at: 2026-05-10T01:32:22.666Z
   - _ulid: 01KRC2VWNNEDSQYK8QCF4SNNK1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -44771,7 +44771,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-11T17:56:18.411Z
-        completed_at: 2026-05-11T17:56:18.411Z
+        completed_at: 2026-05-11T17:56:29.383Z
+        notes: "Friction points: the prompt-provided detached review path was missing/stale and had to be
+          reconstructed from git worktree metadata; later the reconstructed review path disappeared
+          again before reflection. Also, running two focused npm test commands concurrently in one
+          worktree caused both test runners to self-build the web UI at the same time and fail with
+          a SvelteKit manifest-full.js ENOENT before tests ran."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-11T17:56:29.383Z
+        completed_at: 2026-05-11T17:56:29.383Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-11T17:55:24.981Z
