@@ -18170,6 +18170,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-11T18:17:21.887Z
+  - _ulid: 01KRC6AGYD58W6ER9VXTXNN0N2
+    type: friction
+    content: "Daemon process leak hygiene checks using 'pgrep -af node.*dist/daemon/index.js' produce
+      false-positive transient PIDs because the zsh -c wrapper running pgrep matches its own command
+      line (the regex is passed as a literal string argument). This trips up step 6 of
+      daemon-hardening validation tasks (capture pre/post baselines). Workaround: use 'ps -eo
+      pid,cmd | awk' with explicit $2 == node and command-line regex filter, which excludes shell
+      wrappers. Worth either documenting the awk-based pattern in the task template, or providing a
+      'kspec util daemon-pids' helper that does the precise filtering once."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-11T18:55:50.221Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
