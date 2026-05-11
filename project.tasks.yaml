@@ -28562,3 +28562,21 @@
   submitted_at: 2026-05-09T21:38:28.291Z
   completed_at: 2026-05-09T21:57:51.618Z
   automation: eligible
+- _ulid: 01KRC2R0XFZ9558AF3EN6DS6DK
+  slugs:
+    - task-stabilize-bun-websocket-runtime-parity-startup-hook
+  title: Stabilize Bun websocket runtime parity startup hook
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - daemon-tests
+    - flaky
+    - websocket
+    - bun
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-11T17:53:18.255Z
+  automation: eligible

@@ -1,0 +1,29 @@
+_ulid: 01KRC2R0XFZ9558AF3EN6DS6DK
+slugs:
+  - task-stabilize-bun-websocket-runtime-parity-startup-hook
+title: Stabilize Bun websocket runtime parity startup hook
+type: bug
+description: "During review of @task-fix-register-cleanup-failure-leak on 2026-05-11, full npm test
+  failed once in tests/daemon-api/websocket-protocol.test.ts:482: the Bun runtime parity case timed
+  out in beforeEach after 60000ms. Immediate fresh reruns of
+  tests/daemon-api/websocket-protocol.test.ts passed, so this appears flaky rather than introduced
+  by the cleanup-registration fix. Investigate why Bun daemon startup or runtime availability/setup
+  can occasionally exceed the hook budget under full-suite load, then make the test deterministic
+  without masking real startup failures."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - daemon-tests
+  - flaky
+  - websocket
+  - bun
+vcs_refs: []
+created_at: 2026-05-11T17:53:18.255Z
+todos: []
+automation: eligible
