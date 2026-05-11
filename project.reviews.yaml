@@ -200294,7 +200294,18 @@ reviews:
     slugs: []
     title: "Plan review: Daemon Test Cleanup Contract Hardening"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/daemon-test-cleanup-contract-hardening.md --dry-run succeeded and
+          stored the full document.
+        name: Plan import parse
+        required: true
+        runner: kspec
+        created_at: 2026-05-11T23:34:00.074Z
+        completed_at: 2026-05-11T23:34:00.074Z
     events:
       - _ulid: 01KRCP66H55GDK0NHFR30JQ9KJ
         actor: Jacob Chapel
@@ -200330,6 +200341,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRCP7FENTXE7DMMB44MZTY7F
         timestamp: 2026-05-11T23:33:49.003Z
+      - _ulid: 01KRCP7WZPF7EX0VKDTWM8YK1T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import parse
+        timestamp: 2026-05-11T23:34:01.462Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -200403,5 +200421,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-11T23:33:05.707Z
-    updated_at: 2026-05-11T23:33:47.605Z
+    updated_at: 2026-05-11T23:34:00.074Z
     notes: []
