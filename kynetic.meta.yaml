@@ -18143,6 +18143,19 @@ observations:
     resolved: false
     workflow_ref: "@01KRC2VW"
     created_at: 2026-05-11T17:57:30.801Z
+  - _ulid: 01KRC32D1J0Y3D0FFAS5X56RWG
+    type: friction
+    content: Detached reviewer snapshot cleanup can remove the review worktree before the same reviewer
+      process finishes post-approval actions. In this session, approval closed the review and the
+      detached snapshot path disappeared before the merge helper/task completion verification
+      commands ran, causing path-not-found failures and requiring recovery from the canonical task
+      worktree. Defer snapshot deletion until the reviewer invocation exits, or provide a stable
+      post-approval project context for merge/completion commands.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-11T17:58:58.354Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
