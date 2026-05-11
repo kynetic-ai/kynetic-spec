@@ -136,3 +136,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-09T18:10:49.862Z
+  - _ulid: 01KRC1PJ4AZ0CY9KVY49HYZ8SS
+    content: "Unblocking after bootstrap investigation: the block was caused by reviewer bootstrap step
+      install-workspace-dependencies failing during npm ci with repeated npm TAR_ENTRY_ERROR ENOENT
+      lstat entries under the temporary -review node_modules tree. This appears
+      operational/transient rather than an implementation or review blocker: the submitted commit
+      07488494e8a3c2e26cf3ddc945e56b6a90826963 was checked out at the exact intended review path,
+      and both npm ci --ignore-scripts=false and npm run build completed successfully there at
+      2026-05-11T10:34:38-07:00. No active dispatch invocation was running during inspection. Retry
+      review bootstrap from pending_review."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-05-11T17:35:01.770Z
