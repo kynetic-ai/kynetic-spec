@@ -44924,7 +44924,7 @@ runs:
     completed_at: 2026-05-11T18:55:58.370Z
   - _ulid: 01KRC7BXFBKVM4ZA72KQZ388KV
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -44959,7 +44959,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-11T19:15:43.440Z
-        completed_at: 2026-05-11T19:15:43.440Z
+        completed_at: 2026-05-11T19:15:51.465Z
+        notes: "Proposed improvement: teach alignment validation/reporting or reviewer guidance to
+          distinguish transient pending_review lifecycle mismatches for validation tasks from real
+          implementation-status drift. It would reduce reviewer confusion and avoid recording false
+          status findings before the task reaches completed. Rough scope: small-to-medium, depending
+          on whether implemented as validation wording/filtering or documentation."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-11T19:15:51.465Z
+        completed_at: 2026-05-11T19:15:51.465Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-11T19:14:04.395Z
