@@ -85,3 +85,68 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-11T18:04:10.359Z
+  - _ulid: 01KRC412MAQFWQA877GVJZ53E1
+    content: >-
+      Implementation complete (commit 2c98d77b4):
+
+
+      Test fix in tests/daemon-api/websocket-protocol.test.ts:
+
+      - Raised parity beforeEach hook timeout 60_000 → 90_000ms (matching parent describe's {
+      timeout: 90_000 })
+
+      - Added explicit timeoutMs: 25_000 to startTestDaemon (50s combined health+cache readiness
+      budget vs. prior 30s default)
+
+      - Replaced inline comment to document why the budget is wider in the parity case (file-level
+      daemon churn + ac-readiness-diagnostics)
+
+      - No production code change; daemon behavior, readiness probes, launch-error race, and
+      DaemonReadinessError diagnostics all unchanged
+
+
+      Verification:
+
+      - Focused: npm test tests/daemon-api/websocket-protocol.test.ts → 15/15 pass, 7.1-8.4s across
+      3 consecutive runs (1× --fresh + 2× cached)
+
+      - Full suite: npm test --fresh → 2419/2419 suites, 9028/9033 tests pass (5 skipped, 0 failed)
+      in 35 minutes; websocket-protocol.test.ts itself ran in 7.3s alongside the rest of the
+      heavy-serial pool
+
+      - Local validation: kspec validate --refs --warnings-ok and --completeness --warnings-ok both
+      exit 0 (only pre-existing deprecated-ref + malformed_ac_token warnings, unchanged by this
+      diff)
+
+
+      Why this does not mask startup failures:
+
+      - Readiness wait remains bounded at 25s per probe (50s combined); a daemon that fails to bind,
+      crashes, or never registers its entity cache still produces a DaemonReadinessError with the
+      full diagnostic bundle (endpoint, pid, exit code/signal, stdout/stderr tails, last health
+      response, last cache-status response) within 50s — per ac-readiness-diagnostics
+
+      - Spawn launch errors (ENOENT/EACCES) still race the readiness wait and surface immediately
+      via startTestDaemon's launch-error path
+
+      - The 40s headroom between readiness budget (50s) and hook budget (90s) is the diagnostic
+      surface area, not extra wait time for a healthy daemon — a healthy daemon still reaches
+      readiness in <1s
+
+
+      AC coverage:
+
+      - @daemon-test-runtime-selection ac-runtime-matrix-parity, ac-missing-optional-runtime-skips,
+      ac-runtime-degradation-assertions, ac-explicit-runtime-only: unchanged annotations remain
+      attached to the parity tests
+
+      - @daemon-runtime-adapter ac-websocket-parity, ac-heartbeat-degradation: unchanged
+
+      - @daemon-test-mode-boundaries ac-full-process-tests-use-real-daemon: unchanged
+
+      - The fix tightens compliance with @daemon-backed-test-fixture-contract
+      ac-readiness-diagnostics by ensuring the hook timeout doesn't preempt the readiness probe's
+      diagnostic path
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-11T18:15:43.498Z
