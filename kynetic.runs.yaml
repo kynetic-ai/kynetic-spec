@@ -44924,7 +44924,7 @@ runs:
     completed_at: 2026-05-11T18:55:58.370Z
   - _ulid: 01KRC7BXFBKVM4ZA72KQZ388KV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -44939,7 +44939,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-11T19:15:25.598Z
-        completed_at: 2026-05-11T19:15:25.598Z
+        completed_at: 2026-05-11T19:15:34.692Z
+        notes: "Friction points: kspec validate --alignment reported @daemon-test-guardrail-precision as
+          implemented-but-should-be-in_progress while this validation task was still pending_review,
+          then the warning disappeared after task completion. This is a lifecycle artifact that
+          reviewers can misread as a real status problem. A second friction point, detached review
+          snapshots lacking a local .kspec worktree for git -C .kspec status, was encountered but
+          appears already tracked."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-11T19:15:34.692Z
+        completed_at: 2026-05-11T19:15:34.692Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-11T19:14:04.395Z
