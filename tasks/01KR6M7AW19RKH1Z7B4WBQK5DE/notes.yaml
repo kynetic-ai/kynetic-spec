@@ -1,1 +1,88 @@
-notes: []
+notes:
+  - _ulid: 01KRC53JQFCENMYYFPEJF8X0FS
+    content: >-
+      End-to-end validation of daemon hardening corrective work.
+
+
+      ## Spec coverage and status alignment
+
+      - `@daemon-test-startup-failure-hygiene` already at `implemented`. Tightened AC
+      `ac-cleanup-registration-failure-stops-owned-child` is covered by annotated tests in
+      `tests/helpers/daemon.test.ts:595-596` (passed in focused suite). All 5 ACs annotated and
+      exercised by the focused daemon helper / e2e fixture cleanup suites.
+
+      - `@daemon-test-guardrail-precision` aligned from `in_progress` to `implemented`. All 7 ACs
+      are covered by annotated tests in `tests/lint-daemon-test-guardrails.test.ts` and
+      `tests/lint-no-leaky-test-daemon.test.ts`, including the tightened ACs
+      `ac-detached-cleanup-bound-before-observation` (annotated at
+      lint-daemon-test-guardrails.test.ts:3781+ and lint-no-leaky-test-daemon.test.ts:219+) and
+      `ac-approved-daemon-helper-boundary-explicit` (annotated at
+      lint-daemon-test-guardrails.test.ts:5280+). Focused guardrail suite passed all 272 tests.
+
+
+      ## Focused suites (all passed, --fresh)
+
+      - `npm test -- --fresh tests/helpers/daemon.test.ts` -> 10/10 pass (9 test files, 2.3s)
+
+      - `npm test -- --fresh tests/e2e-fixture-daemon-cleanup.test.ts` -> 3/3 pass (2 test files,
+      1.6ms)
+
+      - `npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts` -> 272/272 pass (23 test files, 62.5s)
+
+
+      ## kspec validations (all passed, only pre-existing warnings)
+
+      - `kspec validate --refs --warnings-ok` -> PASS. 6 pre-existing deprecated-target warnings
+      unrelated to these specs (session-summary-cache, task-activity-git-query).
+
+      - `kspec validate --alignment --warnings-ok` -> PASS. 38 warnings: 34 orphan specs + 4 status
+      mismatches on unrelated specs (Task Set Batch Support, Daemon-Sensitive Test Determinism,
+      Daemon Network Endpoint Contract, Concurrent Read Command Execution). Neither tightened spec
+      is in the mismatch list.
+
+      - `kspec validate --completeness --warnings-ok` -> PASS. 252 warnings: 232 missing own AC
+      coverage on unrelated specs, 1 automation without spec on unrelated task, 19 invalid AC
+      annotations on unrelated tests (cli-agent-commands.test.ts, cli-schedule-commands.test.ts,
+      session-start-format.test.ts). None reference @daemon-test-startup-failure-hygiene or
+      @daemon-test-guardrail-precision.
+
+
+      ## Full test suite
+
+      - `npm test -- --fresh` -> PASS. 2419 test suites, 9028 passed + 5 skipped (33s × 60 ~=
+      2067.4s total). No failures across the project.
+
+
+      ## Process hygiene
+
+      - Pre-suite daemon node-process baseline (9 PIDs tied to other dispatch worktrees / ambient
+      test daemons): 71442, 818476, 1153361, 1723311, 1960693, 2796005, 2879734, 3565399, 3860133.
+      All classified as pre-existing (not started by these suites).
+
+      - Post-focused-suite snapshot identical to baseline; transient pids observed in initial
+      `pgrep` runs were the zsh wrapper command-line matching the regex argument, not new daemons
+      (confirmed by `ps -eo pid,cmd` with strict awk filter).
+
+      - Post-full-suite snapshot identical to baseline (9 PIDs, all pre-existing). No newly leaked
+      daemon process remains.
+
+
+      ## Worktree / shadow state
+
+      - `git status --short --branch` -> clean on
+      `dispatch/task/task-validate-daemon-hardening-corrections/01kr6m7a`.
+
+      - `kspec shadow status` -> shadow branch `kspec-meta` healthy at project root. Worktree-level
+      `.kspec/` is correctly absent (canonical state lives at the project root).
+
+
+      ## Conclusion
+
+      All validation gates pass. The tightened specs are correctly aligned:
+      `@daemon-test-startup-failure-hygiene` remains `implemented`,
+      `@daemon-test-guardrail-precision` updated `in_progress` -> `implemented`. No daemon process
+      leakage. Pre-existing warnings catalogued and unrelated to this hardening work.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-11T18:34:34.096Z
