@@ -199887,6 +199887,18 @@ reviews:
         runner: kspec-validate
         created_at: 2026-05-11T17:54:07.749Z
         completed_at: 2026-05-11T17:54:07.749Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: mise exec -- npm test completed with one flaky non-regression in
+          tests/daemon-api/websocket-protocol.test.ts Bun beforeEach timeout; immediate fresh reruns
+          of that file passed twice; follow-up task @01KRC2R0 created per review-gates
+        name: npm test full suite
+        required: true
+        runner: npm-test
+        created_at: 2026-05-11T17:54:23.199Z
+        completed_at: 2026-05-11T17:54:23.199Z
     events:
       - _ulid: 01KRC1WBEQYG5F4SCXEPGTXRRW
         actor: Jacob Chapel
@@ -199980,6 +199992,13 @@ reviews:
           status: pass
           name: kspec validate completeness
         timestamp: 2026-05-11T17:54:09.141Z
+      - _ulid: 01KRC2T1PQQVASAEH5RK8DEV8R
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test full suite
+        timestamp: 2026-05-11T17:54:24.599Z
     examined_commit: 07488494e8a3c2e26cf3ddc945e56b6a90826963
     external_links: []
     lifecycle_state: closed
@@ -199999,5 +200018,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-11T17:53:14.113Z
     created_at: 2026-05-11T17:38:11.543Z
-    updated_at: 2026-05-11T17:54:07.749Z
+    updated_at: 2026-05-11T17:54:23.199Z
     notes: []
