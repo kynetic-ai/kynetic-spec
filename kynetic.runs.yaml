@@ -46881,9 +46881,22 @@ runs:
     completed_at: 2026-05-12T07:33:40.558Z
   - _ulid: 01KRDK6YWXRPEDGD74K0WS9CBD
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-12T08:00:19.357Z
+        completed_at: 2026-05-12T08:07:05.304Z
+        notes: "Gate passed: task @01KRCRJQHJVPTS7KS7SYWQ600H was reviewed, approved, merged to dev via
+          detached reviewer helper, and completed. Worked well: reading the diff before notes kept
+          the review grounded; recording checks on the review provided clear merge-gate evidence;
+          the detached reviewer merge helper handled manual_merge cleanly without checking out dev
+          in the snapshot."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-12T08:07:05.304Z
+        completed_at: 2026-05-12T08:07:05.304Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T08:00:19.357Z
