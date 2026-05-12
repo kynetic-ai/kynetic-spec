@@ -206644,6 +206644,18 @@ reviews:
         runner: oxlint
         created_at: 2026-05-12T18:59:05.448Z
         completed_at: 2026-05-12T18:59:05.448Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run lint exited 1: found 31 errors and 755 warnings across the repository, including
+          existing general lint debt and no-leaky-test-daemon reports in unchanged
+          tests/cli-serve.test.ts. Changed-file oxlint for this diff exits 0."
+        name: repository lint
+        required: true
+        runner: oxlint
+        created_at: 2026-05-12T18:59:20.002Z
+        completed_at: 2026-05-12T18:59:20.002Z
     events:
       - _ulid: 01KREQRDWHV64QVFH3YH6YVQ43
         actor: Jacob Chapel
@@ -206699,6 +206711,13 @@ reviews:
           status: pass
           name: changed-file oxlint
         timestamp: 2026-05-12T18:59:07.155Z
+      - _ulid: 01KRERXPD87DDSFNYC8694H5K8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: repository lint
+        timestamp: 2026-05-12T18:59:21.641Z
     examined_commit: 671d9b4584a8dfb718be8fa81a3c153965e62a4c
     external_links: []
     lifecycle_state: open
@@ -206749,7 +206768,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T18:39:00.497Z
-    updated_at: 2026-05-12T18:59:05.448Z
+    updated_at: 2026-05-12T18:59:20.002Z
     notes: []
   - _ulid: 01KRERNSBMVT2M524R6JBTT54Q
     slugs: []
