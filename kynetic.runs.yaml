@@ -47146,9 +47146,23 @@ runs:
     completed_at: 2026-05-12T13:58:47.855Z
   - _ulid: 01KRE9JMA8SVJ9DP8W8VJ7DPZ0
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-12T14:31:10.408Z
+        completed_at: 2026-05-12T14:31:45.071Z
+        notes: "What worked well: The detached-review process had enough structured context to stay on the
+          correct snapshot and integration target. Reading the isolated dev...HEAD diff after
+          noticing the prompt target was older than local dev reduced review noise and focused
+          scrutiny on the task's two commits. The review evidence log plus required checks made the
+          approval gate auditable before merge. The detached merge helper handled the occupied dev
+          worktree cleanly and reported the exact merge commit."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-12T14:31:45.071Z
+        completed_at: 2026-05-12T14:31:45.071Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T14:31:10.408Z
