@@ -201009,6 +201009,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T01:41:28.168Z
+      - _ulid: 01KRCYVX0YQ2QZQNH20VST1JZC
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRCXDX6BKV5A6K2Q8840SF01
+        timestamp: 2026-05-12T02:04:45.470Z
+      - _ulid: 01KRCYW0F97XW7660X40H8P92P
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRCXDX6BKV5A6K2Q8840SF01
+        timestamp: 2026-05-12T02:04:49.001Z
+      - _ulid: 01KRCYW3XJ87B6E61022RP75TM
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRCXEA8VNC6BP9GCHYCX6SVY
+        timestamp: 2026-05-12T02:04:52.530Z
+      - _ulid: 01KRCYW8DGE56XEMQCNXAJ4874
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRCXEA8VNC6BP9GCHYCX6SVY
+        timestamp: 2026-05-12T02:04:57.136Z
     examined_commit: 38281b2580cd078393fbc844446cd34113ff5d0a
     external_links: []
     lifecycle_state: closed
@@ -201041,7 +201065,46 @@ reviews:
               intentionally fails after the implementation closes the bug and the wrapper needs
               removal."
             created_at: 2026-05-12T01:39:38.316Z
+          - _ulid: 01KRCYVVPJ5V3K8X1FDCFNJBJS
+            author: "@claude"
+            body: >-
+              Fixed: converted all 5 staged regressions from plain `it(...)` to the selective
+              expected-failure pattern (per @01KR431R, the validated repo convention). Each test now
+              uses a local `expect*` helper that runs the post-fix assertion and, on the expected
+              pre-fix throw, re-asserts the EXACT current bug shape:
+
+
+              - tests/helpers/daemon.test.ts: `expectKillChildScopedMissesExitObservation(child)` —
+              pre-fix shape is BOTH exitCode AND signalCode null on the handle after stop() returns.
+
+              - tests/helpers/mock-daemon.test.ts: `expectMockDaemonStopLeaksPid(pid)` — pre-fix
+              shape is `isProcessAlive(pid) === true` after stop() returns.
+
+              - tests/cli-serve.test.ts: three helpers —
+              `expectWaitForChildExitMissesObservation(child)`,
+              `expectWaitForChildExitMissesSignalFastPath(elapsed)` (window [500ms, 7000ms]),
+              `expectKillPidIsFireAndForget(pid)`.
+
+
+              An unrelated failure mode (different exit timing, child crashed in setup, etc.)
+              re-throws and fails the test, preserving selectivity. Post-fix the wrapper throws an
+              explicit "STAGED REGRESSION CLOSED — remove this wrapper" sentinel so the next
+              implementation task (@task-implement-bounded-process-stop-primitives) is forced to
+              inline the assertion and delete the helper.
+
+
+              Verified: focused slice green (`mise exec -- npm test -- --fresh
+              tests/helpers/daemon.test.ts tests/helpers/mock-daemon.test.ts
+              tests/cli-serve.test.ts` — 74 tests pass), and the full suite is green (9033 passed, 5
+              skipped, 0 failed).
+
+
+              `it.fails(...)` was rejected per @01KR3ZR8 because any thrown assertion satisfies the
+              marker; the selective wrapper enforces the bug-shape contract.
+            created_at: 2026-05-12T02:04:44.114Z
         kind: blocker
+        resolved_at: 2026-05-12T02:04:47.620Z
+        resolved_by: "@claude"
       - _ulid: 01KRCXEA8VNC6BP9GCHYCX6SVY
         anchor:
           type: code
@@ -201061,7 +201124,32 @@ reviews:
               (also in tests/helpers/mock-daemon.test.ts lines 624-628) or add behavioral assertions
               that actually prove that contract."
             created_at: 2026-05-12T01:39:51.708Z
+          - _ulid: 01KRCYW2JWS2MFRN3M5KBBFZ7R
+            author: "@claude"
+            body: >-
+              Fixed: removed the false `ac-no-ambient-daemon-control` annotation from both new
+              bounded-stop tests:
+
+
+              - tests/helpers/daemon.test.ts (was line 756) — `startTestDaemon stop() observes
+              termination before return`.
+
+              - tests/helpers/mock-daemon.test.ts (was line 627) — `mock daemon helper — bounded
+              child stop contract`.
+
+
+              These tests own a synthetic child via the fixture and only verify scoped cleanup +
+              bounded termination of that child; they do not set up an unrelated ambient daemon, do
+              not observe ambient daemon state, and do not assert that ambient daemon state was
+              untouched. The remaining annotations on these tests
+              (`ac-stop-observes-termination-before-return`,
+              `ac-uncooperative-process-stop-is-bounded`, `ac-scoped-cleanup`,
+              `ac-fixture-contract-tests-run`, and on the daemon.test.ts case
+              `ac-fixture-contract-tests`) reflect what the tests actually verify.
+            created_at: 2026-05-12T02:04:51.164Z
         kind: blocker
+        resolved_at: 2026-05-12T02:04:55.792Z
+        resolved_by: "@claude"
       - _ulid: 01KRCXGV9AT0QEF43D1TJPNVQD
         entries:
           - _ulid: 01KRCXGV9BFTY8Y21Y18K5SVV7
@@ -201088,7 +201176,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T01:41:28.168Z
     created_at: 2026-05-12T01:25:48.577Z
-    updated_at: 2026-05-12T01:41:28.168Z
+    updated_at: 2026-05-12T02:04:55.792Z
     notes: []
   - _ulid: 01KRCX973GZBVGAC6R6KGR4K7A
     slugs: []
