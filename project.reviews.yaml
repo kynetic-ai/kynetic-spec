@@ -206618,6 +206618,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KRER48GN0CZPCV27CKSX6BQQ
         timestamp: 2026-05-12T18:45:31.061Z
+      - _ulid: 01KRER725D0PQNGV051XQ34418
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRER48GN0CZPCV27CKSX6BQQ
+        timestamp: 2026-05-12T18:47:00.014Z
     examined_commit: 671d9b4584a8dfb718be8fa81a3c153965e62a4c
     external_links: []
     lifecycle_state: open
@@ -206647,8 +206653,26 @@ reviews:
               violated because the rule credits cleanup that does not terminate the just-started
               daemon."
             created_at: 2026-05-12T18:45:28.214Z
+          - _ulid: 01KRER6ZE2FZEEAD6C5GYWY2WM
+            author: Jacob Chapel
+            body: >-
+              Clarifying the blocker body because my first command lost inline code formatting to
+              shell interpolation:
+
+
+              MUST-FIX: helper-body target validation still accepts any identifier as a daemon
+              target. `isVerifiableKillTarget()` returns true for every `Identifier`, so a local
+              helper can ignore the PID passed by the cleanup callback and kill a different outer
+              variable while still satisfying cleanup. Evidence: an ad hoc oxlint probe with
+              `function killPid(_pid) { process.kill(otherPid, "SIGTERM"); }` followed by
+              `onTestFinished(() => killPid(pid))` reported `Found 0 warnings and 0 errors`; the
+              same false negative appears through a local object-literal `kill()` method that kills
+              `otherPid`. Impact: `ac-cleanup-operation-terminates-daemon` and
+              `ac-cleanup-helper-origin-is-trusted` are still violated because the rule credits
+              cleanup that does not terminate the just-started daemon.
+            created_at: 2026-05-12T18:46:57.218Z
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T18:39:00.497Z
-    updated_at: 2026-05-12T18:45:28.214Z
+    updated_at: 2026-05-12T18:46:57.218Z
     notes: []
