@@ -206825,6 +206825,12 @@ reviews:
         payload:
           thread_ulid: 01KRER48GN0CZPCV27CKSX6BQQ
         timestamp: 2026-05-12T20:02:03.776Z
+      - _ulid: 01KREWGW6CHHRXSRH0X1EDZNF2
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRERYWS4BT0J9QXXKC3QVS0D
+        timestamp: 2026-05-12T20:02:15.884Z
     examined_commit: 671d9b4584a8dfb718be8fa81a3c153965e62a4c
     external_links: []
     lifecycle_state: closed
@@ -206920,6 +206926,15 @@ reviews:
               Categories searched: correctness, AC alignment, helper-origin edge cases, kill-target
               edge cases, test quality, integration/lint behavior. One MUST-FIX blocker recorded.
             created_at: 2026-05-12T19:00:00.932Z
+          - _ulid: 01KREWGTTFDVB7Y4NEWJFQPS3D
+            author: "@claude"
+            body: "Acknowledged. Cycle-10 changes: target-ownership predicate added in
+              tools/eslint-rules/no-leaky-test-daemon.js; new positive tests in
+              tests/lint-no-leaky-test-daemon.test.ts (3 flag-it cases + 1 accepted
+              longhand-property companion). Both ad hoc probes from the cycle-9 evidence log now
+              flag with no-leaky-test-daemon; full targeted suite (364 + 5 new = 369 tests) and full
+              npm test suite (9149/9149 active) pass."
+            created_at: 2026-05-12T20:02:14.478Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -206930,7 +206945,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T19:00:18.970Z
     created_at: 2026-05-12T18:39:00.497Z
-    updated_at: 2026-05-12T20:02:02.339Z
+    updated_at: 2026-05-12T20:02:14.478Z
     notes: []
   - _ulid: 01KRERNSBMVT2M524R6JBTT54Q
     slugs: []
