@@ -204925,7 +204925,18 @@ reviews:
     slugs: []
     title: Review bounded process-stop primitives
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2431 suites, 9086 tests passed, 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KREE7B3YMJ84KMMKPQR5GM3N/c2e7f82a89558a88.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-12T16:09:32.829Z
+        completed_at: 2026-05-12T16:09:32.829Z
     events:
       - _ulid: 01KREEADWJGYC6D3Q0W0G7HHA4
         actor: Jacob Chapel
@@ -204940,6 +204951,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T15:54:19.774Z
+      - _ulid: 01KREF6STHP55Q9RW7R65KF7A2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-12T16:09:34.289Z
     examined_commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
     external_links: []
     lifecycle_state: open
@@ -204952,5 +204970,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T15:54:04.568Z
-    updated_at: 2026-05-12T15:54:18.382Z
+    updated_at: 2026-05-12T16:09:32.829Z
     notes: []
