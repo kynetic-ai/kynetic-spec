@@ -1,1 +1,52 @@
-notes: []
+notes:
+  - _ulid: 01KRD96CNXM38G7FDYX7SS0HBR
+    content: >-
+      Approach:
+
+
+      Adding three failing-before-fix regression tests for @daemon-test-teardown-boundedness
+      ac-setup-failure-cleans-owned-resources and ac-cleanup-errors-preserve-primary-failure, using
+      the existing it.fails pattern from prior staged regressions.
+
+
+      Test seams (narrow, in line with __testBinaryOverride / __testObserveSpawn):
+
+      - tests/helpers/daemon.ts: __testStageHook on createTestDaemonProject (named stages:
+      after-temp-dir, after-shadow-detection, after-isolated-home) so a test can simulate a
+      setup-step failure without mutating real FS permissions.
+
+      - tests/helpers/daemon.ts: __testStopFailure on startTestDaemon so a test can inject a stop()
+      failure after the default kill, exposing the readiness+cleanup error replacement gap.
+
+      - tests/e2e/fixtures/daemon-fixture.ts: runDaemonFixtureLifecycle helper that captures the
+      wrapper's setup → use → teardown pattern at fixture-unit level so the use-error preservation
+      contract can be tested without Playwright. Helper starts buggy (mirrors current try/finally
+      semantics); fix task will refactor test-base.ts to use it and add error preservation.
+
+
+      Tests:
+
+      1. createTestDaemonProject setup-failure (it.fails) — throws at named stages, asserts tempDir
+      does not leak post-rejection. Pre-fix: tempDir leaks (no cleanup). Post-fix: tempDir cleaned
+      up.
+
+      2. startTestDaemon readiness+stop failure (it.fails) — readiness probe fails AND stop throws
+      via __testStopFailure. Pre-fix: stop error replaces DaemonReadinessError. Post-fix:
+      DaemonReadinessError preserved with stop error attached as cause/suppressed/AggregateError per
+      fix task's chosen shape.
+
+      3. runDaemonFixtureLifecycle use+teardown error preservation (it.fails) — use throws AND
+      teardown throws. Pre-fix: JS try/finally semantics drop the use error. Post-fix: use error is
+      primary; teardown error attached.
+
+
+      Positive contract tests added inline for the lifecycle helper success path and registerCleanup
+      interaction so the regression suite captures normal behavior.
+
+
+      it.fails staging keeps the merge gate green; the dependent fix task
+      @task-fix-setup-failure-cleanup-error-preservation will flip these to plain it(...) after the
+      contract is enforced.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T05:05:14.942Z

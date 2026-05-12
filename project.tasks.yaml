@@ -28884,7 +28884,7 @@
     - testing
     - daemon
     - e2e
-  notes_count: 0
+  notes_count: 1
   todos_count: 0
   created_at: 2026-05-12T00:14:55.376Z
   started_at: 2026-05-12T04:58:41.178Z
