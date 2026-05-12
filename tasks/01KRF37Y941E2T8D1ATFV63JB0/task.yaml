@@ -1,0 +1,76 @@
+_ulid: 01KRF37Y941E2T8D1ATFV63JB0
+slugs:
+  - task-centralize-dispatch-artifact-protection-decisions
+title: Centralize dispatch artifact protection decisions
+type: task
+description: |
+  Introduce a single protection-policy helper for dispatch artifact cleanup and
+  route destructive cleanup decisions through that helper.
+
+  Why: The race can reappear if branch cleanup, root-directory pruning,
+  reviewer snapshot cleanup, and workspace-record reaping each use separate
+  protection logic. A shared policy is the long-term maintenance guardrail: new
+  cleanup surfaces must consume the same active/in-flight/provisioning decision
+  instead of inventing their own eligibility checks.
+
+  What:
+  1. In `src/agent-runtime/workspace.ts`, add an internal helper such as
+     `buildDispatchArtifactProtectionState(...)` or
+     `shouldPreserveDispatchArtifact(...)` that accepts resolved dispatch
+     config, registry records/metadata, and active/in-flight task refs.
+  2. The helper must treat these as protection sources:
+     - task refs supplied by cleanup callers as active/in-flight protection;
+     - non-closed registry records while they still represent protected or
+       unclassified work, including lifecycle_state `provisioning`, `ready`,
+       `active`, `stale`, `integrating`, and `cleanup_blocked`; `closing`
+       records are protected only while active/in-flight/provisioning
+       ownership or unresolved integration remains, and otherwise may proceed
+       through scheduled `reapDispatchWorkspace()` cleanup once classification
+       says cleanup is eligible; generic orphan-branch pruning still preserves
+       non-closed registry branches;
+     - metadata-backed worktrees that can be recovered or classified before
+       deletion.
+  3. The helper must return enough information for cleanup to preserve worker
+     worktrees, reviewer worktrees/snapshots, unregistered root-directory
+     candidates equal to or contained by protected paths, and dispatch
+     branches belonging to protected records or unclassified records that have
+     not yet been determined cleanup-eligible.
+  4. Registry or metadata load/parsing failure must produce a no-blind-deletion
+     result for dispatcher-managed artifacts unless existing cleanup policy
+     classification can determine that cleanup is safe. The result must
+     include actionable diagnostic text for logs/test assertions.
+  5. Replace ad hoc protection checks inside `reconcileDispatchWorkspaceArtifacts()`
+     with calls to this helper or helper-derived protected sets.
+
+  How: Keep the helper local to workspace cleanup unless other code needs it.
+  Do not add durable lease schema or owner/TTL fields. Preserve existing cleanup
+  behavior for records that are explicitly closed or terminal cleanup-eligible
+  after classification.
+
+  Testing: Add focused helper-level tests in `tests/dispatch-workspace-cleanup.test.ts`
+  or a new `tests/dispatch-artifact-protection.test.ts` proving preserve/delete
+  decisions for active, in-flight, provisioning/protected-unclassified,
+  closing cleanup-eligible, closed, and registry-unavailable cases.
+
+  Covers: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved,
+  ac-protection-applies-to-every-destructive-surface,
+  ac-ambiguous-protection-blocks-blind-deletion; @dispatch-workspace-registry
+  ac-partial-provisioning-classified-before-cleanup.
+spec_ref: "@dispatch-workspace-cleanup-policy"
+plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-cleanup-preservation-no-blind-deletion-acs"
+  - "@task-add-startup-provisioning-classification-ac"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - workspace
+  - cleanup
+  - maintainability
+vcs_refs: []
+created_at: 2026-05-12T21:59:43.140Z
+todos: []

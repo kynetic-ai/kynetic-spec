@@ -1,0 +1,91 @@
+_ulid: 01KRF37ZHJ6AEZ14HEADGHPX6V
+slugs:
+  - task-test-cleanup-protection-positive-and-regression-cases
+title: Add positive and regression coverage for cleanup protection
+type: task
+description: >
+  Add tests proving cleanup preserves active/in-flight/provisioning artifacts,
+
+  still removes truly stale terminal artifacts, and blocks blind deletion when
+
+  registry or protection state is unavailable.
+
+
+  Why: The fix must be provable in both directions. Positive cases prove the
+
+  intended cleanup behavior still works; regression cases prove the bootstrap
+
+  race cannot delete active preparation artifacts; negative controls prove the
+
+  conservative policy does not permanently disable cleanup.
+
+
+  What:
+
+  1. Add protected-case tests for:
+     - active task refs passed through cleanup options;
+     - in-flight task refs passed through cleanup options before active
+       invocation registration;
+     - registry records with lifecycle_state `provisioning` or another
+       protected/unclassified state;
+     - `closing` records that are cleanup-eligible through scheduled reaping
+       while non-closed orphan-branch pruning still preserves their branches;
+     - reviewer snapshot paths associated with protected records;
+     - dispatch branches associated with protected or unclassified records;
+     - root-directory candidates contained by protected worker/reviewer paths.
+  2. Add cleanup-positive tests showing closed or truly orphaned worktrees,
+     root directories, reviewer snapshots, and dispatch branches are still
+     removed when no protection source applies.
+  3. Add ambiguous-state tests where registry/protection state cannot be loaded or
+     trusted, asserting cleanup does not blindly delete dispatcher-managed
+     artifacts before reconstructing, blocking with actionable diagnostics,
+     or classifying them as safely cleanup-eligible.
+  4. Add behavioral guardrail coverage for each destructive surface through
+     the public reconciliation path or focused helper API, asserting both
+     protected and cleanup-eligible outcomes for metadata-less worktree
+     removal, cleanup-eligible record reaping, reviewer snapshot removal,
+     unregistered root-directory pruning, and dispatch branch pruning.
+  5. Add a direct regression test that creates bootstrap-like nested files under
+     a worker workspace, runs `reconcileDispatchWorkspaceArtifacts()` with the
+     task protected as in-flight, and asserts the nested files and parent
+     workspace survive.
+
+  How: Prefer deterministic fixtures over sleeps. Use existing temp project,
+
+  git worktree, and registry helpers in the dispatch workspace tests. The
+
+  regression does not need to run real `npm`; it only needs to prove cleanup
+
+  cannot remove the parent tree during the in-flight bootstrap window.
+
+
+  Testing: Run
+
+  `npm test -- --run tests/dispatch-workspace-cleanup.test.ts
+  tests/dispatch-workspace-registry.test.ts`.
+
+
+  Covers: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved,
+
+  ac-protection-applies-to-every-destructive-surface,
+
+  ac-ambiguous-protection-blocks-blind-deletion; @dispatch-workspace-registry
+
+  ac-partial-provisioning-classified-before-cleanup.
+spec_ref: "@dispatch-workspace-cleanup-policy"
+plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-apply-protection-policy-across-artifact-reconciliation"
+context: []
+priority: 1
+tags:
+  - tests
+  - dispatch
+  - workspace
+  - cleanup
+vcs_refs: []
+created_at: 2026-05-12T21:59:44.434Z
+todos: []

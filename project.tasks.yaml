@@ -28954,3 +28954,180 @@
   submitted_at: 2026-05-12T08:08:41.725Z
   completed_at: 2026-05-12T08:28:39.313Z
   automation: eligible
+- _ulid: 01KRF37WZYVQHSE1W8PYMBH5R2
+  slugs:
+    - task-add-inflight-cleanup-protection-engine-ac
+  title: Add in-flight cleanup protection AC to dispatch engine
+  type: task
+  spec_ref: "@agent-dispatch-engine"
+  plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+    - dispatch
+    - scheduler
+    - cleanup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T21:59:41.822Z
+- _ulid: 01KRF37XEJDQ1CFCNYDKP4XGSX
+  slugs:
+    - task-add-cleanup-preservation-no-blind-deletion-acs
+  title: Add cleanup preservation and no-blind-deletion ACs
+  type: task
+  spec_ref: "@dispatch-workspace-cleanup-policy"
+  plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+    - dispatch
+    - workspace
+    - cleanup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T21:59:42.290Z
+- _ulid: 01KRF37XVT9YSRGV87660W7BR6
+  slugs:
+    - task-add-startup-provisioning-classification-ac
+  title: Add startup classification AC for partial provisioning artifacts
+  type: task
+  spec_ref: "@dispatch-workspace-registry"
+  plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+    - dispatch
+    - workspace
+    - recovery
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T21:59:42.714Z
+- _ulid: 01KRF37Y941E2T8D1ATFV63JB0
+  slugs:
+    - task-centralize-dispatch-artifact-protection-decisions
+  title: Centralize dispatch artifact protection decisions
+  type: task
+  spec_ref: "@dispatch-workspace-cleanup-policy"
+  plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-cleanup-preservation-no-blind-deletion-acs"
+    - "@task-add-startup-provisioning-classification-ac"
+  priority: 1
+  tags:
+    - dispatch
+    - workspace
+    - cleanup
+    - maintainability
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T21:59:43.140Z
+- _ulid: 01KRF37YPHJMC4CJ1VH7DDT3K0
+  slugs:
+    - task-include-inflight-spawn-refs-in-cleanup-inputs
+  title: Include in-flight spawn refs in cleanup inputs
+  type: task
+  spec_ref: "@agent-dispatch-engine"
+  plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-inflight-cleanup-protection-engine-ac"
+  priority: 1
+  tags:
+    - dispatch
+    - scheduler
+    - cleanup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T21:59:43.569Z
+- _ulid: 01KRF37Z421Y3S41YH2WS2R2G1
+  slugs:
+    - task-apply-protection-policy-across-artifact-reconciliation
+  title: Apply protection policy across artifact reconciliation surfaces
+  type: task
+  spec_ref: "@dispatch-workspace-cleanup-policy"
+  plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-centralize-dispatch-artifact-protection-decisions"
+    - "@task-include-inflight-spawn-refs-in-cleanup-inputs"
+  priority: 1
+  tags:
+    - dispatch
+    - workspace
+    - cleanup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T21:59:44.002Z
+- _ulid: 01KRF37ZHJ6AEZ14HEADGHPX6V
+  slugs:
+    - task-test-cleanup-protection-positive-and-regression-cases
+  title: Add positive and regression coverage for cleanup protection
+  type: task
+  spec_ref: "@dispatch-workspace-cleanup-policy"
+  plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-apply-protection-policy-across-artifact-reconciliation"
+  priority: 1
+  tags:
+    - tests
+    - dispatch
+    - workspace
+    - cleanup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T21:59:44.434Z
+- _ulid: 01KRF37ZZ4E2KKX66YP217WW69
+  slugs:
+    - task-test-dispatch-inflight-bootstrap-race-regression
+  title: Add dispatch-level in-flight bootstrap race regression
+  type: task
+  spec_ref: "@agent-dispatch-engine"
+  plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-apply-protection-policy-across-artifact-reconciliation"
+  priority: 1
+  tags:
+    - tests
+    - dispatch
+    - scheduler
+    - bootstrap
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T21:59:44.868Z
+- _ulid: 01KRF380CNC5AFY7YW4YWSGN2M
+  slugs:
+    - task-validate-inflight-cleanup-protection
+  title: Validate in-flight cleanup protection implementation
+  type: task
+  spec_ref: "@dispatch-workspace-cleanup-policy"
+  plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-test-cleanup-protection-positive-and-regression-cases"
+    - "@task-test-dispatch-inflight-bootstrap-race-regression"
+  priority: 2
+  tags:
+    - validation
+    - dispatch
+    - cleanup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T21:59:45.301Z

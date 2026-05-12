@@ -1,0 +1,93 @@
+_ulid: 01KRF37XEJDQ1CFCNYDKP4XGSX
+slugs:
+  - task-add-cleanup-preservation-no-blind-deletion-acs
+title: Add cleanup preservation and no-blind-deletion ACs
+type: task
+description: >
+  Add cleanup-policy acceptance criteria for active, in-flight, and
+
+  provisioning artifact preservation, consistent protection across destructive
+
+  cleanup surfaces, and no-blind-deletion behavior when protection state cannot be
+
+  trusted.
+
+
+  Why: @dispatch-workspace-cleanup-policy ac-4 protects active invocation
+
+  ownership for branch deletion, but the incident involves multiple artifact
+
+  surfaces and the in-flight/provisioning window before active registration.
+
+  The cleanup contract must make preservation path-independent and conservative
+
+  when ownership/protection state is unavailable, while remaining compatible with existing policy
+  that may deterministically block or clean untrusted metadata after classification.
+
+
+  What: Add these exact ACs to @dispatch-workspace-cleanup-policy.
+
+
+  AC id: ac-active-inflight-provisioning-artifact-preserved
+
+  Given: Artifact cleanup evaluates a dispatcher-managed worktree, reviewer
+    snapshot, root directory, or dispatch branch for work that is active,
+    in-flight, or in provisioning.
+  When: Cleanup determines whether that artifact is eligible for destructive
+    removal.
+  Then: Cleanup preserves the artifact instead of removing, pruning, or
+    deleting it.
+
+  AC id: ac-protection-applies-to-every-destructive-surface
+
+  Given: Artifact cleanup discovers the same protected task or workspace
+    through any destructive cleanup surface.
+  When: Cleanup evaluates worker worktrees, reviewer snapshots, root
+    directories, workspace records, or dispatch branches.
+  Then: The protected artifact receives the same preserve outcome regardless
+    of which cleanup surface discovered it.
+
+  AC id: ac-ambiguous-protection-blocks-blind-deletion
+
+  Given: Artifact cleanup cannot load or trust the registry, metadata, or
+    protection state needed to classify whether a dispatcher-managed artifact
+    is protected or safely cleanup-eligible.
+  When: The artifact would otherwise be considered eligible for destructive
+    cleanup.
+  Then: Cleanup does not blindly delete the artifact; it reconstructs or
+    reattaches trusted state, blocks cleanup with actionable guidance, or
+    proceeds only after existing cleanup policy classification determines the
+    metadata is untrusted and cleanup is safe.
+
+  How: Use `kspec item ac add @dispatch-workspace-cleanup-policy
+
+  ...` for each AC. Set @dispatch-workspace-cleanup-policy implementation
+
+  status to in_progress with `--no-cascade` unless current evidence proves all
+
+  new ACs are already implemented. Verify with `kspec item get
+
+  @dispatch-workspace-cleanup-policy`.
+
+
+  Covers: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved,
+
+  ac-protection-applies-to-every-destructive-surface,
+
+  ac-ambiguous-protection-blocks-blind-deletion.
+spec_ref: "@dispatch-workspace-cleanup-policy"
+plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - dispatch
+  - workspace
+  - cleanup
+vcs_refs: []
+created_at: 2026-05-12T21:59:42.290Z
+todos: []

@@ -1,0 +1,68 @@
+_ulid: 01KRF380CNC5AFY7YW4YWSGN2M
+slugs:
+  - task-validate-inflight-cleanup-protection
+title: Validate in-flight cleanup protection implementation
+type: task
+description: >
+  Run targeted and broad validation for the simplified in-flight cleanup
+
+  protection work and record the evidence on this validation task.
+
+
+  Why: The simplified plan is only acceptable if it is testable in both
+
+  directions and maintainable long-term. Validation must prove positive cleanup
+
+  behavior, regression protection for the bootstrap race, and guardrails for
+
+  future destructive cleanup paths.
+
+
+  What:
+
+  1. Run targeted tests:
+     - `npm test -- --run tests/dispatch-workspace-cleanup.test.ts tests/dispatch-workspace-registry.test.ts`
+     - `npm test -- --run tests/agent-dispatch-engine.test.ts tests/dispatch-runtime-bootstrap-contract.test.ts`
+  2. Run project quality gates:
+     - `npm run typecheck`
+     - `npm test -- --fresh`
+     - `kspec validate --warnings-ok`
+  3. If the full suite fails for known unrelated baseline instability, record
+     the exact command, exit code, failing test names, and focused passing
+     evidence rather than hiding the failure.
+  4. Verify `git status --short` and `.kspec` shadow status are clean or contain
+     only intended changes.
+
+  How: Capture exact command outputs and exit codes in task notes. Do not mark
+
+  unrelated durable-lease tasks complete; this plan supersedes that approach
+
+  but does not implement the deferred lease design.
+
+
+  Covers: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup;
+
+  @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved,
+
+  ac-protection-applies-to-every-destructive-surface,
+
+  ac-ambiguous-protection-blocks-blind-deletion; @dispatch-workspace-registry
+
+  ac-partial-provisioning-classified-before-cleanup.
+spec_ref: "@dispatch-workspace-cleanup-policy"
+plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-test-cleanup-protection-positive-and-regression-cases"
+  - "@task-test-dispatch-inflight-bootstrap-race-regression"
+context: []
+priority: 2
+tags:
+  - validation
+  - dispatch
+  - cleanup
+vcs_refs: []
+created_at: 2026-05-12T21:59:45.301Z
+todos: []

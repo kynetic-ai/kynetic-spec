@@ -49284,10 +49284,19 @@ plans:
       Dependency ordering keeps spec updates first, cleanup policy centralization second, engine
       input wiring in parallel with policy work, destructive-surface application after both are
       available, tests/guardrails after behavior lands, and validation last.
-    status: approved
+    status: active
     approved_at: 2026-05-12T21:59:29.946Z
     derived_specs: []
-    derived_tasks: []
+    derived_tasks:
+      - "@task-add-inflight-cleanup-protection-engine-ac"
+      - "@task-add-cleanup-preservation-no-blind-deletion-acs"
+      - "@task-add-startup-provisioning-classification-ac"
+      - "@task-centralize-dispatch-artifact-protection-decisions"
+      - "@task-include-inflight-spawn-refs-in-cleanup-inputs"
+      - "@task-apply-protection-policy-across-artifact-reconciliation"
+      - "@task-test-cleanup-protection-positive-and-regression-cases"
+      - "@task-test-dispatch-inflight-bootstrap-race-regression"
+      - "@task-validate-inflight-cleanup-protection"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/dispatch-workspace-inflight-cleanup-protection.md
     created_at: 2026-05-12T21:19:46.911Z
@@ -49311,3 +49320,31 @@ plans:
         content: Remove environment-specific mise wrappers from plan commands
         author: Jacob Chapel
         created_at: 2026-05-12T21:54:21.771Z
+      - _ulid: 01KRF380WY8SH4BH8930TDF8WM
+        content: >-
+          This is an existing-spec update plan. The `## Specs` section is deliberately omitted
+          because structured plan specs create new spec items; the intended work is to tighten
+          existing specs with explicit spec-update tasks.
+
+
+          The durable-lease plan remains useful as deferred design context, but this plan
+          intentionally does not add owner IDs, PIDs, process-start timestamps, TTLs, renewals,
+          abandoned lease ownership, or compare-and-swap lease writes. If future requirements
+          introduce multiple daemon owners, external cleanup processes, or restart-surviving
+          provisioning ownership, revive and harden the durable lease design using review feedback
+          recorded on `@01KRETXETZV92HX06C0F0R46QC` and `@01KREVDS9XYG0933RSJPPD5WEC`.
+
+
+          The central invariant for this plan is: dispatcher cleanup must not destructively remove
+          artifacts for work that is active, in-flight, provisioning, pending classification, or
+          unclassifiable because protection state is unavailable unless existing cleanup policy has
+          classified the artifact as safe to clean. Cleanup may still remove closing, closed,
+          terminal, or truly orphaned artifacts after the same protection policy classifies them as
+          cleanup-eligible and unprotected.
+
+
+          Dependency ordering keeps spec updates first, cleanup policy centralization second, engine
+          input wiring in parallel with policy work, destructive-surface application after both are
+          available, tests/guardrails after behavior lands, and validation last.
+        author: Jacob Chapel
+        created_at: 2026-05-12T21:59:45.823Z

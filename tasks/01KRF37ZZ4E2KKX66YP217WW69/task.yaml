@@ -1,0 +1,68 @@
+_ulid: 01KRF37ZZ4E2KKX66YP217WW69
+slugs:
+  - task-test-dispatch-inflight-bootstrap-race-regression
+title: Add dispatch-level in-flight bootstrap race regression
+type: task
+description: >
+  Add a higher-level dispatch engine regression test proving reconciliation
+
+  cannot delete a workspace while a spawn attempt is in-flight and blocked in
+
+  bootstrap or pre-invocation preparation.
+
+
+  Why: Cleanup unit tests prove the policy, but the incident came from
+
+  composition across `_spawnInvocation()`, inFlightTaskKeys, bootstrap, and
+
+  artifact reconciliation. A dispatch-level regression protects that boundary.
+
+
+  What:
+
+  1. Add a test in `tests/agent-dispatch-engine.test.ts` or a focused dispatch
+     integration test that starts a spawn attempt for a task and blocks it at a
+     deterministic bootstrap/preparation barrier after `inFlightTaskKeys` is
+     set but before active invocation registration.
+  2. Create a sentinel file under the worker workspace representing
+     bootstrap-created files.
+  3. Trigger workspace artifact reconciliation while the spawn remains
+     in-flight.
+  4. Assert the workspace directory and sentinel survive.
+
+  5. Release the barrier and assert the spawn reaches the expected controlled
+     success or failure path without cleanup-induced ENOENT/TAR/spawn errors.
+
+  How: Use a probarrier, fixture script, or file sentinel instead of
+
+  timing sleeps. Keep the test focused on cleanup/provisioning interaction;
+
+  do not require real package-manager network work.
+
+
+  Testing: Run
+
+  `npm test -- --run tests/agent-dispatch-engine.test.ts
+  tests/dispatch-runtime-bootstrap-contract.test.ts`.
+
+
+  Covers: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup;
+
+  @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved.
+spec_ref: "@agent-dispatch-engine"
+plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-apply-protection-policy-across-artifact-reconciliation"
+context: []
+priority: 1
+tags:
+  - tests
+  - dispatch
+  - scheduler
+  - bootstrap
+vcs_refs: []
+created_at: 2026-05-12T21:59:44.868Z
+todos: []

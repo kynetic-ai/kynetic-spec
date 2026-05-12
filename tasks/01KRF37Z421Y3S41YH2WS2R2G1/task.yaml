@@ -1,0 +1,73 @@
+_ulid: 01KRF37Z421Y3S41YH2WS2R2G1
+slugs:
+  - task-apply-protection-policy-across-artifact-reconciliation
+title: Apply protection policy across artifact reconciliation surfaces
+type: task
+description: |
+  Ensure every destructive path in `reconcileDispatchWorkspaceArtifacts()` and
+  the cleanup paths it calls honors active, in-flight, and provisioning
+  protection.
+
+  Why: The original failure can reappear through any cleanup surface that
+  bypasses protection: metadata-less worktree removal, reviewer snapshot
+  cleanup, root-directory pruning, cleanup-eligible record reaping, or orphan
+  dispatch branch deletion.
+
+  What:
+  1. In `src/agent-runtime/workspace.ts`, before removing metadata-less
+     dispatch worktrees, consult the shared protection decision and preserve
+     artifacts that can be associated with active/in-flight/provisioning work
+     or that cannot be classified safely.
+  2. Before calling `reapDispatchWorkspace()`, skip or block records whose task
+     ref is active/in-flight or whose registry state is provisioning, protected, or unclassified
+     until classification says the record is cleanup-eligible. Do not treat
+     `closing` alone as protected when existing cleanup prerequisites are met
+     and no active/in-flight/provisioning ownership remains.
+  3. Before deleting reviewer snapshot worktrees, preserve paths associated
+     with protected records or active/in-flight task refs.
+  4. Before deleting unregistered root directories without `.git`, preserve
+     candidates equal to or contained by protected worker/reviewer paths, and
+     avoid blind deletion for ambiguous dispatcher-managed candidates when
+     protection state is unavailable unless classification determines cleanup
+     is safe.
+  5. Before deleting dispatch branches, preserve branches tracked by protected
+     or unclassified records and avoid blind deletion when the registry cannot
+     be loaded or trusted unless existing cleanup classification has
+     determined the branch is safely cleanup-eligible.
+  6. Ensure diagnostics identify the cleanup surface and protection source when
+     an artifact is preserved or blocked.
+
+  How: Preserve existing behavior for truly orphaned artifacts, for scheduled
+  `reapDispatchWorkspace()` cleanup of `closing` records after classification,
+  and for closed records that are cleanup-eligible under existing retention
+  rules. Orphan dispatch-branch pruning must still honor the existing
+  registry contract that preserves branches for non-closed records; branch
+  deletion for a closing workspace belongs to scheduled/bounded reaping, not to
+  the generic orphan-branch sweep. Avoid a broad grace-period heuristic as the
+  primary fix; use explicit protection state instead.
+
+  Testing: Update `tests/dispatch-workspace-cleanup.test.ts` and/or
+  `tests/dispatch-workspace-registry.test.ts` to cover each destructive surface
+  with both protected and cleanup-eligible negative-control cases.
+
+  Covers: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved,
+  ac-protection-applies-to-every-destructive-surface,
+  ac-ambiguous-protection-blocks-blind-deletion; @dispatch-workspace-registry
+  ac-partial-provisioning-classified-before-cleanup.
+spec_ref: "@dispatch-workspace-cleanup-policy"
+plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-centralize-dispatch-artifact-protection-decisions"
+  - "@task-include-inflight-spawn-refs-in-cleanup-inputs"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - workspace
+  - cleanup
+vcs_refs: []
+created_at: 2026-05-12T21:59:44.002Z
+todos: []

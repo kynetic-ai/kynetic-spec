@@ -1,0 +1,56 @@
+_ulid: 01KRF37XVT9YSRGV87660W7BR6
+slugs:
+  - task-add-startup-provisioning-classification-ac
+title: Add startup classification AC for partial provisioning artifacts
+type: task
+description: |
+  Add a registry/recovery acceptance criterion requiring restart and periodic
+  reconciliation to classify provisioning, unclassified, or metadata-backed
+  partial workspaces before destructive cleanup treats them as orphaned
+  artifacts, while preserving the existing ability for classified `closing`
+  workspaces to complete scheduled cleanup.
+
+  Why: This plan intentionally avoids full durable owner/TTL leases. Restart
+  recovery still needs a conservative contract: ambiguous partial provisioning
+  artifacts must be reattached, retried, marked stale/unhealthy, or otherwise
+  classified before cleanup deletes them.
+
+  What: Add this exact AC to @dispatch-workspace-registry.
+
+  AC id: ac-partial-provisioning-classified-before-cleanup
+  Given: Daemon startup or periodic reconciliation finds a provisioning
+    lifecycle state, unclassified non-closed workspace record, or
+    metadata-backed dispatch artifact that may belong to a task whose
+    invocation is not currently active.
+  When: Artifact cleanup is about to evaluate that workspace's worktrees,
+    reviewer snapshot, root directory, or dispatch branch for destructive
+    cleanup.
+  Then: Reconciliation first classifies the workspace as preserved for retry,
+    active/in-flight, stale/unhealthy with actionable recovery detail, or
+    cleanup-eligible state. A `closing` workspace with satisfied cleanup
+    prerequisites and no active/in-flight/provisioning ownership may be
+    classified cleanup-eligible so scheduled cleanup can reach `closed`.
+
+  How: Use `kspec item ac add @dispatch-workspace-registry ...`
+  with the exact AC text above. Set @dispatch-workspace-registry implementation
+  status to in_progress with `--no-cascade` unless current evidence proves the
+  new AC is already implemented. Verify with `kspec item get
+  @dispatch-workspace-registry`.
+
+  Covers: @dispatch-workspace-registry ac-partial-provisioning-classified-before-cleanup.
+spec_ref: "@dispatch-workspace-registry"
+plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - dispatch
+  - workspace
+  - recovery
+vcs_refs: []
+created_at: 2026-05-12T21:59:42.714Z
+todos: []

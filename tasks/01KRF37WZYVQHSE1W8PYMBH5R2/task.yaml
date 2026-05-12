@@ -1,0 +1,51 @@
+_ulid: 01KRF37WZYVQHSE1W8PYMBH5R2
+slugs:
+  - task-add-inflight-cleanup-protection-engine-ac
+title: Add in-flight cleanup protection AC to dispatch engine
+type: task
+description: |
+  Add an engine-level acceptance criterion requiring queued-to-spawn work to
+  count as protected cleanup ownership until the spawn attempt reaches a
+  registered active invocation or terminal preparation outcome.
+
+  Why: @agent-dispatch-engine already has ac-26 requiring at most one active
+  invocation per task, and the implementation uses inFlightTaskKeys to enforce
+  that during the pre-active window. Cleanup does not currently receive that
+  in-flight set, so the same work can be protected from duplicate dispatch but
+  unprotected from artifact deletion.
+
+  What: Add this exact AC to @agent-dispatch-engine.
+
+  AC id: ac-inflight-spawn-refs-protect-cleanup
+  Given: A dispatch entry has been dequeued for spawn and the dispatch engine
+    has marked the task in-flight, but no active invocation has been
+    registered for that task yet.
+  When: Startup, periodic, or post-event reconciliation invokes workspace
+    artifact cleanup.
+  Then: The task reference is included in the cleanup protection input so the
+    pre-active spawn window receives the same artifact protection as a
+    registered active invocation.
+
+  How: Use `kspec item ac add @agent-dispatch-engine ...` with
+  the exact AC text above, then set @agent-dispatch-engine implementation
+  status to in_progress with `--no-cascade` unless current evidence proves the
+  new AC is already implemented. Verify with `kspec item get
+  @agent-dispatch-engine`.
+
+  Covers: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup.
+spec_ref: "@agent-dispatch-engine"
+plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - dispatch
+  - scheduler
+  - cleanup
+vcs_refs: []
+created_at: 2026-05-12T21:59:41.822Z
+todos: []

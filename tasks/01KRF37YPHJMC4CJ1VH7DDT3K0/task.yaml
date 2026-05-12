@@ -1,0 +1,49 @@
+_ulid: 01KRF37YPHJMC4CJ1VH7DDT3K0
+slugs:
+  - task-include-inflight-spawn-refs-in-cleanup-inputs
+title: Include in-flight spawn refs in cleanup inputs
+type: task
+description: |
+  Update the dispatch engine cleanup input so tasks between queue dequeue and
+  active invocation registration are protected from artifact reconciliation.
+
+  Why: `_spawnInvocation()` already records `${agentId}:${taskRef}` in
+  `inFlightTaskKeys` before provisioning/bootstrap. `_hasActiveInvocationForTask()`
+  already considers those keys for scheduler deduplication. `_activeTaskRefs()`
+  currently ignores them, so cleanup receives a weaker view than the scheduler.
+
+  What:
+  1. In `src/agent-runtime/dispatch.ts`, replace `_activeTaskRefs()` with a
+     cleanup-specific helper or update it so the set includes task refs parsed
+     from `this.inFlightTaskKeys` as well as `activeInvocationDetails`.
+  2. Parse in-flight keys safely by splitting only on the first `:` so task
+     refs remain intact.
+  3. Keep `_hasActiveInvocationForTask()` semantics unchanged, but reuse the
+     same parsing helper if practical.
+  4. Verify both `reconcileDispatchWorkspaceArtifacts()` call sites in
+     `start()` and `_reconcile()` receive the expanded protection set.
+
+  How: Keep this as an in-memory/current-state protection fix. Do not add
+  registry-backed leases or durable owner fields.
+
+  Testing: Add or update unit coverage in `tests/agent-dispatch-engine.test.ts`
+  for cleanup input generation, including a task that is in-flight but not yet
+  in `activeInvocationDetails`.
+
+  Covers: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup.
+spec_ref: "@agent-dispatch-engine"
+plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-inflight-cleanup-protection-engine-ac"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - scheduler
+  - cleanup
+vcs_refs: []
+created_at: 2026-05-12T21:59:43.569Z
+todos: []
