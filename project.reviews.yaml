@@ -207838,7 +207838,18 @@ reviews:
     slugs: []
     title: "Focused plan review: Dispatch Workspace Provisioning Lease Protection (necessity and scope)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Observed code shows an in-memory in-flight marker exists before provisioning/bootstrap,
+          but _activeTaskRefs excludes it while cleanup already blocks reaping for activeTaskRefs.
+          The plan does not show evidence that restart-surviving durable leases are required.
+        name: Necessity evidence
+        required: true
+        created_at: 2026-05-12T19:45:31.244Z
+        completed_at: 2026-05-12T19:45:31.244Z
     events:
       - _ulid: 01KREVDS9XFDTD63BNFYSWQE6Z
         actor: Jacob Chapel
@@ -207888,6 +207899,13 @@ reviews:
           kind: nit
           thread_ulid: 01KREVHDBDSWRDNWASPEB4D3DF
         timestamp: 2026-05-12T19:45:06.549Z
+      - _ulid: 01KREVJ8QTJJ63WDF8ED4CPKEV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Necessity evidence
+        timestamp: 2026-05-12T19:45:32.922Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -207991,5 +208009,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-12T19:43:06.045Z
-    updated_at: 2026-05-12T19:45:04.878Z
+    updated_at: 2026-05-12T19:45:31.244Z
     notes: []
