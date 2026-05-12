@@ -28805,6 +28805,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-12T00:14:54.744Z
+  automation: eligible
 - _ulid: 01KRCRJS2M4VVME99W9ACV8JAE
   slugs:
     - task-fix-active-request-teardown-and-observation-bounds
