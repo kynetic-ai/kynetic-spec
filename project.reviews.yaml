@@ -204964,6 +204964,17 @@ reviews:
         runner: reviewer
         created_at: 2026-05-12T16:09:41.013Z
         completed_at: 2026-05-12T16:09:41.013Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate: schema and references OK; repository-wide warnings only (exit 6). kspec
+          validate --warnings-ok exited 0 with the same warnings."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-12T16:09:45.097Z
+        completed_at: 2026-05-12T16:09:45.097Z
     events:
       - _ulid: 01KREEADWJGYC6D3Q0W0G7HHA4
         actor: Jacob Chapel
@@ -204999,6 +205010,13 @@ reviews:
           status: pass
           name: diff and AC review
         timestamp: 2026-05-12T16:09:42.466Z
+      - _ulid: 01KREF75Y0JF1VR95T9VWAXAF3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-12T16:09:46.689Z
     examined_commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
     external_links: []
     lifecycle_state: open
@@ -205011,5 +205029,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T15:54:04.568Z
-    updated_at: 2026-05-12T16:09:41.013Z
+    updated_at: 2026-05-12T16:09:45.097Z
     notes: []
