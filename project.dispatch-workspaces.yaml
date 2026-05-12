@@ -31456,34 +31456,34 @@ workspaces:
     canonical_branch: dispatch/task/task-add-cleanup-preservation-no-blind-deletion-acs/01krf37x
     canonical_branch_head: 0c6506a55cdb40538275c315cad4c85b131bc7ba
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-05-12T22:58:50.740Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-05-12T23:31:13.954Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T22:59:21.131Z
+      updated_at: 2026-05-12T23:31:13.954Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0c6506a55cdb40538275c315cad4c85b131bc7ba
-      updated_at: 2026-05-12T22:58:50.740Z
-    lifecycle_state: integrating
+      updated_at: 2026-05-12T23:31:13.954Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KRF37XEJDQ1CFCNYDKP4XGSX"
     task_slug: task-add-cleanup-preservation-no-blind-deletion-acs
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T22:59:21.131Z
-      last_reconciled_at: 2026-05-12T22:59:21.131Z
+      last_reconciled_at: 2026-05-12T23:31:13.954Z
       created_at: 2026-05-12T22:45:52.766Z
-      updated_at: 2026-05-12T22:59:21.131Z
+      updated_at: 2026-05-12T23:31:13.954Z
     workspace_id: dispatch-workspace-01KRF37XEJDQ1CFCNYDKP4XGSX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
