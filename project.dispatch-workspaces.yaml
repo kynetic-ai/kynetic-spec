@@ -26488,7 +26488,7 @@ workspaces:
         head: 9200a23d698d381592a60d9c0419f877d77b19ac
         last_seen_at: 2026-05-12T04:36:57.274Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-active-request-bounded-observation-regressions-01krcrjr
-  - active_role: null
+  - active_role: worker
     base_branch_point: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
     bootstrap:
       status: succeeded
@@ -26967,7 +26967,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T05:51:52.342Z
+      updated_at: 2026-05-12T05:52:17.291Z
     integration:
       status: pending
       detail: null
@@ -26976,16 +26976,16 @@ workspaces:
       target_branch: dev
       target_commit: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
       updated_at: 2026-05-12T05:51:52.342Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KRCRJSCGAWTVGWM82DNSWWCN"
     task_slug: task-add-setup-failure-error-preservation-regressions
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-12T05:22:10.254Z
-      last_reconciled_at: 2026-05-12T05:51:52.342Z
+      last_active_at: 2026-05-12T05:52:17.291Z
+      last_reconciled_at: 2026-05-12T05:52:17.291Z
       created_at: 2026-05-12T04:57:42.523Z
-      updated_at: 2026-05-12T05:52:16.388Z
+      updated_at: 2026-05-12T05:52:17.291Z
     workspace_id: dispatch-workspace-01KRCRJSCGAWTVGWM82DNSWWCN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
