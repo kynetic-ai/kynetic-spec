@@ -203590,6 +203590,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T06:35:33.383Z
+      - _ulid: 01KRDG09JPH50X5BP1PMFW2XM2
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRDEB3EJQ255SSXARHGE7D9S
+        timestamp: 2026-05-12T07:04:15.190Z
+      - _ulid: 01KRDG0D0EWGE1NT7TD20K4JC4
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRDEB3EJQ255SSXARHGE7D9S
+        timestamp: 2026-05-12T07:04:18.702Z
+      - _ulid: 01KRDG0GCMANYS6ENWFC1DR36Y
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRDEB7CY44HQYM5F0PMQH3C1
+        timestamp: 2026-05-12T07:04:22.164Z
+      - _ulid: 01KRDG0KQNS5Y0WV940GNZEZRP
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRDEB7CY44HQYM5F0PMQH3C1
+        timestamp: 2026-05-12T07:04:25.589Z
     examined_commit: 522d65ee504661e1f648142e7a801325b86289d4
     external_links: []
     lifecycle_state: closed
@@ -203621,7 +203645,37 @@ reviews:
               by executing the helper shape with a throwing setup: output was thrown=setup/start
               failure and teardownRan=false."
             created_at: 2026-05-12T06:35:12.210Z
+          - _ulid: 01KRDG0833YT3041HQJF2P18ES
+            author: "@claude"
+            body: >-
+              Fixed. The cycle 1 wrapper refactor passed startDaemon() as the lifecycle helpers
+              setup callback, but runDaemonFixtureLifecycle invokes setup() outside its try/finally
+              — so a readiness/startup failure bypassed teardown (no stopDaemon, no second-project
+              cleanup, no project.cleanup). Reproduced the failure mode locally (order =
+              [start-daemon]; teardownRan = false).
+
+
+              Fix: extracted runPlaywrightFixtureBody in tests/e2e/fixtures/daemon-fixture.ts that
+              wires startDaemon inside the lifecycle helpers use phase (not setup), so a startup
+              failure flows through the try/finally and still triggers teardown. test-base.ts now
+              delegates to it, restoring the pre-extraction wrapper shape where startDaemon was
+              inside the wrappers own try/finally.
+
+
+              Wrapper coverage added in tests/e2e-fixture-daemon-cleanup.test.ts under
+              describe("runPlaywrightFixtureBody — wrapper startup-failure cleanup"):
+                1. Positive: startDaemon → body → teardown invocation order on success.
+                2. Regression (passing post-fix): startDaemon throws → teardown still runs, body never runs. order asserts exactly [start-daemon, teardown]. A regression that reverted to setup-as-startup would observe [start-daemon] (no teardown) and fail this assertion.
+                3. Staged (it.fails): startDaemon throws + teardown throws → primary error preservation. Pairs with the existing use-phase preservation regression; flips post-fix when @task-fix-setup-failure-cleanup-error-preservation lands.
+
+              Verified:
+                - Reproduced the regressed shape (startDaemon as setup) locally — teardown observably skipped.
+                - Focused: 16/16 suites, 27/27 tests pass.
+                - Full: 9071 passed, 5 skipped, 15 expected fail (it.fails staged). One unrelated flake in tests/file-lock.test.ts (concurrent writes, passed on re-run).
+            created_at: 2026-05-12T07:04:13.664Z
         kind: blocker
+        resolved_at: 2026-05-12T07:04:17.424Z
+        resolved_by: "@claude"
       - _ulid: 01KRDEB7CY44HQYM5F0PMQH3C1
         entries:
           - _ulid: 01KRDEB7CY95XHK3S7FT7HG36P
@@ -203640,7 +203694,14 @@ reviews:
               correctness, setup edge cases, error handling, test quality, integration, and
               source-scanning risk."
             created_at: 2026-05-12T06:35:16.254Z
+          - _ulid: 01KRDG0F2E60NT6Q68BAXK0QZW
+            author: "@claude"
+            body: Acknowledged — evidence log noted. The kspec validate exit-6 reflects pre-existing project
+              warnings (reference/alignment/completeness) and is not affected by this change.
+            created_at: 2026-05-12T07:04:20.814Z
         kind: nit
+        resolved_at: 2026-05-12T07:04:24.226Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -203650,5 +203711,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T06:35:33.383Z
     created_at: 2026-05-12T06:22:50.808Z
-    updated_at: 2026-05-12T06:35:33.383Z
+    updated_at: 2026-05-12T07:04:24.226Z
     notes: []
