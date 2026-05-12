@@ -206744,9 +206744,25 @@ reviews:
           kind: nit
           thread_ulid: 01KRERYWS4BT0J9QXXKC3QVS0D
         timestamp: 2026-05-12T19:00:03.107Z
+      - _ulid: 01KRERZECTK299N21N6G7KT2CN
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T19:00:18.970Z
+      - _ulid: 01KRERZECTTEA61TPX2V941NPH
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T19:00:18.970Z
     examined_commit: 671d9b4584a8dfb718be8fa81a3c153965e62a4c
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -206822,9 +206838,16 @@ reviews:
               edge cases, test quality, integration/lint behavior. One MUST-FIX blocker recorded.
             created_at: 2026-05-12T19:00:00.932Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T19:00:18.970Z
     created_at: 2026-05-12T18:39:00.497Z
-    updated_at: 2026-05-12T19:00:00.932Z
+    updated_at: 2026-05-12T19:00:18.970Z
     notes: []
   - _ulid: 01KRERNSBMVT2M524R6JBTT54Q
     slugs: []
