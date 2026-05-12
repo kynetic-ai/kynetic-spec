@@ -46170,7 +46170,7 @@ runs:
     completed_at: 2026-05-12T04:09:45.222Z
   - _ulid: 01KRD6W2D0GRN69F283ZFJD2WZ
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -46195,7 +46195,157 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-12T04:25:06.525Z
-        completed_at: 2026-05-12T04:25:06.525Z
+        completed_at: 2026-05-12T04:25:52.366Z
+        notes: >-
+          Coverage search results: No matches found for "synthetic oxlint fixture" found no exact
+          phrase, but 01KR3W7P8 [requirement] Daemon Test Guardrail Precision
+          @daemon-test-guardrail-precision in_progress
+            matched: notes[0]
+          01KNTACP [completed] P2 Custom lint rule for unsafe daemon-spawn patterns in test files
+          @task-lint-rule-test-daemon-cleanup
+            matched: description, closed_reason, notes[0], notes[1]
+          01KP78S9 [completed] P1 Suppress CLI auto-start daemon in tests to stop orphan daemon leak
+          @task-tests-suppress-cli-auto-start-daemon
+            matched: description, notes[1]
+          01KQ0JDKW [completed] P2 Repair first wave of invalid AC annotations
+          @task-ac-annotation-repair-wave-one
+            matched: notes[1]
+          01KR22GK1 [completed] P2 Migrate real daemon Vitest process tests to the shared fixture
+          @task-migrate-real-daemon-vitest-tests
+            matched: notes[0]
+          01KR22GM6 [completed] P4 Enforce daemon test fixture usage with guardrails
+          @task-enforce-daemon-test-fixture-usage
+            matched: description, notes[0], notes[1], notes[3], notes[6]
+          01KR22GME [completed] P5 Validate daemon fixture standardization across the suite
+          @task-validate-daemon-test-fixture-standardization
+            matched: description, notes[1]
+          01KR3W7PC [completed] P1 Add guardrail regression tests for precise daemon classification
+          @task-add-guardrail-classification-regressions
+            matched: description, notes[1], notes[3]
+          01KR3W7PP [completed] P1 Fix guardrail daemon command classification
+          @task-fix-guardrail-daemon-command-classification
+            matched: description, notes[15], notes[21]
+          01KR3W7Q0 [completed] P1 Add guardrail regression tests for detached cleanup timing
+          @task-add-detached-cleanup-timing-regressions
+            matched: description, notes[0], notes[2], notes[4], notes[6], notes[9]
+          01KR3W7QA [completed] P1 Fix guardrail detached cleanup timing analysis
+          @task-fix-detached-cleanup-timing-analysis
+            matched: description, notes[0], notes[2], notes[4], notes[6], notes[8], notes[10], notes[12], notes[14]
+          01KR3W7R7 [completed] P2 Harden Playwright daemon fixture cleanup registration
+          @task-harden-playwright-daemon-fixture-cleanup
+            matched: notes[1], notes[3]
+          01KR3W7S3 [completed] P2 Resolve CLI lifecycle test daemon endpoints from reported
+          metadata @task-resolve-cli-lifecycle-test-endpoints
+            matched: description, notes[0], notes[1]
+          01KR3W7SP [completed] P3 Validate daemon test hardening end to end
+          @task-validate-daemon-test-hardening
+            matched: description, notes[0]
+          01KR6M6S [completed] P2 Tighten daemon hardening specs for cleanup binding and approved
+          helpers @task-tighten-daemon-hardening-specs
+            matched: description, notes[0]
+          01KR6M6X [completed] P2 Add real daemon cleanup-registration failure regression
+          @task-add-register-cleanup-failure-regression
+            matched: notes[0]
+          01KR6M74 [completed] P2 Add guardrail regressions for unbound cleanup callbacks and local
+          wrappers @task-add-guardrail-binding-wrapper-regressions
+            matched: description, notes[0], notes[2]
+          01KR6M77 [completed] P2 Fix guardrail cleanup-binding and approved-helper analysis
+          @task-fix-guardrail-binding-wrapper-analysis
+            matched: description, closed_reason, notes[0], notes[2], notes[4], notes[6], notes[8], notes[10], notes[12], notes[14], notes[16], notes[18]
+          01KR6M7A [completed] P3 Validate daemon hardening corrective work end to end
+          @task-validate-daemon-hardening-corrections
+            matched: description, notes[0]
+          01KRCRJP9 [completed] P1 Add adversarial guardrail regressions for cleanup effects
+          @task-add-guardrail-cleanup-effect-regressions
+            matched: description, notes[0], notes[1], notes[3]
+          01KRCRJPM [needs_work] P1 Fix guardrail cleanup-effect classification
+          @task-fix-guardrail-cleanup-effect-classification
+            matched: description, notes[0]
+          01KRCRJPY [completed] P1 Add adversarial guardrail regressions for cleanup boundaries
+          @task-add-guardrail-cleanup-boundary-regressions
+            matched: description, notes[0], notes[3], notes[4]
+          01KRCRJQ8 [pending] P1 Fix guardrail cleanup-boundary classification
+          @task-fix-guardrail-cleanup-boundary-classification
+            matched: description
+          01KRCRJQH [pending] P2 Add implicit auto-start daemon cleanup regressions
+          @task-add-implicit-autostart-cleanup-regressions
+            matched: description
+          01KRCRJQV [pending] P2 Fix implicit auto-start daemon cleanup coverage
+          @task-fix-implicit-autostart-cleanup-coverage
+            matched: description
+          01KRCRJSZ [pending] P3 Validate daemon cleanup contract hardening end to end
+          @task-validate-daemon-cleanup-contract-hardening
+            matched: description
+          01KR2ZYWF [inbox] Investigate whether oxlint JS plugins expose a scope mana...
+            matched: text
+          01KR2ZYWS [inbox] Optimize tests/lint-no-leaky-test-daemon.test.ts and test...
+            matched: text
+          01KNTKFQ [observation] Custom oxlint rule implementation was smooth because: (1)...
+            matched: content
+          01KNTN6C [observation] Fix cycle for no-leaky-test-daemon lint rule was clean: r...
+            matched: content
+          01KNTQ0D [observation] When a lint rule (or any code with multiple validation pa...
+            matched: content
+          01KNTRDW1 [observation] Fix cycle 3 on no-leaky-test-daemon completed in a single...
+            matched: content
+          01KR2TXGP [observation] For fixture-contract lint rules (e.g. tools/eslint-rules/...
+            matched: content
+          01KR2ZYW [observation] Identifier tracking in lint rules must be scope-aware fro...
+            matched: content
+          01KR4JYF [observation] Daemon-entry classifier in tools/eslint-rules/no-leaky-te...
+            matched: content
+          01KR57SK [observation] When implementing static-analysis classifier rules that m...
+            matched: content
+          01KR5CYKN [observation] Static-analysis precision rule fix cycles repeat because ...
+            matched: content
+          01KR607K [observation] When changing a static-analysis lint rule, run the review...
+            matched: content
+          01KR62F0 [observation] Synthetic oxlint probe files (write minimal repro at /tmp...
+            matched: content
+          01KR79NX [observation] Static-analysis fix cycles can introduce polarity errors ...
+            matched: content
+          01KR7C8E [observation] no-leaky-test-daemon rule went through 6 fix cycles, each...
+            matched: content
+          01KR7F2SW [observation] Static analysis security checks added to ONE code path si...
+            matched: content
+
+          42 result(s) found existing observation @01KR62F0 about synthetic oxlint probe files and
+          several no-leaky-test-daemon static-analysis observations, including scope-aware
+          identifier tracking @01KR2ZYW and inbox items @01KR2ZYWF / @01KR2ZYWS. 01KKB8FCD
+          [decision] Spec Completeness Policy @spec-completeness-policy implemented
+            matched: description
+          01KJXSVFH [completed] P1 Implement UI Design System @implement-ui-design-system
+            matched: notes[21]
+          01KKB8FER [completed] P3 Implement CLI AC Backfill @implement-cli-ac-backfill
+            matched: notes[3]
+          01KKJKM8 [completed] P3 Implement Droid Setup Integration
+          @implement-droid-setup-integration
+            matched: notes[8]
+          01KM6YEZ [completed] P2 Purge deprecated spec references @task-purge-old-storage-refs
+            matched: closed_reason
+          01KN7Q6AR [completed] P1 Replace dual-backend watcher with Chokidar-only implementation
+          @task-chokidar-standardize
+            matched: closed_reason
+          01KNDDJ28 [completed] P1 Add context reuse AC to daemon-entity-cache
+          @task-add-ac-context-reuse
+            matched: closed_reason
+          01KQD418 [completed] P1 Keep daemon web UI entry responses current with the served bundle
+          @task-daemon-web-ui-current-entry-responses
+            matched: closed_reason
+          01KRCRJPM [needs_work] P1 Fix guardrail cleanup-effect classification
+          @task-fix-guardrail-cleanup-effect-classification
+            matched: notes[2]
+          01KNTPX4T [observation] Review signal noise: repo-wide kspec validate warnings ar...
+            matched: content
+
+          10 result(s) found existing observation @01KNTPX4T about repo-wide kspec validate warning
+          noise. No matches found for "nested local helper" found no exact match, but the concrete
+          issue is already recorded as a blocker on review @01KRD659, so a duplicate reflection
+          capture is not needed.
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-12T04:25:52.366Z
+        completed_at: 2026-05-12T04:25:52.366Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T04:24:39.585Z
