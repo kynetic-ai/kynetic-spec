@@ -29454,7 +29454,7 @@ workspaces:
         head: e9b7dc1030ff9359f7f4f36e4e1d6ad60d691f2d
         last_seen_at: 2026-05-12T16:37:43.488Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-bounded-process-stop-primitives-01krcrjr
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
     bootstrap:
       status: succeeded
@@ -29922,34 +29922,34 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-active-request-teardown-and-observation-bounds/01krcrjs
     canonical_branch_head: e105a25901b63defac3d25adc605a545ac1df7d2
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-05-12T17:38:06.705Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-05-12T17:58:28.042Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T17:38:40.862Z
+      updated_at: 2026-05-12T17:58:28.042Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
-      updated_at: 2026-05-12T17:38:06.705Z
-    lifecycle_state: integrating
+      updated_at: 2026-05-12T17:58:28.042Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KRCRJS2M4VVME99W9ACV8JAE"
     task_slug: task-fix-active-request-teardown-and-observation-bounds
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T17:38:40.862Z
-      last_reconciled_at: 2026-05-12T17:38:40.862Z
+      last_reconciled_at: 2026-05-12T17:58:28.042Z
       created_at: 2026-05-12T17:10:20.301Z
-      updated_at: 2026-05-12T17:38:40.862Z
+      updated_at: 2026-05-12T17:58:28.042Z
     workspace_id: dispatch-workspace-01KRCRJS2M4VVME99W9ACV8JAE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
