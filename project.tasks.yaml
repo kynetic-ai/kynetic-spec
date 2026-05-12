@@ -28767,8 +28767,28 @@
   type: task
   spec_ref: "@daemon-test-teardown-boundedness"
   plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - |-
+      Dispatch bootstrap failed: Bootstrap step "install-workspace-dependencies" failed with exit code 1. Output: tests-01krcrjr-review/node_modules/@lucide/svelte/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/bits-ui/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/caniuse-lite/data'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/playwright-core/lib'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/@swc/helpers/cjs'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/bun-types/docs'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/@lucide/svelte/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/bits-ui/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/caniuse-lite/data'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/@swc/helpers/cjs'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/playwright-core/lib'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/@lucide/svelte/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/bun-types/docs'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/bits-ui/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/caniuse-lite/data'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/@swc/helpers/cjs'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/playwright-core/lib'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review/node_modules/@lucide/svelte/dist'
+      npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
   depends_on: []
   priority: 1
   tags:
