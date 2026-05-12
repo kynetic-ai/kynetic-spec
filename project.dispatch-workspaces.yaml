@@ -26250,7 +26250,7 @@ workspaces:
         head: 9200a23d698d381592a60d9c0419f877d77b19ac
         last_seen_at: 2026-05-12T04:36:57.274Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-active-request-bounded-observation-regressions-01krcrjr
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
     bootstrap:
       status: succeeded
@@ -26725,12 +26725,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-12T07:24:10.580Z
+      updated_at: 2026-05-12T07:24:50.875Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T07:24:10.580Z
+      updated_at: 2026-05-12T07:24:50.875Z
     integration:
       status: merged
       detail: integration:merged
@@ -26738,7 +26738,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
-      updated_at: 2026-05-12T07:24:10.580Z
+      updated_at: 2026-05-12T07:24:50.875Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KRCRJSCGAWTVGWM82DNSWWCN"
@@ -26746,9 +26746,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T07:08:26.170Z
-      last_reconciled_at: 2026-05-12T07:24:10.580Z
+      last_reconciled_at: 2026-05-12T07:24:50.875Z
       created_at: 2026-05-12T04:57:42.523Z
-      updated_at: 2026-05-12T07:24:10.580Z
+      updated_at: 2026-05-12T07:24:50.875Z
     workspace_id: dispatch-workspace-01KRCRJSCGAWTVGWM82DNSWWCN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
