@@ -47711,7 +47711,7 @@ runs:
     completed_at: 2026-05-12T18:33:46.257Z
   - _ulid: 01KRES1R3171NM9VRQT4EKN6N5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47728,7 +47728,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T19:02:49.920Z
-        completed_at: 2026-05-12T19:02:49.920Z
+        completed_at: 2026-05-12T19:03:06.880Z
+        notes: "Friction points: (1) Review comment bodies with inline backticks and code snippets are easy
+          to corrupt when passed through shell --body quoting; my first blocker body lost the code
+          identifiers via command substitution and required a corrective reply. The project
+          convention already recommends file-based payloads for shell-sensitive text, but the review
+          comment command appears to require --body text rather than a body-file option. (2) After
+          starting a workflow, kspec workflow show without a run ref errors instead of showing the
+          active/current run, adding a small but repeatable lookup step. (3) Full npm test took
+          3280.1s; necessary for review gates, but long enough that checkpointing exact evidence
+          matters."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T19:03:06.880Z
+        completed_at: 2026-05-12T19:03:06.880Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T19:01:34.433Z
