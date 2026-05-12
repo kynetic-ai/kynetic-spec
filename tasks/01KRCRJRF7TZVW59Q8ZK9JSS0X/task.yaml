@@ -54,7 +54,7 @@ description: >
 spec_ref: "@daemon-test-teardown-boundedness"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-bounded-process-stop-contract-tests"
@@ -68,11 +68,11 @@ review_ref: "@01KREEADWRFZ4HV75GJYFJ31BS"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-implement-bounded-process-stop-primitives/01krcrjr
-  captured_at: 2026-05-12T15:34:48.016Z
-  commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-12T16:34:22.014Z
+  commit: e9b7dc1030ff9359f7f4f36e4e1d6ad60d691f2d
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-implement-bounded-process-stop-primitives/01krcrjr
 session_id: 01KREFP30TDC8TTKX9JKWSPTQA
 history:
   - author: Jacob Chapel
@@ -145,8 +145,35 @@ history:
         previous: 2026-05-12T15:13:04.834Z
     command: task-start
     timestamp: 2026-05-12T16:18:41.864Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-implement-bounded-process-stop-primitives/01krcrjr
+          captured_at: 2026-05-12T16:34:22.014Z
+          commit: e9b7dc1030ff9359f7f4f36e4e1d6ad60d691f2d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-implement-bounded-process-stop-primitives/01krcrjr
+        previous:
+          review_url: null
+          branch: dispatch/task/task-implement-bounded-process-stop-primitives/01krcrjr
+          captured_at: 2026-05-12T15:34:48.016Z
+          commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-12T16:34:22.017Z
+        previous: 2026-05-12T15:34:48.019Z
+    command: task-submit
+    timestamp: 2026-05-12T16:34:22.017Z
 created_at: 2026-05-12T00:14:54.439Z
 started_at: 2026-05-12T16:18:41.864Z
-submitted_at: 2026-05-12T15:34:48.019Z
+submitted_at: 2026-05-12T16:34:22.017Z
 todos: []
 automation: eligible
