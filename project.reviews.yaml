@@ -206105,6 +206105,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KREPS6YAF5PVPM7DWWB4F1QJ
         timestamp: 2026-05-12T18:21:59.355Z
+      - _ulid: 01KREPSFPENGCT6F7BYBF5C601
+        actor: Hermes
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KREPSE0E83Z9058FJP6JX2Y8
+        timestamp: 2026-05-12T18:22:06.542Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -206133,7 +206140,22 @@ reviews:
               model these as new child specs instead."
             created_at: 2026-05-12T18:21:57.578Z
         kind: blocker
+      - _ulid: 01KREPSE0E83Z9058FJP6JX2Y8
+        anchor:
+          type: structured
+          ref: "@task-add-dispatch-workspace-provisioning-lease-acs"
+          section: tasks
+        entries:
+          - _ulid: 01KREPSE0F3FFV9TTXFQR3E2FN
+            author: Hermes
+            body: The Phase 1 spec-update tasks say to add ACs “exactly as drafted in this plan” but do not
+              embed the full Given/When/Then AC payloads in the task descriptions. If the structured
+              Specs block is removed to avoid duplicate derivation, an agent executing the derived
+              task from kspec task get would not have the exact AC text. Make each spec-update task
+              standalone by including the exact AC payloads or precise batch/CLI payloads.
+            created_at: 2026-05-12T18:22:04.815Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T18:20:31.298Z
-    updated_at: 2026-05-12T18:21:57.578Z
+    updated_at: 2026-05-12T18:22:04.815Z
     notes: []
