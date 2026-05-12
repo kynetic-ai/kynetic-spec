@@ -24434,18 +24434,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-add-bounded-process-stop-contract-tests/01krcrjr
-    canonical_branch_head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
+    canonical_branch_head: 38281b2580cd078393fbc844446cd34113ff5d0a
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T00:23:22.571Z
+      updated_at: 2026-05-12T00:53:44.763Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T00:23:47.565Z
+      updated_at: 2026-05-12T00:53:44.763Z
     integration:
       status: pending
       detail: null
@@ -24453,7 +24453,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
-      updated_at: 2026-05-12T00:23:22.571Z
+      updated_at: 2026-05-12T00:53:44.763Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KRCRJR5K77Q2THCVVH3BDNFH"
@@ -24461,9 +24461,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T00:23:47.565Z
-      last_reconciled_at: 2026-05-12T00:23:47.565Z
+      last_reconciled_at: 2026-05-12T00:53:44.763Z
       created_at: 2026-05-12T00:23:22.571Z
-      updated_at: 2026-05-12T00:23:47.565Z
+      updated_at: 2026-05-12T00:53:44.763Z
     workspace_id: dispatch-workspace-01KRCRJR5K77Q2THCVVH3BDNFH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
