@@ -207498,9 +207498,25 @@ reviews:
           status: pass
           name: Repository validation context
         timestamp: 2026-05-12T19:14:43.981Z
+      - _ulid: 01KREST5FX45QVCDS5B6M7SA56
+        actor: Jacob Chapel
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-12T19:14:54.590Z
+      - _ulid: 01KREST5FYBJBNAAPRFCKJMJ3C
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T19:14:54.590Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -207508,7 +207524,14 @@ reviews:
       ref: "@plan-dispatch-workspace-provisioning-lease-protection"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: Jacob Chapel
+        role: reviewer
+        created_at: 2026-05-12T19:14:54.589Z
     created_at: 2026-05-12T19:13:07.805Z
-    updated_at: 2026-05-12T19:14:42.614Z
+    updated_at: 2026-05-12T19:14:54.590Z
     notes: []
