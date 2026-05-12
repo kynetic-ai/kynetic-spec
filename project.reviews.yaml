@@ -207589,6 +207589,13 @@ reviews:
           kind: question
           thread_ulid: 01KREV11W9A9ADY2FH0Y8B84V3
         timestamp: 2026-05-12T19:36:10.268Z
+      - _ulid: 01KREV1JCBCY1DBFS2TZD3ESWY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KREV1GZ6MXQ3WTB0EX4EBY2Y
+        timestamp: 2026-05-12T19:36:25.740Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -207680,7 +207687,25 @@ reviews:
               eligibility, retention bound, and fresh-provisioning path explicitly."
             created_at: 2026-05-12T19:36:08.841Z
         kind: question
+      - _ulid: 01KREV1GZ6MXQ3WTB0EX4EBY2Y
+        anchor:
+          type: structured
+          ref: "@task-validate-provisioning-lease-protection"
+          section: tasks
+        entries:
+          - _ulid: 01KREV1GZ6W72FW6KG1NJCPT2A
+            author: Jacob Chapel
+            body: "SHOULD-FIX: The plan records owner, phase, expiry, and health diagnostics, but it does not
+              require an operator-visible inspection surface or structured cleanup-skip reason.
+              Future failures involving stale owner metadata, false liveness, or cleanup starvation
+              will be hard to diagnose if the only evidence is buried in the registry file or
+              generic health text. Add a small observability contract to the validation or
+              implementation tasks: status/debug output should expose current lease status, owner
+              daemon/spawn, phase, expires_at, abandoned reason, and why cleanup preserved or
+              skipped each protected artifact."
+            created_at: 2026-05-12T19:36:24.294Z
+        kind: question
     verdicts: []
     created_at: 2026-05-12T19:34:11.039Z
-    updated_at: 2026-05-12T19:36:08.841Z
+    updated_at: 2026-05-12T19:36:24.294Z
     notes: []
