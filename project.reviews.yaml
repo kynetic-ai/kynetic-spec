@@ -204921,3 +204921,29 @@ reviews:
     created_at: 2026-05-12T15:12:58.406Z
     updated_at: 2026-05-12T15:30:03.776Z
     notes: []
+  - _ulid: 01KREEADWRFZ4HV75GJYFJ31BS
+    slugs: []
+    title: Review bounded process-stop primitives
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KREEADWJGYC6D3Q0W0G7HHA4
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-12T15:54:04.562Z
+    examined_commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRCRJRF7TZVW59Q8ZK9JSS0X"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-12T15:54:04.568Z
+    updated_at: null
+    notes: []
