@@ -26721,11 +26721,11 @@ workspaces:
     canonical_branch: dispatch/task/task-add-setup-failure-error-preservation-regressions/01krcrjs
     canonical_branch_head: ab1d59a2942c2e18b8373c2bd89fd50ef992c151
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-12T07:24:50.875Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-12T07:24:52.760Z
     health:
       status: healthy
       issues: []
@@ -26739,7 +26739,7 @@ workspaces:
       target_branch: dev
       target_commit: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
       updated_at: 2026-05-12T07:24:50.875Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KRCRJSCGAWTVGWM82DNSWWCN"
     task_slug: task-add-setup-failure-error-preservation-regressions
@@ -26748,7 +26748,7 @@ workspaces:
       last_active_at: 2026-05-12T07:08:26.170Z
       last_reconciled_at: 2026-05-12T07:24:50.875Z
       created_at: 2026-05-12T04:57:42.523Z
-      updated_at: 2026-05-12T07:24:50.875Z
+      updated_at: 2026-05-12T07:24:52.760Z
     workspace_id: dispatch-workspace-01KRCRJSCGAWTVGWM82DNSWWCN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
