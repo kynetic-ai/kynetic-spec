@@ -204089,6 +204089,24 @@ reviews:
         runner: kspec
         created_at: 2026-05-12T08:26:38.083Z
         completed_at: 2026-05-12T08:26:38.083Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md; src/parser/file-lock.ts; tests/file-lock.test.ts; task
+          @01KRD9FY; spec @scoped-dispatch-shadow-serialization. Commands run: git
+          diff/stat/name/log/show; kspec task get; kspec review for-task/add/open/check; kspec item
+          get @scoped-dispatch-shadow-serialization; rg AC annotations; kspec validate; kspec
+          validate --warnings-ok; npm test -- --fresh tests/file-lock.test.ts; npm test -- --fresh.
+          Claims verified: worker root-cause claim checked against file-lock diff lines 126-139 and
+          checkStaleLock behavior; existing concurrent write regression test passed targeted and in
+          full suite. Categories searched: correctness, concurrency edge cases, stale-lock error
+          handling, test quality, spec/AC alignment, integration."
+        name: review evidence log
+        required: false
+        runner: codex
+        created_at: 2026-05-12T08:27:06.507Z
+        completed_at: 2026-05-12T08:27:06.507Z
     events:
       - _ulid: 01KRDM0XWQ3SMK7SKVJMN4JJ65
         actor: Jacob Chapel
@@ -204124,6 +204142,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-12T08:26:39.499Z
+      - _ulid: 01KRDMR1MZNSNC1W2VRA75127M
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-12T08:27:07.807Z
     examined_commit: 866065b339c34190fb52f3673bffb90aac357365
     external_links: []
     lifecycle_state: open
@@ -204136,5 +204161,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T08:14:30.295Z
-    updated_at: 2026-05-12T08:26:38.083Z
+    updated_at: 2026-05-12T08:27:06.507Z
     notes: []
