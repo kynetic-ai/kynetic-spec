@@ -208439,6 +208439,12 @@ reviews:
         payload:
           thread_ulid: 01KREY0NHJ68M5MX2SP1BHAD86
         timestamp: 2026-05-12T21:08:15.031Z
+      - _ulid: 01KRF0A0S6TKNS9D5Z8THW2KNX
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KREY0T2WGKDH3TARWNQHFEB3
+        timestamp: 2026-05-12T21:08:25.510Z
     examined_commit: 62bffa595961c9d0d4e1c8c1cc8e5ef09486064e
     external_links: []
     lifecycle_state: closed
@@ -208509,6 +208515,41 @@ reviews:
               ac-cleanup-operation-terminates-daemon/ac-cleanup-helper-origin-is-trusted while
               leaving the newly started daemon running."
             created_at: 2026-05-12T20:28:26.588Z
+          - _ulid: 01KRF09ZD58AZTEJ0HTWMEYGFH
+            author: "@claude"
+            body: >-
+              Fixed in cycle 11. Two complementary tightening changes close all three sub-probes:
+
+
+              1. Helper-function with parameter-bound kill target —
+              `isHelperBodyKillTargetTiedToOwner` now finds the parameter's index in
+              `ownerFn.params` and requires the call site (`useCallNode`) to provide a VERIFIABLE
+              kill-target argument at that index via new `callSiteProvidesVerifiableArgAt`. Omitted
+              args, undefined / void / null literals, and Literal / computed targets at the
+              kill-target parameter position are rejected. This closes probes 1 (omitted second
+              param) and 2 (parameter default to stale outer pid) — both call `killPid(pid)` with no
+              arg at index 1.
+
+
+              2. Object-literal kill method with stale closure capture —
+              `collectDaemonKillCaptureNames` now also surfaces closure-captured kill-target
+              identifiers from a local literal's kill method body (via
+              `collectLiteralKillMethodClosureKillTargets`), regardless of whether the literal
+              exposes the same name as a property. The cycle-9 structural check
+              (literal-carries-property) was insufficient because the literal could expose a stale
+              outer Identifier; the temporal-ownership check at the top level
+              (`isCaptureOwnedByDetachedStart`) now runs against the closure capture and rejects
+              names bound before the detached start. The canonical legitimate shape `{ pid, kill() {
+              process.kill(pid, ...) } }` still passes because `pid` is bound AFTER the start.
+
+
+              Verified all three reviewer probes now produce diagnostics via `npx oxlint`. Added 7
+              positive flag-it regressions covering omitted-parameter, stale-default-parameter,
+              arrow-helper variant, literal-exposes-stale-outer, unimported-approved-name,
+              unapproved-path import, and literal-target argument shapes; 3 accepted-companion
+              regressions for legitimate `stopPidBounded` / `stopChildProcessBounded` / `{ pid,
+              kill() {...} }` shapes.
+            created_at: 2026-05-12T21:08:24.100Z
         kind: blocker
       - _ulid: 01KREYJ1ASKQ6PGHATCNA3MMJD
         entries:
@@ -208541,5 +208582,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T20:38:07.381Z
     created_at: 2026-05-12T20:24:47.787Z
-    updated_at: 2026-05-12T21:08:13.573Z
+    updated_at: 2026-05-12T21:08:24.100Z
     notes: []
