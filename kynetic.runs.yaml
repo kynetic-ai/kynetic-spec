@@ -46826,9 +46826,26 @@ runs:
     completed_at: 2026-05-12T07:28:53.935Z
   - _ulid: 01KRDHH4TA6ZSCBQ27SC6XRATT
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-12T07:30:55.947Z
+        completed_at: 2026-05-12T07:32:39.957Z
+        notes: "Step 1 (what worked): The existing it.fails staging pattern documented in
+          tests/lint-no-leaky-test-daemon.test.ts process.on('exit'...) cases was a perfect template
+          — applied directly to the new implicit-auto-start regressions without iteration. Reading
+          the real cli-no-daemon.test.ts source FIRST (before writing synthetic fixtures) ensured
+          fixtures matched the actual ownership shape (spawnSync('kspec',['util','ulid']) +
+          readTestOutputSync(daemonPidFilePath) + execSync('ps -p ${pid}') + expect). Verifying the
+          structural classifier in isolation via a one-off node script before relying on it in the
+          test suite confirmed it finds exactly 1 finding (line 144, unsafe case) and skips the safe
+          case (line 234, onTestFinished immediately after pid)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-12T07:32:39.957Z
+        completed_at: 2026-05-12T07:32:39.957Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T07:30:55.947Z
