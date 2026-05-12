@@ -203355,6 +203355,12 @@ reviews:
         payload:
           thread_ulid: 01KRDCTJFGS20AAHFTFKK4C15Q
         timestamp: 2026-05-12T06:42:58.273Z
+      - _ulid: 01KRDESM51XB281E2JX1TH4G76
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRDCWVP66YJ3KS89EA9JTZ76
+        timestamp: 2026-05-12T06:43:08.065Z
     examined_commit: 0eb6b62cc0ae567d1814d73cf552c720279f7510
     external_links: []
     lifecycle_state: closed
@@ -203468,6 +203474,8 @@ reviews:
               quality, validation, lint, and integration with prior review blockers."
             created_at: 2026-05-12T06:09:56.935Z
         kind: nit
+        resolved_at: 2026-05-12T06:43:06.783Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -203477,7 +203485,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T06:10:08.185Z
     created_at: 2026-05-12T05:53:35.177Z
-    updated_at: 2026-05-12T06:42:56.865Z
+    updated_at: 2026-05-12T06:43:06.783Z
     notes: []
   - _ulid: 01KRDDMFDR6798Q1SYMR79VPBW
     slugs: []
