@@ -203750,6 +203750,18 @@ reviews:
         runner: git
         created_at: 2026-05-12T07:22:33.975Z
         completed_at: 2026-05-12T07:22:33.975Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate: schema/references OK; exited 6 for repository-wide pre-existing warnings
+          (deprecated refs, orphaned specs, missing legacy AC coverage, invalid legacy annotations),
+          no new task-specific validation error identified"
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-12T07:22:38.634Z
+        completed_at: 2026-05-12T07:22:38.634Z
     events:
       - _ulid: 01KRDG9HWMSJB1HWK6W71Q3FGV
         actor: Jacob Chapel
@@ -203785,6 +203797,13 @@ reviews:
           status: pass
           name: git diff --check
         timestamp: 2026-05-12T07:22:35.587Z
+      - _ulid: 01KRDH20PSHSGCYT6TDYEAXF8G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-12T07:22:40.217Z
     examined_commit: ab1d59a2942c2e18b8373c2bd89fd50ef992c151
     external_links: []
     lifecycle_state: open
@@ -203797,5 +203816,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T07:09:18.613Z
-    updated_at: 2026-05-12T07:22:33.975Z
+    updated_at: 2026-05-12T07:22:38.634Z
     notes: []
