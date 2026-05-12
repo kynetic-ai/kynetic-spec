@@ -203236,6 +203236,13 @@ reviews:
           status: fail
           name: npm run lint
         timestamp: 2026-05-12T06:09:43.088Z
+      - _ulid: 01KRDCWX13R647VRS8SDVNJ6EV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRDCWVP66YJ3KS89EA9JTZ76
+        timestamp: 2026-05-12T06:09:58.307Z
     examined_commit: 0eb6b62cc0ae567d1814d73cf552c720279f7510
     external_links: []
     lifecycle_state: open
@@ -203291,7 +203298,27 @@ reviews:
               proven."
             created_at: 2026-05-12T06:08:41.968Z
         kind: blocker
+      - _ulid: 01KRDCWVP66YJ3KS89EA9JTZ76
+        entries:
+          - _ulid: 01KRDCWVP73EJPBAZGXC9MSR2Q
+            author: Jacob Chapel
+            body: "Evidence log: Files read: `kspec-agents.md`, `.agents/skills/kspec-review/SKILL.md`,
+              `.agents/skills/review-gates/SKILL.md`, `.agents/skills/kspec-merge/SKILL.md`,
+              `tools/eslint-rules/no-leaky-test-daemon.js`,
+              `tests/lint-no-leaky-test-daemon.test.ts`, `tests/cli-serve.test.ts`,
+              `tests/helpers/mock-daemon.test.ts`, prior reviews @01KRD39Y, @01KRD659, @01KRD8SM.
+              Commands run: `kspec task get`, `kspec item get @daemon-test-guardrail-precision`,
+              `kspec item get @daemon-test-harness-guardrails`, `git diff`, `rg` AC scans, `kspec
+              validate`, targeted `npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+              tests/lint-daemon-test-guardrails.test.ts`, full `npm test -- --fresh`, `npm run
+              lint`, changed-file `npx oxlint`, and two synthetic oxlint probes. Claims verified:
+              cycle-3 signal override and unapproved import fixes are covered by tests and targeted
+              suite; new parameter-bound no-op helper probe disproves full helper-origin coverage.
+              Categories searched: correctness, helper-origin edge cases, signal policy, test
+              quality, validation, lint, and integration with prior review blockers."
+            created_at: 2026-05-12T06:09:56.935Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-12T05:53:35.177Z
-    updated_at: 2026-05-12T06:09:41.756Z
+    updated_at: 2026-05-12T06:09:56.935Z
     notes: []
