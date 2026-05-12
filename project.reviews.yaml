@@ -206611,6 +206611,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T18:39:44.041Z
+      - _ulid: 01KRER4B9NNDE162T7KVYKMPH0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRER48GN0CZPCV27CKSX6BQQ
+        timestamp: 2026-05-12T18:45:31.061Z
     examined_commit: 671d9b4584a8dfb718be8fa81a3c153965e62a4c
     external_links: []
     lifecycle_state: open
@@ -206620,8 +206627,28 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRER48GN0CZPCV27CKSX6BQQ
+        anchor:
+          type: code
+          commit: 671d9b4584a8dfb718be8fa81a3c153965e62a4c
+          line_end: 1678
+          line_start: 1678
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KRER48GPH393ZQ02TJG9SYK9
+            author: Jacob Chapel
+            body: "MUST-FIX: helper-body target validation still accepts any identifier as a daemon
+              target.  returns true for every , so a local helper can ignore the PID passed by the
+              cleanup callback and kill a different outer variable while still satisfying cleanup.
+              Evidence: an ad hoc oxlint probe with  followed by  reported ; the same false negative
+              appears through a local object-literal  method that kills . Impact:  and  are still
+              violated because the rule credits cleanup that does not terminate the just-started
+              daemon."
+            created_at: 2026-05-12T18:45:28.214Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T18:39:00.497Z
-    updated_at: 2026-05-12T18:39:42.143Z
+    updated_at: 2026-05-12T18:45:28.214Z
     notes: []
