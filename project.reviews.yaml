@@ -204712,6 +204712,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T15:13:29.286Z
+      - _ulid: 01KRECGDSCKMPZ0D5594GJ7RWP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRECGCDB6EYW31BWG0ZQYJ0R
+        timestamp: 2026-05-12T15:22:23.916Z
     examined_commit: f2d28b784205871178ae3872f42601a3a15f9fa1
     external_links: []
     lifecycle_state: open
@@ -204721,8 +204728,30 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRECGCDB6EYW31BWG0ZQYJ0R
+        anchor:
+          type: code
+          commit: f2d28b784205871178ae3872f42601a3a15f9fa1
+          line_end: 1194
+          line_start: 1142
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KRECGCDBJ93825G66F98MH0J
+            author: Jacob Chapel
+            body: "MUST-FIX: helper-origin lookup still misses local bindings that are not function params or
+              Block/Program statements.  walks function parameters and then only scans
+              BlockStatement/Program statement lists with /; it never treats  initializers, / left
+              bindings, or  params as local helper bindings. Those helpers then fall through to the
+              free-identifier trust path in , so a no-op local helper still satisfies cleanup by
+              name. Evidence: an ad hoc oxlint probe with  exited 0 with no  diagnostic; the same
+              happened for  and . This violates @daemon-test-guardrail-precision
+              ac-cleanup-helper-origin-is-trusted because the helper is locally bound and not an
+              approved terminating primitive."
+            created_at: 2026-05-12T15:22:22.507Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T15:12:58.406Z
-    updated_at: 2026-05-12T15:13:27.910Z
+    updated_at: 2026-05-12T15:22:22.507Z
     notes: []
