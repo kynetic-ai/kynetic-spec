@@ -29275,12 +29275,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T15:51:54.909Z
+      updated_at: 2026-05-12T15:51:54.707Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T15:51:54.909Z
+      updated_at: 2026-05-12T15:51:54.707Z
     integration:
       status: pending
       detail: null
@@ -29288,7 +29288,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 34a859ddadd1535338f54dfcb0e733a0967df185
-      updated_at: 2026-05-12T15:51:54.909Z
+      updated_at: 2026-05-12T15:51:54.707Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRCRJRF7TZVW59Q8ZK9JSS0X"
@@ -29296,16 +29296,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T15:12:14.160Z
-      last_reconciled_at: 2026-05-12T15:51:54.909Z
+      last_reconciled_at: 2026-05-12T15:51:54.707Z
       created_at: 2026-05-12T15:11:49.232Z
-      updated_at: 2026-05-12T15:51:54.909Z
+      updated_at: 2026-05-12T15:51:54.707Z
     workspace_id: dispatch-workspace-01KRCRJRF7TZVW59Q8ZK9JSS0X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
+        last_seen_at: 2026-05-12T15:51:54.707Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-bounded-process-stop-primitives-01krcrjr-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-implement-bounded-process-stop-primitives/01krcrjr
-        head: 34a859ddadd1535338f54dfcb0e733a0967df185
-        last_seen_at: 2026-05-12T15:11:49.232Z
+        head: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
+        last_seen_at: 2026-05-12T15:51:54.707Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-bounded-process-stop-primitives-01krcrjr
