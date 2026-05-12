@@ -53,3 +53,39 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-12T01:29:24.911Z
+  - _ulid: 01KRCX436X953DDB1P3G8QVZGB
+    content: >-
+      Implementation: Added 17 new regression cases to tests/lint-no-leaky-test-daemon.test.ts. 10
+      cases fail-before-fix as the task requires; the other 7 are positive baselines and adversarial
+      controls that already pass today, ensuring the implementation task cannot satisfy the rejected
+      cases by banning all process.kill / child.kill / helper-name shapes.
+
+
+      Verification run: npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+
+      - Result: 60 passed, 10 failed of 70. Failures match the failing-before-fix contract exactly:
+      4 non-terminating signal probes (0, SIGUSR1, SIGCONT, SIGWINCH), 4 local no-op helper shapes
+      (function/arrow with empty or log-only body for killPid/stopDaemon/stopMockDaemon), and 1
+      currently-rejected positive case (child.kill() with no signal) that the rule must accept once
+      Node's SIGTERM default is honored.
+
+      - Companion run: npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts → 219/219 pass;
+      no spillover.
+
+
+      AC coverage on @daemon-test-guardrail-precision:
+
+      - ac-cleanup-operation-terminates-daemon: 6 cases (process.kill no-arg, SIGTERM, SIGKILL;
+      child.kill no-arg, SIGTERM, SIGUSR1)
+
+      - ac-cleanup-probes-do-not-count: 4 cases (process.kill 0, SIGUSR1, SIGCONT, SIGWINCH)
+
+      - ac-cleanup-helper-origin-is-trusted: 6 cases (4 local no-op shapes + 2 trusted-origin
+      shapes)
+
+
+      Plus @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged on every
+      rejected case.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T01:34:16.797Z
