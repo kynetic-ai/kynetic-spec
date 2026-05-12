@@ -46126,7 +46126,7 @@ runs:
     completed_at: 2026-05-12T04:02:59.822Z
   - _ulid: 01KRD5Y6WZ8DZPA1RN7W2PD3H6
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -46142,7 +46142,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T04:09:00.566Z
-        completed_at: 2026-05-12T04:09:00.566Z
+        completed_at: 2026-05-12T04:09:29.418Z
+        notes: "Friction (low confidence — likely one-off): (1) kspec task note rejects --message and only
+          accepts a positional message argument; surprised because task block/complete/reset use
+          --reason. Minor papercut. (2) kspec review threads is not a subcommand — used kspec review
+          get --json to get full thread bodies. Both are minor inconsistencies, not systemic
+          friction worth capturing in loop mode."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T04:09:29.418Z
+        completed_at: 2026-05-12T04:09:29.418Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T04:08:21.152Z
