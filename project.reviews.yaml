@@ -208650,6 +208650,19 @@ reviews:
         runner: kspec
         created_at: 2026-05-12T21:22:43.500Z
         completed_at: 2026-05-12T21:22:43.500Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Reviewed @agent-dispatch-engine, @dispatch-workspace-cleanup-policy,
+          @dispatch-workspace-registry, and superseded
+          @plan-dispatch-workspace-provisioning-lease-protection. Plan updates existing specs and
+          excludes durable owner/PID/TTL/renewal/CAS lease scope.
+        name: Spec neighborhood and Path A scope
+        required: true
+        runner: kspec
+        created_at: 2026-05-12T21:22:53.838Z
+        completed_at: 2026-05-12T21:22:53.838Z
     events:
       - _ulid: 01KRF133687JF68MVKDCFWD8X6
         actor: Jacob Chapel
@@ -208678,6 +208691,13 @@ reviews:
           status: pass
           name: Plan import dry-run
         timestamp: 2026-05-12T21:22:44.937Z
+      - _ulid: 01KRF14J5QJ0PTQ4RSK2SC03WB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Spec neighborhood and Path A scope
+        timestamp: 2026-05-12T21:22:55.287Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -208709,5 +208729,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T21:22:07.177Z
-    updated_at: 2026-05-12T21:22:43.500Z
+    updated_at: 2026-05-12T21:22:53.838Z
     notes: []
