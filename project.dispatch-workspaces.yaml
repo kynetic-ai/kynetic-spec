@@ -29459,3 +29459,79 @@ workspaces:
         head: e9b7dc1030ff9359f7f4f36e4e1d6ad60d691f2d
         last_seen_at: 2026-05-12T16:37:43.488Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-bounded-process-stop-primitives-01krcrjr
+  - active_role: null
+    base_branch_point: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-fix-active-request-teardown-and-observation-bounds/01krcrjs
+    canonical_branch_head: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-12T17:10:20.301Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-12T17:10:20.301Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
+      updated_at: 2026-05-12T17:10:20.301Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KRCRJS2M4VVME99W9ACV8JAE"
+    task_slug: task-fix-active-request-teardown-and-observation-bounds
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-12T17:10:20.301Z
+      created_at: 2026-05-12T17:10:20.301Z
+      updated_at: 2026-05-12T17:10:20.301Z
+    workspace_id: dispatch-workspace-01KRCRJS2M4VVME99W9ACV8JAE
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-fix-active-request-teardown-and-observation-bounds/01krcrjs
+        head: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
+        last_seen_at: 2026-05-12T17:10:20.301Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-active-request-teardown-and-observation-bounds-01krcrjs
