@@ -47213,7 +47213,7 @@ runs:
     started_at: 2026-05-12T14:31:10.408Z
     completed_at: 2026-05-12T14:35:35.758Z
   - _ulid: 01KRED18K0V6JH11KEVGAMWQMW
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -47261,10 +47261,14 @@ runs:
         completed_at: 2026-05-12T15:33:49.295Z
         notes: Skipped discussion because there are no new proposed improvements. Existing coverage already
           tracks the observed friction, so there is nothing to ask the user to approve.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-12T15:33:49.295Z
-        completed_at: 2026-05-12T15:33:49.295Z
+        completed_at: 2026-05-12T15:34:05.914Z
+        notes: No capture performed. High-confidence learnings were either already captured in existing
+          observations or were specific to the completed review record. Avoided creating duplicate
+          inbox items or observations.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T15:31:35.648Z
+    completed_at: 2026-05-12T15:34:05.914Z
