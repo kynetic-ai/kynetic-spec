@@ -209629,6 +209629,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T22:37:39.370Z
+      - _ulid: 01KRF5K0YZ4S858TPMX64H940H
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRF5JZ992N9VE3E3N8KYNVEA
+        timestamp: 2026-05-12T22:40:43.487Z
     examined_commit: 251769a1a36ad2fdc02760f60808f71324cfc6ed
     external_links: []
     lifecycle_state: open
@@ -209638,8 +209645,29 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRF5JZ992N9VE3E3N8KYNVEA
+        anchor:
+          type: code
+          commit: 251769a1a36ad2fdc02760f60808f71324cfc6ed
+          line_end: 6052
+          line_start: 6050
+          path: tests/lint-daemon-test-guardrails.test.ts
+          side: head
+        entries:
+          - _ulid: 01KRF5JZ99AKNVQZHMBCSDCDE4
+            author: Jacob Chapel
+            body: "MUST-FIX: this is a source-scanning test. The submitted test reads
+              tests/cli-no-daemon.test.ts via readTestOutputSync(), runs a line-based
+              collectUnsafeAutoStartFindings() helper over the file text, and asserts on the
+              resulting findings. The project review gates reject source-scanning/structural tests
+              as AC coverage because they do not exercise user-visible behavior and can pass or fail
+              based on source shape rather than the guardrail behavior. Replace this with behavioral
+              coverage that runs the guardrail (for example via oxlint on focused fixtures) or move
+              this tracking out of the test suite."
+            created_at: 2026-05-12T22:40:41.770Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T22:37:15.947Z
-    updated_at: 2026-05-12T22:37:37.328Z
+    updated_at: 2026-05-12T22:40:41.770Z
     notes: []
