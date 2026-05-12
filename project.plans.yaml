@@ -46966,6 +46966,13 @@ plans:
           ```
         author: Jacob Chapel
         created_at: 2026-05-08T13:25:40.008Z
+      - _ulid: 01KRF406JPH7T9Q78QCFTM6N88
+        content: Closed after verifying all 12 derived tasks and 6 direct corrective follow-up tasks
+          attached to this plan are completed. Remaining @daemon-test-guardrail-precision
+          in_progress status is owned by later @plan-daemon-test-cleanup-contract-hardening tasks,
+          not this plan.
+        author: Jacob Chapel
+        created_at: 2026-05-12T22:12:58.070Z
   - _ulid: 01KRCP1DKWKWQZM1PTHBVQXAFR
     slugs:
       - plan-daemon-test-cleanup-contract-hardening
