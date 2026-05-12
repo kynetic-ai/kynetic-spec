@@ -209738,6 +209738,13 @@ reviews:
           status: pass
           name: AC annotation scan
         timestamp: 2026-05-12T22:53:21.172Z
+      - _ulid: 01KRF6AN1QC43YYQMET9T8WSBZ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRF6AKFHFX5XTG691SSGF5HY
+        timestamp: 2026-05-12T22:53:37.719Z
     examined_commit: 251769a1a36ad2fdc02760f60808f71324cfc6ed
     external_links: []
     lifecycle_state: open
@@ -209789,9 +209796,31 @@ reviews:
               annotations/staged expected-failure tests from this task branch."
             created_at: 2026-05-12T22:40:46.594Z
         kind: blocker
+      - _ulid: 01KRF6AKFHFX5XTG691SSGF5HY
+        entries:
+          - _ulid: 01KRF6AKFHQVB74T4M6X9F8HWJ
+            author: Jacob Chapel
+            body: "Evidence log:\\n\\nFiles read: kspec-agents.md; .agents/skills/kspec-review/SKILL.md;
+              .agents/skills/kspec-merge/SKILL.md; .agents/skills/review-gates/SKILL.md;
+              .agents/skills/work-gates/SKILL.md; task @01KRCRJPMHMHC410TKRC5Y9HF1; prior review
+              @01KRF0M0; tools/eslint-rules/no-leaky-test-daemon.js;
+              tests/lint-no-leaky-test-daemon.test.ts; tests/lint-daemon-test-guardrails.test.ts;
+              src/parser/file-lock.ts.\\n\\nCommands run: git diff/stat/name-only/log against
+              0dcbcdd..251769a; kspec item get @daemon-test-guardrail-precision; kspec validate; rg
+              AC annotation scans; rg it.fails/source-scanning scans; git diff --check; npm test --
+              --fresh; npm run lint.\\n\\nClaims verified: worker claim that full npm test passes
+              verified directly (2432 suites, 9163 passed, 5 skipped). Worker claim that kspec
+              validate is warnings-only verified directly. Latest primitive-shadow fix is covered by
+              new behavioral oxlint tests in tests/lint-no-leaky-test-daemon.test.ts and included in
+              the passing suite.\\n\\nCategories searched: correctness of helper-origin/local-shadow
+              classifier, test quality/AC coverage, source-scanning guardrails, validation/lint/test
+              health, whitespace, and integration risk from changed helper/lint files. Findings
+              recorded as blocker threads."
+            created_at: 2026-05-12T22:53:36.113Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-12T22:37:15.947Z
-    updated_at: 2026-05-12T22:53:19.628Z
+    updated_at: 2026-05-12T22:53:36.113Z
     notes: []
   - _ulid: 01KRF5XR6NKPCBYWQCRMRCDGDF
     slugs: []
