@@ -207960,9 +207960,25 @@ reviews:
           status: fail
           name: Proportionality
         timestamp: 2026-05-12T19:46:11.939Z
+      - _ulid: 01KREVKV4A834XHWR18QR0M20X
+        actor: Codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T19:46:24.522Z
+      - _ulid: 01KREVKV4AVKG3Y4STEF89NMMC
+        actor: Codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T19:46:24.522Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -208061,7 +208077,14 @@ reviews:
               unless a reproduced restart/orphan-bootstrap case shows they are needed now."
             created_at: 2026-05-12T19:45:04.878Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: Codex
+        role: reviewer
+        created_at: 2026-05-12T19:46:24.521Z
     created_at: 2026-05-12T19:43:06.045Z
-    updated_at: 2026-05-12T19:46:10.295Z
+    updated_at: 2026-05-12T19:46:24.522Z
     notes: []
