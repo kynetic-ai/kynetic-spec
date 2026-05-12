@@ -26960,12 +26960,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T06:19:50.563Z
+      updated_at: 2026-05-12T06:20:09.655Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T06:19:50.563Z
+      updated_at: 2026-05-12T06:20:09.655Z
     integration:
       status: pending
       detail: null
@@ -26973,7 +26973,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
-      updated_at: 2026-05-12T06:19:50.563Z
+      updated_at: 2026-05-12T06:20:09.655Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRCRJSCGAWTVGWM82DNSWWCN"
@@ -26981,16 +26981,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T05:52:17.291Z
-      last_reconciled_at: 2026-05-12T06:19:50.563Z
+      last_reconciled_at: 2026-05-12T06:20:09.655Z
       created_at: 2026-05-12T04:57:42.523Z
-      updated_at: 2026-05-12T06:19:50.563Z
+      updated_at: 2026-05-12T06:20:09.655Z
     workspace_id: dispatch-workspace-01KRCRJSCGAWTVGWM82DNSWWCN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 522d65ee504661e1f648142e7a801325b86289d4
+        last_seen_at: 2026-05-12T06:20:09.655Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-setup-failure-error-preservation-regressions-01krcrjs-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-setup-failure-error-preservation-regressions/01krcrjs
-        head: 69024560de4a34a772c9944f034e9a9021056675
-        last_seen_at: 2026-05-12T05:51:52.342Z
+        head: 522d65ee504661e1f648142e7a801325b86289d4
+        last_seen_at: 2026-05-12T06:20:09.655Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-setup-failure-error-preservation-regressions-01krcrjs
