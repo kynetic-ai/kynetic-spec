@@ -201513,3 +201513,29 @@ reviews:
     created_at: 2026-05-12T01:47:46.850Z
     updated_at: 2026-05-12T02:01:37.268Z
     notes: []
+  - _ulid: 01KRD0KBBPD9NZPX0HJJYQXV08
+    slugs: []
+    title: Review cleanup-effect guardrail regressions (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRD0KBBFT42TVD86WN8VY8YA
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-12T02:35:02.384Z
+    examined_commit: d647b8096eb464f0867666b87740fb4df74ac6a4
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRCRJP9RHZ06B249NBJSPSY3"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-12T02:35:02.390Z
+    updated_at: null
+    notes: []
