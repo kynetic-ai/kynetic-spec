@@ -47274,7 +47274,7 @@ runs:
     completed_at: 2026-05-12T15:34:05.914Z
   - _ulid: 01KREFBKDT5ZE7388GAEDWGD9Z
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47318,7 +47318,15 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-05-12T16:15:08.525Z
-        completed_at: 2026-05-12T16:15:08.525Z
+        completed_at: 2026-05-12T16:15:28.559Z
+        notes: "Discussion decision: this invocation is non-interactive, so I am not asking for new task
+          approval. Capture only the high-confidence systemic friction as an observation: dropped
+          async cleanup promises in lifecycle callbacks are easy to miss after helper API changes.
+          Do not capture the workflow show friction because it is already tracked by @01KKBD52."
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-12T16:15:28.559Z
+        completed_at: 2026-05-12T16:15:28.559Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T16:12:11.578Z
