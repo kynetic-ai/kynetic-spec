@@ -47274,7 +47274,7 @@ runs:
     completed_at: 2026-05-12T15:34:05.914Z
   - _ulid: 01KREFBKDT5ZE7388GAEDWGD9Z
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47289,7 +47289,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T16:12:33.750Z
-        completed_at: 2026-05-12T16:12:33.750Z
+        completed_at: 2026-05-12T16:12:56.198Z
+        notes: "Friction points: (1) API shape changes from synchronous cleanup helpers to Promise-returning
+          cleanup helpers are easy to partially update; block-bodied onTestFinished callbacks can
+          drop the promise without tests failing. (2) Review workflow commands require carrying the
+          run/review refs manually; a bare 'kspec workflow show' did not infer the active workflow
+          run, so there is a small command-flow snag during reflection."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T16:12:56.198Z
+        completed_at: 2026-05-12T16:12:56.198Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T16:12:11.578Z
