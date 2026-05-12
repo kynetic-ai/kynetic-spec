@@ -28727,6 +28727,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-12T00:14:53.490Z
+  automation: eligible
 - _ulid: 01KRCRJQVWASBCR27BR3D8VFBA
   slugs:
     - task-fix-implicit-autostart-cleanup-coverage
