@@ -47534,7 +47534,7 @@ runs:
     completed_at: 2026-05-12T17:39:26.405Z
   - _ulid: 01KRENGEJRXK5TF44DXNNH1WV9
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47552,7 +47552,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T18:00:56.872Z
-        completed_at: 2026-05-12T18:00:56.872Z
+        completed_at: 2026-05-12T18:01:41.819Z
+        notes: "Friction points: kspec validate was useful but noisy in review context because it exited 6
+          for broad repo-wide warnings unrelated to this task, so the reviewer had to classify it
+          manually as warning-only evidence. Full npm test gave strong confidence but took 2724.4s,
+          forcing a long wait before verdict/merge. Review evidence logging required a manual nit
+          thread plus separate check records; that worked, but it is still manual structure rather
+          than a first-class evidence-log command. No code-change friction from the detached merge
+          path itself."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T18:01:41.819Z
+        completed_at: 2026-05-12T18:01:41.819Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T17:59:41.912Z
