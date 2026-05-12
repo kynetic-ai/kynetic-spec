@@ -18290,6 +18290,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-12T05:51:31.071Z
+  - _ulid: 01KRDDDWT4GKJC85GMR8511JPV
+    type: success
+    content: "Closing wrapper-coverage gap (@01KRDB3E friction) via extract-seam-and-delegate has a
+      deterministic fix-cycle recipe. When a reviewer flags that staged regressions test helpers in
+      isolation but production wrapper does not exercise them: (1) extract a wrapper-unit seam that
+      mirrors the wrapper's pre-try/finally setup verbatim, including the bug — same __testStageHook
+      pattern existing helpers like createTestDaemonProject use; (2) refactor the production wrapper
+      to delegate setup to the new seam AND the use+teardown body to the existing lifecycle helper,
+      so the wrapper inherits both contracts the dependent fix task will harden; (3) add it.fails
+      staged regressions per setup stage on the new seam plus a positive contract test that asserts
+      every stage hook fires in declared order (this guards against future refactors silently
+      dropping a stage and turning the keyed regressions into false coverage); (4) verify by
+      stripping it.fails and confirming each new regression fails with the expected pre-fix
+      assertion message. Demonstrated on @task-add-setup-failure-error-preservation-regressions
+      cycle 1 (review @01KRDA6QCN3N0G8YNKR6GC7VQD): closed both blockers in one pass with 5 new
+      tests, full suite still green, smoke E2E green, dependent fix task
+      @task-fix-setup-failure-cleanup-error-preservation now has a single helper to harden which the
+      wrapper inherits automatically."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T06:19:15.140Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
