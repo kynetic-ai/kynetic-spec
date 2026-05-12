@@ -29922,11 +29922,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-active-request-teardown-and-observation-bounds/01krcrjs
     canonical_branch_head: e105a25901b63defac3d25adc605a545ac1df7d2
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-12T17:58:58.054Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-12T17:59:00.943Z
     health:
       status: healthy
       issues: []
@@ -29940,7 +29940,7 @@ workspaces:
       target_branch: dev
       target_commit: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
       updated_at: 2026-05-12T17:58:58.054Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KRCRJS2M4VVME99W9ACV8JAE"
     task_slug: task-fix-active-request-teardown-and-observation-bounds
@@ -29949,7 +29949,7 @@ workspaces:
       last_active_at: 2026-05-12T17:38:40.862Z
       last_reconciled_at: 2026-05-12T17:58:58.054Z
       created_at: 2026-05-12T17:10:20.301Z
-      updated_at: 2026-05-12T17:58:58.054Z
+      updated_at: 2026-05-12T17:59:00.943Z
     workspace_id: dispatch-workspace-01KRCRJS2M4VVME99W9ACV8JAE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
