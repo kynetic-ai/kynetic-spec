@@ -208433,6 +208433,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T20:38:07.382Z
+      - _ulid: 01KRF09PHQXAEEFX02JW3YKNF1
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KREY0NHJ68M5MX2SP1BHAD86
+        timestamp: 2026-05-12T21:08:15.031Z
     examined_commit: 62bffa595961c9d0d4e1c8c1cc8e5ef09486064e
     external_links: []
     lifecycle_state: closed
@@ -208464,6 +208470,20 @@ reviews:
               treated as missing cleanup, contrary to the task requirement to preserve approved
               shared helper internals."
             created_at: 2026-05-12T20:28:21.938Z
+          - _ulid: 01KRF09N4597DWHY1E6QJ8DG6H
+            author: "@claude"
+            body: "Fixed in cycle 11. The strict primitive classifier now recognises approved shared cleanup
+              primitives — `stopPidBounded` and `stopChildProcessBounded` from
+              `./helpers/process-stop` — as terminating when called inside an inspected helper body.
+              New `isApprovedSharedCleanupPrimitiveCall` requires (1) the callee name to be in
+              `APPROVED_SHARED_CLEANUP_PRIMITIVE_NAMES`, (2) the import to resolve on disk to the
+              canonical `tests/helpers/process-stop.ts`, and (3) the kill-target argument to be tied
+              to the helper's invocation context. Verified: `npx oxlint --config .oxlintrc.json
+              tests/cli-serve.test.ts` now reports 0 no-leaky-test-daemon errors (was 18).
+              Repository lint dropped from 31 errors → 13 errors (no remaining no-leaky-test-daemon
+              diagnostics; remaining errors are pre-existing `no-source-scanning` and unicorn rules
+              unrelated to this fix)."
+            created_at: 2026-05-12T21:08:13.573Z
         kind: blocker
       - _ulid: 01KREY0T2WGKDH3TARWNQHFEB3
         anchor:
@@ -208521,5 +208541,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T20:38:07.381Z
     created_at: 2026-05-12T20:24:47.787Z
-    updated_at: 2026-05-12T20:38:07.382Z
+    updated_at: 2026-05-12T21:08:13.573Z
     notes: []
