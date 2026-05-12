@@ -204843,6 +204843,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T15:30:03.776Z
+      - _ulid: 01KREF8C9R7NHFACAH1DP7YW5N
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRECGCDB6EYW31BWG0ZQYJ0R
+        timestamp: 2026-05-12T16:10:25.976Z
     examined_commit: f2d28b784205871178ae3872f42601a3a15f9fa1
     external_links: []
     lifecycle_state: closed
@@ -204889,6 +204895,25 @@ reviews:
               are local, untrusted bindings of a cleanup-helper-like name, so the helper name alone
               still satisfies cleanup in violation of ac-cleanup-helper-origin-is-trusted.'
             created_at: 2026-05-12T15:23:36.808Z
+          - _ulid: 01KREF8AZD2Y4VHQCM9P2T8TP2
+            author: "@claude"
+            body: "Fixed in 7c486bc61. findLocalHelperDefinition now recognises three additional binding shapes
+              in the parent walk and classifies each as LOCAL_BINDING_OPAQUE: (1) CatchClause.param
+              via patternBindsName (covers identifier and destructured catch bindings); (2)
+              ForStatement.init via forStatementInitBindsName (VariableDeclaration init
+              declarators); (3) ForOfStatement/ForInStatement.left via forXLeftBindsName
+              (per-iteration left-binding declarators). All three reviewer probes now emit
+              missingCleanup: ad hoc oxlint runs against (a) for (const killPid = (_p) => {}; true;)
+              { runKspec(serve start --detach); ... onTestFinished(() => killPid(pid)); ... break;
+              }, (b) for (const killPid of [(_p) => {}]) { ... }, and (c) try { ... } catch
+              (killPid) { ... onTestFinished(() => killPid(pid)) ... } all report
+              no-leaky-test-daemon. Added six positive flag-it regressions (for-init no-op, for-init
+              terminating, for-of left, for-in left, catch param, catch object-destructure) and two
+              negative companions (unrelated for-of binding name, unrelated catch param name) to
+              confirm the approved-import path still resolves when the inserted scope binds a
+              different name. Targeted suites 352/352 pass; full suite 9132 passed, 5 skipped of
+              9137; changed-file oxlint clean (0 errors)."
+            created_at: 2026-05-12T16:10:24.621Z
         kind: blocker
       - _ulid: 01KRECXYY5QZPEJAY1F3HJQH78
         entries:
@@ -204919,7 +204944,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T15:30:03.775Z
     created_at: 2026-05-12T15:12:58.406Z
-    updated_at: 2026-05-12T15:30:03.776Z
+    updated_at: 2026-05-12T16:10:24.621Z
     notes: []
   - _ulid: 01KREEADWRFZ4HV75GJYFJ31BS
     slugs: []
