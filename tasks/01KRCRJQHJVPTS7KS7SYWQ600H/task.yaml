@@ -59,7 +59,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-tighten-daemon-guardrail-cleanup-semantics-specs"
@@ -71,6 +71,14 @@ tags:
   - daemon
   - cli
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-add-implicit-autostart-cleanup-regressions/01krcrjq
+  captured_at: 2026-05-12T07:30:30.736Z
+  commit: 70f36e34d73a83df3a8ef32ec6ec7470e6509870
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KRDG8TH3J4TCDDNWG2JJH4S1
 history:
   - author: Jacob Chapel
@@ -93,7 +101,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-12T07:09:30.392Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-implicit-autostart-cleanup-regressions/01krcrjq
+          captured_at: 2026-05-12T07:30:30.736Z
+          commit: 70f36e34d73a83df3a8ef32ec6ec7470e6509870
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-12T07:30:30.739Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-12T07:30:30.739Z
 created_at: 2026-05-12T00:14:53.490Z
 started_at: 2026-05-12T07:09:30.392Z
+submitted_at: 2026-05-12T07:30:30.739Z
 todos: []
 automation: eligible
