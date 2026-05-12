@@ -207578,6 +207578,16 @@ reviews:
         required: true
         created_at: 2026-05-12T19:37:03.646Z
         completed_at: 2026-05-12T19:37:03.646Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Producer tasks can merge before lease-aware cleanup, leaving an intermediate state that
+          writes durable protection signals while cleanup still ignores them.
+        name: Partial rollout ordering
+        required: true
+        created_at: 2026-05-12T19:37:03.658Z
+        completed_at: 2026-05-12T19:37:03.658Z
     events:
       - _ulid: 01KRETXETVRT4R7XQ5XQRF4Q5Z
         actor: Jacob Chapel
@@ -207648,6 +207658,13 @@ reviews:
           status: fail
           name: Operability and bounded cleanup
         timestamp: 2026-05-12T19:37:07.341Z
+      - _ulid: 01KREV2X74QVS7T97AXKK4PMV8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Partial rollout ordering
+        timestamp: 2026-05-12T19:37:09.604Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -207759,5 +207776,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-05-12T19:34:11.039Z
-    updated_at: 2026-05-12T19:37:03.646Z
+    updated_at: 2026-05-12T19:37:03.658Z
     notes: []
