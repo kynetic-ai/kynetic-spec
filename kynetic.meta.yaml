@@ -18393,6 +18393,19 @@ observations:
     resolved: false
     workflow_ref: "@01KRE7F1"
     created_at: 2026-05-12T13:58:05.927Z
+  - _ulid: 01KRE7PFAS1WT03B31SYZE7BT3
+    type: friction
+    content: Reviewer workspace preparation can fail in ways that are operational rather than task
+      scoped. This session had a prompt-provided detached review snapshot path that was absent
+      locally, plus task notes showing an earlier transient review-bootstrap ENOENT spawn sh failure
+      that was later triaged as not a task blocker. A reviewer preflight or clearer recovery path
+      for missing or failed detached review worktrees would reduce orientation time and prevent
+      infrastructure failures from being mistaken for code blockers.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KRE7F1"
+    created_at: 2026-05-12T13:58:19.225Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
