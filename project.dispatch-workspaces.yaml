@@ -24588,12 +24588,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T02:09:47.707Z
+      updated_at: 2026-05-12T02:09:47.604Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T02:09:47.707Z
+      updated_at: 2026-05-12T02:09:47.604Z
     integration:
       status: pending
       detail: null
@@ -24601,7 +24601,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
-      updated_at: 2026-05-12T02:09:47.707Z
+      updated_at: 2026-05-12T02:09:47.604Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRCRJR5K77Q2THCVVH3BDNFH"
@@ -24609,18 +24609,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T01:46:31.763Z
-      last_reconciled_at: 2026-05-12T02:09:47.707Z
+      last_reconciled_at: 2026-05-12T02:09:47.604Z
       created_at: 2026-05-12T00:23:22.571Z
-      updated_at: 2026-05-12T02:09:47.707Z
+      updated_at: 2026-05-12T02:09:47.604Z
     workspace_id: dispatch-workspace-01KRCRJR5K77Q2THCVVH3BDNFH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 0d1ebb5f7abec74f141ccfbbcb0cae66dac9ef2d
+        last_seen_at: 2026-05-12T02:09:47.604Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-bounded-process-stop-contract-tests/01krcrjr
-        head: 38281b2580cd078393fbc844446cd34113ff5d0a
-        last_seen_at: 2026-05-12T01:46:06.094Z
+        head: 0d1ebb5f7abec74f141ccfbbcb0cae66dac9ef2d
+        last_seen_at: 2026-05-12T02:09:47.604Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr
   - active_role: worker
     base_branch_point: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
