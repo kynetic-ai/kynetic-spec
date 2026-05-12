@@ -182,3 +182,51 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T13:53:01.818Z
+  - _ulid: 01KRE9JBMGDZ1JTK9DRG78S99X
+    content: >-
+      Fix cycle 6: addressed cycle-5 reviewer blocker @01KRE6ARGB5SF4YPG2F2MGZ51N (binding-order
+      false negative).
+
+
+      Blocker: findLocalHelperDefinition trusted local helper definitions even when the declarator's
+      binding was only initialized AFTER an intervening observation. The reviewer's synthetic probe
+      was: runKspec(serve start --detach); const pid = readPidFromFile(); onTestFinished(() =>
+      killPid(pid)); expect(true).toBe(true); const killPid = (p) => process.kill(p, "SIGTERM"); —
+      pre-fix output was Found 0 warnings because the lookup walked every statement in the enclosing
+      block without considering source order, found the declarator, the body inspection saw
+      process.kill, and the use site was silently credited. If the expect fails (or any intervening
+      statement throws), teardown invokes the cleanup arrow while killPid is in TDZ —
+      ReferenceError, daemon leaks.
+
+
+      Fix: in findLocalHelperDefinition, when matchHelperDefinitionInStatement returns a
+      VariableDeclarator-with-function-init match, call
+      statementIsVariableHelperDefinition+isStatementBeforeUseSite to verify the declarator's
+      statement index is strictly less than the use site's containing statement index in the same
+      enclosing block. If not, return LOCAL_BINDING_OPAQUE so isTrustedHelperByOrigin rejects via
+      the explicit opaque branch. FunctionDeclarations are exempt because ES2015+ block-scoped
+      function declarations are hoisted with their value to the start of the enclosing scope.
+
+
+      New helpers: statementIsVariableHelperDefinition (unwraps ExportNamed/Default wrappers,
+      returns true for VariableDeclaration with simple-Identifier id and
+      FunctionExpression/ArrowFunctionExpression init matching name); isStatementBeforeUseSite
+      (strict less-than to keep pathological IIFE-init shapes opaque). Strict less-than means a
+      declarator's containing statement that IS the use-site statement (e.g. const k = (() => {
+      onTestFinished(() => k(p)); })()) is also opaque — conservatively safe.
+
+
+      Regressions: 5 positive flag-it (const arrow after, const function expression after, let arrow
+      after, describe-scope const after afterEach, program-level const after describe block) plus 2
+      negative companions (hoisted FunctionDeclaration after registration is still accepted; const
+      arrow declared before registration is still accepted).
+
+
+      Checks: targeted suites pass (335/335: 116 lint-no-leaky-test-daemon + 219
+      lint-daemon-test-guardrails, up from 328 in cycle 5). Full vitest pass (9096 passed, 5 skipped
+      of 9101, 0 failures, 2195s). Changed-file oxlint clean on
+      tools/eslint-rules/no-leaky-test-daemon.js and tests/lint-no-leaky-test-daemon.test.ts (0
+      errors, pre-existing warnings only). kspec validate warnings-only.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T14:31:01.520Z
