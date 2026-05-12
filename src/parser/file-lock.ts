@@ -123,8 +123,21 @@ export async function acquireFileLock(
       // mkdir with recursive:false is atomic - only one process succeeds
       await fs.mkdir(lockDir, { recursive: false });
 
-      // Write our PID for stale lock detection
-      await fs.writeFile(pidFile, ownershipMarker, "utf-8");
+      // Publish the pid file via temp + rename. fs.writeFile opens with
+      // O_TRUNC, briefly leaving the pid file empty; a concurrent staleness
+      // check seeing that empty content would treat the lock as corrupt,
+      // rm the lockDir, and let two callers into the critical section.
+      // Rename is atomic, so readers see ENOENT or the full marker.
+      const tmpPidFile = path.join(lockDir, `pid.tmp.${randomUUID()}`);
+      try {
+        await fs.writeFile(tmpPidFile, ownershipMarker, "utf-8");
+        await fs.rename(tmpPidFile, pidFile);
+      } catch (writeErr) {
+        // Roll back the lockDir so future acquirers aren't blocked by a
+        // lock with no pid file (which the ENOENT path treats as notStale).
+        await fs.rm(lockDir, { recursive: true, force: true }).catch(() => {});
+        throw writeErr;
+      }
 
       // Return release function with acquire info attached
       const release = async () => {
