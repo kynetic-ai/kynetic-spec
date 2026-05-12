@@ -45592,7 +45592,7 @@ runs:
     completed_at: 2026-05-12T03:19:39.142Z
   - _ulid: 01KRD45W16YVRRDM9EBTQQWQSF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -45607,7 +45607,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T03:38:30.047Z
-        completed_at: 2026-05-12T03:38:30.047Z
+        completed_at: 2026-05-12T03:38:38.773Z
+        notes: "Friction points: Full npm run lint is still not useful as a clean review gate because it
+          fails on existing repo-wide lint errors, so changed-file lint had to be run separately to
+          distinguish task-local signal from background noise. Review evidence also required
+          summarizing ad hoc repro fixtures manually in check text. Both are already covered by
+          existing records found during search: @01KQ133T6 for noisy full lint and @01KR2JD1 for
+          review evidence logs lacking a first-class place for structured artifacts."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T03:38:38.773Z
+        completed_at: 2026-05-12T03:38:38.773Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T03:37:35.014Z
