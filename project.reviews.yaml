@@ -208290,6 +208290,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KREY0NHJ68M5MX2SP1BHAD86
         timestamp: 2026-05-12T20:28:23.541Z
+      - _ulid: 01KREY0VPZ3ST05EGXKAKWXBMG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KREY0T2WGKDH3TARWNQHFEB3
+        timestamp: 2026-05-12T20:28:28.256Z
     examined_commit: 62bffa595961c9d0d4e1c8c1cc8e5ef09486064e
     external_links: []
     lifecycle_state: open
@@ -208322,7 +208329,32 @@ reviews:
               shared helper internals."
             created_at: 2026-05-12T20:28:21.938Z
         kind: blocker
+      - _ulid: 01KREY0T2WGKDH3TARWNQHFEB3
+        anchor:
+          type: code
+          commit: 62bffa595961c9d0d4e1c8c1cc8e5ef09486064e
+          line_end: 1827
+          line_start: 1826
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KREY0T2W8PV8NYBY9V1BXN6P
+            author: Jacob Chapel
+            body: "MUST-FIX: the helper-body ownership check accepts any helper parameter or any object-literal
+              property value as a valid kill target without proving that this value is the
+              just-started daemon. I verified three false negatives with ad hoc oxlint probes: (1)
+              function killPid(_pid, target) { process.kill(target!, 'SIGTERM') } called as
+              killPid(pid) produces 0 no-leaky diagnostics, even though the helper kills undefined
+              instead of pid; (2) function killPid(_pid, target = otherPid) kills a stale outer pid
+              while killPid(pid) is credited; (3) const handle = { otherPid, kill() {
+              process.kill(otherPid, 'SIGTERM') } } is credited because the literal exposes otherPid
+              as a property, but otherPid was bound before the detached start. Impact:
+              cleanup-shaped code can still satisfy
+              ac-cleanup-operation-terminates-daemon/ac-cleanup-helper-origin-is-trusted while
+              leaving the newly started daemon running."
+            created_at: 2026-05-12T20:28:26.588Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T20:24:47.787Z
-    updated_at: 2026-05-12T20:28:21.938Z
+    updated_at: 2026-05-12T20:28:26.588Z
     notes: []
