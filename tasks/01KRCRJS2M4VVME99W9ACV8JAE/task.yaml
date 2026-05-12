@@ -51,7 +51,7 @@ description: >
 spec_ref: "@daemon-test-teardown-boundedness"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-active-request-bounded-observation-regressions"
@@ -63,6 +63,14 @@ tags:
   - daemon
   - mock
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-fix-active-request-teardown-and-observation-bounds/01krcrjs
+  captured_at: 2026-05-12T17:35:32.486Z
+  commit: e105a25901b63defac3d25adc605a545ac1df7d2
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KREJPTP5FQZANW5BYQ16PTG0
 history:
   - author: Jacob Chapel
@@ -85,7 +93,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-12T17:11:37.654Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-fix-active-request-teardown-and-observation-bounds/01krcrjs
+          captured_at: 2026-05-12T17:35:32.486Z
+          commit: e105a25901b63defac3d25adc605a545ac1df7d2
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-12T17:35:32.488Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-12T17:35:32.488Z
 created_at: 2026-05-12T00:14:55.060Z
 started_at: 2026-05-12T17:11:37.653Z
+submitted_at: 2026-05-12T17:35:32.488Z
 todos: []
 automation: eligible
