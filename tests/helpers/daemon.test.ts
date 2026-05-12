@@ -9,7 +9,7 @@
  */
 import { describe, expect, it, onTestFinished } from "vitest";
 import type { ChildProcess } from "node:child_process";
-import { existsSync, statSync } from "node:fs";
+import { chmodSync, existsSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 import {
@@ -18,7 +18,35 @@ import {
   DaemonReadinessError,
   startTestDaemon,
 } from "./daemon.js";
-import { readTestOutputSync } from "./cli.js";
+import { cleanupTempDir, createTempDir, readTestOutputSync } from "./cli.js";
+
+/**
+ * Synthetic uncooperative-child source for bounded-stop contract tests.
+ *
+ * Installs no-op SIGTERM / SIGINT / SIGHUP handlers so the only signal that
+ * actually terminates the process is SIGKILL, then writes one ready line to
+ * stdout. The test waits for that line before sending any signals — without
+ * the handshake, a too-fast SIGTERM races the script's signal-handler
+ * installation and hits the default terminate action, masking the bug
+ * under test.
+ */
+const UNCOOPERATIVE_CHILD_SOURCE = `#!/usr/bin/env node
+process.on("SIGTERM", () => { /* swallow */ });
+process.on("SIGINT", () => { /* swallow */ });
+process.on("SIGHUP", () => { /* swallow */ });
+process.stdout.write("ready\\n");
+setInterval(() => {}, 60_000);
+`;
+
+/** Probe whether a process is still alive without sending a real signal. */
+function isProcessAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 describe("buildDaemonChildEnv", () => {
   // AC: @daemon-backed-test-fixture-contract ac-no-ambient-daemon-control
@@ -715,5 +743,128 @@ describe(
         }
       }
     });
+  },
+);
+
+describe(
+  "startTestDaemon stop() observes termination before return",
+  { timeout: 30_000 },
+  () => {
+    // AC: @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return
+    // AC: @daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded
+    // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+    // AC: @daemon-backed-test-fixture-contract ac-no-ambient-daemon-control
+    // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+    // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+    //
+    // The real-daemon stop path must not report cleanup success while the
+    // owned child is still in its post-SIGKILL window. The current
+    // killChildScoped resolves from the graceful-timer callback immediately
+    // after sending SIGKILL — before libuv has fired the child's 'exit'
+    // event and set exitCode / signalCode. That leaves callers thinking
+    // cleanup is done while the process still exists (zombie or otherwise),
+    // and is the bounded-stop bug this regression locks down.
+    it(
+      "does not resolve until an uncooperative child has been observed terminated",
+      async () => {
+        if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
+          throw new Error(
+            "dist/daemon/index.js missing — run 'npm run build:daemon' before tests",
+          );
+        }
+        const scriptDir = await createTempDir("kspec-uncooperative-daemon-");
+        onTestFinished(async () => {
+          await cleanupTempDir(scriptDir);
+        });
+        const synthPath = join(scriptDir, "uncooperative-daemon.cjs");
+        writeFileSync(synthPath, UNCOOPERATIVE_CHILD_SOURCE);
+        chmodSync(synthPath, 0o755);
+
+        const project = await createTestDaemonProject();
+        onTestFinished(async () => {
+          await project.cleanup();
+        });
+
+        // Capture the spawned child handle via the synchronous observer
+        // seam so the test can assert on the OS-visible pid after stop()
+        // returns. The probe waits for the synth's stdout handshake so
+        // we never race SIGTERM against the script's signal-handler
+        // installation (without the handshake a too-fast SIGTERM hits
+        // the default terminate action and masks the bug under test).
+        let observed: { child: ChildProcess; pid: number } | null = null;
+        const started = await startTestDaemon(project, {
+          __testBinaryOverride: synthPath,
+          readiness: {
+            mode: "custom",
+            probe: (ctx) => {
+              const stdoutText = ctx.stdoutTail();
+              if (ctx.child.exitCode !== null || ctx.child.signalCode !== null) {
+                return { ok: false, details: `synth child exited unexpectedly` };
+              }
+              if (!stdoutText.includes("ready")) {
+                return { ok: false, details: `awaiting synth ready handshake` };
+              }
+              return { ok: true, details: "synth ready" };
+            },
+          },
+          timeoutMs: 5_000,
+          intervalMs: 50,
+          __testObserveSpawn: ({ child }) => {
+            observed = { child, pid: child.pid ?? -1 };
+          },
+          registerCleanup: () => {
+            /* test owns stop() lifecycle directly */
+          },
+        });
+
+        expect(observed).not.toBeNull();
+        const captured = observed as unknown as { child: ChildProcess; pid: number };
+        expect(captured.pid).toBeGreaterThan(0);
+        expect(isProcessAlive(captured.pid)).toBe(true);
+
+        // Belt-and-suspenders: if the helper bug leaves the synthetic
+        // child alive after stop() resolves, force-kill it on test exit
+        // so the regression cannot strand an uncooperative process.
+        onTestFinished(() => {
+          if (isProcessAlive(captured.pid)) {
+            try {
+              process.kill(captured.pid, "SIGKILL");
+            } catch {
+              /* already gone */
+            }
+          }
+        });
+
+        const stopStartedAt = Date.now();
+        await started.stop();
+        const elapsed = Date.now() - stopStartedAt;
+
+        // ac-stop-observes-termination-before-return: by the time stop()
+        // resolves, the child's exit event must have fired so exitCode or
+        // signalCode is non-null. The current bug resolves the stop
+        // promise from the timer callback synchronously after kill("SIGKILL"),
+        // before libuv has surfaced the exit event.
+        expect(
+          started.child.exitCode !== null || started.child.signalCode !== null,
+          "stop() must not resolve until the child exit has been observed " +
+            `(exitCode=${started.child.exitCode} signalCode=${started.child.signalCode})`,
+        ).toBe(true);
+
+        // After stop() resolves, the OS must no longer report the pid as
+        // alive. A zombie pid (not yet reaped) would also satisfy this
+        // check on Linux only after the parent has reaped via libuv, which
+        // is what the 'exit' event fundamentally signals.
+        expect(isProcessAlive(captured.pid)).toBe(false);
+
+        // ac-uncooperative-process-stop-is-bounded: the helper must
+        // escalate to SIGKILL and observe exit within a bounded multiple
+        // of the graceful period (default 5s). 15s is generous enough for
+        // slow CI without masking a regression that hangs the wait.
+        expect(elapsed).toBeLessThan(15_000);
+
+        // Idempotent stop after observation.
+        await started.stop();
+      },
+    );
   },
 );

@@ -23,9 +23,92 @@ import {
 import { spawn, spawnSync, execSync } from "child_process";
 import { once } from "events";
 import { dirname, join } from "path";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { chmodSync, existsSync, mkdirSync, writeFileSync } from "fs";
 import { createServer } from "net";
 import type { ChildProcess } from "child_process";
+
+/**
+ * Probe whether a process is still alive without sending a real signal.
+ *
+ * Used by bounded-stop contract tests to assert the cleanup helpers observe
+ * actual process termination rather than reporting success from a timeout
+ * callback while the OS-visible pid still exists.
+ */
+function isProcessAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Synthetic uncooperative-child source for bounded-stop contract tests.
+ *
+ * Installs no-op SIGTERM / SIGINT / SIGHUP handlers so the only signal that
+ * actually terminates the process is SIGKILL, then writes one "ready" line
+ * to stdout. Tests MUST wait for that line before sending any signals —
+ * without the handshake, a too-fast SIGTERM races the script's
+ * signal-handler installation and hits the default terminate action,
+ * masking the bug under test.
+ */
+const UNCOOPERATIVE_CHILD_SOURCE = `#!/usr/bin/env node
+process.on("SIGTERM", () => { /* swallow */ });
+process.on("SIGINT", () => { /* swallow */ });
+process.on("SIGHUP", () => { /* swallow */ });
+process.stdout.write("ready\\n");
+setInterval(() => {}, 60_000);
+`;
+
+/**
+ * Cooperative-child source that the parent terminates by signal.
+ *
+ * No signal handlers installed; the test sends SIGKILL after waiting for
+ * the "ready" handshake so the parent's ChildProcess handle observes
+ * exit-by-signal (exitCode === null, signalCode === 'SIGKILL'). Used by
+ * the signal-exit-race regression to probe the cleanup helper's
+ * already-exited fast-path.
+ */
+const SIGNAL_EXIT_CHILD_SOURCE = `#!/usr/bin/env node
+process.stdout.write("ready\\n");
+setInterval(() => {}, 60_000);
+`;
+
+/**
+ * Wait for a spawned synthetic child to write its handshake line.
+ *
+ * Returns after the child writes "ready\\n" to stdout, or throws if the
+ * child exits unexpectedly. Bounded by `timeoutMs` so a stuck child does
+ * not hang the suite.
+ */
+function waitForSynthReady(child: ChildProcess, timeoutMs = 5_000): Promise<void> {
+  return new Promise((resolve, reject) => {
+    let buf = "";
+    const onData = (chunk: Buffer): void => {
+      buf += chunk.toString();
+      if (buf.includes("ready")) {
+        cleanup();
+        resolve();
+      }
+    };
+    const onExit = (): void => {
+      cleanup();
+      reject(new Error(`synth child exited before ready: stdout=${buf}`));
+    };
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error(`synth child did not write ready within ${timeoutMs}ms`));
+    }, timeoutMs);
+    const cleanup = (): void => {
+      clearTimeout(timer);
+      child.stdout?.off("data", onData);
+      child.off("exit", onExit);
+    };
+    child.stdout?.on("data", onData);
+    child.once("exit", onExit);
+  });
+}
 
 /**
  * Kill a process by PID, swallowing ESRCH (already dead).
@@ -1752,3 +1835,260 @@ describe("kspec serve commands", () => {
     });
   });
 });
+
+/**
+ * Bounded-stop contract tests for the PID-based and ChildProcess-based
+ * cleanup helpers used by CLI lifecycle tests.
+ *
+ * These tests own their own synthetic children — no real daemon, no
+ * isolated home, no shadow worktree — so the only behavior under
+ * observation is the cleanup helper's stop semantics.
+ *
+ * The current cleanup primitives have two shapes that violate the
+ * @daemon-test-teardown-boundedness contract:
+ *
+ *   1. `waitForChildExit(child, timeoutMs)` resolves from its setTimeout
+ *      callback synchronously after `child.kill("SIGKILL")` — before
+ *      libuv has fired the child's 'exit' event. The exitCode /
+ *      signalCode handles are still null at that moment, and the OS may
+ *      not have reaped the pid.
+ *
+ *   2. `waitForChildExit`'s fast-path checks only `child.exitCode !==
+ *      null`. A child terminated by signal has `exitCode === null` and
+ *      `signalCode !== null`, so the function falls through to the full
+ *      polling timeout (default 5000ms) before resolving, even though
+ *      the exit is already observable on the handle.
+ *
+ *   3. `killPid(pid, signal)` is fire-and-forget. It sends a single
+ *      signal and returns synchronously without escalation or
+ *      observation. Uncooperative pids survive indefinitely.
+ *
+ * Each test below targets one of those gaps. They are scoped under their
+ * own describe block so they do not inherit the `kspec serve` setup
+ * (isolated HOME, runKspec, etc) — synthetic children only.
+ */
+describe(
+  "PID-based cleanup contract — observes termination before return",
+  { timeout: 20_000 },
+  () => {
+    let scriptDir: string;
+    let uncooperativePath: string;
+    let signalExitPath: string;
+
+    beforeEach(async () => {
+      scriptDir = await createTempDir("kspec-cli-bounded-stop-");
+      uncooperativePath = join(scriptDir, "uncooperative.cjs");
+      signalExitPath = join(scriptDir, "signal-exit.cjs");
+      writeFileSync(uncooperativePath, UNCOOPERATIVE_CHILD_SOURCE);
+      chmodSync(uncooperativePath, 0o755);
+      writeFileSync(signalExitPath, SIGNAL_EXIT_CHILD_SOURCE);
+      chmodSync(signalExitPath, 0o755);
+    });
+
+    afterEach(async () => {
+      await cleanupTempDir(scriptDir);
+    });
+
+    // AC: @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return
+    // AC: @daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded
+    // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+    //
+    // waitForChildExit on a SIGTERM-ignoring child must escalate to
+    // SIGKILL AND wait for the resulting exit event. The current bug
+    // resolves from the timer callback synchronously after kill("SIGKILL"),
+    // before libuv surfaces the exit event — leaving exitCode/signalCode
+    // null and the pid potentially still in the OS process table.
+    it("waitForChildExit does not resolve until uncooperative child exit observed", async () => {
+      const child = spawn(uncooperativePath, [], {
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+      const pid = child.pid;
+      expect(pid).toBeDefined();
+      expect(pid).toBeGreaterThan(0);
+
+      // Belt-and-suspenders force-kill so a regression cannot strand a
+      // synthetic daemon-like process between runs.
+      onTestFinished(() => {
+        if (pid !== undefined && isProcessAlive(pid)) {
+          try {
+            process.kill(pid, "SIGKILL");
+          } catch {
+            /* already gone */
+          }
+        }
+      });
+
+      // Wait for the synth handshake so the SIGTERM handler is
+      // guaranteed installed before we signal. Without this, a too-fast
+      // SIGTERM hits the default terminate action and masks the bug.
+      await waitForSynthReady(child);
+
+      // Send the initial SIGTERM directly (synth ignores it). The helper
+      // must escalate to SIGKILL after the configured grace window and
+      // must wait for the resulting exit observation.
+      child.kill("SIGTERM");
+
+      const startedAt = Date.now();
+      await waitForChildExit(child, 200);
+      const elapsed = Date.now() - startedAt;
+
+      // ac-stop-observes-termination-before-return: by the time
+      // waitForChildExit resolves, the child's exit event must have
+      // fired so exitCode or signalCode is non-null on the handle.
+      expect(
+        child.exitCode !== null || child.signalCode !== null,
+        `waitForChildExit must not resolve until child exit observed ` +
+          `(exitCode=${child.exitCode} signalCode=${child.signalCode})`,
+      ).toBe(true);
+
+      // The OS pid must no longer exist after the helper reports done.
+      expect(pid).toBeDefined();
+      expect(isProcessAlive(pid as number)).toBe(false);
+
+      // ac-uncooperative-process-stop-is-bounded: escalation must
+      // happen within a bounded multiple of the configured grace window
+      // (200ms). 3s is generous for slow CI without masking a hang.
+      expect(elapsed).toBeLessThan(3_000);
+    });
+
+    // AC: @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return
+    //
+    // Signal-exit race: when a foreground child is killed by signal
+    // rather than exiting normally, the ChildProcess handle has
+    // `exitCode === null` and `signalCode !== null`. The current
+    // waitForChildExit fast-path checks only `child.exitCode !== null`,
+    // so an already-signal-exited handle falls through to the full
+    // polling timeout (5000ms) before resolving — even though the exit
+    // is already observable. Cleanup that proves termination must
+    // recognize signalCode as an exit indicator equivalent to exitCode.
+    //
+    // SIGKILL is used here (not SIGINT) so the parent's ChildProcess
+    // handle deterministically observes exit-by-signal — SIGKILL is
+    // uncatchable so the synth cannot exit cleanly with code 0 and mask
+    // the signalCode branch under test.
+    it("waitForChildExit returns immediately when child already exited via signal", async () => {
+      const child = spawn(signalExitPath, [], {
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+      const pid = child.pid;
+      expect(pid).toBeDefined();
+
+      // Wait for the synth handshake so we know the script has reached
+      // setInterval and won't exit on its own before we signal.
+      await waitForSynthReady(child);
+
+      // Wait for the child to fully exit by signal. SIGKILL forces a
+      // signal-exit on the parent's handle regardless of any default
+      // Node SIGINT behavior on the child side.
+      await new Promise<void>((resolve) => {
+        child.once("exit", () => resolve());
+        child.kill("SIGKILL");
+      });
+
+      onTestFinished(() => {
+        if (pid !== undefined && isProcessAlive(pid)) {
+          try {
+            process.kill(pid, "SIGKILL");
+          } catch {
+            /* already gone */
+          }
+        }
+      });
+
+      // Confirm we set up the signal-exit race state we care about.
+      expect(child.exitCode).toBeNull();
+      expect(child.signalCode).toBe("SIGKILL");
+
+      // Fast-path: helper sees the exit is already observable and
+      // returns immediately, not after the configured timeout.
+      const startedAt = Date.now();
+      await waitForChildExit(child, 5_000);
+      const elapsed = Date.now() - startedAt;
+
+      // 500ms is comfortably above microsecond-level synchronous
+      // resolution while still well below the configured 5000ms
+      // timeout — the only way to pass it is to recognize the
+      // already-exited-by-signal state.
+      expect(elapsed).toBeLessThan(500);
+    });
+
+    // AC: @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return
+    // AC: @daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded
+    // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+    //
+    // PID-based cleanup contract: an uncooperative pid must reach a
+    // bounded terminal outcome. The current `killPid` helper sends a
+    // single signal and returns synchronously — fire-and-forget. After
+    // calling it with SIGTERM against a child that ignores SIGTERM, the
+    // pid remains alive indefinitely. The bounded-stop contract requires
+    // escalation and observation; this regression locks that contract
+    // down so the next implementation task replaces `killPid` with (or
+    // routes it through) a bounded primitive that escalates to SIGKILL
+    // and waits for actual termination before returning.
+    it("killPid drives an uncooperative pid to a bounded terminal outcome", async () => {
+      const child = spawn(uncooperativePath, [], {
+        // Pipe stdout so we can read the synth's ready handshake before
+        // signaling. Without the handshake, SIGTERM races handler
+        // installation and the synth dies cooperatively, hiding the gap.
+        stdio: ["ignore", "pipe", "pipe"],
+        // Detached so the child outlives the spawn handle for the test —
+        // PID-based cleanup is the contract under test, not ChildProcess
+        // cleanup. unref() lets the test process exit even if cleanup
+        // misbehaves.
+        detached: true,
+      });
+      child.unref();
+      const pid = child.pid;
+      expect(pid).toBeDefined();
+      expect(pid).toBeGreaterThan(0);
+      expect(isProcessAlive(pid as number)).toBe(true);
+
+      // Belt-and-suspenders: force-kill if the helper bug leaves the
+      // synthetic pid alive after the cleanup attempt.
+      onTestFinished(() => {
+        if (pid !== undefined && isProcessAlive(pid)) {
+          try {
+            process.kill(pid, "SIGKILL");
+          } catch {
+            /* already gone */
+          }
+        }
+      });
+
+      // Wait for the synth handshake so the SIGTERM handler is
+      // guaranteed installed before we signal.
+      await waitForSynthReady(child);
+
+      // Invoke the cleanup helper. The current killPid is synchronous
+      // void; a bounded replacement may return a Promise. Handle both
+      // shapes so this regression captures the contract — termination
+      // observed within a bounded window — independently of whether
+      // the helper is refactored to async in the next task.
+      const stopReturn: unknown = killPid(pid as number);
+      if (
+        stopReturn !== undefined &&
+        stopReturn !== null &&
+        typeof (stopReturn as { then?: unknown }).then === "function"
+      ) {
+        await (stopReturn as Promise<unknown>);
+      } else {
+        // Sync helper: allow a generous grace window for any internal
+        // escalation + observation to complete. 5500ms is just past
+        // the conventional 5s daemon-stop grace; today's fire-and-forget
+        // killPid never escalates, so the pid survives this entire
+        // window and the assertion below fails — proving the gap.
+        await new Promise((r) => setTimeout(r, 5_500));
+      }
+
+      // ac-uncooperative-process-stop-is-bounded: cleanup must reach a
+      // terminal outcome. Today killPid is fire-and-forget with no
+      // escalation — the synthetic child survives the SIGTERM and the
+      // pid is still alive after the grace window. This regression
+      // proves the gap and the next implementation task fixes it.
+      expect(
+        isProcessAlive(pid as number),
+        `killPid must drive uncooperative pid ${pid} to a bounded terminal outcome`,
+      ).toBe(false);
+    });
+  },
+);

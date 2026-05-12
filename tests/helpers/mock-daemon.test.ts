@@ -595,3 +595,83 @@ describe("mock daemon helper — startup-failure hygiene contract", () => {
     expect(recorded.KSPEC_SESSION_ID).toBe("01OVERRIDESESSION0000000000");
   });
 });
+
+/**
+ * Contract tests for the child-process mock daemon helper's bounded-stop path.
+ *
+ * The mock daemon's child `stop()` closure must:
+ *   - Send SIGTERM, wait for graceful exit, escalate to SIGKILL if needed.
+ *   - Only resolve once the child's 'exit' event has been observed, even if
+ *     the child ignored SIGTERM and the graceful timer fired the escalation.
+ *
+ * The current implementation finalises the stop promise from the SIGKILL
+ * fallback timer's setTimeout callback — synchronously after calling
+ * `child.kill("SIGKILL")` — before libuv has fired the exit event. That
+ * leaves the caller thinking the child is stopped while it can still be in
+ * post-SIGKILL teardown.
+ */
+describe("mock daemon helper — bounded child stop contract", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-mock-daemon-bounded-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return
+  // AC: @daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded
+  // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+  // AC: @daemon-backed-test-fixture-contract ac-no-ambient-daemon-control
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  it(
+    "stop() does not resolve until an uncooperative child has been observed terminated",
+    async () => {
+      const pidFile = join(tempDir, "uncooperative-child.pid");
+
+      // The child writes its pid synchronously at startup and installs
+      // no-op SIGTERM/SIGINT/SIGHUP handlers via --ignore-sigterm so the
+      // helper must escalate to SIGKILL inside stop().
+      const child = await startMockDaemon({
+        asChildProcess: true,
+        __testInjectArgs: ["--ignore-sigterm", "--pid-file", pidFile],
+      });
+      expect(child).not.toBeNull();
+      expect(existsSync(pidFile)).toBe(true);
+      const childPid = Number.parseInt(readFileSync(pidFile, "utf8"), 10);
+      expect(Number.isFinite(childPid)).toBe(true);
+      expect(childPid).toBeGreaterThan(0);
+      expect(isProcessAlive(childPid)).toBe(true);
+
+      // Belt-and-suspenders: force-kill on test exit if the regression
+      // leaves the child alive after stop() returns.
+      onTestFinished(() => {
+        if (isProcessAlive(childPid)) ensureProcessReaped(childPid);
+      });
+
+      const stopStartedAt = Date.now();
+      await child!.stop();
+      const elapsed = Date.now() - stopStartedAt;
+
+      // ac-stop-observes-termination-before-return: after stop() resolves,
+      // the pid must no longer exist in the OS process table. The current
+      // bug finalises from the SIGKILL timer's setTimeout callback, before
+      // the child's exit event has fired and the parent has reaped it.
+      expect(
+        isProcessAlive(childPid),
+        `stop() must not resolve until child pid ${childPid} has been observed terminated`,
+      ).toBe(false);
+
+      // ac-uncooperative-process-stop-is-bounded: escalation to SIGKILL +
+      // observation must complete within a small multiple of the
+      // CHILD_GRACEFUL_KILL_MS (1500ms) budget. 6s is generous for slow CI
+      // without masking a regression that hangs the wait.
+      expect(elapsed).toBeLessThan(6_000);
+
+      // Idempotent stop after observation.
+      await expect(child!.stop()).resolves.toBeUndefined();
+    },
+  );
+});

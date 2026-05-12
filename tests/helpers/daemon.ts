@@ -132,7 +132,8 @@ export interface StartTestDaemonOptions {
    * reporting. Production callers must not pass this. Contract tests use it
    * to simulate process launch failures (e.g. ENOENT from a nonexistent
    * binary path) without depending on whether a real system runtime is
-   * actually missing on the host.
+   * actually missing on the host, and to substitute a synthetic
+   * uncooperative-child script when driving the bounded-stop contract.
    */
   __testBinaryOverride?: string;
   /**
