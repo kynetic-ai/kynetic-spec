@@ -204861,6 +204861,12 @@ reviews:
         payload:
           thread_ulid: 01KRECXYY5QZPEJAY1F3HJQH78
         timestamp: 2026-05-12T16:10:55.521Z
+      - _ulid: 01KREF9F943JN5Y4WCRY4HD4VN
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRECXYY5QZPEJAY1F3HJQH78
+        timestamp: 2026-05-12T16:11:01.796Z
     examined_commit: f2d28b784205871178ae3872f42601a3a15f9fa1
     external_links: []
     lifecycle_state: closed
@@ -204959,6 +204965,8 @@ reviews:
               tests/lint-no-leaky-test-daemon.test.ts."
             created_at: 2026-05-12T16:10:54.158Z
         kind: nit
+        resolved_at: 2026-05-12T16:11:00.389Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -204968,7 +204976,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T15:30:03.775Z
     created_at: 2026-05-12T15:12:58.406Z
-    updated_at: 2026-05-12T16:10:54.158Z
+    updated_at: 2026-05-12T16:11:00.389Z
     notes: []
   - _ulid: 01KREEADWRFZ4HV75GJYFJ31BS
     slugs: []
