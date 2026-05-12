@@ -29787,12 +29787,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T17:38:00.412Z
+      updated_at: 2026-05-12T17:38:06.705Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T17:38:00.412Z
+      updated_at: 2026-05-12T17:38:06.705Z
     integration:
       status: pending
       detail: null
@@ -29800,7 +29800,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
-      updated_at: 2026-05-12T17:38:00.412Z
+      updated_at: 2026-05-12T17:38:06.705Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRCRJS2M4VVME99W9ACV8JAE"
@@ -29808,16 +29808,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T17:10:45.347Z
-      last_reconciled_at: 2026-05-12T17:38:00.412Z
+      last_reconciled_at: 2026-05-12T17:38:06.705Z
       created_at: 2026-05-12T17:10:20.301Z
-      updated_at: 2026-05-12T17:38:00.412Z
+      updated_at: 2026-05-12T17:38:06.705Z
     workspace_id: dispatch-workspace-01KRCRJS2M4VVME99W9ACV8JAE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: e105a25901b63defac3d25adc605a545ac1df7d2
+        last_seen_at: 2026-05-12T17:38:06.705Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-active-request-teardown-and-observation-bounds-01krcrjs-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-active-request-teardown-and-observation-bounds/01krcrjs
-        head: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
-        last_seen_at: 2026-05-12T17:10:20.301Z
+        head: e105a25901b63defac3d25adc605a545ac1df7d2
+        last_seen_at: 2026-05-12T17:38:06.705Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-active-request-teardown-and-observation-bounds-01krcrjs
