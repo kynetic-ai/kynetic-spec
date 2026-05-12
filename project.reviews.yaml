@@ -208663,6 +208663,18 @@ reviews:
         runner: kspec
         created_at: 2026-05-12T21:22:53.838Z
         completed_at: 2026-05-12T21:22:53.838Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Task @task-add-cleanup-protection-maintenance-guardrails allows source-level/static tests
+          for AC coverage, conflicting with project review rules and the no-source-scanning lint
+          guardrail.
+        name: Testability and guardrail coverage
+        required: true
+        runner: manual
+        created_at: 2026-05-12T21:23:03.989Z
+        completed_at: 2026-05-12T21:23:03.989Z
     events:
       - _ulid: 01KRF133687JF68MVKDCFWD8X6
         actor: Jacob Chapel
@@ -208698,6 +208710,13 @@ reviews:
           status: pass
           name: Spec neighborhood and Path A scope
         timestamp: 2026-05-12T21:22:55.287Z
+      - _ulid: 01KRF14W24KDRAR49TZKH522AQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Testability and guardrail coverage
+        timestamp: 2026-05-12T21:23:05.412Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -208729,5 +208748,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T21:22:07.177Z
-    updated_at: 2026-05-12T21:22:53.838Z
+    updated_at: 2026-05-12T21:23:03.989Z
     notes: []
