@@ -201517,7 +201517,18 @@ reviews:
     slugs: []
     title: Review cleanup-effect guardrail regressions (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+          tests/lint-daemon-test-guardrails.test.ts: 289 passed / 289, exit 0."
+        name: targeted lint regressions
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T02:48:02.975Z
+        completed_at: 2026-05-12T02:48:02.975Z
     events:
       - _ulid: 01KRD0KBBFT42TVD86WN8VY8YA
         actor: Jacob Chapel
@@ -201532,6 +201543,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T02:35:40.590Z
+      - _ulid: 01KRD1B6Z12PC46JMH5M21MGK6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted lint regressions
+        timestamp: 2026-05-12T02:48:04.321Z
     examined_commit: d647b8096eb464f0867666b87740fb4df74ac6a4
     external_links: []
     lifecycle_state: open
@@ -201544,5 +201562,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T02:35:02.390Z
-    updated_at: 2026-05-12T02:35:39.168Z
+    updated_at: 2026-05-12T02:48:02.975Z
     notes: []
