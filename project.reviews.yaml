@@ -203136,6 +203136,19 @@ reviews:
         runner: npm test
         created_at: 2026-05-12T06:09:08.449Z
         completed_at: 2026-05-12T06:09:08.449Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Synthetic tests/synthetic-test.ts with local default-parameter no-op killPid: it(...,
+          (killPid = (_pid) => {}) => { runKspec('serve start --detach'); onTestFinished(() =>
+          killPid(pid)); expect(true).toBe(true); }) returned exit 0 with 0 no-leaky-test-daemon
+          errors."
+        name: ad hoc helper-origin probe
+        required: true
+        runner: npx oxlint
+        created_at: 2026-05-12T06:09:19.677Z
+        completed_at: 2026-05-12T06:09:19.677Z
     events:
       - _ulid: 01KRDBYWY9D0WAGCVR0G2MVNFC
         actor: Jacob Chapel
@@ -203178,6 +203191,13 @@ reviews:
           status: pass
           name: npm test -- --fresh
         timestamp: 2026-05-12T06:09:09.876Z
+      - _ulid: 01KRDCVRMG87ER2ATNK7FXFD7R
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: ad hoc helper-origin probe
+        timestamp: 2026-05-12T06:09:21.040Z
     examined_commit: 0eb6b62cc0ae567d1814d73cf552c720279f7510
     external_links: []
     lifecycle_state: open
@@ -203235,5 +203255,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T05:53:35.177Z
-    updated_at: 2026-05-12T06:09:08.449Z
+    updated_at: 2026-05-12T06:09:19.677Z
     notes: []
