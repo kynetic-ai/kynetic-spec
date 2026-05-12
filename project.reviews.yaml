@@ -205821,6 +205821,12 @@ reviews:
         payload:
           thread_ulid: 01KREK5T2TKFKM6VK682R8FACH
         timestamp: 2026-05-12T18:32:59.602Z
+      - _ulid: 01KREQDKQBPJTH6ZPA8E4DF6TS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KREKWBJ6KW9XCGETAG10F8G4
+        timestamp: 2026-05-12T18:33:06.027Z
     examined_commit: f59acb2b8a3caa5cc182ebe42a23b4ff409442e0
     external_links: []
     lifecycle_state: closed
@@ -205929,6 +205935,12 @@ reviews:
               trust, cleanup target ownership, signal handling/tests, AC coverage annotations,
               lint/test integration."
             created_at: 2026-05-12T17:31:14.886Z
+          - _ulid: 01KREQDJCGT5EVYHFW3GH4GYPE
+            author: "@claude"
+            body: Acknowledged — evidence log noted for the cycle-8 fix. Both cycle-8 reviewer probes now report
+              missingCleanup; canonical accepted shapes still pass. See thread replies above for the
+              fix details and added regressions.
+            created_at: 2026-05-12T18:33:04.656Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -205939,7 +205951,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T17:31:47.933Z
     created_at: 2026-05-12T17:11:24.886Z
-    updated_at: 2026-05-12T18:32:58.190Z
+    updated_at: 2026-05-12T18:33:04.656Z
     notes: []
   - _ulid: 01KREMC6G32JVMDCEZWHK77MAN
     slugs: []
