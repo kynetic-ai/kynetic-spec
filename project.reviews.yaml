@@ -206819,6 +206819,12 @@ reviews:
         payload:
           thread_ulid: 01KRER48GN0CZPCV27CKSX6BQQ
         timestamp: 2026-05-12T20:01:54.230Z
+      - _ulid: 01KREWGGBZJ012MT8DHRH8NTBZ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRER48GN0CZPCV27CKSX6BQQ
+        timestamp: 2026-05-12T20:02:03.776Z
     examined_commit: 671d9b4584a8dfb718be8fa81a3c153965e62a4c
     external_links: []
     lifecycle_state: closed
@@ -206883,6 +206889,8 @@ reviews:
               'SIGTERM'); } }`) was added so the property tie does not collapse to shorthand-only."
             created_at: 2026-05-12T20:01:52.788Z
         kind: blocker
+        resolved_at: 2026-05-12T20:02:02.339Z
+        resolved_by: "@claude"
       - _ulid: 01KRERYWS4BT0J9QXXKC3QVS0D
         entries:
           - _ulid: 01KRERYWS4JWD9ME29RRXASC9H
@@ -206922,7 +206930,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T19:00:18.970Z
     created_at: 2026-05-12T18:39:00.497Z
-    updated_at: 2026-05-12T20:01:52.788Z
+    updated_at: 2026-05-12T20:02:02.339Z
     notes: []
   - _ulid: 01KRERNSBMVT2M524R6JBTT54Q
     slugs: []
