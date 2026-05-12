@@ -1,1 +1,67 @@
-notes: []
+notes:
+  - _ulid: 01KRCXK1XEGY4NCDKDDCXETFK4
+    content: >-
+      Added adversarial guardrail regressions to tests/lint-no-leaky-test-daemon.test.ts.
+
+
+      Failing-before-fix cases (3 — observed failing against current rule, will pass after
+      @task-fix-guardrail-cleanup-boundary-classification):
+
+      - process.on("exit", ...) only — currently credited as cleanup, must be rejected
+
+      - process.on("beforeExit", ...) only — currently credited, must be rejected
+
+      - process.on("SIGTERM", ...) only — currently credited, must be rejected (and analogously
+      SIGINT/SIGHUP/SIGQUIT/SIGBREAK covered by PROCESS_EXIT_EVENT_NAMES)
+
+
+      Rejected cases that already pass and lock in current behavior:
+
+      - process.once("exit", ...) only — rule only matches .on, not .once
+
+      - Promise.finally(...) only — not a recognised registration
+
+      - queueMicrotask(...) only — not a recognised registration
+
+
+      (beforeEach/afterEach/beforeAll/afterAll registered in-test bodies and unregistered callback
+      shapes are already covered by existing positive tests; left in place and verified still
+      rejected.)
+
+
+      Accepted cases newly annotated to ac-cleanup-registration-is-test-scoped:
+
+      - onTestFinished(() => process.kill(pid, 'SIGTERM')) where pid is captured before the
+      registration
+
+      - try/finally finalizer with pid captured before the try block opens
+
+      - Mixed: onTestFinished + process.on("exit", ...) fallback — accepted because onTestFinished
+      is what credits the guardrail. After the follow-up fix removes process.on(...) from the
+      registration set, this case must still pass (per-test boundary alone satisfies the contract).
+
+
+      The previous negative case at lines ~927-940 ('process.on with an exit/signal event is valid
+      cleanup') was relocated/inverted into the positive section as a rejected case for
+      ac-cleanup-registration-is-test-scoped, with a comment explaining process-lifecycle cleanup is
+      allowed only as a supplemental fallback, not as the cleanup credit.
+
+
+      Test runs:
+
+      - mise exec -- npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts → 3 failures (the
+      three flipped process.on event cases), all other 58 cases pass.
+
+      - mise exec -- npm test -- tests/lint-daemon-test-guardrails.test.ts → 219 pass.
+
+
+      Covers: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped,
+      ac-detached-cleanup-before-observation, ac-detached-cleanup-bound-before-observation;
+      @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged.
+
+
+      The 3 failing-before-fix cases are the test contract for
+      @task-fix-guardrail-cleanup-boundary-classification (next in the chain).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T01:42:26.990Z
