@@ -205223,6 +205223,19 @@ reviews:
         runner: npm
         created_at: 2026-05-12T16:34:46.214Z
         completed_at: 2026-05-12T16:34:46.214Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Two synthetic oxlint probes failed the expected behavior: bare unimported killPid cleanup
+          exited 0 with 0 diagnostics; nested tests/e2e/synthetic-test.ts importing ./helpers/daemon
+          also exited 0 with 0 diagnostics even though that specifier resolves outside the approved
+          shared helper path."
+        name: ad hoc helper-origin probes
+        required: true
+        runner: oxlint
+        created_at: 2026-05-12T16:35:00.259Z
+        completed_at: 2026-05-12T16:35:00.259Z
     events:
       - _ulid: 01KREFK8YRPCTQTBS1F9VS8GRM
         actor: Jacob Chapel
@@ -205286,6 +205299,13 @@ reviews:
           status: fail
           name: repository lint
         timestamp: 2026-05-12T16:34:47.628Z
+      - _ulid: 01KREGNDBSH1SZ2HT4TF0WY54N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: ad hoc helper-origin probes
+        timestamp: 2026-05-12T16:35:01.625Z
     examined_commit: 7c486bc61439fc86e9d39f39230c78379b4c9c48
     external_links: []
     lifecycle_state: open
@@ -205339,5 +205359,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T16:16:23.000Z
-    updated_at: 2026-05-12T16:34:46.214Z
+    updated_at: 2026-05-12T16:35:00.259Z
     notes: []
