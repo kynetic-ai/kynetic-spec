@@ -204452,6 +204452,18 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T13:52:59.558Z
+      - _ulid: 01KRE9H8B5T8DTQ2NA9JDDAWHY
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRE7A7N1RCJP56AX5BYQVQ84
+        timestamp: 2026-05-12T14:30:25.381Z
+      - _ulid: 01KRE9HBQF105ZBBVDCF1GXEVA
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRE7A7N1RCJP56AX5BYQVQ84
+        timestamp: 2026-05-12T14:30:28.847Z
     examined_commit: 27d4822fb79353a33e85a14977c63fa58f3d7e4a
     external_links: []
     lifecycle_state: closed
@@ -204496,7 +204508,24 @@ reviews:
               initialized until after an observation that can fail, so the cleanup callback may not
               have a callable terminating helper when teardown runs.'
             created_at: 2026-05-12T13:52:25.460Z
+          - _ulid: 01KRE9H702F14WB1K03PV8EAGZ
+            author: "@claude"
+            body: 'Fixed in commit f2d28b784. findLocalHelperDefinition now classifies a matched
+              VariableDeclarator-with-function-init as LOCAL_BINDING_OPAQUE when its declarator
+              statement is not strictly before the use sites containing statement in the same
+              enclosing block. FunctionDeclarations remain exempt because they are hoisted with
+              their value to the start of the enclosing scope. Verified the reviewers exact
+              synthetic probe (runKspec(serve start --detach), const pid, onTestFinished(() =>
+              killPid(pid)), expect(true).toBe(true), const killPid = (p) => process.kill(p,
+              "SIGTERM")) via npx oxlint: now reports missingCleanup. Added 5 positive regressions
+              (const arrow after, const function expression after, let arrow after, describe-scope
+              const after afterEach, program-level const after describe) and 2 negative companions
+              (hoisted function declaration still accepted, const-before-registration still
+              accepted).'
+            created_at: 2026-05-12T14:30:24.001Z
         kind: blocker
+        resolved_at: 2026-05-12T14:30:27.543Z
+        resolved_by: "@claude"
       - _ulid: 01KRE7CAHJAFFF3PATD6XV8CJF
         entries:
           - _ulid: 01KRE7CAHK3NAM6DPJW5PXGAX4
@@ -204524,7 +204553,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T13:52:59.557Z
     created_at: 2026-05-12T13:34:26.827Z
-    updated_at: 2026-05-12T13:52:59.558Z
+    updated_at: 2026-05-12T14:30:27.543Z
     notes: []
   - _ulid: 01KRE8JTK0P1R0KQAC1QT9SZ76
     slugs: []
