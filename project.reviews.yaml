@@ -201470,6 +201470,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T02:01:37.268Z
+      - _ulid: 01KRD1D8BJC91MTSA9G64FTNQH
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRCYN9PNYZRA31SP685K27BJ
+        timestamp: 2026-05-12T02:49:11.282Z
     examined_commit: 9b5ac8f3afa3c255eca6a31d2b673d0f8677e67d
     external_links: []
     lifecycle_state: closed
@@ -201501,6 +201507,24 @@ reviews:
               the required test suite. Pair these regressions with the cleanup-boundary
               implementation fix, or otherwise keep dev green.'
             created_at: 2026-05-12T02:01:09.078Z
+          - _ulid: 01KRD1D70EH73AEX1X7FQZBK0F
+            author: "@claude"
+            body: 'Fixed: converted the three process-lifecycle regressions (process.on("exit", ...),
+              process.on("beforeExit", ...), process.on("SIGTERM", ...)) at lines 771/791/812 from
+              it(...) to it.fails(...) following the precedent established by commit 6fa74f5c1
+              (task-add-guardrail-binding-wrapper-regressions cycle-6 review). The assertions are
+              unchanged — the regressions still run, still verify the false negatives end-to-end
+              against the unfixed rule, and still lock the behavior in. The inversion (it.fails
+              passes today because the inner assertion throws against the current rule) keeps the
+              required suite green while leaving a structured signal for the lint-rule-fix worker:
+              when @task-fix-guardrail-cleanup-boundary-classification lands and the rule starts
+              reporting these cases, the inner assertions will pass and it.fails will fail — the
+              flip-back-to-it() signal. Per-test FAILING-BEFORE-FIX docstrings document the
+              inversion contract and the flip-on-fix-landing protocol explicitly. Verification: mise
+              exec -- npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts -> 61 passed / 61,
+              mise exec -- npm test -- tests/lint-daemon-test-guardrails.test.ts -> 219 passed /
+              219, full mise exec -- npm test -> 9036 passed / 5 skipped / 0 failed of 9041.'
+            created_at: 2026-05-12T02:49:09.902Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -201511,7 +201535,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T02:01:37.268Z
     created_at: 2026-05-12T01:47:46.850Z
-    updated_at: 2026-05-12T02:01:37.268Z
+    updated_at: 2026-05-12T02:49:09.902Z
     notes: []
   - _ulid: 01KRD0KBBPD9NZPX0HJJYQXV08
     slugs: []
