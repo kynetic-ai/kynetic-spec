@@ -18210,6 +18210,40 @@ observations:
     resolved: false
     workflow_ref: "@01KRCXK0"
     created_at: 2026-05-12T01:44:21.251Z
+  - _ulid: 01KRD34R26DJST03JAFXM22KN0
+    type: success
+    content: "Forward-staged regression suites flip a rule-fix task from open-ended thinking into a
+      mechanical checklist. When the dependent regression task encodes each adversarial probe with
+      the selective-expected-failure helper (see @01KR431R), the rule-fix task's post-refactor
+      verification reduces to: run npm test, collect every STAGED REGRESSION CLOSED sentinel, inline
+      its post-fix assertions. On @task-fix-guardrail-cleanup-effect-classification (cycle 1) this
+      surfaced exactly 10 sentinels with no surrounding suite regressions — a precise to-do list
+      with zero ambiguity about coverage. The verification cost becomes O(staged regressions) rather
+      than O(time spent enumerating edge cases). Pair this success with @01KR431R: that observation
+      documents the helper's shape; this one documents the workflow leverage it gives the downstream
+      fix task."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T03:19:29.606Z
+  - _ulid: 01KRD34RACBQCMZ0N5ZT8JKQ7X
+    type: success
+    content: "Parameter-default Literal escape hatch when tightening static signal predicates. When
+      tightening a rule that previously accepted any shape on a CallExpression argument,
+      locally-defined call sites often carry an Identifier whose value comes from a function
+      parameter with an AssignmentPattern default — e.g. tests/cli-serve.test.ts's function
+      killPid(pid, signal: NodeJS.Signals = 'SIGTERM') { process.kill(pid, signal); }. The static
+      check cannot prove termination from `signal` alone, but the AssignmentPattern.right Literal is
+      statically pinnable. Threading the owning function node through the signal predicate and
+      resolving Identifier signals against the param defaults preserves the safe shape without
+      forcing a downstream refactor. Generalises to any stricter argument predicate on a
+      function-arg slot — check parameter-default Literals before rejecting Identifier shapes.
+      Validated on @task-fix-guardrail-cleanup-effect-classification: cli-serve.test.ts kept passing
+      under the stricter classifier without changes."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T03:19:29.868Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
