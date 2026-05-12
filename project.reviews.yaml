@@ -200882,7 +200882,19 @@ reviews:
     slugs: []
     title: Review add bounded process-stop contract tests
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm test -- --fresh tests/helpers/daemon.test.ts tests/helpers/mock-daemon.test.ts
+          tests/cli-serve.test.ts. Expected red signal observed: 5 failed, 69 passed; failures are
+          the five new bounded-stop assertions."
+        name: focused bounded-stop contract slice
+        required: false
+        runner: npm-test
+        created_at: 2026-05-12T01:40:23.784Z
+        completed_at: 2026-05-12T01:40:23.784Z
     events:
       - _ulid: 01KRCWMJX0GGCSDFKSS849N9F0
         actor: Jacob Chapel
@@ -200911,6 +200923,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRCXEA8VNC6BP9GCHYCX6SVY
         timestamp: 2026-05-12T01:39:53.281Z
+      - _ulid: 01KRCXFB5AQCVR063RCZWQG8CB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused bounded-stop contract slice
+        timestamp: 2026-05-12T01:40:25.386Z
     examined_commit: 38281b2580cd078393fbc844446cd34113ff5d0a
     external_links: []
     lifecycle_state: open
@@ -200966,7 +200985,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T01:25:48.577Z
-    updated_at: 2026-05-12T01:39:51.708Z
+    updated_at: 2026-05-12T01:40:23.784Z
     notes: []
   - _ulid: 01KRCX973GZBVGAC6R6KGR4K7A
     slugs: []
