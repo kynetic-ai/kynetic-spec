@@ -204733,6 +204733,19 @@ reviews:
         runner: kspec
         created_at: 2026-05-12T15:28:53.222Z
         completed_at: 2026-05-12T15:28:53.222Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npx oxlint tools/eslint-rules/no-leaky-test-daemon.js
+          tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts
+          tests/cli-serve.test.ts tests/helpers/mock-daemon.test.ts exited 0 with 35 warnings and 0
+          errors.
+        name: changed-file oxlint
+        required: false
+        runner: oxlint
+        created_at: 2026-05-12T15:29:07.451Z
+        completed_at: 2026-05-12T15:29:07.451Z
     events:
       - _ulid: 01KREBZ5H6M58HYKNFTXGWCAF2
         actor: Jacob Chapel
@@ -204781,6 +204794,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-12T15:28:54.670Z
+      - _ulid: 01KRECWS6P459B37DRGTHGATXX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file oxlint
+        timestamp: 2026-05-12T15:29:08.822Z
     examined_commit: f2d28b784205871178ae3872f42601a3a15f9fa1
     external_links: []
     lifecycle_state: open
@@ -204830,5 +204850,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T15:12:58.406Z
-    updated_at: 2026-05-12T15:28:53.222Z
+    updated_at: 2026-05-12T15:29:07.451Z
     notes: []
