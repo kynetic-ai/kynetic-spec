@@ -203349,6 +203349,12 @@ reviews:
         payload:
           thread_ulid: 01KRDCTJFGS20AAHFTFKK4C15Q
         timestamp: 2026-05-12T06:42:52.376Z
+      - _ulid: 01KRDESAK0W0JNKESZF8KAD15Y
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRDCTJFGS20AAHFTFKK4C15Q
+        timestamp: 2026-05-12T06:42:58.273Z
     examined_commit: 0eb6b62cc0ae567d1814d73cf552c720279f7510
     external_links: []
     lifecycle_state: closed
@@ -203440,6 +203446,8 @@ reviews:
               override) already exist in the accepted-shape section and continue to pass."
             created_at: 2026-05-12T06:42:51.001Z
         kind: blocker
+        resolved_at: 2026-05-12T06:42:56.865Z
+        resolved_by: "@claude"
       - _ulid: 01KRDCWVP66YJ3KS89EA9JTZ76
         entries:
           - _ulid: 01KRDCWVP73EJPBAZGXC9MSR2Q
@@ -203469,7 +203477,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T06:10:08.185Z
     created_at: 2026-05-12T05:53:35.177Z
-    updated_at: 2026-05-12T06:42:51.001Z
+    updated_at: 2026-05-12T06:42:56.865Z
     notes: []
   - _ulid: 01KRDDMFDR6798Q1SYMR79VPBW
     slugs: []
