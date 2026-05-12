@@ -210200,6 +210200,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KRF9DMPKMQGP6V3DEP2BK0PH
         timestamp: 2026-05-12T23:47:45.656Z
+      - _ulid: 01KRF9F0E58XTH5BH3QK15D3TE
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRF9DMPKMQGP6V3DEP2BK0PH
+        timestamp: 2026-05-12T23:48:26.181Z
     examined_commit: 185cd75f0c9bc830e2f2952ca1525583c1ab95e7
     external_links: []
     lifecycle_state: open
@@ -210233,8 +210239,20 @@ reviews:
               ac-cleanup-operation-terminates-daemon because helper/import trust is not local-scope
               accurate for class bindings."
             created_at: 2026-05-12T23:47:41.396Z
+          - _ulid: 01KRF9EWC82D3CBZE07FK3F4AV
+            author: Jacob Chapel
+            body: 'Clarification for the shell-stripped code snippets above: the affected local-binding resolver
+              is findLocalHelperDefinition plus statementBindsNameOpaquely. Repro 1: import killPid
+              from ./helpers/daemon, start with runKspec("serve start --detach"), read pid, declare
+              class killPid {}, then register onTestFinished(() => killPid(pid)). Oxlint produced
+              only no-unused-vars and zero no-leaky-test-daemon errors. Repro 2: import
+              stopPidBounded from ./helpers/process-stop, then inside a local killPid helper declare
+              class stopPidBounded {} before calling stopPidBounded(pid); the cleanup is also
+              credited. These class declarations lexically shadow the approved imports, so they need
+              to be treated as opaque local bindings.'
+            created_at: 2026-05-12T23:48:22.022Z
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T23:44:31.434Z
-    updated_at: 2026-05-12T23:47:41.396Z
+    updated_at: 2026-05-12T23:48:22.022Z
     notes: []
