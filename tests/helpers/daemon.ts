@@ -350,6 +350,35 @@ function findFirstWebUiBuild(): string | null {
   return null;
 }
 
+// ── Error preservation ────────────────────────────────────────────────
+
+/**
+ * Attach a secondary cleanup failure to a primary error. Sets
+ * `primary.cause` to the cleanup error and appends the cleanup message
+ * to `primary.message` so both `error.cause` walkers and plain-string
+ * log consumers can observe the secondary failure. The suffix is only
+ * appended once so reentry through nested cleanup boundaries (e.g. an
+ * inner helper that already attached the same cleanup error) does not
+ * stack duplicate suffixes. Any existing `primary.cause` is preserved
+ * by chaining it under `cleanup.cause`.
+ */
+export function attachCleanupFailure(primary: Error, cleanup: Error): void {
+  const suffix = `\n[cleanup also failed: ${cleanup.message}]`;
+  if (!primary.message.includes(suffix)) {
+    primary.message = `${primary.message}${suffix}`;
+  }
+  const existing = (primary as { cause?: unknown }).cause;
+  if (existing instanceof Error && existing !== cleanup) {
+    (cleanup as { cause?: unknown }).cause ??= existing;
+  }
+  (primary as { cause?: unknown }).cause = cleanup;
+}
+
+/** Coerce an unknown thrown value to an Error. */
+function toError(value: unknown): Error {
+  return value instanceof Error ? value : new Error(String(value));
+}
+
 // ── Project fixture ───────────────────────────────────────────────────
 
 /**
@@ -359,51 +388,91 @@ function findFirstWebUiBuild(): string | null {
  * pointer, an isolated HOME/config tree, and (optionally) a fixture data
  * tree copied into `.kspec/`. The default fixture source is the e2e
  * fixtures dir, which already has the shape the daemon expects.
+ *
+ * Setup-failure cleanup: each owned resource is registered on a cleanup
+ * stack as soon as it is claimed. If a later setup step (including the
+ * test-only `__testStageHook`) throws, the stack runs in reverse so the
+ * temp dir and any sibling owned resources are released before the error
+ * propagates. The returned `cleanup()` shares the same stack and remains
+ * idempotent across the success path and post-failure teardown.
  */
 export async function createTestDaemonProject(
   opts: CreateTestDaemonProjectOptions = {},
 ): Promise<TestDaemonProject> {
-  const tempDir = await createTempDir("kspec-daemon-fixture-");
-  opts.__testStageHook?.("after-temp-dir");
-  const kspecDir = join(tempDir, ".kspec");
-  mkdirSync(kspecDir, { recursive: true });
-
-  // setupShadowDetection initializes git AND writes the worktree pointer
-  // .kspec/.git → .git/worktrees/-kspec, so initContext() / daemon project
-  // detection resolves spec data from .kspec/.
-  await setupShadowDetection(tempDir);
-  opts.__testStageHook?.("after-shadow-detection");
-
-  if (!opts.skipFixtures) {
-    const source = opts.fixturesSource ?? E2E_FIXTURES;
-    if (existsSync(source)) {
-      await fsCp(source, kspecDir, {
-        recursive: true,
-        // Skip e2e wrapper artifacts that are not part of the daemon-visible
-        // .kspec/ tree (test-base.ts, project-tests/).
-        filter: (src) => !src.includes("test-base") && !src.includes("project-tests"),
-      });
-    }
-  }
-
-  const isolatedHome = await createIsolatedKspecHome(tempDir);
-  opts.__testStageHook?.("after-isolated-home");
-
-  const webUiDir =
-    opts.webUiDir === undefined ? findFirstWebUiBuild() : opts.webUiDir ?? null;
-
+  // Reverse-order cleanup stack: each step pushes its release callback
+  // before running the next step. If a later step throws, the stack
+  // unwinds in reverse so child resources are released before their
+  // parent. The first cleanup error is surfaced; subsequent failures
+  // are best-effort so one leak does not mask another.
+  const cleanups: Array<() => Promise<void>> = [];
   let cleanedUp = false;
-  return {
-    tempDir,
-    kspecDir,
-    isolatedHome,
-    webUiDir,
-    cleanup: async () => {
-      if (cleanedUp) return;
-      cleanedUp = true;
-      await cleanupTempDir(tempDir);
-    },
+
+  const runCleanups = async (): Promise<Error | null> => {
+    if (cleanedUp) return null;
+    cleanedUp = true;
+    let cleanupError: Error | null = null;
+    for (let i = cleanups.length - 1; i >= 0; i--) {
+      try {
+        await cleanups[i]();
+      } catch (error) {
+        cleanupError ??= toError(error);
+      }
+    }
+    return cleanupError;
   };
+
+  try {
+    const tempDir = await createTempDir("kspec-daemon-fixture-");
+    cleanups.push(() => cleanupTempDir(tempDir));
+    opts.__testStageHook?.("after-temp-dir");
+
+    const kspecDir = join(tempDir, ".kspec");
+    mkdirSync(kspecDir, { recursive: true });
+
+    // setupShadowDetection initializes git AND writes the worktree pointer
+    // .kspec/.git → .git/worktrees/-kspec, so initContext() / daemon project
+    // detection resolves spec data from .kspec/. The shadow-detection state
+    // lives entirely under tempDir, so removing tempDir releases it.
+    await setupShadowDetection(tempDir);
+    opts.__testStageHook?.("after-shadow-detection");
+
+    if (!opts.skipFixtures) {
+      const source = opts.fixturesSource ?? E2E_FIXTURES;
+      if (existsSync(source)) {
+        await fsCp(source, kspecDir, {
+          recursive: true,
+          // Skip e2e wrapper artifacts that are not part of the daemon-visible
+          // .kspec/ tree (test-base.ts, project-tests/).
+          filter: (src) => !src.includes("test-base") && !src.includes("project-tests"),
+        });
+      }
+    }
+
+    const isolatedHome = await createIsolatedKspecHome(tempDir);
+    opts.__testStageHook?.("after-isolated-home");
+
+    const webUiDir =
+      opts.webUiDir === undefined ? findFirstWebUiBuild() : opts.webUiDir ?? null;
+
+    return {
+      tempDir,
+      kspecDir,
+      isolatedHome,
+      webUiDir,
+      cleanup: async () => {
+        const cleanupError = await runCleanups();
+        if (cleanupError) throw cleanupError;
+      },
+    };
+  } catch (primary) {
+    const cleanupError = await runCleanups();
+    if (cleanupError) {
+      const err = toError(primary);
+      attachCleanupFailure(err, cleanupError);
+      throw err;
+    }
+    throw primary;
+  }
 }
 
 // ── Output buffers ────────────────────────────────────────────────────
@@ -768,17 +837,11 @@ export async function startTestDaemon(
       try {
         await stop();
       } catch (stopError) {
-        // Surface the secondary cleanup failure as supplementary context on
-        // the original error — never replace the registration failure as
-        // the primary rejection cause, since that is what the caller needs
-        // to diagnose the misuse that triggered this path.
-        const primary =
-          registrationError instanceof Error
-            ? registrationError
-            : new Error(String(registrationError));
-        primary.message = `${primary.message} (cleanup after registerCleanup failure also failed: ${
-          stopError instanceof Error ? stopError.message : String(stopError)
-        })`;
+        // The registration failure is the primary cause — the caller
+        // needs to diagnose the misuse that triggered this path. The
+        // stop failure is attached as supplementary context.
+        const primary = toError(registrationError);
+        attachCleanupFailure(primary, toError(stopError));
         throw primary;
       }
       throw registrationError;
@@ -871,8 +934,17 @@ export async function startTestDaemon(
       lastCacheStatus,
       cause,
     };
-    await stop();
-    throw new DaemonReadinessError(diagnostics);
+    const readinessError = new DaemonReadinessError(diagnostics);
+    // Run cleanup defensively: a stop() throw must not replace the
+    // actionable readiness diagnostic as the surfaced primary error. The
+    // cleanup failure is attached as supplementary context (cause +
+    // message suffix) so callers can still observe it.
+    try {
+      await stop();
+    } catch (stopError) {
+      attachCleanupFailure(readinessError, toError(stopError));
+    }
+    throw readinessError;
   }
 
   return {
