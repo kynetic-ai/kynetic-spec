@@ -204746,6 +204746,18 @@ reviews:
         runner: oxlint
         created_at: 2026-05-12T15:29:07.451Z
         completed_at: 2026-05-12T15:29:07.451Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Expected diagnostics were missing for local no-op helper bindings in for initializer,
+          for-of/for-in left binding, and catch parameter shapes. All probes exited 0 with no
+          no-leaky-test-daemon diagnostic, confirming blocker thread 01KRECGCDB6EYW31BWG0ZQYJ0R.
+        name: ad hoc local binding probes
+        required: true
+        runner: oxlint
+        created_at: 2026-05-12T15:29:25.564Z
+        completed_at: 2026-05-12T15:29:25.564Z
     events:
       - _ulid: 01KREBZ5H6M58HYKNFTXGWCAF2
         actor: Jacob Chapel
@@ -204801,6 +204813,13 @@ reviews:
           status: pass
           name: changed-file oxlint
         timestamp: 2026-05-12T15:29:08.822Z
+      - _ulid: 01KRECXAX354DSBA8DF4M6SZ7P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: ad hoc local binding probes
+        timestamp: 2026-05-12T15:29:26.947Z
     examined_commit: f2d28b784205871178ae3872f42601a3a15f9fa1
     external_links: []
     lifecycle_state: open
@@ -204850,5 +204869,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T15:12:58.406Z
-    updated_at: 2026-05-12T15:29:07.451Z
+    updated_at: 2026-05-12T15:29:25.564Z
     notes: []
