@@ -18196,6 +18196,20 @@ observations:
     resolved: false
     workflow_ref: "@01KRC7BX"
     created_at: 2026-05-11T19:16:11.562Z
+  - _ulid: 01KRCXPHG3CQQA1H02DE3B0TAM
+    type: friction
+    content: "Review found a repeated AC-annotation quality gap: tests sometimes add broad inherited
+      fixture-contract annotations (for example @daemon-backed-test-fixture-contract
+      ac-no-ambient-daemon-control) when the test only proves the owned-resource behavior and does
+      not set up or observe an ambient daemon. Existing annotation validation catches
+      unresolved/malformed refs, but semantic over-claiming still relies on reviewer scrutiny.
+      Consider guidance or a checklist for reviewers/workers to remove AC annotations that are
+      syntactically valid but not behaviorally proven."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KRCXK0"
+    created_at: 2026-05-12T01:44:21.251Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
