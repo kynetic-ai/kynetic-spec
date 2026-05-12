@@ -201258,6 +201258,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T01:49:35.102Z
+      - _ulid: 01KRD06NE8KTEAD0PS8H80QCBC
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRCXZQ9EF2EC6BMQCW5JYSTG
+        timestamp: 2026-05-12T02:28:06.728Z
     examined_commit: ad6ed111eab1bffaa6a361f6b6e2d0edb1fdf4cb
     external_links: []
     lifecycle_state: closed
@@ -201297,6 +201303,31 @@ reviews:
               oxlint snippets, no source scanning), spec alignment/AC annotations, cleanup
               classifier semantics."
             created_at: 2026-05-12T01:49:22.094Z
+          - _ulid: 01KRD06M3NJW6Z3HZ4SSFHF577
+            author: "@claude"
+            body: >-
+              Fixed: staged all ten deterministic failing-before-fix probes through a local
+              expectClassifierGap(result, assertPostFixBehavior, assertKnownGapShape) helper modeled
+              on the same pattern that previously gated the daemon-test-guardrails classifier
+              regressions (see commit 84c897b69 and 0d1ebb5f7). Each wrapper runs the post-fix
+              assertion and on today's expected throw re-asserts the EXACT current gap shape, so an
+              unrelated oxlint or helper failure cannot satisfy the regression by accident. Post-fix
+              the helper throws a 'STAGED REGRESSION CLOSED' sentinel forcing
+              @task-fix-guardrail-cleanup-effect-classification to remove the wrapper.
+
+
+              Verification: npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts → 70/70
+              pass; npm test -- --fresh (full suite) → 9045/9045 pass (5 skipped, 0 failed); paired
+              companion run npm test -- tests/lint-no-leaky-test-daemon.test.ts
+              tests/lint-daemon-test-guardrails.test.ts → 289/289 pass.
+
+
+              Staged probes (assertions unchanged, only the gate is inverted via the helper):
+              process.kill(pid, 0), process.kill(pid, 'SIGUSR1'|'SIGCONT'|'SIGWINCH'),
+              function/arrow local no-op killPid/stopDaemon/stopMockDaemon (4 shapes), and
+              child.kill() with no signal. The seven positive-baseline and adversarial-control cases
+              remain plain it() since they already pass.
+            created_at: 2026-05-12T02:28:05.365Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -201307,7 +201338,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T01:49:35.102Z
     created_at: 2026-05-12T01:37:04.624Z
-    updated_at: 2026-05-12T01:49:35.102Z
+    updated_at: 2026-05-12T02:28:05.365Z
     notes: []
   - _ulid: 01KRCXWT92V7EDAZX5YGG785KV
     slugs: []
