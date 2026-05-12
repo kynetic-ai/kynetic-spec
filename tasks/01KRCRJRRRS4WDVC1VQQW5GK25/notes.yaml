@@ -1,1 +1,47 @@
-notes: []
+notes:
+  - _ulid: 01KRD6ESCKGGGN143BTDVDJ05A
+    content: >-
+      Approach: Add FAILING-BEFORE-FIX regressions for @daemon-test-teardown-boundedness
+      ac-active-requests-do-not-block-teardown and ac-daemon-observations-are-bounded.
+
+
+      Coverage plan (per task bullets):
+
+      1) In-process mock daemon stop() with hanging request — clear regression: server.close() waits
+      for active connections indefinitely. Use it.fails wrapping a stop() Promise.race against a
+      small bound (~1.5s) and assert bounded outcome. Cancel the controller after the race so
+      afterEach can drain.
+
+      2) Child-process mock daemon stop() with hanging request — graceful SIGTERM handler calls
+      server.close() which hangs; parent SIGKILL fallback at CHILD_GRACEFUL_KILL_MS (1500ms) bounds
+      the outcome today. Lock as positive contract (plain it, ~3s bound).
+
+      3) Daemon-facing HTTP probe helper — bounded AbortSignal.timeout pattern is the expected
+      post-fix shape. Add positive contract test against in-process hang endpoint to lock in bounded
+      observation pattern.
+
+      4) Bare-fetch call site exposure — add a focused regression in tests/cli-serve.test.ts using
+      the mock daemon hang mode that exercises a bare fetch(url) call shape against /api/health (the
+      waitForDaemonHealth call site pattern). it.fails locks the gap and the fix task will replace
+      bare fetches with a shared bounded helper.
+
+
+      Test design notes:
+
+      - Use it.fails for assertions that fail today and will pass after fix.
+
+      - Use Promise.race with explicit timer for in-process and bare-fetch tests to keep the suite
+      bounded.
+
+      - For child case (already bounded via SIGKILL escalation), use plain it as a positive contract
+      lock.
+
+      - All hang-mode active requests are cancelled via AbortController before afterEach to prevent
+      leaked sockets.
+
+      - Annotate every test with AC: @daemon-test-teardown-boundedness
+      ac-active-requests-do-not-block-teardown and/or ac-daemon-observations-are-bounded; plus
+      @daemon-backed-test-fixture-contract ac-bounded-readiness.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T04:17:24.371Z
