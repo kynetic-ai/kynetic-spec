@@ -200897,6 +200897,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T01:26:01.188Z
+      - _ulid: 01KRCXDYS8GHYPMX0WNP1PF1FB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRCXDX6BKV5A6K2Q8840SF01
+        timestamp: 2026-05-12T01:39:39.944Z
     examined_commit: 38281b2580cd078393fbc844446cd34113ff5d0a
     external_links: []
     lifecycle_state: open
@@ -200906,10 +200913,33 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJR5K77Q2THCVVH3BDNFH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRCXDX6BKV5A6K2Q8840SF01
+        anchor:
+          type: code
+          commit: 38281b2580cd078393fbc844446cd34113ff5d0a
+          line_end: 868
+          line_start: 767
+          path: tests/helpers/daemon.test.ts
+          side: head
+        entries:
+          - _ulid: 01KRCXDX6CJ56MFAGZ5ARQJYY4
+            author: Jacob Chapel
+            body: "MUST-FIX: these staged regression tests are active red tests, so this task cannot merge
+              independently. Both the focused slice (`npm test -- --fresh
+              tests/helpers/daemon.test.ts tests/helpers/mock-daemon.test.ts
+              tests/cli-serve.test.ts`) and the full suite fail only because the five new contract
+              assertions are plain `it(...)` tests. That violates the merge gate and would make
+              `dev` red before @task-implement-bounded-process-stop-primitives runs. Stage the
+              regressions using the repo pattern (selective expected-failure wrapper preferred, or
+              `it.fails` where sufficiently selective) so the suite stays green pre-fix and
+              intentionally fails after the implementation closes the bug and the wrapper needs
+              removal."
+            created_at: 2026-05-12T01:39:38.316Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T01:25:48.577Z
-    updated_at: 2026-05-12T01:25:59.777Z
+    updated_at: 2026-05-12T01:39:38.316Z
     notes: []
   - _ulid: 01KRCX973GZBVGAC6R6KGR4K7A
     slugs: []
