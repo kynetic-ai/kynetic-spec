@@ -47493,7 +47493,7 @@ runs:
     completed_at: 2026-05-12T16:59:09.837Z
   - _ulid: 01KREM219ZP28V1KBNKS69AP2S
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47507,7 +47507,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T17:38:25.976Z
-        completed_at: 2026-05-12T17:38:25.976Z
+        completed_at: 2026-05-12T17:39:04.236Z
+        notes: "High-confidence items identified: (1) Success pattern: custom synthetic oxlint probes that
+          mutate the reviewed rule's trust assumptions can expose static-analysis false negatives
+          after submitted tests pass. Existing observations @01KR5R15S and @01KR607K already cover
+          this pattern, so no duplicate capture needed. (2) Friction: kspec batch structured
+          review-check arguments did not preserve optional/non-required semantics for one check;
+          targeted search found existing tracking @01KQ1272, so no duplicate capture needed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T17:39:04.236Z
+        completed_at: 2026-05-12T17:39:04.236Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T17:34:20.992Z
