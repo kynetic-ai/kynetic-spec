@@ -47007,7 +47007,7 @@ runs:
     completed_at: 2026-05-12T08:33:16.317Z
   - _ulid: 01KRE78ENY1CSCE66VYC4ZT1N8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47023,7 +47023,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T13:53:44.488Z
-        completed_at: 2026-05-12T13:53:44.488Z
+        completed_at: 2026-05-12T13:54:08.557Z
+        notes: "Friction points: (1) After review approval, the detached merge helper reported conflicts and
+          restored the target safely, but the conflict output did not include enough handoff detail
+          for a high-quality needs_work reason; I had to run extra git diff/log/merge-tree commands
+          to identify what dev changed. (2) kspec review for-task
+          @task-add-bounded-process-stop-contract-tests returned only the current cycle-2 review,
+          even though the session needed prior review @01KRCWMJX1SHC9MASHP4KYM3J9 context and the
+          review skill says for-task returns all linked reviews. (3) The deleted detached review
+          worktree meant a follow-up reflection command had to recover by locating the canonical
+          task worktree, which already had merge conflicts from follow-up work."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T13:54:08.557Z
+        completed_at: 2026-05-12T13:54:08.557Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T13:50:39.806Z
