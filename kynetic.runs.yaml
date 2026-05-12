@@ -44985,7 +44985,7 @@ runs:
     completed_at: 2026-05-11T19:16:21.243Z
   - _ulid: 01KRCSTDJW20JFA6H1ECBHWHT3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -44999,7 +44999,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T00:37:08.683Z
-        completed_at: 2026-05-12T00:37:08.683Z
+        completed_at: 2026-05-12T00:37:17.773Z
+        notes: "Friction points: task completion printed a broad AC coverage warning even though this was
+          intentionally a spec-only task that set the linked spec back to in_progress; that warning
+          is not wrong, but it adds review noise after approval. Also, adding an informational
+          review evidence log through batch was awkward: required=false did not produce a
+          non-required check, so the review displayed it as required."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T00:37:17.773Z
+        completed_at: 2026-05-12T00:37:17.773Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T00:36:34.012Z
