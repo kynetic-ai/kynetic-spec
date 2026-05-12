@@ -48159,7 +48159,7 @@ runs:
     completed_at: 2026-05-12T22:53:01.819Z
   - _ulid: 01KRF6CFSAR15RMGYT18CQK4HE
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -48183,7 +48183,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-12T22:57:31.812Z
-        completed_at: 2026-05-12T22:57:31.812Z
+        completed_at: 2026-05-12T22:57:39.391Z
+        notes: "Decision pass: source-scanning itself is already broadly tracked by prior no-source-scanning
+          guardrail work, so no duplicate task was created. The unique high-confidence item is the
+          stale/contradictory observation guidance discovered during this review; it was captured as
+          friction observation @01KRF6FA. No vague or hypothetical items were captured."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-12T22:57:39.391Z
+        completed_at: 2026-05-12T22:57:39.391Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T22:54:37.866Z
