@@ -63,8 +63,12 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer helper at
+  0dcbcdd27642e95299a7b77a48da1e5d295df176. Added staged cleanup-effect guardrail regressions for
+  non-terminating process.kill signals, local no-op cleanup helpers, child.kill signal behavior, and
+  trusted terminating cleanup controls; review @01KRD0KB approved with full npm test passing.
 depends_on:
   - "@task-tighten-daemon-guardrail-cleanup-semantics-specs"
 context: []
@@ -189,8 +193,25 @@ history:
         previous: "@01KRCX973GZBVGAC6R6KGR4K7A"
     command: review-link
     timestamp: 2026-05-12T02:35:05.909Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer helper at 0dcbcdd27642e95299a7b77a48da1e5d295df176. Added
+          staged cleanup-effect guardrail regressions for non-terminating process.kill signals,
+          local no-op cleanup helpers, child.kill signal behavior, and trusted terminating cleanup
+          controls; review @01KRD0KB approved with full npm test passing.
+        previous: null
+      completed_at:
+        new: 2026-05-12T02:49:22.818Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-12T02:49:22.826Z
 created_at: 2026-05-12T00:14:52.216Z
 started_at: 2026-05-12T02:28:54.870Z
 submitted_at: 2026-05-12T02:28:58.164Z
+completed_at: 2026-05-12T02:49:22.818Z
 todos: []
 automation: eligible
