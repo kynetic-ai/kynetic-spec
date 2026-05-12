@@ -46962,9 +46962,22 @@ runs:
     completed_at: 2026-05-12T08:11:26.617Z
   - _ulid: 01KRDMXJH46E3D4E2A9SRWH0PP
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-12T08:30:08.932Z
+        completed_at: 2026-05-12T08:31:55.434Z
+        notes: "Reflection gate: meaningful session confirmed. Completed task @01KRD9FY2NX3EH2KR4493T6YYA
+          after review approval and detached-helper merge to dev. What worked: first-party review
+          records captured checks/verdict cleanly; detached-reviewer-merge helper completed
+          integration without manually checking out dev; targeted plus full fresh tests gave strong
+          confidence for flaky lock fix."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-12T08:31:55.434Z
+        completed_at: 2026-05-12T08:31:55.434Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T08:30:08.932Z
