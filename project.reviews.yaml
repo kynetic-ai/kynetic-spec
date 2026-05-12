@@ -205188,6 +205188,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KREG2F8BRMEFB6FN4DM1TJ7Q
         timestamp: 2026-05-12T16:24:43.049Z
+      - _ulid: 01KREG35XS1GT7N9899KZY4ZDV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KREG33WZX33E6PXDS1ACQ1RT
+        timestamp: 2026-05-12T16:25:04.185Z
     examined_commit: 7c486bc61439fc86e9d39f39230c78379b4c9c48
     external_links: []
     lifecycle_state: open
@@ -205218,7 +205225,28 @@ reviews:
               helper name alone does not prove daemon termination.'
             created_at: 2026-05-12T16:24:40.971Z
         kind: blocker
+      - _ulid: 01KREG33WZX33E6PXDS1ACQ1RT
+        anchor:
+          type: code
+          commit: 7c486bc61439fc86e9d39f39230c78379b4c9c48
+          line_end: 1100
+          line_start: 1096
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KREG33WZ1FV4CJ45ADPWW4PN
+            author: Jacob Chapel
+            body: 'MUST-FIX: approved-helper import trust checks only the raw module specifier, not the path it
+              resolves to from the importing test file. A nested test at
+              `tests/e2e/synthetic-test.ts` with `import { killPid } from "./helpers/daemon"` is
+              credited as cleanup because the specifier matches
+              `APPROVED_HELPER_IMPORT_PATH_PATTERNS`, but that import resolves to
+              `tests/e2e/helpers/daemon`, not the approved shared helper. My ad hoc oxlint probe for
+              that shape exited 0 with 0 diagnostics, so an unapproved helper path can still satisfy
+              cleanup by name alone.'
+            created_at: 2026-05-12T16:25:02.111Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T16:16:23.000Z
-    updated_at: 2026-05-12T16:24:40.971Z
+    updated_at: 2026-05-12T16:25:02.111Z
     notes: []
