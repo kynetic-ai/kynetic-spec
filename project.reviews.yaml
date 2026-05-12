@@ -207561,6 +207561,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T19:34:27.049Z
+      - _ulid: 01KRETZ7C79E354G93Q1ABGSP3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRETZ60H3P9P6GHQCHBD2QDS
+        timestamp: 2026-05-12T19:35:08.935Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -207570,8 +207577,28 @@ reviews:
       content_hash: ""
       ref: "@plan-dispatch-workspace-provisioning-lease-protection"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRETZ60H3P9P6GHQCHBD2QDS
+        anchor:
+          type: structured
+          ref: "@task-make-artifact-reconciliation-lease-aware"
+          section: tasks
+        entries:
+          - _ulid: 01KRETZ60JSQPH56C3Y6K3E2HS
+            author: Jacob Chapel
+            body: "MUST-FIX: The cleanup contract does not say what happens when the workspace registry cannot
+              be read or is partially corrupt. The artifact-reconciliation task says to load the
+              registry and build protected sets, but it does not require cleanup to fail closed if
+              that load fails; the current implementation has a catch path that falls back to branch
+              deletion when registry parsing/loading fails. Because the lease is registry-backed, an
+              unreadable registry would erase the only durable protection signal and could allow
+              cleanup to delete branches or root directories for work that is actually in
+              provisioning/bootstrap. Add an explicit contract/task requirement that
+              registry-unavailable/corrupt cleanup preserves dispatch artifacts or otherwise blocks
+              destructive cleanup with diagnostics until the registry state is recoverable."
+            created_at: 2026-05-12T19:35:07.538Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T19:34:11.039Z
-    updated_at: 2026-05-12T19:34:25.620Z
+    updated_at: 2026-05-12T19:35:07.538Z
     notes: []
