@@ -48030,9 +48030,23 @@ runs:
     completed_at: 2026-05-12T21:34:42.403Z
   - _ulid: 01KRF5HD25WEHPRJNPWHB1PNR8
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-12T22:39:50.341Z
+        completed_at: 2026-05-12T22:40:31.080Z
+        notes: "Worked well: (1) Verified current implementation evidence (_activeTaskRefs at
+          src/agent-runtime/dispatch.ts:986,1364,1586-1594) before setting status, instead of
+          blindly following the task's How instructions. (2) Used kspec batch with --dry-run then
+          execute for atomic 3-op mutation (item ac add + item set + task note). (3) Wrote AC
+          payload to JSON file to avoid shell quoting issues with long Given/When/Then text
+          containing commas and parentheses."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-12T22:40:31.080Z
+        completed_at: 2026-05-12T22:40:31.080Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T22:39:50.341Z
