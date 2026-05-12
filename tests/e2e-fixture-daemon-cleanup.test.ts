@@ -251,9 +251,9 @@ describe("startPlaywrightFixtureDaemon — cleanup registration contract", () =>
 
 describe("runDaemonFixtureLifecycle — primary error preservation", () => {
   // Positive contract: the lifecycle helper runs setup → use → teardown in
-  // order on the success path. The fix task will refactor `test-base.ts` to
-  // delegate to this helper, so wiring success-path ordering here protects
-  // the wrapper's lifecycle contract from accidental regressions.
+  // order on the success path. The Playwright wrapper delegates to this
+  // helper, so wiring success-path ordering protects the wrapper's
+  // lifecycle contract from accidental regressions.
   // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
   it("invokes setup, use, and teardown in order on the success path", async () => {
     const order: string[] = [];
@@ -303,28 +303,12 @@ describe("runDaemonFixtureLifecycle — primary error preservation", () => {
     expect((thrown as Error).message).toContain(useSentinel);
   });
 
-  // STAGED REGRESSION (vitest `it.fails`): documents the use-error
-  // replacement gap that exists in the wrapper at
-  // `tests/e2e/fixtures/test-base.ts` today. The current `runDaemonFixtureLifecycle`
-  // body is a plain `try { use() } finally { teardown() }`, so when both
-  // `use()` and `teardown()` throw, JS try/finally semantics drop the
-  // primary use error and surface the teardown error instead — exactly the
-  // failure mode @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
-  // calls out for the test-body path.
-  //
-  // Pre-fix: at least one assertion below fails because the surfaced error
-  // does not reference the use sentinel. `it.fails` reports the expected
-  // failure as PASS so the merge gate stays green while this regression
-  // sits ahead of @task-fix-setup-failure-cleanup-error-preservation.
-  //
-  // Post-fix: the helper will capture the use error, run teardown, then
-  // re-raise the use error with the teardown error attached (cause chain
-  // or AggregateError per the fix task's chosen shape). All assertions
-  // will pass, `it.fails` will then report this as FAIL, and the fix task
-  // flips it back to a regular `it(...)`.
+  // When both `use()` and `teardown()` throw, the use-phase error is
+  // the surfaced primary failure. The teardown error is attached as
+  // `error.cause` and as message context so it remains discoverable.
   // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
   // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
-  it.fails(
+  it(
     "preserves the use-phase primary error when teardown also fails",
     async () => {
       const useSentinel = "use-phase primary error sentinel";
@@ -348,23 +332,17 @@ describe("runDaemonFixtureLifecycle — primary error preservation", () => {
       }
 
       // Teardown still ran — the helper must not skip cleanup just because
-      // `use()` threw. This part holds pre-fix and protects the JS
-      // try/finally guarantee against regressions in the helper structure.
+      // `use()` threw.
       expect(teardownRan).toBe(true);
 
       // ac-cleanup-errors-preserve-primary-failure (use path): the surfaced
-      // error must be the use-phase failure. Pre-fix this fails because JS
-      // try/finally lets the teardown throw escape and the use error is
-      // discarded.
+      // error must be the use-phase failure, not the teardown failure.
       expect(thrown).toBeInstanceOf(Error);
       const error = thrown as Error;
       expect(error.message).toContain(useSentinel);
 
-      // Post-fix: the teardown failure must remain discoverable from the
-      // surfaced error — as message text, `error.cause`, or an entry in
-      // an AggregateError. Pre-fix the surfaced error is the teardown
-      // error itself, so the use sentinel is missing from every channel
-      // and the assertion above already fails.
+      // The teardown failure remains discoverable from the surfaced error
+      // — as message text, `error.cause`, or an entry in an AggregateError.
       const surfacedText = [
         error.message,
         (error as { cause?: unknown }).cause instanceof Error
@@ -424,23 +402,11 @@ describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", 
     }
   });
 
-  // STAGED REGRESSIONS (vitest `it.fails`): document the partial-resource
-  // leak in the wrapper setup path when a step after createTestDaemonProject
-  // fails. Today `acquirePlaywrightFixtureResources` mirrors the wrapper's
-  // pre-try/finally body verbatim — there is no setup-failure cleanup, so a
-  // throw at any later stage exits before the project handle reaches the
-  // wrapper's outer teardown. The temp project tree leaks because the only
-  // `cleanup()` reference is on the unreturned project handle.
-  //
-  // Pre-fix: the assertion that the temp project no longer exists fails.
-  // `it.fails` reports that as PASS so the merge gate stays green ahead of
-  // @task-fix-setup-failure-cleanup-error-preservation.
-  //
-  // Post-fix: the helper records each owned resource as it is claimed and
-  // rolls back already-claimed resources when a later step throws. The
-  // assertion will then pass, `it.fails` will report this as FAIL, and the
-  // fix task will flip these back to regular `it(...)` calls to pin the
-  // cleaned-up post-fix behavior.
+  // The helper wraps the post-create setup steps in cleanup so a throw
+  // at any later stage releases the owned project handle before
+  // propagating the original setup failure. The temp project tree is no
+  // longer leaked when the wrapper setup path fails before the resources
+  // reach the wrapper's outer teardown.
   for (const failureStage of [
     "after-copy-project-tests",
     "after-write-config",
@@ -448,16 +414,16 @@ describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", 
   ] as const satisfies readonly PlaywrightFixtureSetupStage[]) {
     // AC: @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources
     // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
-    it.fails(
+    it(
       `cleans up the project temp dir when wrapper setup fails at ${failureStage}`,
       async () => {
         const sentinel = `wrapper setup failure sentinel for ${failureStage}`;
 
         // Use a real temp project so the cleanup-or-leak observation is
-        // grounded in actual filesystem state. The handle doubles as the
-        // safety net — even with `it.fails` masking the assertion, a
-        // post-test `cleanup()` removes the directory so the staged
-        // regression cannot accumulate leaked temp dirs across runs.
+        // grounded in actual filesystem state. The handle also serves as
+        // a defensive safety net: if a future regression re-introduces
+        // the leak, a post-test `cleanup()` here removes the directory
+        // so the failing run does not accumulate orphaned temp dirs.
         const safetyHandle = await createTestDaemonProject({ skipFixtures: true });
         const projectTempDir = safetyHandle.tempDir;
 
@@ -481,22 +447,16 @@ describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", 
           thrown = error;
         }
 
-        // The helper must propagate the simulated step failure verbatim —
-        // the contract is about cleanup, not error wrapping.
+        // The helper must propagate the simulated step failure as the
+        // primary cause — the surfaced error references the sentinel.
         expect(thrown).toBeInstanceOf(Error);
         expect((thrown as Error).message).toContain(sentinel);
 
-        // The project temp dir was owned at the moment of failure (the
-        // helper's createTestDaemonProject stage already returned the
-        // project handle). The wrapper's only cleanup reference would have
-        // been `project.cleanup()` on the unreturned handle, so pre-fix
-        // the directory still exists.
         const stillExists = existsSync(projectTempDir);
 
-        // Safety net: force-remove the leaked directory so this regression
-        // cannot accumulate temp directories across runs even when
-        // `it.fails` is masking the assertion. Post-fix the helper will
-        // already have cleaned it up and this branch is a no-op.
+        // Defensive safety net for regressions: if the helper does leak
+        // the tempDir, drop it so the failing run does not accumulate
+        // orphans. The assertion below still fails.
         if (stillExists) {
           try {
             await safetyHandle.cleanup();
@@ -509,10 +469,9 @@ describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", 
           }
         }
 
-        // ac-setup-failure-cleans-owned-resources — the helper must roll
-        // back the owned project temp dir when a later wrapper setup step
+        // ac-setup-failure-cleans-owned-resources — the helper rolls back
+        // the owned project temp dir when a later wrapper setup step
         // fails before the resources reach the wrapper's outer teardown.
-        // Pre-fix the directory still exists; post-fix it is removed.
         expect(
           stillExists,
           `project tempDir ${projectTempDir} must be removed after wrapper setup failure at ${failureStage}`,
@@ -521,16 +480,15 @@ describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", 
     );
   }
 
-  // STAGED REGRESSION (vitest `it.fails`): allocateTestDaemonPort is the
-  // last step in the wrapper setup path. A failure here is the most likely
-  // real-world setup failure (port exhaustion, EADDRINUSE on the bind
-  // probe), so it gets a dedicated test that simulates the failure inside
-  // allocatePort itself rather than via the stage hook. This matches the
-  // task description's call-out for "port allocation fails before normal
-  // teardown registration".
+  // allocateTestDaemonPort is the last step in the wrapper setup path —
+  // the most likely real-world setup failure (port exhaustion,
+  // EADDRINUSE on the bind probe). A dedicated test simulates the
+  // failure inside allocatePort itself rather than via the stage hook,
+  // matching the task description's call-out for "port allocation fails
+  // before normal teardown registration".
   // AC: @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources
   // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
-  it.fails(
+  it(
     "cleans up the project temp dir when allocateTestDaemonPort itself rejects",
     async () => {
       const sentinel = "allocateTestDaemonPort failure sentinel";
@@ -684,20 +642,14 @@ describe("runPlaywrightFixtureBody — wrapper startup-failure cleanup", () => {
 
   // Regression: startDaemon throws AND teardown throws. The wrapper must
   // still drive teardown to completion (so the project temp dir is
-  // released) and the surfaced error must remain the startup error, not
-  // the teardown error, once the companion fix task lands.
-  //
-  // Staged with `it.fails`: pre-fix the lifecycle helper's plain
-  // try/finally lets the teardown error escape and discards the startup
-  // error. @task-fix-setup-failure-cleanup-error-preservation will add
-  // primary-error preservation (cause chain or AggregateError) so the
-  // startup sentinel remains discoverable. This pairs with the existing
-  // use-phase primary-error-preservation regression in
+  // released) and the surfaced error remains the startup error with the
+  // teardown error attached as supplementary context. This pairs with
+  // the use-phase primary-error preservation regression in
   // `runDaemonFixtureLifecycle — primary error preservation`.
   // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
   // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
   // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
-  it.fails(
+  it(
     "preserves the startDaemon primary error when teardown also fails",
     async () => {
       const startupSentinel = "wrapper startDaemon primary error sentinel";
@@ -720,25 +672,21 @@ describe("runPlaywrightFixtureBody — wrapper startup-failure cleanup", () => {
         thrown = error;
       }
 
-      // Teardown still ran — even pre-fix the JS try/finally drives this.
-      // The assertion guards against a regression that skips teardown
-      // entirely (e.g., re-introducing the setup-as-startup shape).
+      // Teardown still ran. The assertion guards against a regression
+      // that skips teardown entirely (e.g., re-introducing the
+      // setup-as-startup shape).
       expect(teardownRan).toBe(true);
 
       // ac-cleanup-errors-preserve-primary-failure (startup path): the
-      // surfaced error must reference the startDaemon failure. Pre-fix
-      // the teardown throw escapes and the startup error is dropped, so
-      // this assertion fails. Post-fix the helper preserves the startup
-      // error and the assertion passes.
+      // surfaced error references the startDaemon failure rather than
+      // the teardown failure that arrived second.
       expect(thrown).toBeInstanceOf(Error);
       const error = thrown as Error;
       expect(error.message).toContain(startupSentinel);
 
-      // Post-fix the teardown failure must remain discoverable from the
-      // surfaced error — as message text, `error.cause`, or an entry in
-      // an AggregateError. Pre-fix the surfaced error IS the teardown
-      // error, so the startup sentinel is missing and the assertion above
-      // already fails before this one is reached.
+      // The teardown failure remains discoverable from the surfaced
+      // error — as message text, `error.cause`, or an entry in an
+      // AggregateError.
       const surfacedText = [
         error.message,
         (error as { cause?: unknown }).cause instanceof Error
