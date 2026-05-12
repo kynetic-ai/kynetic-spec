@@ -46656,7 +46656,7 @@ runs:
     completed_at: 2026-05-12T06:41:26.176Z
   - _ulid: 01KRDEVRGCJ21M44P48ZFXB6G3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -46679,7 +46679,23 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T06:45:52.686Z
-        completed_at: 2026-05-12T06:45:52.686Z
+        completed_at: 2026-05-12T06:46:09.839Z
+        notes: "Friction points worth recording: (1) The 'free-identifier conservative-trust' fallback in
+          isTrustedHelperByOrigin has been the recurring root cause across multiple review cycles
+          (cycles 1, 3, 4, 5). Each cycle a new shape (unapproved import, nested no-op, signal
+          override, parameter shadow) was discovered to fall through to that path and silently
+          credit cleanup. The systemic pattern is: default-trust + per-shape plugs leaves an
+          open-ended discovery surface. Worth observing — inverting the default (free-identifier =
+          REJECT unless proven trusted via a positive allowlist) would close the discovery surface
+          but is a behavior change that needs spec-first work. (2) The wrapper-pattern test fixture
+          I wrote first hit the helper-boundary detection rule before reaching the
+          cleanup-classifier branch under test. The two detection paths (boundary vs cleanup) share
+          fixture surface area, so a fixture intended to exercise one rule needs to also evade the
+          others — non-obvious until you read the failure output."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T06:46:09.839Z
+        completed_at: 2026-05-12T06:46:09.839Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T06:44:18.060Z
