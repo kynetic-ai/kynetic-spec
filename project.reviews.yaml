@@ -205329,6 +205329,42 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T16:35:39.885Z
+      - _ulid: 01KREJBVPMYW3QJZJHFKCTSD1C
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KREG2F8BRMEFB6FN4DM1TJ7Q
+        timestamp: 2026-05-12T17:04:45.780Z
+      - _ulid: 01KREJBZ8PW3ZCFS4VNQ1SYX7R
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KREG2F8BRMEFB6FN4DM1TJ7Q
+        timestamp: 2026-05-12T17:04:49.430Z
+      - _ulid: 01KREJC2Q4BM96VAH7TDC5JQDP
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KREG33WZX33E6PXDS1ACQ1RT
+        timestamp: 2026-05-12T17:04:52.964Z
+      - _ulid: 01KREJC67DYR6H29A4APBKG2YJ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KREG33WZX33E6PXDS1ACQ1RT
+        timestamp: 2026-05-12T17:04:56.557Z
+      - _ulid: 01KREJC9PYE3NYZQNB2KCBN8JR
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KREGNZQHHVSKFKYXBF6RR8D5
+        timestamp: 2026-05-12T17:05:00.126Z
+      - _ulid: 01KREJCD4KQY6JRS9N9CB9TX9G
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KREGNZQHHVSKFKYXBF6RR8D5
+        timestamp: 2026-05-12T17:05:03.635Z
     examined_commit: 7c486bc61439fc86e9d39f39230c78379b4c9c48
     external_links: []
     lifecycle_state: closed
@@ -205358,7 +205394,23 @@ reviews:
               `killPid` has no trusted origin. This violates ac-cleanup-helper-origin-is-trusted:
               helper name alone does not prove daemon termination.'
             created_at: 2026-05-12T16:24:40.971Z
+          - _ulid: 01KREJBT9JJN28JTRK7945C5EH
+            author: "@claude"
+            body: "Fixed: isTrustedHelperByOrigin no longer falls through to a conservative-trust return on the
+              free-identifier path. The previous final 'return true' (path 5) is now 'return false'.
+              The only positive trust paths are now (1) a locally-inspectable function body that
+              contains a terminating primitive, and (3) an import whose resolved path matches the
+              approved-helper-implementation allowlist. Every other shape — opaque local binding
+              (path 2), unapproved import (path 4), and free identifier (path 5) — returns false.
+              Verified reviewer's exact probe: runKspec(serve start --detach); const pid =
+              readPidFromFile(); onTestFinished(() => killPid(pid)); — oxlint now reports
+              missingCleanup where the cycle-7 commit reported 0 diagnostics. Added two regression
+              tests (bare unimported killPid, bare unimported stopDaemon) plus the existing positive
+              flag-it cases for the opaque-binding shapes still pass."
+            created_at: 2026-05-12T17:04:44.338Z
         kind: blocker
+        resolved_at: 2026-05-12T17:04:47.958Z
+        resolved_by: "@claude"
       - _ulid: 01KREG33WZX33E6PXDS1ACQ1RT
         anchor:
           type: code
@@ -205379,7 +205431,28 @@ reviews:
               that shape exited 0 with 0 diagnostics, so an unapproved helper path can still satisfy
               cleanup by name alone.'
             created_at: 2026-05-12T16:25:02.111Z
+          - _ulid: 01KREJC1BXQR8ZPJ86WK82216W
+            author: "@claude"
+            body: "Fixed: isHelperNameImportedFromApprovedPath no longer trusts the raw module specifier alone.
+              The new isHelperImportSpecifierApproved helper (1) keeps the existing relative-prefix
+              prefilter as a fast reject for bare/scoped/alias specifiers, then (2) resolves the
+              specifier against the importing file's directory via
+              path.resolve(path.dirname(context.physicalFilename), specifier), (3) normalises the
+              resolved path's extension to .ts (the canonical on-disk form for the shared helpers —
+              specifiers may omit the extension or use .js for NodeNext compatibility), and (4)
+              tests the resolved path against APPROVED_HELPER_IMPLEMENTATION_PATTERNS
+              (tests/helpers/daemon.ts and tests/helpers/mock-daemon.ts). Verified reviewer's exact
+              probe: a synthetic test at tests/e2e/synthetic-test.ts importing { killPid } from
+              './helpers/daemon' resolves to tests/e2e/helpers/daemon.ts — outside the
+              implementation allowlist — and oxlint now reports missingCleanup where the cycle-7
+              commit reported 0 diagnostics. Added two regression tests (mis-resolved nested import
+              is flagged; canonical-resolving ../helpers/daemon from tests/integration is still
+              accepted) plus extended runOxlintAt with a relative-path parameter so the regression
+              can put the synthetic file at the nested path that anchors the resolution."
+            created_at: 2026-05-12T17:04:51.581Z
         kind: blocker
+        resolved_at: 2026-05-12T17:04:55.219Z
+        resolved_by: "@claude"
       - _ulid: 01KREGNZQHHVSKFKYXBF6RR8D5
         entries:
           - _ulid: 01KREGNZQH8C53M01BX11EVJFB
@@ -205396,7 +205469,13 @@ reviews:
               correctness/helper-origin trust, import-path trust, AC coverage, test quality,
               lint/regression checks, merge readiness."
             created_at: 2026-05-12T16:35:20.433Z
+          - _ulid: 01KREJC8AFEM1XWD5JYGT6AA4M
+            author: "@claude"
+            body: Noted, thanks for the evidence log.
+            created_at: 2026-05-12T17:04:58.703Z
         kind: nit
+        resolved_at: 2026-05-12T17:05:02.277Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -205406,7 +205485,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T16:35:39.885Z
     created_at: 2026-05-12T16:16:23.000Z
-    updated_at: 2026-05-12T16:35:39.885Z
+    updated_at: 2026-05-12T17:05:02.277Z
     notes: []
   - _ulid: 01KREGX7EBJCPM8J3HGA37MBJ9
     slugs: []
