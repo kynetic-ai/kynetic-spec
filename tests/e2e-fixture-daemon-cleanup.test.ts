@@ -35,6 +35,7 @@ import { describe, expect, it } from "vitest";
 import {
   acquirePlaywrightFixtureResources,
   runDaemonFixtureLifecycle,
+  runPlaywrightFixtureBody,
   startPlaywrightFixtureDaemon,
   type AllocateTestDaemonPortImpl,
   type CreateTestDaemonProjectImpl,
@@ -575,6 +576,181 @@ describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", 
         stillExists,
         `project tempDir ${projectTempDir} must be removed after allocateTestDaemonPort failure`,
       ).toBe(false);
+    },
+  );
+});
+
+describe("runPlaywrightFixtureBody — wrapper startup-failure cleanup", () => {
+  // Cycle 2 review caught a wrapper regression: an earlier refactor passed
+  // startDaemon as the lifecycle helper's `setup` callback, but
+  // `runDaemonFixtureLifecycle` invokes `setup()` BEFORE entering its
+  // try/finally — so a readiness/startup failure surfaced without running
+  // teardown, dropping stopDaemon, second-project cleanup, and
+  // project.cleanup. The reviewer reproduced the regression by "executing
+  // the helper shape with a throwing setup" and observed
+  // `thrown=setup/start failure` / `teardownRan=false`.
+  //
+  // `runPlaywrightFixtureBody` exists to close that gap: it wires
+  // startDaemon inside the lifecycle's `use` phase (not `setup`) so a
+  // startup failure flows through the try/finally and still triggers full
+  // teardown. The Playwright wrapper at `tests/e2e/fixtures/test-base.ts`
+  // delegates to this helper, so the assertions below cover the same code
+  // path the wrapper executes — a regression that re-introduced the
+  // setup-as-startup shape would surface here behaviorally.
+
+  // Positive contract: the helper invokes startDaemon → body → teardown in
+  // order on the success path. The wrapper's per-test ordering depends on
+  // this — body reads from state that startDaemon populates, and teardown
+  // expects body to have completed.
+  // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+  // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+  it("invokes startDaemon, body, and teardown in order on the success path", async () => {
+    const order: string[] = [];
+    await runPlaywrightFixtureBody<{ token: number }>({
+      startDaemon: async () => {
+        order.push("start-daemon");
+        return { token: 7 };
+      },
+      body: async (started) => {
+        order.push(`body:${started.token}`);
+      },
+      teardown: async () => {
+        order.push("teardown");
+      },
+    });
+
+    expect(order).toEqual(["start-daemon", "body:7", "teardown"]);
+  });
+
+  // Regression: startDaemon throws during readiness/startup. The wrapper's
+  // owned project temp dir, second-project tree, and daemon child must be
+  // released — exactly the contract the cycle 2 review identified as
+  // regressed.
+  //
+  // This is NOT staged with `it.fails` because `runPlaywrightFixtureBody`
+  // is the fix for the wrapper-level regression: it routes startDaemon
+  // through the lifecycle's `use` phase, so a throw triggers teardown via
+  // JS try/finally even before the companion fix task adds explicit
+  // primary-error preservation. A future refactor that reverted to the
+  // setup-as-startup shape would fail this assertion by surfacing the
+  // startup error without running teardown.
+  // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+  // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+  // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
+  it("runs teardown when startDaemon throws (wrapper startup-failure path)", async () => {
+    const order: string[] = [];
+    const startupSentinel = "wrapper startDaemon readiness failure sentinel";
+    let bodyRan = false;
+
+    let thrown: unknown = null;
+    try {
+      await runPlaywrightFixtureBody<void>({
+        startDaemon: async () => {
+          order.push("start-daemon");
+          throw new Error(startupSentinel);
+        },
+        body: async () => {
+          // Should never run — startDaemon threw before body was reached.
+          // Tracked explicitly so a regression that swallowed the startup
+          // error and proceeded to body would surface as an unexpected
+          // event in `order` rather than a silent skip.
+          bodyRan = true;
+          order.push("body");
+        },
+        teardown: async () => {
+          order.push("teardown");
+        },
+      });
+    } catch (error) {
+      thrown = error;
+    }
+
+    // The startup error propagates verbatim — the helper does not swallow
+    // or wrap it.
+    expect(thrown).toBeInstanceOf(Error);
+    expect((thrown as Error).message).toContain(startupSentinel);
+
+    // body() never ran (startDaemon threw first).
+    expect(bodyRan).toBe(false);
+
+    // ac-owned-child-stopped-after-startup-failure / ac-scoped-cleanup —
+    // teardown ran even though startDaemon rejected before body could
+    // execute. This is the precise behavior the cycle 2 review confirmed
+    // was MISSING in the prior wrapper shape: pre-fix the reviewer
+    // observed teardownRan=false; post-fix `order` here contains both
+    // start-daemon AND teardown.
+    expect(order).toEqual(["start-daemon", "teardown"]);
+  });
+
+  // Regression: startDaemon throws AND teardown throws. The wrapper must
+  // still drive teardown to completion (so the project temp dir is
+  // released) and the surfaced error must remain the startup error, not
+  // the teardown error, once the companion fix task lands.
+  //
+  // Staged with `it.fails`: pre-fix the lifecycle helper's plain
+  // try/finally lets the teardown error escape and discards the startup
+  // error. @task-fix-setup-failure-cleanup-error-preservation will add
+  // primary-error preservation (cause chain or AggregateError) so the
+  // startup sentinel remains discoverable. This pairs with the existing
+  // use-phase primary-error-preservation regression in
+  // `runDaemonFixtureLifecycle — primary error preservation`.
+  // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
+  // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+  // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
+  it.fails(
+    "preserves the startDaemon primary error when teardown also fails",
+    async () => {
+      const startupSentinel = "wrapper startDaemon primary error sentinel";
+      const teardownSentinel = "wrapper teardown failure sentinel";
+      let teardownRan = false;
+
+      let thrown: unknown = null;
+      try {
+        await runPlaywrightFixtureBody<void>({
+          startDaemon: async () => {
+            throw new Error(startupSentinel);
+          },
+          body: async () => {},
+          teardown: async () => {
+            teardownRan = true;
+            throw new Error(teardownSentinel);
+          },
+        });
+      } catch (error) {
+        thrown = error;
+      }
+
+      // Teardown still ran — even pre-fix the JS try/finally drives this.
+      // The assertion guards against a regression that skips teardown
+      // entirely (e.g., re-introducing the setup-as-startup shape).
+      expect(teardownRan).toBe(true);
+
+      // ac-cleanup-errors-preserve-primary-failure (startup path): the
+      // surfaced error must reference the startDaemon failure. Pre-fix
+      // the teardown throw escapes and the startup error is dropped, so
+      // this assertion fails. Post-fix the helper preserves the startup
+      // error and the assertion passes.
+      expect(thrown).toBeInstanceOf(Error);
+      const error = thrown as Error;
+      expect(error.message).toContain(startupSentinel);
+
+      // Post-fix the teardown failure must remain discoverable from the
+      // surfaced error — as message text, `error.cause`, or an entry in
+      // an AggregateError. Pre-fix the surfaced error IS the teardown
+      // error, so the startup sentinel is missing and the assertion above
+      // already fails before this one is reached.
+      const surfacedText = [
+        error.message,
+        (error as { cause?: unknown }).cause instanceof Error
+          ? ((error as { cause: Error }).cause).message
+          : "",
+        error instanceof AggregateError
+          ? error.errors
+              .map((e) => (e instanceof Error ? e.message : String(e)))
+              .join(" ")
+          : "",
+      ].join(" ");
+      expect(surfacedText).toContain(teardownSentinel);
     },
   );
 });

@@ -19,7 +19,7 @@ import {
 } from "../../helpers/daemon.js";
 import {
   acquirePlaywrightFixtureResources,
-  runDaemonFixtureLifecycle,
+  runPlaywrightFixtureBody,
   startPlaywrightFixtureDaemon,
 } from "./daemon-fixture.js";
 
@@ -286,18 +286,25 @@ tasks: []
         return secondProjectPath;
       }
 
-      // The setup/use/teardown sequence runs through runDaemonFixtureLifecycle
-      // so the wrapper inherits the lifecycle's primary-error preservation
-      // contract (test-body errors are not replaced by secondary teardown
-      // failures). The captured stop hook is registered before the readiness
-      // wait can fail, so the teardown always has a stop available when one
-      // is needed.
+      // The startup/body/teardown sequence runs through runPlaywrightFixtureBody
+      // so the wrapper inherits both contracts the helpers cover:
+      //  * Startup-failure cleanup — startDaemon is wired inside the
+      //    lifecycle's `use` phase (NOT `setup`), so a readiness/startup
+      //    failure still triggers teardown via the lifecycle's try/finally.
+      //    Routing startDaemon through `setup` would skip teardown because
+      //    `runDaemonFixtureLifecycle` calls `setup()` outside its
+      //    try/finally — exactly the regression cycle 2 review caught.
+      //  * Primary-error preservation — body errors are not replaced by
+      //    secondary teardown failures (enforced by the companion fix task
+      //    @task-fix-setup-failure-cleanup-error-preservation).
       // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
-      await runDaemonFixtureLifecycle<void>({
-        setup: async () => {
+      // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+      // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+      await runPlaywrightFixtureBody<void>({
+        startDaemon: async () => {
           await startDaemon();
         },
-        use: async () => {
+        body: async () => {
           // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation
           // AC: @e2e-test-daemon-isolation ac-browser-endpoint-from-fixture
           // AC: @daemon-test-endpoint-consistency ac-resolved-endpoint-source

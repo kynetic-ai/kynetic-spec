@@ -232,3 +232,58 @@ export async function runDaemonFixtureLifecycle<T>(
     await opts.teardown();
   }
 }
+
+export interface RunPlaywrightFixtureBodyOpts<T> {
+  /**
+   * Start the daemon. May throw on readiness/startup failure. Wired into
+   * the lifecycle helper's `use` phase (NOT `setup`) so that a startup
+   * failure flows through the helper's `try/finally` and still triggers
+   * `teardown`. Putting startDaemon in `setup` would regress
+   * @daemon-test-startup-failure-hygiene
+   * ac-owned-child-stopped-after-startup-failure because
+   * `runDaemonFixtureLifecycle` calls `setup()` before its try/finally.
+   */
+  startDaemon: () => Promise<T>;
+  /**
+   * Test fixture body — equivalent to a Playwright fixture's `await use(...)`
+   * call. Receives the value returned by `startDaemon`.
+   */
+  body: (started: T) => Promise<void>;
+  /**
+   * Full teardown including stopDaemon, second-project cleanup, and the
+   * owned project.cleanup. Runs after `body` regardless of whether
+   * `startDaemon` or `body` threw. A throw from teardown must not replace
+   * the primary error (enforced by the companion fix task's primary-error
+   * preservation contract in `runDaemonFixtureLifecycle`).
+   */
+  teardown: () => Promise<void>;
+}
+
+/**
+ * Drive the Playwright fixture wrapper's startup → body → teardown sequence
+ * with startup-failure cleanup and primary-error preservation.
+ *
+ * The wrapper at `tests/e2e/fixtures/test-base.ts` uses this helper to
+ * wire startDaemon inside the lifecycle's `use` phase, mirroring the
+ * pre-extraction wrapper shape where startDaemon was inside the wrapper's
+ * own `try/finally`. This guarantees that a daemon readiness/startup
+ * failure triggers full teardown (stopDaemon, second-project cleanup,
+ * project.cleanup) — passing startDaemon as `setup` instead would skip
+ * teardown because `runDaemonFixtureLifecycle` invokes `setup()` before
+ * entering its try/finally.
+ *
+ * AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+ * AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+ */
+export async function runPlaywrightFixtureBody<T>(
+  opts: RunPlaywrightFixtureBodyOpts<T>,
+): Promise<void> {
+  await runDaemonFixtureLifecycle<void>({
+    setup: async () => undefined,
+    use: async () => {
+      const started = await opts.startDaemon();
+      await opts.body(started);
+    },
+    teardown: opts.teardown,
+  });
+}
