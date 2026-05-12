@@ -2670,6 +2670,149 @@ describe("test suite", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
       expect(result.output).toContain("has no scoped cleanup registration");
     });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-9 blocker: helper-body target validation accepted every
+    // Identifier, so a local helper whose parameter shadow is `_pid`
+    // could ignore the caller's argument and terminate an unrelated
+    // outer Identifier while still satisfying trust. The cleanup site
+    // passes the just-started daemon's pid via the parameter, but the
+    // body fires `process.kill(otherPid, "SIGTERM")` against an
+    // unrelated binding — the daemon stays alive. The target-ownership
+    // tie (`isHelperBodyKillTargetTiedToOwner`) requires the root
+    // Identifier to be a parameter of the helper OR a property value of
+    // the enclosing object literal; the outer `otherPid` matches
+    // neither, so the helper body no longer satisfies trust.
+    it("should flag serve start --detach when cleanup helper body kills an outer identifier unrelated to its parameter", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const otherPid = 99999;
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    function killPid(_pid: number): void {
+      process.kill(otherPid, "SIGTERM");
+    }
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-9 blocker variant (arrow helper, ignored-parameter shape):
+    // the same gap surfaces through an arrow declared at module scope.
+    // The helper's `_pid` parameter is ignored and the body kills the
+    // outer `otherPid`, so the cleanup target is not tied to the
+    // daemon. Parameter pattern is unchanged from the function-decl
+    // case, so the rule must reject regardless of helper syntax.
+    it("should flag serve start --detach when cleanup arrow helper body kills an outer identifier unrelated to its parameter", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+const otherPid = 99999;
+const killPid = (_pid: number): void => {
+  process.kill(otherPid, "SIGTERM");
+};
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-9 blocker (object-literal variant): the literal's kill
+    // method has no `_pid` parameter to ignore, and the literal carries
+    // no property whose value names `otherPid`. The receiver check
+    // (`isChildHandleReceiverTrusted`) descends into the kill method
+    // body, which fires `process.kill(otherPid, "SIGTERM")` — root
+    // Identifier is `otherPid`, which is neither a parameter of the
+    // kill method nor a property value of the surrounding literal.
+    // Trust is rejected and the missing-cleanup diagnostic fires.
+    it("should flag serve start --detach when local literal kill body terminates an outer identifier the literal does not carry", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const otherPid = 99999;
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    const handle = {
+      pid,
+      kill(_signal: string) {
+        process.kill(otherPid, "SIGTERM");
+      },
+    };
+    onTestFinished(() => handle.kill("SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-9 blocker (object-literal child-handle variant with no
+    // `pid` property at all): even when the kill method's identifier
+    // target shares its NAME with the daemon variable (`pid`), if the
+    // literal itself does not carry that property value the rule
+    // cannot conclude the literal owns the daemon. The kill method
+    // closes over the outer `pid` declared in the test body, but the
+    // literal has no property whose value is the outer `pid`, so the
+    // ownership tie is missing. Without that tie the literal is
+    // indistinguishable from an arbitrary closure-bearing wrapper that
+    // could just as easily reference an unrelated outer binding —
+    // exactly the cycle-9 confusion the rule must reject. The
+    // canonical accepted shape (next section's positive companion)
+    // explicitly carries the daemon binding as a literal property.
+    it("should flag serve start --detach when local literal kill body kills an outer identifier the literal does not expose as a property", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    const handle = {
+      kill(_signal: string) {
+        process.kill(pid, "SIGTERM");
+      },
+    };
+    onTestFinished(() => handle.kill("SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {
@@ -3559,6 +3702,35 @@ describe("test suite", () => {
     const handle = {
       pid,
       kill(signal: string) { process.kill(pid, "SIGTERM"); },
+    };
+    onTestFinished(() => handle.kill("SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-9 accepted companion (longhand-property variant): the
+    // ownership tie accepts either shorthand (`{ pid, kill() {…} }`) or
+    // longhand (`{ daemonPid: pid, kill() {…} }`) — both expose the
+    // outer `pid` Identifier as a property value of the same literal,
+    // so the kill method's closure target traces back to a binding the
+    // literal owns. Without this, refactors that rename the property
+    // key would silently lose trust.
+    it("should allow serve start --detach when cleanup is a local literal whose kill body invokes process.kill SIGTERM via a longhand property name", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    const handle = {
+      daemonPid: pid,
+      kill(_signal: string) { process.kill(pid, "SIGTERM"); },
     };
     onTestFinished(() => handle.kill("SIGTERM"));
     expect(true).toBe(true);

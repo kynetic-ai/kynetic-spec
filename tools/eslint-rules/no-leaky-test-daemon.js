@@ -1685,6 +1685,150 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * Walk a kill-target expression to its root Identifier name, rejecting
+     * any computed `MemberExpression` along the way and any non-Identifier
+     * root (Literal, ThisExpression, CallExpression, TemplateLiteral, …).
+     * Returns null when the chain bottoms out at a non-Identifier or
+     * passes through a computed access — both shapes cannot be statically
+     * tied to a named outer or parameter binding the helper body could
+     * plausibly own.
+     *
+     * Stricter than `extractRootCaptureIdentifierName` because that helper
+     * is used for closure-capture analysis at the cleanup-callback level,
+     * where transparent walks down nested `MemberExpression`s ignore the
+     * `computed` flag. Inside a helper body we additionally require every
+     * intermediate access to be non-computed so the target's underlying
+     * binding can be unambiguously identified.
+     */
+    function getHelperBodyKillTargetRootName(node) {
+      if (!node) return null;
+      let current = unwrapTransparentExpression(node);
+      while (current && current.type === "MemberExpression") {
+        if (current.computed) return null;
+        if (!current.object) return null;
+        current = unwrapTransparentExpression(current.object);
+      }
+      if (current && current.type === "Identifier") return current.name;
+      return null;
+    }
+
+    /**
+     * True when `name` is bound by any parameter of `ownerFn`, including
+     * destructured (`{ pid }`, `[pid]`), defaulted (`pid = 0`), and rest
+     * (`...rest`) parameter shapes. Used by
+     * `isHelperBodyKillTargetTiedToOwner` to recognise the canonical
+     * "helper kills what its caller passed in" contract — a helper named
+     * `killPid(pid)` whose body calls `process.kill(pid, "SIGTERM")` ties
+     * its kill target to whatever the cleanup site passed at the `pid`
+     * argument position. The cleanup-callback binding analysis on the
+     * call site itself validates that argument as a daemon-owning
+     * capture.
+     */
+    function ownerFnParamBindsName(ownerFn, name) {
+      if (!ownerFn || !Array.isArray(ownerFn.params)) return false;
+      for (const param of ownerFn.params) {
+        if (patternBindsName(param, name)) return true;
+      }
+      return false;
+    }
+
+    /**
+     * True when `ownerFn` is the value of a `Property` inside an
+     * `ObjectExpression` literal, and at least one property of THAT same
+     * literal has a value of type `Identifier` whose name is `name`.
+     * Used by `isHelperBodyKillTargetTiedToOwner` to recognise the
+     * canonical object-literal child-handle pattern:
+     *
+     *   const pid = readPidFromFile();
+     *   const handle = {
+     *     pid,                                          // shorthand: value is Identifier "pid"
+     *     kill(signal) { process.kill(pid, "SIGTERM"); }
+     *   };
+     *
+     * The kill method closes over the outer `pid`, but the literal itself
+     * carries `pid` as a property — the literal "owns" the daemon binding.
+     * Longhand forms (`{ daemonPid: pid, kill() { … } }`) work the same
+     * way because the property value is still Identifier `pid`.
+     *
+     * Computed property keys (`[name]: pid`) are still recognised because
+     * what matters is the VALUE Identifier name, not how the key is
+     * expressed. Spread properties and method-only properties are
+     * skipped because they don't carry an inspectable value Identifier.
+     *
+     * Closes the cycle-9 reviewer blocker on the object-literal variant
+     * (`const handle = { kill() { process.kill(otherPid, "SIGTERM"); } }`):
+     * the literal has no `otherPid` property, so the kill target cannot
+     * be tied to the daemon binding the literal allegedly owns.
+     */
+    function enclosingObjectLiteralBindsIdentifierName(ownerFn, name) {
+      if (!ownerFn || !ownerFn.parent) return false;
+      const property = ownerFn.parent;
+      if (!property || property.type !== "Property") return false;
+      if (property.value !== ownerFn) return false;
+      const objectExpr = property.parent;
+      if (!objectExpr || objectExpr.type !== "ObjectExpression") return false;
+      for (const prop of objectExpr.properties || []) {
+        if (!prop || prop.type !== "Property") continue;
+        if (!prop.value) continue;
+        const unwrapped = unwrapTransparentExpression(prop.value);
+        if (
+          unwrapped &&
+          unwrapped.type === "Identifier" &&
+          unwrapped.name === name
+        ) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * True when a kill-target expression inside a helper body is tied to
+     * the helper's invocation context — i.e. its root Identifier is
+     * either a parameter of `ownerFn` (the helper kills what its caller
+     * passed) or a property value of the enclosing `ObjectExpression`
+     * when `ownerFn` is an object-literal method (the literal owns the
+     * daemon binding it kills). Computed-shape targets and Literal /
+     * ThisExpression / CallExpression roots are rejected as
+     * unverifiable.
+     *
+     * Cycle-9 reviewer blocker: the prior helper-body inspection
+     * accepted ANY Identifier kill target, so:
+     *
+     *   function killPid(_pid) { process.kill(otherPid, "SIGTERM"); }
+     *   onTestFinished(() => killPid(pid));
+     *
+     * was credited as cleanup even though the helper ignores `_pid` and
+     * terminates an unrelated outer binding. The same gap applied to
+     * the object-literal variant:
+     *
+     *   const handle = { kill() { process.kill(otherPid, "SIGTERM"); } };
+     *   onTestFinished(() => handle.kill("SIGTERM"));
+     *
+     * Tying the target's root Identifier to the helper's parameters or
+     * the literal's own property values closes both gaps on
+     * `@daemon-test-guardrail-precision`
+     * `ac-cleanup-operation-terminates-daemon` /
+     * `ac-cleanup-helper-origin-is-trusted`.
+     *
+     * The top-level cleanup classifier (`isDaemonCleanupCallExpression`)
+     * keeps using `isVerifiableKillTarget` unchanged: at the callback
+     * level the cleanup-binding analysis (`cleanupCallbackBindingStatus`)
+     * is the predicate that validates whether the captured Identifier is
+     * a daemon-owning binding. Tightening also at that layer would
+     * double-reject legitimate `onTestFinished(() => process.kill(pid,
+     * "SIGTERM"))` shapes.
+     */
+    function isHelperBodyKillTargetTiedToOwner(node, ownerFn) {
+      if (!isVerifiableKillTarget(node)) return false;
+      const rootName = getHelperBodyKillTargetRootName(node);
+      if (rootName === null) return false;
+      if (ownerFnParamBindsName(ownerFn, rootName)) return true;
+      if (enclosingObjectLiteralBindsIdentifierName(ownerFn, rootName)) return true;
+      return false;
+    }
+
+    /**
      * Strict terminating-primitive predicate used by helper-body
      * inspection. Mirrors `isDaemonCleanupCallExpression` but
      * deliberately omits the helper-name shortcut so wrappers that just
@@ -1699,12 +1843,15 @@ const noLeakyTestDaemon = {
      * cannot bootstrap trust either.
      *
      * The kill TARGET (the pid arg for `process.kill`, the receiver
-     * for `<expr>.kill`) is also validated via
-     * `isVerifiableKillTarget` — a Literal or computed target cannot
-     * represent the just-started daemon and falls under the cycle-8
-     * reviewer blocker 2 `process.kill(12345, "SIGTERM")` shape. CLI
-     * `serve stop` paths do not carry an explicit kill target (the
-     * daemon is identified by the project's own pid file), so they
+     * for `<expr>.kill`) is validated through
+     * `isHelperBodyKillTargetTiedToOwner` — both the structural
+     * verifiability checks (no Literals or computed targets) AND the
+     * cycle-9 ownership tie (root identifier must be a parameter of
+     * `ownerFn` or a property value of the enclosing object literal).
+     * The bare verifiability check was insufficient in cycle-9: a local
+     * helper could kill an unrelated outer Identifier and still satisfy
+     * trust. CLI `serve stop` paths do not carry an explicit kill target
+     * (the daemon is identified by the project's own pid file), so they
      * are accepted unchanged.
      */
     function isTerminatingPrimitiveCall(node, ownerFn, useCallNode) {
@@ -1722,7 +1869,9 @@ const noLeakyTestDaemon = {
           callee.object.type === "Identifier" &&
           callee.object.name === "process"
         ) {
-          if (!isVerifiableKillTarget(node.arguments[0])) return false;
+          if (!isHelperBodyKillTargetTiedToOwner(node.arguments[0], ownerFn)) {
+            return false;
+          }
           return isTerminatingKillSignalArg(
             node.arguments[1],
             ownerFn,
@@ -1738,7 +1887,9 @@ const noLeakyTestDaemon = {
         ) {
           return false;
         }
-        if (!isVerifiableKillTarget(callee.object)) return false;
+        if (!isHelperBodyKillTargetTiedToOwner(callee.object, ownerFn)) {
+          return false;
+        }
         return isChildHandleReceiverTrusted(callee.object, node);
       }
       if (callee.type === "Identifier") {
