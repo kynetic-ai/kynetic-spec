@@ -204820,6 +204820,13 @@ reviews:
           status: fail
           name: ad hoc local binding probes
         timestamp: 2026-05-12T15:29:26.947Z
+      - _ulid: 01KRECY097BS6Q9RAAZHWEE3BX
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRECXYY5QZPEJAY1F3HJQH78
+        timestamp: 2026-05-12T15:29:48.839Z
     examined_commit: f2d28b784205871178ae3872f42601a3a15f9fa1
     external_links: []
     lifecycle_state: open
@@ -204867,7 +204874,27 @@ reviews:
               still satisfies cleanup in violation of ac-cleanup-helper-origin-is-trusted.'
             created_at: 2026-05-12T15:23:36.808Z
         kind: blocker
+      - _ulid: 01KRECXYY5QZPEJAY1F3HJQH78
+        entries:
+          - _ulid: 01KRECXYY6EKG9BHN9F92RMET4
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; tools/eslint-rules/no-leaky-test-daemon.js around
+              cleanup classification, helper-origin lookup, binding ownership, cleanup registration,
+              and Program:exit reporting; tests/lint-no-leaky-test-daemon.test.ts cleanup-effect
+              sections; tests/lint-daemon-test-guardrails.test.ts annotations;
+              tests/cli-serve.test.ts and tests/helpers/mock-daemon.test.ts sibling regression
+              additions; prior review @01KRE6AR. Commands run: kspec task get; kspec item get for
+              @daemon-test-guardrail-precision and @daemon-test-harness-guardrails; kspec validate;
+              targeted npm test; full npm test; changed-file oxlint; git diff/stat; ad hoc oxlint
+              probes for late helper, approved/unapproved imports, signal policy, for/catch binding
+              gaps. Claims verified: cycle-5 late const blocker is fixed for ordinary Block/Program
+              variable declarations; targeted and full tests pass; new blocker remains for
+              non-Block/Program local binding forms. Categories searched: correctness, edge cases,
+              error handling/static analysis limits, test quality, AC alignment, integration with
+              sibling daemon guardrail tests."
+            created_at: 2026-05-12T15:29:47.462Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-12T15:12:58.406Z
-    updated_at: 2026-05-12T15:29:25.564Z
+    updated_at: 2026-05-12T15:29:47.462Z
     notes: []
