@@ -207582,6 +207582,13 @@ reviews:
           kind: question
           thread_ulid: 01KREV06G8RC7W47EZSRCD3Y93
         timestamp: 2026-05-12T19:35:42.212Z
+      - _ulid: 01KREV138WM8E39F6GNR9KEJPN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KREV11W9A9ADY2FH0Y8B84V3
+        timestamp: 2026-05-12T19:36:10.268Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -207652,7 +207659,28 @@ reviews:
               so no merged intermediate state claims durable protection without honoring it."
             created_at: 2026-05-12T19:35:40.808Z
         kind: question
+      - _ulid: 01KREV11W9A9ADY2FH0Y8B84V3
+        anchor:
+          type: structured
+          field: ac-expired-provisioning-lease-recovery
+          ref: "@dispatch-workspace-registry"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KREV11W9M4HGJ2XG5RVYMMYQ
+            author: Jacob Chapel
+            body: "SHOULD-FIX: The abandoned-lease lifecycle is ambiguous enough to permit either cleanup
+              starvation or too-fast deletion. The AC says an expired lease is marked abandoned
+              before any later cleanup can delete artifacts, and the helper task says abandonment
+              records diagnostics and avoids deleting artifacts itself, but no later contract
+              defines when abandoned artifacts become cleanup-eligible, whether abandoned status is
+              protected if `expires_at` is still present, or what bounded retention/retry/reset path
+              moves the workspace out of abandoned. An implementation could preserve abandoned
+              non-closed records forever, leaking worktrees/branches, or delete on the next cycle
+              before an operator can inspect diagnostics. Define the abandoned state’s cleanup
+              eligibility, retention bound, and fresh-provisioning path explicitly."
+            created_at: 2026-05-12T19:36:08.841Z
+        kind: question
     verdicts: []
     created_at: 2026-05-12T19:34:11.039Z
-    updated_at: 2026-05-12T19:35:40.808Z
+    updated_at: 2026-05-12T19:36:08.841Z
     notes: []
