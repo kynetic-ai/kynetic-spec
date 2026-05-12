@@ -26250,7 +26250,7 @@ workspaces:
         head: 9200a23d698d381592a60d9c0419f877d77b19ac
         last_seen_at: 2026-05-12T04:36:57.274Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-active-request-bounded-observation-regressions-01krcrjr
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
     bootstrap:
       status: succeeded
@@ -26746,9 +26746,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T07:08:26.170Z
-      last_reconciled_at: 2026-05-12T07:24:50.875Z
+      last_reconciled_at: 2026-05-12T07:29:28.002Z
       created_at: 2026-05-12T04:57:42.523Z
-      updated_at: 2026-05-12T07:24:52.760Z
+      updated_at: 2026-05-12T07:29:28.002Z
     workspace_id: dispatch-workspace-01KRCRJSCGAWTVGWM82DNSWWCN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
