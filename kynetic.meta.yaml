@@ -18594,6 +18594,22 @@ observations:
     resolved: false
     workflow_ref: "@01KRF1M5"
     created_at: 2026-05-12T21:34:29.866Z
+  - _ulid: 01KRF6FA989GJ4T56B9246Z08M
+    type: friction
+    content: "Review @01KRF5CP disproved observation @01KRDHNMY's endorsed structural classifier-in-test
+      pattern for real test files: the submitted branch added an AC-annotated it.fails test that
+      reads tests/cli-no-daemon.test.ts via readTestOutputSync and line-scans it with
+      collectUnsafeAutoStartFindings, but review-gates/work-gates classify source-scanning tests as
+      MUST-FIX and it.fails AC annotations as invalid coverage because the suite passes when the
+      required diagnostic is absent. Existing observations around staged regressions are now
+      contradictory (@01KR431R selective expected-failure vs @01KRDHNMY structural source scan vs
+      @01KR6THZ bare it.fails). Triage should resolve or supersede the unsafe-pattern observations
+      and update guidance so future regression-first tasks use behavioral oxlint fixtures or
+      selective gap wrappers, not source-scanning AC coverage."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T22:56:10.536Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
