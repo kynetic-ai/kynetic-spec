@@ -201297,6 +201297,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-12T02:00:54.495Z
+      - _ulid: 01KRCYNB5NZDV5XTWV080AXB6M
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRCYN9PNYZRA31SP685K27BJ
+        timestamp: 2026-05-12T02:01:10.582Z
     examined_commit: 9b5ac8f3afa3c255eca6a31d2b673d0f8677e67d
     external_links: []
     lifecycle_state: open
@@ -201306,8 +201313,30 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJPYGTDE9GW1GPZCDFRJD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRCYN9PNYZRA31SP685K27BJ
+        anchor:
+          type: code
+          commit: 9b5ac8f3afa3c255eca6a31d2b673d0f8677e67d
+          line_end: 824
+          line_start: 771
+          path: tests/lint-no-leaky-test-daemon.test.ts
+          side: head
+        entries:
+          - _ulid: 01KRCYN9PNFP35BZDAD8MWGKT6
+            author: Jacob Chapel
+            body: 'MUST-FIX: this branch introduces red tests. The three new process-lifecycle expectations here
+              assert that process.on("exit"), process.on("beforeExit"), and process.on("SIGTERM")
+              should be reported, but the current rule still credits those callbacks as cleanup.
+              Evidence: npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts fails 3/61 at
+              lines 783, 803, and 824 with oxlint output "Found 0 warnings and 0 errors"; full npm
+              test -- --fresh also fails on exactly these 3 tests. Under the review gates,
+              failing-before-fix regressions cannot merge to dev by themselves because they break
+              the required test suite. Pair these regressions with the cleanup-boundary
+              implementation fix, or otherwise keep dev green.'
+            created_at: 2026-05-12T02:01:09.078Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T01:47:46.850Z
-    updated_at: 2026-05-12T02:00:53.012Z
+    updated_at: 2026-05-12T02:01:09.078Z
     notes: []
