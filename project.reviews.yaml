@@ -208410,6 +208410,13 @@ reviews:
           status: fail
           name: repository lint
         timestamp: 2026-05-12T20:37:35.691Z
+      - _ulid: 01KREYJ2QQHG9KF8S6NVMHV1RT
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KREYJ1ASKQ6PGHATCNA3MMJD
+        timestamp: 2026-05-12T20:37:52.503Z
     examined_commit: 62bffa595961c9d0d4e1c8c1cc8e5ef09486064e
     external_links: []
     lifecycle_state: open
@@ -208467,7 +208474,29 @@ reviews:
               leaving the newly started daemon running."
             created_at: 2026-05-12T20:28:26.588Z
         kind: blocker
+      - _ulid: 01KREYJ1ASKQ6PGHATCNA3MMJD
+        entries:
+          - _ulid: 01KREYJ1AS4AE7F0SG9APWQFJC
+            author: Jacob Chapel
+            body: "Evidence log:\\n\\nFiles read: kspec-agents.md; task details for @01KRCRJPMHMHC410TKRC5Y9HF1;
+              prior review @01KREQRD; @daemon-test-guardrail-precision ACs;
+              tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-no-leaky-test-daemon.test.ts;
+              tests/lint-daemon-test-guardrails.test.ts; tests/cli-serve.test.ts; changed-file diff
+              and git log.\\n\\nCommands run: kspec task get; kspec review
+              for-task/get/add/open/comment/check; kspec item get @daemon-test-guardrail-precision;
+              rg AC annotations; git diff/stat/log/status; kspec validate; git diff --check; three
+              ad hoc oxlint probes; mise exec -- npm test -- --fresh
+              tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts; npm
+              test; npm run lint; npx oxlint changed files; npx oxlint --config .oxlintrc.json
+              tests/cli-serve.test.ts.\\n\\nClaims verified: cycle-9 target-ownership fix rejects
+              the exact prior outer-identifier shape, but does not reject stale/omitted alternate
+              parameter targets or stale object-literal property targets; repository lint still
+              fails on real cli-serve cleanup via stopPidBounded.\\n\\nCategories searched:
+              correctness, cleanup target ownership, helper origin/trusted internals, test
+              quality/AC annotations, regression/lint integration, deterministic test results."
+            created_at: 2026-05-12T20:37:51.065Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-12T20:24:47.787Z
-    updated_at: 2026-05-12T20:37:34.254Z
+    updated_at: 2026-05-12T20:37:51.065Z
     notes: []
