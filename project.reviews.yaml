@@ -209773,6 +209773,12 @@ reviews:
         payload:
           thread_ulid: 01KRF5K4020DDJQR86VWM79QAR
         timestamp: 2026-05-12T23:38:06.234Z
+      - _ulid: 01KRF8WK3044CCBJ1A86XBCXH9
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRF5JZ992N9VE3E3N8KYNVEA
+        timestamp: 2026-05-12T23:38:22.688Z
     examined_commit: 251769a1a36ad2fdc02760f60808f71324cfc6ed
     external_links: []
     lifecycle_state: closed
@@ -209815,6 +209821,8 @@ reviews:
               coverage can be re-added there as passing tests when that task lands."
             created_at: 2026-05-12T23:37:42.917Z
         kind: blocker
+        resolved_at: 2026-05-12T23:38:19.239Z
+        resolved_by: "@claude"
       - _ulid: 01KRF5K4020DDJQR86VWM79QAR
         anchor:
           type: code
@@ -209882,7 +209890,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T22:53:48.770Z
     created_at: 2026-05-12T22:37:15.947Z
-    updated_at: 2026-05-12T23:38:02.681Z
+    updated_at: 2026-05-12T23:38:19.239Z
     notes: []
   - _ulid: 01KRF5XR6NKPCBYWQCRMRCDGDF
     slugs: []
