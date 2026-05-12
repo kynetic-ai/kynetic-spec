@@ -47146,7 +47146,7 @@ runs:
     completed_at: 2026-05-12T13:58:47.855Z
   - _ulid: 01KRE9JMA8SVJ9DP8W8VJ7DPZ0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47162,7 +47162,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T14:31:45.071Z
-        completed_at: 2026-05-12T14:31:45.071Z
+        completed_at: 2026-05-12T14:33:46.062Z
+        notes: >-
+          Friction points: Historical review lookup is alias-sensitive. The prior approved cycle
+          review @01KRE691 exists and is readable, but its subject is
+          task:@task-add-bounded-process-stop-contract-tests while the current task and prompt used
+          the ULID @01KRCRJR5K77Q2THCVVH3BDNFH. Reviews for @01KRCRJR5K77Q2THCVVH3BDNFH (2):
+            01KRCWMJ closed/changes_requested Review add bounded process-stop contract tests
+            01KRE8JT closed/approved Review bounded process-stop contract tests (cycle 3) and Reviews (2/2):
+            01KRCWMJ closed/changes_requested Review add bounded process-stop contract tests [1/3 threads]
+            01KRE8JT closed/approved Review bounded process-stop contract tests (cycle 3) returned only @01KRCWMJ and the current @01KRE8JT, omitting @01KRE691. That made the review history look shorter than it was and required recovering context from task notes. Minor friction: the full fresh test suite took 2235s, but that is already expected for review gates and partially mitigated by shard/cache conventions.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T14:33:46.062Z
+        completed_at: 2026-05-12T14:33:46.062Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T14:31:10.408Z
