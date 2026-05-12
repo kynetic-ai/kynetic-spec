@@ -54,8 +54,12 @@ description: >
 spec_ref: "@daemon-test-teardown-boundedness"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer helper at
+  34a859ddadd1535338f54dfcb0e733a0967df185. Review @01KRE8JT approved the bounded process-stop
+  contract tests after validating AC annotations, focused daemon contract tests, and the full fresh
+  test suite.
 depends_on: []
 context: []
 priority: 1
@@ -301,9 +305,25 @@ history:
         previous: "@01KRE691AAV7C7RF3YRDKZ86RX"
     command: review-link
     timestamp: 2026-05-12T14:13:51.819Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer helper at 34a859ddadd1535338f54dfcb0e733a0967df185. Review
+          @01KRE8JT approved the bounded process-stop contract tests after validating AC
+          annotations, focused daemon contract tests, and the full fresh test suite.
+        previous: null
+      completed_at:
+        new: 2026-05-12T14:30:01.115Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-12T14:30:01.125Z
 prior_status: null
 created_at: 2026-05-12T00:14:54.131Z
 started_at: 2026-05-12T14:08:58.883Z
 submitted_at: 2026-05-12T14:09:02.243Z
+completed_at: 2026-05-12T14:30:01.115Z
 todos: []
 automation: eligible
