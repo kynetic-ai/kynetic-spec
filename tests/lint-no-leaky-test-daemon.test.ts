@@ -1682,6 +1682,196 @@ describe("test suite", () => {
     });
 
     // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // AC: @daemon-test-guardrail-precision ac-cleanup-probes-do-not-count
+    // Cycle-5 reviewer probe: a parameter binding shadows the helper
+    // name `killPid` and defaults to an inspectable empty arrow. Pre-fix
+    // `findLocalHelperDefinition` saw the parameter and returned null,
+    // and `isTrustedHelperByOrigin` then fell through past the
+    // (non-existent) imports to the free-identifier conservative-trust
+    // path that silently credited the no-op default. The runtime value
+    // of the parameter comes from the test framework's call to the
+    // arrow (vitest's `it` invokes the callback with a context object,
+    // not an override), but the rule cannot statically prove that — and
+    // an explicit caller override could replace the default with any
+    // function, so parameter bindings must be rejected as opaque local
+    // bindings regardless of the default's shape. The
+    // `LOCAL_BINDING_OPAQUE` sentinel routes the use site to the
+    // explicit reject branch.
+    it("should flag serve start --detach when cleanup helper is bound by a parameter default to a no-op arrow", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", (killPid = (_pid: number) => {}) => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-5 variant: a parameter shadow whose default IS a terminating
+    // primitive must STILL be rejected — a caller can override the
+    // default with any value at the call site, so the rule cannot prove
+    // the runtime value terminates. This mirrors the cycle-4 reviewer
+    // logic: helper-body inspection that trusts a terminating-default
+    // parameter (`signal = "SIGTERM"`) still requires call-site
+    // validation; for a parameter that BINDS the helper itself, the
+    // call-site is opaque (the framework invokes the callback), so the
+    // entire binding is rejected. The fix's symmetric stance is that
+    // local opaque bindings are rejected regardless of the default's
+    // contents because the binding value is not the default's value at
+    // runtime.
+    it("should flag serve start --detach when cleanup helper is bound by a parameter default to a terminating arrow", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", (killPid = (p: number) => process.kill(p, "SIGTERM")) => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-5 variant: a `let stopDaemon;` declaration inside the `it`
+    // body binds the helper name with no initializer at all. The rule
+    // cannot inspect a missing initializer for a terminating primitive,
+    // and the binding shadows any outer import. Pre-fix the lookup
+    // walked past this VariableDeclaration without matching (its init
+    // is not a function literal) and the use site fell through to
+    // free-identifier trust. The opaque-binding scan now classifies the
+    // declarator as opaque because the id binds `stopDaemon` and the
+    // init is missing.
+    it("should flag serve start --detach when cleanup helper is bound by a local let with no initializer", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    let stopDaemon: (pid: number) => void;
+    stopDaemon = (_pid: number) => { /* runtime injection */ };
+    const pid = readPidFromFile();
+    onTestFinished(() => stopDaemon(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-5 variant: a local binding via a CallExpression initializer
+    // (`const killPid = makeKill()`) shadows any outer import. The
+    // factory result could be anything — a terminating helper, a
+    // no-op, or even a value not callable at all. The rule cannot
+    // inspect the factory's return value statically; the binding is a
+    // definite local declaration so the opaque-binding scan rejects
+    // it. Pre-fix the lookup walked past this declarator because the
+    // init type was CallExpression rather than a function literal, and
+    // the use site fell through to free-identifier trust.
+    it("should flag serve start --detach when cleanup helper is bound by a local const initialized from a factory call", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+declare function makeKill(): (pid: number) => void;
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const killPid = makeKill();
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-5 variant: an object-destructure binding
+    // (`const { killPid } = require("./fake-cleanup")`) is a local
+    // declarator that binds `killPid` through ObjectPattern shorthand.
+    // The init is a CallExpression and `decl.id` is not the simple
+    // Identifier form, so `matchHelperDefinitionInStatement` does not
+    // match. Pre-fix the use site fell through past the binding to
+    // free-identifier trust, silently crediting any value the require
+    // returned. The opaque-binding scan now recognises ObjectPattern
+    // bindings of `killPid` and rejects.
+    it("should flag serve start --detach when cleanup helper is bound by an object-destructure of a require call", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const { killPid } = require("./fake-cleanup");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-5 variant: a parameter shadow inside the `onTestFinished`
+    // callback itself. The arrow `(killPid) => killPid(pid)` binds the
+    // helper name in the callback's parameter slot — the call site
+    // resolves to the parameter, not any outer scope. Same opaque-
+    // binding principle applies: the parameter is a definite local
+    // binding the rule cannot inspect, even though the textual call
+    // shape matches the cleanup pattern. The lexically-closest
+    // parameter shadow wins so the LOCAL_BINDING_OPAQUE sentinel fires
+    // at the innermost arrow.
+    it("should flag serve start --detach when cleanup helper is bound by a parameter on the onTestFinished callback itself", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(((killPid: (pid: number) => void = (_p) => {}) => () => killPid(pid))());
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
     // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
     // AC: @daemon-test-guardrail-precision ac-cleanup-probes-do-not-count
     // Cycle-1 reviewer probe: a local object literal whose `kill`
@@ -1764,10 +1954,23 @@ describe("test suite", () => {
 
   describe("negative cases (should NOT flag)", () => {
     // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
-    // (negative case: cleanup is registered, so the rule must not flag)
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Negative case: cleanup is registered, so the rule must not flag.
+    // The helper-name `killPid` is resolved through the approved helper
+    // import (`./helpers/daemon`) which matches
+    // `APPROVED_HELPER_IMPORT_PATH_PATTERNS`, so the origin contract is
+    // satisfied. Cycle-5 reviewer blocker 2 required this test to back
+    // the helper-name claim with a proven origin instead of relying on
+    // the free-identifier conservative-trust fallback: a bare,
+    // unimported `killPid(pid)` cannot be the canonical accepted shape
+    // because the same callee shape covers no-op shadows and unapproved
+    // imports that the rule must reject (see the positive flag-it cases
+    // for parameter-bound and unapproved-import shadows of the same
+    // name).
     it("should allow serve start --detach with onTestFinished cleanup", () => {
       const result = runOxlint(`
 import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
 
 describe("test suite", () => {
   it("should start daemon", () => {
@@ -1789,6 +1992,7 @@ describe("test suite", () => {
     it("should allow serve start --detach with a defensive guard inside the onTestFinished callback", () => {
       const result = runOxlint(`
 import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
 
 describe("test suite", () => {
   it("should start daemon", () => {

@@ -218,6 +218,39 @@ const APPROVED_HELPER_IMPORT_PATH_PATTERNS = [
   /^(\.\.?\/)+helpers\/(daemon|mock-daemon)(\.[jt]s)?$/,
 ];
 
+/**
+ * Sentinel returned by `findLocalHelperDefinition` when the helper name
+ * is bound by an enclosing lexical scope but the binding's runtime value
+ * cannot be statically inspected to prove a terminating primitive.
+ * Distinct from `null` (no local binding at all) so the caller in
+ * `isTrustedHelperByOrigin` can REJECT opaque local bindings rather than
+ * falling through to the free-identifier conservative-trust path.
+ *
+ * The opaque cases are:
+ *
+ *   - Function/arrow parameters that name the helper. The runtime value
+ *     comes from the caller; even a terminating default like `(signal =
+ *     "SIGTERM") => process.kill(p, signal)` can be overridden at the
+ *     call site, and parameters of the OUTER call (e.g. an `it`
+ *     callback's `(killPid = (_p) => {}) => { ... }` first param) are
+ *     fully under the test framework's control. Without this sentinel
+ *     the cycle-4 reviewer probe `(killPid = (_pid) => {}) => {
+ *     runKspec("serve start --detach"); onTestFinished(() => killPid(
+ *     pid)); }` fell through to free-identifier trust because
+ *     `findLocalHelperDefinition` returned null on the shadowing
+ *     parameter and the use site had no other binding, silently
+ *     crediting the no-op.
+ *
+ *   - VariableDeclaration bindings whose initializer is missing or is
+ *     not a FunctionExpression / ArrowFunctionExpression. The binding
+ *     is a definite local declaration that shadows any outer import,
+ *     but the rule cannot inspect a non-function value to prove
+ *     termination (`let killPid;`, `const killPid = makeKill()`,
+ *     etc.). Treated as opaque on the same grounds as parameter
+ *     shadowing.
+ */
+const LOCAL_BINDING_OPAQUE = Symbol("local-binding-opaque");
+
 const noLeakyTestDaemon = {
   meta: {
     type: "problem",
@@ -878,7 +911,7 @@ const noLeakyTestDaemon = {
 
     /**
      * Decide whether the recognised helper Identifier `name` at the use
-     * site `useNode` is trusted to actually terminate the daemon. Four
+     * site `useNode` is trusted to actually terminate the daemon. Five
      * resolution paths are evaluated, in order:
      *
      *   1. Locally defined with an inspectable body — the lexical scope
@@ -898,13 +931,26 @@ const noLeakyTestDaemon = {
      *      runtime. If we checked imports first, we would falsely trust
      *      a shadowed approved import while the real call is the no-op.
      *
-     *   2. Imported from an approved helper module — the import path
+     *   2. Locally bound but opaque — the lexical scope chain at
+     *      `useNode` binds `name` through a parameter (with or without a
+     *      default), a `let`/`const`/`var` with a non-function init, or
+     *      a parameter destructure (`findLocalHelperDefinition` returns
+     *      `LOCAL_BINDING_OPAQUE`). The runtime value cannot be
+     *      statically proven to terminate the daemon — a parameter can
+     *      be overridden by the caller (the cycle-4 reviewer probe
+     *      `(killPid = (_pid) => {}) => onTestFinished(() => killPid(
+     *      pid))` is precisely this shape), and a non-function init
+     *      cannot be inspected for a terminating call. Reject so the
+     *      caller cannot bootstrap trust through an unprovable local
+     *      shadow.
+     *
+     *   3. Imported from an approved helper module — the import path
      *      matches `APPROVED_HELPER_IMPORT_PATH_PATTERNS` (the shared
      *      daemon fixture or mock helper, behind the lint path
      *      allowlist). The helper's implementation is vetted out of band
      *      so the name carries the trust of the module it comes from.
      *
-     *   3. Imported from any OTHER module — the helper is imported but
+     *   4. Imported from any OTHER module — the helper is imported but
      *      the source path is not in the approved-helper allowlist
      *      (`import { killPid } from "./fake-cleanup"` and any other
      *      non-vetted module). The vetting boundary is broken: the
@@ -915,30 +961,38 @@ const noLeakyTestDaemon = {
      *      by name alone (`@daemon-test-guardrail-precision`
      *      `ac-cleanup-helper-origin-is-trusted`).
      *
-     *   4. Free identifier — no local definition and no import binding
-     *      at all. The helper is presumed to come from outside this file
-     *      via a non-import channel (a host runtime global, a runtime
-     *      injection, etc.). The rule cannot statically prove it is a
-     *      no-op, so it conservatively counts as cleanup. This preserves
-     *      the historical behavior for tests that rely on a bare
-     *      `killPid(pid)` call shape without an explicit import.
+     *   5. Free identifier — no local binding (function, opaque, or
+     *      otherwise) and no import binding at all. The helper is
+     *      presumed to come from outside this file via a non-import
+     *      channel (a host runtime global, a runtime injection, etc.).
+     *      The rule cannot statically prove it is a no-op, so it
+     *      conservatively counts as cleanup. This preserves the
+     *      historical behavior for tests that rely on a bare `killPid(
+     *      pid)` call shape without an explicit import, while the
+     *      opaque-local-binding rejection at path 2 prevents a
+     *      shadowing local from masquerading as a free identifier.
      *
-     * The locally-defined-no-op rejection (path 1) and the
-     * unapproved-import rejection (path 3) together close the
-     * `ac-cleanup-helper-origin-is-trusted` gap. Without path 3, an
-     * `import { killPid } from "./fake-cleanup"` would reach path 4 (no
-     * LOCAL function declaration, so `findLocalHelperDefinition` returns
-     * null) and silently satisfy cleanup even though the import source
-     * is outside the vetted helper boundary. Without path 1's scope-walk
-     * (cycle-3), a nested `function killPid(_pid) { ... }` no-op declared
-     * inside the `it` callback would be invisible and silently credited
-     * as cleanup by path 4.
+     * Path 1's no-op rejection, path 2's opaque-local rejection, and
+     * path 4's unapproved-import rejection together close the
+     * `ac-cleanup-helper-origin-is-trusted` gap. Without path 2, the
+     * cycle-4 reviewer probe (a parameter named `killPid` bound to an
+     * empty arrow default) would reach path 5 because the parameter
+     * shadow returned null from `findLocalHelperDefinition`, and the
+     * use site had no other binding — silently crediting the no-op
+     * default. Without path 4, an `import { killPid } from
+     * "./fake-cleanup"` would reach path 5 and silently satisfy cleanup
+     * even though the import source is outside the vetted helper
+     * boundary. Without path 1's scope-walk (cycle-3), a nested
+     * `function killPid(_pid) { ... }` no-op declared inside the `it`
+     * callback would be invisible and silently credited as cleanup by
+     * path 5.
      */
     function isTrustedHelperByOrigin(name, useNode) {
-      const localFn = findLocalHelperDefinition(name, useNode);
-      if (localFn) {
+      const localResult = findLocalHelperDefinition(name, useNode);
+      if (localResult === LOCAL_BINDING_OPAQUE) return false;
+      if (localResult) {
         return helperBodyContainsTerminatingPrimitive(
-          localFn,
+          localResult,
           new Set(),
           useNode,
         );
@@ -1008,13 +1062,15 @@ const noLeakyTestDaemon = {
      * Return the lexically-closest local helper definition
      * (FunctionDeclaration or VariableDeclarator init that is a
      * FunctionExpression / ArrowFunctionExpression) named `name` visible
-     * at `fromNode`, or null when no inspectable local definition shadows
-     * `name` at the use site. The walk visits every enclosing
-     * BlockStatement and the Program body — top-level, function/arrow
-     * bodies, `it`/`describe` callbacks, try-blocks — so a helper
-     * declared anywhere in the lexical scope chain (most commonly inside
-     * the `it` callback that registers the cleanup) is found, not just
-     * the module-level shape.
+     * at `fromNode`, the `LOCAL_BINDING_OPAQUE` sentinel when an
+     * enclosing scope binds `name` through a shape the rule cannot
+     * statically inspect (function/arrow parameter, non-function
+     * variable init), or `null` when no enclosing scope binds `name` at
+     * all. The walk visits every enclosing BlockStatement and the
+     * Program body — top-level, function/arrow bodies, `it`/`describe`
+     * callbacks, try-blocks — so a helper declared anywhere in the
+     * lexical scope chain (most commonly inside the `it` callback that
+     * registers the cleanup) is found, not just the module-level shape.
      *
      * Without this scope walk, a `function killPid(_pid) {
      * console.log("noop"); }` declared inside the `it` body would be
@@ -1026,12 +1082,25 @@ const noLeakyTestDaemon = {
      * `@daemon-test-guardrail-precision`
      * `ac-cleanup-helper-origin-is-trusted`.
      *
-     * Parameter shadowing is honoured: when an enclosing function/arrow
-     * has a parameter named `name`, the parameter shadows any outer
-     * helper definition. The rule cannot statically inspect a parameter
-     * value, so this returns null (the caller's free-identifier path
-     * then conservatively trusts the use site, matching the historical
-     * behavior for opaque bindings).
+     * Parameter shadowing is now reported as opaque rather than
+     * absent (cycle-5 blocker): when an enclosing function/arrow has a
+     * parameter named `name`, the parameter is a definite local binding
+     * — not a free identifier. The runtime value comes from the caller,
+     * which the rule cannot statically resolve, so the binding cannot
+     * be trusted by inspecting its default alone. Returning the
+     * sentinel routes the use site to the explicit reject branch in
+     * `isTrustedHelperByOrigin` rather than the free-identifier
+     * conservative-trust path that previously credited
+     * `(killPid = (_pid) => {}) => onTestFinished(() => killPid(pid))`.
+     *
+     * Non-function variable bindings are handled symmetrically: a
+     * `let killPid;`, `const killPid = "noop"`, or `let killPid =
+     * someCall()` declarator binds the name but cannot be inspected
+     * for a terminating primitive, so the sentinel is returned. Only
+     * declarators whose init IS a FunctionExpression /
+     * ArrowFunctionExpression are inspectable (and handled by
+     * `matchHelperDefinitionInStatement` at the top of the loop body
+     * before the opaque check fires).
      */
     function findLocalHelperDefinition(name, fromNode) {
       let current = fromNode;
@@ -1042,7 +1111,7 @@ const noLeakyTestDaemon = {
           current.type === "ArrowFunctionExpression"
         ) {
           for (const param of current.params || []) {
-            if (patternBindsName(param, name)) return null;
+            if (patternBindsName(param, name)) return LOCAL_BINDING_OPAQUE;
           }
         }
         let statements = null;
@@ -1058,11 +1127,66 @@ const noLeakyTestDaemon = {
           for (const stmt of statements) {
             const found = matchHelperDefinitionInStatement(stmt, name);
             if (found) return found;
+            if (statementBindsNameOpaquely(stmt, name)) {
+              return LOCAL_BINDING_OPAQUE;
+            }
           }
         }
         current = current.parent;
       }
       return null;
+    }
+
+    /**
+     * True when `stmt` is a top-level statement of a Block/Program that
+     * binds `name` in a shape the rule cannot statically inspect for a
+     * terminating primitive. The inspectable shapes
+     * (FunctionDeclaration and VariableDeclarator-with-function-init)
+     * are handled by `matchHelperDefinitionInStatement` and must NOT
+     * be reported here — only the opaque residuals are reported.
+     *
+     * Opaque shapes recognised:
+     *
+     *   - `let|const|var <pattern>` where `<pattern>` binds `name` but
+     *     the declarator init is missing or is not a
+     *     FunctionExpression / ArrowFunctionExpression
+     *     (`let killPid;`, `const killPid = makeKill()`, `let killPid
+     *     = "noop"`, `const { killPid } = require("…")`, etc.).
+     *
+     *   - Export wrappers around an opaque declaration — `export const
+     *     killPid = makeKill()` and `export default const killPid =
+     *     ...` are unwrapped to the inner declaration so the opaque
+     *     classification still fires.
+     */
+    function statementBindsNameOpaquely(stmt, name) {
+      if (!stmt) return false;
+      if (stmt.type === "ExportNamedDeclaration" && stmt.declaration) {
+        return statementBindsNameOpaquely(stmt.declaration, name);
+      }
+      if (stmt.type === "ExportDefaultDeclaration" && stmt.declaration) {
+        return statementBindsNameOpaquely(stmt.declaration, name);
+      }
+      if (stmt.type !== "VariableDeclaration") return false;
+      for (const decl of stmt.declarations || []) {
+        if (!decl || !decl.id) continue;
+        if (!patternBindsName(decl.id, name)) continue;
+        // The function-init shape for a simple Identifier id named
+        // `name` is the inspectable case — matchHelperDefinitionInStatement
+        // already returned it above, so by definition we did not reach
+        // this point for that shape. Everything else (no init, non-
+        // function init, destructure binding `name`) is opaque.
+        if (
+          decl.id.type === "Identifier" &&
+          decl.id.name === name &&
+          decl.init &&
+          (decl.init.type === "FunctionExpression" ||
+            decl.init.type === "ArrowFunctionExpression")
+        ) {
+          continue;
+        }
+        return true;
+      }
+      return false;
     }
 
     function matchHelperDefinitionInStatement(stmt, name) {
