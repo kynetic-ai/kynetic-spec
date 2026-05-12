@@ -18418,6 +18418,19 @@ observations:
     resolved: false
     workflow_ref: "@01KRE7F1"
     created_at: 2026-05-12T13:58:33.689Z
+  - _ulid: 01KRE8C8V4W2EP5H6GD1F772C8
+    type: friction
+    content: Parallel dispatch tasks that each append staged regression describe blocks to the same
+      contract-test file (e.g. tests/helpers/daemon.test.ts) produce textually-interleaved
+      auto-merge conflicts at the merge gate even when both sides are semantically additive.
+      Resolution requires manual file reconstruction (split common-prefix + each side's new blocks,
+      concatenate). Hit this on @01KRCRJR5K77Q2THCVVH3BDNFH (fix cycle 2) where dev's setup-failure
+      cleanup + primary-error preservation regressions and this task's bounded-stop regressions both
+      targeted the tail of daemon.test.ts. Detached merge helper escalated; worker resolved by hand.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T14:10:13.476Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
