@@ -204436,9 +204436,25 @@ reviews:
           kind: nit
           thread_ulid: 01KRE7CAHJAFFF3PATD6XV8CJF
         timestamp: 2026-05-12T13:52:48.014Z
+      - _ulid: 01KRE7CQ55AR1BY56YXK9576JK
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T13:52:59.557Z
+      - _ulid: 01KRE7CQ56ZEBNZREGKFPC1AVF
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T13:52:59.558Z
     examined_commit: 27d4822fb79353a33e85a14977c63fa58f3d7e4a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -204499,7 +204515,14 @@ reviews:
               handling, test quality, AC coverage annotations, integration test regressions."
             created_at: 2026-05-12T13:52:46.643Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T13:52:59.557Z
     created_at: 2026-05-12T13:34:26.827Z
-    updated_at: 2026-05-12T13:52:46.643Z
+    updated_at: 2026-05-12T13:52:59.558Z
     notes: []
