@@ -27736,11 +27736,11 @@ workspaces:
     canonical_branch: dispatch/task/stabilize-flaky-file-lock-concurrent-write-test/01krd9fy
     canonical_branch_head: 866065b339c34190fb52f3673bffb90aac357365
     cleanup:
-      status: blocked
+      status: completed
       detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
       reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-05-12T08:33:51.852Z
+      updated_at: 2026-05-12T08:33:55.208Z
     health:
       status: healthy
       issues: []
@@ -27754,16 +27754,16 @@ workspaces:
       target_branch: dev
       target_commit: 258786a7d137e3f2a5f0ff1480faca59144aa98b
       updated_at: 2026-05-12T08:33:51.852Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KRD9FY2NX3EH2KR4493T6YYA"
     task_slug: stabilize-flaky-file-lock-concurrent-write-test
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-12T08:33:55.208Z
       last_active_at: 2026-05-12T08:12:13.528Z
       last_reconciled_at: 2026-05-12T08:33:51.852Z
       created_at: 2026-05-12T07:34:32.744Z
-      updated_at: 2026-05-12T08:33:51.852Z
+      updated_at: 2026-05-12T08:33:55.208Z
     workspace_id: dispatch-workspace-01KRD9FY2NX3EH2KR4493T6YYA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
