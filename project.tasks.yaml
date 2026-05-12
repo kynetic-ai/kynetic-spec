@@ -28973,6 +28973,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-12T21:59:41.822Z
+  automation: eligible
 - _ulid: 01KRF37XEJDQ1CFCNYDKP4XGSX
   slugs:
     - task-add-cleanup-preservation-no-blind-deletion-acs
