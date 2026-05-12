@@ -48030,7 +48030,7 @@ runs:
     completed_at: 2026-05-12T21:34:42.403Z
   - _ulid: 01KRF5HD25WEHPRJNPWHB1PNR8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -48046,7 +48046,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T22:40:31.080Z
-        completed_at: 2026-05-12T22:40:31.080Z
+        completed_at: 2026-05-12T22:41:02.705Z
+        notes: "No high-confidence systemic friction to capture. The task had explicit How instructions and
+          the kspec CLI worked smoothly. The 'wrote payload to JSON file to avoid shell escaping'
+          practice is already a documented convention (kspec-agents.md development convention: 'When
+          command payloads include special chars, use file-based payloads'). Searched for related
+          items: no existing observations on in-flight cleanup protection patterns; no friction
+          patterns specific to this session."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T22:41:02.705Z
+        completed_at: 2026-05-12T22:41:02.705Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T22:39:50.341Z
