@@ -207088,7 +207088,99 @@ reviews:
     slugs: []
     title: "Plan review: Dispatch Workspace Provisioning Lease Protection (cycle 3)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@task-add-dispatch-workspace-provisioning-lease-schema now depends on both
+          @task-add-dispatch-workspace-provisioning-lease-acs and
+          @task-add-bootstrap-in-progress-interlock-acs, so bootstrap schema/status work cannot
+          become ready before the bootstrap spec-update task."
+        name: Prior dependency blocker
+        required: true
+        created_at: 2026-05-12T19:06:34.182Z
+        completed_at: 2026-05-12T19:06:34.182Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The previous combined artifact protection AC is split into worker worktree, reviewer
+          worktree, root directory, and dispatch branch ACs, with separate
+          lifecycle/finalization/recovery ACs. Each cleanup path is independently coverable.
+        name: Artifact-protection AC atomicity
+        required: true
+        created_at: 2026-05-12T19:06:38.853Z
+        completed_at: 2026-05-12T19:06:38.853Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The plan intentionally has no exact ## Specs YAML section, uses derive_from_specs: false,
+          and keeps exact existing-spec AC payloads in Phase 1 tasks, avoiding duplicate derived
+          sibling specs."
+        name: Existing spec update plan shape
+        required: true
+        created_at: 2026-05-12T19:06:43.490Z
+        completed_at: 2026-05-12T19:06:43.490Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Each task includes concrete why/what/how guidance, target files or commands where
+          relevant, verification expectations, dependencies, spec_ref, and Covers lines. Phase 1
+          tasks embed exact AC ids and Given/When/Then text.
+        name: Standalone tasks
+        required: true
+        created_at: 2026-05-12T19:06:47.944Z
+        completed_at: 2026-05-12T19:06:47.944Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Mechanical parse found 14 tasks, all depends_on refs resolve to local task slugs, no
+          cycles, all P1 priorities are aligned, and runtime/test/validation work follows spec
+          updates, schema/helpers, producers, cleanup, finalization, tests, validation.
+        name: Dependency graph
+        required: true
+        created_at: 2026-05-12T19:06:52.559Z
+        completed_at: 2026-05-12T19:06:52.559Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Mechanical parse found 10 registry ACs, 3 bootstrap ACs, and 1 dispatch-engine AC
+          introduced by Phase 1. Every introduced AC is claimed by at least one
+          implementation/test/validation Covers mapping, and no planned AC id is orphaned.
+        name: Coverage mapping
+        required: true
+        created_at: 2026-05-12T19:06:57.197Z
+        completed_at: 2026-05-12T19:06:57.197Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec plan import plans/dispatch-workspace-provisioning-lease-protection.md --dry-run
+          --module @agent-integration succeeded with Derived specs: 0 and Derived tasks: 0 at import
+          time, confirming the task-only draft stores cleanly without structured spec derivation."
+        name: Parser readiness
+        required: true
+        created_at: 2026-05-12T19:07:01.787Z
+        completed_at: 2026-05-12T19:07:01.787Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Reviewed @dispatch-workspace-registry, @dispatch-runtime-bootstrap-contract,
+          @agent-dispatch-engine, @dispatch-workspace-cleanup-policy,
+          @canonical-task-workspace-contract, @branch-provenance-in-dispatch-workspace-registry, and
+          @adopted-branch-cleanup-and-recoverability. The proposed updates refine
+          registry/bootstrap/engine contracts without contradicting existing cleanup or branch
+          provenance semantics.
+        name: Existing spec neighborhood
+        required: true
+        created_at: 2026-05-12T19:07:06.596Z
+        completed_at: 2026-05-12T19:07:06.596Z
     events:
       - _ulid: 01KRES7SP5XZDPMR0X7G69YEGH
         actor: Jacob Chapel
@@ -207096,9 +207188,81 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-05-12T19:04:52.677Z
+      - _ulid: 01KRESASZZBGYZYSZMEZ1QMD8B
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-05-12T19:06:31.295Z
+      - _ulid: 01KRESAYMH7DVQH9SK4AHDGPJV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Prior dependency blocker
+        timestamp: 2026-05-12T19:06:36.049Z
+      - _ulid: 01KRESB31SBGGZAQCV58N1W33P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Artifact-protection AC atomicity
+        timestamp: 2026-05-12T19:06:40.569Z
+      - _ulid: 01KRESB7JCNP24JT2W3R4B65WX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec update plan shape
+        timestamp: 2026-05-12T19:06:45.196Z
+      - _ulid: 01KRESBC19M445F3H598JAVCEB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Standalone tasks
+        timestamp: 2026-05-12T19:06:49.769Z
+      - _ulid: 01KRESBGEFG0CS4JGBGH9HJGMQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency graph
+        timestamp: 2026-05-12T19:06:54.287Z
+      - _ulid: 01KRESBMYXZ0F9M1KNDH0CZY24
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Coverage mapping
+        timestamp: 2026-05-12T19:06:58.909Z
+      - _ulid: 01KRESBSKYXG5M5XBT9EH38F1H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Parser readiness
+        timestamp: 2026-05-12T19:07:03.678Z
+      - _ulid: 01KRESBY5B3ZWTR6PTT3EEEM9B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec neighborhood
+        timestamp: 2026-05-12T19:07:08.331Z
+      - _ulid: 01KRESC2QFFKQR1YC4Y05Y58ZH
+        actor: Jacob Chapel
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: comment
+        timestamp: 2026-05-12T19:07:13.007Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: plan
@@ -207106,7 +207270,14 @@ reviews:
       ref: "@plan-dispatch-workspace-provisioning-lease-protection"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: comment
+        reviewer: Jacob Chapel
+        role: reviewer
+        created_at: 2026-05-12T19:07:13.007Z
     created_at: 2026-05-12T19:04:52.677Z
-    updated_at: null
+    updated_at: 2026-05-12T19:07:13.007Z
     notes: []
