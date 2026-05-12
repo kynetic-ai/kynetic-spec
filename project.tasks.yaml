@@ -28684,7 +28684,7 @@
   type: task
   spec_ref: "@daemon-test-guardrail-precision"
   plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-tighten-daemon-guardrail-cleanup-semantics-specs"
@@ -28697,7 +28697,7 @@
   notes_count: 5
   todos_count: 0
   created_at: 2026-05-12T00:14:52.880Z
-  started_at: 2026-05-12T02:49:54.057Z
+  started_at: 2026-05-12T03:41:22.606Z
   submitted_at: 2026-05-12T02:49:57.347Z
   automation: eligible
 - _ulid: 01KRCRJQ8CM6D08AHASH84VRDM
