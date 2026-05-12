@@ -125,6 +125,7 @@ import path from "node:path";
 const HELPER_PATH_PATTERNS = [
   /[\\/]tests[\\/]helpers[\\/]daemon\.ts$/,
   /[\\/]tests[\\/]helpers[\\/]mock-daemon\.ts$/,
+  /[\\/]tests[\\/]helpers[\\/]process-stop\.ts$/,
   /[\\/]tools[\\/]eslint-rules[\\/]/,
   /[\\/]tests[\\/]lint-no-leaky-test-daemon\.test\.ts$/,
   /[\\/]tests[\\/]lint-daemon-test-guardrails\.test\.ts$/,
@@ -275,6 +276,78 @@ const APPROVED_CLEANUP_HELPER_EXPORT_NAMES = new Set([
  */
 const APPROVED_HELPER_IMPORT_PATH_PATTERNS = [
   /^(\.\.?\/)+helpers\/(daemon|mock-daemon)(\.[jt]s)?$/,
+];
+
+/**
+ * Identifier-callee names recognised as approved SHARED-HELPER-INTERNAL
+ * cleanup primitives. Unlike `TRUSTED_HELPER_NAMES` (which gate the
+ * cleanup-callback identifier-callee shape `killPid(pid)`,
+ * `stopDaemon(...)`, `stopMockDaemon(...)`), these names are
+ * BODY-LEVEL primitives — they live INSIDE a project-vetted helper
+ * (e.g. `function killPid(pid) { return stopPidBounded(pid, ...); }`)
+ * and the lint rule's helper-body inspector must accept them as
+ * terminating without requiring the body to reach `process.kill` /
+ * `<child>.kill` directly.
+ *
+ * `stopPidBounded` and `stopChildProcessBounded` are the canonical
+ * bounded-stop primitives in `tests/helpers/process-stop.ts`: they send
+ * `SIGTERM`, observe termination, escalate to `SIGKILL`, and throw a
+ * `BoundedProcessStopError` if the process does not exit. Their bodies
+ * satisfy `isTerminatingPrimitiveCall` already, but a body-internal
+ * `process.kill` is wrapped inside `await` / control flow / signal
+ * helpers and is therefore not directly visible to a one-level
+ * helper-body inspection at the call site. The rule trusts them by
+ * NAME + IMPORT PATH (relative to the importing test file, resolved
+ * to `tests/helpers/process-stop.ts`) the same way it trusts the
+ * shared cleanup-callback callees `killPid` / `stopDaemon` /
+ * `stopMockDaemon` by name + approved-import-path.
+ *
+ * The task description explicitly requires preserving "accepted
+ * cleanup through `kspec serve stop` lifecycle commands AND approved
+ * shared helper internals" — these primitives are the project's
+ * approved shared cleanup internals. Without this recognition, real
+ * helpers like `tests/cli-serve.test.ts`'s
+ *   function killPid(pid: number): Promise<void> {
+ *     return stopPidBounded(pid, { label: "kspec serve daemon pid" });
+ *   }
+ * fail the helper-body inspection because the body's only
+ * primitive is `stopPidBounded`, not a direct `process.kill`.
+ * The cycle-10 reviewer blocker on
+ * `@daemon-test-guardrail-precision`
+ * `ac-cleanup-helper-origin-is-trusted` /
+ * `ac-cleanup-operation-terminates-daemon` exactly.
+ */
+const APPROVED_SHARED_CLEANUP_PRIMITIVE_NAMES = new Set([
+  "stopPidBounded",
+  "stopChildProcessBounded",
+]);
+
+/**
+ * Module specifier prefilter for relative imports of the approved
+ * shared-cleanup-primitive module. Mirrors
+ * `APPROVED_HELPER_IMPORT_PATH_PATTERNS` for `helpers/process-stop`.
+ * The prefilter is intentionally narrow: only direct relative imports
+ * of `helpers/process-stop` (with optional `.js` / `.ts` extension)
+ * pass. Bare specifiers, scoped npm specifiers, and root-rooted aliases
+ * are rejected before path resolution runs.
+ */
+const APPROVED_SHARED_CLEANUP_PRIMITIVE_IMPORT_PATH_PATTERNS = [
+  /^(\.\.?\/)+helpers\/process-stop(\.[jt]s)?$/,
+];
+
+/**
+ * Resolved-on-disk allowlist for the approved shared-cleanup-primitive
+ * implementation file. Used by
+ * `isSharedCleanupPrimitiveImportSpecifierApproved` to verify that the
+ * specifier resolves (relative to the importing test file's directory)
+ * to the canonical `tests/helpers/process-stop.ts`. Closes the same
+ * gap the cycle-7 fix closed for `helpers/daemon`: a nested file at
+ * `tests/e2e/synthetic-test.ts` importing `./helpers/process-stop`
+ * resolves to `tests/e2e/helpers/process-stop`, which is NOT the
+ * canonical approved helper and must be rejected.
+ */
+const APPROVED_SHARED_CLEANUP_PRIMITIVE_IMPLEMENTATION_PATTERNS = [
+  /[\\/]tests[\\/]helpers[\\/]process-stop\.ts$/,
 ];
 
 /**
@@ -1242,6 +1315,140 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * True when the import specifier resolves to the canonical
+     * `tests/helpers/process-stop.ts` (the approved shared
+     * cleanup-primitive module). Mirrors
+     * `isHelperImportSpecifierApproved`: passes a relative-prefix
+     * prefilter, then resolves the specifier against the importing
+     * file's directory and checks the resolved path against the
+     * implementation allowlist. Extension normalisation handles
+     * specifier shapes that omit `.ts` or use `.js` for NodeNext
+     * compatibility — the on-disk file is `.ts`.
+     */
+    function isSharedCleanupPrimitiveImportSpecifierApproved(specifier) {
+      if (typeof specifier !== "string") return false;
+      if (
+        !APPROVED_SHARED_CLEANUP_PRIMITIVE_IMPORT_PATH_PATTERNS.some((pattern) =>
+          pattern.test(specifier),
+        )
+      ) {
+        return false;
+      }
+      if (typeof filename !== "string" || filename.length === 0) {
+        return false;
+      }
+      const importingDir = path.dirname(filename);
+      let resolved = path.resolve(importingDir, specifier);
+      if (resolved.endsWith(".js")) {
+        resolved = `${resolved.slice(0, -3)}.ts`;
+      } else if (!resolved.endsWith(".ts")) {
+        resolved = `${resolved}.ts`;
+      }
+      return APPROVED_SHARED_CLEANUP_PRIMITIVE_IMPLEMENTATION_PATTERNS.some(
+        (pattern) => pattern.test(resolved),
+      );
+    }
+
+    /**
+     * True when a top-level `ImportDeclaration` in the same file imports
+     * `name` from a module specifier that BOTH passes the relative
+     * prefilter
+     * (`APPROVED_SHARED_CLEANUP_PRIMITIVE_IMPORT_PATH_PATTERNS`) AND
+     * resolves on disk to the canonical
+     * `tests/helpers/process-stop.ts`, AND whose imported (original)
+     * export name is itself a recognised approved cleanup-primitive
+     * name (`APPROVED_SHARED_CLEANUP_PRIMITIVE_NAMES`).
+     *
+     * Anchoring on the IMPORTED export name (not just the local alias)
+     * mirrors the cycle-8 fix for `isHelperNameImportedFromApprovedPath`:
+     * `import { sendPidSignal as stopPidBounded } from
+     * "./helpers/process-stop"` aliases an unrelated export to the
+     * cleanup-primitive name and must be rejected, because the
+     * underlying value is a one-shot signal sender (not the bounded
+     * stop + observe + escalate primitive the rule is willing to
+     * trust). `ImportDefaultSpecifier` and `ImportNamespaceSpecifier`
+     * shapes cannot be tied to a specific approved export and are
+     * rejected.
+     */
+    function isSharedCleanupPrimitiveImported(name, fromNode) {
+      const program = findProgramNode(fromNode);
+      if (!program || !Array.isArray(program.body)) return false;
+      for (const stmt of program.body) {
+        if (!stmt || stmt.type !== "ImportDeclaration") continue;
+        const source = stmt.source && stmt.source.value;
+        if (!isSharedCleanupPrimitiveImportSpecifierApproved(source)) continue;
+        for (const spec of stmt.specifiers || []) {
+          if (!spec || spec.type !== "ImportSpecifier") continue;
+          if (!spec.local || spec.local.type !== "Identifier") continue;
+          if (spec.local.name !== name) continue;
+          const imported = spec.imported;
+          if (!imported || imported.type !== "Identifier") continue;
+          if (APPROVED_SHARED_CLEANUP_PRIMITIVE_NAMES.has(imported.name)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Helper-body terminating-primitive recogniser for approved shared
+     * cleanup primitives (`stopPidBounded`, `stopChildProcessBounded`).
+     * Used by `isTerminatingPrimitiveCall` so a vetted helper that
+     * delegates to one of these primitives — the canonical real-world
+     * shape from `tests/cli-serve.test.ts`:
+     *
+     *   import { stopPidBounded } from "./helpers/process-stop";
+     *   function killPid(pid: number): Promise<void> {
+     *     return stopPidBounded(pid, { label: "kspec serve daemon pid" });
+     *   }
+     *
+     * — is recognised as terminating without requiring a direct
+     * `process.kill` in the helper body itself. Recognition requires
+     * three independent gates, all of which must hold:
+     *
+     *   1. The callee Identifier name is in
+     *      `APPROVED_SHARED_CLEANUP_PRIMITIVE_NAMES` (rejecting
+     *      `sendPidSignal(pid)` and other shapes that are not the
+     *      bounded-stop primitives).
+     *   2. The identifier is imported from an approved path AND its
+     *      imported (original) export name is also one of the approved
+     *      primitive names (rejecting aliased imports of unrelated
+     *      exports and bare unimported identifiers of the same name —
+     *      a local `function stopPidBounded(_p) {}` no-op shadow does
+     *      not satisfy trust here either).
+     *   3. The kill target argument (the first arg —
+     *      pid Identifier for `stopPidBounded`, ChildProcess Identifier
+     *      for `stopChildProcessBounded`) is tied to the helper's
+     *      invocation context, exactly the same rule the direct-kill
+     *      path applies via `isHelperBodyKillTargetTiedToOwner`. A
+     *      literal target (`stopPidBounded(12345)`) or a stale
+     *      closure-captured outer target that the helper's parameters
+     *      do not bind is rejected — the same cycle-9 / cycle-10
+     *      ownership invariant applies regardless of how the
+     *      terminating syscall is reached.
+     *
+     * Returns false when ownerFn is null (top-level cleanup-callback
+     * context) — the top-level
+     * `cleanupCallbackBindingStatus` already validates the captured
+     * Identifier ownership; this body-level recogniser only fires
+     * inside a trusted helper definition.
+     */
+    function isApprovedSharedCleanupPrimitiveCall(node, ownerFn, useCallNode) {
+      if (!node || node.type !== "CallExpression") return false;
+      const callee = node.callee;
+      if (!callee || callee.type !== "Identifier") return false;
+      if (!APPROVED_SHARED_CLEANUP_PRIMITIVE_NAMES.has(callee.name)) {
+        return false;
+      }
+      if (!ownerFn) return false;
+      if (!isSharedCleanupPrimitiveImported(callee.name, node)) return false;
+      const targetArg = node.arguments && node.arguments[0];
+      if (!targetArg) return false;
+      return isHelperBodyKillTargetTiedToOwner(targetArg, ownerFn, useCallNode);
+    }
+
+    /**
      * Return the lexically-closest local helper definition
      * (FunctionDeclaration or VariableDeclarator init that is a
      * FunctionExpression / ArrowFunctionExpression) named `name` visible
@@ -1733,6 +1940,65 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * Find the parameter index in `ownerFn.params` that binds `name`,
+     * walking destructured (`{ pid }`, `[pid]`), defaulted (`pid = 0`),
+     * and rest (`...rest`) parameter shapes. Returns -1 when no
+     * parameter binds the name. Used by
+     * `isHelperBodyKillTargetTiedToOwner` to determine which
+     * call-site argument position the helper body's kill target
+     * corresponds to, so the rule can verify that the cleanup
+     * invocation actually passes a verifiable kill target at that
+     * position.
+     */
+    function findOwnerFnParamIndex(ownerFn, name) {
+      if (!ownerFn || !Array.isArray(ownerFn.params)) return -1;
+      for (let i = 0; i < ownerFn.params.length; i += 1) {
+        if (patternBindsName(ownerFn.params[i], name)) return i;
+      }
+      return -1;
+    }
+
+    /**
+     * True when the call-site `useCallNode` provides a verifiable kill
+     * target argument at position `idx`. "Verifiable" here mirrors
+     * `isVerifiableKillTarget`: an Identifier or a non-computed
+     * MemberExpression chain rooted at an Identifier / ThisExpression.
+     * A missing argument (call site passes fewer args than the helper
+     * declares), `undefined` / `void <expr>` / `null` literal arguments,
+     * and Literal / computed targets are all rejected — none of them
+     * can statically tie back to the just-started daemon's pid.
+     *
+     * The cycle-10 reviewer's probes both relied on this gap. Probe 1:
+     *
+     *   function killPid(_pid, target) { process.kill(target, "SIGTERM"); }
+     *   onTestFinished(() => killPid(pid));
+     *
+     * The helper body's kill target is the `target` parameter at
+     * index 1, but the call site provides only one argument; at
+     * runtime `target` is `undefined` and `process.kill(undefined,
+     * "SIGTERM")` cannot kill the daemon. Probe 2 is the same shape
+     * with `target = otherPid` as the parameter default; the call
+     * site still omits the second argument, so the body kills a
+     * stale outer binding. The static check rejects both: no
+     * argument at index 1 → false.
+     *
+     * Used by `isHelperBodyKillTargetTiedToOwner` after the parameter
+     * binding has been located by `findOwnerFnParamIndex`. When
+     * `useCallNode` is null (the rule does not know the call-site
+     * context, e.g. when validating an object-literal kill method
+     * outside of a recognised cleanup-callback chain), the call-site
+     * check is skipped because the caller has no concrete invocation
+     * to validate against.
+     */
+    function callSiteProvidesVerifiableArgAt(useCallNode, idx) {
+      if (!useCallNode || useCallNode.type !== "CallExpression") return true;
+      const args = useCallNode.arguments;
+      if (!Array.isArray(args)) return false;
+      if (idx < 0 || idx >= args.length) return false;
+      return isVerifiableKillTarget(args[idx]);
+    }
+
+    /**
      * True when `ownerFn` is the value of a `Property` inside an
      * `ObjectExpression` literal, and at least one property of THAT same
      * literal has a value of type `Identifier` whose name is `name`.
@@ -1819,11 +2085,32 @@ const noLeakyTestDaemon = {
      * double-reject legitimate `onTestFinished(() => process.kill(pid,
      * "SIGTERM"))` shapes.
      */
-    function isHelperBodyKillTargetTiedToOwner(node, ownerFn) {
+    function isHelperBodyKillTargetTiedToOwner(node, ownerFn, useCallNode) {
       if (!isVerifiableKillTarget(node)) return false;
       const rootName = getHelperBodyKillTargetRootName(node);
       if (rootName === null) return false;
-      if (ownerFnParamBindsName(ownerFn, rootName)) return true;
+      const paramIdx = findOwnerFnParamIndex(ownerFn, rootName);
+      if (paramIdx >= 0) {
+        // Helper body kills "whatever was passed at parameter index N".
+        // The call site MUST provide a verifiable argument at that
+        // index — an omitted argument leaves the parameter `undefined`
+        // (`process.kill(undefined, ...)` cannot kill the daemon) and
+        // a Literal / null / undefined / void argument at that index
+        // cannot represent the just-started daemon either. Without
+        // this check, the cycle-10 reviewer's probes 1 and 2 are
+        // silently credited:
+        //
+        //   function killPid(_pid, target) { process.kill(target, "SIGTERM"); }
+        //   onTestFinished(() => killPid(pid));     // target → undefined
+        //
+        //   function killPid(_pid, target = otherPid) { process.kill(target, "SIGTERM"); }
+        //   onTestFinished(() => killPid(pid));     // target → stale otherPid
+        //
+        // Both forms map the body's `target` to parameter index 1,
+        // but the call site provides only one argument; the
+        // verifiable-arg-at-idx check rejects both.
+        return callSiteProvidesVerifiableArgAt(useCallNode, paramIdx);
+      }
       if (enclosingObjectLiteralBindsIdentifierName(ownerFn, rootName)) return true;
       return false;
     }
@@ -1869,7 +2156,13 @@ const noLeakyTestDaemon = {
           callee.object.type === "Identifier" &&
           callee.object.name === "process"
         ) {
-          if (!isHelperBodyKillTargetTiedToOwner(node.arguments[0], ownerFn)) {
+          if (
+            !isHelperBodyKillTargetTiedToOwner(
+              node.arguments[0],
+              ownerFn,
+              useCallNode,
+            )
+          ) {
             return false;
           }
           return isTerminatingKillSignalArg(
@@ -1887,7 +2180,13 @@ const noLeakyTestDaemon = {
         ) {
           return false;
         }
-        if (!isHelperBodyKillTargetTiedToOwner(callee.object, ownerFn)) {
+        if (
+          !isHelperBodyKillTargetTiedToOwner(
+            callee.object,
+            ownerFn,
+            useCallNode,
+          )
+        ) {
           return false;
         }
         return isChildHandleReceiverTrusted(callee.object, node);
@@ -1918,6 +2217,22 @@ const noLeakyTestDaemon = {
           if (node.arguments.length < 2) return false;
           return tokensResolveToServeStop(
             collectArgvArrayTokens(node.arguments[1]),
+          );
+        }
+        if (APPROVED_SHARED_CLEANUP_PRIMITIVE_NAMES.has(name)) {
+          // Approved shared cleanup primitive (stopPidBounded /
+          // stopChildProcessBounded from tests/helpers/process-stop.ts).
+          // Recognised inside a helper body so a vetted helper that
+          // delegates to one of these primitives — the canonical real
+          // shape from tests/cli-serve.test.ts — satisfies trust
+          // without requiring a direct process.kill in the helper
+          // body itself. The recogniser enforces approved-import path,
+          // approved imported export name, and the same kill-target
+          // ownership invariant the direct-kill path applies.
+          return isApprovedSharedCleanupPrimitiveCall(
+            node,
+            ownerFn,
+            useCallNode,
           );
         }
       }
@@ -2467,6 +2782,43 @@ const noLeakyTestDaemon = {
           // fall through to UNVERIFIABLE_KILL_TARGET.
           const root = extractRootCaptureIdentifierName(callee.object);
           out.push(root === null ? UNVERIFIABLE_KILL_TARGET : root);
+          // When the receiver is a local Identifier whose binding is an
+          // ObjectExpression literal with a `kill` method, the method
+          // body may close over an outer Identifier as its kill target.
+          // The structural helper-body check
+          // (`enclosingObjectLiteralBindsIdentifierName`) verifies that
+          // the literal carries the captured name as a property value,
+          // but it does NOT verify temporal ownership: the literal could
+          // expose a stale Identifier as a property and still kill that
+          // stale binding inside its `kill` method. The cycle-10
+          // reviewer probe 3 is exactly this shape:
+          //
+          //   const otherPid = 99999;
+          //   runKspec("serve start --detach");
+          //   const pid = readPidFromFile();
+          //   const handle = {
+          //     otherPid,
+          //     kill() { process.kill(otherPid, "SIGTERM"); },
+          //   };
+          //   onTestFinished(() => handle.kill());
+          //
+          // `handle` was bound AFTER the detached start, so the
+          // top-level temporal-ownership check accepts `handle`. But
+          // the kill method targets `otherPid`, which was bound
+          // BEFORE the start. Surface the closure-captured kill
+          // target so `cleanupCallbackBindingStatus` runs the same
+          // temporal-ownership check against it. Stale captures (like
+          // `otherPid` here) fail; legitimate captures (the canonical
+          // accepted shape `const handle = { pid, kill() { process
+          // .kill(pid, "SIGTERM"); } }` where `pid` is bound after
+          // the start) still pass.
+          if (callee.object.type === "Identifier") {
+            for (const name of collectLiteralKillMethodClosureKillTargets(
+              callee.object,
+            )) {
+              if (!out.includes(name)) out.push(name);
+            }
+          }
         }
         return out;
       }
@@ -2485,6 +2837,157 @@ const noLeakyTestDaemon = {
         // the kspec CLI re-reads the pid file itself.
       }
       return out;
+    }
+
+    /**
+     * Collect the outer Identifier names closed over by an
+     * ObjectExpression literal's `kill` method body when used as the
+     * receiver of a `<receiver>.kill(...)` cleanup call. Returns the
+     * names that the top-level temporal-ownership check should also
+     * validate against the detached-start position.
+     *
+     * The walk:
+     *
+     *   1. Resolve the receiver's binding to an ObjectExpression
+     *      initializer (via `findConcreteBindingNodeAt` +
+     *      `bindingInitializer`).
+     *   2. Find the literal's `kill` Property whose value is a
+     *      FunctionExpression or ArrowFunctionExpression.
+     *   3. Walk the kill method body for kill-shaped CallExpressions
+     *      (`process.kill(<expr>, …)` and `<expr>.kill(…)`). For each,
+     *      extract the kill-target root Identifier (the first
+     *      argument's root for `process.kill`; the receiver root for
+     *      `<expr>.kill`).
+     *   4. Skip names bound by the kill method's own parameters —
+     *      parameter-bound targets are validated by the existing
+     *      parameter-index call-site check in
+     *      `isHelperBodyKillTargetTiedToOwner`.
+     *
+     * The remainder is the set of outer-scope identifiers the kill
+     * method closes over. These must satisfy the same temporal
+     * ownership invariant the receiver itself does: the binding's
+     * source range must end at or after the detached start begins.
+     * Surfacing them as top-level captures wires them into
+     * `cleanupCallbackBindingStatus`'s
+     * `isCaptureOwnedByDetachedStart` check.
+     *
+     * Closure-captured names are surfaced REGARDLESS of whether the
+     * enclosing literal exposes the same name as a property. The
+     * cycle-9 structural check
+     * (`enclosingObjectLiteralBindsIdentifierName`) only verifies
+     * that the literal has a property whose VALUE is the same
+     * Identifier — it does NOT verify the binding the Identifier
+     * points to was created after the detached start. The cycle-10
+     * reviewer's probe 3 exploits exactly that gap by exposing a
+     * stale outer `otherPid` as a literal property while the kill
+     * method targets it. The structural check passes; only the
+     * temporal-ownership check at the top level can reject. So this
+     * walker surfaces the closure-captured target name even when the
+     * literal carries it, letting the top-level binding analysis
+     * decide.
+     *
+     * Nested function bodies inside the kill method are not
+     * descended: only kill-shaped calls reachable on the kill
+     * method's own straight-line execution path matter for the
+     * cleanup contract.
+     */
+    function collectLiteralKillMethodClosureKillTargets(receiverIdent) {
+      const binding = findConcreteBindingNodeAt(
+        receiverIdent.name,
+        receiverIdent,
+      );
+      if (!binding) return [];
+      const init = bindingInitializer(binding);
+      if (!init || init.type !== "ObjectExpression") return [];
+      const killProp = findLiteralKillProperty(init);
+      if (!killProp || !killProp.value) return [];
+      const killFn = killProp.value;
+      if (
+        killFn.type !== "FunctionExpression" &&
+        killFn.type !== "ArrowFunctionExpression"
+      ) {
+        return [];
+      }
+      const closureKillTargets = new Set();
+      collectKillTargetClosureRootsInBody(
+        killFn.body,
+        killFn,
+        closureKillTargets,
+      );
+      return Array.from(closureKillTargets);
+    }
+
+    /**
+     * Recursive walker invoked by
+     * `collectLiteralKillMethodClosureKillTargets`. Visits every node
+     * reachable from `node` along the kill method's straight-line
+     * execution path (nested function bodies are not descended),
+     * records the kill-target root Identifier of any kill-shaped
+     * CallExpression, and filters out names bound by the kill
+     * method's own parameters. The remainder is the set of
+     * outer-scope identifiers the rule must surface for top-level
+     * temporal-ownership validation.
+     */
+    function collectKillTargetClosureRootsInBody(node, ownerFn, out) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") {
+        return;
+      }
+      if (node !== ownerFn.body) {
+        if (
+          node.type === "FunctionDeclaration" ||
+          node.type === "FunctionExpression" ||
+          node.type === "ArrowFunctionExpression"
+        ) {
+          return;
+        }
+      }
+      if (
+        node.type === "CallExpression" &&
+        node.callee &&
+        node.callee.type === "MemberExpression" &&
+        node.callee.property &&
+        node.callee.property.type === "Identifier" &&
+        node.callee.property.name === "kill" &&
+        node.callee.object
+      ) {
+        let targetExpr = null;
+        if (
+          node.callee.object.type === "Identifier" &&
+          node.callee.object.name === "process"
+        ) {
+          targetExpr = node.arguments && node.arguments[0];
+        } else {
+          targetExpr = node.callee.object;
+        }
+        if (targetExpr) {
+          const rootName = getHelperBodyKillTargetRootName(targetExpr);
+          if (rootName !== null && !ownerFnParamBindsName(ownerFn, rootName)) {
+            out.add(rootName);
+          }
+        }
+      }
+      for (const key in node) {
+        if (
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        ) {
+          continue;
+        }
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            collectKillTargetClosureRootsInBody(c, ownerFn, out);
+          }
+        } else {
+          collectKillTargetClosureRootsInBody(child, ownerFn, out);
+        }
+      }
     }
 
     /**
