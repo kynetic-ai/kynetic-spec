@@ -18259,6 +18259,24 @@ observations:
     resolved: false
     workflow_ref: "@01KRDB04"
     created_at: 2026-05-12T05:38:36.067Z
+  - _ulid: 01KRDBTTW7DJMTWBVJV3KDK76F
+    type: friction
+    content: "Merging origin/dev into a fix-cycle worker branch can produce duplicate test sections when
+      sibling dispatch tasks have independently transformed the same test region. Cycle-4 of
+      task-fix-guardrail-cleanup-effect-classification merged dev and got two copies (~250 lines
+      each) of the cleanup-effect accepted-shape section: one from this branch's cycle-1
+      transformation, one from sibling tasks (task-add-guardrail-cleanup-boundary-regressions,
+      task-add-active-request-bounded-observation-regressions) that had merged similar
+      transformations earlier. The textual git merge could not recognize them as semantically
+      equivalent and required ~250 lines of manual de-duplication. Pattern: when multiple sibling
+      dispatch tasks touch the same test file with similar content transformations, merges duplicate
+      rather than dedupe. Detection: count occurrences of a section comment after a merge.
+      Mitigation candidate: a pre-resubmit check that flags duplicate it() titles in the same
+      describe block, or vitest's no-identical-title rule run as part of the fix-cycle gate."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T05:51:21.991Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
