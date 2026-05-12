@@ -36,8 +36,13 @@ description: |
 spec_ref: "@agent-dispatch-engine"
 plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Review approved. Merge helper reported no-op because
+  dispatch/task/task-add-inflight-cleanup-protection-engine-ac/01krf37w at
+  0c6506a55cdb40538275c315cad4c85b131bc7ba is already integrated at dev. Spec AC
+  ac-inflight-spawn-refs-protect-cleanup is present on @agent-dispatch-engine and implementation
+  status remains in_progress for downstream implementation task.
 depends_on: []
 context: []
 priority: 1
@@ -105,8 +110,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-12T22:46:39.088Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Review approved. Merge helper reported no-op because
+          dispatch/task/task-add-inflight-cleanup-protection-engine-ac/01krf37w at
+          0c6506a55cdb40538275c315cad4c85b131bc7ba is already integrated at dev. Spec AC
+          ac-inflight-spawn-refs-protect-cleanup is present on @agent-dispatch-engine and
+          implementation status remains in_progress for downstream implementation task.
+        previous: null
+      completed_at:
+        new: 2026-05-12T22:59:25.498Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-12T22:59:25.507Z
 created_at: 2026-05-12T21:59:41.822Z
 started_at: 2026-05-12T22:37:32.366Z
 submitted_at: 2026-05-12T22:39:29.509Z
+completed_at: 2026-05-12T22:59:25.498Z
 todos: []
 automation: eligible
