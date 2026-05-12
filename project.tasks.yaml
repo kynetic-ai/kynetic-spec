@@ -28661,8 +28661,17 @@
   type: task
   spec_ref: "@daemon-test-guardrail-precision"
   plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - |-
+      Dispatch bootstrap failed: Bootstrap step "install-workspace-dependencies" failed with exit code 254. Output: npm error code ENOENT
+      npm error syscall spawn sh
+      npm error path /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-guardrail-cleanup-effect-classification-01krcrjp-review/packages/web-ui
+      npm error errno -2
+      npm error enoent spawn sh ENOENT
+      npm error enoent This is related to npm not being able to find a file.
+      npm error enoent
+      npm error A complete log of this run can be found in: /home/chapel/.npm/_logs/2026-05-12T06_47_52_815Z-debug-0.log
   depends_on:
     - "@task-add-guardrail-cleanup-effect-regressions"
   priority: 1
