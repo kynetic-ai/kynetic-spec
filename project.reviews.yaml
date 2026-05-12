@@ -203923,6 +203923,17 @@ reviews:
         runner: tsc
         created_at: 2026-05-12T07:54:08.593Z
         completed_at: 2026-05-12T07:54:08.593Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run lint exits 1 from existing unrelated repo-wide lint debt (13 errors/721 warnings
+          across src/tests/packages); changed file is clean under oxlint.
+        name: full lint baseline
+        required: false
+        runner: oxlint
+        created_at: 2026-05-12T07:54:13.058Z
+        completed_at: 2026-05-12T07:54:13.058Z
     events:
       - _ulid: 01KRDHWT1CCT01GV3ZQDQ3G52N
         actor: Jacob Chapel
@@ -203972,6 +203983,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-05-12T07:54:10.138Z
+      - _ulid: 01KRDJVTQHZQFS3R122FWDZTKK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: full lint baseline
+        timestamp: 2026-05-12T07:54:14.641Z
     examined_commit: 70f36e34d73a83df3a8ef32ec6ec7470e6509870
     external_links: []
     lifecycle_state: open
@@ -203984,5 +204002,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T07:37:18.125Z
-    updated_at: 2026-05-12T07:54:08.593Z
+    updated_at: 2026-05-12T07:54:13.058Z
     notes: []
