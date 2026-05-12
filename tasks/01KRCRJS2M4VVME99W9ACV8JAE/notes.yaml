@@ -1,1 +1,53 @@
-notes: []
+notes:
+  - _ulid: 01KREM10RN3K0BQVSJQ9SFRKG9
+    content: >-
+      Implementation complete.
+
+
+      Approach:
+
+      1. Added tests/helpers/daemon-fetch.ts exporting boundedDaemonFetch(url, opts) — composes
+      AbortSignal.timeout(timeoutMs) with the caller's optional signal via AbortSignal.any so a
+      stalled daemon endpoint cannot pin the consumer past the budget. Default timeout 5000ms.
+
+      2. Fixed in-process mock daemon stop() in tests/helpers/mock-daemon.ts: track every accepted
+      socket via server.on('connection', ...), and on stop() set a 250ms graceful timer that
+      force-destroys remaining sockets so server.close() can finalize. A 1000ms hard bound resolves
+      the promise even if close() never fires its callback. AC: @daemon-test-teardown-boundedness
+      ac-active-requests-do-not-block-teardown.
+
+      3. Replaced bare daemon-facing fetches in tests/cli-serve.test.ts:
+         - waitForDaemonHealth probe (2s helper timeout per probe iteration)
+         - Direct /api/health checks (configured 127.0.0.2, advertised connect_host, IPv6 negative case, post-detach health check, install path health check, runtime selection health check)
+         - /api/projects POSTs after waitForDaemonHealth
+      4. Replaced the bare /api/projects POST in tests/e2e/fixtures/test-base.ts
+      createSecondProject.
+
+      5. Refactored daemon.ts boundedProbeFetch and sampleEndpointDiagnostic to delegate to
+      boundedDaemonFetch — consolidates the bounded-probe pattern so the real-daemon fixture and the
+      new helper share the same primitive.
+
+      6. Flipped the three FAILING-BEFORE-FIX it.fails regressions to plain it():
+         - tests/helpers/mock-daemon.test.ts: in-process stop() bounded teardown contract (no body change — the mock-daemon.ts fix makes it pass)
+         - tests/helpers/mock-daemon.test.ts: AbortSignal.timeout positive contract refactored to use boundedDaemonFetch directly so it now locks the helper contract
+         - tests/helpers/mock-daemon.test.ts: bare-fetch regression rewritten to call boundedDaemonFetch with timeoutMs=200ms (renamed from "bare fetch()" to "boundedDaemonFetch") — locks that the helper aborts internally within budget
+         - tests/cli-serve.test.ts: bare-fetch-to-/api/health regression rewritten the same way
+
+      Endpoint metadata fidelity and request-recording behavior preserved — only the
+      socket-tracking, close-escalation and probe-bounding logic changed in mock-daemon.ts. No
+      public API change.
+
+
+      Verified:
+
+      - Target slice (tests/helpers/mock-daemon.test.ts, tests/helpers/daemon.test.ts,
+      tests/cli-serve.test.ts): 82/82 pass, 66.9s.
+
+      - Playwright smoke (tests/e2e/smoke.spec.ts): 6/6 pass, 3.6s.
+
+      - TypeScript clean.
+
+      - Full suite running (will note results in resubmission if needed).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T17:33:47.669Z
