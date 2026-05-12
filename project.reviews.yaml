@@ -206737,6 +206737,13 @@ reviews:
           status: fail
           name: ad hoc classifier probes
         timestamp: 2026-05-12T18:59:37.427Z
+      - _ulid: 01KRERYYX36FF56V638DXAAT10
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRERYWS4BT0J9QXXKC3QVS0D
+        timestamp: 2026-05-12T19:00:03.107Z
     examined_commit: 671d9b4584a8dfb718be8fa81a3c153965e62a4c
     external_links: []
     lifecycle_state: open
@@ -206785,9 +206792,39 @@ reviews:
               cleanup that does not terminate the just-started daemon.
             created_at: 2026-05-12T18:46:57.218Z
         kind: blocker
+      - _ulid: 01KRERYWS4BT0J9QXXKC3QVS0D
+        entries:
+          - _ulid: 01KRERYWS4JWD9ME29RRXASC9H
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+
+              Files read: kspec-agents.md; task details for @01KRCRJPMHMHC410TKRC5Y9HF1; prior
+              review @01KREJR1; tools/eslint-rules/no-leaky-test-daemon.js around cleanup
+              classification, helper-origin import trust, local helper lookup, and kill-target
+              validation; tests/lint-no-leaky-test-daemon.test.ts around the new cycle-8 regressions
+              and accepted companions; tests/lint-daemon-test-guardrails.test.ts submitted diff.
+
+
+              Commands run: kspec item get @daemon-test-guardrail-precision; kspec validate; npm
+              test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+              tests/lint-daemon-test-guardrails.test.ts; npm test; npm run lint; npx oxlint on
+              changed files; two ad hoc oxlint probes for unrelated-identifier kill targets.
+
+
+              Claims verified: worker's targeted and full test claims were independently verified;
+              prior alias-import and literal-target blockers have direct tests in the submitted
+              suite; the new target-association gap was verified with ad hoc oxlint probes.
+
+
+              Categories searched: correctness, AC alignment, helper-origin edge cases, kill-target
+              edge cases, test quality, integration/lint behavior. One MUST-FIX blocker recorded.
+            created_at: 2026-05-12T19:00:00.932Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-12T18:39:00.497Z
-    updated_at: 2026-05-12T18:59:35.280Z
+    updated_at: 2026-05-12T19:00:00.932Z
     notes: []
   - _ulid: 01KRERNSBMVT2M524R6JBTT54Q
     slugs: []
