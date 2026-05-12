@@ -207872,6 +207872,17 @@ reviews:
         required: true
         created_at: 2026-05-12T19:45:53.012Z
         completed_at: 2026-05-12T19:45:53.012Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The plan adds durable lease schema, owner/liveness semantics, recovery lifecycle, and many
+          ACs for a race that appears preventable by a smaller cleanup interlock unless additional
+          evidence is supplied.
+        name: Proportionality
+        required: true
+        created_at: 2026-05-12T19:46:10.295Z
+        completed_at: 2026-05-12T19:46:10.295Z
     events:
       - _ulid: 01KREVDS9XFDTD63BNFYSWQE6Z
         actor: Jacob Chapel
@@ -207942,6 +207953,13 @@ reviews:
           status: fail
           name: Existing spec coverage
         timestamp: 2026-05-12T19:45:54.650Z
+      - _ulid: 01KREVKEV33JKFXD2S48TA8WEJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Proportionality
+        timestamp: 2026-05-12T19:46:11.939Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -208045,5 +208063,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-12T19:43:06.045Z
-    updated_at: 2026-05-12T19:45:53.012Z
+    updated_at: 2026-05-12T19:46:10.295Z
     notes: []
