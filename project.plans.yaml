@@ -48839,10 +48839,10 @@ plans:
             pre-active spawn window receives the same artifact protection as a
             registered active invocation.
 
-          How: Use `mise exec -- kspec item ac add @agent-dispatch-engine ...` with
+          How: Use `kspec item ac add @agent-dispatch-engine ...` with
           the exact AC text above, then set @agent-dispatch-engine implementation
           status to in_progress with `--no-cascade` unless current evidence proves the
-          new AC is already implemented. Verify with `mise exec -- kspec item get
+          new AC is already implemented. Verify with `kspec item get
           @agent-dispatch-engine`.
 
           Covers: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup.
@@ -48894,10 +48894,10 @@ plans:
             proceeds only after existing cleanup policy classification determines the
             metadata is untrusted and cleanup is safe.
 
-          How: Use `mise exec -- kspec item ac add @dispatch-workspace-cleanup-policy
+          How: Use `kspec item ac add @dispatch-workspace-cleanup-policy
           ...` for each AC. Set @dispatch-workspace-cleanup-policy implementation
           status to in_progress with `--no-cascade` unless current evidence proves all
-          new ACs are already implemented. Verify with `mise exec -- kspec item get
+          new ACs are already implemented. Verify with `kspec item get
           @dispatch-workspace-cleanup-policy`.
 
           Covers: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved,
@@ -48937,10 +48937,10 @@ plans:
             prerequisites and no active/in-flight/provisioning ownership may be
             classified cleanup-eligible so scheduled cleanup can reach `closed`.
 
-          How: Use `mise exec -- kspec item ac add @dispatch-workspace-registry ...`
+          How: Use `kspec item ac add @dispatch-workspace-registry ...`
           with the exact AC text above. Set @dispatch-workspace-registry implementation
           status to in_progress with `--no-cascade` unless current evidence proves the
-          new AC is already implemented. Verify with `mise exec -- kspec item get
+          new AC is already implemented. Verify with `kspec item get
           @dispatch-workspace-registry`.
 
           Covers: @dispatch-workspace-registry ac-partial-provisioning-classified-before-cleanup.
@@ -49161,7 +49161,7 @@ plans:
           cannot remove the parent tree during the in-flight bootstrap window.
 
           Testing: Run
-          `mise exec -- npm test -- --run tests/dispatch-workspace-cleanup.test.ts tests/dispatch-workspace-registry.test.ts`.
+          `npm test -- --run tests/dispatch-workspace-cleanup.test.ts tests/dispatch-workspace-registry.test.ts`.
 
           Covers: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved,
           ac-protection-applies-to-every-destructive-surface,
@@ -49197,12 +49197,12 @@ plans:
           5. Release the barrier and assert the spawn reaches the expected controlled
              success or failure path without cleanup-induced ENOENT/TAR/spawn errors.
 
-          How: Use a promise barrier, fixture script, or file sentinel instead of
+          How: Use a probarrier, fixture script, or file sentinel instead of
           timing sleeps. Keep the test focused on cleanup/provisioning interaction;
           do not require real package-manager network work.
 
           Testing: Run
-          `mise exec -- npm test -- --run tests/agent-dispatch-engine.test.ts tests/dispatch-runtime-bootstrap-contract.test.ts`.
+          `npm test -- --run tests/agent-dispatch-engine.test.ts tests/dispatch-runtime-bootstrap-contract.test.ts`.
 
           Covers: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup;
           @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved.
@@ -49229,12 +49229,12 @@ plans:
 
           What:
           1. Run targeted tests:
-             - `mise exec -- npm test -- --run tests/dispatch-workspace-cleanup.test.ts tests/dispatch-workspace-registry.test.ts`
-             - `mise exec -- npm test -- --run tests/agent-dispatch-engine.test.ts tests/dispatch-runtime-bootstrap-contract.test.ts`
+             - `npm test -- --run tests/dispatch-workspace-cleanup.test.ts tests/dispatch-workspace-registry.test.ts`
+             - `npm test -- --run tests/agent-dispatch-engine.test.ts tests/dispatch-runtime-bootstrap-contract.test.ts`
           2. Run project quality gates:
-             - `mise exec -- npm run typecheck`
-             - `mise exec -- npm test -- --fresh`
-             - `mise exec -- kspec validate --warnings-ok`
+             - `npm run typecheck`
+             - `npm test -- --fresh`
+             - `kspec validate --warnings-ok`
           3. If the full suite fails for known unrelated baseline instability, record
              the exact command, exit code, failing test names, and focused passing
              evidence rather than hiding the failure.
@@ -49303,3 +49303,7 @@ plans:
         content: Clarify closing branch cleanup scope and merge guardrail coverage into regression tests
         author: Jacob Chapel
         created_at: 2026-05-12T21:38:15.478Z
+      - _ulid: 01KRF2Y4EBEGAEHEXGEE13FD0T
+        content: Remove environment-specific mise wrappers from plan commands
+        author: Jacob Chapel
+        created_at: 2026-05-12T21:54:21.771Z
