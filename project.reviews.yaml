@@ -203113,7 +203113,18 @@ reviews:
     slugs: []
     title: Review fix guardrail cleanup-effect classification (cycle 4)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+          tests/lint-daemon-test-guardrails.test.ts passed: 322/322 tests."
+        name: targeted daemon lint tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T06:08:57.426Z
+        completed_at: 2026-05-12T06:08:57.426Z
     events:
       - _ulid: 01KRDBYWY9D0WAGCVR0G2MVNFC
         actor: Jacob Chapel
@@ -203142,6 +203153,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRDCTJFGS20AAHFTFKK4C15Q
         timestamp: 2026-05-12T06:08:43.328Z
+      - _ulid: 01KRDCV2WD5DSETPC5BC768ABK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon lint tests
+        timestamp: 2026-05-12T06:08:58.765Z
     examined_commit: 0eb6b62cc0ae567d1814d73cf552c720279f7510
     external_links: []
     lifecycle_state: open
@@ -203199,5 +203217,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T05:53:35.177Z
-    updated_at: 2026-05-12T06:08:41.968Z
+    updated_at: 2026-05-12T06:08:57.426Z
     notes: []
