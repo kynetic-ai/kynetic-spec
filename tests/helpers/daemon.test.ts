@@ -9,7 +9,7 @@
  */
 import { describe, expect, it, onTestFinished } from "vitest";
 import type { ChildProcess } from "node:child_process";
-import { existsSync, readdirSync, rmSync, statSync } from "node:fs";
+import { chmodSync, existsSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, dirname, join } from "node:path";
 
@@ -20,7 +20,35 @@ import {
   startTestDaemon,
   type CreateTestDaemonProjectStage,
 } from "./daemon.js";
-import { readTestOutputSync } from "./cli.js";
+import { cleanupTempDir, createTempDir, readTestOutputSync } from "./cli.js";
+
+/**
+ * Synthetic uncooperative-child source for bounded-stop contract tests.
+ *
+ * Installs no-op SIGTERM / SIGINT / SIGHUP handlers so the only signal that
+ * actually terminates the process is SIGKILL, then writes one ready line to
+ * stdout. The test waits for that line before sending any signals — without
+ * the handshake, a too-fast SIGTERM races the script's signal-handler
+ * installation and hits the default terminate action, masking the bug
+ * under test.
+ */
+const UNCOOPERATIVE_CHILD_SOURCE = `#!/usr/bin/env node
+process.on("SIGTERM", () => { /* swallow */ });
+process.on("SIGINT", () => { /* swallow */ });
+process.on("SIGHUP", () => { /* swallow */ });
+process.stdout.write("ready\\n");
+setInterval(() => {}, 60_000);
+`;
+
+/** Probe whether a process is still alive without sending a real signal. */
+function isProcessAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 describe("buildDaemonChildEnv", () => {
   // AC: @daemon-backed-test-fixture-contract ac-no-ambient-daemon-control
@@ -717,6 +745,192 @@ describe(
         }
       }
     });
+  },
+);
+
+/**
+ * Selective expected-failure helper for the bounded process-stop bug in
+ * `killChildScoped` (tests/helpers/daemon.ts): the helper resolves from
+ * the graceful-timer callback synchronously after `child.kill("SIGKILL")`,
+ * before libuv has fired the child's 'exit' event. The parent handle
+ * still has `exitCode === null` and `signalCode === null` at that moment.
+ *
+ * Bug-shape differentiator: handle has BOTH exitCode and signalCode null
+ * after stop() returns. After the fix, at least one is non-null.
+ *
+ * Behavior:
+ *  1. Run the post-fix assertion (handle has observed exit).
+ *  2. If it throws today (expected pre-fix), re-assert the EXACT bug
+ *     shape: BOTH exitCode AND signalCode are null. A different failure
+ *     mode (e.g. child already exited cooperatively) re-throws and fails
+ *     the test, preserving selectivity.
+ *  3. If it succeeds (post-fix), throw an explicit "remove this wrapper"
+ *     sentinel so the implementation task is forced to inline the
+ *     assertion and delete the helper as part of the fix.
+ *
+ * The wrapper is intentionally bug-shape-specific (killChildScoped's
+ * timer-callback resolution only) — remove when the helper fix lands.
+ */
+function expectKillChildScopedMissesExitObservation(child: ChildProcess): void {
+  let postFixSucceeded = false;
+  try {
+    expect(
+      child.exitCode !== null || child.signalCode !== null,
+      "post-fix: stop() must not resolve until child exit observed " +
+        `(exitCode=${child.exitCode} signalCode=${child.signalCode})`,
+    ).toBe(true);
+    postFixSucceeded = true;
+  } catch (postFixError) {
+    // Selective re-assertion of the EXACT current bug shape. If exit
+    // happened to fire before this check (e.g. cooperative child, fast
+    // CI), only ONE of exitCode/signalCode would be non-null and the
+    // re-assertion would fail — propagating a real failure.
+    expect(
+      child.exitCode === null && child.signalCode === null,
+      `bug-shape mismatch: pre-fix expects both exitCode AND signalCode null on the handle, but exitCode=${child.exitCode} signalCode=${child.signalCode}. Underlying assertion: ${
+        postFixError instanceof Error ? postFixError.message : String(postFixError)
+      }`,
+    ).toBe(true);
+    return;
+  }
+  if (postFixSucceeded) {
+    throw new Error(
+      "STAGED REGRESSION CLOSED: killChildScoped now observes child exit " +
+        "before resolving. Inline the post-fix assertion and remove " +
+        "expectKillChildScopedMissesExitObservation from " +
+        "tests/helpers/daemon.test.ts. See " +
+        "@task-implement-bounded-process-stop-primitives.",
+    );
+  }
+}
+
+describe(
+  "startTestDaemon stop() observes termination before return",
+  { timeout: 30_000 },
+  () => {
+    // STAGED REGRESSION (selective expected-failure via
+    // expectKillChildScopedMissesExitObservation): documents the
+    // bounded-stop bug in killChildScoped while keeping the required
+    // suite green so this task can merge ahead of the helper fix in
+    // @task-implement-bounded-process-stop-primitives.
+    //
+    // Pre-fix: killChildScoped resolves from the graceful-timer
+    // callback synchronously after kill("SIGKILL"), before the child's
+    // 'exit' event fires. The wrapper catches the failing post-fix
+    // assertion and re-asserts the bug shape (both exitCode AND
+    // signalCode null). Post-fix: helper observes exit before resolving;
+    // wrapper throws "remove this wrapper" sentinel, forcing the
+    // implementation task to inline the assertion.
+    //
+    // bare `it.fails()` is rejected as too permissive (@01KR3ZR8):
+    // any thrown assertion satisfies the marker. The selective wrapper
+    // (@01KR431R) re-asserts the EXACT current bug shape so an
+    // unrelated failure mode propagates as a real failure.
+    // AC: @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return
+    // AC: @daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded
+    // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+    // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+    // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+    it(
+      "does not resolve until an uncooperative child has been observed terminated",
+      async () => {
+        if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
+          throw new Error(
+            "dist/daemon/index.js missing — run 'npm run build:daemon' before tests",
+          );
+        }
+        const scriptDir = await createTempDir("kspec-uncooperative-daemon-");
+        onTestFinished(async () => {
+          await cleanupTempDir(scriptDir);
+        });
+        const synthPath = join(scriptDir, "uncooperative-daemon.cjs");
+        writeFileSync(synthPath, UNCOOPERATIVE_CHILD_SOURCE);
+        chmodSync(synthPath, 0o755);
+
+        const project = await createTestDaemonProject();
+        onTestFinished(async () => {
+          await project.cleanup();
+        });
+
+        // Capture the spawned child handle via the synchronous observer
+        // seam so the test can assert on the OS-visible pid after stop()
+        // returns. The probe waits for the synth's stdout handshake so
+        // we never race SIGTERM against the script's signal-handler
+        // installation (without the handshake a too-fast SIGTERM hits
+        // the default terminate action and masks the bug under test).
+        let observed: { child: ChildProcess; pid: number } | null = null;
+        const started = await startTestDaemon(project, {
+          __testBinaryOverride: synthPath,
+          readiness: {
+            mode: "custom",
+            probe: (ctx) => {
+              const stdoutText = ctx.stdoutTail();
+              if (ctx.child.exitCode !== null || ctx.child.signalCode !== null) {
+                return { ok: false, details: `synth child exited unexpectedly` };
+              }
+              if (!stdoutText.includes("ready")) {
+                return { ok: false, details: `awaiting synth ready handshake` };
+              }
+              return { ok: true, details: "synth ready" };
+            },
+          },
+          timeoutMs: 5_000,
+          intervalMs: 50,
+          __testObserveSpawn: ({ child }) => {
+            observed = { child, pid: child.pid ?? -1 };
+          },
+          registerCleanup: () => {
+            /* test owns stop() lifecycle directly */
+          },
+        });
+
+        expect(observed).not.toBeNull();
+        const captured = observed as unknown as { child: ChildProcess; pid: number };
+        expect(captured.pid).toBeGreaterThan(0);
+        expect(isProcessAlive(captured.pid)).toBe(true);
+
+        // Belt-and-suspenders: if the helper bug leaves the synthetic
+        // child alive after stop() resolves, force-kill it on test exit
+        // so the regression cannot strand an uncooperative process.
+        onTestFinished(() => {
+          if (isProcessAlive(captured.pid)) {
+            try {
+              process.kill(captured.pid, "SIGKILL");
+            } catch {
+              /* already gone */
+            }
+          }
+        });
+
+        const stopStartedAt = Date.now();
+        await started.stop();
+        const elapsed = Date.now() - stopStartedAt;
+
+        // ac-stop-observes-termination-before-return — selective
+        // expected-failure: pre-fix asserts the bug shape (BOTH
+        // exitCode AND signalCode null because killChildScoped resolved
+        // from the timer callback before libuv fired the exit event);
+        // post-fix asserts the contract (exit observed on the handle)
+        // and forces wrapper removal. The pid-liveness check is racy
+        // pre-fix (kernel may or may not have actually delivered the
+        // queued SIGKILL by the time we probe) and is therefore not
+        // part of the bug shape — handle observation is the only
+        // deterministic differentiator. See
+        // expectKillChildScopedMissesExitObservation above.
+        expectKillChildScopedMissesExitObservation(started.child);
+
+        // ac-uncooperative-process-stop-is-bounded: helper must reach
+        // a bounded outcome. 15s is generous enough for slow CI
+        // without masking a regression that hangs the wait. Pre-fix
+        // returns near-instantly from the timer callback; post-fix
+        // returns within the graceful window plus libuv exit
+        // observation — both well under 15s.
+        expect(elapsed).toBeLessThan(15_000);
+
+        // Idempotent stop after observation.
+        await started.stop();
+      },
+    );
   },
 );
 

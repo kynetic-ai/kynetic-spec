@@ -61,9 +61,14 @@ const recordFile = getArg("record", null);
 // --env-record <path> Write a JSON snapshot of inherited daemon-control /
 //                    session env keys to <path> at startup so the test can
 //                    assert the helper sanitised the child's environment.
+// --ignore-sigterm   Install no-op SIGTERM / SIGINT / SIGHUP handlers so the
+//                    child keeps its listener bound after the helper's
+//                    graceful kill. The bounded-stop contract test uses this
+//                    to drive the SIGTERM → SIGKILL escalation path.
 const breakMode = getArg("break", null);
 const pidFile = getArg("pid-file", null);
 const envRecordFile = getArg("env-record", null);
+const ignoreSigterm = process.argv.includes("--ignore-sigterm");
 
 if (breakMode !== null && breakMode !== "malformed-stdout" && breakMode !== "no-stdout") {
   process.stderr.write(`mock daemon: unknown break '${breakMode}'\n`);
@@ -267,9 +272,24 @@ server.on("error", (err) => {
   process.exit(1);
 });
 
-process.on("SIGTERM", () => {
-  server.close(() => process.exit(0));
-});
-process.on("SIGINT", () => {
-  server.close(() => process.exit(0));
-});
+if (ignoreSigterm) {
+  // No-op signal handlers force the helper to escalate from SIGTERM to
+  // SIGKILL. SIGKILL is uncatchable, so the child still terminates — but
+  // only after the helper's graceful timer fires.
+  process.on("SIGTERM", () => {
+    /* swallow */
+  });
+  process.on("SIGINT", () => {
+    /* swallow */
+  });
+  process.on("SIGHUP", () => {
+    /* swallow */
+  });
+} else {
+  process.on("SIGTERM", () => {
+    server.close(() => process.exit(0));
+  });
+  process.on("SIGINT", () => {
+    server.close(() => process.exit(0));
+  });
+}
