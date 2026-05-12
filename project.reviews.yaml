@@ -201998,6 +201998,12 @@ reviews:
         payload:
           thread_ulid: 01KRD445ARG2EN4FN1KYXK80PM
         timestamp: 2026-05-12T04:06:55.399Z
+      - _ulid: 01KRD5VRYY4PFAVJDDXW3DKDCH
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRD448MQ078041DNX9KB4K12
+        timestamp: 2026-05-12T04:07:01.342Z
     examined_commit: 8450ce07dd2c02ef2786561e0c03f524655893ec
     external_links: []
     lifecycle_state: closed
@@ -202107,6 +202113,8 @@ reviews:
               both blockers it called out are addressed in this cycle.
             created_at: 2026-05-12T04:06:37.817Z
         kind: nit
+        resolved_at: 2026-05-12T04:06:59.972Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -202116,7 +202124,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T03:36:47.206Z
     created_at: 2026-05-12T03:22:20.072Z
-    updated_at: 2026-05-12T04:06:53.977Z
+    updated_at: 2026-05-12T04:06:59.972Z
     notes: []
   - _ulid: 01KRD4N3Q8TK8FFJ8Q9E5MYE8E
     slugs: []
