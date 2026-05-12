@@ -63,7 +63,7 @@ tags:
   - testing
   - daemon
 vcs_refs: []
-review_ref: "@01KRE691AAV7C7RF3YRDKZ86RX"
+review_ref: "@01KRE8JTK0P1R0KQAC1QT9SZ76"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-add-bounded-process-stop-contract-tests/01krcrjr
@@ -294,6 +294,13 @@ history:
         previous: 2026-05-12T02:05:39.666Z
     command: task-submit
     timestamp: 2026-05-12T14:09:02.244Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KRE8JTK0P1R0KQAC1QT9SZ76"
+        previous: "@01KRE691AAV7C7RF3YRDKZ86RX"
+    command: review-link
+    timestamp: 2026-05-12T14:13:51.819Z
 prior_status: null
 created_at: 2026-05-12T00:14:54.131Z
 started_at: 2026-05-12T14:08:58.883Z

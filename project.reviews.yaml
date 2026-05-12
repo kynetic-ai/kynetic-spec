@@ -204526,3 +204526,29 @@ reviews:
     created_at: 2026-05-12T13:34:26.827Z
     updated_at: 2026-05-12T13:52:59.558Z
     notes: []
+  - _ulid: 01KRE8JTK0P1R0KQAC1QT9SZ76
+    slugs: []
+    title: Review bounded process-stop contract tests (cycle 3)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRE8JTJV6F9YNQ5E8RW7S2PR
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-12T14:13:48.251Z
+    examined_commit: b5c4b4ba6dc76ef086dd98cdd43abba332dd00e8
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRCRJR5K77Q2THCVVH3BDNFH"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-12T14:13:48.256Z
+    updated_at: null
+    notes: []
