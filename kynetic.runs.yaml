@@ -45327,7 +45327,7 @@ runs:
     completed_at: 2026-05-12T02:08:55.153Z
   - _ulid: 01KRD0970K2MWQJV1KNEYVCZWZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -45346,7 +45346,29 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T02:32:06.958Z
-        completed_at: 2026-05-12T02:32:06.958Z
+        completed_at: 2026-05-12T02:32:18.644Z
+        notes: >-
+          Candidate items:
+
+          1. SUCCESS (high confidence): expectClassifierGap staging helper applied this fix-cycle —
+          exact match with @01KR431R and @01KR4F09Q. SKIP duplicate.
+
+          2. FRICTION (high confidence): worker default to bare deterministic failing tests despite
+          three precedent observations documenting the staging pattern — recurrence of @01KR45YDC.
+          SKIP duplicate.
+
+          3. POTENTIAL NEW SIGNAL: the recurrence itself (three instances in
+          plan-daemon-test-cleanup-contract-hardening suggest the precedent-search step is
+          unreliable) — but the mitigation in @01KR45YDC already prescribes 're-check meta
+          observations on sister tasks at submission time'. Capturing a meta-observation about
+          repeated misses would just paraphrase the existing prescription. SKIP as noise.
+
+
+          Net: no new items meet the high-confidence-AND-unique bar.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T02:32:18.644Z
+        completed_at: 2026-05-12T02:32:18.644Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T02:29:30.259Z
