@@ -192,14 +192,30 @@ const TRUSTED_HELPER_NAMES = new Set([
  * implementation lives behind the path allowlist
  * (`HELPER_PATH_PATTERNS`) and is therefore vetted out-of-band.
  *
- * Patterns are anchored to the path-tail `helpers/daemon` /
- * `helpers/mock-daemon` so both repo-rooted (`tests/helpers/daemon`),
- * directly-rooted (`helpers/daemon`), and relative (`./helpers/daemon`,
- * `../helpers/daemon`) imports resolve. Optional `.ts` is accepted for
- * tests that use the extension.
+ * Patterns are anchored to a relative-path prefix (`./` or `../`,
+ * possibly chained: `../../`, `./../`, etc.) so that ONLY in-repo
+ * relative imports of the shared helpers resolve. A path that merely
+ * ENDS with `helpers/daemon` is not enough — `import { killPid } from
+ * "some-unapproved-package/helpers/daemon"` is a bare specifier
+ * resolved from `node_modules`, so its body lives outside the path
+ * allowlist (`HELPER_PATH_PATTERNS`) and cannot be trusted by name.
+ * The relative-prefix anchor closes that gap on
+ * `@daemon-test-guardrail-precision`
+ * `ac-cleanup-helper-origin-is-trusted`: every approved import in the
+ * tests/ tree uses a `./` or `../` form (see e.g.
+ * `./helpers/daemon.js`, `../helpers/daemon.js`,
+ * `../../helpers/daemon.js`), and a bare or scoped specifier never
+ * matches.
+ *
+ * Intermediate path segments between the relative prefix and
+ * `helpers/<file>` are NOT allowed: only exact relative pointers to
+ * the shared-helper directory match. Optional `.js` / `.ts` extension
+ * is accepted to cover both the TS-source `./helpers/daemon` form and
+ * the NodeNext-compatible `./helpers/daemon.js` form used across the
+ * test tree.
  */
 const APPROVED_HELPER_IMPORT_PATH_PATTERNS = [
-  /(^|[\\/])helpers[\\/](daemon|mock-daemon)(\.ts)?$/,
+  /^(\.\.?\/)+helpers\/(daemon|mock-daemon)(\.[jt]s)?$/,
 ];
 
 const noLeakyTestDaemon = {
@@ -591,7 +607,7 @@ const noLeakyTestDaemon = {
           callee.object.type === "Identifier" &&
           callee.object.name === "process"
         ) {
-          return isTerminatingKillSignalArg(node.arguments[1], null);
+          return isTerminatingKillSignalArg(node.arguments[1], null, null);
         }
         // <expr>.kill(<signal>?) — child handle cleanup. Same accepted
         // signal policy as process.kill, AND the receiver must not be a
@@ -601,10 +617,10 @@ const noLeakyTestDaemon = {
         // onTestFinished(() => fake.kill())` — the literal's kill
         // method has no terminating primitive call, so the cleanup
         // shape is misleading and counts as no cleanup at all.
-        if (!isTerminatingKillSignalArg(node.arguments[0], null)) {
+        if (!isTerminatingKillSignalArg(node.arguments[0], null, null)) {
           return false;
         }
-        return isChildHandleReceiverTrusted(callee.object);
+        return isChildHandleReceiverTrusted(callee.object, node);
       }
 
       return false;
@@ -626,15 +642,36 @@ const noLeakyTestDaemon = {
      *     `SIGINT` (the daemon-relevant terminating signals).
      *
      * When `ownerFn` is provided (helper-body inspection), an Identifier
-     * referring to one of the helper's parameters is accepted if that
-     * parameter has a default value (`AssignmentPattern`) whose right-
-     * hand side is a terminating Literal. This recognises the
-     * `function killPid(pid, signal = "SIGTERM") { process.kill(pid,
-     * signal); }` pattern: every call site that omits the signal
-     * inherits the SIGTERM default at runtime. Outside the helper-body
-     * context (`ownerFn === null`), the top-level classifier rejects
-     * Identifier signals because the actual runtime value cannot be
-     * statically pinned.
+     * referring to one of the helper's parameters is accepted only if
+     * BOTH:
+     *
+     *   (a) The parameter has a terminating default value
+     *       (`AssignmentPattern` with a `SIGTERM`/`SIGKILL`/`SIGINT`
+     *       Literal right-hand side), AND
+     *   (b) The call site at `useCallNode` either omits the corresponding
+     *       argument (caller inherits the terminating default) OR passes
+     *       a terminating argument shape (`undefined` / `void` /
+     *       terminating Literal).
+     *
+     * The call-site check is required because parameter defaults only
+     * apply when the caller omits the argument — a call like
+     * `killPid(pid, "SIGUSR1")` overrides `function killPid(pid, signal
+     * = "SIGTERM")` with a non-terminating signal at runtime, leaving the
+     * daemon running. Trusting the body's parameter-default alone would
+     * silently credit the override and violate
+     * `@daemon-test-guardrail-precision`
+     * `ac-cleanup-operation-terminates-daemon` /
+     * `ac-cleanup-probes-do-not-count`.
+     *
+     * When `useCallNode` is not provided (recursive body inspection with
+     * no concrete use site, or the use site is not a CallExpression),
+     * the rule cannot validate an override and rejects the Identifier
+     * — the body alone cannot prove termination because the parameter's
+     * runtime value depends on the caller.
+     *
+     * Outside the helper-body context (`ownerFn === null`), the top-level
+     * classifier rejects Identifier signals because the actual runtime
+     * value cannot be statically pinned.
      *
      * Diagnostic / non-terminating signals — Literal `0` (the liveness
      * probe), `"SIGUSR1"`, `"SIGCONT"`, `"SIGWINCH"`, etc. — fall through
@@ -642,7 +679,7 @@ const noLeakyTestDaemon = {
      * MemberExpression) also fall through: the rule cannot prove
      * termination from a runtime-computed signal.
      */
-    function isTerminatingKillSignalArg(arg, ownerFn) {
+    function isTerminatingKillSignalArg(arg, ownerFn, useCallNode) {
       if (arg === undefined) return true;
       const unwrapped = unwrapTransparentExpression(arg);
       if (!unwrapped) return false;
@@ -667,8 +704,10 @@ const noLeakyTestDaemon = {
         unwrapped.type === "Identifier" &&
         Array.isArray(ownerFn.params)
       ) {
-        for (const param of ownerFn.params) {
+        for (let i = 0; i < ownerFn.params.length; i++) {
+          const param = ownerFn.params[i];
           if (
+            param &&
             param.type === "AssignmentPattern" &&
             param.left &&
             param.left.type === "Identifier" &&
@@ -676,13 +715,27 @@ const noLeakyTestDaemon = {
           ) {
             const def = unwrapTransparentExpression(param.right);
             if (
-              def &&
-              def.type === "Literal" &&
-              typeof def.value === "string" &&
-              TERMINATING_KILL_SIGNALS.has(def.value)
+              !def ||
+              def.type !== "Literal" ||
+              typeof def.value !== "string" ||
+              !TERMINATING_KILL_SIGNALS.has(def.value)
             ) {
-              return true;
+              return false;
             }
+            // Parameter default is terminating; the helper terminates
+            // the daemon only when the call site preserves the default
+            // (arg omitted) or supplies a terminating shape itself.
+            // Without a concrete call site to inspect, the override
+            // cannot be ruled out, so reject conservatively.
+            if (!useCallNode || useCallNode.type !== "CallExpression") {
+              return false;
+            }
+            if (useCallNode.arguments.length <= i) return true;
+            return isTerminatingKillSignalArg(
+              useCallNode.arguments[i],
+              null,
+              null,
+            );
           }
         }
       }
@@ -750,7 +803,7 @@ const noLeakyTestDaemon = {
      *      default. The value is not a body the rule can statically
      *      inspect for termination, so the rule cannot prove a no-op.
      */
-    function isChildHandleReceiverTrusted(receiver) {
+    function isChildHandleReceiverTrusted(receiver, killCallNode) {
       if (!receiver) return true;
       if (receiver.type !== "Identifier") return true;
       const binding = findConcreteBindingNodeAt(receiver.name, receiver);
@@ -765,7 +818,11 @@ const noLeakyTestDaemon = {
         (value.type === "FunctionExpression" ||
           value.type === "ArrowFunctionExpression")
       ) {
-        return helperBodyContainsTerminatingPrimitive(value, new Set());
+        return helperBodyContainsTerminatingPrimitive(
+          value,
+          new Set(),
+          killCallNode,
+        );
       }
       return true;
     }
@@ -880,7 +937,11 @@ const noLeakyTestDaemon = {
     function isTrustedHelperByOrigin(name, useNode) {
       const localFn = findLocalHelperDefinition(name, useNode);
       if (localFn) {
-        return helperBodyContainsTerminatingPrimitive(localFn, new Set());
+        return helperBodyContainsTerminatingPrimitive(
+          localFn,
+          new Set(),
+          useNode,
+        );
       }
       if (isHelperNameImportedFromApprovedPath(name, useNode)) return true;
       if (isHelperNameImported(name, useNode)) return false;
@@ -1071,14 +1132,22 @@ const noLeakyTestDaemon = {
      * recursive wrappers or helper names whose body does not contain an
      * approved terminating cleanup call" requirement.
      */
-    function helperBodyContainsTerminatingPrimitive(fnNode, visited) {
+    function helperBodyContainsTerminatingPrimitive(
+      fnNode,
+      visited,
+      useCallNode,
+    ) {
       if (!fnNode || visited.has(fnNode)) return false;
       visited.add(fnNode);
       if (!fnNode.body) return false;
-      return subtreeContainsTerminatingPrimitive(fnNode.body, fnNode);
+      return subtreeContainsTerminatingPrimitive(
+        fnNode.body,
+        fnNode,
+        useCallNode,
+      );
     }
 
-    function subtreeContainsTerminatingPrimitive(node, ownerFn) {
+    function subtreeContainsTerminatingPrimitive(node, ownerFn, useCallNode) {
       if (!node || typeof node !== "object" || typeof node.type !== "string") {
         return false;
       }
@@ -1093,7 +1162,7 @@ const noLeakyTestDaemon = {
       }
       if (
         node.type === "CallExpression" &&
-        isTerminatingPrimitiveCall(node, ownerFn)
+        isTerminatingPrimitiveCall(node, ownerFn, useCallNode)
       ) {
         return true;
       }
@@ -1117,7 +1186,7 @@ const noLeakyTestDaemon = {
               c &&
               typeof c === "object" &&
               typeof c.type === "string" &&
-              subtreeContainsTerminatingPrimitive(c, ownerFn)
+              subtreeContainsTerminatingPrimitive(c, ownerFn, useCallNode)
             ) {
               return true;
             }
@@ -1127,7 +1196,9 @@ const noLeakyTestDaemon = {
           typeof child === "object" &&
           typeof child.type === "string"
         ) {
-          if (subtreeContainsTerminatingPrimitive(child, ownerFn)) return true;
+          if (subtreeContainsTerminatingPrimitive(child, ownerFn, useCallNode)) {
+            return true;
+          }
         }
       }
       return false;
@@ -1147,7 +1218,7 @@ const noLeakyTestDaemon = {
      * too so a wrapper whose body invokes a local-no-op-literal kill
      * cannot bootstrap trust either.
      */
-    function isTerminatingPrimitiveCall(node, ownerFn) {
+    function isTerminatingPrimitiveCall(node, ownerFn, useCallNode) {
       if (!node || node.type !== "CallExpression") return false;
       const callee = node.callee;
       if (!callee) return false;
@@ -1162,12 +1233,22 @@ const noLeakyTestDaemon = {
           callee.object.type === "Identifier" &&
           callee.object.name === "process"
         ) {
-          return isTerminatingKillSignalArg(node.arguments[1], ownerFn);
+          return isTerminatingKillSignalArg(
+            node.arguments[1],
+            ownerFn,
+            useCallNode,
+          );
         }
-        if (!isTerminatingKillSignalArg(node.arguments[0], ownerFn)) {
+        if (
+          !isTerminatingKillSignalArg(
+            node.arguments[0],
+            ownerFn,
+            useCallNode,
+          )
+        ) {
           return false;
         }
-        return isChildHandleReceiverTrusted(callee.object);
+        return isChildHandleReceiverTrusted(callee.object, node);
       }
       if (callee.type === "Identifier") {
         const name = callee.name;
