@@ -45250,7 +45250,7 @@ runs:
     completed_at: 2026-05-12T02:03:31.602Z
   - _ulid: 01KRCYYKP3390NY81J5DHFMPME
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -45266,7 +45266,37 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T02:08:02.827Z
-        completed_at: 2026-05-12T02:08:02.827Z
+        completed_at: 2026-05-12T02:08:39.133Z
+        notes: >-
+          Step 2 (identify): Reviewed candidates against existing observations.
+
+
+          HIGH CONFIDENCE existing tracking (no new capture needed):
+
+          - Selective expected-failure pattern → @01KR431R (success, well-documented; this session
+          re-validated by applying it cleanly to 5 tests across 3 files first-try by reading the
+          reference commit 0233c88c3).
+
+          - Bare it.fails() rejected as non-selective → @01KR3ZR8 (success, resolved).
+
+          - Post-fix path scoping rule (must contain all task-required assertions) → @01KR6W25
+          (friction, well-documented).
+
+
+          Considered but NOT captured (low confidence / one-off / already covered):
+
+          - Fix-cycle requires task start before task submit on needs_work: documented state
+          machine, my one-off oversight, not systemic friction.
+
+          - Whether to include redundant observation modes (handle exit vs pid liveness) in post-fix
+          path: judgment call already subsumed by @01KR6W25 rule. Not new pattern.
+
+
+          No new high-confidence items to capture this session.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T02:08:39.133Z
+        completed_at: 2026-05-12T02:08:39.133Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T02:06:14.211Z
