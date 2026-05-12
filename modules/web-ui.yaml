@@ -1387,6 +1387,9 @@ features:
           children stop owned resources within bounded time, verify termination when
           cleanup reports success, and preserve the primary failure when cleanup also
           encounters an error.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
