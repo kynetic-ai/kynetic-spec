@@ -47881,7 +47881,7 @@ runs:
     completed_at: 2026-05-12T20:00:44.680Z
   - _ulid: 01KREYKNNZHSQBVFHXW34XJE1W
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47895,7 +47895,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T20:39:31.094Z
-        completed_at: 2026-05-12T20:39:31.094Z
+        completed_at: 2026-05-12T20:39:34.651Z
+        notes: "Friction: reproducing no-leaky classifier gaps required repeatedly hand-building temp oxlint
+          fixtures and configs; the targeted lint-rule tests can pass while the rule fails on real
+          repository files; distinguishing pre-existing global lint noise from task-introduced
+          no-leaky errors required a separate focused oxlint invocation."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T20:39:34.651Z
+        completed_at: 2026-05-12T20:39:34.651Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T20:38:44.671Z
