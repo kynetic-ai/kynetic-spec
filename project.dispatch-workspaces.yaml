@@ -30954,7 +30954,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T23:00:05.324Z
+      updated_at: 2026-05-12T23:02:05.844Z
     integration:
       status: merged
       detail: integration:merged
@@ -30963,25 +30963,20 @@ workspaces:
       target_branch: dev
       target_commit: 0c6506a55cdb40538275c315cad4c85b131bc7ba
       updated_at: 2026-05-12T23:00:05.324Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KRF37WZYVQHSE1W8PYMBH5R2"
     task_slug: task-add-inflight-cleanup-protection-engine-ac
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T22:45:48.892Z
-      last_reconciled_at: 2026-05-12T23:02:02.561Z
+      last_reconciled_at: 2026-05-12T23:02:05.844Z
       created_at: 2026-05-12T22:36:36.904Z
-      updated_at: 2026-05-12T23:02:02.561Z
+      updated_at: 2026-05-12T23:02:05.844Z
     workspace_id: dispatch-workspace-01KRF37WZYVQHSE1W8PYMBH5R2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 0c6506a55cdb40538275c315cad4c85b131bc7ba
-        last_seen_at: 2026-05-12T22:44:51.765Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-inflight-cleanup-protection-engine-ac-01krf37w-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-inflight-cleanup-protection-engine-ac/01krf37w
