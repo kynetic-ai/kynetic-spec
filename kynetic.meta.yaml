@@ -18502,6 +18502,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-12T17:37:38.177Z
+  - _ulid: 01KRENZYWRRMN8FF76E4Q73JMA
+    type: friction
+    content: "Staged-regression test bodies that were authored as it.fails carry verbose narrative
+      comment blocks (STAGED REGRESSION sentinel, 'Pre-fix this fails because...', 'Post-fix: the
+      helper will...', 'with it.fails masking the assertion'). When the dependent fix task flips
+      it.fails → it, those blocks become stale: they narrate a state that no longer exists and
+      reference the helper's old behavior. Trimming them is mechanical but easy to leave behind
+      because tests pass either way. Observed concretely while flipping 7 regressions across
+      tests/helpers/daemon.test.ts and tests/e2e-fixture-daemon-cleanup.test.ts in
+      @task-fix-setup-failure-cleanup-error-preservation — required a second pass after the it.fails
+      → it flip to clean ~5 comment blocks. Possible mitigations: convention for staged-regression
+      authors to use a parseable marker (e.g. // STAGED:fix-when-flipped) the fix-task worker greps
+      for, or a /kspec:flip-staged-regression skill that pairs the it.fails→it flip with mandatory
+      comment trimming."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T18:08:10.136Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
