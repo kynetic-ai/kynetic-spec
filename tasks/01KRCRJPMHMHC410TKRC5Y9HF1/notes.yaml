@@ -67,3 +67,49 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T05:12:39.028Z
+  - _ulid: 01KRDBQNW4MJYZA5P76C36QMNS
+    content: >-
+      Fix cycle 4: addressed both blockers on @01KRD8SM review.
+
+
+      Blocker 1 (helper-body trust ignored call-site signal override on parameter defaults):
+      isTerminatingKillSignalArg(arg, ownerFn) -> isTerminatingKillSignalArg(arg, ownerFn,
+      useCallNode). When the helper-body inspection accepts an Identifier signal arg via a
+      parameter's terminating default, the predicate now also validates the call-site argument at
+      that parameter index. Trust only if the call site omits the arg (default applies), passes
+      undefined/void, or passes a SIGTERM/SIGKILL/SIGINT literal. Threaded useCallNode through
+      helperBodyContainsTerminatingPrimitive -> subtreeContainsTerminatingPrimitive ->
+      isTerminatingPrimitiveCall, and through isChildHandleReceiverTrusted(receiver, killCallNode)
+      so the kill-method body inspection on object literals also gets the override check. The
+      reviewer's exact fixture (function killPid(pid, signal = "SIGTERM") { process.kill(pid,
+      signal); } called as killPid(pid, "SIGUSR1")) now reports missingCleanup.
+
+
+      Blocker 2 (approved-helper import allowlist was path-tail anchored, trusted any specifier
+      ending in helpers/daemon): APPROVED_HELPER_IMPORT_PATH_PATTERNS now anchors to
+      /^(\.\.?\/)+helpers\/(daemon|mock-daemon)(\.[jt]s)?$/. Bare (helpers/daemon), scoped npm
+      (@scope/pkg/helpers/mock-daemon), and root-rooted alias (tests/helpers/daemon) specifiers no
+      longer match; only relative ./helpers/... and ../helpers/... forms (the canonical in-repo
+      shape across tests/) resolve as approved. The reviewer's exact fixture (import { killPid }
+      from "some-unapproved-package/helpers/daemon") now reports missingCleanup.
+
+
+      Added 9 positive flag-it regressions (function helper override, arrow helper override,
+      child-handle receiver override, scoped npm import, bare specifier import, root-rooted alias
+      import, liveness-probe 0 override, runtime-computed signal override) and 3 accepted-shape
+      companions (omitted-arg, terminating-literal override, explicit undefined). Both reviewer
+      probes verified via npx oxlint.
+
+
+      Also merged origin/dev to consume sibling-task additions (boundary regressions, active-request
+      teardown). Resolved the cleanup-effect-section conflict by keeping HEAD content and
+      de-duplicating with the dev-merge copy; single canonical accepted-shape section now contains
+      13 tests.
+
+
+      Checks: targeted lint suites 322/322 pass; full vitest 9083 passed, 5 skipped, 0 failures;
+      changed-file oxlint clean (0 errors, pre-existing warnings only); kspec validate
+      warnings-only.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T05:49:38.564Z
