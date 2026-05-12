@@ -204530,7 +204530,61 @@ reviews:
     slugs: []
     title: Review bounded process-stop contract tests (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 because of existing repo-wide warnings; kspec validate
+          --warnings-ok exited 0. Schema OK, references OK, skills OK; reviewed AC annotations in
+          touched files and found no new invalid targets.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-12T14:28:44.994Z
+        completed_at: 2026-05-12T14:28:44.994Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts
+          tests/helpers/mock-daemon.test.ts tests/cli-serve.test.ts: 23 suites passed, 82 tests
+          passed. Log: /tmp/kspec-test-cache/01KRE8EMXQMMNH6R229C11AH46/38f036537b04e76a.log"
+        name: focused daemon contract tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T14:28:48.531Z
+        completed_at: 2026-05-12T14:28:48.531Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh: 2431 suites passed; 9086 passed, 5 skipped, 0 failed;
+          duration 2235.0s. Log:
+          /tmp/kspec-test-cache/01KRE8EMXQMMNH6R229C11AH46/4f134ca02f2ab7d2.log"
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T14:28:52.112Z
+        completed_at: 2026-05-12T14:28:52.112Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/helpers/daemon.test.ts, tests/helpers/mock-daemon.test.ts,
+          tests/cli-serve.test.ts, tests/helpers/daemon.ts, tests/helpers/mock-daemon.ts,
+          tests/helpers/mock-daemon.cjs. Commands run: git diff dev...HEAD, kspec task get, kspec
+          item get for relevant specs, rg AC annotations/source-scan patterns, git diff --check,
+          kspec validate/--warnings-ok, focused npm test, full npm test. Claims verified: cycle-2
+          merge kept both adjacent dev suites plus bounded-stop suites; current helper
+          implementations still expose the timer-callback/fire-and-forget gaps targeted by the
+          staged selective expected-failure tests. Categories searched: correctness, edge cases,
+          teardown boundedness, error handling, test quality, AC coverage, integration."
+        name: review evidence log
+        required: false
+        runner: codex-review
+        created_at: 2026-05-12T14:28:55.713Z
+        completed_at: 2026-05-12T14:28:55.713Z
     events:
       - _ulid: 01KRE8JTJV6F9YNQ5E8RW7S2PR
         actor: Jacob Chapel
@@ -204545,9 +204599,53 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T14:14:04.340Z
+      - _ulid: 01KRE9E7MXGGWSA7NEKJ3SN04C
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-12T14:28:46.365Z
+      - _ulid: 01KRE9EB5143BR675DCCHMQ5NH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused daemon contract tests
+        timestamp: 2026-05-12T14:28:49.953Z
+      - _ulid: 01KRE9EEJM9Q9CG5AMRB3VM854
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-05-12T14:28:53.460Z
+      - _ulid: 01KRE9EJ2MHPM4V886JC3JE74J
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-12T14:28:57.044Z
+      - _ulid: 01KRE9ENJ55B25TQQSAKW74W4Y
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-12T14:29:00.613Z
+      - _ulid: 01KRE9ENJ5XHJ3Z85QBRAHXCWH
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T14:29:00.613Z
     examined_commit: b5c4b4ba6dc76ef086dd98cdd43abba332dd00e8
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -204555,7 +204653,14 @@ reviews:
       ref: "@01KRCRJR5K77Q2THCVVH3BDNFH"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T14:29:00.613Z
     created_at: 2026-05-12T14:13:48.256Z
-    updated_at: 2026-05-12T14:14:02.949Z
+    updated_at: 2026-05-12T14:29:00.613Z
     notes: []
