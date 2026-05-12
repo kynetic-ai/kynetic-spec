@@ -14,6 +14,18 @@
  * @daemon-test-harness-guardrails stay grouped there. The cases here that
  * cover the same lint rule behavior reuse fixture strings that name a
  * specific concrete scenario (e.g. cleanup placement, callee shape).
+ *
+ * MERGE GATE — cleanup-effect classifier regressions added by
+ * `@task-add-guardrail-cleanup-effect-regressions` are staged through the
+ * `expectClassifierGap` helper (defined immediately after `runOxlint`).
+ * The wrapper runs each AC's post-fix assertions and, on today's expected
+ * throw, re-asserts the EXACT current classifier-gap shape — so unrelated
+ * oxlint or helper failures cannot satisfy the regression by accident.
+ * When the rule fix in `@task-fix-guardrail-cleanup-effect-classification`
+ * lands, the post-fix assertions succeed and `expectClassifierGap` throws
+ * the "STAGED REGRESSION CLOSED" sentinel — the fix task MUST then remove
+ * the wrapper and inline the post-fix assertions. Do not silence by
+ * deleting the test.
  */
 
 import { describe, expect, it } from "vitest";
@@ -23,8 +35,10 @@ import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import * as path from "node:path";
 import * as os from "node:os";
 
+type OxlintResult = { exitCode: number; output: string };
+
 // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
-function runOxlint(fileContent: string): { exitCode: number; output: string } {
+function runOxlint(fileContent: string): OxlintResult {
   const tempDir = mkdtempSync(path.join(os.tmpdir(), "lint-test-"));
   // Place the synthetic test file under tests/ so the rule's path-based
   // helper allowlist (tests/helpers/, tools/eslint-rules/, etc.) does not
@@ -63,6 +77,66 @@ function runOxlint(fileContent: string): { exitCode: number; output: string } {
     const output = (error.stdout || "") + (error.stderr || "");
     rmSync(tempDir, { recursive: true, force: true });
     return { exitCode: error.status, output };
+  }
+}
+
+/**
+ * Precondition for every selective expected-failure regression: oxlint
+ * itself ran without a parser, helper, or internal failure. Exit code 0
+ * means "no diagnostics" and exit code 1 means "rule diagnostics emitted";
+ * any other exit code, or any error/panic fragment in the output, is
+ * treated as a parser/helper failure that invalidates the regression.
+ */
+function expectOxlintRanCleanly(result: OxlintResult): void {
+  expect([0, 1]).toContain(result.exitCode);
+  expect(result.output).not.toMatch(
+    /panic|panicked|internal error|failed to parse|parse error|cannot find|module not found|enoent/i,
+  );
+}
+
+/**
+ * Selective expected-failure helper for cleanup-effect classifier-gap
+ * regressions added by `@task-add-guardrail-cleanup-effect-regressions`.
+ *
+ * Each regression asserts the AC's post-fix behavior via
+ * `assertPostFixBehavior`. Today, the rule still has the classifier gap,
+ * so those assertions throw. This helper catches that failure and then
+ * re-asserts the EXACT current gap shape via `assertKnownGapShape` — so a
+ * generic parser/helper failure (which would also throw inside
+ * `assertPostFixBehavior`) cannot satisfy the regression by accident:
+ * such a failure would not match the known gap shape and would re-throw.
+ *
+ * The plan deliberately splits regressions and the rule fix across two
+ * tasks (`@task-add-guardrail-cleanup-effect-regressions` and
+ * `@task-fix-guardrail-cleanup-effect-classification`). When the
+ * dependent rule fix lands, `assertPostFixBehavior` succeeds, the catch
+ * block does not run, and this helper throws the "STAGED REGRESSION
+ * CLOSED" sentinel — the dependent task MUST remove the wrapper and let
+ * the post-fix assertions stand on their own. Do not silence by deleting
+ * the test.
+ */
+function expectClassifierGap(
+  result: OxlintResult,
+  assertPostFixBehavior: () => void,
+  assertKnownGapShape: () => void,
+): void {
+  expectOxlintRanCleanly(result);
+  let postFixPassed = false;
+  try {
+    assertPostFixBehavior();
+    postFixPassed = true;
+  } catch {
+    // Expected failure today. Verify the failure shape is the known
+    // classifier gap and not an unrelated oxlint or helper error — any
+    // assertion failure here re-throws and fails the test.
+    assertKnownGapShape();
+  }
+  if (postFixPassed) {
+    throw new Error(
+      "STAGED REGRESSION CLOSED — classifier no longer exhibits the captured gap. " +
+        "Remove expectClassifierGap() and inline the post-fix assertions " +
+        "(see @task-fix-guardrail-cleanup-effect-classification).",
+    );
   }
 }
 
@@ -916,6 +990,356 @@ describe("test suite", () => {
 `);
       expect(result.output).toContain("no-leaky-test-daemon");
     });
+
+    // Cleanup-effect semantics: the rule's old callee-shape predicate
+    // accepted `process.kill(...)` regardless of signal and accepted any
+    // local helper named `killPid` / `stopDaemon` / `stopMockDaemon` by
+    // name alone. The cycle-N cleanup-effect adversarial probes below
+    // assert that cleanup callbacks must actually terminate the daemon to
+    // satisfy the guardrail.
+    //
+    // MERGE GATE — these probes are staged via `expectClassifierGap` so
+    // the regressions run today (capturing the EXACT current gap shape)
+    // without contributing red to `dev`. When the rule fix in
+    // `@task-fix-guardrail-cleanup-effect-classification` lands, the
+    // post-fix assertions succeed and the helper throws the "STAGED
+    // REGRESSION CLOSED" sentinel — the fix task MUST then remove the
+    // `expectClassifierGap` wrapper and let the post-fix assertions
+    // stand on their own. Do not silence by deleting the test.
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-probes-do-not-count
+    // Liveness probe — `process.kill(pid, 0)` returns whether the target
+    // process is reachable but does NOT send a terminating signal. Pre-fix
+    // the rule accepted this as cleanup because it only matched the
+    // `process.kill(...)` callee shape; the leak survives because the
+    // daemon is still running when the test ends.
+    it("should flag serve start --detach when onTestFinished cleanup is process.kill(pid, 0) (liveness probe)", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, 0));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectClassifierGap(
+        result,
+        () => {
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toContain("has no scoped cleanup registration");
+        },
+        () => {
+          // Known gap today: process.kill callee shape is accepted
+          // regardless of signal, so the liveness probe satisfies the rule
+          // and no diagnostic is emitted.
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-probes-do-not-count
+    // SIGUSR1 is a user-defined signal — Node uses it for the debugger
+    // and many programs use it for runtime introspection. It does NOT
+    // terminate the receiving process. A cleanup callback that sends
+    // SIGUSR1 leaves the daemon running.
+    it("should flag serve start --detach when onTestFinished cleanup uses process.kill with SIGUSR1", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGUSR1"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectClassifierGap(
+        result,
+        () => {
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toContain("has no scoped cleanup registration");
+        },
+        () => {
+          // Known gap today: process.kill signal argument is not inspected.
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-probes-do-not-count
+    // SIGCONT resumes a stopped process. Sending it to a running daemon
+    // does nothing useful and certainly does not terminate it.
+    it("should flag serve start --detach when onTestFinished cleanup uses process.kill with SIGCONT", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGCONT"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectClassifierGap(
+        result,
+        () => {
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toContain("has no scoped cleanup registration");
+        },
+        () => {
+          // Known gap today: process.kill signal argument is not inspected.
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-probes-do-not-count
+    // SIGWINCH is the terminal window-change signal — historically
+    // delivered to interactive shells. It is not a daemon-relevant
+    // termination signal; programs typically install no handler and the
+    // default action is to ignore it.
+    it("should flag serve start --detach when onTestFinished cleanup uses process.kill with SIGWINCH", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGWINCH"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectClassifierGap(
+        result,
+        () => {
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toContain("has no scoped cleanup registration");
+        },
+        () => {
+          // Known gap today: process.kill signal argument is not inspected.
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // Same shape as the SIGUSR1 process.kill probe but on the child
+    // handle. The child-handle callee gate already rejects non-terminating
+    // signals; this probe documents that contract symmetrically with the
+    // `process.kill` cases and protects against future regressions if the
+    // child-handle branch is broadened.
+    it("should flag serve start --detach when child handle cleanup uses .kill('SIGUSR1')", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const child = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    onTestFinished(() => child.kill("SIGUSR1"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Locally defined function declaration named `killPid` whose body is
+    // a no-op — pre-fix the rule trusted the name alone. The helper does
+    // nothing, so the daemon outlives the test.
+    it("should flag serve start --detach when cleanup calls a locally defined no-op killPid helper", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+function killPid(_pid: number): void {
+  // intentionally empty — local no-op shaped like the approved helper
+}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectClassifierGap(
+        result,
+        () => {
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toContain("has no scoped cleanup registration");
+        },
+        () => {
+          // Known gap today: helper name alone (killPid) is trusted as
+          // cleanup even though the local body is a no-op.
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Same shape as the killPid probe but using the `stopDaemon` name
+    // recognised by the cleanup classifier. A locally defined `stopDaemon`
+    // can be a no-op or do unrelated work; the name does not prove it
+    // stops the daemon.
+    it("should flag serve start --detach when cleanup calls a locally defined no-op stopDaemon helper", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+function stopDaemon(_pid: number): void {
+  // intentionally empty — local no-op
+}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => stopDaemon(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectClassifierGap(
+        result,
+        () => {
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toContain("has no scoped cleanup registration");
+        },
+        () => {
+          // Known gap today: helper name alone (stopDaemon) is trusted.
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // `stopMockDaemon` is also in the approved-name set. The same
+    // false-negative shape applies — a local no-op definition satisfies
+    // the rule today even though no kill ever runs.
+    it("should flag serve start --detach when cleanup calls a locally defined no-op stopMockDaemon helper", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+function stopMockDaemon(_pid: number): void {
+  // intentionally empty — local no-op
+}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => stopMockDaemon(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectClassifierGap(
+        result,
+        () => {
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toContain("has no scoped cleanup registration");
+        },
+        () => {
+          // Known gap today: helper name alone (stopMockDaemon) is trusted.
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Local arrow definition variant: `const killPid = (_pid) => { ... }`
+    // with an empty body must be rejected for the same reason as the
+    // function-declaration no-op. The VariableDeclarator + arrow shape
+    // is a common no-op pattern in tests that mock cleanup.
+    it("should flag serve start --detach when cleanup calls a locally defined no-op killPid arrow", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+const killPid = (_pid: number): void => {
+  // intentionally empty — local no-op arrow
+};
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectClassifierGap(
+        result,
+        () => {
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toContain("has no scoped cleanup registration");
+        },
+        () => {
+          // Known gap today: arrow-form local helper named killPid is
+          // trusted by name alone.
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // A local helper whose body only forwards to an unrelated logger
+    // (no terminating syscall) must not be trusted — the name alone
+    // cannot bridge the gap when the body proves the helper does not
+    // stop the daemon.
+    it("should flag serve start --detach when cleanup calls a local stopDaemon helper that only logs", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+function stopDaemon(pid: number): void {
+  console.log("would stop", pid);
+}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => stopDaemon(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectClassifierGap(
+        result,
+        () => {
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toContain("has no scoped cleanup registration");
+        },
+        () => {
+          // Known gap today: local stopDaemon is trusted by name even
+          // though the body has no terminating syscall.
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+      );
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {
@@ -1149,6 +1573,181 @@ describe("test suite", () => {
     const pid = readPidFromFile();
     onTestFinished(() => process.kill(pid, "SIGTERM"));
     process.on("exit", () => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // Cleanup-effect semantics: accepted-shape companions to the cleanup
+    // -effect adversarial probes in "positive cases (should flag)" above.
+    // Each probe pairs a terminating signal or an origin-trusted helper
+    // with a detached daemon start and asserts the guardrail does not
+    // fire — proving the implementation cannot satisfy the rejected
+    // cases by simply banning all `process.kill`, `.kill`, or helper-name
+    // cleanup shapes.
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // `process.kill(pid)` (no signal) — Node treats a missing signal as
+    // SIGTERM, which is the canonical daemon termination signal. The
+    // cleanup actually stops the daemon, so the rule must not fire.
+    it("should allow serve start --detach when cleanup is process.kill(pid) (no signal, defaults to SIGTERM)", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // Explicit SIGTERM is the canonical graceful daemon termination.
+    it("should allow serve start --detach when cleanup is process.kill(pid, 'SIGTERM')", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // SIGKILL is the unconditional termination signal — receivers cannot
+    // mask it. It does terminate the daemon and must be accepted.
+    it("should allow serve start --detach when cleanup is process.kill(pid, 'SIGKILL')", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGKILL"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // `child.kill()` (no signal) — Node's ChildProcess.kill default is
+    // SIGTERM, which is terminating. The child-handle cleanup branch
+    // pre-fix required an explicit SIGTERM/SIGKILL/SIGINT literal and
+    // rejected the no-arg form; after the fix the no-arg form must be
+    // accepted symmetric with `process.kill(pid)`. Staged via
+    // `expectClassifierGap` so the regression captures the EXACT current
+    // false-positive shape without breaking the merge gate.
+    it("should allow serve start --detach when child.kill() (no signal, defaults to SIGTERM) is registered as cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const child = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    onTestFinished(() => child.kill());
+    expect(child.pid).toBeDefined();
+  });
+});
+`);
+      expectClassifierGap(
+        result,
+        () => {
+          // Post-fix: the no-arg child.kill() must be accepted as
+          // cleanup, mirroring Node's SIGTERM default and the accepted
+          // `process.kill(pid)` companion above.
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+        () => {
+          // Known gap today: the child-handle branch requires an explicit
+          // terminating signal literal and rejects the no-arg form as
+          // missing cleanup.
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toContain("has no scoped cleanup registration");
+        },
+      );
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // Explicit SIGTERM on the child handle — already accepted today but
+    // documented here as the positive companion to the `child.kill('SIGUSR1')`
+    // rejected case so future readers can compare shapes side by side.
+    it("should allow serve start --detach when child.kill('SIGTERM') is registered as cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const child = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    onTestFinished(() => child.kill("SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Approved-helper accepted case (origin via import path): `killPid`
+    // imported from the shared daemon-fixture helper has a trusted body
+    // and must continue to satisfy cleanup. The companion local-no-op
+    // probe in "positive cases" rejects an identically-named LOCAL
+    // helper, so the implementation cannot fix the false negative by
+    // banning the name outright.
+    it("should allow serve start --detach when cleanup calls killPid imported from the shared daemon helper", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Approved-helper accepted case (origin via inspectable body): a
+    // local helper whose body invokes a trusted terminating primitive
+    // (`process.kill(pid, "SIGTERM")`) must be accepted. The body proves
+    // the helper actually stops the daemon — the implementation that
+    // rejects local no-op helpers by name alone must still accept
+    // helpers whose body contains a terminating call.
+    it("should allow serve start --detach when cleanup calls a local killPid helper whose body invokes process.kill SIGTERM", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+function killPid(pid: number): void {
+  process.kill(pid, "SIGTERM");
+}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
     expect(true).toBe(true);
   });
 });
