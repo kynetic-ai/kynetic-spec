@@ -205064,9 +205064,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KREF8EVWEKW97948MK3NNV45
         timestamp: 2026-05-12T16:10:29.966Z
+      - _ulid: 01KREF90MCH4DK8RKC0G2K9SWP
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T16:10:46.796Z
+      - _ulid: 01KREF90MCA46853PZGFBYDAHA
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T16:10:46.796Z
     examined_commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -205111,7 +205127,14 @@ reviews:
               completes. Await killPid(pid) before removing the fixture directory."
             created_at: 2026-05-12T16:10:28.604Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T16:10:46.796Z
     created_at: 2026-05-12T15:54:04.568Z
-    updated_at: 2026-05-12T16:10:28.604Z
+    updated_at: 2026-05-12T16:10:46.796Z
     notes: []
