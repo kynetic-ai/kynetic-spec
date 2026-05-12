@@ -46763,7 +46763,7 @@ runs:
     completed_at: 2026-05-12T07:07:36.946Z
   - _ulid: 01KRDH6X9FG92BVHQ2HNY1N846
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -46780,7 +46780,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T07:26:08.860Z
-        completed_at: 2026-05-12T07:26:08.860Z
+        completed_at: 2026-05-12T07:26:33.378Z
+        notes: "Friction points: (1) kspec validate exits 6 for repository-wide existing warnings, so review
+          evidence needs manual classification to distinguish pre-existing warnings from
+          task-specific failures. (2) Review evidence recording required several separate kspec
+          review check commands plus a separate evidence-log comment; batch can help, but there is
+          no obvious single review-finalization command that records common checks and an evidence
+          log together. (3) The full test suite is long-running, but the test runner's condensed
+          progress output made it manageable, so I do not consider that worth capturing by itself."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T07:26:33.378Z
+        completed_at: 2026-05-12T07:26:33.378Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T07:25:20.559Z
