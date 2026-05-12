@@ -204849,6 +204849,12 @@ reviews:
         payload:
           thread_ulid: 01KRECGCDB6EYW31BWG0ZQYJ0R
         timestamp: 2026-05-12T16:10:25.976Z
+      - _ulid: 01KREF8WR7YTYKWWJ7M7HRG036
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRECGCDB6EYW31BWG0ZQYJ0R
+        timestamp: 2026-05-12T16:10:42.823Z
     examined_commit: f2d28b784205871178ae3872f42601a3a15f9fa1
     external_links: []
     lifecycle_state: closed
@@ -204915,6 +204921,8 @@ reviews:
               9137; changed-file oxlint clean (0 errors)."
             created_at: 2026-05-12T16:10:24.621Z
         kind: blocker
+        resolved_at: 2026-05-12T16:10:41.431Z
+        resolved_by: "@claude"
       - _ulid: 01KRECXYY5QZPEJAY1F3HJQH78
         entries:
           - _ulid: 01KRECXYY6EKG9BHN9F92RMET4
@@ -204944,7 +204952,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T15:30:03.775Z
     created_at: 2026-05-12T15:12:58.406Z
-    updated_at: 2026-05-12T16:10:24.621Z
+    updated_at: 2026-05-12T16:10:41.431Z
     notes: []
   - _ulid: 01KREEADWRFZ4HV75GJYFJ31BS
     slugs: []
