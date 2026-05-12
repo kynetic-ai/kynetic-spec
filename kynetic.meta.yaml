@@ -18562,6 +18562,28 @@ observations:
     resolved: false
     workflow_ref: "@01KRES1R"
     created_at: 2026-05-12T19:05:32.231Z
+  - _ulid: 01KREWDW5WDMR98B62KS6BVRGP
+    type: friction
+    content: "Reviewer full-suite verification can dominate review time: this session's required npm
+      test -- --fresh passed but took 2168.8s after focused daemon regressions had already passed.
+      Search found no direct tracking item for reviewer-duration friction; future triage could
+      decide whether gate policy or runner optimization should reduce this bottleneck."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-12T20:00:37.564Z
+  - _ulid: 01KREWDWDYSXF6SSCAW8A5ZFE3
+    type: success
+    content: "Detached review merge flow worked well: a fresh kspec review record plus required checks
+      gave a clear approval gate, and .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh
+      merged the approved branch into dev and refreshed the occupied worktree without manual branch
+      checkout."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-12T20:00:37.822Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

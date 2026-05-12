@@ -3470,3 +3470,14 @@ inbox:
       - post-mvp
     added_by: "@claude"
     created_at: 2026-05-12T17:37:38.068Z
+  - _ulid: 01KREWDW2SC9Z5PH523JJEXK3Z
+    text: "Clean up stale future-tense daemon fixture comments that still describe
+      @task-fix-setup-failure-cleanup-error-preservation as future work after the task has merged.
+      Scope: tests/e2e/fixtures/daemon-fixture.ts and related fixture comments; update wording to
+      describe the current lifecycle behavior."
+    tags:
+      - reflection
+      - testing
+      - daemon
+    added_by: Jacob Chapel
+    created_at: 2026-05-12T20:00:37.466Z
