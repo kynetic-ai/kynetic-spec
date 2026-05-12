@@ -205899,7 +205899,41 @@ reviews:
     slugs: []
     title: Review task-fix-active-request-teardown-and-observation-bounds
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 2431 test suites passed; 9086 tests passed, 5 skipped; duration 2724.4s; log
+          /tmp/kspec-test-cache/01KREM9YB9ERARA14XAZP628RY/3a72faae798bf0f5.log
+        name: npm test
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T17:56:46.910Z
+        completed_at: 2026-05-12T17:56:46.910Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation schema and references OK. Command exited 6 because of repo-wide warnings:
+          deprecated references, orphaned specs/status mismatches, broad missing AC coverage and
+          invalid annotations outside this task."
+        name: kspec validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-12T17:56:51.712Z
+        completed_at: 2026-05-12T17:56:51.712Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "build:e2e completed successfully with pre-existing Svelte/a11y warnings; Playwright
+          smoke: 6 passed in 5.3s."
+        name: e2e smoke
+        required: true
+        runner: npm run build:e2e && npx playwright test tests/e2e/smoke.spec.ts
+        created_at: 2026-05-12T17:56:56.475Z
+        completed_at: 2026-05-12T17:56:56.475Z
     events:
       - _ulid: 01KREMC6G3FRRFZPDA9DBSEAC4
         actor: Jacob Chapel
@@ -205914,17 +205948,101 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T17:40:48.783Z
+      - _ulid: 01KRENB5G6BWPT0Z43VKVYGH50
+        actor: codex-reviewer
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-12T17:56:48.774Z
+      - _ulid: 01KRENBA4BEDJC60P40AGJXSCE
+        actor: codex-reviewer
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-12T17:56:53.515Z
+      - _ulid: 01KRENBEVA9YZCEZYXRR28V5CZ
+        actor: codex-reviewer
+        event_type: check_added
+        payload:
+          status: pass
+          name: e2e smoke
+        timestamp: 2026-05-12T17:56:58.346Z
+      - _ulid: 01KRENBKEZ7VN08S1DYJCBJ3EN
+        actor: codex-reviewer
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRENBHP68ZN5MNSG71F867BB
+        timestamp: 2026-05-12T17:57:03.071Z
+      - _ulid: 01KRENBR5TWZSNCGETXRRZ9763
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-12T17:57:07.898Z
+      - _ulid: 01KRENBR5T4FGPP3BHV1M69MM1
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T17:57:07.898Z
     examined_commit: e105a25901b63defac3d25adc605a545ac1df7d2
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KRCRJS2M4VVME99W9ACV8JAE"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KRENBHP68ZN5MNSG71F867BB
+        entries:
+          - _ulid: 01KRENBHP883P03G2FG0QX3NWG
+            author: codex-reviewer
+            body: >-
+              Evidence log
+
+
+              Files read: tests/helpers/daemon-fetch.ts; tests/helpers/daemon.ts;
+              tests/helpers/mock-daemon.ts; tests/helpers/mock-daemon.test.ts;
+              tests/cli-serve.test.ts; tests/e2e/fixtures/test-base.ts;
+              tests/helpers/process-stop.ts.
+
+
+              Commands run: kspec task get @01KRCRJS2M4VVME99W9ACV8JAE; kspec item get
+              @daemon-test-teardown-boundedness; kspec item get
+              @daemon-test-startup-failure-hygiene; git diff/stat/name-only/diff --check against
+              dev; rg AC annotations and daemon fetch call sites; kspec validate; npm test; npm run
+              build:e2e; npx playwright test tests/e2e/smoke.spec.ts.
+
+
+              Claims verified: boundedDaemonFetch composes an internal timeout with caller signal;
+              mock in-process stop tracks accepted sockets and force-destroys active sockets before
+              a hard stop bound; child mock stop routes through stopChildProcessBounded;
+              representative CLI lifecycle and Playwright daemon probes use boundedDaemonFetch.
+
+
+              Categories searched: correctness, active-request teardown edge cases, bounded HTTP
+              observation behavior, startup/cleanup error paths, AC annotation coverage,
+              source-scanning test shortcuts, and integration with existing daemon/process-stop
+              helpers. No blocking issues found.
+            created_at: 2026-05-12T17:57:01.256Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-05-12T17:57:07.898Z
     created_at: 2026-05-12T17:39:53.987Z
-    updated_at: 2026-05-12T17:40:46.655Z
+    updated_at: 2026-05-12T17:57:07.898Z
     notes: []
