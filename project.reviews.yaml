@@ -201552,6 +201552,25 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-12T02:48:24.522Z
         completed_at: 2026-05-12T02:48:24.522Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, .agents/skills/kspec-review/SKILL.md,
+          .agents/skills/kspec-merge/SKILL.md, tests/lint-no-leaky-test-daemon.test.ts,
+          tools/eslint-rules/no-leaky-test-daemon.js, tests/lint-daemon-test-guardrails.test.ts.
+          Commands run: kspec task get, kspec item get, kspec review for-task/get, git
+          diff/stat/name-only/log/show/diff --check, rg AC and cleanup probes, targeted npm test,
+          full npm test, kspec validate. Claims verified: prior red-test blocker resolved by staged
+          expectClassifierGap exact-gap assertions; AC annotations cover cleanup operation, probe
+          rejection, helper-origin, and detached cleanup guardrail; no source-scanning tests
+          introduced. Categories searched: correctness, edge cases, error handling/parser failures
+          via expectOxlintRanCleanly, test quality, integration."
+        name: review evidence log
+        required: false
+        runner: codex review
+        created_at: 2026-05-12T02:48:37.280Z
+        completed_at: 2026-05-12T02:48:37.280Z
     events:
       - _ulid: 01KRD0KBBFT42TVD86WN8VY8YA
         actor: Jacob Chapel
@@ -201587,6 +201606,13 @@ reviews:
           status: pass
           name: kspec validate --warnings-ok
         timestamp: 2026-05-12T02:48:25.875Z
+      - _ulid: 01KRD1C8GKPAE23ZAWF4AFCGRS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-12T02:48:38.675Z
     examined_commit: d647b8096eb464f0867666b87740fb4df74ac6a4
     external_links: []
     lifecycle_state: open
@@ -201599,5 +201625,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T02:35:02.390Z
-    updated_at: 2026-05-12T02:48:24.522Z
+    updated_at: 2026-05-12T02:48:37.280Z
     notes: []
