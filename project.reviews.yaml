@@ -209761,6 +209761,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T22:53:48.771Z
+      - _ulid: 01KRF8VFRTWFBAGMAZDHQMEAFV
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRF5JZ992N9VE3E3N8KYNVEA
+        timestamp: 2026-05-12T23:37:46.522Z
     examined_commit: 251769a1a36ad2fdc02760f60808f71324cfc6ed
     external_links: []
     lifecycle_state: closed
@@ -209791,6 +209797,17 @@ reviews:
               coverage that runs the guardrail (for example via oxlint on focused fixtures) or move
               this tracking out of the test suite."
             created_at: 2026-05-12T22:40:41.770Z
+          - _ulid: 01KRF8VC85MHCNV4S9FW4ZEQYJ
+            author: "@claude"
+            body: "Fixed in cycle 13 commit 185cd75f0. Removed the entire `daemon test guardrail precision:
+              implicit CLI auto-start cleanup boundary` describe block, including the
+              source-scanning structural contract test (the it.fails block reading
+              tests/cli-no-daemon.test.ts via readTestOutputSync and walking the source
+              line-by-line) and the `collectUnsafeAutoStartFindings` helper. Also removed the
+              now-unused `readTestOutputSync` import. The implicit-auto-start classifier work
+              belongs to @task-fix-implicit-autostart-cleanup-coverage; behavioral guardrail
+              coverage can be re-added there as passing tests when that task lands."
+            created_at: 2026-05-12T23:37:42.917Z
         kind: blocker
       - _ulid: 01KRF5K4020DDJQR86VWM79QAR
         anchor:
@@ -209843,7 +209860,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T22:53:48.770Z
     created_at: 2026-05-12T22:37:15.947Z
-    updated_at: 2026-05-12T22:53:48.771Z
+    updated_at: 2026-05-12T23:37:42.917Z
     notes: []
   - _ulid: 01KRF5XR6NKPCBYWQCRMRCDGDF
     slugs: []
