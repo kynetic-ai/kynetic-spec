@@ -28706,6 +28706,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-12T00:14:53.196Z
+  automation: eligible
 - _ulid: 01KRCRJQHJVPTS7KS7SYWQ600H
   slugs:
     - task-add-implicit-autostart-cleanup-regressions
