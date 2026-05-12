@@ -203717,7 +203717,18 @@ reviews:
     slugs: []
     title: Review setup-failure cleanup regressions (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts
+          tests/e2e-fixture-daemon-cleanup.test.ts: 16 suites passed, 27 tests passed"
+        name: focused regression tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T07:22:25.066Z
+        completed_at: 2026-05-12T07:22:25.066Z
     events:
       - _ulid: 01KRDG9HWMSJB1HWK6W71Q3FGV
         actor: Jacob Chapel
@@ -203732,6 +203743,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T07:09:47.006Z
+      - _ulid: 01KRDH1KEG3EN4FX1KEA96CWHB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused regression tests
+        timestamp: 2026-05-12T07:22:26.640Z
     examined_commit: ab1d59a2942c2e18b8373c2bd89fd50ef992c151
     external_links: []
     lifecycle_state: open
@@ -203744,5 +203762,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T07:09:18.613Z
-    updated_at: 2026-05-12T07:09:45.616Z
+    updated_at: 2026-05-12T07:22:25.066Z
     notes: []
