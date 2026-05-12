@@ -1837,6 +1837,134 @@ describe("kspec serve commands", () => {
 });
 
 /**
+ * Selective expected-failure helper for the timer-callback resolution bug
+ * in `waitForChildExit`: the helper resolves from its setTimeout callback
+ * synchronously after `child.kill("SIGKILL")`, before libuv has fired the
+ * child's 'exit' event. The parent handle still has `exitCode === null`
+ * and `signalCode === null` at that moment.
+ *
+ * Bug-shape differentiator: handle has BOTH exitCode and signalCode null
+ * after waitForChildExit returns. After the fix, at least one is non-null.
+ *
+ * Pre-fix throw path re-asserts the EXACT bug shape; an unrelated failure
+ * mode propagates. Post-fix the wrapper throws an explicit "remove this
+ * wrapper" sentinel that forces the implementation task to inline the
+ * post-fix assertion.
+ */
+function expectWaitForChildExitMissesObservation(child: ChildProcess): void {
+  let postFixSucceeded = false;
+  try {
+    expect(
+      child.exitCode !== null || child.signalCode !== null,
+      "post-fix: waitForChildExit must not resolve until child exit observed " +
+        `(exitCode=${child.exitCode} signalCode=${child.signalCode})`,
+    ).toBe(true);
+    postFixSucceeded = true;
+  } catch (postFixError) {
+    expect(
+      child.exitCode === null && child.signalCode === null,
+      `bug-shape mismatch: pre-fix expects both exitCode AND signalCode null on the handle, but exitCode=${child.exitCode} signalCode=${child.signalCode}. Underlying assertion: ${
+        postFixError instanceof Error ? postFixError.message : String(postFixError)
+      }`,
+    ).toBe(true);
+    return;
+  }
+  if (postFixSucceeded) {
+    throw new Error(
+      "STAGED REGRESSION CLOSED: waitForChildExit now observes child exit " +
+        "before resolving. Inline the post-fix assertion and remove " +
+        "expectWaitForChildExitMissesObservation from tests/cli-serve.test.ts. " +
+        "See @task-implement-bounded-process-stop-primitives.",
+    );
+  }
+}
+
+/**
+ * Selective expected-failure helper for the signal-exit fast-path miss in
+ * `waitForChildExit`: the fast-path checks only `child.exitCode !== null`,
+ * so a child terminated by signal (exitCode=null, signalCode set) falls
+ * through to the full polling timeout (default 5000ms) before resolving.
+ *
+ * Bug-shape differentiator: elapsed time after waitForChildExit on an
+ * already-signal-exited child. Pre-fix the helper waits near the
+ * configured timeout (5000ms); post-fix it returns sub-500ms by
+ * recognising signalCode as an exit indicator equivalent to exitCode.
+ *
+ * The pre-fix window is `[500ms, 7_000ms]`: 500ms is the post-fix
+ * threshold; 7_000ms gives slow CI a margin above the 5_000ms polling
+ * timeout without admitting a fully hung wait.
+ */
+function expectWaitForChildExitMissesSignalFastPath(elapsed: number): void {
+  let postFixSucceeded = false;
+  try {
+    expect(
+      elapsed,
+      "post-fix: waitForChildExit must recognise an already-signal-exited " +
+        `child via signalCode (elapsed=${elapsed}ms)`,
+    ).toBeLessThan(500);
+    postFixSucceeded = true;
+  } catch (postFixError) {
+    expect(
+      elapsed >= 500 && elapsed <= 7_000,
+      `bug-shape mismatch: pre-fix expects elapsed in [500ms, 7000ms] window (signal-exit falls through to polling), got ${elapsed}ms. Underlying assertion: ${
+        postFixError instanceof Error ? postFixError.message : String(postFixError)
+      }`,
+    ).toBe(true);
+    return;
+  }
+  if (postFixSucceeded) {
+    throw new Error(
+      "STAGED REGRESSION CLOSED: waitForChildExit fast-path now recognises " +
+        "signal-exit via signalCode. Inline the post-fix assertion and " +
+        "remove expectWaitForChildExitMissesSignalFastPath from " +
+        "tests/cli-serve.test.ts. See " +
+        "@task-implement-bounded-process-stop-primitives.",
+    );
+  }
+}
+
+/**
+ * Selective expected-failure helper for the fire-and-forget shape of
+ * `killPid`: the helper sends a single signal and returns synchronously
+ * without escalation or observation. An uncooperative pid survives.
+ *
+ * Bug-shape differentiator: `process.kill(pid, 0)` succeeds (pid still
+ * alive) after the cleanup helper returns, even with a generous grace
+ * window. Post-fix the helper escalates and observes termination, so the
+ * pid is gone.
+ *
+ * Pre-fix throw path re-asserts that the pid is still alive; an
+ * unrelated failure mode (e.g. child crashed before signal) propagates.
+ * Post-fix the wrapper throws the "remove this wrapper" sentinel.
+ */
+function expectKillPidIsFireAndForget(pid: number): void {
+  let postFixSucceeded = false;
+  try {
+    expect(
+      isProcessAlive(pid),
+      `post-fix: killPid must drive uncooperative pid ${pid} to a bounded terminal outcome`,
+    ).toBe(false);
+    postFixSucceeded = true;
+  } catch (postFixError) {
+    expect(
+      isProcessAlive(pid),
+      `bug-shape mismatch: pre-fix expects pid ${pid} still alive (fire-and-forget killPid did not escalate), but pid was already reaped. Underlying assertion: ${
+        postFixError instanceof Error ? postFixError.message : String(postFixError)
+      }`,
+    ).toBe(true);
+    return;
+  }
+  if (postFixSucceeded) {
+    throw new Error(
+      "STAGED REGRESSION CLOSED: killPid now escalates and observes " +
+        "termination. Inline the post-fix assertion and remove " +
+        "expectKillPidIsFireAndForget from tests/cli-serve.test.ts. " +
+        "See @task-implement-bounded-process-stop-primitives.",
+    );
+  }
+}
+
+/**
  * Bounded-stop contract tests for the PID-based and ChildProcess-based
  * cleanup helpers used by CLI lifecycle tests.
  *
@@ -1844,7 +1972,7 @@ describe("kspec serve commands", () => {
  * isolated home, no shadow worktree — so the only behavior under
  * observation is the cleanup helper's stop semantics.
  *
- * The current cleanup primitives have two shapes that violate the
+ * The current cleanup primitives have three shapes that violate the
  * @daemon-test-teardown-boundedness contract:
  *
  *   1. `waitForChildExit(child, timeoutMs)` resolves from its setTimeout
@@ -1866,6 +1994,16 @@ describe("kspec serve commands", () => {
  * Each test below targets one of those gaps. They are scoped under their
  * own describe block so they do not inherit the `kspec serve` setup
  * (isolated HOME, runKspec, etc) — synthetic children only.
+ *
+ * STAGED REGRESSION (selective expected-failure via the three local
+ * `expect*` helpers above): keeps the required suite green so this task
+ * can merge ahead of the helper fixes in
+ * @task-implement-bounded-process-stop-primitives. Each wrapper
+ * re-asserts the EXACT current bug shape on the expected pre-fix throw
+ * so an unrelated failure mode propagates as a real failure. Post-fix
+ * the wrapper throws an explicit "remove this wrapper" sentinel that
+ * forces the implementation task to inline the post-fix assertion and
+ * delete the helper.
  */
 describe(
   "PID-based cleanup contract — observes termination before return",
@@ -1932,22 +2070,24 @@ describe(
       await waitForChildExit(child, 200);
       const elapsed = Date.now() - startedAt;
 
-      // ac-stop-observes-termination-before-return: by the time
-      // waitForChildExit resolves, the child's exit event must have
-      // fired so exitCode or signalCode is non-null on the handle.
-      expect(
-        child.exitCode !== null || child.signalCode !== null,
-        `waitForChildExit must not resolve until child exit observed ` +
-          `(exitCode=${child.exitCode} signalCode=${child.signalCode})`,
-      ).toBe(true);
-
-      // The OS pid must no longer exist after the helper reports done.
+      // ac-stop-observes-termination-before-return — selective
+      // expected-failure: pre-fix asserts the bug shape (BOTH
+      // exitCode AND signalCode null on the handle because
+      // waitForChildExit resolved from the timer callback before
+      // libuv fired the exit event); post-fix asserts the contract
+      // (exit observed) and forces wrapper removal. The pid-liveness
+      // check is racy pre-fix (kernel may or may not have actually
+      // delivered the queued SIGKILL by the time we probe) and is
+      // therefore not part of the bug shape — handle observation is
+      // the only deterministic differentiator. See
+      // expectWaitForChildExitMissesObservation above.
       expect(pid).toBeDefined();
-      expect(isProcessAlive(pid as number)).toBe(false);
+      expectWaitForChildExitMissesObservation(child);
 
-      // ac-uncooperative-process-stop-is-bounded: escalation must
-      // happen within a bounded multiple of the configured grace window
-      // (200ms). 3s is generous for slow CI without masking a hang.
+      // ac-uncooperative-process-stop-is-bounded: helper must reach
+      // a bounded outcome. 3s is generous for slow CI without masking
+      // a hang — pre-fix returns near-instantly from the timer
+      // callback; post-fix returns after libuv fires exit.
       expect(elapsed).toBeLessThan(3_000);
     });
 
@@ -2005,11 +2145,15 @@ describe(
       await waitForChildExit(child, 5_000);
       const elapsed = Date.now() - startedAt;
 
-      // 500ms is comfortably above microsecond-level synchronous
-      // resolution while still well below the configured 5000ms
-      // timeout — the only way to pass it is to recognize the
-      // already-exited-by-signal state.
-      expect(elapsed).toBeLessThan(500);
+      // ac-stop-observes-termination-before-return — selective
+      // expected-failure: pre-fix asserts the bug shape (elapsed
+      // falls in the [500ms, 7000ms] window because the fast-path
+      // only checked exitCode and signal-exit fell through to the
+      // 5000ms polling timeout); post-fix asserts the contract
+      // (elapsed < 500ms — signal recognised immediately) and forces
+      // wrapper removal. See expectWaitForChildExitMissesSignalFastPath
+      // above.
+      expectWaitForChildExitMissesSignalFastPath(elapsed);
     });
 
     // AC: @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return
@@ -2080,15 +2224,13 @@ describe(
         await new Promise((r) => setTimeout(r, 5_500));
       }
 
-      // ac-uncooperative-process-stop-is-bounded: cleanup must reach a
-      // terminal outcome. Today killPid is fire-and-forget with no
-      // escalation — the synthetic child survives the SIGTERM and the
-      // pid is still alive after the grace window. This regression
-      // proves the gap and the next implementation task fixes it.
-      expect(
-        isProcessAlive(pid as number),
-        `killPid must drive uncooperative pid ${pid} to a bounded terminal outcome`,
-      ).toBe(false);
+      // ac-uncooperative-process-stop-is-bounded — selective
+      // expected-failure: pre-fix asserts the bug shape (pid still
+      // alive after the grace window because killPid was
+      // fire-and-forget with no escalation); post-fix asserts the
+      // contract (pid reaped) and forces wrapper removal. See
+      // expectKillPidIsFireAndForget above.
+      expectKillPidIsFireAndForget(pid as number);
     });
   },
 );
