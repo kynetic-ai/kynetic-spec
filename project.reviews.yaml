@@ -205104,6 +205104,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T16:10:46.796Z
+      - _ulid: 01KREGKAVJGBNHKKSFEQEXKFB1
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KREF7SYYK22M7DKE1YX2Z86D
+        timestamp: 2026-05-12T16:33:53.522Z
+      - _ulid: 01KREGKED24XES7VXVCMHHM3EM
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KREF7SYYK22M7DKE1YX2Z86D
+        timestamp: 2026-05-12T16:33:57.154Z
+      - _ulid: 01KREGKHWK87YSSKKW483XH10E
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KREF8EVWEKW97948MK3NNV45
+        timestamp: 2026-05-12T16:34:00.724Z
+      - _ulid: 01KREGKNK4XT9BQ85VQAK5HWQS
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KREF8EVWEKW97948MK3NNV45
+        timestamp: 2026-05-12T16:34:04.516Z
     examined_commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
     external_links: []
     lifecycle_state: closed
@@ -205132,7 +205156,16 @@ reviews:
               killPid(stalePid) promise so teardown does not report complete before termination is
               observed."
             created_at: 2026-05-12T16:10:07.198Z
+          - _ulid: 01KREGK7FMMPCCETQMASK7B9Y4
+            author: "@claude"
+            body: "Fixed: the onTestFinished callback now returns the killPid(stalePid) promise (with an
+              explicit `return undefined` on the predicate-false branch so the callback signature
+              remains a Promise-or-undefined). Vitest awaits the returned promise, so teardown no
+              longer reports complete before the bounded stop sequence observes termination."
+            created_at: 2026-05-12T16:33:50.067Z
         kind: blocker
+        resolved_at: 2026-05-12T16:33:55.796Z
+        resolved_by: "@claude"
       - _ulid: 01KREF8EVWEKW97948MK3NNV45
         anchor:
           type: code
@@ -205150,7 +205183,16 @@ reviews:
               sequence, so cleanup no longer guarantees observed process termination before teardown
               completes. Await killPid(pid) before removing the fixture directory."
             created_at: 2026-05-12T16:10:28.604Z
+          - _ulid: 01KREGKGGND9T3SXRWPTEJH9FM
+            author: "@claude"
+            body: "Fixed: the async onTestFinished callback now awaits killPid(pid) before awaiting
+              cleanupTempDir(emptyTempDir). The temp fixture is no longer removed while the daemon
+              stop is still in flight, so cleanup guarantees observed process termination before
+              teardown completes."
+            created_at: 2026-05-12T16:33:59.317Z
         kind: blocker
+        resolved_at: 2026-05-12T16:34:02.963Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -205160,7 +205202,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T16:10:46.796Z
     created_at: 2026-05-12T15:54:04.568Z
-    updated_at: 2026-05-12T16:10:46.796Z
+    updated_at: 2026-05-12T16:34:02.963Z
     notes: []
   - _ulid: 01KREFK8YRJZTX56WZD9Y28F5Q
     slugs: []
