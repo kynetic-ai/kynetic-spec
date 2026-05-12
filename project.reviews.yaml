@@ -203729,6 +203729,16 @@ reviews:
         runner: npm test
         created_at: 2026-05-12T07:22:25.066Z
         completed_at: 2026-05-12T07:22:25.066Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: 2425 suites passed, 9072 tests passed, 5 skipped"
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T07:22:29.519Z
+        completed_at: 2026-05-12T07:22:29.519Z
     events:
       - _ulid: 01KRDG9HWMSJB1HWK6W71Q3FGV
         actor: Jacob Chapel
@@ -203750,6 +203760,13 @@ reviews:
           status: pass
           name: focused regression tests
         timestamp: 2026-05-12T07:22:26.640Z
+      - _ulid: 01KRDH1QS9905409J20FVYHJ1B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-05-12T07:22:31.082Z
     examined_commit: ab1d59a2942c2e18b8373c2bd89fd50ef992c151
     external_links: []
     lifecycle_state: open
@@ -203762,5 +203779,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T07:09:18.613Z
-    updated_at: 2026-05-12T07:22:25.066Z
+    updated_at: 2026-05-12T07:22:29.519Z
     notes: []
