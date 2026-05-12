@@ -26730,7 +26730,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T07:24:50.875Z
+      updated_at: 2026-05-12T07:29:29.698Z
     integration:
       status: merged
       detail: integration:merged
@@ -26739,25 +26739,20 @@ workspaces:
       target_branch: dev
       target_commit: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
       updated_at: 2026-05-12T07:24:50.875Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KRCRJSCGAWTVGWM82DNSWWCN"
     task_slug: task-add-setup-failure-error-preservation-regressions
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T07:08:26.170Z
-      last_reconciled_at: 2026-05-12T07:29:28.002Z
+      last_reconciled_at: 2026-05-12T07:29:29.698Z
       created_at: 2026-05-12T04:57:42.523Z
-      updated_at: 2026-05-12T07:29:28.002Z
+      updated_at: 2026-05-12T07:29:29.698Z
     workspace_id: dispatch-workspace-01KRCRJSCGAWTVGWM82DNSWWCN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: ab1d59a2942c2e18b8373c2bd89fd50ef992c151
-        last_seen_at: 2026-05-12T07:07:59.485Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-setup-failure-error-preservation-regressions-01krcrjs-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-setup-failure-error-preservation-regressions/01krcrjs
