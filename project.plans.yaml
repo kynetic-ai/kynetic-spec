@@ -47922,6 +47922,54 @@ plans:
       safely rather than leaving artifacts forever or deleting active work.
 
 
+      ## Deferred Supersession Note
+
+
+      This draft is intentionally preserved as a deferred durable-lease design, not as the current
+      implementation path. Focused review cycles were run after the initial clean review:
+
+
+      - `@01KRETXETZV92HX06C0F0R46QC` reviewed long-term/backfire risks and requested changes.
+
+      - `@01KREVDS9XYG0933RSJPPD5WEC` reviewed necessity, value, and alternatives and requested
+      changes.
+
+
+      The current implementation direction moved to a simpler in-memory/current-state cleanup
+      protection plan because this project normally has one daemon and one dispatch engine per
+      project. The immediate failure can be addressed by ensuring cleanup treats active, in-flight,
+      and provisioning work as protected, while daemon restart recovery can conservatively classify
+      partial artifacts before destructive cleanup without requiring full durable owner/TTL lease
+      semantics.
+
+
+      If this durable lease design is revived, incorporate the review feedback before approval or
+      derivation:
+
+
+      - Registry-unavailable or corrupt cleanup must fail closed rather than falling back to
+      destructive deletion.
+
+      - Different-owner non-expired lease writes need conflict or compare-and-swap semantics;
+      another daemon/spawn must not silently overwrite, renew, clear, or abandon a live owner’s
+      lease.
+
+      - Abandoned lease retention, cleanup eligibility, retry/reset behavior, and operator
+      inspection windows must be explicit.
+
+      - Observability must expose owner, phase, expiry, abandoned reason, and cleanup
+      skip/preservation reasons.
+
+      - Task ordering must prevent producer tasks from landing before cleanup honors the protective
+      signal.
+
+      - The plan must justify why durable restart-surviving owner state is required instead of the
+      smaller active/in-flight/provisioning cleanup-protection fix.
+
+      - The durable schema/API surface should be deferred unless cross-process cleanup, multiple
+      daemons, or restart-surviving provisioning ownership becomes a proven requirement.
+
+
       ## Existing Spec Updates
 
 
@@ -48669,3 +48717,7 @@ plans:
           split artifact-protection ACs by cleanup path"
         author: Jacob Chapel
         created_at: 2026-05-12T19:00:40.922Z
+      - _ulid: 01KRF0SAQPDGHNCVKJ1Z8VE1Z3
+        content: Preserve durable lease design as deferred/superseded and record focused review feedback
+        author: Jacob Chapel
+        created_at: 2026-05-12T21:16:47.222Z
