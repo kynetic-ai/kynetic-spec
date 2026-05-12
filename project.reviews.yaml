@@ -206112,6 +206112,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KREPSE0E83Z9058FJP6JX2Y8
         timestamp: 2026-05-12T18:22:06.542Z
+      - _ulid: 01KREPSPH0VCJJC6R5EJH5XPF7
+        actor: Hermes
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KREPSMXTJCEN5ZFT08ETYW6T
+        timestamp: 2026-05-12T18:22:13.536Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -206155,7 +206162,24 @@ reviews:
               standalone by including the exact AC payloads or precise batch/CLI payloads.
             created_at: 2026-05-12T18:22:04.815Z
         kind: blocker
+      - _ulid: 01KREPSMXTJCEN5ZFT08ETYW6T
+        anchor:
+          type: structured
+          field: ac-expired-provisioning-lease-recovery
+          ref: "@dispatch-workspace-registry"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KREPSMXVNV37612SR81DXJX9
+            author: Hermes
+            body: The lease owner/liveness recovery contract is underspecified. The plan requires an owner
+              process identity and says cleanup should check whether a live dispatcher process still
+              owns an expired lease, but the schema only defines owner:string and does not specify
+              daemon instance identity, pid/start marker, spawn attempt/session id, or exact
+              post-restart liveness rules. This is central to safe cleanup recovery; define the
+              owner identity and abandoned-vs-live recovery rule explicitly.
+            created_at: 2026-05-12T18:22:11.899Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T18:20:31.298Z
-    updated_at: 2026-05-12T18:22:04.815Z
+    updated_at: 2026-05-12T18:22:11.899Z
     notes: []
