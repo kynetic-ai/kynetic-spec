@@ -24588,12 +24588,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T02:09:07.913Z
+      updated_at: 2026-05-12T02:09:47.707Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T02:09:07.913Z
+      updated_at: 2026-05-12T02:09:47.707Z
     integration:
       status: pending
       detail: null
@@ -24601,17 +24601,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
-      updated_at: 2026-05-12T02:09:07.913Z
-    lifecycle_state: ready
+      updated_at: 2026-05-12T02:09:47.707Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRCRJR5K77Q2THCVVH3BDNFH"
     task_slug: task-add-bounded-process-stop-contract-tests
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T01:46:31.763Z
-      last_reconciled_at: 2026-05-12T02:09:07.913Z
+      last_reconciled_at: 2026-05-12T02:09:47.707Z
       created_at: 2026-05-12T00:23:22.571Z
-      updated_at: 2026-05-12T02:09:07.913Z
+      updated_at: 2026-05-12T02:09:47.707Z
     workspace_id: dispatch-workspace-01KRCRJR5K77Q2THCVVH3BDNFH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
