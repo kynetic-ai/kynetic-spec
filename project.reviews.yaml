@@ -206098,6 +206098,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T18:21:52.389Z
+      - _ulid: 01KREPS8NV59Z1DHMYBAZFTZ91
+        actor: Hermes
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KREPS6YAF5PVPM7DWWB4F1QJ
+        timestamp: 2026-05-12T18:21:59.355Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -206107,8 +206114,26 @@ reviews:
       content_hash: ""
       ref: "@plan-dispatch-workspace-provisioning-lease-protection"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KREPS6YAF5PVPM7DWWB4F1QJ
+        anchor:
+          type: structured
+          ref: "@plan-dispatch-workspace-provisioning-lease-protection"
+          section: specs
+        entries:
+          - _ulid: 01KREPS6YAJHNADH9VW13R1FNW
+            author: Hermes
+            body: "The plan puts “Updates to Existing Spec” entries in the structured ## Specs block for
+              @dispatch-workspace-registry, @dispatch-runtime-bootstrap-contract, and
+              @agent-dispatch-engine. Derivation materializes ## Specs entries as new spec items,
+              with collision suffixing, rather than applying AC updates to the existing specs. As
+              written, approving/deriving this plan risks creating duplicate specs and redirecting
+              task spec_refs to derived duplicates. Fix by either removing the structured Specs
+              block and making Phase 1 tasks explicitly update the existing refs, or intentionally
+              model these as new child specs instead."
+            created_at: 2026-05-12T18:21:57.578Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T18:20:31.298Z
-    updated_at: 2026-05-12T18:21:50.751Z
+    updated_at: 2026-05-12T18:21:57.578Z
     notes: []
