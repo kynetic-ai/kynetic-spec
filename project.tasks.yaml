@@ -29076,6 +29076,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-12T21:59:44.002Z
+  automation: eligible
 - _ulid: 01KRF37ZHJ6AEZ14HEADGHPX6V
   slugs:
     - task-test-cleanup-protection-positive-and-regression-cases
