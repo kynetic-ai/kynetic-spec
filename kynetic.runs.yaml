@@ -46721,9 +46721,24 @@ runs:
     completed_at: 2026-05-12T06:46:56.769Z
   - _ulid: 01KRDG3BFZ121EPFQWJN0TA1RS
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-12T07:05:55.455Z
+        completed_at: 2026-05-12T07:07:13.445Z
+        notes: "Worked well: (1) reading review JSON for the reviewer's reproduction ('thrown=setup/start
+          failure, teardownRan=false') established the regression shape before any code; (2)
+          extracting runPlaywrightFixtureBody preserved cycle 1's wrapper-coverage win while
+          structurally fixing cycle 2 (startDaemon inside use phase, not setup), mirroring the cycle
+          1 acquirePlaywrightFixtureResources extraction pattern. Friction: kspec task submit
+          refused needs_work — required kspec task start first to flip to in_progress before submit
+          accepted it (fix-cycle path felt like one step)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-12T07:07:13.445Z
+        completed_at: 2026-05-12T07:07:13.445Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T07:05:55.455Z
