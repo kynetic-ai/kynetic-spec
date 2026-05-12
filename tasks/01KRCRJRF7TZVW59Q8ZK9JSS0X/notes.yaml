@@ -1,1 +1,45 @@
-notes: []
+notes:
+  - _ulid: 01KREC2YB8EMN1ATMC1QA7JHTS
+    content: >-
+      Approach: introduce shared test-side helper tests/helpers/process-stop.ts with two entry
+      points:
+
+
+      1. stopChildProcessBounded(child, opts) — for ChildProcess handles owned by daemon.ts and
+      mock-daemon.ts. Sends graceful signal (SIGTERM), waits for observed exit (exitCode OR
+      signalCode non-null OR 'exit' event fired) within graceful budget, escalates to SIGKILL on
+      timeout, then waits again for observed exit within escalation budget. Treats signalCode-only
+      exits as real exits.
+
+
+      2. stopPidBounded(pid, opts) — for PID-only callers in cli-serve.test.ts. Same
+      graceful->escalate semantics, observes termination via process.kill(pid, 0) polling since no
+      ChildProcess handle exists.
+
+
+      Both return Promise<void> on success and throw a BoundedStopError with diagnostics if
+      escalation timeout elapses without observed exit. Idempotent (already-exited fast-path); avoid
+      killing unrelated PIDs by checking liveness before each signal.
+
+
+      Refactor sites:
+
+      - daemon.ts killChildScoped -> use stopChildProcessBounded
+
+      - mock-daemon.ts inline stop() closures (both startup-failure cleanup and operational stop) ->
+      use stopChildProcessBounded
+
+      - cli-serve.test.ts killPid + waitForChildExit -> retain helpers as thin wrappers around the
+      new primitives so onTestFinished call sites keep their fire-and-forget shape while gaining
+      bounded semantics. waitForChildExit will route through the same observed-exit logic so
+      signalCode fast-path is honored.
+
+
+      Test plan: remove the 4 staged-regression wrappers
+      (expectKillChildScopedMissesExitObservation, expectMockDaemonStopLeaksPid,
+      expectWaitForChildExitMissesObservation, expectWaitForChildExitMissesSignalFastPath,
+      expectKillPidIsFireAndForget) and inline the post-fix assertions. Then run the target test
+      slice and full suite.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T15:15:02.120Z
