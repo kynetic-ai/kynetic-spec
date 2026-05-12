@@ -29013,6 +29013,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-12T21:59:42.714Z
+  automation: eligible
 - _ulid: 01KRF37Y941E2T8D1ATFV63JB0
   slugs:
     - task-centralize-dispatch-artifact-protection-decisions
