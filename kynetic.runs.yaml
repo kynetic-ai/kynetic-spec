@@ -48075,7 +48075,7 @@ runs:
     completed_at: 2026-05-12T22:41:18.165Z
   - _ulid: 01KRF63MZ3KP0J52N7TPB3JBT8
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -48120,7 +48120,36 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-12T22:52:13.270Z
-        completed_at: 2026-05-12T22:52:13.270Z
+        completed_at: 2026-05-12T22:52:53.463Z
+        notes: >-
+          Coverage check results:
+
+
+          Candidate A (task note positional --message): no existing observation, inbox, or task
+          tracks this specific CLI inconsistency. Related but distinct prior observation 'Commander
+          --json flag conflict' (about global vs local --json) exists. Candidate A is unique.
+
+
+          Candidate B (workflow show run-ref required): no existing tracking. Single-session
+          observation.
+
+
+          Final capture decision for loop mode: skip both. Rationale:
+
+          - Candidate A is real but low-impact: the user must use heredoc/file-based payloads anyway
+          for any multi-line note containing special chars (per existing kspec convention 'when
+          command payloads include $, <, >, or multi-line text, use file-based payloads or quoted
+          heredocs'), so the --message flag failure adds at most one CLI try before falling back to
+          the documented pattern. Capturing pollutes observation stream with low-impact friction.
+
+          - Candidate B was observed exactly once. Insufficient evidence of systemic friction.
+
+
+          Per loop mode guidance: 'Better to capture nothing than capture noise.' No captures.
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-12T22:52:53.463Z
+        completed_at: 2026-05-12T22:52:53.463Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T22:49:48.260Z
