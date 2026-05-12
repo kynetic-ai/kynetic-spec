@@ -27598,12 +27598,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T08:11:38.166Z
+      updated_at: 2026-05-12T08:11:46.217Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T08:11:38.166Z
+      updated_at: 2026-05-12T08:11:46.217Z
     integration:
       status: pending
       detail: null
@@ -27611,24 +27611,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 258786a7d137e3f2a5f0ff1480faca59144aa98b
-      updated_at: 2026-05-12T08:11:38.166Z
-    lifecycle_state: ready
+      updated_at: 2026-05-12T08:11:46.217Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRD9FY2NX3EH2KR4493T6YYA"
     task_slug: stabilize-flaky-file-lock-concurrent-write-test
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T07:34:56.972Z
-      last_reconciled_at: 2026-05-12T08:11:38.166Z
+      last_reconciled_at: 2026-05-12T08:11:46.217Z
       created_at: 2026-05-12T07:34:32.744Z
-      updated_at: 2026-05-12T08:11:38.166Z
+      updated_at: 2026-05-12T08:11:46.217Z
     workspace_id: dispatch-workspace-01KRD9FY2NX3EH2KR4493T6YYA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 866065b339c34190fb52f3673bffb90aac357365
+        last_seen_at: 2026-05-12T08:11:46.217Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-file-lock-concurrent-write-test-01krd9fy-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/stabilize-flaky-file-lock-concurrent-write-test/01krd9fy
-        head: 258786a7d137e3f2a5f0ff1480faca59144aa98b
-        last_seen_at: 2026-05-12T07:34:32.744Z
+        head: 866065b339c34190fb52f3673bffb90aac357365
+        last_seen_at: 2026-05-12T08:11:46.217Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-file-lock-concurrent-write-test-01krd9fy
