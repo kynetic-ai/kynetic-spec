@@ -201698,6 +201698,18 @@ reviews:
         runner: npm test
         created_at: 2026-05-12T03:07:44.503Z
         completed_at: 2026-05-12T03:07:44.503Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full fresh suite passed: 2419 suites passed; 9036 passed, 5 skipped of 9041 tests;
+          duration 2075.3s; log
+          /tmp/kspec-test-cache/01KRD1P3V7WKAANSHH2MHAM3YQ/31ebc08193e3af2c.log."
+        name: npm test -- --fresh
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T03:07:57.338Z
+        completed_at: 2026-05-12T03:07:57.338Z
     events:
       - _ulid: 01KRD1RXNJ72HWBD6J9TC1PXA8
         actor: Jacob Chapel
@@ -201719,6 +201731,13 @@ reviews:
           status: pass
           name: focused daemon lint suites
         timestamp: 2026-05-12T03:07:46.079Z
+      - _ulid: 01KRD2FNGCEK7CH2BBHQHYJC38
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-12T03:07:58.860Z
     examined_commit: 315823030c112bf8d55755f08cf3db734c4d84fc
     external_links: []
     lifecycle_state: open
@@ -201731,5 +201750,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T02:55:33.554Z
-    updated_at: 2026-05-12T03:07:44.503Z
+    updated_at: 2026-05-12T03:07:57.338Z
     notes: []
