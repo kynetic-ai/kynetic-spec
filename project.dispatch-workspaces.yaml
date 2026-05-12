@@ -30945,11 +30945,11 @@ workspaces:
     canonical_branch: dispatch/task/task-add-inflight-cleanup-protection-engine-ac/01krf37w
     canonical_branch_head: 0c6506a55cdb40538275c315cad4c85b131bc7ba
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-12T23:00:05.324Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-12T23:00:15.333Z
     health:
       status: healthy
       issues: []
@@ -30963,7 +30963,7 @@ workspaces:
       target_branch: dev
       target_commit: 0c6506a55cdb40538275c315cad4c85b131bc7ba
       updated_at: 2026-05-12T23:00:05.324Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KRF37WZYVQHSE1W8PYMBH5R2"
     task_slug: task-add-inflight-cleanup-protection-engine-ac
@@ -30972,7 +30972,7 @@ workspaces:
       last_active_at: 2026-05-12T22:45:48.892Z
       last_reconciled_at: 2026-05-12T23:00:05.324Z
       created_at: 2026-05-12T22:36:36.904Z
-      updated_at: 2026-05-12T23:00:05.324Z
+      updated_at: 2026-05-12T23:00:15.333Z
     workspace_id: dispatch-workspace-01KRF37WZYVQHSE1W8PYMBH5R2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
