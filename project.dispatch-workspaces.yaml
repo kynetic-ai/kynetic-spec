@@ -25469,12 +25469,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T01:45:55.938Z
+      updated_at: 2026-05-12T01:46:35.271Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T01:45:55.938Z
+      updated_at: 2026-05-12T01:46:35.271Z
     integration:
       status: pending
       detail: null
@@ -25482,24 +25482,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
-      updated_at: 2026-05-12T01:45:55.938Z
-    lifecycle_state: ready
+      updated_at: 2026-05-12T01:46:35.271Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRCRJPYGTDE9GW1GPZCDFRJD"
     task_slug: task-add-guardrail-cleanup-boundary-regressions
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T01:36:43.757Z
-      last_reconciled_at: 2026-05-12T01:45:55.938Z
+      last_reconciled_at: 2026-05-12T01:46:35.271Z
       created_at: 2026-05-12T01:36:17.301Z
-      updated_at: 2026-05-12T01:45:55.938Z
+      updated_at: 2026-05-12T01:46:35.271Z
     workspace_id: dispatch-workspace-01KRCRJPYGTDE9GW1GPZCDFRJD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 9b5ac8f3afa3c255eca6a31d2b673d0f8677e67d
+        last_seen_at: 2026-05-12T01:46:35.271Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-guardrail-cleanup-boundary-regressions-01krcrjp-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-guardrail-cleanup-boundary-regressions/01krcrjp
-        head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
-        last_seen_at: 2026-05-12T01:36:17.301Z
+        head: 9b5ac8f3afa3c255eca6a31d2b673d0f8677e67d
+        last_seen_at: 2026-05-12T01:46:35.271Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-guardrail-cleanup-boundary-regressions-01krcrjp
