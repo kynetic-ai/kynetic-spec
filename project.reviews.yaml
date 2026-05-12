@@ -206813,6 +206813,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T19:00:18.970Z
+      - _ulid: 01KREWG71PWMB2EX0BTW1D8H0R
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRER48GN0CZPCV27CKSX6BQQ
+        timestamp: 2026-05-12T20:01:54.230Z
     examined_commit: 671d9b4584a8dfb718be8fa81a3c153965e62a4c
     external_links: []
     lifecycle_state: closed
@@ -206860,6 +206866,22 @@ reviews:
               `ac-cleanup-helper-origin-is-trusted` are still violated because the rule credits
               cleanup that does not terminate the just-started daemon.
             created_at: 2026-05-12T18:46:57.218Z
+          - _ulid: 01KREWG5MTSFB7CDA85VBZ9SFV
+            author: "@claude"
+            body: "Fixed in 62bffa595: added `isHelperBodyKillTargetTiedToOwner()` that requires the kill
+              target's root Identifier to be either (a) a parameter of the helper
+              (function-decl/arrow contract: the helper kills what its caller passed), or (b) a
+              property value of the enclosing ObjectExpression when the helper is an object-literal
+              method (the literal owns the daemon binding). The bare `isVerifiableKillTarget()`
+              check now only gates the structural verifiability (no Literals, no computed access);
+              the tie predicate runs in the helper-body context inside `isTerminatingPrimitiveCall`.
+              Both reviewer probes (`function killPid(_pid) { process.kill(otherPid, 'SIGTERM'); }`
+              and the object-literal `{ kill() { process.kill(otherPid, 'SIGTERM'); } }` variant)
+              now flag — verified locally via ad hoc oxlint probes. New cycle-9 positive tests cover
+              both shapes plus a closure-over-outer-pid-without-property variant; a
+              longhand-property accepted companion (`{ daemonPid: pid, kill() { process.kill(pid,
+              'SIGTERM'); } }`) was added so the property tie does not collapse to shorthand-only."
+            created_at: 2026-05-12T20:01:52.788Z
         kind: blocker
       - _ulid: 01KRERYWS4BT0J9QXXKC3QVS0D
         entries:
@@ -206900,7 +206922,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T19:00:18.970Z
     created_at: 2026-05-12T18:39:00.497Z
-    updated_at: 2026-05-12T19:00:18.970Z
+    updated_at: 2026-05-12T20:01:52.788Z
     notes: []
   - _ulid: 01KRERNSBMVT2M524R6JBTT54Q
     slugs: []
