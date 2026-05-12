@@ -205313,9 +205313,25 @@ reviews:
           kind: nit
           thread_ulid: 01KREGNZQHHVSKFKYXBF6RR8D5
         timestamp: 2026-05-12T16:35:21.830Z
+      - _ulid: 01KREGPJQDCR55B810H0YE2S19
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T16:35:39.885Z
+      - _ulid: 01KREGPJQD9X18P1WQWGW4M7YA
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T16:35:39.885Z
     examined_commit: 7c486bc61439fc86e9d39f39230c78379b4c9c48
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -205381,7 +205397,14 @@ reviews:
               lint/regression checks, merge readiness."
             created_at: 2026-05-12T16:35:20.433Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T16:35:39.885Z
     created_at: 2026-05-12T16:16:23.000Z
-    updated_at: 2026-05-12T16:35:20.433Z
+    updated_at: 2026-05-12T16:35:39.885Z
     notes: []
