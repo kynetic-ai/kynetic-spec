@@ -47336,7 +47336,7 @@ runs:
     completed_at: 2026-05-12T16:16:07.087Z
   - _ulid: 01KREGNF5RQ1265FF6556WRTXM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -47349,7 +47349,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T16:37:01.831Z
-        completed_at: 2026-05-12T16:37:01.831Z
+        completed_at: 2026-05-12T16:37:09.086Z
+        notes: "Two high-confidence candidates from session: (a) friction — body-form onTestFinished
+          callbacks silently drop bounded-stop promises when helpers migrate from void to
+          Promise<void>; (b) success — grep-scanned sibling call sites before resubmitting to catch
+          any analogous drops beyond the flagged ones. Both candidates evaluated against existing
+          state in next step."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T16:37:09.086Z
+        completed_at: 2026-05-12T16:37:09.086Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T16:35:03.480Z
