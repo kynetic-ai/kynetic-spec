@@ -1,1 +1,31 @@
-notes: []
+notes:
+  - _ulid: 01KRENT9TVHECJBHMAGNFNRMTQ
+    content: >-
+      Hardened setup-failure cleanup and primary-error preservation across the daemon test fixtures:
+
+
+      - createTestDaemonProject() now records owned resources on a reverse-order cleanup stack. A
+      setup-stage failure unwinds the stack before propagating, closing the temp project leak.
+
+      - acquirePlaywrightFixtureResources() catches post-create setup failures and releases the
+      owned project handle so the Playwright wrapper setup path no longer leaks the project tree.
+
+      - startTestDaemon readiness-failure catch and registerCleanup-failure catch keep the
+      actionable diagnostic primary; stop() failures attach as supplementary context via
+      attachCleanupFailure.
+
+      - runDaemonFixtureLifecycle captures both use and teardown phases explicitly so a teardown
+      throw no longer replaces a use-phase primary error.
+
+      - Shared attachCleanupFailure helper sets primary.cause to the cleanup error, appends a
+      one-shot message suffix, and preserves any existing cause chain.
+
+      - Flipped 7 staged it.fails regressions to it() across tests/helpers/daemon.test.ts and
+      tests/e2e-fixture-daemon-cleanup.test.ts.
+
+
+      Validation: focused tests (helpers/daemon + e2e-fixture-daemon-cleanup) pass, full vitest
+      suite passes (9086/9091, 5 skipped), tests/e2e/smoke.spec.ts passes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T18:05:04.731Z
