@@ -203049,6 +203049,12 @@ reviews:
         payload:
           thread_ulid: 01KRDAYCAQ19Y0J7QBEACS2HQH
         timestamp: 2026-05-12T06:14:29.924Z
+      - _ulid: 01KRDD5HJS8NV8GE4KD59PY8G4
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRDAX8FJY110R76FC3AYC8JM
+        timestamp: 2026-05-12T06:14:41.497Z
     examined_commit: 69024560de4a34a772c9944f034e9a9021056675
     external_links: []
     lifecycle_state: closed
@@ -203094,6 +203100,8 @@ reviews:
               (`npx playwright test tests/e2e/smoke.spec.ts`)."
             created_at: 2026-05-12T06:14:16.095Z
         kind: blocker
+        resolved_at: 2026-05-12T06:14:40.124Z
+        resolved_by: "@claude"
       - _ulid: 01KRDAXG9P5K136WG3TJQDAAPP
         anchor:
           type: code
@@ -203155,7 +203163,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T05:36:03.273Z
     created_at: 2026-05-12T05:22:54.485Z
-    updated_at: 2026-05-12T06:14:28.512Z
+    updated_at: 2026-05-12T06:14:40.124Z
     notes: []
   - _ulid: 01KRDBYWY96D1FZ30GYEK03A9A
     slugs: []
