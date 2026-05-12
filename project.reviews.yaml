@@ -206831,6 +206831,12 @@ reviews:
         payload:
           thread_ulid: 01KRERYWS4BT0J9QXXKC3QVS0D
         timestamp: 2026-05-12T20:02:15.884Z
+      - _ulid: 01KREWH2BDPDK2NGBJX3160418
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRERYWS4BT0J9QXXKC3QVS0D
+        timestamp: 2026-05-12T20:02:22.189Z
     examined_commit: 671d9b4584a8dfb718be8fa81a3c153965e62a4c
     external_links: []
     lifecycle_state: closed
@@ -206936,6 +206942,8 @@ reviews:
               npm test suite (9149/9149 active) pass."
             created_at: 2026-05-12T20:02:14.478Z
         kind: nit
+        resolved_at: 2026-05-12T20:02:20.744Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -206945,7 +206953,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T19:00:18.970Z
     created_at: 2026-05-12T18:39:00.497Z
-    updated_at: 2026-05-12T20:02:14.478Z
+    updated_at: 2026-05-12T20:02:20.744Z
     notes: []
   - _ulid: 01KRERNSBMVT2M524R6JBTT54Q
     slugs: []
