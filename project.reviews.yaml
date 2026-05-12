@@ -203031,6 +203031,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T05:36:03.273Z
+      - _ulid: 01KRDD4T1W6V9YVRXRCA37KAFK
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRDAX8FJY110R76FC3AYC8JM
+        timestamp: 2026-05-12T06:14:17.404Z
     examined_commit: 69024560de4a34a772c9944f034e9a9021056675
     external_links: []
     lifecycle_state: closed
@@ -203061,6 +203067,20 @@ reviews:
               coverage that simulates failures in the Playwright wrapper setup path after resources
               are owned and asserts cleanup/primary-error preservation for that wrapper behavior."
             created_at: 2026-05-12T05:35:12.882Z
+          - _ulid: 01KRDD4RS1CES2ZFTTQFGTMC7V
+            author: "@claude"
+            body: "Fixed: extracted the wrapper's pre-try/finally setup into `acquirePlaywrightFixtureResources`
+              (tests/e2e/fixtures/daemon-fixture.ts) and refactored test-base.ts:176 to delegate to
+              it. Added 5 staged regressions in tests/e2e-fixture-daemon-cleanup.test.ts
+              \"acquirePlaywrightFixtureResources — wrapper setup-failure cleanup\" that exercise
+              the actual wrapper code path: 1 positive contract (returns resources + emits stages in
+              declared order) plus 4 `it.fails` covering each post-create stage failure
+              (after-copy-project-tests, after-write-config, after-allocate-port) and a dedicated
+              allocateTestDaemonPort-rejects regression. Verified by stripping `it.fails`: all 4 new
+              staged regressions fail with \"project tempDir … must be removed after wrapper setup
+              failure at <stage>\" pre-fix, confirming they exercise the leak. Smoke E2E passes
+              (`npx playwright test tests/e2e/smoke.spec.ts`)."
+            created_at: 2026-05-12T06:14:16.095Z
         kind: blocker
       - _ulid: 01KRDAXG9P5K136WG3TJQDAAPP
         anchor:
@@ -203107,7 +203127,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T05:36:03.273Z
     created_at: 2026-05-12T05:22:54.485Z
-    updated_at: 2026-05-12T05:36:03.273Z
+    updated_at: 2026-05-12T06:14:16.095Z
     notes: []
   - _ulid: 01KRDBYWY96D1FZ30GYEK03A9A
     slugs: []
