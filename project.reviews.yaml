@@ -201781,9 +201781,25 @@ reviews:
           status: pass
           name: diff and AC review
         timestamp: 2026-05-12T03:08:26.008Z
+      - _ulid: 01KRD2GY7SARJ0BBC75ZGE92PA
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-12T03:08:40.569Z
+      - _ulid: 01KRD2GY7S8X44E305D5VKPMPE
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T03:08:40.569Z
     examined_commit: 315823030c112bf8d55755f08cf3db734c4d84fc
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -201791,7 +201807,14 @@ reviews:
       ref: "@01KRCRJPYGTDE9GW1GPZCDFRJD"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T03:08:40.568Z
     created_at: 2026-05-12T02:55:33.554Z
-    updated_at: 2026-05-12T03:08:24.499Z
+    updated_at: 2026-05-12T03:08:40.569Z
     notes: []
