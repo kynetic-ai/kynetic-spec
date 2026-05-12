@@ -125,3 +125,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T02:09:59.968Z
+  - _ulid: 01KRE64KKCDQF8MXHR4A6JF841
+    content: "Unblocking after reviewer-bootstrap triage. The submitted commit
+      0d1ebb5f7abec74f141ccfbbcb0cae66dac9ef2d bootstrapped cleanly in detached worktree
+      /tmp/kspec-bootstrap-repro-manual/bounded: npm ci --ignore-scripts=false passed and npm run
+      build passed. The recorded block was an operational review-bootstrap failure (npm
+      TAR_ENTRY_ERROR/ENOENT while extracting node_modules in the transient review workspace), not a
+      task-scope/spec blocker. Retry review/dispatch normally."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-05-12T13:31:05.196Z
