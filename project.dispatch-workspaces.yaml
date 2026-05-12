@@ -24625,3 +24625,79 @@ workspaces:
         head: 38281b2580cd078393fbc844446cd34113ff5d0a
         last_seen_at: 2026-05-12T01:24:03.046Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr
+  - active_role: null
+    base_branch_point: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-add-guardrail-cleanup-effect-regressions/01krcrjp
+    canonical_branch_head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-12T01:24:32.829Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-12T01:24:32.829Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
+      updated_at: 2026-05-12T01:24:32.829Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KRCRJP9RHZ06B249NBJSPSY3"
+    task_slug: task-add-guardrail-cleanup-effect-regressions
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-12T01:24:32.829Z
+      created_at: 2026-05-12T01:24:32.829Z
+      updated_at: 2026-05-12T01:24:32.829Z
+    workspace_id: dispatch-workspace-01KRCRJP9RHZ06B249NBJSPSY3
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-add-guardrail-cleanup-effect-regressions/01krcrjp
+        head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
+        last_seen_at: 2026-05-12T01:24:32.829Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-guardrail-cleanup-effect-regressions-01krcrjp
