@@ -18455,6 +18455,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-12T16:15:51.060Z
+  - _ulid: 01KREJM0D0KCXJ09DPCCCR4579
+    type: friction
+    content: "Static-analysis lint rules that trust callees via approved-import allowlists must verify
+      the resolved file path, not just the import specifier string. Cycle-7 review on
+      @01KRCRJPMHMHC410TKRC5Y9HF1 caught this: APPROVED_HELPER_IMPORT_PATH_PATTERNS matched the
+      specifier text './helpers/daemon' but never checked what it resolved to on disk relative to
+      the importing file. A nested test at tests/e2e/synthetic-test.ts importing './helpers/daemon'
+      resolves to tests/e2e/helpers/daemon — outside the approved-helper allowlist — and was
+      silently credited. Fix in cycle 8 uses path.resolve(path.dirname(context.physicalFilename),
+      specifier) + extension normalisation + match against APPROVED_HELPER_IMPLEMENTATION_PATTERNS.
+      Mitigation when authoring/reviewing an import-trust allowlist: distinguish (a) a fast
+      specifier-shape prefilter — useful for early reject — from (b) the authoritative resolved-path
+      check. The prefilter ALONE is never sufficient because relative specifiers depend on the
+      importer's location. Applies to any precision rule maintaining a trust-by-import allowlist
+      (helper modules, dependency allowlists, module-trust policies, framework-internal imports)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T17:09:12.737Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
