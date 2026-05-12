@@ -45395,7 +45395,7 @@ runs:
     completed_at: 2026-05-12T02:32:34.573Z
   - _ulid: 01KRD1F2AJZR6WZ1A8GC3DSDMM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -45411,7 +45411,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T02:50:51.084Z
-        completed_at: 2026-05-12T02:50:51.084Z
+        completed_at: 2026-05-12T02:51:09.927Z
+        notes: "Friction points: kspec validate is still useful as a schema/reference gate, but in review
+          evidence it produces a large amount of unrelated project-wide warning output. That forces
+          reviewers to manually distinguish task-relevant validation from known baseline warnings
+          when recording checks. Minor friction: workflow commands require the run ref after start;
+          this was easy to recover from and not worth capture by itself."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T02:51:09.927Z
+        completed_at: 2026-05-12T02:51:09.927Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T02:50:10.643Z
