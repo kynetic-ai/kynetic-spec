@@ -1,1 +1,52 @@
-notes: []
+notes:
+  - _ulid: 01KRCTSB8BQX33KYFV8EFDP395
+    content: |-
+      Added 5 failing-before-fix contract tests for bounded process-stop:
+
+      1. tests/helpers/daemon.test.ts — startTestDaemon stop() observes termination:
+         Spawns a synthetic uncooperative Node script (ignores SIGTERM/SIGINT/SIGHUP)
+         via __testBinaryOverride and a custom readiness probe that waits for a
+         stdout handshake. Asserts that after started.stop() returns, the child
+         exit event has been observed (exitCode or signalCode is non-null) AND
+         the OS pid is no longer alive. Fails today because killChildScoped
+         resolves from its setTimeout callback synchronously after kill('SIGKILL'),
+         before libuv has fired the exit event.
+
+      2. tests/helpers/mock-daemon.test.ts — bounded child stop contract:
+         Drives startMockDaemon({asChildProcess: true}) with a new --ignore-sigterm
+         seam in mock-daemon.cjs that swaps the SIGTERM/SIGINT/SIGHUP handlers for
+         no-ops. Asserts that after mock.stop() returns, the recorded pid is no
+         longer alive. Fails today for the same reason as #1 — the stop closure
+         finalizes from the SIGKILL-fallback timer callback rather than waiting
+         for the actual exit event.
+
+      3-5. tests/cli-serve.test.ts — PID-based cleanup contract:
+         Adds three regressions against the local killPid + waitForChildExit
+         helpers using synthetic uncooperative children with a stdout handshake:
+         - waitForChildExit must observe child exit before returning (same
+           timer-callback bug as the daemon stop path).
+         - waitForChildExit must take the fast-path for an already-signal-exited
+           child (signalCode set, exitCode null). Currently the fast-path checks
+           only exitCode !== null, so signal-exit handles wait the full 5s
+           timeout before resolving.
+         - killPid must drive an uncooperative pid to a bounded terminal outcome.
+           Today killPid is fire-and-forget sync void — no escalation, no
+           observation — so a SIGTERM-ignoring child survives indefinitely.
+
+      Source changes are minimal: one docstring update in tests/helpers/daemon.ts
+      (__testBinaryOverride now documented as both launch-failure simulation and
+      synthetic-child substitution), and a new test-only --ignore-sigterm flag in
+      tests/helpers/mock-daemon.cjs.
+
+      Key implementation detail: the synthetic child must finish installing its
+      signal handlers BEFORE the test sends any signals. Without a stdout
+      handshake, a too-fast SIGTERM races the script's handler installation,
+      hits the default terminate action, and masks the bug under test. All
+      five tests use the handshake pattern.
+
+      Verified: all 5 new tests fail today against the existing buggy helpers.
+      No existing tests in daemon.test.ts / mock-daemon.test.ts / cli-serve.test.ts
+      were broken (70 prior tests still pass).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T00:53:27.435Z
