@@ -40,6 +40,7 @@ import {
 } from "node:fs";
 import * as path from "node:path";
 import * as os from "node:os";
+import { readTestOutputSync } from "./helpers/cli";
 
 const PROJECT_ROOT = path.resolve(__dirname, "..");
 const RULE_PATH = path.resolve(
@@ -5692,3 +5693,529 @@ export const sharedFixture = {
     });
   });
 });
+
+/**
+ * Implicit auto-start daemon cleanup boundary regressions.
+ *
+ * The detached-serve guardrail above only inspects calls whose argv
+ * tokenises to the kspec `serve start --detach` lifecycle subcommand —
+ * exec("kspec serve start --detach"), runKspec("serve start --detach"),
+ * spawn("kspec", ["serve", "start", "--detach"]), etc. Ordinary CLI
+ * commands (`kspec util ulid`, `kspec task add`, etc.) can ALSO bring a
+ * daemon up implicitly when the project's `daemon.auto_start: true`
+ * config is set — and that ownership shape is not covered by the
+ * literal `serve start --detach` token sequence.
+ *
+ * The unsafe pattern, modelled after the existing
+ * `tests/cli-no-daemon.test.ts` cases that read
+ * `isolatedHome.daemonPidFilePath` after the CLI subprocess returns:
+ *
+ *   const result = spawnSync("kspec", ["util", "ulid"], { env });
+ *   await waitForStartup(...);              // pid file appears
+ *   const pid = readPidFromFile();          // daemon pid captured
+ *   const cmd = execSync(\`ps -p \${pid}\`);   // observation that may throw
+ *   expect(cmd).toContain("node");          // observation that may throw
+ *   // — no onTestFinished cleanup; daemon leaks if any assertion throws
+ *
+ * The safe shape captures the pid (or another stop handle) and registers
+ * `onTestFinished(() => process.kill(pid, "SIGTERM"))` BEFORE any later
+ * assertion or daemon observation that could throw:
+ *
+ *   const pid = readPidFromFile();
+ *   onTestFinished(() => { try { process.kill(pid, "SIGTERM"); } catch {} });
+ *   // — later observations are now bounded by per-test cleanup
+ *
+ * The regressions below pair synthetic guardrail fixtures (runOxlint on
+ * inline source strings) with a focused structural contract test on the
+ * real `tests/cli-no-daemon.test.ts`. The synthetic-rejected cases are
+ * staged as `it.fails(...)` today: the rule has no implicit-auto-start
+ * classifier yet, so today's assertion `toContain("no-leaky-test-daemon")`
+ * throws and `it.fails` PASSES. When @task-fix-implicit-autostart-
+ * cleanup-coverage lands and the rule reports the pattern, the
+ * assertion will hold and `it.fails` will FAIL — the structured signal
+ * to the fix worker to flip the test from `it.fails(...)` back to
+ * `it(...)`. The structural contract test is staged the same way for
+ * the parallel source-hardening step in the same fix task.
+ *
+ * AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+ * AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+ * AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+ */
+describe("daemon test guardrail precision: implicit CLI auto-start cleanup boundary", () => {
+  describe("synthetic fixtures cover the implicit auto-start ownership shape", () => {
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // UNSAFE: a non-`serve start --detach` CLI invocation (`spawnSync("kspec",
+    // ["util", "ulid"])`) implicitly brings up the daemon under
+    // `daemon.auto_start: true`. The test reads the daemon pid file
+    // (`isolatedHome.daemonPidFilePath` via the safe `readTestOutputSync`
+    // helper), runs an `execSync("ps -p ${pid}")` observation, and only
+    // THEN attaches `onTestFinished(() => process.kill(pid, "SIGTERM"))`.
+    // If `expect(processCommand)…` throws, the cleanup callback is never
+    // registered and the auto-started daemon survives into the next
+    // test. The detached-serve guardrail in the rule today inspects only
+    // the literal `serve start --detach` token sequence, so this implicit
+    // ownership shape is currently a false negative.
+    it.fails(
+      "should flag implicit auto-start via spawnSync('kspec', ['util','ulid']) when cleanup is registered AFTER a daemon-pid observation",
+      () => {
+        const result = runOxlint({
+          source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawnSync, execSync } from "node:child_process";
+import { readTestOutputSync } from "./helpers/cli";
+
+describe("implicit auto-start observed before cleanup", () => {
+  it("auto-starts and observes pid before registering cleanup", () => {
+    const isolatedHome = { daemonPidFilePath: "/tmp/daemon.pid" };
+    const result = spawnSync("kspec", ["util", "ulid"], { env: process.env });
+    expect(result.status).toBe(0);
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    const processCommand = execSync(\`ps -p \${pid} -o command=\`, { encoding: "utf-8" }).trim();
+    expect(processCommand).toContain("node");
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  });
+});
+`,
+        });
+        expect(result.output).toContain("no-leaky-test-daemon");
+        expect(result.output).toMatch(/auto-start|implicit|scoped cleanup|onTestFinished|before.*observation/i);
+      },
+    );
+
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // UNSAFE: same implicit auto-start shape but with NO scoped cleanup
+    // anywhere — the test calls `kspec serve stop` as a tail statement
+    // after the observation, but that is not `onTestFinished` and does
+    // not run when an earlier assertion throws. This is the exact
+    // shape of the first auto-start case in `tests/cli-no-daemon.test.ts`
+    // (the bun runtime parity case): a `kspec serve stop` call sits at
+    // the end of the `it(...)` body, but every preceding `expect(...)`
+    // can abort the test before cleanup runs. The detached-serve rule
+    // does not credit a tail `kspec serve stop` as scoped cleanup —
+    // and once the rule has an implicit-auto-start classifier, this
+    // case must be flagged.
+    it.fails(
+      "should flag implicit auto-start via spawnSync('kspec', ['util','ulid']) when the only cleanup is a tail 'kspec serve stop' (not onTestFinished)",
+      () => {
+        const result = runOxlint({
+          source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync, execSync } from "node:child_process";
+import { readTestOutputSync, kspec } from "./helpers/cli";
+
+describe("implicit auto-start without per-test cleanup", () => {
+  it("auto-starts and stops via a tail CLI call only", () => {
+    const isolatedHome = { daemonPidFilePath: "/tmp/daemon.pid" };
+    const tempDir = "/tmp/project";
+    const result = spawnSync("kspec", ["util", "ulid"], { env: process.env });
+    expect(result.status).toBe(0);
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    const processCommand = execSync(\`ps -p \${pid} -o command=\`, { encoding: "utf-8" }).trim();
+    expect(processCommand).toContain("node");
+    kspec(\`serve stop --kspec-dir \${tempDir}\`, tempDir, { env: isolatedHome });
+  });
+});
+`,
+        });
+        expect(result.output).toContain("no-leaky-test-daemon");
+        expect(result.output).toMatch(/auto-start|implicit|scoped cleanup|onTestFinished|before.*observation/i);
+      },
+    );
+
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    // ALLOWED: the safe ownership shape — the test captures the daemon
+    // pid into a const and registers `onTestFinished(() => process.kill(
+    // pid, "SIGTERM"))` BEFORE any subsequent assertion or daemon
+    // observation. The implicit-auto-start classifier must NOT report
+    // this shape: it matches the "CLI invocation → immediate
+    // PID/metadata capture → immediate `onTestFinished` terminating
+    // cleanup → then later observations" pattern that the spec defines
+    // as the safe ownership boundary.
+    it("does not flag implicit auto-start when onTestFinished is registered before any pid-derived observation", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawnSync, execSync } from "node:child_process";
+import { readTestOutputSync } from "./helpers/cli";
+
+describe("implicit auto-start with immediate cleanup", () => {
+  it("auto-starts, captures pid, registers cleanup, then observes", () => {
+    const isolatedHome = { daemonPidFilePath: "/tmp/daemon.pid" };
+    const result = spawnSync("kspec", ["util", "ulid"], { env: process.env });
+    expect(result.status).toBe(0);
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    onTestFinished(() => {
+      try { process.kill(pid, "SIGTERM"); } catch {}
+    });
+    const processCommand = execSync(\`ps -p \${pid} -o command=\`, { encoding: "utf-8" }).trim();
+    expect(processCommand).toContain("node");
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+    // ALLOWED control: an ordinary CLI test that runs a kspec subcommand
+    // and inspects only `result.stdout` / `result.status`. The test
+    // never reads the daemon pid file, never observes daemon
+    // metadata, and never owns the daemon. Even with the
+    // implicit-auto-start classifier in place, this case must remain
+    // unreported — the classifier's narrowness is what keeps ordinary
+    // CLI subprocess tests unaffected.
+    it("does not flag a kspec CLI subprocess test that never observes the daemon pid file or metadata", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync } from "node:child_process";
+
+describe("ordinary CLI subprocess test", () => {
+  it("returns the expected ulid format", () => {
+    const result = spawnSync("kspec", ["util", "ulid"], { env: process.env });
+    expect(result.status).toBe(0);
+    expect(result.stdout.toString()).toMatch(/^[0-9A-Z]+$/);
+  });
+});
+`,
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    // UNSAFE: the test never registers any cleanup at all. It auto-starts
+    // implicitly, reads the pid, and observes — leaving the daemon
+    // alive even on the happy path (let alone on assertion throw). This
+    // is the most acute leak shape covered by the new classifier.
+    it.fails(
+      "should flag implicit auto-start with daemon pid observation and NO cleanup registration anywhere in the test",
+      () => {
+        const result = runOxlint({
+          source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync, execSync } from "node:child_process";
+import { readTestOutputSync } from "./helpers/cli";
+
+describe("implicit auto-start with no cleanup at all", () => {
+  it("auto-starts and observes pid without ever registering cleanup", () => {
+    const isolatedHome = { daemonPidFilePath: "/tmp/daemon.pid" };
+    const result = spawnSync("kspec", ["util", "ulid"], { env: process.env });
+    expect(result.status).toBe(0);
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    const processCommand = execSync(\`ps -p \${pid} -o command=\`, { encoding: "utf-8" }).trim();
+    expect(processCommand).toContain("node");
+  });
+});
+`,
+        });
+        expect(result.output).toContain("no-leaky-test-daemon");
+        expect(result.output).toMatch(/auto-start|implicit|scoped cleanup|onTestFinished|before.*observation/i);
+      },
+    );
+
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    // UNSAFE: the kspec invocation uses the `runKspec`/`kspec` helper
+    // shape (single shell-style args string) instead of `spawnSync`.
+    // The pid file is read and observed before cleanup is attached. The
+    // classifier must catch this helper shape too — `runKspec("util ulid")`
+    // is the same implicit-auto-start path as `spawnSync("kspec",
+    // ["util", "ulid"])`, just through the project's CLI helper.
+    it.fails(
+      "should flag implicit auto-start via runKspec('util ulid') helper when pid is observed before cleanup",
+      () => {
+        const result = runOxlint({
+          source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { execSync } from "node:child_process";
+import { readTestOutputSync } from "./helpers/cli";
+
+describe("implicit auto-start via runKspec helper", () => {
+  it("auto-starts, observes pid, then registers cleanup", () => {
+    const isolatedHome = { daemonPidFilePath: "/tmp/daemon.pid" };
+    const result = runKspec("util ulid");
+    expect(result.exitCode).toBe(0);
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    expect(pid).toBeGreaterThan(0);
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+  });
+});
+`,
+        });
+        expect(result.output).toContain("no-leaky-test-daemon");
+        expect(result.output).toMatch(/auto-start|implicit|scoped cleanup|onTestFinished|before.*observation/i);
+      },
+    );
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // UNSAFE: process-lifecycle cleanup hook is not per-test scoped. A
+    // detached or implicitly-auto-started daemon "cleaned up" via
+    // `process.on("exit", ...)` survives into every subsequent test in
+    // the file — only Node-process shutdown triggers the handler. The
+    // classifier must reject process-lifecycle hooks as the sole cleanup
+    // boundary for an auto-started daemon, exactly as it does for the
+    // explicit `serve start --detach` path.
+    it.fails(
+      "should flag implicit auto-start when the only cleanup is process.on(\"exit\", ...) (not per-test scoped)",
+      () => {
+        const result = runOxlint({
+          source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync } from "node:child_process";
+import { readTestOutputSync } from "./helpers/cli";
+
+describe("implicit auto-start with process-lifecycle cleanup", () => {
+  it("registers cleanup on process exit instead of onTestFinished", () => {
+    const isolatedHome = { daemonPidFilePath: "/tmp/daemon.pid" };
+    const result = spawnSync("kspec", ["util", "ulid"], { env: process.env });
+    expect(result.status).toBe(0);
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    process.on("exit", () => {
+      try { process.kill(pid, "SIGTERM"); } catch {}
+    });
+    expect(pid).toBeGreaterThan(0);
+  });
+});
+`,
+        });
+        expect(result.output).toContain("no-leaky-test-daemon");
+        expect(result.output).toMatch(/auto-start|implicit|scoped cleanup|process.on|test-scoped|per-test/i);
+      },
+    );
+  });
+
+  describe("focused source coverage of the real tests/cli-no-daemon.test.ts auto-start cases", () => {
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    //
+    // Focused contract test on the REAL `tests/cli-no-daemon.test.ts`
+    // source file. The detached-serve guardrail rule today inspects only
+    // the literal `serve start --detach` token sequence — so the
+    // implicit-auto-start path used by `tests/cli-no-daemon.test.ts` is
+    // invisible to the rule. Until the rule's implicit-auto-start
+    // classifier in @task-fix-implicit-autostart-cleanup-coverage lands
+    // AND the file's first auto-start case is hardened (it currently
+    // observes the daemon pid via `execSync("ps -p ${pid}")` /
+    // `expect(processCommand).toContain("node")` and only stops the
+    // daemon via a tail `kspec("serve stop ...")` — no scoped
+    // `onTestFinished` is registered), the file exhibits the unsafe
+    // implicit-auto-start ownership shape.
+    //
+    // This is a STRUCTURAL contract on a test file (not on
+    // implementation source). The check uses `readTestOutputSync` —
+    // the no-source-scanning rule's safe-listed read helper — to read
+    // the file and walks the source line-by-line looking for the
+    // unsafe shape:
+    //
+    //   1. An outer-scope (top-level it-block body) capture of the
+    //      daemon pid from `readTestOutputSync(...daemonPidFilePath...)`.
+    //   2. A subsequent observation that uses that pid (an
+    //      `execSync(\`ps -p \${pid}\`)` call, or any `expect(\`...\${pid}...\`)`
+    //      / `expect(processCommand).toContain(...)` shape, or another
+    //      `expect(...)` that depends on the captured pid) before any
+    //      `onTestFinished` registration in the same it-block body.
+    //
+    // The check intentionally does NOT inspect `await waitForStartup(...)`
+    // callbacks — those are inner-scope reads inside helper closures and
+    // their failures are bounded by waitForStartup's own timeout. The
+    // leak target is the post-waitForStartup outer-scope pid capture
+    // followed by `expect(...)` observations.
+    //
+    // FAILING-BEFORE-FIX: today the first auto-start case in
+    // `tests/cli-no-daemon.test.ts` (the bun-runtime parity case at the
+    // top of the file) exhibits the unsafe shape — it does
+    // `const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);`
+    // and then `const processCommand = execSync(\`ps -p \${pid}\`)…;
+    // expect(processCommand).toContain("node")` with no
+    // `onTestFinished(() => process.kill(pid, ...))` registration
+    // anywhere in the test body. The structural check therefore
+    // returns at least one finding and the post-fix assertion
+    // `toEqual([])` throws. `it.fails` PASSES today. When the source
+    // fix in @task-fix-implicit-autostart-cleanup-coverage lands, the
+    // assertion holds and `it.fails` will FAIL — that failure is the
+    // structured signal to the fix worker to flip this test from
+    // `it.fails(...)` back to `it(...)`.
+    it.fails(
+      "every auto-start case in tests/cli-no-daemon.test.ts registers onTestFinished cleanup before any pid-derived observation",
+      () => {
+        const cliNoDaemonPath = path.resolve(
+          PROJECT_ROOT,
+          "tests/cli-no-daemon.test.ts",
+        );
+        const source = readTestOutputSync(cliNoDaemonPath);
+        const findings = collectUnsafeAutoStartFindings(source);
+        expect(findings).toEqual([]);
+      },
+    );
+
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    //
+    // Sanity check on the structural classifier itself. The classifier
+    // is the load-bearing piece for the contract above — if it
+    // collapses to "always empty," the failing-before-fix regression
+    // would silently pass and we would lose the signal. This test
+    // feeds the classifier a synthetic source string that contains the
+    // SAFE pattern (immediate `onTestFinished` after pid capture) and
+    // an UNSAFE pattern (pid capture followed by observation with no
+    // cleanup) and asserts the classifier finds exactly the unsafe
+    // case. It runs today, against the real classifier, with no
+    // dependency on the rule or the source fix.
+    it("classifier finds unsafe pid-observation patterns but skips safe ones", () => {
+      const safeAndUnsafe = `
+import { it, onTestFinished, expect } from "vitest";
+
+it("safe auto-start", () => {
+    const isolatedHome = { daemonPidFilePath: "/tmp/daemon.pid" };
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    const processCommand = execSync(\`ps -p \${pid}\`).toString();
+    expect(processCommand).toContain("node");
+});
+
+it("unsafe auto-start", () => {
+    const isolatedHome = { daemonPidFilePath: "/tmp/daemon.pid" };
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    const processCommand = execSync(\`ps -p \${pid}\`).toString();
+    expect(processCommand).toContain("node");
+});
+`;
+      const findings = collectUnsafeAutoStartFindings(safeAndUnsafe);
+      expect(findings.length).toBeGreaterThanOrEqual(1);
+      const offending = findings.map((f) => f.snippet).join("\n");
+      expect(offending).toContain("processCommand");
+      // The safe block must NOT appear in the findings — verify by
+      // ensuring the only findings come AFTER the "unsafe auto-start"
+      // it-block opens in the source.
+      const unsafeOpenIndex = safeAndUnsafe.indexOf('it("unsafe auto-start"');
+      for (const f of findings) {
+        const captureOffset = safeAndUnsafe.indexOf(f.snippet);
+        expect(captureOffset).toBeGreaterThan(unsafeOpenIndex);
+      }
+    });
+  });
+});
+
+/**
+ * Structural classifier for the real tests/cli-no-daemon.test.ts
+ * focused-source-coverage contract.
+ *
+ * Walks the source line-by-line and surfaces every outer-scope pid
+ * capture (`const pid = parseInt(readTestOutputSync(...daemonPidFilePath
+ * ...).trim(), 10);`) whose enclosing it-block body proceeds to a
+ * pid-derived observation before any `onTestFinished` registration. The
+ * "outer scope" heuristic uses indentation: pid captures inside
+ * `waitForStartup(...)` callbacks live at deeper indent levels (8+
+ * spaces) and are skipped because waitForStartup's own timeout bounds
+ * their failure. The classifier is a structural check on a test file
+ * (not on implementation source), used by the failing-before-fix
+ * contract above.
+ *
+ * Returns one finding per unsafe pid capture, each with a snippet that
+ * the contract test can use to identify the offending block.
+ */
+function collectUnsafeAutoStartFindings(source: string): Array<{
+  line: number;
+  snippet: string;
+}> {
+  const lines = source.split("\n");
+  const findings: Array<{ line: number; snippet: string }> = [];
+
+  // Heuristic: outer-scope pid capture inside an it-block body sits at
+  // 4–6 leading spaces. Lines indented further (8+ spaces) are inside
+  // a nested callback (e.g. waitForStartup's async probe). The capture
+  // pattern is the canonical
+  //   const <name> = parseInt(readTestOutputSync(<expr>daemonPidFilePath<expr>).trim(), 10);
+  // shape used by tests/cli-no-daemon.test.ts; the classifier matches
+  // on both the `daemonPidFilePath` token and the `readTestOutputSync`
+  // call so a bare `parseInt(...)` somewhere else is not picked up.
+  const captureRe =
+    /^( {2,6})const\s+(\w+)\s*=\s*parseInt\(\s*readTestOutputSync\([^)]*daemonPidFilePath[^)]*\)/;
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const captureMatch = lines[i].match(captureRe);
+    if (!captureMatch) continue;
+    const pidName = captureMatch[2];
+
+    // Scan forward in the same it-block body. The block closes at the
+    // first line whose indent is shorter than the capture line and
+    // contains a `}` (the close brace for the enclosing arrow). Inside
+    // the block, the classifier looks for the first occurrence of any
+    // pid-derived observation OR an onTestFinished registration. If a
+    // pid-derived observation appears first, the capture is unsafe.
+    const captureIndent = captureMatch[1].length;
+    let unsafe = false;
+    let observationLine = -1;
+    for (let j = i + 1; j < lines.length; j += 1) {
+      const line = lines[j];
+      const trimmed = line.trimStart();
+      const indent = line.length - trimmed.length;
+
+      // End of enclosing it-block body.
+      if (indent < captureIndent && trimmed.startsWith("}")) break;
+
+      // Scoped cleanup registration that captures the pid by name
+      // closes the case as safe.
+      if (
+        /onTestFinished\s*\(/.test(line) ||
+        /\bafterEach\s*\(/.test(line)
+      ) {
+        unsafe = false;
+        break;
+      }
+
+      // A pid-derived observation BEFORE the cleanup registration is
+      // the unsafe signal. Recognised observations:
+      //   - execSync(`ps -p ${pid}`) — process probe
+      //   - expect(<expr that references the pid name>) — assertion
+      //   - any reference to the pid name inside an `expect(` call on
+      //     the same line
+      //   - any template literal containing `${pidName}` in an
+      //     `expect(...)` call on the same line
+      const pidUseRe = new RegExp(`\\b${pidName}\\b`);
+      if (/expect\s*\(/.test(line) && pidUseRe.test(line)) {
+        unsafe = true;
+        observationLine = j;
+        break;
+      }
+      if (
+        /execSync\s*\(/.test(line) &&
+        /\bps\s+-p\b/.test(line) &&
+        pidUseRe.test(line)
+      ) {
+        unsafe = true;
+        observationLine = j;
+        break;
+      }
+      // An assignment whose right-hand side uses the pid (e.g.
+      // `const cmd = execSync(`ps -p ${pid}`)`) is itself an
+      // observation that can throw and leaks the daemon if it does.
+      if (
+        /^\s*(const|let|var)\s+\w+\s*=\s*execSync\s*\(/.test(line) &&
+        pidUseRe.test(line)
+      ) {
+        unsafe = true;
+        observationLine = j;
+        break;
+      }
+      // `expect(<varName>).toContain(...)` where <varName> is the
+      // result of a pid-derived observation on a prior line is also
+      // unsafe. The simpler signal is to flag any `expect(<ident>)`
+      // call that follows a pid-derived observation in the same block
+      // — but we only need to detect ONE observation to mark the
+      // capture unsafe.
+    }
+
+    if (unsafe) {
+      const start = Math.max(0, i);
+      const end = Math.min(lines.length - 1, observationLine);
+      findings.push({
+        line: i + 1,
+        snippet: lines.slice(start, end + 1).join("\n"),
+      });
+    }
+  }
+
+  return findings;
+}

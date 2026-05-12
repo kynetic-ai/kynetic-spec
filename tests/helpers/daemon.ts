@@ -60,6 +60,18 @@ const WEB_UI_BUILD_CANDIDATES = [
 
 export type DaemonTestRuntime = DaemonRuntime;
 
+/**
+ * Named stages observable by `__testStageHook` during `createTestDaemonProject`.
+ * Each stage corresponds to a point at which the project has just claimed a
+ * new owned resource (temp dir, shadow worktree, isolated HOME). Contract
+ * tests use the hook to simulate a later-step failure and assert that
+ * already-owned resources are cleaned up.
+ */
+export type CreateTestDaemonProjectStage =
+  | "after-temp-dir"
+  | "after-shadow-detection"
+  | "after-isolated-home";
+
 export interface CreateTestDaemonProjectOptions {
   /** Source directory copied into the project's `.kspec/`. Defaults to e2e fixtures. */
   fixturesSource?: string;
@@ -67,6 +79,15 @@ export interface CreateTestDaemonProjectOptions {
   skipFixtures?: boolean;
   /** Override WEB_UI_DIR. Defaults to dist/web-ui or packages/web-ui/build if present. */
   webUiDir?: string | null;
+  /**
+   * Test-only seam: invoked synchronously after each named setup stage so
+   * contract tests can simulate a later-step failure by throwing. The hook
+   * must remain non-behavioral: it observes the stage label only and does
+   * not alter the surrounding flow except by re-throwing. Production callers
+   * must not pass this. Pairs with the
+   * `ac-setup-failure-cleans-owned-resources` regression coverage.
+   */
+  __testStageHook?: (stage: CreateTestDaemonProjectStage) => void;
 }
 
 export interface TestDaemonProject {
@@ -149,6 +170,16 @@ export interface StartTestDaemonOptions {
     child: ChildProcess;
     endpoint: DaemonResolvedEndpoint;
   }) => void;
+  /**
+   * Test-only seam: when set, the fixture-owned stop function still kills the
+   * spawned child via the default `killChildScoped` path AND then throws this
+   * error so contract tests can exercise the cleanup-also-fails scenarios for
+   * `@daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure`.
+   * The throw happens exactly once (gated by the same `stopped` flag that
+   * guards the kill) so the test-finished cleanup hook can call `stop()`
+   * idempotently. Production callers must not pass this.
+   */
+  __testStopFailure?: Error;
 }
 
 export interface StartedTestDaemon {
@@ -331,6 +362,7 @@ export async function createTestDaemonProject(
   opts: CreateTestDaemonProjectOptions = {},
 ): Promise<TestDaemonProject> {
   const tempDir = await createTempDir("kspec-daemon-fixture-");
+  opts.__testStageHook?.("after-temp-dir");
   const kspecDir = join(tempDir, ".kspec");
   mkdirSync(kspecDir, { recursive: true });
 
@@ -338,6 +370,7 @@ export async function createTestDaemonProject(
   // .kspec/.git → .git/worktrees/-kspec, so initContext() / daemon project
   // detection resolves spec data from .kspec/.
   await setupShadowDetection(tempDir);
+  opts.__testStageHook?.("after-shadow-detection");
 
   if (!opts.skipFixtures) {
     const source = opts.fixturesSource ?? E2E_FIXTURES;
@@ -352,6 +385,7 @@ export async function createTestDaemonProject(
   }
 
   const isolatedHome = await createIsolatedKspecHome(tempDir);
+  opts.__testStageHook?.("after-isolated-home");
 
   const webUiDir =
     opts.webUiDir === undefined ? findFirstWebUiBuild() : opts.webUiDir ?? null;
@@ -721,8 +755,15 @@ export async function startTestDaemon(
     // is no pid to signal and no 'exit' event will fire. killChildScoped
     // would block for its graceful timeout before giving up — short-circuit
     // instead so cleanup stays bounded for launch-failure callers.
-    if (launchError && child.pid === undefined) return;
-    await killChildScoped(child);
+    if (!(launchError && child.pid === undefined)) {
+      await killChildScoped(child);
+    }
+    // Test-only failure injection: see `__testStopFailure` JSDoc. Gated by
+    // the `stopped` flag above, so a subsequent test-finished cleanup call
+    // is a no-op and does not throw again.
+    if (opts.__testStopFailure) {
+      throw opts.__testStopFailure;
+    }
   };
 
   // Test-only observer seam: lets contract tests capture the live child

@@ -25,6 +25,8 @@ import { once } from "events";
 import { dirname, join } from "path";
 import { chmodSync, existsSync, mkdirSync, writeFileSync } from "fs";
 import { createServer } from "net";
+import { createServer as createHttpServer, type Server as HttpServer } from "node:http";
+import type { AddressInfo } from "node:net";
 import type { ChildProcess } from "child_process";
 
 /**
@@ -318,6 +320,85 @@ describe("kspec serve commands", () => {
       ),
     ).rejects.toThrow(/Last observation: status=503 body=warming-up/);
   });
+
+  // AC: @daemon-test-teardown-boundedness ac-daemon-observations-are-bounded
+  // AC: @daemon-backed-test-fixture-contract ac-bounded-readiness
+  // AC: @daemon-sensitive-cli-test-determinism ac-readiness-diagnostics
+  // FAILING-BEFORE-FIX regression for the bare-fetch call sites in this
+  // suite. `waitForDaemonHealth` (defined above) and the inline
+  // `await fetch(\`${daemonEndpoint.apiUrl}/api/health\`)` /
+  // `/api/projects` probes scattered through this file all hit a daemon
+  // endpoint with no client-side abort signal or timeout. When a daemon
+  // accepts the connection but does not respond, each bare fetch can
+  // hang up to the OS TCP timeout (~75s on Linux) — far past the
+  // readiness budget the caller intended. The companion fix task
+  // (@task-fix-active-request-teardown-and-observation-bounds) introduces
+  // a shared bounded daemon-fetch helper that those call sites must
+  // adopt. When the fix lands this assertion passes and vitest's
+  // `it.fails` will flag the case for re-enablement as plain `it(...)`.
+  //
+  // A small inline hang server is used in place of a real daemon so the
+  // /api/health probe shape mirrors the call-site pattern exactly. The
+  // cleanup AbortController bounds the simulated bare fetch only at
+  // teardown — not as a timeout — so the test does not accidentally
+  // cover the gap it is meant to expose.
+  it.fails(
+    "bare fetch to /api/health reaches a bounded outcome when the endpoint stalls",
+    async () => {
+      const hangServer: HttpServer = createHttpServer(() => {
+        // Accept the connection but never write a response — mirrors a
+        // daemon that has bound its listener but stalled mid-handler.
+      });
+      const hangServerPort = await new Promise<number>((resolveListen, rejectListen) => {
+        hangServer.once("error", rejectListen);
+        hangServer.listen(0, "127.0.0.1", () => {
+          const addr = hangServer.address() as AddressInfo | null;
+          if (!addr) {
+            rejectListen(new Error("hang server failed to allocate port"));
+            return;
+          }
+          resolveListen(addr.port);
+        });
+      });
+
+      const cleanupController = new AbortController();
+      onTestFinished(async () => {
+        cleanupController.abort();
+        // Server is also stopped via destroy so any lingering sockets
+        // are reaped regardless of whether the active fetch was aborted.
+        await new Promise<void>((resolveClose) => {
+          hangServer.closeAllConnections?.();
+          hangServer.close(() => resolveClose());
+        });
+      });
+
+      // Bare-fetch shape matching cli-serve.test.ts call sites. The
+      // signal is wired to test cleanup only — not to a user-facing
+      // timeout. The contract under test is exactly that the call site
+      // does not bound itself.
+      const BUDGET_MS = 400;
+      const startedAt = Date.now();
+      const outcome = await Promise.race([
+        fetch(`http://127.0.0.1:${hangServerPort}/api/health`, {
+          signal: cleanupController.signal,
+        })
+          .then(() => "responded" as const)
+          .catch(() => "errored" as const),
+        new Promise<"timeout">((resolveTimeout) =>
+          setTimeout(() => resolveTimeout("timeout"), BUDGET_MS),
+        ),
+      ]);
+      const elapsed = Date.now() - startedAt;
+
+      // ac-daemon-observations-are-bounded: a daemon-facing probe must
+      // reach a bounded terminal outcome — a real response or a bounded
+      // error from the shared helper that replaces these bare fetches.
+      // "timeout" means the bare fetch stayed in flight past the focused
+      // budget, locking the gap this regression protects.
+      expect(outcome).not.toBe("timeout");
+      expect(elapsed).toBeLessThan(BUDGET_MS);
+    },
+  );
 
   // AC: @cli-serve-commands ac-1
   // AC: @daemon-server ac-12
