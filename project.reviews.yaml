@@ -203903,6 +203903,16 @@ reviews:
         runner: npm
         created_at: 2026-05-12T07:53:38.473Z
         completed_at: 2026-05-12T07:53:38.473Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npx oxlint tests/lint-daemon-test-guardrails.test.ts: Found 0 warnings and 0 errors."
+        name: touched file oxlint
+        required: true
+        runner: oxlint
+        created_at: 2026-05-12T07:54:04.186Z
+        completed_at: 2026-05-12T07:54:04.186Z
     events:
       - _ulid: 01KRDHWT1CCT01GV3ZQDQ3G52N
         actor: Jacob Chapel
@@ -203938,6 +203948,13 @@ reviews:
           status: pass
           name: full test suite
         timestamp: 2026-05-12T07:53:39.990Z
+      - _ulid: 01KRDJVJ1RBPM81VVWSB1XXDZF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: touched file oxlint
+        timestamp: 2026-05-12T07:54:05.752Z
     examined_commit: 70f36e34d73a83df3a8ef32ec6ec7470e6509870
     external_links: []
     lifecycle_state: open
@@ -203950,5 +203967,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T07:37:18.125Z
-    updated_at: 2026-05-12T07:53:38.473Z
+    updated_at: 2026-05-12T07:54:04.186Z
     notes: []
