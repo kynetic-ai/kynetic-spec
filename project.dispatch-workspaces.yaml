@@ -29958,7 +29958,7 @@ workspaces:
         head: e105a25901b63defac3d25adc605a545ac1df7d2
         last_seen_at: 2026-05-12T17:38:06.705Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-active-request-teardown-and-observation-bounds-01krcrjs
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
     bootstrap:
       status: succeeded
@@ -30454,9 +30454,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T19:38:36.015Z
-      last_reconciled_at: 2026-05-12T19:57:03.436Z
+      last_reconciled_at: 2026-05-12T20:01:16.596Z
       created_at: 2026-05-12T17:38:44.644Z
-      updated_at: 2026-05-12T19:57:05.921Z
+      updated_at: 2026-05-12T20:01:16.596Z
     workspace_id: dispatch-workspace-01KRCRJSNXN4SS1XJ6DKD4XC46
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
