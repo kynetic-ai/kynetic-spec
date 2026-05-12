@@ -595,3 +595,283 @@ describe("mock daemon helper — startup-failure hygiene contract", () => {
     expect(recorded.KSPEC_SESSION_ID).toBe("01OVERRIDESESSION0000000000");
   });
 });
+
+/**
+ * FAILING-BEFORE-FIX regression suite for @daemon-test-teardown-boundedness
+ * ac-active-requests-do-not-block-teardown and ac-daemon-observations-are-bounded.
+ *
+ * The mock daemon advertises a "hang" mode for `/api/command` that accepts
+ * the connection but never writes a response. That mode lets us simulate
+ * the "daemon-like server with an active request that does not complete"
+ * scenario described by the AC.
+ *
+ * Today:
+ *   - In-process `stop()` awaits `server.close()`, which Node holds open
+ *     until every active connection drains. With a hung request, the close
+ *     callback never fires and `stop()` never resolves — there is no
+ *     bounded outcome.
+ *   - The child-process variant also catches SIGTERM and runs
+ *     `server.close(() => process.exit(0))` in its signal handler, which
+ *     hangs for the same reason. The parent's stop closure escalates to
+ *     SIGKILL after CHILD_GRACEFUL_KILL_MS, which is the only thing that
+ *     bounds the outer wait.
+ *   - There is no shared bounded daemon-fetch helper, so daemon-facing
+ *     probes that use bare `fetch(url)` (cli-serve.test.ts waitForDaemonHealth,
+ *     Playwright daemon setup) can hang up to the OS TCP timeout (~75s on
+ *     Linux) when a daemon endpoint stalls mid-request.
+ *
+ * Each test bounds itself with an explicit Promise.race timer so the suite
+ * cannot hang even when the contract is violated. In-flight hang requests
+ * are cancelled via AbortController before afterEach so any future fix can
+ * complete `server.close()` deterministically during teardown.
+ */
+describe("mock daemon helper — active-request teardown contract", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-mock-daemon-active-request-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @daemon-test-teardown-boundedness ac-active-requests-do-not-block-teardown
+  // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // FAILING-BEFORE-FIX: in-process `stop()` awaits `server.close()`. Node
+  // holds the close callback until every accepted connection drains, so a
+  // hung request keeps the close pending forever. The companion fix task
+  // (@task-fix-active-request-teardown-and-observation-bounds) must track
+  // active sockets / requests and abort them so teardown reaches a bounded
+  // outcome. When the fix lands the inner assertions will pass; vitest's
+  // `it.fails` then flips this case red and the worker MUST switch back to
+  // plain `it(...)`.
+  it.fails(
+    "in-process stop() reaches a bounded outcome when an active request is hanging",
+    async () => {
+      const mock = (await startMockDaemon({ mode: "hang" })) ?? undefined;
+      expect(mock).toBeDefined();
+
+      // Belt-and-suspenders: a future fix that resolves stop() but leaves
+      // a socket dangling should still tear down before afterEach.
+      const controller = new AbortController();
+      onTestFinished(async () => {
+        controller.abort();
+        if (mock) {
+          // Idempotent stop covers the case where the Promise.race below
+          // observed a timeout and the outer stop() is still pending.
+          await mock.stop();
+        }
+      });
+
+      // Issue a hang request and intentionally hold the promise — the
+      // server's handler stalls so Node keeps the connection open. We do
+      // NOT await this promise; the test only needs the request in flight.
+      const hangRequest = fetch(`${mock!.apiUrl}/api/command`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ command: "task list" }),
+        signal: controller.signal,
+      }).catch(() => {
+        // Swallow the AbortError from cleanup; the test is about teardown
+        // boundedness, not the response.
+      });
+
+      // Brief delay so the request reaches the listener and `server.close`
+      // sees an active connection before stop() runs.
+      await new Promise((resolveDelay) => setTimeout(resolveDelay, 100));
+
+      const BOUND_MS = 1_500;
+      const stopStartedAt = Date.now();
+      const stopOutcome = await Promise.race([
+        mock!.stop().then(() => "stopped" as const),
+        new Promise<"timeout">((resolveTimeout) =>
+          setTimeout(() => resolveTimeout("timeout"), BOUND_MS),
+        ),
+      ]);
+      const elapsed = Date.now() - stopStartedAt;
+
+      // Cancel the in-flight request so any future fix can finalize
+      // server.close() during the lingering stop() invocation. Awaiting
+      // hangRequest also ensures the response side has settled before we
+      // assert on the outcome.
+      controller.abort();
+      await hangRequest;
+
+      // ac-active-requests-do-not-block-teardown: stop() must reach a
+      // bounded terminal outcome regardless of in-flight connections.
+      // Today this assertion fails because Promise.race observes "timeout"
+      // — server.close() never resolves while the hang handler holds the
+      // socket open.
+      expect(stopOutcome).toBe("stopped");
+      expect(elapsed).toBeLessThan(BOUND_MS);
+    },
+  );
+
+  // AC: @daemon-test-teardown-boundedness ac-active-requests-do-not-block-teardown
+  // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // The child-process stop() bounds the outer wait via the SIGKILL
+  // escalation timer at CHILD_GRACEFUL_KILL_MS (1.5s) even when the
+  // child's SIGTERM handler calls `server.close()` and hangs on an active
+  // connection. Positive contract lock: a future cleanup refactor that
+  // removed the SIGKILL fallback or extended the grace window without an
+  // escalation path would break the AC.
+  it(
+    "child stop() reaches a bounded outcome when the child has an active hang request",
+    { timeout: 10_000 },
+    async () => {
+      const child =
+        (await startMockDaemon({ asChildProcess: true, mode: "hang" })) ??
+        undefined;
+      expect(child).toBeDefined();
+
+      const controller = new AbortController();
+      onTestFinished(async () => {
+        controller.abort();
+        if (child) await child.stop();
+      });
+
+      // Same hang-request pattern as the in-process case; the child's
+      // SIGTERM handler will call server.close() and stall when stop()
+      // signals it.
+      const hangRequest = fetch(`${child!.apiUrl}/api/command`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ command: "task list" }),
+        signal: controller.signal,
+      }).catch(() => {});
+
+      await new Promise((resolveDelay) => setTimeout(resolveDelay, 100));
+
+      // Allow SIGTERM grace (1.5s) + SIGKILL fan-out + observer settle.
+      // 3s is generous for slow CI without masking a regression that
+      // removes the SIGKILL fallback (which would hang past 3s).
+      const BOUND_MS = 3_000;
+      const stopStartedAt = Date.now();
+      const stopOutcome = await Promise.race([
+        child!.stop().then(() => "stopped" as const),
+        new Promise<"timeout">((resolveTimeout) =>
+          setTimeout(() => resolveTimeout("timeout"), BOUND_MS),
+        ),
+      ]);
+      const elapsed = Date.now() - stopStartedAt;
+
+      controller.abort();
+      await hangRequest;
+
+      // ac-active-requests-do-not-block-teardown: the parent's stop wait
+      // bounds via SIGKILL escalation. The grace window is 1.5s so we
+      // expect the resolution well before the 3s bound.
+      expect(stopOutcome).toBe("stopped");
+      expect(elapsed).toBeLessThan(BOUND_MS);
+    },
+  );
+
+  // AC: @daemon-test-teardown-boundedness ac-daemon-observations-are-bounded
+  // AC: @daemon-backed-test-fixture-contract ac-bounded-readiness
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // Positive contract lock for the bounded-observation pattern callers
+  // SHOULD use against a daemon endpoint that accepts a connection but
+  // does not respond. The companion fix task introduces a shared bounded
+  // daemon-fetch helper; until then this test documents the expected
+  // shape (AbortSignal.timeout aborts within budget and surfaces an
+  // AbortError that callers can treat as a bounded observation).
+  it("AbortSignal.timeout-bounded fetch reaches a bounded outcome against a hang endpoint", async () => {
+    const mock = (await startMockDaemon({ mode: "hang" })) ?? undefined;
+    expect(mock).toBeDefined();
+    onTestFinished(async () => {
+      if (mock) await mock.stop();
+    });
+
+    const BUDGET_MS = 250;
+    const startedAt = Date.now();
+    let aborted = false;
+    let body: string | null = null;
+    try {
+      const response = await fetch(`${mock!.apiUrl}/api/command`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ command: "task list" }),
+        signal: AbortSignal.timeout(BUDGET_MS),
+      });
+      body = await response.text();
+    } catch (err) {
+      // Node fetch surfaces AbortSignal.timeout as a TimeoutError;
+      // accept either name so the test does not depend on the runtime's
+      // exact error class label.
+      const name = err instanceof Error ? err.name : "";
+      aborted = name === "AbortError" || name === "TimeoutError";
+    }
+    const elapsed = Date.now() - startedAt;
+
+    expect(aborted).toBe(true);
+    expect(body).toBeNull();
+    // Bound the observation to a small multiple of the budget so a
+    // future regression that drops the abort signal cannot satisfy this
+    // case by waiting out the OS TCP timeout (~75s on Linux).
+    expect(elapsed).toBeLessThan(BUDGET_MS * 4);
+  });
+
+  // AC: @daemon-test-teardown-boundedness ac-daemon-observations-are-bounded
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // FAILING-BEFORE-FIX: this regression documents the gap at the
+  // representative bare-fetch call sites (cli-serve.test.ts
+  // `waitForDaemonHealth`, the Playwright fixture's createSecondProject
+  // POST, and the inline /api/health probes in cli-serve.test.ts). A
+  // daemon endpoint that accepts the connection and stalls leaves a
+  // bare `fetch(url)` waiting up to the OS TCP timeout (~75s on Linux).
+  // The companion fix task introduces a shared bounded helper that those
+  // call sites must adopt; when the fix lands this assertion passes and
+  // vitest's `it.fails` flags the case for re-enablement as plain `it`.
+  //
+  // The fetch uses a cleanup-bound `AbortSignal` (no timeout) so the
+  // simulated bare-fetch hang can be deterministically released during
+  // `onTestFinished`. The signal is intentionally NOT plumbed to a
+  // timeout — the gap under test is exactly that consumers do not wire a
+  // bounded signal into the call site. The cleanup signal exists only to
+  // keep the test suite bounded; it is not the contract under test.
+  it.fails(
+    "bare fetch() against a hang endpoint reaches a bounded outcome within a focused test budget",
+    async () => {
+      const mock = (await startMockDaemon({ mode: "hang" })) ?? undefined;
+      expect(mock).toBeDefined();
+
+      const cleanupController = new AbortController();
+      onTestFinished(async () => {
+        cleanupController.abort();
+        if (mock) await mock.stop();
+      });
+
+      // Bare-fetch shape from the perspective of the consumer: no
+      // user-facing timeout, no AbortController.signal.timeout wiring.
+      // The signal here is wired to test cleanup only.
+      const BUDGET_MS = 400;
+      const startedAt = Date.now();
+      const outcome = await Promise.race([
+        fetch(`${mock!.apiUrl}/api/command`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ command: "task list" }),
+          signal: cleanupController.signal,
+        })
+          .then(() => "responded" as const)
+          .catch(() => "errored" as const),
+        new Promise<"timeout">((resolveTimeout) =>
+          setTimeout(() => resolveTimeout("timeout"), BUDGET_MS),
+        ),
+      ]);
+      const elapsed = Date.now() - startedAt;
+
+      // ac-daemon-observations-are-bounded: the consumer must observe a
+      // bounded outcome — either a real response or a bounded error from
+      // a shared helper. "timeout" means the request stayed in flight
+      // past the focused budget, which is the gap this regression locks
+      // for the bare-fetch call sites in cli-serve.test.ts and the
+      // Playwright fixture's createSecondProject POST.
+      expect(outcome).not.toBe("timeout");
+      expect(elapsed).toBeLessThan(BUDGET_MS);
+    },
+  );
+});
