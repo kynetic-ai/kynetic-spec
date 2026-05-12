@@ -28844,7 +28844,7 @@
   type: task
   spec_ref: "@daemon-test-teardown-boundedness"
   plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-add-active-request-bounded-observation-regressions"
@@ -28857,6 +28857,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-12T00:14:55.060Z
+  started_at: 2026-05-12T17:11:37.653Z
   automation: eligible
 - _ulid: 01KRCRJSCGAWTVGWM82DNSWWCN
   slugs:
