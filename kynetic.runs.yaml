@@ -45189,7 +45189,7 @@ runs:
     completed_at: 2026-05-12T01:52:22.645Z
   - _ulid: 01KRCYQB960G1D1W7N1MD4R0Q1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -45204,7 +45204,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T02:02:49.888Z
-        completed_at: 2026-05-12T02:02:49.888Z
+        completed_at: 2026-05-12T02:02:58.954Z
+        notes: "Friction points: The submitted task intentionally created failing-before-fix regression
+          tests, but the review/merge gates require the branch itself to keep npm test green. That
+          creates predictable needs_work outcomes for regression-only task splits when the
+          implementation fix is scheduled separately. Secondary friction: full npm test is expensive
+          but necessary as review evidence; focused suites helped reduce uncertainty before paying
+          that cost."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T02:02:58.954Z
+        completed_at: 2026-05-12T02:02:58.954Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T02:02:16.230Z
