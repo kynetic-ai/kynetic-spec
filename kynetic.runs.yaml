@@ -45508,9 +45508,25 @@ runs:
     completed_at: 2026-05-12T03:13:19.112Z
   - _ulid: 01KRD2ZFP3FD2BKFZ9BYBC17TM
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-12T03:16:37.188Z
+        completed_at: 2026-05-12T03:18:43.262Z
+        notes: "Searched: existing observations @01KR431R already documents the expectClassifierGap
+          selective-expected-failure pattern as a success, so my session's reflection on that
+          pattern is a DUPLICATE — do not re-capture. @01KR3ZR8 is the predecessor (resolved by
+          @01KR431R). No existing observations on (a) splitting a single overloaded classifier
+          predicate into per-shape sub-predicates as a refactor strategy or (b) the
+          parameter-default Literal helper-body pattern that bridges static analysis past
+          Identifier-shaped signals. Searched 'rule file size', 'modular classifier', 'predicate
+          split', 'helper origin', 'helper body' — no matches."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-12T03:18:43.262Z
+        completed_at: 2026-05-12T03:18:43.262Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T03:16:37.188Z
