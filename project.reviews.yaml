@@ -201722,6 +201722,23 @@ reviews:
         runner: kspec
         created_at: 2026-05-12T03:08:09.933Z
         completed_at: 2026-05-12T03:08:09.933Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/lint-no-leaky-test-daemon.test.ts;
+          tools/eslint-rules/no-leaky-test-daemon.js; prior review @01KRCXWT; spec
+          @daemon-test-guardrail-precision. Commands run: git diff/stat/log, rg AC annotations,
+          kspec item get, kspec validate, focused npm test, full npm test, git diff --check. Claims
+          verified: prior red-test blocker fixed by it.fails for the three current false negatives;
+          rule still credits process.on exit/beforeExit/SIGTERM so the inverted regressions exercise
+          the intended boundary. Categories searched: correctness, edge cases, error handling/test
+          quality, integration; no blockers found."
+        name: diff and AC review
+        required: false
+        runner: reviewer
+        created_at: 2026-05-12T03:08:24.499Z
+        completed_at: 2026-05-12T03:08:24.499Z
     events:
       - _ulid: 01KRD1RXNJ72HWBD6J9TC1PXA8
         actor: Jacob Chapel
@@ -201757,6 +201774,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-12T03:08:11.598Z
+      - _ulid: 01KRD2GG0R2Z0AZW8QSANRHFZV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: diff and AC review
+        timestamp: 2026-05-12T03:08:26.008Z
     examined_commit: 315823030c112bf8d55755f08cf3db734c4d84fc
     external_links: []
     lifecycle_state: open
@@ -201769,5 +201793,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T02:55:33.554Z
-    updated_at: 2026-05-12T03:08:09.933Z
+    updated_at: 2026-05-12T03:08:24.499Z
     notes: []
