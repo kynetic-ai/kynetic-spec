@@ -205049,6 +205049,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KREF7SYYK22M7DKE1YX2Z86D
         timestamp: 2026-05-12T16:10:08.581Z
+      - _ulid: 01KREF8G6E9PZVBPHY5C5XD3NV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KREF8EVWEKW97948MK3NNV45
+        timestamp: 2026-05-12T16:10:29.966Z
     examined_commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
     external_links: []
     lifecycle_state: open
@@ -205078,7 +205085,25 @@ reviews:
               observed."
             created_at: 2026-05-12T16:10:07.198Z
         kind: blocker
+      - _ulid: 01KREF8EVWEKW97948MK3NNV45
+        anchor:
+          type: code
+          commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
+          line_end: 1330
+          line_start: 1329
+          path: tests/cli-serve.test.ts
+          side: head
+        entries:
+          - _ulid: 01KREF8EVW2XHV4224FYMJH6B6
+            author: Jacob Chapel
+            body: "MUST-FIX: this async onTestFinished callback calls the new async killPid(pid) but does not
+              await it before deleting the temp directory. On assertion failure before the normal
+              serve stop path, cleanupTempDir can run while the daemon is still in the bounded stop
+              sequence, so cleanup no longer guarantees observed process termination before teardown
+              completes. Await killPid(pid) before removing the fixture directory."
+            created_at: 2026-05-12T16:10:28.604Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T15:54:04.568Z
-    updated_at: 2026-05-12T16:10:07.198Z
+    updated_at: 2026-05-12T16:10:28.604Z
     notes: []
