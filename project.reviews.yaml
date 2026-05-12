@@ -205643,6 +205643,20 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T17:12:01.973Z
+      - _ulid: 01KREK5P6C9SMAH3QWGW7MZGXE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KREK5KR988F5WVRCTFYV38G2
+        timestamp: 2026-05-12T17:18:52.109Z
+      - _ulid: 01KREK5WMGYM3F6WM10E7BT35T
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KREK5T2TKFKM6VK682R8FACH
+        timestamp: 2026-05-12T17:18:58.704Z
     examined_commit: f59acb2b8a3caa5cc182ebe42a23b4ff409442e0
     external_links: []
     lifecycle_state: open
@@ -205652,8 +205666,55 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KREK5KR988F5WVRCTFYV38G2
+        anchor:
+          type: code
+          commit: f59acb2b8a3caa5cc182ebe42a23b4ff409442e0
+          line_end: 1124
+          line_start: 1119
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KREK5KRAFXNJRX4NHYXQ0SRA
+            author: Jacob Chapel
+            body: 'MUST-FIX: approved-path imports are trusted by local alias only.
+              `isHelperNameImportedFromApprovedPath` returns true whenever the local import binding
+              is named `killPid`/`stopDaemon` and the module path resolves to
+              `tests/helpers/daemon.ts` or `tests/helpers/mock-daemon.ts`, but it never checks which
+              export was imported. I verified a synthetic file with `import { startTestDaemon as
+              killPid } from "./helpers/daemon"; onTestFinished(() => killPid(pid));` produces
+              `Found 0 warnings and 0 errors`. `startTestDaemon` is an exported daemon starter, not
+              a terminating cleanup helper, so this still lets helper-shaped syntax satisfy cleanup
+              without proof that the imported function terminates the daemon. The origin trust needs
+              to require the imported export itself to be an approved cleanup helper, not just the
+              local alias and path.'
+            created_at: 2026-05-12T17:18:49.610Z
+        kind: blocker
+      - _ulid: 01KREK5T2TKFKM6VK682R8FACH
+        anchor:
+          type: code
+          commit: f59acb2b8a3caa5cc182ebe42a23b4ff409442e0
+          line_end: 1090
+          line_start: 1085
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KREK5T2VB13YTPH9TH12BRB3
+            author: Jacob Chapel
+            body: 'MUST-FIX: local helper-body trust does not prove the helper terminates the daemon passed to
+              it. The local-definition path accepts any helper body that contains a terminating
+              primitive, then separately treats the cleanup call argument as owned. I verified a
+              synthetic `function killPid(_pid) { process.kill(12345, "SIGTERM"); }` followed by
+              `onTestFinished(() => killPid(pid))` produces `Found 0 warnings and 0 errors`. That
+              helper kills a hardcoded unrelated pid and ignores the just-started daemon pid, so it
+              should not satisfy `ac-cleanup-operation-terminates-daemon` or
+              `ac-cleanup-helper-origin-is-trusted`. Body inspection needs to tie the terminating
+              primitive target to the helper parameter/call-site value, or reject helpers whose
+              termination target is unrelated/unverifiable.'
+            created_at: 2026-05-12T17:18:56.091Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T17:11:24.886Z
-    updated_at: 2026-05-12T17:12:00.554Z
+    updated_at: 2026-05-12T17:18:56.091Z
     notes: []
