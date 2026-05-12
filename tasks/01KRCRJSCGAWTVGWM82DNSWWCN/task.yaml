@@ -53,7 +53,7 @@ description: >
 spec_ref: "@daemon-test-teardown-boundedness"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -67,8 +67,8 @@ review_ref: "@01KRDDMFDR6798Q1SYMR79VPBW"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-add-setup-failure-error-preservation-regressions/01krcrjs
-  captured_at: 2026-05-12T06:16:16.453Z
-  commit: 522d65ee504661e1f648142e7a801325b86289d4
+  captured_at: 2026-05-12T07:05:27.668Z
+  commit: ab1d59a2942c2e18b8373c2bd89fd50ef992c151
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-add-setup-failure-error-preservation-regressions/01krcrjs
@@ -201,8 +201,35 @@ history:
         previous: 2026-05-12T06:16:13.076Z
     command: task-start
     timestamp: 2026-05-12T07:05:24.056Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-setup-failure-error-preservation-regressions/01krcrjs
+          captured_at: 2026-05-12T07:05:27.668Z
+          commit: ab1d59a2942c2e18b8373c2bd89fd50ef992c151
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-add-setup-failure-error-preservation-regressions/01krcrjs
+        previous:
+          review_url: null
+          branch: dispatch/task/task-add-setup-failure-error-preservation-regressions/01krcrjs
+          captured_at: 2026-05-12T06:16:16.453Z
+          commit: 522d65ee504661e1f648142e7a801325b86289d4
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-add-setup-failure-error-preservation-regressions/01krcrjs
+      submitted_at:
+        new: 2026-05-12T07:05:27.674Z
+        previous: 2026-05-12T06:16:16.456Z
+    command: task-submit
+    timestamp: 2026-05-12T07:05:27.674Z
 created_at: 2026-05-12T00:14:55.376Z
 started_at: 2026-05-12T07:05:24.055Z
-submitted_at: 2026-05-12T06:16:16.456Z
+submitted_at: 2026-05-12T07:05:27.674Z
 todos: []
 automation: eligible
