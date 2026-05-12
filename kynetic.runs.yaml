@@ -46491,7 +46491,7 @@ runs:
     completed_at: 2026-05-12T05:14:52.073Z
   - _ulid: 01KRDB0400F5A7HJCVDT2ZSS2R
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -46507,7 +46507,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T05:37:33.579Z
-        completed_at: 2026-05-12T05:37:33.579Z
+        completed_at: 2026-05-12T05:38:11.323Z
+        notes: "High-confidence items: (1) Success: comparing task bullets and plan scope against actual
+          call sites, not just added helper tests, exposed two review blockers while full tests were
+          green. (2) Friction: helper-only staged regressions can look like wrapper coverage when
+          the real wrapper has not yet been wired to the helper. Existing coverage found: @01KR6W25
+          covers selective expected-failure assertion placement; @01KRD34R2 covers forward-staged
+          regression workflow leverage. Baseline command friction from this workflow is already
+          tracked by @01KQ8TTN, so I will not duplicate it."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T05:38:11.323Z
+        completed_at: 2026-05-12T05:38:11.323Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T05:36:46.593Z
