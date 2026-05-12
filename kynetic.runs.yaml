@@ -47711,7 +47711,7 @@ runs:
     completed_at: 2026-05-12T18:33:46.257Z
   - _ulid: 01KRES1R3171NM9VRQT4EKN6N5
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47788,7 +47788,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-12T19:04:21.636Z
-        completed_at: 2026-05-12T19:04:21.636Z
+        completed_at: 2026-05-12T19:04:49.798Z
+        notes: "Proposed captures: no new friction item, because both concrete friction points are already
+          tracked. Capture one success observation: in review of static analysis rules, adversarial
+          ad hoc probes against minimal synthetic fixtures at the rule boundary can uncover semantic
+          false negatives that the submitted regression set misses; include the exact probe shape in
+          the review record when it drives a finding. Scope: documentation/process observation,
+          small."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-12T19:04:49.798Z
+        completed_at: 2026-05-12T19:04:49.798Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T19:01:34.433Z
