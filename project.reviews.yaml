@@ -207558,6 +207558,16 @@ reviews:
         required: true
         created_at: 2026-05-12T19:36:47.761Z
         completed_at: 2026-05-12T19:36:47.761Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Registry corruption/unavailable cleanup has no fail-closed contract; different-owner
+          non-expired lease mutation semantics are unspecified.
+        name: Long-term lease failure modes
+        required: true
+        created_at: 2026-05-12T19:37:03.571Z
+        completed_at: 2026-05-12T19:37:03.571Z
     events:
       - _ulid: 01KRETXETVRT4R7XQ5XQRF4Q5Z
         actor: Jacob Chapel
@@ -207614,6 +207624,13 @@ reviews:
           status: pass
           name: Existing spec neighborhood
         timestamp: 2026-05-12T19:36:49.201Z
+      - _ulid: 01KREV2RSHFPH6WPP6YK85TN5W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Long-term lease failure modes
+        timestamp: 2026-05-12T19:37:05.073Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -207725,5 +207742,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-05-12T19:34:11.039Z
-    updated_at: 2026-05-12T19:36:47.761Z
+    updated_at: 2026-05-12T19:37:03.571Z
     notes: []
