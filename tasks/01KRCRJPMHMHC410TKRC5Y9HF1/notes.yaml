@@ -358,3 +358,63 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T17:31:50.764Z
+  - _ulid: 01KREQFGMT8XQGGK7Z3ZE6KCRP
+    content: >-
+      Fix cycle 9: addressed cycle-8 reviewer blockers @01KREK5KR988F5WVRCTFYV38G2 and
+      @01KREK5T2TKFKM6VK682R8FACH on @01KREJR1 review.
+
+
+      Blocker 1 (line 1119): isHelperNameImportedFromApprovedPath trusted the LOCAL alias name plus
+      resolved path, but never inspected which export was actually imported. `import {
+      startTestDaemon as killPid } from "./helpers/daemon"` was credited as cleanup even though
+      startTestDaemon is the daemon STARTER. Fix: anchor approved-import trust on the IMPORTED
+      export name. New constant APPROVED_CLEANUP_HELPER_EXPORT_NAMES (= killPid / stopDaemon /
+      stopMockDaemon — same names as TRUSTED_HELPER_NAMES but matched against spec.imported.name,
+      not spec.local.name). Only ImportSpecifier (named imports) carry an `imported` field;
+      ImportDefaultSpecifier and ImportNamespaceSpecifier shapes cannot be tied to a specific
+      approved cleanup export and are rejected outright. Non-Identifier `imported` shapes (the
+      proposal `import { "kill-pid" as killPid }` form) are also rejected.
+
+
+      Blocker 2 (line 1085): helper-body inspection accepted any terminating primitive in the body
+      without inspecting its TARGET. `function killPid(_pid) { process.kill(12345, "SIGTERM"); }`
+      always killed a hardcoded literal pid unrelated to whatever the call site passed. Fix: new
+      isVerifiableKillTarget helper requires the kill target (the pid arg for process.kill, the
+      receiver for <expr>.kill) to be an Identifier, ThisExpression, or non-computed
+      MemberExpression chain rooted at one. Literal and computed targets (CallExpression,
+      BinaryExpression, TemplateLiteral, computed MemberExpression) are rejected because they cannot
+      represent the just-started daemon. The Identifier case is intentionally broad — both parameter
+      bindings (the helper terminates "whatever was passed in") and outer-scope closure bindings
+      (object-literal kill methods capturing the test's `const pid`) are legitimate, and both
+      existing accepted-shape tests at tests/lint-no-leaky-test-daemon.test.ts:3173 and 3551
+      continue to pass. Same check applied to the top-level isDaemonCleanupCallExpression so
+      `onTestFinished(() => process.kill(12345, "SIGTERM"))` is also rejected.
+
+
+      Reviewer probes verified via oxlint: both `import { startTestDaemon as killPid } from
+      "./helpers/daemon"` and `function killPid(_pid) { process.kill(12345, "SIGTERM"); }` now
+      report missingCleanup (pre-fix: 0 warnings, 0 errors).
+
+
+      Regressions: 8 new positive flag-it cases at tests/lint-no-leaky-test-daemon.test.ts —
+      alias-renames-starter (blocker 1 exact probe), alias-renames-allocator, default-import,
+      namespace-import, function-helper-literal-target (blocker 2 exact probe),
+      arrow-helper-literal-target, object-literal-kill-method-literal-target,
+      top-level-cleanup-literal-target. Tests cover both reviewer probes plus four broader shapes
+      that exercise the same gap through adjacent AST forms (default/namespace imports, arrow
+      helpers, child-handle receiver-check path).
+
+
+      Also merged origin/dev to consume sibling-task additions (process-stop primitives,
+      daemon-fetch helper, daemon.ts/mock-daemon.ts refactors). Clean merge.
+
+
+      Checks: targeted suites pass (364/364: 136 lint-no-leaky-test-daemon + 228
+      lint-daemon-test-guardrails, up from 356 in cycle 8). Full vitest pass (9144 passed, 5 skipped
+      of 9149, 0 failures, 2420s). Changed-file oxlint clean on
+      tools/eslint-rules/no-leaky-test-daemon.js and tests/lint-no-leaky-test-daemon.test.ts (0
+      errors, 35 pre-existing warnings). kspec validate warnings-only (pre-existing AC annotation
+      warnings unrelated to this fix). All three review threads replied and resolved.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T18:34:08.411Z
