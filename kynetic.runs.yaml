@@ -45128,7 +45128,7 @@ runs:
     completed_at: 2026-05-12T01:45:44.535Z
   - _ulid: 01KRCY1RQFVBT88CDCGSD1JSXG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -45144,7 +45144,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T01:51:05.660Z
-        completed_at: 2026-05-12T01:51:05.660Z
+        completed_at: 2026-05-12T01:51:19.474Z
+        notes: "Friction: the reviewed task was explicitly regression-test-only and intentionally submitted
+          with failing tests. That collided with the project review gate that mergeable branches
+          must keep the suite green, causing a predictable needs_work cycle after long deterministic
+          verification. The full suite also took about 35 minutes after the focused failure was
+          already proven, but the full run was required by review policy and provided useful
+          evidence that failures were isolated to the changed file."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T01:51:19.474Z
+        completed_at: 2026-05-12T01:51:19.474Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T01:50:29.103Z
