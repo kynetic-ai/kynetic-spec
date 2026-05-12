@@ -49185,30 +49185,34 @@ plans:
         depends_on:
           - "@task-apply-protection-policy-across-artifact-reconciliation"
         description: |
-          Add guardrail coverage that makes future cleanup changes prove they still use
-          the shared protection policy.
+          Add behavioral guardrail coverage that makes future cleanup changes prove
+          they still honor the shared protection policy.
 
           Why: The long-term maintenance risk is a future cleanup path bypassing the
           centralized active/in-flight/provisioning protection decision. Guardrails
-          should catch that during tests or source audit before it reaches dispatch.
+          must catch that through executable cleanup behavior rather than brittle
+          source-scanning tests.
 
           What:
-          1. Add source-level or contract-level tests that enumerate destructive
-             cleanup operations in `reconcileDispatchWorkspaceArtifacts()` and verify
-             each one is covered by the shared protection helper or by a test case that
-             exercises the public reconciliation path.
-          2. Include destructive surfaces currently present in `src/agent-runtime/workspace.ts`:
-             - `safelyRemoveDispatchWorktree()` for metadata-less worktrees;
-             - `reapDispatchWorkspace()` for cleanup-eligible records;
+          1. Add behavioral or helper-contract tests that exercise the public
+             `reconcileDispatchWorkspaceArtifacts()` path, or the focused protection
+             helper API if it is intentionally exported for tests, with protected and
+             cleanup-eligible cases for each destructive surface.
+          2. Cover destructive surfaces currently present in `src/agent-runtime/workspace.ts`:
+             - metadata-less dispatch worktree removal;
+             - cleanup-eligible record reaping through `reapDispatchWorkspace()`;
              - reviewer snapshot worktree removal;
-             - root-directory `fs.rm(..., { recursive: true, force: true })` pruning;
-             - `deleteDispatchBranch()` for dispatch branch pruning.
-          3. Make the guardrail fail with a clear message naming the unprotected
-             destructive surface and the expected protection policy/helper.
+             - unregistered root-directory pruning;
+             - dispatch branch pruning.
+          3. For each surface, assert both directions:
+             - protected active/in-flight/provisioning artifacts are preserved;
+             - truly orphaned, closed, or terminal cleanup-eligible artifacts are still
+               removed when no protection source applies.
+          4. Make failures identify the behavior gap and cleanup surface under test.
 
-          How: Prefer behavioral contract tests when practical. If a static/source
-          audit is used, keep it narrow and semantic enough to reject bypasses rather
-          than merely checking for a helper name anywhere in the file.
+          How: Do not add source-scanning/static tests that inspect `workspace.ts` for
+          helper names or implementation strings. The guardrail must be behavioral or
+          helper-contract coverage that remains valid through refactors.
 
           Testing: Run
           `mise exec -- npm test -- --run tests/dispatch-workspace-cleanup.test.ts`.
@@ -49290,11 +49294,15 @@ plans:
       available, tests/guardrails after behavior lands, and validation last.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/dispatch-workspace-inflight-cleanup-protection.md
     created_at: 2026-05-12T21:19:46.911Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KRF16NF8354M31Q56J5GR9D7
+        content: Address review finding by requiring behavioral cleanup guardrails instead of source
+          scanning
+        author: Jacob Chapel
+        created_at: 2026-05-12T21:24:04.201Z
