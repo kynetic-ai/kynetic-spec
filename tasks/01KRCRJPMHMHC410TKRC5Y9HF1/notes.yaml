@@ -22,3 +22,21 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T03:36:49.499Z
+  - _ulid: 01KRD5WG0E9W3D670CD2Q1820T
+    content: "Fix cycle 2: addressed both blockers from review @01KRD39Y. Blocker 1 (line 713):
+      isTrustedHelperByOrigin now rejects helper names imported from any non-approved path via new
+      isHelperNameImported predicate; four-path resolution is approved-import → trust,
+      any-other-import → reject, local-definition → require terminating primitive in body, free
+      identifier → conservative trust. Blocker 2 (line 589): added isChildHandleReceiverTrusted that
+      mirrors helper-body inspection — receiver Identifier whose binding is an ObjectExpression
+      literal with a no-op kill property body is rejected; non-Identifier, free, parameter, alias,
+      or CallExpression-init receivers fall through unchanged. Both predicates are wired into
+      isTerminatingPrimitiveCall so wrappers cannot bootstrap trust by either gap. Added 8
+      regression tests (3 unapproved-import shapes, 3 local-literal no-op shapes, 2 accepted
+      companions) plus the spawn-result child-handle shape. Verified ad-hoc with reviewer's exact
+      probes via npx oxlint — both fixtures now report missingCleanup. Targeted suites pass
+      (297/297); full vitest run pass (9053/9058 with 5 skipped). Lint clean on changed files (0
+      errors). kspec validate warnings-only."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T04:07:24.942Z
