@@ -45395,9 +45395,23 @@ runs:
     completed_at: 2026-05-12T02:32:34.573Z
   - _ulid: 01KRD1F2AJZR6WZ1A8GC3DSDMM
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-12T02:50:10.643Z
+        completed_at: 2026-05-12T02:50:51.084Z
+        notes: "What worked well: The detached reviewer workflow was smooth: review record creation,
+          required checks, approve verdict, and the supported detached-reviewer merge helper
+          completed the manual_merge path without needing branch checkout inside the snapshot. The
+          prior blocker was easy to verify because the fix-cycle note named the exact staged helper
+          and failure shape. Targeted tests plus the full test runner gave clear evidence before
+          merge."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-12T02:50:51.084Z
+        completed_at: 2026-05-12T02:50:51.084Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T02:50:10.643Z
