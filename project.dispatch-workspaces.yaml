@@ -28527,18 +28527,18 @@ workspaces:
       remote_ref: null
       source: task-submission-linkage
     canonical_branch: dispatch/task/task-fix-guardrail-cleanup-effect-classification/01krcrjp
-    canonical_branch_head: 91aef3aad51ecfc36f547f55bec8f8972e89812c
+    canonical_branch_head: 56ec34d8326055b533f836eb08517203f2c7a637
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T20:42:01.656Z
+      updated_at: 2026-05-12T21:08:01.847Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T20:42:01.656Z
+      updated_at: 2026-05-12T21:08:01.847Z
     integration:
       status: pending
       detail: null
@@ -28546,7 +28546,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
-      updated_at: 2026-05-12T20:42:01.656Z
+      updated_at: 2026-05-12T21:08:01.847Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@task-fix-guardrail-cleanup-effect-classification"
@@ -28554,9 +28554,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T13:31:48.960Z
-      last_reconciled_at: 2026-05-12T20:42:01.656Z
+      last_reconciled_at: 2026-05-12T21:08:01.847Z
       created_at: 2026-05-12T13:31:21.926Z
-      updated_at: 2026-05-12T20:42:01.656Z
+      updated_at: 2026-05-12T21:08:01.847Z
     workspace_id: dispatch-workspace-task-fix-guardrail-cleanup-effect-classification
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
