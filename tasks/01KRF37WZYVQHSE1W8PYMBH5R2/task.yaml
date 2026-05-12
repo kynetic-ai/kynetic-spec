@@ -36,7 +36,7 @@ description: |
 spec_ref: "@agent-dispatch-engine"
 plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -47,6 +47,14 @@ tags:
   - scheduler
   - cleanup
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-add-inflight-cleanup-protection-engine-ac/01krf37w
+  captured_at: 2026-05-12T22:39:29.505Z
+  commit: 0c6506a55cdb40538275c315cad4c85b131bc7ba
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KRF5CCZYE5YNSJF6M0DM4F6D
 history:
   - author: Jacob Chapel
@@ -69,7 +77,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-12T22:37:32.367Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-inflight-cleanup-protection-engine-ac/01krf37w
+          captured_at: 2026-05-12T22:39:29.505Z
+          commit: 0c6506a55cdb40538275c315cad4c85b131bc7ba
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-12T22:39:29.509Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-12T22:39:29.509Z
 created_at: 2026-05-12T21:59:41.822Z
 started_at: 2026-05-12T22:37:32.366Z
+submitted_at: 2026-05-12T22:39:29.509Z
 todos: []
 automation: eligible
