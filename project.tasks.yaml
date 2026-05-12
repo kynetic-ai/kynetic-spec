@@ -28665,6 +28665,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-12T00:14:52.561Z
+  automation: eligible
 - _ulid: 01KRCRJPYGTDE9GW1GPZCDFRJD
   slugs:
     - task-add-guardrail-cleanup-boundary-regressions
