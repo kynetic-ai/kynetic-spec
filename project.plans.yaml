@@ -48978,8 +48978,9 @@ plans:
                `active`, `stale`, `integrating`, and `cleanup_blocked`; `closing`
                records are protected only while active/in-flight/provisioning
                ownership or unresolved integration remains, and otherwise may proceed
-               through existing scheduled cleanup once classification says cleanup is
-               eligible;
+               through scheduled `reapDispatchWorkspace()` cleanup once classification
+               says cleanup is eligible; generic orphan-branch pruning still preserves
+               non-closed registry branches;
              - metadata-backed worktrees that can be recovered or classified before
                deletion.
           3. The helper must return enough information for cleanup to preserve worker
@@ -49087,10 +49088,14 @@ plans:
           6. Ensure diagnostics identify the cleanup surface and protection source when
              an artifact is preserved or blocked.
 
-          How: Preserve existing behavior for truly orphaned artifacts and for closed
-          records that are cleanup-eligible under existing retention rules. Avoid a
-          broad grace-period heuristic as the primary fix; use explicit protection
-          state instead.
+          How: Preserve existing behavior for truly orphaned artifacts, for scheduled
+          `reapDispatchWorkspace()` cleanup of `closing` records after classification,
+          and for closed records that are cleanup-eligible under existing retention
+          rules. Orphan dispatch-branch pruning must still honor the existing
+          registry contract that preserves branches for non-closed records; branch
+          deletion for a closing workspace belongs to scheduled/bounded reaping, not to
+          the generic orphan-branch sweep. Avoid a broad grace-period heuristic as the
+          primary fix; use explicit protection state instead.
 
           Testing: Update `tests/dispatch-workspace-cleanup.test.ts` and/or
           `tests/dispatch-workspace-registry.test.ts` to cover each destructive surface
@@ -49113,8 +49118,8 @@ plans:
           - "@task-apply-protection-policy-across-artifact-reconciliation"
         description: |
           Add tests proving cleanup preserves active/in-flight/provisioning artifacts,
-          still removes truly stale terminal artifacts, and fails closed when registry
-          or protection state is unavailable.
+          still removes truly stale terminal artifacts, and blocks blind deletion when
+          registry or protection state is unavailable.
 
           Why: The fix must be provable in both directions. Positive cases prove the
           intended cleanup behavior still works; regression cases prove the bootstrap
@@ -49127,7 +49132,9 @@ plans:
              - in-flight task refs passed through cleanup options before active
                invocation registration;
              - registry records with lifecycle_state `provisioning` or another
-               protected/unclassified state, plus `closing` records that are cleanup-eligible;
+               protected/unclassified state;
+             - `closing` records that are cleanup-eligible through scheduled reaping
+               while non-closed orphan-branch pruning still preserves their branches;
              - reviewer snapshot paths associated with protected records;
              - dispatch branches associated with protected or unclassified records;
              - root-directory candidates contained by protected worker/reviewer paths.
@@ -49138,7 +49145,12 @@ plans:
              trusted, asserting cleanup does not blindly delete dispatcher-managed
              artifacts before reconstructing, blocking with actionable diagnostics,
              or classifying them as safely cleanup-eligible.
-          4. Add a direct regression test that creates bootstrap-like nested files under
+          4. Add behavioral guardrail coverage for each destructive surface through
+             the public reconciliation path or focused helper API, asserting both
+             protected and cleanup-eligible outcomes for metadata-less worktree
+             removal, cleanup-eligible record reaping, reviewer snapshot removal,
+             unregistered root-directory pruning, and dispatch branch pruning.
+          5. Add a direct regression test that creates bootstrap-like nested files under
              a worker workspace, runs `reconcileDispatchWorkspaceArtifacts()` with the
              task protected as in-flight, and asserts the nested files and parent
              workspace survive.
@@ -49195,48 +49207,6 @@ plans:
           Covers: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup;
           @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved.
 
-      - title: Add maintenance guardrails for cleanup protection coverage
-        slug: task-add-cleanup-protection-maintenance-guardrails
-        priority: 2
-        tags: [tests, dispatch, cleanup, maintainability]
-        spec_ref: "@dispatch-workspace-cleanup-policy"
-        depends_on:
-          - "@task-apply-protection-policy-across-artifact-reconciliation"
-        description: |
-          Add behavioral guardrail coverage that makes future cleanup changes prove
-          they still honor the shared protection policy.
-
-          Why: The long-term maintenance risk is a future cleanup path bypassing the
-          centralized active/in-flight/provisioning protection decision. Guardrails
-          must catch that through executable cleanup behavior rather than brittle
-          source-scanning tests.
-
-          What:
-          1. Add behavioral or helper-contract tests that exercise the public
-             `reconcileDispatchWorkspaceArtifacts()` path, or the focused protection
-             helper API if it is intentionally exported for tests, with protected and
-             cleanup-eligible cases for each destructive surface.
-          2. Cover destructive surfaces currently present in `src/agent-runtime/workspace.ts`:
-             - metadata-less dispatch worktree removal;
-             - cleanup-eligible record reaping through `reapDispatchWorkspace()`;
-             - reviewer snapshot worktree removal;
-             - unregistered root-directory pruning;
-             - dispatch branch pruning.
-          3. For each surface, assert both directions:
-             - protected active/in-flight/provisioning artifacts are preserved;
-             - truly orphaned, closed, or terminal cleanup-eligible artifacts are still
-               removed when no protection source applies.
-          4. Make failures identify the behavior gap and cleanup surface under test.
-
-          How: Do not add source-scanning/static tests that inspect `workspace.ts` for
-          helper names or implementation strings. The guardrail must be behavioral or
-          helper-contract coverage that remains valid through refactors.
-
-          Testing: Run
-          `mise exec -- npm test -- --run tests/dispatch-workspace-cleanup.test.ts`.
-
-          Covers: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface.
-
       # ─── Phase 4: Validation ───
 
 
@@ -49248,7 +49218,6 @@ plans:
         depends_on:
           - "@task-test-cleanup-protection-positive-and-regression-cases"
           - "@task-test-dispatch-inflight-bootstrap-race-regression"
-          - "@task-add-cleanup-protection-maintenance-guardrails"
         description: |
           Run targeted and broad validation for the simplified in-flight cleanup
           protection work and record the evidence on this validation task.
@@ -49330,3 +49299,7 @@ plans:
           eligibility
         author: Jacob Chapel
         created_at: 2026-05-12T21:32:52.799Z
+      - _ulid: 01KRF20MSP8E1CBGHXAQ3C4YFR
+        content: Clarify closing branch cleanup scope and merge guardrail coverage into regression tests
+        author: Jacob Chapel
+        created_at: 2026-05-12T21:38:15.478Z
