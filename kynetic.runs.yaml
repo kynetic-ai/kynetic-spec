@@ -47642,7 +47642,7 @@ runs:
     completed_at: 2026-05-12T18:08:17.165Z
   - _ulid: 01KREQ82Z626P6E6NQ2NQ6XZAS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47658,7 +47658,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T18:31:10.740Z
-        completed_at: 2026-05-12T18:31:10.740Z
+        completed_at: 2026-05-12T18:31:33.006Z
+        notes: "Friction points: Workflow commands default to all active runs, and this repository has many
+          historical active workflow runs, so every workflow next command had to specify @01KREQ82
+          explicitly. Long free-form notes are also fragile when passed through the shell:
+          backticked command names caused command substitution and produced an unrelated
+          unknown-command error. Review-specific reflection also is not explicitly listed in the
+          reflection gate, even though this session produced a closed review record, two blockers,
+          checks, and a task transition."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T18:31:33.006Z
+        completed_at: 2026-05-12T18:31:33.006Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T18:30:05.030Z
