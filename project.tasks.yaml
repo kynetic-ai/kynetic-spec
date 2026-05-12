@@ -28935,3 +28935,18 @@
   todos_count: 0
   created_at: 2026-05-12T00:14:55.981Z
   automation: eligible
+- _ulid: 01KRD9FY2NX3EH2KR4493T6YYA
+  slugs: []
+  title: Stabilize flaky file-lock concurrent write test
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - testing
+    - flaky
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T05:10:27.668Z
+  automation: eligible
