@@ -28684,7 +28684,7 @@
   type: task
   spec_ref: "@daemon-test-guardrail-precision"
   plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-tighten-daemon-guardrail-cleanup-semantics-specs"
@@ -28699,6 +28699,7 @@
   created_at: 2026-05-12T00:14:52.880Z
   started_at: 2026-05-12T03:41:22.606Z
   submitted_at: 2026-05-12T03:41:25.765Z
+  completed_at: 2026-05-12T03:59:52.964Z
   automation: eligible
 - _ulid: 01KRCRJQ8CM6D08AHASH84VRDM
   slugs:
