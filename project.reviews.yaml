@@ -203421,7 +203421,40 @@ reviews:
     slugs: []
     title: Review setup-failure cleanup regressions (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/helpers/daemon.test.ts
+          tests/e2e-fixture-daemon-cleanup.test.ts: 15 suites passed, 24 tests passed, duration
+          3.2s."
+        name: focused regression tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T06:35:20.371Z
+        completed_at: 2026-05-12T06:35:20.371Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test: 2424 suites passed; 9069 passed, 5 skipped of 9074; duration 2095.1s."
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T06:35:24.375Z
+        completed_at: 2026-05-12T06:35:24.375Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Schema/references OK; command exited 6 due existing project warnings: 7 reference
+          warnings, 38 alignment warnings, 255 completeness warnings."
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-12T06:35:28.279Z
+        completed_at: 2026-05-12T06:35:28.279Z
     events:
       - _ulid: 01KRDDMFDR2S48FFTDJ9T8QYJS
         actor: Jacob Chapel
@@ -203436,17 +203469,116 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T06:23:06.874Z
+      - _ulid: 01KRDEB50WMXBRDDRCK84DGPS0
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRDEB3EJQ255SSXARHGE7D9S
+        timestamp: 2026-05-12T06:35:13.820Z
+      - _ulid: 01KRDEB8Y0DDDA2FR7P29KG2JJ
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRDEB7CY44HQYM5F0PMQH3C1
+        timestamp: 2026-05-12T06:35:17.824Z
+      - _ulid: 01KRDEBCY37FTT2W47GM9Y498A
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused regression tests
+        timestamp: 2026-05-12T06:35:21.923Z
+      - _ulid: 01KRDEBGVRYNQF9GE369484GC1
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-05-12T06:35:25.944Z
+      - _ulid: 01KRDEBMMD8ENMR987157PNNBR
+        actor: codex
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-12T06:35:29.805Z
+      - _ulid: 01KRDEBR47314MEGASTGX2PJBV
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T06:35:33.383Z
+      - _ulid: 01KRDEBR47W2ZGH5WPEENJK4XF
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T06:35:33.383Z
     examined_commit: 522d65ee504661e1f648142e7a801325b86289d4
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KRCRJSCGAWTVGWM82DNSWWCN"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KRDEB3EJQ255SSXARHGE7D9S
+        anchor:
+          type: code
+          commit: 522d65ee504661e1f648142e7a801325b86289d4
+          line_end: 232
+          line_start: 228
+          path: tests/e2e/fixtures/daemon-fixture.ts
+          side: head
+        entries:
+          - _ulid: 01KRDEB3EJAKAFCMNQYKHSPAP4
+            author: codex
+            body: "MUST-FIX: runDaemonFixtureLifecycle calls setup() before entering its try/finally, but
+              test-base now passes startDaemon() as setup. If startPlaywrightFixtureDaemon rejects
+              during readiness/startup, teardown is never invoked, so stopDaemon(), second-project
+              cleanup, and project.cleanup() are skipped. This regresses the previous wrapper shape
+              where startDaemon() was inside the try/finally and violates
+              @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure /
+              @daemon-backed-test-fixture-contract ac-scoped-cleanup. I confirmed the control flow
+              by executing the helper shape with a throwing setup: output was thrown=setup/start
+              failure and teardownRan=false."
+            created_at: 2026-05-12T06:35:12.210Z
+        kind: blocker
+      - _ulid: 01KRDEB7CY44HQYM5F0PMQH3C1
+        entries:
+          - _ulid: 01KRDEB7CY95XHK3S7FT7HG36P
+            author: codex
+            body: "Evidence log: Files read: kspec-agents.md; task/spec/prior-review context; diff for
+              tests/helpers/daemon.ts, tests/helpers/daemon.test.ts,
+              tests/e2e/fixtures/daemon-fixture.ts, tests/e2e/fixtures/test-base.ts,
+              tests/e2e-fixture-daemon-cleanup.test.ts; surrounding helper and wrapper code; vitest
+              config. Commands run: git diff/stat/log, kspec task get, kspec review for-task/get,
+              kspec item get @daemon-test-teardown-boundedness, AC annotation rg, source-scanning
+              rg, kspec validate, focused npm test -- --fresh tests/helpers/daemon.test.ts
+              tests/e2e-fixture-daemon-cleanup.test.ts, npm test, and a one-off control-flow
+              reproduction for setup failure. Claims verified: prior wrapper-path coverage was
+              added, but the wrapper refactor changes startup-failure cleanup semantics; focused and
+              full tests pass; kspec validate has pre-existing warnings. Categories searched:
+              correctness, setup edge cases, error handling, test quality, integration, and
+              source-scanning risk."
+            created_at: 2026-05-12T06:35:16.254Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T06:35:33.383Z
     created_at: 2026-05-12T06:22:50.808Z
-    updated_at: 2026-05-12T06:23:05.496Z
+    updated_at: 2026-05-12T06:35:33.383Z
     notes: []
