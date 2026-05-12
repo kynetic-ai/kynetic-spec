@@ -48766,11 +48766,12 @@ plans:
       shape: a project normally has one daemon process and one dispatch engine. This plan supersedes
       that durable lease plan for the immediate fix. It keeps the invariant smaller: cleanup must
       treat active, in-flight, and provisioning work as protected, must use one shared protection
-      decision across destructive paths, and must fail closed when protection state is unavailable.
+      decision across destructive paths, and must block blind destructive cleanup when protection
+      state is unavailable or unclassified.
 
 
       Daemon restart recovery does not require full durable ownership. On restart there is no live
-      in-memory spawn to preserve, but registry-backed non-closed/provisioning records and
+      in-memory spawn to preserve, but registry-backed provisioning or unclassified records and
       metadata-backed partial workspaces must be reconciled and classified before destructive
       cleanup treats them as ordinary garbage.
 
@@ -48791,11 +48792,12 @@ plans:
 
       - `@dispatch-workspace-cleanup-policy` receives ACs requiring active/in-flight/provisioning
       artifacts to be preserved, the same protection outcome to apply across destructive cleanup
-      surfaces, and cleanup to fail closed when protection state is unavailable.
+      surfaces, and cleanup to block blind destructive deletion until ambiguous protection state is
+      classified.
 
       - `@dispatch-workspace-registry` receives an AC requiring startup/periodic reconciliation to
-      classify non-closed/provisioning or metadata-backed partial workspaces before destructive
-      cleanup.
+      classify provisioning, unclassified, or metadata-backed partial workspaces before destructive
+      cleanup, while still allowing classified `closing` workspaces to complete cleanup.
 
 
       ## Tasks
@@ -48845,22 +48847,22 @@ plans:
 
           Covers: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup.
 
-      - title: Add cleanup preservation and fail-closed ACs
-        slug: task-add-cleanup-preservation-fail-closed-acs
+      - title: Add cleanup preservation and no-blind-deletion ACs
+        slug: task-add-cleanup-preservation-no-blind-deletion-acs
         priority: 1
         tags: [spec-update, dispatch, workspace, cleanup]
         spec_ref: "@dispatch-workspace-cleanup-policy"
         description: |
           Add cleanup-policy acceptance criteria for active, in-flight, and
           provisioning artifact preservation, consistent protection across destructive
-          cleanup surfaces, and fail-closed behavior when protection state cannot be
+          cleanup surfaces, and no-blind-deletion behavior when protection state cannot be
           trusted.
 
           Why: @dispatch-workspace-cleanup-policy ac-4 protects active invocation
           ownership for branch deletion, but the incident involves multiple artifact
           surfaces and the in-flight/provisioning window before active registration.
           The cleanup contract must make preservation path-independent and conservative
-          when ownership/protection state is unavailable.
+          when ownership/protection state is unavailable, while remaining compatible with existing policy that may deterministically block or clean untrusted metadata after classification.
 
           What: Add these exact ACs to @dispatch-workspace-cleanup-policy.
 
@@ -48881,14 +48883,16 @@ plans:
           Then: The protected artifact receives the same preserve outcome regardless
             of which cleanup surface discovered it.
 
-          AC id: ac-protection-state-unavailable-fails-closed
+          AC id: ac-ambiguous-protection-blocks-blind-deletion
           Given: Artifact cleanup cannot load or trust the registry, metadata, or
-            protection state needed to determine whether a dispatcher-managed artifact
-            is protected.
+            protection state needed to classify whether a dispatcher-managed artifact
+            is protected or safely cleanup-eligible.
           When: The artifact would otherwise be considered eligible for destructive
             cleanup.
-          Then: Cleanup skips destructive removal for that artifact and reports
-            actionable recovery guidance.
+          Then: Cleanup does not blindly delete the artifact; it reconstructs or
+            reattaches trusted state, blocks cleanup with actionable guidance, or
+            proceeds only after existing cleanup policy classification determines the
+            metadata is untrusted and cleanup is safe.
 
           How: Use `mise exec -- kspec item ac add @dispatch-workspace-cleanup-policy
           ...` for each AC. Set @dispatch-workspace-cleanup-policy implementation
@@ -48898,7 +48902,7 @@ plans:
 
           Covers: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved,
           ac-protection-applies-to-every-destructive-surface,
-          ac-protection-state-unavailable-fails-closed.
+          ac-ambiguous-protection-blocks-blind-deletion.
 
       - title: Add startup classification AC for partial provisioning artifacts
         slug: task-add-startup-provisioning-classification-ac
@@ -48907,8 +48911,10 @@ plans:
         spec_ref: "@dispatch-workspace-registry"
         description: |
           Add a registry/recovery acceptance criterion requiring restart and periodic
-          reconciliation to classify non-closed/provisioning or metadata-backed partial
-          workspaces before destructive cleanup treats them as orphaned artifacts.
+          reconciliation to classify provisioning, unclassified, or metadata-backed
+          partial workspaces before destructive cleanup treats them as orphaned
+          artifacts, while preserving the existing ability for classified `closing`
+          workspaces to complete scheduled cleanup.
 
           Why: This plan intentionally avoids full durable owner/TTL leases. Restart
           recovery still needs a conservative contract: ambiguous partial provisioning
@@ -48918,16 +48924,18 @@ plans:
           What: Add this exact AC to @dispatch-workspace-registry.
 
           AC id: ac-partial-provisioning-classified-before-cleanup
-          Given: Daemon startup or periodic reconciliation finds a non-closed
-            workspace record, provisioning lifecycle state, or metadata-backed dispatch
-            artifact that may belong to a task whose invocation is not currently
-            active.
+          Given: Daemon startup or periodic reconciliation finds a provisioning
+            lifecycle state, unclassified non-closed workspace record, or
+            metadata-backed dispatch artifact that may belong to a task whose
+            invocation is not currently active.
           When: Artifact cleanup is about to evaluate that workspace's worktrees,
             reviewer snapshot, root directory, or dispatch branch for destructive
             cleanup.
           Then: Reconciliation first classifies the workspace as preserved for retry,
             active/in-flight, stale/unhealthy with actionable recovery detail, or
-            cleanup-eligible terminal state.
+            cleanup-eligible state. A `closing` workspace with satisfied cleanup
+            prerequisites and no active/in-flight/provisioning ownership may be
+            classified cleanup-eligible so scheduled cleanup can reach `closed`.
 
           How: Use `mise exec -- kspec item ac add @dispatch-workspace-registry ...`
           with the exact AC text above. Set @dispatch-workspace-registry implementation
@@ -48946,7 +48954,7 @@ plans:
         tags: [dispatch, workspace, cleanup, maintainability]
         spec_ref: "@dispatch-workspace-cleanup-policy"
         depends_on:
-          - "@task-add-cleanup-preservation-fail-closed-acs"
+          - "@task-add-cleanup-preservation-no-blind-deletion-acs"
           - "@task-add-startup-provisioning-classification-ac"
         description: |
           Introduce a single protection-policy helper for dispatch artifact cleanup and
@@ -48965,19 +48973,24 @@ plans:
              config, registry records/metadata, and active/in-flight task refs.
           2. The helper must treat these as protection sources:
              - task refs supplied by cleanup callers as active/in-flight protection;
-             - non-closed registry records, including lifecycle_state `provisioning`,
-               `ready`, `active`, `stale`, `integrating`, `closing`, and
-               `cleanup_blocked` until existing cleanup rules classify them terminal;
+             - non-closed registry records while they still represent protected or
+               unclassified work, including lifecycle_state `provisioning`, `ready`,
+               `active`, `stale`, `integrating`, and `cleanup_blocked`; `closing`
+               records are protected only while active/in-flight/provisioning
+               ownership or unresolved integration remains, and otherwise may proceed
+               through existing scheduled cleanup once classification says cleanup is
+               eligible;
              - metadata-backed worktrees that can be recovered or classified before
                deletion.
           3. The helper must return enough information for cleanup to preserve worker
              worktrees, reviewer worktrees/snapshots, unregistered root-directory
              candidates equal to or contained by protected paths, and dispatch
-             branches belonging to protected/non-closed records.
-          4. Registry or metadata load/parsing failure must produce a fail-closed
-             result for dispatcher-managed artifacts instead of falling back to blind
-             destructive deletion. The result must include actionable diagnostic text
-             for logs/test assertions.
+             branches belonging to protected records or unclassified records that have
+             not yet been determined cleanup-eligible.
+          4. Registry or metadata load/parsing failure must produce a no-blind-deletion
+             result for dispatcher-managed artifacts unless existing cleanup policy
+             classification can determine that cleanup is safe. The result must
+             include actionable diagnostic text for logs/test assertions.
           5. Replace ad hoc protection checks inside `reconcileDispatchWorkspaceArtifacts()`
              with calls to this helper or helper-derived protected sets.
 
@@ -48988,12 +49001,12 @@ plans:
 
           Testing: Add focused helper-level tests in `tests/dispatch-workspace-cleanup.test.ts`
           or a new `tests/dispatch-artifact-protection.test.ts` proving preserve/delete
-          decisions for active, in-flight, provisioning/non-closed, closed, and
-          registry-unavailable cases.
+          decisions for active, in-flight, provisioning/protected-unclassified,
+          closing cleanup-eligible, closed, and registry-unavailable cases.
 
           Covers: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved,
           ac-protection-applies-to-every-destructive-surface,
-          ac-protection-state-unavailable-fails-closed; @dispatch-workspace-registry
+          ac-ambiguous-protection-blocks-blind-deletion; @dispatch-workspace-registry
           ac-partial-provisioning-classified-before-cleanup.
 
       - title: Include in-flight spawn refs in cleanup inputs
@@ -49056,17 +49069,21 @@ plans:
              artifacts that can be associated with active/in-flight/provisioning work
              or that cannot be classified safely.
           2. Before calling `reapDispatchWorkspace()`, skip or block records whose task
-             ref is active/in-flight or whose registry state is non-closed/provisioning
-             until classification says the record is cleanup-eligible.
+             ref is active/in-flight or whose registry state is provisioning, protected, or unclassified
+             until classification says the record is cleanup-eligible. Do not treat
+             `closing` alone as protected when existing cleanup prerequisites are met
+             and no active/in-flight/provisioning ownership remains.
           3. Before deleting reviewer snapshot worktrees, preserve paths associated
              with protected records or active/in-flight task refs.
           4. Before deleting unregistered root directories without `.git`, preserve
              candidates equal to or contained by protected worker/reviewer paths, and
-             fail closed for ambiguous dispatcher-managed candidates when protection
-             state is unavailable.
-          5. Before deleting dispatch branches, preserve branches tracked by non-closed
-             registry records and fail closed when the registry cannot be loaded or
-             trusted.
+             avoid blind deletion for ambiguous dispatcher-managed candidates when
+             protection state is unavailable unless classification determines cleanup
+             is safe.
+          5. Before deleting dispatch branches, preserve branches tracked by protected
+             or unclassified records and avoid blind deletion when the registry cannot
+             be loaded or trusted unless existing cleanup classification has
+             determined the branch is safely cleanup-eligible.
           6. Ensure diagnostics identify the cleanup surface and protection source when
              an artifact is preserved or blocked.
 
@@ -49081,7 +49098,7 @@ plans:
 
           Covers: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved,
           ac-protection-applies-to-every-destructive-surface,
-          ac-protection-state-unavailable-fails-closed; @dispatch-workspace-registry
+          ac-ambiguous-protection-blocks-blind-deletion; @dispatch-workspace-registry
           ac-partial-provisioning-classified-before-cleanup.
 
       # ─── Phase 3: Regression Coverage and Maintenance Guardrails ───
@@ -49110,16 +49127,17 @@ plans:
              - in-flight task refs passed through cleanup options before active
                invocation registration;
              - registry records with lifecycle_state `provisioning` or another
-               non-closed state;
+               protected/unclassified state, plus `closing` records that are cleanup-eligible;
              - reviewer snapshot paths associated with protected records;
-             - dispatch branches associated with protected/non-closed records;
+             - dispatch branches associated with protected or unclassified records;
              - root-directory candidates contained by protected worker/reviewer paths.
           2. Add cleanup-positive tests showing closed or truly orphaned worktrees,
              root directories, reviewer snapshots, and dispatch branches are still
              removed when no protection source applies.
-          3. Add fail-closed tests where registry/protection state cannot be loaded or
-             trusted, asserting dispatcher-managed artifacts are preserved and
-             actionable diagnostics are emitted.
+          3. Add ambiguous-state tests where registry/protection state cannot be loaded or
+             trusted, asserting cleanup does not blindly delete dispatcher-managed
+             artifacts before reconstructing, blocking with actionable diagnostics,
+             or classifying them as safely cleanup-eligible.
           4. Add a direct regression test that creates bootstrap-like nested files under
              a worker workspace, runs `reconcileDispatchWorkspaceArtifacts()` with the
              task protected as in-flight, and asserts the nested files and parent
@@ -49135,7 +49153,7 @@ plans:
 
           Covers: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved,
           ac-protection-applies-to-every-destructive-surface,
-          ac-protection-state-unavailable-fails-closed; @dispatch-workspace-registry
+          ac-ambiguous-protection-blocks-blind-deletion; @dispatch-workspace-registry
           ac-partial-provisioning-classified-before-cleanup.
 
       - title: Add dispatch-level in-flight bootstrap race regression
@@ -49261,7 +49279,7 @@ plans:
           Covers: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup;
           @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved,
           ac-protection-applies-to-every-destructive-surface,
-          ac-protection-state-unavailable-fails-closed; @dispatch-workspace-registry
+          ac-ambiguous-protection-blocks-blind-deletion; @dispatch-workspace-registry
           ac-partial-provisioning-classified-before-cleanup.
       ```
 
@@ -49283,10 +49301,11 @@ plans:
 
 
       The central invariant for this plan is: dispatcher cleanup must not destructively remove
-      artifacts for work that is active, in-flight, provisioning, non-closed pending classification,
-      or unclassifiable because protection state is unavailable. Cleanup may still remove closed,
-      terminal, or truly orphaned artifacts after the same protection policy classifies them as
-      unprotected.
+      artifacts for work that is active, in-flight, provisioning, pending classification, or
+      unclassifiable because protection state is unavailable unless existing cleanup policy has
+      classified the artifact as safe to clean. Cleanup may still remove closing, closed, terminal,
+      or truly orphaned artifacts after the same protection policy classifies them as
+      cleanup-eligible and unprotected.
 
 
       Dependency ordering keeps spec updates first, cleanup policy centralization second, engine
@@ -49306,3 +49325,8 @@ plans:
           scanning
         author: Jacob Chapel
         created_at: 2026-05-12T21:24:04.201Z
+      - _ulid: 01KRF1PSNZX2W339E9KWT9A5MZ
+        content: Address review feedback on no-blind-deletion wording and closing workspace cleanup
+          eligibility
+        author: Jacob Chapel
+        created_at: 2026-05-12T21:32:52.799Z
