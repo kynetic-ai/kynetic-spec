@@ -208327,6 +208327,19 @@ reviews:
         runner: npm test
         created_at: 2026-05-12T20:37:30.192Z
         completed_at: 2026-05-12T20:37:30.192Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run lint failed with 31 errors / 755 warnings. Relevant introduced guardrail
+          failures: npx oxlint --config .oxlintrc.json tests/cli-serve.test.ts reports 18
+          no-leaky-test-daemon errors, including tests/cli-serve.test.ts:514, because killPid
+          delegates to stopPidBounded and is not classified as approved cleanup."
+        name: repository lint
+        required: true
+        runner: npm run lint
+        created_at: 2026-05-12T20:37:34.254Z
+        completed_at: 2026-05-12T20:37:34.254Z
     events:
       - _ulid: 01KREXT4DBSJCHN1XQFWA4YQBT
         actor: Jacob Chapel
@@ -208390,6 +208403,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-12T20:37:31.623Z
+      - _ulid: 01KREYHJAADYXMKXCM9HY9QZJJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: repository lint
+        timestamp: 2026-05-12T20:37:35.691Z
     examined_commit: 62bffa595961c9d0d4e1c8c1cc8e5ef09486064e
     external_links: []
     lifecycle_state: open
@@ -208449,5 +208469,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T20:24:47.787Z
-    updated_at: 2026-05-12T20:37:30.192Z
+    updated_at: 2026-05-12T20:37:34.254Z
     notes: []
