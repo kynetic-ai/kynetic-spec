@@ -423,3 +423,39 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T19:00:22.814Z
+  - _ulid: 01KREWHXDXQBGC34XBF39W2QY2
+    content: >-
+      Fix cycle 10: addressed cycle-9 reviewer blocker @01KRER48GN0CZPCV27CKSX6BQQ on @01KREQRD
+      review.
+
+
+      Root cause: helper-body inspection accepted ANY Identifier as a daemon target via
+      isVerifiableKillTarget, so a local helper could ignore its parameter and kill an unrelated
+      outer binding while still satisfying trust. Same false negative applied to local
+      object-literal kill methods whose body killed an outer Identifier the literal did not carry as
+      a property.
+
+
+      Fix: new isHelperBodyKillTargetTiedToOwner() predicate runs inside isTerminatingPrimitiveCall
+      (helper-body context only). It requires the kill target's root Identifier to be either (a)
+      bound by ownerFn's parameters (patternBindsName covers destructuring/rest/defaults), or (b)
+      the value of a property on the enclosing ObjectExpression when ownerFn is an object-literal
+      method. Computed-access roots and ThisExpression/Literal roots are rejected. Top-level cleanup
+      classifier (isDaemonCleanupCallExpression) keeps using isVerifiableKillTarget unchanged — the
+      cleanup-callback binding analysis (cleanupCallbackBindingStatus) validates captured-Identifier
+      ownership at the callback level.
+
+
+      Test coverage: 3 new flag-it tests covering (1) function-decl helper ignoring _pid + killing
+      outer otherPid, (2) arrow-helper variant of same, (3) object-literal kill method targeting
+      outer otherPid the literal does not expose; 1 new accepted-companion test covering longhand
+      property ({ daemonPid: pid, kill() { process.kill(pid, SIGTERM) } }). Existing cycle-1..8
+      accepted shapes verified still passing (369 targeted tests / 9149 active full-suite tests).
+
+
+      Verification of cycle-9 ad hoc probes: both probes from the reviewer's evidence log (function
+      killPid(_pid) { process.kill(otherPid, SIGTERM); } and the object-literal variant) now produce
+      no-leaky-test-daemon diagnostics under npx oxlint.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T20:02:49.917Z
