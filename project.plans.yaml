@@ -47996,14 +47996,33 @@ plans:
           Then: The workspace lifecycle is treated as non-closed for the duration of
             the lease.
 
-          AC id: ac-provisioning-lease-protects-artifacts
-          Given: Workspace artifact reconciliation evaluates dispatch worktrees,
-            reviewer worktrees, unregistered directories under the dispatch worktree
-            root, or dispatch branches.
-          When: The registry contains a non-expired provisioning lease for the related
-            task/workspace, or the dispatch engine reports the task as in-flight.
-          Then: Artifact reconciliation preserves those paths and branches while the
-            lease or in-flight marker is active.
+          AC id: ac-provisioning-lease-protects-worker-worktree
+          Given: Workspace artifact reconciliation evaluates a worker worktree path for
+            a workspace record.
+          When: The registry contains a non-expired provisioning lease for that
+            workspace.
+          Then: Artifact reconciliation preserves the worker worktree path.
+
+          AC id: ac-provisioning-lease-protects-reviewer-worktree
+          Given: Workspace artifact reconciliation evaluates a reviewer snapshot or
+            reviewer worktree path for a workspace record.
+          When: The registry contains a non-expired provisioning lease for that
+            workspace.
+          Then: Artifact reconciliation preserves the reviewer path.
+
+          AC id: ac-provisioning-lease-protects-root-directory
+          Given: Workspace artifact reconciliation evaluates an unregistered directory
+            under the dispatch worktree root.
+          When: The directory is equal to or contained by a worker or reviewer path for
+            a workspace with a non-expired provisioning lease.
+          Then: Artifact reconciliation preserves the directory.
+
+          AC id: ac-provisioning-lease-protects-dispatch-branch
+          Given: Workspace artifact reconciliation evaluates a dispatch branch for a
+            workspace record.
+          When: The registry contains a non-expired provisioning lease for that
+            workspace.
+          Then: Artifact reconciliation preserves the dispatch branch.
 
           AC id: ac-provisioning-lease-success-finalized
           Given: A provisioning, bootstrap, or pre-invocation validation phase reaches
@@ -48038,7 +48057,9 @@ plans:
 
           Covers: @dispatch-workspace-registry ac-provisioning-lease-recorded-before-mutation,
           ac-provisioning-lease-identifies-owner, ac-provisioning-lease-keeps-lifecycle-open,
-          ac-provisioning-lease-protects-artifacts, ac-provisioning-lease-success-finalized,
+          ac-provisioning-lease-protects-worker-worktree,
+          ac-provisioning-lease-protects-reviewer-worktree, ac-provisioning-lease-protects-root-directory,
+          ac-provisioning-lease-protects-dispatch-branch, ac-provisioning-lease-success-finalized,
           ac-provisioning-lease-failure-finalized, ac-expired-provisioning-lease-recovery.
 
       - title: Add bootstrap in-progress interlock ACs
@@ -48134,6 +48155,7 @@ plans:
         spec_ref: "@dispatch-workspace-registry"
         depends_on:
           - "@task-add-dispatch-workspace-provisioning-lease-acs"
+          - "@task-add-bootstrap-in-progress-interlock-acs"
         description: |
           Extend the dispatch workspace registry schema and TypeScript types with an
           explicit provisioning lease record.
@@ -48377,7 +48399,9 @@ plans:
           branch-pruning behavior should remain unchanged for records with no active
           task and no valid lease.
 
-          Covers: @dispatch-workspace-registry ac-provisioning-lease-protects-artifacts,
+          Covers: @dispatch-workspace-registry ac-provisioning-lease-protects-worker-worktree,
+          ac-provisioning-lease-protects-reviewer-worktree, ac-provisioning-lease-protects-root-directory,
+          ac-provisioning-lease-protects-dispatch-branch,
           ac-provisioning-lease-keeps-lifecycle-open, ac-expired-provisioning-lease-recovery;
           @dispatch-runtime-bootstrap-contract ac-bootstrap-cleanup-interlock.
 
@@ -48488,7 +48512,9 @@ plans:
           real `npm`; it only needs to prove cleanup cannot remove the parent tree
           during an active bootstrap window.
 
-          Covers: @dispatch-workspace-registry ac-provisioning-lease-protects-artifacts,
+          Covers: @dispatch-workspace-registry ac-provisioning-lease-protects-worker-worktree,
+          ac-provisioning-lease-protects-reviewer-worktree, ac-provisioning-lease-protects-root-directory,
+          ac-provisioning-lease-protects-dispatch-branch,
           @dispatch-runtime-bootstrap-contract ac-bootstrap-cleanup-interlock,
           @agent-dispatch-engine ac-inflight-provisioning-counts-active-for-cleanup.
 
@@ -48572,7 +48598,9 @@ plans:
 
           Covers: @dispatch-workspace-registry ac-provisioning-lease-recorded-before-mutation,
           ac-provisioning-lease-identifies-owner, ac-provisioning-lease-keeps-lifecycle-open,
-          ac-provisioning-lease-protects-artifacts, ac-provisioning-lease-success-finalized,
+          ac-provisioning-lease-protects-worker-worktree,
+          ac-provisioning-lease-protects-reviewer-worktree, ac-provisioning-lease-protects-root-directory,
+          ac-provisioning-lease-protects-dispatch-branch, ac-provisioning-lease-success-finalized,
           ac-provisioning-lease-failure-finalized, ac-expired-provisioning-lease-recovery;
           @dispatch-runtime-bootstrap-contract
           ac-bootstrap-in-progress-is-durable, ac-bootstrap-terminal-state-after-subprocess,
@@ -48636,3 +48664,8 @@ plans:
         content: "Fix parser shape: use prose existing-spec section and task-only derivation"
         author: Jacob Chapel
         created_at: 2026-05-12T18:48:54.845Z
+      - _ulid: 01KRES03TSPCDX2Q8MRR9428Q2
+        content: "Address review @01KRERNSBMVT2M524R6JBTT54Q: gate schema task on bootstrap AC update and
+          split artifact-protection ACs by cleanup path"
+        author: Jacob Chapel
+        created_at: 2026-05-12T19:00:40.922Z
