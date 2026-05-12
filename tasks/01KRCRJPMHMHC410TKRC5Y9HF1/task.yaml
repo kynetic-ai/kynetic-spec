@@ -76,7 +76,7 @@ tags:
   - lint
   - daemon
 vcs_refs: []
-review_ref: "@01KRD8SMY43QGPP8B0Y19BFC6Z"
+review_ref: "@01KRDBYWY96D1FZ30GYEK03A9A"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fix-guardrail-cleanup-effect-classification/01krcrjp
@@ -298,6 +298,13 @@ history:
         previous: 2026-05-12T04:54:30.315Z
     command: task-submit
     timestamp: 2026-05-12T05:49:56.110Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KRDBYWY96D1FZ30GYEK03A9A"
+        previous: "@01KRD8SMY43QGPP8B0Y19BFC6Z"
+    command: review-link
+    timestamp: 2026-05-12T05:53:38.743Z
 created_at: 2026-05-12T00:14:52.561Z
 started_at: 2026-05-12T05:49:52.577Z
 submitted_at: 2026-05-12T05:49:56.110Z
