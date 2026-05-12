@@ -45734,7 +45734,7 @@ runs:
     completed_at: 2026-05-12T03:43:57.415Z
   - _ulid: 01KRD5FZ9F57NJRDJ1P7S2GP1T
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -45750,7 +45750,103 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T04:00:58.083Z
-        completed_at: 2026-05-12T04:00:58.083Z
+        completed_at: 2026-05-12T04:01:17.795Z
+        notes: >-
+          Friction points: ✓ Validation passed
+
+          ────────────────────────────────────────
+
+          Files checked: 1495
+
+          Items checked: 620
+
+          Tasks checked: 1484
+
+          Meta: 12 agents, 11 workflows, 11 conventions
+
+
+          Schema: OK
+
+          References: OK
+
+
+          Reference warnings: 7
+            ⚠ @session-summary-cache
+              Reference "@session-summary-cache" points to deprecated item: Session Summary Cache
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/tasks/01KKB3PHA6MSJDZS7AZ1Z2VN6A/task.yaml (spec_ref)
+            ⚠ @session-summary-cache
+              Reference "@session-summary-cache" points to deprecated item: Session Summary Cache
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/tasks/01KKSRDQY1HZBENKBD06V6KDGW/task.yaml (spec_ref)
+            ⚠ @task-activity-git-query
+              Reference "@task-activity-git-query" points to deprecated item: Task Activity Git Query
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/tasks/01KKW4VPB0MV22C92JHNR7APJZ/task.yaml (spec_ref)
+            ⚠ @task-activity-git-query
+              Reference "@task-activity-git-query" points to deprecated item: Task Activity Git Query
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/tasks/01KKW6PK9QFXKH69HE6KY8Q40Y/task.yaml (spec_ref)
+            ⚠ @task-activity-git-query
+              Reference "@task-activity-git-query" points to deprecated item: Task Activity Git Query
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/tasks/01KKWG44FR0W955X7EFVBHPX6B/task.yaml (spec_ref)
+            ... and 2 more (use -v to see all)
+
+          Alignment warnings: 39
+            Orphaned specs (no tasks): 34
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ○ Semantic Exit Codes
+              ... and 31 more
+            Status mismatches: 5
+              ! Task Set Batch Support
+                Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+              ! Daemon-Sensitive Test Determinism
+                Spec "Daemon-Sensitive Test Determinism" status is "in_progress" but should be "implemented" based on task progress
+              ! Daemon Network Endpoint Contract
+                Spec "Daemon Network Endpoint Contract" status is "in_progress" but should be "implemented" based on task progress
+              ! Daemon Test Teardown Boundedness
+                Spec "Daemon Test Teardown Boundedness" status is "in_progress" but should be "not_started" based on task progress
+              ! Concurrent Read Command Execution
+                Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+          Alignment stats: 454/620 specs have tasks, 449 aligned
+
+
+          Completeness warnings: 254
+            Missing own AC coverage: 234
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 231 more
+            Automation without spec: 1
+              ! @task-stabilize-bun-websocket-runtime-parity-startup-hook - Stabilize Bun websocket runtime parity startup hook
+                Task @task-stabilize-bun-websocket-runtime-parity-startup-hook is automation: eligible but has no spec_ref - eligible tasks should have linked specs
+            Invalid AC annotations: 19
+              Unresolved targets: 13
+                ! Unresolved target: '@' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-guardrail-cleanup-boundary-regressions-01krcrjp-review/tests/cli/session-start-format.test.ts:685
+                ! Unresolved target: '@' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-guardrail-cleanup-boundary-regressions-01krcrjp-review/tests/cli-agent-commands.test.ts:182
+                ! Unresolved target: '@' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-guardrail-cleanup-boundary-regressions-01krcrjp-review/tests/cli-schedule-commands.test.ts:644
+                ... and 10 more
+              malformed_ac_token: 6
+                ! Malformed AC token: 'ac-1:' in annotation targeting '@trait-filterable-list' is not a valid ac-prefixed identifier
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-guardrail-cleanup-boundary-regressions-01krcrjp-review/tests/cli-agent-commands.test.ts:1848
+                ! Malformed AC token: 'ac-2/3/4/5/7:' in annotation targeting '@trait-filterable-list' is not a valid ac-prefixed identifier
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-guardrail-cleanup-boundary-regressions-01krcrjp-review/tests/cli-agent-commands.test.ts:1849
+                ! Malformed AC token: 'ac-2/3/4/5/7:' in annotation targeting '@trait-filterable-list' is not a valid ac-prefixed identifier
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-guardrail-cleanup-boundary-regressions-01krcrjp-review/tests/cli-agent-commands.test.ts:1850
+                ... and 3 more
+          Skills: OK (10 files checked) returned exit code 6 for warnings even though schema and
+          references were OK; during review this required manual classification and careful check
+          evidence so a warning-only result could be recorded accurately. The full required test
+          suite took about 35 minutes, which is expected for merge ownership but makes review
+          feedback loops long. No blocker emerged from either issue.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T04:01:17.795Z
+        completed_at: 2026-05-12T04:01:17.795Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T04:00:34.607Z
