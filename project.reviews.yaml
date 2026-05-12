@@ -202891,6 +202891,13 @@ reviews:
           status: pass
           name: focused regression tests
         timestamp: 2026-05-12T05:35:18.110Z
+      - _ulid: 01KRDAXHK87CMJMYRP11EEEC51
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRDAXG9P5K136WG3TJQDAAPP
+        timestamp: 2026-05-12T05:35:22.216Z
     examined_commit: 69024560de4a34a772c9944f034e9a9021056675
     external_links: []
     lifecycle_state: open
@@ -202922,7 +202929,27 @@ reviews:
               are owned and asserts cleanup/primary-error preservation for that wrapper behavior."
             created_at: 2026-05-12T05:35:12.882Z
         kind: blocker
+      - _ulid: 01KRDAXG9P5K136WG3TJQDAAPP
+        anchor:
+          type: code
+          commit: 69024560de4a34a772c9944f034e9a9021056675
+          line_end: 326
+          line_start: 308
+          path: tests/e2e-fixture-daemon-cleanup.test.ts
+          side: head
+        entries:
+          - _ulid: 01KRDAXG9PWT5SBXJPB1AWNWP5
+            author: Jacob Chapel
+            body: "MUST-FIX: this staged primary-error regression exercises the newly added
+              runDaemonFixtureLifecycle helper, but test-base.ts does not call that helper in this
+              snapshot. As a result, the test can pass/fail independently of the actual Playwright
+              wrapper, and it would not catch the wrapper continuing to replace a test-body/use
+              error with a cleanup error. The task asks for tests proving the Playwright wrapper
+              behavior, so either wire the wrapper through the helper in this change or add a
+              fixture-unit test that exercises the wrapper lifecycle seam itself."
+            created_at: 2026-05-12T05:35:20.886Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T05:22:54.485Z
-    updated_at: 2026-05-12T05:35:16.690Z
+    updated_at: 2026-05-12T05:35:20.886Z
     notes: []
