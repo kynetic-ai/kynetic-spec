@@ -200904,6 +200904,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRCXDX6BKV5A6K2Q8840SF01
         timestamp: 2026-05-12T01:39:39.944Z
+      - _ulid: 01KRCXEBT1ESFK968JT4X5AWVG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRCXEA8VNC6BP9GCHYCX6SVY
+        timestamp: 2026-05-12T01:39:53.281Z
     examined_commit: 38281b2580cd078393fbc844446cd34113ff5d0a
     external_links: []
     lifecycle_state: open
@@ -200937,9 +200944,29 @@ reviews:
               removal."
             created_at: 2026-05-12T01:39:38.316Z
         kind: blocker
+      - _ulid: 01KRCXEA8VNC6BP9GCHYCX6SVY
+        anchor:
+          type: code
+          commit: 38281b2580cd078393fbc844446cd34113ff5d0a
+          line_end: 758
+          line_start: 753
+          path: tests/helpers/daemon.test.ts
+          side: head
+        entries:
+          - _ulid: 01KRCXEA8WHK3A5SMA0VKVK062
+            author: Jacob Chapel
+            body: "MUST-FIX: the new bounded-stop tests claim `@daemon-backed-test-fixture-contract
+              ac-no-ambient-daemon-control`, but they do not set up or observe an unrelated ambient
+              daemon, nor assert that ambient daemon state is not stopped, killed, or reused. The
+              assertions prove owned-child scoped cleanup and bounded termination behavior, not
+              no-ambient daemon control. Remove this AC annotation from the new bounded-stop tests
+              (also in tests/helpers/mock-daemon.test.ts lines 624-628) or add behavioral assertions
+              that actually prove that contract."
+            created_at: 2026-05-12T01:39:51.708Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T01:25:48.577Z
-    updated_at: 2026-05-12T01:39:38.316Z
+    updated_at: 2026-05-12T01:39:51.708Z
     notes: []
   - _ulid: 01KRCX973GZBVGAC6R6KGR4K7A
     slugs: []
