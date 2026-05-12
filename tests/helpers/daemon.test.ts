@@ -20,7 +20,13 @@ import {
   startTestDaemon,
   type CreateTestDaemonProjectStage,
 } from "./daemon.js";
-import { cleanupTempDir, createTempDir, readTestOutputSync } from "./cli.js";
+import {
+  _resetCleanupRmForTesting,
+  _setCleanupRmForTesting,
+  cleanupTempDir,
+  createTempDir,
+  readTestOutputSync,
+} from "./cli.js";
 
 /**
  * Synthetic uncooperative-child source for bounded-stop contract tests.
@@ -864,22 +870,12 @@ describe(
 );
 
 describe("createTestDaemonProject setup-failure cleanup", () => {
-  // STAGED REGRESSION (vitest `it.fails`): documents the partial-resource leak
-  // in createTestDaemonProject when a setup step fails after the temp project
-  // directory has already been created. With the helper as-shipped today,
-  // throwing from a stage hook bubbles straight out of the function — the
-  // tempDir is never removed because there is no setup-failure cleanup
-  // wrapper around the steps that own resources. `it.fails` reports the
-  // expected leak assertion failure as PASS so the merge gate stays green
-  // while this regression sits ahead of the helper fix
-  // (@task-fix-setup-failure-cleanup-error-preservation).
-  //
-  // Post-fix contract: the helper will record each owned resource as it is
-  // claimed (temp dir, shadow worktree pointer, isolated HOME) and roll back
-  // already-claimed resources when a later step throws. The assertion below
-  // will then pass, `it.fails` will report it as FAIL, and the implementation
-  // task will flip the wrapper back to a regular `it(...)` to pin normal
-  // post-fix behavior.
+  // The helper records each owned resource on a cleanup stack as it is
+  // claimed (temp dir, shadow worktree pointer, isolated HOME). When a
+  // later setup step — including the test-only `__testStageHook` — throws,
+  // the stack runs in reverse so already-owned resources are released
+  // before the original failure propagates. These regressions pin the
+  // contract that no temp project is leaked behind a setup failure.
 
   for (const stage of [
     "after-shadow-detection",
@@ -888,7 +884,7 @@ describe("createTestDaemonProject setup-failure cleanup", () => {
     // AC: @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources
     // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
     // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
-    it.fails(
+    it(
       `removes the owned temp project when a setup step fails at ${stage}`,
       async () => {
         const sentinel = `setup failure sentinel for ${stage}`;
@@ -948,16 +944,14 @@ describe("createTestDaemonProject setup-failure cleanup", () => {
         expect(observedTempDir).not.toBeNull();
         const tempDirAtFailure = observedTempDir as unknown as string;
 
-        // ac-setup-failure-cleans-owned-resources — the helper must roll
-        // back the owned temp dir when a later setup step fails before the
-        // caller receives the project handle. Pre-fix, the directory still
-        // exists; post-fix it is removed.
+        // ac-setup-failure-cleans-owned-resources — the helper rolls
+        // back the owned temp dir when a later setup step fails before
+        // the caller receives the project handle.
         const stillExists = existsSync(tempDirAtFailure);
 
-        // Safety net: even with `it.fails` masking the failure, force-remove
-        // the leaked directory so this regression cannot accumulate temp
-        // directories across runs. With the fix in place the helper will
-        // already have removed it and this branch is a no-op.
+        // Defensive safety net: if a regression re-introduces the leak,
+        // force-remove the orphaned directory so the failing run does
+        // not accumulate temp dirs. The assertion below still fails.
         if (stillExists) {
           try {
             rmSync(tempDirAtFailure, { recursive: true, force: true });
@@ -975,37 +969,142 @@ describe("createTestDaemonProject setup-failure cleanup", () => {
   }
 });
 
+describe("createTestDaemonProject setup failure preserves primary when cleanup also fails", () => {
+  // The setup-failure catch in createTestDaemonProject builds the primary
+  // error BEFORE invoking runCleanups, and wraps the cleanup-error case in
+  // attachCleanupFailure(). The primary setup failure remains the surfaced
+  // error even when the registered cleanup (cleanupTempDir) itself rejects.
+  // The cleanup failure is attached as error.cause + message context so the
+  // actionable setup diagnostic is never replaced by secondary teardown noise.
+  //
+  // The contract is exercised by injecting both failures simultaneously:
+  //   - __testStageHook throws at a later setup stage (primary)
+  //   - _setCleanupRmForTesting installs a rm impl that rejects, causing
+  //     cleanupTempDir(tempDir) on the cleanup stack to fail (cleanup)
+  //
+  // This is the gap identified by the cycle-1 review: prior coverage proved
+  // setup-stage primary preservation only when cleanup succeeded. Without
+  // this regression, the cleanupError branch in createTestDaemonProject
+  // could regress (e.g. swallowed, or replacing primary) and every existing
+  // setup-failure test would still pass.
+  //
+  // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+  it(
+    "surfaces the setup-stage error as primary even when cleanupTempDir rejects",
+    async () => {
+      const setupSentinel = "setup-stage primary error sentinel with cleanup-failure";
+      const cleanupSentinel = "simulated rm rejection during setup-failure cleanup";
+
+      // Captured during the first hook so the test can manually remove the
+      // orphaned tree after restoring the real rm impl. The injected
+      // cleanup-failure means createTestDaemonProject's runCleanups path
+      // cannot remove the temp dir on its own.
+      let observedTempDir: string | null = null;
+
+      _setCleanupRmForTesting(async () => {
+        throw new Error(cleanupSentinel);
+      });
+
+      let thrown: unknown = null;
+      try {
+        await createTestDaemonProject({
+          skipFixtures: true,
+          __testStageHook: (currentStage) => {
+            if (currentStage === "after-temp-dir") {
+              const parent = tmpdir();
+              const prefix = basename("kspec-daemon-fixture-");
+              let newest: { name: string; mtimeMs: number } | null = null;
+              for (const name of readdirSync(parent)) {
+                if (!name.startsWith(prefix)) continue;
+                try {
+                  const fullPath = join(parent, name);
+                  const stat = statSync(fullPath);
+                  if (!stat.isDirectory()) continue;
+                  if (!newest || stat.mtimeMs > newest.mtimeMs) {
+                    newest = { name, mtimeMs: stat.mtimeMs };
+                  }
+                } catch {
+                  // Directory may have been cleaned up by a sibling test.
+                }
+              }
+              if (newest) {
+                observedTempDir = join(parent, newest.name);
+              }
+            }
+            if (currentStage === "after-shadow-detection") {
+              throw new Error(setupSentinel);
+            }
+          },
+        });
+      } catch (error) {
+        thrown = error;
+      } finally {
+        // Restore the real rm impl before any other test runs cleanupTempDir.
+        // Tests in this file run sequentially under vitest's default
+        // configuration, so a synchronous restore here is safe.
+        _resetCleanupRmForTesting();
+      }
+
+      // Defensive cleanup: the injected rm-failure prevented runCleanups
+      // from removing the temp dir during the failure-path catch. Drop the
+      // orphaned tree now using the restored rm so the failing run does not
+      // accumulate temp dirs.
+      if (observedTempDir && existsSync(observedTempDir)) {
+        try {
+          await cleanupTempDir(observedTempDir);
+        } catch {
+          try {
+            rmSync(observedTempDir, { recursive: true, force: true });
+          } catch {
+            // Best effort.
+          }
+        }
+      }
+
+      // ac-cleanup-errors-preserve-primary-failure — the surfaced error is
+      // the setup-stage failure, not the cleanup failure that fired during
+      // the catch block's runCleanups.
+      expect(thrown).toBeInstanceOf(Error);
+      const error = thrown as Error;
+      expect(error.message).toContain(setupSentinel);
+
+      // The cleanup failure remains discoverable from the surfaced error
+      // — as message text, error.cause, or an entry in an AggregateError.
+      // attachCleanupFailure sets primary.cause to the cleanup error and
+      // appends a one-shot message suffix.
+      const surfacedText = [
+        error.message,
+        (error as { cause?: unknown }).cause instanceof Error
+          ? ((error as { cause: Error }).cause).message
+          : "",
+        error instanceof AggregateError
+          ? error.errors
+              .map((e) => (e instanceof Error ? e.message : String(e)))
+              .join(" ")
+          : "",
+      ].join(" ");
+      expect(surfacedText).toContain(cleanupSentinel);
+    },
+  );
+});
+
 describe(
   "startTestDaemon readiness failure preserves primary error when stop also fails",
   { timeout: 60_000 },
   () => {
-    // STAGED REGRESSION (vitest `it.fails`): documents the primary-error
-    // replacement gap in startTestDaemon's readiness-failure catch block.
-    // The catch currently does `await stop(); throw new DaemonReadinessError(...)`,
-    // so if `stop()` throws, JS evaluation order means the stop error escapes
-    // and the DaemonReadinessError is never constructed — the caller loses
-    // the actionable readiness diagnostic.
-    //
-    // Pre-fix: the stop error replaces the DaemonReadinessError, so the
-    // assertion that `thrown instanceof DaemonReadinessError` fails.
-    // `it.fails` reports that expected failure as PASS so the merge gate
-    // stays green ahead of @task-fix-setup-failure-cleanup-error-preservation.
-    //
-    // Post-fix: the helper preserves the readiness diagnostic as the primary
-    // error and attaches the stop failure as suppressed context (cause chain
-    // or AggregateError, per the fix task's chosen shape). `it.fails` will
-    // then report this test as FAIL, signaling the fix to flip it back to a
-    // regular `it(...)`.
-    //
-    // The body still asserts the full contract (primary surfaces the
-    // readiness diagnostic, the surfaced error references the stop failure
-    // somehow) so the staged regression captures every facet the dependent
-    // fix must preserve.
+    // The readiness-failure catch in startTestDaemon constructs the
+    // DaemonReadinessError BEFORE invoking stop(), and wraps the stop()
+    // call in its own try/catch. When stop() throws, the readiness
+    // diagnostic remains the surfaced primary error and the stop failure
+    // is attached as `error.cause` + message context — the actionable
+    // diagnostic is never replaced by secondary teardown noise.
     // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
     // AC: @daemon-backed-test-fixture-contract ac-readiness-diagnostics
     // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
     // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
-    it.fails(
+    it(
       "surfaces DaemonReadinessError as primary even when stop() throws",
       async () => {
         if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
@@ -1072,20 +1171,15 @@ describe(
           }
         });
 
-        // ac-cleanup-errors-preserve-primary-failure — the helper must
-        // surface the readiness diagnostic as the primary failure even
-        // though `stop()` threw the sentinel during the failure-path catch.
-        // Pre-fix this assertion fails: the surfaced error is the sentinel
-        // (a plain Error), not a DaemonReadinessError, because JS try/finally
-        // semantics let the stop throw escape and abort the
-        // `throw new DaemonReadinessError(...)` that followed it.
+        // ac-cleanup-errors-preserve-primary-failure — the helper
+        // surfaces the readiness diagnostic as the primary failure even
+        // though `stop()` threw the sentinel during the failure-path
+        // catch.
         expect(thrown).toBeInstanceOf(DaemonReadinessError);
 
-        // Post-fix: the stop failure must remain discoverable from the
-        // surfaced error — either as `error.cause`, as an entry in an
-        // AggregateError, or as supplementary message text. The exact
-        // shape is the fix task's choice; the contract is just that the
-        // information is preserved.
+        // The stop failure remains discoverable from the surfaced error
+        // — either as `error.cause`, as an entry in an AggregateError,
+        // or as supplementary message text.
         const error = thrown as Error;
         const surfacedText = [
           error.message,

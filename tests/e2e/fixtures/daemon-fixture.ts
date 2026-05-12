@@ -20,6 +20,7 @@ import { join } from "node:path";
 
 import {
   allocateTestDaemonPort as defaultAllocateTestDaemonPort,
+  attachCleanupFailure,
   createTestDaemonProject as defaultCreateTestDaemonProject,
   startTestDaemon as defaultStartTestDaemon,
   type DaemonTestRuntime,
@@ -135,14 +136,13 @@ export interface PlaywrightFixtureResources {
  *   3. Write `kspec.config.yaml` enabling coverage scan opt-in
  *   4. `allocateTestDaemonPort` — reserves a dynamic listen port
  *
- * Pre-fix: this function does NOT clean up the project temp dir if a later
- * setup step fails after step 1 succeeds — the project handle is constructed
- * eagerly but never returned, so the caller has no `cleanup()` to invoke.
- * The dependent fix task (@task-fix-setup-failure-cleanup-error-preservation)
- * wraps the post-create steps in cleanup so the temp project is removed
- * when a later step throws. The `__testStageHook` seam below lets the staged
- * regression observe the leak today and verify the post-fix contract once
- * the helper is hardened.
+ * Setup-failure cleanup: each step claims its owned resource before the
+ * named stage hook runs. If any later step (including the test-only hook)
+ * throws, already-owned resources are released — currently the project
+ * handle, which owns the temp project tree and isolated HOME. The
+ * surfaced error is the original setup failure; a cleanup failure is
+ * attached as `error.cause` and as message context so the actionable
+ * diagnostic is not replaced by secondary teardown noise.
  */
 export async function acquirePlaywrightFixtureResources(
   opts: AcquirePlaywrightFixtureResourcesOptions,
@@ -154,35 +154,51 @@ export async function acquirePlaywrightFixtureResources(
     fixturesSource: opts.fixturesSource,
     webUiDir: opts.webUiDir,
   });
-  opts.__testStageHook?.("after-create-project");
 
-  // Copy project-level tests directory for AC coverage scanning. The shared
-  // fixture only copies into .kspec/, so the e2e-only tests/ tree (used by
-  // the @test-feature ac-1 coverage path) has to be staged here in the
-  // wrapper.
-  const projectTests = join(opts.fixturesSource, "project-tests");
-  if (existsSync(projectTests)) {
-    cpSync(projectTests, join(project.tempDir, "tests"), { recursive: true });
+  try {
+    opts.__testStageHook?.("after-create-project");
+
+    // Copy project-level tests directory for AC coverage scanning. The shared
+    // fixture only copies into .kspec/, so the e2e-only tests/ tree (used by
+    // the @test-feature ac-1 coverage path) has to be staged here in the
+    // wrapper.
+    const projectTests = join(opts.fixturesSource, "project-tests");
+    if (existsSync(projectTests)) {
+      cpSync(projectTests, join(project.tempDir, "tests"), { recursive: true });
+    }
+    opts.__testStageHook?.("after-copy-project-tests");
+
+    // Coverage scanning is explicit opt-in (AC: @coverage-scan-config
+    // ac-explicit-opt-in) and the e2e items spec relies on AC coverage being
+    // detected for @test-feature ac-1.
+    writeFileSync(
+      join(project.tempDir, "kspec.config.yaml"),
+      "coverage:\n  scan_paths:\n    - tests\n",
+    );
+    opts.__testStageHook?.("after-write-config");
+
+    // Pre-allocate the dynamic port so daemon.stop() / daemon.start() restart
+    // cycles re-bind to the same endpoint that the browser already loaded —
+    // losing the port across a restart would force every test that exercises
+    // reconnection behavior to reload.
+    const port = await allocatePort();
+    opts.__testStageHook?.("after-allocate-port");
+
+    return { project, port };
+  } catch (primary) {
+    // Release the owned project handle so a later-step failure does not
+    // leak the temp project + isolated HOME. project.cleanup is
+    // idempotent, so a later teardown that also calls cleanup is safe.
+    try {
+      await project.cleanup();
+    } catch (cleanupError) {
+      const err = primary instanceof Error ? primary : new Error(String(primary));
+      const secondary = cleanupError instanceof Error ? cleanupError : new Error(String(cleanupError));
+      attachCleanupFailure(err, secondary);
+      throw err;
+    }
+    throw primary;
   }
-  opts.__testStageHook?.("after-copy-project-tests");
-
-  // Coverage scanning is explicit opt-in (AC: @coverage-scan-config
-  // ac-explicit-opt-in) and the e2e items spec relies on AC coverage being
-  // detected for @test-feature ac-1.
-  writeFileSync(
-    join(project.tempDir, "kspec.config.yaml"),
-    "coverage:\n  scan_paths:\n    - tests\n",
-  );
-  opts.__testStageHook?.("after-write-config");
-
-  // Pre-allocate the dynamic port so daemon.stop() / daemon.start() restart
-  // cycles re-bind to the same endpoint that the browser already loaded —
-  // losing the port across a restart would force every test that exercises
-  // reconnection behavior to reload.
-  const port = await allocatePort();
-  opts.__testStageHook?.("after-allocate-port");
-
-  return { project, port };
 }
 
 export interface DaemonFixtureLifecycleOpts<T> {
@@ -215,21 +231,39 @@ export interface DaemonFixtureLifecycleOpts<T> {
  *
  * The Playwright wrapper at `tests/e2e/fixtures/test-base.ts` delegates to
  * this helper, so the wrapper's primary-error preservation behavior flows
- * directly from this function. The body deliberately uses the same simple
- * `try/finally` shape as the original inline wrapper: pre-fix, a teardown
- * throw replaces a primary use/setup error under JS try/finally semantics.
- * The companion fix task (@task-fix-setup-failure-cleanup-error-preservation)
- * introduces explicit primary-error preservation (cause chaining or
- * `AggregateError`) here, which the wrapper inherits automatically.
+ * directly from this function. Both phases are caught explicitly so a
+ * teardown failure cannot replace a primary `use()` failure under plain
+ * JS try/finally semantics — the surfaced error is always the
+ * actionable primary cause, with any cleanup failure attached as
+ * `error.cause` and as message context.
  */
 export async function runDaemonFixtureLifecycle<T>(
   opts: DaemonFixtureLifecycleOpts<T>,
 ): Promise<void> {
   const started = await opts.setup();
+  let primary: unknown = null;
   try {
     await opts.use(started);
-  } finally {
+  } catch (error) {
+    primary = error;
+  }
+  let teardownError: unknown = null;
+  try {
     await opts.teardown();
+  } catch (error) {
+    teardownError = error;
+  }
+  if (primary !== null) {
+    if (teardownError !== null) {
+      const primaryErr = primary instanceof Error ? primary : new Error(String(primary));
+      const secondary = teardownError instanceof Error ? teardownError : new Error(String(teardownError));
+      attachCleanupFailure(primaryErr, secondary);
+      throw primaryErr;
+    }
+    throw primary;
+  }
+  if (teardownError !== null) {
+    throw teardownError;
   }
 }
 
