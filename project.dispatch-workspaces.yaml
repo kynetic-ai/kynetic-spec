@@ -24950,18 +24950,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-add-guardrail-cleanup-effect-regressions/01krcrjp
-    canonical_branch_head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
+    canonical_branch_head: ad6ed111eab1bffaa6a361f6b6e2d0edb1fdf4cb
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T01:24:32.829Z
+      updated_at: 2026-05-12T01:34:46.122Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T01:24:57.851Z
+      updated_at: 2026-05-12T01:34:46.122Z
     integration:
       status: pending
       detail: null
@@ -24969,7 +24969,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
-      updated_at: 2026-05-12T01:24:32.829Z
+      updated_at: 2026-05-12T01:34:46.122Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KRCRJP9RHZ06B249NBJSPSY3"
@@ -24977,9 +24977,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T01:24:57.851Z
-      last_reconciled_at: 2026-05-12T01:24:57.851Z
+      last_reconciled_at: 2026-05-12T01:34:46.122Z
       created_at: 2026-05-12T01:24:32.829Z
-      updated_at: 2026-05-12T01:24:57.851Z
+      updated_at: 2026-05-12T01:34:46.122Z
     workspace_id: dispatch-workspace-01KRCRJP9RHZ06B249NBJSPSY3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
