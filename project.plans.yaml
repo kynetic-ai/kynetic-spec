@@ -48098,8 +48098,8 @@ plans:
             stale or invalid health issue before any later cleanup can delete the
             workspace artifacts.
 
-          How: Use `mise exec -- kspec item ac add @dispatch-workspace-registry ...`
-          for each AC. Verify with `mise exec -- kspec item get
+          How: Use `kspec item ac add @dispatch-workspace-registry ...`
+          for each AC. Verify with `kspec item get
           @dispatch-workspace-registry` and ensure the new AC IDs are present exactly
           once. Do not create a new spec item; these are existing-spec AC additions.
 
@@ -48152,9 +48152,9 @@ plans:
             workspace until bootstrap reaches a terminal state or the lease is
             recovered as abandoned.
 
-          How: Use `mise exec -- kspec item ac add
+          How: Use `kspec item ac add
           @dispatch-runtime-bootstrap-contract ...` for each AC. Verify with
-          `mise exec -- kspec item get @dispatch-runtime-bootstrap-contract`. Do not
+          `kspec item get @dispatch-runtime-bootstrap-contract`. Do not
           create a new spec item; these are existing-spec AC additions.
 
           Covers: @dispatch-runtime-bootstrap-contract ac-bootstrap-in-progress-is-durable,
@@ -48187,8 +48187,8 @@ plans:
             protection set passed to cleanup so provisioning, bootstrap, and validation
             cannot race with artifact deletion.
 
-          How: Use `mise exec -- kspec item ac add @agent-dispatch-engine ...` and
-          verify with `mise exec -- kspec item get @agent-dispatch-engine`. Do not
+          How: Use `kspec item ac add @agent-dispatch-engine ...` and
+          verify with `kspec item get @agent-dispatch-engine`. Do not
           create a new spec item; this is an existing-spec AC addition.
 
           Covers: @agent-dispatch-engine ac-inflight-provisioning-counts-active-for-cleanup.
@@ -48596,7 +48596,7 @@ plans:
              proceed or fail in the expected controlled way.
 
           How: Prefer a tiny shell script fixture over sleeps. The test should wait on
-          file existence or a promise barrier to avoid timing flakes.
+          file existence or a probarrier to avoid timing flakes.
 
           Covers: @agent-dispatch-engine ac-inflight-provisioning-counts-active-for-cleanup,
           @dispatch-runtime-bootstrap-contract ac-bootstrap-in-progress-is-durable,
@@ -48631,15 +48631,15 @@ plans:
              - dispatch runtime bootstrap tests;
              - dispatch engine scheduler/in-flight tests.
           2. Run project validation commands:
-             - `mise exec -- npm run typecheck`
-             - `mise exec -- npm test -- --fresh` for the full suite, or the focused
-               `mise exec -- npm test -- --run <test-file>` form supported by
+             - `npm run typecheck`
+             - `npm test -- --fresh` for the full suite, or the focused
+               `npm test -- --run <test-file>` form supported by
                `scripts/test.cjs` when validating an individual changed test file.
-             - `mise exec -- kspec validate`
+             - `kspec validate`
           3. Verify `git status --short` and shadow branch status are clean or contain
              only the intended spec/task/implementation changes.
           4. If dispatch was paused for implementation, resume it and verify
-             `mise exec -- kspec agent status --json` reports expected running state.
+             `kspec agent status --json` reports expected running state.
 
           How: Capture command outputs in task notes with exact commands, exit codes,
           and any intentionally skipped expensive suites.
@@ -48721,6 +48721,10 @@ plans:
         content: Preserve durable lease design as deferred/superseded and record focused review feedback
         author: Jacob Chapel
         created_at: 2026-05-12T21:16:47.222Z
+      - _ulid: 01KRF2Y6X13ATYAEXE8CYES5H5
+        content: Remove environment-specific mise wrappers from deferred plan commands
+        author: Jacob Chapel
+        created_at: 2026-05-12T21:54:24.289Z
   - _ulid: 01KRF0YT70585X6057AR1JRBHZ
     slugs:
       - plan-dispatch-workspace-in-flight-cleanup-protection
