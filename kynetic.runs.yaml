@@ -46826,7 +46826,7 @@ runs:
     completed_at: 2026-05-12T07:28:53.935Z
   - _ulid: 01KRDHH4TA6ZSCBQ27SC6XRATT
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -46860,7 +46860,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-12T07:33:11.790Z
-        completed_at: 2026-05-12T07:33:11.790Z
+        completed_at: 2026-05-12T07:33:31.795Z
+        notes: "Step 3 (capture decisions): Captured 2 observations via batch — 1 friction
+          (no-leaky-test-daemon.js size growth, candidate for post-plan refactor), 1 success
+          (structural classifier-in-test pattern for failing-before-fix on file structural
+          properties). No tasks created (loop mode bar). Skipped silently: rule-callsite
+          documentation density (low confidence systemic), kspec plan get inline output limit
+          (file-based read worked fine, not novel friction)."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-12T07:33:31.795Z
+        completed_at: 2026-05-12T07:33:31.795Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T07:30:55.947Z
