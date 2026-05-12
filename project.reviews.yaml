@@ -202631,6 +202631,19 @@ reviews:
         runner: npm test
         created_at: 2026-05-12T05:11:22.430Z
         completed_at: 2026-05-12T05:11:22.430Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full npm test -- --fresh ran. It reported 9057 passed, 5 skipped, 1 failure in
+          tests/file-lock.test.ts:202 (expected count: 5, got count: 4). Immediate rerun of npm test
+          -- --fresh tests/file-lock.test.ts passed 21/21, so classified as flaky/non-regression and
+          created follow-up task @01KRD9FY."
+        name: npm test -- --fresh
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T05:11:34.840Z
+        completed_at: 2026-05-12T05:11:34.840Z
     events:
       - _ulid: 01KRD8SMY30TE7JJ337C3BXE69
         actor: Jacob Chapel
@@ -202666,6 +202679,13 @@ reviews:
           status: pass
           name: targeted daemon lint tests
         timestamp: 2026-05-12T05:11:23.982Z
+      - _ulid: 01KRD9J15GBP0WK5Q26B843Z06
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-12T05:11:36.368Z
     examined_commit: 40336586e664d485ab1c0a212b94aa7eece9db0d
     external_links: []
     lifecycle_state: open
@@ -202720,5 +202740,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T04:58:17.412Z
-    updated_at: 2026-05-12T05:11:22.430Z
+    updated_at: 2026-05-12T05:11:34.840Z
     notes: []
