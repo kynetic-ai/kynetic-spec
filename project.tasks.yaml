@@ -28961,7 +28961,7 @@
   type: task
   spec_ref: "@agent-dispatch-engine"
   plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -28973,6 +28973,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-12T21:59:41.822Z
+  started_at: 2026-05-12T22:37:32.366Z
   automation: eligible
 - _ulid: 01KRF37XEJDQ1CFCNYDKP4XGSX
   slugs:
