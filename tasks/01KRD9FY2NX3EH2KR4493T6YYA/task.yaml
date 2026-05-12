@@ -11,7 +11,7 @@ description: "During review of @01KRCRJPMHMHC410TKRC5Y9HF1, full npm test -- --f
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -20,6 +20,14 @@ tags:
   - testing
   - flaky
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/stabilize-flaky-file-lock-concurrent-write-test/01krd9fy
+  captured_at: 2026-05-12T08:08:41.723Z
+  commit: 866065b339c34190fb52f3673bffb90aac357365
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KRDHRG28ZEGN8M8B5WJ2P0EW
 history:
   - author: "@claude"
@@ -35,7 +43,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-12T07:35:14.785Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/stabilize-flaky-file-lock-concurrent-write-test/01krd9fy
+          captured_at: 2026-05-12T08:08:41.723Z
+          commit: 866065b339c34190fb52f3673bffb90aac357365
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-12T08:08:41.725Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-12T08:08:41.725Z
 created_at: 2026-05-12T05:10:27.668Z
 started_at: 2026-05-12T07:35:14.785Z
+submitted_at: 2026-05-12T08:08:41.725Z
 todos: []
 automation: eligible
