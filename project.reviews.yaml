@@ -206050,7 +206050,60 @@ reviews:
     slugs: []
     title: Review setup-failure cleanup preservation
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full fresh test run passed: 2431 suites passed; 9086 passed, 5 skipped of 9091. Log:
+          /tmp/kspec-test-cache/01KREP3A7NAQHWQ4BFEKB7J4XY/7a439603920f5fd7.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-05-12T18:28:33.842Z
+        completed_at: 2026-05-12T18:28:33.842Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate reported schema/references OK with repository-wide warnings only; kspec
+          validate --warnings-ok exited 0. Warnings were global existing
+          coverage/alignment/reference warnings, not changes in the reviewed files.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-12T18:28:37.852Z
+        completed_at: 2026-05-12T18:28:37.852Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run build:e2e completed; npx playwright test tests/e2e/smoke.spec.ts passed 6/6. Build
+          emitted existing Svelte/a11y warnings unrelated to this task.
+        name: build:e2e + smoke
+        required: true
+        runner: npm/playwright
+        created_at: 2026-05-12T18:28:41.892Z
+        completed_at: 2026-05-12T18:28:41.892Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/helpers/daemon.ts, tests/helpers/daemon.test.ts,
+          tests/e2e/fixtures/daemon-fixture.ts, tests/e2e/fixtures/test-base.ts,
+          tests/e2e-fixture-daemon-cleanup.test.ts, tests/helpers/cli.ts, kspec-agents.md. Commands
+          run: git diff/stat/log/diff --check, kspec task get, kspec item get, kspec review
+          add/open, kspec validate, kspec validate --warnings-ok, rg AC/source-scan patterns, npm
+          test -- --fresh, npm run build:e2e && npx playwright test tests/e2e/smoke.spec.ts. Claims
+          verified: cleanup rollback paths exist and focused/full tests pass; E2E build/smoke claim
+          passes. Categories searched: correctness, setup/startup/readiness error handling, AC
+          coverage, test quality, integration wiring. Finding: missing behavioral coverage for setup
+          primary preservation when cleanup itself fails."
+        name: review evidence log
+        required: false
+        runner: codex-review
+        created_at: 2026-05-12T18:28:45.544Z
+        completed_at: 2026-05-12T18:28:45.544Z
     events:
       - _ulid: 01KREP5N9JA2GBH35YB06NYGCG
         actor: Jacob Chapel
@@ -206065,19 +206118,125 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T18:12:03.864Z
+      - _ulid: 01KREQ5BEB17XQGQAFZHJJ3XNQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-12T18:28:35.403Z
+      - _ulid: 01KREQ5FCFEESP9ESC7DCKKMC8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-12T18:28:39.439Z
+      - _ulid: 01KREQ5K4BR45AHZC4WM77WS4Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: build:e2e + smoke
+        timestamp: 2026-05-12T18:28:43.275Z
+      - _ulid: 01KREQ5PQKB685HQBK5PTFQQGQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-12T18:28:46.963Z
+      - _ulid: 01KREQ5T7Q5AVQJDFAWP9RCZAW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KREQ5RV2NWHBDYYX5P0PH6ST
+        timestamp: 2026-05-12T18:28:50.551Z
+      - _ulid: 01KREQ5XNCNE714VM0HT3B8X2V
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KREQ5WB6MAFTWT81ZSS3XATS
+        timestamp: 2026-05-12T18:28:54.060Z
+      - _ulid: 01KREQ618KVHXVYXD50T88CFV1
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T18:28:57.747Z
+      - _ulid: 01KREQ618KSQ9Y11HTXAZDRE0D
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T18:28:57.747Z
     examined_commit: 83237c93fdbddca17934bb1ab429e90324c55649
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KRCRJSNXN4SS1XJ6DKD4XC46"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KREQ5RV2NWHBDYYX5P0PH6ST
+        anchor:
+          type: code
+          commit: 83237c93fdbddca17934bb1ab429e90324c55649
+          line_end: 470
+          line_start: 466
+          path: tests/helpers/daemon.ts
+          side: head
+        entries:
+          - _ulid: 01KREQ5RV2JTGC0BJG3WX5WMNM
+            author: Jacob Chapel
+            body: "MUST-FIX: `ac-cleanup-errors-preserve-primary-failure` is still not behaviorally proven for
+              the core setup-failure path. The new tests cover setup-created temp dirs being removed
+              when cleanup succeeds, and they cover primary preservation for use/startup/readiness
+              cleanup failures, but no test makes `createTestDaemonProject()` hit a setup-stage
+              primary error while `runCleanups()` also fails. That means the cleanupError branch
+              here can regress and all current AC annotations still pass. Add a behavioral test that
+              injects a setup failure plus a cleanup failure and asserts the surfaced error remains
+              the setup failure with cleanup context attached."
+            created_at: 2026-05-12T18:28:49.122Z
+        kind: blocker
+      - _ulid: 01KREQ5WB6MAFTWT81ZSS3XATS
+        anchor:
+          type: code
+          commit: 83237c93fdbddca17934bb1ab429e90324c55649
+          line_end: 198
+          line_start: 188
+          path: tests/e2e/fixtures/daemon-fixture.ts
+          side: head
+        entries:
+          - _ulid: 01KREQ5WB6ESR2MY8GAXBNPG45
+            author: Jacob Chapel
+            body: "MUST-FIX: the Playwright setup rollback path has the same uncovered cleanup-failure case. The
+              wrapper tests exercise later setup failures only when `project.cleanup()` succeeds;
+              none make `acquirePlaywrightFixtureResources()` preserve the setup failure when the
+              owned project cleanup also rejects. Since the task explicitly requires setup
+              primary-error preservation when cleanup also fails, add a behavioral regression for
+              this branch too, for example with a fake returned project whose `cleanup()` rejects
+              after a later setup-stage failure."
+            created_at: 2026-05-12T18:28:52.710Z
+        kind: blocker
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T18:28:57.747Z
     created_at: 2026-05-12T18:11:16.914Z
-    updated_at: 2026-05-12T18:12:02.086Z
+    updated_at: 2026-05-12T18:28:57.747Z
     notes: []
   - _ulid: 01KREPPJP2CAQXRA7072P3KS01
     slugs: []
