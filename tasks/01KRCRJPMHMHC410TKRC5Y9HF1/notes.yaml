@@ -45,3 +45,20 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T04:24:05.117Z
+  - _ulid: 01KRD8JPCBD2XEB1G41CA82HD3
+    content: "Fix cycle 3: addressed the cycle-2 blocker on @01KRD659. findLocalHelperDefinition only
+      scanned Program.body, so a no-op function killPid declared inside the it callback was
+      invisible — the use site fell through the unapproved-import gate to the free-identifier
+      conservative-trust path and silently credited the no-op. The lookup now walks every enclosing
+      BlockStatement and the Program (honouring parameter shadowing on the way up), and
+      isTrustedHelperByOrigin checks local scope before imports so a nested helper that shadows an
+      approved import is rejected when its body cannot prove termination. Added 4 positive
+      regressions (nested function in it body, nested arrow in it body, helper in describe block,
+      nested no-op shadowing approved import) and 1 negative companion (nested function with
+      process.kill SIGTERM body trusted). Verified the reviewer's exact synthetic probe: oxlint now
+      reports missingCleanup where cycle-2 reported 0 warnings. Targeted suites pass (83 + 219 = 302
+      tests). Full suite pass (9058 passed, 5 skipped of 9063). Lint clean on changed files (no new
+      lint introduced). kspec validate warnings-only."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T04:54:29.516Z

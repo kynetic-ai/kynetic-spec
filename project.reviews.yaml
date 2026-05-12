@@ -202368,6 +202368,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T04:24:02.860Z
+      - _ulid: 01KRD8JAQM55XK1Q3SCGZXZ8ND
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRD689D3866QK9CB87AJAEQ0
+        timestamp: 2026-05-12T04:54:17.588Z
+      - _ulid: 01KRD8JE6ZTKRX62S212Z0Z82Z
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRD689D3866QK9CB87AJAEQ0
+        timestamp: 2026-05-12T04:54:21.151Z
+      - _ulid: 01KRD8JHJYCQSMYW7NACQ0C98C
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRD6TKQSEHRQC8G28MRQ1RZG
+        timestamp: 2026-05-12T04:54:24.607Z
+      - _ulid: 01KRD8JN37NMPKP2R29CRA483P
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRD6TKQSEHRQC8G28MRQ1RZG
+        timestamp: 2026-05-12T04:54:28.200Z
     examined_commit: f1621bfda256773bb8ae933797d2c89462d0eb5d
     external_links: []
     lifecycle_state: closed
@@ -202401,7 +202425,25 @@ reviews:
               nested local helper definitions, and add a regression test for this nested helper
               shape.'
             created_at: 2026-05-12T04:13:51.396Z
+          - _ulid: 01KRD8J9BJR6H1NNC4APQYFYFP
+            author: "@claude"
+            body: "Fixed: rewrote findLocalHelperDefinition to walk every enclosing BlockStatement plus the
+              Program when resolving the helper, instead of only scanning Program.body. Parameter
+              shadowing is honoured on the way up (an outer parameter named killPid returns null so
+              the conservative-trust path applies). Reordered isTrustedHelperByOrigin to inspect a
+              local definition BEFORE imports — JS lexical scoping means a nested function killPid
+              shadows any outer import of the same name, so the inner body is the call target and
+              must be inspected for a terminating primitive. Added four positive regressions: nested
+              helper inside the it body (the exact reviewer probe), nested arrow inside the it body,
+              helper inside describe (intermediate scope), and a nested no-op shadowing an approved
+              import. Added one negative companion: a nested helper whose body invokes
+              process.kill(p, 'SIGTERM') is still trusted. Verified the reviewer's exact synthetic
+              fixture: oxlint now reports a no-leaky-test-daemon missingCleanup diagnostic where it
+              previously reported zero warnings."
+            created_at: 2026-05-12T04:54:16.177Z
         kind: blocker
+        resolved_at: 2026-05-12T04:54:19.803Z
+        resolved_by: "@claude"
       - _ulid: 01KRD6TKQSEHRQC8G28MRQ1RZG
         entries:
           - _ulid: 01KRD6TKQS9YP0WR2ZR07TEV3Y
@@ -202418,7 +202460,13 @@ reviews:
               definitions still evade helper-origin inspection. Categories searched: correctness,
               edge cases/scope, error handling, test quality, integration."
             created_at: 2026-05-12T04:23:51.801Z
+          - _ulid: 01KRD8JG91ME3QQCGGK9XXY0W3
+            author: "@claude"
+            body: Acknowledged — evidence log noted, no action needed.
+            created_at: 2026-05-12T04:54:23.265Z
         kind: nit
+        resolved_at: 2026-05-12T04:54:26.867Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -202428,7 +202476,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T04:24:02.859Z
     created_at: 2026-05-12T04:12:12.932Z
-    updated_at: 2026-05-12T04:24:02.860Z
+    updated_at: 2026-05-12T04:54:26.867Z
     notes: []
   - _ulid: 01KRD7N9EQB9RHPWT2KHDQBQPH
     slugs: []
