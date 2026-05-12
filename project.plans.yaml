@@ -47922,16 +47922,16 @@ plans:
       safely rather than leaving artifacts forever or deleting active work.
 
 
-      ## Specs
+      ## Existing Spec Updates
 
 
-      This plan updates existing kspec items; it intentionally derives no new specs from
+      This plan updates existing kspec items; it intentionally has no structured
 
-      `## Specs`. The exact acceptance criteria to add are embedded in the Phase 1
+      `## Specs` YAML block. The exact acceptance criteria to add are embedded in the
 
-      spec-update tasks below so derived tasks remain standalone and so plan derivation
+      Phase 1 spec-update tasks below so derived tasks remain standalone and so plan
 
-      cannot create duplicate sibling specs with collision-suffixed slugs.
+      derivation cannot create duplicate sibling specs with collision-suffixed slugs.
 
 
       Existing specs updated by this plan:
@@ -48632,3 +48632,7 @@ plans:
           payloads, lease owner recovery semantics"
         author: Jacob Chapel
         created_at: 2026-05-12T18:47:56.510Z
+      - _ulid: 01KRERAJ9WGYAAX28KRAQBW8BS
+        content: "Fix parser shape: use prose existing-spec section and task-only derivation"
+        author: Jacob Chapel
+        created_at: 2026-05-12T18:48:54.845Z
