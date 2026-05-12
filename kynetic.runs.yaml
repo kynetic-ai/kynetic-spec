@@ -45188,7 +45188,7 @@ runs:
     started_at: 2026-05-12T01:50:29.103Z
     completed_at: 2026-05-12T01:52:22.645Z
   - _ulid: 01KRCYQB960G1D1W7N1MD4R0Q1
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -45237,10 +45237,14 @@ runs:
         completed_at: 2026-05-12T02:03:23.984Z
         notes: "No discussion needed: there are no new proposed improvements after coverage search; existing
           observations already cover the friction."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-12T02:03:23.984Z
-        completed_at: 2026-05-12T02:03:23.984Z
+        completed_at: 2026-05-12T02:03:31.602Z
+        notes: "No capture: coverage search found existing observations for the regression-first
+          task-splitting friction, and adding another observation would be duplicative. Success
+          pattern is useful but not new enough to capture as durable meta."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T02:02:16.230Z
+    completed_at: 2026-05-12T02:03:31.602Z
