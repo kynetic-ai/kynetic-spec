@@ -16,6 +16,7 @@ import {
   type KspecOptions,
 } from "./helpers/cli";
 import { createTestDaemonProject, startTestDaemon } from "./helpers/daemon.js";
+import { boundedDaemonFetch } from "./helpers/daemon-fetch.js";
 import { stopChildProcessBounded, stopPidBounded } from "./helpers/process-stop.js";
 import {
   resolveDaemonClientEndpoint,
@@ -232,8 +233,12 @@ describe("kspec serve commands", () => {
       `daemon health endpoint at ${endpoint.apiUrl}`,
       async () => {
         const url = `${endpoint.apiUrl}/api/health`;
+        // Bounded probe: AbortSignal.timeout caps the request so a daemon
+        // that accepts the connection but stalls mid-response cannot pin
+        // the readiness wait to the OS TCP timeout (~75s on Linux).
+        // AC: @daemon-test-teardown-boundedness ac-daemon-observations-are-bounded
         try {
-          const response = await fetch(url);
+          const response = await boundedDaemonFetch(url, { timeoutMs: 2_000 });
           const body = (await response.text()).trim();
           const bodyReportsHealthy = body.includes('"status":"ok"');
           return {
@@ -327,26 +332,16 @@ describe("kspec serve commands", () => {
   // AC: @daemon-test-teardown-boundedness ac-daemon-observations-are-bounded
   // AC: @daemon-backed-test-fixture-contract ac-bounded-readiness
   // AC: @daemon-sensitive-cli-test-determinism ac-readiness-diagnostics
-  // FAILING-BEFORE-FIX regression for the bare-fetch call sites in this
-  // suite. `waitForDaemonHealth` (defined above) and the inline
-  // `await fetch(\`${daemonEndpoint.apiUrl}/api/health\`)` /
-  // `/api/projects` probes scattered through this file all hit a daemon
-  // endpoint with no client-side abort signal or timeout. When a daemon
-  // accepts the connection but does not respond, each bare fetch can
-  // hang up to the OS TCP timeout (~75s on Linux) — far past the
-  // readiness budget the caller intended. The companion fix task
-  // (@task-fix-active-request-teardown-and-observation-bounds) introduces
-  // a shared bounded daemon-fetch helper that those call sites must
-  // adopt. When the fix lands this assertion passes and vitest's
-  // `it.fails` will flag the case for re-enablement as plain `it(...)`.
-  //
-  // A small inline hang server is used in place of a real daemon so the
-  // /api/health probe shape mirrors the call-site pattern exactly. The
-  // cleanup AbortController bounds the simulated bare fetch only at
-  // teardown — not as a timeout — so the test does not accidentally
-  // cover the gap it is meant to expose.
-  it.fails(
-    "bare fetch to /api/health reaches a bounded outcome when the endpoint stalls",
+  // Positive contract lock for the bounded daemon-fetch helper that
+  // `waitForDaemonHealth` and the representative `/api/health` /
+  // `/api/projects` call sites in this file now adopt. The previous
+  // FAILING-BEFORE-FIX shape used a bare `fetch(url)` to lock the gap;
+  // the companion fix introduces `boundedDaemonFetch` so daemon-facing
+  // probes never wait past the caller's budget. A small inline hang
+  // server simulates a daemon that accepts the connection but stalls
+  // mid-handler.
+  it(
+    "bounded daemon fetch to /api/health reaches a bounded outcome when the endpoint stalls",
     async () => {
       const hangServer: HttpServer = createHttpServer(() => {
         // Accept the connection but never write a response — mirrors a
@@ -367,22 +362,24 @@ describe("kspec serve commands", () => {
       const cleanupController = new AbortController();
       onTestFinished(async () => {
         cleanupController.abort();
-        // Server is also stopped via destroy so any lingering sockets
-        // are reaped regardless of whether the active fetch was aborted.
+        // Force-close any lingering sockets so the hang server can finalize
+        // its close even if the bounded fetch was already aborted internally.
         await new Promise<void>((resolveClose) => {
           hangServer.closeAllConnections?.();
           hangServer.close(() => resolveClose());
         });
       });
 
-      // Bare-fetch shape matching cli-serve.test.ts call sites. The
-      // signal is wired to test cleanup only — not to a user-facing
-      // timeout. The contract under test is exactly that the call site
-      // does not bound itself.
-      const BUDGET_MS = 400;
+      // Use the shared bounded helper exactly as the daemon-facing
+      // call sites in this suite now do. The helper's internal
+      // `AbortSignal.timeout` aborts the request within `timeoutMs`,
+      // so the outer race timer never fires.
+      const HELPER_TIMEOUT_MS = 200;
+      const BUDGET_MS = 800;
       const startedAt = Date.now();
       const outcome = await Promise.race([
-        fetch(`http://127.0.0.1:${hangServerPort}/api/health`, {
+        boundedDaemonFetch(`http://127.0.0.1:${hangServerPort}/api/health`, {
+          timeoutMs: HELPER_TIMEOUT_MS,
           signal: cleanupController.signal,
         })
           .then(() => "responded" as const)
@@ -393,12 +390,11 @@ describe("kspec serve commands", () => {
       ]);
       const elapsed = Date.now() - startedAt;
 
-      // ac-daemon-observations-are-bounded: a daemon-facing probe must
-      // reach a bounded terminal outcome — a real response or a bounded
-      // error from the shared helper that replaces these bare fetches.
-      // "timeout" means the bare fetch stayed in flight past the focused
-      // budget, locking the gap this regression protects.
-      expect(outcome).not.toBe("timeout");
+      // ac-daemon-observations-are-bounded: the bounded helper aborts
+      // the request internally, so the consumer observes an "errored"
+      // outcome well inside the outer budget. A "timeout" would mean
+      // the helper failed to enforce its own bound.
+      expect(outcome).toBe("errored");
       expect(elapsed).toBeLessThan(BUDGET_MS);
     },
   );
@@ -591,7 +587,7 @@ describe("kspec serve commands", () => {
 
     // Daemon is bound on the resolved bind host (127.0.0.1), proven by a
     // health check that uses the IPv4 address directly rather than a name.
-    const directIpv4Health = await fetch(`http://127.0.0.1:${port}/api/health`);
+    const directIpv4Health = await boundedDaemonFetch(`http://127.0.0.1:${port}/api/health`);
     expect(directIpv4Health.ok).toBe(true);
 
     // Cleanup
@@ -679,13 +675,15 @@ describe("kspec serve commands", () => {
       let elapsed = 0;
       const tick = async (): Promise<void> => {
         try {
-          const response = await fetch(`http://[::1]:${port}/api/health`);
+          const response = await boundedDaemonFetch(`http://[::1]:${port}/api/health`, {
+            timeoutMs: 1_000,
+          });
           if (response.ok) {
             resolve(true);
             return;
           }
         } catch {
-          // Connection refused — expected: nothing listening on [::1]:PORT.
+          // Connection refused or aborted — expected: nothing listening on [::1]:PORT.
         }
         elapsed += 200;
         if (elapsed >= 2000) {
@@ -940,7 +938,10 @@ describe("kspec serve commands", () => {
       "daemon health endpoint at configured 127.0.0.2",
       async () => {
         try {
-          const response = await fetch(`http://127.0.0.2:${port}/api/health`);
+          const response = await boundedDaemonFetch(
+            `http://127.0.0.2:${port}/api/health`,
+            { timeoutMs: 2_000 },
+          );
           const body = (await response.text()).trim();
           return {
             ok: response.ok,
@@ -956,10 +957,14 @@ describe("kspec serve commands", () => {
 
     // Negative proof: nothing at 127.0.0.1:port. If the daemon ignored
     // the configured host and bound to the default loopback, this would
-    // succeed — and the test must catch that regression.
+    // succeed — and the test must catch that regression. Bounded so a
+    // stalled (rather than refused) socket cannot pin teardown.
     let defaultLoopbackAccepted = false;
     try {
-      const refused = await fetch(`http://127.0.0.1:${port}/api/health`);
+      const refused = await boundedDaemonFetch(
+        `http://127.0.0.1:${port}/api/health`,
+        { timeoutMs: 2_000 },
+      );
       defaultLoopbackAccepted = refused.ok;
     } catch {
       defaultLoopbackAccepted = false;
@@ -1049,7 +1054,10 @@ describe("kspec serve commands", () => {
       `daemon health endpoint at advertised connect_host`,
       async () => {
         try {
-          const response = await fetch(`http://127.0.0.2:${port}/api/health`);
+          const response = await boundedDaemonFetch(
+            `http://127.0.0.2:${port}/api/health`,
+            { timeoutMs: 2_000 },
+          );
           const body = (await response.text()).trim();
           return {
             ok: response.ok,
@@ -1075,7 +1083,7 @@ describe("kspec serve commands", () => {
     // 127.0.0.2 must succeed. Before the middleware accepted additional
     // hosts, this came back 403 Forbidden even though metadata said the
     // URL was the canonical client endpoint.
-    const advertised = await fetch(`http://127.0.0.2:${port}/api/health`);
+    const advertised = await boundedDaemonFetch(`http://127.0.0.2:${port}/api/health`);
     expect(advertised.status).toBe(200);
     const advertisedBody = (await advertised.json()) as { status: string };
     expect(advertisedBody.status).toBe("ok");
@@ -1242,7 +1250,7 @@ describe("kspec serve commands", () => {
 
     // Register a project via API
     const testProjectPath = tempDir;
-    await fetch(`${daemonEndpoint.apiUrl}/api/projects`, {
+    await boundedDaemonFetch(`${daemonEndpoint.apiUrl}/api/projects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: testProjectPath }),
@@ -1279,7 +1287,7 @@ describe("kspec serve commands", () => {
 
     // Register a project via API
     const testProjectPath = tempDir;
-    await fetch(`${daemonEndpoint.apiUrl}/api/projects`, {
+    await boundedDaemonFetch(`${daemonEndpoint.apiUrl}/api/projects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: testProjectPath }),
@@ -1508,7 +1516,9 @@ describe("kspec serve commands", () => {
       const installedDaemonEndpoint = await waitForDaemonHealth(isolated.configDir);
 
       // Verify health endpoint responds (daemon is actually running with Elysia)
-      const healthResponse = await fetch(`${installedDaemonEndpoint.apiUrl}/api/health`);
+      const healthResponse = await boundedDaemonFetch(
+        `${installedDaemonEndpoint.apiUrl}/api/health`,
+      );
       // oxlint-disable-next-line jest/valid-expect -- vitest supports custom message as 2nd arg
       expect(healthResponse.ok, "daemon health endpoint should respond").toBe(true);
       const healthBody = (await healthResponse.json()) as { status: string; runtime: string };
@@ -1719,7 +1729,7 @@ describe("kspec serve commands", () => {
 
     const daemonEndpoint = await waitForDaemonHealth();
 
-    const healthResponse = await fetch(`${daemonEndpoint.apiUrl}/api/health`);
+    const healthResponse = await boundedDaemonFetch(`${daemonEndpoint.apiUrl}/api/health`);
     expect(healthResponse.ok).toBe(true);
   });
 

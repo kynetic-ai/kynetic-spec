@@ -38,6 +38,7 @@ import {
   createTempDir,
   type IsolatedKspecHome,
 } from "./cli.js";
+import { boundedDaemonFetch } from "./daemon-fetch.js";
 import {
   expectedHostHeader,
   probeHostAvailable,
@@ -719,15 +720,13 @@ describe("mock daemon helper — active-request teardown contract", () => {
   // AC: @daemon-test-teardown-boundedness ac-active-requests-do-not-block-teardown
   // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
   // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
-  // FAILING-BEFORE-FIX: in-process `stop()` awaits `server.close()`. Node
-  // holds the close callback until every accepted connection drains, so a
-  // hung request keeps the close pending forever. The companion fix task
-  // (@task-fix-active-request-teardown-and-observation-bounds) must track
-  // active sockets / requests and abort them so teardown reaches a bounded
-  // outcome. When the fix lands the inner assertions will pass; vitest's
-  // `it.fails` then flips this case red and the worker MUST switch back to
-  // plain `it(...)`.
-  it.fails(
+  // Positive contract lock: in-process `stop()` tracks active sockets and
+  // force-closes them after a small graceful budget so `server.close()`
+  // finalizes even when a request is hanging. Before the fix Node held the
+  // close callback until every accepted connection drained, so a hung
+  // request kept the close pending forever; the bounded teardown contract
+  // in mock-daemon.ts must keep the resolution well inside `BOUND_MS`.
+  it(
     "in-process stop() reaches a bounded outcome when an active request is hanging",
     async () => {
       const mock = (await startMockDaemon({ mode: "hang" })) ?? undefined;
@@ -852,13 +851,12 @@ describe("mock daemon helper — active-request teardown contract", () => {
   // AC: @daemon-test-teardown-boundedness ac-daemon-observations-are-bounded
   // AC: @daemon-backed-test-fixture-contract ac-bounded-readiness
   // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
-  // Positive contract lock for the bounded-observation pattern callers
-  // SHOULD use against a daemon endpoint that accepts a connection but
-  // does not respond. The companion fix task introduces a shared bounded
-  // daemon-fetch helper; until then this test documents the expected
-  // shape (AbortSignal.timeout aborts within budget and surfaces an
-  // AbortError that callers can treat as a bounded observation).
-  it("AbortSignal.timeout-bounded fetch reaches a bounded outcome against a hang endpoint", async () => {
+  // Positive contract lock for the shared `boundedDaemonFetch` helper.
+  // Replaced the prior inline `AbortSignal.timeout` shape now that the
+  // helper exists — the helper composes `AbortSignal.timeout` with the
+  // caller's optional signal, so this case proves the helper bounds the
+  // observation against a stalled daemon endpoint.
+  it("boundedDaemonFetch reaches a bounded outcome against a hang endpoint", async () => {
     const mock = (await startMockDaemon({ mode: "hang" })) ?? undefined;
     expect(mock).toBeDefined();
     onTestFinished(async () => {
@@ -870,11 +868,11 @@ describe("mock daemon helper — active-request teardown contract", () => {
     let aborted = false;
     let body: string | null = null;
     try {
-      const response = await fetch(`${mock!.apiUrl}/api/command`, {
+      const response = await boundedDaemonFetch(`${mock!.apiUrl}/api/command`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ command: "task list" }),
-        signal: AbortSignal.timeout(BUDGET_MS),
+        timeoutMs: BUDGET_MS,
       });
       body = await response.text();
     } catch (err) {
@@ -889,31 +887,25 @@ describe("mock daemon helper — active-request teardown contract", () => {
     expect(aborted).toBe(true);
     expect(body).toBeNull();
     // Bound the observation to a small multiple of the budget so a
-    // future regression that drops the abort signal cannot satisfy this
-    // case by waiting out the OS TCP timeout (~75s on Linux).
+    // future regression that drops the helper's internal abort cannot
+    // satisfy this case by waiting out the OS TCP timeout (~75s on Linux).
     expect(elapsed).toBeLessThan(BUDGET_MS * 4);
   });
 
   // AC: @daemon-test-teardown-boundedness ac-daemon-observations-are-bounded
   // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
-  // FAILING-BEFORE-FIX: this regression documents the gap at the
-  // representative bare-fetch call sites (cli-serve.test.ts
-  // `waitForDaemonHealth`, the Playwright fixture's createSecondProject
-  // POST, and the inline /api/health probes in cli-serve.test.ts). A
-  // daemon endpoint that accepts the connection and stalls leaves a
-  // bare `fetch(url)` waiting up to the OS TCP timeout (~75s on Linux).
-  // The companion fix task introduces a shared bounded helper that those
-  // call sites must adopt; when the fix lands this assertion passes and
-  // vitest's `it.fails` flags the case for re-enablement as plain `it`.
-  //
-  // The fetch uses a cleanup-bound `AbortSignal` (no timeout) so the
-  // simulated bare-fetch hang can be deterministically released during
-  // `onTestFinished`. The signal is intentionally NOT plumbed to a
-  // timeout — the gap under test is exactly that consumers do not wire a
-  // bounded signal into the call site. The cleanup signal exists only to
-  // keep the test suite bounded; it is not the contract under test.
-  it.fails(
-    "bare fetch() against a hang endpoint reaches a bounded outcome within a focused test budget",
+  // Positive contract lock for the shared `boundedDaemonFetch` helper that
+  // the representative bare-fetch call sites in cli-serve.test.ts
+  // (`waitForDaemonHealth` and inline `/api/health` / `/api/projects`
+  // probes) and the Playwright fixture's `createSecondProject` POST now
+  // adopt. The helper's internal `AbortSignal.timeout` aborts the request
+  // within its budget regardless of socket-level behavior, so a daemon
+  // that stalls mid-response can no longer pin the consumer to the OS
+  // TCP timeout (~75s on Linux). A cleanup-bound signal still releases
+  // any in-flight socket on `onTestFinished` so the test suite stays
+  // bounded even if a future regression drops the helper's internal abort.
+  it(
+    "boundedDaemonFetch against a hang endpoint reaches a bounded outcome within a focused test budget",
     async () => {
       const mock = (await startMockDaemon({ mode: "hang" })) ?? undefined;
       expect(mock).toBeDefined();
@@ -924,16 +916,19 @@ describe("mock daemon helper — active-request teardown contract", () => {
         if (mock) await mock.stop();
       });
 
-      // Bare-fetch shape from the perspective of the consumer: no
-      // user-facing timeout, no AbortController.signal.timeout wiring.
-      // The signal here is wired to test cleanup only.
-      const BUDGET_MS = 400;
+      // The helper aborts internally after `timeoutMs`. The outer race
+      // timer is a safety bound that should never fire — its purpose is
+      // to keep the test bounded if a future regression drops the
+      // helper's internal abort.
+      const HELPER_TIMEOUT_MS = 200;
+      const BUDGET_MS = 800;
       const startedAt = Date.now();
       const outcome = await Promise.race([
-        fetch(`${mock!.apiUrl}/api/command`, {
+        boundedDaemonFetch(`${mock!.apiUrl}/api/command`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ command: "task list" }),
+          timeoutMs: HELPER_TIMEOUT_MS,
           signal: cleanupController.signal,
         })
           .then(() => "responded" as const)
@@ -944,13 +939,11 @@ describe("mock daemon helper — active-request teardown contract", () => {
       ]);
       const elapsed = Date.now() - startedAt;
 
-      // ac-daemon-observations-are-bounded: the consumer must observe a
-      // bounded outcome — either a real response or a bounded error from
-      // a shared helper. "timeout" means the request stayed in flight
-      // past the focused budget, which is the gap this regression locks
-      // for the bare-fetch call sites in cli-serve.test.ts and the
-      // Playwright fixture's createSecondProject POST.
-      expect(outcome).not.toBe("timeout");
+      // ac-daemon-observations-are-bounded: the helper aborts the request
+      // internally, so the consumer observes an "errored" outcome well
+      // inside the outer budget. A "timeout" would mean the helper
+      // failed to enforce its own bound.
+      expect(outcome).toBe("errored");
       expect(elapsed).toBeLessThan(BUDGET_MS);
     },
   );

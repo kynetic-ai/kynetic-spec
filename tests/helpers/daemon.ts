@@ -43,6 +43,7 @@ import {
   type IsolatedKspecHome,
   type StartupProbeResult,
 } from "./cli.js";
+import { boundedDaemonFetch } from "./daemon-fetch.js";
 import { stopChildProcessBounded } from "./process-stop.js";
 
 // ── Paths ─────────────────────────────────────────────────────────────
@@ -449,15 +450,9 @@ interface BoundedProbeFetchResult {
 }
 
 async function boundedProbeFetch(url: string): Promise<BoundedProbeFetchResult> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), PROBE_FETCH_TIMEOUT_MS);
-  try {
-    const response = await fetch(url, { signal: controller.signal });
-    const body = await response.text();
-    return { ok: response.ok, status: response.status, body };
-  } finally {
-    clearTimeout(timer);
-  }
+  const response = await boundedDaemonFetch(url, { timeoutMs: PROBE_FETCH_TIMEOUT_MS });
+  const body = await response.text();
+  return { ok: response.ok, status: response.status, body };
 }
 
 function describeChildExit(child: ChildProcess): string | null {
@@ -479,19 +474,14 @@ function describeChildExit(child: ChildProcess): string | null {
 async function sampleEndpointDiagnostic(
   url: string,
 ): Promise<DaemonEndpointObservation> {
-  const controller = new AbortController();
-  const timer = setTimeout(
-    () => controller.abort(),
-    DIAGNOSTIC_SAMPLE_TIMEOUT_MS,
-  );
   try {
-    const response = await fetch(url, { signal: controller.signal });
+    const response = await boundedDaemonFetch(url, {
+      timeoutMs: DIAGNOSTIC_SAMPLE_TIMEOUT_MS,
+    });
     const body = await response.text();
     return { status: response.status, body };
   } catch (error) {
     return { error: error instanceof Error ? error.message : String(error) };
-  } finally {
-    clearTimeout(timer);
   }
 }
 

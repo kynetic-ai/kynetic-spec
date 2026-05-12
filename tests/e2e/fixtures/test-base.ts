@@ -17,6 +17,7 @@ import {
   type DaemonTestRuntime,
   type StartedTestDaemon,
 } from "../../helpers/daemon.js";
+import { boundedDaemonFetch } from "../../helpers/daemon-fetch.js";
 import {
   acquirePlaywrightFixtureResources,
   runPlaywrightFixtureBody,
@@ -272,7 +273,10 @@ tasks: []
 
         // AC: @e2e-test-daemon-isolation ac-browser-endpoint-from-fixture
         // AC: @daemon-test-endpoint-consistency ac-resolved-endpoint-source
-        const response = await fetch(`${started.apiUrl}/api/projects`, {
+        // AC: @daemon-test-teardown-boundedness ac-daemon-observations-are-bounded
+        // Bounded so a daemon that accepts the connection but stalls
+        // mid-request cannot pin the fixture body to the OS TCP timeout.
+        const response = await boundedDaemonFetch(`${started.apiUrl}/api/projects`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ path: secondProjectPath }),

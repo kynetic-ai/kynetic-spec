@@ -35,7 +35,7 @@
 
 import { ChildProcess, spawn } from "node:child_process";
 import http from "node:http";
-import { createServer as createNetServer } from "node:net";
+import { createServer as createNetServer, type Socket } from "node:net";
 import { existsSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -321,12 +321,25 @@ function handleInProcessRequest(
   ctx.response.end("Not found");
 }
 
+// In-process stop() budget. `server.close()` waits for active connections to
+// drain, so a hung request keeps the close callback pending forever. The
+// graceful budget gives a cooperating handler time to finish; on elapse the
+// helper escalates by force-destroying remaining sockets so close finalizes.
+// The hard bound is a safety net for any future Node behavior where close
+// stays pending even after all sockets are destroyed — teardown must always
+// reach a bounded outcome.
+const IN_PROCESS_STOP_GRACEFUL_MS = 250;
+const IN_PROCESS_STOP_BOUND_MS = 1_000;
+
 async function startInProcessMockDaemon(
   bindHost: string,
   mode: MockDaemonMode,
 ): Promise<MockDaemonClient | null> {
   return new Promise((resolve) => {
     const recorded: RecordedMockRequest[] = [];
+    // Track every accepted socket so stop() can force-close active connections
+    // when server.close() is otherwise pinned by a hung handler.
+    const activeSockets = new Set<Socket>();
     const server = http.createServer(async (req, res) => {
       const body = await readRequestBody(req);
       recorded.push({
@@ -338,6 +351,10 @@ async function startInProcessMockDaemon(
       });
       const url = new URL(req.url ?? "/", `http://${req.headers.host ?? bindHost}`);
       handleInProcessRequest({ body, url, request: req, response: res }, mode);
+    });
+    server.on("connection", (socket: Socket) => {
+      activeSockets.add(socket);
+      socket.once("close", () => activeSockets.delete(socket));
     });
 
     let settled = false;
@@ -362,13 +379,38 @@ async function startInProcessMockDaemon(
       }
       const port = addr.port;
       const { apiUrl, wsUrl } = buildDaemonUrls(bindHost, port);
-      let stopped = false;
-      const stop = (): Promise<void> =>
-        new Promise<void>((resolveStop) => {
-          if (stopped) return resolveStop();
-          stopped = true;
-          server.close(() => resolveStop());
+      let stopPromise: Promise<void> | undefined;
+      // Operational stop(): bounded teardown that cannot block on a hung
+      // request. server.close() pins on active connections, so the helper
+      // escalates after a small graceful budget by destroying any remaining
+      // sockets (matches server.closeAllConnections() semantics) and a hard
+      // bound resolves the promise even if close() never fires its callback.
+      // Idempotent — subsequent calls return the cached promise.
+      // AC: @daemon-test-teardown-boundedness ac-active-requests-do-not-block-teardown
+      const stop = (): Promise<void> => {
+        if (stopPromise) return stopPromise;
+        stopPromise = new Promise<void>((resolveStop) => {
+          let settledStop = false;
+          const finishStop = (): void => {
+            if (settledStop) return;
+            settledStop = true;
+            clearTimeout(gracefulTimer);
+            clearTimeout(boundTimer);
+            resolveStop();
+          };
+          const gracefulTimer = setTimeout(() => {
+            // Force-close any sockets still tying up server.close(). Once
+            // every connection is destroyed, the close callback fires and
+            // finishStop runs via the close path.
+            for (const socket of activeSockets) {
+              socket.destroy();
+            }
+          }, IN_PROCESS_STOP_GRACEFUL_MS);
+          const boundTimer = setTimeout(finishStop, IN_PROCESS_STOP_BOUND_MS);
+          server.close(() => finishStop());
         });
+        return stopPromise;
+      };
       finish({
         port,
         bindHost,
