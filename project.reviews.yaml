@@ -200895,6 +200895,19 @@ reviews:
         runner: npm-test
         created_at: 2026-05-12T01:40:23.784Z
         completed_at: 2026-05-12T01:40:23.784Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm test -- --fresh. Result: exit 1, 5 failed, 5 skipped, 9028 passed of 9038. The
+          only failures were the five new bounded-stop regression tests in
+          tests/helpers/daemon.test.ts, tests/helpers/mock-daemon.test.ts, and
+          tests/cli-serve.test.ts."
+        name: npm test
+        required: true
+        runner: npm-test
+        created_at: 2026-05-12T01:40:28.589Z
+        completed_at: 2026-05-12T01:40:28.589Z
     events:
       - _ulid: 01KRCWMJX0GGCSDFKSS849N9F0
         actor: Jacob Chapel
@@ -200930,6 +200943,13 @@ reviews:
           status: pass
           name: focused bounded-stop contract slice
         timestamp: 2026-05-12T01:40:25.386Z
+      - _ulid: 01KRCXFFV23Y1FA3ASGV67MKKR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-05-12T01:40:30.178Z
     examined_commit: 38281b2580cd078393fbc844446cd34113ff5d0a
     external_links: []
     lifecycle_state: open
@@ -200985,7 +201005,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T01:25:48.577Z
-    updated_at: 2026-05-12T01:40:23.784Z
+    updated_at: 2026-05-12T01:40:28.589Z
     notes: []
   - _ulid: 01KRCX973GZBVGAC6R6KGR4K7A
     slugs: []
