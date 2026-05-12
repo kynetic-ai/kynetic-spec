@@ -47273,7 +47273,7 @@ runs:
     started_at: 2026-05-12T15:31:35.648Z
     completed_at: 2026-05-12T15:34:05.914Z
   - _ulid: 01KREFBKDT5ZE7388GAEDWGD9Z
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -47326,7 +47326,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-12T16:15:28.559Z
-        completed_at: 2026-05-12T16:15:28.559Z
+        completed_at: 2026-05-12T16:16:07.087Z
+        notes: "Captured one friction observation: @01KREFJ9. No new task was created because implementation
+          scope for the guardrail should be triaged; existing workflow-run defaulting friction
+          remains covered by @01KKBD52."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T16:12:11.578Z
+    completed_at: 2026-05-12T16:16:07.087Z
