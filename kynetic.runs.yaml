@@ -48259,7 +48259,7 @@ runs:
     started_at: 2026-05-12T23:00:12.105Z
     completed_at: 2026-05-12T23:01:40.752Z
   - _ulid: 01KRF8J9X657TPC4WMSYGAX0WG
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -48303,10 +48303,14 @@ runs:
         completed_at: 2026-05-12T23:36:03.155Z
         notes: Skipped discussion because there are no untracked improvement proposals; search found
           existing coverage and this reflection is being completed directly.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-12T23:36:03.155Z
-        completed_at: 2026-05-12T23:36:03.155Z
+        completed_at: 2026-05-12T23:36:16.104Z
+        notes: No new items captured. Existing observations already cover review verdict/readback friction
+          and review evidence-log placement, so adding another inbox item or observation would
+          duplicate tracking.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T23:32:45.606Z
+    completed_at: 2026-05-12T23:36:16.105Z
