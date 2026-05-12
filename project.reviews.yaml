@@ -206079,3 +206079,29 @@ reviews:
     created_at: 2026-05-12T18:11:16.914Z
     updated_at: 2026-05-12T18:12:02.086Z
     notes: []
+  - _ulid: 01KREPPJP2CAQXRA7072P3KS01
+    slugs: []
+    title: "Plan review: Dispatch Workspace Provisioning Lease Protection"
+    author: Hermes
+    checks: []
+    events:
+      - _ulid: 01KREPPJP2JEH49FSD00N3H5JV
+        actor: Hermes
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-12T18:20:31.298Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-dispatch-workspace-provisioning-lease-protection"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-12T18:20:31.298Z
+    updated_at: null
+    notes: []
