@@ -204719,6 +204719,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KRECGCDB6EYW31BWG0ZQYJ0R
         timestamp: 2026-05-12T15:22:23.916Z
+      - _ulid: 01KRECJPJ6WMNPD0Y45Z5NBNAS
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRECGCDB6EYW31BWG0ZQYJ0R
+        timestamp: 2026-05-12T15:23:38.438Z
     examined_commit: f2d28b784205871178ae3872f42601a3a15f9fa1
     external_links: []
     lifecycle_state: open
@@ -204750,8 +204756,23 @@ reviews:
               ac-cleanup-helper-origin-is-trusted because the helper is locally bound and not an
               approved terminating primitive."
             created_at: 2026-05-12T15:22:22.507Z
+          - _ulid: 01KRECJMZ87QF9ZS9KKQQDHK2K
+            author: Jacob Chapel
+            body: 'Clarifying the mangled shell-expanded text above: findLocalHelperDefinition currently handles
+              function/arrow parameters and BlockStatement/Program statement declarations, but it
+              does not treat ForStatement initializers, ForInStatement/ForOfStatement left bindings,
+              or CatchClause params as local helper bindings. Repro evidence from ad hoc oxlint
+              probes: (1) for-loop initializer: for (const killPid = (_p) => {}; true;) {
+              runKspec("serve start --detach --port 3456"); const pid = readPidFromFile();
+              onTestFinished(() => killPid(pid)); expect(true).toBe(true); break; } exited 0 with no
+              no-leaky-test-daemon diagnostic; (2) for-of binding: for (const killPid of [(_p) =>
+              {}]) { ... } also exited 0 with no diagnostic; (3) catch parameter: catch (killPid) {
+              ... onTestFinished(() => killPid(pid)) ... } also exited 0 with no diagnostic. These
+              are local, untrusted bindings of a cleanup-helper-like name, so the helper name alone
+              still satisfies cleanup in violation of ac-cleanup-helper-origin-is-trusted.'
+            created_at: 2026-05-12T15:23:36.808Z
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T15:12:58.406Z
-    updated_at: 2026-05-12T15:22:22.507Z
+    updated_at: 2026-05-12T15:23:36.808Z
     notes: []
