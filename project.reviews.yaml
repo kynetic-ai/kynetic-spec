@@ -203869,7 +203869,19 @@ reviews:
     slugs: []
     title: Review implicit auto-start daemon cleanup regressions
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Schema and references passed. Command exited 6 only because of existing repo-wide
+          warnings: deprecated refs, orphaned specs/status mismatches, missing AC coverage, and
+          invalid annotations outside this task."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-12T07:53:29.520Z
+        completed_at: 2026-05-12T07:53:29.520Z
     events:
       - _ulid: 01KRDHWT1CCT01GV3ZQDQ3G52N
         actor: Jacob Chapel
@@ -203884,6 +203896,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T07:37:42.884Z
+      - _ulid: 01KRDJTG5CQP9JBSZQ7DD0XWRK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-12T07:53:31.052Z
     examined_commit: 70f36e34d73a83df3a8ef32ec6ec7470e6509870
     external_links: []
     lifecycle_state: open
@@ -203896,5 +203915,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T07:37:18.125Z
-    updated_at: 2026-05-12T07:37:41.439Z
+    updated_at: 2026-05-12T07:53:29.520Z
     notes: []
