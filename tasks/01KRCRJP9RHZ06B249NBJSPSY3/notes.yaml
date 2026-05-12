@@ -1,1 +1,55 @@
-notes: []
+notes:
+  - _ulid: 01KRCWV65FSQ8G69PGNMP5RMR4
+    content: >-
+      Approach: Adding failing-before-fix regression cases to
+      tests/lint-no-leaky-test-daemon.test.ts in two clusters.
+
+
+      Rejected (cleanup-effect):
+
+      - process.kill(pid, 0) — liveness probe
+
+      - process.kill(pid, "SIGUSR1"), "SIGCONT", "SIGWINCH" — non-terminating signal literals
+
+      - Local no-op helpers killPid, stopDaemon, stopMockDaemon (function declaration + arrow)
+
+      - child.kill("SIGUSR1") for child-handle parity (already rejected today; documents the
+      contract)
+
+
+      Accepted (cleanup-effect):
+
+      - process.kill(pid) (no signal → Node default SIGTERM)
+
+      - process.kill(pid, "SIGTERM"|"SIGKILL")
+
+      - child.kill() (no signal → Node default SIGTERM) — currently REJECTED, will fail-before-fix
+
+      - child.kill("SIGTERM")
+
+      - killPid imported from tests/helpers/daemon (origin-trusted path)
+
+      - Locally defined killPid whose body calls process.kill(pid, "SIGTERM") (origin-trusted via
+      body)
+
+
+      Probe results against current rule:
+
+      - process.kill(pid, 0|"SIGUSR1"|"SIGCONT"|"SIGWINCH"|"SIGTERM"|"SIGKILL") all currently
+      ACCEPTED (no missingCleanup) — rejected probes fail-before-fix
+
+      - child.kill() currently REJECTED — accepted probe fails-before-fix
+
+      - Local no-op killPid / stopDaemon / stopMockDaemon (with pid arg) currently ACCEPTED —
+      rejected probes fail-before-fix
+
+
+      Assertions: rejected cases assert on the missingCleanup message text ("has no scoped cleanup
+      registration"). Accepted cases assert .not.toContain("no-leaky-test-daemon"). Each new test
+      carries its AC annotation (@daemon-test-guardrail-precision
+      ac-cleanup-operation-terminates-daemon / ac-cleanup-probes-do-not-count /
+      ac-cleanup-helper-origin-is-trusted plus @daemon-test-harness-guardrails
+      ac-detached-serve-without-cleanup-flagged where applicable).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T01:29:24.911Z
