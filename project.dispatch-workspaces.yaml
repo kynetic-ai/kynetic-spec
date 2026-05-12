@@ -24109,7 +24109,7 @@ workspaces:
         head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
         last_seen_at: 2026-05-12T00:22:51.147Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tighten-daemon-guardrail-cleanup-semantics-specs-01krcrjp
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
     bootstrap:
       status: succeeded
@@ -24586,12 +24586,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T01:24:03.046Z
+      updated_at: 2026-05-12T01:45:53.118Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T01:24:29.978Z
+      updated_at: 2026-05-12T01:45:53.118Z
     integration:
       status: pending
       detail: null
@@ -24599,7 +24599,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
-      updated_at: 2026-05-12T01:24:03.046Z
+      updated_at: 2026-05-12T01:45:53.118Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRCRJR5K77Q2THCVVH3BDNFH"
@@ -24607,9 +24607,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T01:24:29.978Z
-      last_reconciled_at: 2026-05-12T01:24:29.978Z
+      last_reconciled_at: 2026-05-12T01:45:53.118Z
       created_at: 2026-05-12T00:23:22.571Z
-      updated_at: 2026-05-12T01:24:29.978Z
+      updated_at: 2026-05-12T01:45:53.118Z
     workspace_id: dispatch-workspace-01KRCRJR5K77Q2THCVVH3BDNFH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
