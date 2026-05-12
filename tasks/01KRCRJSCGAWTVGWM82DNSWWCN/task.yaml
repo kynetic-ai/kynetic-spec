@@ -53,7 +53,7 @@ description: >
 spec_ref: "@daemon-test-teardown-boundedness"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -72,7 +72,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-add-setup-failure-error-preservation-regressions/01krcrjs
-session_id: null
+session_id: 01KRDF24564SZYC5MJKGW86Y9G
 history:
   - author: Jacob Chapel
     changes:
@@ -188,8 +188,21 @@ history:
         previous: 01KRDBWGQ3SAXD27VVMBEBH74Y
     command: review-verdict-needs-work
     timestamp: 2026-05-12T06:35:35.512Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KRDF24564SZYC5MJKGW86Y9G
+        previous: null
+      started_at:
+        new: 2026-05-12T07:05:24.055Z
+        previous: 2026-05-12T06:16:13.076Z
+    command: task-start
+    timestamp: 2026-05-12T07:05:24.056Z
 created_at: 2026-05-12T00:14:55.376Z
-started_at: 2026-05-12T06:16:13.076Z
+started_at: 2026-05-12T07:05:24.055Z
 submitted_at: 2026-05-12T06:16:16.456Z
 todos: []
 automation: eligible
