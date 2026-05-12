@@ -3481,3 +3481,13 @@ inbox:
       - daemon
     added_by: Jacob Chapel
     created_at: 2026-05-12T20:00:37.466Z
+  - _ulid: 01KRF1SHWEH44ED7SP3YB1ZZK1
+    text: Add file-based body input for review comment and review reply commands so rich review findings
+      can avoid shell quoting hazards from inline command arguments.
+    tags:
+      - reflection
+      - review
+      - cli
+      - ergonomics
+    added_by: Jacob Chapel
+    created_at: 2026-05-12T21:34:23.118Z
