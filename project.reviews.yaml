@@ -201094,7 +201094,31 @@ reviews:
     slugs: []
     title: Review cleanup-effect guardrail regressions
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite failed: tests/lint-no-leaky-test-daemon.test.ts has 10 deterministic failures;
+          summary 10 failed, 5 skipped, 9035 passed of 9050. Full log:
+          /tmp/kspec-test-cache/01KRCX7JETJC47VP0FMCDFP5EV/10d881340856784f.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T01:49:25.642Z
+        completed_at: 2026-05-12T01:49:25.642Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema/references/skills passed; command exited 6 due existing repo-wide warnings
+          (deprecated references, orphaned specs, pre-existing annotation warnings), not from this
+          one-file test change.
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-12T01:49:29.152Z
+        completed_at: 2026-05-12T01:49:29.152Z
     events:
       - _ulid: 01KRCX973FFFHR9NXRH2TYGCHK
         actor: Jacob Chapel
@@ -201109,19 +201133,93 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T01:37:18.189Z
+      - _ulid: 01KRCXZRK1SM8VHKCRW2XWX83K
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRCXZQ9EF2EC6BMQCW5JYSTG
+        timestamp: 2026-05-12T01:49:23.425Z
+      - _ulid: 01KRCXZW34JJS5R42MTP8BADSQ
+        actor: codex
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test -- --fresh
+        timestamp: 2026-05-12T01:49:27.012Z
+      - _ulid: 01KRCXZZFYH69WJ7ZBVBSD3JF1
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-12T01:49:30.494Z
+      - _ulid: 01KRCY03ZY35C9KHPCNRG75227
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T01:49:35.102Z
+      - _ulid: 01KRCY03ZYX1FNC7FFGCC3PV44
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T01:49:35.102Z
     examined_commit: ad6ed111eab1bffaa6a361f6b6e2d0edb1fdf4cb
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KRCRJP9RHZ06B249NBJSPSY3"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KRCXZQ9EF2EC6BMQCW5JYSTG
+        anchor:
+          type: code
+          commit: ad6ed111eab1bffaa6a361f6b6e2d0edb1fdf4cb
+          line_end: 1511
+          line_start: 765
+          path: tests/lint-no-leaky-test-daemon.test.ts
+          side: head
+        entries:
+          - _ulid: 01KRCXZQ9EN05GZEJTST9T5G1T
+            author: codex
+            body: "MUST-FIX: This branch introduces deterministic failing tests in the required suite. The new
+              cleanup-effect assertions are intentionally failing-before-fix, but merging them now
+              would break dev: `npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts` failed
+              twice with the same 10 failures, and the full `npm test -- --fresh` run failed only in
+              this file (10 failed, 9035 passed, 5 skipped). The failures are the newly added
+              expectations for `process.kill(pid, 0)`, non-terminating signals, local no-op cleanup
+              helpers, and `child.kill()` with no signal. Please land these regressions together
+              with the rule implementation that makes them pass, or otherwise keep the integration
+              target green. Evidence log: Files read: `tests/lint-no-leaky-test-daemon.test.ts`,
+              `tools/eslint-rules/no-leaky-test-daemon.js`, `kspec-agents.md`, task/spec output.
+              Commands run: `kspec item get @daemon-test-guardrail-precision`, `kspec item get
+              @daemon-test-harness-guardrails`, `kspec validate`, AC annotation search with `rg`,
+              focused test twice, full `npm test -- --fresh`, `git diff --check`. Claim verified:
+              the worker note said 10 cases fail-before-fix; reproduced twice and in the full suite.
+              Categories searched: correctness/integration (suite break), test quality (behavioral
+              oxlint snippets, no source scanning), spec alignment/AC annotations, cleanup
+              classifier semantics."
+            created_at: 2026-05-12T01:49:22.094Z
+        kind: blocker
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T01:49:35.102Z
     created_at: 2026-05-12T01:37:04.624Z
-    updated_at: 2026-05-12T01:37:16.670Z
+    updated_at: 2026-05-12T01:49:35.102Z
     notes: []
   - _ulid: 01KRCXWT92V7EDAZX5YGG785KV
     slugs: []
