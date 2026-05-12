@@ -30429,11 +30429,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-setup-failure-cleanup-error-preservation/01krcrjs
     canonical_branch_head: 18746c4393cec245e014167b4103313010010d55
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-12T19:57:03.436Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-12T19:57:05.921Z
     health:
       status: healthy
       issues: []
@@ -30447,7 +30447,7 @@ workspaces:
       target_branch: dev
       target_commit: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
       updated_at: 2026-05-12T19:57:03.436Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KRCRJSNXN4SS1XJ6DKD4XC46"
     task_slug: task-fix-setup-failure-cleanup-error-preservation
@@ -30456,7 +30456,7 @@ workspaces:
       last_active_at: 2026-05-12T19:38:36.015Z
       last_reconciled_at: 2026-05-12T19:57:03.436Z
       created_at: 2026-05-12T17:38:44.644Z
-      updated_at: 2026-05-12T19:57:03.436Z
+      updated_at: 2026-05-12T19:57:05.921Z
     workspace_id: dispatch-workspace-01KRCRJSNXN4SS1XJ6DKD4XC46
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
