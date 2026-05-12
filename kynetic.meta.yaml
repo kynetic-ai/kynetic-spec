@@ -18532,6 +18532,25 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-12T18:33:37.382Z
+  - _ulid: 01KREQK168PMGH0XZ8C1P0X20G
+    type: friction
+    content: "The no-leaky-test-daemon helper-origin classifier in
+      tools/eslint-rules/no-leaky-test-daemon.js has accreted 9+ review cycles on
+      @task-fix-guardrail-cleanup-effect-classification (plus prior tasks
+      @task-fix-guardrail-binding-wrapper-analysis, @task-fix-detached-cleanup-timing-analysis,
+      @task-fix-guardrail-daemon-command-classification on the same @daemon-test-guardrail-precision
+      spec). Each cycle closed a distinct false-negative: parameter shadow, TDZ ordering, for/catch
+      shapes, alias-vs-imported, kill-target verifiability. The pattern suggests the multi-path
+      helper-origin resolution (local body inspection / import path / free identifier) is
+      structurally prone to gap-by-gap accretion. A structural refactor — e.g. 'positive
+      declared-export contract' where only AST shapes explicitly enumerated as
+      terminating-the-just-started-daemon are credited, with all other shapes rejected — would
+      likely preempt the next 1-2 review cycles. Worth considering before the next adjacent fix task
+      lands."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T18:36:03.656Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
