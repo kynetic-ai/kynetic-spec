@@ -47710,7 +47710,7 @@ runs:
     started_at: 2026-05-12T18:30:05.030Z
     completed_at: 2026-05-12T18:33:46.257Z
   - _ulid: 01KRES1R3171NM9VRQT4EKN6N5
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -47805,7 +47805,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-12T19:05:10.324Z
-        completed_at: 2026-05-12T19:05:10.324Z
+        completed_at: 2026-05-12T19:05:45.092Z
+        notes: Captured success observation @01KRES90. No new friction inbox/task was created because
+          shell-fragile review bodies are already covered by existing observations and active
+          workflow default behavior is already covered by pending task @01KKBD52.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T19:01:34.433Z
+    completed_at: 2026-05-12T19:05:45.092Z
