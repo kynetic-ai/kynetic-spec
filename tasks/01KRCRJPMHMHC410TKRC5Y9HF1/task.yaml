@@ -65,7 +65,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-add-guardrail-cleanup-effect-regressions"
@@ -85,7 +85,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-fix-guardrail-cleanup-effect-classification/01krcrjp
-session_id: 01KREH304FXXX9788FTAWCT4DK
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -577,6 +577,16 @@ history:
         previous: "@01KREFK8YRJZTX56WZD9Y28F5Q"
     command: review-link
     timestamp: 2026-05-12T17:11:28.739Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KREH304FXXX9788FTAWCT4DK
+    command: review-verdict-needs-work
+    timestamp: 2026-05-12T17:31:50.765Z
 prior_status: null
 created_at: 2026-05-12T00:14:52.561Z
 started_at: 2026-05-12T17:06:08.406Z

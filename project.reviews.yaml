@@ -205628,7 +205628,76 @@ reviews:
     slugs: []
     title: Review fix guardrail cleanup-effect classification (cycle 8)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2431 suites passed; 9136 passed, 5 skipped of 9141; duration 2464.9s.
+          Log: /tmp/kspec-test-cache/01KREJNV5DMAQZPB6F3E6D6AEB/70d275789d594fc9.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T17:31:19.540Z
+        completed_at: 2026-05-12T17:31:19.540Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "`npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+          tests/lint-daemon-test-guardrails.test.ts` passed: 356 tests, 26 suites, duration 93.4s."
+        name: targeted daemon lint tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T17:31:24.067Z
+        completed_at: 2026-05-12T17:31:24.067Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 'Two synthetic probes produced `Found 0 warnings and 0 errors`: (1) `import {
+          startTestDaemon as killPid } from "./helpers/daemon"; onTestFinished(() => killPid(pid))`;
+          (2) local `function killPid(_pid) { process.kill(12345, "SIGTERM"); }` with
+          `onTestFinished(() => killPid(pid))`. Both should report missing cleanup.'
+        name: ad hoc helper-origin probes
+        required: true
+        runner: npx oxlint
+        created_at: 2026-05-12T17:31:28.475Z
+        completed_at: 2026-05-12T17:31:28.475Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation schema/references passed but exited 6 due to pre-existing warnings: reference
+          warnings, alignment warnings, completeness/AC annotation warnings."
+        name: kspec validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-12T17:31:32.927Z
+        completed_at: 2026-05-12T17:31:32.927Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "`npx oxlint tools/eslint-rules/no-leaky-test-daemon.js
+          tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts` exited
+          0 with 35 warnings and 0 errors."
+        name: changed-file oxlint
+        required: true
+        runner: npx oxlint
+        created_at: 2026-05-12T17:31:37.337Z
+        completed_at: 2026-05-12T17:31:37.337Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "`npm run lint` exited 1 with 13 errors and 721 warnings across the repo; this matches the
+          known pre-existing lint state from task notes and is recorded as optional."
+        name: repository lint
+        required: true
+        runner: npm run lint
+        created_at: 2026-05-12T17:31:41.805Z
+        completed_at: 2026-05-12T17:31:41.805Z
     events:
       - _ulid: 01KREJR1EPHB0YPXBV139EQ8JG
         actor: Jacob Chapel
@@ -205657,9 +205726,74 @@ reviews:
           kind: blocker
           thread_ulid: 01KREK5T2TKFKM6VK682R8FACH
         timestamp: 2026-05-12T17:18:58.704Z
+      - _ulid: 01KREKWD9V7WSPX1JHKQGZ6WTR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KREKWBJ6KW9XCGETAG10F8G4
+        timestamp: 2026-05-12T17:31:16.667Z
+      - _ulid: 01KREKWHVNBCAAJJNKF9968GEY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-12T17:31:21.333Z
+      - _ulid: 01KREKWP4TQXAFRAKE6RV0MMMK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon lint tests
+        timestamp: 2026-05-12T17:31:25.722Z
+      - _ulid: 01KREKWTHNH9A99T8KH5J182C7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: ad hoc helper-origin probes
+        timestamp: 2026-05-12T17:31:30.229Z
+      - _ulid: 01KREKWYX0JAED9ZS0QH75BPXN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-12T17:31:34.688Z
+      - _ulid: 01KREKX34C3YMZ5PEYE8MYZKRM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file oxlint
+        timestamp: 2026-05-12T17:31:39.020Z
+      - _ulid: 01KREKX7FKESSN6771QSF51J0V
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: repository lint
+        timestamp: 2026-05-12T17:31:43.476Z
+      - _ulid: 01KREKXBTX8498W20B0JAFV295
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T17:31:47.933Z
+      - _ulid: 01KREKXBTXPBSVRWYT9HA3Y1XD
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T17:31:47.933Z
     examined_commit: f59acb2b8a3caa5cc182ebe42a23b4ff409442e0
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -205714,7 +205848,32 @@ reviews:
               termination target is unrelated/unverifiable.'
             created_at: 2026-05-12T17:18:56.091Z
         kind: blocker
-    verdicts: []
+      - _ulid: 01KREKWBJ6KW9XCGETAG10F8G4
+        entries:
+          - _ulid: 01KREKWBJ6K7V82BB0TP87RR2Q
+            author: Jacob Chapel
+            body: "Evidence log: Files read: `kspec-agents.md`, task details, prior cycle review @01KREFK8, spec
+              @daemon-test-guardrail-precision, diff from 7c486bc..HEAD,
+              tools/eslint-rules/no-leaky-test-daemon.js, tests/lint-no-leaky-test-daemon.test.ts,
+              tests/lint-daemon-test-guardrails.test.ts, tests/helpers/daemon.ts exports. Commands
+              run: `kspec validate`; AC annotation scan with `rg`; targeted `npm test -- --fresh
+              tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts`;
+              full `npm test -- --fresh`; `npm run lint`; changed-file `npx oxlint ...`; two ad hoc
+              oxlint probes for helper-origin aliases and unrelated local helper targets. Claims
+              verified: cycle-7 bare-helper and nested-path probes are covered, but two new
+              helper-origin false negatives remain. Categories searched: correctness, helper origin
+              trust, cleanup target ownership, signal handling/tests, AC coverage annotations,
+              lint/test integration."
+            created_at: 2026-05-12T17:31:14.886Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T17:31:47.933Z
     created_at: 2026-05-12T17:11:24.886Z
-    updated_at: 2026-05-12T17:18:56.091Z
+    updated_at: 2026-05-12T17:31:47.933Z
     notes: []
