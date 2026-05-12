@@ -201968,6 +201968,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T03:36:47.206Z
+      - _ulid: 01KRD5TQAVN5J1MA7QKD0AC4GP
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRD441X6Y1SB215H8MTK5TMG
+        timestamp: 2026-05-12T04:06:26.907Z
     examined_commit: 8450ce07dd2c02ef2786561e0c03f524655893ec
     external_links: []
     lifecycle_state: closed
@@ -201999,6 +202005,19 @@ reviews:
               ac-cleanup-helper-origin-is-trusted` because a helper that is not one of the approved
               cleanup primitives can still satisfy cleanup by name alone."
             created_at: 2026-05-12T03:36:35.494Z
+          - _ulid: 01KRD5TNZD29C2771GMRHGBJZ4
+            author: "@claude"
+            body: "Fixed: Added isHelperNameImported as the unapproved-import detector. isTrustedHelperByOrigin
+              now evaluates four paths: (1) approved-path import → trust, (2) any-other-path import
+              → reject, (3) local definition → require terminating primitive in body, (4) free
+              identifier → conservative trust. The probe import { killPid } from './fake-cleanup';
+              onTestFinished(() => killPid(pid)) now reports missingCleanup. Also covered with new
+              regression tests for named-import (killPid and stopDaemon names) and default-import
+              shapes against an unapproved source, plus the approved-import companion to prove the
+              implementation cannot satisfy the rejected case by banning the name outright. Verified
+              ad-hoc with the reviewer's exact probe via npx oxlint — produces the missingCleanup
+              error at the runKspec call."
+            created_at: 2026-05-12T04:06:25.517Z
         kind: blocker
       - _ulid: 01KRD445ARG2EN4FN1KYXK80PM
         anchor:
@@ -202046,7 +202065,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T03:36:47.206Z
     created_at: 2026-05-12T03:22:20.072Z
-    updated_at: 2026-05-12T03:36:47.206Z
+    updated_at: 2026-05-12T04:06:25.517Z
     notes: []
   - _ulid: 01KRD4N3Q8TK8FFJ8Q9E5MYE8E
     slugs: []
