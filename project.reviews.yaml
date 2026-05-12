@@ -201262,6 +201262,22 @@ reviews:
         runner: kspec
         created_at: 2026-05-12T02:00:53.012Z
         completed_at: 2026-05-12T02:00:53.012Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/lint-no-leaky-test-daemon.test.ts,
+          tools/eslint-rules/no-leaky-test-daemon.js, relevant spec items. Commands run: git
+          diff/stat/show, kspec task get, kspec item get
+          @daemon-test-guardrail-precision/@daemon-test-harness-guardrails, kspec validate, AC
+          annotation rg, focused npm tests, full npm test. Claims verified: worker claim that 3
+          process.on cases fail before fix verified by focused and full test runs; companion
+          guardrail suite passed. Categories searched: correctness/spec alignment, edge cases around
+          cleanup boundaries, test quality, integration gate."
+        name: review evidence log
+        required: false
+        created_at: 2026-05-12T02:01:25.936Z
+        completed_at: 2026-05-12T02:01:25.936Z
     events:
       - _ulid: 01KRCXWT926WF4AWJ6H94VSVQK
         actor: Jacob Chapel
@@ -201304,6 +201320,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRCYN9PNYZRA31SP685K27BJ
         timestamp: 2026-05-12T02:01:10.582Z
+      - _ulid: 01KRCYNVH6FPGSMEG6G85909JV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-12T02:01:27.334Z
     examined_commit: 9b5ac8f3afa3c255eca6a31d2b673d0f8677e67d
     external_links: []
     lifecycle_state: open
@@ -201338,5 +201361,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T01:47:46.850Z
-    updated_at: 2026-05-12T02:01:09.078Z
+    updated_at: 2026-05-12T02:01:25.936Z
     notes: []
