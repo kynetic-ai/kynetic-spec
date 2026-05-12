@@ -53,6 +53,7 @@ import {
   readTestOutputSync,
   type IsolatedKspecHome,
 } from "./cli.js";
+import { stopChildProcessBounded } from "./process-stop.js";
 
 // ── Paths ─────────────────────────────────────────────────────────────
 
@@ -454,10 +455,11 @@ async function startChildMockDaemon(
      * Idempotent child cleanup for startup-failure paths.
      *
      * Resolves only after the still-running mock daemon child has actually
-     * exited — the contract is that the helper must not return failure to
-     * the caller while the owned child is still alive. Sends SIGTERM,
-     * waits for the child's `exit` event, and schedules a SIGKILL fallback
-     * for children that ignore SIGTERM. Also removes the helper-allocated
+     * been observed terminated — the contract is that the helper must not
+     * return failure to the caller while the owned child is still alive.
+     * Routes through the shared bounded stop primitive so SIGTERM,
+     * escalation to SIGKILL, and exit-observation use the same semantics
+     * as the operational `stop()` closure. Also removes the helper-allocated
      * record file. Safe to call from any failure branch (timeout, malformed
      * first-line stdout, spawn error) — subsequent calls return immediately
      * with the prior outcome, so cascading branches cannot double-kill or
@@ -465,60 +467,25 @@ async function startChildMockDaemon(
      *
      * @see ac-owned-child-stopped-after-startup-failure in
      * @daemon-test-startup-failure-hygiene
+     * @see ac-stop-observes-termination-before-return in
+     * @daemon-test-teardown-boundedness
      */
     let startupCleanupPromise: Promise<void> | undefined;
     const cleanupChildOnStartupFailure = (): Promise<void> => {
       if (startupCleanupPromise) return startupCleanupPromise;
-      startupCleanupPromise = new Promise<void>((resolveCleanup) => {
-        // Holder so `finalize` can reference the timer through a stable
-        // identifier even though the timer is created after `finalize` is
-        // attached as the exit listener.
-        const cleanup: { done: boolean; killTimer?: NodeJS.Timeout } = {
-          done: false,
-        };
-        const finalize = (): void => {
-          if (cleanup.done) return;
-          cleanup.done = true;
-          if (cleanup.killTimer) clearTimeout(cleanup.killTimer);
+      startupCleanupPromise = stopChildProcessBounded(child, {
+        gracefulMs: CHILD_GRACEFUL_KILL_MS,
+        label: "mock daemon child (startup failure)",
+      })
+        .catch(() => {
+          // Bounded-stop failure on the setup path is best-effort: callers
+          // already routing through failStartup will surface their own
+          // diagnostic. Swallow so cleanupRecordFile still runs and the
+          // helper returns a single failure rather than a compound throw.
+        })
+        .finally(() => {
           cleanupRecordFile();
-          resolveCleanup();
-        };
-
-        // If the child has already exited (e.g. spawn rejected, child
-        // crashed before we got here), there's nothing to wait on.
-        if (child.exitCode !== null || child.signalCode !== null) {
-          finalize();
-          return;
-        }
-
-        child.once("exit", finalize);
-
-        let signalled: boolean;
-        try {
-          signalled = child.kill("SIGTERM");
-        } catch {
-          signalled = false;
-        }
-
-        if (!signalled) {
-          // child.kill returns false when the child handle has no spawned
-          // process (e.g. spawn rejected with ENOENT) or has already been
-          // reaped. No exit event is coming, so don't wait — drop our
-          // listener and finalize now. If exit *does* fire later, finalize
-          // is idempotent.
-          child.removeListener("exit", finalize);
-          finalize();
-          return;
-        }
-
-        cleanup.killTimer = setTimeout(() => {
-          try {
-            child.kill("SIGKILL");
-          } catch {
-            // already gone — the exit handler will resolve us
-          }
-        }, CHILD_GRACEFUL_KILL_MS);
-      });
+        });
       return startupCleanupPromise;
     };
 
@@ -541,34 +508,22 @@ async function startChildMockDaemon(
         return;
       }
       const { apiUrl, wsUrl } = buildDaemonUrls(parsed.bindHost, parsed.port);
-      let stopped = false;
-      const stop = (): Promise<void> =>
-        new Promise<void>((resolveStop) => {
-          if (stopped) return resolveStop();
-          stopped = true;
-          let finalized = false;
-          const finalize = (): void => {
-            if (finalized) return;
-            finalized = true;
-            clearTimeout(killTimer);
-            cleanupRecordFile();
-            resolveStop();
-          };
-          child.once("exit", finalize);
-          try {
-            child.kill("SIGTERM");
-          } catch {
-            // already gone
-          }
-          const killTimer = setTimeout(() => {
-            try {
-              child.kill("SIGKILL");
-            } catch {
-              // already gone
-            }
-            finalize();
-          }, CHILD_GRACEFUL_KILL_MS);
+      let stopPromise: Promise<void> | undefined;
+      // Operational stop(): route through the shared bounded primitive so
+      // SIGTERM, escalation to SIGKILL, and exit observation match the
+      // semantics enforced by @daemon-test-teardown-boundedness. Cleanup
+      // never reports success while the child is still observably alive.
+      // Idempotent — subsequent calls return the cached promise.
+      const stop = (): Promise<void> => {
+        if (stopPromise) return stopPromise;
+        stopPromise = stopChildProcessBounded(child, {
+          gracefulMs: CHILD_GRACEFUL_KILL_MS,
+          label: "mock daemon child",
+        }).finally(() => {
+          cleanupRecordFile();
         });
+        return stopPromise;
+      };
       finish({
         port: parsed.port,
         bindHost: parsed.bindHost,

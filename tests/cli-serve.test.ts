@@ -16,6 +16,7 @@ import {
   type KspecOptions,
 } from "./helpers/cli";
 import { createTestDaemonProject, startTestDaemon } from "./helpers/daemon.js";
+import { stopChildProcessBounded, stopPidBounded } from "./helpers/process-stop.js";
 import {
   resolveDaemonClientEndpoint,
   type DaemonClientEndpoint,
@@ -113,15 +114,18 @@ function waitForSynthReady(child: ChildProcess, timeoutMs = 5_000): Promise<void
 }
 
 /**
- * Kill a process by PID, swallowing ESRCH (already dead).
- * Used in onTestFinished cleanup callbacks.
+ * Stop a process by PID within bounded time, observing termination before
+ * returning. Routes through the shared bounded process-stop primitive so an
+ * uncooperative child does not survive cleanup. Used in `onTestFinished`
+ * callbacks — vitest awaits returned promises, so the cleanup contract
+ * holds across assertion failures and timeouts.
+ *
+ * Idempotent: an already-reaped pid is a no-op rather than an error, so a
+ * second call after a regression cannot signal an unrelated process that
+ * has taken over the pid.
  */
-function killPid(pid: number, signal: NodeJS.Signals = "SIGTERM"): void {
-  try {
-    process.kill(pid, signal);
-  } catch {
-    // Already gone — fine
-  }
+function killPid(pid: number): Promise<void> {
+  return stopPidBounded(pid, { label: "kspec serve daemon pid" });
 }
 
 /**
@@ -150,24 +154,23 @@ function resolveCliLifecycleDaemonEndpoint(configDir: string): DaemonClientEndpo
 }
 
 /**
- * Wait for a ChildProcess to exit, with a SIGKILL fallback timeout.
+ * Wait for a ChildProcess to be observed terminated, with SIGKILL escalation
+ * after the configured graceful budget.
+ *
+ * Routes through the shared bounded process-stop primitive: the helper
+ * checks both `exitCode` and `signalCode` for an observed exit (so a child
+ * already terminated by signal returns immediately rather than falling
+ * through to the full poll timeout), and waits for libuv's 'exit' event
+ * after escalation before resolving. Cleanup never reports success while
+ * the child handle is still observably running.
+ *
+ * `timeoutMs` is the graceful budget. Escalation adds a bounded tail wait
+ * for the SIGKILL exit observation, capped by the primitive's default.
  */
 function waitForChildExit(child: ChildProcess, timeoutMs = 5000): Promise<void> {
-  return new Promise((resolve) => {
-    if (child.exitCode !== null) {
-      resolve();
-      return;
-    }
-    const timeout = setTimeout(() => {
-      if (child.exitCode === null) {
-        child.kill("SIGKILL");
-      }
-      resolve();
-    }, timeoutMs);
-    child.once("exit", () => {
-      clearTimeout(timeout);
-      resolve();
-    });
+  return stopChildProcessBounded(child, {
+    gracefulMs: timeoutMs,
+    label: "cli-serve child process",
   });
 }
 
@@ -1918,134 +1921,6 @@ describe("kspec serve commands", () => {
 });
 
 /**
- * Selective expected-failure helper for the timer-callback resolution bug
- * in `waitForChildExit`: the helper resolves from its setTimeout callback
- * synchronously after `child.kill("SIGKILL")`, before libuv has fired the
- * child's 'exit' event. The parent handle still has `exitCode === null`
- * and `signalCode === null` at that moment.
- *
- * Bug-shape differentiator: handle has BOTH exitCode and signalCode null
- * after waitForChildExit returns. After the fix, at least one is non-null.
- *
- * Pre-fix throw path re-asserts the EXACT bug shape; an unrelated failure
- * mode propagates. Post-fix the wrapper throws an explicit "remove this
- * wrapper" sentinel that forces the implementation task to inline the
- * post-fix assertion.
- */
-function expectWaitForChildExitMissesObservation(child: ChildProcess): void {
-  let postFixSucceeded = false;
-  try {
-    expect(
-      child.exitCode !== null || child.signalCode !== null,
-      "post-fix: waitForChildExit must not resolve until child exit observed " +
-        `(exitCode=${child.exitCode} signalCode=${child.signalCode})`,
-    ).toBe(true);
-    postFixSucceeded = true;
-  } catch (postFixError) {
-    expect(
-      child.exitCode === null && child.signalCode === null,
-      `bug-shape mismatch: pre-fix expects both exitCode AND signalCode null on the handle, but exitCode=${child.exitCode} signalCode=${child.signalCode}. Underlying assertion: ${
-        postFixError instanceof Error ? postFixError.message : String(postFixError)
-      }`,
-    ).toBe(true);
-    return;
-  }
-  if (postFixSucceeded) {
-    throw new Error(
-      "STAGED REGRESSION CLOSED: waitForChildExit now observes child exit " +
-        "before resolving. Inline the post-fix assertion and remove " +
-        "expectWaitForChildExitMissesObservation from tests/cli-serve.test.ts. " +
-        "See @task-implement-bounded-process-stop-primitives.",
-    );
-  }
-}
-
-/**
- * Selective expected-failure helper for the signal-exit fast-path miss in
- * `waitForChildExit`: the fast-path checks only `child.exitCode !== null`,
- * so a child terminated by signal (exitCode=null, signalCode set) falls
- * through to the full polling timeout (default 5000ms) before resolving.
- *
- * Bug-shape differentiator: elapsed time after waitForChildExit on an
- * already-signal-exited child. Pre-fix the helper waits near the
- * configured timeout (5000ms); post-fix it returns sub-500ms by
- * recognising signalCode as an exit indicator equivalent to exitCode.
- *
- * The pre-fix window is `[500ms, 7_000ms]`: 500ms is the post-fix
- * threshold; 7_000ms gives slow CI a margin above the 5_000ms polling
- * timeout without admitting a fully hung wait.
- */
-function expectWaitForChildExitMissesSignalFastPath(elapsed: number): void {
-  let postFixSucceeded = false;
-  try {
-    expect(
-      elapsed,
-      "post-fix: waitForChildExit must recognise an already-signal-exited " +
-        `child via signalCode (elapsed=${elapsed}ms)`,
-    ).toBeLessThan(500);
-    postFixSucceeded = true;
-  } catch (postFixError) {
-    expect(
-      elapsed >= 500 && elapsed <= 7_000,
-      `bug-shape mismatch: pre-fix expects elapsed in [500ms, 7000ms] window (signal-exit falls through to polling), got ${elapsed}ms. Underlying assertion: ${
-        postFixError instanceof Error ? postFixError.message : String(postFixError)
-      }`,
-    ).toBe(true);
-    return;
-  }
-  if (postFixSucceeded) {
-    throw new Error(
-      "STAGED REGRESSION CLOSED: waitForChildExit fast-path now recognises " +
-        "signal-exit via signalCode. Inline the post-fix assertion and " +
-        "remove expectWaitForChildExitMissesSignalFastPath from " +
-        "tests/cli-serve.test.ts. See " +
-        "@task-implement-bounded-process-stop-primitives.",
-    );
-  }
-}
-
-/**
- * Selective expected-failure helper for the fire-and-forget shape of
- * `killPid`: the helper sends a single signal and returns synchronously
- * without escalation or observation. An uncooperative pid survives.
- *
- * Bug-shape differentiator: `process.kill(pid, 0)` succeeds (pid still
- * alive) after the cleanup helper returns, even with a generous grace
- * window. Post-fix the helper escalates and observes termination, so the
- * pid is gone.
- *
- * Pre-fix throw path re-asserts that the pid is still alive; an
- * unrelated failure mode (e.g. child crashed before signal) propagates.
- * Post-fix the wrapper throws the "remove this wrapper" sentinel.
- */
-function expectKillPidIsFireAndForget(pid: number): void {
-  let postFixSucceeded = false;
-  try {
-    expect(
-      isProcessAlive(pid),
-      `post-fix: killPid must drive uncooperative pid ${pid} to a bounded terminal outcome`,
-    ).toBe(false);
-    postFixSucceeded = true;
-  } catch (postFixError) {
-    expect(
-      isProcessAlive(pid),
-      `bug-shape mismatch: pre-fix expects pid ${pid} still alive (fire-and-forget killPid did not escalate), but pid was already reaped. Underlying assertion: ${
-        postFixError instanceof Error ? postFixError.message : String(postFixError)
-      }`,
-    ).toBe(true);
-    return;
-  }
-  if (postFixSucceeded) {
-    throw new Error(
-      "STAGED REGRESSION CLOSED: killPid now escalates and observes " +
-        "termination. Inline the post-fix assertion and remove " +
-        "expectKillPidIsFireAndForget from tests/cli-serve.test.ts. " +
-        "See @task-implement-bounded-process-stop-primitives.",
-    );
-  }
-}
-
-/**
  * Bounded-stop contract tests for the PID-based and ChildProcess-based
  * cleanup helpers used by CLI lifecycle tests.
  *
@@ -2053,38 +1928,21 @@ function expectKillPidIsFireAndForget(pid: number): void {
  * isolated home, no shadow worktree — so the only behavior under
  * observation is the cleanup helper's stop semantics.
  *
- * The current cleanup primitives have three shapes that violate the
- * @daemon-test-teardown-boundedness contract:
+ * Each helper now routes through the shared bounded process-stop
+ * primitive (tests/helpers/process-stop.ts):
  *
- *   1. `waitForChildExit(child, timeoutMs)` resolves from its setTimeout
- *      callback synchronously after `child.kill("SIGKILL")` — before
- *      libuv has fired the child's 'exit' event. The exitCode /
- *      signalCode handles are still null at that moment, and the OS may
- *      not have reaped the pid.
+ *   - `waitForChildExit(child, timeoutMs)` waits for an observed exit
+ *     on the handle (exitCode OR signalCode non-null OR 'exit' event
+ *     fired), escalates to SIGKILL after the graceful budget, and only
+ *     resolves once the resulting exit observation lands.
  *
- *   2. `waitForChildExit`'s fast-path checks only `child.exitCode !==
- *      null`. A child terminated by signal has `exitCode === null` and
- *      `signalCode !== null`, so the function falls through to the full
- *      polling timeout (default 5000ms) before resolving, even though
- *      the exit is already observable on the handle.
+ *   - `killPid(pid)` sends SIGTERM, polls for the pid to be reaped
+ *     within the graceful budget, escalates to SIGKILL, and continues
+ *     polling until the OS-visible pid is gone or the escalation budget
+ *     elapses.
  *
- *   3. `killPid(pid, signal)` is fire-and-forget. It sends a single
- *      signal and returns synchronously without escalation or
- *      observation. Uncooperative pids survive indefinitely.
- *
- * Each test below targets one of those gaps. They are scoped under their
- * own describe block so they do not inherit the `kspec serve` setup
- * (isolated HOME, runKspec, etc) — synthetic children only.
- *
- * STAGED REGRESSION (selective expected-failure via the three local
- * `expect*` helpers above): keeps the required suite green so this task
- * can merge ahead of the helper fixes in
- * @task-implement-bounded-process-stop-primitives. Each wrapper
- * re-asserts the EXACT current bug shape on the expected pre-fix throw
- * so an unrelated failure mode propagates as a real failure. Post-fix
- * the wrapper throws an explicit "remove this wrapper" sentinel that
- * forces the implementation task to inline the post-fix assertion and
- * delete the helper.
+ * Cleanup never reports success while the owned process is still
+ * observably running.
  */
 describe(
   "PID-based cleanup contract — observes termination before return",
@@ -2151,19 +2009,20 @@ describe(
       await waitForChildExit(child, 200);
       const elapsed = Date.now() - startedAt;
 
-      // ac-stop-observes-termination-before-return — selective
-      // expected-failure: pre-fix asserts the bug shape (BOTH
-      // exitCode AND signalCode null on the handle because
-      // waitForChildExit resolved from the timer callback before
-      // libuv fired the exit event); post-fix asserts the contract
-      // (exit observed) and forces wrapper removal. The pid-liveness
-      // check is racy pre-fix (kernel may or may not have actually
-      // delivered the queued SIGKILL by the time we probe) and is
-      // therefore not part of the bug shape — handle observation is
-      // the only deterministic differentiator. See
-      // expectWaitForChildExitMissesObservation above.
+      // ac-stop-observes-termination-before-return: waitForChildExit
+      // resolves only after exit has been observed on the parent
+      // handle. At least one of exitCode / signalCode is non-null —
+      // signalCode alone counts because SIGKILL terminates the synth.
+      // Pre-fix the helper resolved from its setTimeout callback
+      // synchronously after kill("SIGKILL"), leaving BOTH null. The
+      // pid-liveness check is racy (kernel may or may not have actually
+      // delivered the queued SIGKILL by the time we probe), so handle
+      // observation is the only deterministic differentiator.
       expect(pid).toBeDefined();
-      expectWaitForChildExitMissesObservation(child);
+      expect(
+        child.exitCode !== null || child.signalCode !== null,
+        `waitForChildExit must not resolve until child exit observed (exitCode=${child.exitCode} signalCode=${child.signalCode})`,
+      ).toBe(true);
 
       // ac-uncooperative-process-stop-is-bounded: helper must reach
       // a bounded outcome. 3s is generous for slow CI without masking
@@ -2226,15 +2085,16 @@ describe(
       await waitForChildExit(child, 5_000);
       const elapsed = Date.now() - startedAt;
 
-      // ac-stop-observes-termination-before-return — selective
-      // expected-failure: pre-fix asserts the bug shape (elapsed
-      // falls in the [500ms, 7000ms] window because the fast-path
-      // only checked exitCode and signal-exit fell through to the
-      // 5000ms polling timeout); post-fix asserts the contract
-      // (elapsed < 500ms — signal recognised immediately) and forces
-      // wrapper removal. See expectWaitForChildExitMissesSignalFastPath
-      // above.
-      expectWaitForChildExitMissesSignalFastPath(elapsed);
+      // ac-stop-observes-termination-before-return: the bounded
+      // primitive recognises a signal-exited child via signalCode and
+      // returns immediately. Pre-fix the fast-path only checked
+      // `exitCode !== null`, so signal-exit fell through to the full
+      // polling timeout (5000ms). 500ms gives slow CI a margin while
+      // still failing if the signal-exit case falls back to polling.
+      expect(
+        elapsed,
+        `waitForChildExit must recognise an already-signal-exited child via signalCode (elapsed=${elapsed}ms)`,
+      ).toBeLessThan(500);
     });
 
     // AC: @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return
@@ -2242,14 +2102,11 @@ describe(
     // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
     //
     // PID-based cleanup contract: an uncooperative pid must reach a
-    // bounded terminal outcome. The current `killPid` helper sends a
-    // single signal and returns synchronously — fire-and-forget. After
-    // calling it with SIGTERM against a child that ignores SIGTERM, the
-    // pid remains alive indefinitely. The bounded-stop contract requires
-    // escalation and observation; this regression locks that contract
-    // down so the next implementation task replaces `killPid` with (or
-    // routes it through) a bounded primitive that escalates to SIGKILL
-    // and waits for actual termination before returning.
+    // bounded terminal outcome. `killPid` now routes through the shared
+    // bounded process-stop primitive (SIGTERM → poll for pid reap →
+    // SIGKILL on graceful timeout → poll again for pid reap), so calling
+    // it against a SIGTERM-ignoring child escalates and observes the pid
+    // leave the process table before resolving.
     it("killPid drives an uncooperative pid to a bounded terminal outcome", async () => {
       const child = spawn(uncooperativePath, [], {
         // Pipe stdout so we can read the synth's ready handshake before
@@ -2305,13 +2162,15 @@ describe(
         await new Promise((r) => setTimeout(r, 5_500));
       }
 
-      // ac-uncooperative-process-stop-is-bounded — selective
-      // expected-failure: pre-fix asserts the bug shape (pid still
-      // alive after the grace window because killPid was
-      // fire-and-forget with no escalation); post-fix asserts the
-      // contract (pid reaped) and forces wrapper removal. See
-      // expectKillPidIsFireAndForget above.
-      expectKillPidIsFireAndForget(pid as number);
+      // ac-uncooperative-process-stop-is-bounded: killPid drives an
+      // uncooperative pid to a bounded terminal outcome (escalates to
+      // SIGKILL and observes the pid leave the OS process table). The
+      // helper now returns a Promise that we await above; the assertion
+      // is straightforward.
+      expect(
+        isProcessAlive(pid as number),
+        `killPid must drive uncooperative pid ${pid} to a bounded terminal outcome`,
+      ).toBe(false);
     });
   },
 );
