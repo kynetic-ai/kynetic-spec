@@ -29781,18 +29781,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-fix-active-request-teardown-and-observation-bounds/01krcrjs
-    canonical_branch_head: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
+    canonical_branch_head: e105a25901b63defac3d25adc605a545ac1df7d2
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T17:10:20.301Z
+      updated_at: 2026-05-12T17:34:57.152Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T17:10:45.347Z
+      updated_at: 2026-05-12T17:34:57.152Z
     integration:
       status: pending
       detail: null
@@ -29800,7 +29800,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
-      updated_at: 2026-05-12T17:10:20.301Z
+      updated_at: 2026-05-12T17:34:57.152Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KRCRJS2M4VVME99W9ACV8JAE"
@@ -29808,9 +29808,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T17:10:45.347Z
-      last_reconciled_at: 2026-05-12T17:10:45.347Z
+      last_reconciled_at: 2026-05-12T17:34:57.152Z
       created_at: 2026-05-12T17:10:20.301Z
-      updated_at: 2026-05-12T17:10:45.347Z
+      updated_at: 2026-05-12T17:34:57.152Z
     workspace_id: dispatch-workspace-01KRCRJS2M4VVME99W9ACV8JAE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
