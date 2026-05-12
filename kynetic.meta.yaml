@@ -18277,6 +18277,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-12T05:51:21.991Z
+  - _ulid: 01KRDBV3QZMDSN477WYRFAT85B
+    type: success
+    content: "Reviewer-fixture verification via npx oxlint on synthetic probe files (cp
+      /tmp/cycle4-fixtures/blocker[12].test.ts tests/_probe_blocker[12].test.ts ; npx oxlint
+      --config .oxlintrc.json tests/_probe*.test.ts) is a fast pre-commit confirmation that the
+      cycle's exact reviewer probes produce missingCleanup before submitting. Caught zero
+      regressions in cycle 4 because both probes flagged after the first iteration; saved a
+      re-review cycle. Pattern: when a review blocker cites an exact source fixture, replay it as a
+      tests/_probe file and verify the diagnostic before committing."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T05:51:31.071Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
