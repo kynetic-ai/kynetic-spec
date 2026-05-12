@@ -45394,7 +45394,7 @@ runs:
     started_at: 2026-05-12T02:29:30.259Z
     completed_at: 2026-05-12T02:32:34.573Z
   - _ulid: 01KRD1F2AJZR6WZ1A8GC3DSDMM
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -45443,10 +45443,13 @@ runs:
         completed_at: 2026-05-12T02:52:02.896Z
         notes: "Skipped discussion: no new untracked improvements were proposed, so there is nothing to ask
           the user to approve."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-12T02:52:02.896Z
-        completed_at: 2026-05-12T02:52:02.896Z
+        completed_at: 2026-05-12T02:52:11.016Z
+        notes: "Skipped capture: no approved new items. Existing tracking covers the validation warning
+          noise friction and the success patterns observed in this session."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T02:50:10.643Z
+    completed_at: 2026-05-12T02:52:11.016Z
