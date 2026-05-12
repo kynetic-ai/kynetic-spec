@@ -1,7 +1,6 @@
 import { test as base, expect } from "@playwright/test";
 import { execSync } from "child_process";
 import {
-  cpSync,
   existsSync,
   mkdirSync,
   readdirSync,
@@ -14,13 +13,15 @@ import { fileURLToPath } from "url";
 import { parse as parseYaml } from "yaml";
 
 import {
-  allocateTestDaemonPort,
-  createTestDaemonProject,
   isDaemonRuntimeAvailable,
   type DaemonTestRuntime,
   type StartedTestDaemon,
 } from "../../helpers/daemon.js";
-import { startPlaywrightFixtureDaemon } from "./daemon-fixture.js";
+import {
+  acquirePlaywrightFixtureResources,
+  runDaemonFixtureLifecycle,
+  startPlaywrightFixtureDaemon,
+} from "./daemon-fixture.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -162,38 +163,21 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
 
       // AC: @e2e-test-daemon-isolation ac-uses-shared-fixture
       // AC: @e2e-test-daemon-isolation ac-isolated-e2e-state
+      // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation
       // AC: @daemon-backed-test-fixture-contract ac-real-daemon-tests-use-shared-fixture
       // AC: @daemon-backed-test-fixture-contract ac-isolated-home-config
       // AC: @daemon-backed-test-fixture-contract ac-isolated-project-data
-      const project = await createTestDaemonProject({
+      // AC: @daemon-test-endpoint-consistency ac-dynamic-port-propagation
+      // AC: @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources
+      // The pre-try/finally setup is delegated to acquirePlaywrightFixtureResources
+      // so the setup-failure cleanup contract can be exercised at the unit level
+      // (tests/e2e-fixture-daemon-cleanup.test.ts) against the same code path the
+      // wrapper executes.
+      const { project, port } = await acquirePlaywrightFixtureResources({
         fixturesSource: E2E_FIXTURES,
         webUiDir: WEB_UI_BUILD,
       });
 
-      // Copy project-level tests directory for AC coverage scanning. The
-      // shared fixture only copies into .kspec/, so the e2e-only tests/
-      // tree (used by the @test-feature ac-1 coverage path) has to be
-      // staged here in the wrapper.
-      const projectTests = join(E2E_FIXTURES, "project-tests");
-      if (existsSync(projectTests)) {
-        cpSync(projectTests, join(project.tempDir, "tests"), { recursive: true });
-      }
-
-      // Configure coverage scanning for the copied project-tests directory.
-      // Coverage scanning is explicit opt-in (AC: @coverage-scan-config ac-explicit-opt-in)
-      // and the e2e items spec relies on AC coverage being detected for @test-feature ac-1.
-      writeFileSync(
-        join(project.tempDir, "kspec.config.yaml"),
-        "coverage:\n  scan_paths:\n    - tests\n",
-      );
-
-      // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation
-      // AC: @daemon-test-endpoint-consistency ac-dynamic-port-propagation
-      // Pre-allocate the dynamic port so daemon.stop() / daemon.start()
-      // restart cycles re-bind to the same endpoint that the browser
-      // already loaded — losing the port across a restart would force
-      // every test that exercises reconnection behavior to reload.
-      const port = await allocateTestDaemonPort();
       let started: StartedTestDaemon | null = null;
       // Stop hook captured via our own `registerCleanup` callback passed
       // through to the shared core. Owning the captured reference here
@@ -302,45 +286,50 @@ tasks: []
         return secondProjectPath;
       }
 
-      // The setup/use/teardown sequence runs inside a try/finally so the
-      // wrapper always tears down the fixture-owned daemon and the temp
-      // project tree, even when startDaemon() rejects (for example if the
-      // shared real-daemon fixture's readiness wait fails). The captured
-      // stop hook is registered before that wait can fail, so the finally
-      // block always has a stop available when one is needed.
-      try {
-        await startDaemon();
-
-        // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation
-        // AC: @e2e-test-daemon-isolation ac-browser-endpoint-from-fixture
-        // AC: @daemon-test-endpoint-consistency ac-resolved-endpoint-source
-        // The shared fixture's wsUrl includes the /ws path suffix
-        // (ws://host:port/ws). Existing E2E tests treat fixture.wsUrl as a base
-        // URL and append "/ws" themselves (api-watcher, api-triage), so strip
-        // the suffix here to preserve that contract.
-        const wsBaseUrl = started!.wsUrl.replace(/\/ws$/, "");
-        await use({
-          tempDir: project.tempDir,
-          kspecDir: project.kspecDir,
-          port: started!.port,
-          baseUrl: started!.apiUrl,
-          wsUrl: wsBaseUrl,
-          stop: stopDaemon,
-          start: startDaemon,
-          createSecondProject,
-        });
-      } finally {
-        // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
-        // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
-        // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
-        await stopDaemon();
-        try {
-          rmSync(`${project.tempDir}-second`, { recursive: true, force: true });
-        } catch {
-          // Best effort: second project is only created by tests that opt in.
-        }
-        await project.cleanup();
-      }
+      // The setup/use/teardown sequence runs through runDaemonFixtureLifecycle
+      // so the wrapper inherits the lifecycle's primary-error preservation
+      // contract (test-body errors are not replaced by secondary teardown
+      // failures). The captured stop hook is registered before the readiness
+      // wait can fail, so the teardown always has a stop available when one
+      // is needed.
+      // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
+      await runDaemonFixtureLifecycle<void>({
+        setup: async () => {
+          await startDaemon();
+        },
+        use: async () => {
+          // AC: @e2e-test-daemon-isolation ac-dynamic-port-propagation
+          // AC: @e2e-test-daemon-isolation ac-browser-endpoint-from-fixture
+          // AC: @daemon-test-endpoint-consistency ac-resolved-endpoint-source
+          // The shared fixture's wsUrl includes the /ws path suffix
+          // (ws://host:port/ws). Existing E2E tests treat fixture.wsUrl as a base
+          // URL and append "/ws" themselves (api-watcher, api-triage), so strip
+          // the suffix here to preserve that contract.
+          const wsBaseUrl = started!.wsUrl.replace(/\/ws$/, "");
+          await use({
+            tempDir: project.tempDir,
+            kspecDir: project.kspecDir,
+            port: started!.port,
+            baseUrl: started!.apiUrl,
+            wsUrl: wsBaseUrl,
+            stop: stopDaemon,
+            start: startDaemon,
+            createSecondProject,
+          });
+        },
+        teardown: async () => {
+          // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
+          // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+          // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+          await stopDaemon();
+          try {
+            rmSync(`${project.tempDir}-second`, { recursive: true, force: true });
+          } catch {
+            // Best effort: second project is only created by tests that opt in.
+          }
+          await project.cleanup();
+        },
+      });
     },
     { scope: "test" },
   ],

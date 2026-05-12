@@ -1,32 +1,50 @@
 /**
  * Unit-level coverage for the Playwright real-daemon fixture wrapper's
- * cleanup-registration contract.
+ * cleanup-registration, setup-failure cleanup, and primary-error preservation
+ * contracts.
  *
- * The Playwright wrapper at `tests/e2e/fixtures/test-base.ts` delegates the
- * daemon-start step to `startPlaywrightFixtureDaemon`
- * (`tests/e2e/fixtures/daemon-fixture.ts`). The helper plumbs the caller's
- * `registerCleanup` callback through to the shared real-daemon fixture
- * core; the wrapper's outer `finally` block drives the captured stop on
- * both the success path and the startup-failure path.
+ * The Playwright wrapper at `tests/e2e/fixtures/test-base.ts` delegates to
+ * three helpers in `tests/e2e/fixtures/daemon-fixture.ts`:
  *
- * No real daemon child is spawned — a fake `startTestDaemon` implementation
- * is injected through the helper's test seam to drive the simulated
- * startup-failure scenario the wrapper relies on. End-to-end ordering for
- * the shared core itself is covered in `tests/helpers/daemon.test.ts`
- * ("startTestDaemon registerCleanup ordering" and
- * "startTestDaemon scoped cleanup on readiness failure"); this suite proves
- * the wrapper plumbs that contract through behaviorally.
+ *   - `acquirePlaywrightFixtureResources` — performs the wrapper's
+ *     pre-try/finally setup (createTestDaemonProject + project-tests copy +
+ *     coverage config + port allocation). Exercised here for the
+ *     `ac-setup-failure-cleans-owned-resources` contract on the wrapper path.
+ *
+ *   - `startPlaywrightFixtureDaemon` — plumbs `registerCleanup` through to
+ *     the shared real-daemon fixture core. Exercised here for the
+ *     `ac-cleanup-registered-before-readiness-wait` contract.
+ *
+ *   - `runDaemonFixtureLifecycle` — wraps setup/use/teardown so the wrapper
+ *     inherits primary-error preservation. Exercised here for the
+ *     `ac-cleanup-errors-preserve-primary-failure` contract on the test-body
+ *     path.
+ *
+ * The wrapper is now wired through all three, so the regressions below cover
+ * the same code paths the wrapper executes — a regression in any helper
+ * surfaces here AND in the wrapper itself. End-to-end ordering for the
+ * shared core is covered in `tests/helpers/daemon.test.ts`
+ * ("startTestDaemon registerCleanup ordering" and "startTestDaemon scoped
+ * cleanup on readiness failure"); this suite proves the wrapper plumbs that
+ * contract through behaviorally.
  */
+import { existsSync, rmSync } from "node:fs";
+
 import { describe, expect, it } from "vitest";
 
 import {
+  acquirePlaywrightFixtureResources,
   runDaemonFixtureLifecycle,
   startPlaywrightFixtureDaemon,
+  type AllocateTestDaemonPortImpl,
+  type CreateTestDaemonProjectImpl,
+  type PlaywrightFixtureSetupStage,
   type StartTestDaemonImpl,
 } from "./e2e/fixtures/daemon-fixture.js";
-import type {
-  StartedTestDaemon,
-  TestDaemonProject,
+import {
+  createTestDaemonProject,
+  type StartedTestDaemon,
+  type TestDaemonProject,
 } from "./helpers/daemon.js";
 
 const FAKE_PROJECT: TestDaemonProject = {
@@ -358,6 +376,205 @@ describe("runDaemonFixtureLifecycle — primary error preservation", () => {
           : "",
       ].join(" ");
       expect(surfacedText).toContain(teardownSentinel);
+    },
+  );
+});
+
+describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", () => {
+  // Positive contract: the helper returns the project + port on the success
+  // path AND emits every named stage in declared order. The Playwright
+  // wrapper at `tests/e2e/fixtures/test-base.ts` reads both off the returned
+  // object before constructing its lifecycle, so a regression in the return
+  // shape would break every E2E test. The stage-order assertion guards the
+  // failure-injection regressions below — if a future refactor dropped a
+  // hook call (or moved a step before the hook), the keyed regression would
+  // silently never trigger and become false coverage.
+  it("returns the resources and emits every stage hook on the success path", async () => {
+    const project = await createTestDaemonProject({ skipFixtures: true });
+    try {
+      const fakeCreate: CreateTestDaemonProjectImpl = (async () => project) as CreateTestDaemonProjectImpl;
+      const fakeAllocate: AllocateTestDaemonPortImpl = (async () => 4321) as AllocateTestDaemonPortImpl;
+
+      const stages: PlaywrightFixtureSetupStage[] = [];
+      const resources = await acquirePlaywrightFixtureResources({
+        // Pointing fixturesSource at a path that does NOT contain a
+        // project-tests subdirectory exercises the cpSync-skip branch while
+        // still requiring the helper to emit after-copy-project-tests. The
+        // failure-injection regressions below depend on that emission.
+        fixturesSource: "/nonexistent-fixtures-source",
+        webUiDir: "/tmp/fake-web-ui",
+        __testCreateProjectImpl: fakeCreate,
+        __testAllocatePortImpl: fakeAllocate,
+        __testStageHook: (stage) => {
+          stages.push(stage);
+        },
+      });
+
+      expect(resources.project).toBe(project);
+      expect(resources.port).toBe(4321);
+      expect(stages).toEqual([
+        "after-create-project",
+        "after-copy-project-tests",
+        "after-write-config",
+        "after-allocate-port",
+      ]);
+    } finally {
+      await project.cleanup();
+    }
+  });
+
+  // STAGED REGRESSIONS (vitest `it.fails`): document the partial-resource
+  // leak in the wrapper setup path when a step after createTestDaemonProject
+  // fails. Today `acquirePlaywrightFixtureResources` mirrors the wrapper's
+  // pre-try/finally body verbatim — there is no setup-failure cleanup, so a
+  // throw at any later stage exits before the project handle reaches the
+  // wrapper's outer teardown. The temp project tree leaks because the only
+  // `cleanup()` reference is on the unreturned project handle.
+  //
+  // Pre-fix: the assertion that the temp project no longer exists fails.
+  // `it.fails` reports that as PASS so the merge gate stays green ahead of
+  // @task-fix-setup-failure-cleanup-error-preservation.
+  //
+  // Post-fix: the helper records each owned resource as it is claimed and
+  // rolls back already-claimed resources when a later step throws. The
+  // assertion will then pass, `it.fails` will report this as FAIL, and the
+  // fix task will flip these back to regular `it(...)` calls to pin the
+  // cleaned-up post-fix behavior.
+  for (const failureStage of [
+    "after-copy-project-tests",
+    "after-write-config",
+    "after-allocate-port",
+  ] as const satisfies readonly PlaywrightFixtureSetupStage[]) {
+    // AC: @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources
+    // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
+    it.fails(
+      `cleans up the project temp dir when wrapper setup fails at ${failureStage}`,
+      async () => {
+        const sentinel = `wrapper setup failure sentinel for ${failureStage}`;
+
+        // Use a real temp project so the cleanup-or-leak observation is
+        // grounded in actual filesystem state. The handle doubles as the
+        // safety net — even with `it.fails` masking the assertion, a
+        // post-test `cleanup()` removes the directory so the staged
+        // regression cannot accumulate leaked temp dirs across runs.
+        const safetyHandle = await createTestDaemonProject({ skipFixtures: true });
+        const projectTempDir = safetyHandle.tempDir;
+
+        const fakeCreate: CreateTestDaemonProjectImpl = (async () => safetyHandle) as CreateTestDaemonProjectImpl;
+        const fakeAllocate: AllocateTestDaemonPortImpl = (async () => 4321) as AllocateTestDaemonPortImpl;
+
+        let thrown: unknown = null;
+        try {
+          await acquirePlaywrightFixtureResources({
+            fixturesSource: "/nonexistent-fixtures-source",
+            webUiDir: "/tmp/fake-web-ui",
+            __testCreateProjectImpl: fakeCreate,
+            __testAllocatePortImpl: fakeAllocate,
+            __testStageHook: (stage) => {
+              if (stage === failureStage) {
+                throw new Error(sentinel);
+              }
+            },
+          });
+        } catch (error) {
+          thrown = error;
+        }
+
+        // The helper must propagate the simulated step failure verbatim —
+        // the contract is about cleanup, not error wrapping.
+        expect(thrown).toBeInstanceOf(Error);
+        expect((thrown as Error).message).toContain(sentinel);
+
+        // The project temp dir was owned at the moment of failure (the
+        // helper's createTestDaemonProject stage already returned the
+        // project handle). The wrapper's only cleanup reference would have
+        // been `project.cleanup()` on the unreturned handle, so pre-fix
+        // the directory still exists.
+        const stillExists = existsSync(projectTempDir);
+
+        // Safety net: force-remove the leaked directory so this regression
+        // cannot accumulate temp directories across runs even when
+        // `it.fails` is masking the assertion. Post-fix the helper will
+        // already have cleaned it up and this branch is a no-op.
+        if (stillExists) {
+          try {
+            await safetyHandle.cleanup();
+          } catch {
+            try {
+              rmSync(projectTempDir, { recursive: true, force: true });
+            } catch {
+              // Best effort: another concurrent cleanup may have removed it.
+            }
+          }
+        }
+
+        // ac-setup-failure-cleans-owned-resources — the helper must roll
+        // back the owned project temp dir when a later wrapper setup step
+        // fails before the resources reach the wrapper's outer teardown.
+        // Pre-fix the directory still exists; post-fix it is removed.
+        expect(
+          stillExists,
+          `project tempDir ${projectTempDir} must be removed after wrapper setup failure at ${failureStage}`,
+        ).toBe(false);
+      },
+    );
+  }
+
+  // STAGED REGRESSION (vitest `it.fails`): allocateTestDaemonPort is the
+  // last step in the wrapper setup path. A failure here is the most likely
+  // real-world setup failure (port exhaustion, EADDRINUSE on the bind
+  // probe), so it gets a dedicated test that simulates the failure inside
+  // allocatePort itself rather than via the stage hook. This matches the
+  // task description's call-out for "port allocation fails before normal
+  // teardown registration".
+  // AC: @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources
+  // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
+  it.fails(
+    "cleans up the project temp dir when allocateTestDaemonPort itself rejects",
+    async () => {
+      const sentinel = "allocateTestDaemonPort failure sentinel";
+      const safetyHandle = await createTestDaemonProject({ skipFixtures: true });
+      const projectTempDir = safetyHandle.tempDir;
+
+      const fakeCreate: CreateTestDaemonProjectImpl = (async () => safetyHandle) as CreateTestDaemonProjectImpl;
+      const fakeAllocate: AllocateTestDaemonPortImpl = (async () => {
+        throw new Error(sentinel);
+      }) as AllocateTestDaemonPortImpl;
+
+      let thrown: unknown = null;
+      try {
+        await acquirePlaywrightFixtureResources({
+          fixturesSource: "/nonexistent-fixtures-source",
+          webUiDir: "/tmp/fake-web-ui",
+          __testCreateProjectImpl: fakeCreate,
+          __testAllocatePortImpl: fakeAllocate,
+        });
+      } catch (error) {
+        thrown = error;
+      }
+
+      expect(thrown).toBeInstanceOf(Error);
+      expect((thrown as Error).message).toContain(sentinel);
+
+      const stillExists = existsSync(projectTempDir);
+      if (stillExists) {
+        try {
+          await safetyHandle.cleanup();
+        } catch {
+          try {
+            rmSync(projectTempDir, { recursive: true, force: true });
+          } catch {
+            // Best effort.
+          }
+        }
+      }
+
+      // ac-setup-failure-cleans-owned-resources — allocateTestDaemonPort
+      // throwing must not leave the project tree behind.
+      expect(
+        stillExists,
+        `project tempDir ${projectTempDir} must be removed after allocateTestDaemonPort failure`,
+      ).toBe(false);
     },
   );
 });
