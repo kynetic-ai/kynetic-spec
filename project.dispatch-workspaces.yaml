@@ -26453,11 +26453,11 @@ workspaces:
     canonical_branch: dispatch/task/task-add-active-request-bounded-observation-regressions/01krcrjr
     canonical_branch_head: 9200a23d698d381592a60d9c0419f877d77b19ac
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-12T04:52:48.771Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-12T04:52:50.350Z
     health:
       status: healthy
       issues: []
@@ -26471,7 +26471,7 @@ workspaces:
       target_branch: dev
       target_commit: 1fd1e5cbd85203e28f23cad455660c917954aa62
       updated_at: 2026-05-12T04:52:48.771Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KRCRJRRRS4WDVC1VQQW5GK25"
     task_slug: task-add-active-request-bounded-observation-regressions
@@ -26480,7 +26480,7 @@ workspaces:
       last_active_at: 2026-05-12T04:37:25.320Z
       last_reconciled_at: 2026-05-12T04:52:48.771Z
       created_at: 2026-05-12T04:10:37.903Z
-      updated_at: 2026-05-12T04:52:48.771Z
+      updated_at: 2026-05-12T04:52:50.350Z
     workspace_id: dispatch-workspace-01KRCRJRRRS4WDVC1VQQW5GK25
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
