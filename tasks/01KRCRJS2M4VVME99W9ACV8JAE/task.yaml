@@ -51,8 +51,12 @@ description: >
 spec_ref: "@daemon-test-teardown-boundedness"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev via detached reviewer merge helper. Reviewed e105a259: bounded
+  in-process mock daemon active-request teardown, shared bounded daemon fetch/probe helper, and
+  representative CLI/E2E daemon probe replacements. Verified npm test, kspec validate warning-only,
+  build:e2e, and Playwright smoke."
 depends_on:
   - "@task-add-active-request-bounded-observation-regressions"
   - "@task-implement-bounded-process-stop-primitives"
@@ -121,8 +125,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-12T17:39:58.840Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev via detached reviewer merge helper. Reviewed e105a259: bounded in-process mock
+          daemon active-request teardown, shared bounded daemon fetch/probe helper, and
+          representative CLI/E2E daemon probe replacements. Verified npm test, kspec validate
+          warning-only, build:e2e, and Playwright smoke."
+        previous: null
+      completed_at:
+        new: 2026-05-12T17:58:21.516Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-12T17:58:21.529Z
 created_at: 2026-05-12T00:14:55.060Z
 started_at: 2026-05-12T17:11:37.653Z
 submitted_at: 2026-05-12T17:35:32.488Z
+completed_at: 2026-05-12T17:58:21.516Z
 todos: []
 automation: eligible
