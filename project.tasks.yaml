@@ -28786,6 +28786,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-12T00:14:54.439Z
+  automation: eligible
 - _ulid: 01KRCRJRRRS4WDVC1VQQW5GK25
   slugs:
     - task-add-active-request-bounded-observation-regressions
