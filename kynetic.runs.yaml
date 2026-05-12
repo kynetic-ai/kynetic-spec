@@ -46656,9 +46656,30 @@ runs:
     completed_at: 2026-05-12T06:41:26.176Z
   - _ulid: 01KRDEVRGCJ21M44P48ZFXB6G3
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-12T06:44:18.060Z
+        completed_at: 2026-05-12T06:45:52.686Z
+        notes: "What worked well in cycle-5 of the cleanup-effect classifier fix: (1) reading the full
+          review JSON (kspec review get --json) gave exact thread anchors and the reviewer's
+          synthetic probe verbatim, which let me reproduce the failure mode immediately; (2) the
+          predicate-based architecture in tools/eslint-rules/no-leaky-test-daemon.js — one named
+          predicate per shape (isTrustedHelperByOrigin, findLocalHelperDefinition,
+          isTerminatingPrimitiveCall, isChildHandleReceiverTrusted) — localized the fix to two
+          existing functions plus one new statementBindsNameOpaquely helper instead of forcing a
+          sprawling refactor; (3) running the targeted suite immediately after the first draft
+          caught a malformed fixture (the wrapper-pattern probe triggered the helper-boundary rule,
+          not the cleanup-classifier rule) before the failure landed in a review; (4) the existing
+          'positive flag-it' / 'accepted-shape companion' bisection in the test file made it obvious
+          where new regressions go and gave a paired template for proving the rejection is
+          unconditional on default shape."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-12T06:45:52.686Z
+        completed_at: 2026-05-12T06:45:52.686Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T06:44:18.060Z
