@@ -8813,6 +8813,27 @@ features:
                       deterministically with explicit task-linked diagnostics instead of silently
                       leaving reviewer handoff ineligible
                     when: the dispatcher reconciles legacy upgrade-path state
+                  - given: Artifact cleanup evaluates a dispatcher-managed worktree, reviewer snapshot, root directory,
+                      or dispatch branch for work that is active, in-flight, or in provisioning.
+                    id: ac-active-inflight-provisioning-artifact-preserved
+                    then: Cleanup preserves the artifact instead of removing, pruning, or deleting it.
+                    when: Cleanup determines whether that artifact is eligible for destructive removal.
+                  - given: Artifact cleanup discovers the same protected task or workspace through any destructive
+                      cleanup surface.
+                    id: ac-protection-applies-to-every-destructive-surface
+                    then: The protected artifact receives the same preserve outcome regardless of which cleanup surface
+                      discovered it.
+                    when: Cleanup evaluates worker worktrees, reviewer snapshots, root directories, workspace records,
+                      or dispatch branches.
+                  - given: Artifact cleanup cannot load or trust the registry, metadata, or protection state needed to
+                      classify whether a dispatcher-managed artifact is protected or safely
+                      cleanup-eligible.
+                    id: ac-ambiguous-protection-blocks-blind-deletion
+                    then: Cleanup does not blindly delete the artifact; it reconstructs or reattaches trusted state,
+                      blocks cleanup with actionable guidance, or proceeds only after existing
+                      cleanup policy classification determines the metadata is untrusted and cleanup
+                      is safe.
+                    when: The artifact would otherwise be considered eligible for destructive cleanup.
                 tags: []
                 requirements:
                   - _ulid: 01KKK7R64BHWCKAV51ESXQ0NAZ
