@@ -206680,7 +206680,87 @@ reviews:
     slugs: []
     title: "Plan review: Dispatch Workspace Provisioning Lease Protection (cycle 2)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The current plan has no exact ## Specs section and uses derive_from_specs: false with
+          manual Phase 1 existing-spec update tasks, so plan derivation will not materialize
+          duplicate sibling specs from structured spec YAML."
+        name: Existing spec update plan shape
+        required: true
+        created_at: 2026-05-12T18:57:41.918Z
+        completed_at: 2026-05-12T18:57:41.918Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Each Phase 1 spec-update task embeds the exact AC id plus Given/When/Then payloads and
+          verification commands, so a worker can update the existing spec from task context alone.
+        name: Standalone spec-update tasks
+        required: true
+        created_at: 2026-05-12T18:57:45.746Z
+        completed_at: 2026-05-12T18:57:45.746Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The plan now defines owner_daemon_id, owner_pid, owner_process_started_at, owner_spawn_id,
+          started/updated/expires timestamps, and expired-lease recovery that only treats a lease as
+          live via active/in-flight refs or a current daemon in-memory spawn attempt matching
+          owner_spawn_id.
+        name: Lease owner and liveness recovery
+        required: true
+        created_at: 2026-05-12T18:57:49.506Z
+        completed_at: 2026-05-12T18:57:49.506Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The prior monolithic lease AC was split into recording, owner identity, lifecycle
+          protection, artifact protection, success finalization, failure finalization, and expired
+          recovery ACs. One broad cleanup AC is recorded as a non-blocking question.
+        name: AC atomicity
+        required: true
+        created_at: 2026-05-12T18:57:53.287Z
+        completed_at: 2026-05-12T18:57:53.287Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@task-add-dispatch-workspace-provisioning-lease-schema can run before
+          @task-add-bootstrap-in-progress-interlock-acs even though it covers and implements
+          bootstrap AC semantics; helper-dependent bootstrap runtime work can then proceed before
+          the bootstrap spec update exists."
+        name: Dependency ordering
+        required: true
+        created_at: 2026-05-12T18:57:57.218Z
+        completed_at: 2026-05-12T18:57:57.218Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Every newly proposed registry, bootstrap, and dispatch-engine AC is claimed by at least
+          one spec-update task plus implementation/test/validation work. The only coverage concern
+          is ordering, not orphan ACs.
+        name: Coverage mapping
+        required: true
+        created_at: 2026-05-12T18:58:01.793Z
+        completed_at: 2026-05-12T18:58:01.793Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec plan import --dry-run accepted the document. Source inspection shows
+          parsePlanDocument supports task-only plans with no exact ## Specs section, and
+          buildTaskPlans materializes manual tasks against existing spec_refs when derive_from_specs
+          is false. plan derive --dry-run was not executed because the plan is draft and this review
+          must not approve it."
+        name: Parser and derivation readiness
+        required: true
+        created_at: 2026-05-12T18:58:06.124Z
+        completed_at: 2026-05-12T18:58:06.124Z
     events:
       - _ulid: 01KRERNSBMSAAJ0DPG2EC7X39S
         actor: Jacob Chapel
@@ -206688,17 +206768,146 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-05-12T18:55:02.516Z
+      - _ulid: 01KRERTB7M90HDEMK3FY79SWKP
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-05-12T18:57:31.892Z
+      - _ulid: 01KRERTF04HJJ7G591HDNZ7G7C
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRERTDH6QSVBWY0DNHGFNASZ
+        timestamp: 2026-05-12T18:57:35.748Z
+      - _ulid: 01KRERTJRQZ801MA21GV5HD2M2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KRERTH9X5HW48X91DE2BAKMT
+        timestamp: 2026-05-12T18:57:39.607Z
+      - _ulid: 01KRERTPE5V825AVGKQB2DGW2X
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec update plan shape
+        timestamp: 2026-05-12T18:57:43.365Z
+      - _ulid: 01KRERTT59AT1T192DBA5PT3BA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Standalone spec-update tasks
+        timestamp: 2026-05-12T18:57:47.177Z
+      - _ulid: 01KRERTXW3WXBSE3VE2QP38DCG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Lease owner and liveness recovery
+        timestamp: 2026-05-12T18:57:50.980Z
+      - _ulid: 01KRERV1M8WJ2PY1DX9CK6NE3H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC atomicity
+        timestamp: 2026-05-12T18:57:54.824Z
+      - _ulid: 01KRERV5JKW8CPX8GEZ2CH6FMW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Dependency ordering
+        timestamp: 2026-05-12T18:57:58.867Z
+      - _ulid: 01KRERVA22K3DPE79EJA3ECQAN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Coverage mapping
+        timestamp: 2026-05-12T18:58:03.458Z
+      - _ulid: 01KRERVEB5WTZ2J91DXG5164E5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Parser and derivation readiness
+        timestamp: 2026-05-12T18:58:07.845Z
+      - _ulid: 01KRERVK4ZY15EW526JB0D383F
+        actor: Jacob Chapel
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T18:58:12.767Z
+      - _ulid: 01KRERVK4Z807RTZ1H0HAG3VM9
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T18:58:12.767Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@plan-dispatch-workspace-provisioning-lease-protection"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KRERTDH6QSVBWY0DNHGFNASZ
+        anchor:
+          type: structured
+          field: depends_on
+          ref: "@task-add-dispatch-workspace-provisioning-lease-schema"
+          section: dependencies
+        entries:
+          - _ulid: 01KRERTDH6M2GYRS6Z9TA60QYA
+            author: Jacob Chapel
+            body: The schema task covers @dispatch-runtime-bootstrap-contract
+              ac-bootstrap-in-progress-is-durable and changes bootstrap status, but it depends only
+              on @task-add-dispatch-workspace-provisioning-lease-acs. After the registry AC task
+              completes, schema/helper/bootstrap runtime work can become ready before
+              @task-add-bootstrap-in-progress-interlock-acs has added the bootstrap ACs those tasks
+              cover. Add @task-add-bootstrap-in-progress-interlock-acs as a dependency of this
+              schema task (which will also gate helper-dependent bootstrap tasks transitively), or
+              otherwise ensure all bootstrap implementation tasks wait for the bootstrap spec-update
+              task.
+            created_at: 2026-05-12T18:57:34.246Z
+        kind: blocker
+      - _ulid: 01KRERTH9X5HW48X91DE2BAKMT
+        anchor:
+          type: structured
+          field: ac-provisioning-lease-protects-artifacts
+          ref: "@dispatch-workspace-registry"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KRERTH9YYHKP9B7SSYY15KPW
+            author: Jacob Chapel
+            body: This AC still combines two protection sources (registry lease and in-flight marker) across
+              several independent cleanup paths (worker worktrees, reviewer worktrees, unregistered
+              root directories, and branches). The tasks enumerate those paths, so this is not the
+              remaining blocker, but consider splitting the AC or making the task coverage mapping
+              list each subcase explicitly so one annotation cannot mask a missing deletion path.
+            created_at: 2026-05-12T18:57:38.110Z
+        kind: question
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: Jacob Chapel
+        role: reviewer
+        created_at: 2026-05-12T18:58:12.767Z
     created_at: 2026-05-12T18:55:02.516Z
-    updated_at: null
+    updated_at: 2026-05-12T18:58:12.767Z
     notes: []
