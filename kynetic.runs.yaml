@@ -45734,7 +45734,7 @@ runs:
     completed_at: 2026-05-12T03:43:57.415Z
   - _ulid: 01KRD5FZ9F57NJRDJ1P7S2GP1T
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -45846,7 +45846,263 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-12T04:01:17.795Z
-        completed_at: 2026-05-12T04:01:17.795Z
+        completed_at: 2026-05-12T04:02:27.398Z
+        notes: >-
+          Coverage search: 01KHF2BN [completed] P2 Create spec for validate --drift feature
+            matched: notes[1]
+          01KJGRQ1 [needs_work] P3 Create phased plan for completeness warning debt reduction
+          @task-plan-completeness-warning-debt-reduction
+            matched: notes[2]
+          01KJS6ZR [completed] P3 kspec validate uses ambiguous exit codes in automation: prints
+          Validation passed but returns non-zer
+            matched: closed_reason, notes[1]
+          01KJXSVJK [completed] P3 Implement Plans View @implement-plans-view
+            matched: notes[11]
+          01KK4F04 [completed] P2 Unify task detail display across kanban and task list
+            matched: notes[2]
+          01KKB3PKZ [completed] P3 Implement Session Text Search @implement-session-text-search
+            matched: notes[2], notes[5], notes[8]
+          01KKB8FD2 [completed] P3 Implement Spec Completeness Policy
+          @implement-spec-completeness-policy
+            matched: notes[2]
+          01KKB8FDM [completed] P3 Implement Core Primitives AC Backfill
+          @implement-core-primitives-ac-backfill
+            matched: notes[12], notes[15]
+          01KKB8FE7 [completed] P3 Implement Schema and Structure AC Backfill
+          @implement-schema-and-structure-ac-backfill
+            matched: notes[3], notes[5], notes[7]
+          01KKCYME2 [completed] P3 Implement Plan Import Content-Only Storage
+          @implement-plan-import-content-only-storage
+            matched: notes[4], notes[5], notes[7], notes[8], notes[11]
+          01KKCYMET [completed] P3 Implement Enhanced Plan Derivation
+          @implement-enhanced-plan-derivation
+            matched: closed_reason, notes[2], notes[4]
+          01KKFERF [completed] P2 Update iterative plan workflow and skill guidance
+          @update-iterative-plan-workflow-and-skill-guidance
+            matched: notes[1]
+          01KKFY9DT [completed] P1 Implement persistent dispatch workspace registry
+          @task-implement-dispatch-workspace-registry
+            matched: notes[10]
+          01KKFY9F0 [completed] P1 Implement dispatch branch integration target contract
+          @task-implement-dispatch-branch-integration-contract
+            matched: closed_reason, notes[4], notes[6], notes[9]
+          01KM6YEMDW [completed] P1 Deprecate superseded task specs
+          @task-deprecate-old-storage-specs
+            matched: closed_reason
+          01KNE1NKX [completed] P1 Update daemon spawn to use configured runtime
+          @task-daemon-spawn-runtime
+            matched: notes[1], notes[4]
+          01KQ0JDHK [completed] P1 Capture validation trust baseline @task-catalog-health-baseline
+            matched: description, notes[0]
+          01KQ0JDHZ [completed] P1 Repair broken task spec references @task-repair-broken-spec-refs
+            matched: description, notes[1], notes[5]
+          01KQ0JDM [completed] P2 Final validation trust gate @task-validation-trust-final-gate
+            matched: description, notes[0]
+          01KQ90ZS [cancelled] P2 Normalize AC ids and annotations to ac-* format
+          @task-normalize-ac-ids-and-annotations
+            matched: description
+          01KQ93NEQ [completed] P1 Normalize catalog AC ids and matching annotations
+          @task-normalize-catalog-ac-ids-and-annotations
+            matched: description
+          01KQ93NF0 [completed] P2 Align annotation parser tests and guidance with required AC id
+          format @task-align-ac-annotation-format-tests
+            matched: description, notes[1], notes[5]
+          01KQ93NFA [completed] P2 Final AC id format validation gate @task-ac-id-format-final-gate
+            matched: description, notes[0]
+          01KQ99Z7 [completed] P2 Fix meta catalog schema error in traits field
+            matched: description, closed_reason, notes[1], notes[3]
+          01KQB9J19 [completed] P1 Update specs for AC ID mutation and annotation hardening
+          @task-ac-id-hardening-spec-updates
+            matched: description, closed_reason, notes[0]
+          01KQB9J2 [completed] P3 Validate AC ID hardening end to end
+          @task-ac-id-hardening-final-gate
+            matched: description, notes[1]
+          01KQD417 [completed] P1 Update specs for daemon web UI asset coherence
+          @task-daemon-web-ui-asset-coherence-specs
+            matched: description
+          01KQWZZF3 [completed] P1 Update localhost security trait for configurable daemon endpoints
+          @task-update-localhost-security-trait
+            matched: description, notes[1]
+          01KQWZZFD [completed] P1 Update configurable daemon settings spec for endpoint resolution
+          @task-update-config-daemon-endpoint-ac
+            matched: description, closed_reason, notes[0], notes[2]
+          01KQWZZFP [completed] P1 Update daemon server spec for default loopback and metadata
+          @task-update-daemon-server-endpoint-ac
+            matched: description, notes[0], notes[1]
+          01KQWZZG0 [completed] P1 Update daemon proxy and direct-mode specs for endpoint metadata
+          @task-update-cli-daemon-proxy-endpoint-ac
+            matched: description, closed_reason, notes[0], notes[1], notes[3]
+          01KQWZZGB [completed] P1 Update global daemon lifecycle and serve command specs for
+          endpoint metadata @task-update-daemon-lifecycle-endpoint-ac
+            matched: description, notes[0]
+          01KQWZZGM [completed] P1 Apply daemon endpoint consumer trait to client specs
+          @task-apply-daemon-endpoint-consumer-trait
+            matched: description, notes[0]
+          01KQWZZGY [completed] P1 Update web API and runtime specs for endpoint-aware clients
+          @task-update-web-api-endpoint-ac
+            matched: description, closed_reason, notes[0], notes[1]
+          01KQZWWG [completed] P3 Retag localhost-security tests to current AC ids
+          @task-retag-localhost-security-ac-annotations
+            matched: description, notes[1]
+          01KQZWWH [completed] P3 Clean daemon endpoint affected-file lint findings
+          @task-clean-daemon-endpoint-lint-findings
+            matched: description, notes[0]
+          01KR22GJE [completed] P1 Update existing daemon test specs for shared fixture standards
+          @task-update-daemon-test-specs
+            matched: description, notes[0], notes[3]
+          01KR22GME [completed] P5 Validate daemon fixture standardization across the suite
+          @task-validate-daemon-test-fixture-standardization
+            matched: description, notes[1]
+          01KR3W7SP [completed] P3 Validate daemon test hardening end to end
+          @task-validate-daemon-test-hardening
+            matched: description, notes[0]
+          01KR6M6S [completed] P2 Tighten daemon hardening specs for cleanup binding and approved
+          helpers @task-tighten-daemon-hardening-specs
+            matched: description, notes[0]
+          01KR6M6X [completed] P2 Add real daemon cleanup-registration failure regression
+          @task-add-register-cleanup-failure-regression
+            matched: description, notes[0], notes[2], notes[3], notes[6]
+          01KR6M70 [completed] P2 Fix real daemon cleanup-registration failure cleanup
+          @task-fix-register-cleanup-failure-leak
+            matched: description, notes[0], notes[1]
+          01KR6M74 [completed] P2 Add guardrail regressions for unbound cleanup callbacks and local
+          wrappers @task-add-guardrail-binding-wrapper-regressions
+            matched: description, notes[2]
+          01KR6M77 [completed] P2 Fix guardrail cleanup-binding and approved-helper analysis
+          @task-fix-guardrail-binding-wrapper-analysis
+            matched: description, notes[2], notes[4], notes[6], notes[8], notes[10], notes[12], notes[14], notes[16], notes[18]
+          01KR6M7A [completed] P3 Validate daemon hardening corrective work end to end
+          @task-validate-daemon-hardening-corrections
+            matched: description, notes[0]
+          01KRC2R0 [blocked] P3 Stabilize Bun websocket runtime parity startup hook
+          @task-stabilize-bun-websocket-runtime-parity-startup-hook
+            matched: notes[1]
+          01KRCRJP0 [completed] P1 Tighten daemon guardrail cleanup semantics specs
+          @task-tighten-daemon-guardrail-cleanup-semantics-specs
+            matched: description, notes[0]
+          01KRCRJSZ [pending] P3 Validate daemon cleanup contract hardening end to end
+          @task-validate-daemon-cleanup-contract-hardening
+            matched: description
+          01KQXEKC [observation] When a task renames AC ids on a spec (e.g. ac-5 → ac-host...
+            matched: content
+          01KQXFDP [observation] Default validation output can hide task-relevant AC cover...
+            matched: content
+
+          50 result(s) (showing first 50) found completed validation/AC-warning work plus
+          pending/completed warning-debt items and observation @01KPVTM6 ('Review-time kspec
+          validate remains dominated by repo-wide...'), so warning-only validation friction is
+          already tracked. 01KN69W9 [pending] P2 Stabilize fresh shard test runs with
+          STACK_TRACE_ERROR failures @task-stabilize-fresh-shard-test-runs
+            matched: description
+          01KHYXJK [convention] testing - ULIDs use Crockford base32 (excludes I, L, O, U) — invalid
+          ULIDs cause SILENT test failures
+            matched: rules[9]
+
+          2 result(s) found @task-stabilize-fresh-shard-test-runs and the testing convention about
+          the runner cache, so long/full-suite behavior has related tracking. 01KPVJ8QK [feature]
+          Detached Reviewer Merge Helper @detached-reviewer-merge-helper implemented
+            matched: title
+          01KPVJ8R0 [completed] P1 Implement detached reviewer merge helper mechanics
+          @task-detached-reviewer-merge-helper
+            matched: title, closed_reason
+          01KPVJ8RA [completed] P1 Wire reviewer guidance and merge skill usage to the detached
+          merge helper @task-detached-reviewer-merge-guidance
+            matched: closed_reason
+          01KPWBHM [completed] P2 Align detached reviewer conflict guidance to the single supported
+          merge path @task-align-detached-reviewer-conflict-guidance
+            matched: description
+          01KQ0JDKG [completed] P2 Enforce coverage annotation scan boundaries
+          @task-coverage-annotation-scope-boundaries
+            matched: closed_reason
+          01KQ0JDM [completed] P2 Final validation trust gate @task-validation-trust-final-gate
+            matched: closed_reason
+          01KQ93NED [completed] P1 Enforce AC identifier format at catalog write boundaries
+          @task-enforce-ac-id-format
+            matched: closed_reason
+          01KQ93NF0 [completed] P2 Align annotation parser tests and guidance with required AC id
+          format @task-align-ac-annotation-format-tests
+            matched: closed_reason
+          01KQ93NFA [completed] P2 Final AC id format validation gate @task-ac-id-format-final-gate
+            matched: closed_reason
+          01KQB9J1X [completed] P2 Reject malformed AC annotation tokens instead of truncating them
+          @task-strict-ac-annotation-token-parsing
+            matched: closed_reason
+          01KQD419 [completed] P2 Verify daemon-served entry documents only reference available
+          startup assets @task-daemon-web-ui-startup-asset-coherence
+            matched: closed_reason
+          01KQWZZFD [completed] P1 Update configurable daemon settings spec for endpoint resolution
+          @task-update-config-daemon-endpoint-ac
+            matched: closed_reason
+          01KQWZZG0 [completed] P1 Update daemon proxy and direct-mode specs for endpoint metadata
+          @task-update-cli-daemon-proxy-endpoint-ac
+            matched: closed_reason
+          01KQWZZJ3 [completed] P1 Centralize web UI development daemon endpoints and CORS origins
+          @task-centralize-web-ui-daemon-endpoints
+            matched: closed_reason
+          01KQZWWG [completed] P3 Retag localhost-security tests to current AC ids
+          @task-retag-localhost-security-ac-annotations
+            matched: closed_reason
+          01KR22GJE [completed] P1 Update existing daemon test specs for shared fixture standards
+          @task-update-daemon-test-specs
+            matched: closed_reason
+          01KR22GJR [completed] P1 Implement shared daemon test fixture core
+          @task-implement-shared-daemon-test-fixture
+            matched: closed_reason
+          01KR22GME [completed] P5 Validate daemon fixture standardization across the suite
+          @task-validate-daemon-test-fixture-standardization
+            matched: closed_reason
+          01KR3W7PP [completed] P1 Fix guardrail daemon command classification
+          @task-fix-guardrail-daemon-command-classification
+            matched: closed_reason
+          01KR3W7Q0 [completed] P1 Add guardrail regression tests for detached cleanup timing
+          @task-add-detached-cleanup-timing-regressions
+            matched: closed_reason
+          01KR3W7R7 [completed] P2 Harden Playwright daemon fixture cleanup registration
+          @task-harden-playwright-daemon-fixture-cleanup
+            matched: closed_reason
+          01KR3W7RH [completed] P1 Add mock daemon helper failure-path contract tests
+          @task-add-mock-daemon-failure-contract-tests
+            matched: closed_reason
+          01KR3W7RT [completed] P1 Fix mock daemon helper cleanup and environment hygiene
+          @task-fix-mock-daemon-cleanup-env-hygiene
+            matched: closed_reason
+          01KR3W7SD [completed] P2 Clarify in-process daemon API helper boundary
+          @task-clarify-in-process-daemon-api-helper-boundary
+            matched: closed_reason
+          01KR4AWP [completed] P2 Stabilize flaky daemon startup review tests
+            matched: closed_reason
+          01KR52YX [completed] P3 Stabilize websocket protocol runtime parity test
+          @task-stabilize-websocket-protocol-runtime-parity-test
+            matched: closed_reason
+          01KR6M74 [completed] P2 Add guardrail regressions for unbound cleanup callbacks and local
+          wrappers @task-add-guardrail-binding-wrapper-regressions
+            matched: closed_reason
+          01KR6M77 [completed] P2 Fix guardrail cleanup-binding and approved-helper analysis
+          @task-fix-guardrail-binding-wrapper-analysis
+            matched: closed_reason
+          01KRCRJPY [completed] P1 Add adversarial guardrail regressions for cleanup boundaries
+          @task-add-guardrail-cleanup-boundary-regressions
+            matched: closed_reason
+          01KRD2RV [inbox] Detached reviewer merge helper conflict output could incl...
+            matched: text
+          01KQ1273 [observation] The detached reviewer merge helper made manual_merge revi...
+            matched: content
+          01KQ9AMHH [observation] The detached reviewer merge helper worked cleanly for man...
+            matched: content
+          01KQYR78 [observation] Cycle-7 review of @task-shared-daemon-endpoint-resolver s...
+            matched: content
+
+          33 result(s) found implemented feature @detached-reviewer-merge-helper, completed helper
+          tasks, inbox @01KRD2RV about conflict output, and prior success observations including
+          @01KQ1273/@01KQ9AMHH; 01KNN907 [observation] Detached review flow behaved correctly after
+          verdicting: ...
+            matched: content
+
+          1 result(s) found @01KNN907. No untracked friction or success pattern found.
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-12T04:02:27.398Z
+        completed_at: 2026-05-12T04:02:27.398Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T04:00:34.607Z
