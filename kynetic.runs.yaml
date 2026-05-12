@@ -46372,7 +46372,7 @@ runs:
     completed_at: 2026-05-12T04:26:16.544Z
   - _ulid: 01KRD8GV1FRRAMJSX24JBZXWFG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -46387,7 +46387,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T04:54:15.115Z
-        completed_at: 2026-05-12T04:54:15.115Z
+        completed_at: 2026-05-12T04:54:39.349Z
+        notes: "Friction points: kspec validate produced warnings-only exit code 6 despite schema/reference
+          checks passing, so review required manual classification and a second --warnings-ok run to
+          record a passing gate. Review evidence logging is still manual: checks and evidence log
+          had to be entered as separate review check commands. No merge friction; helper succeeded."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T04:54:39.349Z
+        completed_at: 2026-05-12T04:54:39.349Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T04:53:28.751Z
