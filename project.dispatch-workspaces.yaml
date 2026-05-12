@@ -31972,11 +31972,11 @@ workspaces:
     canonical_branch: dispatch/task/task-add-startup-provisioning-classification-ac/01krf37x
     canonical_branch_head: 0c6506a55cdb40538275c315cad4c85b131bc7ba
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-12T23:59:15.076Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-12T23:59:24.897Z
     health:
       status: healthy
       issues: []
@@ -31990,7 +31990,7 @@ workspaces:
       target_branch: dev
       target_commit: 0c6506a55cdb40538275c315cad4c85b131bc7ba
       updated_at: 2026-05-12T23:59:15.076Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KRF37XVT9YSRGV87660W7BR6"
     task_slug: task-add-startup-provisioning-classification-ac
@@ -31999,7 +31999,7 @@ workspaces:
       last_active_at: 2026-05-12T23:03:09.558Z
       last_reconciled_at: 2026-05-12T23:59:15.076Z
       created_at: 2026-05-12T22:53:27.615Z
-      updated_at: 2026-05-12T23:59:15.076Z
+      updated_at: 2026-05-12T23:59:24.897Z
     workspace_id: dispatch-workspace-01KRF37XVT9YSRGV87660W7BR6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
