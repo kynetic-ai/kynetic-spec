@@ -30808,12 +30808,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T22:41:46.762Z
+      updated_at: 2026-05-12T22:43:20.282Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T22:41:46.762Z
+      updated_at: 2026-05-12T22:43:20.282Z
     integration:
       status: pending
       detail: null
@@ -30821,17 +30821,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0c6506a55cdb40538275c315cad4c85b131bc7ba
-      updated_at: 2026-05-12T22:41:46.762Z
-    lifecycle_state: ready
+      updated_at: 2026-05-12T22:43:20.282Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRF37WZYVQHSE1W8PYMBH5R2"
     task_slug: task-add-inflight-cleanup-protection-engine-ac
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T22:37:06.695Z
-      last_reconciled_at: 2026-05-12T22:41:46.762Z
+      last_reconciled_at: 2026-05-12T22:43:20.282Z
       created_at: 2026-05-12T22:36:36.904Z
-      updated_at: 2026-05-12T22:41:46.762Z
+      updated_at: 2026-05-12T22:43:20.282Z
     workspace_id: dispatch-workspace-01KRF37WZYVQHSE1W8PYMBH5R2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
