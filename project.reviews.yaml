@@ -205166,7 +205166,18 @@ reviews:
     slugs: []
     title: Review fix guardrail cleanup-effect classification (cycle 7)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2431 suites, 9132 passed, 5 skipped of 9137. Log:
+          /tmp/kspec-test-cache/01KREFHR72YKTC5HB4NZ0JCEJQ/1e57416b2952e1f9.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-05-12T16:33:49.830Z
+        completed_at: 2026-05-12T16:33:49.830Z
     events:
       - _ulid: 01KREFK8YRPCTQTBS1F9VS8GRM
         actor: Jacob Chapel
@@ -205195,6 +205206,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KREG33WZX33E6PXDS1ACQ1RT
         timestamp: 2026-05-12T16:25:04.185Z
+      - _ulid: 01KREGK8N3TNK1PFR16E4HVCQ9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-12T16:33:51.267Z
     examined_commit: 7c486bc61439fc86e9d39f39230c78379b4c9c48
     external_links: []
     lifecycle_state: open
@@ -205248,5 +205266,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T16:16:23.000Z
-    updated_at: 2026-05-12T16:25:02.111Z
+    updated_at: 2026-05-12T16:33:49.830Z
     notes: []
