@@ -1260,6 +1260,29 @@ features:
                 then: The guardrail treats the wrapped daemon startup the same as an inline unsafe daemon start and
                   reports violations of the fixture and cleanup contract
                 when: The guardrail scans the test file
+              - given: A test starts a detached daemon through a daemon lifecycle path
+                id: ac-cleanup-operation-terminates-daemon
+                then: Only cleanup operations that terminate or stop the daemon satisfy the cleanup requirement
+                when: The guardrail evaluates cleanup for that daemon
+              - given: A test starts a detached daemon and registers cleanup-shaped code
+                id: ac-cleanup-probes-do-not-count
+                then: The detached daemon start is reported as missing scoped cleanup
+                when: The code only probes liveness, emits documentation text, calls a non-daemon helper, or sends a
+                  non-terminating signal
+              - given: A test cleanup callback calls a helper by a daemon-cleanup-like name
+                id: ac-cleanup-helper-origin-is-trusted
+                then: The helper name alone does not satisfy daemon cleanup
+                when: That helper is locally defined or otherwise not one of the approved cleanup primitives
+              - given: A test starts a detached daemon
+                id: ac-cleanup-registration-is-test-scoped
+                then: That registration does not satisfy the per-test scoped cleanup requirement
+                when: Cleanup is registered only on process-lifecycle or global shutdown hooks
+              - given: A test invokes a CLI command that may implicitly auto-start a daemon and then observes the
+                  started daemon's pid, metadata, process, or endpoint
+                id: ac-implicit-autostart-cleanup-before-observation
+                then: The unsafe auto-started daemon ownership is reported
+                when: The test performs later assertions or daemon observations before registering cleanup for that
+                  daemon
             tags: []
             created: 2026-05-08T13:25:36.140Z
             notes:
