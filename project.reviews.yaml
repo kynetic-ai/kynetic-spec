@@ -204190,7 +204190,19 @@ reviews:
     slugs: []
     title: Review bounded process-stop contract tests (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation schema/references passed; command exited 6 due to existing global warnings
+          unrelated to changed files (deprecated refs, orphan/status alignment, pre-existing
+          malformed annotations).
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-12T13:45:44.367Z
+        completed_at: 2026-05-12T13:45:44.367Z
     events:
       - _ulid: 01KRE691A9G131YVK8J0AAGBMT
         actor: Jacob Chapel
@@ -204205,6 +204217,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T13:33:47.996Z
+      - _ulid: 01KRE6ZFG5K5SNVDCMW24XADJZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-12T13:45:45.733Z
     examined_commit: 0d1ebb5f7abec74f141ccfbbcb0cae66dac9ef2d
     external_links: []
     lifecycle_state: open
@@ -204217,7 +204236,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T13:33:30.314Z
-    updated_at: 2026-05-12T13:33:46.586Z
+    updated_at: 2026-05-12T13:45:44.367Z
     notes: []
   - _ulid: 01KRE6ARGB5SF4YPG2F2MGZ51N
     slugs: []
