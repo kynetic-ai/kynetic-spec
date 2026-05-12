@@ -240,3 +240,54 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T15:30:05.918Z
+  - _ulid: 01KREFADYRA7D078HA90P2QNY9
+    content: >-
+      Fix cycle 7: addressed cycle-6 reviewer blocker @01KRECGCDB6EYW31BWG0ZQYJ0R (helper-origin
+      walk missed non-Block/Program local binding shapes).
+
+
+      Blocker: findLocalHelperDefinition walked function parameters and BlockStatement/Program
+      statement lists only, so a ForStatement init (for (const killPid = (_p) => {}; ...) {...}), a
+      ForOfStatement/ForInStatement left binding (for (const killPid of [(_p) => {}]) {...}), or a
+      CatchClause param (catch (killPid) {...}) was invisible to the helper-origin check. The use
+      site then fell through the unapproved-import gate to the free-identifier conservative-trust
+      path and silently credited the no-op binding. Reviewer's three ad hoc oxlint probes all exited
+      0 with no diagnostic.
+
+
+      Fix: parent walk in findLocalHelperDefinition now recognises three additional binding shapes
+      and returns LOCAL_BINDING_OPAQUE for each — (1) CatchClause.param via patternBindsName
+      (identifier and destructured forms); (2) ForStatement.init via new forStatementInitBindsName
+      helper; (3) ForOfStatement/ForInStatement.left via new forXLeftBindsName helper. The opaque
+      return routes the use site to the explicit reject branch in isTrustedHelperByOrigin instead of
+      the free-identifier conservative-trust path.
+
+
+      Conservative classification rationale: a catch param's runtime value is whatever was thrown
+      (typically an Error, never a function), a for-statement init binding lives in the for-loop's
+      own scope (not the body block) and the canonical safe shape is a block-level declarator or
+      hoisted FunctionDeclaration, and a for-of/for-in left rebinds on every iteration. All three
+      are unusual contexts the rule cannot statically prove satisfy daemon cleanup.
+
+
+      Regressions: 6 positive flag-it cases (for-init no-op, for-init terminating-shape, for-of
+      left, for-in left, catch param, catch object-destructure param) plus 2 negative companions
+      that confirm the approved-import path still resolves when the inserted scope binds an
+      UNRELATED name (for (const item of [...]), catch (err)). Total cleanup-effect classifier
+      tests: 124 → 132 in lint-no-leaky-test-daemon.test.ts.
+
+
+      Checks: targeted suites pass (352/352: 124 lint-no-leaky-test-daemon + 228
+      lint-daemon-test-guardrails, up from 335 in cycle 6). Full vitest pass (9132 passed, 5 skipped
+      of 9137, 0 failures, 2335.5s). Changed-file oxlint clean on
+      tools/eslint-rules/no-leaky-test-daemon.js and tests/lint-no-leaky-test-daemon.test.ts (0
+      errors, 35 pre-existing warnings). kspec validate warnings-only (pre-existing AC annotation
+      warnings unrelated to this fix).
+
+
+      Also merged origin/dev to consume sibling-task additions (file-lock atomic pid publish,
+      mock-daemon helper additions, daemon-fixture wrapper additions). Clean merge with no
+      conflicts.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T16:11:33.208Z
