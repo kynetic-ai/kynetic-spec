@@ -70,3 +70,22 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T02:01:39.407Z
+  - _ulid: 01KRD1E7MM24JH415G6DZFQ1DY
+    content: 'Fix cycle 1: addressed blocker thread on process-lifecycle regressions introducing red
+      tests. Converted the three failing-before-fix tests (process.on("exit"|"beforeExit"|"SIGTERM")
+      at lines 771/791/812) from it(...) to it.fails(...) following the precedent set by commit
+      6fa74f5c1 (task-add-guardrail-binding-wrapper-regressions cycle-6 review). The inversion keeps
+      the required suite green on this branch while leaving a structured signal — when
+      @task-fix-guardrail-cleanup-boundary-classification lands and the rule starts flagging these
+      cases, the inner assertions will pass and it.fails will fail, signalling the worker to flip
+      the three tests back to it(...). Per-test FAILING-BEFORE-FIX docstrings document the inversion
+      contract explicitly. Re-verified all ACs: the cleanup-registration-is-test-scoped coverage
+      still names the three rejected process-lifecycle event names; the already-rejected variants
+      (process.once, Promise.finally, queueMicrotask) remain as plain it(...) because the current
+      rule already rejects them; the accepted cases (onTestFinished + concrete pid, try/finally +
+      concrete pid, mixed onTestFinished + process.on fallback) remain as plain it(...) because they
+      pass before and after the fix. Verification: focused suite 61/61 pass, companion 219/219 pass,
+      full suite 9036 passed / 5 skipped / 0 failed of 9041.'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T02:49:43.316Z
