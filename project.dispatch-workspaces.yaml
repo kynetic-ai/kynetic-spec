@@ -27870,7 +27870,7 @@ workspaces:
         head: 866065b339c34190fb52f3673bffb90aac357365
         last_seen_at: 2026-05-12T08:11:46.217Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-file-lock-concurrent-write-test-01krd9fy
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
     bootstrap:
       status: succeeded
@@ -28201,7 +28201,7 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T13:32:51.083Z
+      updated_at: 2026-05-12T13:59:12.878Z
     health:
       status: stale
       issues:
@@ -28211,7 +28211,7 @@ workspaces:
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-05-12T13:32:51.083Z
+      updated_at: 2026-05-12T13:59:12.878Z
     integration:
       status: pending
       detail: null
@@ -28219,7 +28219,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
-      updated_at: 2026-05-12T13:32:51.083Z
+      updated_at: 2026-05-12T13:59:12.878Z
     lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@task-fix-guardrail-cleanup-effect-classification"
@@ -28227,9 +28227,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T13:31:48.960Z
-      last_reconciled_at: 2026-05-12T13:32:51.083Z
+      last_reconciled_at: 2026-05-12T13:59:12.878Z
       created_at: 2026-05-12T13:31:21.926Z
-      updated_at: 2026-05-12T13:32:51.083Z
+      updated_at: 2026-05-12T13:59:12.878Z
     workspace_id: dispatch-workspace-task-fix-guardrail-cleanup-effect-classification
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
