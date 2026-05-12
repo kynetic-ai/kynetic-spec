@@ -201264,6 +201264,12 @@ reviews:
         payload:
           thread_ulid: 01KRCXZQ9EF2EC6BMQCW5JYSTG
         timestamp: 2026-05-12T02:28:06.728Z
+      - _ulid: 01KRD06ZK9P18QT8VJXSWXNQ5Q
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRCXZQ9EF2EC6BMQCW5JYSTG
+        timestamp: 2026-05-12T02:28:17.129Z
     examined_commit: ad6ed111eab1bffaa6a361f6b6e2d0edb1fdf4cb
     external_links: []
     lifecycle_state: closed
@@ -201329,6 +201335,8 @@ reviews:
               remain plain it() since they already pass.
             created_at: 2026-05-12T02:28:05.365Z
         kind: blocker
+        resolved_at: 2026-05-12T02:28:15.764Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -201338,7 +201346,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T01:49:35.102Z
     created_at: 2026-05-12T01:37:04.624Z
-    updated_at: 2026-05-12T02:28:05.365Z
+    updated_at: 2026-05-12T02:28:15.764Z
     notes: []
   - _ulid: 01KRCXWT92V7EDAZX5YGG785KV
     slugs: []
