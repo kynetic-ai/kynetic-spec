@@ -202741,6 +202741,13 @@ reviews:
           status: fail
           name: ad hoc cleanup-effect probes
         timestamp: 2026-05-12T05:12:09.659Z
+      - _ulid: 01KRD9KJ3FD5BGQR5EZQAX990K
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRD9KGSZY017BYV0E8XTGFJ2
+        timestamp: 2026-05-12T05:12:26.479Z
     examined_commit: 40336586e664d485ab1c0a212b94aa7eece9db0d
     external_links: []
     lifecycle_state: open
@@ -202793,7 +202800,26 @@ reviews:
               `ac-cleanup-helper-origin-is-trusted`.'
             created_at: 2026-05-12T05:11:10.339Z
         kind: blocker
+      - _ulid: 01KRD9KGSZY017BYV0E8XTGFJ2
+        entries:
+          - _ulid: 01KRD9KGSZ8YT33BT7Z6SMSNXS
+            author: Jacob Chapel
+            body: "Evidence log: Files read: `kspec-agents.md`, `tools/eslint-rules/no-leaky-test-daemon.js`,
+              `tests/lint-no-leaky-test-daemon.test.ts`, prior reviews @01KRD39Y and @01KRD659,
+              task/spec context for @daemon-test-guardrail-precision. Commands run: `kspec task get
+              @01KRCRJPMHMHC410TKRC5Y9HF1`, `kspec item get @daemon-test-guardrail-precision`,
+              `kspec review for-task @01KRCRJPMHMHC410TKRC5Y9HF1`, `git diff 0dcbcdd...HEAD`, `rg`
+              for AC/source-scan coverage, `kspec validate`, `npm test -- --fresh`, `npm test --
+              --fresh tests/file-lock.test.ts`, `npm test -- --fresh
+              tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts`,
+              `npx oxlint` on changed files, and three ad hoc oxlint fixtures. Claims verified:
+              prior nested-helper blocker is covered by added tests; targeted suites pass;
+              full-suite failure was flaky after isolated rerun and follow-up task @01KRD9FY.
+              Categories searched: correctness, edge cases, helper origin trust, signal handling,
+              test quality, integration/regression behavior."
+            created_at: 2026-05-12T05:12:25.151Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-12T04:58:17.412Z
-    updated_at: 2026-05-12T05:12:08.302Z
+    updated_at: 2026-05-12T05:12:25.151Z
     notes: []
