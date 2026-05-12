@@ -207850,6 +207850,17 @@ reviews:
         required: true
         created_at: 2026-05-12T19:45:31.244Z
         completed_at: 2026-05-12T19:45:31.244Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The plan does not evaluate smaller alternatives: expanded activeTaskRefs,
+          delaying/skipping destructive cleanup during bootstrap, in-memory guards,
+          recently-created-dir grace, lockfiles, or startup-only/manual cleanup."
+        name: Alternatives analysis
+        required: true
+        created_at: 2026-05-12T19:45:31.301Z
+        completed_at: 2026-05-12T19:45:31.301Z
     events:
       - _ulid: 01KREVDS9XFDTD63BNFYSWQE6Z
         actor: Jacob Chapel
@@ -207906,6 +207917,13 @@ reviews:
           status: fail
           name: Necessity evidence
         timestamp: 2026-05-12T19:45:32.922Z
+      - _ulid: 01KREVJB953T8HKAW76E10B1AZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Alternatives analysis
+        timestamp: 2026-05-12T19:45:35.525Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -208009,5 +208027,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-12T19:43:06.045Z
-    updated_at: 2026-05-12T19:45:31.244Z
+    updated_at: 2026-05-12T19:45:31.301Z
     notes: []
