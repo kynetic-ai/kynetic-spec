@@ -208303,6 +208303,19 @@ reviews:
         runner: oxlint
         created_at: 2026-05-12T20:29:28.226Z
         completed_at: 2026-05-12T20:29:28.226Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Three ad hoc oxlint probes returned 0 no-leaky diagnostics: helper kills omitted second
+          parameter target; helper kills target defaulting to stale otherPid; object literal exposes
+          stale otherPid property and kill() terminates it. Each should report missing scoped
+          cleanup."
+        name: ad hoc classifier probes
+        required: true
+        runner: oxlint
+        created_at: 2026-05-12T20:37:26.144Z
+        completed_at: 2026-05-12T20:37:26.144Z
     events:
       - _ulid: 01KREXT4DBSJCHN1XQFWA4YQBT
         actor: Jacob Chapel
@@ -208352,6 +208365,13 @@ reviews:
           status: pass
           name: changed-file oxlint
         timestamp: 2026-05-12T20:29:29.894Z
+      - _ulid: 01KREYHAD1Y7SYHCBMY2S171WW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: ad hoc classifier probes
+        timestamp: 2026-05-12T20:37:27.586Z
     examined_commit: 62bffa595961c9d0d4e1c8c1cc8e5ef09486064e
     external_links: []
     lifecycle_state: open
@@ -208411,5 +208431,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T20:24:47.787Z
-    updated_at: 2026-05-12T20:29:28.226Z
+    updated_at: 2026-05-12T20:37:26.144Z
     notes: []
