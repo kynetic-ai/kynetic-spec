@@ -60,3 +60,44 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T01:41:31.104Z
+  - _ulid: 01KRCYXH65KYXXPDA9SKQ16T7F
+    content: >-
+      Fix cycle 1: addressed both review blockers from @01KRCWMJX1SHC9MASHP4KYM3J9.
+
+
+      Blocker 1 (active red tests): Converted all 5 staged regressions from plain `it(...)` to the
+      validated selective expected-failure pattern (@01KR431R). Each test now uses a local `expect*`
+      wrapper that runs the post-fix assertion and, on the expected pre-fix throw, re-asserts the
+      EXACT current bug shape:
+
+      - tests/helpers/daemon.test.ts: expectKillChildScopedMissesExitObservation — pre-fix shape is
+      BOTH exitCode AND signalCode null after stop() returns.
+
+      - tests/helpers/mock-daemon.test.ts: expectMockDaemonStopLeaksPid — pre-fix shape is
+      isProcessAlive(pid) === true after stop() returns.
+
+      - tests/cli-serve.test.ts: three helpers — expectWaitForChildExitMissesObservation (handle
+      exit miss), expectWaitForChildExitMissesSignalFastPath (window [500ms, 7000ms]),
+      expectKillPidIsFireAndForget (pid still alive).
+
+      Unrelated failure modes re-throw to preserve selectivity. Post-fix each wrapper throws a
+      'STAGED REGRESSION CLOSED — remove this wrapper' sentinel forcing the implementation task to
+      inline the assertion.
+
+
+      Blocker 2 (false AC annotation): Removed `@daemon-backed-test-fixture-contract
+      ac-no-ambient-daemon-control` from the two new bounded-stop tests (daemon.test.ts and
+      mock-daemon.test.ts). These tests do not set up or observe an unrelated ambient daemon;
+      remaining annotations reflect what they actually verify.
+
+
+      Also re-read the spec ACs and verified the remaining annotations match the behavioral
+      assertions in each test.
+
+
+      Verified before resubmit: focused slice (`mise exec -- npm test -- --fresh
+      tests/helpers/daemon.test.ts tests/helpers/mock-daemon.test.ts tests/cli-serve.test.ts`) — 74
+      tests pass. Full suite: 9033 passed, 5 skipped, 0 failed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T02:05:38.886Z
