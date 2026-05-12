@@ -41,8 +41,13 @@ description: |
 spec_ref: "@dispatch-workspace-registry"
 plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Approved and merge helper reported no-op: canonical branch
+  dispatch/task/task-add-startup-provisioning-classification-ac/01krf37x at
+  0c6506a55cdb40538275c315cad4c85b131bc7ba is already integrated at dev. Spec alignment verified:
+  @dispatch-workspace-registry includes ac-partial-provisioning-classified-before-cleanup and
+  remains in_progress for downstream implementation/test tasks."
 depends_on: []
 context: []
 priority: 1
@@ -110,8 +115,27 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-12T23:04:11.647Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Approved and merge helper reported no-op: canonical branch
+          dispatch/task/task-add-startup-provisioning-classification-ac/01krf37x at
+          0c6506a55cdb40538275c315cad4c85b131bc7ba is already integrated at dev. Spec alignment
+          verified: @dispatch-workspace-registry includes
+          ac-partial-provisioning-classified-before-cleanup and remains in_progress for downstream
+          implementation/test tasks."
+        previous: null
+      completed_at:
+        new: 2026-05-12T23:58:46.191Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-12T23:58:46.227Z
 created_at: 2026-05-12T21:59:42.714Z
 started_at: 2026-05-12T22:54:30.735Z
 submitted_at: 2026-05-12T22:55:53.049Z
+completed_at: 2026-05-12T23:58:46.191Z
 todos: []
 automation: eligible
