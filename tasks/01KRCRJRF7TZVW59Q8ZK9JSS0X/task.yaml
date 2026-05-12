@@ -54,7 +54,7 @@ description: >
 spec_ref: "@daemon-test-teardown-boundedness"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-bounded-process-stop-contract-tests"
@@ -64,6 +64,14 @@ tags:
   - testing
   - daemon
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-implement-bounded-process-stop-primitives/01krcrjr
+  captured_at: 2026-05-12T15:34:48.016Z
+  commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KREBXT26JFHWAMQ8E598TN0W
 history:
   - author: Jacob Chapel
@@ -86,7 +94,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-12T15:13:04.834Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-implement-bounded-process-stop-primitives/01krcrjr
+          captured_at: 2026-05-12T15:34:48.016Z
+          commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-12T15:34:48.019Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-12T15:34:48.019Z
 created_at: 2026-05-12T00:14:54.439Z
 started_at: 2026-05-12T15:13:04.834Z
+submitted_at: 2026-05-12T15:34:48.019Z
 todos: []
 automation: eligible
