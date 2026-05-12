@@ -64,7 +64,7 @@ tags:
   - testing
   - daemon
 vcs_refs: []
-review_ref: "@01KREEADWRFZ4HV75GJYFJ31BS"
+review_ref: "@01KREGX7EBJCPM8J3HGA37MBJ9"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-implement-bounded-process-stop-primitives/01krcrjr
@@ -172,6 +172,13 @@ history:
         previous: 2026-05-12T15:34:48.019Z
     command: task-submit
     timestamp: 2026-05-12T16:34:22.017Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KREGX7EBJCPM8J3HGA37MBJ9"
+        previous: "@01KREEADWRFZ4HV75GJYFJ31BS"
+    command: review-link
+    timestamp: 2026-05-12T16:39:21.726Z
 created_at: 2026-05-12T00:14:54.439Z
 started_at: 2026-05-12T16:18:41.864Z
 submitted_at: 2026-05-12T16:34:22.017Z
