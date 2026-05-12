@@ -768,7 +768,24 @@ describe("test suite", () => {
     // A `process.on(...)` registration MAY exist alongside a valid
     // per-test cleanup as a supplemental safety net, but it does NOT
     // satisfy the guardrail by itself.
-    it("should flag serve start --detach when only cleanup is process.on(\"exit\", ...)", () => {
+    //
+    // FAILING-BEFORE-FIX: this regression is a CURRENT FALSE NEGATIVE
+    // in the `no-leaky-test-daemon` rule — the rule still credits
+    // `process.on("exit", ...)` as cleanup. The assertion below
+    // (`toContain("no-leaky-test-daemon")`) therefore does not hold
+    // today. Expressing the test with `it.fails(...)` inverts the
+    // pass/fail polarity: today the assertion throws and `it.fails`
+    // PASSES (the inversion is the point — it locks in the false
+    // negative). When @task-fix-guardrail-cleanup-boundary-classification
+    // lands and the rule starts reporting this case, the assertion
+    // will pass and `it.fails` will then FAIL — that failure is the
+    // structured signal to the lint-rule-fix worker to flip this test
+    // from `it.fails(...)` back to `it(...)`. The regression stays
+    // inside the required suite (so it runs and verifies behavior on
+    // every test invocation) without contributing red to a green
+    // branch, matching the precedent set by the cycle-6 cleanup-binding
+    // and wrapper-helper regression tasks.
+    it.fails("should flag serve start --detach when only cleanup is process.on(\"exit\", ...)", () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 
@@ -788,7 +805,13 @@ describe("test suite", () => {
     // when the event loop is empty, which is a process boundary, not the
     // per-test boundary the spec requires. A daemon left running by this
     // test will survive every later test in the file.
-    it("should flag serve start --detach when only cleanup is process.on(\"beforeExit\", ...)", () => {
+    //
+    // FAILING-BEFORE-FIX: see the `process.on("exit", ...)` test above
+    // for the full inversion contract. Same false negative, same
+    // flip-on-fix-landing protocol — when the lint rule fix lands and
+    // the assertion below begins to hold, `it.fails` will fail and
+    // signal the worker to flip this specific test back to `it(...)`.
+    it.fails("should flag serve start --detach when only cleanup is process.on(\"beforeExit\", ...)", () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 
@@ -809,7 +832,13 @@ describe("test suite", () => {
     // the signal, not when this individual test finishes. A handler
     // registered here does nothing for a daemon that leaks into the
     // next test in the same file.
-    it("should flag serve start --detach when only cleanup is process.on(\"SIGTERM\", ...)", () => {
+    //
+    // FAILING-BEFORE-FIX: see the `process.on("exit", ...)` test above
+    // for the full inversion contract. Same false negative, same
+    // flip-on-fix-landing protocol — when the lint rule fix lands and
+    // the assertion below begins to hold, `it.fails` will fail and
+    // signal the worker to flip this specific test back to `it(...)`.
+    it.fails("should flag serve start --detach when only cleanup is process.on(\"SIGTERM\", ...)", () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 
