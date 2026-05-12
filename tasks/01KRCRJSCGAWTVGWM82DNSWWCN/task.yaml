@@ -63,7 +63,7 @@ tags:
   - daemon
   - e2e
 vcs_refs: []
-review_ref: "@01KRDA6QCN3N0G8YNKR6GC7VQD"
+review_ref: "@01KRDDMFDR6798Q1SYMR79VPBW"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-add-setup-failure-error-preservation-regressions/01krcrjs
@@ -171,6 +171,13 @@ history:
         previous: 2026-05-12T05:19:56.940Z
     command: task-submit
     timestamp: 2026-05-12T06:16:16.456Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KRDDMFDR6798Q1SYMR79VPBW"
+        previous: "@01KRDA6QCN3N0G8YNKR6GC7VQD"
+    command: review-link
+    timestamp: 2026-05-12T06:22:54.435Z
 created_at: 2026-05-12T00:14:55.376Z
 started_at: 2026-05-12T06:16:13.076Z
 submitted_at: 2026-05-12T06:16:16.456Z

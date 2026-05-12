@@ -203417,3 +203417,29 @@ reviews:
     created_at: 2026-05-12T05:53:35.177Z
     updated_at: 2026-05-12T06:10:08.186Z
     notes: []
+  - _ulid: 01KRDDMFDR6798Q1SYMR79VPBW
+    slugs: []
+    title: Review setup-failure cleanup regressions (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRDDMFDR2S48FFTDJ9T8QYJS
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-12T06:22:50.808Z
+    examined_commit: 522d65ee504661e1f648142e7a801325b86289d4
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRCRJSCGAWTVGWM82DNSWWCN"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-12T06:22:50.808Z
+    updated_at: null
+    notes: []
