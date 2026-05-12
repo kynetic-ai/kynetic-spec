@@ -26759,7 +26759,7 @@ workspaces:
         head: ab1d59a2942c2e18b8373c2bd89fd50ef992c151
         last_seen_at: 2026-05-12T07:07:59.485Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-setup-failure-error-preservation-regressions-01krcrjs
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
     bootstrap:
       status: succeeded
@@ -27236,7 +27236,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T07:34:00.443Z
+      updated_at: 2026-05-12T07:34:28.638Z
     integration:
       status: pending
       detail: null
@@ -27251,10 +27251,10 @@ workspaces:
     task_slug: task-add-implicit-autostart-cleanup-regressions
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-12T07:08:54.828Z
-      last_reconciled_at: 2026-05-12T07:34:00.443Z
+      last_active_at: 2026-05-12T07:34:28.638Z
+      last_reconciled_at: 2026-05-12T07:34:28.638Z
       created_at: 2026-05-12T07:08:30.108Z
-      updated_at: 2026-05-12T07:34:25.411Z
+      updated_at: 2026-05-12T07:34:28.638Z
     workspace_id: dispatch-workspace-01KRCRJQHJVPTS7KS7SYWQ600H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
