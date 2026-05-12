@@ -45,5 +45,14 @@ tags:
   - scheduler
   - cleanup
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-05-12T22:02:29.466Z
 created_at: 2026-05-12T21:59:43.569Z
 todos: []
+automation: eligible

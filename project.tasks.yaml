@@ -29055,6 +29055,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-12T21:59:43.569Z
+  automation: eligible
 - _ulid: 01KRF37Z421Y3S41YH2WS2R2G1
   slugs:
     - task-apply-protection-policy-across-artifact-reconciliation
