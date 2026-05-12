@@ -46762,7 +46762,7 @@ runs:
     started_at: 2026-05-12T07:05:55.455Z
     completed_at: 2026-05-12T07:07:36.946Z
   - _ulid: 01KRDH6X9FG92BVHQ2HNY1N846
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -46813,10 +46813,14 @@ runs:
         completed_at: 2026-05-12T07:28:31.376Z
         notes: "Skipped discussion: no new untracked improvements to ask about. Existing tracked items cover
           the friction points, so there is nothing new to approve for capture."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-12T07:28:31.376Z
-        completed_at: 2026-05-12T07:28:31.376Z
+        completed_at: 2026-05-12T07:28:53.935Z
+        notes: No capture performed. Reflection found no untracked high-confidence items; validation warning
+          noise and review evidence/check friction are already represented by existing
+          observation/inbox records.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T07:25:20.559Z
+    completed_at: 2026-05-12T07:28:53.935Z
