@@ -47437,7 +47437,7 @@ runs:
     completed_at: 2026-05-12T16:41:24.531Z
   - _ulid: 01KREHWEWK24GF80BG4FZ43Z0Z
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47451,7 +47451,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T16:58:02.095Z
-        completed_at: 2026-05-12T16:58:02.095Z
+        completed_at: 2026-05-12T16:58:16.767Z
+        notes: "Friction points: full npm test took about 35 minutes even after the targeted slice, but that
+          is an expected review gate rather than a new tooling gap. Recording four review checks
+          required separate mutations and audit authorship remained mixed between CLI actor and
+          reviewer, but search shows this is already tracked. kspec validate remains noisy with
+          repository-wide warnings, also already tracked."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T16:58:16.767Z
+        completed_at: 2026-05-12T16:58:16.767Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T16:56:21.139Z
