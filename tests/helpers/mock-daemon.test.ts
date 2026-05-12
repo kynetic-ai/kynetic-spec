@@ -597,81 +597,16 @@ describe("mock daemon helper — startup-failure hygiene contract", () => {
 });
 
 /**
- * Selective expected-failure helper for the bounded process-stop bug in
- * the mock daemon's child stop() closure (tests/helpers/mock-daemon.ts):
- * the `killTimer` setTimeout callback sends SIGKILL and then calls
- * `finalize()` synchronously — before libuv has fired the child's 'exit'
- * event. The OS pid is still in the process table at that moment because
- * the kernel has only just queued the SIGKILL.
- *
- * Bug-shape differentiator: `process.kill(pid, 0)` succeeds (pid still
- * alive) immediately after stop() returns. Post-fix the helper waits for
- * the exit event before finalising, so the pid has been reaped.
- *
- * Behavior:
- *  1. Run the post-fix assertion (pid no longer alive).
- *  2. If it throws today (expected pre-fix), re-assert the EXACT bug
- *     shape: pid still alive. A different failure mode (e.g. mock
- *     daemon never started, child crashed in setup) re-throws and
- *     fails the test.
- *  3. If it succeeds (post-fix), throw an explicit "remove this wrapper"
- *     sentinel so the implementation task is forced to inline the
- *     assertion.
- *
- * The wrapper is intentionally bug-shape-specific (mock daemon stop
- * closure's finalize-from-timer-callback bug) — remove when the helper
- * fix lands.
- */
-function expectMockDaemonStopLeaksPid(pid: number): void {
-  let postFixSucceeded = false;
-  try {
-    expect(
-      isProcessAlive(pid),
-      `post-fix: stop() must not resolve until pid ${pid} has been observed terminated`,
-    ).toBe(false);
-    postFixSucceeded = true;
-  } catch (postFixError) {
-    expect(
-      isProcessAlive(pid),
-      `bug-shape mismatch: pre-fix expects pid ${pid} still alive when stop() returns (finalize ran from timer callback before exit observation), but the pid was already reaped. Underlying assertion: ${
-        postFixError instanceof Error ? postFixError.message : String(postFixError)
-      }`,
-    ).toBe(true);
-    return;
-  }
-  if (postFixSucceeded) {
-    throw new Error(
-      "STAGED REGRESSION CLOSED: mock daemon stop() now waits for the " +
-        "child's exit event before resolving. Inline the post-fix " +
-        "assertion and remove expectMockDaemonStopLeaksPid from " +
-        "tests/helpers/mock-daemon.test.ts. See " +
-        "@task-implement-bounded-process-stop-primitives.",
-    );
-  }
-}
-
-/**
  * Contract tests for the child-process mock daemon helper's bounded-stop path.
  *
- * The mock daemon's child `stop()` closure must:
- *   - Send SIGTERM, wait for graceful exit, escalate to SIGKILL if needed.
- *   - Only resolve once the child's 'exit' event has been observed, even if
- *     the child ignored SIGTERM and the graceful timer fired the escalation.
- *
- * The current implementation finalises the stop promise from the SIGKILL
- * fallback timer's setTimeout callback — synchronously after calling
- * `child.kill("SIGKILL")` — before libuv has fired the exit event. That
- * leaves the caller thinking the child is stopped while it can still be in
- * post-SIGKILL teardown.
- *
- * STAGED REGRESSION (selective expected-failure via
- * expectMockDaemonStopLeaksPid): keeps the required suite green so this
- * task can merge ahead of the helper fix in
- * @task-implement-bounded-process-stop-primitives. The wrapper re-asserts
- * the EXACT bug shape on the expected pre-fix throw so an unrelated
- * failure mode propagates as a real failure; post-fix it throws an
- * explicit "remove this wrapper" sentinel that forces inlining of the
- * post-fix assertion.
+ * The mock daemon's child `stop()` closure now routes through the shared
+ * bounded process-stop primitive:
+ *   - Send SIGTERM, wait for observed exit (exitCode OR signalCode set OR
+ *     'exit' event fired) within the graceful budget.
+ *   - Escalate to SIGKILL on graceful timeout, then wait again for the
+ *     resulting exit observation within the escalation budget.
+ *   - Throw BoundedProcessStopError if termination cannot be observed even
+ *     after escalation — never resolve while the OS pid is still alive.
  */
 describe("mock daemon helper — bounded child stop contract", () => {
   let tempDir: string;
@@ -717,13 +652,16 @@ describe("mock daemon helper — bounded child stop contract", () => {
       await child!.stop();
       const elapsed = Date.now() - stopStartedAt;
 
-      // ac-stop-observes-termination-before-return — selective
-      // expected-failure: pre-fix asserts the bug shape (pid still
-      // alive when stop() returned because finalize ran from the
-      // SIGKILL timer callback before the exit event fired);
-      // post-fix asserts the contract (pid reaped) and forces wrapper
-      // removal. See expectMockDaemonStopLeaksPid above.
-      expectMockDaemonStopLeaksPid(childPid);
+      // ac-stop-observes-termination-before-return: stop() resolves only
+      // after the OS pid has been observed terminated (kill(pid, 0)
+      // throws ESRCH). Pre-fix the helper finalised from the SIGKILL
+      // timer callback before the exit event fired and left the pid in
+      // the process table; post-fix the bounded primitive waits for the
+      // exit observation.
+      expect(
+        isProcessAlive(childPid),
+        `stop() must not resolve until pid ${childPid} has been observed terminated`,
+      ).toBe(false);
 
       // ac-uncooperative-process-stop-is-bounded: helper must reach
       // a bounded outcome. 6s is generous for slow CI without masking

@@ -748,84 +748,16 @@ describe(
   },
 );
 
-/**
- * Selective expected-failure helper for the bounded process-stop bug in
- * `killChildScoped` (tests/helpers/daemon.ts): the helper resolves from
- * the graceful-timer callback synchronously after `child.kill("SIGKILL")`,
- * before libuv has fired the child's 'exit' event. The parent handle
- * still has `exitCode === null` and `signalCode === null` at that moment.
- *
- * Bug-shape differentiator: handle has BOTH exitCode and signalCode null
- * after stop() returns. After the fix, at least one is non-null.
- *
- * Behavior:
- *  1. Run the post-fix assertion (handle has observed exit).
- *  2. If it throws today (expected pre-fix), re-assert the EXACT bug
- *     shape: BOTH exitCode AND signalCode are null. A different failure
- *     mode (e.g. child already exited cooperatively) re-throws and fails
- *     the test, preserving selectivity.
- *  3. If it succeeds (post-fix), throw an explicit "remove this wrapper"
- *     sentinel so the implementation task is forced to inline the
- *     assertion and delete the helper as part of the fix.
- *
- * The wrapper is intentionally bug-shape-specific (killChildScoped's
- * timer-callback resolution only) — remove when the helper fix lands.
- */
-function expectKillChildScopedMissesExitObservation(child: ChildProcess): void {
-  let postFixSucceeded = false;
-  try {
-    expect(
-      child.exitCode !== null || child.signalCode !== null,
-      "post-fix: stop() must not resolve until child exit observed " +
-        `(exitCode=${child.exitCode} signalCode=${child.signalCode})`,
-    ).toBe(true);
-    postFixSucceeded = true;
-  } catch (postFixError) {
-    // Selective re-assertion of the EXACT current bug shape. If exit
-    // happened to fire before this check (e.g. cooperative child, fast
-    // CI), only ONE of exitCode/signalCode would be non-null and the
-    // re-assertion would fail — propagating a real failure.
-    expect(
-      child.exitCode === null && child.signalCode === null,
-      `bug-shape mismatch: pre-fix expects both exitCode AND signalCode null on the handle, but exitCode=${child.exitCode} signalCode=${child.signalCode}. Underlying assertion: ${
-        postFixError instanceof Error ? postFixError.message : String(postFixError)
-      }`,
-    ).toBe(true);
-    return;
-  }
-  if (postFixSucceeded) {
-    throw new Error(
-      "STAGED REGRESSION CLOSED: killChildScoped now observes child exit " +
-        "before resolving. Inline the post-fix assertion and remove " +
-        "expectKillChildScopedMissesExitObservation from " +
-        "tests/helpers/daemon.test.ts. See " +
-        "@task-implement-bounded-process-stop-primitives.",
-    );
-  }
-}
-
 describe(
   "startTestDaemon stop() observes termination before return",
   { timeout: 30_000 },
   () => {
-    // STAGED REGRESSION (selective expected-failure via
-    // expectKillChildScopedMissesExitObservation): documents the
-    // bounded-stop bug in killChildScoped while keeping the required
-    // suite green so this task can merge ahead of the helper fix in
-    // @task-implement-bounded-process-stop-primitives.
-    //
-    // Pre-fix: killChildScoped resolves from the graceful-timer
-    // callback synchronously after kill("SIGKILL"), before the child's
-    // 'exit' event fires. The wrapper catches the failing post-fix
-    // assertion and re-asserts the bug shape (both exitCode AND
-    // signalCode null). Post-fix: helper observes exit before resolving;
-    // wrapper throws "remove this wrapper" sentinel, forcing the
-    // implementation task to inline the assertion.
-    //
-    // bare `it.fails()` is rejected as too permissive (@01KR3ZR8):
-    // any thrown assertion satisfies the marker. The selective wrapper
-    // (@01KR431R) re-asserts the EXACT current bug shape so an
-    // unrelated failure mode propagates as a real failure.
+    // killChildScoped (tests/helpers/daemon.ts) now routes through the
+    // shared bounded process-stop primitive: SIGTERM, wait for observed
+    // exit on the handle (exitCode OR signalCode non-null OR 'exit' event
+    // fired), escalate to SIGKILL on graceful timeout, wait again for
+    // observed exit. Cleanup never resolves while the child is still
+    // observably running.
     // AC: @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return
     // AC: @daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded
     // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
@@ -906,18 +838,15 @@ describe(
         await started.stop();
         const elapsed = Date.now() - stopStartedAt;
 
-        // ac-stop-observes-termination-before-return — selective
-        // expected-failure: pre-fix asserts the bug shape (BOTH
-        // exitCode AND signalCode null because killChildScoped resolved
-        // from the timer callback before libuv fired the exit event);
-        // post-fix asserts the contract (exit observed on the handle)
-        // and forces wrapper removal. The pid-liveness check is racy
-        // pre-fix (kernel may or may not have actually delivered the
-        // queued SIGKILL by the time we probe) and is therefore not
-        // part of the bug shape — handle observation is the only
-        // deterministic differentiator. See
-        // expectKillChildScopedMissesExitObservation above.
-        expectKillChildScopedMissesExitObservation(started.child);
+        // ac-stop-observes-termination-before-return: stop() resolves
+        // only after exit has been observed on the parent handle. At
+        // least one of exitCode / signalCode is non-null — signalCode
+        // alone counts because the synth is uncooperative and the
+        // helper escalates to SIGKILL.
+        expect(
+          started.child.exitCode !== null || started.child.signalCode !== null,
+          `stop() must not resolve until child exit observed (exitCode=${started.child.exitCode} signalCode=${started.child.signalCode})`,
+        ).toBe(true);
 
         // ac-uncooperative-process-stop-is-bounded: helper must reach
         // a bounded outcome. 15s is generous enough for slow CI
