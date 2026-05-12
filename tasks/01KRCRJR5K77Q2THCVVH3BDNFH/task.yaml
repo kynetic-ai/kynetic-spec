@@ -54,7 +54,7 @@ description: >
 spec_ref: "@daemon-test-teardown-boundedness"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -67,8 +67,8 @@ review_ref: "@01KRE691AAV7C7RF3YRDKZ86RX"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-add-bounded-process-stop-contract-tests/01krcrjr
-  captured_at: 2026-05-12T02:05:39.664Z
-  commit: 0d1ebb5f7abec74f141ccfbbcb0cae66dac9ef2d
+  captured_at: 2026-05-12T14:09:02.238Z
+  commit: b5c4b4ba6dc76ef086dd98cdd43abba332dd00e8
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-add-bounded-process-stop-contract-tests/01krcrjr
@@ -267,9 +267,36 @@ history:
         previous: 2026-05-12T02:05:38.054Z
     command: task-start
     timestamp: 2026-05-12T14:08:58.884Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-bounded-process-stop-contract-tests/01krcrjr
+          captured_at: 2026-05-12T14:09:02.238Z
+          commit: b5c4b4ba6dc76ef086dd98cdd43abba332dd00e8
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-add-bounded-process-stop-contract-tests/01krcrjr
+        previous:
+          review_url: null
+          branch: dispatch/task/task-add-bounded-process-stop-contract-tests/01krcrjr
+          captured_at: 2026-05-12T02:05:39.664Z
+          commit: 0d1ebb5f7abec74f141ccfbbcb0cae66dac9ef2d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-add-bounded-process-stop-contract-tests/01krcrjr
+      submitted_at:
+        new: 2026-05-12T14:09:02.243Z
+        previous: 2026-05-12T02:05:39.666Z
+    command: task-submit
+    timestamp: 2026-05-12T14:09:02.244Z
 prior_status: null
 created_at: 2026-05-12T00:14:54.131Z
 started_at: 2026-05-12T14:08:58.883Z
-submitted_at: 2026-05-12T02:05:39.666Z
+submitted_at: 2026-05-12T14:09:02.243Z
 todos: []
 automation: eligible
