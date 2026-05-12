@@ -203128,6 +203128,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T05:53:57.445Z
+      - _ulid: 01KRDCT0YQWQXSDNXGZHQT82E8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRDCSZJ1SD75Z7SGA2VQ3ZQP
+        timestamp: 2026-05-12T06:08:24.023Z
     examined_commit: 0eb6b62cc0ae567d1814d73cf552c720279f7510
     external_links: []
     lifecycle_state: open
@@ -203137,8 +203144,32 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRDCSZJ1SD75Z7SGA2VQ3ZQP
+        anchor:
+          type: code
+          commit: 0eb6b62cc0ae567d1814d73cf552c720279f7510
+          line_end: 1048
+          line_start: 1039
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KRDCSZJ1KRAJ0QZJ1FT3CBEW
+            author: Jacob Chapel
+            body: 'MUST-FIX: parameter-bound cleanup helpers are still credited by name even when the local
+              binding is a no-op. `findLocalHelperDefinition()` detects an enclosing parameter named
+              `killPid` and returns `null`, but `isTrustedHelperByOrigin()` then falls through to
+              approved-import/free-identifier trust instead of rejecting the shadowing local
+              binding. I reproduced this with a synthetic test where `it(..., (killPid = (_pid) =>
+              {}) => { runKspec("serve start --detach"); onTestFinished(() => killPid(pid));
+              expect(true).toBe(true); })`; `npx oxlint` reported 0 `no-leaky-test-daemon` errors.
+              That violates `@daemon-test-guardrail-precision` ac-cleanup-helper-origin-is-trusted
+              and ac-cleanup-probes-do-not-count because the cleanup callback invokes a locally
+              supplied no-op helper, not an approved import or an inspectable terminating helper
+              body.'
+            created_at: 2026-05-12T06:08:22.593Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T05:53:35.177Z
-    updated_at: 2026-05-12T05:53:56.085Z
+    updated_at: 2026-05-12T06:08:22.593Z
     notes: []
