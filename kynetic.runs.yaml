@@ -47274,7 +47274,7 @@ runs:
     completed_at: 2026-05-12T15:34:05.914Z
   - _ulid: 01KREFBKDT5ZE7388GAEDWGD9Z
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47308,7 +47308,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-12T16:14:32.036Z
-        completed_at: 2026-05-12T16:14:32.036Z
+        completed_at: 2026-05-12T16:15:08.525Z
+        notes: "Proposed improvement: add a small/medium guardrail for dropped async cleanup promises in
+          test lifecycle callbacks. It would scan or lint for block-bodied
+          onTestFinished/afterEach-style callbacks that call known Promise-returning cleanup helpers
+          without returning or awaiting them. This would catch exactly the regression found in
+          review when killPid changed from void to Promise<void>. Workflow UX defaulting is already
+          covered by @01KKBD52, so no new proposal there."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-12T16:15:08.525Z
+        completed_at: 2026-05-12T16:15:08.525Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T16:12:11.578Z
