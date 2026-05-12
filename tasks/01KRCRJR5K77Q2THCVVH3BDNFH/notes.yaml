@@ -148,3 +148,58 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T13:48:46.611Z
+  - _ulid: 01KRE89K4T3NGB3XV92VG7PYKP
+    content: >-
+      Fix cycle 2: resolved merge conflicts with dev to unblock detached merge helper.
+
+
+      Background: my approved snapshot (0d1ebb5f) could not be merged into dev (d7713212c) — dev had
+      advanced with two adjacent regression suites that touched the same files in
+      tests/helpers/daemon.test.ts and tests/helpers/mock-daemon.test.ts:
+
+      - setup-failure cleanup and primary-error preservation regressions (in daemon.test.ts)
+
+      - active-request teardown and bounded-observation regressions (in mock-daemon.test.ts)
+
+
+      Action: merged origin/dev into the canonical branch (b5c4b4ba6). The conflicts were additive —
+      both branches appended new describe blocks in the same spot. Resolved by keeping ALL describe
+      blocks from both sides:
+
+
+      daemon.test.ts (1176 lines, was 933):
+
+      - KEPT: expectKillChildScopedMissesExitObservation helper + `startTestDaemon stop() observes
+      termination before return` describe (mine)
+
+      - KEPT: `createTestDaemonProject setup-failure cleanup` describe (dev)
+
+      - KEPT: `startTestDaemon readiness failure preserves primary error when stop also fails`
+      describe (dev)
+
+      - Imports unioned: chmodSync/writeFileSync (mine) + readdirSync/rmSync/tmpdir/basename (dev) +
+      CreateTestDaemonProjectStage type (dev).
+
+
+      mock-daemon.test.ts (1019 lines, was 739):
+
+      - KEPT: expectMockDaemonStopLeaksPid helper + `mock daemon helper — bounded child stop
+      contract` describe (mine)
+
+      - KEPT: `mock daemon helper — active-request teardown contract` describe (dev)
+
+
+      cli-serve.test.ts: auto-merged cleanly (no conflicts).
+
+
+      Verified: TypeScript compiles cleanly (npx tsc --noEmit). Focused slice (mise exec -- npm test
+      -- --fresh tests/helpers/daemon.test.ts tests/helpers/mock-daemon.test.ts
+      tests/cli-serve.test.ts) — 82 tests pass. Full suite: 9086 passed, 5 skipped, 0 failed.
+
+
+      No behavioral changes — all selective expected-failure wrappers and AC annotations from cycle
+      1 are preserved exactly. The merge is purely additive: my bounded-stop regressions sit
+      alongside dev's adjacent setup-failure/primary-error/active-request regressions.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T14:08:45.722Z
