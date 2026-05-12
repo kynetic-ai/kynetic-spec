@@ -204949,6 +204949,21 @@ reviews:
         runner: npm
         created_at: 2026-05-12T16:09:36.961Z
         completed_at: 2026-05-12T16:09:36.961Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/helpers/process-stop.ts, tests/helpers/daemon.ts,
+          tests/helpers/mock-daemon.ts, tests/cli-serve.test.ts, tests/helpers/daemon.test.ts,
+          tests/helpers/mock-daemon.test.ts. Commands: git diff --stat/name-status, git diff
+          --check, rg AC annotations, rg killPid call sites. Claims verified: shared primitive
+          observes signalCode/exit events and target tests cover relevant ACs. Categories searched:
+          correctness, cleanup edge cases, error handling, test quality, integration."
+        name: diff and AC review
+        required: false
+        runner: reviewer
+        created_at: 2026-05-12T16:09:41.013Z
+        completed_at: 2026-05-12T16:09:41.013Z
     events:
       - _ulid: 01KREEADWJGYC6D3Q0W0G7HHA4
         actor: Jacob Chapel
@@ -204977,6 +204992,13 @@ reviews:
           status: pass
           name: targeted daemon stop slice
         timestamp: 2026-05-12T16:09:38.399Z
+      - _ulid: 01KREF71T28PE13G19EFBYTJA8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: diff and AC review
+        timestamp: 2026-05-12T16:09:42.466Z
     examined_commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
     external_links: []
     lifecycle_state: open
@@ -204989,5 +205011,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T15:54:04.568Z
-    updated_at: 2026-05-12T16:09:36.961Z
+    updated_at: 2026-05-12T16:09:41.013Z
     notes: []
