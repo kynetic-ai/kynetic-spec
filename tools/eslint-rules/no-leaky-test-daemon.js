@@ -275,6 +275,23 @@ const APPROVED_HELPER_IMPORT_PATH_PATTERNS = [
  *     start of the enclosing scope (`function killPid(p) {
  *     process.kill(p, "SIGTERM"); }` declared anywhere in the block
  *     is callable from every statement in that block).
+ *
+ *   - `for`-statement init bindings, `for-of`/`for-in` left bindings,
+ *     and `catch` clause params. These shapes bind `name` in scopes
+ *     the original walker (function params + Block/Program statement
+ *     lists) did not visit, so a `for (const killPid = (_p) => {};
+ *     ...) { ...; onTestFinished(() => killPid(pid)); ... }`, `for
+ *     (const killPid of [(_p) => {}]) { ... }`, or `catch (killPid)
+ *     { ... }` use site previously fell through to free-identifier
+ *     trust. A catch param receives an exception value the rule
+ *     cannot inspect; the for-statement init runs once but binds in
+ *     the loop's own scope (not the body block) and even a
+ *     terminating-shaped init is too unusual to credit; the
+ *     for-of/for-in left rebinds on every iteration. All three are
+ *     classified as opaque so the use site is rejected. This was the
+ *     cycle-6 reviewer blocker on
+ *     `@daemon-test-guardrail-precision`
+ *     `ac-cleanup-helper-origin-is-trusted`.
  */
 const LOCAL_BINDING_OPAQUE = Symbol("local-binding-opaque");
 
@@ -1151,6 +1168,57 @@ const noLeakyTestDaemon = {
             if (patternBindsName(param, name)) return LOCAL_BINDING_OPAQUE;
           }
         }
+        // CatchClause param: `try { ... } catch (killPid) { ...
+        // onTestFinished(() => killPid(pid)); ... }`. The catch param
+        // receives the thrown value, which is opaque to static analysis
+        // (typically an Error instance, never a terminating primitive).
+        // Returning the sentinel routes the use site to the explicit
+        // reject branch in `isTrustedHelperByOrigin` instead of letting
+        // it fall through to the free-identifier conservative-trust
+        // path. Destructuring patterns (`catch ({ killPid }) { ... }`,
+        // `catch ([killPid]) { ... }`) are recognised through the
+        // shared `patternBindsName` predicate.
+        if (
+          current.type === "CatchClause" &&
+          current.param &&
+          patternBindsName(current.param, name)
+        ) {
+          return LOCAL_BINDING_OPAQUE;
+        }
+        // ForStatement init: `for (const killPid = ...; ...; ...) {
+        // ...; onTestFinished(() => killPid(pid)); ... }`. The init's
+        // VariableDeclaration binds `name` in the for-statement's own
+        // scope, NOT in any enclosing BlockStatement. Without this
+        // branch the binding is invisible and the use site falls
+        // through to free-identifier trust. Even a terminating-shaped
+        // function init in this position is too unusual to credit —
+        // the canonical safe helper shape is a top-level
+        // FunctionDeclaration or a block-level declarator handled by
+        // `matchHelperDefinitionInStatement`. Returning OPAQUE keeps
+        // the rule conservative.
+        if (
+          current.type === "ForStatement" &&
+          current.init &&
+          forStatementInitBindsName(current.init, name)
+        ) {
+          return LOCAL_BINDING_OPAQUE;
+        }
+        // ForOfStatement / ForInStatement left binding: `for (const
+        // killPid of [...]) { ...; onTestFinished(() => killPid(pid));
+        // ... }`. The left binding is rebound on every iteration; even
+        // if one of the iterated values were a terminating primitive,
+        // the rule cannot statically prove which iteration's value is
+        // captured by the cleanup closure. Pre-fix the walker missed
+        // these shapes entirely. Treat the binding as opaque to keep
+        // the rule conservative.
+        if (
+          (current.type === "ForOfStatement" ||
+            current.type === "ForInStatement") &&
+          current.left &&
+          forXLeftBindsName(current.left, name)
+        ) {
+          return LOCAL_BINDING_OPAQUE;
+        }
         let statements = null;
         if (current.type === "Program" && Array.isArray(current.body)) {
           statements = current.body;
@@ -1760,6 +1828,42 @@ const noLeakyTestDaemon = {
           }
         }
         return false;
+      }
+      return false;
+    }
+
+    /**
+     * True when a `ForStatement`'s `init` (a VariableDeclaration with
+     * `let`/`const`/`var` declarators, e.g. `for (const killPid = (_p)
+     * => {}; ...; ...)`) declares the helper `name`. Used by
+     * `findLocalHelperDefinition` to recognise the for-init binding
+     * scope, which is distinct from any enclosing BlockStatement. Bare
+     * non-VariableDeclaration inits (e.g. `for (i = 0; ...; ...)`)
+     * cannot introduce a NEW local binding — they assign to an outer
+     * one — so they are skipped here and the parent walk continues.
+     */
+    function forStatementInitBindsName(init, name) {
+      if (!init || init.type !== "VariableDeclaration") return false;
+      for (const decl of init.declarations || []) {
+        if (decl && decl.id && patternBindsName(decl.id, name)) return true;
+      }
+      return false;
+    }
+
+    /**
+     * True when a `ForOfStatement`/`ForInStatement`'s `left` (a
+     * VariableDeclaration like `const killPid` in `for (const killPid
+     * of [...])`) declares the helper `name`. Used by
+     * `findLocalHelperDefinition` to recognise the per-iteration left
+     * binding scope. Bare LValue lefts (e.g. `for (killPid of arr)`)
+     * assign to an existing outer binding rather than introducing a
+     * new local; they are skipped here so the parent walk can resolve
+     * the actual declaration upstream.
+     */
+    function forXLeftBindsName(left, name) {
+      if (!left || left.type !== "VariableDeclaration") return false;
+      for (const decl of left.declarations || []) {
+        if (decl && decl.id && patternBindsName(decl.id, name)) return true;
       }
       return false;
     }

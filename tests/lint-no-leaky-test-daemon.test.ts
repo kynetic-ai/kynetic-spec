@@ -2105,6 +2105,199 @@ const killPid = (p: number): void => process.kill(p, "SIGTERM");
       expect(result.output).toContain("no-leaky-test-daemon");
       expect(result.output).toContain("has no scoped cleanup registration");
     });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-7 reviewer probe (ForStatement init binds helper name to a
+    // no-op arrow): `for (const killPid = (_p) => {}; true; ) {
+    // runKspec("serve start --detach"); ...; onTestFinished(() =>
+    // killPid(pid)); ... break; }`. The init's VariableDeclaration
+    // binds `killPid` in the for-statement's own scope, not in the
+    // enclosing BlockStatement, so pre-fix the parent-walk visited
+    // function params and Block/Program statement lists only, missed
+    // the binding entirely, and the use site fell through to
+    // free-identifier conservative-trust. The fix recognises the
+    // ForStatement.init binding and returns LOCAL_BINDING_OPAQUE — even
+    // a terminating-shaped init in this shape is too unusual to credit
+    // here; the canonical safe helper is a top-level FunctionDeclaration
+    // or block-level declarator.
+    it("should flag serve start --detach when cleanup helper is bound by a ForStatement init to a no-op arrow", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    for (const killPid = (_p: number) => {}; true; ) {
+      runKspec("serve start --detach --port 3456");
+      const pid = readPidFromFile();
+      onTestFinished(() => killPid(pid));
+      expect(true).toBe(true);
+      break;
+    }
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-7 variant (ForStatement init with terminating-shaped arrow):
+    // the same ForStatement.init binding shape, but the init is a
+    // terminating-shaped arrow `(p) => process.kill(p, "SIGTERM")`. The
+    // rule still rejects because the for-init binding scope is unusual
+    // enough that the conservative LOCAL_BINDING_OPAQUE classification
+    // applies regardless of the init shape. Tests pinning this behavior
+    // prevent a regression where the for-init branch silently accepts a
+    // terminating-shaped init while the no-op variant is rejected — the
+    // two would diverge on init shape, exactly the gap
+    // ac-cleanup-helper-origin-is-trusted prohibits.
+    it("should flag serve start --detach when cleanup helper is bound by a ForStatement init to a terminating arrow", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    for (const killPid = (p: number) => process.kill(p, "SIGTERM"); true; ) {
+      runKspec("serve start --detach --port 3456");
+      const pid = readPidFromFile();
+      onTestFinished(() => killPid(pid));
+      expect(true).toBe(true);
+      break;
+    }
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-7 reviewer probe (ForOfStatement left binds helper name to
+    // a no-op arrow): `for (const killPid of [(_p) => {}]) { ... }`. The
+    // left binding is a VariableDeclaration on the for-of statement, not
+    // on the body block, so the pre-fix walker missed the binding and
+    // the use site fell through to free-identifier trust. The for-of
+    // left rebinds on every iteration; even if one of the iterated
+    // values were a terminating primitive the rule cannot prove which
+    // iteration's value is captured by the cleanup closure. Classified
+    // as opaque so the use site is rejected.
+    it("should flag serve start --detach when cleanup helper is bound by a ForOfStatement left binding", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    for (const killPid of [(_p: number) => {}]) {
+      runKspec("serve start --detach --port 3456");
+      const pid = readPidFromFile();
+      onTestFinished(() => killPid(pid));
+      expect(true).toBe(true);
+      break;
+    }
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-7 variant (ForInStatement left binding): symmetric to the
+    // for-of probe. `for (const killPid in { kill: (_p) => {} }) { ... }`
+    // — `killPid` is rebound to each enumerable property name on every
+    // iteration, so even if the iterated value were callable the binding
+    // value at teardown time is a string (the property key), which would
+    // throw at call time. Classified as opaque on the same grounds as
+    // the for-of variant.
+    it("should flag serve start --detach when cleanup helper is bound by a ForInStatement left binding", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    for (const killPid in { kill: (_p: number) => {} }) {
+      runKspec("serve start --detach --port 3456");
+      const pid = readPidFromFile();
+      onTestFinished(() => killPid(pid));
+      expect(true).toBe(true);
+      break;
+    }
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-7 reviewer probe (CatchClause param binds helper name):
+    // `try { ... } catch (killPid) { runKspec("serve start --detach"); ...
+    // onTestFinished(() => killPid(pid)); ... }`. The catch param
+    // receives whatever value was thrown — typically an Error instance,
+    // never a terminating primitive — and the rule cannot prove the
+    // runtime value satisfies cleanup. Pre-fix the walker missed the
+    // CatchClause binding entirely. Classified as opaque so the use
+    // site is rejected.
+    it("should flag serve start --detach when cleanup helper is bound by a CatchClause param", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    try {
+      throw new Error("boom");
+    } catch (killPid: any) {
+      runKspec("serve start --detach --port 3456");
+      const pid = readPidFromFile();
+      onTestFinished(() => killPid(pid));
+      expect(true).toBe(true);
+    }
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-7 variant (CatchClause destructured param): `catch ({
+    // killPid }) { ... }`. ObjectPattern destructuring binds `killPid`
+    // from a property of the caught value. The shared `patternBindsName`
+    // predicate recognises the destructure binding so the CatchClause
+    // branch in `findLocalHelperDefinition` still classifies the use
+    // site as opaque.
+    it("should flag serve start --detach when cleanup helper is bound by a CatchClause object-destructure param", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    try {
+      throw { killPid: (_p: number) => {} };
+    } catch ({ killPid }: any) {
+      runKspec("serve start --detach --port 3456");
+      const pid = readPidFromFile();
+      onTestFinished(() => killPid(pid));
+      expect(true).toBe(true);
+    }
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {
@@ -2239,6 +2432,64 @@ describe("test suite", () => {
     const pid = readPidFromFile();
     onTestFinished(() => killPid(pid));
     expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-7 negative companion: a for-of loop whose left binding is
+    // an UNRELATED name (`item`, not `killPid`) does not shadow the
+    // approved `killPid` import from `./helpers/daemon`. The parent
+    // walk visits the ForOfStatement and finds the binding does not
+    // match the target name, so the lookup continues up to the
+    // approved import and the use site is credited. Pre-fix this case
+    // also passed (the for-of binding scope was simply skipped); the
+    // fix must preserve that behavior — only matching bindings should
+    // be classified as opaque.
+    it("should allow serve start --detach when an unrelated for-of binding precedes the registration", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    for (const item of [1, 2, 3]) {
+      runKspec("serve start --detach --port 3456");
+      const pid = readPidFromFile();
+      onTestFinished(() => killPid(pid));
+      expect(item).toBe(item);
+      break;
+    }
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-7 negative companion: a catch clause whose param is an
+    // UNRELATED name (`err`, not `killPid`) does not shadow the
+    // approved `killPid` import. The CatchClause branch in the walker
+    // checks the param against the target name; a non-match falls
+    // through and the approved import resolves the use site. Mirror
+    // of the unrelated-for-of-binding probe.
+    it("should allow serve start --detach when an unrelated catch param precedes the registration", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    try {
+      runKspec("serve start --detach --port 3456");
+      const pid = readPidFromFile();
+      onTestFinished(() => killPid(pid));
+      expect(true).toBe(true);
+    } catch (err: unknown) {
+      // unrelated error binding
+    }
   });
 });
 `);
