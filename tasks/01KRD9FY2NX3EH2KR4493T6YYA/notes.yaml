@@ -1,1 +1,28 @@
-notes: []
+notes:
+  - _ulid: 01KRDKNRSGAW1JG1BR38GYRVRV
+    content: >-
+      Root cause: fs.writeFile(pidFile, marker) is not JS-atomic — internally it calls open(O_TRUNC)
+      → write → close, each as an awaited libuv operation. While the writeFile is pending, a
+      concurrent same-process staleness check could read the pid file BETWEEN open (which truncates)
+      and write, see empty content, parse pid as NaN, fall through to the 'corrupt pid file' branch
+      in checkStaleLock that returns stale=true, then rm the lockDir and acquire its own lock. That
+      let two callers enter the critical section together, losing an increment.
+
+
+      Reproduced the race with a standalone harness driving the same 5-worker contention as
+      tests/file-lock.test.ts:179 — saw 1 failure in 200 runs at baseline.
+
+
+      Fix: publish pidFile atomically via temp + rename. fs.writeFile to pid.tmp.<uuid> in the
+      lockDir, then fs.rename to pid. Rename is atomic on POSIX, so concurrent readers either see
+      ENOENT (notStale via existing catch) or the complete marker. On writeFile/rename error, rm the
+      lockDir so we don't leave a stuck lock with no pid file.
+
+
+      Verified: 500 passes/500 at 10 same-process workers via repro; vitest concurrent-writes test
+      passed 100/100 consecutive runs; full file-lock suite passed 20/20; full npm test --fresh
+      passed (9072 passed, 5 skipped). No spec changes — this fixes a bug that violated the existing
+      serialization contract from @scoped-dispatch-shadow-serialization.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T08:08:24.624Z
