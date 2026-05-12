@@ -3456,3 +3456,17 @@ inbox:
       - fix-cycle
     added_by: Jacob Chapel
     created_at: 2026-05-12T13:55:24.750Z
+  - _ulid: 01KREM81RMR9X7W220WT6DW48F
+    text: Custom oxlint rule (or similar enforcement) for daemon-facing bare fetch() in tests. The
+      project already has a custom no-source-scanning rule (@01KMF7SG832M4PW4C1GJX4AFM7) as
+      precedent. After fixing 8+ bare fetch sites in tests/cli-serve.test.ts plus
+      tests/e2e/fixtures/test-base.ts to use boundedDaemonFetch, the only remaining guard against
+      regression is review. A lint rule that flags fetch(`${daemonEndpoint.apiUrl}/...`) /
+      fetch(`http://127.0.0.1:${port}/...`) without a bounded signal would be defense-in-depth.
+    tags:
+      - testing
+      - daemon
+      - lint
+      - post-mvp
+    added_by: "@claude"
+    created_at: 2026-05-12T17:37:38.068Z

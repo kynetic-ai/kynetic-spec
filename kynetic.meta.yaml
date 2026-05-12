@@ -18489,6 +18489,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-12T17:09:22.425Z
+  - _ulid: 01KREM81W17WNDAX34QJ8HSQBC
+    type: success
+    content: "The FAILING-BEFORE-FIX it.fails pattern from
+      @task-add-active-request-bounded-observation-regressions worked exactly as designed: the
+      regression task landed staged tests that documented the gap (it.fails wrappers + clear
+      comments), and the fix task could flip them to it() while rewriting bodies to lock the new
+      helper contract. Three flip sites — in-process stop() bounded teardown, AbortSignal.timeout
+      pattern, and bare-fetch regressions — all converted cleanly. Pattern worth replicating for
+      future paired contract-then-fix task pairs."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T17:37:38.177Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
