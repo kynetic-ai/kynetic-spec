@@ -18520,6 +18520,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-12T18:08:10.136Z
+  - _ulid: 01KREQEJB6VCEXM55DB4TZ0ZEF
+    type: friction
+    content: Session reflection gate guidance only lists completed tasks, code changes, and recent
+      commits as meaningful-work signals. Reviewer-only sessions can still produce substantive
+      durable work through review records, required checks, verdicts, blocker threads, and task
+      transitions such as pending_review to needs_work; the reflection gate should explicitly count
+      those review artifacts so reviewer sessions are not skipped.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-12T18:33:37.382Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
