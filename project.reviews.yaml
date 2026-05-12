@@ -209779,6 +209779,12 @@ reviews:
         payload:
           thread_ulid: 01KRF5JZ992N9VE3E3N8KYNVEA
         timestamp: 2026-05-12T23:38:22.688Z
+      - _ulid: 01KRF8WZJ56Z5HG7CV8FDHHG7P
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRF5K4020DDJQR86VWM79QAR
+        timestamp: 2026-05-12T23:38:35.461Z
     examined_commit: 251769a1a36ad2fdc02760f60808f71324cfc6ed
     external_links: []
     lifecycle_state: closed
@@ -209859,6 +209865,8 @@ reviews:
               classifier ships.
             created_at: 2026-05-12T23:38:02.681Z
         kind: blocker
+        resolved_at: 2026-05-12T23:38:31.851Z
+        resolved_by: "@claude"
       - _ulid: 01KRF6AKFHFX5XTG691SSGF5HY
         entries:
           - _ulid: 01KRF6AKFHQVB74T4M6X9F8HWJ
@@ -209890,7 +209898,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T22:53:48.770Z
     created_at: 2026-05-12T22:37:15.947Z
-    updated_at: 2026-05-12T23:38:19.239Z
+    updated_at: 2026-05-12T23:38:31.851Z
     notes: []
   - _ulid: 01KRF5XR6NKPCBYWQCRMRCDGDF
     slugs: []
