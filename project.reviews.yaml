@@ -202634,6 +202634,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T04:58:44.647Z
+      - _ulid: 01KRD9GVB1MXMEHX3RRBDWBDWX
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRD9GSVR7V8YYZSCHYDXG0J7
+        timestamp: 2026-05-12T05:10:57.633Z
     examined_commit: 40336586e664d485ab1c0a212b94aa7eece9db0d
     external_links: []
     lifecycle_state: open
@@ -202643,8 +202650,30 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRD9GSVR7V8YYZSCHYDXG0J7
+        anchor:
+          type: code
+          commit: 40336586e664d485ab1c0a212b94aa7eece9db0d
+          line_end: 684
+          line_start: 665
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KRD9GSVSFEHB8SVY1TWDR7QV
+            author: Jacob Chapel
+            body: 'MUST-FIX: Local helper body trust ignores the actual helper call arguments.
+              `isTerminatingKillSignalArg(..., ownerFn)` treats `process.kill(pid, signal)` as
+              terminating when `signal` has a default like `"SIGTERM"`, but
+              `isTrustedHelperByOrigin` then trusts every call to that helper without checking
+              whether the cleanup call overrides the signal. I verified this fixture produces 0
+              no-leaky-test-daemon diagnostics: `function killPid(pid, signal = "SIGTERM") {
+              process.kill(pid, signal); } ... onTestFinished(() => killPid(pid, "SIGUSR1"))`. That
+              cleanup sends a non-terminating signal and leaves the daemon running, so it violates
+              `ac-cleanup-probes-do-not-count` and `ac-cleanup-operation-terminates-daemon`.'
+            created_at: 2026-05-12T05:10:56.121Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T04:58:17.412Z
-    updated_at: 2026-05-12T04:58:43.281Z
+    updated_at: 2026-05-12T05:10:56.121Z
     notes: []
