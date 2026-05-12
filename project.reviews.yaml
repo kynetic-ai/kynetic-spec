@@ -207805,7 +207805,72 @@ reviews:
     slugs: []
     title: Review setup-failure cleanup preservation cycle 2
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/helpers/daemon.test.ts tests/e2e-fixture-daemon-cleanup.test.ts
+          passed: 18 suites, 30 tests."
+        name: focused daemon cleanup regressions
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T19:55:51.093Z
+        completed_at: 2026-05-12T19:55:51.093Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full fresh suite passed: 2432 suites, 9088 passed, 5 skipped of 9093. Log:
+          /tmp/kspec-test-cache/01KREV5H2RRCRCTDFKS9NRDHM4/8a43f767b096f6f0.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T19:55:54.758Z
+        completed_at: 2026-05-12T19:55:54.758Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema/references OK. Warnings are repo-wide pre-existing validation warnings outside this
+          task; --warnings-ok exited 0.
+        name: kspec validate --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-12T19:55:58.334Z
+        completed_at: 2026-05-12T19:55:58.334Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run build:e2e passed with existing Svelte warnings; npx playwright test
+          tests/e2e/smoke.spec.ts passed 6/6.
+        name: build:e2e + smoke
+        required: true
+        runner: npm/playwright
+        created_at: 2026-05-12T19:56:02.006Z
+        completed_at: 2026-05-12T19:56:02.006Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md; tests/helpers/daemon.ts;
+          tests/e2e/fixtures/daemon-fixture.ts; tests/e2e/fixtures/test-base.ts;
+          tests/helpers/daemon.test.ts; tests/e2e-fixture-daemon-cleanup.test.ts; related daemon
+          fixture tests and specs. Commands run: kspec task get; kspec item get
+          @daemon-test-teardown-boundedness @e2e-test-daemon-isolation
+          @daemon-backed-test-fixture-contract; git diff/log/show; rg AC/source-scan checks; kspec
+          validate; kspec validate --warnings-ok; npm test -- --fresh focused daemon files; npm test
+          -- --fresh; npm run build:e2e; npx playwright test tests/e2e/smoke.spec.ts. Claims
+          verified: cycle-1 blocker fixes now have dual-failure behavioral regressions for
+          createTestDaemonProject and acquirePlaywrightFixtureResources; full suite and smoke pass.
+          Categories searched: correctness, setup cleanup, cleanup-error preservation,
+          readiness/startup/test-body paths, AC coverage, source-scanning test risk, integration."
+        name: review evidence log
+        required: true
+        runner: codex-review
+        created_at: 2026-05-12T19:56:05.861Z
+        completed_at: 2026-05-12T19:56:05.861Z
     events:
       - _ulid: 01KREV7BVBYF9VN8HHCXM3P1WY
         actor: Jacob Chapel
@@ -207820,9 +207885,60 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T19:40:10.708Z
+      - _ulid: 01KREW55T3RWSQ0WMRTV3XA03F
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused daemon cleanup regressions
+        timestamp: 2026-05-12T19:55:52.515Z
+      - _ulid: 01KREW599Y8495K14D88YJ5YYR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-12T19:55:56.094Z
+      - _ulid: 01KREW5CW8J7GHPDC6H1S6TNAF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-05-12T19:55:59.752Z
+      - _ulid: 01KREW5GH61G00VX2CDTQTX9KR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: build:e2e + smoke
+        timestamp: 2026-05-12T19:56:03.494Z
+      - _ulid: 01KREW5M8H7RH2EETVVDVGFTZH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-12T19:56:07.313Z
+      - _ulid: 01KREW5QNGHG83ZN17A1DJB8FV
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-12T19:56:10.800Z
+      - _ulid: 01KREW5QNGP7R0TMZ8G69W5JGS
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T19:56:10.801Z
     examined_commit: 18746c4393cec245e014167b4103313010010d55
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -207830,9 +207946,16 @@ reviews:
       ref: "@01KRCRJSNXN4SS1XJ6DKD4XC46"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T19:56:10.800Z
     created_at: 2026-05-12T19:39:35.660Z
-    updated_at: 2026-05-12T19:40:09.239Z
+    updated_at: 2026-05-12T19:56:10.800Z
     notes: []
   - _ulid: 01KREVDS9XYG0933RSJPPD5WEC
     slugs: []
