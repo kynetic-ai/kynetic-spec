@@ -666,8 +666,9 @@ describe("kspec serve commands", () => {
     const stalePid = stalePidText ? parseInt(stalePidText, 10) : NaN;
     onTestFinished(() => {
       if (Number.isFinite(stalePid) && stalePid > 0) {
-        killPid(stalePid);
+        return killPid(stalePid);
       }
+      return undefined;
     });
 
     // Direct behavioral proof of the fix: nothing should ever come up on
@@ -1326,7 +1327,7 @@ describe("kspec serve commands", () => {
     // cannot reach this daemon. Register cleanup targeting this daemon's PID.
     const pid = parseInt(readTestOutputSync(isolated.daemonPidFilePath, "utf-8").trim(), 10);
     onTestFinished(async () => {
-      killPid(pid);
+      await killPid(pid);
       await cleanupTempDir(emptyTempDir);
     });
 
