@@ -207874,6 +207874,13 @@ reviews:
           kind: question
           thread_ulid: 01KREVGB2Q592C5MJA3WV05GSM
         timestamp: 2026-05-12T19:44:31.483Z
+      - _ulid: 01KREVGW84S7BSW428B8D8XNPC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KREVGTMANPKED46K9QY1DXK5
+        timestamp: 2026-05-12T19:44:47.365Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -207940,7 +207947,25 @@ reviews:
               behavior remains unspecified after those contracts are applied."
             created_at: 2026-05-12T19:44:29.784Z
         kind: question
+      - _ulid: 01KREVGTMANPKED46K9QY1DXK5
+        anchor:
+          type: structured
+          ref: "@task-make-artifact-reconciliation-lease-aware"
+          section: tasks
+        entries:
+          - _ulid: 01KREVGTMB4A597D9WRMXD555Q
+            author: Jacob Chapel
+            body: "SHOULD-FIX: The plan lists many cleanup paths to make lease-aware, but it does not compare
+              that to simpler cleanup policy changes: fail closed when registry state is
+              unavailable, ignore recently-created directories under the dispatch root, skip
+              periodic destructive cleanup while any spawn is in flight, or make periodic cleanup
+              startup-only/manual until bootstrap has a terminal state. These alternatives may
+              prevent the reported ENOENT failure with much less durable state and fewer lifecycle
+              edge cases. Add an alternatives section with explicit rejection criteria, or reduce
+              scope to the smallest cleanup interlock."
+            created_at: 2026-05-12T19:44:45.707Z
+        kind: question
     verdicts: []
     created_at: 2026-05-12T19:43:06.045Z
-    updated_at: 2026-05-12T19:44:29.784Z
+    updated_at: 2026-05-12T19:44:45.707Z
     notes: []
