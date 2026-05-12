@@ -18431,6 +18431,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-12T14:10:13.476Z
+  - _ulid: 01KRE9TA8EHX6AQ4C3533E6NG2
+    type: friction
+    content: During review cycle lookup, `kspec review for-task @01KRCRJR5K77Q2THCVVH3BDNFH` and `kspec
+      review list --task @01KRCRJR5K77Q2THCVVH3BDNFH` omitted prior approved review @01KRE691
+      because that review subject was stored as task:@task-add-bounded-process-stop-contract-tests.
+      Review history lookup should normalize task refs across ULID and slug aliases so per-cycle
+      history is complete.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-12T14:35:22.254Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
