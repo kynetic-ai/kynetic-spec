@@ -207334,3 +207334,29 @@ reviews:
     created_at: 2026-05-12T19:04:52.677Z
     updated_at: 2026-05-12T19:07:13.007Z
     notes: []
+  - _ulid: 01KRESPX6XRWQ5518TX4033ECG
+    slugs: []
+    title: "Plan review: Dispatch Workspace Provisioning Lease Protection (final clean review)"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRESPX6WQ5JW0HM9AFQA7X75
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-12T19:13:07.804Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-dispatch-workspace-provisioning-lease-protection"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-12T19:13:07.805Z
+    updated_at: null
+    notes: []
