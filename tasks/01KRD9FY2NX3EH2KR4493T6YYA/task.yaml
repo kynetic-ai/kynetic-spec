@@ -20,6 +20,7 @@ tags:
   - testing
   - flaky
 vcs_refs: []
+review_ref: "@01KRDM0XWQZYKYC3KWWEM17HZD"
 submission_linkage:
   review_url: null
   branch: dispatch/task/stabilize-flaky-file-lock-concurrent-write-test/01krd9fy
@@ -63,6 +64,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-05-12T08:08:41.725Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KRDM0XWQZYKYC3KWWEM17HZD"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-12T08:14:34.209Z
 created_at: 2026-05-12T05:10:27.668Z
 started_at: 2026-05-12T07:35:14.785Z
 submitted_at: 2026-05-12T08:08:41.725Z
