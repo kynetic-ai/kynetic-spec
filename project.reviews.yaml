@@ -206046,3 +206046,29 @@ reviews:
     created_at: 2026-05-12T17:39:53.987Z
     updated_at: 2026-05-12T17:57:07.898Z
     notes: []
+  - _ulid: 01KREP5N9JN5SJP3QQ01H10BX8
+    slugs: []
+    title: Review setup-failure cleanup preservation
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KREP5N9JA2GBH35YB06NYGCG
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-12T18:11:16.914Z
+    examined_commit: 83237c93fdbddca17934bb1ab429e90324c55649
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRCRJSNXN4SS1XJ6DKD4XC46"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-12T18:11:16.914Z
+    updated_at: null
+    notes: []
