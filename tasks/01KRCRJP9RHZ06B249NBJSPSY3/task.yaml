@@ -1,0 +1,78 @@
+_ulid: 01KRCRJP9RHZ06B249NBJSPSY3
+slugs:
+  - task-add-guardrail-cleanup-effect-regressions
+title: Add adversarial guardrail regressions for cleanup effects
+type: task
+description: >
+  What:
+
+  - Extend `tests/lint-no-leaky-test-daemon.test.ts` and, where the newer
+    harness is the better home, `tests/lint-daemon-test-guardrails.test.ts`
+    with failing-before-fix regression cases for cleanup effect semantics.
+  - Add rejected cases for `onTestFinished(() => process.kill(pid, 0))`,
+    `process.kill(pid, "SIGUSR1")`, `process.kill(pid, "SIGCONT")`, and any
+    other non-terminating or daemon-irrelevant signal literals the rule can
+    statically identify.
+  - Add rejected cases where a local no-op or unrelated helper named
+    `killPid`, `stopDaemon`, or `stopMockDaemon` is called in a cleanup
+    callback but does not invoke an approved terminating cleanup primitive.
+  - Add accepted cases for `process.kill(pid)`, `process.kill(pid,
+    "SIGTERM")`, `process.kill(pid, "SIGKILL")`, and project-approved stop
+    helpers whose origin or body proves they stop the just-started daemon.
+  - Add accepted and rejected cases for child-handle cleanup so
+    `child.kill()` and `child.kill("SIGTERM")` are treated consistently with
+    Node's terminating defaults while `child.kill("SIGUSR1")` remains
+    rejected.
+  - Keep each synthetic snippet self-contained and assert on the rule message
+    instead of merely checking a non-zero parser exit.
+
+  Why:
+
+  The current rule accepts `process.kill(...)` by member-expression shape,
+
+  regardless of signal. A liveness probe such as `process.kill(pid, 0)` proves
+
+  the process exists but does not terminate it. Name-only helper recognition
+
+  has the same failure shape: a local function named `killPid` can be a no-op.
+
+
+  How:
+
+  - Place tests near the existing cleanup-timing and cleanup-callback
+    adversarial cases so future reviewers can compare accepted and rejected
+    shapes.
+  - Annotate each regression with the new `@daemon-test-guardrail-precision`
+    AC it protects.
+  - For helper-origin cases, include at least one locally defined no-op helper
+    and one approved helper/import case so the implementation cannot solve
+    the false negative by banning all helpers.
+
+  Testing:
+
+  - First run the new cases and observe they fail against the current rule.
+
+  - After the implementation task, run:
+    `mise exec -- npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts`.
+
+  Covers: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon,
+
+  ac-cleanup-probes-do-not-count, ac-cleanup-helper-origin-is-trusted;
+
+  @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+spec_ref: "@daemon-test-guardrail-precision"
+plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-tighten-daemon-guardrail-cleanup-semantics-specs"
+context: []
+priority: 1
+tags:
+  - testing
+  - lint
+  - daemon
+vcs_refs: []
+created_at: 2026-05-12T00:14:52.216Z
+todos: []

@@ -1,0 +1,78 @@
+_ulid: 01KRCRJP09TGZ629WBSQ093KMF
+slugs:
+  - task-tighten-daemon-guardrail-cleanup-semantics-specs
+title: Tighten daemon guardrail cleanup semantics specs
+type: task
+description: |
+  What:
+  - Update the existing `@daemon-test-guardrail-precision` requirement with
+    exact cleanup-effect and cleanup-boundary ACs so the guardrail contract
+    cannot be satisfied by cleanup-shaped code that leaves a daemon alive.
+  - Add `ac-cleanup-operation-terminates-daemon` with this behavioral shape:
+    Given a test starts a detached daemon through a daemon lifecycle path;
+    When the guardrail evaluates cleanup for that daemon; Then only cleanup
+    operations that terminate or stop the daemon satisfy the cleanup
+    requirement.
+  - Add `ac-cleanup-probes-do-not-count` with this behavioral shape: Given a
+    test starts a detached daemon and registers cleanup-shaped code; When the
+    code only probes liveness, emits documentation text, calls a non-daemon
+    helper, or sends a non-terminating signal; Then the detached daemon start
+    is reported as missing scoped cleanup.
+  - Add `ac-cleanup-helper-origin-is-trusted` with this behavioral shape:
+    Given a test cleanup callback calls a helper by a daemon-cleanup-like
+    name; When that helper is locally defined or otherwise not one of the
+    approved cleanup primitives; Then the helper name alone does not satisfy
+    daemon cleanup.
+  - Add `ac-cleanup-registration-is-test-scoped` with this behavioral shape:
+    Given a test starts a detached daemon; When cleanup is registered only on
+    process-lifecycle or global shutdown hooks; Then that registration does
+    not satisfy the per-test scoped cleanup requirement.
+  - Add `ac-implicit-autostart-cleanup-before-observation` with this
+    behavioral shape: Given a test invokes a CLI command that may implicitly
+    auto-start a daemon and then observes the started daemon's pid, metadata,
+    process, or endpoint; When the test performs later assertions or daemon
+    observations before registering cleanup for that daemon; Then the unsafe
+    auto-started daemon ownership is reported.
+  - Set `@daemon-test-guardrail-precision` implementation status back to
+    `in_progress` without cascading to unrelated specs.
+
+  Why:
+  The current guardrail precision spec covers ordering and binding, but it
+  does not say that credited cleanup must actually terminate the daemon, must
+  be trusted structurally, or must run at the current-test boundary. That
+  under-specification allowed `process.kill(pid, 0)`, local no-op `killPid`,
+  and `process.on("exit", ...)`-only cleanup to look compliant.
+
+  How:
+  - Use `kspec item ac add @daemon-test-guardrail-precision ...` for each new
+    AC.
+  - Use exact behavioral wording above; do not encode file names or internal
+    AST predicate names in the spec ACs.
+  - Run `mise exec -- kspec item get @daemon-test-guardrail-precision` and
+    verify all new AC IDs are present once.
+  - Run `mise exec -- kspec validate --refs --warnings-ok`.
+
+  Testing:
+  - `mise exec -- kspec item get @daemon-test-guardrail-precision`
+  - `mise exec -- kspec validate --refs --warnings-ok`
+
+  Covers: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon,
+  ac-cleanup-probes-do-not-count, ac-cleanup-helper-origin-is-trusted,
+  ac-cleanup-registration-is-test-scoped,
+  ac-implicit-autostart-cleanup-before-observation
+spec_ref: "@daemon-test-guardrail-precision"
+plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - testing
+  - lint
+  - daemon
+  - spec
+vcs_refs: []
+created_at: 2026-05-12T00:14:51.913Z
+todos: []

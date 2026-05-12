@@ -1352,6 +1352,74 @@ features:
             supersedes: null
             author: "@claude"
             created_at: 2026-05-09T15:17:35.540Z
+      - _ulid: 01KRCRJNY7B2PJ958VQYK8R426
+        slugs:
+          - daemon-test-teardown-boundedness
+        title: Daemon Test Teardown Boundedness
+        type: requirement
+        description: |
+          Daemon-backed test infrastructure treats cleanup as a deterministic
+          contract rather than a best-effort signal send. Fixtures, wrappers, and
+          daemon lifecycle tests that own daemon processes or daemon-like mock
+          children stop owned resources within bounded time, verify termination when
+          cleanup reports success, and preserve the primary failure when cleanup also
+          encounters an error.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A daemon-backed test fixture or lifecycle helper owns a daemon process
+              or daemon-like child process
+            id: ac-stop-observes-termination-before-return
+            then: |
+              The owned process has been observed terminated
+            when: |
+              Cleanup reports that the process has been stopped
+          - given: |
+              A fixture-owned daemon process or daemon-like child ignores the initial
+              termination request
+            id: ac-uncooperative-process-stop-is-bounded
+            then: |
+              Cleanup reaches a bounded terminal outcome
+            when: |
+              Cleanup attempts to stop the owned process
+          - given: |
+              A daemon-like test server has an active request that does not complete
+            id: ac-active-requests-do-not-block-teardown
+            then: |
+              Teardown reaches a bounded terminal outcome
+            when: |
+              The helper stop operation runs
+          - given: |
+              Daemon test setup has created temporary project, home, port, or child
+              resources
+            id: ac-setup-failure-cleans-owned-resources
+            then: |
+              The resources already owned by the setup are cleaned up
+            when: |
+              A later setup step fails before the fixture reports readiness
+          - given: |
+              A daemon-backed test setup, test body, or readiness wait fails with a
+              primary error
+            id: ac-cleanup-errors-preserve-primary-failure
+            then: |
+              The surfaced failure preserves the primary error
+            when: |
+              Cleanup also fails while handling that primary error
+          - given: |
+              A daemon-backed test or fixture probes a daemon HTTP or WebSocket
+              endpoint
+            id: ac-daemon-observations-are-bounded
+            then: |
+              The probe reaches a bounded terminal outcome
+            when: |
+              The endpoint accepts a connection but does not respond
+        tags: []
+        created: 2026-05-12T00:14:51.847Z
+        notes: []
     created: 2026-01-22T01:18:09.314Z
     notes: []
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW

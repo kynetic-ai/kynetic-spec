@@ -1,0 +1,67 @@
+_ulid: 01KRCRJSCGAWTVGWM82DNSWWCN
+slugs:
+  - task-add-setup-failure-error-preservation-regressions
+title: Add setup-failure cleanup and primary-error preservation regressions
+type: task
+description: >
+  What:
+
+  - Add focused tests for resource cleanup when daemon test setup fails before
+    fixture readiness or before the main fixture `try/finally` begins.
+  - Cover `createTestDaemonProject()` failure after a temp project directory
+    has been created but before the returned cleanup handle is available.
+  - Cover the Playwright daemon fixture setup path where project/home/config
+    setup or port allocation fails before normal teardown registration.
+  - Add tests proving readiness/startup primary errors are preserved when
+    cleanup also fails, with cleanup failure included as suppressed context or
+    an `AggregateError` according to the chosen implementation shape.
+  - Add tests proving test-body/use primary errors in the Playwright wrapper
+    are not replaced by secondary cleanup failures.
+
+  Why:
+
+  Cleanup hardening is incomplete if setup resources leak before the fixture
+
+  reaches its main `try/finally`, or if a cleanup failure hides the original
+
+  diagnostic that explains why startup/test execution failed.
+
+
+  How:
+
+  - Prefer dependency injection or narrow test seams rather than mutating real
+    filesystem permissions globally.
+  - Assert both sides of the contract: resource cleanup occurs, and the
+    surfaced error still identifies the original failure.
+  - Keep Playwright-specific coverage at the fixture-unit level when browser
+    automation is not needed.
+
+  Testing:
+
+  - First run the new tests and observe failures in the current setup/error
+    preservation paths.
+  - After the implementation task, run:
+    `mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts tests/e2e-fixture-daemon-cleanup.test.ts`.
+
+  Covers: @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources,
+
+  ac-cleanup-errors-preserve-primary-failure; @daemon-test-startup-failure-hygiene
+
+  ac-owned-child-stopped-after-startup-failure,
+
+  ac-cleanup-registration-failure-stops-owned-child
+spec_ref: "@daemon-test-teardown-boundedness"
+plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - e2e
+vcs_refs: []
+created_at: 2026-05-12T00:14:55.376Z
+todos: []

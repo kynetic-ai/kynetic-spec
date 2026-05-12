@@ -1,0 +1,80 @@
+_ulid: 01KRCRJPMHMHC410TKRC5Y9HF1
+slugs:
+  - task-fix-guardrail-cleanup-effect-classification
+title: Fix guardrail cleanup-effect classification
+type: task
+description: >
+  What:
+
+  - Update `tools/eslint-rules/no-leaky-test-daemon.js` so cleanup credit is
+    based on terminating daemon cleanup, not merely cleanup-shaped syntax.
+  - For `process.kill(pid, signal)`, accept only missing/undefined signal or
+    explicit terminating signals such as `SIGTERM`, `SIGKILL`, and `SIGINT`.
+    Reject signal `0`, non-terminating signal literals, and unknown literal
+    signals unless the rule has an explicit project reason to treat them as
+    terminating.
+  - For child-handle `.kill(...)`, align the accepted signal policy with
+    `process.kill`: no signal and known terminating signals count;
+    non-terminating or daemon-irrelevant signals do not count.
+  - Stop treating bare helper names such as `killPid`, `stopDaemon`, or
+    `stopMockDaemon` as sufficient when the helper is locally defined as a
+    no-op or otherwise cannot be trusted. Either restrict recognition to
+    approved imports/known helper paths or inspect the local helper body for a
+    terminating daemon cleanup primitive.
+  - Preserve accepted cleanup through `kspec serve stop` lifecycle commands
+    and approved shared helper internals.
+
+  Why:
+
+  The guardrail is supposed to prove that tests do not leak daemon processes.
+
+  A liveness probe, diagnostic signal, or local no-op helper does not stop the
+
+  daemon and therefore cannot be an exception to the detached-start rule.
+
+
+  How:
+
+  - Refactor the cleanup classifier into separate predicates for terminating
+    signals, trusted helper calls, child-handle cleanup, process PID cleanup,
+    and CLI `serve stop` cleanup.
+  - Keep the allowed signal list centralized and documented in the rule
+    comment.
+  - When local helper-body inspection is used, avoid counting recursive
+    wrappers or helper names whose body does not contain an approved
+    terminating cleanup call.
+  - Keep current false-positive protections for string literals and
+    non-daemon subprocesses.
+
+  Testing:
+
+  - `mise exec -- npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+  tests/lint-daemon-test-guardrails.test.ts`
+
+  - `mise exec -- npm run lint` or the repository lint command that invokes
+    oxlint, if available and not blocked by unrelated pre-existing lint
+    failures.
+
+  Covers: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon,
+
+  ac-cleanup-probes-do-not-count, ac-cleanup-helper-origin-is-trusted;
+
+  @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged,
+
+  ac-exceptions-are-localized
+spec_ref: "@daemon-test-guardrail-precision"
+plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-guardrail-cleanup-effect-regressions"
+context: []
+priority: 1
+tags:
+  - testing
+  - lint
+  - daemon
+vcs_refs: []
+created_at: 2026-05-12T00:14:52.561Z
+todos: []

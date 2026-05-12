@@ -1,0 +1,68 @@
+_ulid: 01KRCRJQVWASBCR27BR3D8VFBA
+slugs:
+  - task-fix-implicit-autostart-cleanup-coverage
+title: Fix implicit auto-start daemon cleanup coverage
+type: task
+description: >
+  What:
+
+  - Harden `tests/cli-no-daemon.test.ts` so every implicit auto-start case
+    registers terminating per-test cleanup immediately after the daemon PID or
+    stop handle becomes known and before later assertions or process
+    observations.
+  - Extend the daemon lifecycle guardrail so tests that observe an
+    implicitly auto-started daemon through PID files, daemon metadata, daemon
+    status, or daemon endpoints must register scoped cleanup before later
+    observations.
+  - Preserve ordinary CLI tests that do not observe or own an auto-started
+    daemon.
+
+  Why:
+
+  The current guardrail is centered on explicit detached start commands. CLI
+
+  auto-start creates the same leak risk once a test discovers the daemon PID
+
+  and then continues with assertions before cleanup is registered.
+
+
+  How:
+
+  - Patch the unsafe `tests/cli-no-daemon.test.ts` pattern first so the real
+    repo complies with the intended rule.
+  - Implement the guardrail expansion using concrete ownership observations
+    such as daemon PID-file reads or daemon metadata reads after a CLI
+    subprocess that can auto-start the daemon, not a broad ban on CLI
+    subprocess tests.
+  - Reuse the cleanup-effect and cleanup-boundary predicates from the earlier
+    guardrail tasks.
+
+  Testing:
+
+  - `mise exec -- npm test -- --fresh tests/cli-no-daemon.test.ts
+  tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts`
+
+  - Run the full tests-directory no-leaky-daemon validation and classify any
+    remaining report.
+
+  Covers: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation,
+
+  ac-cleanup-operation-terminates-daemon, ac-cleanup-registration-is-test-scoped
+spec_ref: "@daemon-test-guardrail-precision"
+plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-implicit-autostart-cleanup-regressions"
+  - "@task-fix-guardrail-cleanup-boundary-classification"
+context: []
+priority: 2
+tags:
+  - testing
+  - lint
+  - daemon
+  - cli
+vcs_refs: []
+created_at: 2026-05-12T00:14:53.820Z
+todos: []

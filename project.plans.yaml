@@ -47793,10 +47793,25 @@ plans:
       implementation fixes. The final validation task must actively probe adversarial
 
       cases rather than relying only on the repository's ordinary test suite.
-    status: approved
+    status: active
     approved_at: 2026-05-12T00:14:28.267Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@daemon-test-teardown-boundedness"
+    derived_tasks:
+      - "@task-tighten-daemon-guardrail-cleanup-semantics-specs"
+      - "@task-add-guardrail-cleanup-effect-regressions"
+      - "@task-fix-guardrail-cleanup-effect-classification"
+      - "@task-add-guardrail-cleanup-boundary-regressions"
+      - "@task-fix-guardrail-cleanup-boundary-classification"
+      - "@task-add-implicit-autostart-cleanup-regressions"
+      - "@task-fix-implicit-autostart-cleanup-coverage"
+      - "@task-add-bounded-process-stop-contract-tests"
+      - "@task-implement-bounded-process-stop-primitives"
+      - "@task-add-active-request-bounded-observation-regressions"
+      - "@task-fix-active-request-teardown-and-observation-bounds"
+      - "@task-add-setup-failure-error-preservation-regressions"
+      - "@task-fix-setup-failure-cleanup-error-preservation"
+      - "@task-validate-daemon-cleanup-contract-hardening"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/daemon-test-cleanup-contract-hardening.md
     created_at: 2026-05-11T23:30:29.111Z
@@ -47807,3 +47822,57 @@ plans:
           exact command"
         author: Jacob Chapel
         created_at: 2026-05-11T23:37:18.374Z
+      - _ulid: 01KRCRJTAWYCH7VTYQFG3GVQQN
+        content: |-
+          This is a follow-up hardening plan after `@plan-daemon-test-fixture-hardening`.
+          That plan substantially improved daemon test infrastructure, but adversarial
+          validation found residual cleanup false negatives and teardown-boundary gaps.
+          The key lesson is that cleanup must be treated as a semantic contract: code that
+          looks like cleanup is not sufficient unless it actually stops the daemon, runs
+          at the right lifecycle boundary, and reports completion only after bounded
+          termination has been observed.
+
+          Investigation evidence used to scope this plan:
+
+          - `tools/eslint-rules/no-leaky-test-daemon.js` currently credits
+            `process.kill(...)` by callee shape, so `process.kill(pid, 0)` and
+            `process.kill(pid, "SIGUSR1")` can satisfy cleanup despite not being a safe
+            daemon stop.
+          - The same rule currently treats `process.on("exit"|"beforeExit"|signal, ...)`
+            as valid cleanup. That can be useful as a process fallback, but it is not
+            per-test scoped cleanup and can leave the daemon alive through later tests.
+          - Name-based cleanup helper recognition accepts local helpers named `killPid`,
+            `stopDaemon`, or `stopMockDaemon` unless helper origin/body is trusted.
+          - `tests/cli-no-daemon.test.ts` includes implicit daemon auto-start paths that
+            do not contain `serve start --detach`, so literal detached-start guardrails do
+            not cover the ownership shape after the test reads the daemon PID.
+          - `tests/helpers/daemon.ts`, `tests/helpers/mock-daemon.ts`, and
+            `tests/cli-serve.test.ts` contain stop paths that can send a forceful signal
+            and report completion without always observing post-escalation process exit.
+          - Mock daemon helpers expose hanging request behavior; teardown needs to prove
+            active requests cannot block cleanup indefinitely.
+          - Setup code in real and Playwright daemon fixtures can own temp resources
+            before the main cleanup path is active; failures in that window need cleanup
+            coverage.
+          - Primary startup/test errors can be masked if cleanup also throws; the surfaced
+            error should retain the primary failure and include cleanup context.
+
+          Scope boundaries:
+
+          - In scope: daemon-test guardrail precision, implicit CLI auto-start cleanup in
+            tests, shared test-side cleanup helpers, real/mock daemon fixture teardown,
+            Playwright daemon fixture cleanup boundaries, and daemon-facing test probe
+            bounds.
+          - Out of scope: production daemon endpoint selection, production serve-stop UX
+            beyond test helper needs, replacing CLI lifecycle tests with the shared daemon
+            fixture when lifecycle commands are the behavior under test, and unrelated
+            pre-existing lint failures.
+          - Process-lifecycle cleanup hooks may remain as supplemental fallbacks, but they
+            must not be the sole reason the guardrail treats a daemon as scoped to the
+            current test.
+
+          Task ordering keeps spec updates first, then failing regression tests, then
+          implementation fixes. The final validation task must actively probe adversarial
+          cases rather than relying only on the repository's ordinary test suite.
+        author: Jacob Chapel
+        created_at: 2026-05-12T00:14:56.348Z

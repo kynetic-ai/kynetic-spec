@@ -1,0 +1,68 @@
+_ulid: 01KRCRJRF7TZVW59Q8ZK9JSS0X
+slugs:
+  - task-implement-bounded-process-stop-primitives
+title: Implement bounded process-stop primitives
+type: task
+description: >
+  What:
+
+  - Add or refactor to a shared test-side process stop primitive used by the
+    real daemon fixture, mock daemon child helper, CLI detached PID cleanup,
+    and foreground child wait helpers where applicable.
+  - The primitive must send a graceful termination request, wait for observed
+    exit/death, escalate to a forceful termination request when needed, and
+    then wait again for observed exit/death before reporting success.
+  - If the process cannot be observed terminated after escalation, return or
+    throw a bounded diagnostic instead of reporting successful cleanup.
+  - Treat signal-based exits as real exits even when `exitCode` remains
+    `null` and only `signalCode` is set.
+  - Keep cleanup idempotent, and avoid killing unrelated processes when the
+    owned child/PID has already exited.
+
+  Why:
+
+  Multiple helpers currently duplicate partial stop logic. Shared semantics
+
+  reduce future drift and make cleanup success mean the same thing for real
+
+  daemon, mock daemon, and CLI lifecycle tests.
+
+
+  How:
+
+  - Inspect `tests/helpers/daemon.ts`, `tests/helpers/mock-daemon.ts`, and
+    `tests/cli-serve.test.ts` for existing stop helpers before choosing the
+    shared helper location.
+  - Preserve existing public helper return shapes unless tests prove a more
+    explicit diagnostic type is needed.
+  - Update comments and diagnostics to say cleanup observes termination rather
+    than merely sending a signal.
+
+  Testing:
+
+  - `mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts tests/helpers/mock-daemon.test.ts
+  tests/cli-serve.test.ts`
+
+  - Run any existing daemon build or WebSocket protocol slice that uses the
+    real daemon fixture.
+
+  Covers: @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return,
+
+  ac-uncooperative-process-stop-is-bounded; @daemon-backed-test-fixture-contract
+
+  ac-scoped-cleanup, ac-readiness-diagnostics
+spec_ref: "@daemon-test-teardown-boundedness"
+plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-bounded-process-stop-contract-tests"
+context: []
+priority: 1
+tags:
+  - testing
+  - daemon
+vcs_refs: []
+created_at: 2026-05-12T00:14:54.439Z
+todos: []

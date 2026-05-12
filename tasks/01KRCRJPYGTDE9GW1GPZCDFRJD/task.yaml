@@ -1,0 +1,73 @@
+_ulid: 01KRCRJPYGTDE9GW1GPZCDFRJD
+slugs:
+  - task-add-guardrail-cleanup-boundary-regressions
+title: Add adversarial guardrail regressions for cleanup boundaries
+type: task
+description: >
+  What:
+
+  - Add failing-before-fix guardrail tests proving cleanup must be registered
+    at a current-test cleanup boundary or in the same synchronous
+    `try/finally` control flow that owns the daemon.
+  - Add rejected cases where the only cleanup registration is
+    `process.on("exit", ...)`, `process.on("beforeExit", ...)`,
+    `process.on("SIGTERM", ...)`, `process.once(...)`, `afterAll(...)`, or
+    another process/global lifecycle hook that can leave the daemon alive
+    while later tests run.
+  - Keep already-rejected cases for `beforeEach`, `beforeAll`, misplaced
+    `afterEach`, callbacks assigned but never invoked, `Promise.finally`, and
+    `queueMicrotask` covered and aligned with the new AC wording.
+  - Add accepted cases for `onTestFinished(() => terminatingCleanup(...))` and
+    direct `try/finally` finalizers that are already bound to the concrete
+    daemon pid or stop handle before observations can fail.
+  - Add a mixed case where a process-lifecycle fallback exists in addition to
+    `onTestFinished`; the per-test cleanup should be what satisfies the
+    guardrail, not the fallback.
+
+  Why:
+
+  Process-exit cleanup can be a last-resort safety net, but it is not scoped
+
+  to the test that started the daemon. Treating it as sufficient lets the
+
+  daemon survive subsequent tests and violates the fixture cleanup contract.
+
+
+  How:
+
+  - Update the existing process-on-exit allowed regression in
+    `tests/lint-no-leaky-test-daemon.test.ts` so it becomes a rejected case
+    under `ac-cleanup-registration-is-test-scoped`.
+  - Keep the failure message actionable: direct the author to
+    `onTestFinished` or `try/finally`, not merely to any cleanup callback.
+  - Include comments explaining that process-lifecycle cleanup is allowed only
+    as a supplemental fallback, not as the cleanup credit for the guardrail.
+
+  Testing:
+
+  - First run the new cases and observe the current `process.on("exit", ...)`
+    allowed case fail the new expectation.
+  - After the implementation task, run:
+    `mise exec -- npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts`.
+
+  Covers: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped,
+
+  ac-detached-cleanup-before-observation, ac-detached-cleanup-bound-before-observation;
+
+  @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+spec_ref: "@daemon-test-guardrail-precision"
+plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-tighten-daemon-guardrail-cleanup-semantics-specs"
+context: []
+priority: 1
+tags:
+  - testing
+  - lint
+  - daemon
+vcs_refs: []
+created_at: 2026-05-12T00:14:52.880Z
+todos: []

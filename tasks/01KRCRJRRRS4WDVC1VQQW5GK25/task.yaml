@@ -1,0 +1,65 @@
+_ulid: 01KRCRJRRRS4WDVC1VQQW5GK25
+slugs:
+  - task-add-active-request-bounded-observation-regressions
+title: Add active-request and bounded-observation teardown regressions
+type: task
+description: >
+  What:
+
+  - Add focused regression tests for daemon-like servers and daemon probes
+    that accept a connection but never complete a response.
+  - Cover in-process mock daemon `stop()` while a hanging request is active.
+
+  - Cover mock child-process daemon cleanup when the child has an active
+    hanging request and graceful shutdown does not complete.
+  - Cover daemon-facing HTTP probe helpers used by tests so accepted but
+    non-responding requests are aborted or otherwise bounded.
+  - Identify and update representative bare-fetch call sites in
+    `tests/cli-serve.test.ts` and Playwright daemon setup coverage so the
+    regression protects real consumers, not only an isolated helper.
+
+  Why:
+
+  `server.close()` waits for active requests. A test helper that exposes a
+
+  hanging endpoint must also prove teardown does not hang forever when that
+
+  endpoint is active.
+
+
+  How:
+
+  - Reuse the existing mock daemon hang behavior where possible.
+
+  - Use `AbortSignal.timeout`, a shared bounded fetch helper, or equivalent
+    test-side timeout control for daemon probes.
+  - Keep runtime waits deterministic and short enough for focused tests.
+
+
+  Testing:
+
+  - First run the new tests and observe current hang/bare-fetch behavior is
+    exposed without letting the suite hang indefinitely.
+  - After the implementation task, run:
+    `mise exec -- npm test -- --fresh tests/helpers/mock-daemon.test.ts tests/helpers/daemon.test.ts tests/cli-serve.test.ts`.
+
+  Covers: @daemon-test-teardown-boundedness ac-active-requests-do-not-block-teardown,
+
+  ac-daemon-observations-are-bounded; @daemon-backed-test-fixture-contract
+
+  ac-bounded-readiness
+spec_ref: "@daemon-test-teardown-boundedness"
+plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - mock
+vcs_refs: []
+created_at: 2026-05-12T00:14:54.744Z
+todos: []

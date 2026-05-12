@@ -1,0 +1,67 @@
+_ulid: 01KRCRJS2M4VVME99W9ACV8JAE
+slugs:
+  - task-fix-active-request-teardown-and-observation-bounds
+title: Fix active-request teardown and daemon observation bounds
+type: task
+description: >
+  What:
+
+  - Update in-process and child-process mock daemon helpers so active or
+    hanging requests cannot block teardown indefinitely.
+  - Add a shared bounded daemon fetch/probe helper or update existing probe
+    helpers so daemon-facing test HTTP requests use an abortable timeout.
+  - Replace representative bare daemon `fetch(...)` calls in CLI lifecycle
+    and Playwright daemon setup tests with the bounded helper when the request
+    is not itself testing raw fetch behavior.
+  - Preserve endpoint metadata fidelity and existing request-recording
+    behavior for mock daemon clients.
+
+  Why:
+
+  Test infrastructure should fail with a diagnostic when a daemon endpoint
+
+  stalls. It should not leave active sockets or hanging requests that prevent
+
+  fixture teardown from completing.
+
+
+  How:
+
+  - For in-process servers, track sockets/active requests or use Node server
+    connection-closing APIs with a bounded fallback.
+  - For child-process mock cleanup, route stop through the bounded process
+    stop primitive and ensure graceful server shutdown cannot block the
+    parent forever.
+  - For daemon probes, prefer the existing bounded patterns already present in
+    the real daemon fixture and daemon build tests.
+
+  Testing:
+
+  - `mise exec -- npm test -- --fresh tests/helpers/mock-daemon.test.ts tests/helpers/daemon.test.ts
+  tests/cli-serve.test.ts`
+
+  - `mise exec -- npm run build:e2e && mise exec -- npx playwright test tests/e2e/smoke.spec.ts`
+
+
+  Covers: @daemon-test-teardown-boundedness ac-active-requests-do-not-block-teardown,
+
+  ac-daemon-observations-are-bounded; @daemon-test-startup-failure-hygiene
+
+  ac-owned-child-stopped-after-startup-failure
+spec_ref: "@daemon-test-teardown-boundedness"
+plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-active-request-bounded-observation-regressions"
+  - "@task-implement-bounded-process-stop-primitives"
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - mock
+vcs_refs: []
+created_at: 2026-05-12T00:14:55.060Z
+todos: []

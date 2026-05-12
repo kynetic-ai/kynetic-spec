@@ -28606,3 +28606,275 @@
   started_at: 2026-05-11T17:54:56.764Z
   submitted_at: 2026-05-11T18:15:50.768Z
   automation: eligible
+- _ulid: 01KRCRJP09TGZ629WBSQ093KMF
+  slugs:
+    - task-tighten-daemon-guardrail-cleanup-semantics-specs
+  title: Tighten daemon guardrail cleanup semantics specs
+  type: task
+  spec_ref: "@daemon-test-guardrail-precision"
+  plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - testing
+    - lint
+    - daemon
+    - spec
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T00:14:51.913Z
+- _ulid: 01KRCRJP9RHZ06B249NBJSPSY3
+  slugs:
+    - task-add-guardrail-cleanup-effect-regressions
+  title: Add adversarial guardrail regressions for cleanup effects
+  type: task
+  spec_ref: "@daemon-test-guardrail-precision"
+  plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-tighten-daemon-guardrail-cleanup-semantics-specs"
+  priority: 1
+  tags:
+    - testing
+    - lint
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T00:14:52.216Z
+- _ulid: 01KRCRJPMHMHC410TKRC5Y9HF1
+  slugs:
+    - task-fix-guardrail-cleanup-effect-classification
+  title: Fix guardrail cleanup-effect classification
+  type: task
+  spec_ref: "@daemon-test-guardrail-precision"
+  plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-guardrail-cleanup-effect-regressions"
+  priority: 1
+  tags:
+    - testing
+    - lint
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T00:14:52.561Z
+- _ulid: 01KRCRJPYGTDE9GW1GPZCDFRJD
+  slugs:
+    - task-add-guardrail-cleanup-boundary-regressions
+  title: Add adversarial guardrail regressions for cleanup boundaries
+  type: task
+  spec_ref: "@daemon-test-guardrail-precision"
+  plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-tighten-daemon-guardrail-cleanup-semantics-specs"
+  priority: 1
+  tags:
+    - testing
+    - lint
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T00:14:52.880Z
+- _ulid: 01KRCRJQ8CM6D08AHASH84VRDM
+  slugs:
+    - task-fix-guardrail-cleanup-boundary-classification
+  title: Fix guardrail cleanup-boundary classification
+  type: task
+  spec_ref: "@daemon-test-guardrail-precision"
+  plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-guardrail-cleanup-boundary-regressions"
+    - "@task-fix-guardrail-cleanup-effect-classification"
+  priority: 1
+  tags:
+    - testing
+    - lint
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T00:14:53.196Z
+- _ulid: 01KRCRJQHJVPTS7KS7SYWQ600H
+  slugs:
+    - task-add-implicit-autostart-cleanup-regressions
+  title: Add implicit auto-start daemon cleanup regressions
+  type: task
+  spec_ref: "@daemon-test-guardrail-precision"
+  plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-tighten-daemon-guardrail-cleanup-semantics-specs"
+  priority: 2
+  tags:
+    - testing
+    - lint
+    - daemon
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T00:14:53.490Z
+- _ulid: 01KRCRJQVWASBCR27BR3D8VFBA
+  slugs:
+    - task-fix-implicit-autostart-cleanup-coverage
+  title: Fix implicit auto-start daemon cleanup coverage
+  type: task
+  spec_ref: "@daemon-test-guardrail-precision"
+  plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-implicit-autostart-cleanup-regressions"
+    - "@task-fix-guardrail-cleanup-boundary-classification"
+  priority: 2
+  tags:
+    - testing
+    - lint
+    - daemon
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T00:14:53.820Z
+- _ulid: 01KRCRJR5K77Q2THCVVH3BDNFH
+  slugs:
+    - task-add-bounded-process-stop-contract-tests
+  title: Add bounded process-stop contract tests
+  type: task
+  spec_ref: "@daemon-test-teardown-boundedness"
+  plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - testing
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T00:14:54.131Z
+- _ulid: 01KRCRJRF7TZVW59Q8ZK9JSS0X
+  slugs:
+    - task-implement-bounded-process-stop-primitives
+  title: Implement bounded process-stop primitives
+  type: task
+  spec_ref: "@daemon-test-teardown-boundedness"
+  plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-bounded-process-stop-contract-tests"
+  priority: 1
+  tags:
+    - testing
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T00:14:54.439Z
+- _ulid: 01KRCRJRRRS4WDVC1VQQW5GK25
+  slugs:
+    - task-add-active-request-bounded-observation-regressions
+  title: Add active-request and bounded-observation teardown regressions
+  type: task
+  spec_ref: "@daemon-test-teardown-boundedness"
+  plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - mock
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T00:14:54.744Z
+- _ulid: 01KRCRJS2M4VVME99W9ACV8JAE
+  slugs:
+    - task-fix-active-request-teardown-and-observation-bounds
+  title: Fix active-request teardown and daemon observation bounds
+  type: task
+  spec_ref: "@daemon-test-teardown-boundedness"
+  plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-active-request-bounded-observation-regressions"
+    - "@task-implement-bounded-process-stop-primitives"
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - mock
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T00:14:55.060Z
+- _ulid: 01KRCRJSCGAWTVGWM82DNSWWCN
+  slugs:
+    - task-add-setup-failure-error-preservation-regressions
+  title: Add setup-failure cleanup and primary-error preservation regressions
+  type: task
+  spec_ref: "@daemon-test-teardown-boundedness"
+  plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - e2e
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T00:14:55.376Z
+- _ulid: 01KRCRJSNXN4SS1XJ6DKD4XC46
+  slugs:
+    - task-fix-setup-failure-cleanup-error-preservation
+  title: Fix setup-failure cleanup and primary-error preservation
+  type: task
+  spec_ref: "@daemon-test-teardown-boundedness"
+  plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-setup-failure-error-preservation-regressions"
+    - "@task-implement-bounded-process-stop-primitives"
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - e2e
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T00:14:55.677Z
+- _ulid: 01KRCRJSZDBERFRFNBMRJT47JR
+  slugs:
+    - task-validate-daemon-cleanup-contract-hardening
+  title: Validate daemon cleanup contract hardening end to end
+  type: task
+  spec_ref: "@daemon-test-teardown-boundedness"
+  plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-fix-guardrail-cleanup-effect-classification"
+    - "@task-fix-guardrail-cleanup-boundary-classification"
+    - "@task-fix-implicit-autostart-cleanup-coverage"
+    - "@task-implement-bounded-process-stop-primitives"
+    - "@task-fix-active-request-teardown-and-observation-bounds"
+    - "@task-fix-setup-failure-cleanup-error-preservation"
+  priority: 3
+  tags:
+    - testing
+    - daemon
+    - validation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-12T00:14:55.981Z

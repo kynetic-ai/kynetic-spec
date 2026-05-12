@@ -1,0 +1,71 @@
+_ulid: 01KRCRJSNXN4SS1XJ6DKD4XC46
+slugs:
+  - task-fix-setup-failure-cleanup-error-preservation
+title: Fix setup-failure cleanup and primary-error preservation
+type: task
+description: >
+  What:
+
+  - Harden `createTestDaemonProject()` so every owned resource created during
+    setup is cleaned up if a later setup step fails before the project fixture
+    is returned.
+  - Move Playwright daemon fixture setup under cleanup coverage immediately
+    after each resource is owned, so failures before readiness still clean up
+    temp project, home/config, and child resources.
+  - Preserve primary startup, readiness, setup, and test-body errors when
+    cleanup also fails. Include cleanup failure context without replacing the
+    primary error.
+  - Keep existing successful fixture behavior and endpoint propagation
+    unchanged.
+
+  Why:
+
+  Setup and cleanup failures are exactly when diagnostics matter most. The
+
+  fixture should not leak resources or hide the primary cause while handling a
+
+  secondary cleanup problem.
+
+
+  How:
+
+  - Use nested `try/finally` or a small cleanup stack that records owned
+    resources as soon as they are created.
+  - When cleanup fails after a primary error, attach the cleanup error as
+    suppressed context or construct an `AggregateError` whose primary entry is
+    the original failure.
+  - Ensure idempotent cleanup remains safe when early cleanup and normal
+    teardown both run.
+
+  Testing:
+
+  - `mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts
+  tests/e2e-fixture-daemon-cleanup.test.ts`
+
+  - `mise exec -- npm run build:e2e && mise exec -- npx playwright test tests/e2e/smoke.spec.ts`
+
+
+  Covers: @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources,
+
+  ac-cleanup-errors-preserve-primary-failure; @e2e-test-daemon-isolation
+
+  ac-e2e-scoped-cleanup; @daemon-backed-test-fixture-contract ac-isolated-project-data,
+
+  ac-scoped-cleanup
+spec_ref: "@daemon-test-teardown-boundedness"
+plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-setup-failure-error-preservation-regressions"
+  - "@task-implement-bounded-process-stop-primitives"
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - e2e
+vcs_refs: []
+created_at: 2026-05-12T00:14:55.677Z
+todos: []

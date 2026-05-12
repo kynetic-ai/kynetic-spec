@@ -1,0 +1,75 @@
+_ulid: 01KRCRJQHJVPTS7KS7SYWQ600H
+slugs:
+  - task-add-implicit-autostart-cleanup-regressions
+title: Add implicit auto-start daemon cleanup regressions
+type: task
+description: >
+  What:
+
+  - Add regression coverage for CLI tests that implicitly auto-start a daemon
+    through ordinary CLI commands rather than an explicit `serve start
+    --detach` command.
+  - Cover the existing pattern in `tests/cli-no-daemon.test.ts` where a CLI
+    subprocess can auto-start the daemon, the test reads the isolated daemon
+    PID file, and later assertions inspect the process or daemon metadata.
+  - Add a rejected guardrail fixture where the PID file is read and assertions
+    or daemon observations run before `onTestFinished` cleanup is registered.
+  - Add an allowed guardrail fixture where cleanup is registered immediately
+    after the PID is known and before any process, metadata, endpoint, or
+    assertion observation.
+  - Add focused source coverage or contract tests proving the real
+    `tests/cli-no-daemon.test.ts` auto-start cases register cleanup at the
+    safe boundary.
+
+  Why:
+
+  The repo-wide adversarial audit found an implicit auto-start path that does
+
+  not contain the literal `serve start --detach` token sequence. Without
+
+  coverage for that ownership shape, daemon leaks can bypass the detached
+
+  lifecycle guardrail entirely.
+
+
+  How:
+
+  - Inspect `tests/cli-no-daemon.test.ts` and the helpers that expose
+    `isolatedHome.daemonPidFilePath`.
+  - Model unsafe ownership as: CLI invocation that may auto-start the daemon,
+    read/parse daemon PID or daemon metadata, later assertion/observation,
+    then cleanup.
+  - Model safe ownership as: CLI invocation, immediate PID/metadata capture,
+    immediate `onTestFinished` terminating cleanup, then later observations.
+  - Keep the classifier narrow enough that ordinary CLI tests that never
+    observe or own an auto-started daemon are not reported.
+
+  Testing:
+
+  - First run the new guardrail regression and observe it fails against the
+    current rule or source state.
+  - After the implementation task, run:
+    `mise exec -- npm test -- --fresh tests/cli-no-daemon.test.ts tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts`.
+
+  Covers: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation,
+
+  ac-cleanup-registration-is-test-scoped; @daemon-test-harness-guardrails
+
+  ac-detached-serve-without-cleanup-flagged
+spec_ref: "@daemon-test-guardrail-precision"
+plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-tighten-daemon-guardrail-cleanup-semantics-specs"
+context: []
+priority: 2
+tags:
+  - testing
+  - lint
+  - daemon
+  - cli
+vcs_refs: []
+created_at: 2026-05-12T00:14:53.490Z
+todos: []

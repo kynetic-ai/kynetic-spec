@@ -1,0 +1,67 @@
+_ulid: 01KRCRJR5K77Q2THCVVH3BDNFH
+slugs:
+  - task-add-bounded-process-stop-contract-tests
+title: Add bounded process-stop contract tests
+type: task
+description: >
+  What:
+
+  - Add focused tests that prove daemon test cleanup observes process
+    termination before reporting success and reaches a bounded outcome for
+    uncooperative children.
+  - Cover the shared real-daemon fixture stop path in `tests/helpers/daemon.ts`
+    using a test seam or synthetic child that ignores the initial termination
+    signal and requires escalation.
+  - Cover the mock child-process daemon stop path in
+    `tests/helpers/mock-daemon.ts` with a child that ignores `SIGTERM`.
+  - Cover PID-based cleanup used by CLI lifecycle tests, including signal exit
+    races where `signalCode` is set and `exitCode` remains `null`.
+  - Assert that cleanup does not resolve until the child exit/death has been
+    observed, or until a bounded failure diagnostic is surfaced.
+
+  Why:
+
+  Current cleanup helpers can send `SIGKILL` and then resolve from a timeout
+
+  callback without observing the child exit. That leaves a narrow but real
+
+  false success path where cleanup reports completion while the process still
+
+  exists.
+
+
+  How:
+
+  - Prefer small synthetic child scripts in temp directories over real daemon
+    processes for uncooperative-signal tests.
+  - Use bounded event waits and process probes; do not add fixed sleeps except
+    as explicit grace-period configuration under test.
+  - Add AC annotations for `@daemon-test-teardown-boundedness` and existing
+    fixture contract ACs.
+
+  Testing:
+
+  - First run the new tests and observe at least one failure against the
+    current cleanup helper behavior.
+  - After the implementation task, run:
+    `mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts tests/helpers/mock-daemon.test.ts tests/cli-serve.test.ts`.
+
+  Covers: @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return,
+
+  ac-uncooperative-process-stop-is-bounded; @daemon-backed-test-fixture-contract
+
+  ac-scoped-cleanup, ac-no-ambient-daemon-control
+spec_ref: "@daemon-test-teardown-boundedness"
+plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - testing
+  - daemon
+vcs_refs: []
+created_at: 2026-05-12T00:14:54.131Z
+todos: []

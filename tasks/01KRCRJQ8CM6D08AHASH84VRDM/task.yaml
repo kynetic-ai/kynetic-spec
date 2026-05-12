@@ -1,0 +1,66 @@
+_ulid: 01KRCRJQ8CM6D08AHASH84VRDM
+slugs:
+  - task-fix-guardrail-cleanup-boundary-classification
+title: Fix guardrail cleanup-boundary classification
+type: task
+description: >
+  What:
+
+  - Update `tools/eslint-rules/no-leaky-test-daemon.js` so process-lifecycle
+    and global lifecycle hooks do not satisfy scoped cleanup for a daemon
+    started inside a test.
+  - Treat `onTestFinished` and same-flow `try/finally` finalizers as the
+    primary accepted cleanup boundaries for detached daemon starts.
+  - If a test also registers `process.on(...)` as a last-resort fallback, keep
+    it allowed only when a valid per-test cleanup boundary is already present.
+  - Update diagnostics and rule comments that currently describe
+    `process.on("exit"|...)` as valid cleanup.
+
+  Why:
+
+  The guardrail should prevent a daemon from remaining alive into later tests.
+
+  Process shutdown hooks run too late to provide that guarantee.
+
+
+  How:
+
+  - Remove process-exit event names from the predicate that credits cleanup.
+
+  - If useful, add a separate predicate for supplemental process fallbacks so
+    comments and diagnostics can distinguish fallback safety nets from
+    guardrail-satisfying cleanup.
+  - Verify local-disable exception behavior remains localized and
+    behavior-specific.
+
+  Testing:
+
+  - `mise exec -- npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+  tests/lint-daemon-test-guardrails.test.ts`
+
+  - Run the real codebase guardrail validation that greps for
+    `no-leaky-test-daemon` output under `tests/` and classify any remaining
+    hit.
+
+  Covers: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped,
+
+  ac-detached-cleanup-before-observation, ac-local-exception-is-local,
+
+  ac-exception-reason-states-subject
+spec_ref: "@daemon-test-guardrail-precision"
+plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-guardrail-cleanup-boundary-regressions"
+  - "@task-fix-guardrail-cleanup-effect-classification"
+context: []
+priority: 1
+tags:
+  - testing
+  - lint
+  - daemon
+vcs_refs: []
+created_at: 2026-05-12T00:14:53.196Z
+todos: []
