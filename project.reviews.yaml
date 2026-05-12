@@ -207575,6 +207575,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRETZQ7JG53HT4RCSXYEP052
         timestamp: 2026-05-12T19:35:26.578Z
+      - _ulid: 01KREV07W4K97C2AAVDPHJJFDZ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KREV06G8RC7W47EZSRCD3Y93
+        timestamp: 2026-05-12T19:35:42.212Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -207626,7 +207633,26 @@ reviews:
               replaced."
             created_at: 2026-05-12T19:35:25.170Z
         kind: blocker
+      - _ulid: 01KREV06G8RC7W47EZSRCD3Y93
+        anchor:
+          type: structured
+          section: dependencies
+        entries:
+          - _ulid: 01KREV06G8SKAQ0E5343N1AMC5
+            author: Jacob Chapel
+            body: "SHOULD-FIX: The task ordering enables lease producers before the cleanup consumer exists.
+              `task-mark-workspace-provisioning-before-mutation` and
+              `task-record-bootstrap-in-progress-terminal-states` can land before
+              `task-make-artifact-reconciliation-lease-aware`, because the latter depends on both
+              producers. In the normal per-task merge lifecycle, that partial state can write
+              durable leases/bootstrap in_progress states while artifact reconciliation still
+              ignores them, so the cleanup/provisioning race remains possible after tasks that
+              appear to have implemented the protective signal. Consider moving lease-aware cleanup
+              earlier after schema/helper support, or grouping producer + cleanup consumer changes
+              so no merged intermediate state claims durable protection without honoring it."
+            created_at: 2026-05-12T19:35:40.808Z
+        kind: question
     verdicts: []
     created_at: 2026-05-12T19:34:11.039Z
-    updated_at: 2026-05-12T19:35:25.170Z
+    updated_at: 2026-05-12T19:35:40.808Z
     notes: []
