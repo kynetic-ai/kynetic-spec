@@ -296,3 +296,60 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T16:35:42.188Z
+  - _ulid: 01KREJDXD7JJJ2CZ3K2NCQT970
+    content: >-
+      Fix cycle 8: addressed cycle-7 reviewer blockers @01KREG2F8BRMEFB6FN4DM1TJ7Q and
+      @01KREG33WZX33E6PXDS1ACQ1RT on @01KREFK8 review.
+
+
+      Blocker 1 (line 1054 of cycle-7 head): isTrustedHelperByOrigin's free-identifier path returned
+      true unconditionally, silently crediting a bare unimported killPid(pid) call as cleanup. The
+      AC explicitly states helper name alone does not prove daemon termination. Fix: change path 5's
+      `return true` to `return false`. The only positive trust paths are now (1) a
+      locally-inspectable function body that contains a terminating primitive and (3) an import
+      whose resolved path matches APPROVED_HELPER_IMPLEMENTATION_PATTERNS. Every other shape (opaque
+      local, unapproved import, free identifier) returns false. The redundant isHelperNameImported
+      predicate became dead code and was removed. Reviewer probe verified: runKspec(serve start
+      --detach); onTestFinished(() => killPid(pid)) — pre-fix 0 diagnostics, post-fix reports
+      missingCleanup.
+
+
+      Blocker 2 (line 1096 of cycle-7 head): isHelperNameImportedFromApprovedPath checked only the
+      raw module specifier string, so a nested test at tests/e2e/synthetic-test.ts importing {
+      killPid } from './helpers/daemon' was credited even though that specifier resolves to
+      tests/e2e/helpers/daemon (not the canonical shared helper). Fix: new
+      isHelperImportSpecifierApproved (1) keeps APPROVED_HELPER_IMPORT_PATH_PATTERNS as a fast
+      prefilter for relative shapes, (2) resolves the specifier against
+      path.dirname(context.physicalFilename), (3) normalises the resolved path's extension to .ts
+      (specifiers may omit it or use .js for NodeNext), and (4) tests the resolved path against new
+      APPROVED_HELPER_IMPLEMENTATION_PATTERNS (tests/helpers/daemon.ts,
+      tests/helpers/mock-daemon.ts). Reviewer probe verified: tests/e2e/synthetic-test.ts importing
+      ./helpers/daemon now flags; tests/integration/synthetic-test.ts importing ../helpers/daemon
+      (resolves to canonical) still passes.
+
+
+      Regressions: 4 new test cases — bare unimported killPid is flagged, bare unimported stopDaemon
+      is flagged, nested-helper specifier is flagged via runOxlintAt at tests/e2e/synthetic-test.ts,
+      canonical-resolving ../helpers/daemon from tests/integration is accepted. Extended runOxlint
+      into runOxlint+runOxlintAt(relativePath, source) so the path-resolution regressions can anchor
+      the synthetic file at a non-root path.
+
+
+      Knock-on test updates: (a) 6 existing negative tests in
+      tests/lint-no-leaky-test-daemon.test.ts and 3 in tests/lint-daemon-test-guardrails.test.ts
+      used bare unimported killPid — they now import killPid from './helpers/daemon' so they
+      continue to exercise their original walker concern (stored-arrow walker, unrelated
+      fetch/WebSocket URL, etc.) instead of relying on the conservative-trust fallback. (b) The
+      three it.fails tests for process.on("exit"/"beforeExit"/"SIGTERM", ...) flipped to it() per
+      their flip-on-fix-landing protocol — the helper-origin rejection now denies their listener
+      bodies the cleanup-effect credit so the rule flags as expected.
+
+
+      Checks: targeted suites pass (356/356: 128 lint-no-leaky-test-daemon + 228
+      lint-daemon-test-guardrails). Full vitest pass (9136 passed, 5 skipped of 9141, 0 failures,
+      2105.5s). Changed-file oxlint clean (0 errors, 35 pre-existing warnings). kspec validate
+      warnings-only (pre-existing AC annotation warnings unrelated to this fix). All three review
+      threads replied and resolved.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T17:05:53.063Z
