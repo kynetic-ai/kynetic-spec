@@ -18244,6 +18244,21 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-12T03:19:29.868Z
+  - _ulid: 01KRDB3EX33184DYRT6G88BJY6
+    type: friction
+    content: "Reviewing staged regression-only tasks needs an explicit call-site check: a new
+      helper-level it.fails test can appear to cover a wrapper contract even when the real wrapper
+      does not call that helper yet. In @task-add-setup-failure-error-preservation-regressions, full
+      tests were green and the helper regression was annotated for the right AC, but comparing the
+      task's Playwright-wrapper bullets against tests/e2e/fixtures/test-base.ts showed the actual
+      wrapper setup/use paths were still unexercised. Future reviews of fixture/wrapper regressions
+      should verify the tested seam is already on the production/test-wrapper call path, or require
+      a wrapper-unit seam that drives the real lifecycle."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KRDB04"
+    created_at: 2026-05-12T05:38:36.067Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
