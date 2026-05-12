@@ -29419,11 +29419,11 @@ workspaces:
     canonical_branch: dispatch/task/task-implement-bounded-process-stop-primitives/01krcrjr
     canonical_branch_head: e9b7dc1030ff9359f7f4f36e4e1d6ad60d691f2d
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-12T16:55:56.206Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-12T16:55:58.439Z
     health:
       status: healthy
       issues: []
@@ -29437,7 +29437,7 @@ workspaces:
       target_branch: dev
       target_commit: 34a859ddadd1535338f54dfcb0e733a0967df185
       updated_at: 2026-05-12T16:55:56.206Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KRCRJRF7TZVW59Q8ZK9JSS0X"
     task_slug: task-implement-bounded-process-stop-primitives
@@ -29446,7 +29446,7 @@ workspaces:
       last_active_at: 2026-05-12T16:38:10.139Z
       last_reconciled_at: 2026-05-12T16:55:56.206Z
       created_at: 2026-05-12T15:11:49.232Z
-      updated_at: 2026-05-12T16:55:56.206Z
+      updated_at: 2026-05-12T16:55:58.439Z
     workspace_id: dispatch-workspace-01KRCRJRF7TZVW59Q8ZK9JSS0X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
