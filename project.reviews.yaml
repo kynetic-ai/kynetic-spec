@@ -202666,6 +202666,18 @@ reviews:
         runner: npx oxlint
         created_at: 2026-05-12T05:11:56.479Z
         completed_at: 2026-05-12T05:11:56.479Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Two synthetic fixtures were incorrectly accepted with 0 no-leaky-test-daemon diagnostics:
+          local helper default SIGTERM overridden by call-site SIGUSR1, and killPid imported from
+          some-unapproved-package/helpers/daemon. Both should report missing scoped cleanup."
+        name: ad hoc cleanup-effect probes
+        required: true
+        runner: npx oxlint
+        created_at: 2026-05-12T05:12:08.302Z
+        completed_at: 2026-05-12T05:12:08.302Z
     events:
       - _ulid: 01KRD8SMY30TE7JJ337C3BXE69
         actor: Jacob Chapel
@@ -202722,6 +202734,13 @@ reviews:
           status: pass
           name: changed-file oxlint
         timestamp: 2026-05-12T05:11:58.092Z
+      - _ulid: 01KRD9K1NVQ15SR4X2ZXN2CG9H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: ad hoc cleanup-effect probes
+        timestamp: 2026-05-12T05:12:09.659Z
     examined_commit: 40336586e664d485ab1c0a212b94aa7eece9db0d
     external_links: []
     lifecycle_state: open
@@ -202776,5 +202795,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T04:58:17.412Z
-    updated_at: 2026-05-12T05:11:56.479Z
+    updated_at: 2026-05-12T05:12:08.302Z
     notes: []
