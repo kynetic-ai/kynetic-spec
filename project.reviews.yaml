@@ -200760,3 +200760,29 @@ reviews:
     created_at: 2026-05-11T23:40:30.593Z
     updated_at: 2026-05-11T23:41:43.516Z
     notes: []
+  - _ulid: 01KRCS3FRJB8C2C2F1J5RVFJXG
+    slugs: []
+    title: Review tighten daemon guardrail cleanup semantics specs
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRCS3FRH1BN4SPYSWQEDG5WP
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-12T00:24:02.577Z
+    examined_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRCRJP09TGZ629WBSQ093KMF"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-12T00:24:02.578Z
+    updated_at: null
+    notes: []
