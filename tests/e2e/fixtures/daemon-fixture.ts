@@ -73,3 +73,49 @@ export async function startPlaywrightFixtureDaemon(
     registerCleanup: opts.registerCleanup,
   });
 }
+
+export interface DaemonFixtureLifecycleOpts<T> {
+  /**
+   * Setup phase. Constructs and returns the value passed to `use`. May
+   * throw — the helper currently does not own any setup-failure cleanup;
+   * a companion fix task (@task-fix-setup-failure-cleanup-error-preservation)
+   * will move setup under cleanup coverage and wire test-base.ts to use this
+   * helper.
+   */
+  setup: () => Promise<T>;
+  /**
+   * Use phase. Mirrors the body of a Playwright test fixture's `await use(...)`
+   * call. If this throws, the surfaced error is the primary failure that
+   * must be preserved even when `teardown` also fails.
+   */
+  use: (started: T) => Promise<void>;
+  /**
+   * Teardown phase. Always runs after `use` regardless of whether `use`
+   * threw. A throw from teardown must not replace a primary error from
+   * `setup` or `use`.
+   */
+  teardown: () => Promise<void>;
+}
+
+/**
+ * Run a daemon-backed fixture's setup → use → teardown lifecycle.
+ *
+ * Mirrors the wrapper pattern at `tests/e2e/fixtures/test-base.ts` so the
+ * use-error preservation contract can be exercised at the unit level without
+ * pulling in `@playwright/test`. The body deliberately uses the same simple
+ * `try/finally` shape as the current wrapper: pre-fix, a teardown throw
+ * replaces a primary use/setup error under JS try/finally semantics. The
+ * companion fix task introduces explicit primary-error preservation (cause
+ * chaining or `AggregateError`) here and refactors `test-base.ts` to delegate
+ * to this helper.
+ */
+export async function runDaemonFixtureLifecycle<T>(
+  opts: DaemonFixtureLifecycleOpts<T>,
+): Promise<void> {
+  const started = await opts.setup();
+  try {
+    await opts.use(started);
+  } finally {
+    await opts.teardown();
+  }
+}

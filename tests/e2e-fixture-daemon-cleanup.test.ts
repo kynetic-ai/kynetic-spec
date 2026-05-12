@@ -20,6 +20,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  runDaemonFixtureLifecycle,
   startPlaywrightFixtureDaemon,
   type StartTestDaemonImpl,
 } from "./e2e/fixtures/daemon-fixture.js";
@@ -227,4 +228,136 @@ describe("startPlaywrightFixtureDaemon — cleanup registration contract", () =>
       KSPEC_TEST_RUNTIME: "node",
     });
   });
+});
+
+describe("runDaemonFixtureLifecycle — primary error preservation", () => {
+  // Positive contract: the lifecycle helper runs setup → use → teardown in
+  // order on the success path. The fix task will refactor `test-base.ts` to
+  // delegate to this helper, so wiring success-path ordering here protects
+  // the wrapper's lifecycle contract from accidental regressions.
+  // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
+  it("invokes setup, use, and teardown in order on the success path", async () => {
+    const order: string[] = [];
+    await runDaemonFixtureLifecycle<{ token: number }>({
+      setup: async () => {
+        order.push("setup");
+        return { token: 42 };
+      },
+      use: async (started) => {
+        order.push(`use:${started.token}`);
+      },
+      teardown: async () => {
+        order.push("teardown");
+      },
+    });
+
+    expect(order).toEqual(["setup", "use:42", "teardown"]);
+  });
+
+  // Positive contract: teardown still runs when only the use phase throws,
+  // even before the primary-error-preservation fix lands. The wrapper today
+  // already guarantees this via JS try/finally semantics; without this
+  // assertion a regression that swallows the use error AND skips teardown
+  // would slip past the more specific it.fails regression below.
+  // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
+  it("runs teardown when use throws even if teardown succeeds", async () => {
+    let teardownRan = false;
+    const useSentinel = "use-only failure sentinel";
+
+    let thrown: unknown = null;
+    try {
+      await runDaemonFixtureLifecycle<void>({
+        setup: async () => {},
+        use: async () => {
+          throw new Error(useSentinel);
+        },
+        teardown: async () => {
+          teardownRan = true;
+        },
+      });
+    } catch (error) {
+      thrown = error;
+    }
+
+    expect(teardownRan).toBe(true);
+    expect(thrown).toBeInstanceOf(Error);
+    expect((thrown as Error).message).toContain(useSentinel);
+  });
+
+  // STAGED REGRESSION (vitest `it.fails`): documents the use-error
+  // replacement gap that exists in the wrapper at
+  // `tests/e2e/fixtures/test-base.ts` today. The current `runDaemonFixtureLifecycle`
+  // body is a plain `try { use() } finally { teardown() }`, so when both
+  // `use()` and `teardown()` throw, JS try/finally semantics drop the
+  // primary use error and surface the teardown error instead — exactly the
+  // failure mode @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
+  // calls out for the test-body path.
+  //
+  // Pre-fix: at least one assertion below fails because the surfaced error
+  // does not reference the use sentinel. `it.fails` reports the expected
+  // failure as PASS so the merge gate stays green while this regression
+  // sits ahead of @task-fix-setup-failure-cleanup-error-preservation.
+  //
+  // Post-fix: the helper will capture the use error, run teardown, then
+  // re-raise the use error with the teardown error attached (cause chain
+  // or AggregateError per the fix task's chosen shape). All assertions
+  // will pass, `it.fails` will then report this as FAIL, and the fix task
+  // flips it back to a regular `it(...)`.
+  // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
+  // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
+  it.fails(
+    "preserves the use-phase primary error when teardown also fails",
+    async () => {
+      const useSentinel = "use-phase primary error sentinel";
+      const teardownSentinel = "teardown failure sentinel";
+      let teardownRan = false;
+
+      let thrown: unknown = null;
+      try {
+        await runDaemonFixtureLifecycle<void>({
+          setup: async () => {},
+          use: async () => {
+            throw new Error(useSentinel);
+          },
+          teardown: async () => {
+            teardownRan = true;
+            throw new Error(teardownSentinel);
+          },
+        });
+      } catch (error) {
+        thrown = error;
+      }
+
+      // Teardown still ran — the helper must not skip cleanup just because
+      // `use()` threw. This part holds pre-fix and protects the JS
+      // try/finally guarantee against regressions in the helper structure.
+      expect(teardownRan).toBe(true);
+
+      // ac-cleanup-errors-preserve-primary-failure (use path): the surfaced
+      // error must be the use-phase failure. Pre-fix this fails because JS
+      // try/finally lets the teardown throw escape and the use error is
+      // discarded.
+      expect(thrown).toBeInstanceOf(Error);
+      const error = thrown as Error;
+      expect(error.message).toContain(useSentinel);
+
+      // Post-fix: the teardown failure must remain discoverable from the
+      // surfaced error — as message text, `error.cause`, or an entry in
+      // an AggregateError. Pre-fix the surfaced error is the teardown
+      // error itself, so the use sentinel is missing from every channel
+      // and the assertion above already fails.
+      const surfacedText = [
+        error.message,
+        (error as { cause?: unknown }).cause instanceof Error
+          ? ((error as { cause: Error }).cause).message
+          : "",
+        error instanceof AggregateError
+          ? error.errors
+              .map((e) => (e instanceof Error ? e.message : String(e)))
+              .join(" ")
+          : "",
+      ].join(" ");
+      expect(surfacedText).toContain(teardownSentinel);
+    },
+  );
 });
