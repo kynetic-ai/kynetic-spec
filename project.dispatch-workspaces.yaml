@@ -29787,12 +29787,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T17:37:52.208Z
+      updated_at: 2026-05-12T17:38:00.412Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T17:37:52.208Z
+      updated_at: 2026-05-12T17:38:00.412Z
     integration:
       status: pending
       detail: null
@@ -29800,17 +29800,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
-      updated_at: 2026-05-12T17:37:52.208Z
-    lifecycle_state: ready
+      updated_at: 2026-05-12T17:38:00.412Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRCRJS2M4VVME99W9ACV8JAE"
     task_slug: task-fix-active-request-teardown-and-observation-bounds
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T17:10:45.347Z
-      last_reconciled_at: 2026-05-12T17:37:52.208Z
+      last_reconciled_at: 2026-05-12T17:38:00.412Z
       created_at: 2026-05-12T17:10:20.301Z
-      updated_at: 2026-05-12T17:37:52.208Z
+      updated_at: 2026-05-12T17:38:00.412Z
     workspace_id: dispatch-workspace-01KRCRJS2M4VVME99W9ACV8JAE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
