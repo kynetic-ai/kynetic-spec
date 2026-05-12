@@ -46922,9 +46922,23 @@ runs:
     started_at: 2026-05-12T08:00:19.357Z
   - _ulid: 01KRDKQ89QPHEQ5S5QS6BYBA2W
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-12T08:09:13.271Z
+        completed_at: 2026-05-12T08:09:59.685Z
+        notes: "What worked: (1) Built a standalone Node.js repro harness driving the same 5-worker
+          contention as tests/file-lock.test.ts outside vitest — caught the 1/200 race in seconds,
+          much faster than running the full vitest harness in a loop. (2) Hypothesis-driven
+          debugging: traced fs.writeFile's internal open/write/close → predicted the empty-file
+          window → confirmed via repro. (3) The atomic temp+rename pattern is a well-established
+          solution for this exact problem; no inventive design needed."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-12T08:09:59.685Z
+        completed_at: 2026-05-12T08:09:59.685Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T08:09:13.271Z
