@@ -202430,3 +202430,29 @@ reviews:
     created_at: 2026-05-12T04:12:12.932Z
     updated_at: 2026-05-12T04:24:02.860Z
     notes: []
+  - _ulid: 01KRD7N9EQB9RHPWT2KHDQBQPH
+    slugs: []
+    title: Review active-request and bounded-observation teardown regressions
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRD7N9EP5WY695HDEQ6JWAZK
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-12T04:38:26.007Z
+    examined_commit: 9200a23d698d381592a60d9c0419f877d77b19ac
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRCRJRRRS4WDVC1VQQW5GK25"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-12T04:38:26.007Z
+    updated_at: null
+    notes: []
