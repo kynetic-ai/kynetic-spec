@@ -205017,6 +205017,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-12T16:09:46.689Z
+      - _ulid: 01KREF7VA4RNSRNV0HE6TWASYM
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KREF7SYYK22M7DKE1YX2Z86D
+        timestamp: 2026-05-12T16:10:08.581Z
     examined_commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
     external_links: []
     lifecycle_state: open
@@ -205026,8 +205033,27 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJRF7TZVW59Q8ZK9JSS0X"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KREF7SYYK22M7DKE1YX2Z86D
+        anchor:
+          type: code
+          commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
+          line_end: 669
+          line_start: 669
+          path: tests/cli-serve.test.ts
+          side: head
+        entries:
+          - _ulid: 01KREF7SYYN8ZQS9MF2DZD4J40
+            author: Jacob Chapel
+            body: "MUST-FIX: killPid() now returns the bounded stop promise, but this onTestFinished callback
+              drops it. Vitest treats teardown as complete immediately, so if this failure-path
+              cleanup runs, the detached daemon stop is no longer awaited/observed and any
+              BoundedProcessStopError is detached from the cleanup lifecycle. Return or await the
+              killPid(stalePid) promise so teardown does not report complete before termination is
+              observed."
+            created_at: 2026-05-12T16:10:07.198Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T15:54:04.568Z
-    updated_at: 2026-05-12T16:09:45.097Z
+    updated_at: 2026-05-12T16:10:07.198Z
     notes: []
