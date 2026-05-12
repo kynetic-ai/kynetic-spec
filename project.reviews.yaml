@@ -205212,6 +205212,17 @@ reviews:
         runner: oxlint
         created_at: 2026-05-12T16:34:32.217Z
         completed_at: 2026-05-12T16:34:32.217Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run lint failed with 13 errors and 721 warnings across existing repository lint
+          backlog; changed-file oxlint has 0 errors.
+        name: repository lint
+        required: false
+        runner: npm
+        created_at: 2026-05-12T16:34:46.214Z
+        completed_at: 2026-05-12T16:34:46.214Z
     events:
       - _ulid: 01KREFK8YRPCTQTBS1F9VS8GRM
         actor: Jacob Chapel
@@ -205268,6 +205279,13 @@ reviews:
           status: pass
           name: changed-file oxlint
         timestamp: 2026-05-12T16:34:33.586Z
+      - _ulid: 01KREGMZPCEMBMRGDCYQWBS75S
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: repository lint
+        timestamp: 2026-05-12T16:34:47.628Z
     examined_commit: 7c486bc61439fc86e9d39f39230c78379b4c9c48
     external_links: []
     lifecycle_state: open
@@ -205321,5 +205339,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T16:16:23.000Z
-    updated_at: 2026-05-12T16:34:32.217Z
+    updated_at: 2026-05-12T16:34:46.214Z
     notes: []
