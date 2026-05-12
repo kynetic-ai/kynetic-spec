@@ -9,16 +9,46 @@
  */
 import { describe, expect, it, onTestFinished } from "vitest";
 import type { ChildProcess } from "node:child_process";
-import { existsSync, statSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { chmodSync, existsSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { basename, dirname, join } from "node:path";
 
 import {
   buildDaemonChildEnv,
   createTestDaemonProject,
   DaemonReadinessError,
   startTestDaemon,
+  type CreateTestDaemonProjectStage,
 } from "./daemon.js";
-import { readTestOutputSync } from "./cli.js";
+import { cleanupTempDir, createTempDir, readTestOutputSync } from "./cli.js";
+
+/**
+ * Synthetic uncooperative-child source for bounded-stop contract tests.
+ *
+ * Installs no-op SIGTERM / SIGINT / SIGHUP handlers so the only signal that
+ * actually terminates the process is SIGKILL, then writes one ready line to
+ * stdout. The test waits for that line before sending any signals — without
+ * the handshake, a too-fast SIGTERM races the script's signal-handler
+ * installation and hits the default terminate action, masking the bug
+ * under test.
+ */
+const UNCOOPERATIVE_CHILD_SOURCE = `#!/usr/bin/env node
+process.on("SIGTERM", () => { /* swallow */ });
+process.on("SIGINT", () => { /* swallow */ });
+process.on("SIGHUP", () => { /* swallow */ });
+process.stdout.write("ready\\n");
+setInterval(() => {}, 60_000);
+`;
+
+/** Probe whether a process is still alive without sending a real signal. */
+function isProcessAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 describe("buildDaemonChildEnv", () => {
   // AC: @daemon-backed-test-fixture-contract ac-no-ambient-daemon-control
@@ -715,5 +745,432 @@ describe(
         }
       }
     });
+  },
+);
+
+/**
+ * Selective expected-failure helper for the bounded process-stop bug in
+ * `killChildScoped` (tests/helpers/daemon.ts): the helper resolves from
+ * the graceful-timer callback synchronously after `child.kill("SIGKILL")`,
+ * before libuv has fired the child's 'exit' event. The parent handle
+ * still has `exitCode === null` and `signalCode === null` at that moment.
+ *
+ * Bug-shape differentiator: handle has BOTH exitCode and signalCode null
+ * after stop() returns. After the fix, at least one is non-null.
+ *
+ * Behavior:
+ *  1. Run the post-fix assertion (handle has observed exit).
+ *  2. If it throws today (expected pre-fix), re-assert the EXACT bug
+ *     shape: BOTH exitCode AND signalCode are null. A different failure
+ *     mode (e.g. child already exited cooperatively) re-throws and fails
+ *     the test, preserving selectivity.
+ *  3. If it succeeds (post-fix), throw an explicit "remove this wrapper"
+ *     sentinel so the implementation task is forced to inline the
+ *     assertion and delete the helper as part of the fix.
+ *
+ * The wrapper is intentionally bug-shape-specific (killChildScoped's
+ * timer-callback resolution only) — remove when the helper fix lands.
+ */
+function expectKillChildScopedMissesExitObservation(child: ChildProcess): void {
+  let postFixSucceeded = false;
+  try {
+    expect(
+      child.exitCode !== null || child.signalCode !== null,
+      "post-fix: stop() must not resolve until child exit observed " +
+        `(exitCode=${child.exitCode} signalCode=${child.signalCode})`,
+    ).toBe(true);
+    postFixSucceeded = true;
+  } catch (postFixError) {
+    // Selective re-assertion of the EXACT current bug shape. If exit
+    // happened to fire before this check (e.g. cooperative child, fast
+    // CI), only ONE of exitCode/signalCode would be non-null and the
+    // re-assertion would fail — propagating a real failure.
+    expect(
+      child.exitCode === null && child.signalCode === null,
+      `bug-shape mismatch: pre-fix expects both exitCode AND signalCode null on the handle, but exitCode=${child.exitCode} signalCode=${child.signalCode}. Underlying assertion: ${
+        postFixError instanceof Error ? postFixError.message : String(postFixError)
+      }`,
+    ).toBe(true);
+    return;
+  }
+  if (postFixSucceeded) {
+    throw new Error(
+      "STAGED REGRESSION CLOSED: killChildScoped now observes child exit " +
+        "before resolving. Inline the post-fix assertion and remove " +
+        "expectKillChildScopedMissesExitObservation from " +
+        "tests/helpers/daemon.test.ts. See " +
+        "@task-implement-bounded-process-stop-primitives.",
+    );
+  }
+}
+
+describe(
+  "startTestDaemon stop() observes termination before return",
+  { timeout: 30_000 },
+  () => {
+    // STAGED REGRESSION (selective expected-failure via
+    // expectKillChildScopedMissesExitObservation): documents the
+    // bounded-stop bug in killChildScoped while keeping the required
+    // suite green so this task can merge ahead of the helper fix in
+    // @task-implement-bounded-process-stop-primitives.
+    //
+    // Pre-fix: killChildScoped resolves from the graceful-timer
+    // callback synchronously after kill("SIGKILL"), before the child's
+    // 'exit' event fires. The wrapper catches the failing post-fix
+    // assertion and re-asserts the bug shape (both exitCode AND
+    // signalCode null). Post-fix: helper observes exit before resolving;
+    // wrapper throws "remove this wrapper" sentinel, forcing the
+    // implementation task to inline the assertion.
+    //
+    // bare `it.fails()` is rejected as too permissive (@01KR3ZR8):
+    // any thrown assertion satisfies the marker. The selective wrapper
+    // (@01KR431R) re-asserts the EXACT current bug shape so an
+    // unrelated failure mode propagates as a real failure.
+    // AC: @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return
+    // AC: @daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded
+    // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+    // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+    // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+    it(
+      "does not resolve until an uncooperative child has been observed terminated",
+      async () => {
+        if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
+          throw new Error(
+            "dist/daemon/index.js missing — run 'npm run build:daemon' before tests",
+          );
+        }
+        const scriptDir = await createTempDir("kspec-uncooperative-daemon-");
+        onTestFinished(async () => {
+          await cleanupTempDir(scriptDir);
+        });
+        const synthPath = join(scriptDir, "uncooperative-daemon.cjs");
+        writeFileSync(synthPath, UNCOOPERATIVE_CHILD_SOURCE);
+        chmodSync(synthPath, 0o755);
+
+        const project = await createTestDaemonProject();
+        onTestFinished(async () => {
+          await project.cleanup();
+        });
+
+        // Capture the spawned child handle via the synchronous observer
+        // seam so the test can assert on the OS-visible pid after stop()
+        // returns. The probe waits for the synth's stdout handshake so
+        // we never race SIGTERM against the script's signal-handler
+        // installation (without the handshake a too-fast SIGTERM hits
+        // the default terminate action and masks the bug under test).
+        let observed: { child: ChildProcess; pid: number } | null = null;
+        const started = await startTestDaemon(project, {
+          __testBinaryOverride: synthPath,
+          readiness: {
+            mode: "custom",
+            probe: (ctx) => {
+              const stdoutText = ctx.stdoutTail();
+              if (ctx.child.exitCode !== null || ctx.child.signalCode !== null) {
+                return { ok: false, details: `synth child exited unexpectedly` };
+              }
+              if (!stdoutText.includes("ready")) {
+                return { ok: false, details: `awaiting synth ready handshake` };
+              }
+              return { ok: true, details: "synth ready" };
+            },
+          },
+          timeoutMs: 5_000,
+          intervalMs: 50,
+          __testObserveSpawn: ({ child }) => {
+            observed = { child, pid: child.pid ?? -1 };
+          },
+          registerCleanup: () => {
+            /* test owns stop() lifecycle directly */
+          },
+        });
+
+        expect(observed).not.toBeNull();
+        const captured = observed as unknown as { child: ChildProcess; pid: number };
+        expect(captured.pid).toBeGreaterThan(0);
+        expect(isProcessAlive(captured.pid)).toBe(true);
+
+        // Belt-and-suspenders: if the helper bug leaves the synthetic
+        // child alive after stop() resolves, force-kill it on test exit
+        // so the regression cannot strand an uncooperative process.
+        onTestFinished(() => {
+          if (isProcessAlive(captured.pid)) {
+            try {
+              process.kill(captured.pid, "SIGKILL");
+            } catch {
+              /* already gone */
+            }
+          }
+        });
+
+        const stopStartedAt = Date.now();
+        await started.stop();
+        const elapsed = Date.now() - stopStartedAt;
+
+        // ac-stop-observes-termination-before-return — selective
+        // expected-failure: pre-fix asserts the bug shape (BOTH
+        // exitCode AND signalCode null because killChildScoped resolved
+        // from the timer callback before libuv fired the exit event);
+        // post-fix asserts the contract (exit observed on the handle)
+        // and forces wrapper removal. The pid-liveness check is racy
+        // pre-fix (kernel may or may not have actually delivered the
+        // queued SIGKILL by the time we probe) and is therefore not
+        // part of the bug shape — handle observation is the only
+        // deterministic differentiator. See
+        // expectKillChildScopedMissesExitObservation above.
+        expectKillChildScopedMissesExitObservation(started.child);
+
+        // ac-uncooperative-process-stop-is-bounded: helper must reach
+        // a bounded outcome. 15s is generous enough for slow CI
+        // without masking a regression that hangs the wait. Pre-fix
+        // returns near-instantly from the timer callback; post-fix
+        // returns within the graceful window plus libuv exit
+        // observation — both well under 15s.
+        expect(elapsed).toBeLessThan(15_000);
+
+        // Idempotent stop after observation.
+        await started.stop();
+      },
+    );
+  },
+);
+
+describe("createTestDaemonProject setup-failure cleanup", () => {
+  // STAGED REGRESSION (vitest `it.fails`): documents the partial-resource leak
+  // in createTestDaemonProject when a setup step fails after the temp project
+  // directory has already been created. With the helper as-shipped today,
+  // throwing from a stage hook bubbles straight out of the function — the
+  // tempDir is never removed because there is no setup-failure cleanup
+  // wrapper around the steps that own resources. `it.fails` reports the
+  // expected leak assertion failure as PASS so the merge gate stays green
+  // while this regression sits ahead of the helper fix
+  // (@task-fix-setup-failure-cleanup-error-preservation).
+  //
+  // Post-fix contract: the helper will record each owned resource as it is
+  // claimed (temp dir, shadow worktree pointer, isolated HOME) and roll back
+  // already-claimed resources when a later step throws. The assertion below
+  // will then pass, `it.fails` will report it as FAIL, and the implementation
+  // task will flip the wrapper back to a regular `it(...)` to pin normal
+  // post-fix behavior.
+
+  for (const stage of [
+    "after-shadow-detection",
+    "after-isolated-home",
+  ] as const satisfies readonly CreateTestDaemonProjectStage[]) {
+    // AC: @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources
+    // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+    // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+    it.fails(
+      `removes the owned temp project when a setup step fails at ${stage}`,
+      async () => {
+        const sentinel = `setup failure sentinel for ${stage}`;
+        // Capture the tempDir path via the first hook call so the test can
+        // assert it was removed even though the helper never returned a
+        // project handle. Without this, the failing call leaks the path —
+        // there is no other observation channel.
+        let observedTempDir: string | null = null;
+
+        let thrown: unknown = null;
+        try {
+          await createTestDaemonProject({
+            skipFixtures: true,
+            __testStageHook: (currentStage) => {
+              if (currentStage === "after-temp-dir") {
+                // The helper calls the hook synchronously right after
+                // createTempDir resolves, so the directory exists on disk at
+                // hook time. We capture the freshest matching entry under
+                // tmpdir() so the test can assert on cleanup even though the
+                // helper never returns a project handle to inspect.
+                const parent = tmpdir();
+                const prefix = basename("kspec-daemon-fixture-");
+                let newest: { name: string; mtimeMs: number } | null = null;
+                for (const name of readdirSync(parent)) {
+                  if (!name.startsWith(prefix)) continue;
+                  try {
+                    const fullPath = join(parent, name);
+                    const stat = statSync(fullPath);
+                    if (!stat.isDirectory()) continue;
+                    if (!newest || stat.mtimeMs > newest.mtimeMs) {
+                      newest = { name, mtimeMs: stat.mtimeMs };
+                    }
+                  } catch {
+                    // Directory may have been cleaned up by a sibling test.
+                  }
+                }
+                if (newest) {
+                  observedTempDir = join(parent, newest.name);
+                }
+              }
+              if (currentStage === stage) {
+                throw new Error(sentinel);
+              }
+            },
+          });
+        } catch (error) {
+          thrown = error;
+        }
+
+        // The helper must propagate the simulated step failure verbatim — the
+        // contract is about cleanup, not error wrapping.
+        expect(thrown).toBeInstanceOf(Error);
+        expect((thrown as Error).message).toContain(sentinel);
+
+        // The "after-temp-dir" hook captured the tempDir path — the helper
+        // owned this resource at the moment a later step failed.
+        expect(observedTempDir).not.toBeNull();
+        const tempDirAtFailure = observedTempDir as unknown as string;
+
+        // ac-setup-failure-cleans-owned-resources — the helper must roll
+        // back the owned temp dir when a later setup step fails before the
+        // caller receives the project handle. Pre-fix, the directory still
+        // exists; post-fix it is removed.
+        const stillExists = existsSync(tempDirAtFailure);
+
+        // Safety net: even with `it.fails` masking the failure, force-remove
+        // the leaked directory so this regression cannot accumulate temp
+        // directories across runs. With the fix in place the helper will
+        // already have removed it and this branch is a no-op.
+        if (stillExists) {
+          try {
+            rmSync(tempDirAtFailure, { recursive: true, force: true });
+          } catch {
+            // Best effort: another concurrent cleanup may have removed it.
+          }
+        }
+
+        expect(
+          stillExists,
+          `tempDir ${tempDirAtFailure} must be removed after setup failure at ${stage}`,
+        ).toBe(false);
+      },
+    );
+  }
+});
+
+describe(
+  "startTestDaemon readiness failure preserves primary error when stop also fails",
+  { timeout: 60_000 },
+  () => {
+    // STAGED REGRESSION (vitest `it.fails`): documents the primary-error
+    // replacement gap in startTestDaemon's readiness-failure catch block.
+    // The catch currently does `await stop(); throw new DaemonReadinessError(...)`,
+    // so if `stop()` throws, JS evaluation order means the stop error escapes
+    // and the DaemonReadinessError is never constructed — the caller loses
+    // the actionable readiness diagnostic.
+    //
+    // Pre-fix: the stop error replaces the DaemonReadinessError, so the
+    // assertion that `thrown instanceof DaemonReadinessError` fails.
+    // `it.fails` reports that expected failure as PASS so the merge gate
+    // stays green ahead of @task-fix-setup-failure-cleanup-error-preservation.
+    //
+    // Post-fix: the helper preserves the readiness diagnostic as the primary
+    // error and attaches the stop failure as suppressed context (cause chain
+    // or AggregateError, per the fix task's chosen shape). `it.fails` will
+    // then report this test as FAIL, signaling the fix to flip it back to a
+    // regular `it(...)`.
+    //
+    // The body still asserts the full contract (primary surfaces the
+    // readiness diagnostic, the surfaced error references the stop failure
+    // somehow) so the staged regression captures every facet the dependent
+    // fix must preserve.
+    // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
+    // AC: @daemon-backed-test-fixture-contract ac-readiness-diagnostics
+    // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+    // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+    it.fails(
+      "surfaces DaemonReadinessError as primary even when stop() throws",
+      async () => {
+        if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
+          throw new Error(
+            "dist/daemon/index.js missing — run 'npm run build:daemon' before tests",
+          );
+        }
+        const project = await createTestDaemonProject();
+        onTestFinished(async () => {
+          await project.cleanup();
+        });
+
+        const stopSentinel = new Error("simulated stop failure during readiness teardown");
+        let registeredStop: (() => Promise<void>) | null = null;
+        let capturedChild: ChildProcess | null = null;
+        let thrown: unknown = null;
+
+        try {
+          await startTestDaemon(project, {
+            // Always-false probe so readiness times out even though the
+            // daemon itself is healthy.
+            readiness: {
+              mode: "custom",
+              probe: (ctx) => {
+                capturedChild = ctx.child;
+                return { ok: false, details: "intentional probe rejection" };
+              },
+            },
+            timeoutMs: 600,
+            intervalMs: 50,
+            __testStopFailure: stopSentinel,
+            registerCleanup: (stop) => {
+              registeredStop = stop;
+            },
+          });
+        } catch (error) {
+          thrown = error;
+        }
+
+        // Always drive the registered stop on cleanup — the `stopped` flag
+        // inside the helper makes this idempotent and silent even when the
+        // first call already threw `__testStopFailure`.
+        onTestFinished(async () => {
+          if (registeredStop) {
+            try {
+              await registeredStop();
+            } catch {
+              // The first stop invocation may have thrown the sentinel.
+              // Subsequent calls are guarded by `stopped` and are no-ops.
+            }
+          }
+          // Defensive: if a future regression bypasses the `stopped` guard,
+          // make sure the child does not leak across tests.
+          if (
+            capturedChild &&
+            (capturedChild as ChildProcess).exitCode === null &&
+            (capturedChild as ChildProcess).signalCode === null
+          ) {
+            try {
+              (capturedChild as ChildProcess).kill("SIGKILL");
+            } catch {
+              // Already dead.
+            }
+          }
+        });
+
+        // ac-cleanup-errors-preserve-primary-failure — the helper must
+        // surface the readiness diagnostic as the primary failure even
+        // though `stop()` threw the sentinel during the failure-path catch.
+        // Pre-fix this assertion fails: the surfaced error is the sentinel
+        // (a plain Error), not a DaemonReadinessError, because JS try/finally
+        // semantics let the stop throw escape and abort the
+        // `throw new DaemonReadinessError(...)` that followed it.
+        expect(thrown).toBeInstanceOf(DaemonReadinessError);
+
+        // Post-fix: the stop failure must remain discoverable from the
+        // surfaced error — either as `error.cause`, as an entry in an
+        // AggregateError, or as supplementary message text. The exact
+        // shape is the fix task's choice; the contract is just that the
+        // information is preserved.
+        const error = thrown as Error;
+        const surfacedText = [
+          error.message,
+          (error as { cause?: unknown }).cause instanceof Error
+            ? ((error as { cause: Error }).cause).message
+            : "",
+          error instanceof AggregateError
+            ? error.errors
+                .map((e) => (e instanceof Error ? e.message : String(e)))
+                .join(" ")
+            : "",
+        ].join(" ");
+        expect(surfacedText).toContain(stopSentinel.message);
+      },
+    );
   },
 );
