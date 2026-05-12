@@ -1,1 +1,30 @@
-notes: []
+notes:
+  - _ulid: 01KRF62F18PCQHD9PCH00XZVRV
+    content: >-
+      Added 3 cleanup-policy ACs verbatim from task spec via batch (atomic shadow commit):
+
+      - ac-active-inflight-provisioning-artifact-preserved: preserve active/in-flight/provisioning
+      artifacts across all surfaces (worktree, reviewer snapshot, root dir, dispatch branch).
+
+      - ac-protection-applies-to-every-destructive-surface: same protected task/workspace yields
+      same preserve outcome regardless of cleanup surface.
+
+      - ac-ambiguous-protection-blocks-blind-deletion: when protection state cannot be trusted,
+      reconstruct/reattach, block with actionable guidance, or proceed only after policy classifies
+      metadata as untrusted.
+
+
+      Set @dispatch-workspace-cleanup-policy implementation status to in_progress with --no-cascade
+      (was already in_progress; refreshed idempotently). Per the plan, these ACs describe behaviors
+      not yet implemented; subsequent Phase 2/3 tasks
+      (@task-centralize-dispatch-artifact-protection-decisions,
+      @task-include-inflight-spawn-refs-in-cleanup-inputs,
+      @task-apply-protection-policy-across-artifact-reconciliation) will deliver the implementation
+      and behavioral test coverage, so this spec-only task adds no production code or tests.
+
+
+      Verified via kspec item get @dispatch-workspace-cleanup-policy — all three new ACs present
+      with exact wording, ids, and implementation status in_progress.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T22:49:09.416Z
