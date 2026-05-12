@@ -201822,7 +201822,66 @@ reviews:
     slugs: []
     title: Review fix guardrail cleanup-effect classification
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2419 test suites passed; 9045 passed, 5 skipped; duration 2103.4s; log
+          /tmp/kspec-test-cache/01KRD37BDYY29NX7QN9WBYNT0C/40ce492de766b8f2.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T03:36:17.761Z
+        completed_at: 2026-05-12T03:36:17.761Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+          tests/lint-daemon-test-guardrails.test.ts passed: 289 tests passed in 65.8s."
+        name: targeted daemon lint tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-12T03:36:21.483Z
+        completed_at: 2026-05-12T03:36:21.483Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate reported 'Validation passed' with exit 6 due existing warnings: 7
+          reference warnings, 39 alignment warnings, 254 completeness warnings. No schema/reference
+          errors."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-12T03:36:24.988Z
+        completed_at: 2026-05-12T03:36:24.988Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full lint exited 1 with 13 errors and 721 warnings in unrelated repo files. Changed-file
+          lint on tools/eslint-rules/no-leaky-test-daemon.js and
+          tests/lint-no-leaky-test-daemon.test.ts had 0 errors, 32 warnings.
+        name: npm run lint
+        required: false
+        runner: oxlint
+        created_at: 2026-05-12T03:36:28.510Z
+        completed_at: 2026-05-12T03:36:28.510Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Two custom oxlint probes produced 0 errors when they should report missing cleanup: (1)
+          import { killPid } from './fake-cleanup'; onTestFinished(() => killPid(pid)); (2) const
+          fake = { kill() { console.log('noop'); } }; onTestFinished(() => fake.kill()).
+          Approved-helper import control also produced 0 errors as expected."
+        name: ad hoc cleanup-effect probes
+        required: true
+        runner: npx oxlint custom fixtures
+        created_at: 2026-05-12T03:36:32.027Z
+        completed_at: 2026-05-12T03:36:32.027Z
     events:
       - _ulid: 01KRD39YH874NPZB4CWABM9D05
         actor: Jacob Chapel
@@ -201837,17 +201896,155 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T03:22:41.965Z
+      - _ulid: 01KRD43J1NANPYVJGAX8CA17FG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-12T03:36:19.253Z
+      - _ulid: 01KRD43NH1PRXXFJNCXR1BBD8T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon lint tests
+        timestamp: 2026-05-12T03:36:22.817Z
+      - _ulid: 01KRD43S03NG5EXZY99SKASNHV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-12T03:36:26.371Z
+      - _ulid: 01KRD43WE2Y3CZXK6DTZTNG18A
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm run lint
+        timestamp: 2026-05-12T03:36:29.890Z
+      - _ulid: 01KRD43ZV5TT3KGGW2N21WQDKV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: ad hoc cleanup-effect probes
+        timestamp: 2026-05-12T03:36:33.381Z
+      - _ulid: 01KRD4436Y181JS0MQ7AP86V2K
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRD441X6Y1SB215H8MTK5TMG
+        timestamp: 2026-05-12T03:36:36.830Z
+      - _ulid: 01KRD446KC95319KA0B2P4V922
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRD445ARG2EN4FN1KYXK80PM
+        timestamp: 2026-05-12T03:36:40.300Z
+      - _ulid: 01KRD449ZJ1KWBX64GXPTAT57Y
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRD448MQ078041DNX9KB4K12
+        timestamp: 2026-05-12T03:36:43.762Z
+      - _ulid: 01KRD44DB6KDEMZETQEFSJBN8F
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T03:36:47.206Z
+      - _ulid: 01KRD44DB63CRZ4MGYCRE9MDE4
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T03:36:47.206Z
     examined_commit: 8450ce07dd2c02ef2786561e0c03f524655893ec
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KRD441X6Y1SB215H8MTK5TMG
+        anchor:
+          type: code
+          commit: 8450ce07dd2c02ef2786561e0c03f524655893ec
+          line_end: 719
+          line_start: 713
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KRD441X63BSARAJ36SC17N5G
+            author: Jacob Chapel
+            body: "MUST-FIX: Unapproved imported cleanup helpers are still trusted by name.
+              `isTrustedHelperByOrigin` checks approved import paths, checks local function
+              declarations, then falls through to `true`. A visible import from an unapproved module
+              is neither approved nor locally inspectable, but it is currently treated as a free
+              helper. I verified this with an oxlint probe containing `import { killPid } from
+              './fake-cleanup'` and `onTestFinished(() => killPid(pid))`; the rule returned 0
+              errors. That violates `@daemon-test-guardrail-precision
+              ac-cleanup-helper-origin-is-trusted` because a helper that is not one of the approved
+              cleanup primitives can still satisfy cleanup by name alone."
+            created_at: 2026-05-12T03:36:35.494Z
+        kind: blocker
+      - _ulid: 01KRD445ARG2EN4FN1KYXK80PM
+        anchor:
+          type: code
+          commit: 8450ce07dd2c02ef2786561e0c03f524655893ec
+          line_end: 592
+          line_start: 589
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KRD445ARRXTXVGHH4S9JZEE1
+            author: Jacob Chapel
+            body: "MUST-FIX: The child-handle branch accepts any non-`process` `.kill()` call with no signal,
+              without proving the receiver is a ChildProcess or otherwise terminates the daemon.
+              Because `isTerminatingKillSignalArg(undefined, null)` returns true, a local no-op
+              object such as `const fake = { kill() { console.log('noop'); } }; onTestFinished(() =>
+              fake.kill())` satisfies cleanup. I verified that fixture with oxlint and it produced 0
+              errors. This reintroduces callee-shape credit instead of terminating cleanup and
+              violates `@daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon` /
+              `ac-cleanup-probes-do-not-count`."
+            created_at: 2026-05-12T03:36:39.001Z
+        kind: blocker
+      - _ulid: 01KRD448MQ078041DNX9KB4K12
+        entries:
+          - _ulid: 01KRD448MQAT2XVK845KVXGE7J
+            author: Jacob Chapel
+            body: "Evidence log: Files read: `kspec-agents.md`, `tools/eslint-rules/no-leaky-test-daemon.js`,
+              `tests/lint-no-leaky-test-daemon.test.ts`, task/spec output for
+              `@01KRCRJPMHMHC410TKRC5Y9HF1`, `@daemon-test-guardrail-precision`, and
+              `@daemon-test-harness-guardrails`. Commands run: `git diff dev...HEAD`, `kspec task
+              get`, `kspec item get`, `kspec validate`, AC annotation search, targeted daemon lint
+              tests, full `npm test -- --fresh`, `npm run lint`, changed-file oxlint, and custom
+              oxlint probes. Claims verified: worker's targeted/full test claim passes; lint has
+              repo-wide pre-existing errors; classifier still has two false-negative cleanup-credit
+              paths. Categories searched: correctness, edge cases, error handling, test quality,
+              integration, and AC alignment."
+            created_at: 2026-05-12T03:36:42.391Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T03:36:47.206Z
     created_at: 2026-05-12T03:22:20.072Z
-    updated_at: 2026-05-12T03:22:40.577Z
+    updated_at: 2026-05-12T03:36:47.206Z
     notes: []
