@@ -206091,9 +206091,16 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-05-12T18:20:31.298Z
+      - _ulid: 01KREPS1W4YSDK5A8VE7FTSQZ5
+        actor: Hermes
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-05-12T18:21:52.389Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: plan
@@ -206103,5 +206110,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T18:20:31.298Z
-    updated_at: null
+    updated_at: 2026-05-12T18:21:50.751Z
     notes: []
