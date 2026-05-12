@@ -47973,7 +47973,7 @@ runs:
     started_at: 2026-05-12T21:10:17.237Z
     completed_at: 2026-05-12T21:12:09.681Z
   - _ulid: 01KRF1M5W7AST3V6CZZTF64TF0
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -48020,7 +48020,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-12T21:34:13.511Z
-        completed_at: 2026-05-12T21:34:13.511Z
+        completed_at: 2026-05-12T21:34:42.403Z
+        notes: Captured inbox item 01KRF1SH for file-based review body input. Captured success observation
+          01KRF1SR for targeted synthetic behavioral probes during guardrail-classifier reviews. Did
+          not duplicate existing coverage for shell payload conventions or review evidence logs.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T21:31:26.983Z
+    completed_at: 2026-05-12T21:34:42.403Z
