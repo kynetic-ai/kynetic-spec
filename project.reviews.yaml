@@ -210172,6 +210172,20 @@ reviews:
         runner: kspec
         created_at: 2026-05-12T23:56:42.239Z
         completed_at: 2026-05-12T23:56:42.239Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite rerun exited 1: 2430 passed suites, 2 failed suites reported, 9087 passed, 1
+          failed, 5 skipped. Failure: tests/helpers/daemon.test.ts readiness diagnostics lastHealth
+          got fetch failed at line 351. This file passed in the first interrupted full-suite attempt
+          and passed focused rerun; classified flaky/pre-existing. Follow-up task created:
+          @01KRF9WA."
+        name: npm test full suite
+        required: false
+        runner: npm
+        created_at: 2026-05-12T23:56:58.160Z
+        completed_at: 2026-05-12T23:56:58.160Z
     events:
       - _ulid: 01KRF6XTEC6W8FX7X5FRXN551C
         actor: Jacob Chapel
@@ -210200,6 +210214,13 @@ reviews:
           status: pass
           name: kspec validate --warnings-ok
         timestamp: 2026-05-12T23:56:46.786Z
+      - _ulid: 01KRF9YRSK9FBVF9PYQAS6KA8C
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test full suite
+        timestamp: 2026-05-12T23:57:02.643Z
     examined_commit: 0c6506a55cdb40538275c315cad4c85b131bc7ba
     external_links: []
     lifecycle_state: open
@@ -210212,7 +210233,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T23:04:05.836Z
-    updated_at: 2026-05-12T23:56:42.239Z
+    updated_at: 2026-05-12T23:56:58.160Z
     notes: []
   - _ulid: 01KRF97V6AP2CG9FRKTV29NDP7
     slugs: []
