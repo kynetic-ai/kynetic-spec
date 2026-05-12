@@ -207338,7 +207338,96 @@ reviews:
     slugs: []
     title: "Plan review: Dispatch Workspace Provisioning Lease Protection (final clean review)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Plan has no structured Specs YAML block, declares derive_from_specs: false, and targets
+          existing specs @dispatch-workspace-registry, @dispatch-runtime-bootstrap-contract, and
+          @agent-dispatch-engine. kspec item get resolved all three refs."
+        name: Existing-spec update shape
+        required: true
+        created_at: 2026-05-12T19:14:17.179Z
+        completed_at: 2026-05-12T19:14:17.179Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Parsed 14 manual tasks from the source document. Each task has spec_ref, priority,
+          concrete Why/What/How guidance, file or command scope where relevant, and a Covers line.
+        name: Standalone task payloads
+        required: true
+        created_at: 2026-05-12T19:14:20.881Z
+        completed_at: 2026-05-12T19:14:20.881Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: All 14 task dependencies resolve to local plan task slugs; graph is acyclic; all tasks are
+          P1 so there is no priority inversion. Ordering is spec updates -> schema/helpers ->
+          runtime producers/cleanup -> tests -> validation.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-05-12T19:14:24.574Z
+        completed_at: 2026-05-12T19:14:24.574Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Independent parse found 14 introduced AC IDs and all 14 are claimed by Covers mappings.
+          Implementation, regression, and validation tasks cover the registry, bootstrap, and
+          dispatch-engine AC surfaces.
+        name: Coverage mapping
+        required: true
+        created_at: 2026-05-12T19:14:28.223Z
+        completed_at: 2026-05-12T19:14:28.223Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/dispatch-workspace-provisioning-lease-protection.md --dry-run
+          succeeded with full document stored and 0 derived specs/tasks, matching the existing-spec
+          update shape. Independent YAML parse found one task fence and 14 task objects. plan derive
+          --dry-run was intentionally blocked only because status is draft, which was not changed.
+        name: Parser readiness
+        required: true
+        created_at: 2026-05-12T19:14:31.801Z
+        completed_at: 2026-05-12T19:14:31.801Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Inspected @dispatch-workspace-registry, @dispatch-runtime-bootstrap-contract,
+          @agent-dispatch-engine, @branch-provenance-in-dispatch-workspace-registry, and prior
+          cleanup task/spec context. The new ACs extend lease/bootstrap/in-flight protection and do
+          not duplicate existing branch provenance or cleanup policy ACs.
+        name: Existing spec neighborhood
+        required: true
+        created_at: 2026-05-12T19:14:35.446Z
+        completed_at: 2026-05-12T19:14:35.446Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec search found no existing provisioning lease, bootstrap in_progress cleanup,
+          in-flight cleanup protection, provisioning lease schema, or expired provisioning lease
+          recovery specs/tasks. Parsed task slugs are unique.
+        name: Hidden duplicate spec/task check
+        required: true
+        created_at: 2026-05-12T19:14:39.067Z
+        completed_at: 2026-05-12T19:14:39.067Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate reported Schema: OK and References: OK. It exited 6 only for the
+          repository existing warning backlog: deprecated refs, orphan/status alignment warnings,
+          missing AC coverage warnings, and invalid legacy AC annotations."
+        name: Repository validation context
+        required: true
+        created_at: 2026-05-12T19:14:42.614Z
+        completed_at: 2026-05-12T19:14:42.614Z
     events:
       - _ulid: 01KRESPX6WQ5JW0HM9AFQA7X75
         actor: Jacob Chapel
@@ -207353,6 +207442,62 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T19:13:25.771Z
+      - _ulid: 01KRESS2BYMQS2RK8ZG0XQ626T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing-spec update shape
+        timestamp: 2026-05-12T19:14:18.622Z
+      - _ulid: 01KRESS5XYCT9RXHFNEWT3XTJP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Standalone task payloads
+        timestamp: 2026-05-12T19:14:22.270Z
+      - _ulid: 01KRESS9MG0YTJRG4XMF3T20BP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-05-12T19:14:26.064Z
+      - _ulid: 01KRESSD3B5SPZS3FNP1QGMTWD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Coverage mapping
+        timestamp: 2026-05-12T19:14:29.611Z
+      - _ulid: 01KRESSGMQ46KN7T09NTZNWHXB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Parser readiness
+        timestamp: 2026-05-12T19:14:33.239Z
+      - _ulid: 01KRESSM55ARN1JC5W53P83XR0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec neighborhood
+        timestamp: 2026-05-12T19:14:36.837Z
+      - _ulid: 01KRESSQNVYWCM795QF557BQNN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Hidden duplicate spec/task check
+        timestamp: 2026-05-12T19:14:40.443Z
+      - _ulid: 01KRESSV4D2PZZCKZG6SGFRNJ6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Repository validation context
+        timestamp: 2026-05-12T19:14:43.981Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -207365,5 +207510,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T19:13:07.805Z
-    updated_at: 2026-05-12T19:13:24.399Z
+    updated_at: 2026-05-12T19:14:42.614Z
     notes: []
