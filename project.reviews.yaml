@@ -202048,3 +202048,29 @@ reviews:
     created_at: 2026-05-12T03:22:20.072Z
     updated_at: 2026-05-12T03:36:47.206Z
     notes: []
+  - _ulid: 01KRD4N3Q8TK8FFJ8Q9E5MYE8E
+    slugs: []
+    title: Review task-add-guardrail-cleanup-boundary-regressions cycle 3
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRD4N3Q7F3K4MMZMWQE4490S
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-12T03:45:54.408Z
+    examined_commit: f7e1313503c55ba5c72bb2c181bef4429e064c84
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRCRJPYGTDE9GW1GPZCDFRJD"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-12T03:45:54.408Z
+    updated_at: null
+    notes: []
