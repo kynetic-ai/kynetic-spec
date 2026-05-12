@@ -47881,7 +47881,7 @@ runs:
     completed_at: 2026-05-12T20:00:44.680Z
   - _ulid: 01KREYKNNZHSQBVFHXW34XJE1W
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47912,7 +47912,18 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-12T20:39:38.070Z
-        completed_at: 2026-05-12T20:39:38.070Z
+        completed_at: 2026-05-12T20:39:41.446Z
+        notes: "Proposed improvement: add a reusable project command/helper for ad hoc no-leaky-test-daemon
+          classifier probes that creates a temp test file, applies the rule config, runs oxlint, and
+          prints only the relevant diagnostics. Scope: small to medium. Benefit: reviewers and
+          workers can add adversarial probes quickly without retyping temp config boilerplate or
+          accidentally testing a path where the rule is inactive. Secondary note: consider a focused
+          repository lint target for no-leaky-test-daemon over tests/ to separate introduced
+          guardrail errors from unrelated lint warnings."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-12T20:39:41.446Z
+        completed_at: 2026-05-12T20:39:41.446Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T20:38:44.671Z
