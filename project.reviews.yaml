@@ -208417,9 +208417,25 @@ reviews:
           kind: nit
           thread_ulid: 01KREYJ1ASKQ6PGHATCNA3MMJD
         timestamp: 2026-05-12T20:37:52.503Z
+      - _ulid: 01KREYJH8PPNDAY4E66ABK7G9H
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T20:38:07.382Z
+      - _ulid: 01KREYJH8P51XBR722PPNQV0GD
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T20:38:07.382Z
     examined_commit: 62bffa595961c9d0d4e1c8c1cc8e5ef09486064e
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -208496,7 +208512,14 @@ reviews:
               quality/AC annotations, regression/lint integration, deterministic test results."
             created_at: 2026-05-12T20:37:51.065Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T20:38:07.381Z
     created_at: 2026-05-12T20:24:47.787Z
-    updated_at: 2026-05-12T20:37:51.065Z
+    updated_at: 2026-05-12T20:38:07.382Z
     notes: []
