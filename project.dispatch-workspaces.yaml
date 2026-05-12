@@ -23598,7 +23598,7 @@ workspaces:
         head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
         last_seen_at: 2026-05-11T18:56:20.059Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-daemon-hardening-corrections-01kr6m7a
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
     bootstrap:
       status: succeeded
@@ -24096,9 +24096,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T00:23:17.974Z
-      last_reconciled_at: 2026-05-12T00:36:46.033Z
+      last_reconciled_at: 2026-05-12T00:38:37.260Z
       created_at: 2026-05-12T00:18:52.123Z
-      updated_at: 2026-05-12T00:36:47.946Z
+      updated_at: 2026-05-12T00:38:37.260Z
     workspace_id: dispatch-workspace-01KRCRJP09TGZ629WBSQ093KMF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
