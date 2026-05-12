@@ -203061,6 +203061,12 @@ reviews:
         payload:
           thread_ulid: 01KRDAXG9P5K136WG3TJQDAAPP
         timestamp: 2026-05-12T06:14:47.476Z
+      - _ulid: 01KRDD5XD4ERY10CRHZ5Z2JCZC
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRDAYCAQ19Y0J7QBEACS2HQH
+        timestamp: 2026-05-12T06:14:53.604Z
     examined_commit: 69024560de4a34a772c9944f034e9a9021056675
     external_links: []
     lifecycle_state: closed
@@ -203162,6 +203168,8 @@ reviews:
             body: Acknowledged. No action needed for this nit — it was the reviewer's evidence log.
             created_at: 2026-05-12T06:14:28.512Z
         kind: nit
+        resolved_at: 2026-05-12T06:14:52.200Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -203171,7 +203179,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T05:36:03.273Z
     created_at: 2026-05-12T05:22:54.485Z
-    updated_at: 2026-05-12T06:14:46.133Z
+    updated_at: 2026-05-12T06:14:52.200Z
     notes: []
   - _ulid: 01KRDBYWY96D1FZ30GYEK03A9A
     slugs: []
