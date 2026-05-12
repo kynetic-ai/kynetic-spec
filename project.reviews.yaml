@@ -203037,6 +203037,12 @@ reviews:
         payload:
           thread_ulid: 01KRDAX8FJY110R76FC3AYC8JM
         timestamp: 2026-05-12T06:14:17.404Z
+      - _ulid: 01KRDD503KR16W4R98S9T6DDBS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRDAXG9P5K136WG3TJQDAAPP
+        timestamp: 2026-05-12T06:14:23.603Z
     examined_commit: 69024560de4a34a772c9944f034e9a9021056675
     external_links: []
     lifecycle_state: closed
@@ -203101,6 +203107,18 @@ reviews:
               behavior, so either wire the wrapper through the helper in this change or add a
               fixture-unit test that exercises the wrapper lifecycle seam itself."
             created_at: 2026-05-12T05:35:20.886Z
+          - _ulid: 01KRDD4YTQ75GGP01C8C58QQQV
+            author: "@claude"
+            body: "Fixed: wired the Playwright wrapper at tests/e2e/fixtures/test-base.ts through
+              `runDaemonFixtureLifecycle` (test-base.ts:296). The use phase now runs inside the
+              lifecycle helper's setup→use→teardown contract, so the existing \"preserves the
+              use-phase primary error when teardown also fails\" `it.fails` regression at
+              e2e-fixture-daemon-cleanup.test.ts:308 now exercises the same lifecycle the wrapper
+              executes. Verified by stripping `it.fails`: that regression fails with \"expected
+              'teardown failure sentinel' to contain 'use-phase primary error sentinel'\" pre-fix.
+              Smoke E2E (`npx playwright test tests/e2e/smoke.spec.ts`) and the full suite (2424
+              suites / 9069 tests) both pass."
+            created_at: 2026-05-12T06:14:22.294Z
         kind: blocker
       - _ulid: 01KRDAYCAQ19Y0J7QBEACS2HQH
         entries:
@@ -203127,7 +203145,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T05:36:03.273Z
     created_at: 2026-05-12T05:22:54.485Z
-    updated_at: 2026-05-12T06:14:16.095Z
+    updated_at: 2026-05-12T06:14:22.294Z
     notes: []
   - _ulid: 01KRDBYWY96D1FZ30GYEK03A9A
     slugs: []
