@@ -205181,6 +205181,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T16:16:37.769Z
+      - _ulid: 01KREG2H99EG6DQH8VDJKJG2R8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KREG2F8BRMEFB6FN4DM1TJ7Q
+        timestamp: 2026-05-12T16:24:43.049Z
     examined_commit: 7c486bc61439fc86e9d39f39230c78379b4c9c48
     external_links: []
     lifecycle_state: open
@@ -205190,8 +205197,28 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KREG2F8BRMEFB6FN4DM1TJ7Q
+        anchor:
+          type: code
+          commit: 7c486bc61439fc86e9d39f39230c78379b4c9c48
+          line_end: 1056
+          line_start: 1054
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KREG2F8B4G1JPQTR89A4KZMY
+            author: Jacob Chapel
+            body: 'MUST-FIX: bare cleanup-helper names are still trusted when there is no approved import or
+              inspectable local body. If `findLocalHelperDefinition` returns null and no import
+              binds the helper, `isTrustedHelperByOrigin` falls through to `return true`, so a test
+              with `runKspec("serve start --detach")`, `const pid = readPidFromFile()`, and
+              `onTestFinished(() => killPid(pid))` reports 0 oxlint diagnostics even though
+              `killPid` has no trusted origin. This violates ac-cleanup-helper-origin-is-trusted:
+              helper name alone does not prove daemon termination.'
+            created_at: 2026-05-12T16:24:40.971Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T16:16:23.000Z
-    updated_at: 2026-05-12T16:16:36.393Z
+    updated_at: 2026-05-12T16:24:40.971Z
     notes: []
