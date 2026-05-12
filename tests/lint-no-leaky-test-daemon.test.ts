@@ -829,6 +829,168 @@ describe("test suite", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
     });
 
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // Process-lifecycle `process.on("exit", ...)` is a global shutdown
+    // hook, not a per-test cleanup boundary. The handler fires when the
+    // Node process is tearing down — which can be after every other test
+    // in the file has run against the leaked daemon. The spec demands
+    // cleanup be registered at the current-test boundary (vitest
+    // `onTestFinished` or a same-flow `try/finally` finalizer), not at a
+    // process-wide event. Treating `process.on("exit", ...)` as
+    // sufficient lets the daemon survive subsequent tests.
+    //
+    // A `process.on(...)` registration MAY exist alongside a valid
+    // per-test cleanup as a supplemental safety net, but it does NOT
+    // satisfy the guardrail by itself.
+    //
+    // FAILING-BEFORE-FIX: this regression is a CURRENT FALSE NEGATIVE
+    // in the `no-leaky-test-daemon` rule — the rule still credits
+    // `process.on("exit", ...)` as cleanup. The assertion below
+    // (`toContain("no-leaky-test-daemon")`) therefore does not hold
+    // today. Expressing the test with `it.fails(...)` inverts the
+    // pass/fail polarity: today the assertion throws and `it.fails`
+    // PASSES (the inversion is the point — it locks in the false
+    // negative). When @task-fix-guardrail-cleanup-boundary-classification
+    // lands and the rule starts reporting this case, the assertion
+    // will pass and `it.fails` will then FAIL — that failure is the
+    // structured signal to the lint-rule-fix worker to flip this test
+    // from `it.fails(...)` back to `it(...)`. The regression stays
+    // inside the required suite (so it runs and verifies behavior on
+    // every test invocation) without contributing red to a green
+    // branch, matching the precedent set by the cycle-6 cleanup-binding
+    // and wrapper-helper regression tasks.
+    it.fails("should flag serve start --detach when only cleanup is process.on(\"exit\", ...)", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    process.on("exit", () => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // `beforeExit` is a process-lifecycle hook just like `exit`: it runs
+    // when the event loop is empty, which is a process boundary, not the
+    // per-test boundary the spec requires. A daemon left running by this
+    // test will survive every later test in the file.
+    //
+    // FAILING-BEFORE-FIX: see the `process.on("exit", ...)` test above
+    // for the full inversion contract. Same false negative, same
+    // flip-on-fix-landing protocol — when the lint rule fix lands and
+    // the assertion below begins to hold, `it.fails` will fail and
+    // signal the worker to flip this specific test back to `it(...)`.
+    it.fails("should flag serve start --detach when only cleanup is process.on(\"beforeExit\", ...)", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    process.on("beforeExit", () => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // Signal handlers (`SIGTERM`, `SIGINT`, etc.) are process-wide
+    // shutdown handlers — they only run when the Node process receives
+    // the signal, not when this individual test finishes. A handler
+    // registered here does nothing for a daemon that leaks into the
+    // next test in the same file.
+    //
+    // FAILING-BEFORE-FIX: see the `process.on("exit", ...)` test above
+    // for the full inversion contract. Same false negative, same
+    // flip-on-fix-landing protocol — when the lint rule fix lands and
+    // the assertion below begins to hold, `it.fails` will fail and
+    // signal the worker to flip this specific test back to `it(...)`.
+    it.fails("should flag serve start --detach when only cleanup is process.on(\"SIGTERM\", ...)", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    process.on("SIGTERM", () => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // `process.once(...)` is the single-shot sibling of `process.on(...)`
+    // — it still registers on a process-lifecycle event and still fires
+    // only at process shutdown, not at the per-test boundary. Treating
+    // a `.once` variant as cleanup would carry the same leak risk as
+    // `.on`.
+    it("should flag serve start --detach when only cleanup is process.once(\"exit\", ...)", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    process.once("exit", () => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // `Promise.finally(...)` is not a per-test cleanup boundary. The
+    // callback runs when the underlying promise settles — which may
+    // happen asynchronously, after the test has already moved on, or
+    // never if the chain is dropped on the floor. The vitest
+    // `onTestFinished` boundary is the only test-scoped hook for
+    // detached daemon cleanup.
+    it("should flag serve start --detach when only cleanup is Promise.finally", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", async () => {
+    const result = runKspec("serve start --detach --port 3456");
+    Promise.resolve().finally(() => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // `queueMicrotask(...)` schedules the callback on the microtask
+    // queue, but the kill runs whenever the microtask drains — not at
+    // the per-test cleanup boundary. The callback can be skipped by an
+    // earlier synchronous throw, and even on the happy path the daemon
+    // is not guaranteed to be terminated before the next test starts.
+    it("should flag serve start --detach when only cleanup is queueMicrotask", () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const result = runKspec("serve start --detach --port 3456");
+    queueMicrotask(() => killPid(result.pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
     // Cleanup-effect semantics: the rule's old callee-shape predicate
     // accepted `process.kill(...)` regardless of signal and accepted any
     // local helper named `killPid` / `stopDaemon` / `stopMockDaemon` by
@@ -1344,18 +1506,248 @@ describe("test suite", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
-    // (negative case: process.on with an exit/signal event is valid
-    // cleanup. The Node runtime fires the callback when the process
-    // is shutting down, so the kill DOES run before the test ends.)
-    it('should allow serve start --detach with cleanup registered via process.on("exit", ...)', () => {
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // The accepted per-test cleanup boundary: a vitest `onTestFinished`
+    // callback whose terminating cleanup is bound to a concrete pid
+    // owned by the just-started daemon BEFORE any later observation
+    // can fail. This is the primary shape the spec credits as scoped
+    // cleanup, alongside same-flow `try/finally`.
+    it("should allow serve start --detach with onTestFinished terminating cleanup at the per-test boundary", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // Same-flow `try/finally` is the other accepted per-test cleanup
+    // boundary: the finalizer runs whether the try block returns
+    // normally or throws, and the captured pid is concretely bound
+    // BEFORE the try block opens so the kill owns the daemon at the
+    // implicit registration site.
+    it("should allow serve start --detach in try/finally whose finalizer kills the concrete pid", () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 
 describe("test suite", () => {
   it("should start daemon", () => {
-    const result = runKspec("serve start --detach --port 3456");
-    process.on("exit", () => killPid(result.pid));
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    try {
+      expect(true).toBe(true);
+    } finally {
+      process.kill(pid, "SIGTERM");
+    }
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // Mixed case: a per-test `onTestFinished` boundary AND a
+    // supplemental `process.on("exit", ...)` fallback. The
+    // `onTestFinished` cleanup is what credits the guardrail — the
+    // process-lifecycle handler is a defence-in-depth safety net for
+    // crashes or hard exits, never the primary cleanup. After the
+    // fix-cycle work in @task-fix-guardrail-cleanup-boundary-classification
+    // removes `process.on(...)` from the registration set, this mixed
+    // case must still be accepted because the per-test boundary alone
+    // satisfies the contract.
+    it("should allow serve start --detach when onTestFinished is paired with a process.on(\"exit\", ...) fallback", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    process.on("exit", () => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // Cleanup-effect semantics: accepted-shape companions to the cleanup
+    // -effect adversarial probes in "positive cases (should flag)" above.
+    // Each probe pairs a terminating signal or an origin-trusted helper
+    // with a detached daemon start and asserts the guardrail does not
+    // fire — proving the implementation cannot satisfy the rejected
+    // cases by simply banning all `process.kill`, `.kill`, or helper-name
+    // cleanup shapes.
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // `process.kill(pid)` (no signal) — Node treats a missing signal as
+    // SIGTERM, which is the canonical daemon termination signal. The
+    // cleanup actually stops the daemon, so the rule must not fire.
+    it("should allow serve start --detach when cleanup is process.kill(pid) (no signal, defaults to SIGTERM)", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // Explicit SIGTERM is the canonical graceful daemon termination.
+    it("should allow serve start --detach when cleanup is process.kill(pid, 'SIGTERM')", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // SIGKILL is the unconditional termination signal — receivers cannot
+    // mask it. It does terminate the daemon and must be accepted.
+    it("should allow serve start --detach when cleanup is process.kill(pid, 'SIGKILL')", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGKILL"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // `child.kill()` (no signal) — Node's ChildProcess.kill default is
+    // SIGTERM, which is terminating. The child-handle cleanup branch
+    // pre-fix required an explicit SIGTERM/SIGKILL/SIGINT literal and
+    // rejected the no-arg form; after the fix the no-arg form must be
+    // accepted symmetric with `process.kill(pid)`. Staged via
+    // `expectClassifierGap` so the regression captures the EXACT current
+    // false-positive shape without breaking the merge gate.
+    it("should allow serve start --detach when child.kill() (no signal, defaults to SIGTERM) is registered as cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const child = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    onTestFinished(() => child.kill());
+    expect(child.pid).toBeDefined();
+  });
+});
+`);
+      expectClassifierGap(
+        result,
+        () => {
+          // Post-fix: the no-arg child.kill() must be accepted as
+          // cleanup, mirroring Node's SIGTERM default and the accepted
+          // `process.kill(pid)` companion above.
+          expect(result.output).not.toContain("no-leaky-test-daemon");
+        },
+        () => {
+          // Known gap today: the child-handle branch requires an explicit
+          // terminating signal literal and rejects the no-arg form as
+          // missing cleanup.
+          expect(result.output).toContain("no-leaky-test-daemon");
+          expect(result.output).toContain("has no scoped cleanup registration");
+        },
+      );
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // Explicit SIGTERM on the child handle — already accepted today but
+    // documented here as the positive companion to the `child.kill('SIGUSR1')`
+    // rejected case so future readers can compare shapes side by side.
+    it("should allow serve start --detach when child.kill('SIGTERM') is registered as cleanup", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const child = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    onTestFinished(() => child.kill("SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Approved-helper accepted case (origin via import path): `killPid`
+    // imported from the shared daemon-fixture helper has a trusted body
+    // and must continue to satisfy cleanup. The companion local-no-op
+    // probe in "positive cases" rejects an identically-named LOCAL
+    // helper, so the implementation cannot fix the false negative by
+    // banning the name outright.
+    it("should allow serve start --detach when cleanup calls killPid imported from the shared daemon helper", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Approved-helper accepted case (origin via inspectable body): a
+    // local helper whose body invokes a trusted terminating primitive
+    // (`process.kill(pid, "SIGTERM")`) must be accepted. The body proves
+    // the helper actually stops the daemon — the implementation that
+    // rejects local no-op helpers by name alone must still accept
+    // helpers whose body contains a terminating call.
+    it("should allow serve start --detach when cleanup calls a local killPid helper whose body invokes process.kill SIGTERM", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+function killPid(pid: number): void {
+  process.kill(pid, "SIGTERM");
+}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
     expect(true).toBe(true);
   });
 });
@@ -1591,181 +1983,6 @@ describe("test suite", () => {
 });
 `);
       expect(result.output).toContain("no-leaky-test-daemon");
-    });
-
-    // Cleanup-effect semantics: accepted-shape companions to the cleanup
-    // -effect adversarial probes in "positive cases (should flag)" above.
-    // Each probe pairs a terminating signal or an origin-trusted helper
-    // with a detached daemon start and asserts the guardrail does not
-    // fire — proving the implementation cannot satisfy the rejected
-    // cases by simply banning all `process.kill`, `.kill`, or helper-name
-    // cleanup shapes.
-
-    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
-    // `process.kill(pid)` (no signal) — Node treats a missing signal as
-    // SIGTERM, which is the canonical daemon termination signal. The
-    // cleanup actually stops the daemon, so the rule must not fire.
-    it("should allow serve start --detach when cleanup is process.kill(pid) (no signal, defaults to SIGTERM)", () => {
-      const result = runOxlint(`
-import { describe, it, expect, onTestFinished } from "vitest";
-
-describe("test suite", () => {
-  it("should start daemon", () => {
-    runKspec("serve start --detach --port 3456");
-    const pid = readPidFromFile();
-    onTestFinished(() => process.kill(pid));
-    expect(true).toBe(true);
-  });
-});
-`);
-      expect(result.output).not.toContain("no-leaky-test-daemon");
-    });
-
-    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
-    // Explicit SIGTERM is the canonical graceful daemon termination.
-    it("should allow serve start --detach when cleanup is process.kill(pid, 'SIGTERM')", () => {
-      const result = runOxlint(`
-import { describe, it, expect, onTestFinished } from "vitest";
-
-describe("test suite", () => {
-  it("should start daemon", () => {
-    runKspec("serve start --detach --port 3456");
-    const pid = readPidFromFile();
-    onTestFinished(() => process.kill(pid, "SIGTERM"));
-    expect(true).toBe(true);
-  });
-});
-`);
-      expect(result.output).not.toContain("no-leaky-test-daemon");
-    });
-
-    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
-    // SIGKILL is the unconditional termination signal — receivers cannot
-    // mask it. It does terminate the daemon and must be accepted.
-    it("should allow serve start --detach when cleanup is process.kill(pid, 'SIGKILL')", () => {
-      const result = runOxlint(`
-import { describe, it, expect, onTestFinished } from "vitest";
-
-describe("test suite", () => {
-  it("should start daemon", () => {
-    runKspec("serve start --detach --port 3456");
-    const pid = readPidFromFile();
-    onTestFinished(() => process.kill(pid, "SIGKILL"));
-    expect(true).toBe(true);
-  });
-});
-`);
-      expect(result.output).not.toContain("no-leaky-test-daemon");
-    });
-
-    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
-    // `child.kill()` (no signal) — Node's ChildProcess.kill default is
-    // SIGTERM, which is terminating. The child-handle cleanup branch
-    // pre-fix required an explicit SIGTERM/SIGKILL/SIGINT literal and
-    // rejected the no-arg form; after the fix the no-arg form must be
-    // accepted symmetric with `process.kill(pid)`. Staged via
-    // `expectClassifierGap` so the regression captures the EXACT current
-    // false-positive shape without breaking the merge gate.
-    it("should allow serve start --detach when child.kill() (no signal, defaults to SIGTERM) is registered as cleanup", () => {
-      const result = runOxlint(`
-import { describe, it, expect, onTestFinished } from "vitest";
-import { spawn } from "child_process";
-
-describe("test suite", () => {
-  it("should start daemon", () => {
-    const child = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
-    onTestFinished(() => child.kill());
-    expect(child.pid).toBeDefined();
-  });
-});
-`);
-      expectClassifierGap(
-        result,
-        () => {
-          // Post-fix: the no-arg child.kill() must be accepted as
-          // cleanup, mirroring Node's SIGTERM default and the accepted
-          // `process.kill(pid)` companion above.
-          expect(result.output).not.toContain("no-leaky-test-daemon");
-        },
-        () => {
-          // Known gap today: the child-handle branch requires an explicit
-          // terminating signal literal and rejects the no-arg form as
-          // missing cleanup.
-          expect(result.output).toContain("no-leaky-test-daemon");
-          expect(result.output).toContain("has no scoped cleanup registration");
-        },
-      );
-    });
-
-    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
-    // Explicit SIGTERM on the child handle — already accepted today but
-    // documented here as the positive companion to the `child.kill('SIGUSR1')`
-    // rejected case so future readers can compare shapes side by side.
-    it("should allow serve start --detach when child.kill('SIGTERM') is registered as cleanup", () => {
-      const result = runOxlint(`
-import { describe, it, expect, onTestFinished } from "vitest";
-import { spawn } from "child_process";
-
-describe("test suite", () => {
-  it("should start daemon", () => {
-    const child = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
-    onTestFinished(() => child.kill("SIGTERM"));
-    expect(child.pid).toBeDefined();
-  });
-});
-`);
-      expect(result.output).not.toContain("no-leaky-test-daemon");
-    });
-
-    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
-    // Approved-helper accepted case (origin via import path): `killPid`
-    // imported from the shared daemon-fixture helper has a trusted body
-    // and must continue to satisfy cleanup. The companion local-no-op
-    // probe in "positive cases" rejects an identically-named LOCAL
-    // helper, so the implementation cannot fix the false negative by
-    // banning the name outright.
-    it("should allow serve start --detach when cleanup calls killPid imported from the shared daemon helper", () => {
-      const result = runOxlint(`
-import { describe, it, expect, onTestFinished } from "vitest";
-import { killPid } from "./helpers/daemon";
-
-describe("test suite", () => {
-  it("should start daemon", () => {
-    runKspec("serve start --detach --port 3456");
-    const pid = readPidFromFile();
-    onTestFinished(() => killPid(pid));
-    expect(true).toBe(true);
-  });
-});
-`);
-      expect(result.output).not.toContain("no-leaky-test-daemon");
-    });
-
-    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
-    // Approved-helper accepted case (origin via inspectable body): a
-    // local helper whose body invokes a trusted terminating primitive
-    // (`process.kill(pid, "SIGTERM")`) must be accepted. The body proves
-    // the helper actually stops the daemon — the implementation that
-    // rejects local no-op helpers by name alone must still accept
-    // helpers whose body contains a terminating call.
-    it("should allow serve start --detach when cleanup calls a local killPid helper whose body invokes process.kill SIGTERM", () => {
-      const result = runOxlint(`
-import { describe, it, expect, onTestFinished } from "vitest";
-
-function killPid(pid: number): void {
-  process.kill(pid, "SIGTERM");
-}
-
-describe("test suite", () => {
-  it("should start daemon", () => {
-    runKspec("serve start --detach --port 3456");
-    const pid = readPidFromFile();
-    onTestFinished(() => killPid(pid));
-    expect(true).toBe(true);
-  });
-});
-`);
-      expect(result.output).not.toContain("no-leaky-test-daemon");
     });
   });
 
