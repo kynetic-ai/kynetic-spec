@@ -47642,7 +47642,7 @@ runs:
     completed_at: 2026-05-12T18:08:17.165Z
   - _ulid: 01KREQ82Z626P6E6NQ2NQ6XZAS
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47669,7 +47669,20 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-12T18:31:33.006Z
-        completed_at: 2026-05-12T18:31:33.006Z
+        completed_at: 2026-05-12T18:32:25.801Z
+        notes: "Coverage check: Searched review evidence log, setup failure cleanup primary error,
+          reflection review session, workflow next multiple active runs, shell quoting workflow
+          notes, active workflow runs, workflow notes, and review session gate. Review evidence logs
+          are already tracked by observation @01KR2JD1. Long workflow/freeform notes quoting is
+          already tracked by observations @01KR2R8B and @01KRE7P2. Workflow active-run behavior
+          appears partially covered by @workflow-step-navigation and @task-workflow-step-navigation,
+          but not specifically the many-active-runs ambiguity. The setup cleanup coverage issue is
+          already captured by review blockers on @01KREP5N. No existing item found for reflection
+          gate criteria explicitly including review-only sessions."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-12T18:32:25.801Z
+        completed_at: 2026-05-12T18:32:25.801Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T18:30:05.030Z
