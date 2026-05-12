@@ -27081,18 +27081,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-add-implicit-autostart-cleanup-regressions/01krcrjq
-    canonical_branch_head: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
+    canonical_branch_head: 70f36e34d73a83df3a8ef32ec6ec7470e6509870
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T07:08:30.108Z
+      updated_at: 2026-05-12T07:30:50.414Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T07:08:54.828Z
+      updated_at: 2026-05-12T07:30:50.414Z
     integration:
       status: pending
       detail: null
@@ -27100,7 +27100,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
-      updated_at: 2026-05-12T07:08:30.108Z
+      updated_at: 2026-05-12T07:30:50.414Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KRCRJQHJVPTS7KS7SYWQ600H"
@@ -27108,9 +27108,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T07:08:54.828Z
-      last_reconciled_at: 2026-05-12T07:08:54.828Z
+      last_reconciled_at: 2026-05-12T07:30:50.414Z
       created_at: 2026-05-12T07:08:30.108Z
-      updated_at: 2026-05-12T07:08:54.828Z
+      updated_at: 2026-05-12T07:30:50.414Z
     workspace_id: dispatch-workspace-01KRCRJQHJVPTS7KS7SYWQ600H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
