@@ -46925,7 +46925,7 @@ runs:
     completed_at: 2026-05-12T08:10:15.709Z
   - _ulid: 01KRDKQ89QPHEQ5S5QS6BYBA2W
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -46941,7 +46941,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T08:09:59.685Z
-        completed_at: 2026-05-12T08:09:59.685Z
+        completed_at: 2026-05-12T08:11:08.312Z
+        notes: "Searched existing observations: no friction or success captures closely match this session.
+          The fs.writeFile non-atomicity bug is now fixed in code; the standalone-repro and
+          temp+rename patterns are generic debugging practices, not project-specific systemic
+          patterns worth observation-level capture in loop mode."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T08:11:08.312Z
+        completed_at: 2026-05-12T08:11:08.312Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T08:09:13.271Z
