@@ -48075,9 +48075,24 @@ runs:
     completed_at: 2026-05-12T22:41:18.165Z
   - _ulid: 01KRF63MZ3KP0J52N7TPB3JBT8
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-12T22:49:48.260Z
+        completed_at: 2026-05-12T22:51:39.342Z
+        notes: "What worked well: (1) Used kspec batch with --file JSON and --dry-run before execute —
+          avoided shell escaping for multi-line AC text with special chars (semicolons,
+          apostrophes). (2) Read both task and linked plan before action, confirming AC verbatim and
+          that implementation/test coverage lives in subsequent plan tasks — avoided scope creep
+          into adding tests for behaviors not yet implemented. (3) Verified post-state with kspec
+          item get to confirm IDs, wording, and implementation status all landed correctly. No
+          surprises."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-12T22:51:39.342Z
+        completed_at: 2026-05-12T22:51:39.342Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T22:49:48.260Z
