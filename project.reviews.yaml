@@ -209636,6 +209636,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRF5JZ992N9VE3E3N8KYNVEA
         timestamp: 2026-05-12T22:40:43.487Z
+      - _ulid: 01KRF5K5NC7DPE01HK16JCT2WR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRF5K4020DDJQR86VWM79QAR
+        timestamp: 2026-05-12T22:40:48.300Z
     examined_commit: 251769a1a36ad2fdc02760f60808f71324cfc6ed
     external_links: []
     lifecycle_state: open
@@ -209667,7 +209674,27 @@ reviews:
               this tracking out of the test suite."
             created_at: 2026-05-12T22:40:41.770Z
         kind: blocker
+      - _ulid: 01KRF5K4020DDJQR86VWM79QAR
+        anchor:
+          type: code
+          commit: 251769a1a36ad2fdc02760f60808f71324cfc6ed
+          line_end: 5762
+          line_start: 5762
+          path: tests/lint-daemon-test-guardrails.test.ts
+          side: head
+        entries:
+          - _ulid: 01KRF5K402A1Z3HZ9Y8Y1YF4M5
+            author: Jacob Chapel
+            body: "MUST-FIX: these AC-annotated implicit-auto-start cases are staged as it.fails, so the suite
+              passes because the rule does NOT emit the required no-leaky-test-daemon diagnostic.
+              That is not valid acceptance-criterion coverage: it proves the current implementation
+              still misses the behavior. The same pattern appears at the other new it.fails cases in
+              this block (lines 5802, 5897, 5930, 5964, and 6043). Replace them with passing
+              behavioral tests once the implementation exists, or remove the AC-coverage
+              annotations/staged expected-failure tests from this task branch."
+            created_at: 2026-05-12T22:40:46.594Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T22:37:15.947Z
-    updated_at: 2026-05-12T22:40:41.770Z
+    updated_at: 2026-05-12T22:40:46.594Z
     notes: []
