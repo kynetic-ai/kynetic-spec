@@ -28625,6 +28625,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-12T00:14:51.913Z
+  automation: eligible
 - _ulid: 01KRCRJP9RHZ06B249NBJSPSY3
   slugs:
     - task-add-guardrail-cleanup-effect-regressions
