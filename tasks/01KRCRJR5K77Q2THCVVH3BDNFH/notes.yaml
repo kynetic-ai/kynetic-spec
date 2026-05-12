@@ -135,3 +135,16 @@ notes:
     supersedes: null
     author: Hermes
     created_at: 2026-05-12T13:31:05.196Z
+  - _ulid: 01KRE7504K96RNC32H105ZJBAZ
+    content: "[FIX_CYCLE: 2] Review findings: Detached merge helper could not merge approved snapshot
+      0d1ebb5f7abe into dev (dev d7713212c); target ref was not advanced. Conflicts:
+      tests/helpers/daemon.test.ts and tests/helpers/mock-daemon.test.ts. dev added setup-failure
+      cleanup / primary-error preservation regressions in daemon.test.ts and active-request teardown
+      / bounded-observation regressions in mock-daemon.test.ts near the same appended contract-test
+      sections. This task adds bounded process-stop staged regressions and helper imports/seams in
+      those same files. Resume the canonical branch
+      dispatch/task/task-add-bounded-process-stop-contract-tests/01krcrjr, rebase/merge dev, keep
+      both contract suites where compatible, rerun tests, and resubmit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-05-12T13:48:46.611Z
