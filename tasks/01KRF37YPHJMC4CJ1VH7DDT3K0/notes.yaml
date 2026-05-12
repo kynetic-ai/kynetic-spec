@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KRF9D98S9J1T8F1S54Z98VVH
+    content: "Approach: add private _parseInFlightTaskRef(key) helper that splits on first ':'. Update
+      _activeTaskRefs() to include refs parsed from inFlightTaskKeys alongside
+      activeInvocationDetails. Reuse the parser in _hasActiveInvocationForTask() to keep semantics
+      consistent. Test plan: unit test in tests/agent-dispatch-engine.test.ts that seeds
+      inFlightTaskKeys directly (no activeInvocationDetails entry) and asserts _activeTaskRefs()
+      returns the parsed task ref; second case: both inFlight and active entries combined; third
+      case: malformed key (no colon) is ignored."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T23:47:29.691Z
