@@ -27592,18 +27592,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/stabilize-flaky-file-lock-concurrent-write-test/01krd9fy
-    canonical_branch_head: 258786a7d137e3f2a5f0ff1480faca59144aa98b
+    canonical_branch_head: 866065b339c34190fb52f3673bffb90aac357365
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T07:34:32.744Z
+      updated_at: 2026-05-12T08:08:52.941Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T07:34:56.972Z
+      updated_at: 2026-05-12T08:08:52.941Z
     integration:
       status: pending
       detail: null
@@ -27611,7 +27611,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 258786a7d137e3f2a5f0ff1480faca59144aa98b
-      updated_at: 2026-05-12T07:34:32.744Z
+      updated_at: 2026-05-12T08:08:52.941Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KRD9FY2NX3EH2KR4493T6YYA"
@@ -27619,9 +27619,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T07:34:56.972Z
-      last_reconciled_at: 2026-05-12T07:34:56.972Z
+      last_reconciled_at: 2026-05-12T08:08:52.941Z
       created_at: 2026-05-12T07:34:32.744Z
-      updated_at: 2026-05-12T07:34:56.972Z
+      updated_at: 2026-05-12T08:08:52.941Z
     workspace_id: dispatch-workspace-01KRD9FY2NX3EH2KR4493T6YYA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
