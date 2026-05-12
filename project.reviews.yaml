@@ -206236,9 +206236,25 @@ reviews:
           status: pass
           name: Import/validation smoke
         timestamp: 2026-05-12T18:23:14.992Z
+      - _ulid: 01KREPVSQ485AX2ZVY9BJQQRQ7
+        actor: Hermes
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T18:23:22.340Z
+      - _ulid: 01KREPVSQ4G7SWMQ60ZKPJJMJY
+        actor: Hermes
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T18:23:22.340Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -206324,7 +206340,14 @@ reviews:
               say that explicitly; otherwise add workspace_id to the lease schema.
             created_at: 2026-05-12T18:22:26.631Z
         kind: question
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: Hermes
+        role: reviewer
+        created_at: 2026-05-12T18:23:22.340Z
     created_at: 2026-05-12T18:20:31.298Z
-    updated_at: 2026-05-12T18:23:13.175Z
+    updated_at: 2026-05-12T18:23:22.340Z
     notes: []
