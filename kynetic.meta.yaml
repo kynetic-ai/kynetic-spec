@@ -18351,6 +18351,36 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-12T06:46:48.944Z
+  - _ulid: 01KRDHNMNH065VFG1RMMKGHETG
+    type: friction
+    content: tools/eslint-rules/no-leaky-test-daemon.js has grown to 4271 lines as the daemon cleanup
+      contract hardening plan adds successive classifier predicates (cleanup-effect,
+      cleanup-boundary, helper-origin, implicit-autostart). At 4271 lines it exceeds the Read tool
+      25000-token limit, forcing slice reads via offset/limit and making cross-predicate consistency
+      checks harder. After @plan-daemon-test-cleanup-contract-hardening completes, the rule should
+      be evaluated for extraction into separate predicate modules under
+      tools/eslint-rules/no-leaky-test-daemon/.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T07:33:23.249Z
+  - _ulid: 01KRDHNMY85EMW6KAZ54Y4TGBY
+    type: success
+    content: "Structural classifier-in-test pattern for failing-before-fix on FILE properties: when an
+      AC requires a structural property of a test file (e.g.
+      ac-implicit-autostart-cleanup-before-observation requires every auto-start case in
+      cli-no-daemon.test.ts to register onTestFinished before observation) but the guardrail lint
+      rule that would enforce it does not yet exist, write a small classifier function in the
+      regression test, read the target file via readTestOutputSync (the no-source-scanning
+      safe-listed helper), and stage the assertion via it.fails — same flip-on-fix-landing protocol
+      as the synthetic-fixture it.fails cases. The classifier should be paired with a sanity test
+      that proves it finds the unsafe shape but skips the safe one, so it cannot silently collapse
+      to always-empty findings. Used successfully in
+      @task-add-implicit-autostart-cleanup-regressions on the real tests/cli-no-daemon.test.ts."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T07:33:23.528Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
