@@ -207568,6 +207568,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRETZ60H3P9P6GHQCHBD2QDS
         timestamp: 2026-05-12T19:35:08.935Z
+      - _ulid: 01KRETZRKJ44RFG6VK2GZQDX50
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRETZQ7JG53HT4RCSXYEP052
+        timestamp: 2026-05-12T19:35:26.578Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -207598,7 +207605,28 @@ reviews:
               destructive cleanup with diagnostics until the registry state is recoverable."
             created_at: 2026-05-12T19:35:07.538Z
         kind: blocker
+      - _ulid: 01KRETZQ7JG53HT4RCSXYEP052
+        anchor:
+          type: structured
+          ref: "@task-implement-dispatch-workspace-provisioning-lease-helpers"
+          section: tasks
+        entries:
+          - _ulid: 01KRETZQ7JH6T24CNBSDDDHNCB
+            author: Jacob Chapel
+            body: "MUST-FIX: The plan records an owner tuple, but it never defines the write-side ownership
+              rules for non-expired leases owned by a different daemon/spawn. The helper task only
+              says repeated start/renew calls for the same owner are idempotent; an implementation
+              could still satisfy the written ACs while allowing a second daemon or retry path to
+              overwrite, renew, clear, or mark abandoned another owner’s non-expired lease. That
+              breaks the product contract the owner metadata implies and can reintroduce
+              cleanup/provisioning races through stale or stolen ownership. Define compare-and-swap
+              semantics: start/renew/clear/finalize should either require the current owner tuple to
+              match or follow an explicit abandoned/recovery path, and different-owner non-expired
+              leases should be treated as a conflict/protected condition rather than silently
+              replaced."
+            created_at: 2026-05-12T19:35:25.170Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T19:34:11.039Z
-    updated_at: 2026-05-12T19:35:07.538Z
+    updated_at: 2026-05-12T19:35:25.170Z
     notes: []
