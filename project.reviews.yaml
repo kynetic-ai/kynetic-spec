@@ -204709,6 +204709,18 @@ reviews:
         runner: npm
         created_at: 2026-05-12T15:28:25.634Z
         completed_at: 2026-05-12T15:28:25.634Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+          tests/lint-daemon-test-guardrails.test.ts passed: 23 suites, 335 tests, duration 78.5s.
+          Log: /tmp/kspec-test-cache/01KREBWYFRBT1HAY82ETGKPEB5/eb2441a2230bbf4e.log"
+        name: targeted daemon lint tests
+        required: true
+        runner: npm
+        created_at: 2026-05-12T15:28:40.301Z
+        completed_at: 2026-05-12T15:28:40.301Z
     events:
       - _ulid: 01KREBZ5H6M58HYKNFTXGWCAF2
         actor: Jacob Chapel
@@ -204743,6 +204755,13 @@ reviews:
           status: pass
           name: npm test -- --fresh
         timestamp: 2026-05-12T15:28:27.048Z
+      - _ulid: 01KRECVYQ2S3BN7F6N23JBBS4G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon lint tests
+        timestamp: 2026-05-12T15:28:41.698Z
     examined_commit: f2d28b784205871178ae3872f42601a3a15f9fa1
     external_links: []
     lifecycle_state: open
@@ -204792,5 +204811,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T15:12:58.406Z
-    updated_at: 2026-05-12T15:28:25.634Z
+    updated_at: 2026-05-12T15:28:40.301Z
     notes: []
