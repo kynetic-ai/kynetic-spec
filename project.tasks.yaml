@@ -28767,6 +28767,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-12T00:14:54.131Z
+  automation: eligible
 - _ulid: 01KRCRJRF7TZVW59Q8ZK9JSS0X
   slugs:
     - task-implement-bounded-process-stop-primitives
