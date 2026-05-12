@@ -201327,9 +201327,25 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-05-12T02:01:27.334Z
+      - _ulid: 01KRCYP57MRF8RSD4B4M0RJZ75
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T02:01:37.268Z
+      - _ulid: 01KRCYP57M1A784YXDF1HKPRB8
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T02:01:37.268Z
     examined_commit: 9b5ac8f3afa3c255eca6a31d2b673d0f8677e67d
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -201359,7 +201375,14 @@ reviews:
               implementation fix, or otherwise keep dev green.'
             created_at: 2026-05-12T02:01:09.078Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T02:01:37.268Z
     created_at: 2026-05-12T01:47:46.850Z
-    updated_at: 2026-05-12T02:01:25.936Z
+    updated_at: 2026-05-12T02:01:37.268Z
     notes: []

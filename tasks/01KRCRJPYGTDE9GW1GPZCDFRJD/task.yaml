@@ -58,7 +58,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-tighten-daemon-guardrail-cleanup-semantics-specs"
@@ -78,7 +78,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KRCX8JBQK5WMZEM605KNX73S
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -127,6 +127,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-12T01:47:50.514Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KRCX8JBQK5WMZEM605KNX73S
+    command: review-verdict-needs-work
+    timestamp: 2026-05-12T02:01:39.407Z
 created_at: 2026-05-12T00:14:52.880Z
 started_at: 2026-05-12T01:37:22.341Z
 submitted_at: 2026-05-12T01:43:09.287Z
