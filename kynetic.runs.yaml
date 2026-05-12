@@ -46431,7 +46431,7 @@ runs:
     started_at: 2026-05-12T04:53:28.751Z
     completed_at: 2026-05-12T04:55:20.792Z
   - _ulid: 01KRD9N2STE2CXS7CXCP3ZT6MS
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -46478,10 +46478,14 @@ runs:
         completed_at: 2026-05-12T05:14:42.144Z
         notes: No user discussion needed because there were no untracked improvement proposals to approve.
           Existing task @01KRD9FY and review blockers @01KRD8SM cover the actionable outcomes.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-12T05:14:42.144Z
-        completed_at: 2026-05-12T05:14:42.144Z
+        completed_at: 2026-05-12T05:14:52.073Z
+        notes: No new captures. The flaky-test friction was already captured as task @01KRD9FY, and the
+          cleanup-classifier correctness findings are already captured as blocker threads on review
+          @01KRD8SM. Avoided duplicate inbox or observation items.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T05:13:16.346Z
+    completed_at: 2026-05-12T05:14:52.073Z
