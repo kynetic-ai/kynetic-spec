@@ -248,6 +248,33 @@ const APPROVED_HELPER_IMPORT_PATH_PATTERNS = [
  *     termination (`let killPid;`, `const killPid = makeKill()`,
  *     etc.). Treated as opaque on the same grounds as parameter
  *     shadowing.
+ *
+ *   - VariableDeclaration bindings with an inspectable function /
+ *     arrow init whose declarator statement is NOT in source-order
+ *     before the cleanup use site's statement within the same
+ *     enclosing block. `const`/`let` bindings sit in the temporal
+ *     dead zone until their declarator runs, so a cleanup callback
+ *     registered earlier in the block (`onTestFinished(() =>
+ *     killPid(pid))`) cannot rely on a `const killPid = (p) =>
+ *     process.kill(p, "SIGTERM")` declared further down: if any
+ *     statement between the registration and the declarator throws
+ *     (an `expect(...)`, an `await`, or any other observation),
+ *     teardown invokes the cleanup arrow while `killPid` is still in
+ *     TDZ — the arrow throws ReferenceError and the daemon is never
+ *     terminated. The cycle-5 reviewer probe pinned this gap:
+ *     `runKspec("serve start --detach"); const pid =
+ *     readPidFromFile(); onTestFinished(() => killPid(pid));
+ *     expect(true).toBe(true); const killPid = (p) =>
+ *     process.kill(p, "SIGTERM");` — pre-fix
+ *     `findLocalHelperDefinition` returned the declarator regardless
+ *     of position, the body inspection saw the terminating primitive,
+ *     and the use site was silently credited as cleanup despite the
+ *     binding being unreachable at teardown when the intervening
+ *     `expect` fails. FunctionDeclaration bindings are exempt from
+ *     this check because they are hoisted with their value to the
+ *     start of the enclosing scope (`function killPid(p) {
+ *     process.kill(p, "SIGTERM"); }` declared anywhere in the block
+ *     is callable from every statement in that block).
  */
 const LOCAL_BINDING_OPAQUE = Symbol("local-binding-opaque");
 
@@ -933,16 +960,26 @@ const noLeakyTestDaemon = {
      *
      *   2. Locally bound but opaque — the lexical scope chain at
      *      `useNode` binds `name` through a parameter (with or without a
-     *      default), a `let`/`const`/`var` with a non-function init, or
-     *      a parameter destructure (`findLocalHelperDefinition` returns
+     *      default), a `let`/`const`/`var` with a non-function init, a
+     *      parameter destructure, OR a `const`/`let` with a function
+     *      init whose declarator statement is at or after the use
+     *      site's containing statement in the same enclosing block
+     *      (`findLocalHelperDefinition` returns
      *      `LOCAL_BINDING_OPAQUE`). The runtime value cannot be
      *      statically proven to terminate the daemon — a parameter can
      *      be overridden by the caller (the cycle-4 reviewer probe
      *      `(killPid = (_pid) => {}) => onTestFinished(() => killPid(
-     *      pid))` is precisely this shape), and a non-function init
-     *      cannot be inspected for a terminating call. Reject so the
-     *      caller cannot bootstrap trust through an unprovable local
-     *      shadow.
+     *      pid))` is precisely this shape), a non-function init cannot
+     *      be inspected for a terminating call, and a late-bound
+     *      `const`/`let` lives in the temporal dead zone until its
+     *      declarator runs — an intervening assertion or await can
+     *      throw before initialization, leaving the cleanup callback
+     *      to fail with ReferenceError at teardown (the cycle-5
+     *      reviewer probe `onTestFinished(() => killPid(pid));
+     *      expect(true).toBe(true); const killPid = (p) =>
+     *      process.kill(p, "SIGTERM");` is precisely this shape).
+     *      Reject so the caller cannot bootstrap trust through an
+     *      unprovable local shadow.
      *
      *   3. Imported from an approved helper module — the import path
      *      matches `APPROVED_HELPER_IMPORT_PATH_PATTERNS` (the shared
@@ -1126,7 +1163,28 @@ const noLeakyTestDaemon = {
         if (statements) {
           for (const stmt of statements) {
             const found = matchHelperDefinitionInStatement(stmt, name);
-            if (found) return found;
+            if (found) {
+              // VariableDeclarator function/arrow inits sit in the
+              // temporal dead zone until their declarator runs, so the
+              // binding is only safe to credit when the declarator
+              // statement comes strictly before the use site's
+              // containing statement in source order. If the declarator
+              // is at or after the use site within this enclosing
+              // block, an intervening assertion or await can fail
+              // before the binding is initialized and the cleanup
+              // arrow will throw ReferenceError at teardown — daemon
+              // not terminated. FunctionDeclarations are hoisted with
+              // their value to the start of the enclosing scope and
+              // need no order check; the wrapper exempts the
+              // hoisting-safe shape from the OPAQUE return.
+              if (
+                statementIsVariableHelperDefinition(stmt, name) &&
+                !isStatementBeforeUseSite(stmt, statements, fromNode)
+              ) {
+                return LOCAL_BINDING_OPAQUE;
+              }
+              return found;
+            }
             if (statementBindsNameOpaquely(stmt, name)) {
               return LOCAL_BINDING_OPAQUE;
             }
@@ -1135,6 +1193,61 @@ const noLeakyTestDaemon = {
         current = current.parent;
       }
       return null;
+    }
+
+    /**
+     * True when `stmt` (top-level statement of a Block or Program) is
+     * a `VariableDeclaration` (optionally wrapped in
+     * `ExportNamedDeclaration` / `ExportDefaultDeclaration`) whose
+     * declarators include an inspectable function-init binding for
+     * `name`: `const|let|var <name> = function|arrow`. The TDZ-aware
+     * source-order check in `findLocalHelperDefinition` only applies
+     * to these shapes; `FunctionDeclaration` and its exported
+     * variants are hoisted and need no order check.
+     */
+    function statementIsVariableHelperDefinition(stmt, name) {
+      if (!stmt) return false;
+      if (stmt.type === "ExportNamedDeclaration" && stmt.declaration) {
+        return statementIsVariableHelperDefinition(stmt.declaration, name);
+      }
+      if (stmt.type === "ExportDefaultDeclaration" && stmt.declaration) {
+        return statementIsVariableHelperDefinition(stmt.declaration, name);
+      }
+      if (stmt.type !== "VariableDeclaration") return false;
+      for (const decl of stmt.declarations || []) {
+        if (
+          decl &&
+          decl.id &&
+          decl.id.type === "Identifier" &&
+          decl.id.name === name &&
+          decl.init &&
+          (decl.init.type === "FunctionExpression" ||
+            decl.init.type === "ArrowFunctionExpression")
+        ) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * True when `stmt`'s position within `statements` is strictly
+     * before the statement that contains `fromNode` (the cleanup use
+     * site). Strict less-than is intentional: when the declarator and
+     * the use site are in the same enclosing statement, the use site
+     * is nested inside the declarator's init (e.g. `const k = (() =>
+     * { onTestFinished(() => k(p)); })()`) and the binding's runtime
+     * availability at teardown depends on the IIFE's evaluation
+     * order, which the rule cannot statically prove. Returning false
+     * routes the use site to the `LOCAL_BINDING_OPAQUE` reject branch
+     * — conservatively safe.
+     */
+    function isStatementBeforeUseSite(stmt, statements, fromNode) {
+      const stmtIdx = statements.indexOf(stmt);
+      if (stmtIdx === -1) return false;
+      const useStmtIdx = findNodeIndex(statements, fromNode);
+      if (useStmtIdx === -1) return false;
+      return stmtIdx < useStmtIdx;
     }
 
     /**

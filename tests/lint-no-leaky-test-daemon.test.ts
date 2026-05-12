@@ -1950,6 +1950,161 @@ describe("test suite", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
       expect(result.output).toContain("has no scoped cleanup registration");
     });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-6 reviewer probe (helper binding order): a `const killPid =
+    // (p) => process.kill(p, "SIGTERM")` declared AFTER the
+    // `onTestFinished(() => killPid(pid))` registration sits in the
+    // temporal dead zone until its declarator runs. The intervening
+    // `expect(true).toBe(true)` can throw before initialization, in
+    // which case teardown invokes the cleanup arrow while `killPid` is
+    // still unbound — ReferenceError at teardown leaves the daemon
+    // running. Pre-fix `findLocalHelperDefinition` returned the
+    // declarator regardless of position, the body inspection saw the
+    // terminating `process.kill`, and the use site was silently
+    // credited. The source-order check now classifies the binding as
+    // opaque when the declarator is at or after the use site's
+    // containing statement in the same enclosing block.
+    it("should flag serve start --detach when cleanup helper is bound by a const arrow declared after the registration", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+    const killPid = (p: number): void => process.kill(p, "SIGTERM");
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-6 variant (function expression instead of arrow init): a
+    // `const killPid = function (p) { ... }` declared after the
+    // registration has the same TDZ shape as the arrow form. The
+    // source-order check operates on the declarator's containing
+    // statement, not the init's surface shape, so both forms must be
+    // rejected uniformly.
+    it("should flag serve start --detach when cleanup helper is bound by a const function expression declared after the registration", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+    const killPid = function (p: number) { process.kill(p, "SIGTERM"); };
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-6 variant (let arrow init): a `let killPid = ...` with a
+    // function init carries the same TDZ semantics as `const`. The
+    // declaration-keyword surface differs but the binding is still in
+    // TDZ until the declarator runs.
+    it("should flag serve start --detach when cleanup helper is bound by a let arrow declared after the registration", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+    let killPid = (p: number): void => process.kill(p, "SIGTERM");
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-6 variant (registration via afterEach in describe scope,
+    // const helper later in same describe body): even outside an `it`
+    // callback, the same TDZ window applies in the describe block —
+    // `afterEach(() => killPid(pid))` captures `killPid` by reference,
+    // and the lexically-later `const killPid = ...` declarator runs
+    // only if every preceding statement completes. The reviewer's
+    // concern generalises: any cleanup-shape registration in a block
+    // whose helper binding sits below it in the same block can be
+    // unreached at teardown.
+    it("should flag serve start --detach when describe-scope helper const is declared after afterEach registration", () => {
+      const result = runOxlint(`
+import { describe, it, expect, afterEach } from "vitest";
+
+describe("test suite", () => {
+  let pid;
+  afterEach(() => killPid(pid));
+
+  const killPid = (p: number): void => process.kill(p, "SIGTERM");
+
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    pid = readPidFromFile();
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-6 variant (program-level helper declared after the it
+    // block): the helper `const killPid = ...` sits at module scope
+    // AFTER the `describe(...)` call that contains the registration.
+    // Top-level statements run in source order at module load time, so
+    // the same TDZ window applies — if the describe body's evaluation
+    // throws before the program reaches the const, the helper binding
+    // is still unbound at teardown. The source-order walk reaches the
+    // Program scope and verifies the declarator precedes the use
+    // site's containing top-level statement.
+    it("should flag serve start --detach when program-level cleanup helper const is declared after the describe block", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+
+const killPid = (p: number): void => process.kill(p, "SIGTERM");
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {
@@ -2030,6 +2185,60 @@ describe("test suite", () => {
     const pid = readPidFromFile();
     onTestFinished(() => killPid(pid));
     later();
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-6 negative companion to the binding-order positives: a
+    // FunctionDeclaration helper declared AFTER the cleanup registration
+    // is still safe. ES2015+ block-scoped function declarations are
+    // hoisted with their value to the start of the enclosing scope, so
+    // `function killPid(p) { process.kill(p, "SIGTERM"); }` is callable
+    // from every statement in the block regardless of source position.
+    // The source-order check is intentionally scoped to
+    // VariableDeclarator-with-function-init bindings only.
+    it("should allow serve start --detach when a hoisted FunctionDeclaration helper is declared after the registration", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+    function killPid(p) { process.kill(p, "SIGTERM"); }
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
+    // Cycle-6 negative companion: a `const killPid = ...` arrow init
+    // declared BEFORE the cleanup registration is safe. The
+    // declarator runs in source order before `onTestFinished` is
+    // called, so by the time the cleanup arrow is registered (and
+    // certainly by the time it fires at teardown), the binding is
+    // initialized. The source-order check accepts this shape because
+    // the declarator's index is strictly less than the registration's
+    // index in the enclosing block.
+    it("should allow serve start --detach when a const arrow helper is declared before the registration", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const killPid = (p) => process.kill(p, "SIGTERM");
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
   });
 });
 `);
