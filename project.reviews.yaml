@@ -210159,6 +210159,19 @@ reviews:
         runner: kspec
         created_at: 2026-05-12T23:56:26.811Z
         completed_at: 2026-05-12T23:56:26.811Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exits 6 due repo-wide warnings; kspec validate --warnings-ok exits 0 with
+          Schema OK and References OK. Focused verbose validation shows only expected uncovered new
+          AC: @dispatch-workspace-registry ac-partial-provisioning-classified-before-cleanup, which
+          downstream plan tasks implement/test."
+        name: kspec validate --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-05-12T23:56:42.239Z
+        completed_at: 2026-05-12T23:56:42.239Z
     events:
       - _ulid: 01KRF6XTEC6W8FX7X5FRXN551C
         actor: Jacob Chapel
@@ -210180,6 +210193,13 @@ reviews:
           status: pass
           name: spec alignment
         timestamp: 2026-05-12T23:56:31.309Z
+      - _ulid: 01KRF9Y9A2WSRD5WBQXTN0ER88
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-05-12T23:56:46.786Z
     examined_commit: 0c6506a55cdb40538275c315cad4c85b131bc7ba
     external_links: []
     lifecycle_state: open
@@ -210192,7 +210212,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T23:04:05.836Z
-    updated_at: 2026-05-12T23:56:26.811Z
+    updated_at: 2026-05-12T23:56:42.239Z
     notes: []
   - _ulid: 01KRF97V6AP2CG9FRKTV29NDP7
     slugs: []
