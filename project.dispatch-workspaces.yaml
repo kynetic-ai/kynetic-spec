@@ -24438,7 +24438,7 @@ workspaces:
         head: 0d1ebb5f7abec74f141ccfbbcb0cae66dac9ef2d
         last_seen_at: 2026-05-12T02:09:47.604Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr
-  - active_role: worker
+  - active_role: null
     base_branch_point: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
     bootstrap:
       status: succeeded
@@ -24917,12 +24917,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T02:28:48.899Z
+      updated_at: 2026-05-12T02:32:47.047Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T02:28:48.899Z
+      updated_at: 2026-05-12T02:32:47.047Z
     integration:
       status: pending
       detail: null
@@ -24930,17 +24930,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
-      updated_at: 2026-05-12T02:28:48.899Z
-    lifecycle_state: active
+      updated_at: 2026-05-12T02:32:47.047Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KRCRJP9RHZ06B249NBJSPSY3"
     task_slug: task-add-guardrail-cleanup-effect-regressions
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T02:09:43.042Z
-      last_reconciled_at: 2026-05-12T02:28:48.899Z
+      last_reconciled_at: 2026-05-12T02:32:47.047Z
       created_at: 2026-05-12T01:24:32.829Z
-      updated_at: 2026-05-12T02:28:48.899Z
+      updated_at: 2026-05-12T02:32:47.047Z
     workspace_id: dispatch-workspace-01KRCRJP9RHZ06B249NBJSPSY3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
