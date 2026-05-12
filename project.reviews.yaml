@@ -204937,6 +204937,18 @@ reviews:
         runner: npm
         created_at: 2026-05-12T16:09:32.829Z
         completed_at: 2026-05-12T16:09:32.829Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/helpers/daemon.test.ts tests/helpers/mock-daemon.test.ts
+          tests/cli-serve.test.ts passed: 23 suites, 82 tests. Full log:
+          /tmp/kspec-test-cache/01KREE7B3YMJ84KMMKPQR5GM3N/6aad629dd734498e.log"
+        name: targeted daemon stop slice
+        required: true
+        runner: npm
+        created_at: 2026-05-12T16:09:36.961Z
+        completed_at: 2026-05-12T16:09:36.961Z
     events:
       - _ulid: 01KREEADWJGYC6D3Q0W0G7HHA4
         actor: Jacob Chapel
@@ -204958,6 +204970,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-12T16:09:34.289Z
+      - _ulid: 01KREF6XTZMWCQCWGSE1QX5WPT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon stop slice
+        timestamp: 2026-05-12T16:09:38.399Z
     examined_commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
     external_links: []
     lifecycle_state: open
@@ -204970,5 +204989,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T15:54:04.568Z
-    updated_at: 2026-05-12T16:09:32.829Z
+    updated_at: 2026-05-12T16:09:36.961Z
     notes: []
