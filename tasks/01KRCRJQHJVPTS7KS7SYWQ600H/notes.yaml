@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KRDGJ5K1RYG3SPK7VE09Z61A
+    content: "Approach: Add failing-before-fix regressions in tests/lint-daemon-test-guardrails.test.ts
+      for implicit auto-start cleanup. Synthetic fixtures: REJECTED (it.fails today) - spawnSync
+      auto-starts + readPidFromFile + assertion before onTestFinished cleanup; ALLOWED - immediate
+      onTestFinished after pid capture; ALLOWED control - ordinary CLI test with no daemon
+      observation. Focused contract test: runs oxlint on the real tests/cli-no-daemon.test.ts using
+      it.fails to capture the current false negative (rule has no implicit-autostart classifier).
+      Covers @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation,
+      ac-cleanup-registration-is-test-scoped; @daemon-test-harness-guardrails
+      ac-detached-serve-without-cleanup-flagged."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T07:14:00.930Z
