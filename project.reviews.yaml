@@ -207546,7 +207546,18 @@ reviews:
     slugs: []
     title: "Focused plan review: Dispatch Workspace Provisioning Lease Protection"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Inspected @dispatch-workspace-registry, @dispatch-runtime-bootstrap-contract, and
+          @agent-dispatch-engine; the plan targets existing specs and prior plan-shape blockers are
+          resolved.
+        name: Existing spec neighborhood
+        required: true
+        created_at: 2026-05-12T19:36:47.761Z
+        completed_at: 2026-05-12T19:36:47.761Z
     events:
       - _ulid: 01KRETXETVRT4R7XQ5XQRF4Q5Z
         actor: Jacob Chapel
@@ -207596,6 +207607,13 @@ reviews:
           kind: question
           thread_ulid: 01KREV1GZ6MXQ3WTB0EX4EBY2Y
         timestamp: 2026-05-12T19:36:25.740Z
+      - _ulid: 01KREV299GRX0S403ECFAWKTH3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec neighborhood
+        timestamp: 2026-05-12T19:36:49.201Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -207707,5 +207725,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-05-12T19:34:11.039Z
-    updated_at: 2026-05-12T19:36:24.294Z
+    updated_at: 2026-05-12T19:36:47.761Z
     notes: []
