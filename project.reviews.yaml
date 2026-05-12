@@ -207867,6 +207867,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KREVFVFJCYJFQZ2HA55J025M
         timestamp: 2026-05-12T19:44:15.463Z
+      - _ulid: 01KREVGCQVYAHR4MR80HD1VAV2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KREVGB2Q592C5MJA3WV05GSM
+        timestamp: 2026-05-12T19:44:31.483Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -207914,7 +207921,26 @@ reviews:
               scoped in-memory provisioning guard, or startup-only/manual artifact sweeps."
             created_at: 2026-05-12T19:44:13.810Z
         kind: blocker
+      - _ulid: 01KREVGB2Q592C5MJA3WV05GSM
+        anchor:
+          type: structured
+          field: ac-4
+          ref: "@dispatch-workspace-cleanup-policy"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KREVGB2R1VX0N3AY5WR764JW
+            author: Jacob Chapel
+            body: "SHOULD-FIX: Existing specs already appear to require the core safety property.
+              @dispatch-workspace-cleanup-policy ac-4 says active invocation ownership prevents
+              branch deletion, @dispatch-workspace-registry ac-6 already has a provisioning
+              lifecycle state, and @agent-dispatch-engine ac-26 treats in-flight work as active for
+              scheduler ownership. That makes the reported race look like a direct implementation
+              bug in cleanup inputs and destructive-path checks, not necessarily plan-level spec
+              expansion. Reframe the plan around the existing contracts, or explain which specific
+              behavior remains unspecified after those contracts are applied."
+            created_at: 2026-05-12T19:44:29.784Z
+        kind: question
     verdicts: []
     created_at: 2026-05-12T19:43:06.045Z
-    updated_at: 2026-05-12T19:44:13.810Z
+    updated_at: 2026-05-12T19:44:29.784Z
     notes: []
