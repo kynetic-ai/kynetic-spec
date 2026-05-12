@@ -202470,6 +202470,24 @@ reviews:
         runner: npm
         created_at: 2026-05-12T04:51:42.671Z
         completed_at: 2026-05-12T04:51:42.671Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: tests/cli-serve.test.ts, tests/helpers/mock-daemon.test.ts,
+          tests/helpers/mock-daemon.ts, tests/e2e/fixtures/test-base.ts,
+          tests/cli-daemon-proxy.test.ts, tests/helpers/cli.ts. Commands run: git diff
+          --stat/name-only/patch, kspec task get, kspec item get for related specs, rg AC/fetch call
+          sites, git diff --check, kspec validate, targeted npm test, full npm test. Claims
+          verified: worker claimed 5 regression tests and expected-failing coverage; verified patch,
+          AC annotations, targeted run, and full run. Categories searched: correctness, edge cases,
+          teardown cleanup, bounded observations, test integrity, integration with CLI serve and
+          Playwright fixture call-site context."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-12T04:51:54.859Z
+        completed_at: 2026-05-12T04:51:54.859Z
     events:
       - _ulid: 01KRD7N9EP5WY695HDEQ6JWAZK
         actor: Jacob Chapel
@@ -202505,6 +202523,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-12T04:51:44.103Z
+      - _ulid: 01KRD8E0RG9CFF8Z299SJ51Q0B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-12T04:51:56.304Z
     examined_commit: 9200a23d698d381592a60d9c0419f877d77b19ac
     external_links: []
     lifecycle_state: open
@@ -202517,5 +202542,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T04:38:26.007Z
-    updated_at: 2026-05-12T04:51:42.671Z
+    updated_at: 2026-05-12T04:51:54.859Z
     notes: []
