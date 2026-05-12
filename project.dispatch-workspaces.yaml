@@ -27227,11 +27227,11 @@ workspaces:
     canonical_branch: dispatch/task/task-add-implicit-autostart-cleanup-regressions/01krcrjq
     canonical_branch_head: 70f36e34d73a83df3a8ef32ec6ec7470e6509870
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-12T07:56:52.043Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-12T07:56:53.663Z
     health:
       status: healthy
       issues: []
@@ -27245,7 +27245,7 @@ workspaces:
       target_branch: dev
       target_commit: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
       updated_at: 2026-05-12T07:56:52.043Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KRCRJQHJVPTS7KS7SYWQ600H"
     task_slug: task-add-implicit-autostart-cleanup-regressions
@@ -27254,7 +27254,7 @@ workspaces:
       last_active_at: 2026-05-12T07:34:28.638Z
       last_reconciled_at: 2026-05-12T07:56:52.043Z
       created_at: 2026-05-12T07:08:30.108Z
-      updated_at: 2026-05-12T07:56:52.043Z
+      updated_at: 2026-05-12T07:56:53.663Z
     workspace_id: dispatch-workspace-01KRCRJQHJVPTS7KS7SYWQ600H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
