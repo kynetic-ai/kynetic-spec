@@ -202764,6 +202764,42 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T05:12:36.757Z
+      - _ulid: 01KRDBP333SN6KTSJ59Z130CEM
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRD9GSVR7V8YYZSCHYDXG0J7
+        timestamp: 2026-05-12T05:48:46.563Z
+      - _ulid: 01KRDBP6NKTGACM4XFR85WKZWZ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRD9GSVR7V8YYZSCHYDXG0J7
+        timestamp: 2026-05-12T05:48:50.227Z
+      - _ulid: 01KRDBPA48YNDS8AYGK3MY93K2
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRD9H7R3VGV7J6QAQ4X6H7CD
+        timestamp: 2026-05-12T05:48:53.768Z
+      - _ulid: 01KRDBPDG7RJXAYF26GQ08B3H7
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRD9H7R3VGV7J6QAQ4X6H7CD
+        timestamp: 2026-05-12T05:48:57.223Z
+      - _ulid: 01KRDBPGR8BMDSNGDK2FWM715Z
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRD9KGSZY017BYV0E8XTGFJ2
+        timestamp: 2026-05-12T05:49:00.552Z
+      - _ulid: 01KRDBPM3B17N6CZVW0MXXXRJH
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRD9KGSZY017BYV0E8XTGFJ2
+        timestamp: 2026-05-12T05:49:03.979Z
     examined_commit: 40336586e664d485ab1c0a212b94aa7eece9db0d
     external_links: []
     lifecycle_state: closed
@@ -202795,7 +202831,25 @@ reviews:
               cleanup sends a non-terminating signal and leaves the daemon running, so it violates
               `ac-cleanup-probes-do-not-count` and `ac-cleanup-operation-terminates-daemon`.'
             created_at: 2026-05-12T05:10:56.121Z
+          - _ulid: 01KRDBP1QQQBFT7STPHK6NYHX2
+            author: "@claude"
+            body: "Fixed: isTerminatingKillSignalArg now threads the use-site CallExpression through
+              helperBodyContainsTerminatingPrimitive → subtreeContainsTerminatingPrimitive →
+              isTerminatingPrimitiveCall, and through isChildHandleReceiverTrusted(receiver,
+              killCallNode) for the kill-method-body case. When the helper-body inspection accepts
+              an Identifier signal arg via a parameter's terminating default, the predicate now also
+              validates the call-site argument at that parameter's index — accepting only when the
+              call site omits the arg (default applies), passes undefined/void, or passes a
+              terminating literal in TERMINATING_KILL_SIGNALS. The exact reviewer fixture (function
+              killPid(pid, signal = \"SIGTERM\") { process.kill(pid, signal); } called as
+              killPid(pid, \"SIGUSR1\")) now reports missingCleanup, confirmed via npx oxlint.
+              Companion accepted-shape tests cover omitted-arg, terminating-literal-override, and
+              explicit-undefined to prove the validation does not regress legitimate usage (e.g.
+              every killPid(pid) site in tests/cli-serve.test.ts)."
+            created_at: 2026-05-12T05:48:45.175Z
         kind: blocker
+        resolved_at: 2026-05-12T05:48:48.873Z
+        resolved_by: "@claude"
       - _ulid: 01KRD9H7R3VGV7J6QAQ4X6H7CD
         anchor:
           type: code
@@ -202815,7 +202869,22 @@ reviews:
               names satisfy cleanup without a trusted origin and violates
               `ac-cleanup-helper-origin-is-trusted`.'
             created_at: 2026-05-12T05:11:10.339Z
+          - _ulid: 01KRDBP8QSDYSF1SVTTWBFN54W
+            author: "@claude"
+            body: "Fixed: APPROVED_HELPER_IMPORT_PATH_PATTERNS is now anchored to a relative-path prefix:
+              /^(\\.\\.?\\/)+helpers\\/(daemon|mock-daemon)(\\.[jt]s)?$/. Only ./ or ../-prefixed
+              in-repo imports match. Bare specifiers (some-unapproved-package/helpers/daemon,
+              helpers/daemon), scoped packages (@scope/pkg/helpers/mock-daemon), and root-rooted
+              aliases (tests/helpers/daemon) all fail the anchor; the import then falls through
+              isHelperNameImportedFromApprovedPath → isHelperNameImported → reject. Reviewer's exact
+              synthetic fixture (import { killPid } from \"some-unapproved-package/helpers/daemon\";
+              ... onTestFinished(() => killPid(pid))) now reports missingCleanup, confirmed via npx
+              oxlint. Verified canonical relative-import sites (./helpers/daemon[.js|.ts] and
+              ../helpers/daemon[.js|.ts]) across tests/ still match the anchor."
+            created_at: 2026-05-12T05:48:52.345Z
         kind: blocker
+        resolved_at: 2026-05-12T05:48:55.833Z
+        resolved_by: "@claude"
       - _ulid: 01KRD9KGSZY017BYV0E8XTGFJ2
         entries:
           - _ulid: 01KRD9KGSZ8YT33BT7Z6SMSNXS
@@ -202834,7 +202903,13 @@ reviews:
               Categories searched: correctness, edge cases, helper origin trust, signal handling,
               test quality, integration/regression behavior."
             created_at: 2026-05-12T05:12:25.151Z
+          - _ulid: 01KRDBPFG454SDVW7NBD42N5N0
+            author: "@claude"
+            body: Acknowledged — evidence log captured. No code change required.
+            created_at: 2026-05-12T05:48:59.268Z
         kind: nit
+        resolved_at: 2026-05-12T05:49:02.653Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -202844,7 +202919,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T05:12:36.756Z
     created_at: 2026-05-12T04:58:17.412Z
-    updated_at: 2026-05-12T05:12:36.757Z
+    updated_at: 2026-05-12T05:49:02.653Z
     notes: []
   - _ulid: 01KRDA6QCN3N0G8YNKR6GC7VQD
     slugs: []
