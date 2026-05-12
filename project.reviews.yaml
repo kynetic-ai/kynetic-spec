@@ -207853,6 +207853,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T19:43:22.472Z
+      - _ulid: 01KREVFCPAQ0TQEF4V7GW1VN5X
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KREVFB1DY33PQK357RJ60C24
+        timestamp: 2026-05-12T19:43:58.666Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -207862,8 +207869,27 @@ reviews:
       content_hash: ""
       ref: "@plan-dispatch-workspace-provisioning-lease-protection"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KREVFB1DY33PQK357RJ60C24
+        anchor:
+          type: structured
+          ref: "@plan-dispatch-workspace-provisioning-lease-protection"
+          section: context
+        entries:
+          - _ulid: 01KREVFB1DZGWDGK36QPRMQQVW
+            author: Jacob Chapel
+            body: "MUST-FIX: The plan does not prove that a durable provisioning lease is necessary for the
+              observed cleanup/bootstrap race. The direct evidence points to a narrower gap:
+              _spawnInvocation adds an in-flight key before provisioning/bootstrap, reconciliation
+              passes only _activeTaskRefs(), _activeTaskRefs() excludes inFlightTaskKeys, and
+              reapDispatchWorkspace already blocks cleanup when activeTaskRefs contains the task.
+              Before adding registry-backed leases, owner tuples, TTLs, and abandoned recovery, the
+              plan needs to either narrow to the smaller fix or document concrete evidence that
+              cleanup must protect bootstrap work across daemon restart or a separate process
+              owner."
+            created_at: 2026-05-12T19:43:56.973Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T19:43:06.045Z
-    updated_at: 2026-05-12T19:43:20.769Z
+    updated_at: 2026-05-12T19:43:56.973Z
     notes: []
