@@ -1,1 +1,19 @@
-notes: []
+notes:
+  - _ulid: 01KRD2XRPR5N95RJTQBSWAJDK4
+    content: "Refactored cleanup classifier in tools/eslint-rules/no-leaky-test-daemon.js into per-shape
+      predicates: isDaemonCleanupCallExpression dispatches to (1) isTerminatingKillSignalArg for
+      process.kill / child.kill — accepts no signal, undefined, void 0, or SIGTERM/SIGKILL/SIGINT
+      literal only (rejects 0, SIGUSR1, SIGCONT, SIGWINCH, computed); (2) isTrustedHelperByOrigin
+      for killPid/stopDaemon/stopMockDaemon — accepts approved-helper import paths, locally-defined
+      helpers whose body contains a strict terminating primitive (isTerminatingPrimitiveCall,
+      mirrors the predicate but omits the helper-name shortcut to block recursive wrappers), and
+      conservatively trusts free identifiers; (3) existing serve-stop CLI predicate unchanged.
+      Helper body inspection threads ownerFn so a parameter Identifier with a terminating default
+      Literal (function killPid(pid, signal = 'SIGTERM') in tests/cli-serve.test.ts) is recognised.
+      All 10 staged expectClassifierGap probes flipped from gap to post-fix; removed the wrapper and
+      inlined direct assertions. Targeted suites (70 + 219 = 289 tests) pass; full vitest run
+      (9045/9050) pass; npm run lint shows 13 pre-existing errors and 721 warnings, none introduced
+      by this change."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T03:15:40.888Z
