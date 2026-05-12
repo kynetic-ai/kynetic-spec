@@ -1043,6 +1043,166 @@ describe("test suite", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
       expect(result.output).toContain("has no scoped cleanup registration");
     });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-1 reviewer probe: a recognised helper name imported from an
+    // unapproved module path must not satisfy cleanup. The shared
+    // daemon-fixture allowlist (`APPROVED_HELPER_IMPORT_PATH_PATTERNS`)
+    // is the boundary that vets the helper body out of band; an import
+    // from `./fake-cleanup` lives outside that boundary and the rule
+    // cannot prove the helper stops the daemon. Pre-fix the classifier
+    // fell through to "free identifier" because the local-definition
+    // lookup returned null, and the daemon was credited as cleaned up
+    // when in reality the import target could be a no-op.
+    it("should flag serve start --detach when cleanup calls killPid imported from an unapproved module", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./fake-cleanup";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Same shape as the killPid unapproved-import probe but using the
+    // `stopDaemon` name. The unapproved-import rejection must apply to
+    // every name in `TRUSTED_HELPER_NAMES`, not just `killPid`.
+    it("should flag serve start --detach when cleanup calls stopDaemon imported from an unapproved module", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { stopDaemon } from "./fake-cleanup";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => stopDaemon(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Default-import shape: `import killPid from "./fake-cleanup"` binds
+    // the local name `killPid` from a non-approved source. Same rejection
+    // — the import-binding scan treats default specifiers identically
+    // to named specifiers because what matters is the locally-bound
+    // identifier, not the wire format of the import.
+    it("should flag serve start --detach when cleanup calls killPid imported as a default from an unapproved module", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import killPid from "./fake-cleanup";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-probes-do-not-count
+    // Cycle-1 reviewer probe: a local object literal whose `kill`
+    // method body is a no-op must not satisfy child-handle cleanup.
+    // Pre-fix the child-handle branch accepted any non-`process` `.kill()`
+    // call with no signal because `isTerminatingKillSignalArg(undefined)`
+    // returns true. The receiver check rejects the literal here because
+    // the kill body never reaches a terminating primitive.
+    it("should flag serve start --detach when cleanup is a local literal with a no-op kill shorthand method", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const fake = { kill() { console.log("noop"); } };
+    onTestFinished(() => fake.kill());
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-probes-do-not-count
+    // Same receiver-shape gap but with the longhand arrow-property form
+    // `{ kill: () => {} }` — empty arrow body. The literal still has a
+    // `kill` property, but the body has no terminating primitive, so
+    // the receiver check rejects.
+    it("should flag serve start --detach when cleanup is a local literal with an empty arrow kill property", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const fake = { pid: 12345, kill: () => {} };
+    onTestFinished(() => fake.kill("SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-probes-do-not-count
+    // Logger-only kill body: the property exists and is a function, but
+    // the body only writes to console. No terminating primitive is
+    // reachable, so the receiver check rejects on the same grounds the
+    // helper-body inspection rejects a logger-only `stopDaemon` helper.
+    it("should flag serve start --detach when cleanup is a local literal with a logger-only kill property", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const fake = {
+      pid: 12345,
+      kill: function (signal?: string) { console.log("would kill", signal); },
+    };
+    onTestFinished(() => fake.kill("SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {
@@ -1610,6 +1770,58 @@ describe("test suite", () => {
     const pid = readPidFromFile();
     onTestFinished(() => killPid(pid));
     expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // Receiver-check accepted companion: a local literal whose `kill`
+    // method body actually invokes a terminating primitive
+    // (`process.kill(pid, "SIGTERM")`) must be accepted. The receiver
+    // check that rejects the no-op literal cannot reject this shape —
+    // the body proves the cleanup terminates the daemon, mirroring the
+    // helper-body acceptance for local helpers whose body contains a
+    // terminating call.
+    it("should allow serve start --detach when cleanup is a local literal whose kill body invokes process.kill SIGTERM", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    const handle = {
+      pid,
+      kill(signal: string) { process.kill(pid, "SIGTERM"); },
+    };
+    onTestFinished(() => handle.kill("SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // Receiver-check accepted companion: when the receiver Identifier
+    // is bound to a CallExpression initializer (`spawn(...)`), the
+    // child-handle branch must continue to accept `child.kill(...)`
+    // because the rule cannot prove the binding is a no-op literal.
+    // The receiver check fires only on ObjectExpression literal inits;
+    // CallExpression inits fall through unchanged, preserving the
+    // canonical legitimate cleanup shape.
+    it("should allow serve start --detach when cleanup is child.kill on a binding initialized from spawn", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawn } from "child_process";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const child = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    onTestFinished(() => child.kill("SIGTERM"));
+    expect(child.pid).toBeDefined();
   });
 });
 `);

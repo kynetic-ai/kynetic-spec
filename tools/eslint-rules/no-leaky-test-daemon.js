@@ -497,7 +497,14 @@ const noLeakyTestDaemon = {
      *      (`child.kill(...)`). Same accepted signal policy as
      *      `process.kill`: no signal / `undefined` / `void 0` /
      *      terminating literal counts; everything else is rejected so
-     *      `child.kill("SIGUSR1")` etc. do not silently pass.
+     *      `child.kill("SIGUSR1")` etc. do not silently pass. The
+     *      receiver is additionally checked by
+     *      `isChildHandleReceiverTrusted`: a local ObjectExpression
+     *      literal whose `kill` method body contains no terminating
+     *      primitive (`const fake = { kill() { console.log("noop") } }`)
+     *      is rejected, so a callee-shape look-alike cannot satisfy
+     *      cleanup the same way a locally defined no-op named
+     *      `killPid` is rejected by the helper-name path.
      *
      *   3. Identifier callees `killPid` / `stopDaemon` /
      *      `stopMockDaemon` — recognised by name only when the origin is
@@ -587,9 +594,17 @@ const noLeakyTestDaemon = {
           return isTerminatingKillSignalArg(node.arguments[1], null);
         }
         // <expr>.kill(<signal>?) — child handle cleanup. Same accepted
-        // signal policy as process.kill so a child-handle leak path
-        // can't sneak in non-terminating signals.
-        return isTerminatingKillSignalArg(node.arguments[0], null);
+        // signal policy as process.kill, AND the receiver must not be a
+        // local object literal whose kill method body does not terminate
+        // the daemon. The receiver check rejects the cycle-1 reviewer
+        // probe `const fake = { kill() { console.log("noop"); } };
+        // onTestFinished(() => fake.kill())` — the literal's kill
+        // method has no terminating primitive call, so the cleanup
+        // shape is misleading and counts as no cleanup at all.
+        if (!isTerminatingKillSignalArg(node.arguments[0], null)) {
+          return false;
+        }
+        return isChildHandleReceiverTrusted(callee.object);
       }
 
       return false;
@@ -675,9 +690,139 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * True when the receiver of a `<expr>.kill(...)` cleanup CallExpression
+     * is trusted to actually be a daemon-stoppable handle (a ChildProcess
+     * from spawn/fork, an outer-scope or framework-provided binding, etc.)
+     * and NOT a local object literal whose `kill` method body does not
+     * terminate the daemon. The reviewer's cycle-1 probe
+     *   `const fake = { kill() { console.log("noop"); } };`
+     *   `onTestFinished(() => fake.kill());`
+     * shaped cleanup-look-alike code by giving a local literal a `kill`
+     * method that does nothing — accepting it would credit cleanup with
+     * no actual termination effect (`@daemon-test-guardrail-precision`
+     * `ac-cleanup-operation-terminates-daemon` /
+     * `ac-cleanup-probes-do-not-count`). The receiver check mirrors the
+     * helper-body inspection used for trusted helper names so the same
+     * no-op body shape is rejected whether the cleanup is invoked by
+     * helper name (`killPid(pid)`) or by member call on a local literal
+     * (`fake.kill()`).
+     *
+     * Resolution paths in order:
+     *
+     *   1. Receiver is not an Identifier (MemberExpression `agent.process`
+     *      or `result.child`, CallExpression `getChild()`, etc.) — the
+     *      rule cannot statically pin down a local literal definition,
+     *      so the receiver is trusted as a conservative default. False
+     *      positives are worse than false negatives for the rule, and
+     *      these shapes are the canonical real child-handle access
+     *      patterns (`agent.process.kill()` in the agent-runtime tests,
+     *      etc.).
+     *
+     *   2. Receiver Identifier has no concrete local binding in the file
+     *      (free identifier, parameter, framework-provided global) —
+     *      trusted. The rule cannot prove the binding is a local no-op.
+     *
+     *   3. Receiver Identifier's most recent concrete binding is
+     *      initialized from anything OTHER than an ObjectExpression
+     *      literal — trusted. CallExpression initializers
+     *      (`spawn(...)`, `fork(...)`, `runKspec(...)`), MemberExpression
+     *      initializers (`result.child`), other Identifier aliases, etc.
+     *      all fall through. Inferring termination effect across these
+     *      shapes requires interprocedural analysis the rule does not
+     *      perform; accepting them preserves the canonical legitimate
+     *      cleanup shapes (`const child = spawn(...); child.kill()`).
+     *
+     *   4. Receiver Identifier's binding is an ObjectExpression literal
+     *      with a literal `kill` property whose value is a
+     *      FunctionExpression / ArrowFunctionExpression (including the
+     *      shorthand-method form `{ kill() { ... } }`) — inspect the
+     *      body. Trusted iff the body contains a terminating primitive
+     *      call (`process.kill` with terminating signal, a child-handle
+     *      `.kill` with terminating signal, or a kspec `serve stop` CLI
+     *      invocation), exactly mirroring the helper-body inspection
+     *      used for the trusted-helper-name path.
+     *
+     *   5. Receiver Identifier's binding is an ObjectExpression literal
+     *      with a `kill` property whose value is something else (an
+     *      Identifier reference, a logical expression, etc.), or with no
+     *      literal `kill` property at all (the property is added later
+     *      via assignment, spread, etc.) — trusted as a conservative
+     *      default. The value is not a body the rule can statically
+     *      inspect for termination, so the rule cannot prove a no-op.
+     */
+    function isChildHandleReceiverTrusted(receiver) {
+      if (!receiver) return true;
+      if (receiver.type !== "Identifier") return true;
+      const binding = findConcreteBindingNodeAt(receiver.name, receiver);
+      if (!binding) return true;
+      const init = bindingInitializer(binding);
+      if (!init || init.type !== "ObjectExpression") return true;
+      const killProp = findLiteralKillProperty(init);
+      if (!killProp) return true;
+      const value = killProp.value;
+      if (
+        value &&
+        (value.type === "FunctionExpression" ||
+          value.type === "ArrowFunctionExpression")
+      ) {
+        return helperBodyContainsTerminatingPrimitive(value, new Set());
+      }
+      return true;
+    }
+
+    /**
+     * Extract the right-hand-side initializer from a binding node returned
+     * by `findConcreteBindingNodeAt`. A VariableDeclarator's initializer
+     * is `init`; a top-level `=` AssignmentExpression's initializer is
+     * `right`. Other node shapes have no initializer surface and are
+     * returned as null.
+     */
+    function bindingInitializer(bindingNode) {
+      if (!bindingNode) return null;
+      if (bindingNode.type === "VariableDeclarator") {
+        return bindingNode.init || null;
+      }
+      if (
+        bindingNode.type === "AssignmentExpression" &&
+        bindingNode.operator === "="
+      ) {
+        return bindingNode.right || null;
+      }
+      return null;
+    }
+
+    /**
+     * Return the Property node for a literal `kill` key on the supplied
+     * ObjectExpression, or null when no such property is present. Computed
+     * keys are skipped because the rule cannot statically resolve them to
+     * `"kill"`. Both Identifier-key (`{ kill() { ... } }` shorthand,
+     * `{ kill: () => { ... } }` longhand) and string-Literal-key
+     * (`{ "kill": () => { ... } }`) shapes are recognised.
+     */
+    function findLiteralKillProperty(objectExpr) {
+      if (!objectExpr || !Array.isArray(objectExpr.properties)) return null;
+      for (const prop of objectExpr.properties) {
+        if (!prop || prop.type !== "Property") continue;
+        if (prop.computed) continue;
+        if (!prop.key) continue;
+        if (prop.key.type === "Identifier" && prop.key.name === "kill") {
+          return prop;
+        }
+        if (
+          prop.key.type === "Literal" &&
+          typeof prop.key.value === "string" &&
+          prop.key.value === "kill"
+        ) {
+          return prop;
+        }
+      }
+      return null;
+    }
+
+    /**
      * Decide whether the recognised helper Identifier `name` at the use
-     * site `useNode` is trusted to actually terminate the daemon. Three
-     * resolution paths are accepted, in order:
+     * site `useNode` is trusted to actually terminate the daemon. Four
+     * resolution paths are evaluated, in order:
      *
      *   1. Imported from an approved helper module — the import path
      *      matches `APPROVED_HELPER_IMPORT_PATH_PATTERNS` (the shared
@@ -685,7 +830,18 @@ const noLeakyTestDaemon = {
      *      allowlist). The helper's implementation is vetted out of band
      *      so the name carries the trust of the module it comes from.
      *
-     *   2. Locally defined with a terminating body — the file contains a
+     *   2. Imported from any OTHER module — the helper is imported but
+     *      the source path is not in the approved-helper allowlist
+     *      (`import { killPid } from "./fake-cleanup"` and any other
+     *      non-vetted module). The vetting boundary is broken: the
+     *      module's body lives outside the path allowlist and cannot be
+     *      proven to terminate the daemon. Reject so the cycle-1
+     *      reviewer probe `import { killPid } from "./fake-cleanup";
+     *      onTestFinished(() => killPid(pid))` cannot satisfy cleanup
+     *      by name alone (`@daemon-test-guardrail-precision`
+     *      `ac-cleanup-helper-origin-is-trusted`).
+     *
+     *   3. Locally defined with a terminating body — the file contains a
      *      top-level FunctionDeclaration / VariableDeclarator-with-
      *      function-init named `name`, and that function's body contains
      *      a CallExpression matching the strict terminating-primitive
@@ -694,29 +850,54 @@ const noLeakyTestDaemon = {
      *      logger-only helper fails this check because no terminating
      *      primitive is reachable.
      *
-     *   3. Free identifier — no local definition and no approved-helper
-     *      import. The helper is presumed to come from outside this file
-     *      (a host runtime global, an import not yet wired up, etc.).
-     *      The rule cannot statically prove it is a no-op, so it
-     *      conservatively counts as cleanup. This preserves the
-     *      historical behavior for tests that already relied on a bare
+     *   4. Free identifier — no local definition and no import binding
+     *      at all. The helper is presumed to come from outside this file
+     *      via a non-import channel (a host runtime global, a runtime
+     *      injection, etc.). The rule cannot statically prove it is a
+     *      no-op, so it conservatively counts as cleanup. This preserves
+     *      the historical behavior for tests that rely on a bare
      *      `killPid(pid)` call shape without an explicit import.
      *
-     * The locally-defined-no-op rejection is the regression that motivated
-     * the predicate split (`@daemon-test-guardrail-precision`
-     * `ac-cleanup-helper-origin-is-trusted`). Previously the bare name
-     * shortcut accepted ANY identifier whose callee name matched
-     * `TRUSTED_HELPER_NAMES`, so a local `function killPid(_pid) {}` —
-     * which never invokes a terminating syscall — silently satisfied the
-     * cleanup contract and left the daemon leaking.
+     * The locally-defined-no-op rejection (path 3) and the
+     * unapproved-import rejection (path 2) together close the
+     * `ac-cleanup-helper-origin-is-trusted` gap. Without path 2, an
+     * `import { killPid } from "./fake-cleanup"` would reach path 4 (no
+     * LOCAL function declaration, so `findLocalHelperDefinition` returns
+     * null) and silently satisfy cleanup even though the import source
+     * is outside the vetted helper boundary.
      */
     function isTrustedHelperByOrigin(name, useNode) {
       if (isHelperNameImportedFromApprovedPath(name, useNode)) return true;
+      if (isHelperNameImported(name, useNode)) return false;
       const localFn = findLocalHelperDefinition(name, useNode);
       if (localFn) {
         return helperBodyContainsTerminatingPrimitive(localFn, new Set());
       }
       return true;
+    }
+
+    /**
+     * True when a top-level `ImportDeclaration` in the same file binds
+     * the local identifier `name` from any module specifier — the
+     * approved-path-aware sister to `isHelperNameImportedFromApprovedPath`.
+     * Used by `isTrustedHelperByOrigin` to detect the
+     * unapproved-import case: when the helper IS imported but the source
+     * is not on the approved-helper allowlist, the helper cannot bridge
+     * the vetting boundary by name alone.
+     */
+    function isHelperNameImported(name, fromNode) {
+      const program = findProgramNode(fromNode);
+      if (!program || !Array.isArray(program.body)) return false;
+      for (const stmt of program.body) {
+        if (!stmt || stmt.type !== "ImportDeclaration") continue;
+        for (const spec of stmt.specifiers || []) {
+          if (!spec || !spec.local || spec.local.type !== "Identifier") {
+            continue;
+          }
+          if (spec.local.name === name) return true;
+        }
+      }
+      return false;
     }
 
     /**
@@ -909,7 +1090,10 @@ const noLeakyTestDaemon = {
      * forwarded to `isTerminatingKillSignalArg` so an Identifier-shaped
      * signal that names a parameter with a terminating default is
      * accepted (the `function killPid(pid, signal = "SIGTERM") { ... }`
-     * pattern used by `tests/cli-serve.test.ts`).
+     * pattern used by `tests/cli-serve.test.ts`). The child-handle
+     * receiver check (`isChildHandleReceiverTrusted`) is applied here
+     * too so a wrapper whose body invokes a local-no-op-literal kill
+     * cannot bootstrap trust either.
      */
     function isTerminatingPrimitiveCall(node, ownerFn) {
       if (!node || node.type !== "CallExpression") return false;
@@ -928,7 +1112,10 @@ const noLeakyTestDaemon = {
         ) {
           return isTerminatingKillSignalArg(node.arguments[1], ownerFn);
         }
-        return isTerminatingKillSignalArg(node.arguments[0], ownerFn);
+        if (!isTerminatingKillSignalArg(node.arguments[0], ownerFn)) {
+          return false;
+        }
+        return isChildHandleReceiverTrusted(callee.object);
       }
       if (callee.type === "Identifier") {
         const name = callee.name;
