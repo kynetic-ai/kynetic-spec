@@ -46880,7 +46880,7 @@ runs:
     started_at: 2026-05-12T07:30:55.947Z
     completed_at: 2026-05-12T07:33:40.558Z
   - _ulid: 01KRDK6YWXRPEDGD74K0WS9CBD
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -46913,13 +46913,16 @@ runs:
           @01KQ133T6. The review-evidence-log pattern is duplicate/covered by @01KR2JD1. Detached
           reviewer merge helper success is covered by @detached-reviewer-merge-helper plus prior
           observations from search. No unique high-confidence item met the capture bar."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-05-12T08:09:20.901Z
-        completed_at: 2026-05-12T08:09:20.901Z
+        completed_at: 2026-05-12T08:10:15.706Z
+        notes: "No capture: every concrete item identified was already tracked, and the loop mode bar favors
+          capturing nothing over duplicate/noisy records."
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T08:00:19.357Z
+    completed_at: 2026-05-12T08:10:15.709Z
   - _ulid: 01KRDKQ89QPHEQ5S5QS6BYBA2W
     status: active
     current_step: 1
