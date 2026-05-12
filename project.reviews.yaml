@@ -204827,9 +204827,25 @@ reviews:
           kind: nit
           thread_ulid: 01KRECXYY5QZPEJAY1F3HJQH78
         timestamp: 2026-05-12T15:29:48.839Z
+      - _ulid: 01KRECYEVZAN3VDM09XYC9G4PP
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T15:30:03.776Z
+      - _ulid: 01KRECYEW0A41ZQX176NZF3KGA
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T15:30:03.776Z
     examined_commit: f2d28b784205871178ae3872f42601a3a15f9fa1
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -204894,7 +204910,14 @@ reviews:
               sibling daemon guardrail tests."
             created_at: 2026-05-12T15:29:47.462Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T15:30:03.775Z
     created_at: 2026-05-12T15:12:58.406Z
-    updated_at: 2026-05-12T15:29:47.462Z
+    updated_at: 2026-05-12T15:30:03.776Z
     notes: []
