@@ -46826,7 +46826,7 @@ runs:
     completed_at: 2026-05-12T07:28:53.935Z
   - _ulid: 01KRDHH4TA6ZSCBQ27SC6XRATT
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -46845,7 +46845,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T07:32:39.957Z
-        completed_at: 2026-05-12T07:32:39.957Z
+        completed_at: 2026-05-12T07:33:11.790Z
+        notes: "Step 2 (friction candidates evaluated): 1) tools/eslint-rules/no-leaky-test-daemon.js is
+          4271 lines and exceeds the Read tool's 25000-token limit, forcing slice reads via
+          offset/limit. As the cleanup-contract-hardening plan adds more classifiers
+          (cleanup-effect, cleanup-boundary, implicit-autostart) this grows further. Searched for
+          existing tracking (eslint rule size growth refactor / 4271 lines no-leaky / large lint
+          rule file) — no matches. Candidate for friction observation. 2) Structural
+          classifier-in-test pattern using readTestOutputSync (the no-source-scanning safe-listed
+          helper) is a useful failing-before-fix shape when a guardrail RULE doesn't yet exist but
+          the FILE structural property is checkable today. Searched for existing tracking — no
+          matches. Both are systemic enough for capture; capturing as observations (loop mode
+          prefers observation over task without user confirmation)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T07:33:11.790Z
+        completed_at: 2026-05-12T07:33:11.790Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T07:30:55.947Z
