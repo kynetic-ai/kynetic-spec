@@ -3067,6 +3067,85 @@ describe("test suite", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
       expect(result.output).toContain("has no scoped cleanup registration");
     });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-11 blocker (approved-shared-primitive name shadowed by
+    // local const no-op): even when `stopPidBounded` is imported from
+    // the canonical approved path at the module top, a local
+    // `const stopPidBounded = (_pid) => {}` inside the helper body
+    // shadows the import — the runtime call resolves to the no-op,
+    // not the approved export, and the daemon is left running. The
+    // approved-shared-primitive recogniser must walk the lexical
+    // scope chain at the call site (mirroring the local-scope-first
+    // ordering in `isTrustedHelperByOrigin`) and reject when any
+    // local binding of the callee name exists. The recogniser
+    // previously trusted top-level imports without verifying lexical
+    // resolution, so this shadow was credited and the test cycle-11
+    // probe exited with 0 no-leaky-test-daemon diagnostics.
+    it("should flag serve start --detach when cleanup helper body shadows approved primitive with local const no-op", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { stopPidBounded } from "./helpers/process-stop";
+
+function killPid(pid: number): Promise<void> {
+  const stopPidBounded = (_pid: number) => Promise.resolve();
+  return stopPidBounded(pid);
+}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-11 blocker (approved-shared-primitive name shadowed by
+    // parameter default): the helper signature binds
+    // `stopPidBounded` as a parameter with a no-op default, so the
+    // callee in the helper body resolves to the parameter value (a
+    // caller-overridable no-op) rather than the module-level import.
+    // The lexical-resolution gate must classify this binding as
+    // opaque (the runtime value is supplied by the caller) and
+    // reject — symmetric to the const-shadow case above, and
+    // matching the cycle-5 parameter-shadow treatment in
+    // `findLocalHelperDefinition`.
+    it("should flag serve start --detach when cleanup helper body shadows approved primitive with parameter default", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { stopPidBounded } from "./helpers/process-stop";
+
+function killPid(
+  pid: number,
+  stopPidBounded: (p: number) => Promise<void> = async (_p: number) => {},
+): Promise<void> {
+  return stopPidBounded(pid);
+}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {

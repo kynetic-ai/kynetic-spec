@@ -1405,19 +1405,40 @@ const noLeakyTestDaemon = {
      *
      * — is recognised as terminating without requiring a direct
      * `process.kill` in the helper body itself. Recognition requires
-     * three independent gates, all of which must hold:
+     * four independent gates, all of which must hold:
      *
      *   1. The callee Identifier name is in
      *      `APPROVED_SHARED_CLEANUP_PRIMITIVE_NAMES` (rejecting
      *      `sendPidSignal(pid)` and other shapes that are not the
      *      bounded-stop primitives).
-     *   2. The identifier is imported from an approved path AND its
+     *   2. The callee Identifier resolves to a free identifier at the
+     *      call site — `findLocalHelperDefinition(callee.name, node)`
+     *      returns null. Any lexically-closer binding (a local
+     *      FunctionDeclaration / VariableDeclarator with an
+     *      inspectable init, a function/arrow parameter with or
+     *      without a default, a CatchClause binding, a for-loop
+     *      binding, an opaque `let`/`const`/`var` declaration, or a
+     *      late-bound declarator after the call site) shadows the
+     *      module import: the runtime value of `stopPidBounded` is
+     *      the local shadow, not the approved export. Rejecting on
+     *      ANY non-null result closes the cycle-11 reviewer probe —
+     *      `import { stopPidBounded } from "./helpers/process-stop";
+     *      function killPid(pid) { const stopPidBounded = (_pid) =>
+     *      {}; stopPidBounded(pid); }` and
+     *      `function killPid(pid, stopPidBounded = (_pid) => {}) {
+     *      stopPidBounded(pid); }` both bind `stopPidBounded`
+     *      locally, so the import path alone cannot prove the call
+     *      site invokes the approved primitive. The check mirrors the
+     *      local-scope-first ordering in `isTrustedHelperByOrigin`,
+     *      where any local binding (function, opaque, or otherwise)
+     *      defeats import-based trust.
+     *   3. The identifier is imported from an approved path AND its
      *      imported (original) export name is also one of the approved
      *      primitive names (rejecting aliased imports of unrelated
      *      exports and bare unimported identifiers of the same name —
      *      a local `function stopPidBounded(_p) {}` no-op shadow does
      *      not satisfy trust here either).
-     *   3. The kill target argument (the first arg —
+     *   4. The kill target argument (the first arg —
      *      pid Identifier for `stopPidBounded`, ChildProcess Identifier
      *      for `stopChildProcessBounded`) is tied to the helper's
      *      invocation context, exactly the same rule the direct-kill
@@ -1442,6 +1463,9 @@ const noLeakyTestDaemon = {
         return false;
       }
       if (!ownerFn) return false;
+      if (findLocalHelperDefinition(callee.name, node) !== null) {
+        return false;
+      }
       if (!isSharedCleanupPrimitiveImported(callee.name, node)) return false;
       const targetArg = node.arguments && node.arguments[0];
       if (!targetArg) return false;
