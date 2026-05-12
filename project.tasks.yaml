@@ -28761,7 +28761,7 @@
   type: task
   spec_ref: "@daemon-test-teardown-boundedness"
   plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -28772,6 +28772,7 @@
   todos_count: 0
   created_at: 2026-05-12T00:14:54.131Z
   started_at: 2026-05-12T00:24:28.753Z
+  submitted_at: 2026-05-12T00:53:47.536Z
   automation: eligible
 - _ulid: 01KRCRJRF7TZVW59Q8ZK9JSS0X
   slugs:
