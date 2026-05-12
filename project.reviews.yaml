@@ -206258,6 +206258,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-12T18:28:57.747Z
+      - _ulid: 01KRESJQ2CDF52NKVTMG5XXP2F
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KREQ5RV2NWHBDYYX5P0PH6ST
+        timestamp: 2026-05-12T19:10:50.445Z
     examined_commit: 83237c93fdbddca17934bb1ab429e90324c55649
     external_links: []
     lifecycle_state: closed
@@ -206288,6 +206294,18 @@ reviews:
               injects a setup failure plus a cleanup failure and asserts the surfaced error remains
               the setup failure with cleanup context attached."
             created_at: 2026-05-12T18:28:49.122Z
+          - _ulid: 01KRESJNPD75FTNQ9FS9GF35D2
+            author: "@claude"
+            body: "Fixed in commit 18746c439 (tests/helpers/daemon.test.ts): added behavioral regression
+              \"createTestDaemonProject setup failure preserves primary when cleanup also fails\"
+              that injects both failures simultaneously. It uses _setCleanupRmForTesting to make
+              cleanupTempDir reject during the cleanup-stack rollback, paired with a __testStageHook
+              throw at after-shadow-detection. Asserts (a) the surfaced error is the setup-stage
+              sentinel and (b) the cleanup sentinel is discoverable via error.message / error.cause.
+              Sanity-flip verified: replacing 'attachCleanupFailure(err, cleanupError); throw err'
+              with 'throw cleanupError' makes the new test fail exactly on the setup-sentinel
+              containment assertion."
+            created_at: 2026-05-12T19:10:49.037Z
         kind: blocker
       - _ulid: 01KREQ5WB6MAFTWT81ZSS3XATS
         anchor:
@@ -206318,7 +206336,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T18:28:57.747Z
     created_at: 2026-05-12T18:11:16.914Z
-    updated_at: 2026-05-12T18:28:57.747Z
+    updated_at: 2026-05-12T19:10:49.037Z
     notes: []
   - _ulid: 01KREPPJP2CAQXRA7072P3KS01
     slugs: []
