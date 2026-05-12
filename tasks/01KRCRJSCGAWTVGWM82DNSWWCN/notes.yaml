@@ -55,3 +55,51 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T05:36:05.345Z
+  - _ulid: 01KRDD7ZSCFJKDQFJ7DDA6XMB2
+    content: >-
+      Fix cycle 1: addressed both blocker threads on review @01KRDA6QCN3N0G8YNKR6GC7VQD by closing
+      the wrapper-coverage gap.
+
+
+      Root cause: prior staged regressions exercised runDaemonFixtureLifecycle and
+      createTestDaemonProject in isolation, but the Playwright wrapper at
+      tests/e2e/fixtures/test-base.ts did not delegate to either helper. A regression in the
+      wrapper's pre-try/finally setup (createTestDaemonProject -> project-tests cpSync ->
+      kspec.config.yaml writeFileSync -> allocateTestDaemonPort) or in its lifecycle would not
+      surface.
+
+
+      Fix: extracted acquirePlaywrightFixtureResources(opts) in daemon-fixture.ts mirroring the
+      wrapper's setup steps verbatim (with __testStageHook seam matching the existing pattern in
+      createTestDaemonProject), and refactored test-base.ts to delegate setup to it AND the
+      use+teardown body to runDaemonFixtureLifecycle. The wrapper now inherits both the
+      setup-failure cleanup contract and the primary-error preservation contract from helpers the
+      regressions exercise.
+
+
+      Coverage added: 5 new tests under 'acquirePlaywrightFixtureResources -- wrapper setup-failure
+      cleanup' (1 positive + 4 it.fails staged regressions for after-copy-project-tests,
+      after-write-config, after-allocate-port, plus dedicated allocateTestDaemonPort-rejects).
+      Verified by stripping it.fails: all 4 fail with 'project tempDir ... must be removed after
+      wrapper setup failure' pre-fix.
+
+
+      Re-verified full ACs against the implementation:
+
+      - @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources: covered by 4 new
+      wrapper-path it.fails + the existing 2 createTestDaemonProject-path it.fails (6 staged
+      regressions total).
+
+      - @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure: existing 2
+      it.fails (use-path lifecycle helper + readiness/stop path in startTestDaemon) now meaningfully
+      cover the wrapper because test-base.ts delegates to runDaemonFixtureLifecycle.
+
+      - @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure and
+      ac-cleanup-registration-failure-stops-owned-child: unchanged, already covered.
+
+
+      Verification: focused tests pass (15 suites / 24 tests); full suite passes (2424 suites / 9069
+      tests / 5 skipped); E2E smoke passes (6/6).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T06:16:01.580Z
