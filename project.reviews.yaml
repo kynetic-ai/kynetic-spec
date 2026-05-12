@@ -202865,6 +202865,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T05:23:54.770Z
+      - _ulid: 01KRDAX9TFGHE8XVWM0FZA60KB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRDAX8FJY110R76FC3AYC8JM
+        timestamp: 2026-05-12T05:35:14.255Z
     examined_commit: 69024560de4a34a772c9944f034e9a9021056675
     external_links: []
     lifecycle_state: open
@@ -202874,8 +202881,29 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJSCGAWTVGWM82DNSWWCN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRDAX8FJY110R76FC3AYC8JM
+        anchor:
+          type: code
+          commit: 69024560de4a34a772c9944f034e9a9021056675
+          line_end: 196
+          line_start: 168
+          path: tests/e2e/fixtures/test-base.ts
+          side: head
+        entries:
+          - _ulid: 01KRDAX8FJM5TJSBHRJ52NYW04
+            author: Jacob Chapel
+            body: "MUST-FIX: the task explicitly calls for Playwright daemon fixture setup-path regressions
+              where project/home/config setup or port allocation fails before normal teardown
+              registration, but no added test exercises this wrapper window. In the real wrapper,
+              createTestDaemonProject() and allocateTestDaemonPort() still run before the
+              try/finally starts, so a regression in this path would not be caught by the new
+              createTestDaemonProject-only tests or by runDaemonFixtureLifecycle. Add fixture-unit
+              coverage that simulates failures in the Playwright wrapper setup path after resources
+              are owned and asserts cleanup/primary-error preservation for that wrapper behavior."
+            created_at: 2026-05-12T05:35:12.882Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T05:22:54.485Z
-    updated_at: 2026-05-12T05:23:53.376Z
+    updated_at: 2026-05-12T05:35:12.882Z
     notes: []
