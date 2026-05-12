@@ -201710,6 +201710,18 @@ reviews:
         runner: npm test
         created_at: 2026-05-12T03:07:57.338Z
         completed_at: 2026-05-12T03:07:57.338Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate reported schema/references OK and no validation errors. It exited 6 due to
+          existing repository-wide warnings (deprecated refs, orphaned specs, missing historical AC
+          coverage), not changes in this task.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-12T03:08:09.933Z
+        completed_at: 2026-05-12T03:08:09.933Z
     events:
       - _ulid: 01KRD1RXNJ72HWBD6J9TC1PXA8
         actor: Jacob Chapel
@@ -201738,6 +201750,13 @@ reviews:
           status: pass
           name: npm test -- --fresh
         timestamp: 2026-05-12T03:07:58.860Z
+      - _ulid: 01KRD2G1YEHF2B8ATH2JJ2942B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-12T03:08:11.598Z
     examined_commit: 315823030c112bf8d55755f08cf3db734c4d84fc
     external_links: []
     lifecycle_state: open
@@ -201750,5 +201769,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T02:55:33.554Z
-    updated_at: 2026-05-12T03:07:57.338Z
+    updated_at: 2026-05-12T03:08:09.933Z
     notes: []
