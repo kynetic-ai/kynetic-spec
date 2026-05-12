@@ -202641,6 +202641,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRD9GSVR7V8YYZSCHYDXG0J7
         timestamp: 2026-05-12T05:10:57.633Z
+      - _ulid: 01KRD9H9AMMQ61PY87HQ7WHN0C
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRD9H7R3VGV7J6QAQ4X6H7CD
+        timestamp: 2026-05-12T05:11:11.956Z
     examined_commit: 40336586e664d485ab1c0a212b94aa7eece9db0d
     external_links: []
     lifecycle_state: open
@@ -202673,7 +202680,27 @@ reviews:
               `ac-cleanup-probes-do-not-count` and `ac-cleanup-operation-terminates-daemon`.'
             created_at: 2026-05-12T05:10:56.121Z
         kind: blocker
+      - _ulid: 01KRD9H7R3VGV7J6QAQ4X6H7CD
+        anchor:
+          type: code
+          commit: 40336586e664d485ab1c0a212b94aa7eece9db0d
+          line_end: 202
+          line_start: 201
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KRD9H7R300GEFAP2FED6E57Y
+            author: Jacob Chapel
+            body: 'MUST-FIX: The approved helper import allowlist is path-tail based, so it trusts unapproved
+              modules whose specifier happens to end in `helpers/daemon` or `helpers/mock-daemon`. I
+              verified `import { killPid } from "some-unapproved-package/helpers/daemon"; ...
+              onTestFinished(() => killPid(pid))` produces 0 no-leaky-test-daemon diagnostics. That
+              import is not the approved shared daemon-test fixture path, so this still lets helper
+              names satisfy cleanup without a trusted origin and violates
+              `ac-cleanup-helper-origin-is-trusted`.'
+            created_at: 2026-05-12T05:11:10.339Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T04:58:17.412Z
-    updated_at: 2026-05-12T05:10:56.121Z
+    updated_at: 2026-05-12T05:11:10.339Z
     notes: []
