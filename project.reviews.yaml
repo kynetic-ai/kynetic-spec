@@ -208652,6 +208652,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T21:22:29.332Z
+      - _ulid: 01KRF13V3HHQVHH39JQDCQ3DTC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRF13QDK2DXKHPY6B547EN9G
+        timestamp: 2026-05-12T21:22:31.665Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -208661,8 +208668,27 @@ reviews:
       content_hash: ""
       ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRF13QDK2DXKHPY6B547EN9G
+        anchor:
+          type: structured
+          field: testing
+          ref: "@task-add-cleanup-protection-maintenance-guardrails"
+          section: tasks
+        entries:
+          - _ulid: 01KRF13QDKXGX2FY53XXH97BZS
+            author: Jacob Chapel
+            body: The guardrail task permits source-level/static tests that enumerate destructive operations in
+              src/agent-runtime/workspace.ts. Project review rules reject source-scanning tests as
+              valid AC coverage, and the no-source-scanning lint rule is intended to enforce that.
+              If implemented as written, this can produce non-behavioral coverage for
+              ac-protection-applies-to-every-destructive-surface. Fix by removing the
+              source-level/static-audit option and requiring behavioral/contract tests through the
+              public reconciliation path or a focused helper API, with explicit protected and
+              cleanup-eligible cases for each destructive surface.
+            created_at: 2026-05-12T21:22:27.891Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T21:22:07.177Z
-    updated_at: 2026-05-12T21:22:27.887Z
+    updated_at: 2026-05-12T21:22:27.891Z
     notes: []
