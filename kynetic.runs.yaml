@@ -48260,9 +48260,20 @@ runs:
     completed_at: 2026-05-12T23:01:40.752Z
   - _ulid: 01KRF8J9X657TPC4WMSYGAX0WG
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-12T23:32:45.606Z
+        completed_at: 2026-05-12T23:35:15.300Z
+        notes: "Worked well: the structured detached review flow gave clear gates. kspec item get confirmed
+          exact AC state, npm test provided full-suite evidence, and the detached merge helper
+          handled the already-integrated branch as a safe no-op."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-12T23:35:15.300Z
+        completed_at: 2026-05-12T23:35:15.300Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T23:32:45.606Z
