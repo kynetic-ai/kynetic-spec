@@ -43,6 +43,8 @@ import {
   type IsolatedKspecHome,
   type StartupProbeResult,
 } from "./cli.js";
+import { boundedDaemonFetch } from "./daemon-fetch.js";
+import { stopChildProcessBounded } from "./process-stop.js";
 
 // ── Paths ─────────────────────────────────────────────────────────────
 
@@ -448,15 +450,9 @@ interface BoundedProbeFetchResult {
 }
 
 async function boundedProbeFetch(url: string): Promise<BoundedProbeFetchResult> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), PROBE_FETCH_TIMEOUT_MS);
-  try {
-    const response = await fetch(url, { signal: controller.signal });
-    const body = await response.text();
-    return { ok: response.ok, status: response.status, body };
-  } finally {
-    clearTimeout(timer);
-  }
+  const response = await boundedDaemonFetch(url, { timeoutMs: PROBE_FETCH_TIMEOUT_MS });
+  const body = await response.text();
+  return { ok: response.ok, status: response.status, body };
 }
 
 function describeChildExit(child: ChildProcess): string | null {
@@ -478,19 +474,14 @@ function describeChildExit(child: ChildProcess): string | null {
 async function sampleEndpointDiagnostic(
   url: string,
 ): Promise<DaemonEndpointObservation> {
-  const controller = new AbortController();
-  const timer = setTimeout(
-    () => controller.abort(),
-    DIAGNOSTIC_SAMPLE_TIMEOUT_MS,
-  );
   try {
-    const response = await fetch(url, { signal: controller.signal });
+    const response = await boundedDaemonFetch(url, {
+      timeoutMs: DIAGNOSTIC_SAMPLE_TIMEOUT_MS,
+    });
     const body = await response.text();
     return { status: response.status, body };
   } catch (error) {
     return { error: error instanceof Error ? error.message : String(error) };
-  } finally {
-    clearTimeout(timer);
   }
 }
 
@@ -632,29 +623,17 @@ function buildDaemonArgs(args: {
   return result;
 }
 
+/**
+ * Stop the daemon child via the shared bounded stop primitive: SIGTERM,
+ * wait for observed exit on the handle, escalate to SIGKILL on timeout,
+ * then wait again for the resulting exit observation. The wait treats
+ * `signalCode` as an exit indicator equivalent to `exitCode` so a child
+ * killed by signal does not block cleanup. Throws BoundedProcessStopError
+ * if termination cannot be observed even after escalation — cleanup never
+ * reports success while the child is still observably alive.
+ */
 async function killChildScoped(child: ChildProcess, gracefulMs = 5_000): Promise<void> {
-  if (describeChildExit(child)) return;
-  try {
-    child.kill("SIGTERM");
-  } catch {
-    // already exited between the check and the kill
-  }
-  await new Promise<void>((resolveExit) => {
-    const timer = setTimeout(() => {
-      if (!describeChildExit(child)) {
-        try {
-          child.kill("SIGKILL");
-        } catch {
-          // ignore
-        }
-      }
-      resolveExit();
-    }, gracefulMs);
-    child.once("exit", () => {
-      clearTimeout(timer);
-      resolveExit();
-    });
-  });
+  await stopChildProcessBounded(child, { gracefulMs, label: "test daemon child" });
 }
 
 function formatDiagnostics(d: DaemonReadinessDiagnostics): string {
@@ -751,13 +730,12 @@ export async function startTestDaemon(
   const stop = async (): Promise<void> => {
     if (stopped) return;
     stopped = true;
-    // If the OS never started the child (spawn ENOENT / EACCES etc), there
-    // is no pid to signal and no 'exit' event will fire. killChildScoped
-    // would block for its graceful timeout before giving up — short-circuit
-    // instead so cleanup stays bounded for launch-failure callers.
-    if (!(launchError && child.pid === undefined)) {
-      await killChildScoped(child);
-    }
+    // killChildScoped routes through the shared bounded-stop primitive.
+    // The primitive short-circuits when child.pid is undefined (the OS
+    // never started the child — e.g. spawn ENOENT / EACCES — so there is
+    // no pid to signal and no 'exit' event will fire) so cleanup stays
+    // bounded for launch-failure callers without an extra outer guard.
+    await killChildScoped(child);
     // Test-only failure injection: see `__testStopFailure` JSDoc. Gated by
     // the `stopped` flag above, so a subsequent test-finished cleanup call
     // is a no-op and does not throw again.

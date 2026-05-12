@@ -35,7 +35,7 @@
 
 import { ChildProcess, spawn } from "node:child_process";
 import http from "node:http";
-import { createServer as createNetServer } from "node:net";
+import { createServer as createNetServer, type Socket } from "node:net";
 import { existsSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -53,6 +53,7 @@ import {
   readTestOutputSync,
   type IsolatedKspecHome,
 } from "./cli.js";
+import { stopChildProcessBounded } from "./process-stop.js";
 
 // ── Paths ─────────────────────────────────────────────────────────────
 
@@ -320,12 +321,25 @@ function handleInProcessRequest(
   ctx.response.end("Not found");
 }
 
+// In-process stop() budget. `server.close()` waits for active connections to
+// drain, so a hung request keeps the close callback pending forever. The
+// graceful budget gives a cooperating handler time to finish; on elapse the
+// helper escalates by force-destroying remaining sockets so close finalizes.
+// The hard bound is a safety net for any future Node behavior where close
+// stays pending even after all sockets are destroyed — teardown must always
+// reach a bounded outcome.
+const IN_PROCESS_STOP_GRACEFUL_MS = 250;
+const IN_PROCESS_STOP_BOUND_MS = 1_000;
+
 async function startInProcessMockDaemon(
   bindHost: string,
   mode: MockDaemonMode,
 ): Promise<MockDaemonClient | null> {
   return new Promise((resolve) => {
     const recorded: RecordedMockRequest[] = [];
+    // Track every accepted socket so stop() can force-close active connections
+    // when server.close() is otherwise pinned by a hung handler.
+    const activeSockets = new Set<Socket>();
     const server = http.createServer(async (req, res) => {
       const body = await readRequestBody(req);
       recorded.push({
@@ -337,6 +351,10 @@ async function startInProcessMockDaemon(
       });
       const url = new URL(req.url ?? "/", `http://${req.headers.host ?? bindHost}`);
       handleInProcessRequest({ body, url, request: req, response: res }, mode);
+    });
+    server.on("connection", (socket: Socket) => {
+      activeSockets.add(socket);
+      socket.once("close", () => activeSockets.delete(socket));
     });
 
     let settled = false;
@@ -361,13 +379,38 @@ async function startInProcessMockDaemon(
       }
       const port = addr.port;
       const { apiUrl, wsUrl } = buildDaemonUrls(bindHost, port);
-      let stopped = false;
-      const stop = (): Promise<void> =>
-        new Promise<void>((resolveStop) => {
-          if (stopped) return resolveStop();
-          stopped = true;
-          server.close(() => resolveStop());
+      let stopPromise: Promise<void> | undefined;
+      // Operational stop(): bounded teardown that cannot block on a hung
+      // request. server.close() pins on active connections, so the helper
+      // escalates after a small graceful budget by destroying any remaining
+      // sockets (matches server.closeAllConnections() semantics) and a hard
+      // bound resolves the promise even if close() never fires its callback.
+      // Idempotent — subsequent calls return the cached promise.
+      // AC: @daemon-test-teardown-boundedness ac-active-requests-do-not-block-teardown
+      const stop = (): Promise<void> => {
+        if (stopPromise) return stopPromise;
+        stopPromise = new Promise<void>((resolveStop) => {
+          let settledStop = false;
+          const finishStop = (): void => {
+            if (settledStop) return;
+            settledStop = true;
+            clearTimeout(gracefulTimer);
+            clearTimeout(boundTimer);
+            resolveStop();
+          };
+          const gracefulTimer = setTimeout(() => {
+            // Force-close any sockets still tying up server.close(). Once
+            // every connection is destroyed, the close callback fires and
+            // finishStop runs via the close path.
+            for (const socket of activeSockets) {
+              socket.destroy();
+            }
+          }, IN_PROCESS_STOP_GRACEFUL_MS);
+          const boundTimer = setTimeout(finishStop, IN_PROCESS_STOP_BOUND_MS);
+          server.close(() => finishStop());
         });
+        return stopPromise;
+      };
       finish({
         port,
         bindHost,
@@ -454,10 +497,11 @@ async function startChildMockDaemon(
      * Idempotent child cleanup for startup-failure paths.
      *
      * Resolves only after the still-running mock daemon child has actually
-     * exited — the contract is that the helper must not return failure to
-     * the caller while the owned child is still alive. Sends SIGTERM,
-     * waits for the child's `exit` event, and schedules a SIGKILL fallback
-     * for children that ignore SIGTERM. Also removes the helper-allocated
+     * been observed terminated — the contract is that the helper must not
+     * return failure to the caller while the owned child is still alive.
+     * Routes through the shared bounded stop primitive so SIGTERM,
+     * escalation to SIGKILL, and exit-observation use the same semantics
+     * as the operational `stop()` closure. Also removes the helper-allocated
      * record file. Safe to call from any failure branch (timeout, malformed
      * first-line stdout, spawn error) — subsequent calls return immediately
      * with the prior outcome, so cascading branches cannot double-kill or
@@ -465,60 +509,25 @@ async function startChildMockDaemon(
      *
      * @see ac-owned-child-stopped-after-startup-failure in
      * @daemon-test-startup-failure-hygiene
+     * @see ac-stop-observes-termination-before-return in
+     * @daemon-test-teardown-boundedness
      */
     let startupCleanupPromise: Promise<void> | undefined;
     const cleanupChildOnStartupFailure = (): Promise<void> => {
       if (startupCleanupPromise) return startupCleanupPromise;
-      startupCleanupPromise = new Promise<void>((resolveCleanup) => {
-        // Holder so `finalize` can reference the timer through a stable
-        // identifier even though the timer is created after `finalize` is
-        // attached as the exit listener.
-        const cleanup: { done: boolean; killTimer?: NodeJS.Timeout } = {
-          done: false,
-        };
-        const finalize = (): void => {
-          if (cleanup.done) return;
-          cleanup.done = true;
-          if (cleanup.killTimer) clearTimeout(cleanup.killTimer);
+      startupCleanupPromise = stopChildProcessBounded(child, {
+        gracefulMs: CHILD_GRACEFUL_KILL_MS,
+        label: "mock daemon child (startup failure)",
+      })
+        .catch(() => {
+          // Bounded-stop failure on the setup path is best-effort: callers
+          // already routing through failStartup will surface their own
+          // diagnostic. Swallow so cleanupRecordFile still runs and the
+          // helper returns a single failure rather than a compound throw.
+        })
+        .finally(() => {
           cleanupRecordFile();
-          resolveCleanup();
-        };
-
-        // If the child has already exited (e.g. spawn rejected, child
-        // crashed before we got here), there's nothing to wait on.
-        if (child.exitCode !== null || child.signalCode !== null) {
-          finalize();
-          return;
-        }
-
-        child.once("exit", finalize);
-
-        let signalled: boolean;
-        try {
-          signalled = child.kill("SIGTERM");
-        } catch {
-          signalled = false;
-        }
-
-        if (!signalled) {
-          // child.kill returns false when the child handle has no spawned
-          // process (e.g. spawn rejected with ENOENT) or has already been
-          // reaped. No exit event is coming, so don't wait — drop our
-          // listener and finalize now. If exit *does* fire later, finalize
-          // is idempotent.
-          child.removeListener("exit", finalize);
-          finalize();
-          return;
-        }
-
-        cleanup.killTimer = setTimeout(() => {
-          try {
-            child.kill("SIGKILL");
-          } catch {
-            // already gone — the exit handler will resolve us
-          }
-        }, CHILD_GRACEFUL_KILL_MS);
-      });
+        });
       return startupCleanupPromise;
     };
 
@@ -541,34 +550,22 @@ async function startChildMockDaemon(
         return;
       }
       const { apiUrl, wsUrl } = buildDaemonUrls(parsed.bindHost, parsed.port);
-      let stopped = false;
-      const stop = (): Promise<void> =>
-        new Promise<void>((resolveStop) => {
-          if (stopped) return resolveStop();
-          stopped = true;
-          let finalized = false;
-          const finalize = (): void => {
-            if (finalized) return;
-            finalized = true;
-            clearTimeout(killTimer);
-            cleanupRecordFile();
-            resolveStop();
-          };
-          child.once("exit", finalize);
-          try {
-            child.kill("SIGTERM");
-          } catch {
-            // already gone
-          }
-          const killTimer = setTimeout(() => {
-            try {
-              child.kill("SIGKILL");
-            } catch {
-              // already gone
-            }
-            finalize();
-          }, CHILD_GRACEFUL_KILL_MS);
+      let stopPromise: Promise<void> | undefined;
+      // Operational stop(): route through the shared bounded primitive so
+      // SIGTERM, escalation to SIGKILL, and exit observation match the
+      // semantics enforced by @daemon-test-teardown-boundedness. Cleanup
+      // never reports success while the child is still observably alive.
+      // Idempotent — subsequent calls return the cached promise.
+      const stop = (): Promise<void> => {
+        if (stopPromise) return stopPromise;
+        stopPromise = stopChildProcessBounded(child, {
+          gracefulMs: CHILD_GRACEFUL_KILL_MS,
+          label: "mock daemon child",
+        }).finally(() => {
+          cleanupRecordFile();
         });
+        return stopPromise;
+      };
       finish({
         port: parsed.port,
         bindHost: parsed.bindHost,
