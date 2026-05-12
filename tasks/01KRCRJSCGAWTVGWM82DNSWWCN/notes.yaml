@@ -108,3 +108,42 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T06:35:35.511Z
+  - _ulid: 01KRDG1XSEFV3EH3B0WA5Z31GA
+    content: >-
+      Fix cycle 2: addressed the blocker thread on review @01KRDDMFDR6798Q1SYMR79VPBW.
+
+
+      Root cause: the cycle 1 wrapper refactor passed startDaemon() as runDaemonFixtureLifecycle's
+      setup callback. The lifecycle helper invokes setup() OUTSIDE its try/finally, so when
+      startPlaywrightFixtureDaemon rejected during readiness/startup, teardown was skipped —
+      stopDaemon, second-project cleanup, and project.cleanup all bypassed. The reviewer reproduced
+      this behaviorally (thrown=setup/start failure, teardownRan=false), confirming a violation of
+      @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure and
+      @daemon-backed-test-fixture-contract ac-scoped-cleanup.
+
+
+      Fix: extracted runPlaywrightFixtureBody in tests/e2e/fixtures/daemon-fixture.ts. The helper
+      wires startDaemon INSIDE the lifecycle's use phase (not setup), so a readiness/startup failure
+      flows through the try/finally and still triggers teardown. test-base.ts now delegates to
+      runPlaywrightFixtureBody, restoring the pre-extraction wrapper shape where startDaemon was
+      inside the wrapper's own try/finally while preserving the cycle 1 use+teardown
+      error-preservation delegation.
+
+
+      Wrapper coverage added under describe("runPlaywrightFixtureBody — wrapper startup-failure
+      cleanup"):
+        1. Positive: startDaemon → body → teardown order on success.
+        2. Regression (passes post-fix): startDaemon throws → teardown still runs; order asserts exactly [start-daemon, teardown]. A regression that reverted to setup-as-startup would observe [start-daemon] alone (teardown skipped) and fail this assertion.
+        3. Staged it.fails: startDaemon throws + teardown throws → primary-error preservation. Pairs with the existing use-phase preservation regression; flips post-fix when @task-fix-setup-failure-cleanup-error-preservation lands.
+
+      Re-verified full ACs against the implementation:
+        - @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources: unchanged coverage (4 wrapper-path it.fails + 2 createTestDaemonProject-path it.fails).
+        - @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure: now covers both use-phase (existing) AND startup-phase (new) paths.
+        - @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure: existing cleanup-registration coverage + new wrapper-shape regression test that observes teardown invocation on startup failure.
+
+      Verification:
+        - Focused: 16/16 suites, 27/27 tests pass.
+        - Full: 9071 passed, 5 skipped, 15 expected fail (it.fails staged). One unrelated flake in tests/file-lock.test.ts (concurrent-write timing); passed on re-run.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T07:05:08.654Z
