@@ -47533,7 +47533,7 @@ runs:
     started_at: 2026-05-12T17:34:20.992Z
     completed_at: 2026-05-12T17:39:26.405Z
   - _ulid: 01KRENGEJRXK5TF44DXNNH1WV9
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -47586,10 +47586,15 @@ runs:
         completed_at: 2026-05-12T18:02:32.921Z
         notes: No discussion needed because there are no new proposed improvements. Existing tracked items
           already cover the friction points; no user approval needed for duplicate captures.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-12T18:02:32.921Z
-        completed_at: 2026-05-12T18:02:32.921Z
+        completed_at: 2026-05-12T18:02:46.690Z
+        notes: "No captures created. High-confidence friction and success patterns from this session are
+          already tracked: validation warning noise, long full-suite review waits, review evidence
+          logging, and detached-reviewer merge helper behavior. Avoided duplicate inbox/observation
+          entries."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T17:59:41.912Z
+    completed_at: 2026-05-12T18:02:46.690Z
