@@ -201238,6 +201238,19 @@ reviews:
         runner: npm
         created_at: 2026-05-12T02:00:44.731Z
         completed_at: 2026-05-12T02:00:44.731Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 'npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts failed 3/61:
+          process.on("exit"), process.on("beforeExit"), and process.on("SIGTERM") expected
+          no-leaky-test-daemon but oxlint returned 0 errors. npm test -- --fresh
+          tests/lint-daemon-test-guardrails.test.ts passed 219/219.'
+        name: focused daemon lint suites
+        required: true
+        runner: npm
+        created_at: 2026-05-12T02:00:48.826Z
+        completed_at: 2026-05-12T02:00:48.826Z
     events:
       - _ulid: 01KRCXWT926WF4AWJ6H94VSVQK
         actor: Jacob Chapel
@@ -201259,6 +201272,13 @@ reviews:
           status: fail
           name: npm test -- --fresh
         timestamp: 2026-05-12T02:00:46.108Z
+      - _ulid: 01KRCYMQD9XHX5ESXXTM4D2PSB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: focused daemon lint suites
+        timestamp: 2026-05-12T02:00:50.345Z
     examined_commit: 9b5ac8f3afa3c255eca6a31d2b673d0f8677e67d
     external_links: []
     lifecycle_state: open
@@ -201271,5 +201291,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T01:47:46.850Z
-    updated_at: 2026-05-12T02:00:44.731Z
+    updated_at: 2026-05-12T02:00:48.826Z
     notes: []
