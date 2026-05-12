@@ -47876,3 +47876,706 @@ plans:
           cases rather than relying only on the repository's ordinary test suite.
         author: Jacob Chapel
         created_at: 2026-05-12T00:14:56.348Z
+  - _ulid: 01KREBPJEW6TRM8ETCGV16HPP7
+    slugs:
+      - plan-dispatch-workspace-provisioning-lease-protection
+    title: Dispatch Workspace Provisioning Lease Protection
+    content: >
+      # Dispatch Workspace Provisioning Lease Protection
+
+
+      ## Context
+
+
+      Dispatch workspace artifact reconciliation can currently run while a worker or reviewer
+      workspace is between queue dequeue and active invocation registration. During that window the
+      dispatcher may be creating or repairing a worktree, running bootstrap commands such as `npm
+      install`, or re-validating the workspace after recovery. The runtime has an in-memory
+      `inFlightTaskKeys` marker for scheduler deduplication, but artifact cleanup only receives
+      `activeInvocationDetails` via `_activeTaskRefs()`, and the registry does not durably expose a
+      provisioning/bootstrap lease that cleanup can honor after restart.
+
+
+      The observed failure mode is a compound race:
+
+
+      - `DispatchEngine._spawnInvocation()` adds an in-flight key before provisioning, but it does
+      not register an active invocation until after provisioning, bootstrap, validation, prompt
+      creation, and adapter setup.
+
+      - `reconcileDispatchWorkspaceArtifacts()` is called from startup and periodic reconciliation
+      with only active invocation refs, so it can treat a task in the provisioning/bootstrap window
+      as idle.
+
+      - `reconcileDispatchWorkspaceArtifacts()` may remove unregistered directories under the
+      dispatch worktree root, cleanup-eligible workspace trees, reviewer snapshot trees, or
+      orphan-looking dispatch branches without knowing that bootstrap is still mutating them.
+
+      - Bootstrap steps such as `npm install` create and rename many nested filesystem entries;
+      removing or pruning their parent workspace mid-step yields transient-looking `ENOENT`,
+      `TAR_ENTRY_ERROR`, and `spawn sh ENOENT` failures.
+
+
+      This plan makes the protected window explicit and durable. Provisioning, bootstrap, and
+      pre-invocation validation become leased workspace phases. Artifact cleanup must honor both
+      live in-memory in-flight refs and registry-backed leases, and expired leases must recover
+      safely rather than leaving artifacts forever or deleting active work.
+
+
+      ## Specs
+
+
+      ```yaml
+
+      # ─── Updates to Existing Spec: @dispatch-workspace-registry ───
+
+
+      - title: Dispatch Workspace Registry
+        slug: dispatch-workspace-registry
+        type: requirement
+        acceptance_criteria:
+          - id: ac-provisioning-lease-recorded
+            given: |
+              The dispatcher begins creating, repairing, rehydrating, bootstrapping, or
+              validating a dispatch workspace before an agent invocation is registered
+              as active
+            when: |
+              The dispatcher mutates workspace branches, worktree directories,
+              reviewer snapshot directories, workspace metadata, or bootstrap artifacts
+            then: |
+              The workspace registry records a durable provisioning lease for the
+              affected task and role, including the workspace id when known, role,
+              owner process identity, phase, started_at, updated_at, and expires_at;
+              the workspace lifecycle remains non-closed for the duration of the lease
+          - id: ac-provisioning-lease-protects-artifacts
+            given: |
+              Workspace artifact reconciliation evaluates dispatch worktrees,
+              reviewer worktrees, unregistered directories under the dispatch
+              worktree root, or dispatch branches
+            when: |
+              The registry contains a non-expired provisioning lease for the related
+              task/workspace, or the dispatch engine reports the task as in-flight
+            then: |
+              Artifact reconciliation preserves those paths and branches and does not
+              reap, prune, detach, or delete them while the lease or in-flight marker
+              is active
+          - id: ac-provisioning-lease-finalized
+            given: |
+              A provisioning, bootstrap, or pre-invocation validation phase ends in
+              success, handled failure, or thrown error
+            when: |
+              Control leaves that phase
+            then: |
+              The dispatcher finalizes the provisioning lease in the registry in a
+              `finally`-equivalent path: successful preparation clears the lease and
+              moves the workspace to ready or active as appropriate; failed preparation
+              clears or expires the lease and records actionable unhealthy/stale
+              diagnostics instead of leaving an indefinitely protected workspace
+          - id: ac-expired-provisioning-lease-recovery
+            given: |
+              The daemon starts or periodic reconciliation observes a workspace record
+              with an expired provisioning lease
+            when: |
+              No live dispatcher process or active task marker still owns that lease
+            then: |
+              Reconciliation treats the lease as abandoned, records an actionable
+              stale or invalid health issue, and only then allows normal recovery or
+              cleanup rules to proceed; it never deletes artifacts solely because a
+              lease is old without first recording the abandoned state
+
+      # ─── Updates to Existing Spec: @dispatch-runtime-bootstrap-contract ───
+
+
+      - title: Dispatch Runtime Bootstrap Contract
+        slug: dispatch-runtime-bootstrap-contract
+        type: requirement
+        acceptance_criteria:
+          - id: ac-bootstrap-in-progress-is-durable
+            given: |
+              The dispatcher is about to run one or more configured bootstrap steps
+              for a workspace role
+            when: |
+              The first bootstrap subprocess is spawned
+            then: |
+              The workspace registry durably records that role's bootstrap state as
+              in_progress, associated with the current provisioning lease and bootstrap
+              config hash, before the subprocess can mutate the workspace
+          - id: ac-bootstrap-terminal-state-after-subprocess
+            given: |
+              A bootstrap subprocess succeeds, fails, is aborted, or throws while the
+              dispatcher is preparing an invocation
+            when: |
+              The subprocess handling path completes
+            then: |
+              The role bootstrap state is durably finalized as succeeded or failed
+              with step results and failure guidance, and no in_progress bootstrap
+              state remains unless a fresh retry has started
+          - id: ac-bootstrap-cleanup-interlock
+            given: |
+              Artifact cleanup runs while bootstrap is in_progress for a role
+            when: |
+              Cleanup considers any path or branch belonging to the workspace
+            then: |
+              Cleanup treats the bootstrap in_progress state and provisioning lease as
+              a hard protection signal and skips deletion or pruning for that
+              workspace until bootstrap reaches a terminal state or the lease is
+              recovered as abandoned
+
+      # ─── Updates to Existing Spec: @agent-dispatch-engine ───
+
+
+      - title: Agent Dispatch Engine
+        slug: agent-dispatch-engine
+        type: feature
+        acceptance_criteria:
+          - id: ac-inflight-provisioning-counts-active-for-cleanup
+            given: |
+              A queue entry has been selected for spawn and the dispatch engine has
+              marked the task in-flight, but no agent invocation has been registered
+              yet
+            when: |
+              Startup, periodic, or post-event reconciliation invokes workspace
+              artifact cleanup
+            then: |
+              The dispatch engine includes the in-flight task reference in the active
+              protection set passed to cleanup so provisioning, bootstrap, and
+              validation cannot race with artifact deletion
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: false
+
+
+      ```yaml
+
+      # ─── Phase 1: Spec Updates ───
+
+
+      - title: Add provisioning lease ACs to dispatch workspace registry
+        slug: task-add-dispatch-workspace-provisioning-lease-acs
+        priority: 1
+        tags: [spec-update, dispatch, workspace, cleanup]
+        spec_ref: "@dispatch-workspace-registry"
+        description: |
+          Add the registry-level acceptance criteria that define durable provisioning
+          leases and their cleanup protection semantics.
+
+          Why: @dispatch-workspace-registry currently defines lifecycle_state
+          `provisioning`, but it does not specify a durable lease/owner/expiry
+          contract, does not say cleanup must treat provisioning as protected, and
+          does not define how expired provisioning state recovers after restart. That
+          gap allowed cleanup to classify a workspace being bootstrapped as stale or
+          idle.
+
+          What: Add these ACs to @dispatch-workspace-registry exactly as drafted in
+          this plan:
+          - ac-provisioning-lease-recorded
+          - ac-provisioning-lease-protects-artifacts
+          - ac-provisioning-lease-finalized
+          - ac-expired-provisioning-lease-recovery
+
+          How: Use `kspec item ac add @dispatch-workspace-registry ...` for each AC.
+          Verify with `kspec item get @dispatch-workspace-registry` and ensure the new
+          AC IDs are present.
+
+          Covers: @dispatch-workspace-registry ac-provisioning-lease-recorded,
+          ac-provisioning-lease-protects-artifacts,
+          ac-provisioning-lease-finalized,
+          ac-expired-provisioning-lease-recovery.
+
+      - title: Add bootstrap in-progress interlock ACs
+        slug: task-add-bootstrap-in-progress-interlock-acs
+        priority: 1
+        tags: [spec-update, dispatch, bootstrap, cleanup]
+        spec_ref: "@dispatch-runtime-bootstrap-contract"
+        depends_on:
+          - "@task-add-dispatch-workspace-provisioning-lease-acs"
+        description: |
+          Add bootstrap-specific acceptance criteria requiring durable in-progress and
+          terminal bootstrap state around subprocess execution.
+
+          Why: @dispatch-runtime-bootstrap-contract currently distinguishes not_run,
+          succeeded, and failed outcomes, but it does not require an in_progress state
+          before filesystem-mutating subprocesses run. Cleanup therefore lacks a
+          spec-backed signal that `npm install` or equivalent bootstrap work is active.
+
+          What: Add these ACs to @dispatch-runtime-bootstrap-contract exactly as
+          drafted in this plan:
+          - ac-bootstrap-in-progress-is-durable
+          - ac-bootstrap-terminal-state-after-subprocess
+          - ac-bootstrap-cleanup-interlock
+
+          How: Use `kspec item ac add @dispatch-runtime-bootstrap-contract ...` for
+          each AC. Verify with `kspec item get @dispatch-runtime-bootstrap-contract`.
+
+          Covers: @dispatch-runtime-bootstrap-contract ac-bootstrap-in-progress-is-durable,
+          ac-bootstrap-terminal-state-after-subprocess, ac-bootstrap-cleanup-interlock.
+
+      - title: Add dispatch in-flight cleanup protection AC
+        slug: task-add-dispatch-inflight-cleanup-protection-ac
+        priority: 1
+        tags: [spec-update, dispatch, scheduler, cleanup]
+        spec_ref: "@agent-dispatch-engine"
+        depends_on:
+          - "@task-add-dispatch-workspace-provisioning-lease-acs"
+        description: |
+          Add an engine-level acceptance criterion requiring in-flight queue entries to
+          count as active for cleanup protection before activeInvocationDetails exists.
+
+          Why: The dispatch engine already has `inFlightTaskKeys` for scheduler
+          deduplication, but `_activeTaskRefs()` only returns active invocation
+          records. Reconciliation calls `reconcileDispatchWorkspaceArtifacts()` with
+          that incomplete set, leaving the provisioning/bootstrap window unprotected.
+
+          What: Add ac-inflight-provisioning-counts-active-for-cleanup to
+          @agent-dispatch-engine exactly as drafted in this plan.
+
+          How: Use `kspec item ac add @agent-dispatch-engine ...` and verify with
+          `kspec item get @agent-dispatch-engine`.
+
+          Covers: @agent-dispatch-engine ac-inflight-provisioning-counts-active-for-cleanup.
+
+      # ─── Phase 2: Registry Schema and Lease Helpers ───
+
+
+      - title: Add provisioning lease schema to dispatch workspace records
+        slug: task-add-dispatch-workspace-provisioning-lease-schema
+        priority: 1
+        tags: [dispatch, workspace, schema]
+        spec_ref: "@dispatch-workspace-registry"
+        depends_on:
+          - "@task-add-dispatch-workspace-provisioning-lease-acs"
+        description: |
+          Extend the dispatch workspace registry schema and TypeScript types with an
+          explicit provisioning lease record.
+
+          Why: Existing lifecycle_state values can say `provisioning`, but they do not
+          encode owner, role, phase, timestamps, or expiry. Cleanup needs a durable,
+          inspectable signal that survives daemon restart and can be recovered if the
+          daemon dies mid-bootstrap.
+
+          What:
+          1. In `src/schema/dispatch-workspace.ts`, add
+             `DispatchWorkspaceProvisioningLeaseSchema` with fields:
+             - `status`: `none | in_progress | abandoned`
+             - `owner`: string nullable/optional
+             - `role`: `worker | reviewer` nullable/optional
+             - `phase`: `workspace | bootstrap | validation | invocation_start` nullable/optional
+             - `started_at`: DateTime nullable/optional
+             - `updated_at`: DateTime nullable/optional
+             - `expires_at`: DateTime nullable/optional
+             - `detail`: string nullable/optional
+          2. Add `provisioning_lease` to `DispatchWorkspaceRecordSchema` with a
+             backward-compatible default `{ status: "none" }`.
+          3. Export the inferred lease type and update the corresponding runtime
+             record/metadata conversion types in `src/agent-runtime/workspace.ts`.
+          4. Extend `DispatchWorkspaceBootstrapStatusSchema` with `in_progress` and
+             ensure old records without the status still default to `not_run`.
+
+          How: Keep schema defaults backward compatible so existing
+          `.kspec/project.dispatch-workspaces.yaml` files validate without migration.
+          Update normalization helpers so omitted lease fields never produce validation
+          errors.
+
+          Covers: @dispatch-workspace-registry ac-provisioning-lease-recorded,
+          @dispatch-runtime-bootstrap-contract ac-bootstrap-in-progress-is-durable.
+
+      - title: Implement provisioning lease mutation helpers
+        slug: task-implement-dispatch-workspace-provisioning-lease-helpers
+        priority: 1
+        tags: [dispatch, workspace, registry]
+        spec_ref: "@dispatch-workspace-registry"
+        depends_on:
+          - "@task-add-dispatch-workspace-provisioning-lease-schema"
+        description: |
+          Add first-party helpers for starting, renewing, clearing, and abandoning
+          provisioning leases through the protected shadow mutation path.
+
+          Why: Lease updates must be durable before cleanup relies on them. Ad hoc
+          record writes from dispatch.ts or bootstrap.ts would risk bypassing the
+          existing shadow-branch serialization and creating another cleanup race.
+
+          What:
+          1. In `src/agent-runtime/workspace.ts`, add exported helpers similar to the
+             existing mark-active/mark-idle functions:
+             - `markDispatchWorkspaceProvisioning(options)`
+             - `renewDispatchWorkspaceProvisioningLease(options)`
+             - `clearDispatchWorkspaceProvisioningLease(options)`
+             - `markDispatchWorkspaceProvisioningAbandoned(options)`
+          2. Helpers must load the matching registry record, mutate only lease,
+             lifecycle, health/bootstrap fields required for the transition, save via
+             existing registry persistence, and commit through the protected shadow
+             mutation path.
+          3. `markDispatchWorkspaceProvisioning` must set lifecycle_state to
+             `provisioning` unless the record is already `active`, and set a finite
+             `expires_at` based on a constant/default TTL.
+          4. `clearDispatchWorkspaceProvisioningLease` must clear the lease to
+             `{ status: "none" }` and move lifecycle to `ready` unless invocation
+             activation immediately moves it to `active`.
+          5. `markDispatchWorkspaceProvisioningAbandoned` must set lease status to
+             `abandoned`, record a health issue with suggested recovery, and avoid
+             deleting artifacts itself.
+
+          How: Keep mutation helpers idempotent. Repeated start/renew calls for the
+          same owner/phase should update timestamps but not create duplicate records.
+          Repeated clear calls when no lease exists should be a no-op.
+
+          Covers: @dispatch-workspace-registry ac-provisioning-lease-recorded,
+          ac-provisioning-lease-finalized, ac-expired-provisioning-lease-recovery.
+
+      # ─── Phase 3: Protect the Provisioning/Bootstrap Window ───
+
+
+      - title: Mark workspace provisioning before filesystem mutation
+        slug: task-mark-workspace-provisioning-before-mutation
+        priority: 1
+        tags: [dispatch, workspace, cleanup]
+        spec_ref: "@dispatch-workspace-registry"
+        depends_on:
+          - "@task-implement-dispatch-workspace-provisioning-lease-helpers"
+        description: |
+          Ensure workspace creation, repair, branch adoption, reviewer snapshot setup,
+          and metadata recovery enter a leased provisioning phase before cleanup can
+          classify their artifacts as stale.
+
+          Why: The first vulnerable window begins before bootstrap: worktree creation
+          or repair may create directories under the dispatch worktree root before
+          active invocation registration. Cleanup currently removes unregistered root
+          directories that lack a `.git` marker and may also reap cleanup-eligible
+          workspace metadata without knowing provisioning is active.
+
+          What:
+          1. Update `provisionDispatchWorkspace()` in `src/agent-runtime/workspace.ts`
+             so new and reused records are moved into provisioning with a lease before
+             mutating worktrees/branches where possible.
+          2. For brand-new workspaces, create or update the registry record with the
+             intended worker worktree path and lifecycle_state `provisioning` before
+             long-running filesystem work begins.
+          3. For reviewer provisioning, set the lease phase before creating/resetting
+             the detached reviewer worktree.
+          4. Ensure all error paths either clear the lease with unhealthy diagnostics
+             or mark it abandoned/failed with actionable guidance.
+
+          How: Use `try/finally` or equivalent around each provisioning phase. Do not
+          mark a workspace ready merely because branch/worktree creation finished if
+          bootstrap still needs to run; dispatch.ts will advance the phase to
+          bootstrap next.
+
+          Covers: @dispatch-workspace-registry ac-provisioning-lease-recorded,
+          ac-provisioning-lease-finalized.
+
+      - title: Record bootstrap in-progress and terminal states
+        slug: task-record-bootstrap-in-progress-terminal-states
+        priority: 1
+        tags: [dispatch, bootstrap, workspace]
+        spec_ref: "@dispatch-runtime-bootstrap-contract"
+        depends_on:
+          - "@task-implement-dispatch-workspace-provisioning-lease-helpers"
+        description: |
+          Make `ensureWorkspaceBootstrap()` persist in_progress bootstrap state and
+          provisioning lease phase before spawning bootstrap subprocesses, then always
+          persist terminal state after subprocess completion.
+
+          Why: Bootstrap is the observed failure point. `npm install` can be killed by
+          parent workspace deletion while files are being extracted. Cleanup needs a
+          durable hard protection signal before `bash -lc <bootstrap command>` starts.
+
+          What:
+          1. In `src/agent-runtime/bootstrap.ts`, before the first call to `runShell`,
+             update the role bootstrap state to `in_progress`, store config hash,
+             canonical branch head, lastRole, and clear prior failure details for the
+             current attempt.
+          2. Start/renew the workspace provisioning lease with phase `bootstrap` and
+             role `worker` or `reviewer` before spawning each subprocess.
+          3. On successful completion, persist existing succeeded state and step
+             results, then let the caller clear/advance the lease.
+          4. On failure/abort/throw, persist failed state and failureMessage in a
+             `finally`-equivalent path before rethrowing `DispatchBootstrapError`.
+          5. Ensure skipped/reused bootstrap does not create an in_progress state.
+
+          How: Preserve existing ACs requiring exact command strings and sanitized
+          environment. Do not wrap or modify configured bootstrap commands.
+
+          Covers: @dispatch-runtime-bootstrap-contract ac-bootstrap-in-progress-is-durable,
+          ac-bootstrap-terminal-state-after-subprocess.
+
+      - title: Include in-flight task refs in cleanup protection
+        slug: task-include-inflight-refs-in-cleanup-protection
+        priority: 1
+        tags: [dispatch, scheduler, cleanup]
+        spec_ref: "@agent-dispatch-engine"
+        depends_on:
+          - "@task-add-dispatch-inflight-cleanup-protection-ac"
+        description: |
+          Update the dispatch engine's active task set used for artifact cleanup so it
+          includes tasks between queue dequeue and active invocation registration.
+
+          Why: `_spawnInvocation()` adds `${agentId}:${taskRef}` to `inFlightTaskKeys`
+          before provisioning. `_activeTaskRefs()` currently ignores those keys, so
+          startup/periodic reconciliation can call cleanup with an incomplete active
+          set during the exact window that needs protection.
+
+          What:
+          1. Update `_activeTaskRefs()` in `src/agent-runtime/dispatch.ts` to include
+             task refs parsed from `this.inFlightTaskKeys` in addition to
+             `activeInvocationDetails`.
+          2. Keep `_hasActiveInvocationForTask()` behavior unchanged except where it
+             can reuse the same parser helper.
+          3. Ensure both reconcile call sites that pass `activeTaskRefs:
+             this._activeTaskRefs()` now receive the expanded protection set.
+
+          How: Parse in-flight keys by splitting only on the first `:` so task refs
+          remain intact. Add a small helper if needed to avoid duplicating parsing.
+
+          Covers: @agent-dispatch-engine ac-inflight-provisioning-counts-active-for-cleanup.
+
+      - title: Make artifact reconciliation lease-aware
+        slug: task-make-artifact-reconciliation-lease-aware
+        priority: 1
+        tags: [dispatch, workspace, cleanup]
+        spec_ref: "@dispatch-workspace-registry"
+        depends_on:
+          - "@task-mark-workspace-provisioning-before-mutation"
+          - "@task-record-bootstrap-in-progress-terminal-states"
+          - "@task-include-inflight-refs-in-cleanup-protection"
+        description: |
+          Teach `reconcileDispatchWorkspaceArtifacts()` to preserve leased and
+          in-flight workspace artifacts across every deletion path.
+
+          Why: Cleanup has several independent deletion paths: cleanup-eligible record
+          reaping, unreferenced reviewer snapshot deletion, unregistered root directory
+          pruning, and orphan dispatch branch deletion. All must honor the same
+          protection contract or the race can reappear through a different path.
+
+          What:
+          1. In `src/agent-runtime/workspace.ts`, load the workspace registry once near
+             the start of `reconcileDispatchWorkspaceArtifacts()` and build protected
+             sets for:
+             - task refs with non-expired provisioning leases;
+             - worker worktree paths for leased/non-closed records;
+             - reviewer worktree paths for leased/non-closed records;
+             - canonical branches for leased/non-closed records.
+          2. Treat `options.activeTaskRefs` as an additional hard protection source.
+          3. Before calling `reapDispatchWorkspace()`, skip records whose task ref is
+             active/in-flight or whose registry record has a non-expired provisioning
+             lease or in_progress bootstrap state.
+          4. Before deleting reviewer snapshot directories, skip paths in the
+             protected reviewer set.
+          5. Before deleting root directories without `.git`, skip any candidate that
+             is equal to or contained by a protected worker/reviewer path.
+          6. Before deleting dispatch branches, preserve branches for any non-closed
+             registry record and explicitly include leased branches in diagnostics.
+          7. When a lease is expired, call the abandonment helper before allowing
+             cleanup to proceed on later cycles.
+
+          How: Keep cleanup conservative. A protected path false-positive is safer
+          than deleting an active bootstrap tree. Existing closed-record retention and
+          branch-pruning behavior should remain unchanged for records with no active
+          task and no valid lease.
+
+          Covers: @dispatch-workspace-registry ac-provisioning-lease-protects-artifacts,
+          ac-expired-provisioning-lease-recovery; @dispatch-runtime-bootstrap-contract
+          ac-bootstrap-cleanup-interlock.
+
+      - title: Finalize leases around invocation activation and preparation failures
+        slug: task-finalize-provisioning-leases-around-invocation-start
+        priority: 1
+        tags: [dispatch, workspace, scheduler]
+        spec_ref: "@dispatch-workspace-registry"
+        depends_on:
+          - "@task-make-artifact-reconciliation-lease-aware"
+        description: |
+          Wire lease finalization into `_spawnInvocation()` so successful preparation
+          hands off to active invocation state and failed preparation does not leave a
+          stale protected lease.
+
+          Why: Provisioning and bootstrap are called from `_spawnInvocation()` before
+          active invocation registration. The caller owns the overall preparation
+          lifecycle and must guarantee lease cleanup across success, adapter errors,
+          prompt errors, validation failures, and thrown exceptions.
+
+          What:
+          1. In `src/agent-runtime/dispatch.ts`, establish a provisioning owner id for
+             the spawn attempt (the preSessionId or a dedicated ULID generated before
+             provisioning starts).
+          2. Advance lease phases as preparation proceeds: workspace, bootstrap,
+             validation, invocation_start.
+          3. On successful `markDispatchWorkspaceActive()`, clear the provisioning
+             lease or allow mark-active to atomically replace it with active_role.
+          4. On provisioning/bootstrap/validation/prompt/adapter failure before
+             invocation registration, finalize the lease with failed/unhealthy
+             diagnostics before returning false.
+          5. Ensure `finally` still removes `inFlightTaskKeys` when no invocation was
+             registered, preserving existing scheduler deduplication semantics.
+
+          How: Avoid making task-blocking or task-note recovery depend on the lease
+          write succeeding. If lease finalization fails, log the failure but keep the
+          task recovery path actionable.
+
+          Covers: @dispatch-workspace-registry ac-provisioning-lease-finalized.
+
+      # ─── Phase 4: Regression Coverage and Guardrails ───
+
+
+      - title: Cover lease schema defaults and transitions
+        slug: task-test-provisioning-lease-schema-and-transitions
+        priority: 1
+        tags: [tests, dispatch, schema]
+        spec_ref: "@dispatch-workspace-registry"
+        depends_on:
+          - "@task-implement-dispatch-workspace-provisioning-lease-helpers"
+        description: |
+          Add unit coverage proving old registry records validate, lease transitions
+          persist, and expired leases become abandoned diagnostics instead of silent
+          deletes.
+
+          Why: The registry file is durable project metadata. Backward compatibility
+          and deterministic transition semantics are required before cleanup relies on
+          the new fields.
+
+          What:
+          1. Add tests in `tests/dispatch-workspace-registry.test.ts` or a focused new
+             test file for schema defaulting when `provisioning_lease` is omitted.
+          2. Test mark/renew/clear helper idempotence and timestamp/phase updates.
+          3. Test expired lease recovery records stale/invalid health details and does
+             not delete artifacts in the same step.
+
+          How: Use existing fixture helpers for temp kspec projects and registry
+          persistence. Avoid real long-running subprocesses in these unit tests.
+
+          Covers: @dispatch-workspace-registry ac-provisioning-lease-recorded,
+          ac-provisioning-lease-finalized, ac-expired-provisioning-lease-recovery.
+
+      - title: Cover artifact reconciliation preserving active bootstrap artifacts
+        slug: task-test-artifact-reconciliation-preserves-bootstrap-artifacts
+        priority: 1
+        tags: [tests, dispatch, cleanup, bootstrap]
+        spec_ref: "@dispatch-workspace-registry"
+        depends_on:
+          - "@task-make-artifact-reconciliation-lease-aware"
+        description: |
+          Add regression tests proving artifact reconciliation does not delete worker
+          or reviewer workspace artifacts while provisioning/bootstrap is leased or
+          in-flight.
+
+          Why: This is the direct regression for the `npm` extraction ENOENT failure.
+          Cleanup must skip all relevant deletion paths, not just the branch-pruning
+          path.
+
+          What:
+          1. Create a test workspace registry record with a non-expired provisioning
+             lease and a worker worktree path under the dispatch worktree root.
+          2. Place nested bootstrap-like directories/files under the worker path,
+             including directories without `.git` markers that would otherwise look
+             pruneable from the worktree root scan.
+          3. Run `reconcileDispatchWorkspaceArtifacts()` with no active invocation and
+             assert the leased worker path, nested files, reviewer path, and canonical
+             branch are preserved.
+          4. Repeat with `activeTaskRefs` containing the task ref but no lease to prove
+             in-flight engine protection works.
+          5. Add a negative control for a closed/no-lease stale artifact to ensure
+             cleanup still removes truly orphaned artifacts.
+
+          How: Keep the fixture small and deterministic. The test does not need to run
+          real `npm`; it only needs to prove cleanup cannot remove the parent tree
+          during an active bootstrap window.
+
+          Covers: @dispatch-workspace-registry ac-provisioning-lease-protects-artifacts,
+          @dispatch-runtime-bootstrap-contract ac-bootstrap-cleanup-interlock,
+          @agent-dispatch-engine ac-inflight-provisioning-counts-active-for-cleanup.
+
+      - title: Cover dispatch bootstrap race with controlled in-flight spawn
+        slug: task-test-dispatch-bootstrap-race-inflight-protection
+        priority: 1
+        tags: [tests, dispatch, scheduler, bootstrap]
+        spec_ref: "@agent-dispatch-engine"
+        depends_on:
+          - "@task-finalize-provisioning-leases-around-invocation-start"
+        description: |
+          Add a higher-level dispatch engine regression test where reconciliation runs
+          while a spawn attempt is blocked in bootstrap, then verify cleanup does not
+          remove the workspace.
+
+          Why: Unit tests around cleanup are necessary but not sufficient; the bug
+          exists because `_spawnInvocation()`, in-memory in-flight tracking, bootstrap,
+          and reconciliation compose incorrectly.
+
+          What:
+          1. Add a dispatch engine test using `DispatchEngine` with
+             `reconcileIntervalMs: 0` and controlled/manual invocation of the
+             reconciliation path.
+          2. Configure a bootstrap step that blocks on a fixture-controlled signal or
+             creates a sentinel file before waiting.
+          3. Start spawn for a task and wait until the bootstrap sentinel exists.
+          4. Trigger workspace artifact reconciliation while the spawn is still
+             in-flight.
+          5. Assert the workspace directory and bootstrap sentinel survive, then
+             release bootstrap and assert the lease is finalized and the invocation can
+             proceed or fail in the expected controlled way.
+
+          How: Prefer a tiny shell script fixture over sleeps. The test should wait on
+          file existence or a promise barrier to avoid timing flakes.
+
+          Covers: @agent-dispatch-engine ac-inflight-provisioning-counts-active-for-cleanup,
+          @dispatch-runtime-bootstrap-contract ac-bootstrap-in-progress-is-durable,
+          ac-bootstrap-terminal-state-after-subprocess.
+
+      # ─── Phase 5: Validation ───
+
+
+      - title: Validate provisioning lease protection implementation
+        slug: task-validate-provisioning-lease-protection
+        priority: 1
+        tags: [validation, dispatch, tests]
+        spec_ref: "@dispatch-workspace-registry"
+        depends_on:
+          - "@task-test-provisioning-lease-schema-and-transitions"
+          - "@task-test-artifact-reconciliation-preserves-bootstrap-artifacts"
+          - "@task-test-dispatch-bootstrap-race-inflight-protection"
+        description: |
+          Run targeted and broad validation for the provisioning lease protection work
+          and record the results on the completed implementation task.
+
+          Why: The failure is race-like and touches durable metadata, cleanup, and
+          dispatch engine scheduling. Validation must prove both the new regression
+          tests and existing dispatch workspace behavior still pass.
+
+          What:
+          1. Run targeted tests for the changed areas, including:
+             - dispatch workspace registry tests;
+             - dispatch workspace/artifact cleanup tests;
+             - dispatch runtime bootstrap tests;
+             - dispatch engine scheduler/in-flight tests.
+          2. Run project validation commands:
+             - `mise exec -- npm run typecheck`
+             - `mise exec -- npm run test -- --runInBand` or the repository's
+               supported focused/full test command if `--runInBand` is unsupported.
+             - `mise exec -- kspec validate`
+          3. Verify `git status --short` and shadow branch status are clean or contain
+             only the intended spec/task/implementation changes.
+          4. If dispatch was paused for implementation, resume it and verify
+             `mise exec -- kspec agent status --json` reports expected running state.
+
+          How: Capture command outputs in task notes with exact commands, exit codes,
+          and any intentionally skipped expensive suites.
+
+          Covers: @dispatch-workspace-registry ac-provisioning-lease-recorded,
+          ac-provisioning-lease-protects-artifacts, ac-provisioning-lease-finalized,
+          ac-expired-provisioning-lease-recovery; @dispatch-runtime-bootstrap-contract
+          ac-bootstrap-in-progress-is-durable, ac-bootstrap-terminal-state-after-subprocess,
+          ac-bootstrap-cleanup-interlock; @agent-dispatch-engine
+          ac-inflight-provisioning-counts-active-for-cleanup.
+      ```
+    status: draft
+    approved_at: null
+    branch: null
+    derived_specs: []
+    derived_tasks: []
+    module_ref: "@agent-integration"
+    source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/dispatch-workspace-provisioning-lease-protection.md
+    created_at: 2026-05-12T15:08:16.729Z
+    completed_at: null
+    notes: []
