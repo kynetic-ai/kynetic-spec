@@ -54,7 +54,7 @@ description: >
 spec_ref: "@daemon-test-teardown-boundedness"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -72,7 +72,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KRCS30YRHKST38ZYKR4WKVMG
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -121,6 +121,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-12T01:25:52.065Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KRCS30YRHKST38ZYKR4WKVMG
+    command: review-verdict-needs-work
+    timestamp: 2026-05-12T01:41:31.104Z
 created_at: 2026-05-12T00:14:54.131Z
 started_at: 2026-05-12T00:24:28.753Z
 submitted_at: 2026-05-12T00:53:47.536Z

@@ -200993,9 +200993,25 @@ reviews:
           kind: nit
           thread_ulid: 01KRCXGV9AT0QEF43D1TJPNVQD
         timestamp: 2026-05-12T01:41:16.247Z
+      - _ulid: 01KRCXH8F8A0373B31RPWKCDFD
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-12T01:41:28.168Z
+      - _ulid: 01KRCXH8F8TNNFCY4ZNNZPBF8X
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-12T01:41:28.168Z
     examined_commit: 38281b2580cd078393fbc844446cd34113ff5d0a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -201063,9 +201079,16 @@ reviews:
               false no-ambient AC annotations."
             created_at: 2026-05-12T01:41:14.667Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-12T01:41:28.168Z
     created_at: 2026-05-12T01:25:48.577Z
-    updated_at: 2026-05-12T01:41:14.667Z
+    updated_at: 2026-05-12T01:41:28.168Z
     notes: []
   - _ulid: 01KRCX973GZBVGAC6R6KGR4K7A
     slugs: []
