@@ -47881,7 +47881,7 @@ runs:
     completed_at: 2026-05-12T20:00:44.680Z
   - _ulid: 01KREYKNNZHSQBVFHXW34XJE1W
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47903,7 +47903,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-12T20:39:34.651Z
-        completed_at: 2026-05-12T20:39:34.651Z
+        completed_at: 2026-05-12T20:39:38.070Z
+        notes: "Coverage checked before proposing capture: kspec search 'review ad hoc classifier probes',
+          'no-leaky-test-daemon stopPidBounded', and 'repository lint no-leaky-test-daemon' returned
+          no matches. Existing task @task-fix-guardrail-cleanup-effect-classification now carries
+          the immediate blockers, so any captured item should be process/tooling improvement rather
+          than duplicating this task."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-12T20:39:38.070Z
+        completed_at: 2026-05-12T20:39:38.070Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T20:38:44.671Z
