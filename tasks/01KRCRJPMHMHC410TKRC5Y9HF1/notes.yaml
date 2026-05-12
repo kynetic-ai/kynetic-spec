@@ -464,3 +464,89 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T20:38:09.601Z
+  - _ulid: 01KRF0BJQ1BK7BCGFB1SRHCVWP
+    content: >-
+      Fix cycle 11: addressed both cycle-10 reviewer blockers on @01KREXT4 review.
+
+
+      Blocker 1 (line 1857 of cycle-10 head, strict primitive classifier rejected approved shared
+      helper internals): the helper-body inspection required the body to reach process.kill /
+      <child>.kill directly, so tests/cli-serve.test.ts's killPid(pid) — which delegates to
+      stopPidBounded from ./helpers/process-stop — failed and repository lint reported 18
+      no-leaky-test-daemon errors on that file. Task description explicitly preserves "approved
+      shared helper internals", which means the vetted bounded-stop primitives MUST be recognised as
+      terminating.
+
+
+      Fix: APPROVED_SHARED_CLEANUP_PRIMITIVE_NAMES = {stopPidBounded, stopChildProcessBounded} with
+      relative-prefix import prefilter ./helpers/process-stop and on-disk allowlist
+      tests/helpers/process-stop.ts. New isApprovedSharedCleanupPrimitiveCall enforces approved name
+      + approved-import + kill-target tied to ownerFn (mirrors the direct-kill path's ownership
+      tie). Wired into isTerminatingPrimitiveCall after the existing serve-stop branch. Also added
+      tests/helpers/process-stop.ts to HELPER_PATH_PATTERNS so the rule does not lint its own
+      approved primitive's implementation file.
+
+
+      Blocker 2 (line 1826 of cycle-10 head, helper-body ownership too permissive): three sub-probes
+      from the reviewer's evidence log — (1) helper kills omitted second-parameter target; (2)
+      helper kills target defaulting to stale outer pid; (3) object literal exposes stale outer pid
+      as a property and the kill method targets it.
+
+
+      Probe 1 + 2 fix: isHelperBodyKillTargetTiedToOwner now finds the parameter index of the kill
+      target's root via new findOwnerFnParamIndex, then requires the call site (useCallNode) to
+      provide a verifiable kill-target argument at that index via new
+      callSiteProvidesVerifiableArgAt. Omitted-arg / undefined / void / null / Literal /
+      computed-target arguments are rejected at the kill-target parameter position. Both reviewer
+      probes call killPid(pid) with only one argument, so args[1] is missing → reject.
+
+
+      Probe 3 fix: collectDaemonKillCaptureNames now extends the captures for <receiver>.kill()
+      shapes — when the receiver is a local Identifier bound to an ObjectExpression with a kill
+      method, the closure-captured kill-target identifiers from the kill method body (via new
+      collectLiteralKillMethodClosureKillTargets + collectKillTargetClosureRootsInBody) are added to
+      the top-level capture list. Names bound by the kill method's own parameters are filtered out
+      (already covered by the parameter-binding path). cleanupCallbackBindingStatus then runs
+      isCaptureOwnedByDetachedStart against the closure capture; stale outer otherPid bound BEFORE
+      the detached start fails the temporal check and the missing-cleanup diagnostic fires with
+      "captures an unbound `otherPid`".
+
+
+      The canonical legitimate object-literal shape `const handle = { pid, kill() {
+      process.kill(pid, "SIGTERM") } }` continues to pass because pid is bound AFTER the start (the
+      literal-carries filter was deliberately removed so closure-captured names always route through
+      the top-level temporal check — accepted shapes pass it, stale ones don't).
+
+
+      Test coverage: 7 new positive flag-it cases — omitted-parameter, stale-default-parameter
+      (function-decl), arrow-helper variant of omitted-parameter, object-literal exposing stale
+      outer pid as property, bare-unimported approved-primitive name, approved-primitive imported
+      from unapproved path, approved-primitive called with literal pid; 3 accepted-companion cases —
+      stopPidBounded delegation, stopChildProcessBounded delegation via stopDaemon helper, canonical
+      `{ pid, kill() {...} }` literal shape.
+
+
+      Verification of cycle-10 reviewer probes via npx oxlint:
+
+      - probe 1 (function killPid(_pid, target) { process.kill(target!, "SIGTERM") }) →
+      no-leaky-test-daemon reported
+
+      - probe 2 (function killPid(_pid, target = otherPid)) → no-leaky-test-daemon reported
+
+      - probe 3 (const handle = { otherPid, kill() { process.kill(otherPid, ...) } }) →
+      no-leaky-test-daemon reported with "captures an unbound `otherPid`"
+
+      - tests/cli-serve.test.ts: 18 no-leaky-test-daemon errors → 0 errors
+
+
+      Checks: targeted suites pass (379/379: 151 lint-no-leaky-test-daemon + 228
+      lint-daemon-test-guardrails, up from 369 in cycle 10). Full vitest pass (9161 passed, 5
+      skipped of 9166, 0 failures, 2116.4s). Changed-file oxlint clean (0 errors, 35 pre-existing
+      warnings). Repository lint dropped 31→13 errors / 755→721 warnings; the 18
+      no-leaky-test-daemon errors on tests/cli-serve.test.ts are fully resolved. Remaining 13 errors
+      are pre-existing no-source-scanning / unicorn rules unrelated to this fix. kspec validate
+      warnings-only (pre-existing AC annotation warnings unrelated to this fix). All two blocker
+      threads replied and resolved.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T21:09:16.641Z
