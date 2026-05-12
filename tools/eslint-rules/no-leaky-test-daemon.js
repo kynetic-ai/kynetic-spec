@@ -214,6 +214,36 @@ const TRUSTED_HELPER_NAMES = new Set([
 ]);
 
 /**
+ * Set of EXPORT names (i.e. the original name declared by the approved
+ * helper module, NOT the local alias at the import site) the rule
+ * accepts when validating the approved-helper-import path. Distinct
+ * from `TRUSTED_HELPER_NAMES`, which is matched against the local
+ * callee identifier at the use site — the local binding name. An
+ * `import { startTestDaemon as killPid } from "./helpers/daemon"` binds
+ * the LOCAL name `killPid` (which `TRUSTED_HELPER_NAMES` recognises as
+ * a cleanup-shaped callee at the use site) but its IMPORTED name is
+ * `startTestDaemon`, a daemon STARTER not a terminating cleanup helper.
+ * Without this set the rule trusted the local alias and silently
+ * credited the starter as cleanup — cycle-8 reviewer blocker 1 on
+ * `@daemon-test-guardrail-precision`
+ * `ac-cleanup-helper-origin-is-trusted`.
+ *
+ * The accepted set deliberately matches `TRUSTED_HELPER_NAMES`: an
+ * approved-helper import is trusted only when both the imported export
+ * AND the local alias share a recognised cleanup-helper name (so the
+ * use site keeps its identifier-name → cleanup-callee invariant). A
+ * helper export whose original name is `startTestDaemon`,
+ * `allocateTestDaemonPort`, `createTestDaemonProject`, etc., is never
+ * a cleanup primitive — and that is true regardless of how the
+ * importer locally aliases it.
+ */
+const APPROVED_CLEANUP_HELPER_EXPORT_NAMES = new Set([
+  "killPid",
+  "stopDaemon",
+  "stopMockDaemon",
+]);
+
+/**
  * Module specifier prefilter (the `from "…"` string in an
  * `ImportDeclaration`) for relative imports of the approved shared
  * daemon-test helpers. This prefilter narrows the candidate set BEFORE
@@ -709,10 +739,17 @@ const noLeakyTestDaemon = {
         // `undefined`, or a terminating literal (SIGTERM/SIGKILL/SIGINT)
         // counts; liveness probes (`0`), non-terminating signals
         // (SIGUSR1, SIGCONT, SIGWINCH), and computed signals do not.
+        // The pid argument itself must be a verifiable target (an
+        // Identifier or non-computed MemberExpression chain rooted at
+        // one) — a Literal target like `process.kill(12345, "SIGTERM")`
+        // is a hardcoded pid that cannot represent the just-started
+        // daemon and falls under the cycle-8 reviewer blocker on
+        // `ac-cleanup-operation-terminates-daemon`.
         if (
           callee.object.type === "Identifier" &&
           callee.object.name === "process"
         ) {
+          if (!isVerifiableKillTarget(node.arguments[0])) return false;
           return isTerminatingKillSignalArg(node.arguments[1], null, null);
         }
         // <expr>.kill(<signal>?) — child handle cleanup. Same accepted
@@ -722,10 +759,13 @@ const noLeakyTestDaemon = {
         // probe `const fake = { kill() { console.log("noop"); } };
         // onTestFinished(() => fake.kill())` — the literal's kill
         // method has no terminating primitive call, so the cleanup
-        // shape is misleading and counts as no cleanup at all.
+        // shape is misleading and counts as no cleanup at all. The
+        // receiver must also be a verifiable target — a Literal /
+        // computed receiver cannot be the test's owned child handle.
         if (!isTerminatingKillSignalArg(node.arguments[0], null, null)) {
           return false;
         }
+        if (!isVerifiableKillTarget(callee.object)) return false;
         return isChildHandleReceiverTrusted(callee.object, node);
       }
 
@@ -1099,16 +1139,32 @@ const noLeakyTestDaemon = {
      * prefilter (`APPROVED_HELPER_IMPORT_PATH_PATTERNS`) AND resolves on
      * disk — relative to the importing test file — to one of the
      * approved shared-helper implementation files
-     * (`APPROVED_HELPER_IMPLEMENTATION_PATTERNS`).
+     * (`APPROVED_HELPER_IMPLEMENTATION_PATTERNS`), AND whose imported
+     * (original) export name is itself a recognised cleanup-helper
+     * export (`APPROVED_CLEANUP_HELPER_EXPORT_NAMES`).
      *
-     * Recognises named, default, and namespace import specifiers — what
-     * matters is the locally-bound identifier name, since later call
-     * sites refer to that local name regardless of how the value
-     * arrived. The resolved-path check is delegated to
-     * `isHelperImportSpecifierApproved`, which performs path resolution
-     * relative to the importing file's directory and normalises the
-     * `.js` / no-extension / `.ts` specifier forms to the canonical
-     * `.ts` form on disk.
+     * The imported-name check is the cycle-8 fix: the prior version
+     * trusted the local alias only, so `import { startTestDaemon as
+     * killPid } from "./helpers/daemon"` was accepted because (a) the
+     * specifier resolved to the canonical approved helper and (b) the
+     * local binding was the recognised cleanup name `killPid` — but the
+     * underlying imported value was a daemon STARTER, not a terminating
+     * cleanup helper. Anchoring trust on the original export name as
+     * well as the resolved path closes that gap on
+     * `@daemon-test-guardrail-precision`
+     * `ac-cleanup-helper-origin-is-trusted` and
+     * `ac-cleanup-operation-terminates-daemon`.
+     *
+     * Only `ImportSpecifier` (named imports) carry an `imported` field
+     * that names the actual export. `ImportDefaultSpecifier` and
+     * `ImportNamespaceSpecifier` cannot statically be tied to a specific
+     * approved cleanup export — a default import could be anything the
+     * module's `export default` happens to be, and a namespace import
+     * is the whole module record — so they are rejected here.
+     * Non-Identifier `imported` shapes (the `import { "kill-pid" as
+     * killPid } from "…"` string-literal-key form supported by recent
+     * proposals) are also rejected; the approved-export contract names
+     * its exports as bare identifiers.
      */
     function isHelperNameImportedFromApprovedPath(name, fromNode) {
       const program = findProgramNode(fromNode);
@@ -1118,10 +1174,14 @@ const noLeakyTestDaemon = {
         const source = stmt.source && stmt.source.value;
         if (!isHelperImportSpecifierApproved(source)) continue;
         for (const spec of stmt.specifiers || []) {
-          if (!spec || !spec.local || spec.local.type !== "Identifier") {
-            continue;
+          if (!spec || spec.type !== "ImportSpecifier") continue;
+          if (!spec.local || spec.local.type !== "Identifier") continue;
+          if (spec.local.name !== name) continue;
+          const imported = spec.imported;
+          if (!imported || imported.type !== "Identifier") continue;
+          if (APPROVED_CLEANUP_HELPER_EXPORT_NAMES.has(imported.name)) {
+            return true;
           }
-          if (spec.local.name === name) return true;
         }
       }
       return false;
@@ -1579,6 +1639,52 @@ const noLeakyTestDaemon = {
     }
 
     /**
+     * True when `node` is a kill-call target argument (or child-handle
+     * receiver) the helper body could plausibly tie back to the
+     * just-started daemon — i.e. an Identifier or a non-computed
+     * MemberExpression chain rooted at an Identifier / ThisExpression.
+     * False when the target is a Literal (the reviewer's cycle-8 probe
+     * `process.kill(12345, "SIGTERM")` — a hardcoded pid that ignores
+     * whatever the call site passed) or any computed shape
+     * (CallExpression, BinaryExpression, TemplateLiteral, computed
+     * MemberExpression) the rule cannot tie to the test's owned
+     * daemon binding.
+     *
+     * The Identifier case is intentionally broad: a parameter binding
+     * (the helper terminates "whatever the caller passed in") and an
+     * outer-scope binding (closure cleanup that targets the test's
+     * own pid / handle) are both legitimate cleanup shapes. The
+     * existing object-literal-kill accepted case `const handle = {
+     * pid, kill(signal) { process.kill(pid, "SIGTERM"); } }` relies
+     * on the closure form — the kill method's `pid` is the outer
+     * `it` body's `const pid`, not a parameter — so the rule must
+     * accept any Identifier target. The single thing it must reject
+     * is a target that statically CANNOT represent the just-started
+     * daemon: a literal pid, an inline computed value, etc.
+     *
+     * Reviewer cycle-8 blocker 2 on `@daemon-test-guardrail-precision`
+     * `ac-cleanup-operation-terminates-daemon` /
+     * `ac-cleanup-helper-origin-is-trusted`: the prior helper-body
+     * inspection accepted any terminating primitive in the body
+     * without inspecting its target argument, so `function killPid
+     * (_pid) { process.kill(12345, "SIGTERM"); }` satisfied trust
+     * even though the literal `12345` cannot represent the daemon
+     * the test just started.
+     */
+    function isVerifiableKillTarget(node) {
+      if (!node) return false;
+      const unwrapped = unwrapTransparentExpression(node);
+      if (!unwrapped) return false;
+      if (unwrapped.type === "Identifier") return true;
+      if (unwrapped.type === "ThisExpression") return true;
+      if (unwrapped.type === "MemberExpression") {
+        if (unwrapped.computed) return false;
+        return isVerifiableKillTarget(unwrapped.object);
+      }
+      return false;
+    }
+
+    /**
      * Strict terminating-primitive predicate used by helper-body
      * inspection. Mirrors `isDaemonCleanupCallExpression` but
      * deliberately omits the helper-name shortcut so wrappers that just
@@ -1591,6 +1697,15 @@ const noLeakyTestDaemon = {
      * receiver check (`isChildHandleReceiverTrusted`) is applied here
      * too so a wrapper whose body invokes a local-no-op-literal kill
      * cannot bootstrap trust either.
+     *
+     * The kill TARGET (the pid arg for `process.kill`, the receiver
+     * for `<expr>.kill`) is also validated via
+     * `isVerifiableKillTarget` — a Literal or computed target cannot
+     * represent the just-started daemon and falls under the cycle-8
+     * reviewer blocker 2 `process.kill(12345, "SIGTERM")` shape. CLI
+     * `serve stop` paths do not carry an explicit kill target (the
+     * daemon is identified by the project's own pid file), so they
+     * are accepted unchanged.
      */
     function isTerminatingPrimitiveCall(node, ownerFn, useCallNode) {
       if (!node || node.type !== "CallExpression") return false;
@@ -1607,6 +1722,7 @@ const noLeakyTestDaemon = {
           callee.object.type === "Identifier" &&
           callee.object.name === "process"
         ) {
+          if (!isVerifiableKillTarget(node.arguments[0])) return false;
           return isTerminatingKillSignalArg(
             node.arguments[1],
             ownerFn,
@@ -1622,6 +1738,7 @@ const noLeakyTestDaemon = {
         ) {
           return false;
         }
+        if (!isVerifiableKillTarget(callee.object)) return false;
         return isChildHandleReceiverTrusted(callee.object, node);
       }
       if (callee.type === "Identifier") {
