@@ -59,7 +59,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-tighten-daemon-guardrail-cleanup-semantics-specs"
@@ -71,6 +71,7 @@ tags:
   - daemon
   - cli
 vcs_refs: []
+session_id: 01KRDG8TH3J4TCDDNWG2JJH4S1
 history:
   - author: Jacob Chapel
     changes:
@@ -79,6 +80,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-12T00:18:22.758Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KRDG8TH3J4TCDDNWG2JJH4S1
+        previous: null
+      started_at:
+        new: 2026-05-12T07:09:30.392Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-12T07:09:30.392Z
 created_at: 2026-05-12T00:14:53.490Z
+started_at: 2026-05-12T07:09:30.392Z
 todos: []
 automation: eligible
