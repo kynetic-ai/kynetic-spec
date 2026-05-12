@@ -47711,7 +47711,7 @@ runs:
     completed_at: 2026-05-12T18:33:46.257Z
   - _ulid: 01KRES1R3171NM9VRQT4EKN6N5
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47741,7 +47741,54 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-12T19:03:06.880Z
-        completed_at: 2026-05-12T19:03:06.880Z
+        completed_at: 2026-05-12T19:04:21.636Z
+        notes: >-
+          Coverage search results: 01KJW0NZ [observation] Creating PRs with gh --body inline
+          markdown containing ba...
+            matched: content
+          01KMPRFB [observation] Review comment capture is still shell-fragile for multili...
+            matched: content
+          01KMWP14 [observation] Review comments and check evidence that include backticks...
+            matched: content
+          01KN6CGA [observation] Review recording is fragile when kspec review comment --b...
+            matched: content
+          01KP6QNNM [observation] Automated review comments are awkward to post safely when...
+            matched: content
+          01KR6THZ9 [observation] kspec review reply --body "..." (and likely other CLI wri...
+            matched: content
+
+          6 result(s) and 01KNPC03 [observation] Review comments that include shell-sensitive
+          quoting are ...
+            matched: content
+
+          1 result(s) found multiple existing observations for shell-fragile review/comment bodies,
+          including @01KMPRFB, @01KMWP14, @01KN6CGA, @01KP6QNNM, @01KR6THZ9, and @01KNPC03, so I
+          will not duplicate that friction. 01KFESTX [requirement] Workflow Step Navigation
+          @workflow-step-navigation implemented
+            matched: description, ac[4].then
+          01KFR7JA [feature] Loop Mode Workflows @loop-mode-workflows implemented
+            matched: description
+          01KFESYSR [completed] P3 Implement: Workflow Step Navigation
+          @task-workflow-step-navigation
+            matched: notes[0]
+          01KFR829 [completed] P1 Implement: Loop Mode Workflows @task-loop-mode-workflows
+            matched: notes[0]
+          01KHZHPK [completed] P3 Write core skill: kspec:reflect
+            matched: closed_reason, notes[1]
+          01KKBD52 [pending] P3 Workflow UX: allow kspec workflow show (and related workflow run
+          commands where safe) to default to 
+            matched: description
+
+          6 result(s) found pending task @01KKBD52, Workflow UX: allow kspec workflow show (and
+          related workflow run commands where safe) to default to active/current run, so
+          workflow-show friction is already tracked. No matches found for "ad hoc review probes
+          oxlint" found no matches; this success pattern appears untracked. No matches found for
+          "full test duration" found no matches, but this was expected review cost rather than a
+          concrete improvement.
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-12T19:04:21.636Z
+        completed_at: 2026-05-12T19:04:21.636Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T19:01:34.433Z
