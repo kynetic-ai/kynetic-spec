@@ -47145,7 +47145,7 @@ runs:
     started_at: 2026-05-12T13:54:15.816Z
     completed_at: 2026-05-12T13:58:47.855Z
   - _ulid: 01KRE9JMA8SVJ9DP8W8VJ7DPZ0
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -47203,7 +47203,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-12T14:35:04.067Z
-        completed_at: 2026-05-12T14:35:04.067Z
+        completed_at: 2026-05-12T14:35:35.758Z
+        notes: "Captured one high-confidence friction observation: @01KRE9TA. No new capture for review
+          evidence logs because existing observation @01KR2JD1 covers that area. No new capture for
+          full-suite runtime because shard/cache conventions already partially cover local iteration
+          and full-suite review cost was expected for merge gating."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T14:31:10.408Z
+    completed_at: 2026-05-12T14:35:35.758Z
