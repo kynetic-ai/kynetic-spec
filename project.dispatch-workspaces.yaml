@@ -29970,3 +29970,79 @@ workspaces:
         head: e105a25901b63defac3d25adc605a545ac1df7d2
         last_seen_at: 2026-05-12T17:38:06.705Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-active-request-teardown-and-observation-bounds-01krcrjs
+  - active_role: null
+    base_branch_point: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-fix-setup-failure-cleanup-error-preservation/01krcrjs
+    canonical_branch_head: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-12T17:38:44.644Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-12T17:38:44.644Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
+      updated_at: 2026-05-12T17:38:44.644Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KRCRJSNXN4SS1XJ6DKD4XC46"
+    task_slug: task-fix-setup-failure-cleanup-error-preservation
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-12T17:38:44.644Z
+      created_at: 2026-05-12T17:38:44.644Z
+      updated_at: 2026-05-12T17:38:44.644Z
+    workspace_id: dispatch-workspace-01KRCRJSNXN4SS1XJ6DKD4XC46
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-fix-setup-failure-cleanup-error-preservation/01krcrjs
+        head: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
+        last_seen_at: 2026-05-12T17:38:44.644Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-setup-failure-cleanup-error-preservation-01krcrjs
