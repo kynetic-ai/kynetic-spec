@@ -45,3 +45,51 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-12T04:17:24.371Z
+  - _ulid: 01KRD7ERG45EAWMGEWFMFJ6560
+    content: >-
+      Implementation complete. 5 regression tests added across two files.
+
+
+      tests/helpers/mock-daemon.test.ts (new 'active-request teardown contract' describe):
+
+      - it.fails 'in-process stop() reaches a bounded outcome when an active request is hanging' —
+      locks the server.close() hang gap. Promise.race against 1500ms timer bounds the suite; cleanup
+      AbortController releases the simulated request so server.close() can finalize after
+      assertions.
+
+      - it 'child stop() reaches a bounded outcome when the child has an active hang request' —
+      positive contract lock; today the parent SIGKILL fallback escalates at CHILD_GRACEFUL_KILL_MS
+      (1500ms) so this passes within 3s bound. Locks the contract that the SIGKILL fallback must
+      remain in place.
+
+      - it 'AbortSignal.timeout-bounded fetch reaches a bounded outcome against a hang endpoint' —
+      positive contract lock for the bounded-observation pattern.
+
+      - it.fails 'bare fetch() against a hang endpoint reaches a bounded outcome within a focused
+      test budget' — locks the bare-fetch gap. Uses /api/command POST (mock daemon hangs on this
+      path).
+
+
+      tests/cli-serve.test.ts (new regression next to existing waitForDaemonHealth):
+
+      - it.fails 'bare fetch to /api/health reaches a bounded outcome when the endpoint stalls' —
+      stands up a small inline http.createServer hang endpoint so the probe shape mirrors
+      waitForDaemonHealth exactly. Hang server cleaned up with closeAllConnections() + close() in
+      onTestFinished to prevent socket leakage.
+
+
+      Results:
+
+      - Target test run (mock-daemon, daemon helper, cli-serve): 71 passed | 3 expected fail (74),
+      52.9s
+
+      - Full suite: 9052 passed | 6 expected fail | 5 skipped (9063), 2035s — no regression in
+      unrelated tests.
+
+
+      The three new it.fails cases will flip and require conversion back to plain it(...) when
+      @task-fix-active-request-teardown-and-observation-bounds lands (it depends on
+      @task-implement-bounded-process-stop-primitives which is currently blocked).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T04:34:52.037Z
