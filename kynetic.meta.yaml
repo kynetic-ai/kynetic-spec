@@ -18474,6 +18474,21 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-12T17:09:12.737Z
+  - _ulid: 01KREJM9VR4MNAW09RBXSQV4YW
+    type: success
+    content: "Verifying reviewer's exact probes via npx oxlint BEFORE running the test suite (cycle 8 of
+      @01KRCRJPMHMHC410TKRC5Y9HF1) caught both blocker fixes in under 30 seconds vs ~80s for the
+      targeted suite + ~35min for the full vitest run. Built ad hoc /tmp directories with the exact
+      reviewer fixtures and the project's plugin path, then invoked 'npx oxlint --config
+      .oxlintrc.json' directly. Both reviewer probes flagged on first try. This is a confirmation of
+      the existing pattern in @01KRDBV3QZMDSN477WYRFAT85B (reviewer-fixture verification) and
+      reinforces: when a review blocker cites an exact probe, replay it through the production
+      toolchain before committing to the long test cycle. Especially valuable for fix-cycle work
+      where wrong-direction iterations cost 35+ minutes each."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T17:09:22.425Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
