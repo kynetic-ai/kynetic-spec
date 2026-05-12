@@ -28777,12 +28777,23 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T13:57:00.636Z
+      updated_at: 2026-05-12T14:37:54.914Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T13:57:01.473Z
+      status: invalid
+      issues:
+        - code: missing_adopted_branch
+          message: Adopted canonical branch
+            "dispatch/task/task-add-bounded-process-stop-contract-tests/01krcrjr" is missing locally
+            and no remote locator is recorded.
+          suggestion: Locate the original branch source and manually restore it, or re-submit the task with
+            updated submission linkage.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-05-12T14:37:54.914Z
     integration:
       status: pending
       detail: null
@@ -28790,17 +28801,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
-      updated_at: 2026-05-12T13:57:00.636Z
-    lifecycle_state: ready
+      updated_at: 2026-05-12T14:37:54.914Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@task-add-bounded-process-stop-contract-tests"
     task_slug: task-add-bounded-process-stop-contract-tests
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T13:32:20.359Z
-      last_reconciled_at: 2026-05-12T13:57:01.473Z
+      last_reconciled_at: 2026-05-12T14:37:54.914Z
       created_at: 2026-05-12T13:31:52.541Z
-      updated_at: 2026-05-12T13:57:01.473Z
+      updated_at: 2026-05-12T14:37:54.914Z
     workspace_id: dispatch-workspace-task-add-bounded-process-stop-contract-tests
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
