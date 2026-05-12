@@ -43,3 +43,47 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-12T15:15:02.120Z
+  - _ulid: 01KRED6YSM3KHBKFY1JF3MH91Q
+    content: >-
+      Implementation complete.
+
+
+      Added tests/helpers/process-stop.ts with stopChildProcessBounded() and stopPidBounded(). Both
+      send SIGTERM, wait for observed exit (handle exitCode OR signalCode OR 'exit' event for
+      ChildProcess; ESRCH from process.kill(pid, 0) for pid-only), escalate to SIGKILL on graceful
+      timeout, wait again for observed exit, and throw BoundedProcessStopError if escalation also
+      elapses without observation.
+
+
+      Refactor sites:
+
+      - tests/helpers/daemon.ts killChildScoped routes through the primitive (drops the redundant
+      outer pid-undefined guard since the primitive short-circuits).
+
+      - tests/helpers/mock-daemon.ts both startup-failure cleanup and operational stop() closures
+      route through the primitive.
+
+      - tests/cli-serve.test.ts killPid (now async Promise<void>) routes through stopPidBounded;
+      waitForChildExit is a thin wrapper over stopChildProcessBounded so the signalCode fast-path
+      applies.
+
+
+      Removed all five staged-regression wrappers (expectKillChildScopedMissesExitObservation,
+      expectMockDaemonStopLeaksPid, expectWaitForChildExitMissesObservation,
+      expectWaitForChildExitMissesSignalFastPath, expectKillPidIsFireAndForget) per their 'remove
+      this wrapper' sentinels, and inlined the post-fix assertions.
+
+
+      Verified:
+
+      - Target slice (tests/helpers/daemon.test.ts, tests/helpers/mock-daemon.test.ts,
+      tests/cli-serve.test.ts): 82/82 pass.
+
+      - Full suite: 9086 passed, 5 skipped, 0 failed (2107s).
+
+      - TypeScript clean.
+
+      - oxlint: no new errors in modified files.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T15:34:42.228Z
