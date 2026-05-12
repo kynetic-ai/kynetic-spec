@@ -205306,6 +205306,13 @@ reviews:
           status: fail
           name: ad hoc helper-origin probes
         timestamp: 2026-05-12T16:35:01.625Z
+      - _ulid: 01KREGP136NF8XPTJ8CFHNSCDW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KREGNZQHHVSKFKYXBF6RR8D5
+        timestamp: 2026-05-12T16:35:21.830Z
     examined_commit: 7c486bc61439fc86e9d39f39230c78379b4c9c48
     external_links: []
     lifecycle_state: open
@@ -205357,7 +205364,24 @@ reviews:
               cleanup by name alone.'
             created_at: 2026-05-12T16:25:02.111Z
         kind: blocker
+      - _ulid: 01KREGNZQHHVSKFKYXBF6RR8D5
+        entries:
+          - _ulid: 01KREGNZQH8C53M01BX11EVJFB
+            author: Jacob Chapel
+            body: "Evidence log: Files read: AGENTS.md/kspec-agents.md, task details, prior cycle review
+              @01KREBZ5H6TV3470HT3Z4KQCTE, @daemon-test-guardrail-precision ACs,
+              tools/eslint-rules/no-leaky-test-daemon.js, tests/lint-no-leaky-test-daemon.test.ts,
+              tests/lint-daemon-test-guardrails.test.ts. Commands run: git
+              status/rev-parse/log/diff, kspec task get, kspec item get, kspec validate, AC
+              annotation rg, targeted npm test, full npm test, npm run lint, changed-file oxlint,
+              two ad hoc oxlint helper-origin probes. Claims verified: cycle-7 for/catch binding
+              probes are covered by tests; cleanup-effect AC annotations exist; full tests pass;
+              helper-origin still has two false negatives. Categories searched:
+              correctness/helper-origin trust, import-path trust, AC coverage, test quality,
+              lint/regression checks, merge readiness."
+            created_at: 2026-05-12T16:35:20.433Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-12T16:16:23.000Z
-    updated_at: 2026-05-12T16:35:00.259Z
+    updated_at: 2026-05-12T16:35:20.433Z
     notes: []
