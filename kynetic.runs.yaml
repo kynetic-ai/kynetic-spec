@@ -47815,7 +47815,7 @@ runs:
     completed_at: 2026-05-12T19:05:45.092Z
   - _ulid: 01KREW8DNW5SCGV591WZJ7Y9KB
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47840,7 +47840,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-12T19:58:42.039Z
-        completed_at: 2026-05-12T19:58:42.039Z
+        completed_at: 2026-05-12T19:59:54.329Z
+        notes: "Coverage search results: validation-warning noise is already tracked by unresolved friction
+          observation @01KNTPX4, so do not duplicate it. Full fresh review-test duration had no
+          direct match for 'full test suite duration' or 'test runner cache shard'; related 'npm
+          test shard' result was completed @task-ci-full-e2e but not the reviewer-duration friction
+          itself. Stale future-tense 'companion fix task' comments had no match and are a candidate
+          small cleanup item."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-12T19:59:54.329Z
+        completed_at: 2026-05-12T19:59:54.329Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T19:57:38.876Z
