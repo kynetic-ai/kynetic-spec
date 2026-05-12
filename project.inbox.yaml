@@ -3442,10 +3442,12 @@ inbox:
     added_by: Jacob Chapel
     created_at: 2026-05-12T03:13:00.005Z
   - _ulid: 01KRE7H4YETNJWPJ6S4NREETZA
-    text: >-
-      Review history lookup gap: during a fix-cycle review, Reviews for
-      @task-add-bounded-process-stop-contract-tests (1):
-        01KRE691 closed/approved Review bounded process-stop contract tests (cycle 2) returned only the current cycle-2 review even though prior review @01KRCWMJX1SHC9MASHP4KYM3J9 was needed and the review workflow says reviewers should be able to find all historical cycle reviews. Investigate whether no packages found for for-task should include historical reviews from task activity/linkage or add an explicit all-cycles/history mode with tests.
+    text: "Review history lookup gap: during a fix-cycle review, the command kspec review for-task
+      @task-add-bounded-process-stop-contract-tests returned only the current cycle-2 review even
+      though prior review @01KRCWMJX1SHC9MASHP4KYM3J9 was needed and the review workflow says
+      reviewers should be able to find historical cycle reviews. Investigate whether review for-task
+      should include historical reviews from task activity/linkage or add an explicit
+      all-cycles/history mode with tests."
     tags:
       - reflection
       - dx
