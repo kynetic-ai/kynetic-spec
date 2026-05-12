@@ -555,3 +555,23 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T21:30:43.216Z
+  - _ulid: 01KRF2SK0V4ZFKX8P9NX5H6JV6
+    content: "Fix cycle 12: addressed the cycle-11 blocker on @01KRF0M0 —
+      isApprovedSharedCleanupPrimitiveCall now rejects locally-shadowed approved cleanup primitives.
+      Root cause: the recognizer consulted isSharedCleanupPrimitiveImported (which scans Program
+      imports) without verifying that callee.name actually resolved to that import at the call site,
+      so a local const no-op or parameter-default shadow defeated the check. Fix: added a lexical
+      resolution gate that calls findLocalHelperDefinition(callee.name, node) and rejects on any
+      non-null result — captures both the inspectable local
+      FunctionExpression/ArrowFunctionExpression shape (const stopPidBounded = (_p) => {}) and the
+      LOCAL_BINDING_OPAQUE sentinel (parameter / non-function init / late binding). Mirrors the
+      local-scope-first ordering already used in isTrustedHelperByOrigin. Two new behavioral tests
+      in tests/lint-no-leaky-test-daemon.test.ts under the positive-cases describe reproduce both
+      reviewer probes (lines added after the cycle-10 literal-pid case). Ad hoc npx oxlint probes
+      mirroring the reviewer's repros now report no-leaky-test-daemon on both shadow shapes —
+      verified directly with the project oxlint config. Targeted lint tests pass (381 tests, 89s).
+      Full npm test passes (2432 suites, 9163 passed, 5 skipped, 2188.9s). Replied to and resolved
+      the cycle-11 blocker thread on @01KRF0M0."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T21:51:52.859Z
