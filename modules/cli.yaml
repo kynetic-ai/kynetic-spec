@@ -8731,6 +8731,17 @@ features:
                 id: ac-completed-cleanup-resolves-to-closed
                 then: The lifecycle state resolves to closed
                 when: The lifecycle state is next evaluated
+              - given: Daemon startup or periodic reconciliation finds a provisioning lifecycle state, unclassified
+                  non-closed workspace record, or metadata-backed dispatch artifact that may belong
+                  to a task whose invocation is not currently active.
+                id: ac-partial-provisioning-classified-before-cleanup
+                then: Reconciliation first classifies the workspace as preserved for retry, active/in-flight,
+                  stale/unhealthy with actionable recovery detail, or cleanup-eligible state. A
+                  `closing` workspace with satisfied cleanup prerequisites and no
+                  active/in-flight/provisioning ownership may be classified cleanup-eligible so
+                  scheduled cleanup can reach `closed`.
+                when: Artifact cleanup is about to evaluate that workspace's worktrees, reviewer snapshot, root
+                  directory, or dispatch branch for destructive cleanup.
             tags: []
             requirements:
               - _ulid: 01KKFY93ZNBHPNV5S09KQEXBFA
