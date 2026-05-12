@@ -18443,6 +18443,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-12T14:35:22.254Z
+  - _ulid: 01KREFJ9RK6X4HQ80ENDYYV3K2
+    type: friction
+    content: "Reviewing bounded process-stop changes exposed a repeatable guardrail gap: when a test
+      cleanup helper changes from synchronous void to Promise-returning bounded cleanup,
+      block-bodied lifecycle callbacks such as onTestFinished(() => { killPid(pid); }) can silently
+      drop the promise. Tests can still pass while teardown reports complete before termination is
+      observed. Consider a lint/static guard for known async cleanup helpers in lifecycle
+      callbacks."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-12T16:15:51.060Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
