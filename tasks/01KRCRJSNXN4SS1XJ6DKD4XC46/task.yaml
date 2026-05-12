@@ -55,8 +55,11 @@ description: >
 spec_ref: "@daemon-test-teardown-boundedness"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer helper. Review approved after verifying
+  setup-failure cleanup rollback, primary-error preservation with cleanup failures, full fresh test
+  suite, validation with existing warnings accepted, and E2E smoke.
 depends_on:
   - "@task-add-setup-failure-error-preservation-regressions"
   - "@task-implement-bounded-process-stop-primitives"
@@ -182,8 +185,24 @@ history:
         previous: "@01KREP5N9JN5SJP3QQ01H10BX8"
     command: review-link
     timestamp: 2026-05-12T19:39:39.486Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer helper. Review approved after verifying setup-failure
+          cleanup rollback, primary-error preservation with cleanup failures, full fresh test suite,
+          validation with existing warnings accepted, and E2E smoke.
+        previous: null
+      completed_at:
+        new: 2026-05-12T19:56:45.717Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-12T19:56:45.726Z
 created_at: 2026-05-12T00:14:55.677Z
 started_at: 2026-05-12T19:12:20.428Z
 submitted_at: 2026-05-12T19:12:23.910Z
+completed_at: 2026-05-12T19:56:45.717Z
 todos: []
 automation: eligible
