@@ -45734,9 +45734,23 @@ runs:
     completed_at: 2026-05-12T03:43:57.415Z
   - _ulid: 01KRD5FZ9F57NJRDJ1P7S2GP1T
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-12T04:00:34.607Z
+        completed_at: 2026-05-12T04:00:58.083Z
+        notes: "What worked well: The detached-reviewer merge flow was effective after approval: review
+          checks were recorded against the detached snapshot, the supported helper merged the
+          canonical task branch into dev without manual checkout, and the task completion command
+          then closed the lifecycle cleanly. The prior conflict note was specific enough to verify
+          the worker kept both cleanup-boundary and cleanup-effect regression groups. Focused tests
+          plus the full --fresh suite gave clear evidence before approval."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-12T04:00:58.083Z
+        completed_at: 2026-05-12T04:00:58.083Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T04:00:34.607Z
