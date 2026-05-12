@@ -46721,7 +46721,7 @@ runs:
     completed_at: 2026-05-12T06:46:56.769Z
   - _ulid: 01KRDG3BFZ121EPFQWJN0TA1RS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -46738,7 +46738,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T07:07:13.445Z
-        completed_at: 2026-05-12T07:07:13.445Z
+        completed_at: 2026-05-12T07:07:21.022Z
+        notes: "High-confidence friction: kspec task submit rejecting needs_work — already tracked twice
+          (01KMR544, 01KP8BQ2). No new high-confidence items beyond what is already covered. The
+          wrapper-coverage extraction pattern (extract small helper to make wrapper-shape testable)
+          is reasonably standard refactor-for-testability; not surprising enough to capture as a
+          success observation."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T07:07:21.022Z
+        completed_at: 2026-05-12T07:07:21.022Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T07:05:55.455Z
