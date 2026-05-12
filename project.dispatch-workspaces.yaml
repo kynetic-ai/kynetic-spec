@@ -29454,7 +29454,7 @@ workspaces:
         head: e9b7dc1030ff9359f7f4f36e4e1d6ad60d691f2d
         last_seen_at: 2026-05-12T16:37:43.488Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-bounded-process-stop-primitives-01krcrjr
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
     bootstrap:
       status: succeeded
@@ -29926,12 +29926,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-12T17:58:28.042Z
+      updated_at: 2026-05-12T17:58:58.054Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T17:58:28.042Z
+      updated_at: 2026-05-12T17:58:58.054Z
     integration:
       status: merged
       detail: integration:merged
@@ -29939,7 +29939,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
-      updated_at: 2026-05-12T17:58:28.042Z
+      updated_at: 2026-05-12T17:58:58.054Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KRCRJS2M4VVME99W9ACV8JAE"
@@ -29947,9 +29947,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T17:38:40.862Z
-      last_reconciled_at: 2026-05-12T17:58:28.042Z
+      last_reconciled_at: 2026-05-12T17:58:58.054Z
       created_at: 2026-05-12T17:10:20.301Z
-      updated_at: 2026-05-12T17:58:28.042Z
+      updated_at: 2026-05-12T17:58:58.054Z
     workspace_id: dispatch-workspace-01KRCRJS2M4VVME99W9ACV8JAE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
