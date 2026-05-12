@@ -201974,6 +201974,12 @@ reviews:
         payload:
           thread_ulid: 01KRD441X6Y1SB215H8MTK5TMG
         timestamp: 2026-05-12T04:06:26.907Z
+      - _ulid: 01KRD5TX682PFM5M0NQ86GM1XM
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRD445ARG2EN4FN1KYXK80PM
+        timestamp: 2026-05-12T04:06:32.904Z
     examined_commit: 8450ce07dd2c02ef2786561e0c03f524655893ec
     external_links: []
     lifecycle_state: closed
@@ -202039,6 +202045,24 @@ reviews:
               violates `@daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon` /
               `ac-cleanup-probes-do-not-count`."
             created_at: 2026-05-12T03:36:39.001Z
+          - _ulid: 01KRD5TVWTMWCPBMS35HJE4EXK
+            author: "@claude"
+            body: "Fixed: Added isChildHandleReceiverTrusted that mirrors the helper-body inspection used for
+              trusted helper names. The <expr>.kill(<signal>?) branches in both
+              isDaemonCleanupCallExpression and isTerminatingPrimitiveCall now invoke this receiver
+              check after the signal check passes. The check rejects when the receiver Identifier
+              resolves to a local ObjectExpression literal with a literal kill property whose
+              function body contains no terminating primitive call. The probe const fake = { kill()
+              { console.log('noop'); } }; onTestFinished(() => fake.kill()) now reports
+              missingCleanup. Receivers that are non-Identifier (agent.process.kill(),
+              result.child.kill()), free identifiers, parameter-bound, alias-bound, or initialized
+              from a CallExpression (const child = spawn(...)) all fall through unchanged — the
+              receiver check fires only on directly-resolved literal-with-no-op-kill shapes, the
+              strict mirror of how the local-no-op helper rejection works. Added regression tests
+              for the shorthand-method, longhand-arrow, and logger-only kill shapes plus an accepted
+              companion (literal whose kill body invokes process.kill SIGTERM) and the spawn-result
+              child handle."
+            created_at: 2026-05-12T04:06:31.578Z
         kind: blocker
       - _ulid: 01KRD448MQ078041DNX9KB4K12
         entries:
@@ -202065,7 +202089,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T03:36:47.206Z
     created_at: 2026-05-12T03:22:20.072Z
-    updated_at: 2026-05-12T04:06:25.517Z
+    updated_at: 2026-05-12T04:06:31.578Z
     notes: []
   - _ulid: 01KRD4N3Q8TK8FFJ8Q9E5MYE8E
     slugs: []
