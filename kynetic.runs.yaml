@@ -47641,7 +47641,7 @@ runs:
     started_at: 2026-05-12T18:05:40.597Z
     completed_at: 2026-05-12T18:08:17.165Z
   - _ulid: 01KREQ82Z626P6E6NQ2NQ6XZAS
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -47700,7 +47700,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-12T18:33:24.027Z
-        completed_at: 2026-05-12T18:33:24.027Z
+        completed_at: 2026-05-12T18:33:46.257Z
+        notes: "Captured one friction observation: @01KREQEJ. It records that reflection gate guidance
+          should explicitly count reviewer-only artifacts such as review records, checks, verdicts,
+          blocker threads, and task transitions. Did not capture duplicates for evidence logs or
+          freeform-note shell quoting because searches found existing observations."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T18:30:05.030Z
+    completed_at: 2026-05-12T18:33:46.257Z
