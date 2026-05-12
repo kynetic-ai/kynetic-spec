@@ -28944,7 +28944,7 @@ workspaces:
         head: 0d1ebb5f7abec74f141ccfbbcb0cae66dac9ef2d
         last_seen_at: 2026-05-12T13:31:52.541Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-01krcrjr
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 34a859ddadd1535338f54dfcb0e733a0967df185
     bootstrap:
       status: succeeded
@@ -29426,7 +29426,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T15:51:54.707Z
+      updated_at: 2026-05-12T15:52:24.515Z
     integration:
       status: pending
       detail: null
@@ -29441,10 +29441,10 @@ workspaces:
     task_slug: task-implement-bounded-process-stop-primitives
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-12T15:12:14.160Z
-      last_reconciled_at: 2026-05-12T15:51:54.707Z
+      last_active_at: 2026-05-12T15:52:24.515Z
+      last_reconciled_at: 2026-05-12T15:52:24.515Z
       created_at: 2026-05-12T15:11:49.232Z
-      updated_at: 2026-05-12T15:52:20.774Z
+      updated_at: 2026-05-12T15:52:24.515Z
     workspace_id: dispatch-workspace-01KRCRJRF7TZVW59Q8ZK9JSS0X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
