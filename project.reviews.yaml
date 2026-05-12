@@ -204055,7 +204055,17 @@ reviews:
     slugs: []
     title: Review stabilize flaky file-lock concurrent write test
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/file-lock.test.ts: 21/21 tests passed."
+        name: file-lock targeted tests
+        required: true
+        runner: npm
+        created_at: 2026-05-12T08:26:30.182Z
+        completed_at: 2026-05-12T08:26:30.182Z
     events:
       - _ulid: 01KRDM0XWQ3SMK7SKVJMN4JJ65
         actor: Jacob Chapel
@@ -204070,6 +204080,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-12T08:15:27.468Z
+      - _ulid: 01KRDMPY5VKHP824RM3QVHAQJV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: file-lock targeted tests
+        timestamp: 2026-05-12T08:26:31.483Z
     examined_commit: 866065b339c34190fb52f3673bffb90aac357365
     external_links: []
     lifecycle_state: open
@@ -204082,5 +204099,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T08:14:30.295Z
-    updated_at: 2026-05-12T08:15:26.085Z
+    updated_at: 2026-05-12T08:26:30.182Z
     notes: []
