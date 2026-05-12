@@ -48159,7 +48159,7 @@ runs:
     completed_at: 2026-05-12T22:53:01.819Z
   - _ulid: 01KRF6CFSAR15RMGYT18CQK4HE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -48173,7 +48173,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T22:56:27.744Z
-        completed_at: 2026-05-12T22:56:27.744Z
+        completed_at: 2026-05-12T22:57:31.812Z
+        notes: High-confidence friction/success review completed. Captured one corrective friction
+          observation as @01KRF6FA after searching existing coverage. Existing success observations
+          already cover the useful behavioral fixture pattern, so no additional success capture is
+          needed. Existing observations @01KRDHNMY/@01KR6THZ conflict with later review gates
+          because they endorse source-scanning AC coverage and bare it.fails; the captured item
+          points triage at resolving that guidance conflict.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T22:57:31.812Z
+        completed_at: 2026-05-12T22:57:31.812Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T22:54:37.866Z
