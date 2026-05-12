@@ -203337,6 +203337,12 @@ reviews:
         payload:
           thread_ulid: 01KRDCSZJ1SD75Z7SGA2VQ3ZQP
         timestamp: 2026-05-12T06:42:32.167Z
+      - _ulid: 01KRDERQ29QD5PHG15HASCWQVY
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRDCSZJ1SD75Z7SGA2VQ3ZQP
+        timestamp: 2026-05-12T06:42:38.282Z
     examined_commit: 0eb6b62cc0ae567d1814d73cf552c720279f7510
     external_links: []
     lifecycle_state: closed
@@ -203387,6 +203393,8 @@ reviews:
               tools/eslint-rules/no-leaky-test-daemon.js:937-1098."
             created_at: 2026-05-12T06:42:30.776Z
         kind: blocker
+        resolved_at: 2026-05-12T06:42:36.859Z
+        resolved_by: "@claude"
       - _ulid: 01KRDCTJFGS20AAHFTFKK4C15Q
         anchor:
           type: code
@@ -203437,7 +203445,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-12T06:10:08.185Z
     created_at: 2026-05-12T05:53:35.177Z
-    updated_at: 2026-05-12T06:42:30.776Z
+    updated_at: 2026-05-12T06:42:36.859Z
     notes: []
   - _ulid: 01KRDDMFDR6798Q1SYMR79VPBW
     slugs: []
