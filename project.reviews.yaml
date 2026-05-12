@@ -204416,6 +204416,13 @@ reviews:
           status: fail
           name: ad hoc helper binding order probe
         timestamp: 2026-05-12T13:51:12.067Z
+      - _ulid: 01KRE7A90X41C23TTWH901CK12
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRE7A7N1RCJP56AX5BYQVQ84
+        timestamp: 2026-05-12T13:51:39.549Z
     examined_commit: 27d4822fb79353a33e85a14977c63fa58f3d7e4a
     external_links: []
     lifecycle_state: open
@@ -204425,8 +204432,32 @@ reviews:
       content_hash: ""
       ref: "@task-fix-guardrail-cleanup-effect-classification"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRE7A7N1RCJP56AX5BYQVQ84
+        anchor:
+          type: code
+          commit: 27d4822fb79353a33e85a14977c63fa58f3d7e4a
+          line_end: 1129
+          line_start: 1127
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KRE7A7N2GENH92P7EAVZXWM0
+            author: Jacob Chapel
+            body: "MUST-FIX: local helper definitions are trusted even when their binding is only initialized
+              after an intervening observation.  scans every statement in the enclosing block and
+              returns a function/arrow declarator without considering source order relative to the
+              cleanup registration or the next /await. I verified with a synthetic
+              fixture:  currently produces . If the assertion fails before the  initializer runs,
+              the cleanup callback throws/has no callable helper and the detached daemon is not
+              terminated. This violates @daemon-test-guardrail-precision
+              ac-detached-cleanup-before-observation and ac-cleanup-helper-origin-is-trusted; the
+              helper must only satisfy cleanup when its callable terminating binding is available
+              before the first later observation, or this shape must be reported as missing scoped
+              cleanup."
+            created_at: 2026-05-12T13:51:38.146Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-12T13:34:26.827Z
-    updated_at: 2026-05-12T13:51:10.744Z
+    updated_at: 2026-05-12T13:51:38.146Z
     notes: []
