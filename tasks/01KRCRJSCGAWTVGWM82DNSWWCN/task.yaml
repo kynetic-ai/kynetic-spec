@@ -53,7 +53,7 @@ description: >
 spec_ref: "@daemon-test-teardown-boundedness"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -63,6 +63,14 @@ tags:
   - daemon
   - e2e
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-add-setup-failure-error-preservation-regressions/01krcrjs
+  captured_at: 2026-05-12T05:19:56.938Z
+  commit: 69024560de4a34a772c9944f034e9a9021056675
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KRD8SBKKQRXD89RT38PVVEQE
 history:
   - author: Jacob Chapel
@@ -85,7 +93,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-12T04:58:41.179Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-setup-failure-error-preservation-regressions/01krcrjs
+          captured_at: 2026-05-12T05:19:56.938Z
+          commit: 69024560de4a34a772c9944f034e9a9021056675
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-12T05:19:56.940Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-12T05:19:56.941Z
 created_at: 2026-05-12T00:14:55.376Z
 started_at: 2026-05-12T04:58:41.178Z
+submitted_at: 2026-05-12T05:19:56.940Z
 todos: []
 automation: eligible
