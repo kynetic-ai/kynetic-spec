@@ -824,13 +824,30 @@ const noLeakyTestDaemon = {
      * site `useNode` is trusted to actually terminate the daemon. Four
      * resolution paths are evaluated, in order:
      *
-     *   1. Imported from an approved helper module — the import path
+     *   1. Locally defined with an inspectable body — the lexical scope
+     *      chain at `useNode` contains a FunctionDeclaration /
+     *      VariableDeclarator-with-function-init named `name`
+     *      (`findLocalHelperDefinition` walks every enclosing Block and
+     *      the Program). Trust IFF the body contains a CallExpression
+     *      matching the strict terminating-primitive shape
+     *      (`isTerminatingPrimitiveCall`). A no-op or logger-only helper
+     *      fails this check because no terminating primitive is
+     *      reachable.
+     *
+     *      Local-scope-first is intentional: JS lexical scoping means an
+     *      inner `function killPid(_pid) { console.log("noop"); }`
+     *      declared in the `it` callback shadows any outer import named
+     *      `killPid`, so the inner body is the value actually invoked at
+     *      runtime. If we checked imports first, we would falsely trust
+     *      a shadowed approved import while the real call is the no-op.
+     *
+     *   2. Imported from an approved helper module — the import path
      *      matches `APPROVED_HELPER_IMPORT_PATH_PATTERNS` (the shared
      *      daemon fixture or mock helper, behind the lint path
      *      allowlist). The helper's implementation is vetted out of band
      *      so the name carries the trust of the module it comes from.
      *
-     *   2. Imported from any OTHER module — the helper is imported but
+     *   3. Imported from any OTHER module — the helper is imported but
      *      the source path is not in the approved-helper allowlist
      *      (`import { killPid } from "./fake-cleanup"` and any other
      *      non-vetted module). The vetting boundary is broken: the
@@ -841,15 +858,6 @@ const noLeakyTestDaemon = {
      *      by name alone (`@daemon-test-guardrail-precision`
      *      `ac-cleanup-helper-origin-is-trusted`).
      *
-     *   3. Locally defined with a terminating body — the file contains a
-     *      top-level FunctionDeclaration / VariableDeclarator-with-
-     *      function-init named `name`, and that function's body contains
-     *      a CallExpression matching the strict terminating-primitive
-     *      shape (`isTerminatingPrimitiveCall`). The body proves the
-     *      helper actually stops the daemon at runtime; a no-op or
-     *      logger-only helper fails this check because no terminating
-     *      primitive is reachable.
-     *
      *   4. Free identifier — no local definition and no import binding
      *      at all. The helper is presumed to come from outside this file
      *      via a non-import channel (a host runtime global, a runtime
@@ -858,21 +866,24 @@ const noLeakyTestDaemon = {
      *      the historical behavior for tests that rely on a bare
      *      `killPid(pid)` call shape without an explicit import.
      *
-     * The locally-defined-no-op rejection (path 3) and the
-     * unapproved-import rejection (path 2) together close the
-     * `ac-cleanup-helper-origin-is-trusted` gap. Without path 2, an
+     * The locally-defined-no-op rejection (path 1) and the
+     * unapproved-import rejection (path 3) together close the
+     * `ac-cleanup-helper-origin-is-trusted` gap. Without path 3, an
      * `import { killPid } from "./fake-cleanup"` would reach path 4 (no
      * LOCAL function declaration, so `findLocalHelperDefinition` returns
      * null) and silently satisfy cleanup even though the import source
-     * is outside the vetted helper boundary.
+     * is outside the vetted helper boundary. Without path 1's scope-walk
+     * (cycle-3), a nested `function killPid(_pid) { ... }` no-op declared
+     * inside the `it` callback would be invisible and silently credited
+     * as cleanup by path 4.
      */
     function isTrustedHelperByOrigin(name, useNode) {
-      if (isHelperNameImportedFromApprovedPath(name, useNode)) return true;
-      if (isHelperNameImported(name, useNode)) return false;
       const localFn = findLocalHelperDefinition(name, useNode);
       if (localFn) {
         return helperBodyContainsTerminatingPrimitive(localFn, new Set());
       }
+      if (isHelperNameImportedFromApprovedPath(name, useNode)) return true;
+      if (isHelperNameImported(name, useNode)) return false;
       return true;
     }
 
@@ -933,21 +944,62 @@ const noLeakyTestDaemon = {
     }
 
     /**
-     * Return the top-level helper definition (FunctionDeclaration or a
-     * VariableDeclarator init that is a FunctionExpression /
-     * ArrowFunctionExpression) named `name` in the same file, or null.
-     * Top-level scanning is sufficient for tests because the
-     * locally-defined-no-op pattern lives at module scope; nested
-     * helpers are not a common shape in this codebase. Returns the
-     * function/arrow node itself so the caller can inspect `body` and
-     * `params`.
+     * Return the lexically-closest local helper definition
+     * (FunctionDeclaration or VariableDeclarator init that is a
+     * FunctionExpression / ArrowFunctionExpression) named `name` visible
+     * at `fromNode`, or null when no inspectable local definition shadows
+     * `name` at the use site. The walk visits every enclosing
+     * BlockStatement and the Program body — top-level, function/arrow
+     * bodies, `it`/`describe` callbacks, try-blocks — so a helper
+     * declared anywhere in the lexical scope chain (most commonly inside
+     * the `it` callback that registers the cleanup) is found, not just
+     * the module-level shape.
+     *
+     * Without this scope walk, a `function killPid(_pid) {
+     * console.log("noop"); }` declared inside the `it` body would be
+     * invisible to the helper-origin check: `findLocalHelperDefinition`
+     * would return null, the use site would fall through the
+     * unapproved-import gate, and the free-identifier conservative-trust
+     * path would silently credit the no-op as cleanup. That is the
+     * cycle-3 reviewer blocker on
+     * `@daemon-test-guardrail-precision`
+     * `ac-cleanup-helper-origin-is-trusted`.
+     *
+     * Parameter shadowing is honoured: when an enclosing function/arrow
+     * has a parameter named `name`, the parameter shadows any outer
+     * helper definition. The rule cannot statically inspect a parameter
+     * value, so this returns null (the caller's free-identifier path
+     * then conservatively trusts the use site, matching the historical
+     * behavior for opaque bindings).
      */
     function findLocalHelperDefinition(name, fromNode) {
-      const program = findProgramNode(fromNode);
-      if (!program || !Array.isArray(program.body)) return null;
-      for (const stmt of program.body) {
-        const found = matchHelperDefinitionInStatement(stmt, name);
-        if (found) return found;
+      let current = fromNode;
+      while (current) {
+        if (
+          current.type === "FunctionDeclaration" ||
+          current.type === "FunctionExpression" ||
+          current.type === "ArrowFunctionExpression"
+        ) {
+          for (const param of current.params || []) {
+            if (patternBindsName(param, name)) return null;
+          }
+        }
+        let statements = null;
+        if (current.type === "Program" && Array.isArray(current.body)) {
+          statements = current.body;
+        } else if (
+          current.type === "BlockStatement" &&
+          Array.isArray(current.body)
+        ) {
+          statements = current.body;
+        }
+        if (statements) {
+          for (const stmt of statements) {
+            const found = matchHelperDefinitionInStatement(stmt, name);
+            if (found) return found;
+          }
+        }
+        current = current.parent;
       }
       return null;
     }

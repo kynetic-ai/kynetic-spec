@@ -1125,6 +1125,125 @@ describe("test suite", () => {
     });
 
     // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // AC: @daemon-test-guardrail-precision ac-cleanup-probes-do-not-count
+    // Cycle-3 reviewer probe: a no-op `function killPid(_pid) { ... }`
+    // declared INSIDE the `it` callback body (not at module scope) must
+    // not satisfy cleanup. Pre-fix `findLocalHelperDefinition` scanned
+    // only `Program.body` and missed the nested declaration; the use
+    // site then fell through the unapproved-import gate to the
+    // free-identifier conservative-trust path and silently credited the
+    // no-op. The scope-walking lookup now visits every enclosing
+    // BlockStatement (the `it` body) before the Program, so the inner
+    // FunctionDeclaration is found and its body is inspected for a
+    // terminating primitive.
+    it("should flag serve start --detach when cleanup calls a nested no-op killPid helper declared inside the it body", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    function killPid(_pid: number): void {
+      console.log("noop");
+    }
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-3 variant: nested arrow declaration `const stopDaemon = (_pid)
+    // => { ... }` with a no-op body. Same scope-walk requirement, applied
+    // to a different recognised helper name and the VariableDeclarator +
+    // ArrowFunctionExpression init shape rather than FunctionDeclaration.
+    it("should flag serve start --detach when cleanup calls a nested no-op stopDaemon arrow declared inside the it body", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    const stopDaemon = (_pid: number): void => {
+      // intentionally empty — nested local no-op arrow
+    };
+    onTestFinished(() => stopDaemon(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-3 variant: nested helper declared inside the `describe`
+    // callback (one block deeper than module scope but one shallower
+    // than the `it` body). The scope walk must reach this intermediate
+    // BlockStatement too — the rule cannot assume the helper sits in
+    // the same block as the use site.
+    it("should flag serve start --detach when cleanup calls a no-op killPid helper declared in the describe block", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  function killPid(_pid: number): void {
+    console.log("noop");
+  }
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-3 variant: a nested local helper SHADOWS an approved import
+    // of the same name. Lexical scoping says the inner function is what
+    // runs when `killPid(pid)` is invoked, so the import's vetted body
+    // does not apply. Before the local-first ordering fix, the approved
+    // import would short-circuit the check and silently trust the
+    // shadowed name even though the actual call target is the no-op.
+    it("should flag serve start --detach when a nested no-op killPid shadows an approved import", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    function killPid(_pid: number): void {
+      console.log("shadowed noop");
+    }
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
     // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
     // AC: @daemon-test-guardrail-precision ac-cleanup-probes-do-not-count
     // Cycle-1 reviewer probe: a local object literal whose `kill`
@@ -1768,6 +1887,32 @@ describe("test suite", () => {
   it("should start daemon", () => {
     runKspec("serve start --detach --port 3456");
     const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-3 accepted companion (nested helper with terminating body):
+    // a `function killPid(p) { process.kill(p, "SIGTERM"); }` declared
+    // INSIDE the `it` callback must still be accepted. The scope-walking
+    // lookup that catches the no-op shape cannot reject inspectable
+    // helpers whose body proves termination — that would be a false
+    // positive on legitimate per-test scoped cleanup definitions.
+    it("should allow serve start --detach when cleanup calls a nested killPid helper whose body invokes process.kill SIGTERM", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    function killPid(p: number): void {
+      process.kill(p, "SIGTERM");
+    }
     onTestFinished(() => killPid(pid));
     expect(true).toBe(true);
   });
