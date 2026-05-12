@@ -15,17 +15,11 @@
  * cover the same lint rule behavior reuse fixture strings that name a
  * specific concrete scenario (e.g. cleanup placement, callee shape).
  *
- * MERGE GATE — cleanup-effect classifier regressions added by
- * `@task-add-guardrail-cleanup-effect-regressions` are staged through the
- * `expectClassifierGap` helper (defined immediately after `runOxlint`).
- * The wrapper runs each AC's post-fix assertions and, on today's expected
- * throw, re-asserts the EXACT current classifier-gap shape — so unrelated
- * oxlint or helper failures cannot satisfy the regression by accident.
- * When the rule fix in `@task-fix-guardrail-cleanup-effect-classification`
- * lands, the post-fix assertions succeed and `expectClassifierGap` throws
- * the "STAGED REGRESSION CLOSED" sentinel — the fix task MUST then remove
- * the wrapper and inline the post-fix assertions. Do not silence by
- * deleting the test.
+ * Cleanup-effect classifier regressions added by
+ * `@task-add-guardrail-cleanup-effect-regressions` are now post-fix:
+ * `@task-fix-guardrail-cleanup-effect-classification` landed the rule
+ * change that closes the classifier gap, so the previously-staged
+ * `expectClassifierGap` wrappers are inlined as direct assertions.
  */
 
 import { describe, expect, it } from "vitest";
@@ -92,52 +86,6 @@ function expectOxlintRanCleanly(result: OxlintResult): void {
   expect(result.output).not.toMatch(
     /panic|panicked|internal error|failed to parse|parse error|cannot find|module not found|enoent/i,
   );
-}
-
-/**
- * Selective expected-failure helper for cleanup-effect classifier-gap
- * regressions added by `@task-add-guardrail-cleanup-effect-regressions`.
- *
- * Each regression asserts the AC's post-fix behavior via
- * `assertPostFixBehavior`. Today, the rule still has the classifier gap,
- * so those assertions throw. This helper catches that failure and then
- * re-asserts the EXACT current gap shape via `assertKnownGapShape` — so a
- * generic parser/helper failure (which would also throw inside
- * `assertPostFixBehavior`) cannot satisfy the regression by accident:
- * such a failure would not match the known gap shape and would re-throw.
- *
- * The plan deliberately splits regressions and the rule fix across two
- * tasks (`@task-add-guardrail-cleanup-effect-regressions` and
- * `@task-fix-guardrail-cleanup-effect-classification`). When the
- * dependent rule fix lands, `assertPostFixBehavior` succeeds, the catch
- * block does not run, and this helper throws the "STAGED REGRESSION
- * CLOSED" sentinel — the dependent task MUST remove the wrapper and let
- * the post-fix assertions stand on their own. Do not silence by deleting
- * the test.
- */
-function expectClassifierGap(
-  result: OxlintResult,
-  assertPostFixBehavior: () => void,
-  assertKnownGapShape: () => void,
-): void {
-  expectOxlintRanCleanly(result);
-  let postFixPassed = false;
-  try {
-    assertPostFixBehavior();
-    postFixPassed = true;
-  } catch {
-    // Expected failure today. Verify the failure shape is the known
-    // classifier gap and not an unrelated oxlint or helper error — any
-    // assertion failure here re-throws and fails the test.
-    assertKnownGapShape();
-  }
-  if (postFixPassed) {
-    throw new Error(
-      "STAGED REGRESSION CLOSED — classifier no longer exhibits the captured gap. " +
-        "Remove expectClassifierGap() and inline the post-fix assertions " +
-        "(see @task-fix-guardrail-cleanup-effect-classification).",
-    );
-  }
 }
 
 describe("no-leaky-test-daemon lint rule", () => {
@@ -832,18 +780,12 @@ describe("test suite", () => {
     // Cleanup-effect semantics: the rule's old callee-shape predicate
     // accepted `process.kill(...)` regardless of signal and accepted any
     // local helper named `killPid` / `stopDaemon` / `stopMockDaemon` by
-    // name alone. The cycle-N cleanup-effect adversarial probes below
-    // assert that cleanup callbacks must actually terminate the daemon to
-    // satisfy the guardrail.
-    //
-    // MERGE GATE — these probes are staged via `expectClassifierGap` so
-    // the regressions run today (capturing the EXACT current gap shape)
-    // without contributing red to `dev`. When the rule fix in
-    // `@task-fix-guardrail-cleanup-effect-classification` lands, the
-    // post-fix assertions succeed and the helper throws the "STAGED
-    // REGRESSION CLOSED" sentinel — the fix task MUST then remove the
-    // `expectClassifierGap` wrapper and let the post-fix assertions
-    // stand on their own. Do not silence by deleting the test.
+    // name alone. The cleanup-effect adversarial probes below assert that
+    // cleanup callbacks must actually terminate the daemon to satisfy the
+    // guardrail — the classifier split landed in
+    // `@task-fix-guardrail-cleanup-effect-classification` (signal validity
+    // for process.kill / child.kill, helper origin via approved import or
+    // inspected local body).
 
     // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
     // AC: @daemon-test-guardrail-precision ac-cleanup-probes-do-not-count
@@ -865,19 +807,9 @@ describe("test suite", () => {
   });
 });
 `);
-      expectClassifierGap(
-        result,
-        () => {
-          expect(result.output).toContain("no-leaky-test-daemon");
-          expect(result.output).toContain("has no scoped cleanup registration");
-        },
-        () => {
-          // Known gap today: process.kill callee shape is accepted
-          // regardless of signal, so the liveness probe satisfies the rule
-          // and no diagnostic is emitted.
-          expect(result.output).not.toContain("no-leaky-test-daemon");
-        },
-      );
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
     });
 
     // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
@@ -899,17 +831,9 @@ describe("test suite", () => {
   });
 });
 `);
-      expectClassifierGap(
-        result,
-        () => {
-          expect(result.output).toContain("no-leaky-test-daemon");
-          expect(result.output).toContain("has no scoped cleanup registration");
-        },
-        () => {
-          // Known gap today: process.kill signal argument is not inspected.
-          expect(result.output).not.toContain("no-leaky-test-daemon");
-        },
-      );
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
     });
 
     // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
@@ -929,17 +853,9 @@ describe("test suite", () => {
   });
 });
 `);
-      expectClassifierGap(
-        result,
-        () => {
-          expect(result.output).toContain("no-leaky-test-daemon");
-          expect(result.output).toContain("has no scoped cleanup registration");
-        },
-        () => {
-          // Known gap today: process.kill signal argument is not inspected.
-          expect(result.output).not.toContain("no-leaky-test-daemon");
-        },
-      );
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
     });
 
     // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
@@ -961,17 +877,9 @@ describe("test suite", () => {
   });
 });
 `);
-      expectClassifierGap(
-        result,
-        () => {
-          expect(result.output).toContain("no-leaky-test-daemon");
-          expect(result.output).toContain("has no scoped cleanup registration");
-        },
-        () => {
-          // Known gap today: process.kill signal argument is not inspected.
-          expect(result.output).not.toContain("no-leaky-test-daemon");
-        },
-      );
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
     });
 
     // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
@@ -1020,18 +928,9 @@ describe("test suite", () => {
   });
 });
 `);
-      expectClassifierGap(
-        result,
-        () => {
-          expect(result.output).toContain("no-leaky-test-daemon");
-          expect(result.output).toContain("has no scoped cleanup registration");
-        },
-        () => {
-          // Known gap today: helper name alone (killPid) is trusted as
-          // cleanup even though the local body is a no-op.
-          expect(result.output).not.toContain("no-leaky-test-daemon");
-        },
-      );
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
     });
 
     // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
@@ -1057,17 +956,9 @@ describe("test suite", () => {
   });
 });
 `);
-      expectClassifierGap(
-        result,
-        () => {
-          expect(result.output).toContain("no-leaky-test-daemon");
-          expect(result.output).toContain("has no scoped cleanup registration");
-        },
-        () => {
-          // Known gap today: helper name alone (stopDaemon) is trusted.
-          expect(result.output).not.toContain("no-leaky-test-daemon");
-        },
-      );
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
     });
 
     // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
@@ -1092,17 +983,9 @@ describe("test suite", () => {
   });
 });
 `);
-      expectClassifierGap(
-        result,
-        () => {
-          expect(result.output).toContain("no-leaky-test-daemon");
-          expect(result.output).toContain("has no scoped cleanup registration");
-        },
-        () => {
-          // Known gap today: helper name alone (stopMockDaemon) is trusted.
-          expect(result.output).not.toContain("no-leaky-test-daemon");
-        },
-      );
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
     });
 
     // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
@@ -1128,18 +1011,9 @@ describe("test suite", () => {
   });
 });
 `);
-      expectClassifierGap(
-        result,
-        () => {
-          expect(result.output).toContain("no-leaky-test-daemon");
-          expect(result.output).toContain("has no scoped cleanup registration");
-        },
-        () => {
-          // Known gap today: arrow-form local helper named killPid is
-          // trusted by name alone.
-          expect(result.output).not.toContain("no-leaky-test-daemon");
-        },
-      );
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
     });
 
     // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
@@ -1165,18 +1039,9 @@ describe("test suite", () => {
   });
 });
 `);
-      expectClassifierGap(
-        result,
-        () => {
-          expect(result.output).toContain("no-leaky-test-daemon");
-          expect(result.output).toContain("has no scoped cleanup registration");
-        },
-        () => {
-          // Known gap today: local stopDaemon is trusted by name even
-          // though the body has no terminating syscall.
-          expect(result.output).not.toContain("no-leaky-test-daemon");
-        },
-      );
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
     });
   });
 
@@ -1660,12 +1525,9 @@ describe("test suite", () => {
 
     // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
     // `child.kill()` (no signal) — Node's ChildProcess.kill default is
-    // SIGTERM, which is terminating. The child-handle cleanup branch
-    // pre-fix required an explicit SIGTERM/SIGKILL/SIGINT literal and
-    // rejected the no-arg form; after the fix the no-arg form must be
-    // accepted symmetric with `process.kill(pid)`. Staged via
-    // `expectClassifierGap` so the regression captures the EXACT current
-    // false-positive shape without breaking the merge gate.
+    // SIGTERM, which is terminating. The child-handle cleanup branch now
+    // accepts the no-arg form symmetric with `process.kill(pid)` so a
+    // terminating-by-default cleanup is not rejected as missing.
     it("should allow serve start --detach when child.kill() (no signal, defaults to SIGTERM) is registered as cleanup", () => {
       const result = runOxlint(`
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -1679,22 +1541,8 @@ describe("test suite", () => {
   });
 });
 `);
-      expectClassifierGap(
-        result,
-        () => {
-          // Post-fix: the no-arg child.kill() must be accepted as
-          // cleanup, mirroring Node's SIGTERM default and the accepted
-          // `process.kill(pid)` companion above.
-          expect(result.output).not.toContain("no-leaky-test-daemon");
-        },
-        () => {
-          // Known gap today: the child-handle branch requires an explicit
-          // terminating signal literal and rejects the no-arg form as
-          // missing cleanup.
-          expect(result.output).toContain("no-leaky-test-daemon");
-          expect(result.output).toContain("has no scoped cleanup registration");
-        },
-      );
+      expectOxlintRanCleanly(result);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
     // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon

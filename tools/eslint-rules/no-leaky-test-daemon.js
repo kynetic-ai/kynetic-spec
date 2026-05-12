@@ -158,6 +158,50 @@ const DAEMON_ENTRY_LITERAL = "dist/daemon/index.js";
 const DAEMON_ENTRY_IDENTIFIER = "DAEMON_ENTRY";
 const KSPEC_EXECUTABLE_PATTERN = /(^|\/)kspec$/;
 
+/**
+ * Daemon-relevant terminating signals — sent to a running daemon, each
+ * actually stops the receiving process by default. Used by the cleanup
+ * classifier to gate `process.kill(pid, "<signal>")` and
+ * `<child-handle>.kill("<signal>")` callee shapes: only these literals
+ * (and no signal at all, which defaults to SIGTERM) count as terminating
+ * cleanup. Diagnostic / liveness signals (`0`, `SIGUSR1`, `SIGCONT`,
+ * `SIGWINCH`, etc.) explicitly DO NOT count — sending them leaves the
+ * daemon running, and the cleanup contract requires actual termination.
+ */
+const TERMINATING_KILL_SIGNALS = new Set(["SIGTERM", "SIGKILL", "SIGINT"]);
+
+/**
+ * Identifier-callee names the cleanup classifier recognises as
+ * daemon-cleanup helpers. The name alone is necessary but NOT
+ * sufficient — see `isTrustedHelperByOrigin` for the origin check that
+ * requires either an import from an approved helper module or a local
+ * helper body whose runtime path actually contains a terminating
+ * primitive. A locally-defined no-op `function killPid(_p) {}` shares
+ * this name but does not stop the daemon; the origin check rejects it.
+ */
+const TRUSTED_HELPER_NAMES = new Set([
+  "killPid",
+  "stopDaemon",
+  "stopMockDaemon",
+]);
+
+/**
+ * Module specifiers (the `from "…"` string in an `ImportDeclaration`)
+ * that resolve to the approved shared daemon-test helpers. An identifier
+ * imported from one of these paths is trusted by name because the helper
+ * implementation lives behind the path allowlist
+ * (`HELPER_PATH_PATTERNS`) and is therefore vetted out-of-band.
+ *
+ * Patterns are anchored to the path-tail `helpers/daemon` /
+ * `helpers/mock-daemon` so both repo-rooted (`tests/helpers/daemon`),
+ * directly-rooted (`helpers/daemon`), and relative (`./helpers/daemon`,
+ * `../helpers/daemon`) imports resolve. Optional `.ts` is accepted for
+ * tests that use the extension.
+ */
+const APPROVED_HELPER_IMPORT_PATH_PATTERNS = [
+  /(^|[\\/])helpers[\\/](daemon|mock-daemon)(\.ts)?$/,
+];
+
 const noLeakyTestDaemon = {
   meta: {
     type: "problem",
@@ -434,25 +478,44 @@ const noLeakyTestDaemon = {
 
     /**
      * True when a CallExpression's static shape matches an actual daemon
-     * cleanup operation:
+     * cleanup operation that, by its callee shape and arguments, is
+     * expected to terminate or stop the daemon. The classifier is split
+     * into per-shape predicates so each requirement (signal validity,
+     * helper origin, CLI subcommand) is enforced in one place:
      *
-     *   - `process.kill(...)`            (MemberExpression callee)
-     *   - `<expr>.kill("SIGTERM"|"SIGKILL"|"SIGINT", ...)`
-     *     (any `.kill(...)` call whose first argument is one of the three
-     *     daemon-relevant kill signal literals — this is the
-     *     `child.kill("SIGTERM")` shape used by spawn/exec child handles)
-     *   - `killPid(...)` / `stopDaemon(...)` / `stopMockDaemon(...)`
-     *     (Identifier callees that are the project-recognised cleanup
-     *     helpers from tests/cli-serve.test.ts and tests/helpers/)
-     *   - `runKspec(...)` / `kspec(...)` whose args resolve to the
-     *     `serve stop` lifecycle subcommand (first two non-flag positional
-     *     tokens are exactly `serve` then `stop`)
-     *   - `exec(...)` / `execSync(...)` shell-string forms whose leading
-     *     token is the kspec executable and whose remaining tokens resolve
-     *     to `serve stop`
-     *   - `spawn(...)` / `spawnSync(...)` / `execFile(...)` / `execFileSync(...)`
-     *     argv-array forms with a kspec executable and a `serve stop`
-     *     subcommand path
+     *   1. `process.kill(<expr>, <signal>?)` — accepted only when
+     *      `<signal>` is missing, the `undefined` identifier / `void 0`
+     *      sentinel, or one of the terminating literals
+     *      `SIGTERM` / `SIGKILL` / `SIGINT`. The Node default when no
+     *      second argument is passed is SIGTERM, so the no-arg form
+     *      counts. Liveness probes (`process.kill(pid, 0)`),
+     *      non-terminating signals (`SIGUSR1`, `SIGCONT`, `SIGWINCH`),
+     *      and computed signals fall through to "not cleanup" — sending
+     *      them leaves the daemon running.
+     *
+     *   2. `<expr>.kill(<signal>?)` — child-handle cleanup
+     *      (`child.kill(...)`). Same accepted signal policy as
+     *      `process.kill`: no signal / `undefined` / `void 0` /
+     *      terminating literal counts; everything else is rejected so
+     *      `child.kill("SIGUSR1")` etc. do not silently pass.
+     *
+     *   3. Identifier callees `killPid` / `stopDaemon` /
+     *      `stopMockDaemon` — recognised by name only when the origin is
+     *      trustworthy (`isTrustedHelperByOrigin`): either imported from
+     *      an approved helper module, defined locally with a body that
+     *      contains a terminating primitive, or genuinely free (no
+     *      visible local definition — presumed external). A locally
+     *      defined no-op or logger-only helper with the same name does
+     *      NOT count, because the helper body proves the daemon is not
+     *      stopped (`@daemon-test-guardrail-precision`
+     *      `ac-cleanup-helper-origin-is-trusted`).
+     *
+     *   4. `runKspec(...)` / `kspec(...)` / `exec(...)` / `execSync(...)`
+     *      / `spawn(...)` / `spawnSync(...)` / `execFile(...)` /
+     *      `execFileSync(...)` whose argv resolves to the `serve stop`
+     *      lifecycle subcommand — the CLI cleanup path. The tokeniser
+     *      requires the first two non-flag positional tokens to be
+     *      exactly `serve` then `stop`; substring matches don't count.
      *
      * Only an actual call whose CALLEE matches one of these shapes counts.
      * String literals containing kill-token substrings (e.g.
@@ -473,12 +536,8 @@ const noLeakyTestDaemon = {
 
       if (callee.type === "Identifier") {
         const name = callee.name;
-        if (
-          name === "killPid" ||
-          name === "stopDaemon" ||
-          name === "stopMockDaemon"
-        ) {
-          return true;
+        if (TRUSTED_HELPER_NAMES.has(name)) {
+          return isTrustedHelperByOrigin(name, node);
         }
         if (name === "runKspec" || name === "kspec") {
           const tokens = [];
@@ -512,37 +571,394 @@ const noLeakyTestDaemon = {
       if (
         callee.type === "MemberExpression" &&
         callee.property &&
-        callee.property.type === "Identifier"
+        callee.property.type === "Identifier" &&
+        callee.property.name === "kill" &&
+        callee.object
       ) {
-        const propName = callee.property.name;
-        // process.kill(...) — the canonical daemon-cleanup syscall in
-        // detached tests, called with the captured pid file contents.
+        // process.kill(<expr>, <signal>?) — daemon-relevant only when
+        // the signal would actually terminate the receiver. No signal,
+        // `undefined`, or a terminating literal (SIGTERM/SIGKILL/SIGINT)
+        // counts; liveness probes (`0`), non-terminating signals
+        // (SIGUSR1, SIGCONT, SIGWINCH), and computed signals do not.
         if (
-          propName === "kill" &&
-          callee.object &&
           callee.object.type === "Identifier" &&
           callee.object.name === "process"
         ) {
-          return true;
+          return isTerminatingKillSignalArg(node.arguments[1], null);
         }
-        // <expr>.kill("SIG...") — typically a ChildProcess handle from
-        // `spawn(...)`. Require the first arg to be a daemon-relevant
-        // kill signal literal so unrelated `.kill("EVENT")` calls do
-        // NOT silently count as cleanup.
-        if (propName === "kill") {
-          const first = node.arguments[0];
+        // <expr>.kill(<signal>?) — child handle cleanup. Same accepted
+        // signal policy as process.kill so a child-handle leak path
+        // can't sneak in non-terminating signals.
+        return isTerminatingKillSignalArg(node.arguments[0], null);
+      }
+
+      return false;
+    }
+
+    /**
+     * True when `arg` is a kill-signal argument that, sent to a running
+     * daemon, actually terminates it. Used by both the top-level
+     * `isDaemonCleanupCallExpression` classifier and the helper-body
+     * inspection path. Accepted shapes:
+     *
+     *   - `undefined` argument slot (no second arg passed) — Node's
+     *     `process.kill(pid)` and `ChildProcess.kill()` default to
+     *     SIGTERM, which is terminating.
+     *   - The `undefined` Identifier or `void <expr>` UnaryExpression
+     *     sentinel — explicitly passing undefined falls back to the
+     *     SIGTERM default in both APIs.
+     *   - A string Literal whose value is one of `SIGTERM` / `SIGKILL` /
+     *     `SIGINT` (the daemon-relevant terminating signals).
+     *
+     * When `ownerFn` is provided (helper-body inspection), an Identifier
+     * referring to one of the helper's parameters is accepted if that
+     * parameter has a default value (`AssignmentPattern`) whose right-
+     * hand side is a terminating Literal. This recognises the
+     * `function killPid(pid, signal = "SIGTERM") { process.kill(pid,
+     * signal); }` pattern: every call site that omits the signal
+     * inherits the SIGTERM default at runtime. Outside the helper-body
+     * context (`ownerFn === null`), the top-level classifier rejects
+     * Identifier signals because the actual runtime value cannot be
+     * statically pinned.
+     *
+     * Diagnostic / non-terminating signals — Literal `0` (the liveness
+     * probe), `"SIGUSR1"`, `"SIGCONT"`, `"SIGWINCH"`, etc. — fall through
+     * to `false`. Computed expressions (CallExpression, TemplateLiteral,
+     * MemberExpression) also fall through: the rule cannot prove
+     * termination from a runtime-computed signal.
+     */
+    function isTerminatingKillSignalArg(arg, ownerFn) {
+      if (arg === undefined) return true;
+      const unwrapped = unwrapTransparentExpression(arg);
+      if (!unwrapped) return false;
+      if (unwrapped.type === "Identifier" && unwrapped.name === "undefined") {
+        return true;
+      }
+      if (
+        unwrapped.type === "UnaryExpression" &&
+        unwrapped.operator === "void"
+      ) {
+        return true;
+      }
+      if (
+        unwrapped.type === "Literal" &&
+        typeof unwrapped.value === "string" &&
+        TERMINATING_KILL_SIGNALS.has(unwrapped.value)
+      ) {
+        return true;
+      }
+      if (
+        ownerFn &&
+        unwrapped.type === "Identifier" &&
+        Array.isArray(ownerFn.params)
+      ) {
+        for (const param of ownerFn.params) {
           if (
-            first &&
-            first.type === "Literal" &&
-            (first.value === "SIGTERM" ||
-              first.value === "SIGKILL" ||
-              first.value === "SIGINT")
+            param.type === "AssignmentPattern" &&
+            param.left &&
+            param.left.type === "Identifier" &&
+            param.left.name === unwrapped.name
           ) {
-            return true;
+            const def = unwrapTransparentExpression(param.right);
+            if (
+              def &&
+              def.type === "Literal" &&
+              typeof def.value === "string" &&
+              TERMINATING_KILL_SIGNALS.has(def.value)
+            ) {
+              return true;
+            }
           }
         }
       }
+      return false;
+    }
 
+    /**
+     * Decide whether the recognised helper Identifier `name` at the use
+     * site `useNode` is trusted to actually terminate the daemon. Three
+     * resolution paths are accepted, in order:
+     *
+     *   1. Imported from an approved helper module — the import path
+     *      matches `APPROVED_HELPER_IMPORT_PATH_PATTERNS` (the shared
+     *      daemon fixture or mock helper, behind the lint path
+     *      allowlist). The helper's implementation is vetted out of band
+     *      so the name carries the trust of the module it comes from.
+     *
+     *   2. Locally defined with a terminating body — the file contains a
+     *      top-level FunctionDeclaration / VariableDeclarator-with-
+     *      function-init named `name`, and that function's body contains
+     *      a CallExpression matching the strict terminating-primitive
+     *      shape (`isTerminatingPrimitiveCall`). The body proves the
+     *      helper actually stops the daemon at runtime; a no-op or
+     *      logger-only helper fails this check because no terminating
+     *      primitive is reachable.
+     *
+     *   3. Free identifier — no local definition and no approved-helper
+     *      import. The helper is presumed to come from outside this file
+     *      (a host runtime global, an import not yet wired up, etc.).
+     *      The rule cannot statically prove it is a no-op, so it
+     *      conservatively counts as cleanup. This preserves the
+     *      historical behavior for tests that already relied on a bare
+     *      `killPid(pid)` call shape without an explicit import.
+     *
+     * The locally-defined-no-op rejection is the regression that motivated
+     * the predicate split (`@daemon-test-guardrail-precision`
+     * `ac-cleanup-helper-origin-is-trusted`). Previously the bare name
+     * shortcut accepted ANY identifier whose callee name matched
+     * `TRUSTED_HELPER_NAMES`, so a local `function killPid(_pid) {}` —
+     * which never invokes a terminating syscall — silently satisfied the
+     * cleanup contract and left the daemon leaking.
+     */
+    function isTrustedHelperByOrigin(name, useNode) {
+      if (isHelperNameImportedFromApprovedPath(name, useNode)) return true;
+      const localFn = findLocalHelperDefinition(name, useNode);
+      if (localFn) {
+        return helperBodyContainsTerminatingPrimitive(localFn, new Set());
+      }
+      return true;
+    }
+
+    /**
+     * True when a top-level `ImportDeclaration` in the same file imports
+     * `name` from a module specifier matching the approved-helper path
+     * list. Recognises named, default, and namespace import specifiers —
+     * what matters is the locally-bound identifier name, since later
+     * call sites refer to that local name regardless of how the value
+     * arrived.
+     */
+    function isHelperNameImportedFromApprovedPath(name, fromNode) {
+      const program = findProgramNode(fromNode);
+      if (!program || !Array.isArray(program.body)) return false;
+      for (const stmt of program.body) {
+        if (!stmt || stmt.type !== "ImportDeclaration") continue;
+        const source = stmt.source && stmt.source.value;
+        if (typeof source !== "string") continue;
+        if (
+          !APPROVED_HELPER_IMPORT_PATH_PATTERNS.some((pattern) =>
+            pattern.test(source),
+          )
+        ) {
+          continue;
+        }
+        for (const spec of stmt.specifiers || []) {
+          if (!spec || !spec.local || spec.local.type !== "Identifier") {
+            continue;
+          }
+          if (spec.local.name === name) return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Return the top-level helper definition (FunctionDeclaration or a
+     * VariableDeclarator init that is a FunctionExpression /
+     * ArrowFunctionExpression) named `name` in the same file, or null.
+     * Top-level scanning is sufficient for tests because the
+     * locally-defined-no-op pattern lives at module scope; nested
+     * helpers are not a common shape in this codebase. Returns the
+     * function/arrow node itself so the caller can inspect `body` and
+     * `params`.
+     */
+    function findLocalHelperDefinition(name, fromNode) {
+      const program = findProgramNode(fromNode);
+      if (!program || !Array.isArray(program.body)) return null;
+      for (const stmt of program.body) {
+        const found = matchHelperDefinitionInStatement(stmt, name);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    function matchHelperDefinitionInStatement(stmt, name) {
+      if (!stmt) return null;
+      if (
+        stmt.type === "FunctionDeclaration" &&
+        stmt.id &&
+        stmt.id.name === name
+      ) {
+        return stmt;
+      }
+      if (stmt.type === "VariableDeclaration") {
+        for (const decl of stmt.declarations) {
+          if (
+            decl.id &&
+            decl.id.type === "Identifier" &&
+            decl.id.name === name &&
+            decl.init &&
+            (decl.init.type === "FunctionExpression" ||
+              decl.init.type === "ArrowFunctionExpression")
+          ) {
+            return decl.init;
+          }
+        }
+        return null;
+      }
+      if (stmt.type === "ExportNamedDeclaration" && stmt.declaration) {
+        return matchHelperDefinitionInStatement(stmt.declaration, name);
+      }
+      if (stmt.type === "ExportDefaultDeclaration" && stmt.declaration) {
+        return matchHelperDefinitionInStatement(stmt.declaration, name);
+      }
+      return null;
+    }
+
+    /**
+     * Walk up `fromNode`'s parent chain to find the enclosing Program
+     * node. Used by `isHelperNameImportedFromApprovedPath` and
+     * `findLocalHelperDefinition` to scan top-level imports and
+     * declarations without threading the Program node through every
+     * call site.
+     */
+    function findProgramNode(fromNode) {
+      let current = fromNode;
+      while (current && current.parent) current = current.parent;
+      if (current && current.type === "Program") return current;
+      return null;
+    }
+
+    /**
+     * True when `fnNode`'s body contains at least one CallExpression
+     * whose shape is a strict terminating primitive
+     * (`isTerminatingPrimitiveCall`) — a `process.kill` or
+     * child-handle `.kill` with an accepted terminating signal, or a
+     * kspec `serve stop` CLI invocation. Nested function / arrow bodies
+     * are NOT descended: their CallExpressions belong to a different
+     * cleanup context, so a `process.kill` inside an unrelated nested
+     * callback should not count toward `fnNode`'s trust. The `visited`
+     * set guards against infinite recursion for pathological reentry
+     * shapes (helpers that capture themselves, etc.).
+     *
+     * Helper-name calls inside the body (e.g. a wrapper that just
+     * forwards to another `killPid`) deliberately do NOT count, because
+     * the rule must see the actual terminating syscall — wrappers that
+     * stack helper names without ever reaching a syscall leave the
+     * daemon running. This matches the task spec's "avoid counting
+     * recursive wrappers or helper names whose body does not contain an
+     * approved terminating cleanup call" requirement.
+     */
+    function helperBodyContainsTerminatingPrimitive(fnNode, visited) {
+      if (!fnNode || visited.has(fnNode)) return false;
+      visited.add(fnNode);
+      if (!fnNode.body) return false;
+      return subtreeContainsTerminatingPrimitive(fnNode.body, fnNode);
+    }
+
+    function subtreeContainsTerminatingPrimitive(node, ownerFn) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") {
+        return false;
+      }
+      if (node !== ownerFn.body) {
+        if (
+          node.type === "FunctionDeclaration" ||
+          node.type === "FunctionExpression" ||
+          node.type === "ArrowFunctionExpression"
+        ) {
+          return false;
+        }
+      }
+      if (
+        node.type === "CallExpression" &&
+        isTerminatingPrimitiveCall(node, ownerFn)
+      ) {
+        return true;
+      }
+      for (const key in node) {
+        if (
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        ) {
+          continue;
+        }
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (
+              c &&
+              typeof c === "object" &&
+              typeof c.type === "string" &&
+              subtreeContainsTerminatingPrimitive(c, ownerFn)
+            ) {
+              return true;
+            }
+          }
+        } else if (
+          child &&
+          typeof child === "object" &&
+          typeof child.type === "string"
+        ) {
+          if (subtreeContainsTerminatingPrimitive(child, ownerFn)) return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Strict terminating-primitive predicate used by helper-body
+     * inspection. Mirrors `isDaemonCleanupCallExpression` but
+     * deliberately omits the helper-name shortcut so wrappers that just
+     * delegate to another `killPid` / `stopDaemon` cannot bootstrap
+     * trust without ever reaching a terminating syscall. `ownerFn` is
+     * forwarded to `isTerminatingKillSignalArg` so an Identifier-shaped
+     * signal that names a parameter with a terminating default is
+     * accepted (the `function killPid(pid, signal = "SIGTERM") { ... }`
+     * pattern used by `tests/cli-serve.test.ts`).
+     */
+    function isTerminatingPrimitiveCall(node, ownerFn) {
+      if (!node || node.type !== "CallExpression") return false;
+      const callee = node.callee;
+      if (!callee) return false;
+      if (
+        callee.type === "MemberExpression" &&
+        callee.property &&
+        callee.property.type === "Identifier" &&
+        callee.property.name === "kill" &&
+        callee.object
+      ) {
+        if (
+          callee.object.type === "Identifier" &&
+          callee.object.name === "process"
+        ) {
+          return isTerminatingKillSignalArg(node.arguments[1], ownerFn);
+        }
+        return isTerminatingKillSignalArg(node.arguments[0], ownerFn);
+      }
+      if (callee.type === "Identifier") {
+        const name = callee.name;
+        if (name === "runKspec" || name === "kspec") {
+          const tokens = [];
+          for (const arg of node.arguments) {
+            for (const t of collectKspecHelperArgTokens(arg)) tokens.push(t);
+          }
+          return tokensResolveToServeStop(tokens);
+        }
+        if (name === "exec" || name === "execSync") {
+          const tokens = shellCommandTokens(node.arguments[0]);
+          if (!tokens || tokens.length === 0) return false;
+          const lead = tokens[0];
+          if (lead !== "kspec" && !lead.endsWith("/kspec")) return false;
+          return tokensResolveToServeStop(tokens.slice(1));
+        }
+        if (
+          name === "spawn" ||
+          name === "spawnSync" ||
+          name === "execFile" ||
+          name === "execFileSync"
+        ) {
+          if (!isKspecExecutableArg(node.arguments[0])) return false;
+          if (node.arguments.length < 2) return false;
+          return tokensResolveToServeStop(
+            collectArgvArrayTokens(node.arguments[1]),
+          );
+        }
+      }
       return false;
     }
 
