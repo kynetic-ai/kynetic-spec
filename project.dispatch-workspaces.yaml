@@ -30472,7 +30472,7 @@ workspaces:
         head: 18746c4393cec245e014167b4103313010010d55
         last_seen_at: 2026-05-12T19:38:08.686Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-setup-failure-cleanup-error-preservation-01krcrjs
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 0c6506a55cdb40538275c315cad4c85b131bc7ba
     bootstrap:
       status: succeeded
@@ -30970,9 +30970,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T22:45:48.892Z
-      last_reconciled_at: 2026-05-12T23:00:05.324Z
+      last_reconciled_at: 2026-05-12T23:02:02.561Z
       created_at: 2026-05-12T22:36:36.904Z
-      updated_at: 2026-05-12T23:00:15.333Z
+      updated_at: 2026-05-12T23:02:02.561Z
     workspace_id: dispatch-workspace-01KRF37WZYVQHSE1W8PYMBH5R2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
