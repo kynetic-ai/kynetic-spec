@@ -46596,7 +46596,7 @@ runs:
     completed_at: 2026-05-12T06:12:33.444Z
   - _ulid: 01KRDEEP9NYBVGNDFQHR421PRD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -46611,7 +46611,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T06:38:07.803Z
-        completed_at: 2026-05-12T06:38:07.803Z
+        completed_at: 2026-05-12T06:38:42.597Z
+        notes: "Friction points: helper extraction made a lifecycle boundary easy to shift accidentally; the
+          new runDaemonFixtureLifecycle tests covered use-phase errors but not setup/start failure
+          cleanup, so I had to reproduce that control flow manually. Review evidence still requires
+          a nit thread/evidence-log convention rather than a first-class review field, but that is
+          already tracked. No user-facing command issue beyond these already-covered points."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T06:38:42.597Z
+        completed_at: 2026-05-12T06:38:42.597Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T06:37:09.813Z
