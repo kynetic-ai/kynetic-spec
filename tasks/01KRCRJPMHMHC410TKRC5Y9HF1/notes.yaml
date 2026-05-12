@@ -118,3 +118,39 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T06:10:10.526Z
+  - _ulid: 01KRDETNGXZDDBDB0A80JT310Q
+    content: >-
+      Fix cycle 5: addressed both blockers on @01KRDBYW review.
+
+
+      Blocker 1 (parameter-bound cleanup helpers credited by name when local binding is a no-op):
+      findLocalHelperDefinition now returns a LOCAL_BINDING_OPAQUE sentinel — distinct from null —
+      whenever an enclosing scope binds the helper name through a shape the rule cannot statically
+      inspect: function/arrow parameters (with or without a default), VariableDeclaration
+      declarators with missing/non-function init, and parameter destructure shapes.
+      isTrustedHelperByOrigin branches on the sentinel and rejects explicitly before reaching the
+      free-identifier conservative-trust path. The reviewer's exact synthetic probe (it(...,
+      (killPid = (_pid) => {}) => { runKspec('serve start --detach'); onTestFinished(() =>
+      killPid(pid)); ... })) now reports missingCleanup because the it-callback parameter sets
+      OPAQUE at the use-site walk. Function declarations and function/arrow variable inits are still
+      returned for body inspection so legitimate scoped helpers (function killPid(p) {
+      process.kill(p, 'SIGTERM'); }) continue to satisfy cleanup.
+
+
+      Blocker 2 (negative test treated bare unimported killPid(pid) as valid cleanup): updated the
+      canonical accepted shape ('should allow serve start --detach with onTestFinished cleanup' and
+      the defensive-guard sibling) to import killPid from the approved './helpers/daemon' path.
+      Added 6 positive flag-it regressions for the new opaque-binding paths: parameter default to a
+      no-op arrow (the reviewer's exact shape), parameter default to a terminating arrow (proves
+      rejection is unconditional on default contents), let with no init, const initialized from a
+      factory CallExpression, object-destructure of a require call, and a parameter shadow on the
+      IIFE returning the cleanup arrow.
+
+
+      Checks: targeted suites pass (328/328 across tests/lint-no-leaky-test-daemon.test.ts and
+      tests/lint-daemon-test-guardrails.test.ts). Full vitest run passes (9089 passed, 5 skipped of
+      9094, 0 failures). Changed-file oxlint clean (0 errors, 34 pre-existing warnings). kspec
+      validate warnings-only (pre-existing AC annotation warnings unrelated to this fix).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T06:43:42.237Z
