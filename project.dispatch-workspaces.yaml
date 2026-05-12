@@ -30286,12 +30286,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T18:08:58.582Z
+      updated_at: 2026-05-12T18:09:24.157Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T18:08:58.582Z
+      updated_at: 2026-05-12T18:09:24.157Z
     integration:
       status: pending
       detail: null
@@ -30299,7 +30299,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
-      updated_at: 2026-05-12T18:08:58.582Z
+      updated_at: 2026-05-12T18:09:24.157Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRCRJSNXN4SS1XJ6DKD4XC46"
@@ -30307,16 +30307,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T17:39:21.219Z
-      last_reconciled_at: 2026-05-12T18:08:58.582Z
+      last_reconciled_at: 2026-05-12T18:09:24.157Z
       created_at: 2026-05-12T17:38:44.644Z
-      updated_at: 2026-05-12T18:08:58.582Z
+      updated_at: 2026-05-12T18:09:24.157Z
     workspace_id: dispatch-workspace-01KRCRJSNXN4SS1XJ6DKD4XC46
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 83237c93fdbddca17934bb1ab429e90324c55649
+        last_seen_at: 2026-05-12T18:09:24.157Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-setup-failure-cleanup-error-preservation-01krcrjs-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-setup-failure-cleanup-error-preservation/01krcrjs
-        head: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
-        last_seen_at: 2026-05-12T17:38:44.644Z
+        head: 83237c93fdbddca17934bb1ab429e90324c55649
+        last_seen_at: 2026-05-12T18:09:24.157Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-setup-failure-cleanup-error-preservation-01krcrjs
