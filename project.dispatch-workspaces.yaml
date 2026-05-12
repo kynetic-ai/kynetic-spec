@@ -24109,7 +24109,7 @@ workspaces:
         head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
         last_seen_at: 2026-05-12T00:22:51.147Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tighten-daemon-guardrail-cleanup-semantics-specs-01krcrjp
-  - active_role: null
+  - active_role: worker
     base_branch_point: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
     bootstrap:
       status: succeeded
@@ -24500,7 +24500,7 @@ workspaces:
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-05-12T13:49:03.875Z
+      updated_at: 2026-05-12T13:49:29.893Z
     integration:
       status: pending
       detail: null
@@ -24515,10 +24515,10 @@ workspaces:
     task_slug: task-add-bounded-process-stop-contract-tests
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-12T01:46:31.763Z
-      last_reconciled_at: 2026-05-12T13:49:03.875Z
+      last_active_at: 2026-05-12T13:49:29.893Z
+      last_reconciled_at: 2026-05-12T13:49:29.893Z
       created_at: 2026-05-12T00:23:22.571Z
-      updated_at: 2026-05-12T13:49:28.948Z
+      updated_at: 2026-05-12T13:49:29.893Z
     workspace_id: dispatch-workspace-01KRCRJR5K77Q2THCVVH3BDNFH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
