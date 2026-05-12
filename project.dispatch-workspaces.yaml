@@ -31499,7 +31499,7 @@ workspaces:
         head: 0c6506a55cdb40538275c315cad4c85b131bc7ba
         last_seen_at: 2026-05-12T22:58:50.740Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-cleanup-preservation-no-blind-deletion-acs-01krf37x
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 0c6506a55cdb40538275c315cad4c85b131bc7ba
     bootstrap:
       status: succeeded
@@ -31981,7 +31981,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T23:02:27.773Z
+      updated_at: 2026-05-12T23:03:09.558Z
     integration:
       status: pending
       detail: null
@@ -31996,10 +31996,10 @@ workspaces:
     task_slug: task-add-startup-provisioning-classification-ac
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-12T22:53:57.807Z
-      last_reconciled_at: 2026-05-12T23:02:27.773Z
+      last_active_at: 2026-05-12T23:03:09.558Z
+      last_reconciled_at: 2026-05-12T23:03:09.558Z
       created_at: 2026-05-12T22:53:27.615Z
-      updated_at: 2026-05-12T23:03:03.674Z
+      updated_at: 2026-05-12T23:03:09.558Z
     workspace_id: dispatch-workspace-01KRF37XVT9YSRGV87660W7BR6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
