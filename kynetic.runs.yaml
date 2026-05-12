@@ -46432,7 +46432,7 @@ runs:
     completed_at: 2026-05-12T04:55:20.792Z
   - _ulid: 01KRD9N2STE2CXS7CXCP3ZT6MS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -46446,7 +46446,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T05:13:56.637Z
-        completed_at: 2026-05-12T05:13:56.637Z
+        completed_at: 2026-05-12T05:14:04.446Z
+        notes: "Friction points: Full npm test took about 35 minutes and produced an intermittent unrelated
+          file-lock failure, which required rerun triage before the review could finish. The lint
+          rule's trust model required manual synthetic fixture construction to test untracked edge
+          cases; that was useful but repetitive. No separate capture needed for the flaky test
+          because @01KRD9FY now tracks it."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T05:14:04.446Z
+        completed_at: 2026-05-12T05:14:04.446Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T05:13:16.346Z
