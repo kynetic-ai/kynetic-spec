@@ -34,3 +34,38 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T18:29:00.041Z
+  - _ulid: 01KRESMEE3378DA43X9AYX2C1W
+    content: >-
+      Fix cycle 1: addressed both cycle-1 review blockers (codex).
+
+
+      Added two behavioral regressions that close the gap between proven and unproven primary-error
+      preservation when cleanup itself fails:
+
+
+      1. tests/helpers/daemon.test.ts: "createTestDaemonProject setup failure preserves primary when
+      cleanup also fails". Injects both failures via _setCleanupRmForTesting (cleanupTempDir rejects
+      on the cleanup stack) + __testStageHook throw at after-shadow-detection. Asserts primary
+      sentinel surfaces and cleanup sentinel is attached via error.message / error.cause.
+
+
+      2. tests/e2e-fixture-daemon-cleanup.test.ts: "preserves the wrapper setup-stage error as
+      primary even when project.cleanup() rejects". Returns a fake project whose cleanup() rejects
+      from __testCreateProjectImpl + __testStageHook throw at after-write-config. Adds a
+      cleanupInvocations counter so a regression that skips cleanup cannot silently pass.
+
+
+      Sanity-flip verified both tests detect their target regression (throwing cleanupError in place
+      of the primary makes each new test fail on the primary-sentinel assertion).
+
+
+      Re-verified ACs across both modified source files (tests/helpers/daemon.ts setup-failure catch
+      and tests/e2e/fixtures/daemon-fixture.ts wrapper catch) — no other AC coverage gaps surfaced.
+
+
+      Validation: focused tests pass; full vitest suite passes (9088 passed / 5 skipped of 9093);
+      npx playwright test tests/e2e/smoke.spec.ts passes 6/6; kspec validate --warnings-ok reports
+      only pre-existing repo-wide warnings unrelated to this task.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T19:11:47.140Z
