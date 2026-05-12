@@ -33,12 +33,28 @@ type OxlintResult = { exitCode: number; output: string };
 
 // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
 function runOxlint(fileContent: string): OxlintResult {
+  return runOxlintAt("tests/synthetic-test.ts", fileContent);
+}
+
+/**
+ * Variant of `runOxlint` that places the synthetic test file at a
+ * caller-specified relative path under the temp directory. Used by the
+ * cycle-7 helper-import path-resolution regressions to put the test at
+ * a NESTED path (e.g. `tests/e2e/synthetic-test.ts`) so a relative
+ * import like `./helpers/daemon` resolves to a NESTED helpers directory
+ * (`tests/e2e/helpers/daemon`) instead of the canonical shared helper
+ * (`tests/helpers/daemon`). The approved-helper allowlist must reject
+ * the nested path because the nested helper is not the vetted shared
+ * implementation.
+ *
+ * The relative path must live under `tests/...` so the lint config
+ * override (which matches the `tests/**\/*.ts` glob) applies; placing
+ * the file outside that glob makes the rule a no-op and the regression
+ * cannot distinguish "rule rejected" from "rule not run".
+ */
+function runOxlintAt(relativePath: string, fileContent: string): OxlintResult {
   const tempDir = mkdtempSync(path.join(os.tmpdir(), "lint-test-"));
-  // Place the synthetic test file under tests/ so the rule's path-based
-  // helper allowlist (tests/helpers/, tools/eslint-rules/, etc.) does not
-  // accidentally exempt the input — the override below only matches the
-  // tests/ glob and the file must therefore be under that root.
-  const testFile = path.join(tempDir, "tests", "synthetic-test.ts");
+  const testFile = path.join(tempDir, relativePath);
   fs.mkdirSync(path.dirname(testFile), { recursive: true });
   const projectRoot = path.resolve(__dirname, "..");
   const pluginPath = path.resolve(projectRoot, "tools/eslint-rules/no-leaky-test-daemon.js");
@@ -791,23 +807,19 @@ describe("test suite", () => {
     // per-test cleanup as a supplemental safety net, but it does NOT
     // satisfy the guardrail by itself.
     //
-    // FAILING-BEFORE-FIX: this regression is a CURRENT FALSE NEGATIVE
-    // in the `no-leaky-test-daemon` rule — the rule still credits
-    // `process.on("exit", ...)` as cleanup. The assertion below
-    // (`toContain("no-leaky-test-daemon")`) therefore does not hold
-    // today. Expressing the test with `it.fails(...)` inverts the
-    // pass/fail polarity: today the assertion throws and `it.fails`
-    // PASSES (the inversion is the point — it locks in the false
-    // negative). When @task-fix-guardrail-cleanup-boundary-classification
-    // lands and the rule starts reporting this case, the assertion
-    // will pass and `it.fails` will then FAIL — that failure is the
-    // structured signal to the lint-rule-fix worker to flip this test
-    // from `it.fails(...)` back to `it(...)`. The regression stays
-    // inside the required suite (so it runs and verifies behavior on
-    // every test invocation) without contributing red to a green
-    // branch, matching the precedent set by the cycle-6 cleanup-binding
-    // and wrapper-helper regression tasks.
-    it.fails("should flag serve start --detach when only cleanup is process.on(\"exit\", ...)", () => {
+    // FLIPPED-ON-FIX (cycle 7): the helper-origin fix in this task
+    // (`@task-fix-guardrail-cleanup-effect-classification`) closed
+    // the conservative-trust path that previously credited bare
+    // unimported helper names. The fixture's `() => killPid(
+    // result.pid)` listener body now has no trusted origin, so the
+    // body fails the cleanup-effect classifier and the rule flags
+    // the missing scoped cleanup. Per the flip-on-fix protocol
+    // recorded in earlier cycles, this test moves from `it.fails`
+    // to `it`. (The boundary-classification false negative for
+    // `process.on(...)` carrier shapes with a directly-terminating
+    // inline body is still tracked by
+    // `@task-fix-guardrail-cleanup-boundary-classification`.)
+    it("should flag serve start --detach when only cleanup is process.on(\"exit\", ...)", () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 
@@ -828,12 +840,12 @@ describe("test suite", () => {
     // per-test boundary the spec requires. A daemon left running by this
     // test will survive every later test in the file.
     //
-    // FAILING-BEFORE-FIX: see the `process.on("exit", ...)` test above
-    // for the full inversion contract. Same false negative, same
-    // flip-on-fix-landing protocol — when the lint rule fix lands and
-    // the assertion below begins to hold, `it.fails` will fail and
-    // signal the worker to flip this specific test back to `it(...)`.
-    it.fails("should flag serve start --detach when only cleanup is process.on(\"beforeExit\", ...)", () => {
+    // FLIPPED-ON-FIX (cycle 7): see the `process.on("exit", ...)`
+    // sibling above for the flip-on-fix protocol summary. Same
+    // mechanism — the cycle-7 helper-origin rejection on bare
+    // unimported `killPid` denies the fixture's listener-body the
+    // cleanup-effect credit, so the rule flags as expected.
+    it("should flag serve start --detach when only cleanup is process.on(\"beforeExit\", ...)", () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 
@@ -855,12 +867,9 @@ describe("test suite", () => {
     // registered here does nothing for a daemon that leaks into the
     // next test in the same file.
     //
-    // FAILING-BEFORE-FIX: see the `process.on("exit", ...)` test above
-    // for the full inversion contract. Same false negative, same
-    // flip-on-fix-landing protocol — when the lint rule fix lands and
-    // the assertion below begins to hold, `it.fails` will fail and
-    // signal the worker to flip this specific test back to `it(...)`.
-    it.fails("should flag serve start --detach when only cleanup is process.on(\"SIGTERM\", ...)", () => {
+    // FLIPPED-ON-FIX (cycle 7): see the `process.on("exit", ...)`
+    // sibling above for the flip-on-fix protocol summary.
+    it("should flag serve start --detach when only cleanup is process.on(\"SIGTERM\", ...)", () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 
@@ -2298,6 +2307,130 @@ describe("test suite", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
       expect(result.output).toContain("has no scoped cleanup registration");
     });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-7 reviewer blocker 1 (bare unimported helper name): a
+    // `runKspec("serve start --detach")` followed by `onTestFinished(()
+    // => killPid(pid))` where `killPid` has NO import and NO local
+    // definition. Pre-fix `isTrustedHelperByOrigin` fell through to
+    // `return true` on the free-identifier path — "conservative trust"
+    // — silently crediting the bare name as cleanup. The AC explicitly
+    // states that helper name alone does not prove daemon termination,
+    // so the rule must reject. Post-fix the free-identifier path
+    // returns false and this shape is flagged as missing scoped
+    // cleanup.
+    it("should flag serve start --detach when cleanup calls a bare unimported killPid helper", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-7 variant (bare unimported stopDaemon): the
+    // free-identifier rejection must apply to every name in
+    // `TRUSTED_HELPER_NAMES`, not just `killPid`. Same pre-fix gap as
+    // the bare-killPid probe — the conservative-trust fallback
+    // accepted any unbound name from the trusted-helper set.
+    it("should flag serve start --detach when cleanup calls a bare unimported stopDaemon helper", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => stopDaemon(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-7 reviewer blocker 2 (approved-helper specifier resolved
+    // to a nested non-canonical path): a synthetic test under
+    // `tests/e2e/` importing `./helpers/daemon` resolves on disk to
+    // `tests/e2e/helpers/daemon`, NOT the canonical shared helper at
+    // `tests/helpers/daemon`. Pre-fix the approved-import check only
+    // tested the raw specifier string, so the relative-prefix
+    // prefilter matched and the helper was silently trusted by name.
+    // The resolved-path check must reject the import because the
+    // resolved path is outside the approved-helper-implementation
+    // allowlist (`tests/helpers/daemon.ts`, `tests/helpers/
+    // mock-daemon.ts`). The file is placed via `runOxlintAt` at
+    // `tests/e2e/synthetic-test.ts` so the import resolution is
+    // anchored on the nested test directory.
+    it("should flag serve start --detach when cleanup helper is imported via a relative specifier that resolves outside the approved helper path", () => {
+      const result = runOxlintAt(
+        "tests/e2e/synthetic-test.ts",
+        `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`,
+      );
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-7 blocker 2 variant (intermediate-path relative import
+    // resolved off the canonical helper): a synthetic test at
+    // `tests/integration/synthetic-test.ts` importing `../helpers/
+    // daemon` resolves to `tests/helpers/daemon`, the CANONICAL path.
+    // The post-fix resolved-path check must accept this case — the
+    // relative-prefix prefilter recognises chained `../` forms and
+    // the resolved path matches the implementation allowlist. This
+    // negative companion proves the path resolution doesn't
+    // over-reject legitimate cross-directory imports of the shared
+    // helper, only mis-resolved nested-helper shapes.
+    it("should allow serve start --detach when cleanup helper is imported via a relative specifier that resolves to the canonical shared helper path", () => {
+      const result = runOxlintAt(
+        "tests/integration/synthetic-test.ts",
+        `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "../helpers/daemon";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`,
+      );
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {
@@ -2370,6 +2503,7 @@ describe("test suite", () => {
     it("should allow serve start --detach when a stored arrow with expect is invoked after cleanup", () => {
       const result = runOxlint(`
 import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
 
 describe("test suite", () => {
   it("should start daemon", () => {
@@ -2506,6 +2640,7 @@ describe("test suite", () => {
     it("should allow serve start --detach when a stored named function with expect is invoked after cleanup", () => {
       const result = runOxlint(`
 import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
 
 describe("test suite", () => {
   it("should start daemon", () => {
@@ -2531,6 +2666,7 @@ describe("test suite", () => {
     it("should allow serve start --detach when an unrelated fetch URL precedes cleanup", () => {
       const result = runOxlint(`
 import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
 
 describe("test suite", () => {
   it("should start daemon", () => {
@@ -2553,6 +2689,7 @@ describe("test suite", () => {
     it("should allow serve start --detach when an unrelated WebSocket URL precedes cleanup", () => {
       const result = runOxlint(`
 import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
 
 describe("test suite", () => {
   it("should start daemon", () => {
@@ -2576,6 +2713,7 @@ describe("test suite", () => {
     it("should allow serve start --detach when an identifier-bound unrelated URL precedes cleanup", () => {
       const result = runOxlint(`
 import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
 
 describe("test suite", () => {
   it("should start daemon", () => {

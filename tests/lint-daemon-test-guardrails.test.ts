@@ -492,6 +492,7 @@ describe("argv-style detached serve via spawnSync", () => {
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
 import { spawn } from "child_process";
+import { killPid } from "./helpers/daemon";
 
 describe("argv detached serve with scoped cleanup", () => {
   it("starts the daemon detached via argv and cleans up", () => {
@@ -510,6 +511,7 @@ describe("argv detached serve with scoped cleanup", () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
 
 describe("detached serve with scoped cleanup", () => {
   it("starts the daemon detached and cleans up", () => {
@@ -3440,6 +3442,7 @@ describe("exec kspec serve start --detach", () => {
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
 import { exec } from "child_process";
+import { killPid } from "./helpers/daemon";
 
 describe("exec kspec serve start --detach with cleanup", () => {
   it("starts the daemon detached via exec and registers cleanup", () => {

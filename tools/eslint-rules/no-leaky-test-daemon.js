@@ -120,12 +120,40 @@
  * either use the shared fixture or annotate a localized exception.
  */
 
+import path from "node:path";
+
 const HELPER_PATH_PATTERNS = [
   /[\\/]tests[\\/]helpers[\\/]daemon\.ts$/,
   /[\\/]tests[\\/]helpers[\\/]mock-daemon\.ts$/,
   /[\\/]tools[\\/]eslint-rules[\\/]/,
   /[\\/]tests[\\/]lint-no-leaky-test-daemon\.test\.ts$/,
   /[\\/]tests[\\/]lint-daemon-test-guardrails\.test\.ts$/,
+];
+
+/**
+ * Subset of `HELPER_PATH_PATTERNS` that names the approved shared
+ * daemon-test helper IMPLEMENTATION files — the canonical on-disk paths
+ * for the shared fixture and mock helper. Used by
+ * `isHelperImportSpecifierApproved` to validate that an
+ * `import { killPid } from "./helpers/daemon"` resolves on disk to one
+ * of these files relative to the importing test, not merely matches a
+ * specifier-string regex (which previously credited
+ * `tests/e2e/synthetic-test.ts` importing `./helpers/daemon` because the
+ * specifier text matched even though the resolved path
+ * `tests/e2e/helpers/daemon` is outside the approved-helper allowlist
+ * — the cycle-7 reviewer blocker 2 on
+ * `@daemon-test-guardrail-precision`
+ * `ac-cleanup-helper-origin-is-trusted`).
+ *
+ * The rule's broader allowlist (`HELPER_PATH_PATTERNS`) also exempts the
+ * rule source and the lint-rule fixture-string test files; those are
+ * intentionally NOT in the helper-implementation set because no test
+ * imports its cleanup helper from `tools/eslint-rules/...` or from a
+ * sibling lint test file.
+ */
+const APPROVED_HELPER_IMPLEMENTATION_PATTERNS = [
+  /[\\/]tests[\\/]helpers[\\/]daemon\.ts$/,
+  /[\\/]tests[\\/]helpers[\\/]mock-daemon\.ts$/,
 ];
 
 const FETCH_LIKE_CALLEES = new Set(["fetch"]);
@@ -186,33 +214,34 @@ const TRUSTED_HELPER_NAMES = new Set([
 ]);
 
 /**
- * Module specifiers (the `from "…"` string in an `ImportDeclaration`)
- * that resolve to the approved shared daemon-test helpers. An identifier
- * imported from one of these paths is trusted by name because the helper
- * implementation lives behind the path allowlist
- * (`HELPER_PATH_PATTERNS`) and is therefore vetted out-of-band.
+ * Module specifier prefilter (the `from "…"` string in an
+ * `ImportDeclaration`) for relative imports of the approved shared
+ * daemon-test helpers. This prefilter narrows the candidate set BEFORE
+ * the resolved-path check in `isHelperImportSpecifierApproved` — a
+ * specifier that fails the prefilter cannot resolve to an approved
+ * helper on disk and is rejected outright.
  *
  * Patterns are anchored to a relative-path prefix (`./` or `../`,
  * possibly chained: `../../`, `./../`, etc.) so that ONLY in-repo
- * relative imports of the shared helpers resolve. A path that merely
- * ENDS with `helpers/daemon` is not enough — `import { killPid } from
- * "some-unapproved-package/helpers/daemon"` is a bare specifier
- * resolved from `node_modules`, so its body lives outside the path
- * allowlist (`HELPER_PATH_PATTERNS`) and cannot be trusted by name.
- * The relative-prefix anchor closes that gap on
- * `@daemon-test-guardrail-precision`
- * `ac-cleanup-helper-origin-is-trusted`: every approved import in the
- * tests/ tree uses a `./` or `../` form (see e.g.
- * `./helpers/daemon.js`, `../helpers/daemon.js`,
- * `../../helpers/daemon.js`), and a bare or scoped specifier never
- * matches.
+ * relative imports of the shared helpers are even considered. A bare
+ * specifier (`some-pkg/helpers/daemon`), a scoped npm specifier, or a
+ * root-rooted alias (`tests/helpers/daemon`) is rejected at the
+ * prefilter and never reaches path resolution.
+ *
+ * The prefilter alone is NOT sufficient. A nested test file at e.g.
+ * `tests/e2e/synthetic-test.ts` importing `./helpers/daemon` matches
+ * this prefilter but resolves to `tests/e2e/helpers/daemon` — outside
+ * the approved-helper implementation allowlist. The resolved-path
+ * check in `isHelperImportSpecifierApproved` rejects that case
+ * (cycle-7 reviewer blocker 2 on `@daemon-test-guardrail-precision`
+ * `ac-cleanup-helper-origin-is-trusted`).
  *
  * Intermediate path segments between the relative prefix and
- * `helpers/<file>` are NOT allowed: only exact relative pointers to
- * the shared-helper directory match. Optional `.js` / `.ts` extension
- * is accepted to cover both the TS-source `./helpers/daemon` form and
- * the NodeNext-compatible `./helpers/daemon.js` form used across the
- * test tree.
+ * `helpers/<file>` are NOT allowed in the prefilter: only exact
+ * relative pointers to a `helpers/<file>` directory match. Optional
+ * `.js` / `.ts` extension is accepted to cover both the TS-source
+ * `./helpers/daemon` form and the NodeNext-compatible
+ * `./helpers/daemon.js` form used across the test tree.
  */
 const APPROVED_HELPER_IMPORT_PATH_PATTERNS = [
   /^(\.\.?\/)+helpers\/(daemon|mock-daemon)(\.[jt]s)?$/,
@@ -998,48 +1027,57 @@ const noLeakyTestDaemon = {
      *      Reject so the caller cannot bootstrap trust through an
      *      unprovable local shadow.
      *
-     *   3. Imported from an approved helper module — the import path
-     *      matches `APPROVED_HELPER_IMPORT_PATH_PATTERNS` (the shared
-     *      daemon fixture or mock helper, behind the lint path
-     *      allowlist). The helper's implementation is vetted out of band
-     *      so the name carries the trust of the module it comes from.
+     *   3. Imported from an approved helper module — the import
+     *      specifier passes the relative-prefix prefilter
+     *      (`APPROVED_HELPER_IMPORT_PATH_PATTERNS`) AND resolves on
+     *      disk to one of the approved shared-helper implementation
+     *      files relative to the importing test file
+     *      (`APPROVED_HELPER_IMPLEMENTATION_PATTERNS`). The helper's
+     *      implementation is vetted out of band so the name carries
+     *      the trust of the module it comes from.
      *
      *   4. Imported from any OTHER module — the helper is imported but
-     *      the source path is not in the approved-helper allowlist
-     *      (`import { killPid } from "./fake-cleanup"` and any other
-     *      non-vetted module). The vetting boundary is broken: the
-     *      module's body lives outside the path allowlist and cannot be
-     *      proven to terminate the daemon. Reject so the cycle-1
-     *      reviewer probe `import { killPid } from "./fake-cleanup";
-     *      onTestFinished(() => killPid(pid))` cannot satisfy cleanup
-     *      by name alone (`@daemon-test-guardrail-precision`
+     *      the source path is not in the approved-helper allowlist.
+     *      Cases: a specifier shape outside the prefilter (`import {
+     *      killPid } from "./fake-cleanup"`, bare/scoped/alias
+     *      specifiers); a specifier shape inside the prefilter whose
+     *      resolved on-disk path is outside the implementation
+     *      allowlist (a nested test at `tests/e2e/synthetic-test.ts`
+     *      importing `./helpers/daemon` resolves to
+     *      `tests/e2e/helpers/daemon`, not the canonical shared
+     *      helper). The vetting boundary is broken in either case:
+     *      the module's body lives outside the path allowlist and
+     *      cannot be proven to terminate the daemon. Reject so the
+     *      cycle-1/cycle-7 reviewer probes cannot satisfy cleanup by
+     *      name alone (`@daemon-test-guardrail-precision`
      *      `ac-cleanup-helper-origin-is-trusted`).
      *
      *   5. Free identifier — no local binding (function, opaque, or
      *      otherwise) and no import binding at all. The helper is
-     *      presumed to come from outside this file via a non-import
-     *      channel (a host runtime global, a runtime injection, etc.).
-     *      The rule cannot statically prove it is a no-op, so it
-     *      conservatively counts as cleanup. This preserves the
-     *      historical behavior for tests that rely on a bare `killPid(
-     *      pid)` call shape without an explicit import, while the
-     *      opaque-local-binding rejection at path 2 prevents a
-     *      shadowing local from masquerading as a free identifier.
+     *      neither defined in this file nor brought in through a
+     *      vetted module path. The rule cannot statically prove the
+     *      identifier resolves to a terminating primitive, and the
+     *      AC explicitly states that helper name alone does not
+     *      satisfy daemon cleanup
+     *      (`@daemon-test-guardrail-precision`
+     *      `ac-cleanup-helper-origin-is-trusted`). Reject so the
+     *      cycle-7 reviewer probe `runKspec("serve start --detach");
+     *      const pid = readPidFromFile(); onTestFinished(() =>
+     *      killPid(pid));` — with no import or local definition of
+     *      `killPid` — is flagged as missing scoped cleanup. The
+     *      previous "conservative trust" behavior accepted these
+     *      shapes by name; that conservative-trust was the
+     *      false-negative the AC closes.
      *
-     * Path 1's no-op rejection, path 2's opaque-local rejection, and
-     * path 4's unapproved-import rejection together close the
-     * `ac-cleanup-helper-origin-is-trusted` gap. Without path 2, the
-     * cycle-4 reviewer probe (a parameter named `killPid` bound to an
-     * empty arrow default) would reach path 5 because the parameter
-     * shadow returned null from `findLocalHelperDefinition`, and the
-     * use site had no other binding — silently crediting the no-op
-     * default. Without path 4, an `import { killPid } from
-     * "./fake-cleanup"` would reach path 5 and silently satisfy cleanup
-     * even though the import source is outside the vetted helper
-     * boundary. Without path 1's scope-walk (cycle-3), a nested
-     * `function killPid(_pid) { ... }` no-op declared inside the `it`
-     * callback would be invisible and silently credited as cleanup by
-     * path 5.
+     * Every termination path now requires positive proof: either a
+     * locally-inspectable body with a terminating primitive (path 1),
+     * or an approved-helper import that resolves to a vetted
+     * implementation file (path 3). Paths 2, 4, and 5 reject without
+     * positive proof; together they close the
+     * `ac-cleanup-helper-origin-is-trusted` gap on every shape the
+     * cycle-1..7 reviewer probes exercised (no-op shadow, parameter
+     * shadow, late binding, unapproved import, mis-resolved approved
+     * specifier, bare unimported helper).
      */
     function isTrustedHelperByOrigin(name, useNode) {
       const localResult = findLocalHelperDefinition(name, useNode);
@@ -1052,41 +1090,25 @@ const noLeakyTestDaemon = {
         );
       }
       if (isHelperNameImportedFromApprovedPath(name, useNode)) return true;
-      if (isHelperNameImported(name, useNode)) return false;
-      return true;
-    }
-
-    /**
-     * True when a top-level `ImportDeclaration` in the same file binds
-     * the local identifier `name` from any module specifier — the
-     * approved-path-aware sister to `isHelperNameImportedFromApprovedPath`.
-     * Used by `isTrustedHelperByOrigin` to detect the
-     * unapproved-import case: when the helper IS imported but the source
-     * is not on the approved-helper allowlist, the helper cannot bridge
-     * the vetting boundary by name alone.
-     */
-    function isHelperNameImported(name, fromNode) {
-      const program = findProgramNode(fromNode);
-      if (!program || !Array.isArray(program.body)) return false;
-      for (const stmt of program.body) {
-        if (!stmt || stmt.type !== "ImportDeclaration") continue;
-        for (const spec of stmt.specifiers || []) {
-          if (!spec || !spec.local || spec.local.type !== "Identifier") {
-            continue;
-          }
-          if (spec.local.name === name) return true;
-        }
-      }
       return false;
     }
 
     /**
      * True when a top-level `ImportDeclaration` in the same file imports
-     * `name` from a module specifier matching the approved-helper path
-     * list. Recognises named, default, and namespace import specifiers —
-     * what matters is the locally-bound identifier name, since later
-     * call sites refer to that local name regardless of how the value
-     * arrived.
+     * `name` from a module specifier that BOTH passes the relative
+     * prefilter (`APPROVED_HELPER_IMPORT_PATH_PATTERNS`) AND resolves on
+     * disk — relative to the importing test file — to one of the
+     * approved shared-helper implementation files
+     * (`APPROVED_HELPER_IMPLEMENTATION_PATTERNS`).
+     *
+     * Recognises named, default, and namespace import specifiers — what
+     * matters is the locally-bound identifier name, since later call
+     * sites refer to that local name regardless of how the value
+     * arrived. The resolved-path check is delegated to
+     * `isHelperImportSpecifierApproved`, which performs path resolution
+     * relative to the importing file's directory and normalises the
+     * `.js` / no-extension / `.ts` specifier forms to the canonical
+     * `.ts` form on disk.
      */
     function isHelperNameImportedFromApprovedPath(name, fromNode) {
       const program = findProgramNode(fromNode);
@@ -1094,14 +1116,7 @@ const noLeakyTestDaemon = {
       for (const stmt of program.body) {
         if (!stmt || stmt.type !== "ImportDeclaration") continue;
         const source = stmt.source && stmt.source.value;
-        if (typeof source !== "string") continue;
-        if (
-          !APPROVED_HELPER_IMPORT_PATH_PATTERNS.some((pattern) =>
-            pattern.test(source),
-          )
-        ) {
-          continue;
-        }
+        if (!isHelperImportSpecifierApproved(source)) continue;
         for (const spec of stmt.specifiers || []) {
           if (!spec || !spec.local || spec.local.type !== "Identifier") {
             continue;
@@ -1110,6 +1125,60 @@ const noLeakyTestDaemon = {
         }
       }
       return false;
+    }
+
+    /**
+     * True when the import specifier (the `from "…"` string) both
+     * passes the relative-prefix prefilter AND resolves on disk —
+     * relative to the importing test file's directory — to one of the
+     * approved shared-helper implementation files
+     * (`APPROVED_HELPER_IMPLEMENTATION_PATTERNS`).
+     *
+     * The resolved-path check is the cycle-7 fix: the prefilter alone
+     * accepted a nested test at `tests/e2e/synthetic-test.ts` importing
+     * `./helpers/daemon` because the specifier string matched the
+     * relative-prefix regex, but that specifier resolves to
+     * `tests/e2e/helpers/daemon`, NOT the canonical shared helper.
+     * Anchoring trust on the resolved path closes that gap on
+     * `@daemon-test-guardrail-precision`
+     * `ac-cleanup-helper-origin-is-trusted`.
+     *
+     * Extension normalisation: import specifiers commonly omit the
+     * extension (`./helpers/daemon`) or use `.js` for NodeNext
+     * compatibility (`./helpers/daemon.js`); the approved-helper
+     * implementations on disk are `.ts` files. The specifier's
+     * extension is normalised to `.ts` before pattern matching so all
+     * three forms resolve the same way.
+     *
+     * Returns false if the importing filename is unknown (no oxlint
+     * filename available), if the specifier is non-string or
+     * non-relative, or if the resolved path does not match the
+     * implementation allowlist. False rather than throw so the rule
+     * degrades to the strict-reject path in `isTrustedHelperByOrigin`
+     * — never to silent trust.
+     */
+    function isHelperImportSpecifierApproved(specifier) {
+      if (typeof specifier !== "string") return false;
+      if (
+        !APPROVED_HELPER_IMPORT_PATH_PATTERNS.some((pattern) =>
+          pattern.test(specifier),
+        )
+      ) {
+        return false;
+      }
+      if (typeof filename !== "string" || filename.length === 0) {
+        return false;
+      }
+      const importingDir = path.dirname(filename);
+      let resolved = path.resolve(importingDir, specifier);
+      if (resolved.endsWith(".js")) {
+        resolved = `${resolved.slice(0, -3)}.ts`;
+      } else if (!resolved.endsWith(".ts")) {
+        resolved = `${resolved}.ts`;
+      }
+      return APPROVED_HELPER_IMPLEMENTATION_PATTERNS.some((pattern) =>
+        pattern.test(resolved),
+      );
     }
 
     /**
