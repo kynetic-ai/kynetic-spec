@@ -28578,15 +28578,10 @@ workspaces:
       reason: null
       updated_at: 2026-05-12T13:57:00.636Z
     health:
-      status: stale
-      issues:
-        - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-task-add-review"
-            is missing or no longer registered.
-          suggestion: Recreate the detached reviewer snapshot before running review again.
-      summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-05-12T13:57:00.636Z
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-12T13:57:01.473Z
     integration:
       status: pending
       detail: null
@@ -28595,25 +28590,20 @@ workspaces:
       target_branch: dev
       target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
       updated_at: 2026-05-12T13:57:00.636Z
-    lifecycle_state: stale
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@task-add-bounded-process-stop-contract-tests"
     task_slug: task-add-bounded-process-stop-contract-tests
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T13:32:20.359Z
-      last_reconciled_at: 2026-05-12T13:57:00.636Z
+      last_reconciled_at: 2026-05-12T13:57:01.473Z
       created_at: 2026-05-12T13:31:52.541Z
-      updated_at: 2026-05-12T13:57:00.636Z
+      updated_at: 2026-05-12T13:57:01.473Z
     workspace_id: dispatch-workspace-task-add-bounded-process-stop-contract-tests
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 0d1ebb5f7abec74f141ccfbbcb0cae66dac9ef2d
-        last_seen_at: 2026-05-12T13:31:52.541Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-bounded-process-stop-contract-tests-task-add-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-bounded-process-stop-contract-tests/01krcrjr
