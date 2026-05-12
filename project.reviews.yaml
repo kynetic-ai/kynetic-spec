@@ -203160,6 +203160,19 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-12T06:09:30.178Z
         completed_at: 2026-05-12T06:09:30.178Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm run lint exited 1 with existing project lint state: 13 errors and 721 warnings.
+          Changed-file oxlint for tools/eslint-rules/no-leaky-test-daemon.js,
+          tests/lint-no-leaky-test-daemon.test.ts, tests/cli-serve.test.ts,
+          tests/helpers/mock-daemon.test.ts had 0 errors and 34 warnings."
+        name: npm run lint
+        required: false
+        runner: oxlint
+        created_at: 2026-05-12T06:09:41.756Z
+        completed_at: 2026-05-12T06:09:41.756Z
     events:
       - _ulid: 01KRDBYWY9D0WAGCVR0G2MVNFC
         actor: Jacob Chapel
@@ -203216,6 +203229,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-12T06:09:31.545Z
+      - _ulid: 01KRDCWE5GTG96MXKJ5GAXWTJQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm run lint
+        timestamp: 2026-05-12T06:09:43.088Z
     examined_commit: 0eb6b62cc0ae567d1814d73cf552c720279f7510
     external_links: []
     lifecycle_state: open
@@ -203273,5 +203293,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-12T05:53:35.177Z
-    updated_at: 2026-05-12T06:09:30.178Z
+    updated_at: 2026-05-12T06:09:41.756Z
     notes: []
