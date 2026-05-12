@@ -45508,7 +45508,7 @@ runs:
     completed_at: 2026-05-12T03:13:19.112Z
   - _ulid: 01KRD2ZFP3FD2BKFZ9BYBC17TM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -45526,7 +45526,43 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T03:18:43.262Z
-        completed_at: 2026-05-12T03:18:43.262Z
+        completed_at: 2026-05-12T03:19:07.407Z
+        notes: >-
+          Identified two high-confidence items:
+
+
+          SUCCESS 1 — Forward-staged regression suite as a deterministic refactor checklist. When
+          the dependent regression task stages probes with the expectClassifierGap
+          selective-expected-failure helper, the rule-fix task's verification reduces to 'every
+          staged probe must flip to STAGED REGRESSION CLOSED, with no surrounding suite
+          regressions.' On this task, after the classifier refactor, npm test surfaced exactly 10
+          STAGED REGRESSION CLOSED sentinels — a precise, mechanical to-do list for removing the
+          wrappers — and zero unrelated regressions. The cost of the refactor's correctness check
+          became O(staged regressions) instead of O(time spent thinking about edge cases). Concrete,
+          systemic, validated.
+
+
+          SUCCESS 2 — Parameter-default Literal escape hatch when tightening static signal checks.
+          When introducing a stricter predicate on a CallExpression argument that previously
+          accepted any shape, the existing codebase often contains call sites whose argument is an
+          Identifier (function param) whose declarator-level AssignmentPattern carries a terminating
+          Literal default. The cli-serve.test.ts killPid(pid, signal = 'SIGTERM') helper is the
+          canonical case: the static check cannot prove termination from  alone, but the
+          AssignmentPattern's right-hand Literal is statically pinnable. Threading ownerFn through
+          the signal predicate and resolving Identifier signals against the owning function's
+          parameter defaults preserves the safe shape without forcing a downstream refactor. The
+          pattern generalises beyond kill-signal classification — any stricter argument predicate on
+          a function-arg slot should check parameter-default Literals before rejecting Identifier
+          shapes.
+
+
+          No high-confidence frictions this session. Full test suite duration (~34 min) is real but
+          I am not certain about a specific actionable improvement; rule file size (~4700 lines) is
+          growing but the navigation tooling sufficed for this session.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T03:19:07.407Z
+        completed_at: 2026-05-12T03:19:07.407Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-12T03:16:37.188Z
