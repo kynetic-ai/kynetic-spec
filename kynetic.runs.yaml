@@ -47071,7 +47071,7 @@ runs:
     started_at: 2026-05-12T13:50:39.806Z
   - _ulid: 01KRE7F1M8W34PBW63SAK7XGTB
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -47087,7 +47087,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-12T13:55:21.585Z
-        completed_at: 2026-05-12T13:55:21.585Z
+        completed_at: 2026-05-12T13:55:37.720Z
+        notes: "Friction points: (1) The dispatch prompt named a detached review snapshot worktree path that
+          was absent on disk, so review orientation required filesystem discovery and fallback to
+          the canonical task worktree. The task notes also contained a prior review-bootstrap
+          ENOENT/spawn sh failure for a transient review workspace, suggesting review worktree
+          preparation can fail operationally outside the task's actual code state. (2) kspec review
+          comment bodies passed through shell quoting are easy to mangle when they contain
+          backticks, command snippets, or  syntax; the blocker comment body was damaged by command
+          substitution and needed a corrective reply. (3) The full test suite is required review
+          evidence and took 2132.7s even after a blocker was already reproduced; this is expected
+          policy but expensive for fix cycles."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T13:55:37.720Z
+        completed_at: 2026-05-12T13:55:37.720Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T13:54:15.816Z
