@@ -24080,7 +24080,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T00:36:46.033Z
+      updated_at: 2026-05-12T00:38:39.080Z
     integration:
       status: merged
       detail: integration:merged
@@ -24089,25 +24089,20 @@ workspaces:
       target_branch: dev
       target_commit: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
       updated_at: 2026-05-12T00:36:46.033Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KRCRJP09TGZ629WBSQ093KMF"
     task_slug: task-tighten-daemon-guardrail-cleanup-semantics-specs
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T00:23:17.974Z
-      last_reconciled_at: 2026-05-12T00:38:37.260Z
+      last_reconciled_at: 2026-05-12T00:38:39.080Z
       created_at: 2026-05-12T00:18:52.123Z
-      updated_at: 2026-05-12T00:38:37.260Z
+      updated_at: 2026-05-12T00:38:39.080Z
     workspace_id: dispatch-workspace-01KRCRJP09TGZ629WBSQ093KMF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: e108bce0b0d6ee5cc44c647f91fd550c7aedc87b
-        last_seen_at: 2026-05-12T00:22:51.147Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tighten-daemon-guardrail-cleanup-semantics-specs-01krcrjp-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-tighten-daemon-guardrail-cleanup-semantics-specs/01krcrjp
