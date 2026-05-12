@@ -30438,7 +30438,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T19:57:03.436Z
+      updated_at: 2026-05-12T20:01:18.470Z
     integration:
       status: merged
       detail: integration:merged
@@ -30447,25 +30447,20 @@ workspaces:
       target_branch: dev
       target_commit: b5a1ae9d8e8dbecdbef7ae007820b9fdbac3dab0
       updated_at: 2026-05-12T19:57:03.436Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KRCRJSNXN4SS1XJ6DKD4XC46"
     task_slug: task-fix-setup-failure-cleanup-error-preservation
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T19:38:36.015Z
-      last_reconciled_at: 2026-05-12T20:01:16.596Z
+      last_reconciled_at: 2026-05-12T20:01:18.470Z
       created_at: 2026-05-12T17:38:44.644Z
-      updated_at: 2026-05-12T20:01:16.596Z
+      updated_at: 2026-05-12T20:01:18.470Z
     workspace_id: dispatch-workspace-01KRCRJSNXN4SS1XJ6DKD4XC46
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 18746c4393cec245e014167b4103313010010d55
-        last_seen_at: 2026-05-12T19:38:08.686Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-setup-failure-cleanup-error-preservation-01krcrjs-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-setup-failure-cleanup-error-preservation/01krcrjs
