@@ -48201,10 +48201,60 @@ runs:
     started_at: 2026-05-12T22:54:37.866Z
     completed_at: 2026-05-12T22:57:46.980Z
   - _ulid: 01KRF6PP69W4S51WQEVYNS2W9Y
-    status: active
-    current_step: 0
+    status: completed
+    current_step: 5
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-12T23:00:12.105Z
+        completed_at: 2026-05-12T23:01:34.274Z
+        notes: "What worked well: The detached review flow handled a spec-only task cleanly. Reading the
+          spec and plan before deciding on the uncovered AC warning prevented a false blocker: the
+          new AC is intentionally unimplemented, and the dependent implementation task is already
+          queued. Recording review checks in one batch kept the review artifact complete and
+          auditable. The detached merge helper correctly reported no-op because the task branch was
+          already integrated at dev."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-12T23:01:34.274Z
+        completed_at: 2026-05-12T23:01:35.603Z
+        notes: "Friction points: The /kspec:reflect guidance says `kspec workflow show`, but this CLI
+          requires an explicit run ref. I hit the same mismatch and recovered with `kspec workflow
+          show @01KRF6PP`. I also tried `kspec task list --plan`, which is not a valid option;
+          `kspec plan get` already exposes derived work, so this was minor command-discovery
+          friction rather than a clear new product gap."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-12T23:01:35.603Z
+        completed_at: 2026-05-12T23:01:36.904Z
+        notes: Coverage checked with `kspec search`. The workflow-show/run-ref mismatch is already tracked
+          by multiple items, including @01KQ0RH7, @01KQBGKT, @01KR293G, and observations such as
+          @01KR5R15Z. Review evidence logs are already tracked by observation @01KR2JD1. Searches
+          for spec-alignment/downstream implementation and uncovered-AC review patterns found no
+          exact match, but the session did not expose enough repeated friction to justify a new
+          capture.
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-12T23:01:36.904Z
+        completed_at: 2026-05-12T23:01:38.199Z
+        notes: "Proposed improvements: No new high-confidence friction item to capture. Possible success
+          pattern: for spec-update review tasks, verify downstream implementation tasks before
+          treating new uncovered AC warnings as blockers. This was useful in this session but is not
+          yet a repeated enough pattern to record as a durable process change."
+      - status: skipped
+        step_index: 4
+        started_at: 2026-05-12T23:01:38.199Z
+        completed_at: 2026-05-12T23:01:39.509Z
+        notes: "Discussion skipped: no new untracked friction or improvement proposal requires user
+          approval."
+      - status: skipped
+        step_index: 5
+        started_at: 2026-05-12T23:01:39.509Z
+        completed_at: 2026-05-12T23:01:40.752Z
+        notes: "Capture skipped: existing tracked items cover the actionable workflow-command and
+          review-evidence friction; no new inbox item, task, or observation was created."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-12T23:00:12.105Z
+    completed_at: 2026-05-12T23:01:40.752Z
