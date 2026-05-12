@@ -27774,7 +27774,7 @@ workspaces:
         head: 866065b339c34190fb52f3673bffb90aac357365
         last_seen_at: 2026-05-12T08:11:46.217Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-file-lock-concurrent-write-test-01krd9fy
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
     bootstrap:
       status: succeeded
@@ -28110,7 +28110,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T13:31:21.926Z
+      updated_at: 2026-05-12T13:31:48.960Z
     integration:
       status: pending
       detail: null
@@ -28125,10 +28125,10 @@ workspaces:
     task_slug: task-fix-guardrail-cleanup-effect-classification
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-12T13:31:21.926Z
+      last_active_at: 2026-05-12T13:31:48.960Z
+      last_reconciled_at: 2026-05-12T13:31:48.960Z
       created_at: 2026-05-12T13:31:21.926Z
-      updated_at: 2026-05-12T13:31:45.669Z
+      updated_at: 2026-05-12T13:31:48.960Z
     workspace_id: dispatch-workspace-task-fix-guardrail-cleanup-effect-classification
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
