@@ -3426,3 +3426,18 @@ inbox:
       - ergonomics
     added_by: "@claude"
     created_at: 2026-05-11T18:17:22.160Z
+  - _ulid: 01KRD2RVK5P5B8A7WEM0CGVCQR
+    text: Detached reviewer merge helper conflict output could include richer handoff context. In a
+      manual_merge review, the helper safely aborted and restored the target worktree, but after
+      reporting only the conflicted file I had to manually inspect dev commits/diffs to write an
+      actionable needs_work reason. Consider having the helper print target/head SHAs, conflicted
+      paths, and recent target-side commits or a suggested needs_work note template so reviewers can
+      return conflicts with useful worker context without ad hoc git investigation.
+    tags:
+      - reflection
+      - dx
+      - dispatch
+      - merge
+      - review
+    added_by: Jacob Chapel
+    created_at: 2026-05-12T03:13:00.005Z
