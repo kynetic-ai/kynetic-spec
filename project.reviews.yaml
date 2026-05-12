@@ -204214,6 +204214,17 @@ reviews:
         runner: npm
         created_at: 2026-05-12T13:45:44.478Z
         completed_at: 2026-05-12T13:45:44.478Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: git diff --check e108bce0b0d6ee5cc44c647f91fd550c7aedc87b...HEAD passed; rg found no
+          it.fails/describe.fails/todo/skip in changed bounded-stop tests.
+        name: diff hygiene
+        required: false
+        runner: git
+        created_at: 2026-05-12T13:45:48.391Z
+        completed_at: 2026-05-12T13:45:48.391Z
     events:
       - _ulid: 01KRE691A9G131YVK8J0AAGBMT
         actor: Jacob Chapel
@@ -204242,6 +204253,13 @@ reviews:
           status: pass
           name: npm test -- --fresh
         timestamp: 2026-05-12T13:45:47.986Z
+      - _ulid: 01KRE6ZKW5N40FBHAMJJT0FGM5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: diff hygiene
+        timestamp: 2026-05-12T13:45:50.213Z
     examined_commit: 0d1ebb5f7abec74f141ccfbbcb0cae66dac9ef2d
     external_links: []
     lifecycle_state: open
@@ -204254,7 +204272,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-12T13:33:30.314Z
-    updated_at: 2026-05-12T13:45:44.478Z
+    updated_at: 2026-05-12T13:45:48.391Z
     notes: []
   - _ulid: 01KRE6ARGB5SF4YPG2F2MGZ51N
     slugs: []
