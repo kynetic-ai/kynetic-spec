@@ -103,3 +103,22 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-12T03:10:04.260Z
+  - _ulid: 01KRD4CDJWJ13D3AJSXB0DV432
+    content: "Fix cycle 2: resolved merge helper conflict by merging origin/dev into the dispatch branch
+      and keeping both regression groups in tests/lint-no-leaky-test-daemon.test.ts. (1)
+      Cleanup-boundary group (this branch, approved cycle 2): ac-cleanup-registration-is-test-scoped
+      rejected cases for process.on(exit|beforeExit|SIGTERM) as it.fails, already-rejected
+      process.once/Promise.finally/queueMicrotask, accepted
+      onTestFinished/try-finally/mixed-fallback cases. The OLD process.on(\"exit\") valid cleanup
+      negative case from dev was DROPPED (it was inverted by HEAD's cycle 2 work). (2)
+      Cleanup-effect classifier group (from dev): process.kill liveness probe and non-terminating
+      signals (SIGUSR1/SIGCONT/SIGWINCH), child.kill SIGUSR1 reject, locally defined no-op
+      killPid/stopDaemon/stopMockDaemon helpers; accepted companions (process.kill
+      SIGTERM/SIGKILL/no-signal, child.kill SIGTERM/no-signal, imported killPid, local killPid with
+      body invoking process.kill SIGTERM). Also pulled in the expectClassifierGap and
+      expectOxlintRanCleanly helpers, the OxlintResult type alias, and the MERGE GATE doc comment
+      from dev. Verification: focused suites 297/297 pass, full suite 9053 passed/5 skipped/0
+      failed, kspec validate has only pre-existing unrelated warnings. Merge commit f7e131350."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-12T03:41:09.596Z
