@@ -26719,18 +26719,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-add-setup-failure-error-preservation-regressions/01krcrjs
-    canonical_branch_head: 522d65ee504661e1f648142e7a801325b86289d4
+    canonical_branch_head: ab1d59a2942c2e18b8373c2bd89fd50ef992c151
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-12T06:47:22.189Z
+      updated_at: 2026-05-12T07:04:51.691Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-12T06:47:46.791Z
+      updated_at: 2026-05-12T07:04:51.691Z
     integration:
       status: pending
       detail: null
@@ -26738,7 +26738,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
-      updated_at: 2026-05-12T06:47:22.189Z
+      updated_at: 2026-05-12T07:04:51.691Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KRCRJSCGAWTVGWM82DNSWWCN"
@@ -26746,9 +26746,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-12T06:47:46.791Z
-      last_reconciled_at: 2026-05-12T06:47:46.791Z
+      last_reconciled_at: 2026-05-12T07:04:51.691Z
       created_at: 2026-05-12T04:57:42.523Z
-      updated_at: 2026-05-12T06:47:46.791Z
+      updated_at: 2026-05-12T07:04:51.691Z
     workspace_id: dispatch-workspace-01KRCRJSCGAWTVGWM82DNSWWCN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
