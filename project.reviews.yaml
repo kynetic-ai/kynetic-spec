@@ -214053,6 +214053,13 @@ reviews:
           status: pass
           name: tests no-leaky daemon lint sweep
         timestamp: 2026-05-13T10:02:19.621Z
+      - _ulid: 01KRGCKKEN44GM7T6X1TSNQ3BY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRGCKJ1EM6ZNJHKSX7554MSW
+        timestamp: 2026-05-13T10:02:36.885Z
     examined_commit: ea3c85356bd7c4ef72e5347d0b8e9a75c023fa5f
     external_links: []
     lifecycle_state: open
@@ -214062,8 +214069,26 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJQVWASBCR27BR3D8VFBA"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRGCKJ1EM6ZNJHKSX7554MSW
+        entries:
+          - _ulid: 01KRGCKJ1EDG19JAQXHFTV36A1
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; task/spec context; prior review @01KRG6R6; diff
+              and surrounding code in tools/eslint-rules/no-leaky-test-daemon.js,
+              tests/lint-daemon-test-guardrails.test.ts, tests/cli-no-daemon.test.ts,
+              tests/parser/daemon-config.test.ts, src/cli/index.ts. Commands run: kspec item get
+              @daemon-test-guardrail-precision; kspec validate and kspec validate --warnings-ok; AC
+              annotation rg; git diff --check; targeted npm test; full npm test -- --fresh; npx
+              oxlint tests/ and filtered no-leaky output. Claims verified: cycle-1 blocker shapes
+              now have behavioral lint fixtures and implementation classifiers for metadata aliases,
+              pid aliases, serve status, and daemon endpoint fetches; real CLI serve status is
+              skip-listed for auto-start, so classifier is gated on prior auto-start-capable kspec
+              calls. Categories searched: correctness, cleanup edge cases, false positives, test
+              quality, integration."
+            created_at: 2026-05-13T10:02:35.438Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-13T09:47:43.025Z
-    updated_at: 2026-05-13T10:02:18.245Z
+    updated_at: 2026-05-13T10:02:35.438Z
     notes: []
