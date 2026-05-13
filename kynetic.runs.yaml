@@ -48528,7 +48528,7 @@ runs:
     completed_at: 2026-05-13T02:04:59.572Z
   - _ulid: 01KRFJMTJXRZT27H6M1WJGAGKH
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -48552,7 +48552,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-13T02:29:28.888Z
-        completed_at: 2026-05-13T02:29:28.888Z
+        completed_at: 2026-05-13T02:30:08.786Z
+        notes: 'Coverage check: Searched: kspec search "lint", "review gate lint", "changed-file lint", and
+          "repo-wide lint". The review-gate lint friction is already captured by unresolved
+          observation @01KQBP4A, which specifically asks for a first-class changed-file lint command
+          because npm lint with supplied files still runs the hardcoded full lint target and
+          surfaces unrelated pre-existing errors. No new capture needed for this point. Full-suite
+          runtime is documented by existing testing conventions and shard guidance, so no new
+          tracking proposed.'
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-13T02:30:08.786Z
+        completed_at: 2026-05-13T02:30:08.786Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T02:28:53.981Z
