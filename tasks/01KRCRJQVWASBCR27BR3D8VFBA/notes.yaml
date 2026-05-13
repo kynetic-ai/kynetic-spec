@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KRG4JADB7GEQNZYF93SW3PY5
+    content: "Approach: detect implicit auto-start cleanup violations via daemon-pid-file/metadata READ
+      captures. Trigger node = CallExpression whose subtree descends into a MemberExpression
+      `<x>.daemonPidFilePath` (or string literal containing 'daemon.connection.json'), narrowed by
+      being the init of a VariableDeclarator or argument capture. Gate on a prior CLI subprocess
+      (spawn/spawnSync/exec/execSync/runKspec/kspec) in the same test body, to avoid false positives
+      in parser tests that write+read their own pid files. Reuse
+      hasCleanupAfter/detachWithoutCleanup for the cleanup-timing check. Patch unsafe
+      cli-no-daemon.test.ts test #1 first (bun-runtime parity) by moving onTestFinished registration
+      to immediately after pid capture, mirroring the safe pattern in test #2."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T07:42:06.251Z
