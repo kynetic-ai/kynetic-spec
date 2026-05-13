@@ -49045,7 +49045,7 @@ runs:
     completed_at: 2026-05-13T04:48:52.829Z
   - _ulid: 01KRFVH6WQ0FWWTQ64EG6K3YTY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -49060,7 +49060,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T05:05:01.172Z
-        completed_at: 2026-05-13T05:05:01.172Z
+        completed_at: 2026-05-13T05:05:10.707Z
+        notes: "Friction: recording an evidence log required manually packaging several check results and a
+          prose log into optional review checks. This is systemic, but kspec search found an
+          existing observation tracking first-class review evidence logs, so no duplicate capture is
+          needed. The root-directory overlap issue is task-specific test-quality feedback and has
+          already been captured as an anchored review blocker."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T05:05:10.707Z
+        completed_at: 2026-05-13T05:05:10.707Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T05:04:12.695Z
