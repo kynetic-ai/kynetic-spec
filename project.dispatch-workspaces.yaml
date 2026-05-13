@@ -31498,21 +31498,22 @@ workspaces:
     base_branch_point: 0504bc1cf83155103a5bc51038e6f1ed78d48b20
     bootstrap:
       status: succeeded
-      canonicalBranchHead: 8b076968ac2a7ff19dae267fe2334325c028cacd
+      canonicalBranchHead: 3523eee27f80947515557d4720a3ba773eaafe86
       configHash: 726d8dab5f5ed6733d984381b40e07b53bf3966b5a6239aefc441d36d5f23631
       failureMessage: null
       invalidationReasons:
         - canonical-branch-head-changed
-      lastRole: worker
-      lastRunAt: 2026-05-13T02:33:41.764Z
+      lastRole: reviewer
+      lastRunAt: 2026-05-13T02:56:16.191Z
       roleStates:
         reviewer:
           status: succeeded
-          canonicalBranchHead: 8b076968ac2a7ff19dae267fe2334325c028cacd
+          canonicalBranchHead: 3523eee27f80947515557d4720a3ba773eaafe86
           configHash: 726d8dab5f5ed6733d984381b40e07b53bf3966b5a6239aefc441d36d5f23631
           failureMessage: null
-          invalidationReasons: []
-          lastRunAt: 2026-05-13T02:14:00.924Z
+          invalidationReasons:
+            - canonical-branch-head-changed
+          lastRunAt: 2026-05-13T02:56:16.191Z
           steps:
             - status: succeeded
               allowTrackedChanges: false
@@ -31547,7 +31548,7 @@ workspaces:
 
                 183:       <button
 
-                7:13:50 PM [vite-plugin-svelte]
+                7:56:05 PM [vite-plugin-svelte]
                 src/lib/components/content/StructuredContentViewer.svelte:280:11 Buttons and links
                 should either contain text or have an `aria-label`, `aria-labelledby` or `title`
                 attribute
@@ -31570,7 +31571,7 @@ workspaces:
                 "../../node_modules/@tanstack/svelte-query/dist/createMutation.svelte.js" and
                 "../../node_modules/@tanstack/svelte-query/dist/useMutationState.svelte.js".
 
-                7:13:53 PM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8
+                7:56:08 PM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8
                 `<svelte:component>` is deprecated in runes mode — components are dynamic by default
 
                 https://svelte.dev/e/svelte_component_deprecated
@@ -31586,7 +31587,7 @@ workspaces:
 
                 106:               <div class="flex-1">
 
-                7:13:53 PM [vite-plugin-svelte]
+                7:56:08 PM [vite-plugin-svelte]
                 src/lib/components/automation/DispatchTriggersSection.svelte:293:7 A form label must
                 be associated with a control
 
@@ -31604,7 +31605,7 @@ workspaces:
                 295:                 <div class="flex flex-wrap gap-1 mb-1"
                 data-testid="trigger-tags-{trigger.on}">
 
-                7:13:53 PM [vite-plugin-svelte]
+                7:56:08 PM [vite-plugin-svelte]
                 src/lib/components/automation/DispatchTriggersSection.svelte:345:7 A form label must
                 be associated with a control
 
@@ -31621,7 +31622,7 @@ workspaces:
 
                 347:                 class="h-7 text-xs flex-1"
 
-                7:13:53 PM [vite-plugin-svelte]
+                7:56:08 PM [vite-plugin-svelte]
                 src/lib/components/session/SessionFilters.svelte:181:2 A form label must be
                 associated with a control
 
@@ -31639,7 +31640,7 @@ workspaces:
 
                 183:       <button
 
-                7:13:56 PM [vite-plugin-svelte]
+                7:56:11 PM [vite-plugin-svelte]
                 src/lib/components/content/StructuredContentViewer.svelte:280:11 Buttons and links
                 should either contain text or have an `aria-label`, `aria-labelledby` or `title`
                 attribute
@@ -31821,7 +31822,7 @@ workspaces:
           idempotent: true
           name: install-workspace-dependencies
           output: |-
-            added 298 packages, and audited 302 packages in 4s
+            added 298 packages, and audited 302 packages in 3s
 
             67 packages are looking for funding
               run `npm fund` for details
@@ -31836,7 +31837,7 @@ workspaces:
 
             Run `npm audit` for details.
           reviewerRerunAllowed: true
-          role: worker
+          role: reviewer
           run: npm ci --ignore-scripts=false
           source: dispatch
         - status: succeeded
@@ -31848,7 +31849,7 @@ workspaces:
 
             183:       <button
 
-            7:33:31 PM [vite-plugin-svelte]
+            7:56:05 PM [vite-plugin-svelte]
             src/lib/components/content/StructuredContentViewer.svelte:280:11 Buttons and links
             should either contain text or have an `aria-label`, `aria-labelledby` or `title`
             attribute
@@ -31871,7 +31872,7 @@ workspaces:
             "../../node_modules/@tanstack/svelte-query/dist/createMutation.svelte.js" and
             "../../node_modules/@tanstack/svelte-query/dist/useMutationState.svelte.js".
 
-            7:33:34 PM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8
+            7:56:08 PM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8
             `<svelte:component>` is deprecated in runes mode — components are dynamic by default
 
             https://svelte.dev/e/svelte_component_deprecated
@@ -31887,7 +31888,7 @@ workspaces:
 
             106:               <div class="flex-1">
 
-            7:33:34 PM [vite-plugin-svelte]
+            7:56:08 PM [vite-plugin-svelte]
             src/lib/components/automation/DispatchTriggersSection.svelte:293:7 A form label must be
             associated with a control
 
@@ -31905,7 +31906,7 @@ workspaces:
             295:                 <div class="flex flex-wrap gap-1 mb-1"
             data-testid="trigger-tags-{trigger.on}">
 
-            7:33:34 PM [vite-plugin-svelte]
+            7:56:08 PM [vite-plugin-svelte]
             src/lib/components/automation/DispatchTriggersSection.svelte:345:7 A form label must be
             associated with a control
 
@@ -31922,7 +31923,7 @@ workspaces:
 
             347:                 class="h-7 text-xs flex-1"
 
-            7:33:34 PM [vite-plugin-svelte] src/lib/components/session/SessionFilters.svelte:181:2 A
+            7:56:08 PM [vite-plugin-svelte] src/lib/components/session/SessionFilters.svelte:181:2 A
             form label must be associated with a control
 
             https://svelte.dev/e/a11y_label_has_associated_control
@@ -31938,7 +31939,7 @@ workspaces:
 
             183:       <button
 
-            7:33:36 PM [vite-plugin-svelte]
+            7:56:11 PM [vite-plugin-svelte]
             src/lib/components/content/StructuredContentViewer.svelte:280:11 Buttons and links
             should either contain text or have an `aria-label`, `aria-labelledby` or `title`
             attribute
@@ -31956,7 +31957,7 @@ workspaces:
             282:                         class="opacity-0 group-hover/ac:opacity-100
             transition-opacity text-xs text-muted-foreground hover:text-foreground shrink-0"
           reviewerRerunAllowed: true
-          role: worker
+          role: reviewer
           run: npm run build
           source: dispatch
     branch_provenance:
@@ -31996,7 +31997,7 @@ workspaces:
       last_active_at: 2026-05-13T02:33:42.946Z
       last_reconciled_at: 2026-05-13T02:55:52.547Z
       created_at: 2026-05-13T01:46:43.280Z
-      updated_at: 2026-05-13T02:55:52.547Z
+      updated_at: 2026-05-13T02:56:16.191Z
     workspace_id: dispatch-workspace-01KRF37Y941E2T8D1ATFV63JB0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
