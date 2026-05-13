@@ -18622,6 +18622,20 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-13T02:04:40.923Z
+  - _ulid: 01KRFHQD6PKJ0PP51F7YBEP31S
+    type: friction
+    content: "When a spec adds an AC that contradicts existing test expectations, the existing tests can
+      keep passing while silently encoding the pre-AC behavior. In this task, two ac-5 cleanup tests
+      passed by demonstrating exactly the no-blind-deletion behavior that the new
+      ac-ambiguous-protection-blocks-blind-deletion AC forbade. Task-work skills tell agents to add
+      tests for new ACs, but don't explicitly tell them to re-read existing tests against the latest
+      spec to find tests that now contradict the spec. Consider a /kspec:task-work step (or
+      work-gates check) that prompts: 'Did any existing tests assert behavior your new ACs now
+      forbid? Update them before implementing.'"
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T02:12:50.006Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
