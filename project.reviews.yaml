@@ -212230,6 +212230,18 @@ reviews:
         runner: oxlint
         created_at: 2026-05-13T04:24:42.001Z
         completed_at: 2026-05-13T04:24:42.001Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Independent ad hoc probes for helper declaration-level type import, helper specifier-level
+          type import, primitive declaration-level type import, and primitive specifier-level type
+          import all exited 1 with no-leaky-test-daemon missing-cleanup diagnostics.
+        name: type-only import probes
+        required: true
+        runner: oxlint
+        created_at: 2026-05-13T04:24:48.095Z
+        completed_at: 2026-05-13T04:24:48.095Z
     events:
       - _ulid: 01KRFRKJM1P0RWY11ZCT2YCYPW
         actor: Jacob Chapel
@@ -212272,6 +212284,13 @@ reviews:
           status: pass
           name: changed-file oxlint
         timestamp: 2026-05-13T04:24:43.407Z
+      - _ulid: 01KRFS9349P9F1GGK6NNF2SMQH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: type-only import probes
+        timestamp: 2026-05-13T04:24:49.546Z
     examined_commit: f471dc1dcfbca0288216dffefa3abbac6e163ad8
     external_links: []
     lifecycle_state: open
@@ -212284,5 +212303,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T04:13:04.513Z
-    updated_at: 2026-05-13T04:24:42.001Z
+    updated_at: 2026-05-13T04:24:48.095Z
     notes: []
