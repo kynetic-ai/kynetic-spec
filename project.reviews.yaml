@@ -211000,6 +211000,17 @@ reviews:
         runner: npm
         created_at: 2026-05-13T02:27:11.982Z
         completed_at: 2026-05-13T02:27:11.982Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema/references OK; command exited 0 with existing repo-wide warnings (reference,
+          alignment, completeness, invalid AC annotation warnings not introduced by this diff).
+        name: kspec validate --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-05-13T02:27:22.353Z
+        completed_at: 2026-05-13T02:27:22.353Z
     events:
       - _ulid: 01KRFHTRECANVBC4KF11JMREVP
         actor: Jacob Chapel
@@ -211028,6 +211039,13 @@ reviews:
           status: pass
           name: npm test -- --fresh
         timestamp: 2026-05-13T02:27:13.445Z
+      - _ulid: 01KRFJJ2GVPZB2J7H3PW55PNQE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-05-13T02:27:23.804Z
     examined_commit: 8b076968ac2a7ff19dae267fe2334325c028cacd
     external_links: []
     lifecycle_state: open
@@ -211064,5 +211082,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-13T02:14:39.821Z
-    updated_at: 2026-05-13T02:27:11.982Z
+    updated_at: 2026-05-13T02:27:22.353Z
     notes: []
