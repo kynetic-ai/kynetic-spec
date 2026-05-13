@@ -49542,7 +49542,7 @@ plans:
       fail-closed registry behavior from that plan. It only clarifies the cleanup-eligible side of
       the classification boundary.
 
-    status: active
+    status: completed
     approved_at: 2026-05-13T16:44:07.798Z
     derived_specs: []
     derived_tasks:
