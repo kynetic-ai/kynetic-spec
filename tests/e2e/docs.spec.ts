@@ -67,7 +67,7 @@ test.describe("Docs", () => {
 
     // --- Current page is visually indicated ---
     // The current page link should have the active styling (bg-accent class)
-    const currentPageLink = sidebarLinks.filter({ hasText: "Getting Started" });
+    const currentPageLink = docsSidebar.locator('a[href$="/docs/getting-started"]');
     await expect(currentPageLink).toBeVisible();
     await expect(currentPageLink).toHaveClass(/bg-accent/);
 
@@ -210,7 +210,7 @@ test.describe("Docs", () => {
     await page.goto("/docs/getting-started");
 
     // On mobile, the sidebar is hidden but a mobile search input should be visible
-    const searchInput = page.getByTestId("docs-search-input");
+    const searchInput = page.locator(".lg\\:hidden").getByTestId("docs-search-input");
     await expect(searchInput).toBeVisible();
   });
 

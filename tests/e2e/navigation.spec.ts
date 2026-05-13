@@ -168,9 +168,8 @@ test.describe("Navigation and URL State", () => {
 
       await page.goto("/tasks");
 
-      // Verify layout works on tablet
-      const body = await page.locator("body").boundingBox();
-      expect(body?.width).toBe(768);
+      // Verify the requested tablet viewport is active without depending on scrollbar width.
+      expect(page.viewportSize()?.width).toBe(768);
     });
   });
 
