@@ -49735,7 +49735,7 @@ runs:
     started_at: 2026-05-13T10:04:09.898Z
     completed_at: 2026-05-13T10:06:35.082Z
   - _ulid: 01KRGEG8481WMQXFBXK1EQE9E4
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -49781,10 +49781,13 @@ runs:
         started_at: 2026-05-13T10:37:42.758Z
         completed_at: 2026-05-13T10:37:52.127Z
         notes: No improvement proposals to discuss because all reflection candidates are already tracked.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-13T10:37:52.127Z
-        completed_at: 2026-05-13T10:37:52.127Z
+        completed_at: 2026-05-13T10:38:01.302Z
+        notes: No approved new captures. Success pattern and friction candidates were already covered by
+          existing observations/specs/inbox, so no inbox items or observations were added.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T10:35:44.137Z
+    completed_at: 2026-05-13T10:38:01.303Z
