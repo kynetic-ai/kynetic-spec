@@ -64,7 +64,7 @@ tags:
   - daemon
   - cli
 vcs_refs: []
-review_ref: "@01KRG6R6TP1QAK1ZVC3Y8P299K"
+review_ref: "@01KRGBRAHHD059E6AQWHTAAJ4Z"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fix-implicit-autostart-cleanup-coverage/01krcrjq
@@ -172,6 +172,13 @@ history:
         previous: 2026-05-13T08:07:30.156Z
     command: task-submit
     timestamp: 2026-05-13T09:33:46.286Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KRGBRAHHD059E6AQWHTAAJ4Z"
+        previous: "@01KRG6R6TP1QAK1ZVC3Y8P299K"
+    command: review-link
+    timestamp: 2026-05-13T09:47:47.003Z
 created_at: 2026-05-12T00:14:53.820Z
 started_at: 2026-05-13T08:46:42.816Z
 submitted_at: 2026-05-13T09:33:46.286Z
