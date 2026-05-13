@@ -52,8 +52,13 @@ description: >
 spec_ref: "@dispatch-workspace-cleanup-policy"
 plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Review approved and merge helper reported no-op: canonical branch
+  dispatch/task/task-validate-inflight-cleanup-protection/01krf380 at ffdef6f9dc5d is already
+  integrated at dev 9ea4ff4d. Validation checks passed: targeted cleanup/registry tests, targeted
+  dispatch/bootstrap tests, typecheck, full npm test, kspec validate --warnings-ok, and workspace
+  cleanliness."
 depends_on:
   - "@task-test-cleanup-protection-positive-and-regression-cases"
   - "@task-test-dispatch-inflight-bootstrap-race-regression"
@@ -122,8 +127,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-13T07:35:22.393Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Review approved and merge helper reported no-op: canonical branch
+          dispatch/task/task-validate-inflight-cleanup-protection/01krf380 at ffdef6f9dc5d is
+          already integrated at dev 9ea4ff4d. Validation checks passed: targeted cleanup/registry
+          tests, targeted dispatch/bootstrap tests, typecheck, full npm test, kspec validate
+          --warnings-ok, and workspace cleanliness."
+        previous: null
+      completed_at:
+        new: 2026-05-13T07:53:38.957Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-13T07:53:38.965Z
 created_at: 2026-05-12T21:59:45.301Z
 started_at: 2026-05-13T07:16:32.738Z
 submitted_at: 2026-05-13T07:30:59.816Z
+completed_at: 2026-05-13T07:53:38.957Z
 todos: []
 automation: eligible
