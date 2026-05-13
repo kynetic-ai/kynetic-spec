@@ -48463,7 +48463,7 @@ runs:
     completed_at: 2026-05-13T01:01:38.607Z
   - _ulid: 01KRFH41K79QH7R0ANVY24E375
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -48501,7 +48501,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-13T02:03:55.494Z
-        completed_at: 2026-05-13T02:03:55.494Z
+        completed_at: 2026-05-13T02:04:08.471Z
+        notes: "Proposed capture: success observation, not a task. Pattern: for static guardrail/classifier
+          reviews, after verifying the submitted fix shape, generate adjacent behavioral probes over
+          the same semantic category (for this session, runtime lexical bindings adjacent to
+          ClassDeclaration). This caught the enum shadow false negative without adding duplicate
+          task scope. Scope: small process observation for future reviews."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-13T02:04:08.471Z
+        completed_at: 2026-05-13T02:04:08.471Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T02:02:15.527Z
