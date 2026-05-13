@@ -31980,12 +31980,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-13T18:18:38.443Z
+      updated_at: 2026-05-13T18:19:10.537Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T18:18:38.443Z
+      updated_at: 2026-05-13T18:19:10.537Z
     integration:
       status: pending
       detail: null
@@ -31993,7 +31993,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 03f91e732faa6d80427b2c19f77847e72ea8153d
-      updated_at: 2026-05-13T18:18:38.443Z
+      updated_at: 2026-05-13T18:19:10.537Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRH3KX6743A3FAAN1HQ3KFC6"
@@ -32001,16 +32001,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T17:54:08.526Z
-      last_reconciled_at: 2026-05-13T18:18:38.443Z
+      last_reconciled_at: 2026-05-13T18:19:10.537Z
       created_at: 2026-05-13T17:04:44.711Z
-      updated_at: 2026-05-13T18:18:38.443Z
+      updated_at: 2026-05-13T18:19:10.537Z
     workspace_id: dispatch-workspace-01KRH3KX6743A3FAAN1HQ3KFC6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f94ff1aa9a48908647a110de37ec5b45eff1cab4
+        last_seen_at: 2026-05-13T18:19:10.537Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-cleanup-classification-regression-coverage-01krh3kx-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-cleanup-classification-regression-coverage/01krh3kx
-        head: 295ed289945e390e76f38c9d34c45f2c9faceaed
-        last_seen_at: 2026-05-13T17:53:41.830Z
+        head: f94ff1aa9a48908647a110de37ec5b45eff1cab4
+        last_seen_at: 2026-05-13T18:19:10.537Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-cleanup-classification-regression-coverage-01krh3kx
