@@ -48752,7 +48752,7 @@ runs:
     started_at: 2026-05-13T03:11:06.030Z
     completed_at: 2026-05-13T03:13:20.705Z
   - _ulid: 01KRFPB7R7K32HEG43B8MWJVW0
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -48795,10 +48795,13 @@ runs:
         notes: Skipped discussion because there are no new proposed captures. The only concrete friction is
           already tracked, and this invocation asked to run reflection rather than decide on new
           items.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-13T03:35:10.424Z
-        completed_at: 2026-05-13T03:35:10.424Z
+        completed_at: 2026-05-13T03:35:17.447Z
+        notes: Skipped capture. Search showed all high-confidence reflection items are already tracked, so
+          no inbox item or observation was added.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T03:33:34.087Z
+    completed_at: 2026-05-13T03:35:17.447Z
