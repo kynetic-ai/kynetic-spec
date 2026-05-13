@@ -48928,7 +48928,7 @@ runs:
     completed_at: 2026-05-13T04:11:30.776Z
   - _ulid: 01KRFSCR1C8FR08S4VEPFCE7VX
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -48968,7 +48968,18 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-13T04:27:51.291Z
-        completed_at: 2026-05-13T04:27:51.291Z
+        completed_at: 2026-05-13T04:28:00.049Z
+        notes: "Proposal 1 (small): add a narrow follow-up to investigate why detached-reviewer-merge.sh can
+          return success while warning that the occupied worktree has unexpected dirty state due to
+          an untracked .kspec-dispatch-shadow-mutation.lock/ directory. Desired outcome: either
+          clean/ignore/remove stale lock directories during refresh when safe, or make the warning
+          actionable by linking it to the known lock/gitignore handling. Proposal 2 (observation
+          only): record the success pattern that review blocker probes should be rerun independently
+          outside the test wrapper before approving complex static-analysis fixes."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-13T04:28:00.049Z
+        completed_at: 2026-05-13T04:28:00.049Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T04:26:49.260Z
