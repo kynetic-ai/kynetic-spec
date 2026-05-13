@@ -3249,6 +3249,144 @@ describe("test suite", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
       expect(result.output).toContain("has no scoped cleanup registration");
     });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-15 reviewer probe (cleanup helper name shadowed by a local
+    // TSEnumDeclaration): `import { killPid } from "./helpers/daemon";
+    // it(..., () => { ...; enum killPid { noop }; onTestFinished(() =>
+    // killPid(pid)); })`. The enum lexically shadows the approved
+    // import — at runtime `killPid` is an enum object, not a function,
+    // so calling `killPid(pid)` throws TypeError at teardown and the
+    // just-started daemon is left running. The pre-fix
+    // `statementBindsNameOpaquely` walker only inspected
+    // VariableDeclaration and ClassDeclaration, so TSEnumDeclaration
+    // was invisible and the use site fell through to free-identifier /
+    // approved-import trust. Post-fix the enum is classified as an
+    // opaque local binding so the use site is rejected.
+    it("should flag serve start --detach when cleanup helper is shadowed by a local TSEnumDeclaration", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    enum killPid { noop }
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-15 reviewer probe (approved-shared-primitive name shadowed
+    // by a local TSEnumDeclaration inside the helper body): even when
+    // `stopPidBounded` is imported from the canonical approved path,
+    // an `enum stopPidBounded { noop }` declared inside the helper
+    // body shadows the import — the runtime call resolves to the enum
+    // object, which throws TypeError when invoked as a function, so
+    // the daemon is left running. The pre-fix lexical-resolution gate
+    // (`findLocalHelperDefinition` via `statementBindsNameOpaquely`)
+    // only inspected VariableDeclaration and ClassDeclaration shapes
+    // and missed TSEnumDeclaration, so the call was credited as
+    // cleanup. Post-fix the enum is classified as opaque, the
+    // recogniser returns false, and the use site is flagged.
+    it("should flag serve start --detach when cleanup helper body shadows approved primitive with a local TSEnumDeclaration", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { stopPidBounded } from "./helpers/process-stop";
+
+function killPid(pid: number): void {
+  enum stopPidBounded { noop }
+  stopPidBounded(pid);
+}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-15 reviewer variant (exported enum shadows approved import):
+    // `export enum killPid { noop }` at the module top shadows
+    // `import { killPid } from "./helpers/daemon"` — the export wrapper
+    // unwrap in `statementBindsNameOpaquely` must descend into the
+    // TSEnumDeclaration so the binding is still classified as opaque.
+    // Without the unwrap path the rule would silently accept any
+    // exported-enum shadow of a trusted cleanup name.
+    it("should flag serve start --detach when cleanup helper is shadowed by an exported TSEnumDeclaration", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+export enum killPid { noop }
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-15 reviewer variant (namespace shadows approved import):
+    // `namespace killPid { ... }` at the module top emits a runtime
+    // namespace object — `killPid` at the use site resolves to that
+    // object, not a callable cleanup primitive, so `killPid(pid)`
+    // throws TypeError at teardown. TSModuleDeclaration with a body
+    // and an Identifier id must be classified as opaque alongside
+    // TSEnumDeclaration so the use site is rejected. Bodyless
+    // declarations (`declare namespace foo;`) are pure type-space and
+    // are deliberately NOT treated as opaque — they cannot shadow a
+    // runtime binding.
+    it("should flag serve start --detach when cleanup helper is shadowed by a local TSModuleDeclaration namespace", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+namespace killPid {
+  export const noop = 0;
+}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {

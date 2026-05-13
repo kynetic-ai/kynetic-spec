@@ -1709,10 +1709,32 @@ const noLeakyTestDaemon = {
      *     same predicate when `isApprovedSharedCleanupPrimitiveCall`
      *     consults `findLocalHelperDefinition`.
      *
+     *   - TypeScript runtime-value declarations whose id binds `name`:
+     *     `enum <name> { ... }` (TSEnumDeclaration), `namespace
+     *     <name> { ... }` / `module <name> { ... }` with a body
+     *     (TSModuleDeclaration with an Identifier id), and `import
+     *     <name> = require(...)` / `import <name> = X.Y`
+     *     (TSImportEqualsDeclaration). All three emit a runtime
+     *     binding whose value is an enum / namespace object / aliased
+     *     module — none are callable as cleanup primitives, so
+     *     `<name>(pid)` at the use site throws at teardown and the
+     *     daemon is left running. Routing them through OPAQUE rather
+     *     than free-identifier trust closes the cycle-15 reviewer's
+     *     enum-shadow probe: a local `enum killPid { noop }` shadowed
+     *     an approved `killPid` import, and the same shape inside a
+     *     helper body (a `enum stopPidBounded { noop }` shadowing the
+     *     approved bounded-stop primitive) similarly bypassed the
+     *     classifier. Pure type-only declarations (interfaces, type
+     *     aliases, `declare` ambient declarations, and bodyless
+     *     `declare module` / `declare namespace` forms) are erased
+     *     by the TS compiler and so cannot shadow a runtime binding;
+     *     they are deliberately NOT treated as opaque here.
+     *
      *   - Export wrappers around an opaque declaration — `export const
-     *     killPid = makeKill()`, `export class killPid {}`, and
-     *     `export default class killPid {}` are unwrapped to the
-     *     inner declaration so the opaque classification still fires.
+     *     killPid = makeKill()`, `export class killPid {}`,
+     *     `export enum killPid { noop }`, and `export default class
+     *     killPid {}` are unwrapped to the inner declaration so the
+     *     opaque classification still fires.
      */
     function statementBindsNameOpaquely(stmt, name) {
       if (!stmt) return false;
@@ -1724,6 +1746,32 @@ const noLeakyTestDaemon = {
       }
       if (
         stmt.type === "ClassDeclaration" &&
+        stmt.id &&
+        stmt.id.type === "Identifier" &&
+        stmt.id.name === name
+      ) {
+        return true;
+      }
+      if (
+        stmt.type === "TSEnumDeclaration" &&
+        stmt.id &&
+        stmt.id.type === "Identifier" &&
+        stmt.id.name === name
+      ) {
+        return true;
+      }
+      if (
+        stmt.type === "TSModuleDeclaration" &&
+        stmt.id &&
+        stmt.id.type === "Identifier" &&
+        stmt.id.name === name &&
+        stmt.body &&
+        !stmt.declare
+      ) {
+        return true;
+      }
+      if (
+        stmt.type === "TSImportEqualsDeclaration" &&
         stmt.id &&
         stmt.id.type === "Identifier" &&
         stmt.id.name === name
