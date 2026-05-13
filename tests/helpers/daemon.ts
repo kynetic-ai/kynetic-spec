@@ -505,6 +505,19 @@ function makeTailBuffer(maxBytes = TAIL_MAX_BYTES): OutputBuffer {
 
 const DIAGNOSTIC_SAMPLE_TIMEOUT_MS = 2_000;
 
+// Total budget for retrying transient diagnostic samples while the child
+// daemon is still alive. Under heavy parallel load (full-suite runs, slow
+// CI), a daemon spawned with a short readiness timeout may not have bound
+// to its port by the time the failure-path catch samples /api/health and
+// /api/debug/cache-status — a single ECONNREFUSED then masquerades as a
+// dead daemon in the diagnostic bundle. Retrying for up to 5s on transient
+// fetch failures gives the kernel-level bind time to land while keeping
+// the failure path bounded. The retry stops immediately when the child is
+// observably dead (exitCode/signalCode set, or pid undefined from a spawn
+// the OS rejected) so launch failures still surface promptly.
+const DIAGNOSTIC_SAMPLE_RETRY_BUDGET_MS = 5_000;
+const DIAGNOSTIC_SAMPLE_RETRY_INTERVAL_MS = 100;
+
 // Per-probe HTTP budget. Each probe targets a freshly bound localhost
 // endpoint, so a healthy response should land in <100ms; bound to 2s so a
 // daemon that binds but stops responding mid-request fails the probe instead
@@ -535,23 +548,74 @@ function describeChildExit(child: ChildProcess): string | null {
 }
 
 /**
- * One-off diagnostic sample of a daemon endpoint. Bounded by an internal
- * timeout so the readiness failure path cannot itself hang on an unresponsive
- * daemon. Errors are captured into the observation rather than thrown so the
- * caller can always assemble a complete diagnostic bundle.
+ * Treat a child as still potentially reachable when it has a pid the OS
+ * accepted and neither an exit code nor a fatal signal has been observed.
+ * `pid === undefined` indicates the OS rejected the spawn outright (e.g.
+ * ENOENT) — there is no process to bind, so retrying samples is futile.
+ */
+function isChildPotentiallyReachable(child: ChildProcess | null | undefined): boolean {
+  if (!child) return false;
+  if (child.pid === undefined) return false;
+  return child.exitCode === null && child.signalCode === null;
+}
+
+interface SampleEndpointDiagnosticOptions {
+  /**
+   * Live child handle. When provided and the child is still potentially
+   * reachable (see `isChildPotentiallyReachable`), transient fetch failures
+   * are retried up to `budgetMs`. When omitted or the child has exited,
+   * the function falls back to a single non-retried sample.
+   */
+  child?: ChildProcess | null;
+  /** Total retry budget. Defaults to DIAGNOSTIC_SAMPLE_RETRY_BUDGET_MS. */
+  budgetMs?: number;
+  /** Interval between retries. Defaults to DIAGNOSTIC_SAMPLE_RETRY_INTERVAL_MS. */
+  intervalMs?: number;
+}
+
+/**
+ * Diagnostic sample of a daemon endpoint at failure time. Each fetch is
+ * bounded by `DIAGNOSTIC_SAMPLE_TIMEOUT_MS` so the failure-path catch never
+ * hangs on an unresponsive daemon. Errors are captured into the observation
+ * rather than thrown so the caller can always assemble a complete bundle.
+ *
+ * When the caller passes a live `child` handle and the child is still
+ * potentially reachable (pid set, exitCode/signalCode null), a transient
+ * fetch failure (typically ECONNREFUSED before the daemon binds, or a
+ * timeout while the daemon is still booting) is retried up to `budgetMs`.
+ * This eliminates the race between a short readiness timeout firing and the
+ * kernel completing the daemon's port bind: without retry, the bundle would
+ * report `{error: "fetch failed"}` for a daemon that the next millisecond
+ * would have responded to. The retry stops as soon as a sample succeeds, the
+ * child is observably dead, or the budget is exhausted.
  */
 async function sampleEndpointDiagnostic(
   url: string,
+  opts: SampleEndpointDiagnosticOptions = {},
 ): Promise<DaemonEndpointObservation> {
-  try {
-    const response = await boundedDaemonFetch(url, {
-      timeoutMs: DIAGNOSTIC_SAMPLE_TIMEOUT_MS,
-    });
-    const body = await response.text();
-    return { status: response.status, body };
-  } catch (error) {
-    return { error: error instanceof Error ? error.message : String(error) };
+  const budgetMs = opts.budgetMs ?? DIAGNOSTIC_SAMPLE_RETRY_BUDGET_MS;
+  const intervalMs = opts.intervalMs ?? DIAGNOSTIC_SAMPLE_RETRY_INTERVAL_MS;
+  const deadline = Date.now() + budgetMs;
+  let lastError: unknown = new Error("no diagnostic sample taken");
+
+  while (true) {
+    try {
+      const response = await boundedDaemonFetch(url, {
+        timeoutMs: DIAGNOSTIC_SAMPLE_TIMEOUT_MS,
+      });
+      const body = await response.text();
+      return { status: response.status, body };
+    } catch (error) {
+      lastError = error;
+    }
+    // Retry only while the child still has a chance of binding. No handle
+    // (or a handle for a child the OS never started / has reaped) means
+    // there is no point waiting longer.
+    if (!isChildPotentiallyReachable(opts.child)) break;
+    if (Date.now() + intervalMs >= deadline) break;
+    await new Promise<void>((r) => setTimeout(r, intervalMs));
   }
+  return { error: lastError instanceof Error ? lastError.message : String(lastError) };
 }
 
 async function probeHealth(ctx: ReadinessProbeContext): Promise<StartupProbeResult> {
@@ -908,13 +972,21 @@ export async function startTestDaemon(
     const cause = launchError
       ? `process launch failed: ${launchError.message}`
       : baseCause;
-    // Always sample the diagnostic endpoints once at failure time, regardless
-    // of which readiness mode ran. Custom probes never touch /api/health or
+    // Always sample the diagnostic endpoints at failure time, regardless of
+    // which readiness mode ran. Custom probes never touch /api/health or
     // /api/debug/cache-status during the wait, so the bundle would otherwise
     // be empty for them — and ac-readiness-diagnostics requires both fields.
+    // Pass the live child handle so transient fetch failures (typically
+    // ECONNREFUSED for a daemon that has not finished binding when a short
+    // readiness timeout fires) are retried while the child is still
+    // potentially reachable. Launch failures (no pid, child already dead)
+    // skip retry and surface the captured error immediately.
+    const sampleChild = launchError ? null : child;
     const [lastHealth, lastCacheStatus] = await Promise.all([
-      sampleEndpointDiagnostic(`${endpoint.apiUrl}/api/health`),
-      sampleEndpointDiagnostic(`${endpoint.apiUrl}/api/debug/cache-status`),
+      sampleEndpointDiagnostic(`${endpoint.apiUrl}/api/health`, { child: sampleChild }),
+      sampleEndpointDiagnostic(`${endpoint.apiUrl}/api/debug/cache-status`, {
+        child: sampleChild,
+      }),
     ]);
     const diagnostics: DaemonReadinessDiagnostics = {
       endpoint: {

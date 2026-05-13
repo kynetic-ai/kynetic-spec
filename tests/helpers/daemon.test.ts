@@ -46,6 +46,51 @@ process.stdout.write("ready\\n");
 setInterval(() => {}, 60_000);
 `;
 
+/**
+ * Synthetic delayed-bind daemon for the diagnostic-sample retry regression.
+ *
+ * Parses the --port flag (which startTestDaemon passes via buildDaemonArgs),
+ * then waits SYNTH_BIND_DELAY_MS before binding an HTTP listener that serves
+ * /api/health and /api/debug/cache-status with daemon-shaped responses. The
+ * combined "delay > readiness timeout" + "respond once bound" produces a
+ * deterministic race the diagnostic-sample retry must absorb: without retry
+ * the failure-path lastHealth/lastCacheStatus are ECONNREFUSED, with retry
+ * they become 200 because the bind lands inside the retry budget.
+ */
+const DELAYED_BIND_DAEMON_SOURCE = `#!/usr/bin/env node
+const http = require("node:http");
+const args = process.argv.slice(2);
+const portIdx = args.indexOf("--port");
+const port = portIdx >= 0 ? Number(args[portIdx + 1]) : 0;
+const bindDelayMs = Number(process.env.SYNTH_BIND_DELAY_MS ?? "0");
+process.stdout.write("synth-booting\\n");
+setTimeout(() => {
+  const server = http.createServer((req, res) => {
+    if (req.url === "/api/health") {
+      res.statusCode = 200;
+      res.setHeader("content-type", "application/json");
+      res.end(JSON.stringify({ status: "ok", uptime: 0, runtime: "node" }));
+      return;
+    }
+    if (req.url === "/api/debug/cache-status") {
+      res.statusCode = 200;
+      res.setHeader("content-type", "application/json");
+      res.end(JSON.stringify({ projects: [{ path: "/synth", domains: { tasks: { state: "ready" } } }] }));
+      return;
+    }
+    res.statusCode = 404;
+    res.end("{}");
+  });
+  server.on("error", (err) => {
+    process.stderr.write("synth-bind-error: " + err.message + "\\n");
+  });
+  server.listen(port, "127.0.0.1", () => {
+    process.stdout.write("synth-listening\\n");
+  });
+}, bindDelayMs);
+setInterval(() => {}, 60_000);
+`;
+
 /** Probe whether a process is still alive without sending a real signal. */
 function isProcessAlive(pid: number): boolean {
   try {
@@ -1193,6 +1238,138 @@ describe(
             : "",
         ].join(" ");
         expect(surfacedText).toContain(stopSentinel.message);
+      },
+    );
+  },
+);
+
+describe(
+  "startTestDaemon readiness diagnostics retry late-binding daemon",
+  { timeout: 60_000 },
+  () => {
+    // Regression for the lastHealth flake: under heavy parallel load, a
+    // daemon spawned with a custom always-false probe and a short readiness
+    // timeout could time out before the kernel finished binding the daemon's
+    // listen socket. The pre-fix sampleEndpointDiagnostic took a single
+    // snapshot at failure time, so a transient ECONNREFUSED surfaced as
+    // {error:"fetch failed"} in the bundle even though the daemon process
+    // was alive and would have responded a few hundred ms later.
+    //
+    // This test deterministically reproduces the race by spawning a synth
+    // daemon that delays binding by SYNTH_BIND_DELAY_MS (1500ms) and using
+    // a 500ms readiness timeout. Without the retry the diagnostic samples
+    // are guaranteed to fire while the synth has not yet bound, so the
+    // bundle reports errors. With the retry, the samples wait for the
+    // late bind and surface 200 responses.
+    // AC: @daemon-backed-test-fixture-contract ac-readiness-diagnostics
+    // AC: @daemon-backed-test-fixture-contract ac-bounded-readiness
+    // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+    // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+    // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+    it(
+      "retries diagnostic samples while the live child finishes binding",
+      async () => {
+        const scriptDir = await createTempDir("kspec-delayed-bind-daemon-");
+        onTestFinished(async () => {
+          await cleanupTempDir(scriptDir);
+        });
+        const synthPath = join(scriptDir, "delayed-bind-daemon.cjs");
+        writeFileSync(synthPath, DELAYED_BIND_DAEMON_SOURCE);
+        chmodSync(synthPath, 0o755);
+
+        const project = await createTestDaemonProject();
+        onTestFinished(async () => {
+          await project.cleanup();
+        });
+
+        // Capture the live child handle so the test can force-kill the
+        // synth on exit if a regression strands the listener.
+        let observed: { child: ChildProcess; pid: number } | null = null;
+        let registeredStop: (() => Promise<void>) | null = null;
+        const startedAt = Date.now();
+        const readinessTimeoutMs = 500;
+        const synthBindDelayMs = 1_500;
+
+        let thrown: unknown = null;
+        try {
+          await startTestDaemon(project, {
+            __testBinaryOverride: synthPath,
+            extraEnv: { SYNTH_BIND_DELAY_MS: String(synthBindDelayMs) },
+            // Always-false probe — readiness must time out before the
+            // synth's bind delay elapses, so the diagnostic sample lands
+            // during the unbound window.
+            readiness: {
+              mode: "custom",
+              probe: () => ({ ok: false, details: "intentional probe rejection" }),
+            },
+            timeoutMs: readinessTimeoutMs,
+            intervalMs: 50,
+            __testObserveSpawn: ({ child }) => {
+              observed = { child, pid: child.pid ?? -1 };
+            },
+            registerCleanup: (stop) => {
+              registeredStop = stop;
+            },
+          });
+        } catch (error) {
+          thrown = error;
+        }
+        const elapsed = Date.now() - startedAt;
+
+        onTestFinished(async () => {
+          if (registeredStop) {
+            try {
+              await registeredStop();
+            } catch {
+              /* idempotent */
+            }
+          }
+          if (observed) {
+            const ref = observed as unknown as { pid: number };
+            if (ref.pid > 0 && isProcessAlive(ref.pid)) {
+              try {
+                process.kill(ref.pid, "SIGKILL");
+              } catch {
+                /* already gone */
+              }
+            }
+          }
+        });
+
+        expect(thrown).toBeInstanceOf(DaemonReadinessError);
+        const error = thrown as DaemonReadinessError;
+        const d = error.diagnostics;
+
+        // The synth was alive throughout — readiness timed out only
+        // because of the probe rejection. The retry budget must absorb the
+        // bind delay and surface a successful sample for both endpoints.
+        expect(d.lastHealth).not.toBeNull();
+        if ("status" in d.lastHealth) {
+          expect(d.lastHealth.status).toBe(200);
+          expect(d.lastHealth.body).toContain('"status":"ok"');
+        } else {
+          throw new Error(
+            `lastHealth must reflect the late-bound synth (got error=${d.lastHealth.error})`,
+          );
+        }
+        expect(d.lastCacheStatus).not.toBeNull();
+        if ("status" in d.lastCacheStatus) {
+          expect(d.lastCacheStatus.status).toBe(200);
+          expect(d.lastCacheStatus.body).toContain("projects");
+        } else {
+          throw new Error(
+            `lastCacheStatus must reflect the late-bound synth (got error=${d.lastCacheStatus.error})`,
+          );
+        }
+
+        // The retry budget is bounded — the failure path must not extend
+        // beyond the readiness timeout plus the retry budget plus a small
+        // observation slack. Pre-fix: ~readinessTimeoutMs (single fast
+        // ECONNREFUSED, ~0ms). Post-fix: ~readinessTimeoutMs +
+        // synthBindDelayMs + a few hundred ms for the retry that catches
+        // the bind. The cap below proves the failure path stays bounded
+        // even when the retry has to wait for the synth.
+        expect(elapsed).toBeLessThan(15_000);
       },
     );
   },
