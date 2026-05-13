@@ -1203,7 +1203,7 @@ features:
               the daemon that was just started before the test makes later observations.
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
             depends_on: []
             implements: []
             relates_to: []
