@@ -48654,9 +48654,20 @@ runs:
     completed_at: 2026-05-13T02:52:50.412Z
   - _ulid: 01KRFM1TDKEPMR390J2N8P9AP2
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-13T02:53:28.372Z
+        completed_at: 2026-05-13T02:54:32.384Z
+        notes: "What worked well: blocker description pointed at exact code location and failing scenario,
+          enabling a focused minimal-surface fix. Added both positive (preserve) and negative (no
+          over-protection) assertions for the new derivation."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-13T02:54:32.384Z
+        completed_at: 2026-05-13T02:54:32.384Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-13T02:53:28.372Z
