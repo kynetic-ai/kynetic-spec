@@ -79,7 +79,7 @@ description: >
 spec_ref: "@daemon-test-teardown-boundedness"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-fix-guardrail-cleanup-effect-classification"
@@ -95,6 +95,14 @@ tags:
   - daemon
   - validation
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-validate-daemon-cleanup-contract-hardening/01krcrjs
+  captured_at: 2026-05-13T10:15:37.699Z
+  commit: 03f91e732faa6d80427b2c19f77847e72ea8153d
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KRGCP87EYNTC105FTMB4X8MK
 history:
   - author: Jacob Chapel
@@ -117,7 +125,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-13T10:04:33.361Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-validate-daemon-cleanup-contract-hardening/01krcrjs
+          captured_at: 2026-05-13T10:15:37.699Z
+          commit: 03f91e732faa6d80427b2c19f77847e72ea8153d
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-13T10:15:37.701Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-13T10:15:37.701Z
 created_at: 2026-05-12T00:14:55.981Z
 started_at: 2026-05-13T10:04:33.360Z
+submitted_at: 2026-05-13T10:15:37.701Z
 todos: []
 automation: eligible
