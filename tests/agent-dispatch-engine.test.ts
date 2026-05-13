@@ -7596,3 +7596,344 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
     await engine.stop();
   });
 });
+
+// ─── AC: dispatch-level in-flight bootstrap race regression ──────────────────
+
+describe(
+  "In-flight bootstrap race: reconciliation must not delete the worker workspace",
+  { timeout: 60_000 },
+  () => {
+    let testDir: string;
+
+    beforeEach(async () => {
+      testDir = await createTempDir("kspec-dispatch-inflight-bootstrap-race-");
+    });
+
+    afterEach(async () => {
+      vi.restoreAllMocks();
+      await cleanupTempDir(testDir);
+    });
+
+    // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+    // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+    it("preserves the worker workspace and bootstrap-created files while a spawn is blocked at the bootstrap barrier", async () => {
+      const agent = makeTestAgent({
+        id: "task-worker",
+        dispatch: [{ on: "task.ready" }],
+        concurrency: { max_concurrent: 1 },
+      });
+      await setupProjectWithAgents(testDir, [agent]);
+
+      const SENTINEL_BASENAME = "bootstrap-sentinel.txt";
+      const SENTINEL_CONTENT = "bootstrap-in-progress";
+
+      let workspaceCwd: string | null = null;
+      let resolveBootstrapEntered!: () => void;
+      const bootstrapEntered = new Promise<void>((resolve) => {
+        resolveBootstrapEntered = resolve;
+      });
+      let resolveBootstrapBarrier!: () => void;
+      const bootstrapBarrier = new Promise<void>((resolve) => {
+        resolveBootstrapBarrier = resolve;
+      });
+      const bootstrapErrors: Error[] = [];
+
+      // ensureWorkspaceBootstrap is the deterministic barrier: it writes a
+      // sentinel file representing bootstrap-created files (e.g. node_modules
+      // contents from npm install), then waits on a Promise the test releases.
+      // The spawn remains in-flight (inFlightTaskKeys set, no active invocation
+      // registered) for the entire duration of the barrier.
+      const bootstrapSpy = vi
+        .spyOn(bootstrapModule, "ensureWorkspaceBootstrap")
+        .mockImplementation(async (opts) => {
+          workspaceCwd = opts.workspaceDir;
+          try {
+            await fs.writeFile(
+              path.join(opts.workspaceDir, SENTINEL_BASENAME),
+              SENTINEL_CONTENT,
+              "utf-8",
+            );
+          } catch (err) {
+            bootstrapErrors.push(err as Error);
+            throw err;
+          }
+          resolveBootstrapEntered();
+          await bootstrapBarrier;
+          // Re-read the sentinel after the barrier: if reconciliation reaped
+          // the workspace mid-bootstrap, this read surfaces as ENOENT here
+          // — the canonical TAR/ENOENT/spawn failure mode this regression
+          // protects against.
+          try {
+            const survived = await fs.readFile(
+              path.join(opts.workspaceDir, SENTINEL_BASENAME),
+              "utf-8",
+            );
+            if (survived !== SENTINEL_CONTENT) {
+              throw new Error(`bootstrap sentinel corrupted: ${survived}`);
+            }
+          } catch (err) {
+            bootstrapErrors.push(err as Error);
+            throw err;
+          }
+          return { metadata: opts.metadata, reused: false, ranSteps: true };
+        });
+
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as never,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      // Spy on the real artifact reconciliation (call-through). We use it to
+      // assert that the in-flight task ref flowed into activeTaskRefs as the
+      // protection input — and we let it run for real so the workspace dir is
+      // exercised by the cleanup logic, not just inspected.
+      const reconcileArtifactsSpy = vi.spyOn(
+        workspaceModule,
+        "reconcileDispatchWorkspaceArtifacts",
+      );
+      // Stub the registry reconciliation so it cannot revert the forced
+      // cleanup-eligible state mutation below. The registry reconciliation
+      // recomputes lifecycle_state from task state on each cycle; without
+      // this stub it would race with the test's mutation.
+      vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry").mockResolvedValue();
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+        // Disable periodic reconcile — the test drives _reconcile() explicitly
+        // so the regression check is deterministic.
+        reconcileIntervalMs: 0,
+      });
+
+      await engine.start();
+
+      const taskId = testUlid("TASK");
+      const taskRef = `@${taskId}`;
+
+      // handleStateChange awaits the full drain → _spawnInvocation chain, and
+      // our mocked bootstrap blocks indefinitely. Run it without awaiting so
+      // the test thread can proceed once the bootstrap barrier is reached.
+      const handleStateChangePromise = engine.handleStateChange({
+        taskId,
+        taskRef,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: {
+          _ulid: taskId,
+          title: "Bootstrap In-Flight Race",
+          slugs: ["bootstrap-in-flight-race"],
+          status: "pending",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as never,
+      });
+
+      // Deterministic synchronization: spawn has dequeued, inFlightTaskKeys is
+      // populated, provisionDispatchWorkspace has created the real worktree,
+      // and ensureWorkspaceBootstrap is awaiting the barrier. No active
+      // invocation is registered for this task yet — this is precisely the
+      // pre-active spawn window the AC protects.
+      await bootstrapEntered;
+      expect(workspaceCwd).not.toBeNull();
+
+      const engineInternal = engine as unknown as {
+        inFlightTaskKeys: Set<string>;
+        activeInvocationDetails: Map<string, { taskRef: string | undefined }>;
+        _reconcile: () => Promise<void>;
+        _activeTaskRefs: () => Set<string>;
+      };
+
+      // Pre-active window invariants — the very state the regression test exists
+      // to protect: in-flight has it, active does not.
+      expect(
+        Array.from(engineInternal.inFlightTaskKeys).some((key) => key.endsWith(`:${taskRef}`)),
+      ).toBe(true);
+      expect(
+        Array.from(engineInternal.activeInvocationDetails.values()).some(
+          (record) => record.taskRef === taskRef,
+        ),
+      ).toBe(false);
+      // The engine's protection input set must include the in-flight task ref.
+      expect(engineInternal._activeTaskRefs().has(taskRef)).toBe(true);
+
+      // Force the registry record + per-worker metadata into a cleanup-eligible
+      // closing state with resolved integration. Without this mutation the
+      // workspace would be preserved by lifecycle protection alone (ready /
+      // provisioning are in DISPATCH_PROTECTED_LIFECYCLE_STATES), and the test
+      // would not actually exercise the in-flight cleanup-protection branch.
+      // With this mutation, the ONLY thing standing between reap and
+      // workspace deletion is the in-flight task ref being passed into
+      // activeTaskRefs — which is exactly what the AC requires.
+      const registryPath = path.join(testDir, "project.dispatch-workspaces.yaml");
+      const registryRaw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+        kynetic_dispatch_workspaces?: string;
+        workspaces?: Array<Record<string, any>>;
+      };
+      const workspaceRecord = registryRaw.workspaces?.find(
+        (record) => record.task_ref === taskRef,
+      );
+      if (!workspaceRecord) {
+        throw new Error(`workspace registry record missing for ${taskRef}`);
+      }
+      const originalLifecycleState = workspaceRecord.lifecycle_state;
+      const originalCleanup = workspaceRecord.cleanup
+        ? { ...workspaceRecord.cleanup }
+        : undefined;
+      const originalIntegration = workspaceRecord.integration
+        ? { ...workspaceRecord.integration }
+        : undefined;
+      workspaceRecord.lifecycle_state = "closing";
+      workspaceRecord.cleanup = {
+        ...(workspaceRecord.cleanup ?? {}),
+        eligible: true,
+        status: "scheduled",
+        reason: "forced-cleanup-eligible-for-test",
+        detail:
+          "Forced cleanup-eligible state to exercise in-flight bootstrap protection composition",
+        scheduled_at: new Date().toISOString(),
+        completed_at: null,
+      };
+      workspaceRecord.integration = {
+        ...(workspaceRecord.integration ?? {}),
+        status: "merged",
+        outcome: "merged",
+      };
+      await fs.writeFile(
+        registryPath,
+        YAML.stringify({
+          kynetic_dispatch_workspaces: registryRaw.kynetic_dispatch_workspaces ?? "1.0",
+          workspaces: registryRaw.workspaces ?? [],
+        }),
+        "utf-8",
+      );
+
+      const metadataFilePath = path.join(workspaceCwd!, ".kspec-dispatch-workspace.json");
+      const metadataRaw = JSON.parse(await fs.readFile(metadataFilePath, "utf-8")) as Record<
+        string,
+        any
+      >;
+      const originalMetadataCleanupEligible = metadataRaw.cleanupEligible;
+      const originalMetadataLifecycleState = metadataRaw.lifecycleState;
+      const originalMetadataCleanupState = metadataRaw.cleanupState
+        ? { ...metadataRaw.cleanupState }
+        : undefined;
+      metadataRaw.cleanupEligible = true;
+      metadataRaw.cleanupReason = "forced-cleanup-eligible-for-test";
+      metadataRaw.lifecycleState = "closing";
+      metadataRaw.cleanupState = {
+        ...(metadataRaw.cleanupState ?? {}),
+        status: "scheduled",
+        eligible: true,
+        reason: "forced-cleanup-eligible-for-test",
+      };
+      await fs.writeFile(
+        metadataFilePath,
+        `${JSON.stringify(metadataRaw, null, 2)}\n`,
+        "utf-8",
+      );
+
+      // Pre-reconcile sanity: workspace directory and bootstrap sentinel exist.
+      await expect(fs.stat(workspaceCwd!)).resolves.toBeDefined();
+      await expect(
+        fs.readFile(path.join(workspaceCwd!, SENTINEL_BASENAME), "utf-8"),
+      ).resolves.toBe(SENTINEL_CONTENT);
+
+      reconcileArtifactsSpy.mockClear();
+
+      // Trigger reconciliation while the spawn remains in-flight at bootstrap.
+      // The fix under regression: _reconcile() builds activeTaskRefs via
+      // _activeTaskRefs(), which includes inFlightTaskKeys entries, and passes
+      // the merged set to reconcileDispatchWorkspaceArtifacts. The cleanup
+      // surface then routes the task ref through the shared protection state
+      // and preserves the worker workspace despite the cleanup-eligible record.
+      await engineInternal._reconcile();
+
+      // Composition assertion: the in-flight task ref is part of the cleanup
+      // protection input.
+      expect(reconcileArtifactsSpy).toHaveBeenCalled();
+      const reconcileArgs = reconcileArtifactsSpy.mock.calls[0]?.[1];
+      const reconcileActiveRefs = new Set(reconcileArgs?.activeTaskRefs ?? []);
+      expect(reconcileActiveRefs.has(taskRef)).toBe(true);
+
+      // Behavioral assertion: workspace directory and bootstrap-created
+      // sentinel both survive the cleanup pass.
+      await expect(fs.stat(workspaceCwd!)).resolves.toBeDefined();
+      await expect(
+        fs.readFile(path.join(workspaceCwd!, SENTINEL_BASENAME), "utf-8"),
+      ).resolves.toBe(SENTINEL_CONTENT);
+
+      // Restore the registry + metadata to a non-cleanup-eligible state so the
+      // post-bootstrap validation gate sees a healthy workspace and the spawn
+      // can reach its controlled success path.
+      workspaceRecord.lifecycle_state = originalLifecycleState ?? "active";
+      workspaceRecord.cleanup = originalCleanup ?? {
+        eligible: false,
+        status: "not_scheduled",
+        reason: null,
+        detail: null,
+        scheduled_at: null,
+        completed_at: null,
+      };
+      workspaceRecord.integration = originalIntegration ?? {
+        status: "pending",
+        outcome: "pending",
+      };
+      await fs.writeFile(
+        registryPath,
+        YAML.stringify({
+          kynetic_dispatch_workspaces: registryRaw.kynetic_dispatch_workspaces ?? "1.0",
+          workspaces: registryRaw.workspaces ?? [],
+        }),
+        "utf-8",
+      );
+      metadataRaw.cleanupEligible = originalMetadataCleanupEligible ?? false;
+      metadataRaw.cleanupReason = null;
+      metadataRaw.lifecycleState = originalMetadataLifecycleState ?? "active";
+      metadataRaw.cleanupState = originalMetadataCleanupState ?? {
+        status: "not_scheduled",
+        eligible: false,
+        reason: null,
+        detail: null,
+        updated_at: new Date().toISOString(),
+      };
+      await fs.writeFile(
+        metadataFilePath,
+        `${JSON.stringify(metadataRaw, null, 2)}\n`,
+        "utf-8",
+      );
+
+      // Release the bootstrap barrier — the spawn must reach the controlled
+      // success path without cleanup-induced ENOENT / TAR / spawn errors.
+      // The bootstrap mock's post-barrier re-read of the sentinel will throw
+      // if the workspace was reaped under it, capturing those error modes
+      // in `bootstrapErrors`.
+      resolveBootstrapBarrier();
+
+      await waitForMockCall(
+        runSpy,
+        "runInvocation should be called once bootstrap is released",
+      );
+      expect(runSpy).toHaveBeenCalledTimes(1);
+      expect(bootstrapSpy).toHaveBeenCalled();
+      expect(bootstrapErrors).toEqual([]);
+
+      // Ensure the original dispatch chain has fully unwound before stopping
+      // the engine to avoid stop() racing with an in-flight drain.
+      await handleStateChangePromise;
+      await engine.stop();
+    });
+  },
+);
