@@ -211733,6 +211733,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KRFNVBT1EV6BGZA7MHHP8Z0R
         timestamp: 2026-05-13T03:24:55.405Z
+      - _ulid: 01KRFNW4FP5EZMYNJKC32578P2
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRFNPQ6S1FHMHQQVGTJECAWW
+        timestamp: 2026-05-13T03:25:19.222Z
     examined_commit: 493ede939a32cbd9a28e66adea498ac5a08143bf
     external_links: []
     lifecycle_state: open
@@ -211763,6 +211769,14 @@ reviews:
               no-unused-vars, with no no-leaky-test-daemon error. Reject type-only helper imports
               before returning true here."
             created_at: 2026-05-13T03:22:21.785Z
+          - _ulid: 01KRFNW32W4AGGVR7XY6MX1W34
+            author: Jacob Chapel
+            body: "Clarification for the stripped examples in the blocker above: the failing fixture used a
+              type-only import of killPid from ./helpers/daemon and then registered onTestFinished
+              with a callback that calls killPid(pid). Oxlint exited 0 with only a no-unused-vars
+              warning and no no-leaky-test-daemon diagnostic, proving the helper import trust path
+              treats type-only imports as runtime cleanup."
+            created_at: 2026-05-13T03:25:17.787Z
         kind: blocker
       - _ulid: 01KRFNVBT1EV6BGZA7MHHP8Z0R
         anchor:
@@ -211787,5 +211801,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-13T03:16:55.715Z
-    updated_at: 2026-05-13T03:24:53.954Z
+    updated_at: 2026-05-13T03:25:17.787Z
     notes: []
