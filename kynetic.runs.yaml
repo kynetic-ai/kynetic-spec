@@ -49000,9 +49000,24 @@ runs:
     completed_at: 2026-05-13T04:29:01.191Z
   - _ulid: 01KRFTFM00Z200ZA81J4J6G281
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-13T04:45:52.000Z
+        completed_at: 2026-05-13T04:47:04.238Z
+        notes: "Step 1 — What worked well: (1) The pure helper design of
+          buildDispatchArtifactProtectionState made one test trivially deterministic (load-failed
+          registry input → assert branch + path decisions). Zero filesystem setup, fully
+          reproducible. (2) Existing test fixtures (seedRepo, provisionDispatchWorkspace,
+          setupProjectWithReviewerAgent) plus the surface-labeled diagnostic stream let me write 16
+          behavioral tests in one pass without inventing new infrastructure. (3) Running targeted
+          suite after first draft caught two design errors immediately instead of after submission."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-13T04:47:04.238Z
+        completed_at: 2026-05-13T04:47:04.238Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-13T04:45:52.000Z
