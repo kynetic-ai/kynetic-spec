@@ -214557,6 +214557,18 @@ reviews:
         required: true
         created_at: 2026-05-13T16:32:50.507Z
         completed_at: 2026-05-13T16:32:50.507Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Task 1 adds the three clarified ACs. Task 2 covers both cleanup-policy ACs plus the
+          registry recovery AC, and preserves coverage for fail-closed,
+          active/in-flight/provisioning protection, every destructive surface, and partial
+          provisioning classification.
+        name: Coverage mapping
+        required: true
+        created_at: 2026-05-13T16:33:02.417Z
+        completed_at: 2026-05-13T16:33:02.417Z
     events:
       - _ulid: 01KRH2WYBMSTFSAZPFG2R1RBN6
         actor: Jacob Chapel
@@ -214585,6 +214597,13 @@ reviews:
           status: pass
           name: Existing-spec update boundary
         timestamp: 2026-05-13T16:32:52.087Z
+      - _ulid: 01KRH2YHFEHXF22X4PC06MB9QC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Coverage mapping
+        timestamp: 2026-05-13T16:33:03.982Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -214597,5 +214616,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T16:32:11.638Z
-    updated_at: 2026-05-13T16:32:50.507Z
+    updated_at: 2026-05-13T16:33:02.417Z
     notes: []
