@@ -211003,6 +211003,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-13T02:15:11.592Z
+      - _ulid: 01KRFJHB3TK10A0EJCV8H8KNFR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRFJH9MTW1GSKNP0XNCQSQTG
+        timestamp: 2026-05-13T02:26:59.834Z
     examined_commit: 8b076968ac2a7ff19dae267fe2334325c028cacd
     external_links: []
     lifecycle_state: open
@@ -211012,8 +211019,32 @@ reviews:
       content_hash: ""
       ref: "@01KRF37Y941E2T8D1ATFV63JB0"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRFJH9MTW1GSKNP0XNCQSQTG
+        anchor:
+          type: code
+          commit: 8b076968ac2a7ff19dae267fe2334325c028cacd
+          line_end: 3527
+          line_start: 3514
+          path: src/agent-runtime/workspace.ts
+          side: head
+        entries:
+          - _ulid: 01KRFJH9MTA41QQDMEHF70RJK5
+            author: Jacob Chapel
+            body: 'MUST-FIX: active/in-flight task refs do not protect the corresponding dispatch branch when
+              the trusted registry has no record yet. The helper marks
+              evaluateTaskRef(@01KRF37Y941E2T8D1ATFV63JB0) as preserve=true, but
+              evaluateDispatchBranch("dispatch/task/task-centralize-dispatch-artifact-protection-decisions/01krf37y")
+              returns preserve=false with registry={status:"loaded",records:[]}. In reconciliation,
+              that branch path reaches listDispatchBranches() and deleteDispatchBranch(), so the
+              queue-to-spawn window can still delete a canonical branch for active/in-flight work
+              before a registry record exists. This violates
+              ac-active-inflight-provisioning-artifact-preserved and the task requirement that
+              caller-supplied active/in-flight task refs are protection sources across destructive
+              surfaces.'
+            created_at: 2026-05-13T02:26:58.330Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-13T02:14:39.821Z
-    updated_at: 2026-05-13T02:15:10.191Z
+    updated_at: 2026-05-13T02:26:58.330Z
     notes: []
