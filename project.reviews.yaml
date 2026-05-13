@@ -211242,6 +211242,13 @@ reviews:
           status: pass
           name: kspec validate --warnings-ok
         timestamp: 2026-05-13T02:48:44.839Z
+      - _ulid: 01KRFKS9JZB8ED9T2HR9S57DT3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRFKS84YQDDEGMAPDEW7S635
+        timestamp: 2026-05-13T02:48:48.991Z
     examined_commit: ad8fd1d4d3466abc43a47cf9a591e7ff09cdfe6a
     external_links: []
     lifecycle_state: open
@@ -211251,8 +211258,30 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRFKS84YQDDEGMAPDEW7S635
+        anchor:
+          type: code
+          commit: ad8fd1d4d3466abc43a47cf9a591e7ff09cdfe6a
+          line_end: 1762
+          line_start: 1756
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KRFKS84YR6MHH0VWC2J3WEN6
+            author: Jacob Chapel
+            body: "MUST-FIX: TSEnumDeclaration is treated as opaque even when the enum is ambient/type-only. The
+              comment directly below says declare ambient declarations are erased and should not
+              shadow runtime bindings, but this branch returns true for every TSEnumDeclaration
+              without checking stmt.declare. I verified with an oxlint probe using an approved
+              import plus 'declare enum killPid { noop }'; the rule reported the detached start as
+              missing cleanup even though runtime cleanup still calls the approved imported killPid.
+              This is a false positive against the precision contract and should be fixed, with a
+              regression test proving declare enum does not shadow the approved helper while
+              non-declare enum still does."
+            created_at: 2026-05-13T02:48:47.518Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-13T02:34:48.539Z
-    updated_at: 2026-05-13T02:48:43.425Z
+    updated_at: 2026-05-13T02:48:47.518Z
     notes: []
