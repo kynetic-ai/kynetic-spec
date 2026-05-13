@@ -213477,9 +213477,16 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-05-13T07:35:18.289Z
+      - _ulid: 01KRG47E7NT20SG6750R1W6J0T
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-05-13T07:36:09.718Z
     examined_commit: ffdef6f9dc5d15658685f44df4a3210ba430f4c7
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -213489,5 +213496,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T07:35:18.289Z
-    updated_at: null
+    updated_at: 2026-05-13T07:36:08.316Z
     notes: []
