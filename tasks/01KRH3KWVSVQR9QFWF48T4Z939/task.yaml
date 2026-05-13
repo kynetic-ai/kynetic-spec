@@ -74,8 +74,13 @@ description: >
 spec_ref: "@dispatch-workspace-cleanup-policy"
 plan_ref: "@plan-dispatch-workspace-cleanup-classification-hardenin"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Review approved. Detached merge helper reported no-op because
+  dispatch/task/task-clarify-dispatch-cleanup-classification-specs/01krh3kw at
+  03f91e732faa6d80427b2c19f77847e72ea8153d is already integrated at dev. Verified requested cleanup
+  classification ACs on @dispatch-workspace-cleanup-policy and @dispatch-workspace-registry; kspec
+  validate --refs --warnings-ok and npm test passed.
 depends_on: []
 context: []
 priority: 1
@@ -143,8 +148,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-13T16:52:08.955Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Review approved. Detached merge helper reported no-op because
+          dispatch/task/task-clarify-dispatch-cleanup-classification-specs/01krh3kw at
+          03f91e732faa6d80427b2c19f77847e72ea8153d is already integrated at dev. Verified requested
+          cleanup classification ACs on @dispatch-workspace-cleanup-policy and
+          @dispatch-workspace-registry; kspec validate --refs --warnings-ok and npm test passed.
+        previous: null
+      completed_at:
+        new: 2026-05-13T17:04:25.719Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-13T17:04:25.727Z
 created_at: 2026-05-13T16:44:43.767Z
 started_at: 2026-05-13T16:47:25.836Z
 submitted_at: 2026-05-13T16:49:22.469Z
+completed_at: 2026-05-13T17:04:25.719Z
 todos: []
 automation: eligible
