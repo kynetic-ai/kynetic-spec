@@ -99,7 +99,7 @@ description: >
 spec_ref: "@dispatch-workspace-cleanup-policy"
 plan_ref: "@plan-dispatch-workspace-cleanup-classification-hardenin"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-clarify-dispatch-cleanup-classification-specs"
@@ -115,11 +115,11 @@ review_ref: "@01KRH6J6ER43T7F0WSWB351MTM"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-add-cleanup-classification-regression-coverage/01krh3kx
-  captured_at: 2026-05-13T17:31:17.160Z
-  commit: 295ed289945e390e76f38c9d34c45f2c9faceaed
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-13T18:14:13.749Z
+  commit: f94ff1aa9a48908647a110de37ec5b45eff1cab4
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-add-cleanup-classification-regression-coverage/01krh3kx
 session_id: 01KRH7JZSJ8740PW9XNM1R6QXC
 history:
   - author: Jacob Chapel
@@ -192,8 +192,35 @@ history:
         previous: 2026-05-13T17:05:37.405Z
     command: task-start
     timestamp: 2026-05-13T17:55:16.290Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-cleanup-classification-regression-coverage/01krh3kx
+          captured_at: 2026-05-13T18:14:13.749Z
+          commit: f94ff1aa9a48908647a110de37ec5b45eff1cab4
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-add-cleanup-classification-regression-coverage/01krh3kx
+        previous:
+          review_url: null
+          branch: dispatch/task/task-add-cleanup-classification-regression-coverage/01krh3kx
+          captured_at: 2026-05-13T17:31:17.160Z
+          commit: 295ed289945e390e76f38c9d34c45f2c9faceaed
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-13T18:14:13.762Z
+        previous: 2026-05-13T17:31:17.162Z
+    command: task-submit
+    timestamp: 2026-05-13T18:14:13.762Z
 created_at: 2026-05-13T16:44:44.103Z
 started_at: 2026-05-13T17:55:16.290Z
-submitted_at: 2026-05-13T17:31:17.162Z
+submitted_at: 2026-05-13T18:14:13.762Z
 todos: []
 automation: eligible
