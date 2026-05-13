@@ -18651,6 +18651,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-13T02:32:50.570Z
+  - _ulid: 01KRFM0F2M7367KRS8SJDTMN5K
+    type: friction
+    content: "Reviewing no-leaky-test-daemon changes repeatedly required hand-built synthetic oxlint
+      probes: temp directory, generated .oxlintrc, local plugin path, synthetic tests/** file,
+      command invocation, cleanup, and exit-code interpretation. A small reusable helper or
+      documented script for synthetic rule probes would make adversarial lint-rule reviews faster
+      and less error-prone."
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-13T02:52:43.988Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
