@@ -18811,6 +18811,36 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-13T07:14:54.677Z
+  - _ulid: 01KRG6MMK1TPJ8VHKG1HW0TS1H
+    type: success
+    content: "Patching the unsafe source pattern (tests/cli-no-daemon.test.ts and
+      tests/parser/daemon-config.test.ts) BEFORE landing the rule expansion in
+      @task-fix-implicit-autostart-cleanup-coverage meant the rule and source fix shipped together
+      cleanly. The rule did not need a separate follow-up to convert tests-passing-via-bypass back
+      to passing-via-real-coverage. Pattern for guardrail expansions: identify the real-source
+      unsafe shape first, patch it to the safe shape, then introduce the classifier — the synthetic
+      fixtures and the real test surface land in the same commit and the rule has zero red on dev
+      when it lands."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T08:18:19.362Z
+  - _ulid: 01KRG6MMVHZANM96CNFYSGD2G1
+    type: friction
+    content: "Running `npx oxlint tests/` as a pre-commit smoke check is essential for AST rule
+      expansions and consistently surfaces false positives the synthetic lint fixtures do not
+      exercise. In @task-fix-implicit-autostart-cleanup-coverage, four false-positive
+      metadata-path-construction cases in tests/cli-serve.test.ts (where cleanup was registered
+      BEFORE the path construction) were only caught by oxlint-over-real-tests, prompting a
+      narrowing of the classifier to require a recognised file-read primitive in the init expression
+      (not just a path literal). Pattern: when adding a new AST classifier that triggers on a code
+      shape, the synthetic fixtures cover the intended trigger; the real-tests sweep covers the
+      unintended trigger surface that synthetic fixtures by construction cannot enumerate. Skipping
+      it costs a fix cycle."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T08:18:19.633Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
