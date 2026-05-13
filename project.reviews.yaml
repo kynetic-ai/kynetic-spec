@@ -211243,6 +211243,18 @@ reviews:
         runner: npm
         created_at: 2026-05-13T02:48:55.958Z
         completed_at: 2026-05-13T02:48:55.958Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npx oxlint tools/eslint-rules/no-leaky-test-daemon.js
+          tests/lint-no-leaky-test-daemon.test.ts exited 0 with 0 errors and 35 pre-existing
+          warnings.
+        name: changed-file oxlint
+        required: true
+        runner: oxlint
+        created_at: 2026-05-13T02:49:16.211Z
+        completed_at: 2026-05-13T02:49:16.211Z
     events:
       - _ulid: 01KRFJZMTVCNSQAR7MPHNCPJFY
         actor: Jacob Chapel
@@ -211285,6 +211297,13 @@ reviews:
           status: pass
           name: npm test -- --fresh
         timestamp: 2026-05-13T02:48:57.411Z
+      - _ulid: 01KRFKT5H2MSRH9J96TJ4XJP6X
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file oxlint
+        timestamp: 2026-05-13T02:49:17.602Z
     examined_commit: ad8fd1d4d3466abc43a47cf9a591e7ff09cdfe6a
     external_links: []
     lifecycle_state: open
@@ -211319,5 +211338,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-13T02:34:48.539Z
-    updated_at: 2026-05-13T02:48:55.958Z
+    updated_at: 2026-05-13T02:49:16.211Z
     notes: []
