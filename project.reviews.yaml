@@ -211267,6 +211267,17 @@ reviews:
         runner: oxlint
         created_at: 2026-05-13T02:49:20.337Z
         completed_at: 2026-05-13T02:49:20.337Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: git diff --check 0dcbcdd27642e95299a7b77a48da1e5d295df176...HEAD produced no whitespace
+          errors.
+        name: git diff --check
+        required: true
+        runner: git
+        created_at: 2026-05-13T02:49:24.654Z
+        completed_at: 2026-05-13T02:49:24.654Z
     events:
       - _ulid: 01KRFJZMTVCNSQAR7MPHNCPJFY
         actor: Jacob Chapel
@@ -211323,6 +211334,13 @@ reviews:
           status: fail
           name: npm run lint
         timestamp: 2026-05-13T02:49:21.916Z
+      - _ulid: 01KRFKTDXX2QWQED9S28HYNKCW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: git diff --check
+        timestamp: 2026-05-13T02:49:26.205Z
     examined_commit: ad8fd1d4d3466abc43a47cf9a591e7ff09cdfe6a
     external_links: []
     lifecycle_state: open
@@ -211357,5 +211375,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-13T02:34:48.539Z
-    updated_at: 2026-05-13T02:49:20.337Z
+    updated_at: 2026-05-13T02:49:24.654Z
     notes: []
