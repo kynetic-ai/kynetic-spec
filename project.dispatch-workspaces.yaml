@@ -31970,11 +31970,11 @@ workspaces:
     canonical_branch: dispatch/task/task-centralize-dispatch-artifact-protection-decisions/01krf37y
     canonical_branch_head: 3523eee27f80947515557d4720a3ba773eaafe86
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-13T03:10:23.574Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-13T03:10:24.648Z
     health:
       status: healthy
       issues: []
@@ -31988,7 +31988,7 @@ workspaces:
       target_branch: dev
       target_commit: 0504bc1cf83155103a5bc51038e6f1ed78d48b20
       updated_at: 2026-05-13T03:10:23.574Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KRF37Y941E2T8D1ATFV63JB0"
     task_slug: task-centralize-dispatch-artifact-protection-decisions
@@ -31997,7 +31997,7 @@ workspaces:
       last_active_at: 2026-05-13T02:56:19.285Z
       last_reconciled_at: 2026-05-13T03:10:23.574Z
       created_at: 2026-05-13T01:46:43.280Z
-      updated_at: 2026-05-13T03:10:23.574Z
+      updated_at: 2026-05-13T03:10:24.648Z
     workspace_id: dispatch-workspace-01KRF37Y941E2T8D1ATFV63JB0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
