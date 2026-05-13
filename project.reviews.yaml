@@ -211208,7 +211208,19 @@ reviews:
     slugs: []
     title: Review fix guardrail cleanup-effect classification (cycle 16)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed with pre-existing warnings; --warnings-ok exit 0. Schema and references
+          OK; warnings are existing deprecated refs, alignment/completeness warnings, and invalid AC
+          annotations outside this task.
+        name: kspec validate --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-05-13T02:48:43.425Z
+        completed_at: 2026-05-13T02:48:43.425Z
     events:
       - _ulid: 01KRFJZMTVCNSQAR7MPHNCPJFY
         actor: Jacob Chapel
@@ -211223,6 +211235,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-13T02:35:01.564Z
+      - _ulid: 01KRFKS5H6BCFMXCJ4HMF6KV70
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-05-13T02:48:44.839Z
     examined_commit: ad8fd1d4d3466abc43a47cf9a591e7ff09cdfe6a
     external_links: []
     lifecycle_state: open
@@ -211235,5 +211254,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T02:34:48.539Z
-    updated_at: 2026-05-13T02:35:00.195Z
+    updated_at: 2026-05-13T02:48:43.425Z
     notes: []
