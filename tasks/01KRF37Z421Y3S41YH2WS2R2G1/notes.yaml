@@ -15,3 +15,51 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-13T03:20:26.409Z
+  - _ulid: 01KRFQ0GC7YQM8PVT7EPNNXQ00
+    content: >-
+      Implementation summary:
+
+
+      Audited reconcileDispatchWorkspaceArtifacts(): the prior task
+      (centralize-dispatch-artifact-protection-decisions) already routed every destructive cleanup
+      surface (metadata-less worktree removal, reapDispatchWorkspace gate, reviewer snapshot
+      pruning, root directory pruning, dispatch branch pruning) through the shared
+      DispatchArtifactProtectionState helper. Verified evaluateTaskRef covers active/in-flight +
+      provisioning/ready/active/stale/integrating/cleanup_blocked lifecycle states plus
+      closing-with-active-or-integration-unresolved; evaluateClosingRecordForReap returns
+      cleanup-eligible only when closing+no-active+integration-resolved; ambiguous (load-failed)
+      registry → preserve-all dispatcher-managed artifacts.
+
+
+      Implementation gap was diagnostics: preserve decisions were silently honored. Added
+      logArtifactPreservation(surface, identifier, reason) helper that emits a console.debug with
+      [dispatch-cleanup] prefix identifying the cleanup surface (metadata-less-worktree,
+      reap-candidate, reviewer-snapshot, root-directory, dispatch-branch) and the protection-source
+      reason. Wired it into all five destructive surfaces.
+
+
+      Tests added in tests/dispatch-workspace-cleanup.test.ts:
+
+      - blocks blind deletion when registry cannot be parsed (corrupt YAML → load-failed → preserve
+      every dispatcher-managed artifact + emit registry-failure diagnostics across surfaces). Covers
+      ac-ambiguous-protection-blocks-blind-deletion E2E.
+
+      - emits surface-labeled diagnostics for metadata-less-worktree + reviewer-snapshot gates
+      (queue-to-spawn race with no registry record + active task ref short-id matches).
+
+      - skips reap and emits reap-candidate diagnostic when closing workspace task ref is still
+      active.
+
+
+      Note: tests use vi.spyOn(console, 'debug').mockImplementation(...) but must snapshot
+      mock.calls BEFORE mockRestore() — mockRestore clears mock history along with restoring the
+      original method.
+
+
+      Run results: targeted suite (dispatch-workspace-cleanup, dispatch-workspace-registry,
+      dispatch-artifact-protection, agent-dispatch-engine, dispatch-runtime-bootstrap-contract) —
+      202/202 passing. Full suite — 9110/9115 passing (5 skipped are documented file-watcher-on-CI
+      exclusions). npm run typecheck clean. kspec validate clean (default warning threshold).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T03:45:11.047Z
