@@ -29162,7 +29162,7 @@
   type: task
   spec_ref: "@dispatch-workspace-cleanup-policy"
   plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-test-cleanup-protection-positive-and-regression-cases"
@@ -29175,6 +29175,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-12T21:59:45.301Z
+  started_at: 2026-05-13T07:16:32.738Z
   automation: eligible
 - _ulid: 01KRF9WAG6J46D1WJ3R9DX0SNG
   slugs: []
