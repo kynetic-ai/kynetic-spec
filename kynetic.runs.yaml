@@ -49114,7 +49114,7 @@ runs:
     completed_at: 2026-05-13T05:05:57.735Z
   - _ulid: 01KRFW994NRE6G0K54DAKCPG41
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -49155,7 +49155,24 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-13T05:19:28.099Z
-        completed_at: 2026-05-13T05:19:28.099Z
+        completed_at: 2026-05-13T05:19:36.197Z
+        notes: >-
+          Decision matrix applied:
+
+
+          1. handleStateChange-await-deadlock friction: not in observations/inbox/tasks searches
+          above. Unique + high confidence. -> CAPTURE.
+
+
+          2. Verify-regression-bites success: not in observations/inbox/tasks searches. Unique +
+          high confidence. -> CAPTURE.
+
+
+          No duplicates to skip.
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-13T05:19:36.197Z
+        completed_at: 2026-05-13T05:19:36.197Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-13T05:17:21.429Z
