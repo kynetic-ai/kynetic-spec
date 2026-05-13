@@ -948,6 +948,212 @@ describe("test suite", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
     });
 
+    // Boundary-classification regressions for the
+    // `@task-fix-guardrail-cleanup-boundary-classification` fix.
+    //
+    // The prior `process.on(...)`-shape probes (above) all used a bare
+    // helper-call body (`killPid(result.pid)`). After
+    // `@task-fix-guardrail-cleanup-effect-classification` landed, those
+    // bodies fail the helper-origin classifier — so the rule flags them
+    // for the WRONG reason (untrusted helper origin) even when the
+    // boundary classifier still incorrectly credits
+    // `process.on(<exit-event>, …)` as a cleanup boundary.
+    //
+    // The probes below close that masking gap by carrying a
+    // DIRECTLY-TERMINATING body inside the process-lifecycle callback —
+    // `process.kill(pid, "SIGTERM")` or `child.kill("SIGTERM")` — which
+    // sails through the effect classifier with no helper-origin
+    // question. Pre-fix the boundary classifier credited the whole
+    // shape as cleanup and the daemon leaked into every later test in
+    // the file; post-fix the boundary classifier rejects
+    // `process.on(...)` / `process.once(...)` as a per-test boundary
+    // and the rule reports `ac-cleanup-registration-is-test-scoped`
+    // violations even when the body itself terminates.
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // Boundary-isolating probe: the callback body is
+    // `process.kill(pid, "SIGTERM")` — a directly-terminating signal
+    // with no helper-origin question — so the effect classifier
+    // unconditionally accepts the body. The only thing keeping the
+    // detached daemon from being credited as cleaned up is the
+    // boundary classifier rejecting `process.on("exit", …)` as a
+    // per-test cleanup boundary. A daemon left alive when this test
+    // ends survives every later test in the file before the `exit`
+    // handler fires.
+    it('should flag serve start --detach when only cleanup is process.on("exit", () => process.kill(pid, "SIGTERM"))', () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    process.on("exit", () => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // Boundary-isolating probe for `beforeExit`. Same effect-classifier
+    // bypass via `process.kill(pid, "SIGTERM")`; the only thing rejecting
+    // the registration is the boundary classifier. `beforeExit` fires
+    // when the event loop is empty, which is a process boundary, not the
+    // per-test boundary the spec requires.
+    it('should flag serve start --detach when only cleanup is process.on("beforeExit", () => process.kill(pid, "SIGTERM"))', () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    process.on("beforeExit", () => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // Boundary-isolating probe for a signal handler with a directly-
+    // terminating body. The `SIGTERM` handler runs only when the Node
+    // process receives the signal — never for a normal test
+    // completion — so a daemon left running here leaks into every later
+    // test in the same file.
+    it('should flag serve start --detach when only cleanup is process.on("SIGTERM", () => process.kill(pid, "SIGTERM"))', () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    process.on("SIGTERM", () => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // Boundary-isolating probe for `process.once(...)`. The single-shot
+    // variant binds on the same process-lifecycle events as `process.on`
+    // and has identical leak semantics — the daemon survives until
+    // process shutdown, which is after every later test in this file.
+    // Pre-fix the boundary classifier accepted `process.once` shapes
+    // through the same `process.<method>(<exit-event>, …)` predicate
+    // that credited `process.on`.
+    it('should flag serve start --detach when only cleanup is process.once("exit", () => process.kill(pid, "SIGTERM"))', () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    process.once("exit", () => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // Boundary-isolating probe with a child-handle terminating body
+    // (`child.kill("SIGTERM")` rather than `process.kill`). The effect
+    // classifier accepts `<binding>.kill("SIGTERM")` for an inspected
+    // spawn child; the boundary classifier is the only remaining gate.
+    //
+    // The daemon-start MUST go through a non-direct-entry path or the
+    // direct-daemon-entry guardrail reports unconditionally and the
+    // boundary classifier is never the rejector — so the probe spawns
+    // via the `kspec` executable with the `serve start --detach`
+    // subcommand path, which is the detach call expression branch.
+    // Pre-fix the boundary classifier credited `process.on("exit", …)`
+    // as a per-test boundary, the effect classifier credited
+    // `child.kill("SIGTERM")` for the inspected spawn binding, and the
+    // detached daemon was reported as cleaned up. Post-fix the boundary
+    // classifier rejects the registration as not per-test scoped and
+    // the rule fires for `ac-cleanup-registration-is-test-scoped`.
+    it('should flag spawn detached when only cleanup is process.on("exit", () => child.kill("SIGTERM"))', () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+import { spawn } from "child_process";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    const child = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
+    process.on("exit", () => child.kill("SIGTERM"));
+    expect(child.pid).toBeDefined();
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // Boundary-isolating regression for the cycle-4 IPC-handler probe.
+    // `process.on("message", …)` is not a shutdown event and never
+    // satisfied the registration set; this version carries a directly-
+    // terminating body to confirm the rule does not flip back to
+    // crediting non-shutdown `process.on(...)` shapes via the effect
+    // classifier alone. The expected report is still
+    // `ac-cleanup-registration-is-test-scoped` — neither shutdown nor
+    // IPC `process.on(...)` callbacks credit cleanup.
+    it('should flag serve start --detach when only cleanup is process.on("message", () => process.kill(pid, "SIGTERM"))', () => {
+      const result = runOxlint(`
+import { describe, it, expect } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    process.on("message", () => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    // Boundary-isolating allow-case: the supplemental-fallback shape
+    // remains accepted when paired with a per-test boundary. The
+    // `onTestFinished(() => process.kill(pid, "SIGTERM"))` callback is
+    // the only cleanup the rule credits; the `process.on("exit", ...)`
+    // registration alongside it is a defence-in-depth safety net and
+    // must NOT cause the test to be flagged. (Companion to the
+    // process.on-only flag probes above.)
+    it("should allow serve start --detach when onTestFinished is paired with a process.on(\"exit\", () => process.kill(...)) fallback", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => process.kill(pid, "SIGTERM"));
+    process.on("exit", () => process.kill(pid, "SIGTERM"));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
     // Cleanup-effect semantics: the rule's old callee-shape predicate
     // accepted `process.kill(...)` regardless of signal and accepted any
     // local helper named `killPid` / `stopDaemon` / `stopMockDaemon` by
