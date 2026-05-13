@@ -31992,12 +31992,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-13T06:27:09.063Z
+      updated_at: 2026-05-13T06:48:12.393Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T06:27:11.134Z
+      updated_at: 2026-05-13T06:48:12.393Z
     integration:
       status: pending
       detail: null
@@ -32005,7 +32005,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ce6326ae4982ab4883a2924834e87e4c7eeff39d
-      updated_at: 2026-05-13T06:27:09.063Z
+      updated_at: 2026-05-13T06:48:12.393Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KRCRJQ8CM6D08AHASH84VRDM"
@@ -32013,9 +32013,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T06:08:43.584Z
-      last_reconciled_at: 2026-05-13T06:27:11.134Z
+      last_reconciled_at: 2026-05-13T06:48:12.393Z
       created_at: 2026-05-13T05:43:24.422Z
-      updated_at: 2026-05-13T06:27:11.134Z
+      updated_at: 2026-05-13T06:48:12.393Z
     workspace_id: dispatch-workspace-01KRCRJQ8CM6D08AHASH84VRDM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -32024,7 +32024,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-guardrail-cleanup-boundary-classification/01krcrjq
         head: 5de3b8d30d8798bd4279bd86a3e8223ce03894f4
-        last_seen_at: 2026-05-13T06:08:16.701Z
+        last_seen_at: 2026-05-13T06:48:12.393Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-guardrail-cleanup-boundary-classification-01krcrjq
   - active_role: null
     base_branch_point: cb9d7cedfc8e7496b60178495fee4b681363038e
