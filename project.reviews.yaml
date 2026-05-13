@@ -212380,7 +212380,67 @@ reviews:
     slugs: []
     title: Review cleanup protection coverage
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/dispatch-workspace-cleanup.test.ts
+          tests/dispatch-workspace-registry.test.ts: 7 suites passed, 58 tests passed, duration
+          24.8s."
+        name: targeted cleanup tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-13T05:03:08.344Z
+        completed_at: 2026-05-13T05:03:08.344Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test: 2436 suites passed, 9128 passed, 5 skipped, duration 2085.3s."
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-13T05:03:11.967Z
+        completed_at: 2026-05-13T05:03:11.967Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run typecheck completed with exit 0.
+        name: typecheck
+        required: true
+        runner: tsc
+        created_at: 2026-05-13T05:03:15.623Z
+        completed_at: 2026-05-13T05:03:15.623Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate reported Schema OK and References OK, then exited 6 for existing
+          project-wide warnings outside the changed files.
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-13T05:03:19.168Z
+        completed_at: 2026-05-13T05:03:19.168Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, task/spec metadata,
+          tests/dispatch-workspace-cleanup.test.ts, tests/dispatch-workspace-registry.test.ts,
+          src/agent-runtime/workspace.ts. Commands run: kspec task get, kspec item get for cleanup
+          policy and registry, kspec validate, rg AC annotations, git diff/stat/diff-check/show, npm
+          targeted tests, npm test, npm run typecheck. Claims verified: worker's targeted/full
+          test/typecheck claims; coverage annotations present; destructive cleanup surfaces mapped
+          against implementation. Categories searched: correctness, edge cases, error
+          handling/diagnostics, test quality, integration."
+        name: review evidence log
+        required: false
+        runner: codex-review
+        created_at: 2026-05-13T05:03:22.652Z
+        completed_at: 2026-05-13T05:03:22.652Z
     events:
       - _ulid: 01KRFTQZBXD2NGXGT1C3692807
         actor: Jacob Chapel
@@ -212395,17 +212455,105 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-13T04:51:20.311Z
+      - _ulid: 01KRFVF9EMQ00E7TZB63QN0FCM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted cleanup tests
+        timestamp: 2026-05-13T05:03:09.780Z
+      - _ulid: 01KRFVFD1MV7MY416KB4XGW4JJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-05-13T05:03:13.460Z
+      - _ulid: 01KRFVFGFQ8KXPMY7VSA8H1F85
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: typecheck
+        timestamp: 2026-05-13T05:03:16.983Z
+      - _ulid: 01KRFVFKYQ7CD9G8SHS67E45YN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-13T05:03:20.535Z
+      - _ulid: 01KRFVFQCHK2CQBG9ZD07PHR0Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-13T05:03:24.049Z
+      - _ulid: 01KRFVFTYA4HJP3402E2QFHYAF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRFVFSGRHE0200MW0E8K149N
+        timestamp: 2026-05-13T05:03:27.690Z
+      - _ulid: 01KRFVFYG0S924P9YPDPYFNMBD
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-13T05:03:31.328Z
+      - _ulid: 01KRFVFYG0BHCYXJZBPYYC9SBZ
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-13T05:03:31.328Z
     examined_commit: 2371bf574df635f21e6a0fd6c2476736eecbf150
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KRF37ZHJ6AEZ14HEADGHPX6V"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KRFVFSGRHE0200MW0E8K149N
+        anchor:
+          type: code
+          commit: 2371bf574df635f21e6a0fd6c2476736eecbf150
+          line_end: 1026
+          line_start: 1020
+          path: tests/dispatch-workspace-cleanup.test.ts
+          side: head
+        entries:
+          - _ulid: 01KRFVFSGS7481JG3YR0X909B5
+            author: Jacob Chapel
+            body: "Must-fix: this test does not exercise the root-directory overlap it claims to cover.
+              `overlappingRoot` is `path.dirname(workspace.cwd)`, which resolves to the worktree
+              root itself. `reconcileDispatchWorkspaceArtifacts()` only runs root-directory pruning
+              over direct children returned by `fs.readdir(resolvedConfig.worktreeRoot)`
+              (src/agent-runtime/workspace.ts:3840-3844), so this path is never a candidate for the
+              `root-directory` surface. The assertions would pass even if root-directory pruning
+              stopped consulting `evaluateWorkspacePath()` for protected path overlap. Please
+              replace this with a behavioral case where an actual direct child root candidate
+              overlaps a protected worker/reviewer path and verify it is preserved, preferably
+              including the `root-directory` diagnostic."
+            created_at: 2026-05-13T05:03:26.233Z
+        kind: blocker
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-05-13T05:03:31.327Z
     created_at: 2026-05-13T04:50:25.789Z
-    updated_at: 2026-05-13T04:51:18.872Z
+    updated_at: 2026-05-13T05:03:31.328Z
     notes: []
