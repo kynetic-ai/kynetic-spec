@@ -214154,6 +214154,19 @@ reviews:
         runner: npm
         created_at: 2026-05-13T10:32:32.010Z
         completed_at: 2026-05-13T10:32:32.010Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts
+          tests/helpers/mock-daemon.test.ts tests/cli-serve.test.ts tests/cli-no-daemon.test.ts: 91
+          passed across 28 suites; log
+          /tmp/kspec-test-cache/01KRGDF3EE3WMTSH989DKH6G8C/50998b35fe06e5ed.log."
+        name: daemon helper lifecycle focused tests
+        required: true
+        runner: npm
+        created_at: 2026-05-13T10:32:43.519Z
+        completed_at: 2026-05-13T10:32:43.519Z
     events:
       - _ulid: 01KRGDGGPR098JBP1JR6PCZW3D
         actor: Jacob Chapel
@@ -214189,6 +214202,13 @@ reviews:
           status: pass
           name: daemon guardrail lint focused tests
         timestamp: 2026-05-13T10:32:33.449Z
+      - _ulid: 01KRGEAS58C0YB036RT4J9E4Z6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: daemon helper lifecycle focused tests
+        timestamp: 2026-05-13T10:32:44.969Z
     examined_commit: 03f91e732faa6d80427b2c19f77847e72ea8153d
     external_links: []
     lifecycle_state: open
@@ -214201,5 +214221,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T10:18:24.344Z
-    updated_at: 2026-05-13T10:32:32.010Z
+    updated_at: 2026-05-13T10:32:43.519Z
     notes: []
