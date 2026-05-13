@@ -20,3 +20,47 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-13T17:08:15.786Z
+  - _ulid: 01KRH68YNHE2VXJ2068QXVGD3C
+    content: >-
+      Implementation complete. Added 3 regression tests:
+
+
+      1. tests/dispatch-workspace-cleanup.test.ts: 'removes a dispatcher-managed worktree with
+      corrupt metadata when no protection source applies' — covers
+      @dispatch-workspace-cleanup-policy ac-corrupt-metadata-cleanup-eligible.
+
+      2. tests/dispatch-workspace-cleanup.test.ts: 'removes unknown files and directories directly
+      under the worktree root when no workspace path overlaps' — covers
+      @dispatch-workspace-cleanup-policy ac-dispatch-root-unknown-entries-owned.
+
+      3. tests/agent-dispatch-engine.test.ts: 'reprovisions a fresh workspace after corrupt-metadata
+      cleanup removes the prior artifact' — covers @dispatch-workspace-registry
+      ac-task-state-drives-recovery-after-untrusted-artifact-cleanup; asserts the engine
+      reprovisions a fresh workspace + canonical dispatch branch with matching short-id for the same
+      task ref after artifact cleanup.
+
+
+      Implementation source changes: NONE. Existing protection helper +
+      reconcileDispatchWorkspaceArtifacts already classified corrupt metadata + unknown root entries
+      correctly, and the dispatch engine already reprovisions pending automation-eligible tasks from
+      trusted task state.
+
+
+      Findings during testing: vi.spyOn on a module function leaks call history across tests when
+      afterEach does not call vi.restoreAllMocks; the AC-19 describe block in
+      agent-dispatch-engine.test.ts is one such block. The new test calls vi.restoreAllMocks() at
+      the start to ensure a clean spy. The recovery test had to use task.ready (pending) rather than
+      task.in_progress or task.needs_work because the current dispatch eligibility logic refuses
+      fresh provisioning for resumable statuses without submission linkage — that is acceptable per
+      the AC since 'task can be requeued, reprovisioned, or marked stale' is an OR.
+
+
+      Verified: npm test (9248/9253 passing, 5 skipped), npm run typecheck (clean), kspec validate
+      --refs/--alignment/--completeness (--warnings-ok).
+
+
+      Set @dispatch-workspace-cleanup-policy and @dispatch-workspace-registry implementation status
+      to implemented; all other tasks for those specs were already completed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T17:31:10.897Z
