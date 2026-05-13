@@ -18636,6 +18636,21 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-13T02:12:50.006Z
+  - _ulid: 01KRFJW1MANX0XFVNNZVKC1E4S
+    type: friction
+    content: "no-leaky-test-daemon shadow-binding classifier enumerates AST node types one at a time.
+      Cycle 14 added ClassDeclaration; cycle 15 added
+      TSEnumDeclaration/TSModuleDeclaration/TSImportEqualsDeclaration. Each fix cycle has been a new
+      reviewer probe finding the next unhandled shape that shadows a trusted cleanup name.
+      Likely-next variants: namespace imports (import * as killPid), catch-bound names,
+      for-of/for-in declarators, destructuring. Systemic alternative: use scope analysis to
+      enumerate ALL bindings of the name in the lexical chain, then require each binding to be a
+      verified-callable function rather than allow-listing AST shapes. Until then expect more cycles
+      for new TS/JS binding shapes."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T02:32:50.570Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
