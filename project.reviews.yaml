@@ -212019,6 +212019,25 @@ reviews:
         runner: npm run typecheck
         created_at: 2026-05-13T04:01:34.410Z
         completed_at: 2026-05-13T04:01:34.410Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, src/agent-runtime/workspace.ts,
+          tests/dispatch-workspace-cleanup.test.ts, tests/dispatch-artifact-protection.test.ts,
+          tests/dispatch-workspace-registry.test.ts, src/agent-runtime/dispatch.ts. Commands run:
+          git diff/stat/status/log/diff --check, kspec task get, kspec item get for cleanup policy
+          and registry, rg AC annotations/source-scanning check, kspec validate, kspec validate
+          --warnings-ok, npm run typecheck, npm test -- --fresh. Claims verified: dependency already
+          centralized protection on dev; this commit wires surface-labeled diagnostics and
+          behavioral tests for registry-load-failed, active/in-flight metadata-less/reviewer paths,
+          and active closing reap preservation. Categories searched: correctness, edge cases, error
+          handling/diagnostics, test quality, integration; no blocker findings."
+        name: review evidence log
+        required: false
+        runner: manual review
+        created_at: 2026-05-13T04:01:38.542Z
+        completed_at: 2026-05-13T04:01:38.542Z
     events:
       - _ulid: 01KRFQ7FVDPFBPBSMFHVGQ9EME
         actor: Jacob Chapel
@@ -212047,6 +212066,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-05-13T04:01:35.893Z
+      - _ulid: 01KRFQYP5QYN5ZQ2VE93ZA44F0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-13T04:01:40.023Z
     examined_commit: 2ef2236a35e9d2f88cab4f4429f4baabdd7a5a11
     external_links: []
     lifecycle_state: open
@@ -212059,5 +212085,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T03:48:59.885Z
-    updated_at: 2026-05-13T04:01:34.410Z
+    updated_at: 2026-05-13T04:01:38.542Z
     notes: []
