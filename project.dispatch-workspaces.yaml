@@ -33549,3 +33549,79 @@ workspaces:
         head: 5de3b8d30d8798bd4279bd86a3e8223ce03894f4
         last_seen_at: 2026-05-13T06:08:16.701Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-guardrail-cleanup-boundary-classification-01krcrjq
+  - active_role: null
+    base_branch_point: cb9d7cedfc8e7496b60178495fee4b681363038e
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/stabilize-daemon-readiness-diagnostics-lasthealth-flake/01krf9wa
+    canonical_branch_head: cb9d7cedfc8e7496b60178495fee4b681363038e
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-13T06:08:48.869Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-13T06:08:48.869Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: cb9d7cedfc8e7496b60178495fee4b681363038e
+      updated_at: 2026-05-13T06:08:48.869Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KRF9WAG6J46D1WJ3R9DX0SNG"
+    task_slug: stabilize-daemon-readiness-diagnostics-lasthealth-flake
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-13T06:08:48.869Z
+      created_at: 2026-05-13T06:08:48.869Z
+      updated_at: 2026-05-13T06:08:48.869Z
+    workspace_id: dispatch-workspace-01KRF9WAG6J46D1WJ3R9DX0SNG
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/stabilize-daemon-readiness-diagnostics-lasthealth-flake/01krf9wa
+        head: cb9d7cedfc8e7496b60178495fee4b681363038e
+        last_seen_at: 2026-05-13T06:08:48.869Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-daemon-readiness-diagnostics-lasthealth-flake-01krf9wa
