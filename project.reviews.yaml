@@ -211612,6 +211612,13 @@ reviews:
           status: pass
           name: npm run typecheck
         timestamp: 2026-05-13T03:09:12.228Z
+      - _ulid: 01KRFMZ1B754T4AN78YQSGSRXV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRFMYZXJ159MXHFNDJCX5KH1
+        timestamp: 2026-05-13T03:09:25.735Z
     examined_commit: 3523eee27f80947515557d4720a3ba773eaafe86
     external_links: []
     lifecycle_state: open
@@ -211621,8 +211628,27 @@ reviews:
       content_hash: ""
       ref: "@01KRF37Y941E2T8D1ATFV63JB0"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRFMYZXJ159MXHFNDJCX5KH1
+        entries:
+          - _ulid: 01KRFMYZXJ6K1QTGQVK9DQJYRT
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; src/agent-runtime/workspace.ts;
+              tests/dispatch-artifact-protection.test.ts; tests/dispatch-workspace-cleanup.test.ts;
+              prior review @01KRFHTREDT2JCWMVKPPH50VRW; specs @dispatch-workspace-cleanup-policy and
+              @dispatch-workspace-registry. Commands run: git diff/stat/log; rg AC/export searches;
+              kspec task get; kspec item get; kspec review for-task/get/add/open; kspec validate;
+              kspec validate --warnings-ok; npm test -- --fresh; npm run typecheck; npm run lint
+              (repo-wide pre-existing unrelated lint errors); npx oxlint changed files. Claims
+              verified: previous blocker fixed by active/in-flight short-id derivation protecting
+              canonical dispatch branches and worker/reviewer basename paths before registry write;
+              centralized helper is consulted for metadata-less worktrees, reap, reviewer snapshot
+              pruning, root-directory pruning, and branch deletion. Categories searched:
+              correctness, edge cases, error handling/no-blind-deletion, test quality/AC coverage,
+              integration with registry and cleanup lifecycle."
+            created_at: 2026-05-13T03:09:24.274Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-13T02:57:47.898Z
-    updated_at: 2026-05-13T03:09:10.746Z
+    updated_at: 2026-05-13T03:09:24.274Z
     notes: []
