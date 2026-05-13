@@ -18769,6 +18769,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-13T05:42:31.546Z
+  - _ulid: 01KRFZ5Q5393BA6QW38KM8DWRM
+    type: friction
+    content: 'Multi-classifier lint rules: adversarial probes for classifier A can pass for the wrong
+      reason when sibling classifier B (in the same rule but for a different concern) coincidentally
+      rejects the body. Example: @task-add-guardrail-cleanup-boundary-regressions probes for
+      ac-cleanup-registration-is-test-scoped used killPid(result.pid) bodies in process.on("exit",
+      ...) shapes. After @task-fix-guardrail-cleanup-effect-classification landed the helper-origin
+      classifier, those probes started flagging — but because of the body (effect concern), not
+      because of the registration shape (boundary concern). The boundary classifier gap remained and
+      was only caught by writing new probes with directly-terminating bodies (process.kill(pid,
+      "SIGTERM"), child.kill("SIGTERM")) that isolate the boundary gate as the sole rejector.
+      Convention candidate: every adversarial probe for a multi-classifier rule should name which
+      classifier it targets in the test docstring, and the body/shape pairing must isolate that
+      classifier (no incidental rejection by sibling classifiers). Quick verification via git stash
+      + rerun confirms the probe actually fails without the targeted fix. Domain: testing, lint,
+      daemon, convention.'
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T06:07:50.435Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
