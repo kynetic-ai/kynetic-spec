@@ -212952,3 +212952,29 @@ reviews:
     created_at: 2026-05-13T05:44:05.297Z
     updated_at: 2026-05-13T05:57:59.443Z
     notes: []
+  - _ulid: 01KRFZ91D1FG251GVT1QGQ94TS
+    slugs: []
+    title: Review cleanup-boundary classification
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRFZ91D1P2FV6TBJGAB18WJG
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-13T06:09:39.233Z
+    examined_commit: 5de3b8d30d8798bd4279bd86a3e8223ce03894f4
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRCRJQ8CM6D08AHASH84VRDM"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-13T06:09:39.233Z
+    updated_at: null
+    notes: []
