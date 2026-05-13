@@ -1,1 +1,22 @@
-notes: []
+notes:
+  - _ulid: 01KRH4YZSAQGGEKKWSETAXDYRH
+    content: "Approach: add three regression tests covering clarified cleanup classifications. (1) In
+      tests/dispatch-workspace-cleanup.test.ts add a behavioral test that provisions a workspace,
+      writes corrupt JSON into .kspec-dispatch-workspace.json, clears the registry to be
+      loaded-but-empty (loaded successfully, no protecting record), and asserts
+      reconcileDispatchWorkspaceArtifacts removes both the worktree dir and its canonical dispatch
+      branch. Mirrors the existing 'orphaned dispatch worktrees' coverage but pins the
+      corrupt-metadata classification. (2) In the same file add a test that writes an unknown file
+      AND an unknown directory directly under .kspec-worktrees with a trusted (loaded) registry and
+      no protected workspaces, asserting both are removed by the root-directory sweep. (3) In
+      tests/agent-dispatch-engine.test.ts near the existing reprovisioning test add a recovery-path
+      test that seeds an automation-eligible in_progress task, provisions a workspace, corrupts
+      metadata + clears registry, runs reconcileDispatchWorkspaceArtifacts to remove the artifact,
+      then starts DispatchEngine with a worker agent and asserts runInvocation/_spawnInvocation is
+      called for the same task ref (proving the task is not discarded because the corrupt artifact
+      was cleaned). Existing implementation appears correct; if tests pass without source changes I
+      will not modify workspace.ts. After tests pass, set spec implementation status to implemented
+      for both specs if no other pending tasks block."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T17:08:15.786Z
