@@ -214848,6 +214848,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-13T17:36:40.378Z
+      - _ulid: 01KRH6RAJ5D8HX7WBV94MKWJ9H
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRH6R83EZY59EPFMZM8T3V91
+        timestamp: 2026-05-13T17:39:34.598Z
     examined_commit: 295ed289945e390e76f38c9d34c45f2c9faceaed
     external_links: []
     lifecycle_state: open
@@ -214857,8 +214864,27 @@ reviews:
       content_hash: ""
       ref: "@01KRH3KX6743A3FAAN1HQ3KFC6"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRH6R83EZY59EPFMZM8T3V91
+        anchor:
+          type: code
+          commit: 295ed289945e390e76f38c9d34c45f2c9faceaed
+          line_end: 1147
+          line_start: 1147
+          path: tests/dispatch-workspace-cleanup.test.ts
+          side: head
+        entries:
+          - _ulid: 01KRH6R83E72AT5119W5REC82E
+            author: Jacob Chapel
+            body: "MUST-FIX: This test is annotated as covering
+              ac-active-inflight-provisioning-artifact-preserved, but it sets up no
+              activeTaskRefs/provisioning ownership and then asserts the corrupt workspace is
+              removed. That proves cleanup eligibility, not preservation of
+              active/in-flight/provisioning artifacts. Remove this AC marker or add a separate
+              behavioral assertion where a protected artifact survives."
+            created_at: 2026-05-13T17:39:32.078Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-13T17:36:13.784Z
-    updated_at: 2026-05-13T17:36:38.902Z
+    updated_at: 2026-05-13T17:39:32.078Z
     notes: []
