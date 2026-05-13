@@ -32855,18 +32855,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-test-cleanup-protection-positive-and-regression-cases/01krf37z
-    canonical_branch_head: 763376ec5214f8756cb913841341001367df4767
+    canonical_branch_head: 2371bf574df635f21e6a0fd6c2476736eecbf150
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-13T04:12:34.093Z
+      updated_at: 2026-05-13T04:36:23.746Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T04:12:58.558Z
+      updated_at: 2026-05-13T04:36:23.746Z
     integration:
       status: pending
       detail: null
@@ -32874,7 +32874,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 763376ec5214f8756cb913841341001367df4767
-      updated_at: 2026-05-13T04:12:34.093Z
+      updated_at: 2026-05-13T04:36:23.746Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KRF37ZHJ6AEZ14HEADGHPX6V"
@@ -32882,9 +32882,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T04:12:58.558Z
-      last_reconciled_at: 2026-05-13T04:12:58.558Z
+      last_reconciled_at: 2026-05-13T04:36:23.746Z
       created_at: 2026-05-13T04:12:34.093Z
-      updated_at: 2026-05-13T04:12:58.558Z
+      updated_at: 2026-05-13T04:36:23.746Z
     workspace_id: dispatch-workspace-01KRF37ZHJ6AEZ14HEADGHPX6V
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
