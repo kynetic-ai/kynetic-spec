@@ -48694,7 +48694,7 @@ runs:
     completed_at: 2026-05-13T02:55:02.414Z
   - _ulid: 01KRFN239EGNH2C5GPKFPMAP4J
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -48709,7 +48709,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T03:11:57.075Z
-        completed_at: 2026-05-13T03:11:57.075Z
+        completed_at: 2026-05-13T03:12:21.063Z
+        notes: "Friction points: changed-file lint verification was harder than necessary. Running npm run
+          lint -- src/agent-runtime/workspace.ts tests/dispatch-artifact-protection.test.ts
+          tests/dispatch-workspace-cleanup.test.ts still invoked the package script's broad src/
+          tests/ packages/ target and surfaced unrelated repo-wide lint errors, so the review had to
+          fall back to npx oxlint on the changed files. Secondary note: raw kspec validate still
+          exits 6 on known repo warnings; --warnings-ok is the correct gate and already known from
+          prior validation work."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T03:12:21.063Z
+        completed_at: 2026-05-13T03:12:21.063Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T03:11:06.030Z
