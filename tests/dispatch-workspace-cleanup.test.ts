@@ -1143,6 +1143,91 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
     await expect(fs.access(orphanRoot)).rejects.toThrow();
   });
 
+  // AC: @dispatch-workspace-cleanup-policy ac-corrupt-metadata-cleanup-eligible
+  // Regression: a dispatcher-managed worktree whose .kspec-dispatch-workspace.json
+  // is unparseable must be classified as cleanup-eligible (not preserved
+  // indefinitely) when the registry is loaded successfully, no non-closed
+  // record protects the workspace, and no activeTaskRefs option protects the
+  // task. Without this classification the artifact would survive every
+  // reconciliation pass and silently accumulate as dispatch-owned cruft under
+  // the worktree root.
+  it("removes a dispatcher-managed worktree with corrupt metadata when no protection source applies", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 50)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Corrupt Metadata Cleanup",
+        slugs: ["task-corrupt-metadata-cleanup"],
+      },
+    });
+
+    // Corrupt the on-disk metadata so it cannot be parsed. The registry loads
+    // successfully (no parse error) but contains no record protecting this
+    // workspace, and no activeTaskRefs option is supplied. Under the clarified
+    // policy this is a "trusted registry/protection state + untrusted artifact
+    // metadata + no protected owner" classification — cleanup-eligible.
+    await fs.writeFile(
+      workspaceMetadataPath(workspace.cwd),
+      "{ not-valid-json: ${tempDir} <<<corrupt>>>",
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    await expect(fs.access(workspace.cwd)).rejects.toThrow();
+    expect(
+      git(tempDir, "branch --list dispatch/task/task-corrupt-metadata-cleanup/01task00"),
+    ).toBe("");
+    expect(git(tempDir, "worktree list --porcelain")).not.toContain(
+      `worktree ${workspace.cwd}`,
+    );
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-dispatch-root-unknown-entries-owned
+  // Regression: both unknown files and unknown directories placed directly
+  // under the configured dispatch worktree root must be classified as
+  // dispatch-owned garbage when registry/protection state is trusted and no
+  // protected workspace path equals or contains them. The earlier behavior
+  // preserved unknown root entries as user/operator data — that defeated the
+  // dispatch-owned ownership contract for the worktree root.
+  it("removes unknown files and directories directly under the worktree root when no workspace path overlaps", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const worktreeRoot = path.join(tempDir, ".kspec-worktrees");
+    await fs.mkdir(worktreeRoot, { recursive: true });
+
+    const unknownFile = path.join(worktreeRoot, "scratch-note.txt");
+    await fs.writeFile(unknownFile, "operator scratch\n", "utf-8");
+
+    const unknownDir = path.join(worktreeRoot, "scratch-dir");
+    await fs.mkdir(unknownDir, { recursive: true });
+    await fs.writeFile(path.join(unknownDir, "inner.txt"), "inner\n", "utf-8");
+
+    // Registry loads successfully and contains no record. With no
+    // activeTaskRefs option and no protected path overlap, both entries
+    // classify as dispatch-owned garbage.
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    await expect(fs.access(unknownFile)).rejects.toThrow();
+    await expect(fs.access(unknownDir)).rejects.toThrow();
+  });
+
   // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
   it("reaps a closing workspace with no active ownership and resolved integration", async () => {
     await seedRepo(tempDir);

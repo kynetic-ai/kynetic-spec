@@ -4517,6 +4517,126 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     await engine.stop();
   });
 
+  // AC: @dispatch-workspace-registry ac-task-state-drives-recovery-after-untrusted-artifact-cleanup
+  // AC: @dispatch-workspace-cleanup-policy ac-corrupt-metadata-cleanup-eligible
+  // Regression: after artifact cleanup removes a dispatcher-managed worktree
+  // because its on-disk metadata was untrusted and no trusted protection state
+  // classified it as protected, recovery for a non-terminal task must be
+  // driven from trusted task state — not from the removed corrupt artifact.
+  // The dispatcher must requeue the task and reprovision a fresh workspace
+  // rather than silently discarding the queue entry because its artifact was
+  // cleaned.
+  it("reprovisions a fresh workspace after corrupt-metadata cleanup removes the prior artifact", async () => {
+    const worker = makeTestAgent({
+      id: "task-worker",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [worker]);
+
+    const taskId = testUlid("TASK", 35);
+    const taskRef = `@${taskId}`;
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
+
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: testDir,
+      taskRef,
+      task: {
+        title: "Corrupt Artifact Recovery",
+        slugs: ["task-corrupt-artifact-recovery"],
+      },
+    });
+    const canonicalBranch = workspace.metadata.canonicalBranch;
+    expect(fsSync.existsSync(workspace.cwd)).toBe(true);
+
+    // Corrupt the artifact metadata so it cannot be parsed, AND clear the
+    // registry so no record protects the workspace. With no activeTaskRefs
+    // passed in, reconcileDispatchWorkspaceArtifacts must classify the
+    // artifact as cleanup-eligible and remove both the worker worktree and
+    // its canonical dispatch branch.
+    await fs.writeFile(
+      path.join(workspace.cwd, ".kspec-dispatch-workspace.json"),
+      "{ corrupt-json-payload",
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(testDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
+
+    await workspaceModule.reconcileDispatchWorkspaceArtifacts(testDir);
+
+    // Sanity: the prior artifact (worker worktree + canonical branch) is gone
+    // before the dispatch engine starts. This is the precondition that proves
+    // recovery is driven from trusted task state, not from corrupt metadata.
+    expect(fsSync.existsSync(workspace.cwd)).toBe(false);
+    expect(git(testDir, `branch --list ${canonicalBranch}`)).toBe("");
+
+    // Restore any module-level spies left over from earlier tests in this
+    // describe block (which does not auto-restoreAllMocks in afterEach) so
+    // our fresh spy below sees a clean call history.
+    vi.restoreAllMocks();
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => ({
+      session: {} as any,
+      outcome: "success" as const,
+      durationMs: 1,
+    }));
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+
+    await engine.start();
+    await waitForMockCall(runSpy);
+
+    // The non-terminal pending task drove recovery from trusted task state
+    // alone: provisioning created a fresh workspace for the same task ref,
+    // and the worker agent was invoked. The task was not silently discarded
+    // because its corrupt artifact was cleaned, satisfying
+    // ac-task-state-drives-recovery-after-untrusted-artifact-cleanup.
+    expect(runSpy).toHaveBeenCalledTimes(1);
+    const firstCallArg = runSpy.mock.calls[0]?.[0] as {
+      taskRef: string;
+      agent: { id: string };
+      cwd: string;
+    };
+    expect(firstCallArg.taskRef).toBe(taskRef);
+    expect(firstCallArg.agent.id).toBe("task-worker");
+
+    // A fresh worker worktree was provisioned under the configured dispatch
+    // root. Its basename ends with the deterministic short-id derived from
+    // the task ref, confirming the workspace belongs to this task — the
+    // engine reprovisioned it from trusted task state without depending on
+    // the removed corrupt artifact path.
+    const shortId = taskId.slice(0, 8).toLowerCase();
+    const worktreeRoot = path.join(testDir, ".kspec-worktrees");
+    expect(firstCallArg.cwd.startsWith(worktreeRoot + path.sep)).toBe(true);
+    expect(path.basename(firstCallArg.cwd).endsWith(`-${shortId}`)).toBe(true);
+    expect(fsSync.existsSync(firstCallArg.cwd)).toBe(true);
+
+    // A canonical dispatch branch was created for this task ref. The
+    // registry record was rewritten with the freshly provisioned workspace.
+    const registry = YAML.parse(
+      await readTestOutput(path.join(testDir, "project.dispatch-workspaces.yaml")),
+    ) as { workspaces?: Array<{ task_ref: string; canonical_branch: string }> };
+    const reprovisionedRecord = registry.workspaces?.find((r) => r.task_ref === taskRef);
+    expect(reprovisionedRecord).toBeDefined();
+    expect(reprovisionedRecord?.canonical_branch).toMatch(
+      new RegExp(`^dispatch/task/.+/${shortId}$`),
+    );
+    expect(
+      git(testDir, `branch --list ${reprovisionedRecord!.canonical_branch}`),
+    ).toContain(reprovisionedRecord!.canonical_branch);
+
+    await engine.stop();
+  });
+
   // AC: @dispatch-workspace-cleanup-policy ac-6
   // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1, ac-2
   // Discovery now recovers from reviewer metadata when worker worktree is gone.
