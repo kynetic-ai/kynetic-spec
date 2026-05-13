@@ -49977,9 +49977,23 @@ runs:
     completed_at: 2026-05-13T17:53:12.050Z
   - _ulid: 01KRHAR66ZZ6C6ARWBJ2PM5KXA
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-13T18:49:24.447Z
+        completed_at: 2026-05-13T18:50:40.916Z
+        notes: "Worked well: starting from the detached snapshot, reading the prior review before trusting
+          worker notes, then verifying AC annotations with rg and line reads made the fix-cycle
+          review straightforward. The detached reviewer merge helper cleanly handled manual_merge
+          and refreshed the occupied dev worktree. Required review checks and evidence were recorded
+          before verdict, and task completion synced @dispatch-workspace-cleanup-policy to
+          implemented."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-13T18:50:40.916Z
+        completed_at: 2026-05-13T18:50:40.916Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T18:49:24.447Z
