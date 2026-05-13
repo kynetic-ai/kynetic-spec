@@ -637,3 +637,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-13T02:01:30.004Z
+  - _ulid: 01KRFJQKPHCNCQCHDZNRWF50VW
+    content: "Fix cycle 16: addressed cycle-15 blocker @01KRFG8N. Extended statementBindsNameOpaquely to
+      classify TSEnumDeclaration, TSModuleDeclaration (namespace with body, non-declare), and
+      TSImportEqualsDeclaration as opaque helper-name bindings alongside the existing
+      ClassDeclaration handling. The reviewer's exact probe (enum killPid { noop } shadowing an
+      approved import + onTestFinished(() => killPid(pid))) now exits 1 with the
+      no-leaky-test-daemon error; same for the helper-body enum stopPidBounded shadow of the
+      approved shared primitive. Added 4 regression tests mirroring the reviewer's probes: enum at
+      call-site, enum inside helper body, export enum at module top, and namespace
+      TSModuleDeclaration shadow. Pure type-only declarations (interface/type/bodyless declare)
+      deliberately remain non-opaque since they are erased at runtime. Targeted lint suites: 23
+      suites, 379 tests pass. Full npm test: 9166 passed, 5 skipped of 9171."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T02:30:25.233Z
