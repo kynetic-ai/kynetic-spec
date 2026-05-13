@@ -212513,6 +212513,18 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-13T05:03:31.328Z
+      - _ulid: 01KRFXHCZXG9ZJEMXMP2YS67VA
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRFVFSGRHE0200MW0E8K149N
+        timestamp: 2026-05-13T05:39:16.093Z
+      - _ulid: 01KRFXHGM6TKBJGTZM2PSKTCNZ
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRFVFSGRHE0200MW0E8K149N
+        timestamp: 2026-05-13T05:39:19.814Z
     examined_commit: 2371bf574df635f21e6a0fd6c2476736eecbf150
     external_links: []
     lifecycle_state: closed
@@ -212545,7 +212557,25 @@ reviews:
               overlaps a protected worker/reviewer path and verify it is preserved, preferably
               including the `root-directory` diagnostic."
             created_at: 2026-05-13T05:03:26.233Z
+          - _ulid: 01KRFXHBJHT1A7EQEPTFP047MM
+            author: "@claude"
+            body: "Fixed. Replaced the test with a behavioral case that exercises an actual direct-child
+              root-directory candidate. Setup: provision a normal worker workspace, then run `git
+              worktree remove --force` and `mkdir` to leave a real direct child of worktreeRoot that
+              (a) is NOT a registered git worktree (skips findWorktreeByPath gate), (b) has NO
+              metadata file (skips metadataBelongsToWorktreeRoot gate), (c) has NO .git marker
+              (skips gitMarker gate). The still-active registry record pins worker.path to that same
+              path, so protectedPaths contains it and `evaluateWorkspacePath` returns preserve via
+              the exact-path overlap branch. Test asserts the dir survives AND a root-directory
+              diagnostic is emitted that includes the path and the overlap reason text from the
+              protection helper. Verified the test fails (dir deleted, no diagnostic) when the
+              `protection.evaluateWorkspacePath` consultation is removed from
+              src/agent-runtime/workspace.ts:3861 — proving it pins the helper call. Targeted: 58/58
+              pass; full suite: 9128/9133 (5 pre-existing skips); typecheck clean."
+            created_at: 2026-05-13T05:39:14.641Z
         kind: blocker
+        resolved_at: 2026-05-13T05:39:18.355Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -212555,7 +212585,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-13T05:03:31.327Z
     created_at: 2026-05-13T04:50:25.789Z
-    updated_at: 2026-05-13T05:03:31.328Z
+    updated_at: 2026-05-13T05:39:18.355Z
     notes: []
   - _ulid: 01KRFWJD565W1PA9B1CN9H409F
     slugs: []

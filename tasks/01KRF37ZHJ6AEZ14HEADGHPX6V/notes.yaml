@@ -102,3 +102,21 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-13T05:03:33.436Z
+  - _ulid: 01KRFXHJ59FP8MYCE5TQGY2DED
+    content: "Fix cycle 1: addressed the only blocker thread from review @01KRFTQZBXREYNAXRMG1RDX5ZH.
+      Replaced the root-directory overlap test in tests/dispatch-workspace-cleanup.test.ts with a
+      behavioral case that actually exercises the root-directory cleanup surface. The previous
+      version set overlappingRoot = path.dirname(workspace.cwd) which resolves to the worktree root
+      itself — never iterated by the root-directory pruning loop (which only iterates
+      fs.readdir(worktreeRoot)) — so the test would pass even if the protection helper consultation
+      were removed. New design: provision a worker, then strip its git worktree registration and
+      .git marker via `git worktree remove --force` and recreate the directory empty. The registry
+      record still pins worker.path, so the candidate is a real direct child of worktreeRoot that
+      bypasses all earlier skip gates and triggers protection.evaluateWorkspacePath → exact-path
+      overlap → preserve. Test asserts both filesystem preservation and that a
+      `root-directory`-labeled diagnostic is logged with the overlap reason. Mutation-tested:
+      commenting out the rootDecision check produces a failing test (dir deleted, ENOENT). Targeted:
+      58/58 pass. Full suite: 9128/9133 (5 pre-existing skips). Typecheck clean."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T05:39:21.385Z
