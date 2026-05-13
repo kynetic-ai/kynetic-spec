@@ -18885,6 +18885,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-13T16:50:36.617Z
+  - _ulid: 01KRH4XB3XX8JYMQP2FMZ86F1E
+    type: friction
+    content: Detached reviewer snapshots for spec-only review can lack a local .kspec directory, so
+      direct shadow worktree file/git inspection fails even though kspec CLI commands can inspect
+      the spec/task state. Reviewer guidance should make the CLI-only inspection path explicit for
+      detached snapshots.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T17:07:21.853Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
