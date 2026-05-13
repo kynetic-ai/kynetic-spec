@@ -48928,7 +48928,7 @@ runs:
     completed_at: 2026-05-13T04:11:30.776Z
   - _ulid: 01KRFSCR1C8FR08S4VEPFCE7VX
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -48954,7 +48954,21 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-13T04:27:41.710Z
-        completed_at: 2026-05-13T04:27:41.710Z
+        completed_at: 2026-05-13T04:27:51.291Z
+        notes: "Coverage checked with kspec search: 'dispatch shadow mutation lock',
+          '.kspec-dispatch-shadow-mutation.lock', 'detached reviewer merge warning', 'occupied
+          worktree dirty', 'unexpected dirty state after merge', 'ad hoc probe review blocker',
+          'review evidence log', and 'detached reviewer merge helper'. Results: lock suffix/dispatch
+          mutation lock issues are partially covered by completed items such as
+          @task-gitignore-cover-file-lock-directory-suffix and
+          @task-fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents;
+          review evidence logging is already covered by observation @01KR2JD1; detached merge helper
+          has implemented specs/tasks and one inbox about conflict output, but no match for a
+          success-with-dirty-warning refresh case."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-13T04:27:51.291Z
+        completed_at: 2026-05-13T04:27:51.291Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T04:26:49.260Z
