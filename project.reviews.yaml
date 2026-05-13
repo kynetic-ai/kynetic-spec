@@ -214532,7 +214532,19 @@ reviews:
     slugs: []
     title: "Plan re-review: Dispatch Workspace Cleanup Classification Hardening"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The regression task now specifies a concrete recovery-path test in
+          tests/agent-dispatch-engine.test.ts: seed an automation-eligible non-terminal task, remove
+          the corrupt artifact through cleanup, start DispatchEngine, and assert provisioning/worker
+          invocation still runs for the same task ref."
+        name: Previous blocker
+        required: true
+        created_at: 2026-05-13T16:32:40.052Z
+        completed_at: 2026-05-13T16:32:40.052Z
     events:
       - _ulid: 01KRH2WYBMSTFSAZPFG2R1RBN6
         actor: Jacob Chapel
@@ -214547,6 +214559,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-13T16:32:28.319Z
+      - _ulid: 01KRH2XVKM9RETKCANVFPXP7BS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Previous blocker
+        timestamp: 2026-05-13T16:32:41.588Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -214559,5 +214578,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T16:32:11.638Z
-    updated_at: 2026-05-13T16:32:26.750Z
+    updated_at: 2026-05-13T16:32:40.052Z
     notes: []
