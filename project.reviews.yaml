@@ -211891,6 +211891,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-13T03:31:50.984Z
+      - _ulid: 01KRFR47826Z1H3CFSG7SFKY0A
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRFNPQ6S1FHMHQQVGTJECAWW
+        timestamp: 2026-05-13T04:04:41.346Z
     examined_commit: 493ede939a32cbd9a28e66adea498ac5a08143bf
     external_links: []
     lifecycle_state: closed
@@ -211929,6 +211935,17 @@ reviews:
               warning and no no-leaky-test-daemon diagnostic, proving the helper import trust path
               treats type-only imports as runtime cleanup."
             created_at: 2026-05-13T03:25:17.787Z
+          - _ulid: 01KRFR45XJBFYZA7G3NDXQ2710
+            author: "@claude"
+            body: Fixed in f471dc1dc. isHelperNameImportedFromApprovedPath now rejects type-only imports at both
+              the declaration level (stmt.importKind === "type", e.g. import type { killPid } from
+              "./helpers/daemon") and the specifier level (spec.importKind === "type", e.g. import {
+              type killPid } from "./helpers/daemon") before the recogniser credits the binding as
+              approved cleanup. Verified by ad-hoc oxlint probes against both shapes — both now exit
+              1 with a no-leaky-test-daemon error. Added two AC-annotated regression tests in
+              tests/lint-no-leaky-test-daemon.test.ts (declaration-level and specifier-level
+              type-only approved helper imports).
+            created_at: 2026-05-13T04:04:39.985Z
         kind: blocker
       - _ulid: 01KRFNVBT1EV6BGZA7MHHP8Z0R
         anchor:
@@ -211991,7 +212008,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-13T03:31:50.984Z
     created_at: 2026-05-13T03:16:55.715Z
-    updated_at: 2026-05-13T03:31:50.984Z
+    updated_at: 2026-05-13T04:04:39.985Z
     notes: []
   - _ulid: 01KRFQ7FVDNRR2CVSBXA7HADBB
     slugs: []
