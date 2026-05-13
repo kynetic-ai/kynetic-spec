@@ -44,3 +44,56 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-13T04:16:20.849Z
+  - _ulid: 01KRFSXTGMS3W4EAZ7EJA9JGWD
+    content: >-
+      Implemented coverage. Targeted tests: tests/dispatch-workspace-cleanup.test.ts (29/29 passing)
+      and tests/dispatch-workspace-registry.test.ts (29/29 passing). Full suite: 9128/9133 (5
+      pre-existing skips). Typecheck clean.
+
+
+      Test additions (700 lines total):
+
+      - tests/dispatch-workspace-cleanup.test.ts (620 lines): new 'dispatch artifact cleanup
+      protection (positive and regression cases)' describe block with 16 tests covering each AC
+      bullet from the task plan.
+
+      - tests/dispatch-workspace-registry.test.ts (80 lines): 2 partial-provisioning classification
+      tests covering @dispatch-workspace-registry ac-partial-provisioning-classified-before-cleanup
+      (preserved-provisioning + closing-reap-eligible).
+
+
+      Coverage map:
+
+      1. Protected cases — provisioning, stale/integrating/cleanup_blocked (parameterized),
+      closing+unresolved-integration, non-closed orphan-branch-sweep preservation, reviewer-snapshot
+      short-id basename match, root-dir-overlap with worker path.
+
+      2. Cleanup-positive — truly orphan dispatch branch, truly orphan reviewer-snapshot, truly
+      orphan root dir, closing+resolved-integration reaped to closed.
+
+      3. Ambiguous-state — load-failed registry preserves canonical branch via no-blind-deletion
+      with surface-labeled diagnostic; helper-level evaluateDispatchBranch/evaluateWorkspacePath
+      assertions.
+
+      4. Per-surface guardrail — single-pass diagnostic emission across metadata-less-worktree,
+      reviewer-snapshot, root-directory, dispatch-branch.
+
+      5. Regression — bootstrap-like nested files (package.json +
+      node_modules/some-dep/{package.json,bin/tool.js}) under worker workspace;
+      reconcileDispatchWorkspaceArtifacts({activeTaskRefs:[taskRef]}) preserves parent + every
+      nested file + canonical branch.
+
+
+      Adjusted two initial draft tests after first run:
+
+      - Closing+unresolved-integration: corrected assertion — reap-candidate diagnostic IS expected
+      (it labels why reap is skipped), changed to verify diagnostic presence + reason text.
+
+      - Reviewer-snapshot path overlap: redesigned to exercise the active short-id basename match
+      (the only path where the reviewer-snapshot surface consults the protection helper when the
+      registry has no record), since recoverWorkspaceRecordFromMetadata routes worker entries
+      through the registry-derived reviewerWorktreeDir and so my original 'edit metadata only' setup
+      never exercised the reviewer-snapshot decision.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T04:36:08.852Z
