@@ -1583,11 +1583,39 @@ export class DispatchEngine {
     return roles;
   }
 
+  /**
+   * Parse the task ref portion of an in-flight key.
+   * In-flight keys are formatted as `${agentId}:${taskRef}`. Splitting on the
+   * first `:` preserves any `:` characters that may appear within a task ref.
+   * Returns null for malformed keys that lack a separator.
+   */
+  private _parseInFlightTaskRef(key: string): string | null {
+    const colonIdx = key.indexOf(":");
+    if (colonIdx < 0) return null;
+    const taskRef = key.slice(colonIdx + 1);
+    return taskRef.length > 0 ? taskRef : null;
+  }
+
+  /**
+   * Task refs currently protected from workspace artifact cleanup.
+   * Includes both registered active invocations (activeInvocationDetails) and
+   * tasks that have been dequeued for spawn but not yet registered as active
+   * (inFlightTaskKeys), so cleanup sees the same protection set the scheduler
+   * uses for deduplication.
+   *
+   * AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+   */
   private _activeTaskRefs(): Set<string> {
     const refs = new Set<string>();
     for (const record of this.activeInvocationDetails.values()) {
       if (record.taskRef) {
         refs.add(record.taskRef);
+      }
+    }
+    for (const key of this.inFlightTaskKeys) {
+      const taskRef = this._parseInFlightTaskRef(key);
+      if (taskRef) {
+        refs.add(taskRef);
       }
     }
     return refs;
@@ -1609,7 +1637,7 @@ export class DispatchEngine {
     }
     // Check in-flight keys (format: "agentId:taskRef") across all agents
     for (const key of this.inFlightTaskKeys) {
-      if (key.endsWith(`:${taskRef}`)) {
+      if (this._parseInFlightTaskRef(key) === taskRef) {
         return true;
       }
     }
