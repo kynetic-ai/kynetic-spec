@@ -49859,9 +49859,24 @@ runs:
     completed_at: 2026-05-13T17:07:30.864Z
   - _ulid: 01KRH6A330RTQW5C5NX3DG8535
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-13T17:31:48.193Z
+        completed_at: 2026-05-13T17:34:00.566Z
+        notes: "What worked well: behavioral test approach (provision real workspace → corrupt → cleanup →
+          verify removal) made the cleanup classification ACs straightforward; reading existing
+          tests in the same file before writing new ones revealed the right helpers
+          (provisionDispatchWorkspace, reconcileDispatchWorkspaceArtifacts,
+          captureDispatchCleanupDiagnostics, setLifecycleStateThroughRegistry). No production source
+          changes were needed — the existing centralized protection helper already implemented the
+          clarified classifications correctly."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-13T17:34:00.566Z
+        completed_at: 2026-05-13T17:34:00.566Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-13T17:31:48.193Z
