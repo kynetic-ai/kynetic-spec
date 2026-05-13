@@ -676,3 +676,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-13T03:31:53.481Z
+  - _ulid: 01KRFR5XFFAHZZJN00M8GCBQJR
+    content: "Fix cycle 18: addressed both cycle-17 blockers in @01KRFNCR. The approved-helper
+      recogniser (isHelperNameImportedFromApprovedPath) and the approved-shared-cleanup-primitive
+      recogniser (isSharedCleanupPrimitiveImported) both now reject type-only imports —
+      declaration-level (stmt.importKind === 'type', e.g. 'import type { killPid } from
+      \"./helpers/daemon\"') and specifier-level (spec.importKind === 'type', e.g. 'import { type
+      killPid } from \"./helpers/daemon\"'). Either marker alone erases the runtime binding, so both
+      are checked independently. Added four AC-annotated regression tests covering all four shapes
+      (helper × declaration-level, helper × specifier-level, primitive × declaration-level,
+      primitive × specifier-level). Verified by ad-hoc oxlint probes against each shape: all four
+      now exit 1 with a no-leaky-test-daemon diagnostic. Targeted suites pass (387 tests). Full npm
+      test --fresh passes (9174 passed + 5 skipped of 9179). Changed-file oxlint reports 0 errors."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T04:05:36.879Z
