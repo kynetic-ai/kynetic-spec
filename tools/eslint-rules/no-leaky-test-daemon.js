@@ -2415,7 +2415,10 @@ const noLeakyTestDaemon = {
      * via `onTestFinished`, which registers a teardown for the currently
      * running test and is invoked once that test settles. That is the
      * only test-framework hook that scopes cleanup to the just-started
-     * detached daemon.
+     * detached daemon. The other accepted per-test cleanup boundary is a
+     * same-flow `try { ... } finally { kill }` block (handled separately
+     * by `isInTryWithFinallyCleanup`); both are scoped to the current
+     * test invocation and run on every termination path.
      *
      * The lifecycle hooks (`afterEach`, `afterAll`, `beforeEach`,
      * `beforeAll`) are NOT recognised here because registering them
@@ -2438,30 +2441,40 @@ const noLeakyTestDaemon = {
      * next observation (`@daemon-test-guardrail-precision`
      * `ac-detached-cleanup-before-observation`).
      *
-     * Bare names only — process.on("exit", ...) is matched separately by
-     * `isProcessOnExitRegistration` because it is a MemberExpression
-     * callee shape.
+     * Process-lifecycle hooks (`process.on("exit"|"SIGTERM"|…, <fn>)`,
+     * `process.once(...)`) are also NOT recognised here. They fire when
+     * the Node process is shutting down or receiving a termination
+     * signal — a process boundary, not a per-test boundary. A daemon
+     * left running by the current test survives every later test in the
+     * file before the handler runs, so process-lifecycle callbacks do
+     * not satisfy the scoped-cleanup requirement of
+     * `@daemon-test-guardrail-precision`
+     * `ac-cleanup-registration-is-test-scoped`. A test MAY register
+     * `process.on(...)` alongside a per-test boundary as a defence-in
+     * -depth fallback for crashes or hard exits; that supplemental shape
+     * is detected by `isSupplementalProcessFallback` for diagnostics and
+     * documentation purposes only, never as a guardrail-satisfying
+     * cleanup.
      */
     const CLEANUP_REGISTRATION_WRAPPER_NAMES = new Set([
       "onTestFinished",
     ]);
 
     /**
-     * Set of Node `process` events whose callbacks WILL run when the
-     * process is shutting down or receiving a termination signal —
-     * registering a daemon-kill on one of these events does prevent the
-     * leak the rule is guarding against. Any other event (`message`,
-     * `disconnect`, `warning`, `unhandledRejection`, etc.) fires during
-     * normal IPC or error reporting and is not guaranteed to run before
-     * the test ends, so a kill registered there does NOT credit cleanup.
+     * Set of Node `process` events that fire at process shutdown or on a
+     * termination signal. `process.on(<event>, …)` registrations for
+     * these events are recognised as SUPPLEMENTAL safety nets — they
+     * are NOT per-test cleanup boundaries and never satisfy the scoped
+     * cleanup contract on their own. The set is preserved so the rule
+     * can distinguish "supplemental fallback" from "IPC handler that
+     * happens to share the `process.on(...)` shape" in comments and
+     * documentation.
      *
-     * The cycle-4 reviewer probe `process.on("message", () =>
-     * killPid(p))` previously credited cleanup because the predicate
-     * accepted any `process.on(...)` event. Constraining the event name
-     * to this set rejects that probe and keeps the legitimate
-     * `process.on("exit"|"SIGINT"|…)` patterns valid.
+     * The accepted per-test boundaries are `onTestFinished(<fn>)` and
+     * same-flow `try { ... } finally { kill }` (see
+     * `CLEANUP_REGISTRATION_WRAPPER_NAMES` and `isInTryWithFinallyCleanup`).
      */
-    const PROCESS_EXIT_EVENT_NAMES = new Set([
+    const SUPPLEMENTAL_PROCESS_EVENT_NAMES = new Set([
       "exit",
       "beforeExit",
       "SIGINT",
@@ -2472,53 +2485,80 @@ const noLeakyTestDaemon = {
     ]);
 
     /**
-     * True when `callNode` is a `process.on(<exit-event>, <callback>)`
-     * registration whose callback argument is the same node passed in
-     * `callbackArg`, AND the event name is a string literal naming a
-     * process exit/signal event (see `PROCESS_EXIT_EVENT_NAMES`). Used
-     * by `isCleanupRegistrationCallback` to recognise the standard Node
-     * process-lifecycle cleanup pattern alongside the vitest hook names.
+     * True when `callNode` is a `process.on(<exit-event>, <callback>)` or
+     * `process.once(<exit-event>, <callback>)` registration whose callback
+     * argument is the same node passed in `callbackArg`, AND the event
+     * name is a string literal naming a process exit/signal event (see
+     * `SUPPLEMENTAL_PROCESS_EVENT_NAMES`).
      *
-     * The event name MUST be constrained — `process.on("message",
-     * killer)` is an IPC handler, not cleanup, and the callback may run
-     * during normal communication or never at all before the test ends.
-     * Crediting it as cleanup leaves the detached daemon leaking on the
-     * straight-line path to the next observation (cycle-4 reviewer
-     * blocker on `@daemon-test-guardrail-precision`
-     * `ac-detached-cleanup-before-observation`).
+     * NOTE: This predicate is intentionally NOT consulted by
+     * `isCleanupRegistrationCallback`. Process-lifecycle callbacks fire
+     * at process shutdown (or never at all, if the process is killed
+     * with `SIGKILL` or exits without draining handlers), which is a
+     * boundary that spans every later test in the file. A daemon whose
+     * only cleanup is `process.on("exit", () => kill(pid))` is still
+     * alive when the next test starts and therefore violates
+     * `@daemon-test-guardrail-precision`
+     * `ac-cleanup-registration-is-test-scoped`.
+     *
+     * The predicate exists so future diagnostics or auxiliary analyses
+     * can distinguish "supplemental fallback for crash safety" from
+     * "IPC handler that happens to share the `process.on(...)` shape"
+     * (`process.on("message", killer)`). Both shapes are equally
+     * non-credit-bearing to the cleanup contract; the predicate gates
+     * the comments and any future documentation-oriented reporting
+     * rather than gating the cleanup decision.
      */
-    function isProcessOnExitRegistration(callNode, callbackArg) {
+    function isSupplementalProcessFallback(callNode, callbackArg) {
       if (!callNode || callNode.type !== "CallExpression") return false;
       const callee = callNode.callee;
       if (!callee || callee.type !== "MemberExpression") return false;
       if (!callee.object || callee.object.type !== "Identifier") return false;
       if (callee.object.name !== "process") return false;
       if (!callee.property || callee.property.type !== "Identifier") return false;
-      if (callee.property.name !== "on") return false;
+      if (callee.property.name !== "on" && callee.property.name !== "once") {
+        return false;
+      }
       if (!callNode.arguments.includes(callbackArg)) return false;
       const eventArg = callNode.arguments[0];
       if (!eventArg || eventArg.type !== "Literal") return false;
       if (typeof eventArg.value !== "string") return false;
-      return PROCESS_EXIT_EVENT_NAMES.has(eventArg.value);
+      return SUPPLEMENTAL_PROCESS_EVENT_NAMES.has(eventArg.value);
     }
 
     /**
      * True when `fnNode` (a FunctionDeclaration, FunctionExpression, or
      * ArrowFunctionExpression) is itself an argument to a recognised
      * cleanup-registration wrapper call — i.e. its body WILL be invoked by
-     * the test framework at a defined cleanup boundary.
+     * the test framework at a defined per-test cleanup boundary.
      *
-     * Patterns recognised as registrations:
+     * The ONLY pattern recognised as a per-test registration is:
      *   - `onTestFinished(<fn>)` — vitest per-test teardown, the only
-     *     hook that scopes cleanup to the current test.
-     *   - `process.on("exit"|"SIGTERM"|…, <fn>)` — Node process-lifecycle
-     *     teardown.
+     *     test-framework hook that scopes cleanup to the current test.
+     *
+     * (Same-flow `try { ... } finally { kill }` is the other accepted
+     * per-test boundary; it is recognised structurally by
+     * `isInTryWithFinallyCleanup` rather than as a registration callback
+     * because the kill statement sits inside a finalizer block, not an
+     * argument-slot callback.)
+     *
      * Lifecycle hooks (`afterEach` / `afterAll` / `beforeEach` /
      * `beforeAll`) are intentionally NOT recognised: registering one
      * inside a test body does not give the current test scoped cleanup
      * for a daemon that was just started (see
      * `CLEANUP_REGISTRATION_WRAPPER_NAMES` for the rationale and the
      * cycle-6 reviewer probe).
+     *
+     * Process-lifecycle callbacks (`process.on("exit"|"SIGTERM"|…, fn)`,
+     * `process.once(...)`) are also NOT recognised. They run at process
+     * shutdown — a global boundary, not the per-test boundary the spec
+     * requires — so a daemon whose only cleanup is on a process event
+     * still leaks into every subsequent test in the file. The
+     * `isSupplementalProcessFallback` predicate exists for documentation
+     * and diagnostics but is never consulted here as a registration
+     * shape. This is the boundary-classification fix for
+     * `@daemon-test-guardrail-precision`
+     * `ac-cleanup-registration-is-test-scoped`.
      *
      * The callback must occupy an ARGUMENT slot of the call (not the
      * callee position), so an IIFE-shaped node like `(() => kill())()`
@@ -2548,7 +2588,11 @@ const noLeakyTestDaemon = {
       ) {
         return true;
       }
-      return isProcessOnExitRegistration(parent, fnNode);
+      // Process-lifecycle callbacks (`process.on("exit"|…)`,
+      // `process.once(...)`) are explicitly NOT recognised as cleanup
+      // boundaries — see the docstring for the boundary-classification
+      // rationale.
+      return false;
     }
 
     /**
@@ -4062,10 +4106,14 @@ const noLeakyTestDaemon = {
      * daemon-cleanup shape (see `isDaemonCleanupCallExpression`) AND must
      * appear at a position that will execute — the walker descends into
      * function/arrow bodies only when the function/arrow is itself an
-     * argument to a recognised cleanup-registration wrapper
-     * (`onTestFinished`, `process.on(<exit-event>, …)`). Lifecycle hooks
-     * (`afterEach`/`afterAll`/`beforeEach`/`beforeAll`) are intentionally
-     * not recognised; see `CLEANUP_REGISTRATION_WRAPPER_NAMES`. See
+     * argument to a recognised per-test cleanup-registration wrapper
+     * (`onTestFinished`). Lifecycle hooks
+     * (`afterEach`/`afterAll`/`beforeEach`/`beforeAll`) and
+     * process-lifecycle handlers (`process.on(<exit-event>, …)`,
+     * `process.once(...)`) are intentionally not recognised — neither
+     * scopes cleanup to the current test boundary. See
+     * `CLEANUP_REGISTRATION_WRAPPER_NAMES` and
+     * `isSupplementalProcessFallback`. See
      * `subtreeContainsDaemonCleanupCall`.
      *
      * Token-only text matches (e.g. `console.log("SIGTERM docs")`,
@@ -5516,13 +5564,12 @@ const noLeakyTestDaemon = {
     /**
      * Scan the sibling statements between a detached daemon start and
      * the next observation (await/expect/daemon-observation). When a
-     * cleanup-registration callback (`onTestFinished(...)` /
-     * `process.on(<exit-event>, ...)`) is found whose body contains a
-     * recognised daemon-kill CallExpression but whose closure captures
-     * an outer identifier that is statically unbound at the registration
-     * site, return the offender. Returns null when no such mismatch is
-     * found — the caller then falls back to the generic "missing
-     * cleanup" diagnostic.
+     * per-test cleanup-registration callback (`onTestFinished(...)`) is
+     * found whose body contains a recognised daemon-kill CallExpression
+     * but whose closure captures an outer identifier that is statically
+     * unbound at the registration site, return the offender. Returns
+     * null when no such mismatch is found — the caller then falls back
+     * to the generic "missing cleanup" diagnostic.
      *
      * Used by `Program:exit` to pick the precise diagnostic when
      * `detachWithoutCleanup` returns true: an unbound capture is reported
