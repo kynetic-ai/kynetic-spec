@@ -1,1 +1,32 @@
-notes: []
+notes:
+  - _ulid: 01KRG344T6XMEETEK6PBKGV0A6
+    content: >-
+      Approach: This is a validation task. No code changes expected.
+
+
+      Plan:
+
+      1. Run targeted tests for cleanup protection (4 files)
+
+      2. Run project quality gates: typecheck, full suite with --fresh, kspec validate --warnings-ok
+
+      3. Capture exact command outputs and exit codes
+
+      4. Verify git/shadow status remain clean (only intended note additions)
+
+
+      ACs being validated (no implementation, behavior already merged):
+
+      - @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+
+      - @dispatch-workspace-cleanup-policy: ac-active-inflight-provisioning-artifact-preserved,
+      ac-protection-applies-to-every-destructive-surface,
+      ac-ambiguous-protection-blocks-blind-deletion
+
+      - @dispatch-workspace-registry ac-partial-provisioning-classified-before-cleanup
+
+
+      Branch is in sync with origin/dev (ffdef6f9d), no rebase needed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T07:16:53.190Z
