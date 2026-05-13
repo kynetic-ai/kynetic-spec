@@ -1,0 +1,89 @@
+_ulid: 01KRH3KWVSVQR9QFWF48T4Z939
+slugs:
+  - task-clarify-dispatch-cleanup-classification-specs
+title: Clarify dispatch cleanup classification specs
+type: task
+description: >
+  What:
+
+  - Update existing specs to make the cleanup classification policy explicit.
+
+  - Add the following acceptance criterion to @dispatch-workspace-cleanup-policy:
+
+    AC id: ac-corrupt-metadata-cleanup-eligible
+    Given: Registry state and centralized cleanup protection state are loaded and trusted, and cleanup finds a dispatcher-managed artifact under the configured dispatch worktree root whose per-workspace metadata is missing, unreadable, or unparseable.
+    When: No non-closed registry record, active task ref, in-flight task ref, or provisioning ownership classifies that artifact as protected.
+    Then: Cleanup may classify the artifact-local metadata as untrusted and remove the artifact as cleanup-eligible instead of preserving it for metadata recovery.
+
+  - Add the following acceptance criterion to @dispatch-workspace-cleanup-policy:
+
+    AC id: ac-dispatch-root-unknown-entries-owned
+    Given: Registry state and centralized cleanup protection state are loaded and trusted, and cleanup finds an unknown file or directory directly under the configured dispatch worktree root.
+    When: The entry is not equal to, contained by, or otherwise associated with a protected active, in-flight, provisioning, or non-closed workspace artifact.
+    Then: Cleanup treats the entry as dispatch-owned garbage and may remove it instead of preserving it as user/operator data.
+
+  - Add the following acceptance criterion to @dispatch-workspace-registry:
+
+    AC id: ac-task-state-drives-recovery-after-untrusted-artifact-cleanup
+    Given: Cleanup removes a dispatch artifact because its artifact-local metadata is untrusted and no trusted protection state classifies it as protected.
+    When: A later dispatch reconciliation or scheduling cycle evaluates a non-terminal task that still needs work.
+    Then: Recovery is driven from trusted task and registry state; the task can be requeued, reprovisioned, or marked stale with actionable recovery detail without relying on the removed corrupt artifact metadata.
+
+  - Leave @dispatch-workspace-cleanup-policy and @dispatch-workspace-registry in implementation
+  status in_progress with --no-cascade until the regression/evidence task proves the clarified
+  behavior.
+
+  - Do not weaken @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion:
+  registry/protection load failures still fail closed. These new ACs only classify artifact-local
+  corrupt metadata or unknown root entries after registry/protection state is trusted.
+
+
+  Why:
+
+  The in-flight cleanup audit found that current cleanup already removes corrupt per-workspace
+  metadata and arbitrary entries under .kspec-worktrees. Jacob confirmed both behaviors are
+  intended: corrupt artifact metadata should be cleaned and recovered from task state, and the
+  dispatch worktree root is dispatch-owned storage.
+
+
+  How:
+
+  - Use kspec item ac add for the three ACs above.
+
+  - Use kspec item set @dispatch-workspace-cleanup-policy --status in_progress --no-cascade and
+  kspec item set @dispatch-workspace-registry --status in_progress --no-cascade unless the follow-up
+  evidence task has already landed in the same change set.
+
+  - Verify each AC appears on the intended existing spec with kspec item get.
+
+  - Run kspec validate --refs --warnings-ok after the spec updates.
+
+
+  Testing:
+
+  - kspec item get @dispatch-workspace-cleanup-policy
+
+  - kspec item get @dispatch-workspace-registry
+
+  - kspec validate --refs --warnings-ok
+
+
+  Covers: @dispatch-workspace-cleanup-policy ac-corrupt-metadata-cleanup-eligible,
+  ac-dispatch-root-unknown-entries-owned; @dispatch-workspace-registry
+  ac-task-state-drives-recovery-after-untrusted-artifact-cleanup
+spec_ref: "@dispatch-workspace-cleanup-policy"
+plan_ref: "@plan-dispatch-workspace-cleanup-classification-hardenin"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - dispatch
+  - workspace
+  - cleanup
+vcs_refs: []
+created_at: 2026-05-13T16:44:43.767Z
+todos: []

@@ -29209,3 +29209,42 @@
   submitted_at: 2026-05-13T06:32:46.676Z
   completed_at: 2026-05-13T07:05:08.316Z
   automation: eligible
+- _ulid: 01KRH3KWVSVQR9QFWF48T4Z939
+  slugs:
+    - task-clarify-dispatch-cleanup-classification-specs
+  title: Clarify dispatch cleanup classification specs
+  type: task
+  spec_ref: "@dispatch-workspace-cleanup-policy"
+  plan_ref: "@plan-dispatch-workspace-cleanup-classification-hardenin"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+    - dispatch
+    - workspace
+    - cleanup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-13T16:44:43.767Z
+- _ulid: 01KRH3KX6743A3FAAN1HQ3KFC6
+  slugs:
+    - task-add-cleanup-classification-regression-coverage
+  title: Add cleanup classification regression coverage
+  type: task
+  spec_ref: "@dispatch-workspace-cleanup-policy"
+  plan_ref: "@plan-dispatch-workspace-cleanup-classification-hardenin"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-clarify-dispatch-cleanup-classification-specs"
+  priority: 1
+  tags:
+    - tests
+    - dispatch
+    - workspace
+    - cleanup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-13T16:44:44.103Z
