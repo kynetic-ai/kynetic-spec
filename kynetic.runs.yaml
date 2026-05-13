@@ -49736,7 +49736,7 @@ runs:
     completed_at: 2026-05-13T10:06:35.082Z
   - _ulid: 01KRGEG8481WMQXFBXK1EQE9E4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -49751,7 +49751,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T10:36:08.269Z
-        completed_at: 2026-05-13T10:36:08.269Z
+        completed_at: 2026-05-13T10:36:21.958Z
+        notes: "Friction points: (1) Evidence logs are awkward to store in review records: using a nit
+          thread creates an unresolved thread that must be manually resolved even though it is not a
+          finding. (2) Recording seven review checks required seven separate kspec review check
+          commands; a batch-friendly or import-from-command-log path would reduce repetitive
+          bookkeeping. (3) The full npm test gate took about 35 minutes; that is expected for
+          release-level confidence, but reviewers need a clean way to distinguish required broad
+          gates from focused task gates without losing evidence."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T10:36:21.958Z
+        completed_at: 2026-05-13T10:36:21.958Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T10:35:44.137Z
