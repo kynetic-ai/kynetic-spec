@@ -50,8 +50,11 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached-reviewer-merge.sh at
+  9ea4ff4d05694d35e7dc779c98bc5a416a5f689a. Review approved after verifying cleanup-boundary
+  classifier changes, targeted lint tests, kspec validate, and full npm test.
 depends_on:
   - "@task-add-guardrail-cleanup-boundary-regressions"
   - "@task-fix-guardrail-cleanup-effect-classification"
@@ -177,8 +180,24 @@ history:
         previous: "@01KRFZ91D1FG251GVT1QGQ94TS"
     command: review-link
     timestamp: 2026-05-13T07:16:19.195Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached-reviewer-merge.sh at 9ea4ff4d05694d35e7dc779c98bc5a416a5f689a.
+          Review approved after verifying cleanup-boundary classifier changes, targeted lint tests,
+          kspec validate, and full npm test.
+        previous: null
+      completed_at:
+        new: 2026-05-13T07:32:37.515Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-13T07:32:37.526Z
 created_at: 2026-05-12T00:14:53.196Z
 started_at: 2026-05-13T07:05:18.615Z
 submitted_at: 2026-05-13T07:05:21.914Z
+completed_at: 2026-05-13T07:32:37.515Z
 todos: []
 automation: eligible
