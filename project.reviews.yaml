@@ -211367,9 +211367,25 @@ reviews:
           kind: nit
           thread_ulid: 01KRFKV2T3Z3MYAEDQH71D8N9M
         timestamp: 2026-05-13T02:49:49.063Z
+      - _ulid: 01KRFKVDRV0R313X7VWM4ZJBVH
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-13T02:49:58.812Z
+      - _ulid: 01KRFKVDRWEHSTBZ760NPXP67B
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-13T02:49:58.812Z
     examined_commit: ad8fd1d4d3466abc43a47cf9a591e7ff09cdfe6a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -211436,7 +211452,14 @@ reviews:
               source-scanning), integration (full suite and changed-file lint).
             created_at: 2026-05-13T02:49:47.588Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-13T02:49:58.811Z
     created_at: 2026-05-13T02:34:48.539Z
-    updated_at: 2026-05-13T02:49:47.588Z
+    updated_at: 2026-05-13T02:49:58.812Z
     notes: []

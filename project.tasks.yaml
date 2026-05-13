@@ -28661,7 +28661,7 @@
   type: task
   spec_ref: "@daemon-test-guardrail-precision"
   plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-add-guardrail-cleanup-effect-regressions"
@@ -28671,7 +28671,7 @@
     - lint
     - daemon
   review_ref: "@01KRFJZMTV861R70M2R54EW1T4"
-  notes_count: 34
+  notes_count: 35
   todos_count: 0
   created_at: 2026-05-12T00:14:52.561Z
   started_at: 2026-05-13T02:30:40.593Z
