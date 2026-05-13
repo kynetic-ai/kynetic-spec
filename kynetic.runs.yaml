@@ -48351,7 +48351,7 @@ runs:
     started_at: 2026-05-13T00:01:26.176Z
   - _ulid: 01KRFAKVXNNKMFGJ9N2DJNM4A6
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -48367,7 +48367,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T00:09:08.053Z
-        completed_at: 2026-05-13T00:09:08.053Z
+        completed_at: 2026-05-13T00:09:16.662Z
+        notes: "Friction points: First, review comment/reply bodies with backticks and command snippets are
+          still easy to corrupt when passed through shell command strings; this session produced a
+          stripped finding body and required a clarifying reply. Second, review check capture
+          requires careful explicit --no-required handling for known pre-existing lint/validate
+          failures; forgetting that makes the review gate look failing even when those checks are
+          informational. Third, full npm test remains high-latency for review turns, so reviewers
+          need to start it early and continue analysis in parallel."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T00:09:16.662Z
+        completed_at: 2026-05-13T00:09:16.662Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T00:08:33.973Z
