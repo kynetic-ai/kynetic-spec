@@ -212557,3 +212557,29 @@ reviews:
     created_at: 2026-05-13T04:50:25.789Z
     updated_at: 2026-05-13T05:03:31.328Z
     notes: []
+  - _ulid: 01KRFWJD565W1PA9B1CN9H409F
+    slugs: []
+    title: Review task-test-dispatch-inflight-bootstrap-race-regression
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRFWJD56HD55BRFR2ZS05C83
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-13T05:22:20.454Z
+    examined_commit: 56258aa7bd91a61a4c908f3f5b6942b05f72844d
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRF37ZZ4E2KKX66YP217WW69"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-13T05:22:20.454Z
+    updated_at: null
+    notes: []
