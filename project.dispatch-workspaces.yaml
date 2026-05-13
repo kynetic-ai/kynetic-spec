@@ -32502,12 +32502,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-13T09:46:05.742Z
+      updated_at: 2026-05-13T09:46:12.755Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T09:46:05.742Z
+      updated_at: 2026-05-13T09:46:12.755Z
     integration:
       status: pending
       detail: null
@@ -32515,24 +32515,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9ea4ff4d05694d35e7dc779c98bc5a416a5f689a
-      updated_at: 2026-05-13T09:46:05.742Z
-    lifecycle_state: ready
+      updated_at: 2026-05-13T09:46:12.755Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRCRJQVWASBCR27BR3D8VFBA"
     task_slug: task-fix-implicit-autostart-cleanup-coverage
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T08:45:59.957Z
-      last_reconciled_at: 2026-05-13T09:46:05.742Z
+      last_reconciled_at: 2026-05-13T09:46:12.755Z
       created_at: 2026-05-13T07:34:02.995Z
-      updated_at: 2026-05-13T09:46:05.742Z
+      updated_at: 2026-05-13T09:46:12.755Z
     workspace_id: dispatch-workspace-01KRCRJQVWASBCR27BR3D8VFBA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: ea3c85356bd7c4ef72e5347d0b8e9a75c023fa5f
+        last_seen_at: 2026-05-13T09:46:12.755Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-implicit-autostart-cleanup-coverage-01krcrjq-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-implicit-autostart-cleanup-coverage/01krcrjq
-        head: 67fe23685ef6ba6c463cf83414a02ad61e7b7027
-        last_seen_at: 2026-05-13T08:45:35.499Z
+        head: ea3c85356bd7c4ef72e5347d0b8e9a75c023fa5f
+        last_seen_at: 2026-05-13T09:46:12.755Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-implicit-autostart-cleanup-coverage-01krcrjq
