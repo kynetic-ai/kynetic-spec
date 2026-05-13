@@ -49793,7 +49793,7 @@ runs:
     completed_at: 2026-05-13T10:38:01.303Z
   - _ulid: 01KRH4S53Z3F7FMRWN0PH4E1GH
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -49840,7 +49840,15 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-05-13T17:06:49.899Z
-        completed_at: 2026-05-13T17:06:49.899Z
+        completed_at: 2026-05-13T17:07:12.795Z
+        notes: "Discussion/decision: Capture the detached-snapshot spec-state inspection friction as a
+          low-impact friction observation, not as a task. It is evidence-backed by this session,
+          searched as untracked, and small enough for later triage. Do not capture the npm test
+          duration issue because existing inbox @01KNTB8Z4 already tracks it."
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-13T17:07:12.795Z
+        completed_at: 2026-05-13T17:07:12.795Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T17:05:04.639Z
