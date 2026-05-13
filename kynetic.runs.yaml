@@ -49114,9 +49114,19 @@ runs:
     completed_at: 2026-05-13T05:05:57.735Z
   - _ulid: 01KRFW994NRE6G0K54DAKCPG41
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-13T05:17:21.429Z
+        completed_at: 2026-05-13T05:17:50.301Z
+        notes: "Session: added dispatch-engine-level regression test for in-flight bootstrap workspace
+          cleanup race. Reflecting in loop mode — high-confidence only, search before capture."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-13T05:17:50.301Z
+        completed_at: 2026-05-13T05:17:50.301Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-13T05:17:21.429Z
