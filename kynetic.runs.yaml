@@ -49187,7 +49187,7 @@ runs:
     started_at: 2026-05-13T05:17:21.429Z
     completed_at: 2026-05-13T05:19:55.768Z
   - _ulid: 01KRFXDSYQ1SGMG592QDSVGFS1
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -49236,10 +49236,15 @@ runs:
         notes: No untracked improvements to discuss. Existing coverage already tracks the concrete friction
           and success patterns from this session, so there is nothing useful to ask the user to
           approve.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-13T05:38:48.520Z
-        completed_at: 2026-05-13T05:38:48.520Z
+        completed_at: 2026-05-13T05:38:56.087Z
+        notes: "No capture performed. High-confidence findings were already covered by existing
+          observations/tasks: validate warning noise @01KNTPX4T, review evidence log structure
+          @01KR2JD1, and detached reviewer merge helper coverage/observations. Avoided duplicate
+          inbox or observation noise."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T05:37:18.295Z
+    completed_at: 2026-05-13T05:38:56.087Z
