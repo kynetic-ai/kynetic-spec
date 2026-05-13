@@ -1,1 +1,22 @@
-notes: []
+notes:
+  - _ulid: 01KRGCRA4WXYS1ZTQSPDC6BBKZ
+    content: >-
+      Validation approach:
+
+      1. Run required commands per task description (validate, focused tests, broader tests, e2e).
+
+      2. Verify AC coverage annotations exist for all new ACs on @daemon-test-guardrail-precision
+      and @daemon-test-teardown-boundedness.
+
+      3. Build adversarial probes (lint fixtures + targeted source scans) for: non-terminating
+      signals, local no-op cleanup helpers, process-lifecycle-only cleanup, implicit CLI auto-start,
+      bounded teardown.
+
+      4. Run source audits for: direct daemon entrypoint starts, explicit detached starts, implicit
+      auto-start PID observations, process-lifecycle cleanup hooks, bare daemon fetch() calls,
+      guardrail suppressions.
+
+      5. Classify remaining hits as approved internals, behavior-under-test exception, or blocker.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T10:05:11.197Z
