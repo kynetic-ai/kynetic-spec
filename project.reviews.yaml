@@ -213527,6 +213527,17 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-13T07:52:18.120Z
         completed_at: 2026-05-13T07:52:18.120Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: git status --short was empty. kspec shadow status exited 0 and reported branch/worktree
+          linked and healthy.
+        name: workspace cleanliness
+        required: true
+        runner: git status; kspec shadow status
+        created_at: 2026-05-13T07:52:34.239Z
+        completed_at: 2026-05-13T07:52:34.239Z
     events:
       - _ulid: 01KRG45W0HBYVJ2T11GN39FWRX
         actor: Jacob Chapel
@@ -213576,6 +213587,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-13T07:52:19.560Z
+      - _ulid: 01KRG55H37TK98SYPERZMGH71S
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: workspace cleanliness
+        timestamp: 2026-05-13T07:52:35.687Z
     examined_commit: ffdef6f9dc5d15658685f44df4a3210ba430f4c7
     external_links: []
     lifecycle_state: open
@@ -213588,5 +213606,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T07:35:18.289Z
-    updated_at: 2026-05-13T07:52:18.120Z
+    updated_at: 2026-05-13T07:52:34.239Z
     notes: []
