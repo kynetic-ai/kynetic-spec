@@ -18754,6 +18754,21 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-13T05:19:48.595Z
+  - _ulid: 01KRFXQBVTDCQYT7D9G61K7BFG
+    type: success
+    content: Mutation-test new AC-coverage tests by temporarily disabling the production code path they
+      claim to verify, then re-running. If the test still passes, it does not actually pin the
+      behavior. In task @01KRF37ZHJ6AEZ14HEADGHPX6V fix cycle 1, commenting out the
+      protection.evaluateWorkspacePath consultation in src/agent-runtime/workspace.ts root-directory
+      pruning caused the new test to fail with ENOENT (dir deleted), proving the test pinned the
+      helper call. This caught a class of failure where the test setup looks right but vacuously
+      avoids triggering the targeted surface — the same class the reviewer flagged in the prior
+      submission. Worth doing for any new test whose AC mapping is non-obvious, especially when the
+      surface has many skip gates upstream of the protection check.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T05:42:31.546Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
