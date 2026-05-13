@@ -213469,7 +213469,19 @@ reviews:
     slugs: []
     title: Review validate in-flight cleanup protection
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- --run tests/dispatch-workspace-cleanup.test.ts
+          tests/dispatch-workspace-registry.test.ts exited 0; 7 suites passed, 58 tests passed;
+          cleanup 29 tests, registry 29 tests.
+        name: targeted cleanup and registry tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-13T07:51:18.925Z
+        completed_at: 2026-05-13T07:51:18.925Z
     events:
       - _ulid: 01KRG45W0HBYVJ2T11GN39FWRX
         actor: Jacob Chapel
@@ -213484,6 +213496,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-13T07:36:09.718Z
+      - _ulid: 01KRG537HKRJEV51C51JXNJFKY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted cleanup and registry tests
+        timestamp: 2026-05-13T07:51:20.371Z
     examined_commit: ffdef6f9dc5d15658685f44df4a3210ba430f4c7
     external_links: []
     lifecycle_state: open
@@ -213496,5 +213515,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T07:35:18.289Z
-    updated_at: 2026-05-13T07:36:08.316Z
+    updated_at: 2026-05-13T07:51:18.925Z
     notes: []
