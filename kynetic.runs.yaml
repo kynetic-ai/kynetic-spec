@@ -48595,7 +48595,7 @@ runs:
     completed_at: 2026-05-13T02:32:57.989Z
   - _ulid: 01KRFKWVR3JRG3C3XGZZDMZ9NJ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -48609,7 +48609,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T02:51:53.200Z
-        completed_at: 2026-05-13T02:51:53.200Z
+        completed_at: 2026-05-13T02:52:04.255Z
+        notes: "Friction points: writing synthetic oxlint probes outside the test suite required
+          hand-assembling a temp directory, .oxlintrc JSON, plugin path, synthetic test file,
+          command invocation, cleanup, and interpreting oxlint exit status. This has recurred across
+          review cycles for the same guardrail task. Repository-wide npm run lint also remains noisy
+          with known pre-existing errors, but changed-file oxlint gives a practical workaround."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T02:52:04.255Z
+        completed_at: 2026-05-13T02:52:04.255Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T02:50:45.891Z
