@@ -48694,9 +48694,22 @@ runs:
     completed_at: 2026-05-13T02:55:02.414Z
   - _ulid: 01KRFN239EGNH2C5GPKFPMAP4J
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-13T03:11:06.030Z
+        completed_at: 2026-05-13T03:11:57.075Z
+        notes: "What worked well: detached reviewer flow was smooth end to end. Prior review state clearly
+          identified the blocker, the fix-cycle note described the exact queue-to-spawn gap, and
+          review records/checks made it straightforward to verify the fix and gate the merge. The
+          detached-reviewer merge helper cleanly advanced dev and refreshed the occupied worktree
+          without manual branch checkout in the snapshot."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-13T03:11:57.075Z
+        completed_at: 2026-05-13T03:11:57.075Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T03:11:06.030Z
