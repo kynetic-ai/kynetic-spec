@@ -50,7 +50,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-guardrail-cleanup-boundary-regressions"
@@ -62,6 +62,14 @@ tags:
   - lint
   - daemon
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-fix-guardrail-cleanup-boundary-classification/01krcrjq
+  captured_at: 2026-05-13T06:04:57.048Z
+  commit: 5de3b8d30d8798bd4279bd86a3e8223ce03894f4
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KRFXSQCAH4517Q2PXGPABDB3
 history:
   - author: Jacob Chapel
@@ -84,7 +92,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-13T05:44:20.710Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-fix-guardrail-cleanup-boundary-classification/01krcrjq
+          captured_at: 2026-05-13T06:04:57.048Z
+          commit: 5de3b8d30d8798bd4279bd86a3e8223ce03894f4
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-13T06:04:57.050Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-13T06:04:57.051Z
 created_at: 2026-05-12T00:14:53.196Z
 started_at: 2026-05-13T05:44:20.710Z
+submitted_at: 2026-05-13T06:04:57.050Z
 todos: []
 automation: eligible
