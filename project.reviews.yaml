@@ -214580,6 +214580,17 @@ reviews:
         required: true
         created_at: 2026-05-13T16:33:13.240Z
         completed_at: 2026-05-13T16:33:13.240Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --refs --warnings-ok passed. Referenced target specs resolve; warnings are
+          existing deprecated-reference warnings outside this plan.
+        name: Reference validation
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-13T16:33:23.705Z
+        completed_at: 2026-05-13T16:33:23.705Z
     events:
       - _ulid: 01KRH2WYBMSTFSAZPFG2R1RBN6
         actor: Jacob Chapel
@@ -214622,6 +214633,13 @@ reviews:
           status: pass
           name: Dependency and task quality
         timestamp: 2026-05-13T16:33:14.798Z
+      - _ulid: 01KRH2Z67ZNT6T4CETASYWYN44
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Reference validation
+        timestamp: 2026-05-13T16:33:25.247Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -214634,5 +214652,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T16:32:11.638Z
-    updated_at: 2026-05-13T16:33:13.240Z
+    updated_at: 2026-05-13T16:33:23.705Z
     notes: []
