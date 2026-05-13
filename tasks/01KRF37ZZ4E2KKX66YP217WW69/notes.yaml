@@ -1,1 +1,33 @@
-notes: []
+notes:
+  - _ulid: 01KRFW895RPVHKC2VKMM3904HR
+    content: >-
+      Added dispatch-engine-level regression test in tests/agent-dispatch-engine.test.ts that
+      exercises the full composition of _spawnInvocation, inFlightTaskKeys, bootstrap, and artifact
+      reconciliation:
+
+
+      - Uses real provisionDispatchWorkspace and real reconcileDispatchWorkspaceArtifacts; mocks
+      ensureWorkspaceBootstrap to block on a Promise barrier after writing a bootstrap sentinel file
+      representing files an in-progress npm-install-style step would create.
+
+      - While bootstrap awaits the barrier (inFlightTaskKeys populated, no active invocation
+      registered), the test forces the registry record + per-worker metadata into a closing +
+      cleanup-eligible + resolved-integration state so the ONLY thing standing between reap and
+      deletion is the in-flight cleanup protection input.
+
+      - Asserts engine._activeTaskRefs() and the reconcileDispatchWorkspaceArtifacts call args both
+      include the in-flight task ref, that the workspace directory and bootstrap sentinel survive
+      the cleanup pass, and that after the barrier releases the spawn reaches runInvocation with no
+      ENOENT/TAR/spawn errors.
+
+      - Verified the test bites a regression: temporarily removing the inFlightTaskKeys merge from
+      _activeTaskRefs() causes the test to fail at the protection-input assertion. With the fix
+      restored, the targeted suite (agent-dispatch-engine + dispatch-runtime-bootstrap-contract =
+      152 tests) and the full 9192-test repo suite pass.
+
+
+      Covers: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup;
+      @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T05:16:48.696Z
