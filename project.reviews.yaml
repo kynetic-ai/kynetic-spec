@@ -212956,7 +212956,19 @@ reviews:
     slugs: []
     title: Review cleanup-boundary classification
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+          tests/lint-daemon-test-guardrails.test.ts: 23 suites passed, 394 tests passed. Full log:
+          /tmp/kspec-test-cache/01KRFZ7AFRW87P6QYWY0S09XZB/bbb0d0268a5b588d.log"
+        name: targeted lint tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-13T06:23:33.384Z
+        completed_at: 2026-05-13T06:23:33.384Z
     events:
       - _ulid: 01KRFZ91D1P2FV6TBJGAB18WJG
         actor: Jacob Chapel
@@ -212978,6 +212990,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRG01V2RM0NG6DDKHQWPHKY6
         timestamp: 2026-05-13T06:23:13.580Z
+      - _ulid: 01KRG02HHVE6VSQM9857QB0GZD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted lint tests
+        timestamp: 2026-05-13T06:23:34.971Z
     examined_commit: 5de3b8d30d8798bd4279bd86a3e8223ce03894f4
     external_links: []
     lifecycle_state: open
@@ -213012,5 +213031,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-13T06:09:39.233Z
-    updated_at: 2026-05-13T06:23:11.961Z
+    updated_at: 2026-05-13T06:23:33.384Z
     notes: []
