@@ -32023,7 +32023,7 @@ workspaces:
         head: ffdef6f9dc5d15658685f44df4a3210ba430f4c7
         last_seen_at: 2026-05-13T07:33:33.013Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-inflight-cleanup-protection-01krf380
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 9ea4ff4d05694d35e7dc779c98bc5a416a5f689a
     bootstrap:
       status: succeeded
@@ -32524,9 +32524,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T09:46:39.280Z
-      last_reconciled_at: 2026-05-13T10:03:28.021Z
+      last_reconciled_at: 2026-05-13T10:07:04.669Z
       created_at: 2026-05-13T07:34:02.995Z
-      updated_at: 2026-05-13T10:03:29.780Z
+      updated_at: 2026-05-13T10:07:04.669Z
     workspace_id: dispatch-workspace-01KRCRJQVWASBCR27BR3D8VFBA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
