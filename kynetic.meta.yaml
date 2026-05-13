@@ -18680,6 +18680,41 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-13T03:47:00.199Z
+  - _ulid: 01KRFRG47ZHPK078YNQQA0DPWE
+    type: friction
+    content: "Static-analysis classifier whose correctness depends on whether a binding exists at
+      runtime is enumerated by AST shape. The no-leaky-test-daemon rule has reached fix cycle 18
+      because every TypeScript shape that can erase or shadow a binding (declaration-level type-only
+      import, specifier-level type-only import, declare, declare enum, declare class, namespace
+      shadow, exported-enum shadow, exported-namespace shadow, etc.) becomes its own probe target.
+      Each cycle the reviewer finds a previously-unenumerated shape. The hand-rolled per-shape gates
+      (stmt.declare, stmt.importKind, spec.importKind, statementBindsNameOpaquely growing if-chain)
+      have an open-ended surface. A general approach (consulting oxlint scope/symbol info to ask
+      whether the local name resolves to a runtime binding, or operating on a post-elision view of
+      the program) would collapse the long tail. Adjacent: inbox item proposing scope-manager
+      refactor (narrower; scope tracking only). Surfaced fix cycle 18, blockers @01KRFNCR cycle 17."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KRFR77"
+    created_at: 2026-05-13T04:11:11.488Z
+  - _ulid: 01KRFRG4H6S435DDEGT936ZBGD
+    type: success
+    content: "When fixing a classifier blocker that has two orthogonal axes of variation, write the FULL
+      cross-product of probe fixtures upfront, not just the reviewer reproduction. Cycle 18 of
+      @01KRCRJPMHMHC410TKRC5Y9HF1: reviewer flagged two blockers (helper trust path x
+      shared-primitive trust path) using DECLARATION-LEVEL type-only imports. Pre-commit fixtures
+      covered the cross-product (2 trust paths x 2 import-syntax variants = 4 mirrored ad-hoc oxlint
+      probes), so the SPECIFIER-LEVEL variant which the reviewer had not explicitly probed was
+      caught and fixed in the same cycle instead of becoming cycle 19. Pattern: identify orthogonal
+      axes (trust-path x syntax-form, signal-list x call-callee, etc.), generate the cross-product
+      fixture set, run each before committing. Distinct from existing one-pass-fix observations
+      (01KNTN6, 01KRE7PX) which are about reading all blockers, not enumerating axes."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KRFR77"
+    created_at: 2026-05-13T04:11:11.782Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
