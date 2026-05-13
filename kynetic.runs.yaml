@@ -48927,7 +48927,7 @@ runs:
     started_at: 2026-05-13T04:06:19.966Z
     completed_at: 2026-05-13T04:11:30.776Z
   - _ulid: 01KRFSCR1C8FR08S4VEPFCE7VX
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -48987,7 +48987,14 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-13T04:28:16.885Z
-        completed_at: 2026-05-13T04:28:16.885Z
+        completed_at: 2026-05-13T04:29:01.190Z
+        notes: "Captured: inbox @01KRFSG3 for the detached-reviewer merge helper success warning with
+          untracked .kspec-dispatch-shadow-mutation.lock/ after occupied-worktree refresh; success
+          observation @01KRFSG3 for independently rerunning prior blocker probes with ad hoc oxlint
+          fixtures before approving complex static-analysis guardrail changes. No duplicate capture
+          for full-test duration or review evidence logs because existing observations/items already
+          cover those areas."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T04:26:49.260Z
+    completed_at: 2026-05-13T04:29:01.191Z
