@@ -211700,3 +211700,29 @@ reviews:
     created_at: 2026-05-13T02:57:47.898Z
     updated_at: 2026-05-13T03:09:39.834Z
     notes: []
+  - _ulid: 01KRFNCRS3YFATK87B3MGYD0PA
+    slugs: []
+    title: Review fix guardrail cleanup-effect classification (cycle 17)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRFNCRS37VKYHTTJGE8TAG87
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-13T03:16:55.715Z
+    examined_commit: 493ede939a32cbd9a28e66adea498ac5a08143bf
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-13T03:16:55.715Z
+    updated_at: null
+    notes: []
