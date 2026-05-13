@@ -32008,7 +32008,7 @@ workspaces:
         head: 3523eee27f80947515557d4720a3ba773eaafe86
         last_seen_at: 2026-05-13T02:55:52.547Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-centralize-dispatch-artifact-protection-decisions-01krf37y
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 43ebe639e216ede74f49586cad88e213350d998b
     bootstrap:
       status: succeeded
@@ -32506,9 +32506,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T03:48:20.711Z
-      last_reconciled_at: 2026-05-13T04:03:24.390Z
+      last_reconciled_at: 2026-05-13T04:05:40.710Z
       created_at: 2026-05-13T03:16:15.336Z
-      updated_at: 2026-05-13T04:03:27.439Z
+      updated_at: 2026-05-13T04:05:40.710Z
     workspace_id: dispatch-workspace-01KRF37Z421Y3S41YH2WS2R2G1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
