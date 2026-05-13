@@ -1,1 +1,30 @@
-notes: []
+notes:
+  - _ulid: 01KRFZ07NWBAFPPK05EM6ZJ554
+    content: >-
+      Approach: removed process.on/process.once <exit-event> registration from
+      isCleanupRegistrationCallback in tools/eslint-rules/no-leaky-test-daemon.js. Renamed
+      isProcessOnExitRegistration → isSupplementalProcessFallback (and PROCESS_EXIT_EVENT_NAMES →
+      SUPPLEMENTAL_PROCESS_EVENT_NAMES) with docs noting these are defence-in-depth safety nets,
+      never per-test cleanup boundaries. Extended the supplemental predicate to also match
+      process.once for parity with the new test probes. Updated comments in statementContainsCleanup
+      and findUnboundCleanupClosure that previously listed process.on(<exit-event>, ...) as a
+      recognised registration.
+
+
+      Test probes: added 7 boundary-isolating regressions to tests/lint-no-leaky-test-daemon.test.ts
+      that carry directly-terminating bodies (process.kill(pid, 'SIGTERM') or child.kill('SIGTERM'))
+      inside process.on / process.once registrations so the boundary classifier is the only gate —
+      previously the effect classifier's helper-origin rejection masked the boundary gap. Verified
+      by stashing the rule change: 3 of the new probes (process.on("exit"|"beforeExit"|"SIGTERM", ()
+      => process.kill(pid, 'SIGTERM'))) failed without the fix and pass with it. The mixed-boundary
+      allow-case (onTestFinished + process.on fallback) continues to pass.
+
+
+      Validation: targeted suite (tests/lint-no-leaky-test-daemon.test.ts,
+      tests/lint-daemon-test-guardrails.test.ts) green at 394 tests. Full npm test green (2433
+      suites, 9199 tests). Real-codebase guardrail validation (real codebase validation block at the
+      end of lint-no-leaky-test-daemon.test.ts) reports zero no-leaky-test-daemon hits across the
+      full tests/ tree.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T06:04:50.748Z
