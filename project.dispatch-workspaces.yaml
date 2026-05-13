@@ -32537,7 +32537,7 @@ workspaces:
         head: ea3c85356bd7c4ef72e5347d0b8e9a75c023fa5f
         last_seen_at: 2026-05-13T09:46:12.755Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-implicit-autostart-cleanup-coverage-01krcrjq
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 03f91e732faa6d80427b2c19f77847e72ea8153d
     bootstrap:
       status: succeeded
@@ -33014,12 +33014,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-13T10:34:12.742Z
+      updated_at: 2026-05-13T10:34:28.865Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T10:34:12.742Z
+      updated_at: 2026-05-13T10:34:28.865Z
     integration:
       status: merged
       detail: integration:merged
@@ -33027,7 +33027,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 03f91e732faa6d80427b2c19f77847e72ea8153d
-      updated_at: 2026-05-13T10:34:12.742Z
+      updated_at: 2026-05-13T10:34:28.865Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KRCRJSZDBERFRFNBMRJT47JR"
@@ -33035,9 +33035,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T10:17:38.505Z
-      last_reconciled_at: 2026-05-13T10:34:12.742Z
+      last_reconciled_at: 2026-05-13T10:34:28.865Z
       created_at: 2026-05-13T10:03:39.473Z
-      updated_at: 2026-05-13T10:34:12.742Z
+      updated_at: 2026-05-13T10:34:28.865Z
     workspace_id: dispatch-workspace-01KRCRJSZDBERFRFNBMRJT47JR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
