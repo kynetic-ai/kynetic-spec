@@ -211021,6 +211021,19 @@ reviews:
         runner: tsc
         created_at: 2026-05-13T02:27:33.064Z
         completed_at: 2026-05-13T02:27:33.064Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "./node_modules/.bin/oxlint src/agent-runtime/workspace.ts
+          tests/dispatch-artifact-protection.test.ts tests/dispatch-workspace-cleanup.test.ts: 0
+          warnings, 0 errors. Full npm run lint currently reports unrelated repo-wide pre-existing
+          lint debt outside this diff."
+        name: oxlint changed files
+        required: true
+        runner: oxlint
+        created_at: 2026-05-13T02:27:44.233Z
+        completed_at: 2026-05-13T02:27:44.233Z
     events:
       - _ulid: 01KRFHTRECANVBC4KF11JMREVP
         actor: Jacob Chapel
@@ -211063,6 +211076,13 @@ reviews:
           status: pass
           name: npm run typecheck
         timestamp: 2026-05-13T02:27:34.501Z
+      - _ulid: 01KRFJJQXGKP6SYYHDGBTP7P3Y
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: oxlint changed files
+        timestamp: 2026-05-13T02:27:45.712Z
     examined_commit: 8b076968ac2a7ff19dae267fe2334325c028cacd
     external_links: []
     lifecycle_state: open
@@ -211099,5 +211119,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-13T02:14:39.821Z
-    updated_at: 2026-05-13T02:27:33.064Z
+    updated_at: 2026-05-13T02:27:44.233Z
     notes: []
