@@ -31506,7 +31506,7 @@ workspaces:
         head: 03f91e732faa6d80427b2c19f77847e72ea8153d
         last_seen_at: 2026-05-13T16:51:00.184Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-clarify-dispatch-cleanup-classification-specs-01krh3kw
-  - active_role: worker
+  - active_role: null
     base_branch_point: 03f91e732faa6d80427b2c19f77847e72ea8153d
     bootstrap:
       status: succeeded
@@ -31834,12 +31834,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-13T17:30:32.534Z
+      updated_at: 2026-05-13T17:34:39.781Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T17:30:32.534Z
+      updated_at: 2026-05-13T17:34:39.781Z
     integration:
       status: pending
       detail: null
@@ -31847,17 +31847,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 03f91e732faa6d80427b2c19f77847e72ea8153d
-      updated_at: 2026-05-13T17:30:32.534Z
-    lifecycle_state: active
+      updated_at: 2026-05-13T17:34:39.781Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KRH3KX6743A3FAAN1HQ3KFC6"
     task_slug: task-add-cleanup-classification-regression-coverage
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T17:05:11.352Z
-      last_reconciled_at: 2026-05-13T17:30:32.534Z
+      last_reconciled_at: 2026-05-13T17:34:39.781Z
       created_at: 2026-05-13T17:04:44.711Z
-      updated_at: 2026-05-13T17:30:32.534Z
+      updated_at: 2026-05-13T17:34:39.781Z
     workspace_id: dispatch-workspace-01KRH3KX6743A3FAAN1HQ3KFC6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
