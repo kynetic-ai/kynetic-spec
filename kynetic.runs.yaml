@@ -48351,7 +48351,7 @@ runs:
     started_at: 2026-05-13T00:01:26.176Z
   - _ulid: 01KRFAKVXNNKMFGJ9N2DJNM4A6
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -48396,10 +48396,17 @@ runs:
           Benefit: avoids noisy gate=failing states on reviews that already have a blocking verdict
           for a separate finding. Rough scope: small/medium, but needs user/maintainer judgment
           before capture."
-      - status: completed
+      - status: skipped
         step_index: 4
         started_at: 2026-05-13T00:09:56.927Z
-        completed_at: 2026-05-13T00:09:56.927Z
+        completed_at: 2026-05-13T00:10:05.564Z
+        notes: Skipped interactive approval inside this run. The main shell-payload friction is already
+          tracked. The optional-check ergonomics idea is only a candidate and was not approved for
+          capture.
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-13T00:10:05.564Z
+        completed_at: 2026-05-13T00:10:05.564Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T00:08:33.973Z
