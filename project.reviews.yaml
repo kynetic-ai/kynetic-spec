@@ -210562,7 +210562,20 @@ reviews:
     slugs: []
     title: Review task-include-inflight-spawn-refs-in-cleanup-inputs
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec validate. Schema/references/skills OK; command exited 6 due existing
+          repository-wide warnings (reference/alignment/completeness/invalid annotation warnings
+          outside this patch). New @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+          annotation is present in tests/agent-dispatch-engine.test.ts.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-13T00:58:50.751Z
+        completed_at: 2026-05-13T00:58:50.751Z
     events:
       - _ulid: 01KRFCTFBVMJ5Y99M6EDGSXJ32
         actor: Jacob Chapel
@@ -210577,6 +210590,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-13T00:47:34.022Z
+      - _ulid: 01KRFDFZCP9MSQ2DWJ4WZ39T1H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-13T00:58:52.182Z
     examined_commit: ea847802c28d69abd5dbbb6ae5ce65cf6cc77df0
     external_links: []
     lifecycle_state: open
@@ -210589,5 +210609,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T00:47:07.644Z
-    updated_at: 2026-05-13T00:47:32.605Z
+    updated_at: 2026-05-13T00:58:50.751Z
     notes: []
