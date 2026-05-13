@@ -210984,3 +210984,29 @@ reviews:
     created_at: 2026-05-13T01:47:18.391Z
     updated_at: 2026-05-13T02:01:27.417Z
     notes: []
+  - _ulid: 01KRFHTREDT2JCWMVKPPH50VRW
+    slugs: []
+    title: Review centralize dispatch artifact protection decisions
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRFHTRECANVBC4KF11JMREVP
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-13T02:14:39.821Z
+    examined_commit: 8b076968ac2a7ff19dae267fe2334325c028cacd
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRF37Y941E2T8D1ATFV63JB0"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-13T02:14:39.821Z
+    updated_at: null
+    notes: []
