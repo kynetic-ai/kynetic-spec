@@ -32356,12 +32356,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-13T06:48:26.114Z
+      updated_at: 2026-05-13T06:48:42.798Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T06:48:26.114Z
+      updated_at: 2026-05-13T06:48:42.798Z
     integration:
       status: pending
       detail: null
@@ -32369,7 +32369,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: cb9d7cedfc8e7496b60178495fee4b681363038e
-      updated_at: 2026-05-13T06:48:26.114Z
+      updated_at: 2026-05-13T06:48:42.798Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRF9WAG6J46D1WJ3R9DX0SNG"
@@ -32377,16 +32377,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T06:09:14.327Z
-      last_reconciled_at: 2026-05-13T06:48:26.114Z
+      last_reconciled_at: 2026-05-13T06:48:42.798Z
       created_at: 2026-05-13T06:08:48.869Z
-      updated_at: 2026-05-13T06:48:26.114Z
+      updated_at: 2026-05-13T06:48:42.798Z
     workspace_id: dispatch-workspace-01KRF9WAG6J46D1WJ3R9DX0SNG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: d8908e58f6ced81694a1d8023c8ce175c956ec6d
+        last_seen_at: 2026-05-13T06:48:42.798Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-daemon-readiness-diagnostics-lasthealth-flake-01krf9wa-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/stabilize-daemon-readiness-diagnostics-lasthealth-flake/01krf9wa
-        head: cb9d7cedfc8e7496b60178495fee4b681363038e
-        last_seen_at: 2026-05-13T06:08:48.869Z
+        head: d8908e58f6ced81694a1d8023c8ce175c956ec6d
+        last_seen_at: 2026-05-13T06:48:42.798Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-daemon-readiness-diagnostics-lasthealth-flake-01krf9wa
