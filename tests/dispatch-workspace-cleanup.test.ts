@@ -426,6 +426,39 @@ describe("dispatch workspace cleanup", () => {
     ).toContain("dispatch/task/task-in-flight-protection-workspace/01task00");
   });
 
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  it("preserves the canonical dispatch branch when an active task ref has no registry record yet (queue-to-spawn race)", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithReviewerAgent(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    // Reserve a canonical dispatch branch the way the engine would during the
+    // queue-to-spawn window, BEFORE any registry record is written and BEFORE
+    // any worker worktree is provisioned. The registry file is empty.
+    const taskRef = `@${testUlid("TASK", 30)}`;
+    const reservedBranch = "dispatch/task/task-queue-to-spawn-protection/01task00";
+    git(tempDir, `branch ${reservedBranch}`);
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({
+        kynetic_dispatch_workspaces: "1.0",
+        workspaces: [],
+      }),
+      "utf-8",
+    );
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir, {
+      activeTaskRefs: [taskRef],
+    });
+
+    // The reserved branch shares the short-id segment with the active task ref
+    // (`01task00`), so cleanup must preserve it even though no registry record
+    // exists yet — otherwise the queue-to-spawn window can delete a canonical
+    // branch out from under an in-flight invocation.
+    expect(git(tempDir, `branch --list ${reservedBranch}`)).toContain(reservedBranch);
+  });
+
   // AC: @dispatch-workspace-cleanup-policy ac-6
   // AC: @dispatch-workspace-cleanup-policy ac-7
   it("reconstructs a missing registry record and normalizes legacy branch layouts from metadata-backed worktrees", async () => {

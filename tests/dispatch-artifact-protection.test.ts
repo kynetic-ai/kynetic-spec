@@ -125,17 +125,86 @@ function makeRecord(overrides: RecordOverrides = {}): DispatchWorkspaceRecord {
 
 describe("buildDispatchArtifactProtectionState", () => {
   // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
   it("preserves dispatcher artifacts for active task refs even when no registry record exists", () => {
-    const activeTaskRef = `@${testUlid("ACTV")}`;
+    // Queue-to-spawn window: an invocation has been dequeued and the canonical
+    // branch reserved, but the registry record has not yet been written. The
+    // helper must still protect the task ref, the canonical dispatch branch,
+    // and the worker/reviewer worktree basenames so cleanup cannot delete the
+    // canonical branch or workspace dir before provisioning finishes.
+    const activeTaskRef = "@01KRF37Y941E2T8D1ATFV63JB0";
+    const expectedShortId = "01krf37y";
+    const slug = "task-queue-to-spawn-protection";
+    const canonicalBranch = `dispatch/task/${slug}/${expectedShortId}`;
+    const workerPath = path.join(WORKTREE_ROOT, `${slug}-${expectedShortId}`);
+    const reviewerPath = path.join(WORKTREE_ROOT, `${slug}-${expectedShortId}-review`);
+
     const state = buildDispatchArtifactProtectionState({
       worktreeRoot: WORKTREE_ROOT,
       activeOrInFlightTaskRefs: [activeTaskRef],
       registry: { status: "loaded", records: [] },
     });
 
+    expect(state.registryTrusted).toBe(true);
+    expect(state.activeOrInFlightShortIds.has(expectedShortId)).toBe(true);
+
     expect(state.evaluateTaskRef(activeTaskRef).preserve).toBe(true);
     expect(state.evaluateTaskRef(activeTaskRef).reason).toMatch(/active or in-flight/);
-    expect(state.registryTrusted).toBe(true);
+
+    const branchDecision = state.evaluateDispatchBranch(canonicalBranch);
+    expect(branchDecision.preserve).toBe(true);
+    expect(branchDecision.reason).toMatch(/active or in-flight/);
+
+    const workerDecision = state.evaluateWorkspacePath(workerPath);
+    expect(workerDecision.preserve).toBe(true);
+    expect(workerDecision.reason).toMatch(/active or in-flight/);
+
+    const reviewerDecision = state.evaluateWorkspacePath(reviewerPath);
+    expect(reviewerDecision.preserve).toBe(true);
+    expect(reviewerDecision.reason).toMatch(/active or in-flight/);
+
+    // Unrelated dispatch branches/paths with non-matching short ids are not
+    // over-protected — short-id derivation must not become a blanket pass.
+    const unrelatedBranch = `dispatch/task/${slug}/0unrelat`;
+    expect(state.evaluateDispatchBranch(unrelatedBranch).preserve).toBe(false);
+    const unrelatedPath = path.join(WORKTREE_ROOT, `${slug}-0unrelat`);
+    expect(state.evaluateWorkspacePath(unrelatedPath).preserve).toBe(false);
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  it("protects canonical dispatch branches from short-id collisions across all destructive surfaces", () => {
+    // Even with multiple active/in-flight task refs whose short-ids differ,
+    // every matching canonical branch and worktree basename must be preserved
+    // independently. Non-canonical branches (wrong segment count) are NOT
+    // preserved by short-id derivation alone — that would over-protect.
+    const taskA = "@01KAAAAAAAAAAAAAAAAAAAAAAA";
+    const taskB = "@01KBBBBBBBBBBBBBBBBBBBBBBB";
+    const shortA = "01kaaaaa";
+    const shortB = "01kbbbbb";
+
+    const state = buildDispatchArtifactProtectionState({
+      worktreeRoot: WORKTREE_ROOT,
+      activeOrInFlightTaskRefs: [taskA, taskB],
+      registry: { status: "loaded", records: [] },
+    });
+
+    expect(state.evaluateDispatchBranch(`dispatch/task/foo/${shortA}`).preserve).toBe(true);
+    expect(state.evaluateDispatchBranch(`dispatch/task/foo/${shortB}`).preserve).toBe(true);
+    // Wrong segment count: not a canonical dispatch branch even if it
+    // textually contains the short id, must NOT be preserved.
+    expect(state.evaluateDispatchBranch(`dispatch/task/${shortA}`).preserve).toBe(false);
+    expect(
+      state.evaluateDispatchBranch(`dispatch/task/foo/bar/${shortA}`).preserve,
+    ).toBe(false);
+    // Non-dispatch branches with similar suffix must NOT be preserved.
+    expect(state.evaluateDispatchBranch(`feat/something-${shortA}`).preserve).toBe(false);
+
+    // Paths outside the configured worktree root must NOT be preserved by
+    // short-id derivation, even if the basename matches.
+    expect(
+      state.evaluateWorkspacePath(`/elsewhere/foo-${shortA}`).preserve,
+    ).toBe(false);
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved

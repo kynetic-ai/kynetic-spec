@@ -3372,6 +3372,13 @@ export interface DispatchArtifactProtectionState {
   readonly registryTrusted: boolean;
   readonly registryFailureDiagnostic: string | null;
   readonly activeOrInFlightTaskRefs: ReadonlySet<string>;
+  /**
+   * Short-id suffixes derived from {@link activeOrInFlightTaskRefs} via
+   * {@link shortTaskId}. Used to recognize canonical dispatch branches and
+   * worktree basenames during the queue-to-spawn window — when an invocation
+   * is in-flight but the registry record has not yet been written.
+   */
+  readonly activeOrInFlightShortIds: ReadonlySet<string>;
   readonly protectedTaskRefs: ReadonlySet<string>;
   readonly protectedBranches: ReadonlySet<string>;
   readonly protectedPaths: ReadonlySet<string>;
@@ -3426,13 +3433,42 @@ function pathsOverlap(candidate: string, protectedPath: string): boolean {
 }
 
 /**
+ * Return the trailing short-id segment of a canonical dispatch branch
+ * (`dispatch/task/<slug>/<short-id>`) or null if the branch does not match the
+ * canonical 4-segment layout. Used to link active/in-flight task refs to their
+ * deterministic canonical branch even when no registry record exists yet.
+ */
+function dispatchBranchShortIdSuffix(branch: string): string | null {
+  if (!isDispatchBranch(branch)) return null;
+  const parts = branch.split("/");
+  if (parts.length !== 4) return null;
+  const candidate = parts[3];
+  return candidate && candidate.length > 0 ? candidate : null;
+}
+
+/**
+ * Return true when a basename matches the canonical dispatch workspace
+ * layout for a given short-id: `<slug>-<short-id>` for worker worktrees and
+ * `<slug>-<short-id>-review` for reviewer worktrees.
+ */
+function basenameMatchesDispatchShortId(basename: string, shortId: string): boolean {
+  const workerSuffix = `-${shortId}`;
+  const reviewerSuffix = `-${shortId}-review`;
+  return basename.endsWith(workerSuffix) || basename.endsWith(reviewerSuffix);
+}
+
+/**
  * Build a pure {@link DispatchArtifactProtectionState} from a registry
  * snapshot plus the caller-supplied active/in-flight task refs.
  *
  * Protection sources, per @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
  * and @dispatch-workspace-registry ac-partial-provisioning-classified-before-cleanup:
  *
- * - Caller-supplied active/in-flight task refs are always protected.
+ * - Caller-supplied active/in-flight task refs are always protected, and their
+ *   deterministic canonical dispatch branch (`dispatch/task/<slug>/<short-id>`)
+ *   and worker/reviewer worktree basenames (`<slug>-<short-id>` and
+ *   `<slug>-<short-id>-review`) are preserved across every destructive surface
+ *   even when no registry record exists yet (queue-to-spawn window).
  * - Non-closed registry records in `provisioning`, `ready`, `active`, `stale`,
  *   `integrating`, or `cleanup_blocked` lifecycle states are always protected.
  * - Non-closed records in `closing` state are protected only while
@@ -3449,6 +3485,17 @@ export function buildDispatchArtifactProtectionState(
 ): DispatchArtifactProtectionState {
   const worktreeRoot = path.resolve(input.worktreeRoot);
   const activeOrInFlightTaskRefs = new Set(input.activeOrInFlightTaskRefs ?? []);
+  // Derive short-id suffixes so a queue-to-spawn invocation whose canonical
+  // branch (`dispatch/task/<slug>/<short-id>`) has been reserved but whose
+  // registry record has not yet been written still protects that branch and
+  // its worker/reviewer worktree basenames across every destructive cleanup
+  // surface. The short-id is deterministic from the task ref alone, so this
+  // closes the gap between caller-supplied active/in-flight task refs and the
+  // dispatch artifacts they own.
+  const activeOrInFlightShortIds = new Set<string>();
+  for (const ref of activeOrInFlightTaskRefs) {
+    activeOrInFlightShortIds.add(shortTaskId(ref));
+  }
   const protectedTaskRefs = new Set<string>(activeOrInFlightTaskRefs);
   const protectedBranches = new Set<string>();
   const protectedPaths = new Set<string>();
@@ -3521,6 +3568,17 @@ export function buildDispatchArtifactProtectionState(
         reason: `Dispatch branch ${branch} belongs to a non-closed workspace record; preserving until the record reaches closed.`,
       };
     }
+    // Queue-to-spawn protection: even when the registry has no record yet for
+    // an active/in-flight task ref, the canonical dispatch branch reserved for
+    // that task must not be deleted by branch pruning surfaces. The branch's
+    // trailing short-id segment is deterministic from the task ref.
+    const branchShortId = dispatchBranchShortIdSuffix(branch);
+    if (branchShortId && activeOrInFlightShortIds.has(branchShortId)) {
+      return {
+        preserve: true,
+        reason: `Dispatch branch ${branch} matches an active or in-flight task; cleanup must preserve its canonical branch.`,
+      };
+    }
     if (!registryTrusted) {
       return { preserve: true, reason: registryFailureDiagnostic };
     }
@@ -3535,6 +3593,22 @@ export function buildDispatchArtifactProtectionState(
           preserve: true,
           reason: `Path ${resolvedCandidate} overlaps non-closed workspace path ${protectedPath}; cleanup must not delete or prune it.`,
         };
+      }
+    }
+    // Queue-to-spawn protection: worker (`<slug>-<short-id>`) and reviewer
+    // (`<slug>-<short-id>-review`) basenames are deterministic from the task
+    // ref. Preserve these paths under the configured worktree root even when
+    // no registry record exists yet, so root-directory and worktree pruning
+    // never deletes an active or in-flight workspace dir.
+    if (isPathInside(worktreeRoot, resolvedCandidate)) {
+      const basename = path.basename(resolvedCandidate);
+      for (const shortId of activeOrInFlightShortIds) {
+        if (basenameMatchesDispatchShortId(basename, shortId)) {
+          return {
+            preserve: true,
+            reason: `Path ${resolvedCandidate} matches an active or in-flight task workspace basename "${basename}"; cleanup must preserve it.`,
+          };
+        }
       }
     }
     if (!registryTrusted && isPathInside(worktreeRoot, resolvedCandidate)) {
@@ -3572,6 +3646,7 @@ export function buildDispatchArtifactProtectionState(
     registryTrusted,
     registryFailureDiagnostic,
     activeOrInFlightTaskRefs,
+    activeOrInFlightShortIds,
     protectedTaskRefs,
     protectedBranches,
     protectedPaths,
