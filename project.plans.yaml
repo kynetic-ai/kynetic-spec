@@ -49361,6 +49361,12 @@ plans:
           available, tests/guardrails after behavior lands, and validation last.
         author: Jacob Chapel
         created_at: 2026-05-12T21:59:45.823Z
+      - _ulid: 01KRHF6J2DVQ11HR92JDPMP562
+        content: "Closure validation: all 9 derived tasks are completed, no direct open plan_ref tasks
+          remain, and the follow-up cleanup classification plan preserved/validated the intended
+          protection contract."
+        author: Jacob Chapel
+        created_at: 2026-05-13T20:07:09.646Z
   - _ulid: 01KRH2FYHCT8GPXSDS5FT24SY2
     slugs:
       - plan-dispatch-workspace-cleanup-classification-hardenin
