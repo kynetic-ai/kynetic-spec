@@ -49476,7 +49476,8 @@ plans:
           - Add a test proving an unknown file or directory directly under .kspec-worktrees is removed when registry/protection state is trusted and no protected workspace path contains or equals it.
           - Preserve or extend existing negative-control coverage proving registry/protection load failure still blocks blind deletion across destructive surfaces.
           - Preserve or extend existing positive protection coverage proving active, in-flight, provisioning, and non-closed registry-owned artifacts are not removed.
-          - If the current implementation does not satisfy the clarified ACs, update src/agent-runtime/workspace.ts so classification distinguishes:
+          - Add a recovery-path test in tests/agent-dispatch-engine.test.ts near the existing "reprovisions missing in_progress worker worktrees during dispatch bootstrap" coverage. The test must seed an automation-eligible non-terminal task, provision a dispatch workspace, corrupt or remove the artifact-local metadata/registry association enough for reconcileDispatchWorkspaceArtifacts to remove the artifact, then start DispatchEngine with a worker agent and a runInvocation/_spawnInvocation spy. Assert that the task remains dispatch-eligible, a fresh workspace is provisioned for the same task ref, and the task is not discarded solely because the corrupt artifact was cleaned.
+          - If the current implementation does not satisfy the clarified ACs, update src/agent-runtime/workspace.ts and/or dispatch bootstrap recovery so classification distinguishes:
             - registry/protection state unavailable or untrusted => fail closed / preserve or block;
             - artifact-local metadata corrupt under trusted registry/protection state with no protected owner => cleanup-eligible;
             - unknown direct entries under the dispatch-owned worktree root with no protected owner => cleanup-eligible.
@@ -49491,6 +49492,7 @@ plans:
           - Use deterministic temp repos and valid test ULIDs via testUlid/testUlids helpers.
           - When testing corrupt metadata, intentionally create or provision a workspace, remove or avoid the matching registry record, corrupt .kspec-dispatch-workspace.json, run reconcileDispatchWorkspaceArtifacts, and assert the workspace path no longer exists.
           - When testing unknown root entries, create a marker file and a marker directory directly under .kspec-worktrees, run reconcileDispatchWorkspaceArtifacts, and assert both are removed.
+          - When testing task-state recovery after corrupt artifact cleanup, follow the existing dispatch bootstrap test pattern: create an automation-eligible non-terminal task and worker agent, remove the corrupt artifact through cleanup, start DispatchEngine, and assert the worker invocation/provisioning path still runs for the task ref.
           - Include explicit assertions that registry-load failure behavior remains fail-closed, either by extending the existing parse-failure test or adding a focused assertion in the same file.
 
           Testing:
@@ -49542,11 +49544,15 @@ plans:
       automation-eligible, or start implementation until the plan is approved after review.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/dispatch-workspace-cleanup-classification-hardening.md
     created_at: 2026-05-13T16:25:05.832Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KRH2S7ZXDDBFGHN600SJK11G
+        content: "Address review @01KRH2MS: add concrete task-state recovery test path for registry AC
+          coverage"
+        author: Jacob Chapel
+        created_at: 2026-05-13T16:30:10.430Z
