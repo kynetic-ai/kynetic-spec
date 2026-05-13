@@ -18610,6 +18610,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-12T22:56:10.536Z
+  - _ulid: 01KRFH8FJVKGGMXKCGQ153QQYF
+    type: success
+    content: Reviewing static guardrail classifiers with adjacent behavioral probes over the same
+      semantic category catches gaps that narrow fix verification misses. In
+      @01KRCRJPMHMHC410TKRC5Y9HF1, after confirming the ClassDeclaration shadow fix, an ad hoc
+      oxlint probe for the adjacent TypeScript enum runtime binding shape found a real
+      cleanup-helper-origin false negative before merge.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-13T02:04:40.923Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
