@@ -7422,3 +7422,177 @@ describe("AC-28: async internal bookkeeping", () => {
     await engine.stop();
   });
 });
+
+// ─── AC: in-flight spawn refs protect cleanup inputs ─────────────────────────
+
+describe("In-flight spawn refs are included in cleanup protection inputs", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-inflight-cleanup-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+    vi.restoreAllMocks();
+  });
+
+  type EngineInternal = {
+    inFlightTaskKeys: Set<string>;
+    activeInvocationDetails: Map<string, ActiveInvocationRecord>;
+    _activeTaskRefs: () => Set<string>;
+    _hasActiveInvocationForTask: (taskRef: string) => boolean;
+  };
+
+  type ActiveInvocationRecord = {
+    invocationId: string;
+    sessionId: string;
+    agentId: string;
+    agentName: string;
+    taskRef: string | undefined;
+    role: "worker" | "reviewer";
+    startedAtMs: number;
+  };
+
+  function makeActiveRecord(overrides: Partial<ActiveInvocationRecord>): ActiveInvocationRecord {
+    return {
+      invocationId: testUlid("INVK"),
+      sessionId: testUlid("SESS"),
+      agentId: "test-worker",
+      agentName: "Test Worker",
+      taskRef: undefined,
+      role: "worker",
+      startedAtMs: Date.now(),
+      ...overrides,
+    };
+  }
+
+  // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+  it("_activeTaskRefs() includes a task ref from inFlightTaskKeys when no active invocation is registered yet", async () => {
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+    const internal = engine as unknown as EngineInternal;
+
+    const taskRef = `@${testUlid("TASK")}`;
+    internal.inFlightTaskKeys.add(`test-worker:${taskRef}`);
+
+    const refs = internal._activeTaskRefs();
+    expect(refs.has(taskRef)).toBe(true);
+    expect(refs.size).toBe(1);
+  });
+
+  // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+  it("_activeTaskRefs() merges in-flight and active invocation refs with deduplication", async () => {
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+    const internal = engine as unknown as EngineInternal;
+
+    const [sharedId, inflightOnlyId, activeOnlyId] = testUlids("TASK", 3);
+    const sharedTaskRef = `@${sharedId}`;
+    const inflightOnlyRef = `@${inflightOnlyId}`;
+    const activeOnlyRef = `@${activeOnlyId}`;
+
+    internal.inFlightTaskKeys.add(`test-worker:${sharedTaskRef}`);
+    internal.inFlightTaskKeys.add(`test-worker:${inflightOnlyRef}`);
+    internal.activeInvocationDetails.set(
+      "invocation-shared",
+      makeActiveRecord({ taskRef: sharedTaskRef }),
+    );
+    internal.activeInvocationDetails.set(
+      "invocation-active-only",
+      makeActiveRecord({ taskRef: activeOnlyRef }),
+    );
+
+    const refs = internal._activeTaskRefs();
+    expect(refs.has(sharedTaskRef)).toBe(true);
+    expect(refs.has(inflightOnlyRef)).toBe(true);
+    expect(refs.has(activeOnlyRef)).toBe(true);
+    expect(refs.size).toBe(3);
+  });
+
+  // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+  it("parsing splits on the first ':' so task refs containing ':' remain intact", async () => {
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+    const internal = engine as unknown as EngineInternal;
+
+    const taskRefWithColon = `@task:with:colons`;
+    internal.inFlightTaskKeys.add(`test-worker:${taskRefWithColon}`);
+
+    const refs = internal._activeTaskRefs();
+    expect(refs.has(taskRefWithColon)).toBe(true);
+    expect(internal._hasActiveInvocationForTask(taskRefWithColon)).toBe(true);
+  });
+
+  // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+  it("malformed in-flight keys without ':' are ignored", async () => {
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+    const internal = engine as unknown as EngineInternal;
+
+    internal.inFlightTaskKeys.add(`no-separator-here`);
+
+    const refs = internal._activeTaskRefs();
+    expect(refs.size).toBe(0);
+  });
+
+  // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+  it("reconciliation passes the in-flight task ref to reconcileDispatchWorkspaceArtifacts", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry").mockResolvedValue();
+    const reconcileArtifactsSpy = vi
+      .spyOn(workspaceModule, "reconcileDispatchWorkspaceArtifacts")
+      .mockResolvedValue(undefined as any);
+    vi.spyOn(configModule, "resolveDispatchRemoteSync").mockReturnValue(false);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+      reconcileIntervalMs: 0,
+    });
+    const internal = engine as unknown as EngineInternal & {
+      _reconcile: () => Promise<void>;
+    };
+
+    const inFlightTaskRef = `@${testUlid("TASK")}`;
+    internal.inFlightTaskKeys.add(`${agent.id}:${inFlightTaskRef}`);
+
+    await engine.start();
+
+    const callsAfterStart = reconcileArtifactsSpy.mock.calls.length;
+    expect(callsAfterStart).toBeGreaterThan(0);
+    const startCallArg = reconcileArtifactsSpy.mock.calls[callsAfterStart - 1]?.[1];
+    const startActiveRefs = new Set(startCallArg?.activeTaskRefs ?? []);
+    expect(startActiveRefs.has(inFlightTaskRef)).toBe(true);
+
+    reconcileArtifactsSpy.mockClear();
+    await internal._reconcile();
+
+    expect(reconcileArtifactsSpy.mock.calls.length).toBeGreaterThan(0);
+    const reconcileCallArg = reconcileArtifactsSpy.mock.calls[0]?.[1];
+    const reconcileActiveRefs = new Set(reconcileCallArg?.activeTaskRefs ?? []);
+    expect(reconcileActiveRefs.has(inFlightTaskRef)).toBe(true);
+
+    await engine.stop();
+  });
+});
