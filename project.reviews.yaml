@@ -214191,6 +214191,17 @@ reviews:
         runner: npm/playwright
         created_at: 2026-05-13T10:33:05.845Z
         completed_at: 2026-05-13T10:33:05.845Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "mise exec -- npm test -- --fresh: 9245 passed, 5 skipped, 2440 suites passed; duration
+          2105.2s; log /tmp/kspec-test-cache/01KRGDF3EE3WMTSH989DKH6G8C/112602a7e0757cc4.log."
+        name: full npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-13T10:33:16.955Z
+        completed_at: 2026-05-13T10:33:16.955Z
     events:
       - _ulid: 01KRGDGGPR098JBP1JR6PCZW3D
         actor: Jacob Chapel
@@ -214247,6 +214258,13 @@ reviews:
           status: pass
           name: build:e2e and playwright smoke
         timestamp: 2026-05-13T10:33:07.242Z
+      - _ulid: 01KRGEBSV6340NPJKV4CFEF2FW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full npm test
+        timestamp: 2026-05-13T10:33:18.438Z
     examined_commit: 03f91e732faa6d80427b2c19f77847e72ea8153d
     external_links: []
     lifecycle_state: open
@@ -214259,5 +214277,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T10:18:24.344Z
-    updated_at: 2026-05-13T10:33:05.845Z
+    updated_at: 2026-05-13T10:33:16.955Z
     notes: []
