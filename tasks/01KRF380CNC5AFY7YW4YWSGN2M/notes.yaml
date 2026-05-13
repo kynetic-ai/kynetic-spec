@@ -30,3 +30,97 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-13T07:16:53.190Z
+  - _ulid: 01KRG3XP0C6Z2SS500Q4HGVYCR
+    content: >-
+      Validation evidence - all gates passed:
+
+
+      === Targeted tests ===
+
+
+      Cmd: npm test -- --run tests/dispatch-workspace-cleanup.test.ts
+      tests/dispatch-workspace-registry.test.ts
+
+      Exit: 0
+
+      Result: 7 suites passed (transitive), 58 tests passed, 25.0s
+        - tests/dispatch-workspace-registry.test.ts: 29 tests PASS
+        - tests/dispatch-workspace-cleanup.test.ts: 29 tests PASS
+
+      Cmd: npm test -- --run tests/agent-dispatch-engine.test.ts
+      tests/dispatch-runtime-bootstrap-contract.test.ts
+
+      Exit: 0
+
+      Result: 41 suites passed (transitive), 152 tests passed, 41.4s
+        - tests/agent-dispatch-engine.test.ts: 132 tests PASS
+        - tests/dispatch-runtime-bootstrap-contract.test.ts: 20 tests PASS
+
+      === Project quality gates ===
+
+
+      Cmd: npm run typecheck
+
+      Exit: 0
+
+      Result: tsc --noEmit clean
+
+
+      Cmd: npm test -- --fresh
+
+      Exit: 0
+
+      Result: 2435 suites passed, 9211 passed / 5 skipped, 2411.7s
+
+
+      Cmd: kspec validate --warnings-ok
+
+      Exit: 0
+
+      Result: Validation passed. 7 reference warnings, 39 alignment warnings, 253 completeness
+      warnings - all are pre-existing baseline (deprecated session-summary-cache refs, orphaned
+      legacy specs, longstanding missing AC coverage on @spec-item / @ulid-system / @slug-system /
+      etc., 6 malformed AC tokens in tests/cli-agent-commands.test.ts and
+      tests/cli-schedule-commands.test.ts which predate this task). None relate to the in-flight
+      cleanup protection ACs.
+
+
+      === Workspace cleanliness ===
+
+
+      git status --short: empty (clean)
+
+      kspec shadow status: healthy (branch + worktree linked)
+
+
+      === AC coverage verification ===
+
+      Annotated coverage present in 4 files:
+
+      - tests/dispatch-workspace-cleanup.test.ts
+
+      - tests/dispatch-workspace-registry.test.ts
+
+      - tests/dispatch-artifact-protection.test.ts
+
+      - tests/agent-dispatch-engine.test.ts
+
+
+      Covers all listed ACs:
+
+      - @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+
+      - @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+
+      - @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+
+      - @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
+
+      - @dispatch-workspace-registry ac-partial-provisioning-classified-before-cleanup
+
+
+      No code changes were made by this validation task - it is read-only verification of the merged
+      implementation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T07:30:49.996Z
