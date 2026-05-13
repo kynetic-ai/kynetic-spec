@@ -49512,7 +49512,7 @@ runs:
     completed_at: 2026-05-13T07:33:08.976Z
   - _ulid: 01KRG43WP42XA0M6ME4YQ1V5AC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -49528,7 +49528,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T07:35:38.355Z
-        completed_at: 2026-05-13T07:35:38.355Z
+        completed_at: 2026-05-13T07:35:52.931Z
+        notes: "Friction points: kspec validate is still noisy as a review-time gate because
+          schema/reference success is mixed with broad repository warning debt and exits non-zero;
+          this required manual classification in the review check evidence. Review evidence still
+          has to live in a nit thread rather than a first-class evidence-log field. Full fresh npm
+          test remains long-running, though this is expected by current review gates and was
+          necessary for merge confidence."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T07:35:52.931Z
+        completed_at: 2026-05-13T07:35:52.931Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T07:34:13.444Z
