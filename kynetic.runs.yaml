@@ -49669,7 +49669,7 @@ runs:
     started_at: 2026-05-13T08:40:49.562Z
     completed_at: 2026-05-13T08:44:48.586Z
   - _ulid: 01KRGCPE9AJNKCRRF0M7GWG7K5
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -49726,7 +49726,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-13T10:06:05.528Z
-        completed_at: 2026-05-13T10:06:05.528Z
+        completed_at: 2026-05-13T10:06:35.082Z
+        notes: "Captured via kspec batch: two reflection inbox items (workflow command example run-ref
+          mismatch; rule-focused no-leaky-test-daemon lint sweep) and one success observation for
+          the detached reviewer review-check-plus-helper merge pattern."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T10:04:09.898Z
+    completed_at: 2026-05-13T10:06:35.082Z
