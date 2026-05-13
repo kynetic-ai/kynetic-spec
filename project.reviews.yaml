@@ -210469,6 +210469,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-13T00:07:48.655Z
+      - _ulid: 01KRFDQZF00AYP74VEYKH104T1
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRF9DMPKMQGP6V3DEP2BK0PH
+        timestamp: 2026-05-13T01:03:14.400Z
     examined_commit: 185cd75f0c9bc830e2f2952ca1525583c1ab95e7
     external_links: []
     lifecycle_state: closed
@@ -210514,6 +210520,29 @@ reviews:
               credited. These class declarations lexically shadow the approved imports, so they need
               to be treated as opaque local bindings.'
             created_at: 2026-05-12T23:48:22.022Z
+          - _ulid: 01KRFDQY3K2BN324680Q0JMG9M
+            author: "@claude"
+            body: >-
+              Fixed in fix-cycle 14: extended `statementBindsNameOpaquely` (the residual-binding
+              predicate consulted by `findLocalHelperDefinition`'s statement walker) to recognise
+              `ClassDeclaration` whose id binds the looked-up name — both as a top-level statement
+              and through the existing `ExportNamedDeclaration` / `ExportDefaultDeclaration` unwrap.
+              Both reviewer repros now resolve as opaque local bindings:
+
+
+              1. `class killPid {}` in the `it` body → `isTrustedHelperByOrigin` sees
+              `LOCAL_BINDING_OPAQUE` and rejects the cleanup callback.
+
+              2. `class stopPidBounded {}` inside a `killPid` helper body →
+              `isApprovedSharedCleanupPrimitiveCall`'s lexical-resolution gate sees the opaque
+              binding and rejects the trust.
+
+
+              Three new positive regressions assert the cycle-14 shapes (in-scope class shadow,
+              helper-body class shadow of an approved shared primitive, exported-class shadow). Full
+              `tests/lint-no-leaky-test-daemon.test.ts` suite passes (156/156), and the full `npm
+              test` suite passes (2429 suites).
+            created_at: 2026-05-13T01:03:13.011Z
         kind: blocker
       - _ulid: 01KRFAJA8SABFBNHK8SN6YDTAC
         entries:
@@ -210556,7 +210585,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-13T00:07:48.655Z
     created_at: 2026-05-12T23:44:31.434Z
-    updated_at: 2026-05-13T00:07:48.655Z
+    updated_at: 2026-05-13T01:03:13.011Z
     notes: []
   - _ulid: 01KRFCTFBW410617M0X9CZXD1T
     slugs: []
