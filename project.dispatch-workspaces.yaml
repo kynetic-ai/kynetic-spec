@@ -32031,7 +32031,7 @@ workspaces:
         head: d8908e58f6ced81694a1d8023c8ce175c956ec6d
         last_seen_at: 2026-05-13T06:48:42.798Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-daemon-readiness-diagnostics-lasthealth-flake-01krf9wa
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: ffdef6f9dc5d15658685f44df4a3210ba430f4c7
     bootstrap:
       status: succeeded
@@ -32508,7 +32508,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T07:33:33.013Z
+      updated_at: 2026-05-13T07:33:59.767Z
     integration:
       status: pending
       detail: null
@@ -32523,10 +32523,10 @@ workspaces:
     task_slug: task-validate-inflight-cleanup-protection
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-13T07:16:07.122Z
-      last_reconciled_at: 2026-05-13T07:33:33.013Z
+      last_active_at: 2026-05-13T07:33:59.767Z
+      last_reconciled_at: 2026-05-13T07:33:59.767Z
       created_at: 2026-05-13T07:15:41.927Z
-      updated_at: 2026-05-13T07:33:56.808Z
+      updated_at: 2026-05-13T07:33:59.767Z
     workspace_id: dispatch-workspace-01KRF380CNC5AFY7YW4YWSGN2M
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
