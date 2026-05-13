@@ -48528,7 +48528,7 @@ runs:
     completed_at: 2026-05-13T02:04:59.572Z
   - _ulid: 01KRFJMTJXRZT27H6M1WJGAGKH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -48543,7 +48543,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T02:29:14.187Z
-        completed_at: 2026-05-13T02:29:14.187Z
+        completed_at: 2026-05-13T02:29:28.888Z
+        notes: "Friction points: Full npm run lint failed with unrelated repo-wide lint debt outside the
+          reviewed diff, while changed-file oxlint passed. That makes review gate reporting less
+          direct: the reviewer must manually separate introduced lint issues from existing lint
+          backlog. Full npm test -- --fresh is useful but slow; no new capture candidate from that
+          alone because the project already documents shard commands and full-suite expectations."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T02:29:28.888Z
+        completed_at: 2026-05-13T02:29:28.888Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T02:28:53.981Z
