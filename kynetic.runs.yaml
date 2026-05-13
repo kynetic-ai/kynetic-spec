@@ -49670,9 +49670,24 @@ runs:
     completed_at: 2026-05-13T08:44:48.586Z
   - _ulid: 01KRGCPE9AJNKCRRF0M7GWG7K5
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-13T10:04:09.898Z
+        completed_at: 2026-05-13T10:04:35.588Z
+        notes: "What worked well: the review record model handled the fix cycle cleanly: prior review stayed
+          closed, a fresh review captured cycle-2 evidence, and the disposition gate was
+          machine-checkable before merge. The detached reviewer merge helper also worked well: it
+          merged into dev and refreshed the occupied worktree without requiring branch checkout
+          inside the detached snapshot. The targeted daemon guardrail suite gave fast confidence
+          before the full fresh run, and the evidence-log nit thread was a useful place to preserve
+          review details without blocking approval."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-13T10:04:35.588Z
+        completed_at: 2026-05-13T10:04:35.588Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T10:04:09.898Z
