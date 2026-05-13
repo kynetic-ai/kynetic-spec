@@ -32339,12 +32339,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-13T03:47:15.830Z
+      updated_at: 2026-05-13T03:47:25.336Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T03:47:15.830Z
+      updated_at: 2026-05-13T03:47:25.336Z
     integration:
       status: pending
       detail: null
@@ -32352,17 +32352,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 43ebe639e216ede74f49586cad88e213350d998b
-      updated_at: 2026-05-13T03:47:15.830Z
-    lifecycle_state: ready
+      updated_at: 2026-05-13T03:47:25.336Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRF37Z421Y3S41YH2WS2R2G1"
     task_slug: task-apply-protection-policy-across-artifact-reconciliation
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T03:16:40.340Z
-      last_reconciled_at: 2026-05-13T03:47:15.830Z
+      last_reconciled_at: 2026-05-13T03:47:25.336Z
       created_at: 2026-05-13T03:16:15.336Z
-      updated_at: 2026-05-13T03:47:15.830Z
+      updated_at: 2026-05-13T03:47:25.336Z
     workspace_id: dispatch-workspace-01KRF37Z421Y3S41YH2WS2R2G1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
