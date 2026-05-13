@@ -1,1 +1,46 @@
-notes: []
+notes:
+  - _ulid: 01KRFRSJBGE7H60C6RJZXDSCD5
+    content: >-
+      Approach: Add behavioral cleanup tests in tests/dispatch-workspace-cleanup.test.ts (and
+      tests/dispatch-workspace-registry.test.ts for the partial-provisioning classification case).
+
+
+      Plan:
+
+      1. Protected-case tests (per AC ac-active-inflight-provisioning-artifact-preserved,
+      ac-protection-applies-to-every-destructive-surface):
+         - active task refs preserve worktree + dispatch branch + reviewer snapshot (already covered, supplement);
+         - in-flight refs supplied as options.activeTaskRefs (queue-to-spawn race) — covered;
+         - registry record with lifecycle_state='provisioning' preserves all surfaces; same for stale/integrating/cleanup_blocked;
+         - 'closing' record with active ref preserved from reaping (already covered as 'reap-candidate'); add closing+unresolved integration variant;
+         - reviewer snapshot path preserved when its canonical record is non-closed registry record;
+         - dispatch branches associated with non-closed registry records preserved during orphan-branch sweep;
+         - root-directory candidate inside protected worker path preserved.
+
+      2. Cleanup-positive (truly orphan): closed records reach reap to closed; truly orphan
+      reviewer-snapshot dir removed; root-dir candidate outside any protected path removed; orphan
+      dispatch branch (no record, no active ref) removed.
+
+
+      3. Ambiguous-state: registry parse failure preserves dispatcher-managed artifacts under
+      worktree root (already covered, add direct helper-level test for branches+paths); load failure
+      protects branches via short-id mapping.
+
+
+      4. Behavioral guardrail per surface: through reconcileDispatchWorkspaceArtifacts, exercise
+      each of metadata-less-worktree / reap-candidate / reviewer-snapshot / root-directory /
+      dispatch-branch with both protected and cleanup-eligible outcomes.
+
+
+      5. Regression test: create bootstrap-like nested files (node_modules/<pkg>/bin/script,
+      package.json) under a worker workspace, run
+      reconcileDispatchWorkspaceArtifacts({activeTaskRefs:[taskRef]}) WITHOUT the metadata file and
+      WITHOUT a registry record, assert the nested files and parent workspace dir survive. Mirrors
+      @plan-dispatch-workspace-in-flight-cleanup-protection bootstrap race.
+
+
+      Will assert via filesystem state + git branch presence + diagnostic stream. Tests must be
+      behavioral (no source-scanning).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T04:16:20.849Z
