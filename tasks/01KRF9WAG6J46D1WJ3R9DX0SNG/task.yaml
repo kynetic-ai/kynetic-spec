@@ -14,8 +14,10 @@ description: "Full-suite review run for @01KRF37XVT9YSRGV87660W7BR6 failed once 
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer helper. Reviewed daemon readiness diagnostic
+  retry fix; focused daemon helper test and fresh full npm test passed; review @01KRG1JH approved.
 depends_on: []
 context: []
 priority: 2
@@ -75,8 +77,23 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-13T06:49:51.468Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer helper. Reviewed daemon readiness diagnostic retry fix;
+          focused daemon helper test and fresh full npm test passed; review @01KRG1JH approved.
+        previous: null
+      completed_at:
+        new: 2026-05-13T07:05:08.316Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-13T07:05:08.324Z
 created_at: 2026-05-12T23:55:42.470Z
 started_at: 2026-05-13T06:09:45.818Z
 submitted_at: 2026-05-13T06:32:46.676Z
+completed_at: 2026-05-13T07:05:08.316Z
 todos: []
 automation: eligible

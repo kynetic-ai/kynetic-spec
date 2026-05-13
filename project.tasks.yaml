@@ -29180,7 +29180,7 @@
   slugs: []
   title: Stabilize daemon readiness diagnostics lastHealth flake
   type: bug
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -29194,4 +29194,5 @@
   created_at: 2026-05-12T23:55:42.470Z
   started_at: 2026-05-13T06:09:45.818Z
   submitted_at: 2026-05-13T06:32:46.676Z
+  completed_at: 2026-05-13T07:05:08.316Z
   automation: eligible
