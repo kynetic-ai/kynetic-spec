@@ -47800,7 +47800,7 @@ plans:
       implementation fixes. The final validation task must actively probe adversarial
 
       cases rather than relying only on the repository's ordinary test suite.
-    status: active
+    status: completed
     approved_at: 2026-05-12T00:14:28.267Z
     derived_specs:
       - "@daemon-test-teardown-boundedness"
