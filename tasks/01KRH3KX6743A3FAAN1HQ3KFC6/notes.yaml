@@ -69,3 +69,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-13T17:50:48.362Z
+  - _ulid: 01KRH8QCTX40TRSPPJR4QEETTW
+    content: "Fix cycle 1: addressed both reviewer blockers. Removed the misplaced
+      'ac-active-inflight-provisioning-artifact-preserved' annotations from the two new
+      cleanup-eligibility regression tests (tests/dispatch-workspace-cleanup.test.ts at lines 1147
+      and 1197). Those tests assert removal, not preservation, so the preservation AC marker was
+      incorrect. The cleanup-eligible ACs (ac-corrupt-metadata-cleanup-eligible,
+      ac-dispatch-root-unknown-entries-owned) remain correctly annotated. The preservation AC
+      retains its extensive existing coverage in this file and in
+      tests/dispatch-artifact-protection.test.ts. Re-verified ACs against implementation: no
+      production source changes needed. Verified: npm test (9248 pass, 5 skipped, no failures), npm
+      run typecheck clean, kspec validate --warnings-ok passes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T18:14:01.309Z
