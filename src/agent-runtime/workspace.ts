@@ -3343,6 +3343,273 @@ async function persistCleanupCompletedState(
   void taskRef;
 }
 
+/**
+ * Decision returned by the dispatch artifact protection helper for a single
+ * artifact lookup. `preserve` is the binary preserve-or-not signal cleanup
+ * surfaces should consume; `reason` is actionable diagnostic text useful for
+ * logs and test assertions.
+ *
+ * AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+ * AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+ * AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
+ */
+export interface DispatchArtifactProtectionDecision {
+  preserve: boolean;
+  reason: string | null;
+}
+
+/**
+ * Centralized protection-policy state for dispatch artifact cleanup. A single
+ * instance is built per cleanup pass and consulted by every destructive
+ * cleanup surface (worktree deletion, reviewer snapshot pruning,
+ * root-directory pruning, dispatch branch deletion) so the preserve/delete
+ * decision is uniform across surfaces.
+ *
+ * AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+ */
+export interface DispatchArtifactProtectionState {
+  readonly worktreeRoot: string;
+  readonly registryTrusted: boolean;
+  readonly registryFailureDiagnostic: string | null;
+  readonly activeOrInFlightTaskRefs: ReadonlySet<string>;
+  readonly protectedTaskRefs: ReadonlySet<string>;
+  readonly protectedBranches: ReadonlySet<string>;
+  readonly protectedPaths: ReadonlySet<string>;
+  evaluateTaskRef(taskRef: string): DispatchArtifactProtectionDecision;
+  evaluateDispatchBranch(branch: string): DispatchArtifactProtectionDecision;
+  evaluateWorkspacePath(candidatePath: string): DispatchArtifactProtectionDecision;
+  evaluateClosingRecordForReap(
+    record: DispatchWorkspaceRecord | LoadedDispatchWorkspaceRecord,
+  ): DispatchArtifactProtectionDecision;
+}
+
+/**
+ * Input snapshot for {@link buildDispatchArtifactProtectionState}. The helper
+ * is intentionally pure: callers do the registry I/O and pass the outcome in,
+ * so the protection decision is deterministic and easy to unit-test.
+ *
+ * Use `registry.status: "load-failed"` to signal that the registry could not
+ * be loaded or parsed; the helper will then enter no-blind-deletion mode for
+ * dispatcher-managed artifacts under the configured worktree root.
+ */
+export type DispatchArtifactProtectionInput = {
+  worktreeRoot: string;
+  activeOrInFlightTaskRefs?: Iterable<string>;
+  registry:
+    | {
+        status: "loaded";
+        records: readonly (DispatchWorkspaceRecord | LoadedDispatchWorkspaceRecord)[];
+      }
+    | { status: "load-failed"; reason: string };
+};
+
+const DISPATCH_PROTECTED_LIFECYCLE_STATES: ReadonlySet<DispatchWorkspaceLifecycleState> = new Set([
+  "provisioning",
+  "ready",
+  "active",
+  "stale",
+  "integrating",
+  "cleanup_blocked",
+]);
+
+function isUnresolvedDispatchIntegration(status: DispatchWorkspaceIntegrationStatus): boolean {
+  return status === "pending" || status === "in_progress";
+}
+
+function pathsOverlap(candidate: string, protectedPath: string): boolean {
+  const resolvedCandidate = path.resolve(candidate);
+  const resolvedProtected = path.resolve(protectedPath);
+  if (resolvedCandidate === resolvedProtected) return true;
+  if (isPathInside(resolvedCandidate, resolvedProtected)) return true;
+  if (isPathInside(resolvedProtected, resolvedCandidate)) return true;
+  return false;
+}
+
+/**
+ * Build a pure {@link DispatchArtifactProtectionState} from a registry
+ * snapshot plus the caller-supplied active/in-flight task refs.
+ *
+ * Protection sources, per @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+ * and @dispatch-workspace-registry ac-partial-provisioning-classified-before-cleanup:
+ *
+ * - Caller-supplied active/in-flight task refs are always protected.
+ * - Non-closed registry records in `provisioning`, `ready`, `active`, `stale`,
+ *   `integrating`, or `cleanup_blocked` lifecycle states are always protected.
+ * - Non-closed records in `closing` state are protected only while
+ *   active/in-flight ownership or unresolved integration remains. Otherwise the
+ *   helper classifies them cleanup-eligible so scheduled
+ *   {@link reapDispatchWorkspace} cleanup can advance them to `closed`.
+ * - When `registry.status === "load-failed"`, the helper enters no-blind-deletion
+ *   mode: every dispatcher-managed task ref, dispatch branch, and path under the
+ *   configured worktree root is preserved with an actionable diagnostic until
+ *   the registry can be re-classified.
+ */
+export function buildDispatchArtifactProtectionState(
+  input: DispatchArtifactProtectionInput,
+): DispatchArtifactProtectionState {
+  const worktreeRoot = path.resolve(input.worktreeRoot);
+  const activeOrInFlightTaskRefs = new Set(input.activeOrInFlightTaskRefs ?? []);
+  const protectedTaskRefs = new Set<string>(activeOrInFlightTaskRefs);
+  const protectedBranches = new Set<string>();
+  const protectedPaths = new Set<string>();
+
+  let registryTrusted = true;
+  let registryFailureDiagnostic: string | null = null;
+
+  if (input.registry.status === "load-failed") {
+    registryTrusted = false;
+    registryFailureDiagnostic =
+      `Dispatch workspace registry unavailable (${input.registry.reason}). ` +
+      `Preserving dispatcher-managed artifacts under "${worktreeRoot}" until ` +
+      `registry classification can confirm cleanup eligibility.`;
+  } else {
+    for (const record of input.registry.records) {
+      if (!workspaceRecordBelongsToWorktreeRoot(record, worktreeRoot)) continue;
+      if (record.lifecycle_state === "closed") continue;
+
+      const taskRefActive = activeOrInFlightTaskRefs.has(record.task_ref);
+      const integrationUnresolved = isUnresolvedDispatchIntegration(record.integration.status);
+
+      let recordProtected = false;
+      if (DISPATCH_PROTECTED_LIFECYCLE_STATES.has(record.lifecycle_state)) {
+        recordProtected = true;
+      } else if (record.lifecycle_state === "closing") {
+        recordProtected = taskRefActive || integrationUnresolved;
+      }
+
+      // Paths and branches of any non-closed record are protected from blind
+      // path/branch deletion regardless of whether the record itself is
+      // reap-eligible. Reap-eligible closing records are removed through
+      // reapDispatchWorkspace, not by blind cleanup surfaces.
+      protectedBranches.add(record.canonical_branch);
+      protectedPaths.add(path.resolve(record.worktrees.worker.path));
+      if (record.worktrees.reviewer) {
+        protectedPaths.add(path.resolve(record.worktrees.reviewer.path));
+      }
+      if (recordProtected) {
+        protectedTaskRefs.add(record.task_ref);
+      }
+    }
+  }
+
+  const evaluateTaskRef = (taskRef: string): DispatchArtifactProtectionDecision => {
+    if (activeOrInFlightTaskRefs.has(taskRef)) {
+      return {
+        preserve: true,
+        reason: `Task ${taskRef} has an active or in-flight dispatch invocation; cleanup must preserve its artifacts.`,
+      };
+    }
+    if (protectedTaskRefs.has(taskRef)) {
+      return {
+        preserve: true,
+        reason: `Task ${taskRef} has a non-closed dispatch workspace record that is not yet cleanup-eligible.`,
+      };
+    }
+    if (!registryTrusted) {
+      return { preserve: true, reason: registryFailureDiagnostic };
+    }
+    return { preserve: false, reason: null };
+  };
+
+  const evaluateDispatchBranch = (branch: string): DispatchArtifactProtectionDecision => {
+    if (!isDispatchBranch(branch)) {
+      return { preserve: false, reason: null };
+    }
+    if (protectedBranches.has(branch)) {
+      return {
+        preserve: true,
+        reason: `Dispatch branch ${branch} belongs to a non-closed workspace record; preserving until the record reaches closed.`,
+      };
+    }
+    if (!registryTrusted) {
+      return { preserve: true, reason: registryFailureDiagnostic };
+    }
+    return { preserve: false, reason: null };
+  };
+
+  const evaluateWorkspacePath = (candidatePath: string): DispatchArtifactProtectionDecision => {
+    const resolvedCandidate = path.resolve(candidatePath);
+    for (const protectedPath of protectedPaths) {
+      if (pathsOverlap(resolvedCandidate, protectedPath)) {
+        return {
+          preserve: true,
+          reason: `Path ${resolvedCandidate} overlaps non-closed workspace path ${protectedPath}; cleanup must not delete or prune it.`,
+        };
+      }
+    }
+    if (!registryTrusted && isPathInside(worktreeRoot, resolvedCandidate)) {
+      return { preserve: true, reason: registryFailureDiagnostic };
+    }
+    return { preserve: false, reason: null };
+  };
+
+  const evaluateClosingRecordForReap = (
+    record: DispatchWorkspaceRecord | LoadedDispatchWorkspaceRecord,
+  ): DispatchArtifactProtectionDecision => {
+    if (record.lifecycle_state !== "closing") {
+      return { preserve: false, reason: null };
+    }
+    if (activeOrInFlightTaskRefs.has(record.task_ref)) {
+      return {
+        preserve: true,
+        reason: `Closing workspace for ${record.task_ref} still has active/in-flight ownership; reap must wait.`,
+      };
+    }
+    if (isUnresolvedDispatchIntegration(record.integration.status)) {
+      return {
+        preserve: true,
+        reason: `Closing workspace for ${record.task_ref} has unresolved integration status "${record.integration.status}"; reap must wait until integration resolves.`,
+      };
+    }
+    return {
+      preserve: false,
+      reason: `Closing workspace for ${record.task_ref} has no active ownership and resolved integration; eligible for scheduled cleanup via reapDispatchWorkspace.`,
+    };
+  };
+
+  return {
+    worktreeRoot,
+    registryTrusted,
+    registryFailureDiagnostic,
+    activeOrInFlightTaskRefs,
+    protectedTaskRefs,
+    protectedBranches,
+    protectedPaths,
+    evaluateTaskRef,
+    evaluateDispatchBranch,
+    evaluateWorkspacePath,
+    evaluateClosingRecordForReap,
+  };
+}
+
+/**
+ * Convenience wrapper that loads the dispatch workspace registry and assembles
+ * a {@link DispatchArtifactProtectionState} for a project. Registry
+ * load/parsing errors are caught and converted into a `load-failed` snapshot
+ * so the helper can surface them as no-blind-deletion guidance instead of
+ * propagating to cleanup callers.
+ */
+export async function loadDispatchArtifactProtectionState(
+  projectDir: string,
+  resolvedConfig: ResolvedDispatchWorkspaceConfig,
+  options: { activeOrInFlightTaskRefs?: Iterable<string> } = {},
+): Promise<DispatchArtifactProtectionState> {
+  let registryInput: DispatchArtifactProtectionInput["registry"];
+  try {
+    const ctx = await initContext(projectDir);
+    const records = await loadDispatchWorkspaceRegistry(ctx);
+    registryInput = { status: "loaded", records };
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    registryInput = { status: "load-failed", reason };
+  }
+  return buildDispatchArtifactProtectionState({
+    worktreeRoot: resolvedConfig.worktreeRoot,
+    activeOrInFlightTaskRefs: options.activeOrInFlightTaskRefs,
+    registry: registryInput,
+  });
+}
+
 export async function reconcileDispatchWorkspaceArtifacts(
   projectDir: string,
   options?: { activeTaskRefs?: Iterable<string> },
@@ -3354,6 +3621,14 @@ export async function reconcileDispatchWorkspaceArtifacts(
   const entriesUnderRoot = worktreeEntries.filter((entry) =>
     isPathInside(resolvedConfig.worktreeRoot, entry.path),
   );
+
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  // Single source of truth consulted by every destructive cleanup surface in
+  // this function. Built once from the registry snapshot plus active/in-flight
+  // task refs so all surfaces converge on the same preserve/delete decision.
+  let protection = await loadDispatchArtifactProtectionState(projectDir, resolvedConfig, {
+    activeOrInFlightTaskRefs: activeTaskRefs,
+  });
 
   const referencedReviewerDirs = new Set<string>();
   const trackedBranches = new Set<string>();
@@ -3372,6 +3647,22 @@ export async function reconcileDispatchWorkspaceArtifacts(
       continue;
     }
     if (!metadata) {
+      // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+      // AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
+      // A metadata-less dispatch worktree could still belong to a non-closed
+      // registry record (e.g. a provisioning workspace whose metadata file
+      // has not yet been written, or whose metadata file has been deleted out
+      // of band). Defer to the protection state before pruning.
+      const branchDecision = branchName
+        ? protection.evaluateDispatchBranch(branchName)
+        : { preserve: false, reason: null };
+      const pathDecision = protection.evaluateWorkspacePath(entry.path);
+      if (branchDecision.preserve || pathDecision.preserve) {
+        if (branchName) {
+          trackedBranches.add(branchName);
+        }
+        continue;
+      }
       await safelyRemoveDispatchWorktree(projectDir, resolvedConfig.worktreeRoot, entry.path);
       if (branchName && isDispatchBranch(branchName)) {
         await deleteDispatchBranch(projectDir, branchName);
@@ -3397,21 +3688,37 @@ export async function reconcileDispatchWorkspaceArtifacts(
     }
 
     if (metadata.cleanupEligible) {
-      await reapDispatchWorkspace(projectDir, metadata.taskRef, {
-        activeTaskRefs,
-        task: {
-          title: metadata.taskSlug,
-          slugs: [metadata.taskSlug],
-        },
-      });
+      // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+      // reapDispatchWorkspace internally re-checks activeTaskRefs and
+      // integration state, but routing the task-ref decision through the
+      // protection helper keeps the destructive surface aligned with every
+      // other surface in this function.
+      const reapDecision = protection.evaluateTaskRef(metadata.taskRef);
+      if (!reapDecision.preserve) {
+        await reapDispatchWorkspace(projectDir, metadata.taskRef, {
+          activeTaskRefs,
+          task: {
+            title: metadata.taskSlug,
+            slugs: [metadata.taskSlug],
+          },
+        });
+      }
     }
   }
 
+  // Recovery and reap may have mutated the registry. Rebuild the protection
+  // state so subsequent surfaces see the latest classification.
+  protection = await loadDispatchArtifactProtectionState(projectDir, resolvedConfig, {
+    activeOrInFlightTaskRefs: activeTaskRefs,
+  });
+
   for (const entry of entriesUnderRoot) {
     if (entry.branch === null && entry.path.endsWith("-review")) {
-      if (!referencedReviewerDirs.has(path.resolve(entry.path))) {
-        await safelyRemoveDispatchWorktree(projectDir, resolvedConfig.worktreeRoot, entry.path);
-      }
+      if (referencedReviewerDirs.has(path.resolve(entry.path))) continue;
+      // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+      const reviewerDecision = protection.evaluateWorkspacePath(entry.path);
+      if (reviewerDecision.preserve) continue;
+      await safelyRemoveDispatchWorktree(projectDir, resolvedConfig.worktreeRoot, entry.path);
     }
   }
 
@@ -3431,53 +3738,29 @@ export async function reconcileDispatchWorkspaceArtifacts(
     if (gitMarker) {
       continue;
     }
+    // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+    // AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
+    // Root-directory pruning must respect protected workspace paths and must
+    // not delete dispatcher-managed candidates when registry classification
+    // is unavailable.
+    const rootDecision = protection.evaluateWorkspacePath(candidate);
+    if (rootDecision.preserve) continue;
     await fs.rm(candidate, { recursive: true, force: true });
   }
 
-  // AC: @dispatch-workspace-registry ac-13 — consult the workspace registry
-  // before deleting untracked dispatch branches. Registry-only records (no
-  // worktree on disk) would be invisible to trackedBranches, which is built
-  // solely from worktree metadata. Without this check, branches belonging to
-  // active registry records get deleted as orphans.
-  let registryBranchMap: Map<
-    string,
-    { lifecycle_state: string; integration_status: string }
-  > | null = null;
-  try {
-    const ctx = await initContext(projectDir);
-    const registryRecords = await loadDispatchWorkspaceRegistry(ctx);
-    registryBranchMap = new Map();
-    for (const record of registryRecords) {
-      if (record.lifecycle_state !== "closed") {
-        registryBranchMap.set(record.canonical_branch, {
-          lifecycle_state: record.lifecycle_state,
-          integration_status: record.integration.status,
-        });
-      }
-    }
-  } catch {
-    // Registry may not exist yet or be unparseable — fall back to the original
-    // behavior of deleting all untracked dispatch branches.
-    registryBranchMap = null;
-  }
-
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  // AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
+  // AC: @dispatch-workspace-registry ac-13 — dispatch branch deletion consults
+  // the centralized protection state. Branches belonging to non-closed records
+  // are preserved; a registry that cannot be loaded becomes a no-blind-deletion
+  // signal instead of the previous "delete every untracked dispatch branch"
+  // fallback.
   for (const branch of await listDispatchBranches(projectDir)) {
     if (trackedBranches.has(branch)) {
       continue;
     }
-
-    // AC: @dispatch-workspace-registry ac-13 — only branches with no
-    // registry record or whose record has lifecycle_state "closed" are
-    // eligible for deletion.  All other tracked records (including
-    // "closing" and "cleanup_blocked") keep their branch until the
-    // record reaches "closed".
-    // Note: registryBranchMap only contains non-closed records (closed
-    // records are excluded when building the map), so any hit here
-    // means the branch belongs to a non-closed record and must be kept.
-    if (registryBranchMap && registryBranchMap.has(branch)) {
-      continue;
-    }
-
+    const branchDecision = protection.evaluateDispatchBranch(branch);
+    if (branchDecision.preserve) continue;
     await deleteDispatchBranch(projectDir, branch);
   }
 }
