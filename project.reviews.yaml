@@ -213034,6 +213034,13 @@ reviews:
           status: pass
           name: full npm test
         timestamp: 2026-05-13T06:23:44.561Z
+      - _ulid: 01KRG03BJTBGBEVZKAKA0JDGTF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRG03A0Y6DS3DRG8VNX4Z0EK
+        timestamp: 2026-05-13T06:24:01.626Z
     examined_commit: 5de3b8d30d8798bd4279bd86a3e8223ce03894f4
     external_links: []
     lifecycle_state: open
@@ -213066,7 +213073,22 @@ reviews:
               report is missing scoped cleanup, or move/remove the AC claim.'
             created_at: 2026-05-13T06:23:11.961Z
         kind: blocker
+      - _ulid: 01KRG03A0Y6DS3DRG8VNX4Z0EK
+        entries:
+          - _ulid: 01KRG03A0YXEZ0EYRBEC16150V
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md, tools/eslint-rules/no-leaky-test-daemon.js,
+              tests/lint-no-leaky-test-daemon.test.ts, task/spec context for
+              @daemon-test-guardrail-precision. Commands run: git diff/stat/log, kspec task get,
+              kspec item get, kspec validate, AC annotation searches, targeted npm test, full npm
+              test. Claims verified: process.on/process.once are no longer accepted by
+              isCleanupRegistrationCallback; onTestFinished and try/finally remain accepted;
+              targeted suite and full suite pass. Categories searched: correctness, boundary edge
+              cases, error handling/diagnostics text, test quality, integration with direct-spawn
+              guardrails."
+            created_at: 2026-05-13T06:24:00.030Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-13T06:09:39.233Z
-    updated_at: 2026-05-13T06:23:42.904Z
+    updated_at: 2026-05-13T06:24:00.030Z
     notes: []
