@@ -75,7 +75,7 @@ description: >
 spec_ref: "@dispatch-workspace-cleanup-policy"
 plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-apply-protection-policy-across-artifact-reconciliation"
@@ -91,11 +91,11 @@ review_ref: "@01KRFTQZBXREYNAXRMG1RDX5ZH"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-test-cleanup-protection-positive-and-regression-cases/01krf37z
-  captured_at: 2026-05-13T04:36:16.331Z
-  commit: 2371bf574df635f21e6a0fd6c2476736eecbf150
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-13T05:39:49.510Z
+  commit: a820f6e7b1e69d76f77023a1b383d78d40e39569
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-test-cleanup-protection-positive-and-regression-cases/01krf37z
 session_id: 01KRFWFE18K5RMXR5SE6H9B7RS
 history:
   - author: Jacob Chapel
@@ -168,8 +168,35 @@ history:
         previous: 2026-05-13T04:13:35.366Z
     command: task-start
     timestamp: 2026-05-13T05:39:46.095Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-test-cleanup-protection-positive-and-regression-cases/01krf37z
+          captured_at: 2026-05-13T05:39:49.510Z
+          commit: a820f6e7b1e69d76f77023a1b383d78d40e39569
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-test-cleanup-protection-positive-and-regression-cases/01krf37z
+        previous:
+          review_url: null
+          branch: dispatch/task/task-test-cleanup-protection-positive-and-regression-cases/01krf37z
+          captured_at: 2026-05-13T04:36:16.331Z
+          commit: 2371bf574df635f21e6a0fd6c2476736eecbf150
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-13T05:39:49.514Z
+        previous: 2026-05-13T04:36:16.334Z
+    command: task-submit
+    timestamp: 2026-05-13T05:39:49.514Z
 created_at: 2026-05-12T21:59:44.434Z
 started_at: 2026-05-13T05:39:46.095Z
-submitted_at: 2026-05-13T04:36:16.334Z
+submitted_at: 2026-05-13T05:39:49.514Z
 todos: []
 automation: eligible
