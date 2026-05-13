@@ -214963,6 +214963,12 @@ reviews:
         payload:
           thread_ulid: 01KRH6R83EZY59EPFMZM8T3V91
         timestamp: 2026-05-13T18:12:47.834Z
+      - _ulid: 01KRH8NH1R4A7H8KFM3DR2JH3D
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRH6R83EZY59EPFMZM8T3V91
+        timestamp: 2026-05-13T18:13:00.088Z
     examined_commit: 295ed289945e390e76f38c9d34c45f2c9faceaed
     external_links: []
     lifecycle_state: closed
@@ -215001,6 +215007,8 @@ reviews:
               1126, 1233, 1390) and in tests/dispatch-artifact-protection.test.ts."
             created_at: 2026-05-13T18:12:44.561Z
         kind: blocker
+        resolved_at: 2026-05-13T18:12:56.633Z
+        resolved_by: "@claude"
       - _ulid: 01KRH6RF18YZ7JCJ4HAYAGJ99B
         anchor:
           type: code
@@ -215044,5 +215052,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-13T17:50:45.983Z
     created_at: 2026-05-13T17:36:13.784Z
-    updated_at: 2026-05-13T18:12:44.561Z
+    updated_at: 2026-05-13T18:12:56.633Z
     notes: []
