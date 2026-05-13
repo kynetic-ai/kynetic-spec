@@ -48928,7 +48928,7 @@ runs:
     completed_at: 2026-05-13T04:11:30.776Z
   - _ulid: 01KRFSCR1C8FR08S4VEPFCE7VX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -48943,7 +48943,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T04:27:31.757Z
-        completed_at: 2026-05-13T04:27:31.757Z
+        completed_at: 2026-05-13T04:27:41.710Z
+        notes: "Friction: after a successful detached-reviewer merge, the helper warned that the occupied
+          worktree had unexpected dirty state: untracked .kspec-dispatch-shadow-mutation.lock/.
+          Existing searches found prior completed work for .lock/ gitignore coverage and dispatch
+          mutation locks, but no current item specifically covering a successful merge helper run
+          leaving or observing that warning after occupied-worktree refresh. Full npm test remains
+          long in review sessions, but existing conventions and observations already cover shard
+          usage and dispatch test-runtime concerns, so I will not duplicate that."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T04:27:41.710Z
+        completed_at: 2026-05-13T04:27:41.710Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T04:26:49.260Z
