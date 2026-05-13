@@ -32354,12 +32354,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-13T06:48:05.421Z
+      updated_at: 2026-05-13T06:48:26.114Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T06:48:05.421Z
+      updated_at: 2026-05-13T06:48:26.114Z
     integration:
       status: pending
       detail: null
@@ -32367,17 +32367,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: cb9d7cedfc8e7496b60178495fee4b681363038e
-      updated_at: 2026-05-13T06:48:05.421Z
-    lifecycle_state: ready
+      updated_at: 2026-05-13T06:48:26.114Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRF9WAG6J46D1WJ3R9DX0SNG"
     task_slug: stabilize-daemon-readiness-diagnostics-lasthealth-flake
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T06:09:14.327Z
-      last_reconciled_at: 2026-05-13T06:48:05.421Z
+      last_reconciled_at: 2026-05-13T06:48:26.114Z
       created_at: 2026-05-13T06:08:48.869Z
-      updated_at: 2026-05-13T06:48:05.421Z
+      updated_at: 2026-05-13T06:48:26.114Z
     workspace_id: dispatch-workspace-01KRF9WAG6J46D1WJ3R9DX0SNG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
