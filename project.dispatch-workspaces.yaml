@@ -32542,3 +32542,79 @@ workspaces:
         head: ea3c85356bd7c4ef72e5347d0b8e9a75c023fa5f
         last_seen_at: 2026-05-13T09:46:12.755Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-implicit-autostart-cleanup-coverage-01krcrjq
+  - active_role: null
+    base_branch_point: 03f91e732faa6d80427b2c19f77847e72ea8153d
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-validate-daemon-cleanup-contract-hardening/01krcrjs
+    canonical_branch_head: 03f91e732faa6d80427b2c19f77847e72ea8153d
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-13T10:03:39.473Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-13T10:03:39.473Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 03f91e732faa6d80427b2c19f77847e72ea8153d
+      updated_at: 2026-05-13T10:03:39.473Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KRCRJSZDBERFRFNBMRJT47JR"
+    task_slug: task-validate-daemon-cleanup-contract-hardening
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-13T10:03:39.473Z
+      created_at: 2026-05-13T10:03:39.473Z
+      updated_at: 2026-05-13T10:03:39.473Z
+    workspace_id: dispatch-workspace-01KRCRJSZDBERFRFNBMRJT47JR
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-validate-daemon-cleanup-contract-hardening/01krcrjs
+        head: 03f91e732faa6d80427b2c19f77847e72ea8153d
+        last_seen_at: 2026-05-13T10:03:39.473Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-daemon-cleanup-contract-hardening-01krcrjs
