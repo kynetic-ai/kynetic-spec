@@ -49792,7 +49792,7 @@ runs:
     started_at: 2026-05-13T10:35:44.137Z
     completed_at: 2026-05-13T10:38:01.303Z
   - _ulid: 01KRH4S53Z3F7FMRWN0PH4E1GH
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -49848,7 +49848,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-13T17:07:12.795Z
-        completed_at: 2026-05-13T17:07:12.795Z
+        completed_at: 2026-05-13T17:07:30.864Z
+        notes: "Captured friction observation @01KRH4XB: detached reviewer snapshots for spec-only review
+          can lack a local .kspec directory, so reviewer guidance should make the kspec-CLI-only
+          inspection path explicit. No capture for npm test duration because @01KNTB8Z4 already
+          covers it."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T17:05:04.639Z
+    completed_at: 2026-05-13T17:07:30.864Z
