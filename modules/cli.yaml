@@ -8590,7 +8590,7 @@ features:
               invocations.
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
             depends_on: []
             implements: []
             relates_to: []
@@ -8762,7 +8762,7 @@ features:
                   deterministically so it does not leave stale directories or refs behind.
                 status:
                   maturity: draft
-                  implementation: in_progress
+                  implementation: implemented
                 depends_on: []
                 implements: []
                 relates_to: []
