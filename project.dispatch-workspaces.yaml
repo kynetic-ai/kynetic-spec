@@ -33038,7 +33038,7 @@ workspaces:
         head: 56258aa7bd91a61a4c908f3f5b6942b05f72844d
         last_seen_at: 2026-05-13T05:20:46.880Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-dispatch-inflight-bootstrap-race-regression-01krf37z
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: ce6326ae4982ab4883a2924834e87e4c7eeff39d
     bootstrap:
       status: succeeded
@@ -33515,7 +33515,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T06:08:16.701Z
+      updated_at: 2026-05-13T06:08:43.584Z
     integration:
       status: pending
       detail: null
@@ -33530,10 +33530,10 @@ workspaces:
     task_slug: task-fix-guardrail-cleanup-boundary-classification
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-13T05:43:49.041Z
-      last_reconciled_at: 2026-05-13T06:08:16.701Z
+      last_active_at: 2026-05-13T06:08:43.584Z
+      last_reconciled_at: 2026-05-13T06:08:43.584Z
       created_at: 2026-05-13T05:43:24.422Z
-      updated_at: 2026-05-13T06:08:40.323Z
+      updated_at: 2026-05-13T06:08:43.584Z
     workspace_id: dispatch-workspace-01KRCRJQ8CM6D08AHASH84VRDM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
