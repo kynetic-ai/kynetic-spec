@@ -29109,7 +29109,7 @@
   type: task
   spec_ref: "@dispatch-workspace-cleanup-policy"
   plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-apply-protection-policy-across-artifact-reconciliation"
@@ -29123,6 +29123,7 @@
   todos_count: 0
   created_at: 2026-05-12T21:59:44.434Z
   started_at: 2026-05-13T04:13:35.366Z
+  submitted_at: 2026-05-13T04:36:16.334Z
   automation: eligible
 - _ulid: 01KRF37ZZ4E2KKX66YP217WW69
   slugs:
