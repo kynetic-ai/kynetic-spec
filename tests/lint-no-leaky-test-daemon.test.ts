@@ -1073,19 +1073,26 @@ describe("test suite", () => {
     // (`child.kill("SIGTERM")` rather than `process.kill`). The effect
     // classifier accepts `<binding>.kill("SIGTERM")` for an inspected
     // spawn child; the boundary classifier is the only remaining gate.
-    // The probe carries the daemon as a `child` spawn so the body's
-    // terminating effect on the spawn handle is unambiguous, leaving
-    // the boundary classifier as the sole rejector.
+    //
+    // The daemon-start MUST go through a non-direct-entry path or the
+    // direct-daemon-entry guardrail reports unconditionally and the
+    // boundary classifier is never the rejector — so the probe spawns
+    // via the `kspec` executable with the `serve start --detach`
+    // subcommand path, which is the detach call expression branch.
+    // Pre-fix the boundary classifier credited `process.on("exit", …)`
+    // as a per-test boundary, the effect classifier credited
+    // `child.kill("SIGTERM")` for the inspected spawn binding, and the
+    // detached daemon was reported as cleaned up. Post-fix the boundary
+    // classifier rejects the registration as not per-test scoped and
+    // the rule fires for `ac-cleanup-registration-is-test-scoped`.
     it('should flag spawn detached when only cleanup is process.on("exit", () => child.kill("SIGTERM"))', () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 import { spawn } from "child_process";
 
-const DAEMON_ENTRY = "dist/daemon/index.js";
-
 describe("test suite", () => {
   it("should start daemon", () => {
-    const child = spawn("node", [DAEMON_ENTRY, "--port", "3456"]);
+    const child = spawn("kspec", ["serve", "start", "--detach", "--port", "3456"]);
     process.on("exit", () => child.kill("SIGTERM"));
     expect(child.pid).toBeDefined();
   });
