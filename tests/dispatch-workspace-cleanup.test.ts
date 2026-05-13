@@ -268,6 +268,7 @@ describe("dispatch workspace cleanup", () => {
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-5
+  // AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
   it("cleans orphaned dispatch worktrees and branches during reconciliation", async () => {
     await seedRepo(tempDir);
     git(tempDir, "checkout -b agent-dev");
@@ -282,7 +283,17 @@ describe("dispatch workspace cleanup", () => {
       },
     });
 
+    // Make this a true orphan: no metadata file AND no registry record.
+    // The centralized protection helper preserves dispatcher-managed
+    // artifacts whose canonical branch belongs to a non-closed registry
+    // record, so clearing the registry is required to exercise the
+    // legitimate orphan-cleanup path.
     await fs.rm(workspaceMetadataPath(workspace.cwd), { force: true });
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
     await fs.mkdir(path.join(tempDir, ".kspec-worktrees", "orphan-dir"), { recursive: true });
     await fs.writeFile(
       path.join(tempDir, ".kspec-worktrees", "orphan-dir", "leftover.txt"),
@@ -302,6 +313,7 @@ describe("dispatch workspace cleanup", () => {
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-5
+  // AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
   it("prunes stale git worktree registrations when the dispatch directory is already gone", async () => {
     await seedRepo(tempDir);
     git(tempDir, "checkout -b agent-dev");
@@ -317,6 +329,14 @@ describe("dispatch workspace cleanup", () => {
     });
 
     await fs.rm(workspace.cwd, { recursive: true, force: true });
+    // Clear the registry so the stale registration is treated as a true
+    // orphan; otherwise the protection helper preserves the branch on behalf
+    // of the still-open registry record.
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
     expect(git(tempDir, "worktree list --porcelain")).toContain(`worktree ${workspace.cwd}`);
 
     await reconcileDispatchWorkspaceArtifacts(tempDir);
@@ -328,6 +348,115 @@ describe("dispatch workspace cleanup", () => {
         "branch --list dispatch/task/task-stale-registration-cleanup-workspace/01task00",
       ),
     ).toBe("");
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  // AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
+  it("preserves a registry-backed worktree and its canonical branch when the metadata file is missing", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 28)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Registry Backed Metadata Missing Workspace",
+        slugs: ["task-registry-backed-metadata-missing-workspace"],
+      },
+    });
+
+    // Remove only the metadata file. The registry record for this workspace
+    // still exists (lifecycle_state=ready) and must protect both the worktree
+    // directory and the dispatch branch from blind deletion until cleanup
+    // policy classification determines cleanup is safe.
+    await fs.rm(workspaceMetadataPath(workspace.cwd), { force: true });
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    await fs.access(workspace.cwd);
+    expect(
+      git(
+        tempDir,
+        "branch --list dispatch/task/task-registry-backed-metadata-missing-workspace/01task00",
+      ),
+    ).toContain("dispatch/task/task-registry-backed-metadata-missing-workspace/01task00");
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  it("preserves an in-flight task ref's worktree, reviewer dir, and dispatch branch across all cleanup surfaces", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithReviewerAgent(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 29)}`;
+    const workerWorkspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "In Flight Protection Workspace",
+        slugs: ["task-in-flight-protection-workspace"],
+      },
+    });
+    const reviewerWorkspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      role: "reviewer",
+      task: {
+        title: "In Flight Protection Workspace",
+        slugs: ["task-in-flight-protection-workspace"],
+      },
+    });
+
+    // Simulate the queue-to-spawn race: metadata files removed (would happen
+    // mid-provisioning), but the dispatch engine still has the task in-flight.
+    await fs.rm(workspaceMetadataPath(workerWorkspace.cwd), { force: true });
+    await fs.rm(workspaceMetadataPath(reviewerWorkspace.cwd), { force: true });
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir, {
+      activeTaskRefs: [taskRef],
+    });
+
+    await fs.access(workerWorkspace.cwd);
+    await fs.access(reviewerWorkspace.cwd);
+    expect(
+      git(tempDir, "branch --list dispatch/task/task-in-flight-protection-workspace/01task00"),
+    ).toContain("dispatch/task/task-in-flight-protection-workspace/01task00");
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  it("preserves the canonical dispatch branch when an active task ref has no registry record yet (queue-to-spawn race)", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithReviewerAgent(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    // Reserve a canonical dispatch branch the way the engine would during the
+    // queue-to-spawn window, BEFORE any registry record is written and BEFORE
+    // any worker worktree is provisioned. The registry file is empty.
+    const taskRef = `@${testUlid("TASK", 30)}`;
+    const reservedBranch = "dispatch/task/task-queue-to-spawn-protection/01task00";
+    git(tempDir, `branch ${reservedBranch}`);
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({
+        kynetic_dispatch_workspaces: "1.0",
+        workspaces: [],
+      }),
+      "utf-8",
+    );
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir, {
+      activeTaskRefs: [taskRef],
+    });
+
+    // The reserved branch shares the short-id segment with the active task ref
+    // (`01task00`), so cleanup must preserve it even though no registry record
+    // exists yet — otherwise the queue-to-spawn window can delete a canonical
+    // branch out from under an in-flight invocation.
+    expect(git(tempDir, `branch --list ${reservedBranch}`)).toContain(reservedBranch);
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-6
