@@ -1,1 +1,24 @@
-notes: []
+notes:
+  - _ulid: 01KRFZPMBA01YNFFNTJF307053
+    content: >-
+      Root cause: sampleEndpointDiagnostic in tests/helpers/daemon.ts:543 takes a single snapshot at
+      failure time. Under heavy parallel load, a daemon spawned with a custom always-false probe
+      (failingTimeoutMs=800) may not have bound to its port within the readiness budget, so the
+      post-timeout fetch returns ECONNREFUSED ('fetch failed'). The diagnostic bundle then reports
+      {error:...} instead of the expected 200, even though the daemon process is alive.
+
+
+      Approach: Add bounded retries inside sampleEndpointDiagnostic. When the caller passes a child
+      handle and the child is alive (pid set, exitCode/signalCode null), retry the sample on
+      transient fetch failures up to a budget (5s, 100ms interval). When the child is observably
+      dead or no handle is provided, return the latest error immediately. This preserves the
+      bundle-reflects-failure-time semantics while eliminating the race between daemon bind and
+      diagnostic sample.
+
+
+      Spec coverage: existing ac-readiness-diagnostics says 'failure output reports a diagnostic
+      bundle' — the fix strengthens the implementation to reliably surface the daemon's actual
+      reachability state, no AC change required.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T06:17:04.618Z
