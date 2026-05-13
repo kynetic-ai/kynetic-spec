@@ -213685,6 +213685,20 @@ reviews:
         runner: npm test
         created_at: 2026-05-13T08:36:43.505Z
         completed_at: 2026-05-13T08:36:43.505Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Synthetic fixtures after a prior kspec CLI subprocess returned 'Found 0 warnings and 0
+          errors' for four unsafe no-cleanup cases: metadataPath alias read, pidPath alias read,
+          kspec serve status --json observation, and fetch via daemon.apiUrl endpoint. Expected
+          no-leaky-test-daemon to report per @daemon-test-guardrail-precision
+          ac-implicit-autostart-cleanup-before-observation."
+        name: implicit auto-start observation coverage
+        required: true
+        runner: npx oxlint
+        created_at: 2026-05-13T08:37:09.704Z
+        completed_at: 2026-05-13T08:37:09.704Z
     events:
       - _ulid: 01KRG6R6TPV0A046MJ449QPV5G
         actor: Jacob Chapel
@@ -213720,6 +213734,13 @@ reviews:
           status: pass
           name: full npm test
         timestamp: 2026-05-13T08:36:44.971Z
+      - _ulid: 01KRG7Q5TVRQPATNB3XKRFRW5K
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: implicit auto-start observation coverage
+        timestamp: 2026-05-13T08:37:11.131Z
     examined_commit: 67fe23685ef6ba6c463cf83414a02ad61e7b7027
     external_links: []
     lifecycle_state: open
@@ -213757,5 +213778,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-13T08:20:16.342Z
-    updated_at: 2026-05-13T08:36:43.505Z
+    updated_at: 2026-05-13T08:37:09.704Z
     notes: []
