@@ -8,7 +8,7 @@
  * - @config-daemon ac-4: deprecation warning for manifest daemon block
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, onTestFinished } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import {
@@ -579,6 +579,26 @@ daemon:
 
       // The PID file should still contain only our original PID — no new daemon was spawned
       const pidContent = await readTestOutput(isolatedHome.daemonPidFilePath);
+      // Defensive scoped cleanup before the next assertion: if the
+      // auto-start guard ever regresses and a real daemon IS spawned,
+      // the pid file's contents would be the daemon's pid (not this
+      // process's). Capture the recorded pid up-front so an assertion
+      // failure cannot leave a leaked daemon running. The test is
+      // exercising the auto-start path of the CLI; the cleanup is the
+      // safe boundary the daemon-test-guardrail-precision rule
+      // requires after an implicit auto-start ownership observation.
+      // (@daemon-test-guardrail-precision
+      // ac-implicit-autostart-cleanup-before-observation)
+      const observedPid = parseInt(pidContent.trim(), 10);
+      onTestFinished(() => {
+        if (Number.isFinite(observedPid) && observedPid > 0 && observedPid !== process.pid) {
+          try {
+            process.kill(observedPid, "SIGTERM");
+          } catch {
+            // Already gone — fine.
+          }
+        }
+      });
       expect(pidContent.trim()).toBe(String(process.pid));
     });
   });

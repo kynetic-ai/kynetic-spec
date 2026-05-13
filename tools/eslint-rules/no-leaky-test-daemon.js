@@ -488,6 +488,17 @@ const noLeakyTestDaemon = {
         "so HTTP and WebSocket clients share the resolved endpoint and the " +
         "default 127.0.0.1 host. To intentionally test localhost-as-host " +
         "behavior, add a local oxlint-disable-next-line with a -- reason.",
+      implicitAutoStartMissingCleanup:
+        "Implicit auto-started daemon ownership observation ({{pattern}}) " +
+        "has no scoped cleanup registered before the next assertion or " +
+        "daemon observation. A preceding kspec CLI subprocess may have " +
+        "auto-started the daemon; this read captures ownership. Register " +
+        "`onTestFinished(() => process.kill(pid, 'SIGTERM'))` (or another " +
+        "approved terminating cleanup) on the very next statement after " +
+        "the pid/metadata capture and before any later " +
+        "`expect(...)`, `await`, `execSync(\"ps -p ${pid}\")`, or daemon " +
+        "endpoint observation — otherwise an assertion failure leaves the " +
+        "auto-started daemon running.",
     },
     schema: [],
   },
@@ -6087,6 +6098,1129 @@ const noLeakyTestDaemon = {
     // ac-detached-cleanup-before-observation).
     const pendingDetachChecks = [];
 
+    /**
+     * Implicit-auto-start daemon ownership observations queued during
+     * traversal. Each entry is a VariableDeclarator, AssignmentExpression,
+     * or standalone observation CallExpression whose initializer/RHS reads
+     * the daemon's PID file, daemon connection metadata, invokes
+     * `kspec serve status`, or fetches a daemon endpoint URL. The
+     * cleanup-timing analysis is deferred to `Program:exit` so the same
+     * `hasCleanupAfter` / `hasCleanupBefore` walk runs after all later
+     * statements (including identifier-bound URL bindings, daemon-path
+     * aliases, daemon-shaped bindings) are recorded.
+     *
+     * Each entry carries:
+     *   - `node`: the observation node. Used to look up the containing
+     *     statement for the cleanup-timing walk and to report the
+     *     diagnostic with a useful loc.
+     *   - `pattern`: a short string identifying the observation shape for
+     *     the diagnostic.
+     *   - `kind`: `"ownership"` when the observation is a daemon
+     *     pid/metadata READ (direct or via path alias) — these claim
+     *     daemon ownership at the read site, so wrapping the read in a
+     *     local helper hides the cleanup contract from the test body
+     *     (`localWrapperUnsafe` applies). `"observation"` when the
+     *     observation is a pure query (`kspec serve status`, daemon
+     *     endpoint fetch) — the daemon was started elsewhere; the
+     *     observation does not itself claim ownership, so wrapping it
+     *     in a polling helper or async callback is normal practice and
+     *     `localWrapperUnsafe` must NOT apply.
+     */
+    const pendingImplicitAutoStartChecks = [];
+
+    /**
+     * Property names that name the daemon's PID file path on a test fixture
+     * object — used to detect daemon-ownership observations such as
+     * `<x>.daemonPidFilePath`. The canonical fixture (`createIsolatedKspecHome`
+     * in `tests/helpers/cli.ts`) exposes the daemon's pid-file path through
+     * the `daemonPidFilePath` property; a read against this property after
+     * a kspec CLI subprocess proves the test is observing the auto-started
+     * daemon. The list is intentionally narrow — adding other property names
+     * here would broaden the daemon-ownership signal beyond the documented
+     * fixture surface and risk false positives on unrelated objects.
+     */
+    const DAEMON_PID_FILE_PROPERTY_NAMES = new Set(["daemonPidFilePath"]);
+
+    /**
+     * Literal substrings that, when they appear inside a string literal /
+     * template literal feeding a CallExpression argument, identify a
+     * daemon-connection-metadata observation. The canonical fixture writes
+     * `daemon.connection.json` next to the pid file (see
+     * `src/daemon/connection-metadata.ts`); a test that reads that file
+     * is observing the auto-started daemon's connection metadata.
+     */
+    const DAEMON_METADATA_FILE_SUBSTRINGS = ["daemon.connection.json"];
+
+    /**
+     * True when a subtree contains a MemberExpression whose property name is
+     * one of the daemon pid-file property names. Used by
+     * `isDaemonPidFileObservation` to recognise `<x>.daemonPidFilePath`
+     * references inside an argument expression like
+     * `readTestOutputSync(isolatedHome.daemonPidFilePath).trim()`.
+     *
+     * Function/arrow bodies are NOT descended — only the synchronous
+     * subtree of the argument expression is inspected, mirroring the
+     * cleanup-walker discipline elsewhere in this rule.
+     */
+    function subtreeReadsDaemonPidProperty(node) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") {
+        return false;
+      }
+      if (
+        node.type === "FunctionDeclaration" ||
+        node.type === "FunctionExpression" ||
+        node.type === "ArrowFunctionExpression"
+      ) {
+        return false;
+      }
+      if (
+        node.type === "MemberExpression" &&
+        node.property &&
+        node.property.type === "Identifier" &&
+        DAEMON_PID_FILE_PROPERTY_NAMES.has(node.property.name)
+      ) {
+        return true;
+      }
+      for (const key in node) {
+        if (
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        ) {
+          continue;
+        }
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (subtreeReadsDaemonPidProperty(c)) return true;
+          }
+        } else if (
+          child &&
+          typeof child === "object" &&
+          typeof child.type === "string"
+        ) {
+          if (subtreeReadsDaemonPidProperty(child)) return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * True when a subtree contains a string literal or no-substitution
+     * template literal whose text contains one of the daemon-metadata file
+     * substrings (e.g. `daemon.connection.json`). Used to recognise reads
+     * of the daemon connection metadata file regardless of whether the path
+     * is built via `path.join(configDir, "daemon.connection.json")` or
+     * passed as a bare literal.
+     */
+    function subtreeReadsDaemonMetadataLiteral(node) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") {
+        return false;
+      }
+      if (
+        node.type === "FunctionDeclaration" ||
+        node.type === "FunctionExpression" ||
+        node.type === "ArrowFunctionExpression"
+      ) {
+        return false;
+      }
+      if (node.type === "Literal" && typeof node.value === "string") {
+        for (const needle of DAEMON_METADATA_FILE_SUBSTRINGS) {
+          if (node.value.includes(needle)) return true;
+        }
+      }
+      if (node.type === "TemplateLiteral") {
+        for (const quasi of node.quasis) {
+          for (const needle of DAEMON_METADATA_FILE_SUBSTRINGS) {
+            if (quasi.value.raw.includes(needle)) return true;
+          }
+        }
+      }
+      for (const key in node) {
+        if (
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        ) {
+          continue;
+        }
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (subtreeReadsDaemonMetadataLiteral(c)) return true;
+          }
+        } else if (
+          child &&
+          typeof child === "object" &&
+          typeof child.type === "string"
+        ) {
+          if (subtreeReadsDaemonMetadataLiteral(child)) return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Recognise a CallExpression whose callee shape is a file-write
+     * primitive (`writeFileSync`, `fs.writeFile`, `fs.writeFileSync`,
+     * `appendFile`, `appendFileSync`, etc.). Writes are NOT daemon
+     * ownership observations — they create or modify the pid file, they
+     * don't read the daemon's pid. Used by
+     * `isDaemonOwnershipObservationInit` to reject capture inits whose
+     * outermost call is a write, even if a daemon-pid path appears as an
+     * argument.
+     */
+    function isFileWriteCallee(call) {
+      if (!call || call.type !== "CallExpression") return false;
+      const name = getCalleeName(call);
+      if (!name) return false;
+      return (
+        name === "writeFile" ||
+        name === "writeFileSync" ||
+        name === "appendFile" ||
+        name === "appendFileSync" ||
+        name === "outputFile" ||
+        name === "outputFileSync"
+      );
+    }
+
+    /**
+     * Identifier-callee names that name a file-read or file-existence
+     * primitive in the test surface. A daemon-ownership capture's init
+     * expression MUST contain at least one such call — a bare path
+     * alias / path construction is not an observation. Examples this set
+     * accepts:
+     *   - `readTestOutputSync(<...>.daemonPidFilePath)` (test helper)
+     *   - `readFileSync(<...>.daemonPidFilePath)` (Node fs)
+     *   - `await readFile(metadataPath)` / `await readTestOutput(...)`
+     *   - `existsSync(<...>.daemonPidFilePath)` (existence check — the
+     *     daemon's lifecycle file is a daemon observation when the file
+     *     was just written by the daemon under test)
+     *
+     * The rule does NOT include `JSON.parse`, `parseInt`, or `join` —
+     * those are post-processing / path-construction primitives, not
+     * file reads. A binding initialised from `join(home, "daemon.
+     * connection.json")` is a path construction, not an observation, so
+     * the rule must skip it.
+     */
+    const DAEMON_OBSERVATION_READ_CALLEE_NAMES = new Set([
+      "readFile",
+      "readFileSync",
+      "readTestOutput",
+      "readTestOutputSync",
+      "existsSync",
+      "access",
+      "accessSync",
+      "stat",
+      "statSync",
+    ]);
+
+    /**
+     * True when a subtree contains a CallExpression whose callee name is
+     * in `DAEMON_OBSERVATION_READ_CALLEE_NAMES`. Used by
+     * `isDaemonOwnershipObservationInit` to require that a daemon-ownership
+     * capture's init expression actually READS the daemon's pid/metadata
+     * file (not just constructs a path string).
+     *
+     * Function/arrow bodies are NOT descended — only the synchronous spine
+     * of the init expression is inspected, mirroring the cleanup walker
+     * discipline elsewhere in this rule.
+     */
+    function subtreeContainsDaemonReadLikeCall(node) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") {
+        return false;
+      }
+      if (
+        node.type === "FunctionDeclaration" ||
+        node.type === "FunctionExpression" ||
+        node.type === "ArrowFunctionExpression"
+      ) {
+        return false;
+      }
+      if (node.type === "CallExpression") {
+        const name = getCalleeName(node);
+        if (name && DAEMON_OBSERVATION_READ_CALLEE_NAMES.has(name)) return true;
+      }
+      for (const key in node) {
+        if (
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        ) {
+          continue;
+        }
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (subtreeContainsDaemonReadLikeCall(c)) return true;
+          }
+        } else if (
+          child &&
+          typeof child === "object" &&
+          typeof child.type === "string"
+        ) {
+          if (subtreeContainsDaemonReadLikeCall(child)) return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Per-scope tracking of bindings that ALIAS the daemon's pid-file or
+     * connection-metadata path (no file read in the init). Examples:
+     *
+     *   const pidPath = isolatedHome.daemonPidFilePath;
+     *   const metadataPath = join(home.configDir, "daemon.connection.json");
+     *
+     * Such bindings carry the daemon-path identity forward so a later
+     * `readFileSync(pidPath)` / `readTestOutputSync(metadataPath)` is the
+     * observation moment for `ac-implicit-autostart-cleanup-before-observation`.
+     * Without the alias-tracking pass, the current `isDaemonOwnershipObservationInit`
+     * required the daemon-path literal AND the read primitive to live in the
+     * same init expression — splitting them across two declarators silently
+     * defeats the rule (cycle 2 reviewer blocker).
+     *
+     * Map shape: identifier name → array of `{ scopeNode, position }`.
+     */
+    const daemonPathAliasBindings = new Map();
+
+    /**
+     * Per-scope tracking of bindings whose value carries DAEMON STATE — the
+     * parsed connection metadata object, the result of a `kspec serve status
+     * --json` invocation, or a chained alias of either. Used to recognise a
+     * later `fetch(<x>.apiUrl)` / `new WebSocket(<x>.wsUrl)` as a daemon
+     * endpoint observation even when the URL is reached through a member
+     * expression rather than a literal `localhost:<port>` string.
+     *
+     * Map shape: identifier name → array of `{ scopeNode, position }`.
+     */
+    const daemonShapedBindings = new Map();
+
+    function recordDaemonPathAlias(name, anchorNode) {
+      const scopeNode = getEnclosingScopeNode(anchorNode);
+      if (!scopeNode) return;
+      const position = getNodeStart(anchorNode);
+      if (position < 0) return;
+      let entries = daemonPathAliasBindings.get(name);
+      if (!entries) {
+        entries = [];
+        daemonPathAliasBindings.set(name, entries);
+      }
+      entries.push({ scopeNode, position });
+    }
+
+    function recordDaemonShapedBinding(name, anchorNode) {
+      const scopeNode = getEnclosingScopeNode(anchorNode);
+      if (!scopeNode) return;
+      const position = getNodeStart(anchorNode);
+      if (position < 0) return;
+      let entries = daemonShapedBindings.get(name);
+      if (!entries) {
+        entries = [];
+        daemonShapedBindings.set(name, entries);
+      }
+      entries.push({ scopeNode, position });
+    }
+
+    function findApplicableAuxiliaryBinding(map, name, useNode) {
+      const usePos = getNodeStart(useNode);
+      if (usePos < 0) return null;
+      const entries = map.get(name);
+      if (!entries) return null;
+      let current = useNode.parent;
+      while (current) {
+        if (isScopeNode(current)) {
+          if (functionScopeShadowsName(current, name)) return null;
+          let candidate = null;
+          for (const entry of entries) {
+            if (entry.scopeNode !== current) continue;
+            if (entry.position >= usePos) continue;
+            if (!candidate || entry.position > candidate.position) {
+              candidate = entry;
+            }
+          }
+          if (candidate) return candidate;
+        }
+        current = current.parent;
+      }
+      return null;
+    }
+
+    function isDaemonPathAliasIdentifier(node, useNode) {
+      if (!node || node.type !== "Identifier") return false;
+      return findApplicableAuxiliaryBinding(daemonPathAliasBindings, node.name, useNode) !== null;
+    }
+
+    function isDaemonShapedBindingIdentifier(node, useNode) {
+      if (!node || node.type !== "Identifier") return false;
+      return findApplicableAuxiliaryBinding(daemonShapedBindings, node.name, useNode) !== null;
+    }
+
+    /**
+     * True when an init expression NAMES the daemon's pid-file or connection
+     * metadata path WITHOUT performing a read. This is the alias / path-
+     * construction shape that should record a daemon-path-alias binding so
+     * the later read site is recognised as a daemon-ownership observation.
+     *
+     * Excluded shapes:
+     *   - File-write callees (`writeFile(daemonPidFilePath, …)`).
+     *   - Inits that already contain a recognised file-read primitive
+     *     (those are observations themselves, handled by
+     *     `isDaemonOwnershipObservationInit`).
+     */
+    function isDaemonPathAliasInitShape(initNode) {
+      if (!initNode) return false;
+      let candidate = initNode;
+      if (candidate.type === "AwaitExpression") candidate = candidate.argument;
+      if (!candidate) return false;
+      if (candidate.type === "CallExpression" && isFileWriteCallee(candidate)) return false;
+      const namesPid = subtreeReadsDaemonPidProperty(candidate);
+      const namesMetadata = namesPid ? false : subtreeReadsDaemonMetadataLiteral(candidate);
+      if (!namesPid && !namesMetadata) return false;
+      // An init that ALSO contains a read primitive IS an observation, not
+      // an alias — let `isDaemonOwnershipObservationInit` classify it.
+      if (subtreeContainsDaemonReadLikeCall(candidate)) return false;
+      return true;
+    }
+
+    /**
+     * True when a subtree contains a recognised file-read primitive whose
+     * direct argument is an Identifier resolving to a daemon-path-alias
+     * binding. This is the observation shape for the alias chain:
+     *
+     *   const metadataPath = join(home, "daemon.connection.json");
+     *   const data = JSON.parse(readTestOutputSync(metadataPath));
+     *   //                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ matches here
+     *
+     * Function/arrow bodies are NOT descended — only the synchronous spine
+     * of the init expression is inspected, mirroring the cleanup walker
+     * discipline elsewhere in this rule.
+     */
+    function subtreeContainsReadOnDaemonPathAlias(node, useContextNode) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") return false;
+      if (
+        node.type === "FunctionDeclaration" ||
+        node.type === "FunctionExpression" ||
+        node.type === "ArrowFunctionExpression"
+      ) return false;
+      if (node.type === "CallExpression") {
+        const name = getCalleeName(node);
+        if (name && DAEMON_OBSERVATION_READ_CALLEE_NAMES.has(name)) {
+          for (const arg of node.arguments) {
+            if (isDaemonPathAliasIdentifier(arg, useContextNode)) return true;
+          }
+        }
+      }
+      for (const key in node) {
+        if (
+          key === "parent" || key === "loc" || key === "range" ||
+          key === "start" || key === "end" || key === "type" ||
+          key === "tokens" || key === "comments"
+        ) continue;
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (subtreeContainsReadOnDaemonPathAlias(c, useContextNode)) return true;
+          }
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
+          if (subtreeContainsReadOnDaemonPathAlias(child, useContextNode)) return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Collect kspec-CLI argv tokens from a CallExpression that was already
+     * recognised as a kspec invocation by `isPotentialKspecCliCall`.
+     * Supports the helper form (string or array argv) and the spawn-like
+     * form (`exec`/`execSync` shell string, `spawn`/`spawnSync`/`execFile`
+     * argv array).
+     */
+    function collectKspecCallArgTokens(node) {
+      if (!node || node.type !== "CallExpression") return [];
+      const calleeName = getCalleeName(node);
+      if (!calleeName) return [];
+      const args = node.arguments;
+      if (args.length === 0) return [];
+      if (KSPEC_CLI_HELPER_NAMES.has(calleeName)) {
+        const tokens = [];
+        for (const arg of args) {
+          for (const t of collectKspecHelperArgTokens(arg)) tokens.push(t);
+        }
+        return tokens;
+      }
+      if (calleeName === "exec" || calleeName === "execSync") {
+        const literal = literalString(args[0]);
+        const tmpl = literal === null ? templateLiteralRaw(args[0]) : null;
+        const cmdText = literal !== null ? literal : tmpl;
+        if (cmdText === null) return [];
+        const tokens = tokenizeShellCommand(cmdText) || [];
+        if (tokens.length === 0) return [];
+        // Drop the leading kspec executable token so the argv starts at the
+        // subcommand.
+        const lead = tokens[0];
+        if (lead === "kspec" || lead.endsWith("/kspec")) return tokens.slice(1);
+        // node|bun <kspec-path> <argv>: drop the runtime + script tokens.
+        if (isRecognisedShellRuntimeToken(lead)) {
+          for (let i = 1; i < tokens.length; i += 1) {
+            const tk = tokens[i];
+            if (typeof tk !== "string") continue;
+            if (isShellRuntimeFlagToken(tk)) continue;
+            return tokens.slice(i + 1);
+          }
+        }
+        return tokens;
+      }
+      if (
+        calleeName === "spawn" ||
+        calleeName === "spawnSync" ||
+        calleeName === "execFile" ||
+        calleeName === "execFileSync"
+      ) {
+        if (args.length < 2) return [];
+        if (args[1].type !== "ArrayExpression") return [];
+        const argv = collectArgvArrayTokens(args[1]);
+        // For runtime + kspec-path form, drop the script-position token so
+        // the argv starts at the kspec subcommand.
+        if (isRecognisedRuntimeArg(args[0]) || isProcessExecPathExpression(args[0])) {
+          for (let i = 0; i < argv.length; i += 1) {
+            const tk = argv[i];
+            if (typeof tk !== "string") continue;
+            if (
+              tk === "dist/cli/index.js" ||
+              tk.endsWith("/dist/cli/index.js") ||
+              tk === "kspec" ||
+              tk.endsWith("/kspec")
+            ) {
+              return argv.slice(i + 1);
+            }
+          }
+          return argv;
+        }
+        // Direct kspec executable form (`spawn("kspec", [...])`): argv is
+        // already the subcommand list.
+        return argv;
+      }
+      return [];
+    }
+
+    /**
+     * True when a CallExpression invokes the kspec CLI with an argv whose
+     * first two non-opaque tokens are `serve` and `status`. This shape is
+     * itself a daemon observation — the CLI queries the running daemon's
+     * status (or auto-starts and observes it), so the test now owns that
+     * daemon and must register scoped cleanup before later assertions.
+     */
+    function isKspecServeStatusCall(node) {
+      if (!isPotentialKspecCliCall(node)) return false;
+      const tokens = collectKspecCallArgTokens(node);
+      if (!tokens || tokens.length < 2) return false;
+      // Skip leading opaque tokens — an opaque arg defeating the match is
+      // the conservative behaviour for `tokensResolveToDetachedServe` and
+      // matches the same precedent here.
+      let i = 0;
+      while (i < tokens.length && tokens[i] === OPAQUE_ARG_SENTINEL) i += 1;
+      if (i + 1 >= tokens.length) return false;
+      return tokens[i] === "serve" && tokens[i + 1] === "status";
+    }
+
+    /**
+     * True when a subtree contains a kspec CLI call whose argv tokenises to
+     * `serve status`. Function/arrow bodies are NOT descended.
+     */
+    function subtreeContainsKspecServeStatus(node) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") return false;
+      if (
+        node.type === "FunctionDeclaration" ||
+        node.type === "FunctionExpression" ||
+        node.type === "ArrowFunctionExpression"
+      ) return false;
+      if (node.type === "CallExpression" && isKspecServeStatusCall(node)) return true;
+      for (const key in node) {
+        if (
+          key === "parent" || key === "loc" || key === "range" ||
+          key === "start" || key === "end" || key === "type" ||
+          key === "tokens" || key === "comments"
+        ) continue;
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (subtreeContainsKspecServeStatus(c)) return true;
+          }
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
+          if (subtreeContainsKspecServeStatus(child)) return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Property names on a daemon-connection-metadata object that resolve to
+     * a daemon endpoint URL. The canonical fixture writes
+     * `{ apiUrl, wsUrl, port, ... }` to `daemon.connection.json`; reading
+     * one of these properties and using it as a `fetch` / `new WebSocket`
+     * target is a daemon endpoint observation regardless of whether the
+     * URL is constructed from a `localhost:` literal.
+     */
+    const DAEMON_URL_MEMBER_NAMES = new Set([
+      "apiUrl",
+      "wsUrl",
+      "baseUrl",
+      "url",
+    ]);
+
+    /**
+     * True when a fetch / WebSocket argument is a MemberExpression
+     * accessing a daemon URL property on a daemon-shaped binding. Also
+     * descends into TemplateLiteral interpolations so
+     * `` `${daemon.apiUrl}/api/health` `` is recognised the same as
+     * `daemon.apiUrl`.
+     */
+    function isDaemonEndpointMemberArg(arg, useNode) {
+      if (!arg) return false;
+      if (arg.type === "TemplateLiteral") {
+        for (const expr of arg.expressions) {
+          if (isDaemonEndpointMemberArg(expr, useNode)) return true;
+        }
+        return false;
+      }
+      if (arg.type !== "MemberExpression") return false;
+      if (!arg.property || arg.property.type !== "Identifier") return false;
+      if (!DAEMON_URL_MEMBER_NAMES.has(arg.property.name)) return false;
+      if (!arg.object || arg.object.type !== "Identifier") return false;
+      return isDaemonShapedBindingIdentifier(arg.object, useNode);
+    }
+
+    /**
+     * True when a subtree contains a `fetch(<daemonShaped>.<urlProp>)` or
+     * `new WebSocket(<daemonShaped>.<urlProp>)` call. Function/arrow bodies
+     * are NOT descended.
+     */
+    function subtreeContainsFetchOnDaemonMember(node, useContextNode) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") return false;
+      if (
+        node.type === "FunctionDeclaration" ||
+        node.type === "FunctionExpression" ||
+        node.type === "ArrowFunctionExpression"
+      ) return false;
+      if (
+        node.type === "CallExpression" &&
+        node.callee && node.callee.type === "Identifier" &&
+        FETCH_LIKE_CALLEES.has(node.callee.name) &&
+        node.arguments.length > 0 &&
+        isDaemonEndpointMemberArg(node.arguments[0], useContextNode)
+      ) return true;
+      if (
+        node.type === "NewExpression" &&
+        node.callee && node.callee.type === "Identifier" &&
+        WEBSOCKET_LIKE_CONSTRUCTORS.has(node.callee.name) &&
+        node.arguments.length > 0 &&
+        isDaemonEndpointMemberArg(node.arguments[0], useContextNode)
+      ) return true;
+      for (const key in node) {
+        if (
+          key === "parent" || key === "loc" || key === "range" ||
+          key === "start" || key === "end" || key === "type" ||
+          key === "tokens" || key === "comments"
+        ) continue;
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (subtreeContainsFetchOnDaemonMember(c, useContextNode)) return true;
+          }
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
+          if (subtreeContainsFetchOnDaemonMember(child, useContextNode)) return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * True when an init expression captures a daemon ownership observation:
+     *
+     *   1. PID file / connection metadata read in the same init expression
+     *      (the canonical shape — daemon-path literal + file-read primitive
+     *      colocated).
+     *   2. Aliased read: the init contains a recognised file-read primitive
+     *      whose argument is an Identifier bound earlier to a daemon-path
+     *      alias (`const metadataPath = join(home, "daemon.connection.json"
+     *      ); ...readTestOutputSync(metadataPath)` — review cycle 2 blocker
+     *      on `ac-implicit-autostart-cleanup-before-observation`).
+     *   3. `kspec serve status` invocation: the CLI command itself observes
+     *      daemon state (review cycle 2 blocker — daemon-status query was
+     *      not classified as an observation surface).
+     *   4. Endpoint fetch on a daemon-shaped binding's URL property
+     *      (`fetch(daemon.apiUrl)` / `new WebSocket(daemon.wsUrl)` — review
+     *      cycle 2 blocker — member-access reach was missed by the
+     *      identifier-only URL binding pass).
+     *
+     * Returns a `{ pattern }` descriptor when the init is recognised, or
+     * null otherwise. The caller uses `pattern` to populate the diagnostic
+     * data field.
+     */
+    function isDaemonOwnershipObservationInit(initNode) {
+      if (!initNode) return null;
+      // Unwrap a single AwaitExpression so `const x = await readFile(...)`
+      // classifies the same as the synchronous form.
+      let candidate = initNode;
+      if (candidate.type === "AwaitExpression") {
+        candidate = candidate.argument;
+      }
+      if (!candidate) return null;
+      // The outermost call must not be a file write. We inspect the
+      // outermost CallExpression on the synchronous spine.
+      if (candidate.type === "CallExpression" && isFileWriteCallee(candidate)) {
+        return null;
+      }
+      // Shape 1: daemon path naming + read primitive in the same init.
+      // Treated as `ownership` capture — wrapping this read in a local
+      // helper hides the cleanup contract from the test body.
+      const readsPid = subtreeReadsDaemonPidProperty(candidate);
+      const readsMetadata = readsPid
+        ? false
+        : subtreeReadsDaemonMetadataLiteral(candidate);
+      if ((readsPid || readsMetadata) && subtreeContainsDaemonReadLikeCall(candidate)) {
+        return {
+          kind: "ownership",
+          pattern: readsPid ? "daemon pid file read" : "daemon connection metadata read",
+        };
+      }
+      // Shape 2: file-read primitive whose argument resolves to a daemon-
+      // path-alias identifier. Equivalent to shape 1 but split across
+      // declarators (path alias first, read second). Same `ownership`
+      // semantics.
+      if (subtreeContainsReadOnDaemonPathAlias(candidate, initNode)) {
+        return { kind: "ownership", pattern: "aliased daemon path read" };
+      }
+      // Shape 3: kspec serve status invocation in the init expression.
+      // Pure observation — the CLI queries daemon state, does not claim
+      // ownership of the daemon. Wrapping a serve-status call in a
+      // polling helper / async callback is normal practice and must not
+      // trip the local-wrapper diagnostic.
+      if (subtreeContainsKspecServeStatus(candidate)) {
+        return { kind: "observation", pattern: "kspec serve status observation" };
+      }
+      // Shape 4: fetch / new WebSocket against a daemon-shaped binding's
+      // URL property. Pure observation — same rationale as shape 3.
+      if (subtreeContainsFetchOnDaemonMember(candidate, initNode)) {
+        return { kind: "observation", pattern: "daemon endpoint fetch" };
+      }
+      return null;
+    }
+
+    /**
+     * Identifier-callee names recognised as kspec CLI helpers in tests
+     * (`tests/helpers/cli.ts` exports `kspec(args, cwd, opts)` and the
+     * repo also has `runKspec` aliases). A call to one of these is an
+     * implicit auto-start candidate — the helper shells out to the
+     * compiled CLI, which (per `src/cli/index.ts:maybeAutoStartDaemon`)
+     * auto-starts the daemon for any non-skip-listed command when
+     * `daemon.auto_start` is enabled.
+     */
+    const KSPEC_CLI_HELPER_NAMES = new Set(["kspec", "runKspec", "kspecJson", "kspecOutput"]);
+
+    /**
+     * Identifier-callee names recognised as Node child-process primitives
+     * that may launch a kspec CLI subprocess. The classifier below requires
+     * an explicit kspec/runtime arg to qualify, so non-kspec subprocess
+     * calls (`spawn("echo", …)`, `execSync("ls")`) are NOT mis-classified.
+     */
+    const KSPEC_CLI_SPAWN_LIKE_NAMES = new Set([
+      "spawn",
+      "spawnSync",
+      "exec",
+      "execSync",
+      "execFile",
+      "execFileSync",
+    ]);
+
+    /**
+     * Heuristic recognition of a `CLI_PATH`-style identifier passed as the
+     * first non-flag element of a `spawn("node", [...])` argv array. The
+     * shared test helper exports `CLI_PATH` as the absolute path to the
+     * compiled kspec CLI bin, and the project's runtime-parity tests use
+     * `spawnSync("bun", [CLI_PATH, "util", "ulid"])` to drive the CLI under
+     * a non-default runtime. Other identifier names that conventionally
+     * carry a path to the kspec CLI bin are matched on a name-suffix
+     * heuristic. Bare identifier matching keeps the gate conservative —
+     * an opaque expression that is not an Identifier (e.g. a member access
+     * or computed property) does not match.
+     */
+    function looksLikeKspecCliPathIdentifier(arg) {
+      if (!arg || arg.type !== "Identifier") return false;
+      const name = arg.name;
+      return (
+        name === "CLI_PATH" ||
+        name === "KSPEC_CLI_PATH" ||
+        name === "kspecCliPath" ||
+        name === "KSPEC_PATH"
+      );
+    }
+
+    /**
+     * True when an argument node is shaped like a path to the compiled
+     * kspec CLI bin. Accepts the explicit `CLI_PATH` Identifier form, the
+     * `kspec` executable literal forms (delegating to
+     * `isKspecExecutableArg`), and string literals / no-substitution
+     * template literals whose final path segment is `kspec` or
+     * `dist/cli/index.js` (the compiled CLI entry).
+     */
+    function isKspecCliArg(arg) {
+      if (!arg) return false;
+      if (looksLikeKspecCliPathIdentifier(arg)) return true;
+      if (isKspecExecutableArg(arg)) return true;
+      const literal = literalString(arg);
+      if (literal !== null) {
+        return (
+          literal === "dist/cli/index.js" ||
+          literal.endsWith("/dist/cli/index.js")
+        );
+      }
+      const tmpl = templateLiteralRaw(arg);
+      if (tmpl !== null) {
+        return (
+          tmpl === "dist/cli/index.js" ||
+          tmpl.endsWith("/dist/cli/index.js")
+        );
+      }
+      return false;
+    }
+
+    /**
+     * True when a CallExpression launches the kspec CLI (and could
+     * therefore implicitly auto-start the daemon when `daemon.auto_start`
+     * is enabled). Recognised shapes:
+     *
+     *   - `kspec(...)`, `runKspec(...)`, `kspecJson(...)`,
+     *     `kspecOutput(...)` — the project's documented test helpers
+     *     (`tests/helpers/cli.ts`) shell out to the compiled CLI bin.
+     *   - `spawn|spawnSync|execFile|execFileSync(<kspec-exec-or-runtime>,
+     *     [<kspec-path>, ...])` — the spawn-like callee with either
+     *     `"kspec"` as args[0] OR a recognised JS runtime (`node`/`bun`/
+     *     `process.execPath`) as args[0] AND a kspec-path-like argv[0]
+     *     as the first element of args[1].
+     *   - `exec|execSync(<str>)` where the leading shell token is `kspec`
+     *     (or ends in `/kspec`), OR is `node`/`bun` followed by a
+     *     kspec-path token in the script-position slot.
+     *
+     * The classifier is intentionally narrow — a `spawn("echo", [...])`
+     * is NOT a kspec CLI subprocess even if a `CLI_PATH` token happens
+     * to appear elsewhere in the argv. This avoids broadening the
+     * implicit-auto-start gate beyond actual kspec invocations.
+     */
+    function isPotentialKspecCliCall(node) {
+      if (!node || node.type !== "CallExpression") return false;
+      const calleeName = getCalleeName(node);
+      if (!calleeName) return false;
+      const args = node.arguments;
+      if (args.length === 0) return false;
+
+      if (KSPEC_CLI_HELPER_NAMES.has(calleeName)) {
+        return true;
+      }
+
+      if (KSPEC_CLI_SPAWN_LIKE_NAMES.has(calleeName)) {
+        // First arg is the kspec executable literal — done.
+        if (isKspecExecutableArg(args[0])) return true;
+        // Runtime + kspec-path form: args[0] is `node`/`bun`/process.execPath
+        // AND args[1] is an argv array whose first element is a kspec
+        // CLI path Identifier or literal.
+        if (
+          isRecognisedRuntimeArg(args[0]) ||
+          isProcessExecPathExpression(args[0])
+        ) {
+          if (args.length < 2) return false;
+          // `spawn`/`spawnSync`/`execFile`/`execFileSync` take an argv
+          // array as args[1].
+          const argvArg = args[1];
+          if (!argvArg || argvArg.type !== "ArrayExpression") return false;
+          // First element of argv that names a script path. We don't
+          // walk over flags here because the test patterns of interest
+          // (`spawnSync("bun", [CLI_PATH, "util", "ulid"])`) put the CLI
+          // path at index 0. A conservative read suffices: if any
+          // element resolves to a kspec CLI path, treat the call as a
+          // potential kspec invocation.
+          for (const el of argvArg.elements) {
+            if (isKspecCliArg(el)) return true;
+          }
+          return false;
+        }
+        // `exec`/`execSync` shell-string form — first arg is the command
+        // string. The leading token names the executable.
+        if (calleeName === "exec" || calleeName === "execSync") {
+          const literal = literalString(args[0]);
+          const tmpl = literal === null ? templateLiteralRaw(args[0]) : null;
+          const cmdText = literal !== null ? literal : tmpl;
+          if (cmdText === null) return false;
+          const tokens = tokenizeShellCommand(cmdText);
+          if (!tokens || tokens.length === 0) return false;
+          const lead = tokens[0];
+          if (lead === "kspec" || lead.endsWith("/kspec")) return true;
+          if (isRecognisedShellRuntimeToken(lead)) {
+            // node|bun <script>: look for a kspec CLI path token in
+            // the remaining shell args.
+            for (let i = 1; i < tokens.length; i += 1) {
+              const tk = tokens[i];
+              if (typeof tk !== "string") continue;
+              if (isShellRuntimeFlagToken(tk)) continue;
+              if (
+                tk === "dist/cli/index.js" ||
+                tk.endsWith("/dist/cli/index.js") ||
+                tk === "kspec" ||
+                tk.endsWith("/kspec")
+              ) {
+                return true;
+              }
+              // First non-flag token that is not a kspec path → not a
+              // kspec invocation.
+              return false;
+            }
+          }
+          return false;
+        }
+      }
+
+      return false;
+    }
+
+    /**
+     * Walk the top-level statements of `node`'s containing block up to the
+     * statement that contains `node`, and return true when any prior
+     * statement contains a CallExpression recognised by
+     * `isPotentialKspecCliCall`. The walk stops at the trigger statement
+     * (so a kspec call AFTER the daemon-ownership capture does not satisfy
+     * the gate) and does NOT descend into stored function/arrow bodies
+     * (a kspec call inside a stored callback that runs later cannot have
+     * already auto-started the daemon at the trigger site).
+     *
+     * The gate is intentionally conservative — it requires the prior
+     * subprocess to be a recognised kspec CLI shape, not just any
+     * `spawn(...)` / `exec(...)` call. Without the gate, parser unit tests
+     * that write+read their own daemon pid file (e.g.
+     * `tests/parser/daemon-config.test.ts:567`) would be wrongly flagged
+     * — those tests are not auto-starting a daemon, they are exercising
+     * the pid-file parser surface.
+     */
+    function hasPriorKspecCliCallInBlock(node) {
+      const body = findContainingBody(node);
+      if (!body) return false;
+      const nodeIndex = findNodeIndex(body, node);
+      if (nodeIndex < 0) return false;
+      for (let i = 0; i < nodeIndex; i += 1) {
+        if (statementContainsKspecCliCall(body[i])) return true;
+      }
+      return false;
+    }
+
+    function statementContainsKspecCliCall(stmt) {
+      return subtreeContainsKspecCliCall(stmt);
+    }
+
+    function subtreeContainsKspecCliCall(node) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") {
+        return false;
+      }
+      // Stored function bodies are NOT on the straight-line execution
+      // path before the trigger — a kspec call inside an unregistered
+      // callback runs only when the callback runs, which may be after
+      // the trigger. Mirrors the cleanup-walker discipline.
+      if (
+        node.type === "FunctionDeclaration" ||
+        node.type === "FunctionExpression" ||
+        node.type === "ArrowFunctionExpression"
+      ) {
+        return false;
+      }
+      if (node.type === "CallExpression" && isPotentialKspecCliCall(node)) {
+        return true;
+      }
+      for (const key in node) {
+        if (
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        ) {
+          continue;
+        }
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            if (subtreeContainsKspecCliCall(c)) return true;
+          }
+        } else if (
+          child &&
+          typeof child === "object" &&
+          typeof child.type === "string"
+        ) {
+          if (subtreeContainsKspecCliCall(child)) return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * True when a CallExpression / NewExpression is the entire payload of
+     * an ExpressionStatement (unbound) — i.e. not the init of a
+     * VariableDeclarator, RHS of an AssignmentExpression, or argument to
+     * another call. Used by the CallExpression visit to decide whether a
+     * standalone daemon observation (`await kspec("serve status …")`,
+     * `await fetch(daemon.apiUrl)`) needs its own queue entry, since the
+     * bound form is already queued via the VariableDeclarator /
+     * AssignmentExpression visits.
+     */
+    function isStandaloneObservationContext(callNode) {
+      let cur = callNode.parent;
+      while (cur && (cur.type === "AwaitExpression" || cur.type === "ChainExpression")) {
+        cur = cur.parent;
+      }
+      return Boolean(cur && cur.type === "ExpressionStatement");
+    }
+
+    /**
+     * Walk the prior statements in `node`'s containing block and return the
+     * earliest CallExpression recognised by `isPotentialKspecCliCall`.
+     * Used by `hasCleanupBefore` to anchor the cleanup-ownership check at
+     * the implicit auto-start moment: the daemon was first auto-started
+     * when this earliest CLI call ran, so a cleanup callback whose pid
+     * capture is bound BETWEEN that call and the cleanup registration
+     * owns the auto-started daemon. Stored function bodies are not
+     * descended (a kspec call inside a stored callback runs only when
+     * the callback is invoked).
+     */
+    function findEarliestPriorKspecCliCallNode(node) {
+      const body = findContainingBody(node);
+      if (!body) return null;
+      const nodeIndex = findNodeIndex(body, node);
+      if (nodeIndex < 0) return null;
+      for (let i = 0; i < nodeIndex; i += 1) {
+        const found = findKspecCliCallInSubtree(body[i]);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    function findKspecCliCallInSubtree(node) {
+      if (!node || typeof node !== "object" || typeof node.type !== "string") return null;
+      if (
+        node.type === "FunctionDeclaration" ||
+        node.type === "FunctionExpression" ||
+        node.type === "ArrowFunctionExpression"
+      ) return null;
+      if (node.type === "CallExpression" && isPotentialKspecCliCall(node)) return node;
+      for (const key in node) {
+        if (
+          key === "parent" || key === "loc" || key === "range" ||
+          key === "start" || key === "end" || key === "type" ||
+          key === "tokens" || key === "comments"
+        ) continue;
+        const child = node[key];
+        if (Array.isArray(child)) {
+          for (const c of child) {
+            const found = findKspecCliCallInSubtree(c);
+            if (found) return found;
+          }
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
+          const found = findKspecCliCallInSubtree(child);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+
+    /**
+     * True when a sibling statement BEFORE the observation registers a
+     * daemon-cleanup callback. The cleanup contract is satisfied as long
+     * as the cleanup runs at test teardown — whether it was registered
+     * before or after the current observation. The `hasCleanupAfter` walk
+     * (which the detached-serve check uses) covers the canonical safe
+     * shape (`const pid = readPid(); onTestFinished(...); expect(...)`)
+     * but misses the equally-safe SECONDARY-observation shape:
+     *
+     *   spawnSync(...);                              // implicit auto-start
+     *   const pid = readPid(daemonPidFilePath);      // primary capture
+     *   onTestFinished(() => killPid(pid));          // cleanup registered
+     *   const metadataPath = join(home, "daemon.connection.json");
+     *   const metadata = JSON.parse(readPid(metadataPath));  // ← secondary
+     *   expect(metadata.port).toBe(port);
+     *
+     * The secondary read on the last two lines is a daemon-ownership
+     * observation, but the cleanup for the auto-started daemon is
+     * already scheduled. A failure on the expect line still triggers the
+     * onTestFinished cleanup at teardown — the daemon does NOT leak.
+     *
+     * The ownership check anchors at the EARLIEST prior kspec CLI call
+     * (the implicit auto-start moment) rather than the secondary
+     * observation node. Anchoring at the observation would reject the
+     * cleanup because the cleanup's pid capture was bound BEFORE the
+     * observation — which is the whole point of this safe shape.
+     * Anchoring at the auto-start moment correctly accepts cleanup whose
+     * pid was captured between auto-start and registration (the cycle-2
+     * blocker's safe boundary) while still rejecting stale-pid cleanup
+     * (`const pid = 12345; spawnSync(...); onTestFinished(() => kill(
+     * pid))` — pid binding ends BEFORE auto-start, ownership fails).
+     */
+    function hasCleanupBefore(node) {
+      const body = findContainingBody(node);
+      if (!body) return false;
+      const nodeIndex = findNodeIndex(body, node);
+      if (nodeIndex === -1) return false;
+      const autoStartNode = findEarliestPriorKspecCliCallNode(node);
+      if (!autoStartNode) return false;
+      for (let i = 0; i < nodeIndex; i += 1) {
+        if (subtreeContainsDaemonCleanupCall(body[i], false, autoStartNode)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * True when the daemon-ownership capture `node` (a VariableDeclarator,
+     * AssignmentExpression, or standalone observation CallExpression) has
+     * scoped cleanup registered before the next assertion/observation in
+     * its containing block. Reuses `hasCleanupAfter` (the same predicate
+     * that gates the detached-serve check) — a `onTestFinished(() =>
+     * process.kill(pid, "SIGTERM"))` registered on the very next
+     * statement satisfies the contract; an intervening `expect()`,
+     * `await`, or daemon observation before any cleanup registration
+     * fails it. Also accepts cleanup registered EARLIER in the same
+     * test body (`hasCleanupBefore`) — secondary observations after the
+     * primary capture's cleanup are safe because the cleanup runs at
+     * teardown regardless of which observation triggers a failure.
+     *
+     * The check anchors on the statement that CONTAINS the capture node
+     * (its parent VariableDeclaration / ExpressionStatement), not the
+     * capture node itself, so the sibling walk starts immediately after
+     * the capture statement.
+     */
+    function implicitAutoStartHasCleanup(node) {
+      if (isInLifecycleHook(node, "afterEach")) return true;
+      if (hasCleanupAfter(node)) return true;
+      if (hasCleanupBefore(node)) return true;
+      if (isInTryWithFinallyCleanup(node)) return true;
+      return false;
+    }
+
     return {
       VariableDeclarator(node) {
         if (!node.id || node.id.type !== "Identifier" || !node.init) return;
@@ -6096,6 +7230,33 @@ const noLeakyTestDaemon = {
           carriesLocalhostPortUrl(node.init),
           carriesDaemonHostPortUrl(node.init),
         );
+        // Daemon-path-alias binding: record so that a later read-primitive
+        // call on this identifier classifies as a daemon-ownership
+        // observation (review cycle 2 blocker on
+        // `ac-implicit-autostart-cleanup-before-observation`).
+        if (isDaemonPathAliasInitShape(node.init)) {
+          recordDaemonPathAlias(node.id.name, node);
+        }
+        // Implicit auto-start daemon ownership: queue any binding whose
+        // initializer reads `<x>.daemonPidFilePath`, `daemon.connection
+        // .json` (directly or via an aliased path), invokes `kspec serve
+        // status`, or fetches an endpoint on a daemon-shaped binding —
+        // for the deferred cleanup-timing check. The full prior-CLI gate
+        // and cleanup analysis run in `Program:exit` because forward
+        // statement scans (used by both gates) need every sibling
+        // already recorded.
+        const observation = isDaemonOwnershipObservationInit(node.init);
+        if (observation) {
+          pendingImplicitAutoStartChecks.push({
+            node,
+            pattern: observation.pattern,
+            kind: observation.kind,
+          });
+          // Bindings whose init is itself an observation carry daemon state
+          // forward — a later `fetch(<binding>.apiUrl)` is an endpoint
+          // observation on the same daemon.
+          recordDaemonShapedBinding(node.id.name, node);
+        }
       },
 
       AssignmentExpression(node) {
@@ -6113,6 +7274,21 @@ const noLeakyTestDaemon = {
           carriesLocalhostPortUrl(node.right),
           carriesDaemonHostPortUrl(node.right),
         );
+        if (isDaemonPathAliasInitShape(node.right)) {
+          recordDaemonPathAlias(node.left.name, node);
+        }
+        // Same daemon-ownership reassignment shape as the VariableDeclarator
+        // path: `pid = parseInt(readTestOutputSync(home.daemonPidFilePath)
+        // .trim(), 10)` captures the daemon's pid into an outer binding.
+        const observation = isDaemonOwnershipObservationInit(node.right);
+        if (observation) {
+          pendingImplicitAutoStartChecks.push({
+            node,
+            pattern: observation.pattern,
+            kind: observation.kind,
+          });
+          recordDaemonShapedBinding(node.left.name, node);
+        }
       },
 
       CallExpression(node) {
@@ -6148,6 +7324,33 @@ const noLeakyTestDaemon = {
           return;
         }
 
+        // Standalone daemon observation calls — `kspec serve status` and
+        // `fetch(<daemon>.apiUrl)` invoked as ExpressionStatements (no
+        // binding) still claim ownership of an implicitly auto-started
+        // daemon. The bound-form path queues these via the VariableDeclarator
+        // / AssignmentExpression visit; the standalone form needs its own
+        // queue entry so the cleanup-timing analysis sees it.
+        if (isStandaloneObservationContext(node)) {
+          if (isKspecServeStatusCall(node)) {
+            pendingImplicitAutoStartChecks.push({
+              node,
+              pattern: "kspec serve status observation",
+              kind: "observation",
+            });
+          } else if (
+            node.callee && node.callee.type === "Identifier" &&
+            FETCH_LIKE_CALLEES.has(node.callee.name) &&
+            node.arguments.length > 0 &&
+            isDaemonEndpointMemberArg(node.arguments[0], node)
+          ) {
+            pendingImplicitAutoStartChecks.push({
+              node,
+              pattern: "daemon endpoint fetch",
+              kind: "observation",
+            });
+          }
+        }
+
         // Daemon URL constructed from localhost:<port> in fetch().
         if (isFetchOfLocalhostUrl(node)) {
           context.report({
@@ -6164,6 +7367,23 @@ const noLeakyTestDaemon = {
             node,
             messageId: "localhostDaemonUrl",
             data: { pattern: "new WebSocket()" },
+          });
+          return;
+        }
+        // Standalone daemon endpoint WebSocket construction — `new WebSocket
+        // (<daemon>.wsUrl)` as an ExpressionStatement claims ownership of
+        // an implicitly auto-started daemon and needs scoped cleanup.
+        if (
+          isStandaloneObservationContext(node) &&
+          node.callee && node.callee.type === "Identifier" &&
+          WEBSOCKET_LIKE_CONSTRUCTORS.has(node.callee.name) &&
+          node.arguments.length > 0 &&
+          isDaemonEndpointMemberArg(node.arguments[0], node)
+        ) {
+          pendingImplicitAutoStartChecks.push({
+            node,
+            pattern: "daemon endpoint WebSocket",
+            kind: "observation",
           });
         }
       },
@@ -6227,6 +7447,72 @@ const noLeakyTestDaemon = {
             node,
             messageId: "missingCleanup",
             data: { pattern: "serve start --detach" },
+          });
+        }
+
+        // Implicit auto-start daemon ownership cleanup gate.
+        // (@daemon-test-guardrail-precision
+        // ac-implicit-autostart-cleanup-before-observation,
+        // ac-cleanup-operation-terminates-daemon,
+        // ac-cleanup-registration-is-test-scoped)
+        for (const { node, pattern, kind } of pendingImplicitAutoStartChecks) {
+          // afterEach hooks ARE per-test scoped cleanup boundaries — a
+          // daemon pid capture inside an afterEach body is teardown
+          // code and not the leak target. The same exemption applies
+          // to the detached-serve rule above.
+          if (isInLifecycleHook(node, "afterEach")) continue;
+
+          // Local helper functions / arrows / methods inside an
+          // ordinary test file are NOT approved daemon-test fixtures.
+          // The call site never sees a scoped cleanup registration
+          // tied to the daemon ownership the helper claims, so a pid
+          // capture inside a local wrapper is reported the same way as
+          // the inline unsafe shape. This applies only to OWNERSHIP
+          // captures (pid/metadata reads): pure observation calls
+          // (`kspec serve status`, daemon endpoint fetch) inside a
+          // polling helper or async callback are normal practice —
+          // the daemon they query was started by the helper's CALLER,
+          // whose test body has its own cleanup contract enforced by
+          // the detached-serve / pid-read checks. Reporting the
+          // observation inside the helper would force tests to inline
+          // every poll loop, which is the opposite of the helper-
+          // boundary concern.
+          // (@daemon-test-guardrail-precision
+          // ac-approved-daemon-helper-boundary-explicit)
+          if (kind === "ownership" && isInHelperFunction(node)) {
+            context.report({
+              node,
+              messageId: "localWrapperUnsafe",
+              data: { pattern },
+            });
+            continue;
+          }
+
+          // Gate: the daemon must have been potentially auto-started by
+          // a prior kspec CLI subprocess in the same test body. Without
+          // this gate, parser unit tests that write+read their own pid
+          // file (e.g. `tests/parser/daemon-config.test.ts`) would
+          // wrongly trip the rule — those tests are exercising the
+          // pid-file parser, not auto-starting a daemon.
+          if (!hasPriorKspecCliCallInBlock(node)) continue;
+
+          // Cleanup-timing gate: cleanup must be registered for the
+          // daemon. The walk accepts cleanup registered AFTER the
+          // capture (`hasCleanupAfter`, canonical safe shape:
+          // capture-then-onTestFinished-then-expect) OR BEFORE the
+          // capture in the same test body (`hasCleanupBefore`, the
+          // secondary-observation shape: capture-cleanup-then-later-
+          // observation-on-the-same-daemon). The cleanup-shape
+          // predicate (`process.kill(pid, "SIGTERM")` / `killPid(pid)`
+          // / `runKspec("serve stop")` etc.) and the registration-
+          // shape predicate (`onTestFinished(...)` / `try { } finally
+          // { }`) match the detached-serve check exactly.
+          if (implicitAutoStartHasCleanup(node)) continue;
+
+          context.report({
+            node,
+            messageId: "implicitAutoStartMissingCleanup",
+            data: { pattern },
           });
         }
       },
