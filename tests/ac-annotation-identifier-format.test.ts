@@ -48,7 +48,11 @@ describe("ac-explicit-token-format: only ac-prefixed tokens are parsed as AC ids
       acPrefix + "@my-spec ac-validate-input, ac-reject-invalid",
     );
     expect(groups).toEqual([
-      { specRef: "@my-spec", acIds: ["ac-validate-input", "ac-reject-invalid"], malformedTokens: [] },
+      {
+        specRef: "@my-spec",
+        acIds: ["ac-validate-input", "ac-reject-invalid"],
+        malformedTokens: [],
+      },
     ]);
   });
 
@@ -83,9 +87,7 @@ describe("ac-explicit-token-format: only ac-prefixed tokens are parsed as AC ids
   });
 
   it("filters out malformed ac-* tokens while keeping valid ones", () => {
-    const groups = parseACAnnotationLine(
-      acPrefix + "@my-spec ac-valid, ac-bad_id, ac-also-valid",
-    );
+    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-valid, ac-bad_id, ac-also-valid");
     expect(groups).toEqual([
       { specRef: "@my-spec", acIds: ["ac-valid", "ac-also-valid"], malformedTokens: ["ac-bad_id"] },
     ]);
@@ -134,10 +136,7 @@ describe("ac-valid-token-covers-ac: ac-prefixed tokens earn coverage credit", ()
     expect(warnings).toHaveLength(0);
 
     // Both ACs should be covered
-    const coveredACs = new Set([
-      "@my-feature ac-validate-input",
-      "@my-feature ac-reject-invalid",
-    ]);
+    const coveredACs = new Set(["@my-feature ac-validate-input", "@my-feature ac-reject-invalid"]);
     const coverage = computeACCoverage(items[0], coveredACs);
     expect(coverage).toEqual([
       expect.objectContaining({ id: "ac-validate-input", covered: true }),
@@ -202,9 +201,7 @@ describe("ac-bare-ref-no-token-credit: annotations without valid AC tokens earn 
         type: "requirement" as const,
         description: "Spec with ACs",
         status: { maturity: "draft" as const, implementation: "not_started" as const },
-        acceptance_criteria: [
-          { id: "ac-1", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
         _sourceFile: "modules/spec.yaml",
       },
     ];
@@ -230,9 +227,7 @@ describe("ac-bare-ref-no-token-credit: annotations without valid AC tokens earn 
     // ac-1 should remain uncovered
     const coveredACs = new Set<string>(); // nothing covered
     const coverage = computeACCoverage(items[0], coveredACs);
-    expect(coverage).toEqual([
-      expect.objectContaining({ id: "ac-1", covered: false }),
-    ]);
+    expect(coverage).toEqual([expect.objectContaining({ id: "ac-1", covered: false })]);
   });
 
   it("non-ac-prefixed tokens after @ref are ignored and earn no coverage", () => {
@@ -249,16 +244,20 @@ describe("ac-bare-ref-no-token-credit: annotations without valid AC tokens earn 
         type: "requirement" as const,
         description: "Spec with ACs",
         status: { maturity: "draft" as const, implementation: "not_started" as const },
-        acceptance_criteria: [
-          { id: "ac-1", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
         _sourceFile: "modules/spec.yaml",
       },
     ];
 
     const index = new ReferenceIndex([], items);
     const annotations = [
-      { specRef: "@my-spec", acIds: groups[0].acIds, malformedTokens: groups[0].malformedTokens, file: "/tmp/tests/spec.test.ts", line: 5 },
+      {
+        specRef: "@my-spec",
+        acIds: groups[0].acIds,
+        malformedTokens: groups[0].malformedTokens,
+        file: "/tmp/tests/spec.test.ts",
+        line: 5,
+      },
     ];
 
     const warnings = validateACAnnotations(annotations, items, index);
@@ -283,11 +282,13 @@ describe("ac-annotation-format: annotation tokens use ac-prefixed format", () =>
   });
 
   it("accepts ac-prefixed kebab-case ids of varying length", () => {
-    const groups = parseACAnnotationLine(
-      acPrefix + "@my-spec ac-a, ac-very-long-descriptive-name",
-    );
+    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-a, ac-very-long-descriptive-name");
     expect(groups).toEqual([
-      { specRef: "@my-spec", acIds: ["ac-a", "ac-very-long-descriptive-name"], malformedTokens: [] },
+      {
+        specRef: "@my-spec",
+        acIds: ["ac-a", "ac-very-long-descriptive-name"],
+        malformedTokens: [],
+      },
     ]);
   });
 
@@ -383,9 +384,7 @@ describe("ac-malformed-token-not-truncated: malformed ac-* tokens are not trunca
     const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-good/path");
     // "/" splits into two tokens: "ac-good/path" is one token since we split on whitespace/comma
     // Actually "/" is not whitespace or comma, so "ac-good/path" stays as one token
-    expect(groups).toEqual([
-      { specRef: "@my-spec", acIds: [], malformedTokens: ["ac-good/path"] },
-    ]);
+    expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: ["ac-good/path"] }]);
   });
 
   it("ac-good#anchor is not truncated to ac-good", () => {
@@ -404,9 +403,7 @@ describe("ac-malformed-token-not-truncated: malformed ac-* tokens are not trunca
 
   it("ac-good: (with trailing colon) is not truncated to ac-good", () => {
     const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-good:");
-    expect(groups).toEqual([
-      { specRef: "@my-spec", acIds: [], malformedTokens: ["ac-good:"] },
-    ]);
+    expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: ["ac-good:"] }]);
   });
 
   it("malformed token does not grant coverage to the valid prefix", () => {
@@ -418,9 +415,7 @@ describe("ac-malformed-token-not-truncated: malformed ac-* tokens are not trunca
         type: "requirement" as const,
         description: "Spec with ACs",
         status: { maturity: "draft" as const, implementation: "not_started" as const },
-        acceptance_criteria: [
-          { id: "ac-good", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "ac-good", given: "g", when: "w", then: "t" }],
         _sourceFile: "modules/spec.yaml",
       },
     ];
@@ -429,9 +424,7 @@ describe("ac-malformed-token-not-truncated: malformed ac-* tokens are not trunca
     // should NOT provide coverage to ac-good
     const coveredACs = new Set<string>(); // Nothing covered since malformed token is rejected
     const coverage = computeACCoverage(items[0], coveredACs);
-    expect(coverage).toEqual([
-      expect.objectContaining({ id: "ac-good", covered: false }),
-    ]);
+    expect(coverage).toEqual([expect.objectContaining({ id: "ac-good", covered: false })]);
   });
 
   it("mixed valid and malformed tokens: only valid tokens grant coverage", () => {
@@ -503,11 +496,7 @@ describe("ac-valid-delimiters-preserved: whitespace and comma delimiters produce
       },
     ];
 
-    const coveredACs = new Set([
-      "@my-spec ac-1",
-      "@my-spec ac-2",
-      "@my-spec ac-3",
-    ]);
+    const coveredACs = new Set(["@my-spec ac-1", "@my-spec ac-2", "@my-spec ac-3"]);
     const coverage = computeACCoverage(items[0], coveredACs);
     expect(coverage).toEqual([
       expect.objectContaining({ id: "ac-1", covered: true }),

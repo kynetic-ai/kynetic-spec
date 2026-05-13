@@ -70,7 +70,7 @@ For each acceptance criterion, create an annotated test:
 
 ```javascript
 // AC: @your-spec ac-1
-it('should redirect to dashboard after valid login', () => {
+it("should redirect to dashboard after valid login", () => {
   // test implementation
 });
 ```

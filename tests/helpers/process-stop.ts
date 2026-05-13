@@ -229,10 +229,7 @@ export async function stopChildProcessBounded(
  * than a ChildProcess handle. Polls liveness via `process.kill(pid, 0)`.
  * Idempotent: an already-reaped pid is a no-op.
  */
-export async function stopPidBounded(
-  pid: number,
-  options: BoundedStopOptions = {},
-): Promise<void> {
+export async function stopPidBounded(pid: number, options: BoundedStopOptions = {}): Promise<void> {
   const gracefulMs = options.gracefulMs ?? DEFAULT_GRACEFUL_MS;
   const escalationMs = options.escalationMs ?? DEFAULT_ESCALATION_MS;
   const label = options.label ?? "pid";

@@ -78,34 +78,19 @@ describe("Supporting-file path resolution", () => {
 
   // AC: @portable-skill-supporting-file-references ac-rendered-supporting-link-resolution
   it("resolves to codex platform path for project skills", () => {
-    const result = resolveSupportingFilePath(
-      "scripts/merge.sh",
-      "my-skill",
-      "codex",
-      "project",
-    );
+    const result = resolveSupportingFilePath("scripts/merge.sh", "my-skill", "codex", "project");
     expect(result).toBe(".agents/skills/my-skill/scripts/merge.sh");
   });
 
   // AC: @portable-skill-supporting-file-references ac-rendered-supporting-link-resolution
   it("resolves to codex platform path with kspec- prefix for core skills", () => {
-    const result = resolveSupportingFilePath(
-      "scripts/merge.sh",
-      "my-skill",
-      "codex",
-      "core",
-    );
+    const result = resolveSupportingFilePath("scripts/merge.sh", "my-skill", "codex", "core");
     expect(result).toBe(".agents/skills/kspec-my-skill/scripts/merge.sh");
   });
 
   // AC: @portable-skill-supporting-file-references ac-rendered-supporting-link-resolution
   it("resolves to droid platform path for project skills", () => {
-    const result = resolveSupportingFilePath(
-      "scripts/merge.sh",
-      "my-skill",
-      "droid",
-      "project",
-    );
+    const result = resolveSupportingFilePath("scripts/merge.sh", "my-skill", "droid", "project");
     expect(result).toBe(".factory/skills/my-skill/scripts/merge.sh");
   });
 
@@ -307,9 +292,8 @@ describe("Render-time supporting-file reference resolution", () => {
   });
 
   async function loadSkillForTest(skillId: string) {
-    const { codexRenderer, claudeCodeRenderer, droidRenderer } = await import(
-      "../src/parser/skill-render.js"
-    );
+    const { codexRenderer, claudeCodeRenderer, droidRenderer } =
+      await import("../src/parser/skill-render.js");
     const { initContext } = await import("../src/parser/yaml.js");
     const { loadMetaContext } = await import("../src/parser/meta.js");
 
@@ -807,10 +791,14 @@ describe("Prompt-time supporting-file reference resolution", () => {
     expect(renderedPrompt).toContain("scripts/detached-reviewer-merge.sh");
     expect(renderedPrompt).not.toContain("{supporting:");
     // The detached section must not contain positive git checkout instructions
-    const detachedSection = renderedPrompt.split("Detached Reviewer Context")[1]?.split("## Merge Process")[0] || "";
+    const detachedSection =
+      renderedPrompt.split("Detached Reviewer Context")[1]?.split("## Merge Process")[0] || "";
     const lines = detachedSection.split("\n");
     const positiveCheckoutInstructions = lines.filter(
-      (line) => line.trim().startsWith("git checkout") && !line.toLowerCase().includes("do not") && !line.toLowerCase().includes("do **not**"),
+      (line) =>
+        line.trim().startsWith("git checkout") &&
+        !line.toLowerCase().includes("do not") &&
+        !line.toLowerCase().includes("do **not**"),
     );
     expect(positiveCheckoutInstructions).toHaveLength(0);
   });

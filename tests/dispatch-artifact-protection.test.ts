@@ -28,8 +28,7 @@ function makeRecord(overrides: RecordOverrides = {}): DispatchWorkspaceRecord {
   const taskSlug = overrides.taskSlug ?? "task-protection-fixture";
   const root = overrides.worktreeRoot ?? WORKTREE_ROOT;
   const workerPath = overrides.workerPath ?? path.join(root, `${taskSlug}-01task00`);
-  const reviewerPath =
-    overrides.reviewerPath === undefined ? null : overrides.reviewerPath;
+  const reviewerPath = overrides.reviewerPath === undefined ? null : overrides.reviewerPath;
   return {
     workspace_id: overrides.workspaceId ?? `ws-${taskSlug}`,
     task_ref: taskRef,
@@ -37,8 +36,7 @@ function makeRecord(overrides: RecordOverrides = {}): DispatchWorkspaceRecord {
     worktree_root: root,
     resolved_base_branch: "dev",
     base_branch_point: "0".repeat(40),
-    canonical_branch:
-      overrides.canonicalBranch ?? `dispatch/task/${taskSlug}/01task00`,
+    canonical_branch: overrides.canonicalBranch ?? `dispatch/task/${taskSlug}/01task00`,
     canonical_branch_head: "0".repeat(40),
     branch_provenance: {
       ownership: "dispatcher-managed",
@@ -194,17 +192,13 @@ describe("buildDispatchArtifactProtectionState", () => {
     // Wrong segment count: not a canonical dispatch branch even if it
     // textually contains the short id, must NOT be preserved.
     expect(state.evaluateDispatchBranch(`dispatch/task/${shortA}`).preserve).toBe(false);
-    expect(
-      state.evaluateDispatchBranch(`dispatch/task/foo/bar/${shortA}`).preserve,
-    ).toBe(false);
+    expect(state.evaluateDispatchBranch(`dispatch/task/foo/bar/${shortA}`).preserve).toBe(false);
     // Non-dispatch branches with similar suffix must NOT be preserved.
     expect(state.evaluateDispatchBranch(`feat/something-${shortA}`).preserve).toBe(false);
 
     // Paths outside the configured worktree root must NOT be preserved by
     // short-id derivation, even if the basename matches.
-    expect(
-      state.evaluateWorkspacePath(`/elsewhere/foo-${shortA}`).preserve,
-    ).toBe(false);
+    expect(state.evaluateWorkspacePath(`/elsewhere/foo-${shortA}`).preserve).toBe(false);
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved

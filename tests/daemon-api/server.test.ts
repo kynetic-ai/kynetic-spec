@@ -27,11 +27,7 @@
 import { cors } from "@elysiajs/cors";
 import { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import {
-  buildAllowedOrigins,
-  isAllowedOrigin,
-  localhostOnly,
-} from "../../dist/daemon/server.js";
+import { buildAllowedOrigins, isAllowedOrigin, localhostOnly } from "../../dist/daemon/server.js";
 import { projectContextMiddleware } from "../../dist/daemon/middleware/project-context.js";
 import { cleanupTempDir, createTempDir, initGitRepo, setupFixtures } from "./helpers.js";
 

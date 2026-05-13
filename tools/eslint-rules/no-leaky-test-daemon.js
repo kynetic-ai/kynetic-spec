@@ -180,8 +180,7 @@ const WEBSOCKET_LIKE_CONSTRUCTORS = new Set(["WebSocket"]);
  * daemon observation and must not be credited (cycle-6 reviewer
  * blocker).
  */
-const DAEMON_HOST_PORT_URL_PATTERN =
-  /\/\/(?:localhost|127\.0\.0\.1|\[::1\]):(\d|\$\{)/;
+const DAEMON_HOST_PORT_URL_PATTERN = /\/\/(?:localhost|127\.0\.0\.1|\[::1\]):(\d|\$\{)/;
 
 const DAEMON_ENTRY_LITERAL = "dist/daemon/index.js";
 const DAEMON_ENTRY_IDENTIFIER = "DAEMON_ENTRY";
@@ -208,11 +207,7 @@ const TERMINATING_KILL_SIGNALS = new Set(["SIGTERM", "SIGKILL", "SIGINT"]);
  * primitive. A locally-defined no-op `function killPid(_p) {}` shares
  * this name but does not stop the daemon; the origin check rejects it.
  */
-const TRUSTED_HELPER_NAMES = new Set([
-  "killPid",
-  "stopDaemon",
-  "stopMockDaemon",
-]);
+const TRUSTED_HELPER_NAMES = new Set(["killPid", "stopDaemon", "stopMockDaemon"]);
 
 /**
  * Set of EXPORT names (i.e. the original name declared by the approved
@@ -238,11 +233,7 @@ const TRUSTED_HELPER_NAMES = new Set([
  * a cleanup primitive — and that is true regardless of how the
  * importer locally aliases it.
  */
-const APPROVED_CLEANUP_HELPER_EXPORT_NAMES = new Set([
-  "killPid",
-  "stopDaemon",
-  "stopMockDaemon",
-]);
+const APPROVED_CLEANUP_HELPER_EXPORT_NAMES = new Set(["killPid", "stopDaemon", "stopMockDaemon"]);
 
 /**
  * Module specifier prefilter (the `from "…"` string in an
@@ -445,7 +436,7 @@ const noLeakyTestDaemon = {
         "no-leaky-test-daemon/no-leaky-test-daemon -- <reason naming the " +
         "behavior under test>` immediately above the offending statement.",
       hardcodedBunRuntime:
-        'Hardcoded `bun` runtime in a direct daemon entry launch via ' +
+        "Hardcoded `bun` runtime in a direct daemon entry launch via " +
         '"{{pattern}}" outside a runtime parity test. The shared fixture ' +
         "(`startTestDaemon`) defaults to Node and accepts an explicit " +
         "`runtime` opt-in; tests that need Bun coverage should opt in there " +
@@ -496,7 +487,7 @@ const noLeakyTestDaemon = {
         "`onTestFinished(() => process.kill(pid, 'SIGTERM'))` (or another " +
         "approved terminating cleanup) on the very next statement after " +
         "the pid/metadata capture and before any later " +
-        "`expect(...)`, `await`, `execSync(\"ps -p ${pid}\")`, or daemon " +
+        '`expect(...)`, `await`, `execSync("ps -p ${pid}")`, or daemon ' +
         "endpoint observation — otherwise an assertion failure leaves the " +
         "auto-started daemon running.",
     },
@@ -593,27 +584,17 @@ const noLeakyTestDaemon = {
           return true;
         }
         if (
-          (current.type === "FunctionExpression" ||
-            current.type === "ArrowFunctionExpression") &&
+          (current.type === "FunctionExpression" || current.type === "ArrowFunctionExpression") &&
           current.parent
         ) {
           const fnParent = current.parent;
-          if (
-            fnParent.type === "Property" &&
-            fnParent.value === current
-          ) {
+          if (fnParent.type === "Property" && fnParent.value === current) {
             return true;
           }
-          if (
-            fnParent.type === "MethodDefinition" &&
-            fnParent.value === current
-          ) {
+          if (fnParent.type === "MethodDefinition" && fnParent.value === current) {
             return true;
           }
-          if (
-            fnParent.type === "PropertyDefinition" &&
-            fnParent.value === current
-          ) {
+          if (fnParent.type === "PropertyDefinition" && fnParent.value === current) {
             return true;
           }
           if (
@@ -621,8 +602,7 @@ const noLeakyTestDaemon = {
             fnParent.operator === "=" &&
             fnParent.right === current &&
             fnParent.left &&
-            (fnParent.left.type === "Identifier" ||
-              fnParent.left.type === "MemberExpression")
+            (fnParent.left.type === "Identifier" || fnParent.left.type === "MemberExpression")
           ) {
             return true;
           }
@@ -804,9 +784,7 @@ const noLeakyTestDaemon = {
         ) {
           if (!isKspecExecutableArg(node.arguments[0])) return false;
           if (node.arguments.length < 2) return false;
-          return tokensResolveToServeStop(
-            collectArgvArrayTokens(node.arguments[1]),
-          );
+          return tokensResolveToServeStop(collectArgvArrayTokens(node.arguments[1]));
         }
         return false;
       }
@@ -829,10 +807,7 @@ const noLeakyTestDaemon = {
         // is a hardcoded pid that cannot represent the just-started
         // daemon and falls under the cycle-8 reviewer blocker on
         // `ac-cleanup-operation-terminates-daemon`.
-        if (
-          callee.object.type === "Identifier" &&
-          callee.object.name === "process"
-        ) {
+        if (callee.object.type === "Identifier" && callee.object.name === "process") {
           if (!isVerifiableKillTarget(node.arguments[0])) return false;
           return isTerminatingKillSignalArg(node.arguments[1], null, null);
         }
@@ -916,10 +891,7 @@ const noLeakyTestDaemon = {
       if (unwrapped.type === "Identifier" && unwrapped.name === "undefined") {
         return true;
       }
-      if (
-        unwrapped.type === "UnaryExpression" &&
-        unwrapped.operator === "void"
-      ) {
+      if (unwrapped.type === "UnaryExpression" && unwrapped.operator === "void") {
         return true;
       }
       if (
@@ -929,11 +901,7 @@ const noLeakyTestDaemon = {
       ) {
         return true;
       }
-      if (
-        ownerFn &&
-        unwrapped.type === "Identifier" &&
-        Array.isArray(ownerFn.params)
-      ) {
+      if (ownerFn && unwrapped.type === "Identifier" && Array.isArray(ownerFn.params)) {
         for (let i = 0; i < ownerFn.params.length; i++) {
           const param = ownerFn.params[i];
           if (
@@ -961,11 +929,7 @@ const noLeakyTestDaemon = {
               return false;
             }
             if (useCallNode.arguments.length <= i) return true;
-            return isTerminatingKillSignalArg(
-              useCallNode.arguments[i],
-              null,
-              null,
-            );
+            return isTerminatingKillSignalArg(useCallNode.arguments[i], null, null);
           }
         }
       }
@@ -1045,14 +1009,9 @@ const noLeakyTestDaemon = {
       const value = killProp.value;
       if (
         value &&
-        (value.type === "FunctionExpression" ||
-          value.type === "ArrowFunctionExpression")
+        (value.type === "FunctionExpression" || value.type === "ArrowFunctionExpression")
       ) {
-        return helperBodyContainsTerminatingPrimitive(
-          value,
-          new Set(),
-          killCallNode,
-        );
+        return helperBodyContainsTerminatingPrimitive(value, new Set(), killCallNode);
       }
       return true;
     }
@@ -1069,10 +1028,7 @@ const noLeakyTestDaemon = {
       if (bindingNode.type === "VariableDeclarator") {
         return bindingNode.init || null;
       }
-      if (
-        bindingNode.type === "AssignmentExpression" &&
-        bindingNode.operator === "="
-      ) {
+      if (bindingNode.type === "AssignmentExpression" && bindingNode.operator === "=") {
         return bindingNode.right || null;
       }
       return null;
@@ -1207,11 +1163,7 @@ const noLeakyTestDaemon = {
       const localResult = findLocalHelperDefinition(name, useNode);
       if (localResult === LOCAL_BINDING_OPAQUE) return false;
       if (localResult) {
-        return helperBodyContainsTerminatingPrimitive(
-          localResult,
-          new Set(),
-          useNode,
-        );
+        return helperBodyContainsTerminatingPrimitive(localResult, new Set(), useNode);
       }
       if (isHelperNameImportedFromApprovedPath(name, useNode)) return true;
       return false;
@@ -1319,11 +1271,7 @@ const noLeakyTestDaemon = {
      */
     function isHelperImportSpecifierApproved(specifier) {
       if (typeof specifier !== "string") return false;
-      if (
-        !APPROVED_HELPER_IMPORT_PATH_PATTERNS.some((pattern) =>
-          pattern.test(specifier),
-        )
-      ) {
+      if (!APPROVED_HELPER_IMPORT_PATH_PATTERNS.some((pattern) => pattern.test(specifier))) {
         return false;
       }
       if (typeof filename !== "string" || filename.length === 0) {
@@ -1336,9 +1284,7 @@ const noLeakyTestDaemon = {
       } else if (!resolved.endsWith(".ts")) {
         resolved = `${resolved}.ts`;
       }
-      return APPROVED_HELPER_IMPLEMENTATION_PATTERNS.some((pattern) =>
-        pattern.test(resolved),
-      );
+      return APPROVED_HELPER_IMPLEMENTATION_PATTERNS.some((pattern) => pattern.test(resolved));
     }
 
     /**
@@ -1371,8 +1317,8 @@ const noLeakyTestDaemon = {
       } else if (!resolved.endsWith(".ts")) {
         resolved = `${resolved}.ts`;
       }
-      return APPROVED_SHARED_CLEANUP_PRIMITIVE_IMPLEMENTATION_PATTERNS.some(
-        (pattern) => pattern.test(resolved),
+      return APPROVED_SHARED_CLEANUP_PRIMITIVE_IMPLEMENTATION_PATTERNS.some((pattern) =>
+        pattern.test(resolved),
       );
     }
 
@@ -1616,8 +1562,7 @@ const noLeakyTestDaemon = {
         // these shapes entirely. Treat the binding as opaque to keep
         // the rule conservative.
         if (
-          (current.type === "ForOfStatement" ||
-            current.type === "ForInStatement") &&
+          (current.type === "ForOfStatement" || current.type === "ForInStatement") &&
           current.left &&
           forXLeftBindsName(current.left, name)
         ) {
@@ -1626,10 +1571,7 @@ const noLeakyTestDaemon = {
         let statements = null;
         if (current.type === "Program" && Array.isArray(current.body)) {
           statements = current.body;
-        } else if (
-          current.type === "BlockStatement" &&
-          Array.isArray(current.body)
-        ) {
+        } else if (current.type === "BlockStatement" && Array.isArray(current.body)) {
           statements = current.body;
         }
         if (statements) {
@@ -1693,8 +1635,7 @@ const noLeakyTestDaemon = {
           decl.id.type === "Identifier" &&
           decl.id.name === name &&
           decl.init &&
-          (decl.init.type === "FunctionExpression" ||
-            decl.init.type === "ArrowFunctionExpression")
+          (decl.init.type === "FunctionExpression" || decl.init.type === "ArrowFunctionExpression")
         ) {
           return true;
         }
@@ -1849,8 +1790,7 @@ const noLeakyTestDaemon = {
           decl.id.type === "Identifier" &&
           decl.id.name === name &&
           decl.init &&
-          (decl.init.type === "FunctionExpression" ||
-            decl.init.type === "ArrowFunctionExpression")
+          (decl.init.type === "FunctionExpression" || decl.init.type === "ArrowFunctionExpression")
         ) {
           continue;
         }
@@ -1861,11 +1801,7 @@ const noLeakyTestDaemon = {
 
     function matchHelperDefinitionInStatement(stmt, name) {
       if (!stmt) return null;
-      if (
-        stmt.type === "FunctionDeclaration" &&
-        stmt.id &&
-        stmt.id.name === name
-      ) {
+      if (stmt.type === "FunctionDeclaration" && stmt.id && stmt.id.name === name) {
         return stmt;
       }
       if (stmt.type === "VariableDeclaration") {
@@ -1926,19 +1862,11 @@ const noLeakyTestDaemon = {
      * recursive wrappers or helper names whose body does not contain an
      * approved terminating cleanup call" requirement.
      */
-    function helperBodyContainsTerminatingPrimitive(
-      fnNode,
-      visited,
-      useCallNode,
-    ) {
+    function helperBodyContainsTerminatingPrimitive(fnNode, visited, useCallNode) {
       if (!fnNode || visited.has(fnNode)) return false;
       visited.add(fnNode);
       if (!fnNode.body) return false;
-      return subtreeContainsTerminatingPrimitive(
-        fnNode.body,
-        fnNode,
-        useCallNode,
-      );
+      return subtreeContainsTerminatingPrimitive(fnNode.body, fnNode, useCallNode);
     }
 
     function subtreeContainsTerminatingPrimitive(node, ownerFn, useCallNode) {
@@ -1985,11 +1913,7 @@ const noLeakyTestDaemon = {
               return true;
             }
           }
-        } else if (
-          child &&
-          typeof child === "object" &&
-          typeof child.type === "string"
-        ) {
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
           if (subtreeContainsTerminatingPrimitive(child, ownerFn, useCallNode)) {
             return true;
           }
@@ -2190,11 +2114,7 @@ const noLeakyTestDaemon = {
         if (!prop || prop.type !== "Property") continue;
         if (!prop.value) continue;
         const unwrapped = unwrapTransparentExpression(prop.value);
-        if (
-          unwrapped &&
-          unwrapped.type === "Identifier" &&
-          unwrapped.name === name
-        ) {
+        if (unwrapped && unwrapped.type === "Identifier" && unwrapped.name === name) {
           return true;
         }
       }
@@ -2305,41 +2225,16 @@ const noLeakyTestDaemon = {
         callee.property.name === "kill" &&
         callee.object
       ) {
-        if (
-          callee.object.type === "Identifier" &&
-          callee.object.name === "process"
-        ) {
-          if (
-            !isHelperBodyKillTargetTiedToOwner(
-              node.arguments[0],
-              ownerFn,
-              useCallNode,
-            )
-          ) {
+        if (callee.object.type === "Identifier" && callee.object.name === "process") {
+          if (!isHelperBodyKillTargetTiedToOwner(node.arguments[0], ownerFn, useCallNode)) {
             return false;
           }
-          return isTerminatingKillSignalArg(
-            node.arguments[1],
-            ownerFn,
-            useCallNode,
-          );
+          return isTerminatingKillSignalArg(node.arguments[1], ownerFn, useCallNode);
         }
-        if (
-          !isTerminatingKillSignalArg(
-            node.arguments[0],
-            ownerFn,
-            useCallNode,
-          )
-        ) {
+        if (!isTerminatingKillSignalArg(node.arguments[0], ownerFn, useCallNode)) {
           return false;
         }
-        if (
-          !isHelperBodyKillTargetTiedToOwner(
-            callee.object,
-            ownerFn,
-            useCallNode,
-          )
-        ) {
+        if (!isHelperBodyKillTargetTiedToOwner(callee.object, ownerFn, useCallNode)) {
           return false;
         }
         return isChildHandleReceiverTrusted(callee.object, node);
@@ -2368,9 +2263,7 @@ const noLeakyTestDaemon = {
         ) {
           if (!isKspecExecutableArg(node.arguments[0])) return false;
           if (node.arguments.length < 2) return false;
-          return tokensResolveToServeStop(
-            collectArgvArrayTokens(node.arguments[1]),
-          );
+          return tokensResolveToServeStop(collectArgvArrayTokens(node.arguments[1]));
         }
         if (APPROVED_SHARED_CLEANUP_PRIMITIVE_NAMES.has(name)) {
           // Approved shared cleanup primitive (stopPidBounded /
@@ -2382,11 +2275,7 @@ const noLeakyTestDaemon = {
           // body itself. The recogniser enforces approved-import path,
           // approved imported export name, and the same kill-target
           // ownership invariant the direct-kill path applies.
-          return isApprovedSharedCleanupPrimitiveCall(
-            node,
-            ownerFn,
-            useCallNode,
-          );
+          return isApprovedSharedCleanupPrimitiveCall(node, ownerFn, useCallNode);
         }
       }
       return false;
@@ -2467,9 +2356,7 @@ const noLeakyTestDaemon = {
      * documentation purposes only, never as a guardrail-satisfying
      * cleanup.
      */
-    const CLEANUP_REGISTRATION_WRAPPER_NAMES = new Set([
-      "onTestFinished",
-    ]);
+    const CLEANUP_REGISTRATION_WRAPPER_NAMES = new Set(["onTestFinished"]);
 
     /**
      * Set of Node `process` events that fire at process shutdown or on a
@@ -2593,10 +2480,7 @@ const noLeakyTestDaemon = {
       if (!parent.arguments.includes(fnNode)) return false;
       const callee = parent.callee;
       if (!callee) return false;
-      if (
-        callee.type === "Identifier" &&
-        CLEANUP_REGISTRATION_WRAPPER_NAMES.has(callee.name)
-      ) {
+      if (callee.type === "Identifier" && CLEANUP_REGISTRATION_WRAPPER_NAMES.has(callee.name)) {
         return true;
       }
       // Process-lifecycle callbacks (`process.on("exit"|…)`,
@@ -2635,10 +2519,7 @@ const noLeakyTestDaemon = {
       if (unwrapped.type === "Identifier" && unwrapped.name === "undefined") {
         return true;
       }
-      if (
-        unwrapped.type === "UnaryExpression" &&
-        unwrapped.operator === "void"
-      ) {
+      if (unwrapped.type === "UnaryExpression" && unwrapped.operator === "void") {
         return true;
       }
       return false;
@@ -3010,9 +2891,7 @@ const noLeakyTestDaemon = {
           // .kill(pid, "SIGTERM"); } }` where `pid` is bound after
           // the start) still pass.
           if (callee.object.type === "Identifier") {
-            for (const name of collectLiteralKillMethodClosureKillTargets(
-              callee.object,
-            )) {
+            for (const name of collectLiteralKillMethodClosureKillTargets(callee.object)) {
               if (!out.includes(name)) out.push(name);
             }
           }
@@ -3089,28 +2968,18 @@ const noLeakyTestDaemon = {
      * cleanup contract.
      */
     function collectLiteralKillMethodClosureKillTargets(receiverIdent) {
-      const binding = findConcreteBindingNodeAt(
-        receiverIdent.name,
-        receiverIdent,
-      );
+      const binding = findConcreteBindingNodeAt(receiverIdent.name, receiverIdent);
       if (!binding) return [];
       const init = bindingInitializer(binding);
       if (!init || init.type !== "ObjectExpression") return [];
       const killProp = findLiteralKillProperty(init);
       if (!killProp || !killProp.value) return [];
       const killFn = killProp.value;
-      if (
-        killFn.type !== "FunctionExpression" &&
-        killFn.type !== "ArrowFunctionExpression"
-      ) {
+      if (killFn.type !== "FunctionExpression" && killFn.type !== "ArrowFunctionExpression") {
         return [];
       }
       const closureKillTargets = new Set();
-      collectKillTargetClosureRootsInBody(
-        killFn.body,
-        killFn,
-        closureKillTargets,
-      );
+      collectKillTargetClosureRootsInBody(killFn.body, killFn, closureKillTargets);
       return Array.from(closureKillTargets);
     }
 
@@ -3148,10 +3017,7 @@ const noLeakyTestDaemon = {
         node.callee.object
       ) {
         let targetExpr = null;
-        if (
-          node.callee.object.type === "Identifier" &&
-          node.callee.object.name === "process"
-        ) {
+        if (node.callee.object.type === "Identifier" && node.callee.object.name === "process") {
           targetExpr = node.arguments && node.arguments[0];
         } else {
           targetExpr = node.callee.object;
@@ -3242,10 +3108,7 @@ const noLeakyTestDaemon = {
             return true;
           }
         }
-        if (
-          (current.type === "BlockStatement" || current.type === "Program") &&
-          current.body
-        ) {
+        if ((current.type === "BlockStatement" || current.type === "Program") && current.body) {
           const verdict = inspectStatementsForBinding(current.body, name, usePos);
           if (verdict !== null) return verdict;
         }
@@ -3298,10 +3161,7 @@ const noLeakyTestDaemon = {
             if (!declarator || !declarator.id) continue;
             if (declarator.id.type === "Identifier" && declarator.id.name === name) {
               state.foundDeclaration = true;
-              if (
-                declarator.init &&
-                !isNullOrUndefinedInitializer(declarator.init)
-              ) {
+              if (declarator.init && !isNullOrUndefinedInitializer(declarator.init)) {
                 state.bound = true;
               } else {
                 state.bound = false;
@@ -3418,10 +3278,7 @@ const noLeakyTestDaemon = {
             return null;
           }
         }
-        if (
-          (current.type === "BlockStatement" || current.type === "Program") &&
-          current.body
-        ) {
+        if ((current.type === "BlockStatement" || current.type === "Program") && current.body) {
           const result = findConcreteBindingInStatements(current.body, name, usePos);
           if (result.declared) return result.node;
         }
@@ -3460,10 +3317,7 @@ const noLeakyTestDaemon = {
             if (!declarator || !declarator.id) continue;
             if (declarator.id.type === "Identifier" && declarator.id.name === name) {
               state.declared = true;
-              if (
-                declarator.init &&
-                !isNullOrUndefinedInitializer(declarator.init)
-              ) {
+              if (declarator.init && !isNullOrUndefinedInitializer(declarator.init)) {
                 state.node = declarator;
               } else {
                 state.node = null;
@@ -3524,12 +3378,7 @@ const noLeakyTestDaemon = {
             walkStatementsForConcreteBinding(stmt.block.body, name, usePos, state);
           }
           if (stmt.finalizer && Array.isArray(stmt.finalizer.body)) {
-            walkStatementsForConcreteBinding(
-              stmt.finalizer.body,
-              name,
-              usePos,
-              state,
-            );
+            walkStatementsForConcreteBinding(stmt.finalizer.body, name, usePos, state);
           }
           continue;
         }
@@ -3653,10 +3502,7 @@ const noLeakyTestDaemon = {
           // not the cleanup we are validating.
           continue;
         }
-        if (
-          node.type === "CallExpression" &&
-          isDaemonCleanupCallExpression(node)
-        ) {
+        if (node.type === "CallExpression" && isDaemonCleanupCallExpression(node)) {
           const captures = collectDaemonKillCaptureNames(node);
           for (const name of captures) {
             if (checked.has(name)) continue;
@@ -3797,10 +3643,7 @@ const noLeakyTestDaemon = {
               detachedPos >= tryBodyStart &&
               detachedPos < tryBodyEnd
             ) {
-              const firstObservation = findFirstObservationInTryBody(
-                current.block,
-                detachedPos,
-              );
+              const firstObservation = findFirstObservationInTryBody(current.block, detachedPos);
               if (firstObservation) return firstObservation;
               // No observation after the detached start in the try
               // body — the binding only needs to be in scope at the
@@ -3868,10 +3711,7 @@ const noLeakyTestDaemon = {
      */
     function directCleanupCallOwnsDetachedDaemon(callNode, detachedStartNode) {
       if (!detachedStartNode) return true;
-      const useNode = findDirectCleanupRegistrationUseNode(
-        callNode,
-        detachedStartNode,
-      );
+      const useNode = findDirectCleanupRegistrationUseNode(callNode, detachedStartNode);
       const captures = collectDaemonKillCaptureNames(callNode);
       for (const name of captures) {
         if (name === UNVERIFIABLE_KILL_TARGET) {
@@ -3997,9 +3837,7 @@ const noLeakyTestDaemon = {
         // with `pid` undefined and the detached daemon would leak,
         // violating @daemon-test-guardrail-precision
         // ac-detached-cleanup-bound-before-observation.
-        if (
-          !directCleanupCallOwnsDetachedDaemon(node, detachedStartNode)
-        ) {
+        if (!directCleanupCallOwnsDetachedDaemon(node, detachedStartNode)) {
           return false;
         }
         return true;
@@ -4097,12 +3935,26 @@ const noLeakyTestDaemon = {
         const child = node[key];
         if (Array.isArray(child)) {
           for (const c of child) {
-            if (subtreeContainsDaemonCleanupCall(c, insideRegisteredCallback, detachedStartNode, inFinalizerContext)) {
+            if (
+              subtreeContainsDaemonCleanupCall(
+                c,
+                insideRegisteredCallback,
+                detachedStartNode,
+                inFinalizerContext,
+              )
+            ) {
               return true;
             }
           }
         } else if (child && typeof child === "object" && typeof child.type === "string") {
-          if (subtreeContainsDaemonCleanupCall(child, insideRegisteredCallback, detachedStartNode, inFinalizerContext)) {
+          if (
+            subtreeContainsDaemonCleanupCall(
+              child,
+              insideRegisteredCallback,
+              detachedStartNode,
+              inFinalizerContext,
+            )
+          ) {
             return true;
           }
         }
@@ -4238,10 +4090,7 @@ const noLeakyTestDaemon = {
       }
       if (node.type === "AwaitExpression") return true;
       if (node.type === "CallExpression" && node.callee) {
-        if (
-          node.callee.type === "Identifier" &&
-          node.callee.name === "expect"
-        ) {
+        if (node.callee.type === "Identifier" && node.callee.name === "expect") {
           return true;
         }
         // Daemon network observation: a `fetch(<daemon-url>)` call where
@@ -4268,10 +4117,7 @@ const noLeakyTestDaemon = {
       // broader loopback-host predicate so a
       // `new WebSocket("wss://example.com/...")` does not register as a
       // daemon observation.
-      if (
-        node.type === "NewExpression" &&
-        isWebSocketCtorOfDaemonHostUrl(node)
-      ) {
+      if (node.type === "NewExpression" && isWebSocketCtorOfDaemonHostUrl(node)) {
         return true;
       }
       for (const key in node) {
@@ -4655,10 +4501,7 @@ const noLeakyTestDaemon = {
       // Computed access: only accept a static string Literal or a
       // no-substitution TemplateLiteral whose resolved value is exactly
       // "execPath". Dynamic property expressions are rejected.
-      if (
-        node.property.type === "Literal" &&
-        typeof node.property.value === "string"
-      ) {
+      if (node.property.type === "Literal" && typeof node.property.value === "string") {
         return node.property.value === "execPath";
       }
       if (
@@ -4763,10 +4606,7 @@ const noLeakyTestDaemon = {
      */
     function isDaemonEntryShellToken(token) {
       if (typeof token !== "string") return false;
-      return (
-        token === DAEMON_ENTRY_LITERAL ||
-        token.endsWith("/" + DAEMON_ENTRY_LITERAL)
-      );
+      return token === DAEMON_ENTRY_LITERAL || token.endsWith("/" + DAEMON_ENTRY_LITERAL);
     }
 
     /**
@@ -4781,10 +4621,7 @@ const noLeakyTestDaemon = {
     function isRecognisedShellRuntimeToken(token) {
       if (typeof token !== "string") return false;
       return (
-        token === "node" ||
-        token === "bun" ||
-        token.endsWith("/node") ||
-        token.endsWith("/bun")
+        token === "node" || token === "bun" || token.endsWith("/node") || token.endsWith("/bun")
       );
     }
 
@@ -5430,10 +5267,8 @@ const noLeakyTestDaemon = {
         if (scriptIdx === -1) return null;
         if (!isDaemonEntryShellToken(tokens[scriptIdx])) return null;
         const prev = tokens[0];
-        const runtimeLiteral =
-          prev === "bun" || prev.endsWith("/bun") ? "bun" : null;
-        const flagSegment =
-          scriptIdx > 1 ? tokens.slice(1, scriptIdx).join(" ") + " " : "";
+        const runtimeLiteral = prev === "bun" || prev.endsWith("/bun") ? "bun" : null;
+        const flagSegment = scriptIdx > 1 ? tokens.slice(1, scriptIdx).join(" ") + " " : "";
         return {
           runtimeLiteral,
           calleeName,
@@ -5636,10 +5471,7 @@ const noLeakyTestDaemon = {
       let current = detachedNode && detachedNode.parent;
       while (current) {
         if (current.type === "TryStatement" && current.finalizer) {
-          const found = scanFinalizerForUnboundDirectCleanup(
-            current.finalizer,
-            detachedNode,
-          );
+          const found = scanFinalizerForUnboundDirectCleanup(current.finalizer, detachedNode);
           if (found) return found;
         }
         current = current.parent;
@@ -5661,14 +5493,8 @@ const noLeakyTestDaemon = {
       ) {
         return null;
       }
-      if (
-        node.type === "CallExpression" &&
-        isDaemonCleanupCallExpression(node)
-      ) {
-        const useNode = findDirectCleanupRegistrationUseNode(
-          node,
-          detachedStartNode,
-        );
+      if (node.type === "CallExpression" && isDaemonCleanupCallExpression(node)) {
+        const useNode = findDirectCleanupRegistrationUseNode(node, detachedStartNode);
         const captures = collectDaemonKillCaptureNames(node);
         for (const name of captures) {
           if (name === UNVERIFIABLE_KILL_TARGET) {
@@ -5704,11 +5530,7 @@ const noLeakyTestDaemon = {
               if (found) return found;
             }
           }
-        } else if (
-          child &&
-          typeof child === "object" &&
-          typeof child.type === "string"
-        ) {
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
           const found = scanFinalizerForUnboundDirectCleanup(child, detachedStartNode);
           if (found) return found;
         }
@@ -5754,11 +5576,7 @@ const noLeakyTestDaemon = {
               if (found) return found;
             }
           }
-        } else if (
-          child &&
-          typeof child === "object" &&
-          typeof child.type === "string"
-        ) {
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
           const found = scanForUnboundCleanupCallback(child, detachedStartNode);
           if (found) return found;
         }
@@ -5789,11 +5607,7 @@ const noLeakyTestDaemon = {
           for (const c of child) {
             if (subtreeContainsAnyDaemonKillShape(c)) return true;
           }
-        } else if (
-          child &&
-          typeof child === "object" &&
-          typeof child.type === "string"
-        ) {
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
           if (subtreeContainsAnyDaemonKillShape(child)) return true;
         }
       }
@@ -6199,11 +6013,7 @@ const noLeakyTestDaemon = {
           for (const c of child) {
             if (subtreeReadsDaemonPidProperty(c)) return true;
           }
-        } else if (
-          child &&
-          typeof child === "object" &&
-          typeof child.type === "string"
-        ) {
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
           if (subtreeReadsDaemonPidProperty(child)) return true;
         }
       }
@@ -6259,11 +6069,7 @@ const noLeakyTestDaemon = {
           for (const c of child) {
             if (subtreeReadsDaemonMetadataLiteral(c)) return true;
           }
-        } else if (
-          child &&
-          typeof child === "object" &&
-          typeof child.type === "string"
-        ) {
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
           if (subtreeReadsDaemonMetadataLiteral(child)) return true;
         }
       }
@@ -6369,11 +6175,7 @@ const noLeakyTestDaemon = {
           for (const c of child) {
             if (subtreeContainsDaemonReadLikeCall(c)) return true;
           }
-        } else if (
-          child &&
-          typeof child === "object" &&
-          typeof child.type === "string"
-        ) {
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
           if (subtreeContainsDaemonReadLikeCall(child)) return true;
         }
       }
@@ -6517,7 +6319,8 @@ const noLeakyTestDaemon = {
         node.type === "FunctionDeclaration" ||
         node.type === "FunctionExpression" ||
         node.type === "ArrowFunctionExpression"
-      ) return false;
+      )
+        return false;
       if (node.type === "CallExpression") {
         const name = getCalleeName(node);
         if (name && DAEMON_OBSERVATION_READ_CALLEE_NAMES.has(name)) {
@@ -6528,10 +6331,16 @@ const noLeakyTestDaemon = {
       }
       for (const key in node) {
         if (
-          key === "parent" || key === "loc" || key === "range" ||
-          key === "start" || key === "end" || key === "type" ||
-          key === "tokens" || key === "comments"
-        ) continue;
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        )
+          continue;
         const child = node[key];
         if (Array.isArray(child)) {
           for (const c of child) {
@@ -6649,14 +6458,21 @@ const noLeakyTestDaemon = {
         node.type === "FunctionDeclaration" ||
         node.type === "FunctionExpression" ||
         node.type === "ArrowFunctionExpression"
-      ) return false;
+      )
+        return false;
       if (node.type === "CallExpression" && isKspecServeStatusCall(node)) return true;
       for (const key in node) {
         if (
-          key === "parent" || key === "loc" || key === "range" ||
-          key === "start" || key === "end" || key === "type" ||
-          key === "tokens" || key === "comments"
-        ) continue;
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        )
+          continue;
         const child = node[key];
         if (Array.isArray(child)) {
           for (const c of child) {
@@ -6677,12 +6493,7 @@ const noLeakyTestDaemon = {
      * target is a daemon endpoint observation regardless of whether the
      * URL is constructed from a `localhost:` literal.
      */
-    const DAEMON_URL_MEMBER_NAMES = new Set([
-      "apiUrl",
-      "wsUrl",
-      "baseUrl",
-      "url",
-    ]);
+    const DAEMON_URL_MEMBER_NAMES = new Set(["apiUrl", "wsUrl", "baseUrl", "url"]);
 
     /**
      * True when a fetch / WebSocket argument is a MemberExpression
@@ -6717,27 +6528,38 @@ const noLeakyTestDaemon = {
         node.type === "FunctionDeclaration" ||
         node.type === "FunctionExpression" ||
         node.type === "ArrowFunctionExpression"
-      ) return false;
+      )
+        return false;
       if (
         node.type === "CallExpression" &&
-        node.callee && node.callee.type === "Identifier" &&
+        node.callee &&
+        node.callee.type === "Identifier" &&
         FETCH_LIKE_CALLEES.has(node.callee.name) &&
         node.arguments.length > 0 &&
         isDaemonEndpointMemberArg(node.arguments[0], useContextNode)
-      ) return true;
+      )
+        return true;
       if (
         node.type === "NewExpression" &&
-        node.callee && node.callee.type === "Identifier" &&
+        node.callee &&
+        node.callee.type === "Identifier" &&
         WEBSOCKET_LIKE_CONSTRUCTORS.has(node.callee.name) &&
         node.arguments.length > 0 &&
         isDaemonEndpointMemberArg(node.arguments[0], useContextNode)
-      ) return true;
+      )
+        return true;
       for (const key in node) {
         if (
-          key === "parent" || key === "loc" || key === "range" ||
-          key === "start" || key === "end" || key === "type" ||
-          key === "tokens" || key === "comments"
-        ) continue;
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        )
+          continue;
         const child = node[key];
         if (Array.isArray(child)) {
           for (const c of child) {
@@ -6791,9 +6613,7 @@ const noLeakyTestDaemon = {
       // Treated as `ownership` capture — wrapping this read in a local
       // helper hides the cleanup contract from the test body.
       const readsPid = subtreeReadsDaemonPidProperty(candidate);
-      const readsMetadata = readsPid
-        ? false
-        : subtreeReadsDaemonMetadataLiteral(candidate);
+      const readsMetadata = readsPid ? false : subtreeReadsDaemonMetadataLiteral(candidate);
       if ((readsPid || readsMetadata) && subtreeContainsDaemonReadLikeCall(candidate)) {
         return {
           kind: "ownership",
@@ -6886,17 +6706,11 @@ const noLeakyTestDaemon = {
       if (isKspecExecutableArg(arg)) return true;
       const literal = literalString(arg);
       if (literal !== null) {
-        return (
-          literal === "dist/cli/index.js" ||
-          literal.endsWith("/dist/cli/index.js")
-        );
+        return literal === "dist/cli/index.js" || literal.endsWith("/dist/cli/index.js");
       }
       const tmpl = templateLiteralRaw(arg);
       if (tmpl !== null) {
-        return (
-          tmpl === "dist/cli/index.js" ||
-          tmpl.endsWith("/dist/cli/index.js")
-        );
+        return tmpl === "dist/cli/index.js" || tmpl.endsWith("/dist/cli/index.js");
       }
       return false;
     }
@@ -6940,10 +6754,7 @@ const noLeakyTestDaemon = {
         // Runtime + kspec-path form: args[0] is `node`/`bun`/process.execPath
         // AND args[1] is an argv array whose first element is a kspec
         // CLI path Identifier or literal.
-        if (
-          isRecognisedRuntimeArg(args[0]) ||
-          isProcessExecPathExpression(args[0])
-        ) {
+        if (isRecognisedRuntimeArg(args[0]) || isProcessExecPathExpression(args[0])) {
           if (args.length < 2) return false;
           // `spawn`/`spawnSync`/`execFile`/`execFileSync` take an argv
           // array as args[1].
@@ -7067,11 +6878,7 @@ const noLeakyTestDaemon = {
           for (const c of child) {
             if (subtreeContainsKspecCliCall(c)) return true;
           }
-        } else if (
-          child &&
-          typeof child === "object" &&
-          typeof child.type === "string"
-        ) {
+        } else if (child && typeof child === "object" && typeof child.type === "string") {
           if (subtreeContainsKspecCliCall(child)) return true;
         }
       }
@@ -7125,14 +6932,21 @@ const noLeakyTestDaemon = {
         node.type === "FunctionDeclaration" ||
         node.type === "FunctionExpression" ||
         node.type === "ArrowFunctionExpression"
-      ) return null;
+      )
+        return null;
       if (node.type === "CallExpression" && isPotentialKspecCliCall(node)) return node;
       for (const key in node) {
         if (
-          key === "parent" || key === "loc" || key === "range" ||
-          key === "start" || key === "end" || key === "type" ||
-          key === "tokens" || key === "comments"
-        ) continue;
+          key === "parent" ||
+          key === "loc" ||
+          key === "range" ||
+          key === "start" ||
+          key === "end" ||
+          key === "type" ||
+          key === "tokens" ||
+          key === "comments"
+        )
+          continue;
         const child = node[key];
         if (Array.isArray(child)) {
           for (const c of child) {
@@ -7260,12 +7074,7 @@ const noLeakyTestDaemon = {
       },
 
       AssignmentExpression(node) {
-        if (
-          node.operator !== "=" ||
-          !node.left ||
-          node.left.type !== "Identifier" ||
-          !node.right
-        ) {
+        if (node.operator !== "=" || !node.left || node.left.type !== "Identifier" || !node.right) {
           return;
         }
         recordBinding(
@@ -7338,7 +7147,8 @@ const noLeakyTestDaemon = {
               kind: "observation",
             });
           } else if (
-            node.callee && node.callee.type === "Identifier" &&
+            node.callee &&
+            node.callee.type === "Identifier" &&
             FETCH_LIKE_CALLEES.has(node.callee.name) &&
             node.arguments.length > 0 &&
             isDaemonEndpointMemberArg(node.arguments[0], node)
@@ -7375,7 +7185,8 @@ const noLeakyTestDaemon = {
         // an implicitly auto-started daemon and needs scoped cleanup.
         if (
           isStandaloneObservationContext(node) &&
-          node.callee && node.callee.type === "Identifier" &&
+          node.callee &&
+          node.callee.type === "Identifier" &&
           WEBSOCKET_LIKE_CONSTRUCTORS.has(node.callee.name) &&
           node.arguments.length > 0 &&
           isDaemonEndpointMemberArg(node.arguments[0], node)
@@ -7428,9 +7239,7 @@ const noLeakyTestDaemon = {
           // name so the author sees which capture is the leak.
           // (@daemon-test-guardrail-precision
           // ac-detached-cleanup-bound-before-observation)
-          const unbound =
-            findUnboundCleanupClosure(node) ||
-            findUnboundDirectCleanupCapture(node);
+          const unbound = findUnboundCleanupClosure(node) || findUnboundDirectCleanupCapture(node);
           if (unbound) {
             context.report({
               node,
@@ -7516,7 +7325,6 @@ const noLeakyTestDaemon = {
           });
         }
       },
-
     };
   },
 };
@@ -7563,9 +7371,13 @@ function parseDisableBody(rest) {
     ruleList = dashSep[1].trim();
     reason = dashSep[2].trim();
   }
-  const rules = ruleList.length === 0
-    ? []
-    : ruleList.split(/\s*,\s*/).map((r) => r.trim()).filter(Boolean);
+  const rules =
+    ruleList.length === 0
+      ? []
+      : ruleList
+          .split(/\s*,\s*/)
+          .map((r) => r.trim())
+          .filter(Boolean);
   return { rules, reason };
 }
 
@@ -7634,8 +7446,7 @@ const localizedDisable = {
           const body = parseDisableBody(rest);
           if (!directiveTargetsTargetRule(body.rules)) continue;
 
-          const ruleSpec =
-            body.rules.length > 0 ? body.rules.join(", ") : TARGET_RULE_NAME;
+          const ruleSpec = body.rules.length > 0 ? body.rules.join(", ") : TARGET_RULE_NAME;
 
           if (directive === "disable") {
             reportComment(comment, "fileWideDisable", { ruleSpec });

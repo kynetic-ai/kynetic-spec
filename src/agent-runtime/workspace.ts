@@ -3707,9 +3707,7 @@ function logArtifactPreservation(
   reason: string | null,
 ): void {
   const reasonText = reason ?? "protection-source unspecified";
-  console.debug(
-    `[dispatch-cleanup] preserved ${surface} "${identifier}": ${reasonText}`,
-  );
+  console.debug(`[dispatch-cleanup] preserved ${surface} "${identifier}": ${reasonText}`);
 }
 
 export async function reconcileDispatchWorkspaceArtifacts(

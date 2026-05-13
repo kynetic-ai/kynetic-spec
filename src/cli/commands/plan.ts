@@ -1390,10 +1390,7 @@ Examples:
         } catch (err) {
           // AC: @plan-crud ac-53 — concurrent removal yields not-found
           if (err instanceof Error && (err as NodeJS.ErrnoException).code === "ENOENT") {
-            error(
-              `Plan not found: ${ref}`,
-              isJsonMode() ? { error: "not_found", ref } : undefined,
-            );
+            error(`Plan not found: ${ref}`, isJsonMode() ? { error: "not_found", ref } : undefined);
             process.exit(EXIT_CODES.NOT_FOUND);
           }
           throw err;

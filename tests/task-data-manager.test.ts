@@ -874,8 +874,7 @@ describe("TaskDataManager", () => {
         manager = new TaskDataManager("split");
 
         await runWithEntityCache(
-          () =>
-            manager.mutateTask(ctx, fixtureTask._ulid, () => mutatedTask),
+          () => manager.mutateTask(ctx, fixtureTask._ulid, () => mutatedTask),
           () => ({
             getDomainState: () => "ready",
             getTaskIndex: () => [toSummary(fixtureTask)],
@@ -905,11 +904,10 @@ describe("TaskDataManager", () => {
       const fixtureTask = await loadFixtureTask(ctx, "@test-task-pending");
 
       // Without runWithEntityCache, no cache context exists
-      const result = await manager.mutateTask(
-        ctx,
-        fixtureTask._ulid,
-        (task) => ({ ...task, priority: 1 }),
-      );
+      const result = await manager.mutateTask(ctx, fixtureTask._ulid, (task) => ({
+        ...task,
+        priority: 1,
+      }));
 
       // Should succeed without errors — no cache to update
       expect(result.priority).toBe(1);
@@ -926,9 +924,7 @@ describe("TaskDataManager", () => {
         format: "split",
         listTasks: vi.fn(async () => [toSummary(task1), toSummary(task2)]),
         loadAllTasks: vi.fn(async () => [task1, task2]),
-        getTask: vi.fn(async (_ctx, ref) =>
-          ref === task1._ulid ? task1 : task2,
-        ),
+        getTask: vi.fn(async (_ctx, ref) => (ref === task1._ulid ? task1 : task2)),
         createTask: vi.fn(async (_ctx, task) => ({
           ...task,
           _sourceFile: `/mock/${task._ulid}.yaml`,
@@ -951,17 +947,13 @@ describe("TaskDataManager", () => {
 
         await runWithEntityCache(
           () =>
-            manager.mutateTasks(
-              ctx,
-              [task1._ulid, task2._ulid],
-              (tasks) =>
-                tasks.map((t) => ({ ...t, priority: 1 })),
+            manager.mutateTasks(ctx, [task1._ulid, task2._ulid], (tasks) =>
+              tasks.map((t) => ({ ...t, priority: 1 })),
             ),
           () => ({
             getDomainState: () => "ready",
             getTaskIndex: () => [toSummary(task1), toSummary(task2)],
-            getTaskDetail: (ulid: string) =>
-              ulid === task1._ulid ? task1 : task2,
+            getTaskDetail: (ulid: string) => (ulid === task1._ulid ? task1 : task2),
             getTaskHistory: () => [],
             setTaskDetail: vi.fn(),
             getAllTaskDetails: () => [task1, task2],

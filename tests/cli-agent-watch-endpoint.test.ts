@@ -19,10 +19,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Command } from "commander";
 
-import {
-  registerAgentCommands,
-  _setWebSocketCtor,
-} from "../src/cli/commands/agent.js";
+import { registerAgentCommands, _setWebSocketCtor } from "../src/cli/commands/agent.js";
 import {
   cleanupTempDir,
   createIsolatedKspecHome,

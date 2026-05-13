@@ -12,10 +12,7 @@
  * with AC annotation patterns.
  */
 import { describe, it, expect } from "vitest";
-import {
-  validateACAnnotations,
-  computeACCoverage,
-} from "../src/parser/validate.js";
+import { validateACAnnotations, computeACCoverage } from "../src/parser/validate.js";
 import { ReferenceIndex } from "../src/parser/refs.js";
 
 describe("AC annotation integrity reporting", () => {
@@ -207,9 +204,7 @@ describe("AC annotation integrity reporting", () => {
         type: "requirement" as const,
         description: "A feature spec",
         status: { maturity: "draft" as const, implementation: "not_started" as const },
-        acceptance_criteria: [
-          { id: "ac-good", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "ac-good", given: "g", when: "w", then: "t" }],
         _sourceFile: "modules/feature.yaml",
       },
     ];
@@ -246,9 +241,7 @@ describe("AC annotation integrity reporting", () => {
         type: "requirement" as const,
         description: "A feature spec",
         status: { maturity: "draft" as const, implementation: "not_started" as const },
-        acceptance_criteria: [
-          { id: "ac-1", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
         _sourceFile: "modules/feature.yaml",
       },
     ];

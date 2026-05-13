@@ -2414,9 +2414,7 @@ export async function validate(
   const kyneticVersion = ctx.manifest?.kynetic;
   const storageFormat = ctx.manifest?.task_storage?.format;
   const isLegacyProject =
-    kyneticVersion !== undefined &&
-    storageFormat !== "split" &&
-    parseFloat(kyneticVersion) < 1.1;
+    kyneticVersion !== undefined && storageFormat !== "split" && parseFloat(kyneticVersion) < 1.1;
 
   let usedCanonicalPath = false;
 

@@ -91,10 +91,7 @@ describe("CLI: item ac add/set format validation", () => {
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
     // Create a test item to attach ACs to
-    kspec(
-      'item add --under @test-core --title "AC Format Test" --slug ac-format-test',
-      tempDir,
-    );
+    kspec('item add --under @test-core --title "AC Format Test" --slug ac-format-test', tempDir);
   });
 
   afterEach(async () => {
@@ -167,21 +164,17 @@ describe("CLI: item ac add/set format validation", () => {
     });
 
     it("rejects renaming to a non-prefixed id", () => {
-      const result = kspec(
-        'item ac set @ac-format-test ac-original --id "renamed-bad"',
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspec('item ac set @ac-format-test ac-original --id "renamed-bad"', tempDir, {
+        expectFail: true,
+      });
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("ac-prefixed kebab-case");
     });
 
     it("does not mutate the item when rename id is invalid", () => {
-      kspec(
-        'item ac set @ac-format-test ac-original --id "renamed-bad"',
-        tempDir,
-        { expectFail: true },
-      );
+      kspec('item ac set @ac-format-test ac-original --id "renamed-bad"', tempDir, {
+        expectFail: true,
+      });
       const item = kspecJson<{ acceptance_criteria: Array<{ id: string }> }>(
         "item get @ac-format-test",
         tempDir,
@@ -190,10 +183,7 @@ describe("CLI: item ac add/set format validation", () => {
     });
 
     it("accepts renaming to a valid ac-prefixed id", () => {
-      const result = kspec(
-        'item ac set @ac-format-test ac-original --id "ac-renamed"',
-        tempDir,
-      );
+      const result = kspec('item ac set @ac-format-test ac-original --id "ac-renamed"', tempDir);
       expect(result.exitCode).toBe(0);
       const item = kspecJson<{ acceptance_criteria: Array<{ id: string }> }>(
         "item get @ac-format-test",
@@ -206,10 +196,7 @@ describe("CLI: item ac add/set format validation", () => {
   // AC: @acceptance-criterion-id-format ac-generated-ids-conform
   describe("auto-generated AC ids conform to required format", () => {
     it("generates ac-1 for the first AC", () => {
-      kspec(
-        'item ac add @ac-format-test --given "g" --when "w" --then "t"',
-        tempDir,
-      );
+      kspec('item ac add @ac-format-test --given "g" --when "w" --then "t"', tempDir);
       const item = kspecJson<{ acceptance_criteria: Array<{ id: string }> }>(
         "item get @ac-format-test",
         tempDir,
@@ -219,18 +206,9 @@ describe("CLI: item ac add/set format validation", () => {
     });
 
     it("generates sequential ac-N ids", () => {
-      kspec(
-        'item ac add @ac-format-test --given "g1" --when "w1" --then "t1"',
-        tempDir,
-      );
-      kspec(
-        'item ac add @ac-format-test --given "g2" --when "w2" --then "t2"',
-        tempDir,
-      );
-      kspec(
-        'item ac add @ac-format-test --given "g3" --when "w3" --then "t3"',
-        tempDir,
-      );
+      kspec('item ac add @ac-format-test --given "g1" --when "w1" --then "t1"', tempDir);
+      kspec('item ac add @ac-format-test --given "g2" --when "w2" --then "t2"', tempDir);
+      kspec('item ac add @ac-format-test --given "g3" --when "w3" --then "t3"', tempDir);
       const item = kspecJson<{ acceptance_criteria: Array<{ id: string }> }>(
         "item get @ac-format-test",
         tempDir,
@@ -239,11 +217,7 @@ describe("CLI: item ac add/set format validation", () => {
       for (const ac of item.acceptance_criteria) {
         expect(acIdPattern.test(ac.id)).toBe(true);
       }
-      expect(item.acceptance_criteria.map((ac) => ac.id)).toEqual([
-        "ac-1",
-        "ac-2",
-        "ac-3",
-      ]);
+      expect(item.acceptance_criteria.map((ac) => ac.id)).toEqual(["ac-1", "ac-2", "ac-3"]);
     });
   });
 });

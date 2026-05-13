@@ -770,7 +770,9 @@ it('invalid trait AC ref', () => {});
 
     it("should parse a single @ref with multiple comma-separated ACs", () => {
       const groups = parseACAnnotationLine("// AC: @spec-a ac-1, ac-2, ac-3");
-      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1", "ac-2", "ac-3"], malformedTokens: [] }]);
+      expect(groups).toEqual([
+        { specRef: "@spec-a", acIds: ["ac-1", "ac-2", "ac-3"], malformedTokens: [] },
+      ]);
     });
 
     it("should parse multiple @ref groups on the same line", () => {
@@ -835,13 +837,19 @@ it('invalid trait AC ref', () => {});
     it("should parse ac-prefixed named ids as explicit AC references", () => {
       const groups = parseACAnnotationLine("// AC: @my-spec ac-validate-input, ac-reject-invalid");
       expect(groups).toEqual([
-        { specRef: "@my-spec", acIds: ["ac-validate-input", "ac-reject-invalid"], malformedTokens: [] },
+        {
+          specRef: "@my-spec",
+          acIds: ["ac-validate-input", "ac-reject-invalid"],
+          malformedTokens: [],
+        },
       ]);
     });
 
     it("should parse ac-prefixed numeric ids as explicit AC references", () => {
       const groups = parseACAnnotationLine("// AC: @my-spec ac-1, ac-2");
-      expect(groups).toEqual([{ specRef: "@my-spec", acIds: ["ac-1", "ac-2"], malformedTokens: [] }]);
+      expect(groups).toEqual([
+        { specRef: "@my-spec", acIds: ["ac-1", "ac-2"], malformedTokens: [] },
+      ]);
     });
 
     it("should treat mixed tokens correctly: only ac-prefixed tokens become AC ids", () => {
@@ -1030,8 +1038,7 @@ it('test', () => {});
           },
         ],
         testFiles: {
-          "numbered.test.ts":
-            '// AC: @numbered-spec ac-1, ac-2\nit("covers both", () => {});',
+          "numbered.test.ts": '// AC: @numbered-spec ac-1, ac-2\nit("covers both", () => {});',
         },
       });
 
@@ -1063,15 +1070,12 @@ it('test', () => {});
             type: "requirement",
             description: "A spec with ACs",
             status: { maturity: "draft", implementation: "not_started" },
-            acceptance_criteria: [
-              { id: "ac-1", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
           },
         ],
         testFiles: {
           // "validate" is not ac-prefixed, so this should be treated as a blanket ref
-          "bad-token.test.ts":
-            '// AC: @my-spec validate\nit("test", () => {});',
+          "bad-token.test.ts": '// AC: @my-spec validate\nit("test", () => {});',
         },
       });
 
@@ -1087,9 +1091,7 @@ it('test', () => {});
       // ac-1 should remain uncovered
       const missingCoverage = result.completenessWarnings.filter(
         (w) =>
-          w.type === "missing_test_coverage" &&
-          w.subtype === "own_ac" &&
-          w.itemRef === "@my-spec",
+          w.type === "missing_test_coverage" && w.subtype === "own_ac" && w.itemRef === "@my-spec",
       );
       expect(missingCoverage).toHaveLength(1);
       expect(missingCoverage[0].details).toContain("ac-1");
@@ -1105,15 +1107,12 @@ it('test', () => {});
             type: "requirement",
             description: "A spec with ACs",
             status: { maturity: "draft", implementation: "not_started" },
-            acceptance_criteria: [
-              { id: "ac-1", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
           },
         ],
         testFiles: {
           // "1" is not ac-prefixed, parser ignores it → blanket ref behavior
-          "numeric-token.test.ts":
-            '// AC: @my-spec 1\nit("test", () => {});',
+          "numeric-token.test.ts": '// AC: @my-spec 1\nit("test", () => {});',
         },
       });
 
@@ -1126,9 +1125,7 @@ it('test', () => {});
 
       const missingCoverage = result.completenessWarnings.filter(
         (w) =>
-          w.type === "missing_test_coverage" &&
-          w.subtype === "own_ac" &&
-          w.itemRef === "@my-spec",
+          w.type === "missing_test_coverage" && w.subtype === "own_ac" && w.itemRef === "@my-spec",
       );
       expect(missingCoverage).toHaveLength(1);
     });

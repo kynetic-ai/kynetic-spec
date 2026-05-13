@@ -308,55 +308,50 @@ describe("runDaemonFixtureLifecycle — primary error preservation", () => {
   // `error.cause` and as message context so it remains discoverable.
   // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
   // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
-  it(
-    "preserves the use-phase primary error when teardown also fails",
-    async () => {
-      const useSentinel = "use-phase primary error sentinel";
-      const teardownSentinel = "teardown failure sentinel";
-      let teardownRan = false;
+  it("preserves the use-phase primary error when teardown also fails", async () => {
+    const useSentinel = "use-phase primary error sentinel";
+    const teardownSentinel = "teardown failure sentinel";
+    let teardownRan = false;
 
-      let thrown: unknown = null;
-      try {
-        await runDaemonFixtureLifecycle<void>({
-          setup: async () => {},
-          use: async () => {
-            throw new Error(useSentinel);
-          },
-          teardown: async () => {
-            teardownRan = true;
-            throw new Error(teardownSentinel);
-          },
-        });
-      } catch (error) {
-        thrown = error;
-      }
+    let thrown: unknown = null;
+    try {
+      await runDaemonFixtureLifecycle<void>({
+        setup: async () => {},
+        use: async () => {
+          throw new Error(useSentinel);
+        },
+        teardown: async () => {
+          teardownRan = true;
+          throw new Error(teardownSentinel);
+        },
+      });
+    } catch (error) {
+      thrown = error;
+    }
 
-      // Teardown still ran — the helper must not skip cleanup just because
-      // `use()` threw.
-      expect(teardownRan).toBe(true);
+    // Teardown still ran — the helper must not skip cleanup just because
+    // `use()` threw.
+    expect(teardownRan).toBe(true);
 
-      // ac-cleanup-errors-preserve-primary-failure (use path): the surfaced
-      // error must be the use-phase failure, not the teardown failure.
-      expect(thrown).toBeInstanceOf(Error);
-      const error = thrown as Error;
-      expect(error.message).toContain(useSentinel);
+    // ac-cleanup-errors-preserve-primary-failure (use path): the surfaced
+    // error must be the use-phase failure, not the teardown failure.
+    expect(thrown).toBeInstanceOf(Error);
+    const error = thrown as Error;
+    expect(error.message).toContain(useSentinel);
 
-      // The teardown failure remains discoverable from the surfaced error
-      // — as message text, `error.cause`, or an entry in an AggregateError.
-      const surfacedText = [
-        error.message,
-        (error as { cause?: unknown }).cause instanceof Error
-          ? ((error as { cause: Error }).cause).message
-          : "",
-        error instanceof AggregateError
-          ? error.errors
-              .map((e) => (e instanceof Error ? e.message : String(e)))
-              .join(" ")
-          : "",
-      ].join(" ");
-      expect(surfacedText).toContain(teardownSentinel);
-    },
-  );
+    // The teardown failure remains discoverable from the surfaced error
+    // — as message text, `error.cause`, or an entry in an AggregateError.
+    const surfacedText = [
+      error.message,
+      (error as { cause?: unknown }).cause instanceof Error
+        ? (error as { cause: Error }).cause.message
+        : "",
+      error instanceof AggregateError
+        ? error.errors.map((e) => (e instanceof Error ? e.message : String(e))).join(" ")
+        : "",
+    ].join(" ");
+    expect(surfacedText).toContain(teardownSentinel);
+  });
 });
 
 describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", () => {
@@ -371,8 +366,10 @@ describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", 
   it("returns the resources and emits every stage hook on the success path", async () => {
     const project = await createTestDaemonProject({ skipFixtures: true });
     try {
-      const fakeCreate: CreateTestDaemonProjectImpl = (async () => project) as CreateTestDaemonProjectImpl;
-      const fakeAllocate: AllocateTestDaemonPortImpl = (async () => 4321) as AllocateTestDaemonPortImpl;
+      const fakeCreate: CreateTestDaemonProjectImpl = (async () =>
+        project) as CreateTestDaemonProjectImpl;
+      const fakeAllocate: AllocateTestDaemonPortImpl = (async () =>
+        4321) as AllocateTestDaemonPortImpl;
 
       const stages: PlaywrightFixtureSetupStage[] = [];
       const resources = await acquirePlaywrightFixtureResources({
@@ -414,70 +411,69 @@ describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", 
   ] as const satisfies readonly PlaywrightFixtureSetupStage[]) {
     // AC: @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources
     // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
-    it(
-      `cleans up the project temp dir when wrapper setup fails at ${failureStage}`,
-      async () => {
-        const sentinel = `wrapper setup failure sentinel for ${failureStage}`;
+    it(`cleans up the project temp dir when wrapper setup fails at ${failureStage}`, async () => {
+      const sentinel = `wrapper setup failure sentinel for ${failureStage}`;
 
-        // Use a real temp project so the cleanup-or-leak observation is
-        // grounded in actual filesystem state. The handle also serves as
-        // a defensive safety net: if a future regression re-introduces
-        // the leak, a post-test `cleanup()` here removes the directory
-        // so the failing run does not accumulate orphaned temp dirs.
-        const safetyHandle = await createTestDaemonProject({ skipFixtures: true });
-        const projectTempDir = safetyHandle.tempDir;
+      // Use a real temp project so the cleanup-or-leak observation is
+      // grounded in actual filesystem state. The handle also serves as
+      // a defensive safety net: if a future regression re-introduces
+      // the leak, a post-test `cleanup()` here removes the directory
+      // so the failing run does not accumulate orphaned temp dirs.
+      const safetyHandle = await createTestDaemonProject({ skipFixtures: true });
+      const projectTempDir = safetyHandle.tempDir;
 
-        const fakeCreate: CreateTestDaemonProjectImpl = (async () => safetyHandle) as CreateTestDaemonProjectImpl;
-        const fakeAllocate: AllocateTestDaemonPortImpl = (async () => 4321) as AllocateTestDaemonPortImpl;
+      const fakeCreate: CreateTestDaemonProjectImpl = (async () =>
+        safetyHandle) as CreateTestDaemonProjectImpl;
+      const fakeAllocate: AllocateTestDaemonPortImpl = (async () =>
+        4321) as AllocateTestDaemonPortImpl;
 
-        let thrown: unknown = null;
-        try {
-          await acquirePlaywrightFixtureResources({
-            fixturesSource: "/nonexistent-fixtures-source",
-            webUiDir: "/tmp/fake-web-ui",
-            __testCreateProjectImpl: fakeCreate,
-            __testAllocatePortImpl: fakeAllocate,
-            __testStageHook: (stage) => {
-              if (stage === failureStage) {
-                throw new Error(sentinel);
-              }
-            },
-          });
-        } catch (error) {
-          thrown = error;
-        }
-
-        // The helper must propagate the simulated step failure as the
-        // primary cause — the surfaced error references the sentinel.
-        expect(thrown).toBeInstanceOf(Error);
-        expect((thrown as Error).message).toContain(sentinel);
-
-        const stillExists = existsSync(projectTempDir);
-
-        // Defensive safety net for regressions: if the helper does leak
-        // the tempDir, drop it so the failing run does not accumulate
-        // orphans. The assertion below still fails.
-        if (stillExists) {
-          try {
-            await safetyHandle.cleanup();
-          } catch {
-            try {
-              rmSync(projectTempDir, { recursive: true, force: true });
-            } catch {
-              // Best effort: another concurrent cleanup may have removed it.
+      let thrown: unknown = null;
+      try {
+        await acquirePlaywrightFixtureResources({
+          fixturesSource: "/nonexistent-fixtures-source",
+          webUiDir: "/tmp/fake-web-ui",
+          __testCreateProjectImpl: fakeCreate,
+          __testAllocatePortImpl: fakeAllocate,
+          __testStageHook: (stage) => {
+            if (stage === failureStage) {
+              throw new Error(sentinel);
             }
+          },
+        });
+      } catch (error) {
+        thrown = error;
+      }
+
+      // The helper must propagate the simulated step failure as the
+      // primary cause — the surfaced error references the sentinel.
+      expect(thrown).toBeInstanceOf(Error);
+      expect((thrown as Error).message).toContain(sentinel);
+
+      const stillExists = existsSync(projectTempDir);
+
+      // Defensive safety net for regressions: if the helper does leak
+      // the tempDir, drop it so the failing run does not accumulate
+      // orphans. The assertion below still fails.
+      if (stillExists) {
+        try {
+          await safetyHandle.cleanup();
+        } catch {
+          try {
+            rmSync(projectTempDir, { recursive: true, force: true });
+          } catch {
+            // Best effort: another concurrent cleanup may have removed it.
           }
         }
+      }
 
-        // ac-setup-failure-cleans-owned-resources — the helper rolls back
-        // the owned project temp dir when a later wrapper setup step
-        // fails before the resources reach the wrapper's outer teardown.
-        expect(
-          stillExists,
-          `project tempDir ${projectTempDir} must be removed after wrapper setup failure at ${failureStage}`,
-        ).toBe(false);
-      },
-    );
+      // ac-setup-failure-cleans-owned-resources — the helper rolls back
+      // the owned project temp dir when a later wrapper setup step
+      // fails before the resources reach the wrapper's outer teardown.
+      expect(
+        stillExists,
+        `project tempDir ${projectTempDir} must be removed after wrapper setup failure at ${failureStage}`,
+      ).toBe(false);
+    });
   }
 
   // allocateTestDaemonPort is the last step in the wrapper setup path —
@@ -488,54 +484,52 @@ describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", 
   // before normal teardown registration".
   // AC: @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources
   // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
-  it(
-    "cleans up the project temp dir when allocateTestDaemonPort itself rejects",
-    async () => {
-      const sentinel = "allocateTestDaemonPort failure sentinel";
-      const safetyHandle = await createTestDaemonProject({ skipFixtures: true });
-      const projectTempDir = safetyHandle.tempDir;
+  it("cleans up the project temp dir when allocateTestDaemonPort itself rejects", async () => {
+    const sentinel = "allocateTestDaemonPort failure sentinel";
+    const safetyHandle = await createTestDaemonProject({ skipFixtures: true });
+    const projectTempDir = safetyHandle.tempDir;
 
-      const fakeCreate: CreateTestDaemonProjectImpl = (async () => safetyHandle) as CreateTestDaemonProjectImpl;
-      const fakeAllocate: AllocateTestDaemonPortImpl = (async () => {
-        throw new Error(sentinel);
-      }) as AllocateTestDaemonPortImpl;
+    const fakeCreate: CreateTestDaemonProjectImpl = (async () =>
+      safetyHandle) as CreateTestDaemonProjectImpl;
+    const fakeAllocate: AllocateTestDaemonPortImpl = (async () => {
+      throw new Error(sentinel);
+    }) as AllocateTestDaemonPortImpl;
 
-      let thrown: unknown = null;
+    let thrown: unknown = null;
+    try {
+      await acquirePlaywrightFixtureResources({
+        fixturesSource: "/nonexistent-fixtures-source",
+        webUiDir: "/tmp/fake-web-ui",
+        __testCreateProjectImpl: fakeCreate,
+        __testAllocatePortImpl: fakeAllocate,
+      });
+    } catch (error) {
+      thrown = error;
+    }
+
+    expect(thrown).toBeInstanceOf(Error);
+    expect((thrown as Error).message).toContain(sentinel);
+
+    const stillExists = existsSync(projectTempDir);
+    if (stillExists) {
       try {
-        await acquirePlaywrightFixtureResources({
-          fixturesSource: "/nonexistent-fixtures-source",
-          webUiDir: "/tmp/fake-web-ui",
-          __testCreateProjectImpl: fakeCreate,
-          __testAllocatePortImpl: fakeAllocate,
-        });
-      } catch (error) {
-        thrown = error;
-      }
-
-      expect(thrown).toBeInstanceOf(Error);
-      expect((thrown as Error).message).toContain(sentinel);
-
-      const stillExists = existsSync(projectTempDir);
-      if (stillExists) {
+        await safetyHandle.cleanup();
+      } catch {
         try {
-          await safetyHandle.cleanup();
+          rmSync(projectTempDir, { recursive: true, force: true });
         } catch {
-          try {
-            rmSync(projectTempDir, { recursive: true, force: true });
-          } catch {
-            // Best effort.
-          }
+          // Best effort.
         }
       }
+    }
 
-      // ac-setup-failure-cleans-owned-resources — allocateTestDaemonPort
-      // throwing must not leave the project tree behind.
-      expect(
-        stillExists,
-        `project tempDir ${projectTempDir} must be removed after allocateTestDaemonPort failure`,
-      ).toBe(false);
-    },
-  );
+    // ac-setup-failure-cleans-owned-resources — allocateTestDaemonPort
+    // throwing must not leave the project tree behind.
+    expect(
+      stillExists,
+      `project tempDir ${projectTempDir} must be removed after allocateTestDaemonPort failure`,
+    ).toBe(false);
+  });
 
   // The wrapper catch path in acquirePlaywrightFixtureResources runs
   // project.cleanup() to release the owned project handle on setup failure.
@@ -556,96 +550,92 @@ describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", 
   // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
   // AC: @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources
   // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
-  it(
-    "preserves the wrapper setup-stage error as primary even when project.cleanup() rejects",
-    async () => {
-      const setupSentinel = "wrapper setup-stage primary error with cleanup-failure sentinel";
-      const cleanupSentinel = "owned project.cleanup() rejection sentinel";
+  it("preserves the wrapper setup-stage error as primary even when project.cleanup() rejects", async () => {
+    const setupSentinel = "wrapper setup-stage primary error with cleanup-failure sentinel";
+    const cleanupSentinel = "owned project.cleanup() rejection sentinel";
 
-      // Use a real underlying project so writeFileSync at the
-      // after-write-config stage has a valid tempDir to operate on. The
-      // injected project replaces ONLY the cleanup function — every other
-      // step in acquirePlaywrightFixtureResources still touches the real
-      // tempDir on disk, mirroring how a production cleanup failure would
-      // surface (e.g. transient rm error after the wrapper completed
-      // earlier work).
-      const realProject = await createTestDaemonProject({ skipFixtures: true });
-      const projectTempDir = realProject.tempDir;
-      let cleanupInvocations = 0;
-      const projectWithRejectingCleanup: TestDaemonProject = {
-        ...realProject,
-        cleanup: async () => {
-          cleanupInvocations += 1;
-          throw new Error(cleanupSentinel);
-        },
-      };
+    // Use a real underlying project so writeFileSync at the
+    // after-write-config stage has a valid tempDir to operate on. The
+    // injected project replaces ONLY the cleanup function — every other
+    // step in acquirePlaywrightFixtureResources still touches the real
+    // tempDir on disk, mirroring how a production cleanup failure would
+    // surface (e.g. transient rm error after the wrapper completed
+    // earlier work).
+    const realProject = await createTestDaemonProject({ skipFixtures: true });
+    const projectTempDir = realProject.tempDir;
+    let cleanupInvocations = 0;
+    const projectWithRejectingCleanup: TestDaemonProject = {
+      ...realProject,
+      cleanup: async () => {
+        cleanupInvocations += 1;
+        throw new Error(cleanupSentinel);
+      },
+    };
 
-      const fakeCreate: CreateTestDaemonProjectImpl = (async () =>
-        projectWithRejectingCleanup) as CreateTestDaemonProjectImpl;
-      const fakeAllocate: AllocateTestDaemonPortImpl = (async () => 4321) as AllocateTestDaemonPortImpl;
+    const fakeCreate: CreateTestDaemonProjectImpl = (async () =>
+      projectWithRejectingCleanup) as CreateTestDaemonProjectImpl;
+    const fakeAllocate: AllocateTestDaemonPortImpl = (async () =>
+      4321) as AllocateTestDaemonPortImpl;
 
-      let thrown: unknown = null;
-      try {
-        await acquirePlaywrightFixtureResources({
-          fixturesSource: "/nonexistent-fixtures-source",
-          webUiDir: "/tmp/fake-web-ui",
-          __testCreateProjectImpl: fakeCreate,
-          __testAllocatePortImpl: fakeAllocate,
-          __testStageHook: (stage) => {
-            if (stage === "after-write-config") {
-              throw new Error(setupSentinel);
-            }
-          },
-        });
-      } catch (error) {
-        thrown = error;
-      }
-
-      // Defensive cleanup: the wrapper invoked the rejecting cleanup, so
-      // the underlying temp dir is still on disk. Use the real
-      // cleanup function we captured before substituting to release it.
-      if (existsSync(projectTempDir)) {
-        try {
-          await realProject.cleanup();
-        } catch {
-          try {
-            rmSync(projectTempDir, { recursive: true, force: true });
-          } catch {
-            // Best effort.
+    let thrown: unknown = null;
+    try {
+      await acquirePlaywrightFixtureResources({
+        fixturesSource: "/nonexistent-fixtures-source",
+        webUiDir: "/tmp/fake-web-ui",
+        __testCreateProjectImpl: fakeCreate,
+        __testAllocatePortImpl: fakeAllocate,
+        __testStageHook: (stage) => {
+          if (stage === "after-write-config") {
+            throw new Error(setupSentinel);
           }
+        },
+      });
+    } catch (error) {
+      thrown = error;
+    }
+
+    // Defensive cleanup: the wrapper invoked the rejecting cleanup, so
+    // the underlying temp dir is still on disk. Use the real
+    // cleanup function we captured before substituting to release it.
+    if (existsSync(projectTempDir)) {
+      try {
+        await realProject.cleanup();
+      } catch {
+        try {
+          rmSync(projectTempDir, { recursive: true, force: true });
+        } catch {
+          // Best effort.
         }
       }
+    }
 
-      // The wrapper actually invoked the cleanup hook during the catch
-      // — otherwise the cleanup-failure branch never ran and this test
-      // would silently pass on a regression that skipped cleanup.
-      expect(cleanupInvocations).toBe(1);
+    // The wrapper actually invoked the cleanup hook during the catch
+    // — otherwise the cleanup-failure branch never ran and this test
+    // would silently pass on a regression that skipped cleanup.
+    expect(cleanupInvocations).toBe(1);
 
-      // ac-cleanup-errors-preserve-primary-failure (wrapper setup path):
-      // the surfaced error is the setup-stage failure, not the cleanup
-      // failure that fired during the catch block.
-      expect(thrown).toBeInstanceOf(Error);
-      const error = thrown as Error;
-      expect(error.message).toContain(setupSentinel);
+    // ac-cleanup-errors-preserve-primary-failure (wrapper setup path):
+    // the surfaced error is the setup-stage failure, not the cleanup
+    // failure that fired during the catch block.
+    expect(thrown).toBeInstanceOf(Error);
+    const error = thrown as Error;
+    expect(error.message).toContain(setupSentinel);
 
-      // The cleanup failure remains discoverable from the surfaced error
-      // — as message text, error.cause, or an entry in an AggregateError.
-      // attachCleanupFailure sets primary.cause to the cleanup error and
-      // appends a one-shot message suffix.
-      const surfacedText = [
-        error.message,
-        (error as { cause?: unknown }).cause instanceof Error
-          ? ((error as { cause: Error }).cause).message
-          : "",
-        error instanceof AggregateError
-          ? error.errors
-              .map((e) => (e instanceof Error ? e.message : String(e)))
-              .join(" ")
-          : "",
-      ].join(" ");
-      expect(surfacedText).toContain(cleanupSentinel);
-    },
-  );
+    // The cleanup failure remains discoverable from the surfaced error
+    // — as message text, error.cause, or an entry in an AggregateError.
+    // attachCleanupFailure sets primary.cause to the cleanup error and
+    // appends a one-shot message suffix.
+    const surfacedText = [
+      error.message,
+      (error as { cause?: unknown }).cause instanceof Error
+        ? (error as { cause: Error }).cause.message
+        : "",
+      error instanceof AggregateError
+        ? error.errors.map((e) => (e instanceof Error ? e.message : String(e))).join(" ")
+        : "",
+    ].join(" ");
+    expect(surfacedText).toContain(cleanupSentinel);
+  });
 });
 
 describe("runPlaywrightFixtureBody — wrapper startup-failure cleanup", () => {
@@ -759,56 +749,51 @@ describe("runPlaywrightFixtureBody — wrapper startup-failure cleanup", () => {
   // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
   // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
   // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
-  it(
-    "preserves the startDaemon primary error when teardown also fails",
-    async () => {
-      const startupSentinel = "wrapper startDaemon primary error sentinel";
-      const teardownSentinel = "wrapper teardown failure sentinel";
-      let teardownRan = false;
+  it("preserves the startDaemon primary error when teardown also fails", async () => {
+    const startupSentinel = "wrapper startDaemon primary error sentinel";
+    const teardownSentinel = "wrapper teardown failure sentinel";
+    let teardownRan = false;
 
-      let thrown: unknown = null;
-      try {
-        await runPlaywrightFixtureBody<void>({
-          startDaemon: async () => {
-            throw new Error(startupSentinel);
-          },
-          body: async () => {},
-          teardown: async () => {
-            teardownRan = true;
-            throw new Error(teardownSentinel);
-          },
-        });
-      } catch (error) {
-        thrown = error;
-      }
+    let thrown: unknown = null;
+    try {
+      await runPlaywrightFixtureBody<void>({
+        startDaemon: async () => {
+          throw new Error(startupSentinel);
+        },
+        body: async () => {},
+        teardown: async () => {
+          teardownRan = true;
+          throw new Error(teardownSentinel);
+        },
+      });
+    } catch (error) {
+      thrown = error;
+    }
 
-      // Teardown still ran. The assertion guards against a regression
-      // that skips teardown entirely (e.g., re-introducing the
-      // setup-as-startup shape).
-      expect(teardownRan).toBe(true);
+    // Teardown still ran. The assertion guards against a regression
+    // that skips teardown entirely (e.g., re-introducing the
+    // setup-as-startup shape).
+    expect(teardownRan).toBe(true);
 
-      // ac-cleanup-errors-preserve-primary-failure (startup path): the
-      // surfaced error references the startDaemon failure rather than
-      // the teardown failure that arrived second.
-      expect(thrown).toBeInstanceOf(Error);
-      const error = thrown as Error;
-      expect(error.message).toContain(startupSentinel);
+    // ac-cleanup-errors-preserve-primary-failure (startup path): the
+    // surfaced error references the startDaemon failure rather than
+    // the teardown failure that arrived second.
+    expect(thrown).toBeInstanceOf(Error);
+    const error = thrown as Error;
+    expect(error.message).toContain(startupSentinel);
 
-      // The teardown failure remains discoverable from the surfaced
-      // error — as message text, `error.cause`, or an entry in an
-      // AggregateError.
-      const surfacedText = [
-        error.message,
-        (error as { cause?: unknown }).cause instanceof Error
-          ? ((error as { cause: Error }).cause).message
-          : "",
-        error instanceof AggregateError
-          ? error.errors
-              .map((e) => (e instanceof Error ? e.message : String(e)))
-              .join(" ")
-          : "",
-      ].join(" ");
-      expect(surfacedText).toContain(teardownSentinel);
-    },
-  );
+    // The teardown failure remains discoverable from the surfaced
+    // error — as message text, `error.cause`, or an entry in an
+    // AggregateError.
+    const surfacedText = [
+      error.message,
+      (error as { cause?: unknown }).cause instanceof Error
+        ? (error as { cause: Error }).cause.message
+        : "",
+      error instanceof AggregateError
+        ? error.errors.map((e) => (e instanceof Error ? e.message : String(e))).join(" ")
+        : "",
+    ].join(" ");
+    expect(surfacedText).toContain(teardownSentinel);
+  });
 });

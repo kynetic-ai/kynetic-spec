@@ -13,38 +13,39 @@ This guide walks you through creating a structured plan document, importing it i
 
 A plan document is a markdown file with YAML code blocks that define specs and tasks. Create a file (for example, `plans/my-feature.md`) with this structure:
 
-```markdown
+````markdown
 # My Feature Plan
 
 ## Specs
 
 \```yaml
+
 - title: Feature Name
   slug: feature-name
   type: feature
   parent: "@main"
   description: |
-    What this feature does and why it matters.
-  acceptance_criteria:
-    - id: ac-1
-      given: |
-        A user is on the dashboard
-      when: |
-        They click the export button
-      then: |
-        A CSV file downloads with the current data
-\```
+  What this feature does and why it matters.
+  acceptance_criteria: - id: ac-1
+  given: |
+  A user is on the dashboard
+  when: |
+  They click the export button
+  then: |
+  A CSV file downloads with the current data
+  \```
 
 ## Tasks
 
 \```yaml
+
 - title: Implement export feature
   slug: task-implement-export
   spec_ref: "@feature-name"
   plan_ref: "@plan-my-feature"
   tags: [mvp, feature]
-\```
-```
+  \```
+````
 
 Each spec defines what to build with acceptance criteria. Each task references the spec it implements.
 

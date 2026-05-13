@@ -819,7 +819,7 @@ describe("test suite", () => {
     // `process.on(...)` carrier shapes with a directly-terminating
     // inline body is still tracked by
     // `@task-fix-guardrail-cleanup-boundary-classification`.)
-    it("should flag serve start --detach when only cleanup is process.on(\"exit\", ...)", () => {
+    it('should flag serve start --detach when only cleanup is process.on("exit", ...)', () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 
@@ -845,7 +845,7 @@ describe("test suite", () => {
     // mechanism — the cycle-7 helper-origin rejection on bare
     // unimported `killPid` denies the fixture's listener-body the
     // cleanup-effect credit, so the rule flags as expected.
-    it("should flag serve start --detach when only cleanup is process.on(\"beforeExit\", ...)", () => {
+    it('should flag serve start --detach when only cleanup is process.on("beforeExit", ...)', () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 
@@ -869,7 +869,7 @@ describe("test suite", () => {
     //
     // FLIPPED-ON-FIX (cycle 7): see the `process.on("exit", ...)`
     // sibling above for the flip-on-fix protocol summary.
-    it("should flag serve start --detach when only cleanup is process.on(\"SIGTERM\", ...)", () => {
+    it('should flag serve start --detach when only cleanup is process.on("SIGTERM", ...)', () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 
@@ -890,7 +890,7 @@ describe("test suite", () => {
     // only at process shutdown, not at the per-test boundary. Treating
     // a `.once` variant as cleanup would carry the same leak risk as
     // `.on`.
-    it("should flag serve start --detach when only cleanup is process.once(\"exit\", ...)", () => {
+    it('should flag serve start --detach when only cleanup is process.once("exit", ...)', () => {
       const result = runOxlint(`
 import { describe, it, expect } from "vitest";
 
@@ -1136,7 +1136,7 @@ describe("test suite", () => {
     // registration alongside it is a defence-in-depth safety net and
     // must NOT cause the test to be flagged. (Companion to the
     // process.on-only flag probes above.)
-    it("should allow serve start --detach when onTestFinished is paired with a process.on(\"exit\", () => process.kill(...)) fallback", () => {
+    it('should allow serve start --detach when onTestFinished is paired with a process.on("exit", () => process.kill(...)) fallback', () => {
       const result = runOxlint(`
 import { describe, it, expect, onTestFinished } from "vitest";
 
@@ -4083,7 +4083,7 @@ describe("test suite", () => {
     // removes `process.on(...)` from the registration set, this mixed
     // case must still be accepted because the per-test boundary alone
     // satisfies the contract.
-    it("should allow serve start --detach when onTestFinished is paired with a process.on(\"exit\", ...) fallback", () => {
+    it('should allow serve start --detach when onTestFinished is paired with a process.on("exit", ...) fallback', () => {
       const result = runOxlint(`
 import { describe, it, expect, onTestFinished } from "vitest";
 

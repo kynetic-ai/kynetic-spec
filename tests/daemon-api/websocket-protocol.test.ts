@@ -483,9 +483,7 @@ describe("daemon websocket protocol — runtime parity", { timeout: 90_000 }, ()
         runtimeAvailable = await isDaemonRuntimeAvailable(runtimeName);
         if (!runtimeAvailable) {
           if (required) {
-            throw new Error(
-              `Required daemon runtime "${runtimeName}" is not available on PATH`,
-            );
+            throw new Error(`Required daemon runtime "${runtimeName}" is not available on PATH`);
           }
           // ac-missing-optional-runtime-skips — surface skip without failing
           // the generic Node coverage path on machines that lack Bun.
@@ -516,9 +514,10 @@ describe("daemon websocket protocol — runtime parity", { timeout: 90_000 }, ()
         if (!runtimeAvailable) return;
 
         // Health endpoint advertises which runtime is in use.
-        const health = (await (
-          await fetch(`${daemon.apiUrl}/api/health`)
-        ).json()) as { runtime: string; status: string };
+        const health = (await (await fetch(`${daemon.apiUrl}/api/health`)).json()) as {
+          runtime: string;
+          status: string;
+        };
         expect(health.runtime).toBe(runtimeName);
         expect(health.status).toBe("ok");
 
@@ -548,10 +547,7 @@ describe("daemon websocket protocol — runtime parity", { timeout: 90_000 }, ()
 
         const tasksYaml = join(project.kspecDir, "project.tasks.yaml");
         const original = readTestOutputSync(tasksYaml, "utf8");
-        writeFileSync(
-          tasksYaml,
-          `${original}\n# parity-${runtimeName} ${Date.now()}\n`,
-        );
+        writeFileSync(tasksYaml, `${original}\n# parity-${runtimeName} ${Date.now()}\n`);
 
         const broadcast = await broadcastPromise;
         expect(broadcast.topic).toBe("files:updates");

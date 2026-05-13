@@ -10,11 +10,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { execSync } from "node:child_process";
-import {
-  scanTestCoverage,
-  scanACAnnotations,
-  validate,
-} from "../src/parser/validate.js";
+import { scanTestCoverage, scanACAnnotations, validate } from "../src/parser/validate.js";
 import { initContext, writeYamlFilePreserveFormat } from "../src/parser/yaml.js";
 import { createTempDir, cleanupTempDir, testUlid } from "./helpers/cli";
 
@@ -205,11 +201,7 @@ describe("coverage-annotation-scope-boundaries", () => {
         `${acLine("@excluded-spec", "ac-1")}\nit("test", () => {});\n`,
       );
 
-      const coverage = await scanTestCoverage(
-        tempDir,
-        ["tests/"],
-        ["tests/excluded.test.ts"],
-      );
+      const coverage = await scanTestCoverage(tempDir, ["tests/"], ["tests/excluded.test.ts"]);
       expect(coverage.has("@real-spec ac-1")).toBe(true);
       expect(coverage.has("@excluded-spec ac-1")).toBe(false);
     });
@@ -228,11 +220,7 @@ describe("coverage-annotation-scope-boundaries", () => {
         `${acLine("@fixture-spec", "ac-1")}\nexport const fixture = true;\n`,
       );
 
-      const coverage = await scanTestCoverage(
-        tempDir,
-        ["tests/"],
-        ["**/fixtures/**"],
-      );
+      const coverage = await scanTestCoverage(tempDir, ["tests/"], ["**/fixtures/**"]);
       expect(coverage.has("@real-spec ac-1")).toBe(true);
       expect(coverage.has("@fixture-spec ac-1")).toBe(false);
     });
@@ -321,8 +309,7 @@ describe("coverage-annotation-scope-boundaries", () => {
         ],
         files: {
           // This file is excluded — annotation should not count
-          "tests/excluded-example.test.ts":
-            `${acLine("@excluded-spec", "ac-1")}\nit("test", () => {});\n`,
+          "tests/excluded-example.test.ts": `${acLine("@excluded-spec", "ac-1")}\nit("test", () => {});\n`,
         },
       });
 
@@ -364,11 +351,9 @@ describe("coverage-annotation-scope-boundaries", () => {
         ],
         files: {
           // ac-1 covered in included file
-          "tests/included.test.ts":
-            `${acLine("@mixed-spec", "ac-1")}\nit("test ac-1", () => {});\n`,
+          "tests/included.test.ts": `${acLine("@mixed-spec", "ac-1")}\nit("test ac-1", () => {});\n`,
           // ac-2 "covered" in excluded file — should not count
-          "tests/excluded.test.ts":
-            `${acLine("@mixed-spec", "ac-2")}\nit("test ac-2", () => {});\n`,
+          "tests/excluded.test.ts": `${acLine("@mixed-spec", "ac-2")}\nit("test ac-2", () => {});\n`,
         },
       });
 
@@ -409,11 +394,9 @@ describe("coverage-annotation-scope-boundaries", () => {
         ],
         files: {
           // Invalid annotation (unresolved ref) in src/ (outside scan paths)
-          "src/parser-doc.ts":
-            `${acLine("@nonexistent-spec", "ac-1")}\n// This is a documentation example\n`,
+          "src/parser-doc.ts": `${acLine("@nonexistent-spec", "ac-1")}\n// This is a documentation example\n`,
           // Another invalid annotation (missing AC id) outside scan paths
-          "docs/examples.ts":
-            `${acLine("@real-spec", "ac-99")}\n// Documentation showing AC format\n`,
+          "docs/examples.ts": `${acLine("@real-spec", "ac-99")}\n// Documentation showing AC format\n`,
         },
       });
 
@@ -447,8 +430,7 @@ describe("coverage-annotation-scope-boundaries", () => {
         ],
         files: {
           // Excluded file contains annotation referencing nonexistent spec
-          "tests/parser-examples.test.ts":
-            `${acLine("@nonexistent-parser-doc", "ac-1")}\nit("example from docs", () => {});\n`,
+          "tests/parser-examples.test.ts": `${acLine("@nonexistent-parser-doc", "ac-1")}\nit("example from docs", () => {});\n`,
         },
       });
 
@@ -478,21 +460,16 @@ describe("coverage-annotation-scope-boundaries", () => {
             type: "requirement",
             description: "A real spec",
             status: { maturity: "draft", implementation: "not_started" },
-            acceptance_criteria: [
-              { id: "ac-1", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
           },
         ],
         files: {
           // Included file with invalid annotation — SHOULD be reported
-          "tests/real.test.ts":
-            `${acLine("@real-spec", "ac-99")}\nit("test with bad AC id", () => {});\n`,
+          "tests/real.test.ts": `${acLine("@real-spec", "ac-99")}\nit("test with bad AC id", () => {});\n`,
           // Excluded file with invalid annotation — should NOT be reported
-          "tests/excluded-fixture.test.ts":
-            `${acLine("@bogus-ref", "ac-1")}\nit("fixture example", () => {});\n`,
+          "tests/excluded-fixture.test.ts": `${acLine("@bogus-ref", "ac-1")}\nit("fixture example", () => {});\n`,
           // Outside scan paths with invalid annotation — should NOT be reported
-          "src/doc-example.ts":
-            `${acLine("@another-bogus", "ac-1")}\nexport const x = 1;\n`,
+          "src/doc-example.ts": `${acLine("@another-bogus", "ac-1")}\nexport const x = 1;\n`,
         },
       });
 
@@ -524,15 +501,12 @@ describe("coverage-annotation-scope-boundaries", () => {
             type: "requirement",
             description: "Spec to test blanket ref in excluded file",
             status: { maturity: "draft", implementation: "not_started" },
-            acceptance_criteria: [
-              { id: "ac-1", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
           },
         ],
         files: {
           // Excluded file with blanket ref (no ac-N ids) — should NOT generate warning
-          "tests/blanket-example.test.ts":
-            `${acLine("@blanket-spec")}\nit("blanket ref example", () => {});\n`,
+          "tests/blanket-example.test.ts": `${acLine("@blanket-spec")}\nit("blanket ref example", () => {});\n`,
         },
       });
 

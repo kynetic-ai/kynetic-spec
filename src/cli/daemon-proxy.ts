@@ -134,8 +134,7 @@ export async function detectDaemon(): Promise<DaemonDetectionResult> {
 export async function shouldProxyCommand(opts: {
   forceDaemon?: boolean;
 }): Promise<
-  | { proxy: true; port: number; endpoint: DaemonClientEndpoint }
-  | { proxy: false; reason?: string }
+  { proxy: true; port: number; endpoint: DaemonClientEndpoint } | { proxy: false; reason?: string }
 > {
   // AC: @cli-daemon-proxy ac-force-direct
   if (isNoDaemonModeEnabled()) {

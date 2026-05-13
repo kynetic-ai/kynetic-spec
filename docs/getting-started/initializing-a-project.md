@@ -86,13 +86,13 @@ This shows your project summary, active tasks, and suggested next actions. It is
 
 After `kspec init` and `kspec setup`, your repository has:
 
-| Item | Purpose |
-|------|---------|
-| `kynetic.yaml` | Project manifest |
-| `.kspec/` | Shadow directory (worktree on `kspec-meta` branch) |
-| `AGENTS.md` | Entry point for agent instructions |
+| Item              | Purpose                                                     |
+| ----------------- | ----------------------------------------------------------- |
+| `kynetic.yaml`    | Project manifest                                            |
+| `.kspec/`         | Shadow directory (worktree on `kspec-meta` branch)          |
+| `AGENTS.md`       | Entry point for agent instructions                          |
 | `kspec-agents.md` | Generated agent instructions with conventions and workflows |
-| `.agents/skills/` | Rendered skill files for agent use |
+| `.agents/skills/` | Rendered skill files for agent use                          |
 
 Your project is ready for agent integration.
 

@@ -1039,10 +1039,7 @@ describe("dispatch workspace registry", () => {
 
     await fs.access(workspace.metadata.workerWorktreeDir);
     expect(
-      git(
-        tempDir,
-        "branch --list dispatch/task/task-partial-provisioning-classification/01task00",
-      ),
+      git(tempDir, "branch --list dispatch/task/task-partial-provisioning-classification/01task00"),
     ).toContain("dispatch/task/task-partial-provisioning-classification/01task00");
 
     const refreshed = await readWorkspaceRecord(workspace.metadataPath, taskRef);

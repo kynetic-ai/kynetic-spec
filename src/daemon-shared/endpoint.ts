@@ -201,10 +201,7 @@ export function resolveDaemonConnectHost(
   const normalizedBind = normalizeDaemonHost(bindHost);
   if (explicitConnectHost && explicitConnectHost.trim().length > 0) {
     const normalizedConnect = normalizeDaemonHost(explicitConnectHost);
-    if (
-      !isWildcardNormalized(normalizedBind) &&
-      normalizedBind !== normalizedConnect
-    ) {
+    if (!isWildcardNormalized(normalizedBind) && normalizedBind !== normalizedConnect) {
       throw new Error(
         `Invalid daemon endpoint configuration: connect_host '${normalizedConnect}' ` +
           `is not reachable for bind_host '${normalizedBind}'. A daemon bound to a ` +
@@ -645,9 +642,10 @@ export function resolveDaemonClientEndpoint(
  *
  * AC: @daemon-network-endpoint-contract ac-clients-use-metadata
  */
-export function resolveDevDaemonEndpoint(
-  configDir: string = getDefaultDaemonConfigDir(),
-): { apiUrl: string; wsUrl: string } {
+export function resolveDevDaemonEndpoint(configDir: string = getDefaultDaemonConfigDir()): {
+  apiUrl: string;
+  wsUrl: string;
+} {
   const endpoint = resolveDevDaemonEndpointFromMetadata(configDir);
   if (endpoint) return endpoint;
   return buildDaemonUrls(LOOPBACK_HOST_V4, DEFAULT_DAEMON_PORT);

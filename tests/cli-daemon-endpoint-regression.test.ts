@@ -71,10 +71,7 @@ function writeKspecProject(
       ...(opts.schedules ? { schedules: opts.schedules } : {}),
     }),
   );
-  writeFileSync(
-    join(dir, "project.tasks.yaml"),
-    yamlStringify(opts.tasks ?? []),
-  );
+  writeFileSync(join(dir, "project.tasks.yaml"), yamlStringify(opts.tasks ?? []));
 }
 
 describe("CLI daemon clients use the metadata-advertised endpoint", () => {
@@ -186,7 +183,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
     await startMock();
     writeMockDaemonMetadata({ home: isolated, client: mock! });
 
-    const result = runCli('event emit task.ready --field task_id=abc --field task_ref=@x');
+    const result = runCli("event emit task.ready --field task_id=abc --field task_ref=@x");
     expect(result.exitCode).toBe(0);
 
     const req = findRequest((r) => r.method === "POST" && r.url === "/api/events/emit");
@@ -231,9 +228,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
     const result = runCli("agent dispatch status");
     expect(result.exitCode).toBe(0);
 
-    const req = findRequest(
-      (r) => r.method === "GET" && r.url === "/api/agent/dispatch/status",
-    );
+    const req = findRequest((r) => r.method === "GET" && r.url === "/api/agent/dispatch/status");
     expectRequestAtAdvertisedHost(req, "GET /api/agent/dispatch/status");
   });
 
@@ -246,9 +241,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
     const result = runCli("agent status");
     expect(result.exitCode).toBe(0);
 
-    const req = findRequest(
-      (r) => r.method === "GET" && r.url === "/api/agent/dispatch/status",
-    );
+    const req = findRequest((r) => r.method === "GET" && r.url === "/api/agent/dispatch/status");
     expectRequestAtAdvertisedHost(req, "GET /api/agent/dispatch/status");
   });
 
@@ -352,9 +345,7 @@ describe("CLI daemon clients use the metadata-advertised endpoint", () => {
     // Health probe lands at the metadata-advertised URL (the recording
     // daemon serves /api/health) — additional behavioral evidence the
     // status command honored the advertised endpoint.
-    const healthReq = findRequest(
-      (r) => r.method === "GET" && r.url === "/api/health",
-    );
+    const healthReq = findRequest((r) => r.method === "GET" && r.url === "/api/health");
     expectRequestAtAdvertisedHost(healthReq, "GET /api/health");
   });
 

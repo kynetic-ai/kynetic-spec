@@ -19,13 +19,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import {
-  mkdirSync,
-  rmSync,
-  writeFileSync,
-  unlinkSync,
-  existsSync,
-} from "node:fs";
+import { mkdirSync, rmSync, writeFileSync, unlinkSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import { Elysia } from "elysia";
@@ -261,28 +255,19 @@ describe("Daemon-served entry document <-> startup asset coherence (node runtime
       const app = buildBundleApp(tempBundleDir);
 
       // Traversal under /_app/* — handled by serveWebUiStaticAsset (containment check).
-      const traversalPaths = [
-        `/_app/../${outsideName}`,
-        `/_app/immutable/../../${outsideName}`,
-      ];
+      const traversalPaths = [`/_app/../${outsideName}`, `/_app/immutable/../../${outsideName}`];
 
       for (const traversalPath of traversalPaths) {
         const response = await app.handle(new Request(urlFor(traversalPath)));
         const body = await response.text();
-        expect(
-          body,
-          `traversal ${traversalPath} must not return outside content`,
-        ).not.toContain("FORBIDDEN-OUTSIDE-CONTENT");
-        expect(
-          response.status,
-          `traversal ${traversalPath} must not be 200`,
-        ).not.toBe(200);
+        expect(body, `traversal ${traversalPath} must not return outside content`).not.toContain(
+          "FORBIDDEN-OUTSIDE-CONTENT",
+        );
+        expect(response.status, `traversal ${traversalPath} must not be 200`).not.toBe(200);
       }
 
       // Sanity: the legitimate asset still resolves through the same route.
-      const ok = await app.handle(
-        new Request(urlFor("/_app/immutable/entry/start.HASH-A.js")),
-      );
+      const ok = await app.handle(new Request(urlFor("/_app/immutable/entry/start.HASH-A.js")));
       expect(ok.status).toBe(200);
     } finally {
       if (existsSync(outsideFile)) {
@@ -308,9 +293,7 @@ describe("Daemon-served entry document <-> startup asset coherence (node runtime
     const app = buildBundleApp(tempBundleDir);
 
     // Confirm referenced assets are 200 first.
-    const refOk = await app.handle(
-      new Request(urlFor("/_app/immutable/entry/start.HASH-A.js")),
-    );
+    const refOk = await app.handle(new Request(urlFor("/_app/immutable/entry/start.HASH-A.js")));
     expect(refOk.status).toBe(200);
 
     // /_app-shaped path with no matching file.

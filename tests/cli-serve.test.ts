@@ -340,64 +340,61 @@ describe("kspec serve commands", () => {
   // probes never wait past the caller's budget. A small inline hang
   // server simulates a daemon that accepts the connection but stalls
   // mid-handler.
-  it(
-    "bounded daemon fetch to /api/health reaches a bounded outcome when the endpoint stalls",
-    async () => {
-      const hangServer: HttpServer = createHttpServer(() => {
-        // Accept the connection but never write a response — mirrors a
-        // daemon that has bound its listener but stalled mid-handler.
+  it("bounded daemon fetch to /api/health reaches a bounded outcome when the endpoint stalls", async () => {
+    const hangServer: HttpServer = createHttpServer(() => {
+      // Accept the connection but never write a response — mirrors a
+      // daemon that has bound its listener but stalled mid-handler.
+    });
+    const hangServerPort = await new Promise<number>((resolveListen, rejectListen) => {
+      hangServer.once("error", rejectListen);
+      hangServer.listen(0, "127.0.0.1", () => {
+        const addr = hangServer.address() as AddressInfo | null;
+        if (!addr) {
+          rejectListen(new Error("hang server failed to allocate port"));
+          return;
+        }
+        resolveListen(addr.port);
       });
-      const hangServerPort = await new Promise<number>((resolveListen, rejectListen) => {
-        hangServer.once("error", rejectListen);
-        hangServer.listen(0, "127.0.0.1", () => {
-          const addr = hangServer.address() as AddressInfo | null;
-          if (!addr) {
-            rejectListen(new Error("hang server failed to allocate port"));
-            return;
-          }
-          resolveListen(addr.port);
-        });
+    });
+
+    const cleanupController = new AbortController();
+    onTestFinished(async () => {
+      cleanupController.abort();
+      // Force-close any lingering sockets so the hang server can finalize
+      // its close even if the bounded fetch was already aborted internally.
+      await new Promise<void>((resolveClose) => {
+        hangServer.closeAllConnections?.();
+        hangServer.close(() => resolveClose());
       });
+    });
 
-      const cleanupController = new AbortController();
-      onTestFinished(async () => {
-        cleanupController.abort();
-        // Force-close any lingering sockets so the hang server can finalize
-        // its close even if the bounded fetch was already aborted internally.
-        await new Promise<void>((resolveClose) => {
-          hangServer.closeAllConnections?.();
-          hangServer.close(() => resolveClose());
-        });
-      });
+    // Use the shared bounded helper exactly as the daemon-facing
+    // call sites in this suite now do. The helper's internal
+    // `AbortSignal.timeout` aborts the request within `timeoutMs`,
+    // so the outer race timer never fires.
+    const HELPER_TIMEOUT_MS = 200;
+    const BUDGET_MS = 800;
+    const startedAt = Date.now();
+    const outcome = await Promise.race([
+      boundedDaemonFetch(`http://127.0.0.1:${hangServerPort}/api/health`, {
+        timeoutMs: HELPER_TIMEOUT_MS,
+        signal: cleanupController.signal,
+      })
+        .then(() => "responded" as const)
+        .catch(() => "errored" as const),
+      new Promise<"timeout">((resolveTimeout) =>
+        setTimeout(() => resolveTimeout("timeout"), BUDGET_MS),
+      ),
+    ]);
+    const elapsed = Date.now() - startedAt;
 
-      // Use the shared bounded helper exactly as the daemon-facing
-      // call sites in this suite now do. The helper's internal
-      // `AbortSignal.timeout` aborts the request within `timeoutMs`,
-      // so the outer race timer never fires.
-      const HELPER_TIMEOUT_MS = 200;
-      const BUDGET_MS = 800;
-      const startedAt = Date.now();
-      const outcome = await Promise.race([
-        boundedDaemonFetch(`http://127.0.0.1:${hangServerPort}/api/health`, {
-          timeoutMs: HELPER_TIMEOUT_MS,
-          signal: cleanupController.signal,
-        })
-          .then(() => "responded" as const)
-          .catch(() => "errored" as const),
-        new Promise<"timeout">((resolveTimeout) =>
-          setTimeout(() => resolveTimeout("timeout"), BUDGET_MS),
-        ),
-      ]);
-      const elapsed = Date.now() - startedAt;
-
-      // ac-daemon-observations-are-bounded: the bounded helper aborts
-      // the request internally, so the consumer observes an "errored"
-      // outcome well inside the outer budget. A "timeout" would mean
-      // the helper failed to enforce its own bound.
-      expect(outcome).toBe("errored");
-      expect(elapsed).toBeLessThan(BUDGET_MS);
-    },
-  );
+    // ac-daemon-observations-are-bounded: the bounded helper aborts
+    // the request internally, so the consumer observes an "errored"
+    // outcome well inside the outer budget. A "timeout" would mean
+    // the helper failed to enforce its own bound.
+    expect(outcome).toBe("errored");
+    expect(elapsed).toBeLessThan(BUDGET_MS);
+  });
 
   // AC: @cli-serve-commands ac-1
   // AC: @daemon-server ac-12
@@ -858,10 +855,7 @@ describe("kspec serve commands", () => {
       "utf-8",
     );
 
-    runKspec(
-      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
-      tempDir,
-    );
+    runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
     onTestFinished(() => killPid(pid));
@@ -922,10 +916,7 @@ describe("kspec serve commands", () => {
       "utf-8",
     );
 
-    runKspec(
-      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
-      tempDir,
-    );
+    runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
     onTestFinished(() => killPid(pid));
@@ -938,10 +929,9 @@ describe("kspec serve commands", () => {
       "daemon health endpoint at configured 127.0.0.2",
       async () => {
         try {
-          const response = await boundedDaemonFetch(
-            `http://127.0.0.2:${port}/api/health`,
-            { timeoutMs: 2_000 },
-          );
+          const response = await boundedDaemonFetch(`http://127.0.0.2:${port}/api/health`, {
+            timeoutMs: 2_000,
+          });
           const body = (await response.text()).trim();
           return {
             ok: response.ok,
@@ -961,10 +951,9 @@ describe("kspec serve commands", () => {
     // stalled (rather than refused) socket cannot pin teardown.
     let defaultLoopbackAccepted = false;
     try {
-      const refused = await boundedDaemonFetch(
-        `http://127.0.0.1:${port}/api/health`,
-        { timeoutMs: 2_000 },
-      );
+      const refused = await boundedDaemonFetch(`http://127.0.0.1:${port}/api/health`, {
+        timeoutMs: 2_000,
+      });
       defaultLoopbackAccepted = refused.ok;
     } catch {
       defaultLoopbackAccepted = false;
@@ -1031,20 +1020,11 @@ describe("kspec serve commands", () => {
     // unreachable.
     writeFileSync(
       join(tempDir, "kspec.config.yaml"),
-      [
-        "daemon:",
-        "  host: 0.0.0.0",
-        "  connect_host: 127.0.0.2",
-        `  port: ${port}`,
-        "",
-      ].join("\n"),
+      ["daemon:", "  host: 0.0.0.0", "  connect_host: 127.0.0.2", `  port: ${port}`, ""].join("\n"),
       "utf-8",
     );
 
-    runKspec(
-      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
-      tempDir,
-    );
+    runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
 
     const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
     onTestFinished(() => killPid(pid));
@@ -1054,10 +1034,9 @@ describe("kspec serve commands", () => {
       `daemon health endpoint at advertised connect_host`,
       async () => {
         try {
-          const response = await boundedDaemonFetch(
-            `http://127.0.0.2:${port}/api/health`,
-            { timeoutMs: 2_000 },
-          );
+          const response = await boundedDaemonFetch(`http://127.0.0.2:${port}/api/health`, {
+            timeoutMs: 2_000,
+          });
           const body = (await response.text()).trim();
           return {
             ok: response.ok,

@@ -32,20 +32,12 @@
 
 import { describe, expect, it } from "vitest";
 import { execSync } from "node:child_process";
-import {
-  mkdtempSync,
-  mkdirSync,
-  writeFileSync,
-  rmSync,
-} from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import * as path from "node:path";
 import * as os from "node:os";
 
 const PROJECT_ROOT = path.resolve(__dirname, "..");
-const RULE_PATH = path.resolve(
-  PROJECT_ROOT,
-  "tools/eslint-rules/no-leaky-test-daemon.js",
-);
+const RULE_PATH = path.resolve(PROJECT_ROOT, "tools/eslint-rules/no-leaky-test-daemon.js");
 
 interface OxlintInvocation {
   /** Source contents of the test file the lint rule will inspect. */
@@ -63,10 +55,7 @@ interface OxlintResult {
   output: string;
 }
 
-function runOxlint({
-  source,
-  relPath = "tests/sample-test.ts",
-}: OxlintInvocation): OxlintResult {
+function runOxlint({ source, relPath = "tests/sample-test.ts" }: OxlintInvocation): OxlintResult {
   const projectDir = mkdtempSync(path.join(os.tmpdir(), "guardrail-lint-"));
   const testFile = path.join(projectDir, relPath);
   mkdirSync(path.dirname(testFile), { recursive: true });
@@ -89,14 +78,11 @@ function runOxlint({
   writeFileSync(testFile, source);
 
   try {
-    const output = execSync(
-      `npx oxlint --config "${configFile}" "${testFile}"`,
-      {
-        cwd: PROJECT_ROOT,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      },
-    );
+    const output = execSync(`npx oxlint --config "${configFile}" "${testFile}"`, {
+      cwd: PROJECT_ROOT,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    });
     rmSync(projectDir, { recursive: true, force: true });
     return { exitCode: 0, output };
   } catch (err: unknown) {
@@ -157,7 +143,7 @@ describe("direct spawn with onTestFinished", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags hardcoded spawn(\"bun\", [DAEMON_ENTRY]) outside a runtime parity test", () => {
+    it('flags hardcoded spawn("bun", [DAEMON_ENTRY]) outside a runtime parity test', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -418,7 +404,7 @@ describe("parameter shadowing", () => {
 
   // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
   describe("detached serve without scoped cleanup is flagged", () => {
-    it("flags runKspec(\"serve start --detach\") with no onTestFinished or afterEach", () => {
+    it('flags runKspec("serve start --detach") with no onTestFinished or afterEach', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -434,7 +420,7 @@ describe("detached serve without cleanup", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
     });
 
-    it("flags execSync(\"kspec serve start --detach\") in a test body", () => {
+    it('flags execSync("kspec serve start --detach") in a test body', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -451,7 +437,7 @@ describe("execSync detached serve", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
     });
 
-    it("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when argv carries the detach flag separately", () => {
+    it('flags spawn("kspec", ["serve", "start", "--detach"]) when argv carries the detach flag separately', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -469,7 +455,7 @@ describe("argv-style detached serve without cleanup", () => {
       expect(result.output).toMatch(/serve start --detach|cleanup/i);
     });
 
-    it("flags spawnSync(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when argv carries the detach flag separately", () => {
+    it('flags spawnSync("kspec", ["serve", "start", "--detach"]) when argv carries the detach flag separately', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -486,7 +472,7 @@ describe("argv-style detached serve via spawnSync", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when followed by scoped cleanup", () => {
+    it('does not flag spawn("kspec", ["serve", "start", "--detach"]) when followed by scoped cleanup', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -506,7 +492,7 @@ describe("argv detached serve with scoped cleanup", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag runKspec(\"serve start --detach\") when the test reads the pid file and registers killPid via onTestFinished", () => {
+    it('does not flag runKspec("serve start --detach") when the test reads the pid file and registers killPid via onTestFinished', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -544,7 +530,7 @@ export function startHelperDaemon(port) {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag hardcoded spawn(\"bun\", [DAEMON_ENTRY]) inside the shared daemon fixture (tests/helpers/daemon.ts)", () => {
+    it('does not flag hardcoded spawn("bun", [DAEMON_ENTRY]) inside the shared daemon fixture (tests/helpers/daemon.ts)', () => {
       const result = runOxlint({
         relPath: "tests/helpers/daemon.ts",
         source: `
@@ -560,7 +546,7 @@ export function startBunDaemon(port) {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag fetch(\"http://localhost:<port>/...\") inside the mock daemon helper (tests/helpers/mock-daemon.ts)", () => {
+    it('does not flag fetch("http://localhost:<port>/...") inside the mock daemon helper (tests/helpers/mock-daemon.ts)', () => {
       const result = runOxlint({
         relPath: "tests/helpers/mock-daemon.ts",
         source: `
@@ -589,7 +575,7 @@ export function startRogueDaemon(port) {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags fetch(\"http://localhost:<port>/...\") in an unsanctioned tests/helpers/ file", () => {
+    it('flags fetch("http://localhost:<port>/...") in an unsanctioned tests/helpers/ file', () => {
       const result = runOxlint({
         relPath: "tests/helpers/rogue-helper.ts",
         source: `
@@ -837,7 +823,7 @@ describe("unrelated disable", () => {
   // AC: @daemon-test-harness-guardrails ac-helper-internals-allowed
   // AC: @daemon-test-harness-guardrails ac-exceptions-are-localized
   describe("does not regress legitimate non-daemon patterns", () => {
-    it("does not flag fetch(\"http://localhost/api/...\") with no port (in-process app.handle pattern)", () => {
+    it('does not flag fetch("http://localhost/api/...") with no port (in-process app.handle pattern)', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -873,7 +859,7 @@ describe("origin allowlist", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag spawn(\"bun\", [\"run\", \"some-script.mjs\"]) — non-daemon bun usage", () => {
+    it('does not flag spawn("bun", ["run", "some-script.mjs"]) — non-daemon bun usage', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -917,7 +903,7 @@ describe("daemon test guardrail precision", () => {
   // AC: @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged
   // AC: @daemon-test-harness-guardrails ac-direct-daemon-spawn-flagged
   describe("direct daemon entry via non-spawn child-process APIs is flagged", () => {
-    it("flags fork(\"dist/daemon/index.js\", ...) as a direct daemon entrypoint invocation", () => {
+    it('flags fork("dist/daemon/index.js", ...) as a direct daemon entrypoint invocation', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -959,7 +945,7 @@ describe("fork daemon entry identifier", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execFile(\"node\", [\"dist/daemon/index.js\", ...]) as a direct daemon entry invocation", () => {
+    it('flags execFile("node", ["dist/daemon/index.js", ...]) as a direct daemon entry invocation', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -979,7 +965,7 @@ describe("execFile daemon entry literal", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execFileSync(\"node\", [DAEMON_ENTRY, ...]) as a direct daemon entry invocation", () => {
+    it('flags execFileSync("node", [DAEMON_ENTRY, ...]) as a direct daemon entry invocation', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -1026,7 +1012,7 @@ describe("execFile daemon-entry executable", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execFileSync(\"dist/daemon/index.js\", [...]) when the daemon entry literal IS the executable arg", () => {
+    it('flags execFileSync("dist/daemon/index.js", [...]) when the daemon entry literal IS the executable arg', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -1097,7 +1083,7 @@ describe("spawnSync daemon-entry executable, no argv", () => {
     // sidestep the shared-fixture contract by typing the same launch as
     // a single shell string.
 
-    it("flags exec(\"node dist/daemon/index.js --port 0\") as a direct daemon entry invocation", () => {
+    it('flags exec("node dist/daemon/index.js --port 0") as a direct daemon entry invocation', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -1117,7 +1103,7 @@ describe("exec runtime-form shell string", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execSync(\"node dist/daemon/index.js --port 0\") as a direct daemon entry invocation", () => {
+    it('flags execSync("node dist/daemon/index.js --port 0") as a direct daemon entry invocation', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -1136,7 +1122,7 @@ describe("execSync runtime-form shell string", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execSync(\"dist/daemon/index.js --port 0\") when the daemon entry is the leading shell token", () => {
+    it('flags execSync("dist/daemon/index.js --port 0") when the daemon entry is the leading shell token', () => {
       // Direct-executable form via shell — a shebang'd daemon entry is
       // launched by name. The classifier reports this the same as
       // `execFile(DAEMON_ENTRY, [...])`.
@@ -1203,7 +1189,7 @@ describe("exec template literal runtime form", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execSync(\"bun dist/daemon/index.js …\") with the hardcoded-runtime message", () => {
+    it('flags execSync("bun dist/daemon/index.js …") with the hardcoded-runtime message', () => {
       // The hardcoded-bun message fires for shell-string Bun launches
       // too: runtime selection belongs to the shared fixture, regardless
       // of whether the spawn was expressed as argv or as a shell command.
@@ -1234,7 +1220,7 @@ describe("execSync hardcoded bun runtime", () => {
     // the same as `node dist/daemon/index.js`. The classifier must walk
     // past flag-shaped tokens between the runtime and the script path so
     // these direct launches are reported.
-    it("flags exec(\"node --enable-source-maps dist/daemon/index.js --port 0\") with a runtime flag between node and the daemon entry", () => {
+    it('flags exec("node --enable-source-maps dist/daemon/index.js --port 0") with a runtime flag between node and the daemon entry', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -1254,7 +1240,7 @@ describe("exec node runtime flag", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execSync(\"node --inspect-brk=0.0.0.0:9229 dist/daemon/index.js --port 0\") with a value-attached runtime flag", () => {
+    it('flags execSync("node --inspect-brk=0.0.0.0:9229 dist/daemon/index.js --port 0") with a value-attached runtime flag', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -1273,7 +1259,7 @@ describe("execSync node inspect-brk flag", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags exec(\"/usr/bin/node --enable-source-maps --inspect dist/daemon/index.js --port 0\") with multiple runtime flags before a path-suffixed runtime", () => {
+    it('flags exec("/usr/bin/node --enable-source-maps --inspect dist/daemon/index.js --port 0") with multiple runtime flags before a path-suffixed runtime', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -1293,7 +1279,7 @@ describe("exec path-suffixed node runtime with multiple flags", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags exec(\"node -- dist/daemon/index.js --port 0\") with the `--` flag separator between node and the daemon entry", () => {
+    it('flags exec("node -- dist/daemon/index.js --port 0") with the `--` flag separator between node and the daemon entry', () => {
       // The `--` separator ends Node's option parsing. The classifier
       // walks past it the same as any other flag-shaped token; the daemon
       // entry remains the first non-flag token after the runtime, so the
@@ -1317,7 +1303,7 @@ describe("exec node -- daemon entry", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execSync(\"bun --hot dist/daemon/index.js --port 0\") with a Bun runtime flag before the daemon entry", () => {
+    it('flags execSync("bun --hot dist/daemon/index.js --port 0") with a Bun runtime flag before the daemon entry', () => {
       // The hardcoded-bun message must still fire for shell-string Bun
       // launches when runtime flags sit between `bun` and the script
       // path; runtime selection belongs to the shared fixture regardless
@@ -1370,7 +1356,7 @@ describe("exec template literal with node runtime flag", () => {
     // value (`./preload.js`) to be mistaken for the script path. The
     // walker must skip both the flag and the value, then continue
     // checking subsequent tokens for the daemon entry.
-    it("flags exec(\"node --require ./register.js dist/daemon/index.js --port 0\") — separately-passed --require value is not the script", () => {
+    it('flags exec("node --require ./register.js dist/daemon/index.js --port 0") — separately-passed --require value is not the script', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -1390,7 +1376,7 @@ describe("exec node --require preload then daemon entry", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execSync(\"node -r ./register.js dist/daemon/index.js --port 0\") — separately-passed -r value is not the script", () => {
+    it('flags execSync("node -r ./register.js dist/daemon/index.js --port 0") — separately-passed -r value is not the script', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -1409,7 +1395,7 @@ describe("execSync node -r preload then daemon entry", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags exec(\"node --conditions production dist/daemon/index.js\") — --conditions consumes its next token as a value", () => {
+    it('flags exec("node --conditions production dist/daemon/index.js") — --conditions consumes its next token as a value', () => {
       // Coverage for the broader value-consuming-flag set: --conditions
       // (and -C) take a comma-separated condition string as a separate
       // next token. The walker must skip both before reading the script
@@ -1433,7 +1419,7 @@ describe("exec node --conditions then daemon entry", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags exec(\"node --require ./preload.js --enable-source-maps dist/daemon/index.js\") — value-consuming and standalone flags interleaved", () => {
+    it('flags exec("node --require ./preload.js --enable-source-maps dist/daemon/index.js") — value-consuming and standalone flags interleaved', () => {
       // Mixed flag classes between the runtime and the script path: the
       // walker must skip the value-consuming flag's value AND the
       // standalone flag, then read the daemon entry from the next token.
@@ -1456,7 +1442,7 @@ describe("exec node mixed-flag classes then daemon entry", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags exec(\"node --require=./preload.js dist/daemon/index.js\") — bundled-equals --require is one flag-shaped token", () => {
+    it('flags exec("node --require=./preload.js dist/daemon/index.js") — bundled-equals --require is one flag-shaped token', () => {
       // The `--require=./preload.js` form is a single token that starts
       // with `-`, so the standalone-flag branch of the walk skips it
       // without needing to consume a separate value. The daemon entry is
@@ -1510,7 +1496,7 @@ describe("exec template literal with node --require flag", () => {
     // accepted. Verified with `node --import ./setup.mjs probe.js` and
     // `node --env-file .env probe.js` which both consume the next token
     // as the option's value before running the script.
-    it("flags exec(\"node --import ./setup.mjs dist/daemon/index.js --port 0\") — --import consumes its next token as the ESM preload value", () => {
+    it('flags exec("node --import ./setup.mjs dist/daemon/index.js --port 0") — --import consumes its next token as the ESM preload value', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -1530,7 +1516,7 @@ describe("exec node --import preload then daemon entry", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execSync(\"node --env-file .env dist/daemon/index.js --port 0\") — --env-file consumes its next token as the env-file path", () => {
+    it('flags execSync("node --env-file .env dist/daemon/index.js --port 0") — --env-file consumes its next token as the env-file path', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -1549,7 +1535,7 @@ describe("execSync node --env-file then daemon entry", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags exec(\"node --env-file-if-exists .env dist/daemon/index.js --port 0\") — --env-file-if-exists is a sibling value-consuming option of --env-file", () => {
+    it('flags exec("node --env-file-if-exists .env dist/daemon/index.js --port 0") — --env-file-if-exists is a sibling value-consuming option of --env-file', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -1569,7 +1555,7 @@ describe("exec node --env-file-if-exists then daemon entry", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags spawn(\"node\", [\"--import\", \"./setup.mjs\", DAEMON_ENTRY, \"--port\", \"0\"]) — --import value in spawn argv-array form", () => {
+    it('flags spawn("node", ["--import", "./setup.mjs", DAEMON_ENTRY, "--port", "0"]) — --import value in spawn argv-array form', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -1591,7 +1577,7 @@ describe("spawn node --import preload then daemon entry argv", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execFile(\"node\", [\"--env-file\", \".env\", \"dist/daemon/index.js\"]) — --env-file value in execFile argv-array form", () => {
+    it('flags execFile("node", ["--env-file", ".env", "dist/daemon/index.js"]) — --env-file value in execFile argv-array form', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -1611,7 +1597,7 @@ describe("execFile node --env-file then daemon entry argv", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execFileSync(\"node\", [\"--env-file-if-exists\", \".env\", DAEMON_ENTRY]) — --env-file-if-exists value in execFileSync argv-array form", () => {
+    it('flags execFileSync("node", ["--env-file-if-exists", ".env", DAEMON_ENTRY]) — --env-file-if-exists value in execFileSync argv-array form', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -1632,7 +1618,7 @@ describe("execFileSync node --env-file-if-exists then daemon entry argv", () => 
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags spawn(process.execPath, [\"--import\", \"./setup.mjs\", DAEMON_ENTRY]) — --import value with process.execPath runtime form", () => {
+    it('flags spawn(process.execPath, ["--import", "./setup.mjs", DAEMON_ENTRY]) — --import value with process.execPath runtime form', () => {
       // Combines the cycle 5 process.execPath fix with cycle 11's
       // --import value-consuming flag — every recognised runtime form
       // (bare `node`, path-suffixed `node`, `process.execPath`) must
@@ -1669,7 +1655,7 @@ describe("spawn process.execPath --import preload then daemon entry argv", () =>
     // must NOT consume the following token. Verified via `node --use-openssl-ca
     // probe.js` which prints `script-ran` (the script ran, the flag did not
     // consume the path).
-    it("flags exec(\"node --use-openssl-ca dist/daemon/index.js --port 0\") — --use-openssl-ca is standalone, not value-consuming", () => {
+    it('flags exec("node --use-openssl-ca dist/daemon/index.js --port 0") — --use-openssl-ca is standalone, not value-consuming', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -1689,7 +1675,7 @@ describe("exec node --use-openssl-ca then daemon entry", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execSync(\"node --tls-min-v1.0 dist/daemon/index.js --port 0\") — --tls-min-v1.0 is standalone, not value-consuming", () => {
+    it('flags execSync("node --tls-min-v1.0 dist/daemon/index.js --port 0") — --tls-min-v1.0 is standalone, not value-consuming', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -1708,7 +1694,7 @@ describe("execSync node --tls-min-v1.0 then daemon entry", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags exec(\"node --use-bundled-ca dist/daemon/index.js\") — --use-bundled-ca is standalone, not value-consuming", () => {
+    it('flags exec("node --use-bundled-ca dist/daemon/index.js") — --use-bundled-ca is standalone, not value-consuming', () => {
       // Sibling of --use-openssl-ca: another standalone CA-store selector
       // that previously could have been mis-modelled in the same way.
       const result = runOxlint({
@@ -1730,7 +1716,7 @@ describe("exec node --use-bundled-ca then daemon entry", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags exec(\"node --stack-trace-limit=50 dist/daemon/index.js\") — --stack-trace-limit only takes a value via the bundled =N form, not whitespace", () => {
+    it('flags exec("node --stack-trace-limit=50 dist/daemon/index.js") — --stack-trace-limit only takes a value via the bundled =N form, not whitespace', () => {
       // --stack-trace-limit only accepts the bundled `=N` form; the bare
       // `node --stack-trace-limit 50 script.js` errors out with `bad
       // option: --stack-trace-limit`. So it MUST NOT be modelled as a
@@ -1767,13 +1753,13 @@ describe("exec node --stack-trace-limit=N then daemon entry", () => {
     it("flags spawn(`dist/daemon/index.js`, [...]) when the daemon entry is a no-substitution template literal in args[0]", () => {
       const result = runOxlint({
         source: [
-          "import { describe, it, expect, onTestFinished } from \"vitest\";",
-          "import { spawn } from \"child_process\";",
+          'import { describe, it, expect, onTestFinished } from "vitest";',
+          'import { spawn } from "child_process";',
           "",
-          "describe(\"spawn template-literal daemon entry executable\", () => {",
-          "  it(\"spawns the daemon entry as a template literal\", () => {",
-          "    const child = spawn(`dist/daemon/index.js`, [\"--port\", \"0\"]);",
-          "    onTestFinished(() => process.kill(child.pid, \"SIGTERM\"));",
+          'describe("spawn template-literal daemon entry executable", () => {',
+          '  it("spawns the daemon entry as a template literal", () => {',
+          '    const child = spawn(`dist/daemon/index.js`, ["--port", "0"]);',
+          '    onTestFinished(() => process.kill(child.pid, "SIGTERM"));',
           "    expect(child.pid).toBeDefined();",
           "  });",
           "});",
@@ -1785,16 +1771,16 @@ describe("exec node --stack-trace-limit=N then daemon entry", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execFile(\"node\", [`dist/daemon/index.js`, ...]) when the daemon entry argv element is a no-substitution template literal", () => {
+    it('flags execFile("node", [`dist/daemon/index.js`, ...]) when the daemon entry argv element is a no-substitution template literal', () => {
       const result = runOxlint({
         source: [
-          "import { describe, it, expect, onTestFinished } from \"vitest\";",
-          "import { execFile } from \"child_process\";",
+          'import { describe, it, expect, onTestFinished } from "vitest";',
+          'import { execFile } from "child_process";',
           "",
-          "describe(\"execFile node with template-literal daemon entry argv\", () => {",
-          "  it(\"execFiles the daemon entrypoint as a template literal in argv\", () => {",
-          "    const child = execFile(\"node\", [`dist/daemon/index.js`, \"--port\", \"0\"]);",
-          "    onTestFinished(() => process.kill(child.pid, \"SIGTERM\"));",
+          'describe("execFile node with template-literal daemon entry argv", () => {',
+          '  it("execFiles the daemon entrypoint as a template literal in argv", () => {',
+          '    const child = execFile("node", [`dist/daemon/index.js`, "--port", "0"]);',
+          '    onTestFinished(() => process.kill(child.pid, "SIGTERM"));',
           "    expect(child.pid).toBeDefined();",
           "  });",
           "});",
@@ -1809,12 +1795,12 @@ describe("exec node --stack-trace-limit=N then daemon entry", () => {
     it("flags spawnSync(`/workspace/dist/daemon/index.js`, [...]) when the daemon entry is an absolute-path template literal in args[0]", () => {
       const result = runOxlint({
         source: [
-          "import { describe, it, expect } from \"vitest\";",
-          "import { spawnSync } from \"child_process\";",
+          'import { describe, it, expect } from "vitest";',
+          'import { spawnSync } from "child_process";',
           "",
-          "describe(\"spawnSync absolute template-literal daemon entry\", () => {",
-          "  it(\"spawnSyncs the absolute daemon entry path as a template literal\", () => {",
-          "    const result = spawnSync(`/workspace/dist/daemon/index.js`, [\"--port\", \"0\"]);",
+          'describe("spawnSync absolute template-literal daemon entry", () => {',
+          '  it("spawnSyncs the absolute daemon entry path as a template literal", () => {',
+          '    const result = spawnSync(`/workspace/dist/daemon/index.js`, ["--port", "0"]);',
           "    expect(result.status).toBe(0);",
           "  });",
           "});",
@@ -1871,7 +1857,7 @@ describe("exec node single-quoted daemon entry runtime form", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execSync(\"\\\"node\\\" \\\"dist/daemon/index.js\\\" --port 0\") — double-quoted runtime AND daemon entry tokens", () => {
+    it('flags execSync("\\"node\\" \\"dist/daemon/index.js\\" --port 0") — double-quoted runtime AND daemon entry tokens', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -1918,7 +1904,7 @@ describe("exec node single-quoted absolute daemon entry", () => {
     // forms previously matched only because the classifier asked
     // "does the array contain DAEMON_ENTRY anywhere"; the precise walk
     // must keep flagging them.
-    it("flags spawn(\"node\", [\"--require\", \"./pre.js\", DAEMON_ENTRY, \"--port\", \"0\"]) — value-consuming flag then daemon entry in argv", () => {
+    it('flags spawn("node", ["--require", "./pre.js", DAEMON_ENTRY, "--port", "0"]) — value-consuming flag then daemon entry in argv', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -1940,7 +1926,7 @@ describe("spawn node --require preload then daemon entry argv", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execFile(\"node\", [\"-r\", \"./pre.js\", \"dist/daemon/index.js\"]) — short-form value-consuming flag then daemon entry literal", () => {
+    it('flags execFile("node", ["-r", "./pre.js", "dist/daemon/index.js"]) — short-form value-consuming flag then daemon entry literal', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -1960,7 +1946,7 @@ describe("execFile node -r preload then daemon entry argv", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags spawn(\"node\", [\"--enable-source-maps\", \"--inspect\", DAEMON_ENTRY]) — multiple standalone flags then daemon entry", () => {
+    it('flags spawn("node", ["--enable-source-maps", "--inspect", DAEMON_ENTRY]) — multiple standalone flags then daemon entry', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -1982,7 +1968,7 @@ describe("spawn node multiple standalone flags then daemon entry argv", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execFileSync(\"node\", [\"--require=./pre.js\", DAEMON_ENTRY]) — bundled-equals --require is one standalone-flag-shaped element", () => {
+    it('flags execFileSync("node", ["--require=./pre.js", DAEMON_ENTRY]) — bundled-equals --require is one standalone-flag-shaped element', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2003,7 +1989,7 @@ describe("execFileSync node --require=value then daemon entry argv", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags spawn(process.execPath, [\"--require\", \"./pre.js\", DAEMON_ENTRY]) — process.execPath runtime with value-consuming flag then daemon entry", () => {
+    it('flags spawn(process.execPath, ["--require", "./pre.js", DAEMON_ENTRY]) — process.execPath runtime with value-consuming flag then daemon entry', () => {
       // Combines the cycle 5 process.execPath fix with the cycle 9
       // script-position walk — the latter must apply uniformly across
       // every recognised runtime form, including the MemberExpression
@@ -2032,7 +2018,7 @@ describe("spawn process.execPath --require preload then daemon entry argv", () =
 
   // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
   describe("non-kspec subprocesses are not reported as daemon lifecycle violations", () => {
-    it("does not flag spawn(\"echo\", [\"serve\", \"start\", \"--detach\"]) — argv tokens overlap but executable is unrelated", () => {
+    it('does not flag spawn("echo", ["serve", "start", "--detach"]) — argv tokens overlap but executable is unrelated', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2050,7 +2036,7 @@ describe("non-kspec subprocess with overlapping argv tokens", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag spawnSync(\"git\", [\"log\", \"serve\", \"start\", \"--detach\"]) — git is not a kspec lifecycle command", () => {
+    it('does not flag spawnSync("git", ["log", "serve", "start", "--detach"]) — git is not a kspec lifecycle command', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2105,7 +2091,7 @@ describe("kspec non-daemon subcommand whose argument quotes the lifecycle string
     // search receives as `argv[2]`. The fixed argv-array walker treats it
     // as one positional after `search`; the subcommand is `search`, not
     // `serve start`, so it must NOT be reported.
-    it("does not flag spawn(\"kspec\", [\"search\", \"serve start --detach\"]) — kspec subcommand is search (cycle-12 blocker)", () => {
+    it('does not flag spawn("kspec", ["search", "serve start --detach"]) — kspec subcommand is search (cycle-12 blocker)', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2153,7 +2139,7 @@ describe("runKspec helper with a non-daemon subcommand", () => {
     // executable arg must be `kspec` for the lifecycle check to engage,
     // and even then the argv array is walked element-by-element with the
     // first two non-flag positionals required to be `serve` then `start`.
-    it("does not flag execFile(\"kspec\", [\"search\", \"serve start --detach\"]) — kspec subcommand is search", () => {
+    it('does not flag execFile("kspec", ["search", "serve start --detach"]) — kspec subcommand is search', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2178,7 +2164,7 @@ describe("execFile kspec non-daemon subcommand", () => {
     // pattern). The kspec subcommand `inbox add` consumes the next
     // positional as the inbox text; that text mentioning "serve start
     // --detach" is content, not a lifecycle launch.
-    it("does not flag spawn(\"kspec\", [\"inbox\", \"add\", \"serve start --detach repro\"]) — subcommand is inbox add", () => {
+    it('does not flag spawn("kspec", ["inbox", "add", "serve start --detach repro"]) — subcommand is inbox add', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2196,7 +2182,7 @@ describe("kspec inbox add with lifecycle words in the body", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag exec(\"echo --port 3456\") — no daemon entry, no kspec lifecycle command", () => {
+    it('does not flag exec("echo --port 3456") — no daemon entry, no kspec lifecycle command', () => {
       // Regression: a shell string with overlapping tokens but no daemon
       // entry path and no leading kspec executable must not be reported.
       const result = runOxlint({
@@ -2225,7 +2211,7 @@ describe("non-daemon shell string", () => {
     // executable position — either as the first shell token (direct
     // executable) or as the immediate next token after a recognised JS
     // runtime (`node` / `bun`).
-    it("does not flag exec(\"echo dist/daemon/index.js\") — daemon path is an argument to echo, not a launch", () => {
+    it('does not flag exec("echo dist/daemon/index.js") — daemon path is an argument to echo, not a launch', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2243,7 +2229,7 @@ describe("echo with daemon path argument", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag execSync(\"cat /workspace/dist/daemon/index.js\") — cat reads the file, does not launch the daemon", () => {
+    it('does not flag execSync("cat /workspace/dist/daemon/index.js") — cat reads the file, does not launch the daemon', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2261,7 +2247,7 @@ describe("cat with absolute daemon path argument", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag exec(\"grep -r dist/daemon/index.js src/\") — grep searches for the path string, does not launch the daemon", () => {
+    it('does not flag exec("grep -r dist/daemon/index.js src/") — grep searches for the path string, does not launch the daemon', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2298,7 +2284,7 @@ describe("template literal with daemon path argument", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag execSync(\"nodemon dist/daemon/index.js\") — nodemon is not the recognised node runtime token", () => {
+    it('does not flag execSync("nodemon dist/daemon/index.js") — nodemon is not the recognised node runtime token', () => {
       // Substring-of-runtime guard: a shell command whose first token
       // contains `node` as a substring (e.g. `nodemon`) is NOT recognised
       // as the JS runtime. Without this guard, `nodemon dist/daemon/index.js`
@@ -2330,7 +2316,7 @@ describe("nodemon should not be confused with node runtime", () => {
     // file argument), `node` is launching that path — not the daemon —
     // and the call must not be reported even though the daemon entry
     // appears later in the command line as data.
-    it("does not flag exec(\"node ./other-script.js dist/daemon/index.js\") — node launches other-script.js, daemon path is consumed as argv", () => {
+    it('does not flag exec("node ./other-script.js dist/daemon/index.js") — node launches other-script.js, daemon path is consumed as argv', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2348,7 +2334,7 @@ describe("node launches a different script with daemon path as argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag exec(\"node --inspect echo dist/daemon/index.js\") — first non-flag token after node is echo, not the daemon entry", () => {
+    it('does not flag exec("node --inspect echo dist/daemon/index.js") — first non-flag token after node is echo, not the daemon entry', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2366,7 +2352,7 @@ describe("node --inspect launching echo with daemon path argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag exec(\"node --version\") — flag-only command line with no script path token", () => {
+    it('does not flag exec("node --version") — flag-only command line with no script path token', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2395,7 +2381,7 @@ describe("node --version with no script path", () => {
     // forwarded to the eval'd code via process.argv — never a script the
     // runtime is launching. The walker must abort and report no daemon
     // launch.
-    it("does not flag exec(\"node --eval dist/daemon/index.js\") — --eval evaluates the next token as source, not as a script path", () => {
+    it('does not flag exec("node --eval dist/daemon/index.js") — --eval evaluates the next token as source, not as a script path', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2413,7 +2399,7 @@ describe("node --eval with daemon path as eval source", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag execSync(\"node -e dist/daemon/index.js\") — -e evaluates the next token as source", () => {
+    it('does not flag execSync("node -e dist/daemon/index.js") — -e evaluates the next token as source', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2431,7 +2417,7 @@ describe("node -e with daemon path as eval source", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag exec(\"node --print dist/daemon/index.js\") — --print evaluates and prints, no script is executed", () => {
+    it('does not flag exec("node --print dist/daemon/index.js") — --print evaluates and prints, no script is executed', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2449,7 +2435,7 @@ describe("node --print with daemon path as eval source", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag execSync(\"node -p dist/daemon/index.js\") — -p evaluates and prints", () => {
+    it('does not flag execSync("node -p dist/daemon/index.js") — -p evaluates and prints', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2467,7 +2453,7 @@ describe("node -p with daemon path as eval source", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag exec(\"node --eval=console.log(1) dist/daemon/index.js\") — bundled --eval=CODE puts runtime in eval mode", () => {
+    it('does not flag exec("node --eval=console.log(1) dist/daemon/index.js") — bundled --eval=CODE puts runtime in eval mode', () => {
       // The `--eval=CODE` form is a single token. Without recognising it
       // as eval mode, the standalone-flag branch would skip it and the
       // walker would report `dist/daemon/index.js` as the script — a
@@ -2497,7 +2483,7 @@ describe("node --eval=CODE with daemon path as forwarded argv", () => {
     // main entrypoint. The walker correctly skips both the flag and its
     // value, leaves no script-path-position token holding the daemon
     // entry, and the call must not be reported.
-    it("does not flag exec(\"node --require dist/daemon/index.js other-script.js\") — daemon path is the --require preload value, not the script", () => {
+    it('does not flag exec("node --require dist/daemon/index.js other-script.js") — daemon path is the --require preload value, not the script', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2515,7 +2501,7 @@ describe("node --require with daemon path as preload value", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag execSync(\"node -r dist/daemon/index.js\") — daemon path is the -r preload value with no following script", () => {
+    it('does not flag execSync("node -r dist/daemon/index.js") — daemon path is the -r preload value with no following script', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2573,7 +2559,7 @@ describe("exec node --require single-quoted preload then daemon entry", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags exec(\"node --require \\\"./pre load.js\\\" dist/daemon/index.js --port 0\") — double-quoted preload value with internal whitespace", () => {
+    it('flags exec("node --require \\"./pre load.js\\" dist/daemon/index.js --port 0") — double-quoted preload value with internal whitespace', () => {
       // Same false-negative shape as the single-quoted variant above,
       // but using double quotes to verify the quote-aware tokeniser
       // handles `"..."` pairs identically to `'...'`.
@@ -2636,7 +2622,7 @@ describe("execSync template literal with quoted interpolated preload value", () 
     // treats `-c` as `--config <path>` (value-consuming). The `bun -c`
     // case is covered by the positive regression below to verify the
     // short-flag classification flips per runtime.
-    it("does not flag execSync(\"node --check dist/daemon/index.js\") — --check parses the script but never executes it", () => {
+    it('does not flag execSync("node --check dist/daemon/index.js") — --check parses the script but never executes it', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2654,7 +2640,7 @@ describe("node --check syntax-checks the daemon path without running it", () => 
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag exec(\"node -c dist/daemon/index.js\") — -c is the Node short form of --check (parse-only)", () => {
+    it('does not flag exec("node -c dist/daemon/index.js") — -c is the Node short form of --check (parse-only)', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2672,7 +2658,7 @@ describe("node -c (short for --check) syntax-checks the daemon path", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag execSync(\"node --syntax-check dist/daemon/index.js\") — --syntax-check is the legacy parse-only alias", () => {
+    it('does not flag execSync("node --syntax-check dist/daemon/index.js") — --syntax-check is the legacy parse-only alias', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2690,7 +2676,7 @@ describe("node --syntax-check parses the daemon path without running it", () => 
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag execFile(\"node\", [\"--check\", DAEMON_ENTRY]) — argv-array form of --check parses but does not execute", () => {
+    it('does not flag execFile("node", ["--check", DAEMON_ENTRY]) — argv-array form of --check parses but does not execute', () => {
       // Mirrors the spawn-like argv-array branch: the script-position
       // walk receives the runtime tag from args[0] and recognises
       // `--check` as a parse-only no-script flag the same way the
@@ -2714,7 +2700,7 @@ describe("execFile node --check argv-array form", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag spawn(process.execPath, [\"-c\", DAEMON_ENTRY]) — process.execPath is Node, so -c is parse-only", () => {
+    it('does not flag spawn(process.execPath, ["-c", DAEMON_ENTRY]) — process.execPath is Node, so -c is parse-only', () => {
       // The runtime tag derived from `process.execPath` must classify
       // as Node so the runtime-ambiguous `-c` is recognised as
       // parse-only and the call is not reported as a daemon launch.
@@ -2737,7 +2723,7 @@ describe("spawn process.execPath -c argv-array form", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("flags exec(\"bun -c bunfig.toml dist/daemon/index.js\") — Bun's -c is value-consuming (--config), not parse-only", () => {
+    it('flags exec("bun -c bunfig.toml dist/daemon/index.js") — Bun\'s -c is value-consuming (--config), not parse-only', () => {
       // Runtime-disambiguation regression: `-c` means different things
       // to Node and Bun. Node treats `-c` as `--check` (parse-only),
       // but Bun treats it as `-c, --config <path>` (value-consuming,
@@ -2782,7 +2768,7 @@ describe("exec bun -c (--config) then daemon entry", () => {
     // form is only valid when args[0] is `node` or `bun` (bare or
     // path-suffixed); anything else (e.g. `cat`, `grep`, `docker`) is an
     // unrelated subprocess that consumes the path as data.
-    it("does not flag spawn(\"cat\", [DAEMON_ENTRY]) — cat reads the daemon file, does not launch the daemon", () => {
+    it('does not flag spawn("cat", [DAEMON_ENTRY]) — cat reads the daemon file, does not launch the daemon', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2802,7 +2788,7 @@ describe("cat with daemon path argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag execFile(\"grep\", [\"dist/daemon/index.js\", \"src/\"]) — grep searches for the path string, does not launch the daemon", () => {
+    it('does not flag execFile("grep", ["dist/daemon/index.js", "src/"]) — grep searches for the path string, does not launch the daemon', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2820,7 +2806,7 @@ describe("grep with daemon path argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag spawnSync(\"nodemon\", [DAEMON_ENTRY, \"--watch\", \"src\"]) — nodemon is not the recognised node runtime executable", () => {
+    it('does not flag spawnSync("nodemon", [DAEMON_ENTRY, "--watch", "src"]) — nodemon is not the recognised node runtime executable', () => {
       // Substring-of-runtime guard for the spawn-like form: an executable
       // whose name contains `node` as a substring (e.g. `nodemon`) is NOT
       // recognised as the node runtime. The argv form requires an exact
@@ -2844,7 +2830,7 @@ describe("nodemon should not be confused with node runtime in argv form", () => 
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag execFileSync(\"docker\", [\"run\", \"image\", \"dist/daemon/index.js\"]) — docker is not a JS runtime", () => {
+    it('does not flag execFileSync("docker", ["run", "image", "dist/daemon/index.js"]) — docker is not a JS runtime', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -2862,7 +2848,7 @@ describe("docker run with daemon path argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("flags execFile(\"/usr/bin/node\", [DAEMON_ENTRY, ...]) — path-suffixed runtime is recognised", () => {
+    it('flags execFile("/usr/bin/node", [DAEMON_ENTRY, ...]) — path-suffixed runtime is recognised', () => {
       // Positive precision regression: the runtime gate must still match
       // path-suffixed runtimes (`/usr/bin/node`, `./node_modules/.bin/bun`)
       // — only substring confusables (`nodemon`, `bunyan`) are excluded.
@@ -2918,7 +2904,7 @@ describe("spawn process.execPath with daemon entry argv", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execFile(process.execPath, [\"dist/daemon/index.js\", ...]) — process.execPath with literal daemon path argv", () => {
+    it('flags execFile(process.execPath, ["dist/daemon/index.js", ...]) — process.execPath with literal daemon path argv', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -3040,7 +3026,7 @@ describe("spawn process.argv0 with daemon entry argv", () => {
     // form. The rule must classify static-string bracket access the same
     // as dot access while still rejecting dynamic property expressions
     // that cannot be statically resolved to "execPath".
-    it("flags spawn(process[\"execPath\"], [DAEMON_ENTRY, ...]) — static-string computed access resolves to process.execPath", () => {
+    it('flags spawn(process["execPath"], [DAEMON_ENTRY, ...]) — static-string computed access resolves to process.execPath', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -3062,7 +3048,7 @@ describe("spawn process[\\"execPath\\"] with daemon entry argv", () => {
       expect(result.output).toMatch(/shared daemon fixture|startTestDaemon/i);
     });
 
-    it("flags execFile(process[\"execPath\"], [\"dist/daemon/index.js\", ...]) — static-string computed access in the execFile variant", () => {
+    it('flags execFile(process["execPath"], ["dist/daemon/index.js", ...]) — static-string computed access in the execFile variant', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -3134,7 +3120,7 @@ describe("spawn process[propName] with daemon entry argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag spawn(process[\"argv0\"], [DAEMON_ENTRY]) — computed access to a non-execPath property", () => {
+    it('does not flag spawn(process["argv0"], [DAEMON_ENTRY]) — computed access to a non-execPath property', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -3154,7 +3140,7 @@ describe("spawn process[\\"argv0\\"] with daemon entry argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag spawn(other[\"execPath\"], [DAEMON_ENTRY]) — computed access on an unrelated object", () => {
+    it('does not flag spawn(other["execPath"], [DAEMON_ENTRY]) — computed access on an unrelated object', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -3186,7 +3172,7 @@ describe("spawn other-object[\\"execPath\\"] with daemon entry argv", () => {
     // exits. The reviewer's probes were
     // `spawn("node", ["--eval", "dist/daemon/index.js"])` and
     // `execFile("node", ["--version", DAEMON_ENTRY])`.
-    it("does not flag spawn(\"node\", [\"--eval\", \"dist/daemon/index.js\"]) — --eval consumes the next argv element as source, no script is launched", () => {
+    it('does not flag spawn("node", ["--eval", "dist/daemon/index.js"]) — --eval consumes the next argv element as source, no script is launched', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -3204,7 +3190,7 @@ describe("spawn node --eval with daemon path as eval source argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag execFile(\"node\", [\"--version\", DAEMON_ENTRY]) — --version prints version and exits without executing any script", () => {
+    it('does not flag execFile("node", ["--version", DAEMON_ENTRY]) — --version prints version and exits without executing any script', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -3225,7 +3211,7 @@ describe("execFile node --version with daemon entry argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag spawnSync(\"node\", [\"-v\", DAEMON_ENTRY]) — short-form -v also exits without executing any script", () => {
+    it('does not flag spawnSync("node", ["-v", DAEMON_ENTRY]) — short-form -v also exits without executing any script', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -3245,7 +3231,7 @@ describe("spawnSync node -v with daemon entry argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag execFileSync(\"node\", [\"--help\", \"dist/daemon/index.js\"]) — --help prints help and exits without executing any script", () => {
+    it('does not flag execFileSync("node", ["--help", "dist/daemon/index.js"]) — --help prints help and exits without executing any script', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -3263,7 +3249,7 @@ describe("execFileSync node --help with daemon entry argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag spawn(\"node\", [\"-h\", DAEMON_ENTRY]) — short-form -h also exits without executing any script", () => {
+    it('does not flag spawn("node", ["-h", DAEMON_ENTRY]) — short-form -h also exits without executing any script', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -3283,7 +3269,7 @@ describe("spawn node -h with daemon entry argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag spawn(\"node\", [\"--print\", DAEMON_ENTRY]) — --print evaluates inline source, no script is launched", () => {
+    it('does not flag spawn("node", ["--print", DAEMON_ENTRY]) — --print evaluates inline source, no script is launched', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -3303,7 +3289,7 @@ describe("spawn node --print with daemon path as eval source argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag spawn(\"node\", [\"--require\", DAEMON_ENTRY, \"./other.js\"]) — daemon path is the --require value, not the script", () => {
+    it('does not flag spawn("node", ["--require", DAEMON_ENTRY, "./other.js"]) — daemon path is the --require value, not the script', () => {
       // The argv-array script-position walk must consume the daemon
       // path as the value of --require, then continue to find the
       // actual script (./other.js) in the script position. Without the
@@ -3328,7 +3314,7 @@ describe("spawn node --require with daemon path as preload value argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag spawn(\"node\", [\"./other-script.js\", DAEMON_ENTRY]) — node runs other-script.js, daemon path is forwarded argv", () => {
+    it('does not flag spawn("node", ["./other-script.js", DAEMON_ENTRY]) — node runs other-script.js, daemon path is forwarded argv', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -3348,7 +3334,7 @@ describe("spawn node launches another script with daemon path argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag spawn(\"node\", [\"--inspect\", \"./other-script.js\", DAEMON_ENTRY]) — first non-flag argv is other-script.js, not the daemon entry", () => {
+    it('does not flag spawn("node", ["--inspect", "./other-script.js", DAEMON_ENTRY]) — first non-flag argv is other-script.js, not the daemon entry', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -3372,7 +3358,7 @@ describe("spawn node --inspect launching other-script with daemon path argv", ()
     // `isShellRuntimeNoScriptFlag` predicate now applies to both walkers,
     // so `node --version dist/daemon/index.js` and `node --help …` must
     // also abort the shell-string walk and report no daemon launch.
-    it("does not flag exec(\"node --version dist/daemon/index.js\") — shell-string walker also recognises --version as no-script", () => {
+    it('does not flag exec("node --version dist/daemon/index.js") — shell-string walker also recognises --version as no-script', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -3390,7 +3376,7 @@ describe("exec node --version with daemon path as forwarded argv", () => {
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
 
-    it("does not flag execSync(\"node --help dist/daemon/index.js\") — shell-string walker also recognises --help as no-script", () => {
+    it('does not flag execSync("node --help dist/daemon/index.js") — shell-string walker also recognises --help as no-script', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -3415,7 +3401,7 @@ describe("execSync node --help with daemon path as forwarded argv", () => {
   // exec/execSync direct-entry detector must not steal calls that don't
   // carry the daemon entry path token.
   describe("exec/execSync of kspec lifecycle stays classified as detached-serve", () => {
-    it("flags exec(\"kspec serve start --detach\") with the missing-cleanup message, not the direct-spawn message", () => {
+    it('flags exec("kspec serve start --detach") with the missing-cleanup message, not the direct-spawn message', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect } from "vitest";
@@ -3436,7 +3422,7 @@ describe("exec kspec serve start --detach", () => {
       expect(result.output).not.toMatch(/shared daemon fixture/i);
     });
 
-    it("does not flag exec(\"kspec serve start --detach\") when scoped cleanup is registered", () => {
+    it('does not flag exec("kspec serve start --detach") when scoped cleanup is registered', () => {
       const result = runOxlint({
         source: `
 import { describe, it, expect, onTestFinished } from "vitest";
@@ -3491,7 +3477,7 @@ describe("exec kspec serve start --detach with cleanup", () => {
 describe("daemon test guardrail precision: detached cleanup timing", () => {
   // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
   describe("detached daemon flagged when cleanup is not bound before later observations", () => {
-    it("flags runKspec(\"serve start --detach\") when an afterEach closes over a let pid that is assigned only after an expect()", () => {
+    it('flags runKspec("serve start --detach") when an afterEach closes over a let pid that is assigned only after an expect()', () => {
       // UNSAFE: the afterEach captures `pid`, but the test body runs
       // `expect(...)` before `pid = readPidFromFile()`. If the assertion
       // throws, `pid` is still null when the afterEach runs and the
@@ -3522,7 +3508,7 @@ describe("detached cleanup deferred until after assertion", () => {
       expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
     });
 
-    it("flags runKspec(\"serve start --detach\") when an afterEach closes over a let pid that is assigned only after an awaited probe", () => {
+    it('flags runKspec("serve start --detach") when an afterEach closes over a let pid that is assigned only after an awaited probe', () => {
       // UNSAFE: same shape as the assertion case but the intervening
       // operation is an `await` on a daemon observation. The await can
       // throw or hang before `pid` is captured, leaking the daemon.
@@ -3549,7 +3535,7 @@ describe("detached cleanup deferred until after await", () => {
       expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished/i);
     });
 
-    it("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when an afterEach closes over a let child that is assigned only after an awaited probe", () => {
+    it('flags spawn("kspec", ["serve", "start", "--detach"]) when an afterEach closes over a let child that is assigned only after an awaited probe', () => {
       // UNSAFE argv-form variant: the spawn returns a child handle, but
       // the test does not capture it until after `await waitForReady()`.
       // The afterEach closes over `child`, yet the binding is null when
@@ -3581,7 +3567,7 @@ describe("detached child handle deferred until after await", () => {
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
     // (allowed narrow case)
-    it("does not flag runKspec(\"serve start --detach\") when the pid is read and onTestFinished cleanup is registered before any await/expect", () => {
+    it('does not flag runKspec("serve start --detach") when the pid is read and onTestFinished cleanup is registered before any await/expect', () => {
       // ALLOWED narrow: the canonical safe shape — capture pid inline,
       // register `onTestFinished` cleanup, then run assertions. Cleanup
       // is bound to this specific daemon before any operation that could
@@ -3606,7 +3592,7 @@ describe("detached cleanup registered immediately", () => {
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-before-observation
     // (allowed narrow case, child handle flavor)
-    it("does not flag spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when the child handle is captured inline and onTestFinished kills it before any await/expect", () => {
+    it('does not flag spawn("kspec", ["serve", "start", "--detach"]) when the child handle is captured inline and onTestFinished kills it before any await/expect', () => {
       // ALLOWED narrow: the child-handle flavor of the safe shape — the
       // spawn return value is captured by the same statement, the kill
       // closure binds to the just-spawned handle, and only then does the
@@ -3783,7 +3769,7 @@ describe("disable on the wrong line", () => {
 describe("daemon test guardrail precision: cleanup callback bound before observation", () => {
   // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
   describe("detached daemon flagged when cleanup closure is unbound at registration", () => {
-    it("flags runKspec(\"serve start --detach\") when onTestFinished closes over a let pid that is assigned only after an intervening expect()", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished closes over a let pid that is assigned only after an intervening expect()', () => {
       // UNSAFE: cleanup IS registered before the expect(), but the closure
       // captures a `let pid` that is still undefined at registration time.
       // The pid file is read AFTER the expect() runs. If the assertion
@@ -3813,10 +3799,12 @@ describe("cleanup closure captures unbound pid", () => {
       // expect(). An assertion failure leaves the daemon orphaned.
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished|bound|captured/i);
+      expect(result.output).toMatch(
+        /serve start --detach|scoped cleanup|onTestFinished|bound|captured/i,
+      );
     });
 
-    it("flags runKspec(\"serve start --detach\") when onTestFinished closes over a let pid that is assigned only after an intervening await", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished closes over a let pid that is assigned only after an intervening await', () => {
       // UNSAFE: same shape as the assertion variant but the intervening
       // operation is an `await waitForReady(...)` against the daemon. The
       // await can throw or hang before pid is captured. The rule currently
@@ -3839,10 +3827,12 @@ describe("cleanup closure captures unbound pid before await", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished|bound|captured/i);
+      expect(result.output).toMatch(
+        /serve start --detach|scoped cleanup|onTestFinished|bound|captured/i,
+      );
     });
 
-    it("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when onTestFinished closes over a let child handle that is assigned only after an intervening await", () => {
+    it('flags spawn("kspec", ["serve", "start", "--detach"]) when onTestFinished closes over a let child handle that is assigned only after an intervening await', () => {
       // UNSAFE child-handle variant: the spawn returns a child handle but
       // the test doesn't capture it inline — it reassigns `let child`
       // only after an `await waitForReady(...)` against the daemon. The
@@ -3867,10 +3857,12 @@ describe("cleanup closure captures unbound child handle", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished|bound|captured/i);
+      expect(result.output).toMatch(
+        /serve start --detach|scoped cleanup|onTestFinished|bound|captured/i,
+      );
     });
 
-    it("flags runKspec(\"serve start --detach\") when onTestFinished captures pid before a daemon-host fetch observation but pid is bound only after the fetch", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished captures pid before a daemon-host fetch observation but pid is bound only after the fetch', () => {
       // UNSAFE: the intervening observation is a `fetch` to the daemon
       // host (a recognised daemon network observation per the existing
       // observation gate). The cleanup registration sits before it, but
@@ -3894,12 +3886,14 @@ describe("cleanup closure captures unbound pid before daemon fetch", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|scoped cleanup|onTestFinished|bound|captured/i);
+      expect(result.output).toMatch(
+        /serve start --detach|scoped cleanup|onTestFinished|bound|captured/i,
+      );
     });
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (allowed narrow case)
-    it("does not flag runKspec(\"serve start --detach\") when pid is captured BEFORE the onTestFinished registration and BEFORE any observation", () => {
+    it('does not flag runKspec("serve start --detach") when pid is captured BEFORE the onTestFinished registration and BEFORE any observation', () => {
       // ALLOWED narrow: the canonical safe shape — pid is bound to a
       // concrete value by `const pid = readPidFromFile()` BEFORE the
       // onTestFinished registration. The cleanup closure captures the
@@ -3926,7 +3920,7 @@ describe("cleanup closure captures concrete pid before observation", () => {
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (allowed narrow case, child handle flavor)
-    it("does not flag spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when the child handle is captured by the spawn statement and onTestFinished kills it before any observation", () => {
+    it('does not flag spawn("kspec", ["serve", "start", "--detach"]) when the child handle is captured by the spawn statement and onTestFinished kills it before any observation', () => {
       // ALLOWED narrow: the spawn return value is captured by the same
       // statement (`const child = spawn(...)`), so the onTestFinished
       // closure binds to the concrete handle at registration time. No
@@ -3951,7 +3945,7 @@ describe("cleanup closure captures concrete child handle before observation", ()
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (ownership: pre-existing concrete value cannot represent the just-started daemon)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a const pid bound to a literal BEFORE the daemon start", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished captures a const pid bound to a literal BEFORE the daemon start', () => {
       // UNSAFE (cycle-7 reviewer probe): `pid` is concretely bound at
       // registration — but to a literal `12345` set BEFORE the daemon
       // was started. The cleanup closure has SOMETHING to kill, but
@@ -3985,7 +3979,7 @@ describe("cleanup closure captures pid bound to a literal before the daemon star
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (ownership: child-handle variant)
-    it("flags spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when onTestFinished captures a const child handle from an UNRELATED spawn that ran BEFORE the detached start", () => {
+    it('flags spawn("kspec", ["serve", "start", "--detach"]) when onTestFinished captures a const child handle from an UNRELATED spawn that ran BEFORE the detached start', () => {
       // UNSAFE: a child handle from an unrelated spawn (e.g. `spawn
       // ("echo", ["ready"])`) is concretely bound BEFORE the daemon
       // start. The cleanup closure has a concrete handle to call
@@ -4015,7 +4009,7 @@ describe("cleanup closure captures unrelated child handle from a pre-start spawn
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (ownership: imported / undeclared identifier captured)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a pid imported from another module (cannot represent the just-started daemon)", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished captures a pid imported from another module (cannot represent the just-started daemon)', () => {
       // UNSAFE: `pid` is an imported binding — a value defined in a
       // different module, not derived from this test's daemon start.
       // The earlier check treated undeclared identifiers as
@@ -4047,7 +4041,7 @@ describe("cleanup closure captures imported pid", () => {
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (cycle-5 reviewer probe: TS-asserted `undefined` initializer must be
     // recognised as a placeholder, not a concrete value-producing binding)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a const pid initialised to `undefined as number | undefined` (TS-wrapped undefined is still undefined at registration time)", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished captures a const pid initialised to `undefined as number | undefined` (TS-wrapped undefined is still undefined at registration time)', () => {
       // UNSAFE (cycle-5 reviewer probe): the test starts the detached
       // daemon, then declares `const pid = undefined as number | undefined`
       // AFTER the start, then registers `onTestFinished(() => { if (pid !==
@@ -4090,7 +4084,7 @@ describe("cleanup closure captures pid initialised to TS-wrapped undefined", () 
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (cycle-5: TS-asserted `null` initializer is the same placeholder shape)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a const pid initialised to `null as any` (TS-wrapped null is still null at registration time)", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished captures a const pid initialised to `null as any` (TS-wrapped null is still null at registration time)', () => {
       // UNSAFE: `null as any` is the null counterpart of the cycle-5
       // probe. The runtime value at registration is null; the closure has
       // no concrete pid to kill at teardown if an intervening observation
@@ -4119,7 +4113,7 @@ describe("cleanup closure captures pid initialised to TS-wrapped null", () => {
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (cycle-5: stacked transparent wrappers around `undefined` still resolve
     // as a placeholder)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a const pid initialised to `(undefined)!` (non-null assertion over undefined unwraps to a placeholder)", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished captures a const pid initialised to `(undefined)!` (non-null assertion over undefined unwraps to a placeholder)', () => {
       // UNSAFE: stacking parens + non-null assertion over `undefined`
       // produces a TS-coerced placeholder. The fixed-point unwrap loop
       // strips ParenthesizedExpression, then TSNonNullExpression, then
@@ -4150,7 +4144,7 @@ describe("cleanup closure captures pid initialised to non-null-asserted undefine
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (cycle-5: assignment-RHS variant — TS-wrapped undefined as the RHS of a
     // post-start assignment still leaves the binding placeholder-only)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished captures a let pid that is later assigned `undefined as any` after the start (TS-wrapped placeholder RHS)", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished captures a let pid that is later assigned `undefined as any` after the start (TS-wrapped placeholder RHS)', () => {
       // UNSAFE: the assignment-RHS leg of the binding analysis must
       // recognise TS-wrapped null/undefined the same way as the
       // declarator-init leg. `let pid: number | undefined; runKspec(...);
@@ -4182,7 +4176,7 @@ describe("cleanup closure captures pid reassigned to TS-wrapped undefined", () =
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (cycle-5: positive control — wrapped concrete value remains concrete)
-    it("does not flag runKspec(\"serve start --detach\") when const pid = (readPidFromFile() as number) is captured AFTER the start and onTestFinished kills it", () => {
+    it('does not flag runKspec("serve start --detach") when const pid = (readPidFromFile() as number) is captured AFTER the start and onTestFinished kills it', () => {
       // ALLOWED narrow: the unwrap discipline must NOT strip transparent
       // wrappers around a real value-producing expression. Wrapping a
       // `readPidFromFile()` CallExpression in a TS cast does not turn it
@@ -4213,7 +4207,7 @@ describe("cleanup closure captures TS-cast over a concrete read", () => {
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (ownership: kill target is a member expression on a binding that
     // pre-dates the daemon start)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished captures process.kill(holder.pid, ...) where holder was declared BEFORE the daemon start", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished captures process.kill(holder.pid, ...) where holder was declared BEFORE the daemon start', () => {
       // UNSAFE (cycle-8 reviewer probe): the kill target is `holder.pid`,
       // a MemberExpression. The earlier ownership check only inspected
       // bare-Identifier kill targets, so a MemberExpression target was
@@ -4253,7 +4247,7 @@ describe("cleanup closure captures process.kill(holder.pid) where holder predate
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (ownership: kill target is a deep member chain, root predates start)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished captures process.kill(state.daemon.pid, ...) and `state` predates the daemon start", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished captures process.kill(state.daemon.pid, ...) and `state` predates the daemon start', () => {
       // UNSAFE: the kill target is a deep MemberExpression chain
       // `state.daemon.pid`. Walking the chain to its root yields
       // `state`, which is declared BEFORE the runKspec start. The
@@ -4282,7 +4276,7 @@ describe("cleanup closure captures a deep member chain rooted in a binding that 
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (ownership: kill receiver is a member chain, root predates start)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished captures handle.child.kill(\"SIGTERM\") and `handle` predates the daemon start", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished captures handle.child.kill("SIGTERM") and `handle` predates the daemon start', () => {
       // UNSAFE: the kill RECEIVER (callee.object) is a MemberExpression
       // `handle.child`. The earlier check only extracted bare-Identifier
       // receivers, so a member-receiver was accepted silently. Walking
@@ -4312,7 +4306,7 @@ describe("cleanup closure captures member-receiver kill where the receiver root 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (ownership: unverifiable kill target — call expression cannot be tied
     // to the just-started daemon)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished registers process.kill(getStalePid(), ...) — call expression target cannot be statically tied to the daemon", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished registers process.kill(getStalePid(), ...) — call expression target cannot be statically tied to the daemon', () => {
       // UNSAFE: `process.kill(getStalePid(), "SIGTERM")` — the kill
       // target is a CallExpression. Static analysis cannot determine
       // whether the function returns the just-started daemon's pid;
@@ -4340,7 +4334,7 @@ describe("cleanup closure registers a call-expression kill target", () => {
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (callback-local literal kill target — cycle-3 reviewer probe)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished body declares `const pid = 12345` and process.kill(pid, ...) — callback-local literal cannot represent the daemon", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished body declares `const pid = 12345` and process.kill(pid, ...) — callback-local literal cannot represent the daemon', () => {
       // UNSAFE (cycle-3 reviewer probe): the cleanup callback declares
       // its own `const pid = 12345` and calls process.kill(pid, ...).
       // The earlier rule treated callback-local kill targets as
@@ -4378,7 +4372,7 @@ describe("cleanup closure body declares its own pid as a stale literal", () => {
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (callback-local literal via let + later assignment)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished body uses `let pid; pid = 99999;` then process.kill(pid, ...) — every assignment is literal", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished body uses `let pid; pid = 99999;` then process.kill(pid, ...) — every assignment is literal', () => {
       // UNSAFE: callback-local `let pid;` with a later literal
       // assignment also fails the dynamic check. The rule walks all
       // VariableDeclarators AND AssignmentExpressions inside the
@@ -4411,7 +4405,7 @@ describe("cleanup closure body declares pid as let then assigns a literal", () =
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (callback-local kill target wrapped in a TS assertion is still
     // rejected when the binding is literal-only)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished body declares `const pid = 12345 as number` — wrapped literal still resolves as static", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished body declares `const pid = 12345 as number` — wrapped literal still resolves as static', () => {
       // UNSAFE: even with a TS `as number` cast, the binding's value
       // is a literal — the cast does not introduce any runtime read.
       // The static-literal classifier unwraps transparent TS wrappers
@@ -4441,7 +4435,7 @@ describe("cleanup closure body declares pid as a TS-asserted literal", () => {
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (cycle-4 reviewer probe: callback-local CallExpression init is
     // still unsafe — the runtime read is deferred to teardown time)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished body declares `const pid = readPidFromFile()` then process.kill(pid, ...) — callback-local read is deferred to teardown, not owned at registration", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished body declares `const pid = readPidFromFile()` then process.kill(pid, ...) — callback-local read is deferred to teardown, not owned at registration', () => {
       // UNSAFE (cycle-4 reviewer probe): the cleanup callback declares
       // `const pid = readPidFromFile()` inside its own body. The
       // initializer is a CallExpression — but it is evaluated at
@@ -4485,7 +4479,7 @@ describe("cleanup closure reads the pid file at cleanup time", () => {
     // (allowed-narrow: read pid OUTSIDE the callback after the start,
     // then register a closure that captures the outer const — the
     // safe alternative to the cycle-4 callback-local probe above)
-    it("does not flag runKspec(\"serve start --detach\") when pid is read OUTSIDE the callback after the start and onTestFinished closes over the outer const", () => {
+    it('does not flag runKspec("serve start --detach") when pid is read OUTSIDE the callback after the start and onTestFinished closes over the outer const', () => {
       // ALLOWED: the test reads `const pid = readPidFromFile()` after
       // the daemon start completes but BEFORE registering cleanup.
       // The cleanup closure captures the outer `pid` binding, which
@@ -4516,7 +4510,7 @@ describe("cleanup closure captures outer pid read after the start", () => {
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (cycle-4 reviewer probe: callback-local MemberExpression init
     // via deferred read is still unsafe)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished body declares `const pid = state.lastPid` then process.kill(pid, ...) — callback-local member read is still deferred to teardown", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished body declares `const pid = state.lastPid` then process.kill(pid, ...) — callback-local member read is still deferred to teardown', () => {
       // UNSAFE (cycle-4 reviewer probe variant): even when the
       // callback-local initializer is a MemberExpression — a value
       // that "looks like" it could come from runtime state — the
@@ -4552,7 +4546,7 @@ describe("cleanup closure body declares pid as a callback-local member read", ()
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (cycle-4 reviewer probe: callback-local let with later
     // CallExpression assignment is still unsafe)
-    it("flags runKspec(\"serve start --detach\") when onTestFinished body uses `let pid; pid = readPidFromFile();` then process.kill(pid, ...) — callback-local let + dynamic assign is still deferred", () => {
+    it('flags runKspec("serve start --detach") when onTestFinished body uses `let pid; pid = readPidFromFile();` then process.kill(pid, ...) — callback-local let + dynamic assign is still deferred', () => {
       // UNSAFE (cycle-4 reviewer probe variant): a callback-local
       // `let pid;` followed by a CallExpression assignment inside
       // the same callback also fails the contract. Both the
@@ -4585,7 +4579,7 @@ describe("cleanup closure body uses let + later dynamic assignment", () => {
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (cycle-3 reviewer probe: TS as-cast on captured pid in the kill
     // call must not be rejected when the underlying binding is owned)
-    it("does not flag runKspec(\"serve start --detach\") when pid is captured before cleanup and the callback uses process.kill(pid as number, \"SIGTERM\") — TS cast unwrapped to root identifier", () => {
+    it('does not flag runKspec("serve start --detach") when pid is captured before cleanup and the callback uses process.kill(pid as number, "SIGTERM") — TS cast unwrapped to root identifier', () => {
       // ALLOWED narrow (cycle-3 reviewer probe): the test captures
       // `const pid = readPidFromFile() as number` AFTER the daemon
       // start, then registers cleanup that uses `pid as number` in
@@ -4621,7 +4615,7 @@ describe("cleanup closure uses TS cast in the kill call", () => {
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (cycle-3: TS non-null assertion variant)
-    it("does not flag runKspec(\"serve start --detach\") when pid is captured before cleanup and the callback uses process.kill(pid!, \"SIGTERM\") — TS non-null assertion unwrapped to root identifier", () => {
+    it('does not flag runKspec("serve start --detach") when pid is captured before cleanup and the callback uses process.kill(pid!, "SIGTERM") — TS non-null assertion unwrapped to root identifier', () => {
       // ALLOWED narrow: the TS non-null assertion `pid!` is another
       // transparent wrapper. The unwrap fixed-point loop strips it
       // (and the ChainExpression wrapper that some parsers emit
@@ -4649,7 +4643,7 @@ describe("cleanup closure uses TS non-null assertion in the kill call", () => {
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (cycle-3: stacked transparent wrappers must all be unwrapped)
-    it("does not flag runKspec(\"serve start --detach\") when the kill call uses ((pid as number)!) — stacked TS wrappers unwrapped", () => {
+    it('does not flag runKspec("serve start --detach") when the kill call uses ((pid as number)!) — stacked TS wrappers unwrapped', () => {
       // ALLOWED narrow: stacking TS assertion + non-null assertion
       // in parentheses still resolves to the underlying `pid`
       // identifier. The unwrap is a fixed-point loop precisely so
@@ -4676,7 +4670,7 @@ describe("cleanup closure uses stacked TS wrappers in the kill call", () => {
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (cycle-3: TS-cast on a member-expression kill target — root
     // identifier still recovered and ownership validated)
-    it("flags runKspec(\"serve start --detach\") when the kill call uses (holder.pid as number) and `holder` predates the daemon start", () => {
+    it('flags runKspec("serve start --detach") when the kill call uses (holder.pid as number) and `holder` predates the daemon start', () => {
       // UNSAFE: combining a member-expression kill target with a TS
       // cast must still resolve to the root identifier `holder`,
       // which the ownership predicate rejects because `holder` is
@@ -4706,7 +4700,7 @@ describe("cleanup closure uses a TS-asserted member kill target rooted in a pre-
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (allowed-narrow: member-expression kill target rooted in the spawn
     // child handle whose declarator IS the detached daemon start)
-    it("does not flag spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) when onTestFinished kills via process.kill(child.pid, \"SIGTERM\") and `child` is captured by the spawn statement", () => {
+    it('does not flag spawn("kspec", ["serve", "start", "--detach"]) when onTestFinished kills via process.kill(child.pid, "SIGTERM") and `child` is captured by the spawn statement', () => {
       // ALLOWED narrow: the cleanup uses a MemberExpression kill target
       // `child.pid`, but the root `child` is bound by `const child =
       // spawn("kspec", ["serve", "start", "--detach"])` — the
@@ -4901,7 +4895,7 @@ describe("finalizer kills pid captured before the try block", () => {
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (allowed-narrow: const child = spawn(...) BEFORE try, where the
     // declarator's range encompasses the detached-start expression)
-    it("does not flag try/finally finalizer child.kill(\"SIGTERM\") when `child` is captured by `const child = spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"])` before the try block", () => {
+    it('does not flag try/finally finalizer child.kill("SIGTERM") when `child` is captured by `const child = spawn("kspec", ["serve", "start", "--detach"])` before the try block', () => {
       // ALLOWED narrow: `const child = spawn(...)` IS the detached
       // start; the declarator's range encompasses the spawn, so the
       // ownership predicate accepts `child` even though the binding
@@ -5100,7 +5094,7 @@ describe("finalizer reads pid via conditional assignment", () => {
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (multi-start ownership: cycle-8 reviewer probe — single binding cannot own two daemons)
-    it("flags the FIRST of two consecutive runKspec(\"serve start --detach\") calls when a single pid binding is captured by onTestFinished AFTER both starts", () => {
+    it('flags the FIRST of two consecutive runKspec("serve start --detach") calls when a single pid binding is captured by onTestFinished AFTER both starts', () => {
       // UNSAFE (cycle-8 reviewer probe): two consecutive detached
       // daemon starts share a SINGLE `const pid = readPidFromFile()`
       // binding and a single `onTestFinished(() => process.kill(pid,
@@ -5134,7 +5128,7 @@ describe("two consecutive detached starts share a single pid binding", () => {
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (multi-start ownership in try/finally finalizer)
-    it("flags the FIRST of two consecutive runKspec(\"serve start --detach\") calls inside a try block when the finalizer kills a single pid bound after both starts", () => {
+    it('flags the FIRST of two consecutive runKspec("serve start --detach") calls inside a try block when the finalizer kills a single pid bound after both starts', () => {
       // UNSAFE: same multi-start ownership shape but expressed via a
       // try/finally finalizer instead of onTestFinished. The pid is
       // assigned AFTER both detached starts inside the try body, so a
@@ -5167,7 +5161,7 @@ describe("try/finally with two detached starts and a single pid", () => {
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (multi-start ownership: separate scoped cleanups for each start are still accepted)
-    it("does NOT flag two consecutive runKspec(\"serve start --detach\") calls when each has its own bound onTestFinished cleanup interleaved between the starts", () => {
+    it('does NOT flag two consecutive runKspec("serve start --detach") calls when each has its own bound onTestFinished cleanup interleaved between the starts', () => {
       // ALLOWED-NARROW: two detached starts each get their own scoped
       // cleanup (separate const pidN bindings, separate onTestFinished
       // registrations interleaved between the starts). The
@@ -5201,7 +5195,7 @@ describe("two detached starts each with their own scoped cleanup", () => {
 
     // AC: @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation
     // (multi-start ownership: const child = spawn(...) per-daemon binding)
-    it("does NOT flag two const child = spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) calls when each has its own .kill cleanup", () => {
+    it('does NOT flag two const child = spawn("kspec", ["serve", "start", "--detach"]) calls when each has its own .kill cleanup', () => {
       // ALLOWED-NARROW: each spawn binding's range encompasses its
       // own spawn CallExpression (the binding IS the start). The
       // other detached start sits OUTSIDE that binding's range, so
@@ -5282,7 +5276,7 @@ describe("two distinct spawn child handles each with own cleanup", () => {
 describe("daemon test guardrail precision: approved helper boundary is explicit", () => {
   // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
   describe("local wrappers around detached daemon starts are not approved helpers", () => {
-    it("flags a function declaration in a test file that wraps runKspec(\"serve start --detach\") with no caller cleanup", () => {
+    it('flags a function declaration in a test file that wraps runKspec("serve start --detach") with no caller cleanup', () => {
       // UNSAFE: the test file declares `function startDetachedDaemon()`
       // whose body calls `runKspec("serve start --detach ...")`. The
       // call site invokes the helper but registers no cleanup. The
@@ -5308,10 +5302,12 @@ describe("local function wrapper hides detached start", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+      expect(result.output).toMatch(
+        /serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i,
+      );
     });
 
-    it("flags a const arrow function in a test file that wraps spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) with no caller cleanup", () => {
+    it('flags a const arrow function in a test file that wraps spawn("kspec", ["serve", "start", "--detach"]) with no caller cleanup', () => {
       // UNSAFE: the const-arrow form of the local wrapper (the rule's
       // `isInHelperFunction` predicate also matches
       // `VariableDeclarator` initialisers with arrow/function values).
@@ -5337,10 +5333,12 @@ describe("const arrow wrapper hides detached spawn", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+      expect(result.output).toMatch(
+        /serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i,
+      );
     });
 
-    it("flags a function declaration in a test file that wraps execSync(\"kspec serve start --detach\") with no caller cleanup", () => {
+    it('flags a function declaration in a test file that wraps execSync("kspec serve start --detach") with no caller cleanup', () => {
       // UNSAFE: shell-string CLI form of the wrapper. The execSync call
       // tokenises to `kspec serve start --detach`, the rule's detach
       // classifier recognises the lifecycle path, but the helper-
@@ -5365,10 +5363,12 @@ describe("execSync wrapper hides detached start", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+      expect(result.output).toMatch(
+        /serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i,
+      );
     });
 
-    it("flags a function expression assigned to a const in a test file that wraps spawnSync(\"kspec\", [\"serve\", \"start\", \"--detach\"]) with no caller cleanup", () => {
+    it('flags a function expression assigned to a const in a test file that wraps spawnSync("kspec", ["serve", "start", "--detach"]) with no caller cleanup', () => {
       // UNSAFE: function-expression-in-VariableDeclarator form (the
       // rule's `isInHelperFunction` matches `init.type ===
       // "FunctionExpression"` too). spawnSync argv-array form behind
@@ -5392,12 +5392,14 @@ describe("function expression wrapper hides detached spawnSync", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+      expect(result.output).toMatch(
+        /serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i,
+      );
     });
 
     // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
     // (allowed narrow case: explicit shared fixture path)
-    it("does not flag a function declaration that wraps spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) inside the shared daemon fixture (tests/helpers/daemon.ts)", () => {
+    it('does not flag a function declaration that wraps spawn("kspec", ["serve", "start", "--detach"]) inside the shared daemon fixture (tests/helpers/daemon.ts)', () => {
       // ALLOWED narrow: the shared fixture implementation lives at
       // `tests/helpers/daemon.ts`, which is on the rule's explicit
       // path allowlist. The rule never runs in that file at all, so
@@ -5422,7 +5424,7 @@ export function startTestDaemon(port: number) {
 
     // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
     // (allowed narrow case: inline detached start with proper cleanup is unchanged)
-    it("does not flag an inline runKspec(\"serve start --detach\") in a test body when pid is captured and onTestFinished cleanup is registered before any observation", () => {
+    it('does not flag an inline runKspec("serve start --detach") in a test body when pid is captured and onTestFinished cleanup is registered before any observation', () => {
       // ALLOWED narrow: the canonical safe inline shape — no wrapper,
       // pid captured inline, cleanup registered before any observation.
       // The fix to the wrapper boundary must not regress this baseline.
@@ -5445,7 +5447,7 @@ describe("inline detached start with proper cleanup", () => {
     });
 
     // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
-    it("flags an object shorthand-method wrapper that hides runKspec(\"serve start --detach\") even when the method body satisfies cleanup internally", () => {
+    it('flags an object shorthand-method wrapper that hides runKspec("serve start --detach") even when the method body satisfies cleanup internally', () => {
       // UNSAFE: cycle-9 reviewer probe. The detached start sits inside
       // `daemonHelper.start()` — a shorthand-method Property whose
       // `value` is a FunctionExpression. Even though the helper
@@ -5480,11 +5482,13 @@ describe("object shorthand method hides detached start", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+      expect(result.output).toMatch(
+        /serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i,
+      );
     });
 
     // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
-    it("flags a longhand object property whose value is a FunctionExpression wrapping runKspec(\"serve start --detach\")", () => {
+    it('flags a longhand object property whose value is a FunctionExpression wrapping runKspec("serve start --detach")', () => {
       // UNSAFE: longhand-property variant — `{ start: function () {...} }`.
       // The Property is `method: false`, but `value` is still a
       // FunctionExpression and the wrapper hides the same way as the
@@ -5512,11 +5516,13 @@ describe("object longhand function property hides detached start", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+      expect(result.output).toMatch(
+        /serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i,
+      );
     });
 
     // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
-    it("flags an arrow-function object property wrapping runKspec(\"serve start --detach\")", () => {
+    it('flags an arrow-function object property wrapping runKspec("serve start --detach")', () => {
       // UNSAFE: longhand-property variant where the value is an
       // ArrowFunctionExpression. Same Property/value match path as the
       // FunctionExpression variants.
@@ -5542,11 +5548,13 @@ describe("object arrow property hides detached start", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+      expect(result.output).toMatch(
+        /serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i,
+      );
     });
 
     // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
-    it("flags a class method wrapping runKspec(\"serve start --detach\") even when the method body satisfies cleanup internally", () => {
+    it('flags a class method wrapping runKspec("serve start --detach") even when the method body satisfies cleanup internally', () => {
       // UNSAFE: class-method variant. The detached start sits inside
       // `class DaemonHelper { start() {...} }` — a MethodDefinition
       // whose `value` is a FunctionExpression. The rule's predicate
@@ -5576,11 +5584,13 @@ describe("class method hides detached start", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+      expect(result.output).toMatch(
+        /serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i,
+      );
     });
 
     // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
-    it("flags a static class method wrapping runKspec(\"serve start --detach\")", () => {
+    it('flags a static class method wrapping runKspec("serve start --detach")', () => {
       // UNSAFE: static class-method variant. Still a MethodDefinition
       // whose `value` is a FunctionExpression — the static modifier
       // does not change the AST shape that the predicate inspects.
@@ -5606,11 +5616,13 @@ describe("static class method hides detached start", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+      expect(result.output).toMatch(
+        /serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i,
+      );
     });
 
     // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
-    it("flags a class field arrow wrapping runKspec(\"serve start --detach\")", () => {
+    it('flags a class field arrow wrapping runKspec("serve start --detach")', () => {
       // UNSAFE: class-field-arrow variant — `class C { start = () => {} }`.
       // The PropertyDefinition has `value: ArrowFunctionExpression`,
       // matched by the same predicate clause that handles MethodDefinition.
@@ -5637,11 +5649,13 @@ describe("class field arrow hides detached start", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+      expect(result.output).toMatch(
+        /serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i,
+      );
     });
 
     // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
-    it("flags a function reassigned to a member-expression target that wraps runKspec(\"serve start --detach\")", () => {
+    it('flags a function reassigned to a member-expression target that wraps runKspec("serve start --detach")', () => {
       // UNSAFE: assignment-to-member variant — `helper.start = function () {...}`.
       // The walk hits the FunctionExpression and inspects its parent;
       // the parent is an AssignmentExpression with a MemberExpression
@@ -5668,12 +5682,14 @@ describe("assigned member function hides detached start", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i);
+      expect(result.output).toMatch(
+        /serve start --detach|shared daemon fixture|startTestDaemon|scoped cleanup|approved helper/i,
+      );
     });
 
     // AC: @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit
     // (allowed narrow control: object/class methods inside the path-allowlisted shared fixture stay exempt)
-    it("does not flag an object-shorthand method that wraps spawn(\"kspec\", [\"serve\", \"start\", \"--detach\"]) inside the shared daemon fixture (tests/helpers/daemon.ts)", () => {
+    it('does not flag an object-shorthand method that wraps spawn("kspec", ["serve", "start", "--detach"]) inside the shared daemon fixture (tests/helpers/daemon.ts)', () => {
       // ALLOWED narrow: the shared fixture is path-allowlisted, so
       // method-shaped wrappers inside it remain exempt. The
       // boundary-tightening for ordinary test files must not leak
@@ -5748,7 +5764,9 @@ describe("auto-start ownership leak", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/implicit auto-started daemon|daemon pid file read|scoped cleanup/i);
+      expect(result.output).toMatch(
+        /implicit auto-started daemon|daemon pid file read|scoped cleanup/i,
+      );
     });
 
     // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
@@ -5773,7 +5791,9 @@ describe("auto-start ownership leak via helper", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/implicit auto-started daemon|daemon pid file read|scoped cleanup/i);
+      expect(result.output).toMatch(
+        /implicit auto-started daemon|daemon pid file read|scoped cleanup/i,
+      );
     });
 
     // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
@@ -5828,7 +5848,9 @@ describe("auto-start metadata leak", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/daemon connection metadata|implicit auto-started|scoped cleanup/i);
+      expect(result.output).toMatch(
+        /daemon connection metadata|implicit auto-started|scoped cleanup/i,
+      );
     });
 
     // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
@@ -6218,7 +6240,9 @@ describe("daemon endpoint fetch auto-start leak", () => {
       });
       expect(result.exitCode).not.toBe(0);
       expect(result.output).toContain("no-leaky-test-daemon");
-      expect(result.output).toMatch(/aliased daemon path|daemon endpoint fetch|implicit auto-started/i);
+      expect(result.output).toMatch(
+        /aliased daemon path|daemon endpoint fetch|implicit auto-started/i,
+      );
     });
 
     // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation

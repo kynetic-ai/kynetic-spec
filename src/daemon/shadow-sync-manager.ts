@@ -11,10 +11,7 @@
  */
 
 import { join } from "path";
-import {
-  ShadowSyncScheduler,
-  type ShadowSyncPubSub,
-} from "../parser/shadow-sync-scheduler.js";
+import { ShadowSyncScheduler, type ShadowSyncPubSub } from "../parser/shadow-sync-scheduler.js";
 
 export type { ShadowSyncPubSub } from "../parser/shadow-sync-scheduler.js";
 

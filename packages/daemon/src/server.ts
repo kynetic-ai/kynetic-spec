@@ -461,9 +461,7 @@ export function localhostOnly(options: LocalhostOnlyOptions = {}) {
     if (trimmed.length === 0) continue;
     // Accept bracketed IPv6 input from callers that pass URL-formatted hosts.
     const stripped =
-      trimmed.startsWith("[") && trimmed.endsWith("]")
-        ? trimmed.slice(1, -1)
-        : trimmed;
+      trimmed.startsWith("[") && trimmed.endsWith("]") ? trimmed.slice(1, -1) : trimmed;
     if (WILDCARD_HOSTS.has(stripped)) continue;
     allowed.add(stripped);
   }
@@ -974,13 +972,13 @@ export async function createServer(options: ServerOptions) {
   };
   if (isIpv6Literal(endpoint.bindHost)) {
     const OriginalURL = globalThis.URL;
-    function PatchedURL(input: ConstructorParameters<typeof URL>[0], base?: ConstructorParameters<typeof URL>[1]): URL {
+    function PatchedURL(
+      input: ConstructorParameters<typeof URL>[0],
+      base?: ConstructorParameters<typeof URL>[1],
+    ): URL {
       const fixed =
         typeof input === "string"
-          ? input.replace(
-              /^(https?:\/\/)([0-9a-fA-F]*:[0-9a-fA-F:]+)(:\d+)/,
-              "$1[$2]$3",
-            )
+          ? input.replace(/^(https?:\/\/)([0-9a-fA-F]*:[0-9a-fA-F:]+)(:\d+)/, "$1[$2]$3")
           : input;
       return new OriginalURL(fixed, base);
     }

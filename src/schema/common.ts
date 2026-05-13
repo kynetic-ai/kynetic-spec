@@ -30,7 +30,10 @@ export const SlugSchema = z.string().regex(slugPattern, "Invalid slug format");
 export const RefSchema = z.string().regex(refPattern, "Invalid reference format");
 export const AcIdSchema = z
   .string()
-  .regex(acIdPattern, 'AC ID must use ac-prefixed kebab-case format (e.g. "ac-1", "ac-my-criterion")');
+  .regex(
+    acIdPattern,
+    'AC ID must use ac-prefixed kebab-case format (e.g. "ac-1", "ac-my-criterion")',
+  );
 
 // Priority can be string or number
 export const PrioritySchema = z.union([

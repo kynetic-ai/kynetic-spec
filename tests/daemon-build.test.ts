@@ -252,9 +252,7 @@ describe("daemon build pipeline", { timeout: 180_000 }, () => {
       const available = await isDaemonRuntimeAvailable(runtimeName);
       if (!available) {
         if (isRequired) {
-          throw new Error(
-            `Required daemon runtime "${runtimeName}" is not available on PATH`,
-          );
+          throw new Error(`Required daemon runtime "${runtimeName}" is not available on PATH`);
         }
         // ac-missing-optional-runtime-skips — surface missing optional runtime
         // without failing the generic Node coverage path.
@@ -265,24 +263,21 @@ describe("daemon build pipeline", { timeout: 180_000 }, () => {
       project = await createTestDaemonProject({ skipFixtures: true, webUiDir: null });
       project.webUiDir = makeRuntimeWebUiDir(project.tempDir);
 
-      daemon = await startTestDaemon(
-        project,
-        {
-          runtime: runtimeName,
-          // The static-asset assertions below depend on routing, not on the
-          // entity cache being warm. Use health-only readiness so the smoke
-          // test stays focused on the build artifact integrity.
-          readiness: { mode: "health" },
-          extraEnv: {
-            KSPEC_DAEMON_RUNTIME: runtimeName,
-          },
-          registerCleanup: (stop) => {
-            onTestFinished(async () => {
-              await stop();
-            });
-          },
+      daemon = await startTestDaemon(project, {
+        runtime: runtimeName,
+        // The static-asset assertions below depend on routing, not on the
+        // entity cache being warm. Use health-only readiness so the smoke
+        // test stays focused on the build artifact integrity.
+        readiness: { mode: "health" },
+        extraEnv: {
+          KSPEC_DAEMON_RUNTIME: runtimeName,
         },
-      );
+        registerCleanup: (stop) => {
+          onTestFinished(async () => {
+            await stop();
+          });
+        },
+      });
       const fetchCtx = { runtime: runtimeName, daemon } as const;
 
       const healthResponse = await boundedFetch(`${daemon.apiUrl}/api/health`, {
@@ -302,19 +297,19 @@ describe("daemon build pipeline", { timeout: 180_000 }, () => {
       });
       expect(spaResponse.status).toBe(200);
       expect(spaResponse.headers.get("content-type")).toContain("text/html");
-      expect(
-        await readBoundedText(spaResponse, { ...fetchCtx, step: "spa route" }),
-      ).toContain("runtime-ui");
-
-      const assetResponse = await boundedFetch(
-        `${daemon.apiUrl}/_app/immutable/entry/start.js`,
-        { ...fetchCtx, step: "spa asset" },
+      expect(await readBoundedText(spaResponse, { ...fetchCtx, step: "spa route" })).toContain(
+        "runtime-ui",
       );
+
+      const assetResponse = await boundedFetch(`${daemon.apiUrl}/_app/immutable/entry/start.js`, {
+        ...fetchCtx,
+        step: "spa asset",
+      });
       expect(assetResponse.status).toBe(200);
       expect(assetResponse.headers.get("content-type")).toContain("javascript");
-      expect(
-        await readBoundedText(assetResponse, { ...fetchCtx, step: "spa asset" }),
-      ).toContain('console.log("runtime-ui")');
+      expect(await readBoundedText(assetResponse, { ...fetchCtx, step: "spa asset" })).toContain(
+        'console.log("runtime-ui")',
+      );
 
       const faviconResponse = await boundedFetch(`${daemon.apiUrl}/favicon.ico`, {
         ...fetchCtx,
@@ -322,24 +317,24 @@ describe("daemon build pipeline", { timeout: 180_000 }, () => {
       });
       expect(faviconResponse.status).toBe(200);
       expect(faviconResponse.headers.get("content-type")).toContain("image/");
-      expect(
-        await readBoundedText(faviconResponse, { ...fetchCtx, step: "favicon.ico" }),
-      ).toBe("ico");
-
-      const favicon32Response = await boundedFetch(
-        `${daemon.apiUrl}/favicon-32.png`,
-        { ...fetchCtx, step: "favicon-32.png" },
+      expect(await readBoundedText(faviconResponse, { ...fetchCtx, step: "favicon.ico" })).toBe(
+        "ico",
       );
+
+      const favicon32Response = await boundedFetch(`${daemon.apiUrl}/favicon-32.png`, {
+        ...fetchCtx,
+        step: "favicon-32.png",
+      });
       expect(favicon32Response.status).toBe(200);
       expect(favicon32Response.headers.get("content-type")).toContain("image/png");
       expect(
         await readBoundedText(favicon32Response, { ...fetchCtx, step: "favicon-32.png" }),
       ).toBe("png32");
 
-      const favicon192Response = await boundedFetch(
-        `${daemon.apiUrl}/favicon-192.png`,
-        { ...fetchCtx, step: "favicon-192.png" },
-      );
+      const favicon192Response = await boundedFetch(`${daemon.apiUrl}/favicon-192.png`, {
+        ...fetchCtx,
+        step: "favicon-192.png",
+      });
       expect(favicon192Response.status).toBe(200);
       expect(favicon192Response.headers.get("content-type")).toContain("image/png");
       expect(

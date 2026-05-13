@@ -874,12 +874,7 @@ reviews:
     expect(verdictBody.disposition).toBe("changes_requested");
 
     // Step 2: Immediately read the task through the cache-backed GET endpoint
-    const taskResponse = await requestJson(
-      app,
-      tempDir,
-      "GET",
-      `/api/tasks/${CONSIST_TASK_ULID}`,
-    );
+    const taskResponse = await requestJson(app, tempDir, "GET", `/api/tasks/${CONSIST_TASK_ULID}`);
 
     expect(taskResponse.status).toBe(200);
     const taskBody = await taskResponse.json();
@@ -908,12 +903,7 @@ reviews:
     expect(verdictBody.disposition).toBe("approved");
 
     // Task should still be in pending_review — approve doesn't transition it
-    const taskResponse = await requestJson(
-      app,
-      tempDir,
-      "GET",
-      `/api/tasks/${CONSIST_TASK_ULID}`,
-    );
+    const taskResponse = await requestJson(app, tempDir, "GET", `/api/tasks/${CONSIST_TASK_ULID}`);
 
     expect(taskResponse.status).toBe(200);
     const taskBody = await taskResponse.json();

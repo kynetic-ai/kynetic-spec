@@ -311,9 +311,7 @@ describe("mock daemon helper — contract", () => {
   it("stop() removes helper-allocated record files in child-process mode", async () => {
     const tmp = process.env.TMPDIR ?? process.env.TEMP ?? tmpdir();
     const snapshot = (): Set<string> =>
-      new Set(
-        readdirSync(tmp).filter((name) => name.startsWith("kspec-mock-daemon-")),
-      );
+      new Set(readdirSync(tmp).filter((name) => name.startsWith("kspec-mock-daemon-")));
 
     const beforeStart = snapshot();
 
@@ -624,57 +622,54 @@ describe("mock daemon helper — bounded child stop contract", () => {
   // AC: @daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded
   // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
   // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
-  it(
-    "stop() does not resolve until an uncooperative child has been observed terminated",
-    async () => {
-      const pidFile = join(tempDir, "uncooperative-child.pid");
+  it("stop() does not resolve until an uncooperative child has been observed terminated", async () => {
+    const pidFile = join(tempDir, "uncooperative-child.pid");
 
-      // The child writes its pid synchronously at startup and installs
-      // no-op SIGTERM/SIGINT/SIGHUP handlers via --ignore-sigterm so the
-      // helper must escalate to SIGKILL inside stop().
-      const child = await startMockDaemon({
-        asChildProcess: true,
-        __testInjectArgs: ["--ignore-sigterm", "--pid-file", pidFile],
-      });
-      expect(child).not.toBeNull();
-      expect(existsSync(pidFile)).toBe(true);
-      const childPid = Number.parseInt(readFileSync(pidFile, "utf8"), 10);
-      expect(Number.isFinite(childPid)).toBe(true);
-      expect(childPid).toBeGreaterThan(0);
-      expect(isProcessAlive(childPid)).toBe(true);
+    // The child writes its pid synchronously at startup and installs
+    // no-op SIGTERM/SIGINT/SIGHUP handlers via --ignore-sigterm so the
+    // helper must escalate to SIGKILL inside stop().
+    const child = await startMockDaemon({
+      asChildProcess: true,
+      __testInjectArgs: ["--ignore-sigterm", "--pid-file", pidFile],
+    });
+    expect(child).not.toBeNull();
+    expect(existsSync(pidFile)).toBe(true);
+    const childPid = Number.parseInt(readFileSync(pidFile, "utf8"), 10);
+    expect(Number.isFinite(childPid)).toBe(true);
+    expect(childPid).toBeGreaterThan(0);
+    expect(isProcessAlive(childPid)).toBe(true);
 
-      // Belt-and-suspenders: force-kill on test exit if the regression
-      // leaves the child alive after stop() returns.
-      onTestFinished(() => {
-        if (isProcessAlive(childPid)) ensureProcessReaped(childPid);
-      });
+    // Belt-and-suspenders: force-kill on test exit if the regression
+    // leaves the child alive after stop() returns.
+    onTestFinished(() => {
+      if (isProcessAlive(childPid)) ensureProcessReaped(childPid);
+    });
 
-      const stopStartedAt = Date.now();
-      await child!.stop();
-      const elapsed = Date.now() - stopStartedAt;
+    const stopStartedAt = Date.now();
+    await child!.stop();
+    const elapsed = Date.now() - stopStartedAt;
 
-      // ac-stop-observes-termination-before-return: stop() resolves only
-      // after the OS pid has been observed terminated (kill(pid, 0)
-      // throws ESRCH). Pre-fix the helper finalised from the SIGKILL
-      // timer callback before the exit event fired and left the pid in
-      // the process table; post-fix the bounded primitive waits for the
-      // exit observation.
-      expect(
-        isProcessAlive(childPid),
-        `stop() must not resolve until pid ${childPid} has been observed terminated`,
-      ).toBe(false);
+    // ac-stop-observes-termination-before-return: stop() resolves only
+    // after the OS pid has been observed terminated (kill(pid, 0)
+    // throws ESRCH). Pre-fix the helper finalised from the SIGKILL
+    // timer callback before the exit event fired and left the pid in
+    // the process table; post-fix the bounded primitive waits for the
+    // exit observation.
+    expect(
+      isProcessAlive(childPid),
+      `stop() must not resolve until pid ${childPid} has been observed terminated`,
+    ).toBe(false);
 
-      // ac-uncooperative-process-stop-is-bounded: helper must reach
-      // a bounded outcome. 6s is generous for slow CI without masking
-      // a regression that hangs the wait. Pre-fix returns near the
-      // CHILD_GRACEFUL_KILL_MS budget (1500ms); post-fix returns
-      // shortly thereafter — both well under 6s.
-      expect(elapsed).toBeLessThan(6_000);
+    // ac-uncooperative-process-stop-is-bounded: helper must reach
+    // a bounded outcome. 6s is generous for slow CI without masking
+    // a regression that hangs the wait. Pre-fix returns near the
+    // CHILD_GRACEFUL_KILL_MS budget (1500ms); post-fix returns
+    // shortly thereafter — both well under 6s.
+    expect(elapsed).toBeLessThan(6_000);
 
-      // Idempotent stop after observation.
-      await expect(child!.stop()).resolves.toBeUndefined();
-    },
-  );
+    // Idempotent stop after observation.
+    await expect(child!.stop()).resolves.toBeUndefined();
+  });
 });
 
 /**
@@ -726,67 +721,64 @@ describe("mock daemon helper — active-request teardown contract", () => {
   // close callback until every accepted connection drained, so a hung
   // request kept the close pending forever; the bounded teardown contract
   // in mock-daemon.ts must keep the resolution well inside `BOUND_MS`.
-  it(
-    "in-process stop() reaches a bounded outcome when an active request is hanging",
-    async () => {
-      const mock = (await startMockDaemon({ mode: "hang" })) ?? undefined;
-      expect(mock).toBeDefined();
+  it("in-process stop() reaches a bounded outcome when an active request is hanging", async () => {
+    const mock = (await startMockDaemon({ mode: "hang" })) ?? undefined;
+    expect(mock).toBeDefined();
 
-      // Belt-and-suspenders: a future fix that resolves stop() but leaves
-      // a socket dangling should still tear down before afterEach.
-      const controller = new AbortController();
-      onTestFinished(async () => {
-        controller.abort();
-        if (mock) {
-          // Idempotent stop covers the case where the Promise.race below
-          // observed a timeout and the outer stop() is still pending.
-          await mock.stop();
-        }
-      });
-
-      // Issue a hang request and intentionally hold the promise — the
-      // server's handler stalls so Node keeps the connection open. We do
-      // NOT await this promise; the test only needs the request in flight.
-      const hangRequest = fetch(`${mock!.apiUrl}/api/command`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ command: "task list" }),
-        signal: controller.signal,
-      }).catch(() => {
-        // Swallow the AbortError from cleanup; the test is about teardown
-        // boundedness, not the response.
-      });
-
-      // Brief delay so the request reaches the listener and `server.close`
-      // sees an active connection before stop() runs.
-      await new Promise((resolveDelay) => setTimeout(resolveDelay, 100));
-
-      const BOUND_MS = 1_500;
-      const stopStartedAt = Date.now();
-      const stopOutcome = await Promise.race([
-        mock!.stop().then(() => "stopped" as const),
-        new Promise<"timeout">((resolveTimeout) =>
-          setTimeout(() => resolveTimeout("timeout"), BOUND_MS),
-        ),
-      ]);
-      const elapsed = Date.now() - stopStartedAt;
-
-      // Cancel the in-flight request so any future fix can finalize
-      // server.close() during the lingering stop() invocation. Awaiting
-      // hangRequest also ensures the response side has settled before we
-      // assert on the outcome.
+    // Belt-and-suspenders: a future fix that resolves stop() but leaves
+    // a socket dangling should still tear down before afterEach.
+    const controller = new AbortController();
+    onTestFinished(async () => {
       controller.abort();
-      await hangRequest;
+      if (mock) {
+        // Idempotent stop covers the case where the Promise.race below
+        // observed a timeout and the outer stop() is still pending.
+        await mock.stop();
+      }
+    });
 
-      // ac-active-requests-do-not-block-teardown: stop() must reach a
-      // bounded terminal outcome regardless of in-flight connections.
-      // Today this assertion fails because Promise.race observes "timeout"
-      // — server.close() never resolves while the hang handler holds the
-      // socket open.
-      expect(stopOutcome).toBe("stopped");
-      expect(elapsed).toBeLessThan(BOUND_MS);
-    },
-  );
+    // Issue a hang request and intentionally hold the promise — the
+    // server's handler stalls so Node keeps the connection open. We do
+    // NOT await this promise; the test only needs the request in flight.
+    const hangRequest = fetch(`${mock!.apiUrl}/api/command`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ command: "task list" }),
+      signal: controller.signal,
+    }).catch(() => {
+      // Swallow the AbortError from cleanup; the test is about teardown
+      // boundedness, not the response.
+    });
+
+    // Brief delay so the request reaches the listener and `server.close`
+    // sees an active connection before stop() runs.
+    await new Promise((resolveDelay) => setTimeout(resolveDelay, 100));
+
+    const BOUND_MS = 1_500;
+    const stopStartedAt = Date.now();
+    const stopOutcome = await Promise.race([
+      mock!.stop().then(() => "stopped" as const),
+      new Promise<"timeout">((resolveTimeout) =>
+        setTimeout(() => resolveTimeout("timeout"), BOUND_MS),
+      ),
+    ]);
+    const elapsed = Date.now() - stopStartedAt;
+
+    // Cancel the in-flight request so any future fix can finalize
+    // server.close() during the lingering stop() invocation. Awaiting
+    // hangRequest also ensures the response side has settled before we
+    // assert on the outcome.
+    controller.abort();
+    await hangRequest;
+
+    // ac-active-requests-do-not-block-teardown: stop() must reach a
+    // bounded terminal outcome regardless of in-flight connections.
+    // Today this assertion fails because Promise.race observes "timeout"
+    // — server.close() never resolves while the hang handler holds the
+    // socket open.
+    expect(stopOutcome).toBe("stopped");
+    expect(elapsed).toBeLessThan(BOUND_MS);
+  });
 
   // AC: @daemon-test-teardown-boundedness ac-active-requests-do-not-block-teardown
   // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
@@ -801,9 +793,7 @@ describe("mock daemon helper — active-request teardown contract", () => {
     "child stop() reaches a bounded outcome when the child has an active hang request",
     { timeout: 10_000 },
     async () => {
-      const child =
-        (await startMockDaemon({ asChildProcess: true, mode: "hang" })) ??
-        undefined;
+      const child = (await startMockDaemon({ asChildProcess: true, mode: "hang" })) ?? undefined;
       expect(child).toBeDefined();
 
       const controller = new AbortController();
@@ -904,47 +894,44 @@ describe("mock daemon helper — active-request teardown contract", () => {
   // TCP timeout (~75s on Linux). A cleanup-bound signal still releases
   // any in-flight socket on `onTestFinished` so the test suite stays
   // bounded even if a future regression drops the helper's internal abort.
-  it(
-    "boundedDaemonFetch against a hang endpoint reaches a bounded outcome within a focused test budget",
-    async () => {
-      const mock = (await startMockDaemon({ mode: "hang" })) ?? undefined;
-      expect(mock).toBeDefined();
+  it("boundedDaemonFetch against a hang endpoint reaches a bounded outcome within a focused test budget", async () => {
+    const mock = (await startMockDaemon({ mode: "hang" })) ?? undefined;
+    expect(mock).toBeDefined();
 
-      const cleanupController = new AbortController();
-      onTestFinished(async () => {
-        cleanupController.abort();
-        if (mock) await mock.stop();
-      });
+    const cleanupController = new AbortController();
+    onTestFinished(async () => {
+      cleanupController.abort();
+      if (mock) await mock.stop();
+    });
 
-      // The helper aborts internally after `timeoutMs`. The outer race
-      // timer is a safety bound that should never fire — its purpose is
-      // to keep the test bounded if a future regression drops the
-      // helper's internal abort.
-      const HELPER_TIMEOUT_MS = 200;
-      const BUDGET_MS = 800;
-      const startedAt = Date.now();
-      const outcome = await Promise.race([
-        boundedDaemonFetch(`${mock!.apiUrl}/api/command`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ command: "task list" }),
-          timeoutMs: HELPER_TIMEOUT_MS,
-          signal: cleanupController.signal,
-        })
-          .then(() => "responded" as const)
-          .catch(() => "errored" as const),
-        new Promise<"timeout">((resolveTimeout) =>
-          setTimeout(() => resolveTimeout("timeout"), BUDGET_MS),
-        ),
-      ]);
-      const elapsed = Date.now() - startedAt;
+    // The helper aborts internally after `timeoutMs`. The outer race
+    // timer is a safety bound that should never fire — its purpose is
+    // to keep the test bounded if a future regression drops the
+    // helper's internal abort.
+    const HELPER_TIMEOUT_MS = 200;
+    const BUDGET_MS = 800;
+    const startedAt = Date.now();
+    const outcome = await Promise.race([
+      boundedDaemonFetch(`${mock!.apiUrl}/api/command`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ command: "task list" }),
+        timeoutMs: HELPER_TIMEOUT_MS,
+        signal: cleanupController.signal,
+      })
+        .then(() => "responded" as const)
+        .catch(() => "errored" as const),
+      new Promise<"timeout">((resolveTimeout) =>
+        setTimeout(() => resolveTimeout("timeout"), BUDGET_MS),
+      ),
+    ]);
+    const elapsed = Date.now() - startedAt;
 
-      // ac-daemon-observations-are-bounded: the helper aborts the request
-      // internally, so the consumer observes an "errored" outcome well
-      // inside the outer budget. A "timeout" would mean the helper
-      // failed to enforce its own bound.
-      expect(outcome).toBe("errored");
-      expect(elapsed).toBeLessThan(BUDGET_MS);
-    },
-  );
+    // ac-daemon-observations-are-bounded: the helper aborts the request
+    // internally, so the consumer observes an "errored" outcome well
+    // inside the outer budget. A "timeout" would mean the helper
+    // failed to enforce its own bound.
+    expect(outcome).toBe("errored");
+    expect(elapsed).toBeLessThan(BUDGET_MS);
+  });
 });

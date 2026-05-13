@@ -250,9 +250,7 @@ export interface InlineProjectFiles {
  */
 export function setupInlineFixtures(tempDir: string, files: InlineProjectFiles = {}): void {
   if (files.tasksFile !== undefined && files.splitTasks !== undefined) {
-    throw new Error(
-      "setupInlineFixtures: provide either tasksFile or splitTasks, not both",
-    );
+    throw new Error("setupInlineFixtures: provide either tasksFile or splitTasks, not both");
   }
 
   mkdirSync(path.join(tempDir, ".kspec"), { recursive: true });
@@ -269,10 +267,7 @@ export function setupInlineFixtures(tempDir: string, files: InlineProjectFiles =
   // The default manifest includes modules/test.yaml — make sure that file
   // exists even when the caller did not provide a modules override, so
   // includes resolution does not 500.
-  if (
-    files.manifest === undefined &&
-    !Object.prototype.hasOwnProperty.call(modules, "test.yaml")
-  ) {
+  if (files.manifest === undefined && !Object.prototype.hasOwnProperty.call(modules, "test.yaml")) {
     writeFileSync(path.join(tempDir, "modules", "test.yaml"), "features: []\n");
   }
 

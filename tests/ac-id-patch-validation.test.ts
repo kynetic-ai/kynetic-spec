@@ -26,14 +26,8 @@ describe("AC ID patch validation", () => {
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
     // Create test items for patching
-    kspec(
-      'item add --under @test-core --title "Patch Target A" --slug patch-target-a',
-      tempDir,
-    );
-    kspec(
-      'item add --under @test-core --title "Patch Target B" --slug patch-target-b',
-      tempDir,
-    );
+    kspec('item add --under @test-core --title "Patch Target A" --slug patch-target-a', tempDir);
+    kspec('item add --under @test-core --title "Patch Target B" --slug patch-target-b', tempDir);
     // Add a valid AC to target A for verification of preservation
     kspec(
       'item ac add @patch-target-a --id "ac-existing" --given "g" --when "w" --then "t"',
@@ -50,36 +44,26 @@ describe("AC ID patch validation", () => {
   describe("validateSpecItemPatchData helper", () => {
     it("returns null for valid patch data with valid AC IDs", () => {
       const result = validateSpecItemPatchData({
-        acceptance_criteria: [
-          { id: "ac-valid", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "ac-valid", given: "g", when: "w", then: "t" }],
       });
       expect(result).toBeNull();
     });
 
     it("returns error string for invalid AC IDs in patch data", () => {
       const result = validateSpecItemPatchData({
-        acceptance_criteria: [
-          { id: "INVALID", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "INVALID", given: "g", when: "w", then: "t" }],
       });
       expect(result).not.toBeNull();
       expect(result).toContain("ac-prefixed kebab-case");
     });
 
     it("rejects unknown fields when allowUnknown is false", () => {
-      const result = validateSpecItemPatchData(
-        { custom_field: "value" },
-        { allowUnknown: false },
-      );
+      const result = validateSpecItemPatchData({ custom_field: "value" }, { allowUnknown: false });
       expect(result).not.toBeNull();
     });
 
     it("allows unknown fields when allowUnknown is true", () => {
-      const result = validateSpecItemPatchData(
-        { custom_field: "value" },
-        { allowUnknown: true },
-      );
+      const result = validateSpecItemPatchData({ custom_field: "value" }, { allowUnknown: true });
       expect(result).toBeNull();
     });
 
@@ -87,9 +71,7 @@ describe("AC ID patch validation", () => {
       const result = validateSpecItemPatchData(
         {
           custom_field: "value",
-          acceptance_criteria: [
-            { id: "INVALID", given: "g", when: "w", then: "t" },
-          ],
+          acceptance_criteria: [{ id: "INVALID", given: "g", when: "w", then: "t" }],
         },
         { allowUnknown: true },
       );
@@ -106,9 +88,7 @@ describe("AC ID patch validation", () => {
             {
               _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
               title: "Nested Feature",
-              acceptance_criteria: [
-                { id: "BAD-ID", given: "g", when: "w", then: "t" },
-              ],
+              acceptance_criteria: [{ id: "BAD-ID", given: "g", when: "w", then: "t" }],
             },
           ],
         },
@@ -130,9 +110,7 @@ describe("AC ID patch validation", () => {
                 {
                   _ulid: "01BBBBBBBBBBBBBBBBBBBBBTEST",
                   title: "Requirement",
-                  acceptance_criteria: [
-                    { id: "INVALID-DEEP", given: "g", when: "w", then: "t" },
-                  ],
+                  acceptance_criteria: [{ id: "INVALID-DEEP", given: "g", when: "w", then: "t" }],
                 },
               ],
             },
@@ -152,9 +130,7 @@ describe("AC ID patch validation", () => {
             {
               _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
               title: "Feature",
-              acceptance_criteria: [
-                { id: "ac-nested-valid", given: "g", when: "w", then: "t" },
-              ],
+              acceptance_criteria: [{ id: "ac-nested-valid", given: "g", when: "w", then: "t" }],
             },
           ],
         },
@@ -169,9 +145,7 @@ describe("AC ID patch validation", () => {
           {
             _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
             title: "Feature",
-            acceptance_criteria: [
-              { id: "BAD-ID", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "BAD-ID", given: "g", when: "w", then: "t" }],
           },
         ],
       });
@@ -187,9 +161,7 @@ describe("AC ID patch validation", () => {
             {
               _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
               title: "Feature",
-              acceptance_criteria: [
-                { given: "g", when: "w", then: "t" },
-              ],
+              acceptance_criteria: [{ given: "g", when: "w", then: "t" }],
             },
           ],
         },
@@ -207,9 +179,7 @@ describe("AC ID patch validation", () => {
             {
               _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
               title: "Feature",
-              acceptance_criteria: [
-                { id: "ac-valid", given: "g", when: "w" },
-              ],
+              acceptance_criteria: [{ id: "ac-valid", given: "g", when: "w" }],
             },
           ],
         },
@@ -227,9 +197,7 @@ describe("AC ID patch validation", () => {
             {
               _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
               title: "Feature",
-              acceptance_criteria: [
-                { id: "ac-valid" },
-              ],
+              acceptance_criteria: [{ id: "ac-valid" }],
             },
           ],
         },
@@ -307,45 +275,31 @@ describe("AC ID patch validation", () => {
   describe("single item patch rejects invalid AC IDs", () => {
     it("rejects invalid AC ID in real mode", () => {
       const data = JSON.stringify({
-        acceptance_criteria: [
-          { id: "INVALID-ID", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "INVALID-ID", given: "g", when: "w", then: "t" }],
       });
-      const result = kspec(
-        `item patch @patch-target-a --data '${data}'`,
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspec(`item patch @patch-target-a --data '${data}'`, tempDir, {
+        expectFail: true,
+      });
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("ac-prefixed kebab-case");
     });
 
     it("rejects invalid AC ID in dry-run mode", () => {
       const data = JSON.stringify({
-        acceptance_criteria: [
-          { id: "bad_id", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "bad_id", given: "g", when: "w", then: "t" }],
       });
-      const result = kspec(
-        `item patch @patch-target-a --data '${data}' --dry-run`,
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspec(`item patch @patch-target-a --data '${data}' --dry-run`, tempDir, {
+        expectFail: true,
+      });
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("ac-prefixed kebab-case");
     });
 
     it("does not mutate the item when AC ID is invalid", () => {
       const data = JSON.stringify({
-        acceptance_criteria: [
-          { id: "INVALID", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "INVALID", given: "g", when: "w", then: "t" }],
       });
-      kspec(
-        `item patch @patch-target-a --data '${data}'`,
-        tempDir,
-        { expectFail: true },
-      );
+      kspec(`item patch @patch-target-a --data '${data}'`, tempDir, { expectFail: true });
       // Original AC should be preserved
       const item = kspecJson<{ acceptance_criteria: Array<{ id: string }> }>(
         "item get @patch-target-a",
@@ -357,14 +311,9 @@ describe("AC ID patch validation", () => {
 
     it("accepts valid AC IDs in patch", () => {
       const data = JSON.stringify({
-        acceptance_criteria: [
-          { id: "ac-new-valid", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "ac-new-valid", given: "g", when: "w", then: "t" }],
       });
-      const result = kspec(
-        `item patch @patch-target-a --data '${data}'`,
-        tempDir,
-      );
+      const result = kspec(`item patch @patch-target-a --data '${data}'`, tempDir);
       expect(result.exitCode).toBe(0);
       const item = kspecJson<{ acceptance_criteria: Array<{ id: string }> }>(
         "item get @patch-target-a",
@@ -380,31 +329,22 @@ describe("AC ID patch validation", () => {
   describe("--allow-unknown rejects invalid AC IDs for known fields", () => {
     it("rejects invalid AC ID even with --allow-unknown", () => {
       const data = JSON.stringify({
-        acceptance_criteria: [
-          { id: "INVALID", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "INVALID", given: "g", when: "w", then: "t" }],
         custom_extension: "allowed",
       });
-      const result = kspec(
-        `item patch @patch-target-a --data '${data}' --allow-unknown`,
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspec(`item patch @patch-target-a --data '${data}' --allow-unknown`, tempDir, {
+        expectFail: true,
+      });
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("ac-prefixed kebab-case");
     });
 
     it("allows unknown fields with valid AC IDs under --allow-unknown", () => {
       const data = JSON.stringify({
-        acceptance_criteria: [
-          { id: "ac-valid-with-ext", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "ac-valid-with-ext", given: "g", when: "w", then: "t" }],
         custom_extension: "allowed",
       });
-      const result = kspec(
-        `item patch @patch-target-a --data '${data}' --allow-unknown`,
-        tempDir,
-      );
+      const result = kspec(`item patch @patch-target-a --data '${data}' --allow-unknown`, tempDir);
       expect(result.exitCode).toBe(0);
     });
 
@@ -415,17 +355,13 @@ describe("AC ID patch validation", () => {
           {
             _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
             title: "Nested Feature",
-            acceptance_criteria: [
-              { id: "BAD-ID", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "BAD-ID", given: "g", when: "w", then: "t" }],
           },
         ],
       });
-      const result = kspec(
-        `item patch @test-core --data '${data}' --allow-unknown`,
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspec(`item patch @test-core --data '${data}' --allow-unknown`, tempDir, {
+        expectFail: true,
+      });
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("ac-prefixed kebab-case");
     });
@@ -441,19 +377,15 @@ describe("AC ID patch validation", () => {
               {
                 _ulid: "01BBBBBBBBBBBBBBBBBBBBBTEST",
                 title: "Requirement",
-                acceptance_criteria: [
-                  { id: "INVALID-DEEP", given: "g", when: "w", then: "t" },
-                ],
+                acceptance_criteria: [{ id: "INVALID-DEEP", given: "g", when: "w", then: "t" }],
               },
             ],
           },
         ],
       });
-      const result = kspec(
-        `item patch @test-core --data '${data}' --allow-unknown`,
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspec(`item patch @test-core --data '${data}' --allow-unknown`, tempDir, {
+        expectFail: true,
+      });
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("ac-prefixed kebab-case");
     });
@@ -464,16 +396,11 @@ describe("AC ID patch validation", () => {
           {
             _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
             title: "Nested Feature",
-            acceptance_criteria: [
-              { id: "ac-nested-valid", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "ac-nested-valid", given: "g", when: "w", then: "t" }],
           },
         ],
       });
-      const result = kspec(
-        `item patch @test-core --data '${data}' --allow-unknown`,
-        tempDir,
-      );
+      const result = kspec(`item patch @test-core --data '${data}' --allow-unknown`, tempDir);
       expect(result.exitCode).toBe(0);
     });
 
@@ -484,17 +411,13 @@ describe("AC ID patch validation", () => {
           {
             _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
             title: "Feature",
-            acceptance_criteria: [
-              { given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ given: "g", when: "w", then: "t" }],
           },
         ],
       });
-      const result = kspec(
-        `item patch @test-core --data '${data}' --allow-unknown`,
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspec(`item patch @test-core --data '${data}' --allow-unknown`, tempDir, {
+        expectFail: true,
+      });
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("Required");
     });
@@ -510,11 +433,9 @@ describe("AC ID patch validation", () => {
           },
         ],
       });
-      const result = kspec(
-        `item patch @test-core --data '${data}' --allow-unknown`,
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspec(`item patch @test-core --data '${data}' --allow-unknown`, tempDir, {
+        expectFail: true,
+      });
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("Expected array");
     });
@@ -526,17 +447,13 @@ describe("AC ID patch validation", () => {
           {
             _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
             title: "Feature",
-            acceptance_criteria: [
-              { id: "ac-valid", given: "g", when: "w" },
-            ],
+            acceptance_criteria: [{ id: "ac-valid", given: "g", when: "w" }],
           },
         ],
       });
-      const result = kspec(
-        `item patch @test-core --data '${data}' --allow-unknown`,
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspec(`item patch @test-core --data '${data}' --allow-unknown`, tempDir, {
+        expectFail: true,
+      });
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("Required");
     });
@@ -551,17 +468,14 @@ describe("AC ID patch validation", () => {
         {
           ref: "@patch-target-a",
           data: {
-            acceptance_criteria: [
-              { id: "INVALID", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "INVALID", given: "g", when: "w", then: "t" }],
           },
         },
       ]);
-      const result = kspec(
-        "item patch --bulk --dry-run",
-        tempDir,
-        { stdin: patches, expectFail: true },
-      );
+      const result = kspec("item patch --bulk --dry-run", tempDir, {
+        stdin: patches,
+        expectFail: true,
+      });
       expect(result.exitCode).not.toBe(0);
       // Should report as ERR, not OK/Would patch
       expect(result.stdout).toContain("ERR");
@@ -573,17 +487,14 @@ describe("AC ID patch validation", () => {
         {
           ref: "@patch-target-a",
           data: {
-            acceptance_criteria: [
-              { id: "bad-FORMAT", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "bad-FORMAT", given: "g", when: "w", then: "t" }],
           },
         },
       ]);
-      const result = kspec(
-        "item patch --bulk --dry-run --json",
-        tempDir,
-        { stdin: patches, expectFail: true },
-      );
+      const result = kspec("item patch --bulk --dry-run --json", tempDir, {
+        stdin: patches,
+        expectFail: true,
+      });
       expect(result.exitCode).not.toBe(0);
       const json = JSON.parse(result.stdout);
       expect(json.summary.failed).toBe(1);
@@ -602,17 +513,11 @@ describe("AC ID patch validation", () => {
         {
           ref: "@patch-target-a",
           data: {
-            acceptance_criteria: [
-              { id: "INVALID", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "INVALID", given: "g", when: "w", then: "t" }],
           },
         },
       ]);
-      kspec(
-        "item patch --bulk",
-        tempDir,
-        { stdin: patches, expectFail: true },
-      );
+      kspec("item patch --bulk", tempDir, { stdin: patches, expectFail: true });
       // Original AC should be preserved
       const item = kspecJson<{ acceptance_criteria: Array<{ id: string }> }>(
         "item get @patch-target-a",
@@ -632,9 +537,7 @@ describe("AC ID patch validation", () => {
         {
           ref: "@patch-target-a",
           data: {
-            acceptance_criteria: [
-              { id: "INVALID", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "INVALID", given: "g", when: "w", then: "t" }],
           },
         },
         {
@@ -644,11 +547,10 @@ describe("AC ID patch validation", () => {
           },
         },
       ]);
-      const result = kspec(
-        "item patch --bulk --json",
-        tempDir,
-        { stdin: patches, expectFail: true },
-      );
+      const result = kspec("item patch --bulk --json", tempDir, {
+        stdin: patches,
+        expectFail: true,
+      });
       const json = JSON.parse(result.stdout);
       expect(json.summary.failed).toBe(1);
       expect(json.summary.updated).toBe(1);
@@ -656,10 +558,7 @@ describe("AC ID patch validation", () => {
       expect(json.results[1].status).toBe("updated");
 
       // Verify the valid operation was applied
-      const itemB = kspecJson<{ title: string }>(
-        "item get @patch-target-b",
-        tempDir,
-      );
+      const itemB = kspecJson<{ title: string }>("item get @patch-target-b", tempDir);
       expect(itemB.title).toBe("Updated Title B");
     });
 
@@ -668,9 +567,7 @@ describe("AC ID patch validation", () => {
         {
           ref: "@patch-target-a",
           data: {
-            acceptance_criteria: [
-              { id: "INVALID", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "INVALID", given: "g", when: "w", then: "t" }],
           },
         },
         {
@@ -680,11 +577,10 @@ describe("AC ID patch validation", () => {
           },
         },
       ]);
-      const result = kspec(
-        "item patch --bulk --fail-fast --json",
-        tempDir,
-        { stdin: patches, expectFail: true },
-      );
+      const result = kspec("item patch --bulk --fail-fast --json", tempDir, {
+        stdin: patches,
+        expectFail: true,
+      });
       const json = JSON.parse(result.stdout);
       expect(json.summary.failed).toBe(1);
       expect(json.summary.skipped).toBe(1);
@@ -693,10 +589,7 @@ describe("AC ID patch validation", () => {
       expect(json.results[1].status).toBe("skipped");
 
       // Verify the second operation was NOT applied
-      const itemB = kspecJson<{ title: string }>(
-        "item get @patch-target-b",
-        tempDir,
-      );
+      const itemB = kspecJson<{ title: string }>("item get @patch-target-b", tempDir);
       expect(itemB.title).toBe("Patch Target B");
     });
   });
@@ -714,18 +607,12 @@ describe("AC ID patch validation", () => {
         {
           ref: "@patch-target-a",
           data: {
-            acceptance_criteria: [
-              { id: "NOT-VALID", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "NOT-VALID", given: "g", when: "w", then: "t" }],
           },
         },
       ]);
       // Command should exit nonzero even though one operation succeeded
-      const result = kspec(
-        "item patch --bulk",
-        tempDir,
-        { stdin: patches, expectFail: true },
-      );
+      const result = kspec("item patch --bulk", tempDir, { stdin: patches, expectFail: true });
       expect(result.exitCode).not.toBe(0);
     });
   });
@@ -750,9 +637,7 @@ describe("AC ID patch validation", () => {
 
       await expect(
         updateSpecItem(ctx, target, {
-          acceptance_criteria: [
-            { id: "parser-layer-INVALID", given: "g", when: "w", then: "t" },
-          ],
+          acceptance_criteria: [{ id: "parser-layer-INVALID", given: "g", when: "w", then: "t" }],
         }),
       ).rejects.toThrow("ac-prefixed kebab-case");
 
@@ -767,15 +652,11 @@ describe("AC ID patch validation", () => {
       const target = findItemBySlug(items, "patch-target-b");
 
       const result = await updateSpecItem(ctx, target, {
-        acceptance_criteria: [
-          { id: "ac-valid-parser-layer", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "ac-valid-parser-layer", given: "g", when: "w", then: "t" }],
       });
 
       expect(result.acceptance_criteria).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({ id: "ac-valid-parser-layer" }),
-        ]),
+        expect.arrayContaining([expect.objectContaining({ id: "ac-valid-parser-layer" })]),
       );
     });
 
@@ -795,15 +676,13 @@ describe("AC ID patch validation", () => {
           {
             _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
             title: "Feature With Bad AC",
-            acceptance_criteria: [
-              { id: "BAD-NESTED-ID", given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ id: "BAD-NESTED-ID", given: "g", when: "w", then: "t" }],
           },
         ],
       };
-      await expect(
-        updateSpecItem(ctx, target, nestedPatch as never),
-      ).rejects.toThrow("ac-prefixed kebab-case");
+      await expect(updateSpecItem(ctx, target, nestedPatch as never)).rejects.toThrow(
+        "ac-prefixed kebab-case",
+      );
 
       // Verify catalog was not mutated
       const contentAfter = await readYamlFile<unknown>(target._sourceFile!);
@@ -823,15 +702,11 @@ describe("AC ID patch validation", () => {
           {
             _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
             title: "Feature Missing AC ID",
-            acceptance_criteria: [
-              { given: "g", when: "w", then: "t" },
-            ],
+            acceptance_criteria: [{ given: "g", when: "w", then: "t" }],
           },
         ],
       };
-      await expect(
-        updateSpecItem(ctx, target, nestedPatch as never),
-      ).rejects.toThrow("Required");
+      await expect(updateSpecItem(ctx, target, nestedPatch as never)).rejects.toThrow("Required");
 
       // Verify catalog was not mutated
       const contentAfter = await readYamlFile<unknown>(target._sourceFile!);
@@ -855,9 +730,9 @@ describe("AC ID patch validation", () => {
           },
         ],
       };
-      await expect(
-        updateSpecItem(ctx, target, nestedPatch as never),
-      ).rejects.toThrow("Expected array");
+      await expect(updateSpecItem(ctx, target, nestedPatch as never)).rejects.toThrow(
+        "Expected array",
+      );
 
       // Verify catalog was not mutated
       const contentAfter = await readYamlFile<unknown>(target._sourceFile!);
@@ -877,15 +752,11 @@ describe("AC ID patch validation", () => {
           {
             _ulid: "01AAAAAAAAAAAAAAAAAAAATEST",
             title: "Feature Incomplete AC",
-            acceptance_criteria: [
-              { id: "ac-valid", given: "g", when: "w" },
-            ],
+            acceptance_criteria: [{ id: "ac-valid", given: "g", when: "w" }],
           },
         ],
       };
-      await expect(
-        updateSpecItem(ctx, target, nestedPatch as never),
-      ).rejects.toThrow("Required");
+      await expect(updateSpecItem(ctx, target, nestedPatch as never)).rejects.toThrow("Required");
 
       // Verify catalog was not mutated
       const contentAfter = await readYamlFile<unknown>(target._sourceFile!);
@@ -900,10 +771,7 @@ describe("AC ID patch validation", () => {
       const data = JSON.stringify({
         title: "Updated Title",
       });
-      const result = kspec(
-        `item patch @patch-target-a --data '${data}'`,
-        tempDir,
-      );
+      const result = kspec(`item patch @patch-target-a --data '${data}'`, tempDir);
       expect(result.exitCode).toBe(0);
     });
 
@@ -912,11 +780,7 @@ describe("AC ID patch validation", () => {
         { ref: "@patch-target-a", data: { title: "Bulk Updated A" } },
         { ref: "@patch-target-b", data: { title: "Bulk Updated B" } },
       ]);
-      const result = kspec(
-        "item patch --bulk --json",
-        tempDir,
-        { stdin: patches },
-      );
+      const result = kspec("item patch --bulk --json", tempDir, { stdin: patches });
       expect(result.exitCode).toBe(0);
       const json = JSON.parse(result.stdout);
       expect(json.summary.updated).toBe(2);
@@ -927,10 +791,7 @@ describe("AC ID patch validation", () => {
       const data = JSON.stringify({
         custom_field: "value",
       });
-      const result = kspec(
-        `item patch @patch-target-a --data '${data}' --allow-unknown`,
-        tempDir,
-      );
+      const result = kspec(`item patch @patch-target-a --data '${data}' --allow-unknown`, tempDir);
       expect(result.exitCode).toBe(0);
     });
 
@@ -938,10 +799,7 @@ describe("AC ID patch validation", () => {
       const data = JSON.stringify({
         acceptance_criteria: [],
       });
-      const result = kspec(
-        `item patch @patch-target-a --data '${data}'`,
-        tempDir,
-      );
+      const result = kspec(`item patch @patch-target-a --data '${data}'`, tempDir);
       expect(result.exitCode).toBe(0);
       const item = kspecJson<{ acceptance_criteria?: unknown[] }>(
         "item get @patch-target-a",

@@ -18,9 +18,10 @@ const readme = readTestOutputSync(join(projectRoot, "tests", "..", "README.md"))
 const h2Headings = [...readme.matchAll(/^## .+$/gm)].map((m) => m[0]);
 
 // Extract all markdown links: [text](target)
-const allLinks = [...readme.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)].map(
-  (m) => ({ text: m[1], href: m[2] }),
-);
+const allLinks = [...readme.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)].map((m) => ({
+  text: m[1],
+  href: m[2],
+}));
 
 describe("README landing page structure", () => {
   // AC: @readme-landing-page ac-1
@@ -43,9 +44,7 @@ describe("README landing page structure", () => {
 
   // AC: @readme-landing-page ac-1
   it("contains a first-steps section with commands", () => {
-    const hasFirstSteps = h2Headings.some(
-      (h) => /first.step|quick.start|getting.started/i.test(h),
-    );
+    const hasFirstSteps = h2Headings.some((h) => /first.step|quick.start|getting.started/i.test(h));
     expect(hasFirstSteps, "README should have a first-steps section").toBe(true);
     // Should include the core bootstrap commands
     expect(readme).toContain("kspec init");
@@ -54,9 +53,7 @@ describe("README landing page structure", () => {
 
   // AC: @readme-landing-page ac-1
   it("contains a cross-links section", () => {
-    const hasDocsSection = h2Headings.some(
-      (h) => /doc|links|where.to|next/i.test(h),
-    );
+    const hasDocsSection = h2Headings.some((h) => /doc|links|where.to|next/i.test(h));
     expect(hasDocsSection, "README should have a documentation/links section").toBe(true);
   });
 
@@ -105,9 +102,7 @@ describe("README cross-links into docs", () => {
 
   // AC: @readme-landing-page ac-2
   it("all documentation links point to files that exist", () => {
-    const docsLinks = allLinks.filter(
-      (l) => l.href.startsWith("docs/") || l.href === "INSTALL.md",
-    );
+    const docsLinks = allLinks.filter((l) => l.href.startsWith("docs/") || l.href === "INSTALL.md");
     expect(docsLinks.length).toBeGreaterThan(0);
 
     for (const link of docsLinks) {

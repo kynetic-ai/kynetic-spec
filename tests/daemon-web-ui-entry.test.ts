@@ -27,7 +27,10 @@ import {
 let tempDir: string;
 
 beforeEach(() => {
-  tempDir = join(tmpdir(), `kspec-web-ui-entry-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  tempDir = join(
+    tmpdir(),
+    `kspec-web-ui-entry-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  );
   mkdirSync(tempDir, { recursive: true });
 });
 

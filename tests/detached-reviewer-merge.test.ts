@@ -9,8 +9,14 @@
 import { execSync, spawnSync } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { buildTestSubprocessEnv, cleanupTempDir, createTempDir, initGitRepo } from "./helpers/cli.js";
+import { afterEach, describe, expect, it } from "vitest";
+import {
+  buildTestSubprocessEnv,
+  cleanupTempDir,
+  createTempDir,
+  initGitRepo,
+  readTestOutput,
+} from "./helpers/cli.js";
 
 const SCRIPT_PATH = path.resolve(
   __dirname,
@@ -96,10 +102,10 @@ async function setupMergeTestEnv(): Promise<MergeTestEnv> {
 
   // Create detached reviewer worktree at the canonical branch tip
   const reviewerWorktreeDir = path.join(worktreeBase, "reviewer-wt");
-  execSync(
-    `git worktree add --detach "${reviewerWorktreeDir}" "${canonicalBranch}"`,
-    { cwd: projectDir, stdio: "pipe" },
-  );
+  execSync(`git worktree add --detach "${reviewerWorktreeDir}" "${canonicalBranch}"`, {
+    cwd: projectDir,
+    stdio: "pipe",
+  });
 
   return {
     projectDir,
@@ -217,14 +223,11 @@ describe("detached-reviewer-merge helper", () => {
         stdio: ["pipe", "pipe", "pipe"],
       }).trim();
 
-      const canonicalHead = execSync(
-        `git rev-parse "refs/heads/${env.canonicalBranch}"`,
-        {
-          cwd: env.projectDir,
-          encoding: "utf-8",
-          stdio: ["pipe", "pipe", "pipe"],
-        },
-      ).trim();
+      const canonicalHead = execSync(`git rev-parse "refs/heads/${env.canonicalBranch}"`, {
+        cwd: env.projectDir,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
+      }).trim();
 
       // The canonical head should be an ancestor of the new target
       const isAncestor = execSync(
@@ -238,10 +241,7 @@ describe("detached-reviewer-merge helper", () => {
       expect(isAncestor).toBe("yes");
 
       // Verify the feature file exists in the occupied integration worktree
-      const content = await fs.readFile(
-        path.join(env.integrationWorktreeDir, "feature.txt"),
-        "utf-8",
-      );
+      const content = await readTestOutput(path.join(env.integrationWorktreeDir, "feature.txt"));
       expect(content).toBe("feature content\n");
 
       // Verify the occupied worktree index is clean
@@ -264,10 +264,7 @@ describe("detached-reviewer-merge helper", () => {
         cwd: env.projectDir,
         stdio: "pipe",
       });
-      await fs.writeFile(
-        path.join(env.projectDir, "unreviewed.txt"),
-        "unreviewed content\n",
-      );
+      await fs.writeFile(path.join(env.projectDir, "unreviewed.txt"), "unreviewed content\n");
       execSync("git add unreviewed.txt", { cwd: env.projectDir, stdio: "pipe" });
       execSync('git commit -m "feat: unreviewed change"', {
         cwd: env.projectDir,
@@ -286,10 +283,7 @@ describe("detached-reviewer-merge helper", () => {
       expect(result.stdout).toContain("success: merged");
 
       // The reviewed feature file should be present
-      const content = await fs.readFile(
-        path.join(env.integrationWorktreeDir, "feature.txt"),
-        "utf-8",
-      );
+      const content = await readTestOutput(path.join(env.integrationWorktreeDir, "feature.txt"));
       expect(content).toBe("feature content\n");
 
       // The unreviewed file should NOT be present — we merged the pinned commit, not the tip
@@ -356,10 +350,7 @@ describe("detached-reviewer-merge helper", () => {
       const env = await setupMergeTestEnv();
 
       // Create an initial file and commit it in the integration worktree so we can modify it
-      await fs.writeFile(
-        path.join(env.integrationWorktreeDir, "existing.txt"),
-        "original\n",
-      );
+      await fs.writeFile(path.join(env.integrationWorktreeDir, "existing.txt"), "original\n");
       execSync("git add existing.txt", {
         cwd: env.integrationWorktreeDir,
         stdio: "pipe",
@@ -370,10 +361,7 @@ describe("detached-reviewer-merge helper", () => {
       });
 
       // Now make it dirty with a tracked modification
-      await fs.writeFile(
-        path.join(env.integrationWorktreeDir, "existing.txt"),
-        "modified\n",
-      );
+      await fs.writeFile(path.join(env.integrationWorktreeDir, "existing.txt"), "modified\n");
 
       const targetHeadBefore = execSync("git rev-parse HEAD", {
         cwd: env.integrationWorktreeDir,
@@ -404,10 +392,7 @@ describe("detached-reviewer-merge helper", () => {
       const env = await setupMergeTestEnv();
 
       // Stage a new file without committing
-      await fs.writeFile(
-        path.join(env.integrationWorktreeDir, "staged.txt"),
-        "staged content\n",
-      );
+      await fs.writeFile(path.join(env.integrationWorktreeDir, "staged.txt"), "staged content\n");
       execSync("git add staged.txt", {
         cwd: env.integrationWorktreeDir,
         stdio: "pipe",
@@ -458,10 +443,7 @@ describe("detached-reviewer-merge helper", () => {
       expect(result.stdout).toContain("success: merged");
 
       // The feature file should be present after merge
-      const content = await fs.readFile(
-        path.join(env.integrationWorktreeDir, "feature.txt"),
-        "utf-8",
-      );
+      const content = await readTestOutput(path.join(env.integrationWorktreeDir, "feature.txt"));
       expect(content).toBe("feature content\n");
     });
   });

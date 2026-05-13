@@ -75,12 +75,7 @@ if (breakMode !== null && breakMode !== "malformed-stdout" && breakMode !== "no-
   process.exit(2);
 }
 
-if (
-  mode !== "normal" &&
-  mode !== "error" &&
-  mode !== "hang" &&
-  mode !== "refuse"
-) {
+if (mode !== "normal" && mode !== "error" && mode !== "hang" && mode !== "refuse") {
   process.stderr.write(`mock daemon: unknown mode '${mode}'\n`);
   process.exit(2);
 }

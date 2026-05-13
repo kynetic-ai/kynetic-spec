@@ -340,7 +340,6 @@ daemon:
         }
       }
     });
-
   });
 
   describe("getDefaultConfig daemon", () => {

@@ -724,8 +724,7 @@ describe("IPv6 fallback for daemon startup bind", () => {
         blocker.listen({ host: LOOPBACK_HOST_V4, port: 0 }, () => resolve());
       });
       const address = blocker.address();
-      const port =
-        typeof address === "object" && address && "port" in address ? address.port : 0;
+      const port = typeof address === "object" && address && "port" in address ? address.port : 0;
       try {
         const result = await probeBindAvailable(LOOPBACK_HOST_V4, port);
         expect(result.available).toBe(false);

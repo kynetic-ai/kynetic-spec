@@ -567,9 +567,7 @@ describe("dispatch workspace cleanup", () => {
 
     // Diagnostic identifies the cleanup surface and surfaces the registry
     // failure reason so logs are actionable for operators.
-    const diagnosticMessages = capturedCalls.filter((line) =>
-      line.includes("[dispatch-cleanup]"),
-    );
+    const diagnosticMessages = capturedCalls.filter((line) => line.includes("[dispatch-cleanup]"));
     expect(diagnosticMessages.length).toBeGreaterThan(0);
     expect(diagnosticMessages.some((line) => line.includes("registry"))).toBe(true);
     // At least one surface label must show up so the diagnostic is
@@ -631,31 +629,25 @@ describe("dispatch workspace cleanup", () => {
       debugSpy.mockRestore();
     }
 
-    const diagnosticMessages = capturedCalls.filter((line) =>
-      line.includes("[dispatch-cleanup]"),
-    );
+    const diagnosticMessages = capturedCalls.filter((line) => line.includes("[dispatch-cleanup]"));
 
     // The worker worktree surfaces through the metadata-less-worktree gate
     // (the entry has a tracked dispatch branch and missing metadata).
     expect(
       diagnosticMessages.some(
-        (line) =>
-          line.includes("metadata-less-worktree") && line.includes(workerWorkspace.cwd),
+        (line) => line.includes("metadata-less-worktree") && line.includes(workerWorkspace.cwd),
       ),
     ).toBe(true);
     // The reviewer worktree surfaces through the reviewer-snapshot gate
     // (the entry is detached with branch=null and path ends in -review).
     expect(
       diagnosticMessages.some(
-        (line) =>
-          line.includes("reviewer-snapshot") && line.includes(reviewerWorkspace.cwd),
+        (line) => line.includes("reviewer-snapshot") && line.includes(reviewerWorkspace.cwd),
       ),
     ).toBe(true);
     // Protection-source reason text is forwarded into the diagnostic so the
     // operator can identify why preservation occurred.
-    expect(
-      diagnosticMessages.some((line) => /active or in-flight/.test(line)),
-    ).toBe(true);
+    expect(diagnosticMessages.some((line) => /active or in-flight/.test(line))).toBe(true);
 
     // Filesystem state must still be preserved.
     await fs.access(workerWorkspace.cwd);
@@ -707,9 +699,7 @@ describe("dispatch workspace cleanup", () => {
 
     // The reap-candidate surface must emit a diagnostic identifying the
     // surface AND the active/in-flight protection source.
-    const diagnosticMessages = capturedCalls.filter((line) =>
-      line.includes("[dispatch-cleanup]"),
-    );
+    const diagnosticMessages = capturedCalls.filter((line) => line.includes("[dispatch-cleanup]"));
     expect(
       diagnosticMessages.some(
         (line) =>
@@ -993,9 +983,7 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
 
     await fs.access(reviewerDir);
     expect(
-      diagnostics.some(
-        (line) => line.includes("reviewer-snapshot") && line.includes(reviewerDir),
-      ),
+      diagnostics.some((line) => line.includes("reviewer-snapshot") && line.includes(reviewerDir)),
     ).toBe(true);
   });
 
@@ -1017,9 +1005,7 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
 
     const workerPath = workspace.cwd;
     const worktreeRoot = path.dirname(workerPath);
-    expect(workerPath).toBe(
-      path.join(worktreeRoot, "task-root-candidate-overlap-worker-01task00"),
-    );
+    expect(workerPath).toBe(path.join(worktreeRoot, "task-root-candidate-overlap-worker-01task00"));
 
     // Strip the worker dir's git worktree registration AND its on-disk
     // .git pointer + metadata, but leave the still-active registry record
@@ -1097,9 +1083,9 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
 
     await reconcileDispatchWorkspaceArtifacts(tempDir);
 
-    expect(
-      git(tempDir, "branch --list dispatch/task/truly-orphan-cleanup-positive/01orphan"),
-    ).toBe("");
+    expect(git(tempDir, "branch --list dispatch/task/truly-orphan-cleanup-positive/01orphan")).toBe(
+      "",
+    );
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
@@ -1107,7 +1093,11 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
     await seedRepo(tempDir);
     git(tempDir, "checkout -b agent-dev");
 
-    const reviewerDir = path.join(tempDir, ".kspec-worktrees", "task-orphan-reviewer-snapshot-review");
+    const reviewerDir = path.join(
+      tempDir,
+      ".kspec-worktrees",
+      "task-orphan-reviewer-snapshot-review",
+    );
     await fs.mkdir(path.dirname(reviewerDir), { recursive: true });
     git(tempDir, `worktree add --detach ${reviewerDir} HEAD`);
     await fs.access(reviewerDir);
@@ -1184,12 +1174,10 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
     await reconcileDispatchWorkspaceArtifacts(tempDir);
 
     await expect(fs.access(workspace.cwd)).rejects.toThrow();
-    expect(
-      git(tempDir, "branch --list dispatch/task/task-corrupt-metadata-cleanup/01task00"),
-    ).toBe("");
-    expect(git(tempDir, "worktree list --porcelain")).not.toContain(
-      `worktree ${workspace.cwd}`,
+    expect(git(tempDir, "branch --list dispatch/task/task-corrupt-metadata-cleanup/01task00")).toBe(
+      "",
     );
+    expect(git(tempDir, "worktree list --porcelain")).not.toContain(`worktree ${workspace.cwd}`);
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-dispatch-root-unknown-entries-owned
@@ -1257,10 +1245,7 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
 
     await expect(fs.access(workspace.cwd)).rejects.toThrow();
     expect(
-      git(
-        tempDir,
-        "branch --list dispatch/task/task-closing-resolved-integration-reaped/01task00",
-      ),
+      git(tempDir, "branch --list dispatch/task/task-closing-resolved-integration-reaped/01task00"),
     ).toBe("");
   });
 
@@ -1373,9 +1358,7 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
       "root-directory",
       "dispatch-branch",
     ] as const) {
-      expect(
-        diagnostics.some((line) => line.includes(surface)),
-      ).toBe(true);
+      expect(diagnostics.some((line) => line.includes(surface))).toBe(true);
     }
 
     // Filesystem state confirms preservation outcome matches the diagnostic.
@@ -1393,62 +1376,59 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
   // is present. This mirrors the queue-to-spawn bootstrap race where
   // `npm install` is mid-write inside a worker workspace that has not yet
   // committed its provisioning artifacts.
-  it(
-    "preserves bootstrap-like nested files under a worker workspace while the task is in-flight (regression)",
-    async () => {
-      await seedRepo(tempDir);
-      git(tempDir, "checkout -b agent-dev");
+  it("preserves bootstrap-like nested files under a worker workspace while the task is in-flight (regression)", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
 
-      const taskRef = `@${testUlid("TASK", 48)}`;
-      const workspace = await provisionDispatchWorkspace({
-        projectDir: tempDir,
-        taskRef,
-        task: {
-          title: "Bootstrap Race Regression",
-          slugs: ["task-bootstrap-race-regression"],
-        },
-      });
+    const taskRef = `@${testUlid("TASK", 48)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Bootstrap Race Regression",
+        slugs: ["task-bootstrap-race-regression"],
+      },
+    });
 
-      // Bootstrap-like fixture: package.json + a nested binary symlink target
-      // that npm/pnpm/yarn would have created. These are dispatcher-managed
-      // tree contents that cleanup must never blow away while the spawn is
-      // still in-flight.
-      const nodeModulesDir = path.join(workspace.cwd, "node_modules", "some-dep", "bin");
-      await fs.mkdir(nodeModulesDir, { recursive: true });
-      const sentinelFiles = [
-        path.join(workspace.cwd, "package.json"),
-        path.join(nodeModulesDir, "tool.js"),
-        path.join(workspace.cwd, "node_modules", "some-dep", "package.json"),
-      ];
-      await fs.writeFile(sentinelFiles[0]!, '{"name":"bootstrap-race-regression"}\n', "utf-8");
-      await fs.writeFile(sentinelFiles[1]!, "console.log('hi')\n", "utf-8");
-      await fs.writeFile(sentinelFiles[2]!, '{"name":"some-dep","version":"1.0.0"}\n', "utf-8");
+    // Bootstrap-like fixture: package.json + a nested binary symlink target
+    // that npm/pnpm/yarn would have created. These are dispatcher-managed
+    // tree contents that cleanup must never blow away while the spawn is
+    // still in-flight.
+    const nodeModulesDir = path.join(workspace.cwd, "node_modules", "some-dep", "bin");
+    await fs.mkdir(nodeModulesDir, { recursive: true });
+    const sentinelFiles = [
+      path.join(workspace.cwd, "package.json"),
+      path.join(nodeModulesDir, "tool.js"),
+      path.join(workspace.cwd, "node_modules", "some-dep", "package.json"),
+    ];
+    await fs.writeFile(sentinelFiles[0]!, '{"name":"bootstrap-race-regression"}\n', "utf-8");
+    await fs.writeFile(sentinelFiles[1]!, "console.log('hi')\n", "utf-8");
+    await fs.writeFile(sentinelFiles[2]!, '{"name":"some-dep","version":"1.0.0"}\n', "utf-8");
 
-      // Simulate the queue-to-spawn window: metadata removed mid-provisioning,
-      // and the registry not yet written. Only the in-memory in-flight task
-      // ref signals that this workspace must be protected.
-      await fs.rm(workspaceMetadataPath(workspace.cwd), { force: true });
-      await fs.writeFile(
-        path.join(tempDir, "project.dispatch-workspaces.yaml"),
-        YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
-        "utf-8",
-      );
+    // Simulate the queue-to-spawn window: metadata removed mid-provisioning,
+    // and the registry not yet written. Only the in-memory in-flight task
+    // ref signals that this workspace must be protected.
+    await fs.rm(workspaceMetadataPath(workspace.cwd), { force: true });
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
 
-      await reconcileDispatchWorkspaceArtifacts(tempDir, {
-        activeTaskRefs: [taskRef],
-      });
+    await reconcileDispatchWorkspaceArtifacts(tempDir, {
+      activeTaskRefs: [taskRef],
+    });
 
-      // Parent worker workspace and every nested bootstrap file must survive.
-      await fs.access(workspace.cwd);
-      for (const file of sentinelFiles) {
-        await fs.access(file);
-      }
-      // Canonical dispatch branch must also survive the in-flight window.
-      expect(
-        git(tempDir, "branch --list dispatch/task/task-bootstrap-race-regression/01task00"),
-      ).toContain("dispatch/task/task-bootstrap-race-regression/01task00");
-    },
-  );
+    // Parent worker workspace and every nested bootstrap file must survive.
+    await fs.access(workspace.cwd);
+    for (const file of sentinelFiles) {
+      await fs.access(file);
+    }
+    // Canonical dispatch branch must also survive the in-flight window.
+    expect(
+      git(tempDir, "branch --list dispatch/task/task-bootstrap-race-regression/01task00"),
+    ).toContain("dispatch/task/task-bootstrap-race-regression/01task00");
+  });
 
   // AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
   // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
@@ -1469,9 +1449,7 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
     expect(protection.registryTrusted).toBe(false);
     expect(protection.registryFailureDiagnostic).toMatch(/YAML parse error/);
 
-    const branchDecision = protection.evaluateDispatchBranch(
-      "dispatch/task/some-task/01abcdef",
-    );
+    const branchDecision = protection.evaluateDispatchBranch("dispatch/task/some-task/01abcdef");
     expect(branchDecision.preserve).toBe(true);
     expect(branchDecision.reason).toMatch(/YAML parse error/);
 

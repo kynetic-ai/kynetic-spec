@@ -262,10 +262,7 @@ describe("Integration: plan delete", () => {
   // AC: @plan-crud ac-44 — task with plan_ref as slug
   it("should refuse when a task has plan_ref stored as slug", () => {
     kspec('plan add --title "Slug Ref Plan" --content "c" --slug plan-ref-slug', tempDir);
-    kspec(
-      'task add --title "Task By Slug" --plan-ref @plan-ref-slug --slug task-by-slug',
-      tempDir,
-    );
+    kspec('task add --title "Task By Slug" --plan-ref @plan-ref-slug --slug task-by-slug', tempDir);
 
     const result = kspecRun("plan delete @plan-ref-slug --force", tempDir, { expectFail: true });
     expect(result.exitCode).toBe(5);
@@ -278,10 +275,7 @@ describe("Integration: plan delete", () => {
     kspec('plan add --title "ULID Ref Plan" --content "c" --slug plan-ref-ulid', tempDir);
     const plan = kspecJson<{ _ulid: string }>("plan get @plan-ref-ulid", tempDir);
 
-    kspec(
-      `task add --title "Task By ULID" --plan-ref @${plan._ulid} --slug task-by-ulid`,
-      tempDir,
-    );
+    kspec(`task add --title "Task By ULID" --plan-ref @${plan._ulid} --slug task-by-ulid`, tempDir);
 
     const result = kspecRun("plan delete @plan-ref-ulid --force", tempDir, { expectFail: true });
     expect(result.exitCode).toBe(5);

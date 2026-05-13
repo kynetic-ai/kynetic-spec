@@ -38,7 +38,7 @@ kspec agent list
 | `task.ready`          | `task-worker`   | Worker picks up newly ready automation-eligible tasks  |
 | `task.in_progress`    | `task-worker`   | Worker can continue existing automation-eligible tasks |
 | `task.needs_work`     | `task-worker`   | Fix-cycle tasks return to worker                       |
-| `task.pending_review` | `pr-reviewer`   | Review from detached snapshot, merge via helper         |
+| `task.pending_review` | `pr-reviewer`   | Review from detached snapshot, merge via helper        |
 
 ### One-Shot Invocation
 

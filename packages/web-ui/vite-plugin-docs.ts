@@ -31,9 +31,7 @@ function extractTitle(content: string, filename: string): string {
   }
   // Humanize filename: "getting-started.md" → "Getting Started"
   const name = basename(filename, extname(filename));
-  return name
-    .replace(/[-_]/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return name.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 /**
@@ -109,9 +107,7 @@ export function docsPlugin(docsDir: string, options?: DocsPluginOptions): Plugin
       const files = collectMarkdownFiles(docsDir, docsDir).filter(
         ({ relativePath }) =>
           !excludes.some(
-            (pattern) =>
-              relativePath === pattern ||
-              relativePath.startsWith(pattern + "/"),
+            (pattern) => relativePath === pattern || relativePath.startsWith(pattern + "/"),
           ),
       );
 
@@ -154,13 +150,10 @@ export function docsPlugin(docsDir: string, options?: DocsPluginOptions): Plugin
     handleHotUpdate({ file, server }) {
       // If a docs .md file or the release notes file changes, invalidate the virtual module
       const isDocsFile = file.startsWith(docsDir) && file.endsWith(".md");
-      const isReleaseNotes =
-        options?.releaseNotesPath && file === options.releaseNotesPath;
+      const isReleaseNotes = options?.releaseNotesPath && file === options.releaseNotesPath;
 
       if (isDocsFile || isReleaseNotes) {
-        const mod = server.moduleGraph.getModuleById(
-          RESOLVED_VIRTUAL_MODULE_ID,
-        );
+        const mod = server.moduleGraph.getModuleById(RESOLVED_VIRTUAL_MODULE_ID);
         if (mod) {
           server.moduleGraph.invalidateModule(mod);
           return [mod];

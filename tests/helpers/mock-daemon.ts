@@ -48,11 +48,7 @@ import {
   type DaemonRuntime,
 } from "../../src/daemon-shared/endpoint.js";
 
-import {
-  buildTestSubprocessEnv,
-  readTestOutputSync,
-  type IsolatedKspecHome,
-} from "./cli.js";
+import { buildTestSubprocessEnv, readTestOutputSync, type IsolatedKspecHome } from "./cli.js";
 import { stopChildProcessBounded } from "./process-stop.js";
 
 // ── Paths ─────────────────────────────────────────────────────────────
@@ -172,9 +168,7 @@ const AMBIENT_DAEMON_CONTROL_VARS = [
  *
  * @see ac-child-env-sanitized in @daemon-test-startup-failure-hygiene
  */
-function buildMockDaemonChildEnv(
-  overrides: Record<string, string> = {},
-): NodeJS.ProcessEnv {
+function buildMockDaemonChildEnv(overrides: Record<string, string> = {}): NodeJS.ProcessEnv {
   const env = buildTestSubprocessEnv(overrides);
   for (const key of AMBIENT_DAEMON_CONTROL_VARS) {
     if (!(key in overrides)) {
@@ -236,10 +230,7 @@ function respondJson(res: http.ServerResponse, status: number, payload: unknown)
   res.end(JSON.stringify(payload));
 }
 
-function handleInProcessRequest(
-  ctx: InProcessHandlerContext,
-  mode: MockDaemonMode,
-): void {
+function handleInProcessRequest(ctx: InProcessHandlerContext, mode: MockDaemonMode): void {
   const path = ctx.url.pathname;
   const method = ctx.request.method;
 
@@ -294,9 +285,7 @@ function handleInProcessRequest(
     if (mode === "hang") return; // never respond
     if (mode === "error") {
       ctx.response.writeHead(422, { "Content-Type": "application/json" });
-      ctx.response.end(
-        JSON.stringify({ stdout: "", stderr: "error: not found\n", exitCode: 3 }),
-      );
+      ctx.response.end(JSON.stringify({ stdout: "", stderr: "error: not found\n", exitCode: 3 }));
       return;
     }
     if (mode === "refuse") {

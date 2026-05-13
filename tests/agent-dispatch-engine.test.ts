@@ -4630,9 +4630,9 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     expect(reprovisionedRecord?.canonical_branch).toMatch(
       new RegExp(`^dispatch/task/.+/${shortId}$`),
     );
-    expect(
-      git(testDir, `branch --list ${reprovisionedRecord!.canonical_branch}`),
-    ).toContain(reprovisionedRecord!.canonical_branch);
+    expect(git(testDir, `branch --list ${reprovisionedRecord!.canonical_branch}`)).toContain(
+      reprovisionedRecord!.canonical_branch,
+    );
 
     await engine.stop();
   });
@@ -7784,10 +7784,7 @@ describe(
           // — the canonical TAR/ENOENT/spawn failure mode this regression
           // protects against.
           try {
-            const survived = await fs.readFile(
-              path.join(opts.workspaceDir, SENTINEL_BASENAME),
-              "utf-8",
-            );
+            const survived = await readTestOutput(path.join(opts.workspaceDir, SENTINEL_BASENAME));
             if (survived !== SENTINEL_CONTENT) {
               throw new Error(`bootstrap sentinel corrupted: ${survived}`);
             }
@@ -7902,22 +7899,18 @@ describe(
         kynetic_dispatch_workspaces?: string;
         workspaces?: Array<Record<string, any>>;
       };
-      const workspaceRecord = registryRaw.workspaces?.find(
-        (record) => record.task_ref === taskRef,
-      );
+      const workspaceRecord = registryRaw.workspaces?.find((record) => record.task_ref === taskRef);
       if (!workspaceRecord) {
         throw new Error(`workspace registry record missing for ${taskRef}`);
       }
       const originalLifecycleState = workspaceRecord.lifecycle_state;
-      const originalCleanup = workspaceRecord.cleanup
-        ? { ...workspaceRecord.cleanup }
-        : undefined;
+      const originalCleanup = workspaceRecord.cleanup ? { ...workspaceRecord.cleanup } : undefined;
       const originalIntegration = workspaceRecord.integration
         ? { ...workspaceRecord.integration }
         : undefined;
       workspaceRecord.lifecycle_state = "closing";
       workspaceRecord.cleanup = {
-        ...(workspaceRecord.cleanup ?? {}),
+        ...workspaceRecord.cleanup,
         eligible: true,
         status: "scheduled",
         reason: "forced-cleanup-eligible-for-test",
@@ -7927,7 +7920,7 @@ describe(
         completed_at: null,
       };
       workspaceRecord.integration = {
-        ...(workspaceRecord.integration ?? {}),
+        ...workspaceRecord.integration,
         status: "merged",
         outcome: "merged",
       };
@@ -7954,22 +7947,18 @@ describe(
       metadataRaw.cleanupReason = "forced-cleanup-eligible-for-test";
       metadataRaw.lifecycleState = "closing";
       metadataRaw.cleanupState = {
-        ...(metadataRaw.cleanupState ?? {}),
+        ...metadataRaw.cleanupState,
         status: "scheduled",
         eligible: true,
         reason: "forced-cleanup-eligible-for-test",
       };
-      await fs.writeFile(
-        metadataFilePath,
-        `${JSON.stringify(metadataRaw, null, 2)}\n`,
-        "utf-8",
-      );
+      await fs.writeFile(metadataFilePath, `${JSON.stringify(metadataRaw, null, 2)}\n`, "utf-8");
 
       // Pre-reconcile sanity: workspace directory and bootstrap sentinel exist.
       await expect(fs.stat(workspaceCwd!)).resolves.toBeDefined();
-      await expect(
-        fs.readFile(path.join(workspaceCwd!, SENTINEL_BASENAME), "utf-8"),
-      ).resolves.toBe(SENTINEL_CONTENT);
+      await expect(readTestOutput(path.join(workspaceCwd!, SENTINEL_BASENAME))).resolves.toBe(
+        SENTINEL_CONTENT,
+      );
 
       reconcileArtifactsSpy.mockClear();
 
@@ -7991,9 +7980,9 @@ describe(
       // Behavioral assertion: workspace directory and bootstrap-created
       // sentinel both survive the cleanup pass.
       await expect(fs.stat(workspaceCwd!)).resolves.toBeDefined();
-      await expect(
-        fs.readFile(path.join(workspaceCwd!, SENTINEL_BASENAME), "utf-8"),
-      ).resolves.toBe(SENTINEL_CONTENT);
+      await expect(readTestOutput(path.join(workspaceCwd!, SENTINEL_BASENAME))).resolves.toBe(
+        SENTINEL_CONTENT,
+      );
 
       // Restore the registry + metadata to a non-cleanup-eligible state so the
       // post-bootstrap validation gate sees a healthy workspace and the spawn
@@ -8029,11 +8018,7 @@ describe(
         detail: null,
         updated_at: new Date().toISOString(),
       };
-      await fs.writeFile(
-        metadataFilePath,
-        `${JSON.stringify(metadataRaw, null, 2)}\n`,
-        "utf-8",
-      );
+      await fs.writeFile(metadataFilePath, `${JSON.stringify(metadataRaw, null, 2)}\n`, "utf-8");
 
       // Release the bootstrap barrier — the spawn must reach the controlled
       // success path without cleanup-induced ENOENT / TAR / spawn errors.
@@ -8042,10 +8027,7 @@ describe(
       // in `bootstrapErrors`.
       resolveBootstrapBarrier();
 
-      await waitForMockCall(
-        runSpy,
-        "runInvocation should be called once bootstrap is released",
-      );
+      await waitForMockCall(runSpy, "runInvocation should be called once bootstrap is released");
       expect(runSpy).toHaveBeenCalledTimes(1);
       expect(bootstrapSpy).toHaveBeenCalled();
       expect(bootstrapErrors).toEqual([]);

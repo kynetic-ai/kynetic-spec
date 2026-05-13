@@ -62,12 +62,12 @@ The helper reads the dispatch environment variables (`KSPEC_DISPATCH_CANONICAL_B
 
 ### Helper Outcomes
 
-| Outcome | What happens | What to do next |
-| --- | --- | --- |
-| **Success** | Integration target ref advances, occupied worktree refreshed | `kspec task complete @ref`, `kspec review close @review-ref` |
-| **No-op** | Canonical branch already integrated at target tip | Report no-op, complete the task |
-| **Dirty target** | Integration target worktree has uncommitted changes | Follow the recovery guidance the helper prints, then retry |
-| **Conflict** | Merge conflicts detected, merge aborted, target ref unchanged | Move task to `needs_work` with conflict details — do not attempt manual resolution in the snapshot |
+| Outcome          | What happens                                                  | What to do next                                                                                    |
+| ---------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Success**      | Integration target ref advances, occupied worktree refreshed  | `kspec task complete @ref`, `kspec review close @review-ref`                                       |
+| **No-op**        | Canonical branch already integrated at target tip             | Report no-op, complete the task                                                                    |
+| **Dirty target** | Integration target worktree has uncommitted changes           | Follow the recovery guidance the helper prints, then retry                                         |
+| **Conflict**     | Merge conflicts detected, merge aborted, target ref unchanged | Move task to `needs_work` with conflict details — do not attempt manual resolution in the snapshot |
 
 ### What NOT to Do in a Detached Snapshot
 

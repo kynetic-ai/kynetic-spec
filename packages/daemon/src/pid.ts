@@ -8,7 +8,4 @@
  * dist/daemon/. See src/cli/pid-utils.ts for the rationale.
  */
 
-export {
-  PidFileManager,
-  isNoDaemonModeEnabled,
-} from "../../../src/daemon-shared/endpoint.js";
+export { PidFileManager, isNoDaemonModeEnabled } from "../../../src/daemon-shared/endpoint.js";

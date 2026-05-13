@@ -10,7 +10,11 @@
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { acIdPattern, AcIdSchema, AcceptanceCriterionSchema } from "../src/schema/index.js";
-import { parseACAnnotationLine, validateACAnnotations, computeACCoverage } from "../src/parser/validate.js";
+import {
+  parseACAnnotationLine,
+  validateACAnnotations,
+  computeACCoverage,
+} from "../src/parser/validate.js";
 import { ReferenceIndex } from "../src/parser/refs.js";
 import { kspec, kspecJson, setupTempFixtures, cleanupTempDir } from "./helpers/cli.js";
 
@@ -57,13 +61,13 @@ describe("Gate: stored AC ids conform to ac-prefixed format", () => {
 describe("Gate: schema reports invalid persisted AC ids", () => {
   it("AcIdSchema rejects all non-prefixed variants", () => {
     const invalid = [
-      "my-criterion",     // no ac- prefix
-      "1",                // bare number
-      "",                 // empty
-      "ac-",              // prefix only, no suffix
-      "AC-1",             // uppercase prefix
-      "ac--double",       // double hyphen
-      "ac-trailing-",     // trailing hyphen
+      "my-criterion", // no ac- prefix
+      "1", // bare number
+      "", // empty
+      "ac-", // prefix only, no suffix
+      "AC-1", // uppercase prefix
+      "ac--double", // double hyphen
+      "ac-trailing-", // trailing hyphen
     ];
     for (const id of invalid) {
       const result = AcIdSchema.safeParse(id);
@@ -87,10 +91,7 @@ describe("Gate: CLI rejects invalid AC id on create", () => {
 
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
-    kspec(
-      'item add --under @test-core --title "Gate Test Item" --slug gate-test-item',
-      tempDir,
-    );
+    kspec('item add --under @test-core --title "Gate Test Item" --slug gate-test-item', tempDir);
   });
 
   afterEach(async () => {
@@ -136,11 +137,9 @@ describe("Gate: CLI rejects invalid AC id on rename", () => {
   });
 
   it("item ac set --id rejects non-prefixed rename and preserves original", () => {
-    const result = kspec(
-      'item ac set @gate-rename-item ac-original --id "not-valid"',
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspec('item ac set @gate-rename-item ac-original --id "not-valid"', tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toContain("ac-prefixed kebab-case");
 
@@ -159,10 +158,7 @@ describe("Gate: auto-generated AC ids conform", () => {
 
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
-    kspec(
-      'item add --under @test-core --title "Gate Gen Item" --slug gate-gen-item',
-      tempDir,
-    );
+    kspec('item add --under @test-core --title "Gate Gen Item" --slug gate-gen-item', tempDir);
   });
 
   afterEach(async () => {
@@ -170,14 +166,8 @@ describe("Gate: auto-generated AC ids conform", () => {
   });
 
   it("generated ids match acIdPattern", () => {
-    kspec(
-      'item ac add @gate-gen-item --given "g1" --when "w1" --then "t1"',
-      tempDir,
-    );
-    kspec(
-      'item ac add @gate-gen-item --given "g2" --when "w2" --then "t2"',
-      tempDir,
-    );
+    kspec('item ac add @gate-gen-item --given "g1" --when "w1" --then "t1"', tempDir);
+    kspec('item ac add @gate-gen-item --given "g2" --when "w2" --then "t2"', tempDir);
     const item = kspecJson<{ acceptance_criteria: Array<{ id: string }> }>(
       "item get @gate-gen-item",
       tempDir,
@@ -202,7 +192,9 @@ describe("Gate: annotation parser only interprets ac-prefixed tokens", () => {
 
   it("ac-prefixed tokens are captured as AC ids", () => {
     const groups = parseACAnnotationLine(acPrefix + "@spec ac-validate, ac-create");
-    expect(groups).toEqual([{ specRef: "@spec", acIds: ["ac-validate", "ac-create"], malformedTokens: [] }]);
+    expect(groups).toEqual([
+      { specRef: "@spec", acIds: ["ac-validate", "ac-create"], malformedTokens: [] },
+    ]);
   });
 
   it("malformed ac-* tokens are rejected by the parser", () => {
@@ -256,7 +248,13 @@ describe("Gate: ac-prefixed annotation tokens earn coverage credit", () => {
     ];
     const index = new ReferenceIndex([], items);
     const annotations = [
-      { specRef: "@gate-spec", acIds: ["ac-1"], malformedTokens: [], file: "/tmp/test.ts", line: 1 },
+      {
+        specRef: "@gate-spec",
+        acIds: ["ac-1"],
+        malformedTokens: [],
+        file: "/tmp/test.ts",
+        line: 1,
+      },
     ];
 
     const warnings = validateACAnnotations(annotations, items, index);
@@ -298,9 +296,7 @@ describe("Gate: bare ref without ac-prefixed tokens earns no coverage", () => {
       },
       new Set<string>(),
     );
-    expect(coverage).toEqual([
-      expect.objectContaining({ id: "ac-1", covered: false }),
-    ]);
+    expect(coverage).toEqual([expect.objectContaining({ id: "ac-1", covered: false })]);
   });
 });
 
@@ -319,15 +315,19 @@ describe("Gate: valid annotation covers target", () => {
         type: "requirement" as const,
         description: "test",
         status: { maturity: "draft" as const, implementation: "not_started" as const },
-        acceptance_criteria: [
-          { id: "ac-validate", given: "g", when: "w", then: "t" },
-        ],
+        acceptance_criteria: [{ id: "ac-validate", given: "g", when: "w", then: "t" }],
         _sourceFile: "modules/gate.yaml",
       },
     ];
     const index = new ReferenceIndex([], items);
     const annotations = [
-      { specRef: "@gate-integrity", acIds: ["ac-validate"], malformedTokens: [], file: "/tmp/test.ts", line: 1 },
+      {
+        specRef: "@gate-integrity",
+        acIds: ["ac-validate"],
+        malformedTokens: [],
+        file: "/tmp/test.ts",
+        line: 1,
+      },
     ];
 
     // No warnings
@@ -336,9 +336,7 @@ describe("Gate: valid annotation covers target", () => {
 
     // Coverage earned
     const coverage = computeACCoverage(items[0], new Set(["@gate-integrity ac-validate"]));
-    expect(coverage).toEqual([
-      expect.objectContaining({ id: "ac-validate", covered: true }),
-    ]);
+    expect(coverage).toEqual([expect.objectContaining({ id: "ac-validate", covered: true })]);
   });
 });
 

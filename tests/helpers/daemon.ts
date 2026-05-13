@@ -203,9 +203,7 @@ export interface StartedTestDaemon {
   stop: () => Promise<void>;
 }
 
-export type DaemonEndpointObservation =
-  | { status: number; body: string }
-  | { error: string };
+export type DaemonEndpointObservation = { status: number; body: string } | { error: string };
 
 export interface DaemonReadinessDiagnostics {
   endpoint: {
@@ -314,9 +312,7 @@ export function buildDaemonChildEnv(args: {
  * Detect whether a daemon runtime is on PATH. Used by parity tests to skip
  * optional runtimes (Bun) without failing the generic Node coverage path.
  */
-export async function isDaemonRuntimeAvailable(
-  runtime: DaemonTestRuntime,
-): Promise<boolean> {
+export async function isDaemonRuntimeAvailable(runtime: DaemonTestRuntime): Promise<boolean> {
   try {
     const probe = process.platform === "win32" ? "where" : "which";
     execSync(`${probe} ${runtime}`, { stdio: "ignore" });
@@ -451,8 +447,7 @@ export async function createTestDaemonProject(
     const isolatedHome = await createIsolatedKspecHome(tempDir);
     opts.__testStageHook?.("after-isolated-home");
 
-    const webUiDir =
-      opts.webUiDir === undefined ? findFirstWebUiBuild() : opts.webUiDir ?? null;
+    const webUiDir = opts.webUiDir === undefined ? findFirstWebUiBuild() : (opts.webUiDir ?? null);
 
     return {
       tempDir,
@@ -664,9 +659,7 @@ async function probeCacheReady(ctx: ReadinessProbeContext): Promise<StartupProbe
     };
   }
   try {
-    const response = await boundedProbeFetch(
-      `${ctx.endpoint.apiUrl}/api/debug/cache-status`,
-    );
+    const response = await boundedProbeFetch(`${ctx.endpoint.apiUrl}/api/debug/cache-status`);
     if (!response.ok) {
       return {
         ok: false,
@@ -809,8 +802,7 @@ export async function startTestDaemon(
   // Choose a sensible host for port allocation: wildcard binds need a real
   // local interface to listen on, so probe via the loopback that maps to
   // that family.
-  const portProbeHost =
-    bindHost === "0.0.0.0" ? "127.0.0.1" : bindHost === "::" ? "::1" : bindHost;
+  const portProbeHost = bindHost === "0.0.0.0" ? "127.0.0.1" : bindHost === "::" ? "::1" : bindHost;
   const port = opts.port ?? (await allocateTestDaemonPort(portProbeHost));
   const endpoint = resolveDaemonEndpoint({
     bindHost,
@@ -925,17 +917,15 @@ export async function startTestDaemon(
 
   const readinessOp = async (): Promise<void> => {
     if (readiness.mode === "custom") {
-      await waitForStartup(
-        `daemon at ${endpoint.apiUrl}`,
-        () => readiness.probe(probeContext),
-        { timeoutMs, intervalMs },
-      );
+      await waitForStartup(`daemon at ${endpoint.apiUrl}`, () => readiness.probe(probeContext), {
+        timeoutMs,
+        intervalMs,
+      });
     } else {
-      await waitForStartup(
-        `daemon health at ${endpoint.apiUrl}`,
-        () => probeHealth(probeContext),
-        { timeoutMs, intervalMs },
-      );
+      await waitForStartup(`daemon health at ${endpoint.apiUrl}`, () => probeHealth(probeContext), {
+        timeoutMs,
+        intervalMs,
+      });
       if (readiness.mode === "health-and-cache") {
         await waitForStartup(
           `daemon cache ready at ${endpoint.apiUrl}`,
@@ -969,9 +959,7 @@ export async function startTestDaemon(
     // launch-error message so the diagnostic mentions the launch failure
     // (spawn / ENOENT / the failed binary path) instead of falling back to
     // the readiness timeout message that races alongside it.
-    const cause = launchError
-      ? `process launch failed: ${launchError.message}`
-      : baseCause;
+    const cause = launchError ? `process launch failed: ${launchError.message}` : baseCause;
     // Always sample the diagnostic endpoints at failure time, regardless of
     // which readiness mode ran. Custom probes never touch /api/health or
     // /api/debug/cache-status during the wait, so the bundle would otherwise

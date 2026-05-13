@@ -208,7 +208,9 @@ describe("Multi-project shadow sync", () => {
       // Use a deferred promise to control when loadProjectConfig resolves,
       // opening a window for stop to run while start is suspended.
       let resolveConfig!: () => void;
-      const configGate = new Promise<void>((r) => { resolveConfig = r; });
+      const configGate = new Promise<void>((r) => {
+        resolveConfig = r;
+      });
 
       mockedLoadProjectConfig.mockImplementation(async () => {
         await configGate;
@@ -254,7 +256,9 @@ describe("Multi-project shadow sync", () => {
       // and returns without retrying, leaving no scheduler installed.
 
       let resolveConfig!: () => void;
-      const configGate = new Promise<void>((r) => { resolveConfig = r; });
+      const configGate = new Promise<void>((r) => {
+        resolveConfig = r;
+      });
 
       mockedLoadProjectConfig.mockImplementation(async () => {
         await configGate;
@@ -320,7 +324,9 @@ describe("Multi-project shadow sync", () => {
       // 3. loadProjectConfig resolves — doStart must see the cancellation and bail
 
       let resolveConfig!: () => void;
-      const configGate = new Promise<void>((r) => { resolveConfig = r; });
+      const configGate = new Promise<void>((r) => {
+        resolveConfig = r;
+      });
 
       mockedLoadProjectConfig.mockImplementation(async () => {
         await configGate;
@@ -412,12 +418,8 @@ describe("Multi-project shadow sync", () => {
     it("should start shadow sync when project is registered via POST /api/projects", async () => {
       setupConfigMock({ syncInterval: 60, hasRemote: true });
 
-      const { ProjectContextManager } = await import(
-        "../packages/daemon/src/project-context"
-      );
-      const { createProjectsRoutes } = await import(
-        "../packages/daemon/src/routes/projects"
-      );
+      const { ProjectContextManager } = await import("../packages/daemon/src/project-context");
+      const { createProjectsRoutes } = await import("../packages/daemon/src/routes/projects");
 
       const onRegistered = vi.fn(async (projectPath: string) => {
         await startShadowSyncForProject(projectPath, mockPubsub(), mockGetEntityCache());
@@ -450,9 +452,8 @@ describe("Multi-project shadow sync", () => {
     it("should start shadow sync when project is auto-registered via middleware", async () => {
       setupConfigMock({ syncInterval: 60, hasRemote: true });
 
-      const { projectContextMiddleware } = await import(
-        "../packages/daemon/src/middleware/project-context"
-      );
+      const { projectContextMiddleware } =
+        await import("../packages/daemon/src/middleware/project-context");
 
       const onRegistered = vi.fn(async (projectPath: string) => {
         await startShadowSyncForProject(projectPath, mockPubsub(), mockGetEntityCache());
@@ -484,12 +485,9 @@ describe("Multi-project shadow sync", () => {
     it("should start shadow sync when project is registered via WebSocket resolution", async () => {
       setupConfigMock({ syncInterval: 60, hasRemote: true });
 
-      const { ProjectContextManager } = await import(
-        "../packages/daemon/src/project-context"
-      );
-      const { resolveWebSocketProject } = await import(
-        "../packages/daemon/src/websocket/project-resolution"
-      );
+      const { ProjectContextManager } = await import("../packages/daemon/src/project-context");
+      const { resolveWebSocketProject } =
+        await import("../packages/daemon/src/websocket/project-resolution");
 
       const manager = new ProjectContextManager();
       const startWatcherSpy = vi.spyOn(manager, "startWatcher").mockResolvedValue(undefined);
@@ -529,9 +527,7 @@ describe("Multi-project shadow sync", () => {
       await startShadowSyncForProject(projectA, mockPubsub(), mockGetEntityCache());
       expect(shadowSyncSchedulers.has(projectA)).toBe(true);
 
-      const { ProjectContextManager } = await import(
-        "../packages/daemon/src/project-context"
-      );
+      const { ProjectContextManager } = await import("../packages/daemon/src/project-context");
 
       const manager = new ProjectContextManager();
       manager.registerProject(projectA);
@@ -541,9 +537,7 @@ describe("Multi-project shadow sync", () => {
         stopShadowSyncForProject(projectPath);
       });
 
-      const { createProjectsRoutes } = await import(
-        "../packages/daemon/src/routes/projects"
-      );
+      const { createProjectsRoutes } = await import("../packages/daemon/src/routes/projects");
 
       const routes = createProjectsRoutes({
         projectManager: manager,
@@ -572,9 +566,7 @@ describe("Multi-project shadow sync", () => {
       await startShadowSyncForProject(projectA, mockPubsub(), mockGetEntityCache());
       expect(shadowSyncSchedulers.has(projectA)).toBe(true);
 
-      const { ProjectContextManager } = await import(
-        "../packages/daemon/src/project-context"
-      );
+      const { ProjectContextManager } = await import("../packages/daemon/src/project-context");
 
       const manager = new ProjectContextManager();
       manager.registerProject(projectA);

@@ -8,16 +8,21 @@
  * when offline.
  */
 
-export type { DocsEntry, DocsManifest } from './docs-types';
-export { filterSectionEntries, resolveDocsLink, groupDocsSections, DOCS_SECTION_ORDER } from './utils/docs-utils';
-export type { DocsSection } from './utils/docs-utils';
+export type { DocsEntry, DocsManifest } from "./docs-types";
+export {
+  filterSectionEntries,
+  resolveDocsLink,
+  groupDocsSections,
+  DOCS_SECTION_ORDER,
+} from "./utils/docs-utils";
+export type { DocsSection } from "./utils/docs-utils";
 
-import type { DocsManifest, DocsEntry } from './docs-types';
-import { filterSectionEntries } from './utils/docs-utils';
+import type { DocsManifest, DocsEntry } from "./docs-types";
+import { filterSectionEntries } from "./utils/docs-utils";
 
 // Import the build-time generated manifest
 // @ts-expect-error — virtual module provided by vite-plugin-docs
-import manifest from 'virtual:docs';
+import manifest from "virtual:docs";
 
 export const docsManifest: DocsManifest = manifest;
 
@@ -25,34 +30,34 @@ export const docsManifest: DocsManifest = manifest;
  * Look up a docs entry by its URL slug.
  */
 export function getDocsEntry(slug: string): DocsEntry | undefined {
-	return docsManifest.entries.find((e) => e.slug === slug);
+  return docsManifest.entries.find((e) => e.slug === slug);
 }
 
 /**
  * Get the docs landing page (first entry, or a specific index if present).
  */
 export function getDocsLandingEntry(): DocsEntry | undefined {
-	// Prefer an explicit index page if one exists
-	return docsManifest.entries.find((e) => e.slug === 'index') ?? docsManifest.entries[0];
+  // Prefer an explicit index page if one exists
+  return docsManifest.entries.find((e) => e.slug === "index") ?? docsManifest.entries[0];
 }
 
 /**
  * Get all entries for building navigation.
  */
 export function getDocsEntries(): DocsEntry[] {
-	return docsManifest.entries;
+  return docsManifest.entries;
 }
 
 /**
  * Get entries in the same section as the given slug.
  */
 export function getDocsSectionEntries(slug: string): DocsEntry[] {
-	return filterSectionEntries(docsManifest.entries, slug);
+  return filterSectionEntries(docsManifest.entries, slug);
 }
 
 /**
  * Get the configured repo URL for out-of-tree link resolution, or null.
  */
 export function getDocsRepoUrl(): string | null {
-	return docsManifest.repoUrl;
+  return docsManifest.repoUrl;
 }

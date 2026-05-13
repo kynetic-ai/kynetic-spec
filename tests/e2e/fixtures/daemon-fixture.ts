@@ -193,7 +193,8 @@ export async function acquirePlaywrightFixtureResources(
       await project.cleanup();
     } catch (cleanupError) {
       const err = primary instanceof Error ? primary : new Error(String(primary));
-      const secondary = cleanupError instanceof Error ? cleanupError : new Error(String(cleanupError));
+      const secondary =
+        cleanupError instanceof Error ? cleanupError : new Error(String(cleanupError));
       attachCleanupFailure(err, secondary);
       throw err;
     }
@@ -256,7 +257,8 @@ export async function runDaemonFixtureLifecycle<T>(
   if (primary !== null) {
     if (teardownError !== null) {
       const primaryErr = primary instanceof Error ? primary : new Error(String(primary));
-      const secondary = teardownError instanceof Error ? teardownError : new Error(String(teardownError));
+      const secondary =
+        teardownError instanceof Error ? teardownError : new Error(String(teardownError));
       attachCleanupFailure(primaryErr, secondary);
       throw primaryErr;
     }

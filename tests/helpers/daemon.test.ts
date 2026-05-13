@@ -239,9 +239,7 @@ describe("startTestDaemon happy path", { timeout: 60_000 }, () => {
   // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
   it("spawns a Node daemon on a dynamic 127.0.0.1 endpoint and stops cleanly", async () => {
     if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
-      throw new Error(
-        "dist/daemon/index.js missing — run 'npm run build:daemon' before tests",
-      );
+      throw new Error("dist/daemon/index.js missing — run 'npm run build:daemon' before tests");
     }
     const project = await createTestDaemonProject();
     onTestFinished(async () => {
@@ -317,9 +315,7 @@ describe("startTestDaemon happy path", { timeout: 60_000 }, () => {
     // ac-scoped-cleanup — stop targets only this child handle and exits the
     // process cleanly.
     await started.stop();
-    expect(
-      started.child.exitCode !== null || started.child.signalCode !== null,
-    ).toBe(true);
+    expect(started.child.exitCode !== null || started.child.signalCode !== null).toBe(true);
 
     // Idempotent stop.
     await started.stop();
@@ -541,378 +537,351 @@ describe("startTestDaemon process launch failure", { timeout: 30_000 }, () => {
   });
 });
 
-describe(
-  "startTestDaemon scoped cleanup on readiness failure",
-  { timeout: 60_000 },
-  () => {
-    // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
-    // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
-    // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
-    // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
-    it("stops the fixture-owned child before reporting readiness failure", async () => {
-      const project = await createTestDaemonProject();
-      onTestFinished(async () => {
-        await project.cleanup();
+describe("startTestDaemon scoped cleanup on readiness failure", { timeout: 60_000 }, () => {
+  // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+  // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+  it("stops the fixture-owned child before reporting readiness failure", async () => {
+    const project = await createTestDaemonProject();
+    onTestFinished(async () => {
+      await project.cleanup();
+    });
+
+    // Capture the child handle via the probe context. The probe runs after
+    // the child is spawned but always rejects, forcing the readiness wait
+    // to fail. We then assert the captured child has terminated by the
+    // time startTestDaemon throws — proving the helper stops the child
+    // before returning failure to the caller.
+    let capturedChild: ChildProcess | null = null;
+    let registeredStop: (() => Promise<void>) | null = null;
+    let thrown: unknown = null;
+
+    try {
+      await startTestDaemon(project, {
+        readiness: {
+          mode: "custom",
+          probe: (ctx) => {
+            capturedChild = ctx.child;
+            return { ok: false, details: "always-fail" };
+          },
+        },
+        timeoutMs: 600,
+        intervalMs: 50,
+        registerCleanup: (stop) => {
+          registeredStop = stop;
+        },
       });
+    } catch (error) {
+      thrown = error;
+    }
 
-      // Capture the child handle via the probe context. The probe runs after
-      // the child is spawned but always rejects, forcing the readiness wait
-      // to fail. We then assert the captured child has terminated by the
-      // time startTestDaemon throws — proving the helper stops the child
-      // before returning failure to the caller.
-      let capturedChild: ChildProcess | null = null;
-      let registeredStop: (() => Promise<void>) | null = null;
-      let thrown: unknown = null;
+    onTestFinished(async () => {
+      if (registeredStop) await registeredStop();
+    });
 
+    expect(thrown).toBeInstanceOf(DaemonReadinessError);
+    expect(capturedChild).not.toBeNull();
+    const child = capturedChild as unknown as ChildProcess;
+
+    // ac-owned-child-stopped-after-startup-failure — by the time
+    // startTestDaemon throws, the captured child must already be exited or
+    // signaled. The helper awaits stop() before throwing, so exit/signal
+    // state is observable on the handle when the catch block runs.
+    expect(child.exitCode !== null || child.signalCode !== null).toBe(true);
+
+    // ac-scoped-cleanup — the registered stop hook is safe to call again
+    // (idempotent stop). It must not throw, kill ambient processes, or
+    // re-fetch the global pid file.
+    expect(registeredStop).not.toBeNull();
+    await (registeredStop as unknown as () => Promise<void>)();
+    expect(child.exitCode !== null || child.signalCode !== null).toBe(true);
+  });
+});
+
+describe("startTestDaemon registerCleanup ordering", { timeout: 60_000 }, () => {
+  // AC: @daemon-test-startup-failure-hygiene ac-cleanup-registered-before-readiness-wait
+  // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+  it("invokes registerCleanup before any readiness probe runs", async () => {
+    const project = await createTestDaemonProject();
+    onTestFinished(async () => {
+      await project.cleanup();
+    });
+
+    // Synthetic registerCleanup hook: record the order in which the helper
+    // invokes registerCleanup vs the first readiness probe. The contract
+    // is that registerCleanup MUST run first so a wrapper (Playwright,
+    // vitest onTestFinished) has a teardown hook in place before the
+    // readiness wait can fail.
+    const order: string[] = [];
+    let registeredStop: (() => Promise<void>) | null = null;
+    let thrown: unknown = null;
+
+    try {
+      await startTestDaemon(project, {
+        readiness: {
+          mode: "custom",
+          probe: () => {
+            order.push("probe");
+            return { ok: false, details: "always-fail" };
+          },
+        },
+        timeoutMs: 400,
+        intervalMs: 50,
+        registerCleanup: (stop) => {
+          order.push("registerCleanup");
+          registeredStop = stop;
+        },
+      });
+    } catch (error) {
+      thrown = error;
+    }
+
+    onTestFinished(async () => {
+      if (registeredStop) await registeredStop();
+    });
+
+    expect(thrown).toBeInstanceOf(DaemonReadinessError);
+    // ac-cleanup-registered-before-readiness-wait — registerCleanup is
+    // invoked exactly once, before the first probe call.
+    expect(order.filter((event) => event === "registerCleanup")).toHaveLength(1);
+    expect(order[0]).toBe("registerCleanup");
+    // The probe ran at least once after registration, so the test
+    // observed real ordering rather than a no-probe early exit.
+    expect(order).toContain("probe");
+    const firstProbeIndex = order.indexOf("probe");
+    const registerIndex = order.indexOf("registerCleanup");
+    expect(registerIndex).toBeLessThan(firstProbeIndex);
+  });
+});
+
+describe("startTestDaemon registerCleanup failure cleanup", { timeout: 60_000 }, () => {
+  // AC: @daemon-test-startup-failure-hygiene ac-cleanup-registration-failure-stops-owned-child
+  // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
+  // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+  it("stops the owned child when registerCleanup throws after spawn", async () => {
+    if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
+      throw new Error("dist/daemon/index.js missing — run 'npm run build:daemon' before tests");
+    }
+    const project = await createTestDaemonProject();
+    onTestFinished(async () => {
+      await project.cleanup();
+    });
+
+    // Capture the live child handle and resolved endpoint via the
+    // non-behavioral observer seam, BEFORE registerCleanup runs. The
+    // observer must not catch the cleanup-registration error or invoke
+    // stop(); it only exposes references so the test can deterministically
+    // assert post-rejection that the helper terminated the spawned daemon.
+    let observed: { child: ChildProcess; endpoint: string } | null = null;
+    let registerCalls = 0;
+    const sentinel = "intentional registerCleanup failure for regression";
+    let thrown: unknown = null;
+
+    try {
       try {
         await startTestDaemon(project, {
-          readiness: {
-            mode: "custom",
-            probe: (ctx) => {
-              capturedChild = ctx.child;
-              return { ok: false, details: "always-fail" };
-            },
-          },
-          timeoutMs: 600,
-          intervalMs: 50,
-          registerCleanup: (stop) => {
-            registeredStop = stop;
-          },
-        });
-      } catch (error) {
-        thrown = error;
-      }
-
-      onTestFinished(async () => {
-        if (registeredStop) await registeredStop();
-      });
-
-      expect(thrown).toBeInstanceOf(DaemonReadinessError);
-      expect(capturedChild).not.toBeNull();
-      const child = capturedChild as unknown as ChildProcess;
-
-      // ac-owned-child-stopped-after-startup-failure — by the time
-      // startTestDaemon throws, the captured child must already be exited or
-      // signaled. The helper awaits stop() before throwing, so exit/signal
-      // state is observable on the handle when the catch block runs.
-      expect(child.exitCode !== null || child.signalCode !== null).toBe(true);
-
-      // ac-scoped-cleanup — the registered stop hook is safe to call again
-      // (idempotent stop). It must not throw, kill ambient processes, or
-      // re-fetch the global pid file.
-      expect(registeredStop).not.toBeNull();
-      await (registeredStop as unknown as () => Promise<void>)();
-      expect(child.exitCode !== null || child.signalCode !== null).toBe(true);
-    });
-  },
-);
-
-describe(
-  "startTestDaemon registerCleanup ordering",
-  { timeout: 60_000 },
-  () => {
-    // AC: @daemon-test-startup-failure-hygiene ac-cleanup-registered-before-readiness-wait
-    // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
-    // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
-    // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
-    it("invokes registerCleanup before any readiness probe runs", async () => {
-      const project = await createTestDaemonProject();
-      onTestFinished(async () => {
-        await project.cleanup();
-      });
-
-      // Synthetic registerCleanup hook: record the order in which the helper
-      // invokes registerCleanup vs the first readiness probe. The contract
-      // is that registerCleanup MUST run first so a wrapper (Playwright,
-      // vitest onTestFinished) has a teardown hook in place before the
-      // readiness wait can fail.
-      const order: string[] = [];
-      let registeredStop: (() => Promise<void>) | null = null;
-      let thrown: unknown = null;
-
-      try {
-        await startTestDaemon(project, {
-          readiness: {
-            mode: "custom",
-            probe: () => {
-              order.push("probe");
-              return { ok: false, details: "always-fail" };
-            },
-          },
-          timeoutMs: 400,
-          intervalMs: 50,
-          registerCleanup: (stop) => {
-            order.push("registerCleanup");
-            registeredStop = stop;
-          },
-        });
-      } catch (error) {
-        thrown = error;
-      }
-
-      onTestFinished(async () => {
-        if (registeredStop) await registeredStop();
-      });
-
-      expect(thrown).toBeInstanceOf(DaemonReadinessError);
-      // ac-cleanup-registered-before-readiness-wait — registerCleanup is
-      // invoked exactly once, before the first probe call.
-      expect(order.filter((event) => event === "registerCleanup")).toHaveLength(1);
-      expect(order[0]).toBe("registerCleanup");
-      // The probe ran at least once after registration, so the test
-      // observed real ordering rather than a no-probe early exit.
-      expect(order).toContain("probe");
-      const firstProbeIndex = order.indexOf("probe");
-      const registerIndex = order.indexOf("registerCleanup");
-      expect(registerIndex).toBeLessThan(firstProbeIndex);
-    });
-  },
-);
-
-describe(
-  "startTestDaemon registerCleanup failure cleanup",
-  { timeout: 60_000 },
-  () => {
-    // AC: @daemon-test-startup-failure-hygiene ac-cleanup-registration-failure-stops-owned-child
-    // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
-    // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
-    // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
-    // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
-    it("stops the owned child when registerCleanup throws after spawn", async () => {
-      if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
-        throw new Error(
-          "dist/daemon/index.js missing — run 'npm run build:daemon' before tests",
-        );
-      }
-      const project = await createTestDaemonProject();
-      onTestFinished(async () => {
-        await project.cleanup();
-      });
-
-      // Capture the live child handle and resolved endpoint via the
-      // non-behavioral observer seam, BEFORE registerCleanup runs. The
-      // observer must not catch the cleanup-registration error or invoke
-      // stop(); it only exposes references so the test can deterministically
-      // assert post-rejection that the helper terminated the spawned daemon.
-      let observed: { child: ChildProcess; endpoint: string } | null = null;
-      let registerCalls = 0;
-      const sentinel = "intentional registerCleanup failure for regression";
-      let thrown: unknown = null;
-
-      try {
-        try {
-          await startTestDaemon(project, {
-            __testObserveSpawn: ({ child, endpoint }) => {
-              observed = { child, endpoint: endpoint.apiUrl };
-            },
-            registerCleanup: () => {
-              registerCalls += 1;
-              throw new Error(sentinel);
-            },
-            timeoutMs: 4_000,
-            intervalMs: 50,
-          });
-        } catch (error) {
-          thrown = error;
-        }
-
-        // The observer ran synchronously before registerCleanup, so the test
-        // has direct references to the just-spawned child and its resolved
-        // endpoint regardless of how the helper surfaces the
-        // cleanup-registration failure.
-        expect(observed).not.toBeNull();
-        expect(registerCalls).toBe(1);
-        const captured = observed as unknown as {
-          child: ChildProcess;
-          endpoint: string;
-        };
-
-        // The helper must reject — either with the cleanup-registration
-        // failure directly or with a wrapped diagnostic that surfaces the
-        // sentinel. Either form satisfies the contract because the AC is
-        // about cleanup behavior, not about how the failure is wrapped.
-        expect(thrown).not.toBeNull();
-        expect(thrown).toBeInstanceOf(Error);
-        const errorMessage =
-          thrown instanceof Error ? thrown.message : String(thrown);
-        expect(errorMessage).toContain(sentinel);
-
-        // ac-cleanup-registration-failure-stops-owned-child: by the time the
-        // helper rejects, it must have stopped the spawned child it owned.
-        expect(
-          captured.child.exitCode !== null || captured.child.signalCode !== null,
-          "captured child must be terminated by the time startTestDaemon rejects",
-        ).toBe(true);
-
-        // Endpoint must be unreachable post-rejection. A partial helper fix
-        // could terminate the child but leave a listener (orphaned port
-        // binding, leaked watchdog) reachable — see review @01KR6T0X — so
-        // this is verified independently of child liveness.
-        let endpointReachable = false;
-        try {
-          const probe = await fetch(`${captured.endpoint}/api/health`, {
-            signal: AbortSignal.timeout(750),
-          });
-          endpointReachable = probe.ok;
-        } catch {
-          endpointReachable = false;
-        }
-        expect(
-          endpointReachable,
-          "daemon endpoint must be unreachable after startTestDaemon rejects",
-        ).toBe(false);
-      } finally {
-        // Safety net: if a future regression reintroduces the leak, force-kill
-        // whatever the observer captured so this test cannot strand a daemon
-        // process between runs. With the fix in place, startTestDaemon already
-        // stopped the child before rejecting, so this branch is a no-op.
-        if (observed) {
-          const ref = observed as unknown as { child: ChildProcess };
-          if (ref.child.exitCode === null && ref.child.signalCode === null) {
-            try {
-              ref.child.kill("SIGKILL");
-            } catch {
-              // Already dead — nothing to clean up.
-            }
-            await new Promise<void>((resolve) => {
-              if (
-                ref.child.exitCode !== null ||
-                ref.child.signalCode !== null
-              ) {
-                resolve();
-                return;
-              }
-              const onExit = (): void => {
-                ref.child.off("exit", onExit);
-                resolve();
-              };
-              ref.child.once("exit", onExit);
-              setTimeout(() => {
-                ref.child.off("exit", onExit);
-                resolve();
-              }, 5_000);
-            });
-          }
-        }
-      }
-    });
-  },
-);
-
-describe(
-  "startTestDaemon stop() observes termination before return",
-  { timeout: 30_000 },
-  () => {
-    // killChildScoped (tests/helpers/daemon.ts) now routes through the
-    // shared bounded process-stop primitive: SIGTERM, wait for observed
-    // exit on the handle (exitCode OR signalCode non-null OR 'exit' event
-    // fired), escalate to SIGKILL on graceful timeout, wait again for
-    // observed exit. Cleanup never resolves while the child is still
-    // observably running.
-    // AC: @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return
-    // AC: @daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded
-    // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
-    // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
-    // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
-    it(
-      "does not resolve until an uncooperative child has been observed terminated",
-      async () => {
-        if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
-          throw new Error(
-            "dist/daemon/index.js missing — run 'npm run build:daemon' before tests",
-          );
-        }
-        const scriptDir = await createTempDir("kspec-uncooperative-daemon-");
-        onTestFinished(async () => {
-          await cleanupTempDir(scriptDir);
-        });
-        const synthPath = join(scriptDir, "uncooperative-daemon.cjs");
-        writeFileSync(synthPath, UNCOOPERATIVE_CHILD_SOURCE);
-        chmodSync(synthPath, 0o755);
-
-        const project = await createTestDaemonProject();
-        onTestFinished(async () => {
-          await project.cleanup();
-        });
-
-        // Capture the spawned child handle via the synchronous observer
-        // seam so the test can assert on the OS-visible pid after stop()
-        // returns. The probe waits for the synth's stdout handshake so
-        // we never race SIGTERM against the script's signal-handler
-        // installation (without the handshake a too-fast SIGTERM hits
-        // the default terminate action and masks the bug under test).
-        let observed: { child: ChildProcess; pid: number } | null = null;
-        const started = await startTestDaemon(project, {
-          __testBinaryOverride: synthPath,
-          readiness: {
-            mode: "custom",
-            probe: (ctx) => {
-              const stdoutText = ctx.stdoutTail();
-              if (ctx.child.exitCode !== null || ctx.child.signalCode !== null) {
-                return { ok: false, details: `synth child exited unexpectedly` };
-              }
-              if (!stdoutText.includes("ready")) {
-                return { ok: false, details: `awaiting synth ready handshake` };
-              }
-              return { ok: true, details: "synth ready" };
-            },
-          },
-          timeoutMs: 5_000,
-          intervalMs: 50,
-          __testObserveSpawn: ({ child }) => {
-            observed = { child, pid: child.pid ?? -1 };
+          __testObserveSpawn: ({ child, endpoint }) => {
+            observed = { child, endpoint: endpoint.apiUrl };
           },
           registerCleanup: () => {
-            /* test owns stop() lifecycle directly */
+            registerCalls += 1;
+            throw new Error(sentinel);
           },
+          timeoutMs: 4_000,
+          intervalMs: 50,
         });
+      } catch (error) {
+        thrown = error;
+      }
 
-        expect(observed).not.toBeNull();
-        const captured = observed as unknown as { child: ChildProcess; pid: number };
-        expect(captured.pid).toBeGreaterThan(0);
-        expect(isProcessAlive(captured.pid)).toBe(true);
+      // The observer ran synchronously before registerCleanup, so the test
+      // has direct references to the just-spawned child and its resolved
+      // endpoint regardless of how the helper surfaces the
+      // cleanup-registration failure.
+      expect(observed).not.toBeNull();
+      expect(registerCalls).toBe(1);
+      const captured = observed as unknown as {
+        child: ChildProcess;
+        endpoint: string;
+      };
 
-        // Belt-and-suspenders: if the helper bug leaves the synthetic
-        // child alive after stop() resolves, force-kill it on test exit
-        // so the regression cannot strand an uncooperative process.
-        onTestFinished(() => {
-          if (isProcessAlive(captured.pid)) {
-            try {
-              process.kill(captured.pid, "SIGKILL");
-            } catch {
-              /* already gone */
-            }
+      // The helper must reject — either with the cleanup-registration
+      // failure directly or with a wrapped diagnostic that surfaces the
+      // sentinel. Either form satisfies the contract because the AC is
+      // about cleanup behavior, not about how the failure is wrapped.
+      expect(thrown).not.toBeNull();
+      expect(thrown).toBeInstanceOf(Error);
+      const errorMessage = thrown instanceof Error ? thrown.message : String(thrown);
+      expect(errorMessage).toContain(sentinel);
+
+      // ac-cleanup-registration-failure-stops-owned-child: by the time the
+      // helper rejects, it must have stopped the spawned child it owned.
+      expect(
+        captured.child.exitCode !== null || captured.child.signalCode !== null,
+        "captured child must be terminated by the time startTestDaemon rejects",
+      ).toBe(true);
+
+      // Endpoint must be unreachable post-rejection. A partial helper fix
+      // could terminate the child but leave a listener (orphaned port
+      // binding, leaked watchdog) reachable — see review @01KR6T0X — so
+      // this is verified independently of child liveness.
+      let endpointReachable = false;
+      try {
+        const probe = await fetch(`${captured.endpoint}/api/health`, {
+          signal: AbortSignal.timeout(750),
+        });
+        endpointReachable = probe.ok;
+      } catch {
+        endpointReachable = false;
+      }
+      expect(
+        endpointReachable,
+        "daemon endpoint must be unreachable after startTestDaemon rejects",
+      ).toBe(false);
+    } finally {
+      // Safety net: if a future regression reintroduces the leak, force-kill
+      // whatever the observer captured so this test cannot strand a daemon
+      // process between runs. With the fix in place, startTestDaemon already
+      // stopped the child before rejecting, so this branch is a no-op.
+      if (observed) {
+        const ref = observed as unknown as { child: ChildProcess };
+        if (ref.child.exitCode === null && ref.child.signalCode === null) {
+          try {
+            ref.child.kill("SIGKILL");
+          } catch {
+            // Already dead — nothing to clean up.
           }
-        });
+          await new Promise<void>((resolve) => {
+            if (ref.child.exitCode !== null || ref.child.signalCode !== null) {
+              resolve();
+              return;
+            }
+            const onExit = (): void => {
+              ref.child.off("exit", onExit);
+              resolve();
+            };
+            ref.child.once("exit", onExit);
+            setTimeout(() => {
+              ref.child.off("exit", onExit);
+              resolve();
+            }, 5_000);
+          });
+        }
+      }
+    }
+  });
+});
 
-        const stopStartedAt = Date.now();
-        await started.stop();
-        const elapsed = Date.now() - stopStartedAt;
+describe("startTestDaemon stop() observes termination before return", { timeout: 30_000 }, () => {
+  // killChildScoped (tests/helpers/daemon.ts) now routes through the
+  // shared bounded process-stop primitive: SIGTERM, wait for observed
+  // exit on the handle (exitCode OR signalCode non-null OR 'exit' event
+  // fired), escalate to SIGKILL on graceful timeout, wait again for
+  // observed exit. Cleanup never resolves while the child is still
+  // observably running.
+  // AC: @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return
+  // AC: @daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded
+  // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
+  // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
+  // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
+  it("does not resolve until an uncooperative child has been observed terminated", async () => {
+    if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
+      throw new Error("dist/daemon/index.js missing — run 'npm run build:daemon' before tests");
+    }
+    const scriptDir = await createTempDir("kspec-uncooperative-daemon-");
+    onTestFinished(async () => {
+      await cleanupTempDir(scriptDir);
+    });
+    const synthPath = join(scriptDir, "uncooperative-daemon.cjs");
+    writeFileSync(synthPath, UNCOOPERATIVE_CHILD_SOURCE);
+    chmodSync(synthPath, 0o755);
 
-        // ac-stop-observes-termination-before-return: stop() resolves
-        // only after exit has been observed on the parent handle. At
-        // least one of exitCode / signalCode is non-null — signalCode
-        // alone counts because the synth is uncooperative and the
-        // helper escalates to SIGKILL.
-        expect(
-          started.child.exitCode !== null || started.child.signalCode !== null,
-          `stop() must not resolve until child exit observed (exitCode=${started.child.exitCode} signalCode=${started.child.signalCode})`,
-        ).toBe(true);
+    const project = await createTestDaemonProject();
+    onTestFinished(async () => {
+      await project.cleanup();
+    });
 
-        // ac-uncooperative-process-stop-is-bounded: helper must reach
-        // a bounded outcome. 15s is generous enough for slow CI
-        // without masking a regression that hangs the wait. Pre-fix
-        // returns near-instantly from the timer callback; post-fix
-        // returns within the graceful window plus libuv exit
-        // observation — both well under 15s.
-        expect(elapsed).toBeLessThan(15_000);
-
-        // Idempotent stop after observation.
-        await started.stop();
+    // Capture the spawned child handle via the synchronous observer
+    // seam so the test can assert on the OS-visible pid after stop()
+    // returns. The probe waits for the synth's stdout handshake so
+    // we never race SIGTERM against the script's signal-handler
+    // installation (without the handshake a too-fast SIGTERM hits
+    // the default terminate action and masks the bug under test).
+    let observed: { child: ChildProcess; pid: number } | null = null;
+    const started = await startTestDaemon(project, {
+      __testBinaryOverride: synthPath,
+      readiness: {
+        mode: "custom",
+        probe: (ctx) => {
+          const stdoutText = ctx.stdoutTail();
+          if (ctx.child.exitCode !== null || ctx.child.signalCode !== null) {
+            return { ok: false, details: `synth child exited unexpectedly` };
+          }
+          if (!stdoutText.includes("ready")) {
+            return { ok: false, details: `awaiting synth ready handshake` };
+          }
+          return { ok: true, details: "synth ready" };
+        },
       },
-    );
-  },
-);
+      timeoutMs: 5_000,
+      intervalMs: 50,
+      __testObserveSpawn: ({ child }) => {
+        observed = { child, pid: child.pid ?? -1 };
+      },
+      registerCleanup: () => {
+        /* test owns stop() lifecycle directly */
+      },
+    });
+
+    expect(observed).not.toBeNull();
+    const captured = observed as unknown as { child: ChildProcess; pid: number };
+    expect(captured.pid).toBeGreaterThan(0);
+    expect(isProcessAlive(captured.pid)).toBe(true);
+
+    // Belt-and-suspenders: if the helper bug leaves the synthetic
+    // child alive after stop() resolves, force-kill it on test exit
+    // so the regression cannot strand an uncooperative process.
+    onTestFinished(() => {
+      if (isProcessAlive(captured.pid)) {
+        try {
+          process.kill(captured.pid, "SIGKILL");
+        } catch {
+          /* already gone */
+        }
+      }
+    });
+
+    const stopStartedAt = Date.now();
+    await started.stop();
+    const elapsed = Date.now() - stopStartedAt;
+
+    // ac-stop-observes-termination-before-return: stop() resolves
+    // only after exit has been observed on the parent handle. At
+    // least one of exitCode / signalCode is non-null — signalCode
+    // alone counts because the synth is uncooperative and the
+    // helper escalates to SIGKILL.
+    expect(
+      started.child.exitCode !== null || started.child.signalCode !== null,
+      `stop() must not resolve until child exit observed (exitCode=${started.child.exitCode} signalCode=${started.child.signalCode})`,
+    ).toBe(true);
+
+    // ac-uncooperative-process-stop-is-bounded: helper must reach
+    // a bounded outcome. 15s is generous enough for slow CI
+    // without masking a regression that hangs the wait. Pre-fix
+    // returns near-instantly from the timer callback; post-fix
+    // returns within the graceful window plus libuv exit
+    // observation — both well under 15s.
+    expect(elapsed).toBeLessThan(15_000);
+
+    // Idempotent stop after observation.
+    await started.stop();
+  });
+});
 
 describe("createTestDaemonProject setup-failure cleanup", () => {
   // The helper records each owned resource on a cleanup stack as it is
@@ -929,88 +898,85 @@ describe("createTestDaemonProject setup-failure cleanup", () => {
     // AC: @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources
     // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
     // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
-    it(
-      `removes the owned temp project when a setup step fails at ${stage}`,
-      async () => {
-        const sentinel = `setup failure sentinel for ${stage}`;
-        // Capture the tempDir path via the first hook call so the test can
-        // assert it was removed even though the helper never returned a
-        // project handle. Without this, the failing call leaks the path —
-        // there is no other observation channel.
-        let observedTempDir: string | null = null;
+    it(`removes the owned temp project when a setup step fails at ${stage}`, async () => {
+      const sentinel = `setup failure sentinel for ${stage}`;
+      // Capture the tempDir path via the first hook call so the test can
+      // assert it was removed even though the helper never returned a
+      // project handle. Without this, the failing call leaks the path —
+      // there is no other observation channel.
+      let observedTempDir: string | null = null;
 
-        let thrown: unknown = null;
-        try {
-          await createTestDaemonProject({
-            skipFixtures: true,
-            __testStageHook: (currentStage) => {
-              if (currentStage === "after-temp-dir") {
-                // The helper calls the hook synchronously right after
-                // createTempDir resolves, so the directory exists on disk at
-                // hook time. We capture the freshest matching entry under
-                // tmpdir() so the test can assert on cleanup even though the
-                // helper never returns a project handle to inspect.
-                const parent = tmpdir();
-                const prefix = basename("kspec-daemon-fixture-");
-                let newest: { name: string; mtimeMs: number } | null = null;
-                for (const name of readdirSync(parent)) {
-                  if (!name.startsWith(prefix)) continue;
-                  try {
-                    const fullPath = join(parent, name);
-                    const stat = statSync(fullPath);
-                    if (!stat.isDirectory()) continue;
-                    if (!newest || stat.mtimeMs > newest.mtimeMs) {
-                      newest = { name, mtimeMs: stat.mtimeMs };
-                    }
-                  } catch {
-                    // Directory may have been cleaned up by a sibling test.
+      let thrown: unknown = null;
+      try {
+        await createTestDaemonProject({
+          skipFixtures: true,
+          __testStageHook: (currentStage) => {
+            if (currentStage === "after-temp-dir") {
+              // The helper calls the hook synchronously right after
+              // createTempDir resolves, so the directory exists on disk at
+              // hook time. We capture the freshest matching entry under
+              // tmpdir() so the test can assert on cleanup even though the
+              // helper never returns a project handle to inspect.
+              const parent = tmpdir();
+              const prefix = basename("kspec-daemon-fixture-");
+              let newest: { name: string; mtimeMs: number } | null = null;
+              for (const name of readdirSync(parent)) {
+                if (!name.startsWith(prefix)) continue;
+                try {
+                  const fullPath = join(parent, name);
+                  const stat = statSync(fullPath);
+                  if (!stat.isDirectory()) continue;
+                  if (!newest || stat.mtimeMs > newest.mtimeMs) {
+                    newest = { name, mtimeMs: stat.mtimeMs };
                   }
-                }
-                if (newest) {
-                  observedTempDir = join(parent, newest.name);
+                } catch {
+                  // Directory may have been cleaned up by a sibling test.
                 }
               }
-              if (currentStage === stage) {
-                throw new Error(sentinel);
+              if (newest) {
+                observedTempDir = join(parent, newest.name);
               }
-            },
-          });
-        } catch (error) {
-          thrown = error;
+            }
+            if (currentStage === stage) {
+              throw new Error(sentinel);
+            }
+          },
+        });
+      } catch (error) {
+        thrown = error;
+      }
+
+      // The helper must propagate the simulated step failure verbatim — the
+      // contract is about cleanup, not error wrapping.
+      expect(thrown).toBeInstanceOf(Error);
+      expect((thrown as Error).message).toContain(sentinel);
+
+      // The "after-temp-dir" hook captured the tempDir path — the helper
+      // owned this resource at the moment a later step failed.
+      expect(observedTempDir).not.toBeNull();
+      const tempDirAtFailure = observedTempDir as unknown as string;
+
+      // ac-setup-failure-cleans-owned-resources — the helper rolls
+      // back the owned temp dir when a later setup step fails before
+      // the caller receives the project handle.
+      const stillExists = existsSync(tempDirAtFailure);
+
+      // Defensive safety net: if a regression re-introduces the leak,
+      // force-remove the orphaned directory so the failing run does
+      // not accumulate temp dirs. The assertion below still fails.
+      if (stillExists) {
+        try {
+          rmSync(tempDirAtFailure, { recursive: true, force: true });
+        } catch {
+          // Best effort: another concurrent cleanup may have removed it.
         }
+      }
 
-        // The helper must propagate the simulated step failure verbatim — the
-        // contract is about cleanup, not error wrapping.
-        expect(thrown).toBeInstanceOf(Error);
-        expect((thrown as Error).message).toContain(sentinel);
-
-        // The "after-temp-dir" hook captured the tempDir path — the helper
-        // owned this resource at the moment a later step failed.
-        expect(observedTempDir).not.toBeNull();
-        const tempDirAtFailure = observedTempDir as unknown as string;
-
-        // ac-setup-failure-cleans-owned-resources — the helper rolls
-        // back the owned temp dir when a later setup step fails before
-        // the caller receives the project handle.
-        const stillExists = existsSync(tempDirAtFailure);
-
-        // Defensive safety net: if a regression re-introduces the leak,
-        // force-remove the orphaned directory so the failing run does
-        // not accumulate temp dirs. The assertion below still fails.
-        if (stillExists) {
-          try {
-            rmSync(tempDirAtFailure, { recursive: true, force: true });
-          } catch {
-            // Best effort: another concurrent cleanup may have removed it.
-          }
-        }
-
-        expect(
-          stillExists,
-          `tempDir ${tempDirAtFailure} must be removed after setup failure at ${stage}`,
-        ).toBe(false);
-      },
-    );
+      expect(
+        stillExists,
+        `tempDir ${tempDirAtFailure} must be removed after setup failure at ${stage}`,
+      ).toBe(false);
+    });
   }
 });
 
@@ -1036,103 +1002,98 @@ describe("createTestDaemonProject setup failure preserves primary when cleanup a
   // AC: @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure
   // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
   // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
-  it(
-    "surfaces the setup-stage error as primary even when cleanupTempDir rejects",
-    async () => {
-      const setupSentinel = "setup-stage primary error sentinel with cleanup-failure";
-      const cleanupSentinel = "simulated rm rejection during setup-failure cleanup";
+  it("surfaces the setup-stage error as primary even when cleanupTempDir rejects", async () => {
+    const setupSentinel = "setup-stage primary error sentinel with cleanup-failure";
+    const cleanupSentinel = "simulated rm rejection during setup-failure cleanup";
 
-      // Captured during the first hook so the test can manually remove the
-      // orphaned tree after restoring the real rm impl. The injected
-      // cleanup-failure means createTestDaemonProject's runCleanups path
-      // cannot remove the temp dir on its own.
-      let observedTempDir: string | null = null;
+    // Captured during the first hook so the test can manually remove the
+    // orphaned tree after restoring the real rm impl. The injected
+    // cleanup-failure means createTestDaemonProject's runCleanups path
+    // cannot remove the temp dir on its own.
+    let observedTempDir: string | null = null;
 
-      _setCleanupRmForTesting(async () => {
-        throw new Error(cleanupSentinel);
-      });
+    _setCleanupRmForTesting(async () => {
+      throw new Error(cleanupSentinel);
+    });
 
-      let thrown: unknown = null;
-      try {
-        await createTestDaemonProject({
-          skipFixtures: true,
-          __testStageHook: (currentStage) => {
-            if (currentStage === "after-temp-dir") {
-              const parent = tmpdir();
-              const prefix = basename("kspec-daemon-fixture-");
-              let newest: { name: string; mtimeMs: number } | null = null;
-              for (const name of readdirSync(parent)) {
-                if (!name.startsWith(prefix)) continue;
-                try {
-                  const fullPath = join(parent, name);
-                  const stat = statSync(fullPath);
-                  if (!stat.isDirectory()) continue;
-                  if (!newest || stat.mtimeMs > newest.mtimeMs) {
-                    newest = { name, mtimeMs: stat.mtimeMs };
-                  }
-                } catch {
-                  // Directory may have been cleaned up by a sibling test.
+    let thrown: unknown = null;
+    try {
+      await createTestDaemonProject({
+        skipFixtures: true,
+        __testStageHook: (currentStage) => {
+          if (currentStage === "after-temp-dir") {
+            const parent = tmpdir();
+            const prefix = basename("kspec-daemon-fixture-");
+            let newest: { name: string; mtimeMs: number } | null = null;
+            for (const name of readdirSync(parent)) {
+              if (!name.startsWith(prefix)) continue;
+              try {
+                const fullPath = join(parent, name);
+                const stat = statSync(fullPath);
+                if (!stat.isDirectory()) continue;
+                if (!newest || stat.mtimeMs > newest.mtimeMs) {
+                  newest = { name, mtimeMs: stat.mtimeMs };
                 }
-              }
-              if (newest) {
-                observedTempDir = join(parent, newest.name);
+              } catch {
+                // Directory may have been cleaned up by a sibling test.
               }
             }
-            if (currentStage === "after-shadow-detection") {
-              throw new Error(setupSentinel);
+            if (newest) {
+              observedTempDir = join(parent, newest.name);
             }
-          },
-        });
-      } catch (error) {
-        thrown = error;
-      } finally {
-        // Restore the real rm impl before any other test runs cleanupTempDir.
-        // Tests in this file run sequentially under vitest's default
-        // configuration, so a synchronous restore here is safe.
-        _resetCleanupRmForTesting();
-      }
-
-      // Defensive cleanup: the injected rm-failure prevented runCleanups
-      // from removing the temp dir during the failure-path catch. Drop the
-      // orphaned tree now using the restored rm so the failing run does not
-      // accumulate temp dirs.
-      if (observedTempDir && existsSync(observedTempDir)) {
-        try {
-          await cleanupTempDir(observedTempDir);
-        } catch {
-          try {
-            rmSync(observedTempDir, { recursive: true, force: true });
-          } catch {
-            // Best effort.
           }
+          if (currentStage === "after-shadow-detection") {
+            throw new Error(setupSentinel);
+          }
+        },
+      });
+    } catch (error) {
+      thrown = error;
+    } finally {
+      // Restore the real rm impl before any other test runs cleanupTempDir.
+      // Tests in this file run sequentially under vitest's default
+      // configuration, so a synchronous restore here is safe.
+      _resetCleanupRmForTesting();
+    }
+
+    // Defensive cleanup: the injected rm-failure prevented runCleanups
+    // from removing the temp dir during the failure-path catch. Drop the
+    // orphaned tree now using the restored rm so the failing run does not
+    // accumulate temp dirs.
+    if (observedTempDir && existsSync(observedTempDir)) {
+      try {
+        await cleanupTempDir(observedTempDir);
+      } catch {
+        try {
+          rmSync(observedTempDir, { recursive: true, force: true });
+        } catch {
+          // Best effort.
         }
       }
+    }
 
-      // ac-cleanup-errors-preserve-primary-failure — the surfaced error is
-      // the setup-stage failure, not the cleanup failure that fired during
-      // the catch block's runCleanups.
-      expect(thrown).toBeInstanceOf(Error);
-      const error = thrown as Error;
-      expect(error.message).toContain(setupSentinel);
+    // ac-cleanup-errors-preserve-primary-failure — the surfaced error is
+    // the setup-stage failure, not the cleanup failure that fired during
+    // the catch block's runCleanups.
+    expect(thrown).toBeInstanceOf(Error);
+    const error = thrown as Error;
+    expect(error.message).toContain(setupSentinel);
 
-      // The cleanup failure remains discoverable from the surfaced error
-      // — as message text, error.cause, or an entry in an AggregateError.
-      // attachCleanupFailure sets primary.cause to the cleanup error and
-      // appends a one-shot message suffix.
-      const surfacedText = [
-        error.message,
-        (error as { cause?: unknown }).cause instanceof Error
-          ? ((error as { cause: Error }).cause).message
-          : "",
-        error instanceof AggregateError
-          ? error.errors
-              .map((e) => (e instanceof Error ? e.message : String(e)))
-              .join(" ")
-          : "",
-      ].join(" ");
-      expect(surfacedText).toContain(cleanupSentinel);
-    },
-  );
+    // The cleanup failure remains discoverable from the surfaced error
+    // — as message text, error.cause, or an entry in an AggregateError.
+    // attachCleanupFailure sets primary.cause to the cleanup error and
+    // appends a one-shot message suffix.
+    const surfacedText = [
+      error.message,
+      (error as { cause?: unknown }).cause instanceof Error
+        ? (error as { cause: Error }).cause.message
+        : "",
+      error instanceof AggregateError
+        ? error.errors.map((e) => (e instanceof Error ? e.message : String(e))).join(" ")
+        : "",
+    ].join(" ");
+    expect(surfacedText).toContain(cleanupSentinel);
+  });
 });
 
 describe(
@@ -1149,97 +1110,90 @@ describe(
     // AC: @daemon-backed-test-fixture-contract ac-readiness-diagnostics
     // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
     // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
-    it(
-      "surfaces DaemonReadinessError as primary even when stop() throws",
-      async () => {
-        if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
-          throw new Error(
-            "dist/daemon/index.js missing — run 'npm run build:daemon' before tests",
-          );
-        }
-        const project = await createTestDaemonProject();
-        onTestFinished(async () => {
-          await project.cleanup();
-        });
+    it("surfaces DaemonReadinessError as primary even when stop() throws", async () => {
+      if (!existsSync(join(dirname(dirname(__dirname)), "dist", "daemon", "index.js"))) {
+        throw new Error("dist/daemon/index.js missing — run 'npm run build:daemon' before tests");
+      }
+      const project = await createTestDaemonProject();
+      onTestFinished(async () => {
+        await project.cleanup();
+      });
 
-        const stopSentinel = new Error("simulated stop failure during readiness teardown");
-        let registeredStop: (() => Promise<void>) | null = null;
-        let capturedChild: ChildProcess | null = null;
-        let thrown: unknown = null;
+      const stopSentinel = new Error("simulated stop failure during readiness teardown");
+      let registeredStop: (() => Promise<void>) | null = null;
+      let capturedChild: ChildProcess | null = null;
+      let thrown: unknown = null;
 
-        try {
-          await startTestDaemon(project, {
-            // Always-false probe so readiness times out even though the
-            // daemon itself is healthy.
-            readiness: {
-              mode: "custom",
-              probe: (ctx) => {
-                capturedChild = ctx.child;
-                return { ok: false, details: "intentional probe rejection" };
-              },
+      try {
+        await startTestDaemon(project, {
+          // Always-false probe so readiness times out even though the
+          // daemon itself is healthy.
+          readiness: {
+            mode: "custom",
+            probe: (ctx) => {
+              capturedChild = ctx.child;
+              return { ok: false, details: "intentional probe rejection" };
             },
-            timeoutMs: 600,
-            intervalMs: 50,
-            __testStopFailure: stopSentinel,
-            registerCleanup: (stop) => {
-              registeredStop = stop;
-            },
-          });
-        } catch (error) {
-          thrown = error;
-        }
-
-        // Always drive the registered stop on cleanup — the `stopped` flag
-        // inside the helper makes this idempotent and silent even when the
-        // first call already threw `__testStopFailure`.
-        onTestFinished(async () => {
-          if (registeredStop) {
-            try {
-              await registeredStop();
-            } catch {
-              // The first stop invocation may have thrown the sentinel.
-              // Subsequent calls are guarded by `stopped` and are no-ops.
-            }
-          }
-          // Defensive: if a future regression bypasses the `stopped` guard,
-          // make sure the child does not leak across tests.
-          if (
-            capturedChild &&
-            (capturedChild as ChildProcess).exitCode === null &&
-            (capturedChild as ChildProcess).signalCode === null
-          ) {
-            try {
-              (capturedChild as ChildProcess).kill("SIGKILL");
-            } catch {
-              // Already dead.
-            }
-          }
+          },
+          timeoutMs: 600,
+          intervalMs: 50,
+          __testStopFailure: stopSentinel,
+          registerCleanup: (stop) => {
+            registeredStop = stop;
+          },
         });
+      } catch (error) {
+        thrown = error;
+      }
 
-        // ac-cleanup-errors-preserve-primary-failure — the helper
-        // surfaces the readiness diagnostic as the primary failure even
-        // though `stop()` threw the sentinel during the failure-path
-        // catch.
-        expect(thrown).toBeInstanceOf(DaemonReadinessError);
+      // Always drive the registered stop on cleanup — the `stopped` flag
+      // inside the helper makes this idempotent and silent even when the
+      // first call already threw `__testStopFailure`.
+      onTestFinished(async () => {
+        if (registeredStop) {
+          try {
+            await registeredStop();
+          } catch {
+            // The first stop invocation may have thrown the sentinel.
+            // Subsequent calls are guarded by `stopped` and are no-ops.
+          }
+        }
+        // Defensive: if a future regression bypasses the `stopped` guard,
+        // make sure the child does not leak across tests.
+        if (
+          capturedChild &&
+          (capturedChild as ChildProcess).exitCode === null &&
+          (capturedChild as ChildProcess).signalCode === null
+        ) {
+          try {
+            (capturedChild as ChildProcess).kill("SIGKILL");
+          } catch {
+            // Already dead.
+          }
+        }
+      });
 
-        // The stop failure remains discoverable from the surfaced error
-        // — either as `error.cause`, as an entry in an AggregateError,
-        // or as supplementary message text.
-        const error = thrown as Error;
-        const surfacedText = [
-          error.message,
-          (error as { cause?: unknown }).cause instanceof Error
-            ? ((error as { cause: Error }).cause).message
-            : "",
-          error instanceof AggregateError
-            ? error.errors
-                .map((e) => (e instanceof Error ? e.message : String(e)))
-                .join(" ")
-            : "",
-        ].join(" ");
-        expect(surfacedText).toContain(stopSentinel.message);
-      },
-    );
+      // ac-cleanup-errors-preserve-primary-failure — the helper
+      // surfaces the readiness diagnostic as the primary failure even
+      // though `stop()` threw the sentinel during the failure-path
+      // catch.
+      expect(thrown).toBeInstanceOf(DaemonReadinessError);
+
+      // The stop failure remains discoverable from the surfaced error
+      // — either as `error.cause`, as an entry in an AggregateError,
+      // or as supplementary message text.
+      const error = thrown as Error;
+      const surfacedText = [
+        error.message,
+        (error as { cause?: unknown }).cause instanceof Error
+          ? (error as { cause: Error }).cause.message
+          : "",
+        error instanceof AggregateError
+          ? error.errors.map((e) => (e instanceof Error ? e.message : String(e))).join(" ")
+          : "",
+      ].join(" ");
+      expect(surfacedText).toContain(stopSentinel.message);
+    });
   },
 );
 
@@ -1266,111 +1220,108 @@ describe(
     // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
     // AC: @daemon-test-harness-guardrails ac-fixture-contract-tests-run
     // AC: @daemon-sensitive-cli-test-determinism ac-fixture-contract-tests
-    it(
-      "retries diagnostic samples while the live child finishes binding",
-      async () => {
-        const scriptDir = await createTempDir("kspec-delayed-bind-daemon-");
-        onTestFinished(async () => {
-          await cleanupTempDir(scriptDir);
+    it("retries diagnostic samples while the live child finishes binding", async () => {
+      const scriptDir = await createTempDir("kspec-delayed-bind-daemon-");
+      onTestFinished(async () => {
+        await cleanupTempDir(scriptDir);
+      });
+      const synthPath = join(scriptDir, "delayed-bind-daemon.cjs");
+      writeFileSync(synthPath, DELAYED_BIND_DAEMON_SOURCE);
+      chmodSync(synthPath, 0o755);
+
+      const project = await createTestDaemonProject();
+      onTestFinished(async () => {
+        await project.cleanup();
+      });
+
+      // Capture the live child handle so the test can force-kill the
+      // synth on exit if a regression strands the listener.
+      let observed: { child: ChildProcess; pid: number } | null = null;
+      let registeredStop: (() => Promise<void>) | null = null;
+      const startedAt = Date.now();
+      const readinessTimeoutMs = 500;
+      const synthBindDelayMs = 1_500;
+
+      let thrown: unknown = null;
+      try {
+        await startTestDaemon(project, {
+          __testBinaryOverride: synthPath,
+          extraEnv: { SYNTH_BIND_DELAY_MS: String(synthBindDelayMs) },
+          // Always-false probe — readiness must time out before the
+          // synth's bind delay elapses, so the diagnostic sample lands
+          // during the unbound window.
+          readiness: {
+            mode: "custom",
+            probe: () => ({ ok: false, details: "intentional probe rejection" }),
+          },
+          timeoutMs: readinessTimeoutMs,
+          intervalMs: 50,
+          __testObserveSpawn: ({ child }) => {
+            observed = { child, pid: child.pid ?? -1 };
+          },
+          registerCleanup: (stop) => {
+            registeredStop = stop;
+          },
         });
-        const synthPath = join(scriptDir, "delayed-bind-daemon.cjs");
-        writeFileSync(synthPath, DELAYED_BIND_DAEMON_SOURCE);
-        chmodSync(synthPath, 0o755);
+      } catch (error) {
+        thrown = error;
+      }
+      const elapsed = Date.now() - startedAt;
 
-        const project = await createTestDaemonProject();
-        onTestFinished(async () => {
-          await project.cleanup();
-        });
-
-        // Capture the live child handle so the test can force-kill the
-        // synth on exit if a regression strands the listener.
-        let observed: { child: ChildProcess; pid: number } | null = null;
-        let registeredStop: (() => Promise<void>) | null = null;
-        const startedAt = Date.now();
-        const readinessTimeoutMs = 500;
-        const synthBindDelayMs = 1_500;
-
-        let thrown: unknown = null;
-        try {
-          await startTestDaemon(project, {
-            __testBinaryOverride: synthPath,
-            extraEnv: { SYNTH_BIND_DELAY_MS: String(synthBindDelayMs) },
-            // Always-false probe — readiness must time out before the
-            // synth's bind delay elapses, so the diagnostic sample lands
-            // during the unbound window.
-            readiness: {
-              mode: "custom",
-              probe: () => ({ ok: false, details: "intentional probe rejection" }),
-            },
-            timeoutMs: readinessTimeoutMs,
-            intervalMs: 50,
-            __testObserveSpawn: ({ child }) => {
-              observed = { child, pid: child.pid ?? -1 };
-            },
-            registerCleanup: (stop) => {
-              registeredStop = stop;
-            },
-          });
-        } catch (error) {
-          thrown = error;
+      onTestFinished(async () => {
+        if (registeredStop) {
+          try {
+            await registeredStop();
+          } catch {
+            /* idempotent */
+          }
         }
-        const elapsed = Date.now() - startedAt;
-
-        onTestFinished(async () => {
-          if (registeredStop) {
+        if (observed) {
+          const ref = observed as unknown as { pid: number };
+          if (ref.pid > 0 && isProcessAlive(ref.pid)) {
             try {
-              await registeredStop();
+              process.kill(ref.pid, "SIGKILL");
             } catch {
-              /* idempotent */
+              /* already gone */
             }
           }
-          if (observed) {
-            const ref = observed as unknown as { pid: number };
-            if (ref.pid > 0 && isProcessAlive(ref.pid)) {
-              try {
-                process.kill(ref.pid, "SIGKILL");
-              } catch {
-                /* already gone */
-              }
-            }
-          }
-        });
-
-        expect(thrown).toBeInstanceOf(DaemonReadinessError);
-        const error = thrown as DaemonReadinessError;
-        const d = error.diagnostics;
-
-        // The synth was alive throughout — readiness timed out only
-        // because of the probe rejection. The retry budget must absorb the
-        // bind delay and surface a successful sample for both endpoints.
-        expect(d.lastHealth).not.toBeNull();
-        if ("status" in d.lastHealth) {
-          expect(d.lastHealth.status).toBe(200);
-          expect(d.lastHealth.body).toContain('"status":"ok"');
-        } else {
-          throw new Error(
-            `lastHealth must reflect the late-bound synth (got error=${d.lastHealth.error})`,
-          );
         }
-        expect(d.lastCacheStatus).not.toBeNull();
-        if ("status" in d.lastCacheStatus) {
-          expect(d.lastCacheStatus.status).toBe(200);
-          expect(d.lastCacheStatus.body).toContain("projects");
-        } else {
-          throw new Error(
-            `lastCacheStatus must reflect the late-bound synth (got error=${d.lastCacheStatus.error})`,
-          );
-        }
+      });
 
-        // The retry budget is bounded — the failure path must not extend
-        // beyond the readiness timeout plus the retry budget plus a small
-        // observation slack. Pre-fix: ~readinessTimeoutMs (single fast
-        // ECONNREFUSED, ~0ms). Post-fix: ~readinessTimeoutMs +
-        // synthBindDelayMs + a few hundred ms for the retry that catches
-        // the bind. The cap below proves the failure path stays bounded
-        // even when the retry has to wait for the synth.
-        expect(elapsed).toBeLessThan(15_000);
-      },
-    );
+      expect(thrown).toBeInstanceOf(DaemonReadinessError);
+      const error = thrown as DaemonReadinessError;
+      const d = error.diagnostics;
+
+      // The synth was alive throughout — readiness timed out only
+      // because of the probe rejection. The retry budget must absorb the
+      // bind delay and surface a successful sample for both endpoints.
+      expect(d.lastHealth).not.toBeNull();
+      if ("status" in d.lastHealth) {
+        expect(d.lastHealth.status).toBe(200);
+        expect(d.lastHealth.body).toContain('"status":"ok"');
+      } else {
+        throw new Error(
+          `lastHealth must reflect the late-bound synth (got error=${d.lastHealth.error})`,
+        );
+      }
+      expect(d.lastCacheStatus).not.toBeNull();
+      if ("status" in d.lastCacheStatus) {
+        expect(d.lastCacheStatus.status).toBe(200);
+        expect(d.lastCacheStatus.body).toContain("projects");
+      } else {
+        throw new Error(
+          `lastCacheStatus must reflect the late-bound synth (got error=${d.lastCacheStatus.error})`,
+        );
+      }
+
+      // The retry budget is bounded — the failure path must not extend
+      // beyond the readiness timeout plus the retry budget plus a small
+      // observation slack. Pre-fix: ~readinessTimeoutMs (single fast
+      // ECONNREFUSED, ~0ms). Post-fix: ~readinessTimeoutMs +
+      // synthBindDelayMs + a few hundred ms for the retry that catches
+      // the bind. The cap below proves the failure path stays bounded
+      // even when the retry has to wait for the synth.
+      expect(elapsed).toBeLessThan(15_000);
+    });
   },
 );

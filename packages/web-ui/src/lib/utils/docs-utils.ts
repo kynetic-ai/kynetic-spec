@@ -3,18 +3,18 @@
  * Can be imported in both browser code and tests.
  */
 
-import type { DocsEntry } from '../docs-types';
+import type { DocsEntry } from "../docs-types";
 
 /**
  * Canonical order of docs sections as defined by @docs-section-taxonomy.
  * Sections not in this list are appended alphabetically after the known sections.
  */
 export const DOCS_SECTION_ORDER = [
-	'getting-started',
-	'guides',
-	'concepts',
-	'troubleshooting',
-	'release-notes',
+  "getting-started",
+  "guides",
+  "concepts",
+  "troubleshooting",
+  "release-notes",
 ] as const;
 
 /**
@@ -23,9 +23,9 @@ export const DOCS_SECTION_ORDER = [
  * with path "getting-started/index.md" belongs to the "getting-started" section).
  */
 function sectionKeyOf(entry: DocsEntry): string | null {
-	const slashIdx = entry.path.indexOf('/');
-	if (slashIdx === -1) return null; // root-level entry
-	return entry.path.slice(0, slashIdx);
+  const slashIdx = entry.path.indexOf("/");
+  if (slashIdx === -1) return null; // root-level entry
+  return entry.path.slice(0, slashIdx);
 }
 
 /**
@@ -34,21 +34,21 @@ function sectionKeyOf(entry: DocsEntry): string | null {
  * (normalized from dir/index.md to bare dir slug) are included in their section.
  */
 export function filterSectionEntries(entries: DocsEntry[], slug: string): DocsEntry[] {
-	const slashIdx = slug.indexOf('/');
-	let section: string;
-	if (slashIdx === -1) {
-		// Could be a section landing page (normalized index) or a root page.
-		// Check if any entries have paths under this slug as a directory.
-		const hasChildren = entries.some((e) => e.path.startsWith(slug + '/'));
-		if (!hasChildren) {
-			// True root page — return all root-level entries
-			return entries.filter((e) => sectionKeyOf(e) === null);
-		}
-		section = slug;
-	} else {
-		section = slug.slice(0, slashIdx);
-	}
-	return entries.filter((e) => sectionKeyOf(e) === section);
+  const slashIdx = slug.indexOf("/");
+  let section: string;
+  if (slashIdx === -1) {
+    // Could be a section landing page (normalized index) or a root page.
+    // Check if any entries have paths under this slug as a directory.
+    const hasChildren = entries.some((e) => e.path.startsWith(slug + "/"));
+    if (!hasChildren) {
+      // True root page — return all root-level entries
+      return entries.filter((e) => sectionKeyOf(e) === null);
+    }
+    section = slug;
+  } else {
+    section = slug.slice(0, slashIdx);
+  }
+  return entries.filter((e) => sectionKeyOf(e) === section);
 }
 
 /**
@@ -60,36 +60,36 @@ export function filterSectionEntries(entries: DocsEntry[], slug: string): DocsEn
  * or null if the link points outside (e.g. `../INSTALL.md` from a root doc).
  */
 export function resolveDocsLink(href: string, currentDocPath: string): string | null {
-	// Only handle .md links
-	if (!href.endsWith('.md')) return null;
+  // Only handle .md links
+  if (!href.endsWith(".md")) return null;
 
-	// Get the directory of the current doc (relative to docs/)
-	const slashIdx = currentDocPath.lastIndexOf('/');
-	const currentDir = slashIdx === -1 ? '' : currentDocPath.slice(0, slashIdx);
+  // Get the directory of the current doc (relative to docs/)
+  const slashIdx = currentDocPath.lastIndexOf("/");
+  const currentDir = slashIdx === -1 ? "" : currentDocPath.slice(0, slashIdx);
 
-	// Split both into segments and resolve
-	const baseParts = currentDir ? currentDir.split('/') : [];
-	const hrefParts = href.split('/');
+  // Split both into segments and resolve
+  const baseParts = currentDir ? currentDir.split("/") : [];
+  const hrefParts = href.split("/");
 
-	const resolved: string[] = [...baseParts];
-	for (const part of hrefParts) {
-		if (part === '.' || part === '') continue;
-		if (part === '..') {
-			if (resolved.length === 0) return null; // walked outside docs/
-			resolved.pop();
-		} else {
-			resolved.push(part);
-		}
-	}
+  const resolved: string[] = [...baseParts];
+  for (const part of hrefParts) {
+    if (part === "." || part === "") continue;
+    if (part === "..") {
+      if (resolved.length === 0) return null; // walked outside docs/
+      resolved.pop();
+    } else {
+      resolved.push(part);
+    }
+  }
 
-	// Convert the resolved path to a slug (strip .md, normalize index)
-	const resolvedPath = resolved.join('/');
-	const slug = resolvedPath.replace(/\.md$/i, '');
-	// Normalize index pages: "getting-started/index" → "getting-started"
-	if (slug.endsWith('/index')) {
-		return slug.slice(0, -'/index'.length);
-	}
-	return slug;
+  // Convert the resolved path to a slug (strip .md, normalize index)
+  const resolvedPath = resolved.join("/");
+  const slug = resolvedPath.replace(/\.md$/i, "");
+  // Normalize index pages: "getting-started/index" → "getting-started"
+  if (slug.endsWith("/index")) {
+    return slug.slice(0, -"/index".length);
+  }
+  return slug;
 }
 
 /**
@@ -104,37 +104,37 @@ export function resolveDocsLink(href: string, currentDocPath: string): string | 
  * is not a `.md` link or resolves to an invalid path (too many `..` traversals).
  */
 export function resolveOutOfTreeHref(href: string, currentDocPath: string): string | null {
-	if (!href.endsWith('.md')) return null;
+  if (!href.endsWith(".md")) return null;
 
-	// The current doc's directory relative to the repo root is docs/<dir>
-	const slashIdx = currentDocPath.lastIndexOf('/');
-	const currentDir = slashIdx === -1 ? '' : currentDocPath.slice(0, slashIdx);
+  // The current doc's directory relative to the repo root is docs/<dir>
+  const slashIdx = currentDocPath.lastIndexOf("/");
+  const currentDir = slashIdx === -1 ? "" : currentDocPath.slice(0, slashIdx);
 
-	// Build the full path from repo root: ["docs", ...currentDir segments]
-	const baseParts = ['docs', ...(currentDir ? currentDir.split('/') : [])];
-	const hrefParts = href.split('/');
+  // Build the full path from repo root: ["docs", ...currentDir segments]
+  const baseParts = ["docs", ...(currentDir ? currentDir.split("/") : [])];
+  const hrefParts = href.split("/");
 
-	const resolved: string[] = [...baseParts];
-	for (const part of hrefParts) {
-		if (part === '.' || part === '') continue;
-		if (part === '..') {
-			if (resolved.length === 0) return null; // walked above repo root
-			resolved.pop();
-		} else {
-			resolved.push(part);
-		}
-	}
+  const resolved: string[] = [...baseParts];
+  for (const part of hrefParts) {
+    if (part === "." || part === "") continue;
+    if (part === "..") {
+      if (resolved.length === 0) return null; // walked above repo root
+      resolved.pop();
+    } else {
+      resolved.push(part);
+    }
+  }
 
-	return resolved.join('/');
+  return resolved.join("/");
 }
 
 export interface DocsSection {
-	/** Directory name (e.g. "getting-started") used as the section key */
-	key: string;
-	/** Human-readable label (e.g. "Getting Started") */
-	label: string;
-	/** Entries in this section, preserving their original sort order */
-	entries: DocsEntry[];
+  /** Directory name (e.g. "getting-started") used as the section key */
+  key: string;
+  /** Human-readable label (e.g. "Getting Started") */
+  label: string;
+  /** Entries in this section, preserving their original sort order */
+  entries: DocsEntry[];
 }
 
 /**
@@ -143,59 +143,59 @@ export interface DocsSection {
  * Unknown sections are appended alphabetically after the known sections.
  */
 export function groupDocsSections(entries: DocsEntry[]): DocsSection[] {
-	const rootEntries: DocsEntry[] = [];
-	const dirGroups = new Map<string, DocsEntry[]>();
+  const rootEntries: DocsEntry[] = [];
+  const dirGroups = new Map<string, DocsEntry[]>();
 
-	for (const entry of entries) {
-		const section = sectionKeyOf(entry);
-		if (section === null) {
-			rootEntries.push(entry);
-		} else {
-			if (!dirGroups.has(section)) dirGroups.set(section, []);
-			dirGroups.get(section)!.push(entry);
-		}
-	}
+  for (const entry of entries) {
+    const section = sectionKeyOf(entry);
+    if (section === null) {
+      rootEntries.push(entry);
+    } else {
+      if (!dirGroups.has(section)) dirGroups.set(section, []);
+      dirGroups.get(section)!.push(entry);
+    }
+  }
 
-	const sections: DocsSection[] = [];
+  const sections: DocsSection[] = [];
 
-	// Add known sections in canonical order
-	for (const key of DOCS_SECTION_ORDER) {
-		const sectionEntries = dirGroups.get(key);
-		if (sectionEntries && sectionEntries.length > 0) {
-			sections.push({
-				key,
-				label: humanizeDir(key),
-				entries: sectionEntries,
-			});
-			dirGroups.delete(key);
-		}
-	}
+  // Add known sections in canonical order
+  for (const key of DOCS_SECTION_ORDER) {
+    const sectionEntries = dirGroups.get(key);
+    if (sectionEntries && sectionEntries.length > 0) {
+      sections.push({
+        key,
+        label: humanizeDir(key),
+        entries: sectionEntries,
+      });
+      dirGroups.delete(key);
+    }
+  }
 
-	// Add any remaining unknown sections alphabetically
-	const remaining = [...dirGroups.entries()].sort(([a], [b]) => a.localeCompare(b));
-	for (const [key, sectionEntries] of remaining) {
-		sections.push({
-			key,
-			label: humanizeDir(key),
-			entries: sectionEntries,
-		});
-	}
+  // Add any remaining unknown sections alphabetically
+  const remaining = [...dirGroups.entries()].sort(([a], [b]) => a.localeCompare(b));
+  for (const [key, sectionEntries] of remaining) {
+    sections.push({
+      key,
+      label: humanizeDir(key),
+      entries: sectionEntries,
+    });
+  }
 
-	// Root-level entries go last (these are standalone pages not in any section)
-	if (rootEntries.length > 0) {
-		sections.push({
-			key: '',
-			label: 'Docs',
-			entries: rootEntries,
-		});
-	}
+  // Root-level entries go last (these are standalone pages not in any section)
+  if (rootEntries.length > 0) {
+    sections.push({
+      key: "",
+      label: "Docs",
+      entries: rootEntries,
+    });
+  }
 
-	return sections;
+  return sections;
 }
 
 function humanizeDir(dir: string): string {
-	return dir
-		.split('-')
-		.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-		.join(' ');
+  return dir
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 }

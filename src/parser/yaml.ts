@@ -1808,13 +1808,17 @@ function assertSpecItemPatch(
  * walks those nested structures and validates each acceptance_criteria entry
  * against the full AcceptanceCriterionSchema (id, given, when, then).
  */
-function collectNestedAcErrors(
-  data: Record<string, unknown>,
-  parentPath: string = "",
-): string[] {
+function collectNestedAcErrors(data: Record<string, unknown>, parentPath: string = ""): string[] {
   const errors: string[] = [];
   // Catalog fields that can contain nested spec items with acceptance_criteria
-  const catalogFields = ["modules", "features", "requirements", "constraints", "decisions", "traits"];
+  const catalogFields = [
+    "modules",
+    "features",
+    "requirements",
+    "constraints",
+    "decisions",
+    "traits",
+  ];
 
   for (const field of catalogFields) {
     if (!(field in data) || !Array.isArray(data[field])) continue;
@@ -2128,10 +2132,9 @@ export async function updateSpecItem(
 
   // Validate known schema fields (e.g. acceptance_criteria[].id) before writing.
   // Uses passthrough mode so callers can include extension fields.
-  const validationError = validateSpecItemPatchData(
-    updates as Record<string, unknown>,
-    { allowUnknown: true },
-  );
+  const validationError = validateSpecItemPatchData(updates as Record<string, unknown>, {
+    allowUnknown: true,
+  });
   if (validationError) {
     throw new Error(`Invalid patch data: ${validationError}`);
   }

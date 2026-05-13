@@ -90,10 +90,7 @@ ${includesLine}
     if (options?.malformedTask) {
       const taskDir = path.join(tmpDir, "tasks", options.malformedTask.ulid);
       await fs.mkdir(taskDir, { recursive: true });
-      await fs.writeFile(
-        path.join(taskDir, "task.yaml"),
-        options.malformedTask.content,
-      );
+      await fs.writeFile(path.join(taskDir, "task.yaml"), options.malformedTask.content);
     }
   }
 
@@ -133,7 +130,14 @@ ${includesLine}
             status: "in_progress",
             priority: 2,
             depends_on: [],
-            notes: [{ _ulid: testUlid("NOTE1"), content: "working on it", author: "test", created_at: "2026-01-02T00:00:00Z" }],
+            notes: [
+              {
+                _ulid: testUlid("NOTE1"),
+                content: "working on it",
+                author: "test",
+                created_at: "2026-01-02T00:00:00Z",
+              },
+            ],
             created_at: "2026-01-01T00:00:00Z",
           },
           {
@@ -227,9 +231,7 @@ ${includesLine}
 
       // Should have a ref error for the dangling spec_ref
       const refErrors = parsed.refErrors ?? [];
-      const danglingRef = refErrors.find(
-        (e: { ref: string }) => e.ref === "@nonexistent-spec",
-      );
+      const danglingRef = refErrors.find((e: { ref: string }) => e.ref === "@nonexistent-spec");
       expect(danglingRef).toBeDefined();
       expect(danglingRef.sourceUlid).toBe(taskUlid);
     });
@@ -258,9 +260,7 @@ ${includesLine}
       const parsed = JSON.parse(result.stdout);
 
       const refErrors = parsed.refErrors ?? [];
-      const danglingDep = refErrors.find(
-        (e: { ref: string }) => e.ref === `@${phantomUlid}`,
-      );
+      const danglingDep = refErrors.find((e: { ref: string }) => e.ref === `@${phantomUlid}`);
       expect(danglingDep).toBeDefined();
       expect(danglingDep.sourceUlid).toBe(taskUlid);
     });
@@ -320,8 +320,8 @@ ${includesLine}
       const parsed = JSON.parse(result.stdout);
 
       // Should report at least one schema error for the malformed task
-      const taskErrors = (parsed.schemaErrors ?? []).filter(
-        (e: { file: string }) => e.file.includes(malformedUlid),
+      const taskErrors = (parsed.schemaErrors ?? []).filter((e: { file: string }) =>
+        e.file.includes(malformedUlid),
       );
       expect(taskErrors.length).toBeGreaterThan(0);
     });
@@ -340,8 +340,8 @@ ${includesLine}
       const result = kspec("validate --schema --json", tmpDir);
       const parsed = JSON.parse(result.stdout);
 
-      const taskErrors = (parsed.schemaErrors ?? []).filter(
-        (e: { file: string }) => e.file.includes(badYamlUlid),
+      const taskErrors = (parsed.schemaErrors ?? []).filter((e: { file: string }) =>
+        e.file.includes(badYamlUlid),
       );
       expect(taskErrors.length).toBeGreaterThan(0);
     });
@@ -370,8 +370,8 @@ ${includesLine}
       const parsed = JSON.parse(result.stdout);
 
       // Should produce a schema error about unmigrated tasks
-      const migrationErrors = (parsed.schemaErrors ?? []).filter(
-        (e: { message: string }) => e.message.includes("migrated"),
+      const migrationErrors = (parsed.schemaErrors ?? []).filter((e: { message: string }) =>
+        e.message.includes("migrated"),
       );
       expect(migrationErrors.length).toBeGreaterThan(0);
 
@@ -454,8 +454,8 @@ ${includesLine}
       expect(parsed.stats.tasksChecked).toBe(2);
 
       // Bad task should produce schema errors
-      const taskErrors = (parsed.schemaErrors ?? []).filter(
-        (e: { file: string }) => e.file.includes(badUlid),
+      const taskErrors = (parsed.schemaErrors ?? []).filter((e: { file: string }) =>
+        e.file.includes(badUlid),
       );
       expect(taskErrors.length).toBeGreaterThan(0);
     });
@@ -487,8 +487,8 @@ ${includesLine}
       const parsed = JSON.parse(output);
 
       // Must report schema error for the malformed task even without --schema
-      const taskErrors = (parsed.schemaErrors ?? []).filter(
-        (e: { file: string }) => e.file.includes(malformedUlid),
+      const taskErrors = (parsed.schemaErrors ?? []).filter((e: { file: string }) =>
+        e.file.includes(malformedUlid),
       );
       expect(taskErrors.length).toBeGreaterThan(0);
 
@@ -497,9 +497,7 @@ ${includesLine}
 
       // The malformed task's spec_ref must contribute to ref validation findings
       const refErrors = parsed.refErrors ?? [];
-      const danglingRef = refErrors.find(
-        (e: { ref: string }) => e.ref === "@missing-spec",
-      );
+      const danglingRef = refErrors.find((e: { ref: string }) => e.ref === "@missing-spec");
       expect(danglingRef).toBeDefined();
       expect(danglingRef.sourceUlid).toBe(malformedUlid);
     });

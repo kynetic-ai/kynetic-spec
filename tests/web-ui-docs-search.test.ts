@@ -14,6 +14,7 @@ import { mkdirSync, writeFileSync, rmSync, existsSync, readdirSync, readFileSync
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { execSync } from "node:child_process";
+import { readTestOutputSync } from "./helpers/cli.js";
 
 const PROJECT_ROOT = resolve(__dirname, "..");
 
@@ -293,6 +294,7 @@ describe("docs search index content", () => {
     const { gunzipSync } = require("node:zlib");
     const allFragmentContent = fragmentFiles
       .map((f) => {
+        // eslint-disable-next-line no-source-scanning/no-source-file-reads -- Pagefind fragments are test-generated binary output.
         const buf = readFileSync(join(fragmentDir, f));
         try {
           return gunzipSync(buf).toString("utf-8");
@@ -314,7 +316,7 @@ describe("docs search index content", () => {
   it("index entry manifest references all indexed pages", () => {
     // The pagefind-entry.json manifest tells the client how to load index
     // chunks. It should reflect the number of indexed pages.
-    const entryJson = JSON.parse(readFileSync(join(pagefindDir, "pagefind-entry.json"), "utf-8"));
+    const entryJson = JSON.parse(readTestOutputSync(join(pagefindDir, "pagefind-entry.json")));
     // The entry should have index metadata
     expect(entryJson).toHaveProperty("version");
     expect(entryJson).toHaveProperty("languages");
@@ -335,7 +337,7 @@ describe("docs search index content", () => {
     // Verify the client JS does not fetch from any external CDN or service.
     // Pagefind uses internal template strings like `https://example.com${...}`
     // for URL normalization — these are not real network requests.
-    const clientJs = readFileSync(join(pagefindDir, "pagefind.js"), "utf-8");
+    const clientJs = readTestOutputSync(join(pagefindDir, "pagefind.js"));
     // Strip Pagefind's internal URL template patterns used for path normalization
     const cleaned = clientJs.replace(/https?:\/\/example\.com\$\{[^}]*\}/g, "");
     const externalUrls = cleaned.match(/https?:\/\/(?!localhost)[^\s"'`)\]]+/g);
@@ -353,7 +355,10 @@ describe("docs search exclusion behavior", () => {
     const fixture = createTestFixture();
     const historyDir = join(fixture.docsDir, "history");
     mkdirSync(historyDir, { recursive: true });
-    writeFileSync(join(historyDir, "old-design.md"), "# Old Design\n\nThis should not be indexed.\n");
+    writeFileSync(
+      join(historyDir, "old-design.md"),
+      "# Old Design\n\nThis should not be indexed.\n",
+    );
 
     const pagefindDir = join(fixture.buildDir, "pagefind-excl");
 
