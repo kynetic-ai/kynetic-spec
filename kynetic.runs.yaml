@@ -49859,7 +49859,7 @@ runs:
     completed_at: 2026-05-13T17:07:30.864Z
   - _ulid: 01KRH6A330RTQW5C5NX3DG8535
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -49876,7 +49876,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T17:34:00.566Z
-        completed_at: 2026-05-13T17:34:00.566Z
+        completed_at: 2026-05-13T17:34:09.465Z
+        notes: "Friction points (high confidence): (1) vi.spyOn cross-test mock leak in describe blocks
+          without vi.restoreAllMocks() in afterEach — captured as observation @01KRH6DT. (2)
+          Dispatch engine workspace derives slug from task title rather than caller-supplied
+          task.slugs[0] when reprovisioning; the existing reconcile path already documents this
+          implicitly but the divergence between provisionDispatchWorkspace (uses caller slug) and
+          engine bootstrap reprovisioning (derives from disk task title) is subtle. Low confidence —
+          only matters when tests want to predict the exact workspace.cwd path."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T17:34:09.465Z
+        completed_at: 2026-05-13T17:34:09.465Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-13T17:31:48.193Z
