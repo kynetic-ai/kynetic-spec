@@ -28,8 +28,10 @@ description: >-
 spec_ref: "@daemon-concurrent-reads"
 meta_ref: null
 plan_ref: "@plan-cache-aware-command-execution"
-status: pending
+status: completed
 blocked_by: []
+closed_reason: "Profiled createProgram() and documented decision: creation cost is below threshold,
+  so no pooling/lazy registration work is needed."
 depends_on:
   - "@01KNN24A"
 context: []
@@ -75,6 +77,25 @@ history:
         previous: []
     command: task-set
     timestamp: 2026-04-07T22:49:27.802Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending
+      closed_reason:
+        new: "Profiled createProgram() and documented decision: creation cost is below threshold, so no
+          pooling/lazy registration work is needed."
+        previous: null
+      started_at:
+        new: 2026-05-13T20:18:03.009Z
+        previous: null
+      completed_at:
+        new: 2026-05-13T20:18:03.009Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-13T20:18:03.020Z
 created_at: 2026-04-07T22:48:50.413Z
+started_at: 2026-05-13T20:18:03.009Z
+completed_at: 2026-05-13T20:18:03.009Z
 todos: []
 automation: manual_only
