@@ -614,3 +614,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-13T00:07:50.793Z
+  - _ulid: 01KRFDRWBD0NVHJYV6M52HQR9H
+    content: "Fix cycle 14: addressed review @01KRF97V blocker by extending statementBindsNameOpaquely
+      (used by findLocalHelperDefinition's statement walker and also consulted by
+      isApprovedSharedCleanupPrimitiveCall) to recognise ClassDeclaration as an opaque local
+      binding, including via ExportNamedDeclaration / ExportDefaultDeclaration unwrap. Closes the
+      cycle-14 class-shadow gap on the cleanup-callback path (class killPid {} shadows the approved
+      import) and the helper-body path (class stopPidBounded {} shadows the approved bounded-stop
+      primitive). Added three positive regressions covering both shapes plus the exported-class
+      variant. tests/lint-no-leaky-test-daemon.test.ts and tests/lint-daemon-test-guardrails.test.ts
+      pass; full npm test passes (2429 suites)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T01:03:43.982Z
