@@ -49977,7 +49977,7 @@ runs:
     completed_at: 2026-05-13T17:53:12.050Z
   - _ulid: 01KRHAR66ZZ6C6ARWBJ2PM5KXA
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50012,7 +50012,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-13T18:51:01.826Z
-        completed_at: 2026-05-13T18:51:01.826Z
+        completed_at: 2026-05-13T18:51:11.636Z
+        notes: "Proposal: add a test-runner/environment preflight for tmp storage before full uncached runs.
+          It would check available space in the temp/log directory used by the test runner, fail
+          early with clear guidance when below a threshold, and suggest cleanup or relocating
+          temp/cache paths. Helps avoid late false-negative test failures and reviewer time loss.
+          Rough scope: small to medium, depending on whether the threshold is config-driven and
+          whether temp path relocation is included."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-13T18:51:11.636Z
+        completed_at: 2026-05-13T18:51:11.636Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T18:49:24.447Z
