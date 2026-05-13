@@ -211141,6 +211141,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-13T02:28:11.606Z
+      - _ulid: 01KRFKYS3YWGT6WRG2XR3Q5QMR
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRFJH9MTW1GSKNP0XNCQSQTG
+        timestamp: 2026-05-13T02:51:48.734Z
     examined_commit: 8b076968ac2a7ff19dae267fe2334325c028cacd
     external_links: []
     lifecycle_state: closed
@@ -211174,6 +211180,32 @@ reviews:
               caller-supplied active/in-flight task refs are protection sources across destructive
               surfaces.'
             created_at: 2026-05-13T02:26:58.330Z
+          - _ulid: 01KRFKYQQC1179QRR770DBS67E
+            author: "@claude"
+            body: >-
+              Fixed: Derived activeOrInFlightShortIds via shortTaskId() and routed
+              evaluateDispatchBranch() and evaluateWorkspacePath() through it. Any canonical
+              dispatch/task/<slug>/<short-id> branch whose trailing segment matches an
+              active/in-flight ref now returns preserve=true, and so do worker (<slug>-<short-id>)
+              and reviewer (<slug>-<short-id>-review) worktree basenames under the configured
+              worktree root — even when the registry has no record yet. Verified by:
+
+
+              - New unit test (tests/dispatch-artifact-protection.test.ts) exercising the exact
+              blocker scenario: activeOrInFlightTaskRefs=[@01KRF37Y941E2T8D1ATFV63JB0],
+              registry={status:loaded, records:[]}, asserting evaluateDispatchBranch and
+              evaluateWorkspacePath both return preserve=true for the canonical branch and
+              worker/reviewer dirs.
+
+              - A second unit test that asserts the derivation does not over-protect: non-canonical
+              dispatch branches (wrong segment count) and paths outside worktreeRoot remain
+              unprotected.
+
+              - New E2E regression in tests/dispatch-workspace-cleanup.test.ts that reserves
+              dispatch/task/task-queue-to-spawn-protection/01task00 with an empty registry and an
+              active task ref, then proves reconcileDispatchWorkspaceArtifacts() does not delete the
+              branch.
+            created_at: 2026-05-13T02:51:47.308Z
         kind: blocker
       - _ulid: 01KRFJK47M2D0BDPN1G9F809V7
         entries:
@@ -211202,7 +211234,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-13T02:28:11.605Z
     created_at: 2026-05-13T02:14:39.821Z
-    updated_at: 2026-05-13T02:28:11.606Z
+    updated_at: 2026-05-13T02:51:47.308Z
     notes: []
   - _ulid: 01KRFJZMTV861R70M2R54EW1T4
     slugs: []
