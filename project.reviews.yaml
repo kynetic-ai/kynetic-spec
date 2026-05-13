@@ -211159,6 +211159,12 @@ reviews:
         payload:
           thread_ulid: 01KRFJK47M2D0BDPN1G9F809V7
         timestamp: 2026-05-13T02:52:08.125Z
+      - _ulid: 01KRFKZNWK2WVRC7WKNW7H5H81
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRFJK47M2D0BDPN1G9F809V7
+        timestamp: 2026-05-13T02:52:18.195Z
     examined_commit: 8b076968ac2a7ff19dae267fe2334325c028cacd
     external_links: []
     lifecycle_state: closed
@@ -211244,6 +211250,8 @@ reviews:
               code change required.
             created_at: 2026-05-13T02:52:06.687Z
         kind: nit
+        resolved_at: 2026-05-13T02:52:16.692Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -211253,7 +211261,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-13T02:28:11.605Z
     created_at: 2026-05-13T02:14:39.821Z
-    updated_at: 2026-05-13T02:52:06.687Z
+    updated_at: 2026-05-13T02:52:16.692Z
     notes: []
   - _ulid: 01KRFJZMTV861R70M2R54EW1T4
     slugs: []
