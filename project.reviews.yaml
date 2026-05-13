@@ -213142,6 +213142,18 @@ reviews:
         runner: npm test
         created_at: 2026-05-13T07:03:56.977Z
         completed_at: 2026-05-13T07:03:56.977Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --warnings-ok: schema OK, references OK, skills OK. Warnings remain
+          existing project-wide validation debt, including this automation bug task lacking
+          spec_ref; no schema/reference errors."
+        name: kspec validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-13T07:04:07.358Z
+        completed_at: 2026-05-13T07:04:07.358Z
     events:
       - _ulid: 01KRG1JH8R5XM0EE68PNPXDD4M
         actor: Jacob Chapel
@@ -213170,6 +213182,13 @@ reviews:
           status: pass
           name: full test suite
         timestamp: 2026-05-13T07:03:58.412Z
+      - _ulid: 01KRG2CT9BX16SY60SWRRRKT53
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-13T07:04:08.747Z
     examined_commit: d8908e58f6ced81694a1d8023c8ce175c956ec6d
     external_links: []
     lifecycle_state: open
@@ -213182,5 +213201,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T06:49:47.545Z
-    updated_at: 2026-05-13T07:03:56.977Z
+    updated_at: 2026-05-13T07:04:07.358Z
     notes: []
