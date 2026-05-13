@@ -49793,7 +49793,7 @@ runs:
     completed_at: 2026-05-13T10:38:01.303Z
   - _ulid: 01KRH4S53Z3F7FMRWN0PH4E1GH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -49809,7 +49809,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T17:05:34.083Z
-        completed_at: 2026-05-13T17:05:34.083Z
+        completed_at: 2026-05-13T17:06:00.906Z
+        notes: "Friction points: (1) Detached reviewer snapshots for spec-only work do not expose a local
+          .kspec directory, so direct shadow inspection attempts like git -C .kspec log or rg
+          .kspec/modules fail; the reliable path is kspec CLI inspection. This is manageable but
+          easy to trip over during reviews. (2) Full npm test took 2224.2s for a spec-only review.
+          This is already a known broad friction area based on search result @01KNTB8Z4, so likely
+          not a new capture candidate."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T17:06:00.906Z
+        completed_at: 2026-05-13T17:06:00.906Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T17:05:04.639Z
