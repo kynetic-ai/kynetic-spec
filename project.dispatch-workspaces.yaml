@@ -33510,11 +33510,11 @@ workspaces:
     canonical_branch: dispatch/task/task-test-dispatch-inflight-bootstrap-race-regression/01krf37z
     canonical_branch_head: 56258aa7bd91a61a4c908f3f5b6942b05f72844d
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-13T05:37:25.360Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-13T05:37:27.341Z
     health:
       status: healthy
       issues: []
@@ -33528,7 +33528,7 @@ workspaces:
       target_branch: dev
       target_commit: 68bef6d6da0445b4a09b8758b3270f2a8a59e38b
       updated_at: 2026-05-13T05:37:25.360Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KRF37ZZ4E2KKX66YP217WW69"
     task_slug: task-test-dispatch-inflight-bootstrap-race-regression
@@ -33537,7 +33537,7 @@ workspaces:
       last_active_at: 2026-05-13T05:21:14.454Z
       last_reconciled_at: 2026-05-13T05:37:25.360Z
       created_at: 2026-05-13T04:49:44.137Z
-      updated_at: 2026-05-13T05:37:25.360Z
+      updated_at: 2026-05-13T05:37:27.341Z
     workspace_id: dispatch-workspace-01KRF37ZZ4E2KKX66YP217WW69
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
