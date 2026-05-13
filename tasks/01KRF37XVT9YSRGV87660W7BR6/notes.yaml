@@ -12,3 +12,11 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-12T22:55:43.451Z
+  - _ulid: 01KRFA49T8NHDGYGHAEPE7130P
+    content: "Reviewer completion note: kspec task complete auto-synced @dispatch-workspace-registry
+      implementation to implemented; corrected it back to in_progress with kspec item set
+      @dispatch-workspace-registry --status in_progress --no-cascade because this task only adds the
+      AC and downstream plan tasks implement/test it."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-05-13T00:00:03.913Z
