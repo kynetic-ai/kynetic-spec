@@ -33366,18 +33366,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-test-dispatch-inflight-bootstrap-race-regression/01krf37z
-    canonical_branch_head: 68bef6d6da0445b4a09b8758b3270f2a8a59e38b
+    canonical_branch_head: 56258aa7bd91a61a4c908f3f5b6942b05f72844d
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-13T04:49:44.137Z
+      updated_at: 2026-05-13T05:16:27.066Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T04:50:08.548Z
+      updated_at: 2026-05-13T05:16:27.066Z
     integration:
       status: pending
       detail: null
@@ -33385,7 +33385,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 68bef6d6da0445b4a09b8758b3270f2a8a59e38b
-      updated_at: 2026-05-13T04:49:44.137Z
+      updated_at: 2026-05-13T05:16:27.066Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KRF37ZZ4E2KKX66YP217WW69"
@@ -33393,9 +33393,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T04:50:08.548Z
-      last_reconciled_at: 2026-05-13T04:50:08.548Z
+      last_reconciled_at: 2026-05-13T05:16:27.066Z
       created_at: 2026-05-13T04:49:44.137Z
-      updated_at: 2026-05-13T04:50:08.548Z
+      updated_at: 2026-05-13T05:16:27.066Z
     workspace_id: dispatch-workspace-01KRF37ZZ4E2KKX66YP217WW69
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
