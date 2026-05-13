@@ -211773,6 +211773,18 @@ reviews:
         runner: oxlint
         created_at: 2026-05-13T03:31:20.004Z
         completed_at: 2026-05-13T03:31:20.004Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Fixture with type-only stopPidBounded import from ./helpers/process-stop inside local
+          killPid helper exited 0 and emitted only no-unused-vars, no no-leaky-test-daemon
+          diagnostic.
+        name: ad hoc type-only shared primitive import probe
+        required: true
+        runner: oxlint
+        created_at: 2026-05-13T03:31:26.117Z
+        completed_at: 2026-05-13T03:31:26.117Z
     events:
       - _ulid: 01KRFNCRS37VKYHTTJGE8TAG87
         actor: Jacob Chapel
@@ -211849,6 +211861,13 @@ reviews:
           status: fail
           name: ad hoc type-only approved helper import probe
         timestamp: 2026-05-13T03:31:21.426Z
+      - _ulid: 01KRFP7C4H16YGMVH20S1XAKMT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: ad hoc type-only shared primitive import probe
+        timestamp: 2026-05-13T03:31:27.505Z
     examined_commit: 493ede939a32cbd9a28e66adea498ac5a08143bf
     external_links: []
     lifecycle_state: open
@@ -211911,5 +211930,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-13T03:16:55.715Z
-    updated_at: 2026-05-13T03:31:20.004Z
+    updated_at: 2026-05-13T03:31:26.117Z
     notes: []
