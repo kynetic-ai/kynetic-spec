@@ -12,3 +12,20 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-13T07:42:06.251Z
+  - _ulid: 01KRG60M3NM55QZ9K8F6P8XJVA
+    content: "Implementation complete. Extended no-leaky-test-daemon rule with a new implicit auto-start
+      ownership classifier that fires on VariableDeclarator/AssignmentExpression bindings whose init
+      reads <x>.daemonPidFilePath or a daemon.connection.json literal AND contains a recognised
+      file-read primitive (readFileSync/readTestOutputSync/existsSync/etc.). Gated on a prior kspec
+      CLI subprocess (helper or spawn-like callee) in the same test body to avoid false positives in
+      parser tests that exercise the pid-file surface. Reused hasCleanupAfter for cleanup timing.
+      Patched cli-no-daemon.test.ts bun-runtime parity case to register cleanup immediately after
+      pid capture (matching the safe pattern in the same file's test #2). Patched
+      parser/daemon-config.test.ts auto-start-prevention case to register defensive cleanup keyed
+      off the observed pid. Added 12 behavioural fixtures (6 unsafe, 6 safe) covering all ACs.
+      Targeted suite (449 tests) and full npm test (2438/2438 suites, 9230/9235 tests, 5 skipped)
+      all pass. npx oxlint tests/ reports zero no-leaky-test-daemon findings (19 remaining errors
+      are unrelated and pre-existing). kspec validate clean for this task scope."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T08:07:23.510Z
