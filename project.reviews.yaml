@@ -211278,6 +211278,18 @@ reviews:
         runner: git
         created_at: 2026-05-13T02:49:24.654Z
         completed_at: 2026-05-13T02:49:24.654Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Synthetic test with import { killPid } from './helpers/daemon' plus 'declare enum killPid
+          { noop }' should keep the approved runtime cleanup helper, but oxlint reported
+          no-leaky-test-daemon missing cleanup at the detached start.
+        name: ad hoc declare-enum cleanup probe
+        required: true
+        runner: oxlint
+        created_at: 2026-05-13T02:49:29.155Z
+        completed_at: 2026-05-13T02:49:29.155Z
     events:
       - _ulid: 01KRFJZMTVCNSQAR7MPHNCPJFY
         actor: Jacob Chapel
@@ -211341,6 +211353,13 @@ reviews:
           status: pass
           name: git diff --check
         timestamp: 2026-05-13T02:49:26.205Z
+      - _ulid: 01KRFKTJ8EMY1K0K08S6VG0MC9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: ad hoc declare-enum cleanup probe
+        timestamp: 2026-05-13T02:49:30.638Z
     examined_commit: ad8fd1d4d3466abc43a47cf9a591e7ff09cdfe6a
     external_links: []
     lifecycle_state: open
@@ -211375,5 +211394,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-13T02:34:48.539Z
-    updated_at: 2026-05-13T02:49:24.654Z
+    updated_at: 2026-05-13T02:49:29.155Z
     notes: []
