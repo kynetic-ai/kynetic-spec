@@ -18667,6 +18667,19 @@ observations:
     resolved_by: codex
     workflow_ref: "@session-reflect"
     created_at: 2026-05-13T02:52:43.988Z
+  - _ulid: 01KRFQ3TZ774F8050EH5A1BJSG
+    type: friction
+    content: "vi.spyOn(console, 'debug').mockRestore() restores the original method AND clears the spy's
+      mock.calls history. Reading debugSpy.mock.calls AFTER mockRestore returns an empty array, even
+      though calls were captured during the test. Always snapshot mock.calls into a local variable
+      BEFORE calling mockRestore: 'capturedCalls = debugSpy.mock.calls.map(...)' inside try, then
+      mockRestore() in finally. This cost ~20 minutes debugging on
+      @task-apply-protection-policy-across-artifact-reconciliation; tests intermittently passed
+      (mockRestore not yet called) vs failed depending on order of assertions vs restore."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T03:47:00.199Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
