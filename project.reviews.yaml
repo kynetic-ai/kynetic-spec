@@ -213215,9 +213215,25 @@ reviews:
           kind: nit
           thread_ulid: 01KRG2D8D9JG7Y4XR4XQPHWWAY
         timestamp: 2026-05-13T07:04:24.595Z
+      - _ulid: 01KRG2DR7SQYTG5WY1VND8DMA2
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-13T07:04:39.418Z
+      - _ulid: 01KRG2DR7TMZFH2WXPJ3XJA5N5
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-13T07:04:39.418Z
     examined_commit: d8908e58f6ced81694a1d8023c8ce175c956ec6d
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -213255,7 +213271,14 @@ reviews:
               integration with full suite. No blocking findings.
             created_at: 2026-05-13T07:04:23.210Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-13T07:04:39.410Z
     created_at: 2026-05-13T06:49:47.545Z
-    updated_at: 2026-05-13T07:04:23.210Z
+    updated_at: 2026-05-13T07:04:39.418Z
     notes: []
