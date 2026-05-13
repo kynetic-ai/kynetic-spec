@@ -18715,6 +18715,15 @@ observations:
     resolved: false
     workflow_ref: "@01KRFR77"
     created_at: 2026-05-13T04:11:11.782Z
+  - _ulid: 01KRFSG3VY0X01CQZ01W6XT0WC
+    type: success
+    content: During review of complex static-analysis guardrail changes, rerunning prior blocker probes
+      independently with ad hoc oxlint fixtures before approving caught whether the claimed fix
+      worked outside the unit-test wrapper and made the approval evidence concrete.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T04:28:39.678Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

@@ -3491,3 +3491,12 @@ inbox:
       - ergonomics
     added_by: Jacob Chapel
     created_at: 2026-05-12T21:34:23.118Z
+  - _ulid: 01KRFSG3RFRNRHYSBQ03SXZC8D
+    text: Investigate detached-reviewer merge helper success warning when occupied worktree refresh
+      reports untracked .kspec-dispatch-shadow-mutation.lock/ after merge.
+    tags:
+      - reflection
+      - dispatch
+      - merge
+    added_by: Jacob Chapel
+    created_at: 2026-05-13T04:28:39.567Z
