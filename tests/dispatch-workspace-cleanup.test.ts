@@ -1000,7 +1000,8 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
-  it("preserves a root-directory candidate that lives inside a protected worker workspace path", async () => {
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  it("preserves a direct-child root-directory candidate whose path overlaps a non-closed worker record", async () => {
     await seedRepo(tempDir);
     git(tempDir, "checkout -b agent-dev");
 
@@ -1009,21 +1010,73 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
       projectDir: tempDir,
       taskRef,
       task: {
-        title: "Root Candidate Inside Worker",
-        slugs: ["task-root-candidate-inside-worker"],
+        title: "Root Candidate Overlap Worker",
+        slugs: ["task-root-candidate-overlap-worker"],
       },
     });
 
-    // Create a directory entry under the worktree root that *contains* the
-    // worker workspace path (overlapping protected path). Root-directory
-    // pruning must refuse to delete this overlap.
-    const overlappingRoot = path.dirname(workspace.cwd);
-    await fs.access(overlappingRoot);
+    const workerPath = workspace.cwd;
+    const worktreeRoot = path.dirname(workerPath);
+    expect(workerPath).toBe(
+      path.join(worktreeRoot, "task-root-candidate-overlap-worker-01task00"),
+    );
 
-    await reconcileDispatchWorkspaceArtifacts(tempDir);
+    // Strip the worker dir's git worktree registration AND its on-disk
+    // .git pointer + metadata, but leave the still-active registry record
+    // pinning the same path. Recreating an empty dir produces a real direct
+    // child of the worktree root that:
+    //   - is NOT a registered git worktree (so findWorktreeByPath does not skip it),
+    //   - has NO .kspec-dispatch-workspace.json metadata (so the metadata gate
+    //     does not skip it),
+    //   - has NO .git marker file (so the gitMarker gate does not skip it).
+    // Root-directory pruning therefore reaches the protection helper for this
+    // candidate, and the candidate path equals the protected worker.path on
+    // the non-closed registry record so `pathsOverlap` returns true.
+    git(tempDir, `worktree remove --force ${workerPath}`);
+    await expect(fs.access(workerPath)).rejects.toThrow();
+    await fs.mkdir(workerPath, { recursive: true });
 
-    await fs.access(workspace.cwd);
-    await fs.access(overlappingRoot);
+    // Sanity: registry record still pins the worker path. This is what
+    // populates `protectedPaths` and lets evaluateWorkspacePath match.
+    const registryBefore = await readRegistryWorkspaces(tempDir);
+    expect(registryBefore[0]?.worktrees).toMatchObject({
+      worker: { path: workerPath },
+    });
+
+    // Sanity: the recreated candidate exists but is not registered with git
+    // and has no metadata/.git marker, so the earlier skip gates in
+    // reconcileDispatchWorkspaceArtifacts do not short-circuit it.
+    const worktreeListing = git(tempDir, "worktree list --porcelain");
+    expect(worktreeListing.includes(workerPath)).toBe(false);
+    await expect(fs.access(path.join(workerPath, WORKSPACE_METADATA_FILE))).rejects.toThrow();
+    await expect(fs.access(path.join(workerPath, ".git"))).rejects.toThrow();
+
+    const diag = captureDispatchCleanupDiagnostics();
+    let diagnostics: string[] = [];
+    try {
+      await reconcileDispatchWorkspaceArtifacts(tempDir);
+      diagnostics = diag.capture();
+    } finally {
+      diag.restore();
+    }
+
+    // Candidate dir survives root-directory pruning because the helper
+    // saw the path overlap with the protected worker record.
+    await fs.access(workerPath);
+
+    // The root-directory surface emitted a preserve diagnostic identifying
+    // the surface label, the preserved path, and the overlap reason from
+    // the protection helper. Without the `protection.evaluateWorkspacePath`
+    // consultation in root-directory pruning this diagnostic would not exist
+    // (and the dir would be deleted).
+    expect(
+      diagnostics.some(
+        (line) =>
+          line.includes("root-directory") &&
+          line.includes(workerPath) &&
+          line.includes("overlaps non-closed workspace path"),
+      ),
+    ).toBe(true);
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
