@@ -95,6 +95,7 @@ tags:
   - daemon
   - validation
 vcs_refs: []
+review_ref: "@01KRGDGGPRXMPDB5D45BVK6A0V"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-validate-daemon-cleanup-contract-hardening/01krcrjs
@@ -145,6 +146,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-05-13T10:15:37.701Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KRGDGGPRXMPDB5D45BVK6A0V"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-13T10:18:28.019Z
 created_at: 2026-05-12T00:14:55.981Z
 started_at: 2026-05-13T10:04:33.360Z
 submitted_at: 2026-05-13T10:15:37.701Z
