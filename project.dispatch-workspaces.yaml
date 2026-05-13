@@ -31971,12 +31971,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-13T02:31:17.851Z
+      updated_at: 2026-05-13T02:33:18.435Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T02:31:19.967Z
+      updated_at: 2026-05-13T02:33:18.435Z
     integration:
       status: pending
       detail: null
@@ -31984,7 +31984,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0504bc1cf83155103a5bc51038e6f1ed78d48b20
-      updated_at: 2026-05-13T02:31:17.851Z
+      updated_at: 2026-05-13T02:33:18.435Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KRF37Y941E2T8D1ATFV63JB0"
@@ -31992,9 +31992,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T02:14:04.845Z
-      last_reconciled_at: 2026-05-13T02:31:19.967Z
+      last_reconciled_at: 2026-05-13T02:33:18.435Z
       created_at: 2026-05-13T01:46:43.280Z
-      updated_at: 2026-05-13T02:31:19.967Z
+      updated_at: 2026-05-13T02:33:18.435Z
     workspace_id: dispatch-workspace-01KRF37Y941E2T8D1ATFV63JB0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -32003,5 +32003,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-centralize-dispatch-artifact-protection-decisions/01krf37y
         head: 8b076968ac2a7ff19dae267fe2334325c028cacd
-        last_seen_at: 2026-05-13T02:13:36.961Z
+        last_seen_at: 2026-05-13T02:33:18.435Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-centralize-dispatch-artifact-protection-decisions-01krf37y
