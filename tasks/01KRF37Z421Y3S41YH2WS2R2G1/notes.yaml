@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KRFNK6H9FHKC4J8929WSR52D
+    content: "Approach: protection helper from prior task already exists with
+      evaluateTaskRef/evaluateDispatchBranch/evaluateWorkspacePath/evaluateClosingRecordForReap.
+      reconcileDispatchWorkspaceArtifacts already routes every destructive surface (metadata-less
+      worktree removal, reap, reviewer snapshot, root directory, dispatch branch) through it. Gap:
+      (1) preserve decisions are silently honored — no diagnostics surface the cleanup surface +
+      protection source; (2) no end-to-end integration test exercises registry-load-failed
+      (no-blind-deletion). Plan: add per-surface diagnostic logging (console.debug with
+      [dispatch-cleanup] prefix + surface identifier + protection reason); add a
+      registry-load-failed integration test; add a diagnostic test asserting each surface emits a
+      labeled message when preservation occurs. Test plan: vi.spyOn(console, 'debug'), exercise
+      reconcile with active task ref + corrupted registry, assert filesystem state preserved and
+      diagnostics emitted for each surface."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T03:20:26.409Z
