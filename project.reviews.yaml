@@ -210615,6 +210615,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-13T00:58:56.354Z
+      - _ulid: 01KRFDG7QJ5EX8YYHGP5SQ7392
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRFDG646CXJXCS2CM1WM9QGV
+        timestamp: 2026-05-13T00:59:00.722Z
     examined_commit: ea847802c28d69abd5dbbb6ae5ce65cf6cc77df0
     external_links: []
     lifecycle_state: open
@@ -210624,8 +210631,24 @@ reviews:
       content_hash: ""
       ref: "@01KRF37YPHJMC4CJ1VH7DDT3K0"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRFDG646CXJXCS2CM1WM9QGV
+        entries:
+          - _ulid: 01KRFDG6465JH5GPENGZ3AM02J
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: src/agent-runtime/dispatch.ts;
+              tests/agent-dispatch-engine.test.ts; kspec-agents.md. Commands run: kspec task get
+              @01KRF37YPHJMC4CJ1VH7DDT3K0; kspec item get @agent-dispatch-engine; git
+              diff/stat/name-only against 0c6506a55...HEAD; rg for cleanup/in-flight/AC annotations;
+              kspec validate; npm test. Claims verified: cleanup call sites in start() and
+              _reconcile() both pass _activeTaskRefs(); _activeTaskRefs() now includes parsed
+              inFlightTaskKeys; _hasActiveInvocationForTask() still checks active records plus
+              parsed in-flight refs; tests cover in-flight-only refs, dedupe, first-colon parsing,
+              malformed keys, and both cleanup call sites. Categories searched: correctness, edge
+              cases, error handling scope, test quality, integration."
+            created_at: 2026-05-13T00:58:59.078Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-13T00:47:07.644Z
-    updated_at: 2026-05-13T00:58:54.888Z
+    updated_at: 2026-05-13T00:58:59.078Z
     notes: []
