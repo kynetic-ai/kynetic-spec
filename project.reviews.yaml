@@ -210988,7 +210988,18 @@ reviews:
     slugs: []
     title: Review centralize dispatch artifact protection decisions
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "2435 test suites passed; 9105 tests passed; 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KRFHSP4YWKWNVBRNC2A1XTTM/1a890db0c6862a73.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-05-13T02:27:11.982Z
+        completed_at: 2026-05-13T02:27:11.982Z
     events:
       - _ulid: 01KRFHTRECANVBC4KF11JMREVP
         actor: Jacob Chapel
@@ -211010,6 +211021,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRFJH9MTW1GSKNP0XNCQSQTG
         timestamp: 2026-05-13T02:26:59.834Z
+      - _ulid: 01KRFJHRD41YE7GZRTN5TRSF9J
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-13T02:27:13.445Z
     examined_commit: 8b076968ac2a7ff19dae267fe2334325c028cacd
     external_links: []
     lifecycle_state: open
@@ -211046,5 +211064,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-13T02:14:39.821Z
-    updated_at: 2026-05-13T02:26:58.330Z
+    updated_at: 2026-05-13T02:27:11.982Z
     notes: []
