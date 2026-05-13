@@ -213041,9 +213041,25 @@ reviews:
           kind: nit
           thread_ulid: 01KRG03A0Y6DS3DRG8VNX4Z0EK
         timestamp: 2026-05-13T06:24:01.626Z
+      - _ulid: 01KRG03N75WFDRGKSSAVPXEPZT
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-13T06:24:11.493Z
+      - _ulid: 01KRG03N754XEZRD88YDP6WXM3
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-13T06:24:11.493Z
     examined_commit: 5de3b8d30d8798bd4279bd86a3e8223ce03894f4
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -213088,7 +213104,14 @@ reviews:
               guardrails."
             created_at: 2026-05-13T06:24:00.030Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-13T06:24:11.493Z
     created_at: 2026-05-13T06:09:39.233Z
-    updated_at: 2026-05-13T06:24:00.030Z
+    updated_at: 2026-05-13T06:24:11.493Z
     notes: []

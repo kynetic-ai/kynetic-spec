@@ -28709,7 +28709,7 @@
   type: task
   spec_ref: "@daemon-test-guardrail-precision"
   plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-add-guardrail-cleanup-boundary-regressions"
@@ -28720,7 +28720,7 @@
     - lint
     - daemon
   review_ref: "@01KRFZ91D1FG251GVT1QGQ94TS"
-  notes_count: 1
+  notes_count: 2
   todos_count: 0
   created_at: 2026-05-12T00:14:53.196Z
   started_at: 2026-05-13T05:44:20.710Z
