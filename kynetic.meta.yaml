@@ -18789,6 +18789,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-13T06:07:50.435Z
+  - _ulid: 01KRG30H2NXCRJCVDTZ0ZEKDTH
+    type: friction
+    content: 'Multi-classifier lint rules (extends @01KRFZ5Q5393BA6QW38KM8DWRM): boundary-isolating
+      probes must also pair the daemon-start *kind* with the targeted classifier — not just the
+      cleanup body. Cycle-1 of @task-fix-guardrail-cleanup-boundary-classification added a
+      child-handle probe using spawn("node", [DAEMON_ENTRY, ...]) which the direct-daemon-entry
+      visitor reports unconditionally on CallExpression, never reaching the deferred cleanup
+      classifier at Program:exit. Body was a clean child.kill("SIGTERM") that would have correctly
+      exercised the effect classifier, but the start kind pre-empted the rule path entirely. The
+      probe would pass even if the boundary classifier were broken. Convention candidate refinement:
+      in addition to docstring-naming the targeted classifier and isolating the body, the
+      daemon-start kind must route through the visitor branch where that classifier runs. For this
+      rule that means runKspec/kspec-helper or spawn("kspec", [...]) shapes for cleanup-boundary
+      probes, never direct daemon-entry shapes. Verification: stashing
+      tools/eslint-rules/no-leaky-test-daemon.js, the cycle-1 probe still passed (false negative);
+      the cycle-2 spawn("kspec", ...) replacement failed without the fix and passed with it. Domain:
+      testing, lint, daemon, convention.'
+    author: "@claude"
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-13T07:14:54.677Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
