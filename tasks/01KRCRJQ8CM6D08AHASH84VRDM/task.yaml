@@ -50,7 +50,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-add-guardrail-cleanup-boundary-regressions"
@@ -71,7 +71,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KRG1GC5REA48KZJT76V6ZB95
 history:
   - author: Jacob Chapel
     changes:
@@ -130,8 +130,21 @@ history:
         previous: 01KRFXSQCAH4517Q2PXGPABDB3
     command: review-verdict-needs-work
     timestamp: 2026-05-13T06:24:14.101Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KRG1GC5REA48KZJT76V6ZB95
+        previous: null
+      started_at:
+        new: 2026-05-13T07:05:18.615Z
+        previous: 2026-05-13T05:44:20.710Z
+    command: task-start
+    timestamp: 2026-05-13T07:05:18.615Z
 created_at: 2026-05-12T00:14:53.196Z
-started_at: 2026-05-13T05:44:20.710Z
+started_at: 2026-05-13T07:05:18.615Z
 submitted_at: 2026-05-13T06:04:57.050Z
 todos: []
 automation: eligible
