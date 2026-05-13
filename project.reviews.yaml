@@ -210907,6 +210907,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-13T02:01:27.417Z
+      - _ulid: 01KRFJPR8ZJVZ8Z6BSMNS612G0
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRFGEGJBXRJJCYN2EDTFKCN1
+        timestamp: 2026-05-13T02:29:57.151Z
     examined_commit: 92816aacafc0dc3a999bf21a12bd73015e4a5fe9
     external_links: []
     lifecycle_state: closed
@@ -210941,6 +210947,27 @@ reviews:
               TSEnumDeclaration or equivalent runtime TS declarations as opaque local bindings
               before falling through to approved-import trust."
             created_at: 2026-05-13T01:50:29.963Z
+          - _ulid: 01KRFJPPTF6NA9YD2SH2SZTA1S
+            author: "@claude"
+            body: "Fixed: extended statementBindsNameOpaquely to recognise TSEnumDeclaration (the reviewer's
+              exact probe shape), TSModuleDeclaration (namespace with body, non-declare), and
+              TSImportEqualsDeclaration alongside the existing ClassDeclaration handling. All three
+              emit a runtime binding whose value is not callable as a cleanup primitive, so calling
+              `<name>(pid)` at teardown throws TypeError and leaves the daemon running. The export
+              wrapper unwrap path already routes through statementBindsNameOpaquely so `export enum
+              killPid { noop }` is handled by the same descent. Pure type-only declarations
+              (interface, type alias, bodyless `declare` ambient forms) are erased by the TS
+              compiler and so cannot shadow a runtime binding; they are deliberately NOT treated as
+              opaque. Added 4 regression tests in tests/lint-no-leaky-test-daemon.test.ts mirroring
+              the reviewer's probes: (1) enum killPid call-site shadow of approved import, (2) enum
+              stopPidBounded helper-body shadow of approved shared primitive, (3) export enum
+              killPid module-top shadow, and (4) namespace killPid TSModuleDeclaration shadow.
+              Verified at shell level too: the reviewer's exact probe (import { killPid } from
+              './helpers/daemon' + inner 'enum killPid { noop }' + onTestFinished(() =>
+              killPid(pid))) now exits 1 with the no-leaky-test-daemon error, and the helper-body
+              'enum stopPidBounded { noop }' shadow likewise. Targeted lint suites: 379 tests pass
+              (4 new). Full npm test: 9166 passed, 5 skipped of 9171."
+            created_at: 2026-05-13T02:29:55.663Z
         kind: blocker
       - _ulid: 01KRFH2CYX8D3MKRXP0148MVKB
         entries:
@@ -210982,7 +211009,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-13T02:01:27.417Z
     created_at: 2026-05-13T01:47:18.391Z
-    updated_at: 2026-05-13T02:01:27.417Z
+    updated_at: 2026-05-13T02:29:55.663Z
     notes: []
   - _ulid: 01KRFHTREDT2JCWMVKPPH50VRW
     slugs: []
