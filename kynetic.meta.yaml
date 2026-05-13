@@ -18659,8 +18659,12 @@ observations:
       documented script for synthetic rule probes would make adversarial lint-rule reviews faster
       and less error-prone."
     author: codex
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing unresolved observation @01KR2YBHWS, with related resolved
+      duplicate @01KR4HCYCMYBD4623P64YWGGZG covering reusable synthetic oxlint probe helper
+      friction. Closing this reflection capture to avoid duplicate triage noise.
+    resolved: true
+    resolved_at: 2026-05-13T02:53:47.241Z
+    resolved_by: codex
     workflow_ref: "@session-reflect"
     created_at: 2026-05-13T02:52:43.988Z
 schedules:
