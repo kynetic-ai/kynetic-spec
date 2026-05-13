@@ -49977,7 +49977,7 @@ runs:
     completed_at: 2026-05-13T17:53:12.050Z
   - _ulid: 01KRHAR66ZZ6C6ARWBJ2PM5KXA
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -49993,7 +49993,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T18:50:40.916Z
-        completed_at: 2026-05-13T18:50:40.916Z
+        completed_at: 2026-05-13T18:50:50.485Z
+        notes: "Friction: the first full npm test -- --fresh run failed late with ENOSPC because /tmp tmpfs
+          was full. The code under review was not implicated; I had to run df/du/find diagnostics,
+          clear unrelated root-level temporary model/checkpoint files and /tmp/kspec-test-cache,
+          then rerun the full suite. Secondary friction: review evidence logs are still stored as
+          unresolved nit threads, but existing observation @01KR2JD1 already tracks that."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T18:50:50.485Z
+        completed_at: 2026-05-13T18:50:50.485Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T18:49:24.447Z
