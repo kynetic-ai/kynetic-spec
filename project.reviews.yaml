@@ -211726,6 +211726,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRFNPQ6S1FHMHQQVGTJECAWW
         timestamp: 2026-05-13T03:22:23.454Z
+      - _ulid: 01KRFNVD7DZPXZXKJTPCF9ZGSH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRFNVBT1EV6BGZA7MHHP8Z0R
+        timestamp: 2026-05-13T03:24:55.405Z
     examined_commit: 493ede939a32cbd9a28e66adea498ac5a08143bf
     external_links: []
     lifecycle_state: open
@@ -211757,7 +211764,28 @@ reviews:
               before returning true here."
             created_at: 2026-05-13T03:22:21.785Z
         kind: blocker
+      - _ulid: 01KRFNVBT1EV6BGZA7MHHP8Z0R
+        anchor:
+          type: code
+          commit: 493ede939a32cbd9a28e66adea498ac5a08143bf
+          line_end: 1387
+          line_start: 1380
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KRFNVBT2AHH5N7BSZGA7B8XK
+            author: Jacob Chapel
+            body: "MUST-FIX: approved shared cleanup primitives have the same type-only import trust gap.
+              isSharedCleanupPrimitiveImported accepts a type-only import of stopPidBounded from
+              ./helpers/process-stop, so a local killPid helper that calls stopPidBounded is
+              classified as terminating even though that primitive binding is erased at runtime.
+              Evidence: an ad hoc oxlint fixture using import type for stopPidBounded exited 0 with
+              only a no-unused-vars warning and no no-leaky-test-daemon diagnostic. This violates
+              the cleanup-effect contract because helper-body trust must prove a runtime terminating
+              primitive, not a type-only name."
+            created_at: 2026-05-13T03:24:53.954Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-13T03:16:55.715Z
-    updated_at: 2026-05-13T03:22:21.785Z
+    updated_at: 2026-05-13T03:24:53.954Z
     notes: []
