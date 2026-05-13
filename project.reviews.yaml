@@ -210731,6 +210731,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-13T01:47:41.145Z
+      - _ulid: 01KRFGEJ464D9CGMRSZNJ1KQZT
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRFGEGJBXRJJCYN2EDTFKCN1
+        timestamp: 2026-05-13T01:50:31.558Z
     examined_commit: 92816aacafc0dc3a999bf21a12bd73015e4a5fe9
     external_links: []
     lifecycle_state: open
@@ -210740,8 +210747,33 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRFGEGJBXRJJCYN2EDTFKCN1
+        anchor:
+          type: code
+          commit: 92816aacafc0dc3a999bf21a12bd73015e4a5fe9
+          line_end: 1733
+          line_start: 1717
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KRFGEGJBC910B2KB1FQ66TQN
+            author: Jacob Chapel
+            body: "MUST-FIX: statementBindsNameOpaquely still misses TypeScript enum value bindings, so enum
+              declarations can shadow approved cleanup helpers and be credited as daemon cleanup.
+              Evidence: an ad hoc oxlint fixture with import { killPid } from './helpers/daemon',
+              then inside the test body 'enum killPid { noop }' before onTestFinished(() =>
+              killPid(pid)), exited 0 with only no-unused-vars and no no-leaky-test-daemon error.
+              The same false negative reproduces inside a helper body with 'enum stopPidBounded {
+              noop }' shadowing the approved shared primitive import. At runtime these enum bindings
+              are not callable cleanup functions, so the cleanup callback throws and the daemon is
+              left running. This violates @daemon-test-guardrail-precision
+              ac-cleanup-helper-origin-is-trusted and ac-cleanup-operation-terminates-daemon; treat
+              TSEnumDeclaration or equivalent runtime TS declarations as opaque local bindings
+              before falling through to approved-import trust."
+            created_at: 2026-05-13T01:50:29.963Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-13T01:47:18.391Z
-    updated_at: 2026-05-13T01:47:39.714Z
+    updated_at: 2026-05-13T01:50:29.963Z
     notes: []
