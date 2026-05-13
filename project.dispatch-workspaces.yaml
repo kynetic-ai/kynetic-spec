@@ -32359,12 +32359,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-13T07:33:27.607Z
+      updated_at: 2026-05-13T07:33:33.013Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T07:33:27.607Z
+      updated_at: 2026-05-13T07:33:33.013Z
     integration:
       status: pending
       detail: null
@@ -32372,7 +32372,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ffdef6f9dc5d15658685f44df4a3210ba430f4c7
-      updated_at: 2026-05-13T07:33:27.607Z
+      updated_at: 2026-05-13T07:33:33.013Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRF380CNC5AFY7YW4YWSGN2M"
@@ -32380,16 +32380,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T07:16:07.122Z
-      last_reconciled_at: 2026-05-13T07:33:27.607Z
+      last_reconciled_at: 2026-05-13T07:33:33.013Z
       created_at: 2026-05-13T07:15:41.927Z
-      updated_at: 2026-05-13T07:33:27.607Z
+      updated_at: 2026-05-13T07:33:33.013Z
     workspace_id: dispatch-workspace-01KRF380CNC5AFY7YW4YWSGN2M
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: ffdef6f9dc5d15658685f44df4a3210ba430f4c7
+        last_seen_at: 2026-05-13T07:33:33.013Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-inflight-cleanup-protection-01krf380-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-validate-inflight-cleanup-protection/01krf380
         head: ffdef6f9dc5d15658685f44df4a3210ba430f4c7
-        last_seen_at: 2026-05-13T07:15:41.927Z
+        last_seen_at: 2026-05-13T07:33:33.013Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-inflight-cleanup-protection-01krf380
