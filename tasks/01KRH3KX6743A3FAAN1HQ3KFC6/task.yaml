@@ -99,8 +99,12 @@ description: >
 spec_ref: "@dispatch-workspace-cleanup-policy"
 plan_ref: "@plan-dispatch-workspace-cleanup-classification-hardenin"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer merge helper. Added behavioral regression
+  coverage for corrupt metadata cleanup, unknown dispatch-root entry cleanup, and task-state-driven
+  reprovisioning after untrusted artifact cleanup; review approved with full tests and validation
+  passing.
 depends_on:
   - "@task-clarify-dispatch-cleanup-classification-specs"
 context: []
@@ -226,8 +230,25 @@ history:
         previous: "@01KRH6J6ER43T7F0WSWB351MTM"
     command: review-link
     timestamp: 2026-05-13T18:21:18.612Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer merge helper. Added behavioral regression coverage for
+          corrupt metadata cleanup, unknown dispatch-root entry cleanup, and task-state-driven
+          reprovisioning after untrusted artifact cleanup; review approved with full tests and
+          validation passing.
+        previous: null
+      completed_at:
+        new: 2026-05-13T18:48:36.124Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-13T18:48:36.133Z
 created_at: 2026-05-13T16:44:44.103Z
 started_at: 2026-05-13T17:55:16.290Z
 submitted_at: 2026-05-13T18:14:13.762Z
+completed_at: 2026-05-13T18:48:36.124Z
 todos: []
 automation: eligible
