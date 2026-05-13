@@ -211255,6 +211255,18 @@ reviews:
         runner: oxlint
         created_at: 2026-05-13T02:49:16.211Z
         completed_at: 2026-05-13T02:49:16.211Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repository lint still fails with 13 errors and 721 warnings. The errors are outside the
+          two files touched by HEAD; touched-file oxlint has 0 errors. This matches the pre-existing
+          lint failure profile from prior cycles.
+        name: npm run lint
+        required: true
+        runner: oxlint
+        created_at: 2026-05-13T02:49:20.337Z
+        completed_at: 2026-05-13T02:49:20.337Z
     events:
       - _ulid: 01KRFJZMTVCNSQAR7MPHNCPJFY
         actor: Jacob Chapel
@@ -211304,6 +211316,13 @@ reviews:
           status: pass
           name: changed-file oxlint
         timestamp: 2026-05-13T02:49:17.602Z
+      - _ulid: 01KRFKT9QW3KDQGG54STA2WSW9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm run lint
+        timestamp: 2026-05-13T02:49:21.916Z
     examined_commit: ad8fd1d4d3466abc43a47cf9a591e7ff09cdfe6a
     external_links: []
     lifecycle_state: open
@@ -211338,5 +211357,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-13T02:34:48.539Z
-    updated_at: 2026-05-13T02:49:16.211Z
+    updated_at: 2026-05-13T02:49:20.337Z
     notes: []
