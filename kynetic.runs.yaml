@@ -49250,7 +49250,7 @@ runs:
     completed_at: 2026-05-13T05:38:56.087Z
   - _ulid: 01KRFYNP37MN6AH1154Y1MW4V7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -49264,7 +49264,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T06:00:05.858Z
-        completed_at: 2026-05-13T06:00:05.858Z
+        completed_at: 2026-05-13T06:00:26.297Z
+        notes: "Friction: kspec workflow show without a run ref failed even though the reflect skill
+          examples show it bare; this is already tracked by existing reflection workflow
+          observations. Full npm run lint produced broad unrelated pre-existing failures, requiring
+          a changed-file lint isolation pass to distinguish task regressions from repository debt.
+          No task-specific blocker came from this."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T06:00:26.297Z
+        completed_at: 2026-05-13T06:00:26.297Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T05:59:05.063Z
