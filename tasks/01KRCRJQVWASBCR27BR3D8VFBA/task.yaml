@@ -51,7 +51,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-implicit-autostart-cleanup-regressions"
@@ -68,11 +68,11 @@ review_ref: "@01KRG6R6TP1QAK1ZVC3Y8P299K"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fix-implicit-autostart-cleanup-coverage/01krcrjq
-  captured_at: 2026-05-13T08:07:30.154Z
-  commit: 67fe23685ef6ba6c463cf83414a02ad61e7b7027
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-13T09:33:46.282Z
+  commit: ea3c85356bd7c4ef72e5347d0b8e9a75c023fa5f
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-fix-implicit-autostart-cleanup-coverage/01krcrjq
 session_id: 01KRG87A3MV1C16TW64KD7TB09
 history:
   - author: Jacob Chapel
@@ -145,8 +145,35 @@ history:
         previous: 2026-05-13T07:34:55.958Z
     command: task-start
     timestamp: 2026-05-13T08:46:42.817Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-fix-implicit-autostart-cleanup-coverage/01krcrjq
+          captured_at: 2026-05-13T09:33:46.282Z
+          commit: ea3c85356bd7c4ef72e5347d0b8e9a75c023fa5f
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-fix-implicit-autostart-cleanup-coverage/01krcrjq
+        previous:
+          review_url: null
+          branch: dispatch/task/task-fix-implicit-autostart-cleanup-coverage/01krcrjq
+          captured_at: 2026-05-13T08:07:30.154Z
+          commit: 67fe23685ef6ba6c463cf83414a02ad61e7b7027
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-13T09:33:46.286Z
+        previous: 2026-05-13T08:07:30.156Z
+    command: task-submit
+    timestamp: 2026-05-13T09:33:46.286Z
 created_at: 2026-05-12T00:14:53.820Z
 started_at: 2026-05-13T08:46:42.816Z
-submitted_at: 2026-05-13T08:07:30.156Z
+submitted_at: 2026-05-13T09:33:46.286Z
 todos: []
 automation: eligible
