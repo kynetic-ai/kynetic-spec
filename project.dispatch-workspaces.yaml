@@ -31967,11 +31967,11 @@ workspaces:
     canonical_branch: dispatch/task/task-include-inflight-spawn-refs-in-cleanup-inputs/01krf37y
     canonical_branch_head: ea847802c28d69abd5dbbb6ae5ce65cf6cc77df0
     cleanup:
-      status: blocked
+      status: completed
       detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
       reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
-      updated_at: 2026-05-13T01:02:22.758Z
+      updated_at: 2026-05-13T01:02:27.333Z
     health:
       status: healthy
       issues: []
@@ -31985,16 +31985,16 @@ workspaces:
       target_branch: dev
       target_commit: 0c6506a55cdb40538275c315cad4c85b131bc7ba
       updated_at: 2026-05-13T01:02:22.758Z
-    lifecycle_state: cleanup_blocked
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KRF37YPHJMC4CJ1VH7DDT3K0"
     task_slug: task-include-inflight-spawn-refs-in-cleanup-inputs
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-13T01:02:27.333Z
       last_active_at: 2026-05-13T00:46:28.950Z
       last_reconciled_at: 2026-05-13T01:02:22.758Z
       created_at: 2026-05-12T23:43:30.216Z
-      updated_at: 2026-05-13T01:02:22.758Z
+      updated_at: 2026-05-13T01:02:27.333Z
     workspace_id: dispatch-workspace-01KRF37YPHJMC4CJ1VH7DDT3K0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
