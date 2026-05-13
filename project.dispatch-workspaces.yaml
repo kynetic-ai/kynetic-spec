@@ -31494,7 +31494,7 @@ workspaces:
         head: ea847802c28d69abd5dbbb6ae5ce65cf6cc77df0
         last_seen_at: 2026-05-13T00:46:02.265Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-include-inflight-spawn-refs-in-cleanup-inputs-01krf37y
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 0504bc1cf83155103a5bc51038e6f1ed78d48b20
     bootstrap:
       status: succeeded
@@ -31971,12 +31971,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-13T02:13:36.961Z
+      updated_at: 2026-05-13T02:31:17.851Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T02:14:04.845Z
+      updated_at: 2026-05-13T02:31:17.851Z
     integration:
       status: pending
       detail: null
@@ -31984,7 +31984,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0504bc1cf83155103a5bc51038e6f1ed78d48b20
-      updated_at: 2026-05-13T02:13:36.961Z
+      updated_at: 2026-05-13T02:31:17.851Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRF37Y941E2T8D1ATFV63JB0"
@@ -31992,9 +31992,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T02:14:04.845Z
-      last_reconciled_at: 2026-05-13T02:14:04.845Z
+      last_reconciled_at: 2026-05-13T02:31:17.851Z
       created_at: 2026-05-13T01:46:43.280Z
-      updated_at: 2026-05-13T02:14:04.845Z
+      updated_at: 2026-05-13T02:31:17.851Z
     workspace_id: dispatch-workspace-01KRF37Y941E2T8D1ATFV63JB0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
