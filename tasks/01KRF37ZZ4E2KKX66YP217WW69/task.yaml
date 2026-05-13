@@ -52,7 +52,7 @@ description: >
 spec_ref: "@agent-dispatch-engine"
 plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-apply-protection-policy-across-artifact-reconciliation"
@@ -64,6 +64,7 @@ tags:
   - scheduler
   - bootstrap
 vcs_refs: []
+session_id: 01KRFTQEAMBX6PYMT0Z4FV55CJ
 history:
   - author: Jacob Chapel
     changes:
@@ -72,6 +73,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-12T22:02:31.082Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KRFTQEAMBX6PYMT0Z4FV55CJ
+        previous: null
+      started_at:
+        new: 2026-05-13T04:50:42.488Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-13T04:50:42.488Z
 created_at: 2026-05-12T21:59:44.868Z
+started_at: 2026-05-13T04:50:42.488Z
 todos: []
 automation: eligible
