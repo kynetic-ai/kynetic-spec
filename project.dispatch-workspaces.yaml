@@ -33010,11 +33010,11 @@ workspaces:
     canonical_branch: dispatch/task/task-validate-daemon-cleanup-contract-hardening/01krcrjs
     canonical_branch_head: 03f91e732faa6d80427b2c19f77847e72ea8153d
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-13T10:34:28.865Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-13T10:34:30.427Z
     health:
       status: healthy
       issues: []
@@ -33028,7 +33028,7 @@ workspaces:
       target_branch: dev
       target_commit: 03f91e732faa6d80427b2c19f77847e72ea8153d
       updated_at: 2026-05-13T10:34:28.865Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KRCRJSZDBERFRFNBMRJT47JR"
     task_slug: task-validate-daemon-cleanup-contract-hardening
@@ -33037,7 +33037,7 @@ workspaces:
       last_active_at: 2026-05-13T10:17:38.505Z
       last_reconciled_at: 2026-05-13T10:34:28.865Z
       created_at: 2026-05-13T10:03:39.473Z
-      updated_at: 2026-05-13T10:34:28.865Z
+      updated_at: 2026-05-13T10:34:30.427Z
     workspace_id: dispatch-workspace-01KRCRJSZDBERFRFNBMRJT47JR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
