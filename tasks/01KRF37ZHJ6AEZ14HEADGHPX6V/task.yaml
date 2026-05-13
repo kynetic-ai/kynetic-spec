@@ -75,8 +75,13 @@ description: >
 spec_ref: "@dispatch-workspace-cleanup-policy"
 plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev via detached reviewer merge helper. Review cycle 2 approved cleanup
+  protection test coverage: provisioning/non-closed preservation, ambiguous no-blind-deletion,
+  per-surface guardrails, cleanup-positive controls, and bootstrap-race regression coverage.
+  Required checks passed: targeted tests, full npm test, typecheck, changed-file oxlint, kspec
+  validate --warnings-ok."
 depends_on:
   - "@task-apply-protection-policy-across-artifact-reconciliation"
 context: []
@@ -202,8 +207,26 @@ history:
         previous: "@01KRFTQZBXREYNAXRMG1RDX5ZH"
     command: review-link
     timestamp: 2026-05-13T05:44:09.097Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev via detached reviewer merge helper. Review cycle 2 approved cleanup protection
+          test coverage: provisioning/non-closed preservation, ambiguous no-blind-deletion,
+          per-surface guardrails, cleanup-positive controls, and bootstrap-race regression coverage.
+          Required checks passed: targeted tests, full npm test, typecheck, changed-file oxlint,
+          kspec validate --warnings-ok."
+        previous: null
+      completed_at:
+        new: 2026-05-13T05:58:29.241Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-13T05:58:29.249Z
 created_at: 2026-05-12T21:59:44.434Z
 started_at: 2026-05-13T05:39:46.095Z
 submitted_at: 2026-05-13T05:39:49.514Z
+completed_at: 2026-05-13T05:58:29.241Z
 todos: []
 automation: eligible
