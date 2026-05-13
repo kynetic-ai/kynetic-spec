@@ -213699,6 +213699,18 @@ reviews:
         runner: npx oxlint
         created_at: 2026-05-13T08:37:09.704Z
         completed_at: 2026-05-13T08:37:09.704Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate: schema/references/skills OK; exited 6 because of existing repository-wide
+          warnings (deprecated refs, orphaned specs, missing AC coverage, invalid AC annotations)
+          not specific to this task."
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-13T08:37:26.457Z
+        completed_at: 2026-05-13T08:37:26.457Z
     events:
       - _ulid: 01KRG6R6TPV0A046MJ449QPV5G
         actor: Jacob Chapel
@@ -213741,6 +213753,13 @@ reviews:
           status: fail
           name: implicit auto-start observation coverage
         timestamp: 2026-05-13T08:37:11.131Z
+      - _ulid: 01KRG7QP5ZXGTHJ5GAHN9MN57T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-13T08:37:27.871Z
     examined_commit: 67fe23685ef6ba6c463cf83414a02ad61e7b7027
     external_links: []
     lifecycle_state: open
@@ -213778,5 +213797,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-13T08:20:16.342Z
-    updated_at: 2026-05-13T08:37:09.704Z
+    updated_at: 2026-05-13T08:37:26.457Z
     notes: []
