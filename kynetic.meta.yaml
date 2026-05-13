@@ -18895,6 +18895,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-13T17:07:21.853Z
+  - _ulid: 01KRH6DTB3Y3Q748YPPSPEXK0Q
+    type: friction
+    content: "vi.spyOn on a module function carries forward mock.calls history across tests when the
+      enclosing describe's afterEach does not call vi.restoreAllMocks(). A second vi.spyOn on the
+      same method in a later test returns the previously-installed spy (with stale calls), so
+      assertions on spy.mock.calls[0] can match data from a different test's run. Example:
+      tests/agent-dispatch-engine.test.ts AC-19 describe block — its afterEach only cleans temp dirs
+      and does NOT call vi.restoreAllMocks. Workaround that worked: call vi.restoreAllMocks() inside
+      the test before re-creating the spy, OR spy on an engine-instance method (e.g.
+      engine._spawnInvocation) instead of the module-level function. Found while adding the
+      corrupt-metadata recovery-path test on @task-add-cleanup-classification-regression-coverage.
+      Cost ~3 debug cycles before the wrong-taskRef-in-mock.calls signal made the leak obvious."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T17:33:50.307Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
