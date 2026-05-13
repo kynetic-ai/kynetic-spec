@@ -20,3 +20,149 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-13T10:05:11.197Z
+  - _ulid: 01KRGDATWRHDD1T7EB3ZZG8HQ3
+    content: >-
+      Validation complete. Ran all required commands plus adversarial probes and source audits.
+
+
+      REQUIRED COMMAND RESULTS
+
+      - kspec validate --refs --warnings-ok: PASS (6 reference warnings, all pre-existing
+      deprecated-spec refs in unrelated tasks)
+
+      - kspec validate --alignment --warnings-ok: PASS (39 alignment warnings, all pre-existing
+      orphaned specs / unrelated status mismatches)
+
+      - npm test tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts:
+      PASS (421 tests, 28 suites)
+
+      - npm test tests/helpers/daemon.test.ts tests/helpers/mock-daemon.test.ts
+      tests/cli-serve.test.ts tests/cli-no-daemon.test.ts: PASS (91 tests)
+
+      - npm test tests/e2e-fixture-daemon-cleanup.test.ts: PASS (15 tests)
+
+      - npm run build:e2e && npx playwright test tests/e2e/smoke.spec.ts: PASS (6 tests)
+
+
+      AC COVERAGE
+
+      All 11 new ACs have behavioral test annotations:
+
+      - @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon:
+      tests/lint-{no-leaky-test-daemon,daemon-test-guardrails}.test.ts
+
+      - @daemon-test-guardrail-precision ac-cleanup-probes-do-not-count:
+      tests/lint-{no-leaky-test-daemon,daemon-test-guardrails}.test.ts
+
+      - @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted:
+      tests/lint-no-leaky-test-daemon.test.ts
+
+      - @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped:
+      tests/lint-{no-leaky-test-daemon,daemon-test-guardrails}.test.ts
+
+      - @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation:
+      tests/lint-daemon-test-guardrails.test.ts
+
+      - @daemon-test-teardown-boundedness ac-stop-observes-termination-before-return:
+      tests/helpers/{daemon,mock-daemon}.test.ts, tests/cli-serve.test.ts
+
+      - @daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded:
+      tests/helpers/{daemon,mock-daemon}.test.ts, tests/cli-serve.test.ts
+
+      - @daemon-test-teardown-boundedness ac-active-requests-do-not-block-teardown:
+      tests/helpers/mock-daemon.test.ts, tests/helpers/mock-daemon.ts
+
+      - @daemon-test-teardown-boundedness ac-setup-failure-cleans-owned-resources:
+      tests/helpers/daemon.test.ts, tests/e2e/fixtures/test-base.ts,
+      tests/e2e-fixture-daemon-cleanup.test.ts
+
+      - @daemon-test-teardown-boundedness ac-cleanup-errors-preserve-primary-failure:
+      tests/helpers/daemon.test.ts, tests/e2e/fixtures/test-base.ts,
+      tests/e2e-fixture-daemon-cleanup.test.ts
+
+      - @daemon-test-teardown-boundedness ac-daemon-observations-are-bounded:
+      tests/helpers/mock-daemon.test.ts, tests/helpers/daemon-fetch.ts,
+      tests/e2e/fixtures/test-base.ts, tests/cli-serve.test.ts
+
+
+      All annotations point to behavioral tests (runOxlint() on synthetic fixtures for lint ACs,
+      real-child-spawn assertions for runtime ACs).
+
+
+      ADVERSARIAL PROBE RESULTS
+
+      Synthesized 22 adversarial lint fixtures using a tempdir + oxlint harness with the
+      no-leaky-test-daemon plugin loaded. Probes covered five categories:
+
+      1. Non-terminating signals on process.kill / child.kill: process.kill(pid, 0), SIGUSR1,
+      SIGCONT, SIGHUP, child.kill('SIGUSR1') — all FLAGGED.
+
+      2. Approved terminating signals: SIGTERM, SIGKILL, no-signal default, child.kill() — all PASS.
+
+      3. Local no-op helpers with daemon-cleanup-shaped names: killPid, stopDaemon, stopMockDaemon,
+      stopTestDaemon (impersonating shared helper) — all FLAGGED.
+
+      4. Process-lifecycle-only cleanup: process.on('exit'|'beforeExit'|'SIGTERM'),
+      process.once('SIGHUP') — all FLAGGED. process.on('exit') alongside onTestFinished — PASS
+      (supplemental fallback).
+
+      5. Implicit CLI auto-start: PID-file read with later observation but no cleanup — FLAGGED.
+      PID-file read with onTestFinished registered before observation — PASS.
+
+      Plus: docstring/console.log-only cleanup — FLAGGED. runKspec('serve stop') — PASS.
+
+
+      All 22 probes classified as expected. No false positives, no false negatives.
+
+
+      SOURCE AUDIT VERDICTS
+
+      Ran no-leaky-test-daemon across all of tests/ — ZERO daemon-guardrail diagnostics emitted (one
+      unrelated no-unused-vars warning).
+
+
+      Source pattern audits (grep + manual classification):
+
+      - Direct daemon entry refs (DAEMON_ENTRY, dist/daemon/index.js): all hits are (a) approved
+      helper internals in tests/helpers/daemon.ts and its test file, (b) string literals in
+      synthetic fixtures inside the lint-test files (behavior under test for the lint rule), or (c)
+      test-runner readiness checks asserting that artifacts exist.
+
+      - Explicit detached starts (serve start --detach): tests/cli-serve.test.ts uses these because
+      the detached lifecycle IS the behavior under test; all sites use stopPidBounded via the
+      killPid helper for cleanup. tests/daemon-api/server.test.ts only references the string in
+      comments. Lint test files contain synthetic fixtures.
+
+      - Implicit auto-start PID observations: tests/cli-no-daemon.test.ts properly registers
+      onTestFinished SIGTERM cleanup immediately after PID capture and before any later assertion or
+      observation (matches ac-implicit-autostart-cleanup-before-observation).
+
+      - Process-lifecycle cleanup hooks: file-level signal swallowing at the top of cli-serve and
+      daemon helper test files (test safety net to prevent the test process itself from being killed
+      during tear-down), mock-daemon.cjs child script's own signal handlers (internal to mock
+      daemon), and synthetic fixture strings in lint tests. No real test registers process.on() as
+      its primary daemon cleanup.
+
+      - Bare daemon fetch(...) calls: all fixture-owned daemon probes use boundedDaemonFetch
+      (tests/helpers/daemon-fetch.ts) with explicit timeouts. Remaining fetch() calls in
+      tests/helpers/{daemon,mock-daemon}.test.ts are happy-path daemon-endpoint behavioral
+      assertions inside it() blocks where the fixture owns the daemon; cache-warming e2e uses
+      Playwright fixture-supplied baseUrl. One skipped test (tests/e2e/tasks.spec.ts:654) inside
+      test.skip() does not run.
+
+      - Guardrail suppressions: every oxlint-disable for no-leaky-test-daemon lives inside synthetic
+      fixture strings in tests/lint-daemon-test-guardrails.test.ts — they are test data the lint
+      test passes to oxlint, not active suppressions on real test code.
+
+
+      CLASSIFICATION SUMMARY
+
+      Every remaining hit across all six audit categories is either (a) approved helper internals,
+      (b) behavior under test with local oxlint-disable + reason (zero active real suppressions in
+      non-lint test files), or (c) test data inside lint test fixtures. No blockers.
+
+
+      Plan is complete.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T10:15:18.168Z
