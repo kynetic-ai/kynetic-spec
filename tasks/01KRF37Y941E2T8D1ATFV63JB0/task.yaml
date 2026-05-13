@@ -59,7 +59,7 @@ description: |
 spec_ref: "@dispatch-workspace-cleanup-policy"
 plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-cleanup-preservation-no-blind-deletion-acs"
@@ -76,11 +76,11 @@ review_ref: "@01KRFHTREDT2JCWMVKPPH50VRW"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-centralize-dispatch-artifact-protection-decisions/01krf37y
-  captured_at: 2026-05-13T02:11:14.415Z
-  commit: 8b076968ac2a7ff19dae267fe2334325c028cacd
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-13T02:52:56.413Z
+  commit: 3523eee27f80947515557d4720a3ba773eaafe86
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-centralize-dispatch-artifact-protection-decisions/01krf37y
 session_id: 01KRFJXMGYVCAZ2B2CB3Z1NGBX
 history:
   - author: Jacob Chapel
@@ -153,8 +153,35 @@ history:
         previous: 2026-05-13T01:47:29.946Z
     command: task-start
     timestamp: 2026-05-13T02:52:53.290Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-centralize-dispatch-artifact-protection-decisions/01krf37y
+          captured_at: 2026-05-13T02:52:56.413Z
+          commit: 3523eee27f80947515557d4720a3ba773eaafe86
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-centralize-dispatch-artifact-protection-decisions/01krf37y
+        previous:
+          review_url: null
+          branch: dispatch/task/task-centralize-dispatch-artifact-protection-decisions/01krf37y
+          captured_at: 2026-05-13T02:11:14.415Z
+          commit: 8b076968ac2a7ff19dae267fe2334325c028cacd
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-13T02:52:56.417Z
+        previous: 2026-05-13T02:11:14.417Z
+    command: task-submit
+    timestamp: 2026-05-13T02:52:56.417Z
 created_at: 2026-05-12T21:59:43.140Z
 started_at: 2026-05-13T02:52:53.290Z
-submitted_at: 2026-05-13T02:11:14.417Z
+submitted_at: 2026-05-13T02:52:56.417Z
 todos: []
 automation: eligible
