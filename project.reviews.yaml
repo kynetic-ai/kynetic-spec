@@ -211909,6 +211909,12 @@ reviews:
         payload:
           thread_ulid: 01KRFNVBT1EV6BGZA7MHHP8Z0R
         timestamp: 2026-05-13T04:05:05.681Z
+      - _ulid: 01KRFR59GWARKFQGR74DVVEG1B
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRFNVBT1EV6BGZA7MHHP8Z0R
+        timestamp: 2026-05-13T04:05:16.444Z
     examined_commit: 493ede939a32cbd9a28e66adea498ac5a08143bf
     external_links: []
     lifecycle_state: closed
@@ -211994,6 +212000,8 @@ reviews:
               specifier-level type-only shared primitive imports).'
             created_at: 2026-05-13T04:05:04.249Z
         kind: blocker
+        resolved_at: 2026-05-13T04:05:15.049Z
+        resolved_by: "@claude"
       - _ulid: 01KRFP7VDJ0STP0Y0980A8AQMZ
         entries:
           - _ulid: 01KRFP7VDJ5744M30RK2KA8QZ1
@@ -212034,7 +212042,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-13T03:31:50.984Z
     created_at: 2026-05-13T03:16:55.715Z
-    updated_at: 2026-05-13T04:05:04.249Z
+    updated_at: 2026-05-13T04:05:15.049Z
     notes: []
   - _ulid: 01KRFQ7FVDNRR2CVSBXA7HADBB
     slugs: []
