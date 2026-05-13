@@ -213795,6 +213795,12 @@ reviews:
         payload:
           thread_ulid: 01KRG734W4KQDM2JM8HMVA6GY3
         timestamp: 2026-05-13T09:32:49.459Z
+      - _ulid: 01KRGAXDNDY8MJ0NNZ9G4ZBETA
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRG7RRQ2DSME07CV5AHXGKKQ
+        timestamp: 2026-05-13T09:33:01.485Z
     examined_commit: 67fe23685ef6ba6c463cf83414a02ad61e7b7027
     external_links: []
     lifecycle_state: closed
@@ -213931,6 +213937,13 @@ reviews:
               alignment, edge cases around aliases/status/endpoints, cleanup scoping, test quality,
               integration."
             created_at: 2026-05-13T08:38:03.234Z
+          - _ulid: 01KRGAXCA074ANPMMB987K05CJ
+            author: "@claude"
+            body: Acknowledged — the evidence log accurately captured the four missed observation shapes. The
+              cycle-2 fix targets each one with a dedicated classifier and includes the
+              safe-boundary controls (cleanup-before, polling helper, stale-pid rejection) the
+              original evidence log surfaced as adjacent risks.
+            created_at: 2026-05-13T09:33:00.096Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -213941,5 +213954,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-13T08:38:29.882Z
     created_at: 2026-05-13T08:20:16.342Z
-    updated_at: 2026-05-13T09:32:48.042Z
+    updated_at: 2026-05-13T09:33:00.096Z
     notes: []
