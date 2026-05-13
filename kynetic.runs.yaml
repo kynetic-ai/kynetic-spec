@@ -49908,7 +49908,7 @@ runs:
     started_at: 2026-05-13T17:31:48.193Z
     completed_at: 2026-05-13T17:34:27.637Z
   - _ulid: 01KRH7E9QWZAHH0R519430CHBN
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -49964,10 +49964,14 @@ runs:
         completed_at: 2026-05-13T17:53:03.612Z
         notes: No discussion needed because no improvements were proposed for capture. The review finding
           itself is already recorded as blocker threads on @01KRH6J6 and the task is in needs_work.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-13T17:53:03.612Z
-        completed_at: 2026-05-13T17:53:03.612Z
+        completed_at: 2026-05-13T17:53:12.050Z
+        notes: "No items captured. Reason: no high-confidence new systemic improvement remained after search
+          and review-gate coverage. The task-local issue is already captured in review @01KRH6J6 and
+          does not need duplicate inbox or observation tracking."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T17:51:34.652Z
+    completed_at: 2026-05-13T17:53:12.050Z
