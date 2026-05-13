@@ -18841,6 +18841,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-13T08:18:19.633Z
+  - _ulid: 01KRGCTK6B3PQ8EW8H1FXTVPPN
+    type: success
+    content: "Detached reviewer flow worked well when paired with review checks: create a fresh
+      per-cycle review, record targeted/full/validation evidence, approve only after the gate
+      passes, then use the detached-reviewer merge helper to integrate without checking out dev
+      inside the snapshot."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T10:06:25.995Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

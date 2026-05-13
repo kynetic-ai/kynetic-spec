@@ -3500,3 +3500,24 @@ inbox:
       - merge
     added_by: Jacob Chapel
     created_at: 2026-05-13T04:28:39.567Z
+  - _ulid: 01KRGCTJZJSDWS8EWAM1PPKBF6
+    text: "Reflection: update session-reflect workflow command examples so `kspec workflow show` and
+      `kspec workflow next` include the required workflow run ref, or document how to get the active
+      run ref. The current example failed because the CLI requires a run-ref."
+    tags:
+      - reflection
+      - docs
+      - workflow
+    added_by: Jacob Chapel
+    created_at: 2026-05-13T10:06:25.778Z
+  - _ulid: 01KRGCTK36BW0GEAPMTW4PF0CY
+    text: "Reflection: add a documented or scripted rule-focused daemon guardrail lint check that
+      reports only real no-leaky-test-daemon diagnostics from tests/, ignoring unrelated existing
+      oxlint errors. This would make daemon guardrail review evidence less manual and less noisy."
+    tags:
+      - reflection
+      - testing
+      - lint
+      - daemon
+    added_by: Jacob Chapel
+    created_at: 2026-05-13T10:06:25.894Z
