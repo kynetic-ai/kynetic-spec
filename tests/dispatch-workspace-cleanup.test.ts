@@ -4,12 +4,22 @@ import { execSync } from "node:child_process";
 import * as path from "node:path";
 import * as YAML from "yaml";
 import {
+  buildDispatchArtifactProtectionState,
   cleanupReviewerDispatchWorkspace,
   provisionDispatchWorkspace,
   reconcileDispatchWorkspaceLifecycle,
   reconcileDispatchWorkspaceArtifacts,
   reapDispatchWorkspace,
 } from "../src/agent-runtime/workspace.js";
+import {
+  loadDispatchWorkspaceRegistry,
+  saveDispatchWorkspaceRecord,
+} from "../src/parser/dispatch-workspaces.js";
+import { initContext } from "../src/parser/index.js";
+import type {
+  DispatchWorkspaceLifecycleState,
+  DispatchWorkspaceRecord,
+} from "../src/schema/index.js";
 import {
   cleanupTempDir,
   createTempDir,
@@ -72,6 +82,43 @@ async function readRegistryWorkspaces(dir: string): Promise<Array<Record<string,
     workspaces?: Array<Record<string, unknown>>;
   };
   return raw.workspaces ?? [];
+}
+
+async function setLifecycleStateThroughRegistry(
+  projectDir: string,
+  taskRef: string,
+  lifecycleState: DispatchWorkspaceLifecycleState,
+): Promise<DispatchWorkspaceRecord> {
+  const ctx = await initContext(projectDir);
+  const records = await loadDispatchWorkspaceRegistry(ctx);
+  const existing = records.find((record) => record.task_ref === taskRef);
+  if (!existing) {
+    throw new Error(`No registry record found for ${taskRef}`);
+  }
+  const now = new Date().toISOString();
+  const updated: DispatchWorkspaceRecord = {
+    ...existing,
+    lifecycle_state: lifecycleState,
+    timestamps: { ...existing.timestamps, updated_at: now },
+  };
+  await saveDispatchWorkspaceRecord(ctx, updated);
+  return updated;
+}
+
+function captureDispatchCleanupDiagnostics(): {
+  capture: () => string[];
+  restore: () => void;
+} {
+  const spy = vi.spyOn(console, "debug").mockImplementation(() => undefined);
+  return {
+    capture: () =>
+      spy.mock.calls
+        .map((args) => String(args[0] ?? ""))
+        .filter((line) => line.includes("[dispatch-cleanup]")),
+    restore: () => {
+      spy.mockRestore();
+    },
+  };
 }
 
 describe("dispatch workspace cleanup", () => {
@@ -729,6 +776,579 @@ describe("dispatch workspace cleanup", () => {
     expect(git(tempDir, `rev-parse ${workspace.metadata.canonicalBranch}`)).toBe(
       git(workspace.cwd, "rev-parse HEAD"),
     );
+  });
+});
+
+describe("dispatch artifact cleanup protection (positive and regression cases)", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-dispatch-cleanup-protection-");
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  // AC: @dispatch-workspace-registry ac-partial-provisioning-classified-before-cleanup
+  it("preserves every cleanup surface when the registry record is in provisioning lifecycle state", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithReviewerAgent(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 40)}`;
+    const workerWorkspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Provisioning State Workspace",
+        slugs: ["task-provisioning-state-workspace"],
+      },
+    });
+    const reviewerWorkspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      role: "reviewer",
+      task: {
+        title: "Provisioning State Workspace",
+        slugs: ["task-provisioning-state-workspace"],
+      },
+    });
+
+    await setLifecycleStateThroughRegistry(tempDir, taskRef, "provisioning");
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    await fs.access(workerWorkspace.cwd);
+    await fs.access(reviewerWorkspace.cwd);
+    expect(
+      git(tempDir, "branch --list dispatch/task/task-provisioning-state-workspace/01task00"),
+    ).toContain("dispatch/task/task-provisioning-state-workspace/01task00");
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  it.each(["stale", "integrating", "cleanup_blocked"] as const)(
+    "preserves dispatcher-managed artifacts for non-closed lifecycle state %s",
+    async (state) => {
+      await seedRepo(tempDir);
+      git(tempDir, "checkout -b agent-dev");
+
+      const taskRef = `@${testUlid("TASK", 41)}`;
+      const slug = `task-non-closed-state-${state.replace("_", "-")}`;
+      const workspace = await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: { title: slug, slugs: [slug] },
+      });
+
+      await setLifecycleStateThroughRegistry(tempDir, taskRef, state);
+
+      await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+      await fs.access(workspace.cwd);
+      expect(git(tempDir, `branch --list dispatch/task/${slug}/01task00`)).toContain(
+        `dispatch/task/${slug}/01task00`,
+      );
+    },
+  );
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  it("preserves the canonical dispatch branch through orphan-branch sweep when the registry record is non-closed", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 42)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Non-Closed Branch Sweep Preservation",
+        slugs: ["task-non-closed-branch-sweep-preservation"],
+      },
+    });
+    const canonicalBranch = workspace.metadata.canonicalBranch;
+
+    // Detach the worktree from the branch so the branch becomes an
+    // "orphan" candidate from the worktree-list perspective: the dispatch
+    // branch is no longer covered by a worktree entry's branch field, so the
+    // orphan-branch sweep is the only surface that can delete it. The
+    // non-closed registry record must still preserve the branch.
+    await fs.rm(workspace.cwd, { recursive: true, force: true });
+    git(tempDir, "worktree prune");
+
+    expect(git(tempDir, `branch --list ${canonicalBranch}`)).toContain(canonicalBranch);
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    expect(git(tempDir, `branch --list ${canonicalBranch}`)).toContain(canonicalBranch);
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  it("preserves a closing workspace's branch and worktree while integration is still unresolved", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 43)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Closing Unresolved Integration",
+        slugs: ["task-closing-unresolved-integration"],
+      },
+    });
+
+    // Mark the record as closing with integration still in_progress so the
+    // protection helper classifies it as not-yet-reap-eligible.
+    const ctx = await initContext(tempDir);
+    const records = await loadDispatchWorkspaceRegistry(ctx);
+    const existing = records.find((record) => record.task_ref === taskRef)!;
+    const now = new Date().toISOString();
+    await saveDispatchWorkspaceRecord(ctx, {
+      ...existing,
+      lifecycle_state: "closing",
+      integration: {
+        ...existing.integration,
+        status: "in_progress",
+        updated_at: now,
+      },
+      cleanup: {
+        ...existing.cleanup,
+        status: "scheduled",
+        eligible: true,
+        reason: "integrated-into-base-branch",
+        detail: "integrated-into-base-branch",
+        updated_at: now,
+      },
+      timestamps: { ...existing.timestamps, updated_at: now },
+    });
+
+    const diag = captureDispatchCleanupDiagnostics();
+    let diagnostics: string[] = [];
+    try {
+      await reconcileDispatchWorkspaceArtifacts(tempDir);
+      diagnostics = diag.capture();
+    } finally {
+      diag.restore();
+    }
+
+    await fs.access(workspace.cwd);
+    expect(
+      git(tempDir, "branch --list dispatch/task/task-closing-unresolved-integration/01task00"),
+    ).toContain("dispatch/task/task-closing-unresolved-integration/01task00");
+
+    // The reap-candidate surface emits a preservation diagnostic identifying
+    // the protection source so operators can see why cleanup is waiting.
+    expect(
+      diagnostics.some(
+        (line) =>
+          line.includes("reap-candidate") &&
+          line.includes(taskRef) &&
+          /not yet cleanup-eligible/.test(line),
+      ),
+    ).toBe(true);
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  it("preserves a detached reviewer-snapshot dir whose basename matches an active task short-id", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    // Reserve a detached reviewer-snapshot worktree the way the dispatcher
+    // would during the queue-to-spawn window: the directory exists under the
+    // worktree root, its basename ends in -review with the task's short-id,
+    // and there is no metadata file and no registry record yet.
+    const taskRef = `@${testUlid("TASK", 44)}`;
+    const reviewerDir = path.join(
+      tempDir,
+      ".kspec-worktrees",
+      `task-reviewer-shortid-preservation-01task00-review`,
+    );
+    await fs.mkdir(path.dirname(reviewerDir), { recursive: true });
+    git(tempDir, `worktree add --detach ${reviewerDir} HEAD`);
+    await fs.access(reviewerDir);
+
+    // Clear the registry to force the reviewer-snapshot surface to rely on
+    // the short-id basename protection (not the protectedPaths overlap path).
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
+
+    const diag = captureDispatchCleanupDiagnostics();
+    let diagnostics: string[] = [];
+    try {
+      await reconcileDispatchWorkspaceArtifacts(tempDir, { activeTaskRefs: [taskRef] });
+      diagnostics = diag.capture();
+    } finally {
+      diag.restore();
+    }
+
+    await fs.access(reviewerDir);
+    expect(
+      diagnostics.some(
+        (line) => line.includes("reviewer-snapshot") && line.includes(reviewerDir),
+      ),
+    ).toBe(true);
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  it("preserves a root-directory candidate that lives inside a protected worker workspace path", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 45)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Root Candidate Inside Worker",
+        slugs: ["task-root-candidate-inside-worker"],
+      },
+    });
+
+    // Create a directory entry under the worktree root that *contains* the
+    // worker workspace path (overlapping protected path). Root-directory
+    // pruning must refuse to delete this overlap.
+    const overlappingRoot = path.dirname(workspace.cwd);
+    await fs.access(overlappingRoot);
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    await fs.access(workspace.cwd);
+    await fs.access(overlappingRoot);
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  // Cleanup-positive control: closed records are still removed when no
+  // protection source applies, so the conservative policy does not
+  // permanently disable cleanup.
+  it("removes a truly orphan dispatch branch with no registry record and no active task ref", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    git(tempDir, "branch dispatch/task/truly-orphan-cleanup-positive/01orphan");
+
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    expect(
+      git(tempDir, "branch --list dispatch/task/truly-orphan-cleanup-positive/01orphan"),
+    ).toBe("");
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  it("removes a truly orphan reviewer snapshot worktree when no registry record references it", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const reviewerDir = path.join(tempDir, ".kspec-worktrees", "task-orphan-reviewer-snapshot-review");
+    await fs.mkdir(path.dirname(reviewerDir), { recursive: true });
+    git(tempDir, `worktree add --detach ${reviewerDir} HEAD`);
+    await fs.access(reviewerDir);
+
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    await expect(fs.access(reviewerDir)).rejects.toThrow();
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  it("removes a truly orphan root-directory entry that no workspace path overlaps", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const orphanRoot = path.join(tempDir, ".kspec-worktrees", "task-truly-orphan-root-candidate");
+    await fs.mkdir(orphanRoot, { recursive: true });
+    await fs.writeFile(path.join(orphanRoot, "leftover.txt"), "orphan\n", "utf-8");
+
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    await expect(fs.access(orphanRoot)).rejects.toThrow();
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  it("reaps a closing workspace with no active ownership and resolved integration", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 46)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Closing Resolved Integration Reaped",
+        slugs: ["task-closing-resolved-integration-reaped"],
+      },
+    });
+
+    await reconcileDispatchWorkspaceLifecycle({
+      projectDir: tempDir,
+      taskRef,
+      cleanupState: { integrationState: "merged", taskStatus: "completed" },
+      task: {
+        title: "Closing Resolved Integration Reaped",
+        slugs: ["task-closing-resolved-integration-reaped"],
+      },
+    });
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    await expect(fs.access(workspace.cwd)).rejects.toThrow();
+    expect(
+      git(
+        tempDir,
+        "branch --list dispatch/task/task-closing-resolved-integration-reaped/01task00",
+      ),
+    ).toBe("");
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  it("preserves the canonical dispatch branch when the registry file is unreadable due to permissions", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    // Reserve a dispatch branch the way the engine would; do not write any
+    // registry record.
+    const reservedBranch = "dispatch/task/task-registry-load-failed-branch/01reserve";
+    git(tempDir, `branch ${reservedBranch}`);
+
+    // Corrupt the registry so load fails — branch sweep must enter
+    // no-blind-deletion mode for dispatch-branch surface.
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      "kynetic_dispatch_workspaces: 1.0\nworkspaces: [\n  {invalid: yaml,\n",
+      "utf-8",
+    );
+
+    const diag = captureDispatchCleanupDiagnostics();
+    let diagnostics: string[] = [];
+    try {
+      await reconcileDispatchWorkspaceArtifacts(tempDir);
+      diagnostics = diag.capture();
+    } finally {
+      diag.restore();
+    }
+
+    expect(git(tempDir, `branch --list ${reservedBranch}`)).toContain(reservedBranch);
+    expect(
+      diagnostics.some(
+        (line) =>
+          line.includes("dispatch-branch") &&
+          line.includes(reservedBranch) &&
+          /registry/.test(line),
+      ),
+    ).toBe(true);
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  // Behavioral guardrail: every destructive surface must reach the protected
+  // decision through the centralized helper. This drives each surface
+  // (metadata-less-worktree, reviewer-snapshot, root-directory, dispatch-branch)
+  // in one pass to prove the protection helper is wired in across all of them.
+  it("emits a preservation diagnostic for each destructive cleanup surface in a single pass under active protection", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithReviewerAgent(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 47)}`;
+    const workerWorkspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Multi Surface Diagnostic",
+        slugs: ["task-multi-surface-diagnostic"],
+      },
+    });
+    const reviewerWorkspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      role: "reviewer",
+      task: {
+        title: "Multi Surface Diagnostic",
+        slugs: ["task-multi-surface-diagnostic"],
+      },
+    });
+    // Reserve an extra unrelated dispatch branch under the same short-id so
+    // the dispatch-branch surface has something to evaluate without a record.
+    const reservedBranch = "dispatch/task/task-multi-surface-diagnostic-extra/01task00";
+    git(tempDir, `branch ${reservedBranch}`);
+    // Pre-create a bare root-directory candidate (no .git marker, no
+    // metadata) that ALSO shares the active short-id so the root-directory
+    // surface evaluates it through the protection helper.
+    const rootCandidate = path.join(
+      tempDir,
+      ".kspec-worktrees",
+      "task-multi-surface-diagnostic-extra-01task00",
+    );
+    await fs.mkdir(rootCandidate, { recursive: true });
+
+    // Strip metadata and clear the registry so every surface re-classifies
+    // against the active task ref protection source.
+    await fs.rm(workspaceMetadataPath(workerWorkspace.cwd), { force: true });
+    await fs.rm(workspaceMetadataPath(reviewerWorkspace.cwd), { force: true });
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
+
+    const diag = captureDispatchCleanupDiagnostics();
+    let diagnostics: string[] = [];
+    try {
+      await reconcileDispatchWorkspaceArtifacts(tempDir, { activeTaskRefs: [taskRef] });
+      diagnostics = diag.capture();
+    } finally {
+      diag.restore();
+    }
+
+    // All four surfaces below evaluate at least one artifact through the
+    // protection helper and must emit a preservation diagnostic identifying
+    // their surface.
+    for (const surface of [
+      "metadata-less-worktree",
+      "reviewer-snapshot",
+      "root-directory",
+      "dispatch-branch",
+    ] as const) {
+      expect(
+        diagnostics.some((line) => line.includes(surface)),
+      ).toBe(true);
+    }
+
+    // Filesystem state confirms preservation outcome matches the diagnostic.
+    await fs.access(workerWorkspace.cwd);
+    await fs.access(reviewerWorkspace.cwd);
+    await fs.access(rootCandidate);
+    expect(git(tempDir, `branch --list ${reservedBranch}`)).toContain(reservedBranch);
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  // Regression: bootstrap-like nested files under a worker workspace must
+  // survive reconcileDispatchWorkspaceArtifacts() when the task ref is
+  // protected as in-flight, even when neither metadata nor a registry record
+  // is present. This mirrors the queue-to-spawn bootstrap race where
+  // `npm install` is mid-write inside a worker workspace that has not yet
+  // committed its provisioning artifacts.
+  it(
+    "preserves bootstrap-like nested files under a worker workspace while the task is in-flight (regression)",
+    async () => {
+      await seedRepo(tempDir);
+      git(tempDir, "checkout -b agent-dev");
+
+      const taskRef = `@${testUlid("TASK", 48)}`;
+      const workspace = await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: {
+          title: "Bootstrap Race Regression",
+          slugs: ["task-bootstrap-race-regression"],
+        },
+      });
+
+      // Bootstrap-like fixture: package.json + a nested binary symlink target
+      // that npm/pnpm/yarn would have created. These are dispatcher-managed
+      // tree contents that cleanup must never blow away while the spawn is
+      // still in-flight.
+      const nodeModulesDir = path.join(workspace.cwd, "node_modules", "some-dep", "bin");
+      await fs.mkdir(nodeModulesDir, { recursive: true });
+      const sentinelFiles = [
+        path.join(workspace.cwd, "package.json"),
+        path.join(nodeModulesDir, "tool.js"),
+        path.join(workspace.cwd, "node_modules", "some-dep", "package.json"),
+      ];
+      await fs.writeFile(sentinelFiles[0]!, '{"name":"bootstrap-race-regression"}\n', "utf-8");
+      await fs.writeFile(sentinelFiles[1]!, "console.log('hi')\n", "utf-8");
+      await fs.writeFile(sentinelFiles[2]!, '{"name":"some-dep","version":"1.0.0"}\n', "utf-8");
+
+      // Simulate the queue-to-spawn window: metadata removed mid-provisioning,
+      // and the registry not yet written. Only the in-memory in-flight task
+      // ref signals that this workspace must be protected.
+      await fs.rm(workspaceMetadataPath(workspace.cwd), { force: true });
+      await fs.writeFile(
+        path.join(tempDir, "project.dispatch-workspaces.yaml"),
+        YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+        "utf-8",
+      );
+
+      await reconcileDispatchWorkspaceArtifacts(tempDir, {
+        activeTaskRefs: [taskRef],
+      });
+
+      // Parent worker workspace and every nested bootstrap file must survive.
+      await fs.access(workspace.cwd);
+      for (const file of sentinelFiles) {
+        await fs.access(file);
+      }
+      // Canonical dispatch branch must also survive the in-flight window.
+      expect(
+        git(tempDir, "branch --list dispatch/task/task-bootstrap-race-regression/01task00"),
+      ).toContain("dispatch/task/task-bootstrap-race-regression/01task00");
+    },
+  );
+
+  // AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  // Helper-level: a load-failed registry snapshot must mark dispatcher-managed
+  // artifacts as preserved with an actionable diagnostic instead of returning
+  // delete. Exercising the pure helper protects the policy contract even if
+  // future cleanup surfaces are added.
+  it("classifies a load-failed registry snapshot as no-blind-deletion across surfaces", () => {
+    const protection = buildDispatchArtifactProtectionState({
+      worktreeRoot: "/projects/example/.kspec-worktrees",
+      activeOrInFlightTaskRefs: [],
+      registry: {
+        status: "load-failed",
+        reason: "YAML parse error at line 3",
+      },
+    });
+
+    expect(protection.registryTrusted).toBe(false);
+    expect(protection.registryFailureDiagnostic).toMatch(/YAML parse error/);
+
+    const branchDecision = protection.evaluateDispatchBranch(
+      "dispatch/task/some-task/01abcdef",
+    );
+    expect(branchDecision.preserve).toBe(true);
+    expect(branchDecision.reason).toMatch(/YAML parse error/);
+
+    const pathDecision = protection.evaluateWorkspacePath(
+      "/projects/example/.kspec-worktrees/some-task-01abcdef",
+    );
+    expect(pathDecision.preserve).toBe(true);
+    expect(pathDecision.reason).toMatch(/YAML parse error/);
+
+    // Non-dispatch artifacts outside the worktree root remain deletable so
+    // the conservative policy does not over-preserve foreign paths/branches.
+    const foreignBranch = protection.evaluateDispatchBranch("feat/foreign-branch");
+    expect(foreignBranch.preserve).toBe(false);
+    const foreignPath = protection.evaluateWorkspacePath("/elsewhere/cache");
+    expect(foreignPath.preserve).toBe(false);
   });
 });
 
