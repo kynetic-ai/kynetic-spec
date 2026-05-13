@@ -18851,6 +18851,29 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-13T10:06:25.995Z
+  - _ulid: 01KRGDDNN95Y5C1ER9N08731HX
+    type: friction
+    content: kspec task note has no --file or --stdin flag for multi-paragraph structured notes.
+      Validation tasks routinely need to record detailed audit summaries (probe results,
+      classification verdicts). Workaround is "$(cat file.txt)" shell substitution, which works but
+      is awkward and risks shell-escaping bugs for content with $, backticks, or quotes.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T10:16:51.113Z
+  - _ulid: 01KRGDDNXYTV4Y9NJGHVZHKYDS
+    type: success
+    content: "Adversarial lint-probe harness pattern: write a bash script that builds a tempdir +
+      .oxlintrc.json with the project plugin pinned, synthesize adversarial test fixtures, run
+      oxlint against each, and assert FLAG/PASS exit codes. Validated the daemon cleanup contract
+      with 22 probes covering non-terminating signals, no-op helpers, process-lifecycle hooks,
+      implicit auto-start, docstring-only cleanup, and approved cases. Closes the gap that a
+      source-grep-only audit cannot fill, matching the plan's explicit requirement to use generated
+      fixtures."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T10:16:51.390Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
