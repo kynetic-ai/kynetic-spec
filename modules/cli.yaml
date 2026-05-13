@@ -8742,6 +8742,14 @@ features:
                   scheduled cleanup can reach `closed`.
                 when: Artifact cleanup is about to evaluate that workspace's worktrees, reviewer snapshot, root
                   directory, or dispatch branch for destructive cleanup.
+              - given: Cleanup removes a dispatch artifact because its artifact-local metadata is untrusted and no
+                  trusted protection state classifies it as protected.
+                id: ac-task-state-drives-recovery-after-untrusted-artifact-cleanup
+                then: Recovery is driven from trusted task and registry state; the task can be requeued,
+                  reprovisioned, or marked stale with actionable recovery detail without relying on
+                  the removed corrupt artifact metadata.
+                when: A later dispatch reconciliation or scheduling cycle evaluates a non-terminal task that still
+                  needs work.
             tags: []
             requirements:
               - _ulid: 01KKFY93ZNBHPNV5S09KQEXBFA
@@ -8845,6 +8853,22 @@ features:
                       cleanup policy classification determines the metadata is untrusted and cleanup
                       is safe.
                     when: The artifact would otherwise be considered eligible for destructive cleanup.
+                  - given: Registry state and centralized cleanup protection state are loaded and trusted, and cleanup
+                      finds a dispatcher-managed artifact under the configured dispatch worktree
+                      root whose per-workspace metadata is missing, unreadable, or unparseable.
+                    id: ac-corrupt-metadata-cleanup-eligible
+                    then: Cleanup may classify the artifact-local metadata as untrusted and remove the artifact as
+                      cleanup-eligible instead of preserving it for metadata recovery.
+                    when: No non-closed registry record, active task ref, in-flight task ref, or provisioning ownership
+                      classifies that artifact as protected.
+                  - given: Registry state and centralized cleanup protection state are loaded and trusted, and cleanup
+                      finds an unknown file or directory directly under the configured dispatch
+                      worktree root.
+                    id: ac-dispatch-root-unknown-entries-owned
+                    then: Cleanup treats the entry as dispatch-owned garbage and may remove it instead of preserving it
+                      as user/operator data.
+                    when: The entry is not equal to, contained by, or otherwise associated with a protected active,
+                      in-flight, provisioning, or non-closed workspace artifact.
                 tags: []
                 requirements:
                   - _ulid: 01KKK7R64BHWCKAV51ESXQ0NAZ
