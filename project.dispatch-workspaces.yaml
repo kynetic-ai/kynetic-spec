@@ -31494,7 +31494,7 @@ workspaces:
         head: 0c6506a55cdb40538275c315cad4c85b131bc7ba
         last_seen_at: 2026-05-12T23:02:27.773Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-startup-provisioning-classification-ac-01krf37x
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 0c6506a55cdb40538275c315cad4c85b131bc7ba
     bootstrap:
       status: succeeded
@@ -31992,9 +31992,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T00:46:28.950Z
-      last_reconciled_at: 2026-05-13T01:00:20.972Z
+      last_reconciled_at: 2026-05-13T01:01:54.453Z
       created_at: 2026-05-12T23:43:30.216Z
-      updated_at: 2026-05-13T01:00:23.180Z
+      updated_at: 2026-05-13T01:01:54.453Z
     workspace_id: dispatch-workspace-01KRF37YPHJMC4CJ1VH7DDT3K0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
