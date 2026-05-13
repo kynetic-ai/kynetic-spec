@@ -4442,6 +4442,121 @@ describe("test suite", () => {
 `);
       expect(result.output).not.toContain("no-leaky-test-daemon");
     });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-16 reviewer probe (declare-enum ambient shadow): the rule's
+    // documented carve-out says `declare` ambient declarations are erased
+    // by the TS compiler and so cannot shadow a runtime binding. A
+    // `declare enum killPid { noop }` at the module top is pure
+    // type-space and does NOT emit a runtime binding — `killPid` at the
+    // use site still resolves to the approved import. Pre-fix the
+    // TSEnumDeclaration branch in `statementBindsNameOpaquely` returned
+    // true for every TSEnumDeclaration regardless of `stmt.declare`,
+    // producing a false positive against the precision contract by
+    // misclassifying the ambient declaration as opaque. Post-fix the
+    // branch consults `stmt.declare` and the use site keeps its approved
+    // import-trust.
+    it("should allow serve start --detach when ambient declare enum shares the cleanup helper name", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+declare enum killPid { noop }
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-16 carve-out parity: a `declare class killPid {}` at the
+    // module top is the class-shape analogue of the declare-enum probe
+    // and is similarly erased by the TS compiler. The ClassDeclaration
+    // branch in `statementBindsNameOpaquely` must consult `stmt.declare`
+    // so the ambient class does not shadow the approved cleanup import.
+    it("should allow serve start --detach when ambient declare class shares the cleanup helper name", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+declare class killPid {}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-16 carve-out parity: a `declare const killPid: ...` is the
+    // variable-shape analogue of the declare-enum probe and is similarly
+    // erased by the TS compiler. The VariableDeclaration branch in
+    // `statementBindsNameOpaquely` must consult `stmt.declare` so the
+    // ambient binding does not shadow the approved cleanup import.
+    it("should allow serve start --detach when ambient declare const shares the cleanup helper name", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+declare const killPid: (pid: number) => void;
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expect(result.output).not.toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-16 reviewer-intent regression: the runtime-binding form of
+    // `enum killPid { noop }` (no `declare`) must STILL be classified as
+    // opaque after the carve-out fix. This proves the fix only releases
+    // the ambient case and leaves the cycle-15 enum-shadow rejection in
+    // place — a non-declare enum still produces a runtime enum object
+    // that throws TypeError when invoked as a function, so the daemon
+    // remains running.
+    it("should still flag serve start --detach when non-declare enum shadows the cleanup helper name", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+enum killPid { noop }
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
   });
 
   // AC: @daemon-test-harness-guardrails ac-helper-internals-allowed

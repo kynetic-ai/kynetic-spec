@@ -1725,10 +1725,20 @@ const noLeakyTestDaemon = {
      *     helper body (a `enum stopPidBounded { noop }` shadowing the
      *     approved bounded-stop primitive) similarly bypassed the
      *     classifier. Pure type-only declarations (interfaces, type
-     *     aliases, `declare` ambient declarations, and bodyless
-     *     `declare module` / `declare namespace` forms) are erased
-     *     by the TS compiler and so cannot shadow a runtime binding;
-     *     they are deliberately NOT treated as opaque here.
+     *     aliases, `declare` ambient declarations, bodyless
+     *     `declare module` / `declare namespace` forms, and `import
+     *     type` equals-declarations) are erased by the TS compiler and
+     *     so cannot shadow a runtime binding; they are deliberately NOT
+     *     treated as opaque here. The carve-out applies uniformly to
+     *     every runtime-binding statement type the classifier inspects
+     *     — `declare class`, `declare enum`, `declare const|let|var`,
+     *     bodyless `declare namespace`/`declare module`, and `import
+     *     type … = …` are all type-space-only and skip the opaque
+     *     check (cycle-16 reviewer probe: `declare enum killPid
+     *     { noop }` shadowing an approved `killPid` import was
+     *     incorrectly classified opaque because the TSEnumDeclaration
+     *     branch did not consult `stmt.declare`, producing a false
+     *     positive against the precision contract).
      *
      *   - Export wrappers around an opaque declaration — `export const
      *     killPid = makeKill()`, `export class killPid {}`,
@@ -1748,7 +1758,8 @@ const noLeakyTestDaemon = {
         stmt.type === "ClassDeclaration" &&
         stmt.id &&
         stmt.id.type === "Identifier" &&
-        stmt.id.name === name
+        stmt.id.name === name &&
+        !stmt.declare
       ) {
         return true;
       }
@@ -1756,7 +1767,8 @@ const noLeakyTestDaemon = {
         stmt.type === "TSEnumDeclaration" &&
         stmt.id &&
         stmt.id.type === "Identifier" &&
-        stmt.id.name === name
+        stmt.id.name === name &&
+        !stmt.declare
       ) {
         return true;
       }
@@ -1774,11 +1786,13 @@ const noLeakyTestDaemon = {
         stmt.type === "TSImportEqualsDeclaration" &&
         stmt.id &&
         stmt.id.type === "Identifier" &&
-        stmt.id.name === name
+        stmt.id.name === name &&
+        stmt.importKind !== "type"
       ) {
         return true;
       }
       if (stmt.type !== "VariableDeclaration") return false;
+      if (stmt.declare) return false;
       for (const decl of stmt.declarations || []) {
         if (!decl || !decl.id) continue;
         if (!patternBindsName(decl.id, name)) continue;
