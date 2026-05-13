@@ -49909,7 +49909,7 @@ runs:
     completed_at: 2026-05-13T17:34:27.637Z
   - _ulid: 01KRH7E9QWZAHH0R519430CHBN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -49923,7 +49923,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T17:52:10.757Z
-        completed_at: 2026-05-13T17:52:10.757Z
+        completed_at: 2026-05-13T17:52:23.256Z
+        notes: "Friction points: The only repeated/structural friction was AC annotation semantics: kspec
+          validation catches malformed or unresolved AC markers, but it cannot tell when a
+          syntactically valid marker is attached to a test proving the opposite behavior. The
+          reviewer had to manually compare AC text against assertions. This is partly inherent
+          judgment, not a clear tooling defect. No command/worktree friction occurred."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T17:52:23.256Z
+        completed_at: 2026-05-13T17:52:23.256Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T17:51:34.652Z
