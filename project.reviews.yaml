@@ -212309,6 +212309,13 @@ reviews:
           status: fail
           name: npm run lint
         timestamp: 2026-05-13T04:24:55.896Z
+      - _ulid: 01KRFS9F7YCVE1KGYS4A95S2Q2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRFS9DWB3VF8D5SW6WPJ0VWF
+        timestamp: 2026-05-13T04:25:01.950Z
     examined_commit: f471dc1dcfbca0288216dffefa3abbac6e163ad8
     external_links: []
     lifecycle_state: open
@@ -212318,8 +212325,31 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRFS9DWB3VF8D5SW6WPJ0VWF
+        entries:
+          - _ulid: 01KRFS9DWBN5YVPKE308997PAF
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; task @01KRCRJPMHMHC410TKRC5Y9HF1; specs
+              @daemon-test-guardrail-precision and @daemon-test-harness-guardrails; previous review
+              @01KRFNCR; full diff for tests/lint-daemon-test-guardrails.test.ts,
+              tests/lint-no-leaky-test-daemon.test.ts, tools/eslint-rules/no-leaky-test-daemon.js;
+              focused rule sections around helper-origin import trust, shared primitive import
+              trust, local binding/shadow classification, and new type-only tests. Commands run: git
+              status/rev-parse/merge-base/diff/log; rg AC annotations and source-scanning markers;
+              kspec validate and kspec validate --warnings-ok; targeted npm test -- --fresh for the
+              two lint suites; full npm test -- --fresh; changed-file npx oxlint; npm run lint; four
+              ad hoc oxlint probes for the prior type-only import blockers; git diff --check. Claims
+              verified: cycle-17 type-only approved helper/primitive import blockers now reject both
+              declaration-level and specifier-level type imports; invalid implicit-autostart
+              expected-failure/source-scanning block was removed; current task ACs remain
+              behaviorally covered by lint-rule execution tests. Categories searched: correctness,
+              edge cases around imports/shadowing, error handling via missing cleanup diagnostics,
+              test quality/source scanning, integration with existing helper allowlists and
+              full-suite regression. No blockers found."
+            created_at: 2026-05-13T04:25:00.555Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-13T04:13:04.513Z
-    updated_at: 2026-05-13T04:24:54.448Z
+    updated_at: 2026-05-13T04:25:00.555Z
     notes: []
