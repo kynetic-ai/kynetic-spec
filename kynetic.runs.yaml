@@ -49410,7 +49410,7 @@ runs:
     completed_at: 2026-05-13T06:26:51.881Z
   - _ulid: 01KRG2GGQRPFGQ7NZ0M06BV362
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -49425,7 +49425,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T07:07:21.126Z
-        completed_at: 2026-05-13T07:07:21.126Z
+        completed_at: 2026-05-13T07:07:29.886Z
+        notes: "Friction points: (1) The kspec-reflect skill says kspec workflow show can be run without a
+          run ref, but this CLI required an explicit run ref even with a single active workflow. (2)
+          Review evidence logs still have no first-class review field, so I recorded the required
+          evidence as a non-blocking nit thread, leaving an unresolved thread on an approved review.
+          (3) kspec validate still reports broad project-wide warnings, including automation tasks
+          without spec_ref, so review evidence has to distinguish warnings-ok from true gate
+          failure."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T07:07:29.886Z
+        completed_at: 2026-05-13T07:07:29.886Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T07:06:10.040Z
