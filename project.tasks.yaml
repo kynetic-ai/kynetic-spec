@@ -29216,7 +29216,7 @@
   type: task
   spec_ref: "@dispatch-workspace-cleanup-policy"
   plan_ref: "@plan-dispatch-workspace-cleanup-classification-hardenin"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -29228,6 +29228,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-13T16:44:43.767Z
+  started_at: 2026-05-13T16:47:25.836Z
   automation: eligible
 - _ulid: 01KRH3KX6743A3FAAN1HQ3KFC6
   slugs:
