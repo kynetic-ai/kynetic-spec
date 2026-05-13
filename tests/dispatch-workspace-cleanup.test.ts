@@ -459,6 +459,220 @@ describe("dispatch workspace cleanup", () => {
     expect(git(tempDir, `branch --list ${reservedBranch}`)).toContain(reservedBranch);
   });
 
+  // AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  it("blocks blind deletion across all destructive surfaces when the registry cannot be parsed", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 31)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Untrusted Registry Workspace",
+        slugs: ["task-untrusted-registry-workspace"],
+      },
+    });
+
+    // Pre-create an orphan-looking dispatch branch and a root directory candidate.
+    // Both would be eligible for blind deletion under the prior fallback that
+    // treated untracked dispatch branches/root entries as orphans. Under the
+    // no-blind-deletion contract, they must be preserved when registry
+    // classification is unavailable.
+    git(tempDir, "branch dispatch/task/task-untrusted-registry-workspace/01orphan");
+    await fs.mkdir(path.join(tempDir, ".kspec-worktrees", "untrusted-root-candidate"), {
+      recursive: true,
+    });
+
+    // Remove the metadata file so the metadata-less worktree surface is
+    // exercised too. With no metadata and no trustable registry, blind
+    // deletion would have removed both the worktree dir and its dispatch
+    // branch — the protection contract must preserve them instead.
+    await fs.rm(workspaceMetadataPath(workspace.cwd), { force: true });
+
+    // Corrupt the registry so loadDispatchWorkspaceRegistry throws and the
+    // protection helper enters no-blind-deletion mode.
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      "kynetic_dispatch_workspaces: 1.0\nworkspaces: [\n  {invalid yaml here\n",
+      "utf-8",
+    );
+
+    const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => undefined);
+    let capturedCalls: string[] = [];
+    try {
+      await reconcileDispatchWorkspaceArtifacts(tempDir);
+      capturedCalls = debugSpy.mock.calls.map((args) => String(args[0] ?? ""));
+    } finally {
+      debugSpy.mockRestore();
+    }
+
+    // Every dispatcher-managed artifact under the worktree root must survive.
+    await fs.access(workspace.cwd);
+    await fs.access(path.join(tempDir, ".kspec-worktrees", "untrusted-root-candidate"));
+    expect(
+      git(tempDir, "branch --list dispatch/task/task-untrusted-registry-workspace/01task00"),
+    ).toContain("dispatch/task/task-untrusted-registry-workspace/01task00");
+    expect(
+      git(tempDir, "branch --list dispatch/task/task-untrusted-registry-workspace/01orphan"),
+    ).toContain("dispatch/task/task-untrusted-registry-workspace/01orphan");
+
+    // Diagnostic identifies the cleanup surface and surfaces the registry
+    // failure reason so logs are actionable for operators.
+    const diagnosticMessages = capturedCalls.filter((line) =>
+      line.includes("[dispatch-cleanup]"),
+    );
+    expect(diagnosticMessages.length).toBeGreaterThan(0);
+    expect(diagnosticMessages.some((line) => line.includes("registry"))).toBe(true);
+    // At least one surface label must show up so the diagnostic is
+    // surface-aware, not generic.
+    expect(
+      diagnosticMessages.some((line) =>
+        /metadata-less-worktree|root-directory|dispatch-branch/.test(line),
+      ),
+    ).toBe(true);
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  // AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
+  it("emits surface-labeled preservation diagnostics for every destructive cleanup surface", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithReviewerAgent(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 32)}`;
+    const workerWorkspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Diagnostic Surface Workspace",
+        slugs: ["task-diagnostic-surface-workspace"],
+      },
+    });
+    const reviewerWorkspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      role: "reviewer",
+      task: {
+        title: "Diagnostic Surface Workspace",
+        slugs: ["task-diagnostic-surface-workspace"],
+      },
+    });
+
+    // Simulate the queue-to-spawn race: metadata removed from both
+    // worker and reviewer worktrees, AND the registry record cleared. With
+    // an active task ref, the protection helper must preserve each surface
+    // through its deterministic short-id lineage so diagnostics surface all
+    // of them with the active/in-flight protection source.
+    await fs.rm(workspaceMetadataPath(workerWorkspace.cwd), { force: true });
+    await fs.rm(workspaceMetadataPath(reviewerWorkspace.cwd), { force: true });
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
+
+    const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => undefined);
+    let capturedCalls: string[] = [];
+    try {
+      await reconcileDispatchWorkspaceArtifacts(tempDir, {
+        activeTaskRefs: [taskRef],
+      });
+      capturedCalls = debugSpy.mock.calls.map((args) => String(args[0] ?? ""));
+    } finally {
+      debugSpy.mockRestore();
+    }
+
+    const diagnosticMessages = capturedCalls.filter((line) =>
+      line.includes("[dispatch-cleanup]"),
+    );
+
+    // The worker worktree surfaces through the metadata-less-worktree gate
+    // (the entry has a tracked dispatch branch and missing metadata).
+    expect(
+      diagnosticMessages.some(
+        (line) =>
+          line.includes("metadata-less-worktree") && line.includes(workerWorkspace.cwd),
+      ),
+    ).toBe(true);
+    // The reviewer worktree surfaces through the reviewer-snapshot gate
+    // (the entry is detached with branch=null and path ends in -review).
+    expect(
+      diagnosticMessages.some(
+        (line) =>
+          line.includes("reviewer-snapshot") && line.includes(reviewerWorkspace.cwd),
+      ),
+    ).toBe(true);
+    // Protection-source reason text is forwarded into the diagnostic so the
+    // operator can identify why preservation occurred.
+    expect(
+      diagnosticMessages.some((line) => /active or in-flight/.test(line)),
+    ).toBe(true);
+
+    // Filesystem state must still be preserved.
+    await fs.access(workerWorkspace.cwd);
+    await fs.access(reviewerWorkspace.cwd);
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  it("skips reap and emits a reap-candidate diagnostic when the closing workspace's task ref is active", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 33)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Reap Skip Workspace",
+        slugs: ["task-reap-skip-workspace"],
+      },
+    });
+
+    await reconcileDispatchWorkspaceLifecycle({
+      projectDir: tempDir,
+      taskRef,
+      cleanupState: { integrationState: "merged", taskStatus: "completed" },
+      task: {
+        title: "Reap Skip Workspace",
+        slugs: ["task-reap-skip-workspace"],
+      },
+    });
+
+    const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => undefined);
+    let capturedCalls: string[] = [];
+    try {
+      await reconcileDispatchWorkspaceArtifacts(tempDir, {
+        activeTaskRefs: [taskRef],
+      });
+      capturedCalls = debugSpy.mock.calls.map((args) => String(args[0] ?? ""));
+    } finally {
+      debugSpy.mockRestore();
+    }
+
+    // Reap is skipped, so the worktree and canonical branch must survive.
+    await fs.access(workspace.cwd);
+    expect(git(tempDir, "branch --list dispatch/task/task-reap-skip-workspace/01task00")).toContain(
+      "dispatch/task/task-reap-skip-workspace/01task00",
+    );
+
+    // The reap-candidate surface must emit a diagnostic identifying the
+    // surface AND the active/in-flight protection source.
+    const diagnosticMessages = capturedCalls.filter((line) =>
+      line.includes("[dispatch-cleanup]"),
+    );
+    expect(
+      diagnosticMessages.some(
+        (line) =>
+          line.includes("reap-candidate") &&
+          line.includes(taskRef) &&
+          /active or in-flight/.test(line),
+      ),
+    ).toBe(true);
+  });
+
   // AC: @dispatch-workspace-cleanup-policy ac-6
   // AC: @dispatch-workspace-cleanup-policy ac-7
   it("reconstructs a missing registry record and normalizes legacy branch layouts from metadata-backed worktrees", async () => {

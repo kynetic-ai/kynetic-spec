@@ -3685,6 +3685,33 @@ export async function loadDispatchArtifactProtectionState(
   });
 }
 
+/**
+ * Identifier for a dispatch cleanup destructive surface. Used in diagnostic
+ * messages emitted by {@link reconcileDispatchWorkspaceArtifacts} so logs
+ * identify *which* cleanup surface preserved or blocked an artifact alongside
+ * the protection-source reason.
+ *
+ * AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+ * AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
+ */
+type DispatchCleanupSurface =
+  | "metadata-less-worktree"
+  | "reap-candidate"
+  | "reviewer-snapshot"
+  | "root-directory"
+  | "dispatch-branch";
+
+function logArtifactPreservation(
+  surface: DispatchCleanupSurface,
+  identifier: string,
+  reason: string | null,
+): void {
+  const reasonText = reason ?? "protection-source unspecified";
+  console.debug(
+    `[dispatch-cleanup] preserved ${surface} "${identifier}": ${reasonText}`,
+  );
+}
+
 export async function reconcileDispatchWorkspaceArtifacts(
   projectDir: string,
   options?: { activeTaskRefs?: Iterable<string> },
@@ -3736,6 +3763,14 @@ export async function reconcileDispatchWorkspaceArtifacts(
         if (branchName) {
           trackedBranches.add(branchName);
         }
+        // AC: @dispatch-workspace-cleanup-policy ac-ambiguous-protection-blocks-blind-deletion
+        // Surface which protection source preserved this metadata-less
+        // worktree so logs identify the cleanup surface and the reason.
+        logArtifactPreservation(
+          "metadata-less-worktree",
+          entry.path,
+          pathDecision.preserve ? pathDecision.reason : branchDecision.reason,
+        );
         continue;
       }
       await safelyRemoveDispatchWorktree(projectDir, resolvedConfig.worktreeRoot, entry.path);
@@ -3769,7 +3804,9 @@ export async function reconcileDispatchWorkspaceArtifacts(
       // protection helper keeps the destructive surface aligned with every
       // other surface in this function.
       const reapDecision = protection.evaluateTaskRef(metadata.taskRef);
-      if (!reapDecision.preserve) {
+      if (reapDecision.preserve) {
+        logArtifactPreservation("reap-candidate", metadata.taskRef, reapDecision.reason);
+      } else {
         await reapDispatchWorkspace(projectDir, metadata.taskRef, {
           activeTaskRefs,
           task: {
@@ -3792,7 +3829,10 @@ export async function reconcileDispatchWorkspaceArtifacts(
       if (referencedReviewerDirs.has(path.resolve(entry.path))) continue;
       // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
       const reviewerDecision = protection.evaluateWorkspacePath(entry.path);
-      if (reviewerDecision.preserve) continue;
+      if (reviewerDecision.preserve) {
+        logArtifactPreservation("reviewer-snapshot", entry.path, reviewerDecision.reason);
+        continue;
+      }
       await safelyRemoveDispatchWorktree(projectDir, resolvedConfig.worktreeRoot, entry.path);
     }
   }
@@ -3819,7 +3859,10 @@ export async function reconcileDispatchWorkspaceArtifacts(
     // not delete dispatcher-managed candidates when registry classification
     // is unavailable.
     const rootDecision = protection.evaluateWorkspacePath(candidate);
-    if (rootDecision.preserve) continue;
+    if (rootDecision.preserve) {
+      logArtifactPreservation("root-directory", candidate, rootDecision.reason);
+      continue;
+    }
     await fs.rm(candidate, { recursive: true, force: true });
   }
 
@@ -3835,7 +3878,10 @@ export async function reconcileDispatchWorkspaceArtifacts(
       continue;
     }
     const branchDecision = protection.evaluateDispatchBranch(branch);
-    if (branchDecision.preserve) continue;
+    if (branchDecision.preserve) {
+      logArtifactPreservation("dispatch-branch", branch, branchDecision.reason);
+      continue;
+    }
     await deleteDispatchBranch(projectDir, branch);
   }
 }
