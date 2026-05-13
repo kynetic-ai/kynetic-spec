@@ -48316,7 +48316,7 @@ runs:
     completed_at: 2026-05-12T23:36:16.105Z
   - _ulid: 01KRFA6T50AKTGMY5A0642R5R1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -48332,7 +48332,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T00:03:00.858Z
-        completed_at: 2026-05-13T00:03:00.858Z
+        completed_at: 2026-05-13T00:03:12.262Z
+        notes: "Friction points: 1. Full-suite verification was expensive and produced ambiguous signal: one
+          run was near-complete but hung/no-summary, while the rerun exposed a flaky daemon
+          readiness diagnostic failure that required focused rerun and separate tracking. 2. kspec
+          task complete auto-synced @dispatch-workspace-registry from in_progress to implemented
+          even though this was a Phase 1 spec-alignment task whose explicit instruction was to keep
+          the linked spec in_progress for downstream implementation/test tasks; I had to correct it
+          manually with item set --status in_progress --no-cascade and add a note. 3. Review
+          evidence logging required several separate review check/comment commands, which is
+          workable but verbose."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T00:03:12.262Z
+        completed_at: 2026-05-13T00:03:12.262Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T00:01:26.176Z
