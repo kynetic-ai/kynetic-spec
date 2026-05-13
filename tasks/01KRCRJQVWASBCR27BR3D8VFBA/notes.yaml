@@ -34,3 +34,70 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-13T08:38:32.189Z
+  - _ulid: 01KRGAYGQECA4E0X3A5NHMCENN
+    content: >-
+      Fix cycle 2: addressed the MUST-FIX blocker on `@daemon-test-guardrail-precision`
+      `ac-implicit-autostart-cleanup-before-observation`. Cycle 1 only fired when the daemon-path
+      literal AND the file-read primitive lived in the same VariableDeclarator init; four real
+      observation shapes fell through silently.
+
+
+      Extended the `no-leaky-test-daemon` rule with three new classifiers and one cleanup-timing
+      predicate:
+
+
+      - `daemonPathAliasBindings` + `isDaemonPathAliasInitShape` +
+      `subtreeContainsReadOnDaemonPathAlias` — recognise path-alias chains (`metadataPath =
+      join(home.configDir, 'daemon.connection.json'); read(metadataPath)`; same shape for
+      `pidPath`).
+
+      - `isKspecServeStatusCall` / `subtreeContainsKspecServeStatus` / `collectKspecCallArgTokens` —
+      recognise CLI argv tokenising to `serve status` across helper/spawn-like/exec callees.
+      Quote-aware so `kspec search "serve status"` is NOT mis-classified.
+
+      - `daemonShapedBindings` + `subtreeContainsFetchOnDaemonMember` / `isDaemonEndpointMemberArg`
+      — recognise `fetch(daemon.apiUrl)`, `new WebSocket(daemon.wsUrl)`, and the
+      template-interpolated form. Tracks daemon-shaped bindings (init is itself an observation) so
+      the member-access reach is binding-aware.
+
+      - `hasCleanupBefore` — accept cleanup registered EARLIER in the test body for secondary
+      observations, anchored at the earliest prior kspec CLI call (the implicit auto-start moment)
+      so stale-pid cleanups still fail via the existing `isCaptureOwnedByDetachedStart` ownership
+      check.
+
+
+      Also added `kind` field on pending entries: `ownership` for pid/metadata reads (direct or
+      aliased — apply localWrapperUnsafe), `observation` for serve-status / endpoint-fetch (skip
+      localWrapperUnsafe — pure queries inside polling helpers are normal practice, not
+      daemon-startup wrappers). Standalone unbound forms (`await kspec("serve status …")`, `await
+      fetch(daemon.apiUrl)`, `new WebSocket(daemon.wsUrl)`) are queued via the CallExpression /
+      NewExpression visits when they're ExpressionStatement payloads.
+
+
+      Fixtures: tests/lint-daemon-test-guardrails.test.ts now covers all four unsafe shapes (bound +
+      standalone, including a spawnSync argv-form serve status), safe boundaries (cleanup-before,
+      cleanup-immediate, polling helper), the stale-pid regression, and the quote-aware negative
+      control.
+
+
+      Verification:
+
+      - Targeted: `npm test -- --fresh tests/cli-no-daemon.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts` → 31
+      suites, 424 tests pass (11 new tests over cycle 1).
+
+      - Full: `npm test` → 2440 suites, 9245/9250 tests pass (5 skipped, same as cycle 1), 35 min
+      duration.
+
+      - `npx oxlint tests/` → 19 errors (pre-task baseline), zero `no-leaky-test-daemon` errors
+      anywhere.
+
+      - Synthetic fixtures mimicking the reviewer's four probes (metadataPath alias, pidPath alias,
+      kspec serve status, daemon.apiUrl endpoint fetch) all emit `no-leaky-test-daemon` errors with
+      the new pattern strings.
+
+
+      Both review threads (blocker + nit) replied to and resolved.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T09:33:37.390Z
