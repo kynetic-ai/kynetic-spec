@@ -213482,6 +213482,18 @@ reviews:
         runner: npm test
         created_at: 2026-05-13T07:51:18.925Z
         completed_at: 2026-05-13T07:51:18.925Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- --run tests/agent-dispatch-engine.test.ts
+          tests/dispatch-runtime-bootstrap-contract.test.ts exited 0; 41 suites passed, 152 tests
+          passed; dispatch engine 132 tests, bootstrap contract 20 tests.
+        name: targeted dispatch bootstrap tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-13T07:51:31.069Z
+        completed_at: 2026-05-13T07:51:31.069Z
     events:
       - _ulid: 01KRG45W0HBYVJ2T11GN39FWRX
         actor: Jacob Chapel
@@ -213503,6 +213515,13 @@ reviews:
           status: pass
           name: targeted cleanup and registry tests
         timestamp: 2026-05-13T07:51:20.371Z
+      - _ulid: 01KRG53KDJ0C6WS736BCH489YZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted dispatch bootstrap tests
+        timestamp: 2026-05-13T07:51:32.530Z
     examined_commit: ffdef6f9dc5d15658685f44df4a3210ba430f4c7
     external_links: []
     lifecycle_state: open
@@ -213515,5 +213534,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T07:35:18.289Z
-    updated_at: 2026-05-13T07:51:18.925Z
+    updated_at: 2026-05-13T07:51:31.069Z
     notes: []
