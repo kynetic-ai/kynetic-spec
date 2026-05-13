@@ -31973,12 +31973,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-13T02:55:24.447Z
+      updated_at: 2026-05-13T02:55:52.547Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T02:55:24.447Z
+      updated_at: 2026-05-13T02:55:52.547Z
     integration:
       status: pending
       detail: null
@@ -31986,7 +31986,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0504bc1cf83155103a5bc51038e6f1ed78d48b20
-      updated_at: 2026-05-13T02:55:24.447Z
+      updated_at: 2026-05-13T02:55:52.547Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRF37Y941E2T8D1ATFV63JB0"
@@ -31994,16 +31994,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T02:33:42.946Z
-      last_reconciled_at: 2026-05-13T02:55:24.447Z
+      last_reconciled_at: 2026-05-13T02:55:52.547Z
       created_at: 2026-05-13T01:46:43.280Z
-      updated_at: 2026-05-13T02:55:24.447Z
+      updated_at: 2026-05-13T02:55:52.547Z
     workspace_id: dispatch-workspace-01KRF37Y941E2T8D1ATFV63JB0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 3523eee27f80947515557d4720a3ba773eaafe86
+        last_seen_at: 2026-05-13T02:55:52.547Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-centralize-dispatch-artifact-protection-decisions-01krf37y-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-centralize-dispatch-artifact-protection-decisions/01krf37y
-        head: 8b076968ac2a7ff19dae267fe2334325c028cacd
-        last_seen_at: 2026-05-13T02:33:18.435Z
+        head: 3523eee27f80947515557d4720a3ba773eaafe86
+        last_seen_at: 2026-05-13T02:55:52.547Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-centralize-dispatch-artifact-protection-decisions-01krf37y
