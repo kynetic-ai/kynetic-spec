@@ -211719,6 +211719,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-13T03:17:16.434Z
+      - _ulid: 01KRFNPRTY8P7M3G64EJR6G2CJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRFNPQ6S1FHMHQQVGTJECAWW
+        timestamp: 2026-05-13T03:22:23.454Z
     examined_commit: 493ede939a32cbd9a28e66adea498ac5a08143bf
     external_links: []
     lifecycle_state: open
@@ -211728,8 +211735,29 @@ reviews:
       content_hash: ""
       ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRFNPQ6S1FHMHQQVGTJECAWW
+        anchor:
+          type: code
+          commit: 493ede939a32cbd9a28e66adea498ac5a08143bf
+          line_end: 1256
+          line_start: 1249
+          path: tools/eslint-rules/no-leaky-test-daemon.js
+          side: head
+        entries:
+          - _ulid: 01KRFNPQ6SV5Q5BVE80PKP3WEZ
+            author: Jacob Chapel
+            body: "MUST-FIX: approved helper imports are trusted even when the binding is type-only. The loop
+              accepts any ImportSpecifier from an approved helper path and never checks
+              stmt.importKind or spec.importKind, so a test with  plus  receives no
+              no-leaky-test-daemon diagnostic. Type-only imports are erased at runtime, so the
+              cleanup callback would throw instead of terminating the just-started daemon. Evidence:
+              an ad hoc oxlint fixture with that exact import exited 0 and only reported
+              no-unused-vars, with no no-leaky-test-daemon error. Reject type-only helper imports
+              before returning true here."
+            created_at: 2026-05-13T03:22:21.785Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-13T03:16:55.715Z
-    updated_at: 2026-05-13T03:17:14.893Z
+    updated_at: 2026-05-13T03:22:21.785Z
     notes: []
