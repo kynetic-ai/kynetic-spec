@@ -1238,16 +1238,32 @@ const noLeakyTestDaemon = {
      * killPid } from "…"` string-literal-key form supported by recent
      * proposals) are also rejected; the approved-export contract names
      * its exports as bare identifiers.
+     *
+     * Type-only imports — both the declaration-level `import type {
+     * killPid } from "./helpers/daemon"` shape and the specifier-level
+     * `import { type killPid } from "./helpers/daemon"` shape — are
+     * rejected. TypeScript erases these bindings at compile time, so
+     * the local name does not resolve to anything at runtime and any
+     * cleanup callback invoking it would throw `ReferenceError` instead
+     * of terminating the daemon. Trusting them would let a test slip
+     * past the rule while leaving the daemon alive in CI, defeating
+     * `@daemon-test-guardrail-precision`
+     * `ac-cleanup-operation-terminates-daemon`. Both `stmt.importKind`
+     * (declaration-level) and `spec.importKind` (specifier-level) are
+     * checked because either is sufficient on its own to erase the
+     * runtime binding.
      */
     function isHelperNameImportedFromApprovedPath(name, fromNode) {
       const program = findProgramNode(fromNode);
       if (!program || !Array.isArray(program.body)) return false;
       for (const stmt of program.body) {
         if (!stmt || stmt.type !== "ImportDeclaration") continue;
+        if (stmt.importKind === "type") continue;
         const source = stmt.source && stmt.source.value;
         if (!isHelperImportSpecifierApproved(source)) continue;
         for (const spec of stmt.specifiers || []) {
           if (!spec || spec.type !== "ImportSpecifier") continue;
+          if (spec.importKind === "type") continue;
           if (!spec.local || spec.local.type !== "Identifier") continue;
           if (spec.local.name !== name) continue;
           const imported = spec.imported;
@@ -1369,16 +1385,33 @@ const noLeakyTestDaemon = {
      * trust). `ImportDefaultSpecifier` and `ImportNamespaceSpecifier`
      * shapes cannot be tied to a specific approved export and are
      * rejected.
+     *
+     * Type-only imports — both the declaration-level `import type {
+     * stopPidBounded } from "./helpers/process-stop"` and the
+     * specifier-level `import { type stopPidBounded } from
+     * "./helpers/process-stop"` — are rejected for the same reason as
+     * `isHelperNameImportedFromApprovedPath`: TypeScript erases these
+     * bindings at compile time, so a helper body that calls the local
+     * name would throw `ReferenceError` at runtime rather than invoke
+     * the canonical terminating primitive. Trusting them would let a
+     * vetted-looking wrapper helper pass the rule while the wrapped
+     * primitive does not actually exist at runtime, violating the
+     * cleanup-effect contract. Both `stmt.importKind` (declaration-
+     * level) and `spec.importKind` (specifier-level) are checked
+     * because either is sufficient on its own to erase the runtime
+     * binding.
      */
     function isSharedCleanupPrimitiveImported(name, fromNode) {
       const program = findProgramNode(fromNode);
       if (!program || !Array.isArray(program.body)) return false;
       for (const stmt of program.body) {
         if (!stmt || stmt.type !== "ImportDeclaration") continue;
+        if (stmt.importKind === "type") continue;
         const source = stmt.source && stmt.source.value;
         if (!isSharedCleanupPrimitiveImportSpecifierApproved(source)) continue;
         for (const spec of stmt.specifiers || []) {
           if (!spec || spec.type !== "ImportSpecifier") continue;
+          if (spec.importKind === "type") continue;
           if (!spec.local || spec.local.type !== "Identifier") continue;
           if (spec.local.name !== name) continue;
           const imported = spec.imported;

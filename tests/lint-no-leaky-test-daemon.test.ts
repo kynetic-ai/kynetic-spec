@@ -3387,6 +3387,142 @@ describe("test suite", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
       expect(result.output).toContain("has no scoped cleanup registration");
     });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-17 reviewer blocker (declaration-level type-only approved
+    // helper import): `import type { killPid } from "./helpers/daemon"`
+    // is erased at runtime — the local `killPid` binding does not exist
+    // when the cleanup callback fires, so `killPid(pid)` throws
+    // `ReferenceError` and the just-started daemon is left alive. The
+    // pre-fix approved-helper recogniser iterated the import's specifiers
+    // without checking `stmt.importKind`, so a `killPid` bound by a
+    // type-only declaration looked indistinguishable from a runtime
+    // import. Post-fix the declaration-level `type` import is skipped
+    // before the specifier loop, the cleanup-helper origin contract
+    // fails, and the detached start is flagged.
+    it("should flag serve start --detach when cleanup helper is bound via a declaration-level type-only approved import", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import type { killPid } from "./helpers/daemon";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-17 reviewer blocker variant (specifier-level type-only
+    // approved helper import): `import { type killPid } from
+    // "./helpers/daemon"` erases ONLY the `killPid` binding at runtime
+    // even though the surrounding import declaration is a runtime
+    // import. The recogniser must reject `spec.importKind === "type"`
+    // independently of `stmt.importKind` because TypeScript permits
+    // either form to erase the binding. Pre-fix the specifier-level
+    // type marker was ignored, so this shape still classified as
+    // approved cleanup; post-fix the specifier is skipped and the use
+    // site is flagged.
+    it("should flag serve start --detach when cleanup helper is bound via a specifier-level type-only approved import", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { type killPid } from "./helpers/daemon";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-17 reviewer blocker (declaration-level type-only approved
+    // shared-cleanup-primitive import): the wrapper-helper trust path
+    // ultimately resolves to a canonical primitive like `stopPidBounded`
+    // from `./helpers/process-stop`. When that primitive is imported as
+    // `import type { stopPidBounded } from "./helpers/process-stop"`,
+    // the primitive binding does not exist at runtime, so the local
+    // `killPid` helper that calls it throws `ReferenceError` rather
+    // than terminating the daemon. Pre-fix
+    // `isSharedCleanupPrimitiveImported` iterated specifiers without
+    // checking `stmt.importKind`; post-fix the type-only declaration is
+    // skipped and the helper-body trust path fails.
+    it("should flag serve start --detach when helper body calls approved primitive bound via a declaration-level type-only import", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import type { stopPidBounded } from "./helpers/process-stop";
+
+function killPid(pid: number): void {
+  return stopPidBounded(pid, { label: "x" });
+}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-17 reviewer blocker variant (specifier-level type-only
+    // approved shared-cleanup-primitive import): `import { type
+    // stopPidBounded } from "./helpers/process-stop"` erases only the
+    // primitive binding even when the surrounding import is a runtime
+    // import. The shared-primitive recogniser must reject
+    // `spec.importKind === "type"` independently of `stmt.importKind`,
+    // since either form erases the binding. Pre-fix the specifier-
+    // level type marker was ignored; post-fix the use site is flagged.
+    it("should flag serve start --detach when helper body calls approved primitive bound via a specifier-level type-only import", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { type stopPidBounded } from "./helpers/process-stop";
+
+function killPid(pid: number): void {
+  return stopPidBounded(pid, { label: "x" });
+}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {
