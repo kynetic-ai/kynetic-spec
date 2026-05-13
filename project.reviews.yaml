@@ -213115,3 +213115,29 @@ reviews:
     created_at: 2026-05-13T06:09:39.233Z
     updated_at: 2026-05-13T06:24:11.493Z
     notes: []
+  - _ulid: 01KRG1JH8S9J6X57Z0ESFEXQ2T
+    slugs: []
+    title: Review stabilize daemon readiness diagnostics lastHealth flake
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRG1JH8R5XM0EE68PNPXDD4M
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-13T06:49:47.544Z
+    examined_commit: d8908e58f6ced81694a1d8023c8ce175c956ec6d
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRF9WAG6J46D1WJ3R9DX0SNG"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-13T06:49:47.545Z
+    updated_at: null
+    notes: []

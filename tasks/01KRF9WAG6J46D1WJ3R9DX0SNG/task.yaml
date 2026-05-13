@@ -24,6 +24,7 @@ tags:
   - daemon
   - flaky
 vcs_refs: []
+review_ref: "@01KRG1JH8S9J6X57Z0ESFEXQ2T"
 submission_linkage:
   review_url: null
   branch: dispatch/task/stabilize-daemon-readiness-diagnostics-lasthealth-flake/01krf9wa
@@ -67,6 +68,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-05-13T06:32:46.676Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KRG1JH8S9J6X57Z0ESFEXQ2T"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-13T06:49:51.468Z
 created_at: 2026-05-12T23:55:42.470Z
 started_at: 2026-05-13T06:09:45.818Z
 submitted_at: 2026-05-13T06:32:46.676Z
