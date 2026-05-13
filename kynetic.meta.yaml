@@ -18724,6 +18724,36 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-13T04:28:39.678Z
+  - _ulid: 01KRFWDRK53NZHHZ4AB3AFW9MD
+    type: friction
+    content: DispatchEngine.handleStateChange awaits the full drain through _spawnInvocation. When tests
+      mock a later spawn stage (ensureWorkspaceBootstrap, validateDispatchWorkspaceForInvocation,
+      runInvocation) to block on a Promise barrier representing in-flight state, `await
+      engine.handleStateChange(...)` deadlocks because the mock never returns and the drain never
+      completes. The non-obvious fix is to invoke handleStateChange WITHOUT await, capture the
+      returned promise, and await on a `mock-entered` promise the mock resolves before its own
+      barrier; then release the barrier and finally await the original handleStateChange promise.
+      Hit once during the @task-test-dispatch-inflight-bootstrap-race-regression test write-up
+      (initial 60s timeout). Will recur for any future dispatch-level test that needs to interact
+      with pre-active or pre-runInvocation state.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T05:19:48.326Z
+  - _ulid: 01KRFWDRVKNF79C4VV4DKV3Q5G
+    type: success
+    content: For composition-level regression tests whose failure surface is non-obvious from the
+      assertions alone, verify the test bites by temporarily reverting the fix it protects, running
+      the test (expecting failure at the protection-input or behavioral-survival assertion), then
+      restoring the fix. Used for @task-test-dispatch-inflight-bootstrap-race-regression by
+      commenting out the inFlightTaskKeys merge inside DispatchEngine._activeTaskRefs(); the new
+      test failed at the protection-input assertion, confirming bite. Cheap (one edit, one test
+      run), reusable, and catches the silent failure mode where a regression test passes for
+      unrelated reasons.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-13T05:19:48.595Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
