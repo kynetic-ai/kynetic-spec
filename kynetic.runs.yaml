@@ -49044,7 +49044,7 @@ runs:
     started_at: 2026-05-13T04:45:52.000Z
     completed_at: 2026-05-13T04:48:52.829Z
   - _ulid: 01KRFVH6WQ0FWWTQ64EG6K3YTY
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -49102,10 +49102,13 @@ runs:
         completed_at: 2026-05-13T05:05:50.234Z
         notes: "Skipped discussion: no untracked improvement was proposed, and the actionable task-specific
           issue is already captured in the review record for the worker fix cycle."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-13T05:05:50.234Z
-        completed_at: 2026-05-13T05:05:50.234Z
+        completed_at: 2026-05-13T05:05:57.735Z
+        notes: No capture performed. Existing observation @01KR2JD1 covers the only systemic friction; no
+          duplicate inbox item or observation was warranted.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T05:04:12.695Z
+    completed_at: 2026-05-13T05:05:57.735Z
