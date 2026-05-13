@@ -211448,6 +211448,12 @@ reviews:
         payload:
           thread_ulid: 01KRFKS84YQDDEGMAPDEW7S635
         timestamp: 2026-05-13T03:12:44.957Z
+      - _ulid: 01KRFN5GX3AXM82T64KRAEZRV9
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRFKS84YQDDEGMAPDEW7S635
+        timestamp: 2026-05-13T03:12:58.275Z
     examined_commit: ad8fd1d4d3466abc43a47cf9a591e7ff09cdfe6a
     external_links: []
     lifecycle_state: closed
@@ -211491,6 +211497,8 @@ reviews:
               proves the cycle-15 enum-shadow rejection is still in place."
             created_at: 2026-05-13T03:12:43.515Z
         kind: blocker
+        resolved_at: 2026-05-13T03:12:56.827Z
+        resolved_by: "@claude"
       - _ulid: 01KRFKV2T3Z3MYAEDQH71D8N9M
         entries:
           - _ulid: 01KRFKV2T46E6X68Z9KDAFD3NX
@@ -211537,7 +211545,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-13T02:49:58.811Z
     created_at: 2026-05-13T02:34:48.539Z
-    updated_at: 2026-05-13T03:12:43.515Z
+    updated_at: 2026-05-13T03:12:56.827Z
     notes: []
   - _ulid: 01KRFM9QVTZ46C1JAGX0P1ZX8K
     slugs: []
