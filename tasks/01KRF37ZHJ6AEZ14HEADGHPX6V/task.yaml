@@ -75,7 +75,7 @@ description: >
 spec_ref: "@dispatch-workspace-cleanup-policy"
 plan_ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-apply-protection-policy-across-artifact-reconciliation"
@@ -87,6 +87,7 @@ tags:
   - workspace
   - cleanup
 vcs_refs: []
+session_id: 01KRFRKCN6Y35546TB609SSE8N
 history:
   - author: Jacob Chapel
     changes:
@@ -95,6 +96,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-12T22:02:30.556Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KRFRKCN6Y35546TB609SSE8N
+        previous: null
+      started_at:
+        new: 2026-05-13T04:13:35.366Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-13T04:13:35.366Z
 created_at: 2026-05-12T21:59:44.434Z
+started_at: 2026-05-13T04:13:35.366Z
 todos: []
 automation: eligible
