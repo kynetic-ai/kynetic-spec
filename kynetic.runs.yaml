@@ -49114,7 +49114,7 @@ runs:
     completed_at: 2026-05-13T05:05:57.735Z
   - _ulid: 01KRFW994NRE6G0K54DAKCPG41
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -49126,7 +49126,36 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T05:17:50.301Z
-        completed_at: 2026-05-13T05:17:50.301Z
+        completed_at: 2026-05-13T05:19:28.099Z
+        notes: >-
+          High-confidence items identified:
+
+
+          FRICTION:
+
+          - DispatchEngine.handleStateChange awaits the entire drain → _spawnInvocation chain. Tests
+          that mock any later stage (ensureWorkspaceBootstrap,
+          validateDispatchWorkspaceForInvocation, runInvocation) to block on a barrier will deadlock
+          at 'await engine.handleStateChange(...)'. The fix is to NOT await handleStateChange and
+          instead await on a 'mock-entered' promise the mock resolves before its own barrier. Hit
+          once on first test run (60s timeout). Specific, systemic, will recur for anyone testing
+          pre-active dispatch state.
+
+
+          SUCCESS:
+
+          - Verifying regression-test bite by temporarily reverting the fix it protects, running the
+          test (failure expected), then restoring. Confirms the test actually catches the regression
+          and isn't passing for the wrong reason. Cheap, repeatable, especially valuable for
+          composition tests that span multiple modules where the failure surface isn't obvious from
+          the assertions alone.
+
+
+          Searches confirm neither is currently tracked.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T05:19:28.099Z
+        completed_at: 2026-05-13T05:19:28.099Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-13T05:17:21.429Z
