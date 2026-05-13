@@ -48350,7 +48350,7 @@ runs:
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T00:01:26.176Z
   - _ulid: 01KRFAKVXNNKMFGJ9N2DJNM4A6
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -48403,10 +48403,13 @@ runs:
         notes: Skipped interactive approval inside this run. The main shell-payload friction is already
           tracked. The optional-check ergonomics idea is only a candidate and was not approved for
           capture.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-13T00:10:05.564Z
-        completed_at: 2026-05-13T00:10:05.564Z
+        completed_at: 2026-05-13T00:10:15.949Z
+        notes: No new items captured. Already-tracked shell/freeform payload friction was not duplicated.
+          Optional-check ergonomics was left as an uncaptured candidate pending maintainer approval.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T00:08:33.973Z
+    completed_at: 2026-05-13T00:10:15.949Z
