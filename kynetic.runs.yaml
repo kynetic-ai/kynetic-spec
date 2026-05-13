@@ -49250,9 +49250,21 @@ runs:
     completed_at: 2026-05-13T05:38:56.087Z
   - _ulid: 01KRFYNP37MN6AH1154Y1MW4V7
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-13T05:59:05.063Z
+        completed_at: 2026-05-13T06:00:05.858Z
+        notes: "Worked well: the detached review flow was reliable end to end. Prior review context made the
+          fix-cycle target precise, especially the root-directory pruning issue. The supported merge
+          helper handled integration cleanly from the detached snapshot. Recording concrete review
+          checks made the approve/merge gate auditable."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-13T06:00:05.858Z
+        completed_at: 2026-05-13T06:00:05.858Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T05:59:05.063Z
