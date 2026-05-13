@@ -48753,7 +48753,7 @@ runs:
     completed_at: 2026-05-13T03:13:20.705Z
   - _ulid: 01KRFPB7R7K32HEG43B8MWJVW0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -48767,7 +48767,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T03:34:35.514Z
-        completed_at: 2026-05-13T03:34:35.514Z
+        completed_at: 2026-05-13T03:34:44.947Z
+        notes: "Friction points: Review comment bodies remain fragile when passed through shell quoting. One
+          blocker comment lost inline examples because command substitution stripped backticked
+          text, requiring a clarifying reply. This is systemic for review comments and checks with
+          code-like evidence."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T03:34:44.947Z
+        completed_at: 2026-05-13T03:34:44.947Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T03:33:34.087Z
