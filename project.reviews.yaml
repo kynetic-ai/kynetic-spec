@@ -212969,6 +212969,18 @@ reviews:
         runner: npm test
         created_at: 2026-05-13T06:23:33.384Z
         completed_at: 2026-05-13T06:23:33.384Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate reported Schema: OK and References: OK; exited 6 because of existing
+          project-wide warnings (reference/alignment/completeness warnings), not errors in this
+          task's changed files."
+        name: kspec validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-13T06:23:38.095Z
+        completed_at: 2026-05-13T06:23:38.095Z
     events:
       - _ulid: 01KRFZ91D1P2FV6TBJGAB18WJG
         actor: Jacob Chapel
@@ -212997,6 +213009,13 @@ reviews:
           status: pass
           name: targeted lint tests
         timestamp: 2026-05-13T06:23:34.971Z
+      - _ulid: 01KRG02PAZCMYRRZBXRTBRGTN0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-13T06:23:39.871Z
     examined_commit: 5de3b8d30d8798bd4279bd86a3e8223ce03894f4
     external_links: []
     lifecycle_state: open
@@ -213031,5 +213050,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-13T06:09:39.233Z
-    updated_at: 2026-05-13T06:23:33.384Z
+    updated_at: 2026-05-13T06:23:38.095Z
     notes: []
