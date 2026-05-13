@@ -32481,11 +32481,11 @@ workspaces:
     canonical_branch: dispatch/task/task-apply-protection-policy-across-artifact-reconciliation/01krf37z
     canonical_branch_head: 2ef2236a35e9d2f88cab4f4429f4baabdd7a5a11
     cleanup:
-      status: scheduled
-      detail: integrated-into-base-branch
+      status: blocked
+      detail: "Cleanup blocked: canonical branch still has an active dispatch invocation."
       eligible: true
-      reason: integrated-into-base-branch
-      updated_at: 2026-05-13T04:03:24.390Z
+      reason: "Cleanup blocked: canonical branch still has an active dispatch invocation."
+      updated_at: 2026-05-13T04:03:27.439Z
     health:
       status: healthy
       issues: []
@@ -32499,7 +32499,7 @@ workspaces:
       target_branch: dev
       target_commit: 43ebe639e216ede74f49586cad88e213350d998b
       updated_at: 2026-05-13T04:03:24.390Z
-    lifecycle_state: closing
+    lifecycle_state: cleanup_blocked
     resolved_base_branch: dev
     task_ref: "@01KRF37Z421Y3S41YH2WS2R2G1"
     task_slug: task-apply-protection-policy-across-artifact-reconciliation
@@ -32508,7 +32508,7 @@ workspaces:
       last_active_at: 2026-05-13T03:48:20.711Z
       last_reconciled_at: 2026-05-13T04:03:24.390Z
       created_at: 2026-05-13T03:16:15.336Z
-      updated_at: 2026-05-13T04:03:24.390Z
+      updated_at: 2026-05-13T04:03:27.439Z
     workspace_id: dispatch-workspace-01KRF37Z421Y3S41YH2WS2R2G1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
