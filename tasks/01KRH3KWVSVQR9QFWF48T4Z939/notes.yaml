@@ -1,1 +1,25 @@
-notes: []
+notes:
+  - _ulid: 01KRH3W52W01X4EMW2HSCHX1V1
+    content: >-
+      Added three ACs via atomic batch:
+
+      - @dispatch-workspace-cleanup-policy ac-corrupt-metadata-cleanup-eligible (artifact-local
+      corrupt metadata classified untrusted after registry/protection state is trusted; cleanup
+      eligible).
+
+      - @dispatch-workspace-cleanup-policy ac-dispatch-root-unknown-entries-owned (unknown root
+      entries treated as dispatch-owned garbage once trusted protection state confirms they are
+      unprotected).
+
+      - @dispatch-workspace-registry ac-task-state-drives-recovery-after-untrusted-artifact-cleanup
+      (post-cleanup recovery driven by trusted task/registry state).
+
+
+      Both specs reaffirmed at implementation status in_progress with --no-cascade.
+      ac-ambiguous-protection-blocks-blind-deletion left intact — these new ACs are scoped to
+      classification after registry/protection state is trusted. Verified via kspec item get on both
+      specs; kspec validate --refs --warnings-ok passed (warnings are pre-existing deprecated
+      spec_refs on unrelated tasks).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T16:49:14.332Z
