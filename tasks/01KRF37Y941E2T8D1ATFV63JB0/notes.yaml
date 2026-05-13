@@ -1,1 +1,39 @@
-notes: []
+notes:
+  - _ulid: 01KRFHKNYFH4DSAAC95XYFJQSN
+    content: >-
+      Approach: added buildDispatchArtifactProtectionState() and
+      loadDispatchArtifactProtectionState() helpers in src/agent-runtime/workspace.ts. The pure
+      builder accepts a worktree root, active/in-flight task refs, and either a loaded registry
+      snapshot or a load-failed reason. It returns a state with
+      evaluateTaskRef/evaluateDispatchBranch/evaluateWorkspacePath/evaluateClosingRecordForReap,
+      plus the underlying protected sets for inspection.
+
+
+      Routed every destructive surface in reconcileDispatchWorkspaceArtifacts() through the state:
+      (1) metadata-less dispatch worktree pruning checks both branch and path; (2) the inline reap
+      call checks the task-ref decision before invoking reapDispatchWorkspace; (3) reviewer-snapshot
+      pruning checks the path; (4) root-directory pruning checks the path; (5) untracked dispatch
+      branch deletion replaces the old ad-hoc registryBranchMap fallback with the helper's decision.
+      The state is rebuilt after Loop 1 so recovery/reap mutations are visible to later loops.
+
+
+      Protection sources match the task spec: active/in-flight refs always protect, non-closed
+      records in provisioning/ready/active/stale/integrating/cleanup_blocked are always protected,
+      closing records are protected only while active/in-flight ownership or unresolved integration
+      remains. Registry load failure produces an actionable diagnostic and preserves every
+      dispatcher-managed task ref/branch/path under the worktree root (no-blind-deletion).
+
+
+      Tests: new tests/dispatch-artifact-protection.test.ts covers preserve/delete decisions for
+      active/in-flight, all protected lifecycle states, closing+active, closing+unresolved
+      integration, closing+reap-eligible, closed, registry-unavailable, foreign worktree root, and
+      ancestor-path overlap. Updated two existing ac-5 cleanup tests that previously relied on
+      metadata-only deletion of registry-backed workspaces to also clear the registry (true-orphan
+      scenario), and added two new ac-active-inflight-provisioning-artifact-preserved tests
+      asserting the new preserve behavior end-to-end through reconcileDispatchWorkspaceArtifacts.
+
+
+      Full test suite: 9105 passed (5 pre-existing skipped). oxlint clean. tsc clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T02:10:47.888Z
