@@ -36894,7 +36894,7 @@ plans:
       (concurrency) depends on all read loaders being cache-aware and
 
       is the final optimization.
-    status: active
+    status: completed
     approved_at: 2026-04-07T16:15:15.885Z
     branch: plan/plan-cache-aware-command-execution/01knkf3b
     derived_specs:
