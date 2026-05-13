@@ -657,3 +657,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-13T02:50:01.149Z
+  - _ulid: 01KRFN631WPWH6TDRMMFW6F8TT
+    content: "Fix cycle 17: addressed cycle-16 blocker @01KRFJZM (declare-enum ambient shadow).
+      statementBindsNameOpaquely now consults stmt.declare for TSEnumDeclaration so 'declare enum
+      killPid { noop }' no longer false-positives. Aligned the same carve-out across
+      ClassDeclaration, VariableDeclaration, and TSImportEqualsDeclaration (importKind !== 'type')
+      to enforce the documented intent uniformly. Added four behavioral regression tests
+      (declare-enum, declare-class, declare-const, plus a non-declare enum control proving the
+      cycle-15 enum-shadow rejection still fires). Targeted lint-rule suites: 383/383 passed. Full
+      npm test --fresh: 9170 passed, 5 skipped of 9175 (4 more than cycle 16, matching the 4 new
+      tests). Changed-file oxlint: 0 errors. npm run lint: pre-existing 13 errors / 721 warnings
+      outside touched files."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T03:13:16.861Z
