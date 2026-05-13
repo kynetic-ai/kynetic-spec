@@ -211360,6 +211360,13 @@ reviews:
           status: fail
           name: ad hoc declare-enum cleanup probe
         timestamp: 2026-05-13T02:49:30.638Z
+      - _ulid: 01KRFKV487YGQ2MX7P5MCXFZP1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRFKV2T3Z3MYAEDQH71D8N9M
+        timestamp: 2026-05-13T02:49:49.063Z
     examined_commit: ad8fd1d4d3466abc43a47cf9a591e7ff09cdfe6a
     external_links: []
     lifecycle_state: open
@@ -211392,7 +211399,44 @@ reviews:
               non-declare enum still does."
             created_at: 2026-05-13T02:48:47.518Z
         kind: blocker
+      - _ulid: 01KRFKV2T3Z3MYAEDQH71D8N9M
+        entries:
+          - _ulid: 01KRFKV2T46E6X68Z9KDAFD3NX
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+
+              Files read: kspec-agents.md; task @01KRCRJPMHMHC410TKRC5Y9HF1; spec
+              @daemon-test-guardrail-precision; prior review @01KRFG8N; HEAD diff for
+              tools/eslint-rules/no-leaky-test-daemon.js and
+              tests/lint-no-leaky-test-daemon.test.ts; surrounding helper-origin functions in
+              tools/eslint-rules/no-leaky-test-daemon.js; AC annotations in
+              tests/lint-no-leaky-test-daemon.test.ts and tests/lint-daemon-test-guardrails.test.ts.
+
+
+              Commands run: git status --short --branch; git rev-parse HEAD; git log --oneline
+              --graph --max-count=40; git show HEAD; git diff --stat/name-only/check 0dcbcdd...HEAD;
+              kspec item get @daemon-test-guardrail-precision; kspec validate and kspec validate
+              --warnings-ok; rg AC annotation scans; npm test -- --fresh
+              tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts; npm
+              test -- --fresh; npm run lint; npx oxlint on changed files; ad hoc oxlint probes for
+              TSImportEquals and declare enum helper shadow.
+
+
+              Claims verified: cycle-15 enum-shadow fix is implemented for non-declare enum and
+              namespace cases; TSImportEquals probe is rejected. Worker claim that full npm test
+              passes was verified independently. The claimed type-only carve-out is not correct for
+              declare enum, proven by the failing ad hoc probe.
+
+
+              Categories searched: correctness (helper-origin runtime vs type-only bindings), edge
+              cases (enum, namespace, import-equals, declare enum), error handling/regression risk
+              (lint-rule false positives), test quality (new tests are behavioral oxlint runs, not
+              source-scanning), integration (full suite and changed-file lint).
+            created_at: 2026-05-13T02:49:47.588Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-13T02:34:48.539Z
-    updated_at: 2026-05-13T02:49:29.155Z
+    updated_at: 2026-05-13T02:49:47.588Z
     notes: []
