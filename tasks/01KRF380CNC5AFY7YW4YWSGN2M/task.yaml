@@ -64,6 +64,7 @@ tags:
   - dispatch
   - cleanup
 vcs_refs: []
+review_ref: "@01KRG45W0H8Q9A3NM36KKW36Q4"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-validate-inflight-cleanup-protection/01krf380
@@ -114,6 +115,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-05-13T07:30:59.816Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KRG45W0H8Q9A3NM36KKW36Q4"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-13T07:35:22.393Z
 created_at: 2026-05-12T21:59:45.301Z
 started_at: 2026-05-13T07:16:32.738Z
 submitted_at: 2026-05-13T07:30:59.816Z
