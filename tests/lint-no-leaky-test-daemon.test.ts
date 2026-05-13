@@ -3146,6 +3146,109 @@ describe("test suite", () => {
       expect(result.output).toContain("no-leaky-test-daemon");
       expect(result.output).toContain("has no scoped cleanup registration");
     });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-14 reviewer probe (cleanup helper name shadowed by a local
+    // ClassDeclaration): `import { killPid } from "./helpers/daemon";
+    // it(..., () => { ...; class killPid {}; onTestFinished(() =>
+    // killPid(pid)); })`. The class lexically shadows the approved
+    // import, so the cleanup callback's `killPid(pid)` resolves to the
+    // class binding — calling a class without `new` throws TypeError at
+    // teardown, leaving the just-started daemon running. The pre-fix
+    // `statementBindsNameOpaquely` walker only inspected
+    // VariableDeclaration (and Export wrappers around it), so the
+    // ClassDeclaration was invisible and the use site fell through to
+    // free-identifier / approved-import trust. Post-fix the class is
+    // classified as an opaque local binding so the use site is rejected.
+    it("should flag serve start --detach when cleanup helper is shadowed by a local ClassDeclaration", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    class killPid {}
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-14 reviewer probe (approved-shared-primitive name shadowed
+    // by a local ClassDeclaration inside the helper body): even when
+    // `stopPidBounded` is imported from the canonical approved path,
+    // a `class stopPidBounded {}` declared inside the helper body
+    // shadows the import — the runtime call resolves to the class
+    // binding, which throws TypeError when invoked without `new`, so
+    // the daemon is left running. The pre-fix lexical-resolution gate
+    // (`findLocalHelperDefinition` via `statementBindsNameOpaquely`)
+    // only inspected VariableDeclaration shapes and missed
+    // ClassDeclaration, so the call was credited as cleanup. Post-fix
+    // the class is classified as opaque, the recogniser returns false,
+    // and the use site is flagged.
+    it("should flag serve start --detach when cleanup helper body shadows approved primitive with a local ClassDeclaration", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { stopPidBounded } from "./helpers/process-stop";
+
+function killPid(pid: number): void {
+  class stopPidBounded {}
+  stopPidBounded(pid);
+}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
+
+    // AC: @daemon-test-harness-guardrails ac-detached-serve-without-cleanup-flagged
+    // AC: @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted
+    // Cycle-14 reviewer variant (exported class shadows approved import):
+    // `export class killPid {}` at the module top shadows
+    // `import { killPid } from "./helpers/daemon"` — the export wrapper
+    // unwrap in `statementBindsNameOpaquely` must descend into the
+    // ClassDeclaration so the binding is still classified as opaque.
+    // Without the unwrap path the rule would silently accept any
+    // exported-class shadow of a trusted cleanup name.
+    it("should flag serve start --detach when cleanup helper is shadowed by an exported ClassDeclaration", () => {
+      const result = runOxlint(`
+import { describe, it, expect, onTestFinished } from "vitest";
+import { killPid } from "./helpers/daemon";
+
+export class killPid {}
+
+describe("test suite", () => {
+  it("should start daemon", () => {
+    runKspec("serve start --detach --port 3456");
+    const pid = readPidFromFile();
+    onTestFinished(() => killPid(pid));
+    expect(true).toBe(true);
+  });
+});
+`);
+      expectOxlintRanCleanly(result);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toContain("has no scoped cleanup registration");
+    });
   });
 
   describe("negative cases (should NOT flag)", () => {

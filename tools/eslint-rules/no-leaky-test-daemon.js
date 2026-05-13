@@ -1694,10 +1694,25 @@ const noLeakyTestDaemon = {
      *     (`let killPid;`, `const killPid = makeKill()`, `let killPid
      *     = "noop"`, `const { killPid } = require("…")`, etc.).
      *
+     *   - `class <name> { ... }` — a ClassDeclaration whose id binds
+     *     `name` in the enclosing block/module scope. Calling a class
+     *     without `new` throws TypeError, so the binding's runtime
+     *     value can never be a terminating cleanup primitive. Routing
+     *     it through OPAQUE rather than free-identifier trust closes
+     *     the cycle-14 reviewer's class-shadow probe: a local `class
+     *     killPid {}` shadowed an approved `killPid` import, and the
+     *     pre-fix walker — which only looked at VariableDeclaration —
+     *     missed the binding entirely, leaving the use site to fall
+     *     through to free-identifier trust. The same shape inside a
+     *     helper body (a `class stopPidBounded {}` shadowing the
+     *     approved bounded-stop primitive) is rejected through this
+     *     same predicate when `isApprovedSharedCleanupPrimitiveCall`
+     *     consults `findLocalHelperDefinition`.
+     *
      *   - Export wrappers around an opaque declaration — `export const
-     *     killPid = makeKill()` and `export default const killPid =
-     *     ...` are unwrapped to the inner declaration so the opaque
-     *     classification still fires.
+     *     killPid = makeKill()`, `export class killPid {}`, and
+     *     `export default class killPid {}` are unwrapped to the
+     *     inner declaration so the opaque classification still fires.
      */
     function statementBindsNameOpaquely(stmt, name) {
       if (!stmt) return false;
@@ -1706,6 +1721,14 @@ const noLeakyTestDaemon = {
       }
       if (stmt.type === "ExportDefaultDeclaration" && stmt.declaration) {
         return statementBindsNameOpaquely(stmt.declaration, name);
+      }
+      if (
+        stmt.type === "ClassDeclaration" &&
+        stmt.id &&
+        stmt.id.type === "Identifier" &&
+        stmt.id.name === name
+      ) {
+        return true;
       }
       if (stmt.type !== "VariableDeclaration") return false;
       for (const decl of stmt.declarations || []) {
