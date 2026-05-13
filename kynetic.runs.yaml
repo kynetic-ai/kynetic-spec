@@ -49670,7 +49670,7 @@ runs:
     completed_at: 2026-05-13T08:44:48.586Z
   - _ulid: 01KRGCPE9AJNKCRRF0M7GWG7K5
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -49710,7 +49710,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-13T10:05:43.157Z
-        completed_at: 2026-05-13T10:05:43.157Z
+        completed_at: 2026-05-13T10:05:52.142Z
+        notes: "Proposed improvements: (1) Small: update the session-reflect skill/workflow command examples
+          to include the required workflow run ref for `kspec workflow show`/`next`, or document how
+          to get the current run ref. This avoids a failed command at the start of reflection. (2)
+          Medium: add a documented or scripted rule-focused daemon guardrail lint check that reports
+          only no-leaky-test-daemon diagnostics from `tests/`, ignoring unrelated existing oxlint
+          output. This would make the review gate evidence less manual and less noisy."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-13T10:05:52.142Z
+        completed_at: 2026-05-13T10:05:52.142Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T10:04:09.898Z
