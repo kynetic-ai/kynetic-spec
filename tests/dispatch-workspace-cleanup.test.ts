@@ -1144,7 +1144,6 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-corrupt-metadata-cleanup-eligible
-  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
   // Regression: a dispatcher-managed worktree whose .kspec-dispatch-workspace.json
   // is unparseable must be classified as cleanup-eligible (not preserved
   // indefinitely) when the registry is loaded successfully, no non-closed
@@ -1194,7 +1193,6 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-dispatch-root-unknown-entries-owned
-  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
   // Regression: both unknown files and unknown directories placed directly
   // under the configured dispatch worktree root must be classified as
   // dispatch-owned garbage when registry/protection state is trusted and no
