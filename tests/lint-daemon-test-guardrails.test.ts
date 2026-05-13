@@ -5695,3 +5695,353 @@ export const sharedFixture = {
     });
   });
 });
+
+/**
+ * Implicit auto-start daemon ownership cleanup boundary.
+ *
+ * The detached-serve cleanup-timing rule (above) only inspects calls whose
+ * argv tokenises to the kspec `serve start --detach` lifecycle subcommand.
+ * Ordinary CLI commands (`kspec util ulid`, `kspec task add`, …) can ALSO
+ * bring a daemon up implicitly when the project's `daemon.auto_start: true`
+ * config is set — and that ownership shape is not covered by the literal
+ * `serve start --detach` token sequence. Once a test reads the daemon's
+ * pid file or connection metadata, it has claimed ownership of the
+ * auto-started daemon; the daemon must be cleaned up scoped to the test,
+ * before any later observation that can fail and leave the daemon
+ * running.
+ *
+ * The rule treats a VariableDeclarator / AssignmentExpression whose
+ * initializer reads `<x>.daemonPidFilePath` or a string containing
+ * `daemon.connection.json` as the daemon-ownership capture moment.
+ * Gating on a prior kspec CLI subprocess (helper or spawn-like callee)
+ * keeps parser unit tests that exercise the pid-file surface but never
+ * shell out to the CLI from being mis-classified as auto-start
+ * observations.
+ *
+ * AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+ * AC: @daemon-test-guardrail-precision ac-cleanup-operation-terminates-daemon
+ * AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+ */
+describe("daemon test guardrail precision: implicit auto-start cleanup boundary", () => {
+  describe("daemon pid-file observation after an implicit auto-start CLI call", () => {
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    it("flags a spawnSync auto-start path with pid capture, ps probe, expect, no cleanup", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync, execSync } from "node:child_process";
+
+declare const CLI_PATH: string;
+declare const isolatedHome: { daemonPidFilePath: string };
+declare function readTestOutputSync(p: string): string;
+
+describe("auto-start ownership leak", () => {
+  it("captures pid then asserts before cleanup", () => {
+    const result = spawnSync("bun", [CLI_PATH, "util", "ulid"], { encoding: "utf-8" });
+    expect(result.status).toBe(0);
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    const cmd = execSync(\`ps -p \${pid} -o command=\`).trim();
+    expect(cmd).toContain("node");
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/implicit auto-started daemon|daemon pid file read|scoped cleanup/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    it("flags a kspec(...) helper auto-start path with pid capture, expect, no cleanup", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+declare const tempDir: string;
+declare const isolatedHome: { daemonPidFilePath: string };
+declare function readTestOutputSync(p: string): string;
+declare function kspec(args: string, cwd: string, opts?: unknown): { status: number };
+
+describe("auto-start ownership leak via helper", () => {
+  it("captures pid then asserts before cleanup", () => {
+    kspec("util ulid", tempDir);
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    expect(pid).toBeGreaterThan(0);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/implicit auto-started daemon|daemon pid file read|scoped cleanup/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    it("flags a runKspec(...) auto-start path with pid capture, await, no cleanup", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+
+declare const tempDir: string;
+declare const isolated: { daemonPidFilePath: string };
+declare function readTestOutputSync(p: string): string;
+declare function runKspec(args: string, cwd?: string): unknown;
+declare function waitForDaemonHealth(): Promise<void>;
+
+describe("auto-start ownership leak via runKspec", () => {
+  it("captures pid then awaits before cleanup", async () => {
+    runKspec("task add 'new task'", tempDir);
+    const pid = parseInt(readTestOutputSync(isolated.daemonPidFilePath).trim(), 10);
+    await waitForDaemonHealth();
+    expect(pid).toBeGreaterThan(0);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    it("flags a daemon connection metadata read with later expect and no cleanup", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync } from "node:child_process";
+import { join } from "node:path";
+
+declare const CLI_PATH: string;
+declare const isolatedHome: { configDir: string };
+declare function readTestOutputSync(p: string): string;
+
+describe("auto-start metadata leak", () => {
+  it("captures metadata then asserts before cleanup", () => {
+    const result = spawnSync("node", [CLI_PATH, "util", "ulid"], { encoding: "utf-8" });
+    expect(result.status).toBe(0);
+    const metadata = JSON.parse(
+      readTestOutputSync(join(isolatedHome.configDir, "daemon.connection.json"))
+    ) as { port: number };
+    expect(metadata.port).toBeGreaterThan(0);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+      expect(result.output).toMatch(/daemon connection metadata|implicit auto-started|scoped cleanup/i);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-registration-is-test-scoped
+    it("flags pid capture whose only cleanup hook is process-level on('exit')", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync } from "node:child_process";
+
+declare const CLI_PATH: string;
+declare const isolatedHome: { daemonPidFilePath: string };
+declare function readTestOutputSync(p: string): string;
+
+describe("auto-start cleanup via process-lifecycle only", () => {
+  it("registers SIGTERM on process exit but never per-test", () => {
+    spawnSync("node", [CLI_PATH, "util", "ulid"], { encoding: "utf-8" });
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    process.on("exit", () => process.kill(pid, "SIGTERM"));
+    expect(pid).toBeGreaterThan(0);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-cleanup-probes-do-not-count
+    it("flags pid capture whose only 'cleanup' is a liveness probe", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawnSync } from "node:child_process";
+
+declare const CLI_PATH: string;
+declare const isolatedHome: { daemonPidFilePath: string };
+declare function readTestOutputSync(p: string): string;
+
+describe("auto-start cleanup that doesn't terminate", () => {
+  it("uses signal 0 which probes liveness only", () => {
+    spawnSync("kspec", ["util", "ulid"]);
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    onTestFinished(() => process.kill(pid, 0));
+    expect(pid).toBeGreaterThan(0);
+  });
+});
+`,
+      });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.output).toContain("no-leaky-test-daemon");
+    });
+  });
+
+  describe("safe shapes (should not be flagged)", () => {
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    // (safe boundary control)
+    it("does not flag pid capture immediately followed by onTestFinished SIGTERM", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, onTestFinished } from "vitest";
+import { spawnSync, execSync } from "node:child_process";
+
+declare const CLI_PATH: string;
+declare const isolatedHome: { daemonPidFilePath: string };
+declare function readTestOutputSync(p: string): string;
+
+describe("safe auto-start cleanup boundary", () => {
+  it("registers cleanup on the very next statement", () => {
+    spawnSync("node", [CLI_PATH, "util", "ulid"], { encoding: "utf-8" });
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    onTestFinished(() => {
+      try { process.kill(pid, "SIGTERM"); } catch {}
+    });
+    const cmd = execSync(\`ps -p \${pid} -o command=\`).trim();
+    expect(cmd).toContain("node");
+  });
+});
+`,
+      });
+      expect([0, 1]).toContain(result.exitCode);
+      expect(result.output).not.toMatch(/implicit auto-started daemon/);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    // (safe boundary control: try/finally with terminating kill)
+    it("does not flag pid capture inside try/finally whose finalizer kills the pid", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync } from "node:child_process";
+
+declare const CLI_PATH: string;
+declare const isolatedHome: { daemonPidFilePath: string };
+declare function readTestOutputSync(p: string): string;
+
+describe("safe auto-start via try/finally", () => {
+  it("captures pid then asserts inside try, kills in finally", () => {
+    let pid = 0;
+    try {
+      spawnSync("kspec", ["util", "ulid"]);
+      pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+      expect(pid).toBeGreaterThan(0);
+    } finally {
+      if (pid > 0) process.kill(pid, "SIGTERM");
+    }
+  });
+});
+`,
+      });
+      expect([0, 1]).toContain(result.exitCode);
+      expect(result.output).not.toMatch(/implicit auto-started daemon/);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    // (control: pid capture inside afterEach is teardown, not the leak target)
+    it("does not flag pid capture inside an afterEach hook", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect, afterEach } from "vitest";
+
+declare const isolatedHome: { daemonPidFilePath: string };
+declare function readTestOutputSync(p: string): string;
+
+describe("teardown reads pid file", () => {
+  afterEach(() => {
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    if (pid > 0) {
+      try { process.kill(pid, "SIGTERM"); } catch {}
+    }
+  });
+
+  it("runs", () => {
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect([0, 1]).toContain(result.exitCode);
+      expect(result.output).not.toMatch(/implicit auto-started daemon/);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    // (control: writes to the pid file are not daemon ownership observations)
+    it("does not flag writes to daemonPidFilePath even with a prior CLI subprocess", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { writeFileSync } from "node:fs";
+
+declare function kspec(args: string, cwd?: string): unknown;
+declare const tempDir: string;
+declare const isolatedHome: { daemonPidFilePath: string };
+
+describe("pid file write only", () => {
+  it("writes pid file but never reads it", () => {
+    kspec("serve status --json", tempDir);
+    writeFileSync(isolatedHome.daemonPidFilePath, String(process.pid));
+    expect(true).toBe(true);
+  });
+});
+`,
+      });
+      expect([0, 1]).toContain(result.exitCode);
+      expect(result.output).not.toMatch(/implicit auto-started daemon/);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-implicit-autostart-cleanup-before-observation
+    // (control: parser-style test reads pid file without any prior CLI subprocess)
+    it("does not flag pid file reads when no prior kspec CLI subprocess is in the test body", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { writeFile, readFile } from "node:fs/promises";
+
+declare const isolatedHome: { daemonPidFilePath: string };
+
+describe("parser-style pid file round-trip", () => {
+  it("writes then reads its own pid file", async () => {
+    await writeFile(isolatedHome.daemonPidFilePath, String(process.pid));
+    const pidContent = await readFile(isolatedHome.daemonPidFilePath, "utf-8");
+    expect(pidContent.trim()).toBe(String(process.pid));
+  });
+});
+`,
+      });
+      expect([0, 1]).toContain(result.exitCode);
+      expect(result.output).not.toMatch(/implicit auto-started daemon/);
+    });
+
+    // AC: @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+    // (control: a non-kspec subprocess does not satisfy the prior-CLI gate)
+    it("does not flag pid file reads after an unrelated subprocess (echo)", () => {
+      const result = runOxlint({
+        source: `
+import { describe, it, expect } from "vitest";
+import { spawnSync } from "node:child_process";
+import { writeFileSync } from "node:fs";
+
+declare const isolatedHome: { daemonPidFilePath: string };
+declare function readTestOutputSync(p: string): string;
+
+describe("unrelated subprocess before pid read", () => {
+  it("reads pid file after spawn echo (not a kspec call)", () => {
+    writeFileSync(isolatedHome.daemonPidFilePath, String(process.pid));
+    spawnSync("echo", ["util", "ulid"]);
+    const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    expect(pid).toBeGreaterThan(0);
+  });
+});
+`,
+      });
+      expect([0, 1]).toContain(result.exitCode);
+      expect(result.output).not.toMatch(/implicit auto-started daemon/);
+    });
+  });
+});

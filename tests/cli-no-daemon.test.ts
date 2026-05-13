@@ -141,7 +141,23 @@ describe("KSPEC_NO_DAEMON", () => {
       { timeoutMs: 10_000 },
     );
 
+    // The bun CLI subprocess implicitly auto-started the daemon. Capture
+    // its pid and register SIGTERM cleanup BEFORE any later observation
+    // (`execSync("ps -p …")`, `expect(processCommand)…`) — otherwise an
+    // assertion failure between pid capture and the trailing
+    // `kspec serve stop` leaves the auto-started daemon running. Matches
+    // the safe boundary documented for
+    // `@daemon-test-guardrail-precision`
+    // `ac-implicit-autostart-cleanup-before-observation`.
     const pid = parseInt(readTestOutputSync(isolatedHome.daemonPidFilePath).trim(), 10);
+    onTestFinished(() => {
+      try {
+        process.kill(pid, "SIGTERM");
+      } catch {
+        // Already gone — fine.
+      }
+    });
+
     const processCommand = execSync(`ps -p ${pid} -o command=`, { encoding: "utf-8" }).trim();
 
     expect(processCommand).toContain("node");
