@@ -212376,3 +212376,29 @@ reviews:
     created_at: 2026-05-13T04:13:04.513Z
     updated_at: 2026-05-13T04:25:13.546Z
     notes: []
+  - _ulid: 01KRFTQZBXREYNAXRMG1RDX5ZH
+    slugs: []
+    title: Review cleanup protection coverage
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRFTQZBXD2NGXGT1C3692807
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-13T04:50:25.789Z
+    examined_commit: 2371bf574df635f21e6a0fd6c2476736eecbf150
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRF37ZHJ6AEZ14HEADGHPX6V"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-13T04:50:25.789Z
+    updated_at: null
+    notes: []
