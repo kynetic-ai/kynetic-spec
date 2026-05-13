@@ -49670,7 +49670,7 @@ runs:
     completed_at: 2026-05-13T08:44:48.586Z
   - _ulid: 01KRGCPE9AJNKCRRF0M7GWG7K5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -49687,7 +49687,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-13T10:04:35.588Z
-        completed_at: 2026-05-13T10:04:35.588Z
+        completed_at: 2026-05-13T10:04:55.213Z
+        notes: "Friction points: (1) the reflection skill says `kspec workflow show` but this CLI requires
+          an explicit run ref, so the documented command failed until I supplied @01KRGCPE. (2)
+          Verifying that `npx oxlint tests/` had no real no-leaky-test-daemon findings required
+          manually filtering a huge unrelated lint output; the command exits nonzero from existing
+          repo lint errors even when the daemon guardrail is clean. (3) Full `npm test -- --fresh`
+          is intentionally authoritative but takes about 35 minutes, which can collide with dispatch
+          time budgets; targeted suites mitigated this but the full gate still dominated review
+          latency."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-13T10:04:55.213Z
+        completed_at: 2026-05-13T10:04:55.213Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T10:04:09.898Z
