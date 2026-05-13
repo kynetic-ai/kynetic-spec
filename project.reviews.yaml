@@ -211083,6 +211083,13 @@ reviews:
           status: pass
           name: oxlint changed files
         timestamp: 2026-05-13T02:27:45.712Z
+      - _ulid: 01KRFJK5M1YHQH42J9PK458MFE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRFJK47M2D0BDPN1G9F809V7
+        timestamp: 2026-05-13T02:27:59.745Z
     examined_commit: 8b076968ac2a7ff19dae267fe2334325c028cacd
     external_links: []
     lifecycle_state: open
@@ -211117,7 +211124,25 @@ reviews:
               surfaces.'
             created_at: 2026-05-13T02:26:58.330Z
         kind: blocker
+      - _ulid: 01KRFJK47M2D0BDPN1G9F809V7
+        entries:
+          - _ulid: 01KRFJK47MJAMKRAAKA9TPNK9E
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; src/agent-runtime/workspace.ts;
+              src/parser/dispatch-workspaces.ts; tests/dispatch-artifact-protection.test.ts;
+              tests/dispatch-workspace-cleanup.test.ts. Commands run: kspec task get
+              @01KRF37Y941E2T8D1ATFV63JB0; kspec item get @dispatch-workspace-cleanup-policy; kspec
+              item get @dispatch-workspace-registry; rg AC annotations; kspec validate; kspec
+              validate --warnings-ok; npm test -- --fresh; npm run lint; ./node_modules/.bin/oxlint
+              on changed files; npm run typecheck; direct node --import tsx helper probe. Claims
+              verified: worker's full test and typecheck claims verified; changed-file oxlint
+              verified; full npm lint currently fails on unrelated existing repo-wide lint issues.
+              Categories searched: correctness, destructive cleanup edge cases, registry failure
+              behavior, active/in-flight race handling, AC coverage, test integrity, integration
+              with reap/branch/root cleanup."
+            created_at: 2026-05-13T02:27:58.324Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-13T02:14:39.821Z
-    updated_at: 2026-05-13T02:27:44.233Z
+    updated_at: 2026-05-13T02:27:58.324Z
     notes: []
