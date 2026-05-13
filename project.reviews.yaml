@@ -211993,3 +211993,29 @@ reviews:
     created_at: 2026-05-13T03:16:55.715Z
     updated_at: 2026-05-13T03:31:50.984Z
     notes: []
+  - _ulid: 01KRFQ7FVDNRR2CVSBXA7HADBB
+    slugs: []
+    title: Review artifact reconciliation protection policy
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRFQ7FVDPFBPBSMFHVGQ9EME
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-13T03:48:59.885Z
+    examined_commit: 2ef2236a35e9d2f88cab4f4429f4baabdd7a5a11
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRF37Z421Y3S41YH2WS2R2G1"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-13T03:48:59.885Z
+    updated_at: null
+    notes: []
