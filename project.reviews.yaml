@@ -211868,6 +211868,13 @@ reviews:
           status: fail
           name: ad hoc type-only shared primitive import probe
         timestamp: 2026-05-13T03:31:27.505Z
+      - _ulid: 01KRFP7WT1Z9ZMECCWY6ZFRKBN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRFP7VDJ0STP0Y0980A8AQMZ
+        timestamp: 2026-05-13T03:31:44.578Z
     examined_commit: 493ede939a32cbd9a28e66adea498ac5a08143bf
     external_links: []
     lifecycle_state: open
@@ -211928,7 +211935,38 @@ reviews:
               primitive, not a type-only name."
             created_at: 2026-05-13T03:24:53.954Z
         kind: blocker
+      - _ulid: 01KRFP7VDJ0STP0Y0980A8AQMZ
+        entries:
+          - _ulid: 01KRFP7VDJ5744M30RK2KA8QZ1
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+
+              Files read: kspec-agents.md; task @01KRCRJPMHMHC410TKRC5Y9HF1; prior review
+              @01KRFJZMTV861R70M2R54EW1T4; @daemon-test-guardrail-precision;
+              tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-no-leaky-test-daemon.test.ts;
+              tests/lint-daemon-test-guardrails.test.ts.
+
+
+              Commands run: git status/rev-parse/log/diff; kspec task get; kspec review
+              for-task/get/add/open; kspec item get; kspec validate; AC annotation rg; targeted npm
+              test fresh for lint suites; full npm test fresh; changed-file oxlint; repo-wide npm
+              run lint; ad hoc oxlint probes for type-only approved helper imports and type-only
+              shared cleanup primitive imports.
+
+
+              Claims verified: cycle-16 declare ambient fix is present in statementBindsNameOpaquely
+              and covered by declare enum/class/const tests. Targeted and full test suites pass. New
+              blocker found by adversarial type-only import probes.
+
+
+              Categories searched: correctness, AC alignment, cleanup helper origin, helper-body
+              primitive trust, TypeScript erased runtime bindings, test quality, source-scanning
+              patterns, repo integration and lint.
+            created_at: 2026-05-13T03:31:43.154Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-13T03:16:55.715Z
-    updated_at: 2026-05-13T03:31:26.117Z
+    updated_at: 2026-05-13T03:31:43.154Z
     notes: []
