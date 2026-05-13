@@ -214726,6 +214726,19 @@ reviews:
         runner: kspec
         created_at: 2026-05-13T17:03:41.502Z
         completed_at: 2026-05-13T17:03:41.502Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran rg -n 'AC: @(dispatch-workspace-cleanup-policy|dispatch-workspace-registry)' tests
+          src packages templates. Existing related AC annotations are present; the newly added
+          cleanup classification ACs have no implementation-test annotations yet, matching the task
+          direction to keep specs in_progress until the regression/evidence task proves behavior."
+        name: AC annotation scan
+        required: true
+        runner: rg
+        created_at: 2026-05-13T17:03:45.720Z
+        completed_at: 2026-05-13T17:03:45.720Z
     events:
       - _ulid: 01KRH41BTNE1NN2VRQZTGJTHW6
         actor: Jacob Chapel
@@ -214754,6 +214767,13 @@ reviews:
           status: pass
           name: kspec validate --refs --warnings-ok
         timestamp: 2026-05-13T17:03:43.008Z
+      - _ulid: 01KRH4PSGAC0TGNB525VKRGK7E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation scan
+        timestamp: 2026-05-13T17:03:47.210Z
     examined_commit: 03f91e732faa6d80427b2c19f77847e72ea8153d
     external_links: []
     lifecycle_state: open
@@ -214766,5 +214786,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T16:52:05.077Z
-    updated_at: 2026-05-13T17:03:41.502Z
+    updated_at: 2026-05-13T17:03:45.720Z
     notes: []
