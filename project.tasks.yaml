@@ -28709,7 +28709,7 @@
   type: task
   spec_ref: "@daemon-test-guardrail-precision"
   plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-add-guardrail-cleanup-boundary-regressions"
@@ -28724,7 +28724,7 @@
   todos_count: 0
   created_at: 2026-05-12T00:14:53.196Z
   started_at: 2026-05-13T07:05:18.615Z
-  submitted_at: 2026-05-13T06:04:57.050Z
+  submitted_at: 2026-05-13T07:05:21.914Z
   automation: eligible
 - _ulid: 01KRCRJQHJVPTS7KS7SYWQ600H
   slugs:

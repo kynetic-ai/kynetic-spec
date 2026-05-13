@@ -50,7 +50,7 @@ description: >
 spec_ref: "@daemon-test-guardrail-precision"
 plan_ref: "@plan-daemon-test-cleanup-contract-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-guardrail-cleanup-boundary-regressions"
@@ -66,11 +66,11 @@ review_ref: "@01KRFZ91D1FG251GVT1QGQ94TS"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fix-guardrail-cleanup-boundary-classification/01krcrjq
-  captured_at: 2026-05-13T06:04:57.048Z
-  commit: 5de3b8d30d8798bd4279bd86a3e8223ce03894f4
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-13T07:05:21.910Z
+  commit: e8b400acd9f2909ef1b7ff7670153a9458d6f909
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-fix-guardrail-cleanup-boundary-classification/01krcrjq
 session_id: 01KRG1GC5REA48KZJT76V6ZB95
 history:
   - author: Jacob Chapel
@@ -143,8 +143,35 @@ history:
         previous: 2026-05-13T05:44:20.710Z
     command: task-start
     timestamp: 2026-05-13T07:05:18.615Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-fix-guardrail-cleanup-boundary-classification/01krcrjq
+          captured_at: 2026-05-13T07:05:21.910Z
+          commit: e8b400acd9f2909ef1b7ff7670153a9458d6f909
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-fix-guardrail-cleanup-boundary-classification/01krcrjq
+        previous:
+          review_url: null
+          branch: dispatch/task/task-fix-guardrail-cleanup-boundary-classification/01krcrjq
+          captured_at: 2026-05-13T06:04:57.048Z
+          commit: 5de3b8d30d8798bd4279bd86a3e8223ce03894f4
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-13T07:05:21.914Z
+        previous: 2026-05-13T06:04:57.050Z
+    command: task-submit
+    timestamp: 2026-05-13T07:05:21.914Z
 created_at: 2026-05-12T00:14:53.196Z
 started_at: 2026-05-13T07:05:18.615Z
-submitted_at: 2026-05-13T06:04:57.050Z
+submitted_at: 2026-05-13T07:05:21.914Z
 todos: []
 automation: eligible
