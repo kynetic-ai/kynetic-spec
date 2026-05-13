@@ -22,3 +22,25 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-13T06:17:04.618Z
+  - _ulid: 01KRG0K90102F4X9NEC6CCDFZA
+    content: >-
+      Fix complete. Refactored sampleEndpointDiagnostic in tests/helpers/daemon.ts to retry
+      transient fetch failures while the child daemon remains potentially reachable, bounded by a 5s
+      budget at 100ms intervals. Launch failures (pid undefined, captured launchError) short-circuit
+      retry. Added regression test using a delayed-bind synth daemon (1.5s bind delay, 500ms
+      readiness timeout) that deterministically fails without the fix (verified by reverting only
+      daemon.ts) and passes with the fix.
+
+
+      Verification: focused 'npm test -- --run tests/helpers/daemon.test.ts' = 16/16 PASS in 9.9s
+      (was 15 before, added 1 regression). Full 'npm test' = 9211/9216 PASS, 5 skipped, 0 failed in
+      2125s. Typecheck clean. Lint baseline matches dev (721 warnings + 19 errors all pre-existing,
+      none in modified files).
+
+
+      Spec impact: ac-readiness-diagnostics already required 'failure output reports a diagnostic
+      bundle' — the fix strengthens the implementation to reliably reflect daemon reachability at
+      failure time, no AC text change needed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-13T06:32:43.266Z
