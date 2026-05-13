@@ -49793,9 +49793,23 @@ runs:
     completed_at: 2026-05-13T10:38:01.303Z
   - _ulid: 01KRH4S53Z3F7FMRWN0PH4E1GH
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-13T17:05:04.639Z
+        completed_at: 2026-05-13T17:05:34.083Z
+        notes: "What worked well: The detached reviewer flow was straightforward for a spec-only task.
+          Creating a fresh review record, checking the affected specs with kspec item get, recording
+          explicit review checks, approving, and then using the detached merge helper produced an
+          auditable path. The helper correctly handled the already-integrated branch as a no-op. The
+          review evidence log was concrete: spec inspection, validation, AC annotation scan, and
+          full npm test results."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-13T17:05:34.083Z
+        completed_at: 2026-05-13T17:05:34.083Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T17:05:04.639Z
