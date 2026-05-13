@@ -49976,7 +49976,7 @@ runs:
     started_at: 2026-05-13T17:51:34.652Z
     completed_at: 2026-05-13T17:53:12.050Z
   - _ulid: 01KRHAR66ZZ6C6ARWBJ2PM5KXA
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -50029,7 +50029,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-13T18:51:22.064Z
-        completed_at: 2026-05-13T18:51:22.064Z
+        completed_at: 2026-05-13T18:51:42.807Z
+        notes: Captured friction observation @01KRHAW3 for tmpfs ENOSPC test-runner preflight/guidance. Did
+          not capture duplicate evidence-log or detached-merge-helper items because existing
+          observations/specs already cover them.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-13T18:49:24.447Z
+    completed_at: 2026-05-13T18:51:42.807Z
