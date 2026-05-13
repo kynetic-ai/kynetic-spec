@@ -14,7 +14,7 @@ description: "Full-suite review run for @01KRF37XVT9YSRGV87660W7BR6 failed once 
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -24,6 +24,14 @@ tags:
   - daemon
   - flaky
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/stabilize-daemon-readiness-diagnostics-lasthealth-flake/01krf9wa
+  captured_at: 2026-05-13T06:32:46.673Z
+  commit: d8908e58f6ced81694a1d8023c8ce175c956ec6d
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KRFZ88Y4E3J78JJNV2P8HTTF
 history:
   - author: "@claude"
@@ -39,7 +47,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-13T06:09:45.818Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/stabilize-daemon-readiness-diagnostics-lasthealth-flake/01krf9wa
+          captured_at: 2026-05-13T06:32:46.673Z
+          commit: d8908e58f6ced81694a1d8023c8ce175c956ec6d
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-13T06:32:46.676Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-13T06:32:46.676Z
 created_at: 2026-05-12T23:55:42.470Z
 started_at: 2026-05-13T06:09:45.818Z
+submitted_at: 2026-05-13T06:32:46.676Z
 todos: []
 automation: eligible
