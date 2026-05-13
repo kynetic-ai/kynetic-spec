@@ -214000,6 +214000,17 @@ reviews:
         runner: npm
         created_at: 2026-05-13T10:02:03.643Z
         completed_at: 2026-05-13T10:02:03.643Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npx oxlint tests/ exits 1 from existing non-daemon lint errors (19 errors, 597 warnings),
+          but filtered output contains no no-leaky-test-daemon diagnostics from tests/.
+        name: tests no-leaky daemon lint sweep
+        required: true
+        runner: oxlint
+        created_at: 2026-05-13T10:02:18.245Z
+        completed_at: 2026-05-13T10:02:18.245Z
     events:
       - _ulid: 01KRGBRAHH3RXAQY640998TTDC
         actor: Jacob Chapel
@@ -214035,6 +214046,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-13T10:02:09.266Z
+      - _ulid: 01KRGCK2K5WNC4VTSPBDQ4ZS0Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: tests no-leaky daemon lint sweep
+        timestamp: 2026-05-13T10:02:19.621Z
     examined_commit: ea3c85356bd7c4ef72e5347d0b8e9a75c023fa5f
     external_links: []
     lifecycle_state: open
@@ -214047,5 +214065,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-13T09:47:43.025Z
-    updated_at: 2026-05-13T10:02:07.820Z
+    updated_at: 2026-05-13T10:02:18.245Z
     notes: []
