@@ -25111,12 +25111,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-13T04:11:55.778Z
+      updated_at: 2026-05-13T04:12:03.392Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-13T04:11:55.778Z
+      updated_at: 2026-05-13T04:12:03.392Z
     integration:
       status: pending
       detail: null
@@ -25124,26 +25124,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0dcbcdd27642e95299a7b77a48da1e5d295df176
-      updated_at: 2026-05-13T04:11:55.778Z
-    lifecycle_state: ready
+      updated_at: 2026-05-13T04:12:03.392Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
     task_slug: task-fix-guardrail-cleanup-effect-classification
     timestamps:
       closed_at: null
       last_active_at: 2026-05-13T03:47:47.042Z
-      last_reconciled_at: 2026-05-13T04:11:55.778Z
+      last_reconciled_at: 2026-05-13T04:12:03.392Z
       created_at: 2026-05-12T02:54:05.860Z
-      updated_at: 2026-05-13T04:11:55.778Z
+      updated_at: 2026-05-13T04:12:03.392Z
     workspace_id: dispatch-workspace-01KRCRJPMHMHC410TKRC5Y9HF1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f471dc1dcfbca0288216dffefa3abbac6e163ad8
+        last_seen_at: 2026-05-13T04:12:03.392Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-guardrail-cleanup-effect-classification-01krcrjp-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-guardrail-cleanup-effect-classification/01krcrjp
-        head: 493ede939a32cbd9a28e66adea498ac5a08143bf
-        last_seen_at: 2026-05-13T03:47:22.062Z
+        head: f471dc1dcfbca0288216dffefa3abbac6e163ad8
+        last_seen_at: 2026-05-13T04:12:03.392Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-guardrail-cleanup-effect-classification-01krcrjp
   - active_role: null
     base_branch_point: 1fd1e5cbd85203e28f23cad455660c917954aa62
