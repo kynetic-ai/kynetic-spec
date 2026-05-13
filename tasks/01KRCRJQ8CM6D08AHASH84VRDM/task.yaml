@@ -62,7 +62,7 @@ tags:
   - lint
   - daemon
 vcs_refs: []
-review_ref: "@01KRFZ91D1FG251GVT1QGQ94TS"
+review_ref: "@01KRG32ZXPTE3HH1Y4GP5JF1AC"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fix-guardrail-cleanup-boundary-classification/01krcrjq
@@ -170,6 +170,13 @@ history:
         previous: 2026-05-13T06:04:57.050Z
     command: task-submit
     timestamp: 2026-05-13T07:05:21.914Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KRG32ZXPTE3HH1Y4GP5JF1AC"
+        previous: "@01KRFZ91D1FG251GVT1QGQ94TS"
+    command: review-link
+    timestamp: 2026-05-13T07:16:19.195Z
 created_at: 2026-05-12T00:14:53.196Z
 started_at: 2026-05-13T07:05:18.615Z
 submitted_at: 2026-05-13T07:05:21.914Z

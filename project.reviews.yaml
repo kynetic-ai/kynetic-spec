@@ -213308,3 +213308,29 @@ reviews:
     created_at: 2026-05-13T06:49:47.545Z
     updated_at: 2026-05-13T07:04:39.418Z
     notes: []
+  - _ulid: 01KRG32ZXPTE3HH1Y4GP5JF1AC
+    slugs: []
+    title: Review cleanup-boundary classification cycle 2
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRG32ZXPCBYHK1XY0ZS86HXP
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-13T07:16:15.414Z
+    examined_commit: e8b400acd9f2909ef1b7ff7670153a9458d6f909
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRCRJQ8CM6D08AHASH84VRDM"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-13T07:16:15.414Z
+    updated_at: null
+    notes: []
