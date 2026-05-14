@@ -1,0 +1,107 @@
+_ulid: 01KRM50BHPZM315CNQSP4ZA48C
+slugs:
+  - task-daemon-cache-task-storage-incompatibility-suppression
+title: Suppress repeated task cache reloads for deterministic storage incompatibilities
+type: task
+description: >-
+  Implement bounded degraded-state behavior for deterministic task-storage compatibility and
+  migration failures in the tasks cache domain.
+
+
+  Why:
+
+  Legacy/unmigrated task-storage states cannot be fixed by blind retry. Current daemon behavior
+  marks the tasks domain degraded but retries and reports the same failure on repeated cache load
+  paths, which can amplify into repeated errors and memory pressure.
+
+
+  What:
+
+  - In src/parser/task-data-manager.ts and related task-storage backend code, add stable
+  TaskDataManagerError codes for deterministic task-storage incompatibility/migration states:
+    - legacy_task_storage_removed for kynetic < 1.1 without split task storage.
+    - split_task_storage_unmigrated for split format configured while task data still requires migration.
+  - In src/daemon/entity-cache.ts, track the current deterministic task-storage failure for the
+  tasks cache domain using bounded per-domain state keyed by stable error details.
+
+  - Suppress only deterministic task-storage compatibility/migration codes; do not suppress generic
+  TaskDataManagerError cases such as task-not-found, validation failures, or mutation errors.
+
+  - Apply suppression in the lower-level non-meta reload path so initial/progressive load, explicit
+  loadDomain("tasks"), watcher-triggered reloads, and writeThrough fallback reloads all observe the
+  same behavior.
+
+  - Preserve degraded domain state and lastError diagnostics while the condition remains unresolved.
+
+  - Avoid repeated load/report amplification for the same unchanged condition until a relevant
+  task-storage state change occurs.
+
+  - Re-evaluate the tasks domain when relevant task-storage state changes. Relevant signals include
+  kynetic.yaml task-storage settings, legacy project.tasks.yaml / .kspec/project.tasks.yaml storage
+  where applicable, and split task files.
+
+  - On successful migration/config update, transition the tasks domain back to an available state
+  and clear the degraded error state without daemon restart.
+
+  - If a recheck finds the same incompatibility still unresolved, keep the tasks domain degraded.
+
+  - Extend cache diagnostics types in src/daemon/entity-cache.ts and
+  packages/daemon/src/routes/entity-cache-types.ts as needed so diagnostics identify the current
+  error reason, recovery guidance, and whether recovery is waiting on project-state changes.
+
+  - Update packages/daemon/src/routes/debug.ts so GET /api/debug/cache-status exposes the new
+  diagnostic information.
+
+
+  Testing:
+
+  - Add regression tests in tests/daemon-entity-cache.test.ts proving:
+    - legacy kynetic 1.0 monolithic task storage degrades the tasks domain.
+    - repeated task cache activity before a relevant state change does not emit repeated failure reports for the unchanged condition.
+    - split-configured-but-unmigrated task storage is classified as a deterministic task-storage migration error.
+    - concurrent/queued reload paths and writeThrough fallback reloads do not bypass the stable degraded behavior.
+    - kynetic.yaml changes and task-storage file changes cause the tasks domain to re-evaluate current storage state.
+    - successful migration/config update returns the tasks domain to an available state without daemon restart.
+    - unresolved compatibility after a recheck remains degraded.
+  - Add tests in tests/daemon-debug-routes.test.ts proving degraded diagnostics identify the current
+  error reason, recovery guidance, and recovery readiness.
+
+  - Run:
+    npm test -- --run tests/daemon-entity-cache.test.ts
+    npm test -- --run tests/daemon-debug-routes.test.ts
+    kspec validate
+
+  Covers:
+
+  @daemon-entity-cache ac-task-storage-incompatibility-degraded-state
+
+  @daemon-entity-cache ac-task-storage-incompatibility-stable-reporting
+
+  @daemon-entity-cache ac-task-storage-incompatibility-rechecked-after-storage-change
+
+  @daemon-entity-cache ac-task-storage-incompatibility-recovers-after-migration
+
+  @daemon-entity-cache ac-task-storage-incompatibility-persists-when-unresolved
+
+  @daemon-entity-cache ac-manifest-task-storage-settings-affect-tasks-domain
+
+  @daemon-server ac-cache-diagnostics-degraded-reason
+
+  @daemon-server ac-cache-diagnostics-recovery-guidance
+
+  @daemon-server ac-cache-diagnostics-recovery-readiness
+spec_ref: "@daemon-entity-cache"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - daemon
+  - cache
+  - migration
+vcs_refs: []
+created_at: 2026-05-14T21:06:43.893Z
+todos: []
