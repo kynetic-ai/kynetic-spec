@@ -18,6 +18,7 @@ import {
   resolveDaemonClientEndpoint,
   type DaemonClientEndpoint,
 } from "./pid-utils.js";
+import { buildDaemonUrls, LOOPBACK_HOST_V4 } from "../daemon-shared/endpoint.js";
 
 /**
  * Resolve the running daemon's client endpoint, or null when the daemon
@@ -39,5 +40,23 @@ import {
 export function getRunningDaemonClient(): DaemonClientEndpoint | null {
   const pidManager = new PidFileManager();
   if (!pidManager.isDaemonRunning()) return null;
-  return resolveDaemonClientEndpoint();
+  const endpoint = resolveDaemonClientEndpoint();
+  if (endpoint) return endpoint;
+
+  try {
+    const port = pidManager.readPort();
+    const { apiUrl, wsUrl } = buildDaemonUrls(LOOPBACK_HOST_V4, port);
+    return {
+      port,
+      connectHost: LOOPBACK_HOST_V4,
+      apiUrl,
+      wsUrl,
+      bindHost: null,
+      runtime: null,
+      pid: null,
+      source: "legacy-port",
+    };
+  } catch {
+    return null;
+  }
 }
