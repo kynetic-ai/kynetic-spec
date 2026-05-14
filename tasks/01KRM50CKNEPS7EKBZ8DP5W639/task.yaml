@@ -1,0 +1,106 @@
+_ulid: 01KRM50CKNEPS7EKBZ8DP5W639
+slugs:
+  - task-daemon-api-task-storage-incompatibility-errors
+title: Return structured task-storage incompatibility errors from daemon API routes
+type: task
+description: >-
+  Return structured task-storage incompatibility errors from daemon API routes that need task data.
+
+
+  Why:
+
+  Suppressing repeated cache degradation prevents daemon retry/report amplification, but
+  cache-degraded API paths can still fall back to direct task reads. Those direct reads must surface
+  the same migration guidance consistently. In particular, GET /api/tasks/:ref currently catches all
+  TaskDataManagerError values and maps them to 404 not_found, which is wrong for project storage
+  incompatibility.
+
+
+  What:
+
+  - Extend packages/shared/src/api.ts ErrorResponse typings/schemas as needed to allow optional
+  task-storage/cache context fields while keeping CacheStatusSchema as ready | loading.
+
+  - Add a reusable daemon route helper for deterministic task-storage compatibility/migration
+  errors. The helper should:
+    - recognize the stable TaskDataManagerError codes from @task-daemon-cache-task-storage-incompatibility-suppression.
+    - preserve message and recovery guidance.
+    - identify the affected field when the failure exposes one.
+    - identify the affected cache domain and cache domain state when applicable.
+    - return HTTP 409 Conflict with error code task_storage_incompatible.
+    - return no match for generic TaskDataManagerError values so existing not_found/validation handling remains intact.
+  - Apply the helper to every daemon route file that directly uses resolveTaskDataManager() or
+  otherwise loads/enriches task data from disk. Known files to audit and update as needed:
+    - packages/daemon/src/routes/tasks.ts
+    - packages/daemon/src/routes/session-related.ts
+    - packages/daemon/src/routes/sessions.ts
+    - packages/daemon/src/routes/items.ts
+    - packages/daemon/src/routes/reviews.ts
+    - packages/daemon/src/routes/validation.ts
+    - packages/daemon/src/routes/refs.ts
+    - packages/daemon/src/routes/aggregation.ts
+    - packages/daemon/src/routes/plans.ts
+    - packages/daemon/src/routes/triage.ts
+    - packages/daemon/src/routes/diff.ts
+    - packages/daemon/src/routes/agent-dispatch.ts
+  - Treat packages/daemon/src/routes/command.ts as out of scope unless it directly handles
+  TaskDataManagerError in route code; command.ts preserves CLI command response parity and should
+  not be converted to route-level 409 semantics without a separate CLI/API parity decision.
+
+  - Do not leave any currently-known direct task-data route as a TODO while claiming @api-contract
+  coverage. If a file is intentionally unaffected, document why in the task result and make sure no
+  deterministic task-storage incompatibility can reach an unhandled/404 path there.
+
+  - Ensure GET /api/tasks returns structured migration guidance instead of an unhandled direct
+  fallback error.
+
+  - Ensure GET /api/tasks/:ref and task mutation routes do not convert deterministic task-storage
+  incompatibility into task-reference not_found.
+
+
+  Testing:
+
+  - Add tests in the relevant daemon API route test files proving:
+    - GET /api/tasks on legacy monolithic storage returns HTTP 409 Conflict with error task_storage_incompatible and migration guidance.
+    - GET /api/tasks/:ref on legacy monolithic storage is not 404 not_found and returns the same structured guidance.
+    - at least one task mutation route that resolves a task ref returns structured storage guidance instead of not_found.
+    - at least one non-tasks.ts route that needs task data returns the same structured storage guidance.
+    - field, cache domain, and cache domain state context appear when applicable.
+  - Add helper unit tests if route setup makes exhaustive route integration tests too heavy.
+
+  - Run:
+    npm test -- --run <relevant daemon API task route test file>
+    npm test -- --run <representative daemon API non-task route test file>
+    kspec validate
+
+  Covers:
+
+  @api-contract ac-task-storage-incompatibility-conflict-status
+
+  @api-contract ac-task-storage-incompatibility-error-code
+
+  @api-contract ac-task-storage-incompatibility-guidance
+
+  @api-contract ac-task-storage-incompatibility-not-not-found
+
+  @api-contract ac-task-storage-incompatibility-field-context
+
+  @api-contract ac-task-storage-incompatibility-cache-domain-context
+
+  @api-contract ac-task-storage-incompatibility-cache-state-context
+spec_ref: "@api-contract"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-daemon-cache-task-storage-incompatibility-suppression"
+context: []
+priority: 1
+tags:
+  - daemon
+  - api
+  - migration
+vcs_refs: []
+created_at: 2026-05-14T21:06:44.981Z
+todos: []
