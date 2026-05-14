@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KRMEKW3KYD2N0EPMH3M5J24X
+    content: Investigation started from production incident report. User clarified the OOM reproduces
+      with the migrated dispatch project and appeared after a recent daemon/dispatch change; legacy
+      task-storage errors in the same logs must be treated as possibly unrelated until
+      project-specific evidence says otherwise. Initial daemon-backed task mutation timed out while
+      the live daemon was sluggish, so this task was created in direct mode after verifying the slug
+      was absent.
+    supersedes: null
+    author: Hermes
+    created_at: 2026-05-14T23:54:40.627Z
