@@ -5407,6 +5407,14 @@ const noLeakyTestDaemon = {
       return true;
     }
 
+    function formatDetachedServePattern(node) {
+      const sourceCode = context.sourceCode;
+      if (sourceCode && typeof sourceCode.getText === "function") {
+        return sourceCode.getText(node);
+      }
+      return "serve start --detach";
+    }
+
     /**
      * Scan the sibling statements between a detached daemon start and
      * the next observation (await/expect/daemon-observation). When a
@@ -7226,7 +7234,7 @@ const noLeakyTestDaemon = {
             context.report({
               node,
               messageId: "localWrapperUnsafe",
-              data: { pattern: "serve start --detach" },
+              data: { pattern: formatDetachedServePattern(node) },
             });
             continue;
           }
@@ -7245,7 +7253,7 @@ const noLeakyTestDaemon = {
               node,
               messageId: "cleanupClosureUnbound",
               data: {
-                pattern: "serve start --detach",
+                pattern: formatDetachedServePattern(node),
                 identifier: unbound.identifier || "<unknown>",
               },
             });
@@ -7255,7 +7263,7 @@ const noLeakyTestDaemon = {
           context.report({
             node,
             messageId: "missingCleanup",
-            data: { pattern: "serve start --detach" },
+            data: { pattern: formatDetachedServePattern(node) },
           });
         }
 

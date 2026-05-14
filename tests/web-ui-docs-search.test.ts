@@ -84,6 +84,33 @@ function runHelperScript(scriptContent: string, cwd: string): string {
   }
 }
 
+function sleepSync(ms: number): void {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function readJsonTestOutputSync(filePath: string): unknown {
+  const timeoutMs = 2000;
+  const startedAt = Date.now();
+  let lastError: unknown;
+  let lastRaw = "";
+
+  while (Date.now() - startedAt < timeoutMs) {
+    lastRaw = readTestOutputSync(filePath);
+    if (lastRaw.trim().length > 0) {
+      try {
+        return JSON.parse(lastRaw);
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    sleepSync(25);
+  }
+
+  throw new Error(
+    `Timed out waiting for parseable JSON output at ${filePath}; last_length=${lastRaw.length}; last_error=${String(lastError)}`,
+  );
+}
+
 // ─── Index builder helper ───────────────────────────────────────────────────
 
 function buildIndexScript(docsDir: string, outputDir: string, basePath = ""): string {
@@ -316,7 +343,10 @@ describe("docs search index content", () => {
   it("index entry manifest references all indexed pages", () => {
     // The pagefind-entry.json manifest tells the client how to load index
     // chunks. It should reflect the number of indexed pages.
-    const entryJson = JSON.parse(readTestOutputSync(join(pagefindDir, "pagefind-entry.json")));
+    const entryJson = readJsonTestOutputSync(join(pagefindDir, "pagefind-entry.json")) as {
+      version?: unknown;
+      languages?: Record<string, unknown>;
+    };
     // The entry should have index metadata
     expect(entryJson).toHaveProperty("version");
     expect(entryJson).toHaveProperty("languages");

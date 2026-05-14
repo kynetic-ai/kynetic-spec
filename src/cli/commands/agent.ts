@@ -822,16 +822,6 @@ export function registerAgentCommands(program: Command): void {
       const RETRY_BASE_MS = 1000;
       const MAX_RETRY_MS = 30_000;
 
-      // AC: @cli-agent-commands ac-15 — error when daemon not running
-      const daemon = getRunningDaemonClient();
-      if (!daemon) {
-        error("Daemon is not running. The watch command requires the daemon.");
-        info("Suggestion: Start the daemon with: kspec serve");
-        // AC: @cli-agent-commands ac-15 — exit code 3
-        process.exit(EXIT_CODES.NOT_FOUND);
-        return;
-      }
-
       const parsedRetries = parseIntOption(opts.retries, {
         min: 0,
         max: Number.MAX_SAFE_INTEGER,
@@ -845,6 +835,18 @@ export function registerAgentCommands(program: Command): void {
         return;
       }
       const retryLimit = parsedRetries.value;
+
+      // AC: @cli-agent-commands ac-15 — error when daemon is not running.
+      // Validate local numeric options first so invalid CLI input returns the
+      // validation exit code even on machines where the daemon is unavailable.
+      const daemon = getRunningDaemonClient();
+      if (!daemon) {
+        error("Daemon is not running. The watch command requires the daemon.");
+        info("Suggestion: Start the daemon with: kspec serve");
+        // AC: @cli-agent-commands ac-15 — exit code 3
+        process.exit(EXIT_CODES.NOT_FOUND);
+        return;
+      }
       const agentFilter: string | undefined = opts.agent;
       const sessionFilter: string | undefined = opts.session;
       const verbose: boolean = opts.verbose === true;
