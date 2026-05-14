@@ -20,3 +20,14 @@ notes:
     supersedes: null
     author: Hermes
     created_at: 2026-05-14T23:57:35.561Z
+  - _ulid: 01KRMEVSPEERGS8XV1F9B0TGE8
+    content: "Coredump verification: systemd-coredump recorded PID 3032984 (`node
+      /home/chapel/Projects/kynetic-spec/dist/daemon/index.js --port 3456 --kspec-dir
+      /home/chapel/Projects/kynetic-spec/.kspec --host 127.0.0.1`) aborting with Node/V8 OOM
+      (`OOMErrorHandler`, `FatalProcessOutOfMemory`, `IneffectiveMarkCompact`). This confirms the
+      live daemon exit reproduced the production OOM signature. Next step is a constrained-heap
+      repro daemon with logs/monitoring so the retaining path can be isolated without consuming full
+      host heap."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-05-14T23:59:00.302Z
