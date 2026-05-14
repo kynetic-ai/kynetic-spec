@@ -387,7 +387,7 @@ describe("session start format rewrite", () => {
       expect(result.stdout).toContain(`@${task!.ref}`);
     });
 
-    // AC: @cmd-session-start ac-slug-fallback — inbox always uses @short-ulid
+    // AC: @cmd-session-start ac-slug-fallback — inbox always uses short-ulid
     it("should use @short-ulid for inbox items (no slug schema)", () => {
       kspec("session start --full", tempDir);
       // Inbox items don't have slugs — they use short ULID refs

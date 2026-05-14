@@ -294,7 +294,7 @@ describe("Skill Rendering Pipeline", () => {
     });
   });
 
-  // AC: @trait-dry-run
+  // AC: @trait-dry-run ac-2
   describe("Dry run mode (trait)", () => {
     it("should not modify files when --dry-run is provided (ac-2)", async () => {
       kspecFull("skill render --dry-run", tempDir);
@@ -348,7 +348,7 @@ describe("Skill Rendering Pipeline", () => {
     });
 
     it("should render only specified skill with positional ref", async () => {
-      // AC: @skill-render-cli ac-2 - kspec skill render @task-work renders only that skill
+      // AC: @skill-render-cli ac-2 - kspec skill render renders only specified skill
       kspecFull("skill render @test-skill", tempDir);
 
       // test-skill should be rendered

@@ -56,62 +56,7 @@ import { describeEnumValues } from "../enum-help.js";
 import { addListOptions, listTasksAction } from "./tasks.js";
 import { findClosestCommand } from "../suggest.js";
 import { checkBudget, incrementBudget, isEndLoopRequested } from "../../sessions/store.js";
-import { PidFileManager } from "../pid-utils.js";
-
-/**
- * Post a task state change event to the daemon dispatch engine.
- * Fails silently — dispatch requires a running daemon; if absent, this is a no-op.
- * AC: @daemon-agent-dispatch ac-2, ac-7
- * AC: @agent-dispatch-engine ac-18
- */
-async function postDispatchEvent(opts: {
-  taskId: string;
-  taskRef: string;
-  fromStatus: string;
-  toStatus: string;
-  projectPath?: string;
-}): Promise<void> {
-  // AC: @agent-dispatch-engine ac-18 - Suppress self-triggering when running
-  // inside a dispatched agent invocation. The file watcher will independently
-  // detect the change, so the CLI event would be redundant and causes stale
-  // queue entries to accumulate.
-  // NOTE: This relies on the daemon's file watcher being active. If the watcher
-  // is temporarily down, dispatched agents' task mutations won't produce dispatch
-  // events until the watcher recovers and diffs the changed state.
-  if (process.env.KSPEC_SESSION_ID) return;
-
-  const pidManager = new PidFileManager();
-  if (!pidManager.isDaemonRunning()) return;
-
-  let port: number;
-  try {
-    port = pidManager.readPort();
-  } catch {
-    return; // Daemon running but port unreadable — silent fail
-  }
-
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (opts.projectPath) {
-    headers["X-Kspec-Dir"] = opts.projectPath;
-  }
-
-  try {
-    await fetch(`http://localhost:${port}/api/agent/events`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        task_id: opts.taskId,
-        task_ref: opts.taskRef,
-        from_status: opts.fromStatus,
-        to_status: opts.toStatus,
-        timestamp: Date.now(),
-      }),
-      signal: AbortSignal.timeout(1000), // 1s timeout — fire-and-forget
-    });
-  } catch {
-    // Silent fail — daemon unreachable or dispatch engine not running
-  }
-}
+import { postDispatchEvent } from "../dispatch-events.js";
 
 /**
  * Find a task by reference with detailed error reporting.
@@ -147,7 +92,7 @@ async function resolveTaskRef(
         }
         break;
     }
-    // AC: @cli-exit-codes consistent-usage - NOT_FOUND for missing resources
+    // AC: @cli-exit-codes ac-consistent-usage - NOT_FOUND for missing resources
     process.exit(EXIT_CODES.NOT_FOUND);
   }
 
@@ -155,7 +100,7 @@ async function resolveTaskRef(
   const taskSummary = tasks.find((t) => t._ulid === result.ulid);
   if (!taskSummary) {
     error(errors.reference.notTask(ref));
-    // AC: @cli-exit-codes consistent-usage - NOT_FOUND for missing resources
+    // AC: @cli-exit-codes ac-consistent-usage - NOT_FOUND for missing resources
     process.exit(EXIT_CODES.NOT_FOUND);
   }
 

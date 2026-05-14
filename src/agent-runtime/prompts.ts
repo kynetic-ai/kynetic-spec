@@ -11,7 +11,11 @@
 
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
-import { resolveSkillReferenceTokensForPlatform } from "../parser/skill-render.js";
+import {
+  resolveSkillReferenceTokensForPlatform,
+  resolveSupportingFileReferences,
+  collectSkillFiles,
+} from "../parser/skill-render.js";
 import { loadMetaContext, type LoadedSkill } from "../parser/meta.js";
 import { initContext } from "../parser/yaml.js";
 
@@ -121,6 +125,38 @@ export async function rewriteSkillReferencesForAdapter(
   return resolveSkillReferenceTokensForPlatform(text, platform, skillOrigins);
 }
 
+/**
+ * Resolve supporting-file references in a single skill's content for adapter delivery.
+ *
+ * AC: @portable-skill-supporting-file-references ac-prompt-supporting-link-resolution
+ */
+async function rewriteSupportingFileReferencesForSkill(
+  content: string,
+  skillId: string,
+  specDir: string,
+  adapterId?: string,
+): Promise<string> {
+  const platform = getSkillReferencePlatform(adapterId);
+  if (!platform) {
+    return content;
+  }
+
+  const skillOrigins = await loadSkillOrigins(specDir);
+  const origin = skillOrigins.get(skillId);
+
+  const sourceSkillDir = path.join(specDir, "skills", skillId);
+  const existingFiles = await collectSkillFiles(sourceSkillDir);
+
+  return resolveSupportingFileReferences(
+    content,
+    skillId,
+    platform,
+    origin,
+    sourceSkillDir,
+    existingFiles,
+  );
+}
+
 // ─── Template Interpolation ──────────────────────────────────────────────────
 
 /**
@@ -181,7 +217,22 @@ export async function buildPromptWithSkills(options: BuildPromptOptions): Promis
     return basePrompt;
   }
 
-  const skillSections = resolvedSkills
+  // AC: @portable-skill-supporting-file-references ac-prompt-supporting-link-resolution
+  // Resolve supporting-file references per-skill before combining,
+  // since each skill's references are relative to its own directory.
+  const resolvedWithSupportingFiles = await Promise.all(
+    resolvedSkills.map(async (skill) => ({
+      ...skill,
+      content: await rewriteSupportingFileReferencesForSkill(
+        skill.content,
+        skill.id,
+        specDir,
+        adapterId,
+      ),
+    })),
+  );
+
+  const skillSections = resolvedWithSupportingFiles
     .map((skill) => `<!-- Skill: ${skill.id} -->\n${skill.content}`)
     .join("\n\n");
 

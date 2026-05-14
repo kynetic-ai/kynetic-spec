@@ -26,6 +26,7 @@ import {
   resolveMetaRef,
   shortestUniqueUlid,
   updateSpecItem,
+  validateSpecItemPatchData,
 } from "../../parser/index.js";
 import {
   resolveTaskDataManager,
@@ -40,8 +41,8 @@ import type {
   Maturity,
   SpecItemInput,
 } from "../../schema/index.js";
-import { ItemTypeSchema, SpecItemPatchSchema } from "../../schema/index.js";
-import { ImplementationStatusSchema, MaturitySchema } from "../../schema/common.js";
+import { ItemTypeSchema } from "../../schema/index.js";
+import { AcIdSchema, ImplementationStatusSchema, MaturitySchema } from "../../schema/common.js";
 import { errors } from "../../strings/errors.js";
 import { fieldLabels, sectionHeaders } from "../../strings/labels.js";
 import { formatMatchedFields, grepItem } from "../../utils/grep.js";
@@ -1682,18 +1683,14 @@ Examples:
             }
           }
 
-          // Validate against schema (unless --allow-unknown)
-          if (!options.allowUnknown) {
-            // Use strict schema (no passthrough)
-            const strictSchema = SpecItemPatchSchema.strict();
-            const parseResult = strictSchema.safeParse(data);
-            if (!parseResult.success) {
-              const issues = parseResult.error.issues
-                .map((i) => `${i.path.join(".")}: ${i.message}`)
-                .join("; ");
-              error(errors.validation.invalidPatchDataWithIssues(issues));
-              process.exit(EXIT_CODES.ERROR);
-            }
+          // Validate patch data (known fields always validated; unknown fields
+          // rejected unless --allow-unknown)
+          const validationIssues = validateSpecItemPatchData(data, {
+            allowUnknown: options.allowUnknown,
+          });
+          if (validationIssues) {
+            error(errors.validation.invalidPatchDataWithIssues(validationIssues));
+            process.exit(EXIT_CODES.ERROR);
           }
 
           const { refIndex, items } = await buildIndexes(ctx);
@@ -2006,6 +2003,13 @@ Examples:
         // Determine ID
         const acId = options.id || generateNextAcId(existingAc);
 
+        // Validate AC ID format via shared schema
+        const acIdResult = AcIdSchema.safeParse(acId);
+        if (!acIdResult.success) {
+          error(errors.validation.invalidAcIdFormat(acId));
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
         // Check for duplicate ID
         if (existingAc.some((ac) => ac.id === acId)) {
           const itemRef = item.slugs[0] || refIndex.shortUlid(item._ulid);
@@ -2060,6 +2064,15 @@ Examples:
         if (!options.id && !options.given && !options.when && !options.then) {
           warn("No updates specified");
           return;
+        }
+
+        // Validate new AC ID format if renaming via shared schema
+        if (options.id) {
+          const acIdResult = AcIdSchema.safeParse(options.id);
+          if (!acIdResult.success) {
+            error(errors.validation.invalidAcIdFormat(options.id));
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
         }
 
         // Check for duplicate ID if renaming

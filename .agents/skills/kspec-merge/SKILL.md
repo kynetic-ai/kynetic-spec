@@ -55,7 +55,36 @@ The merge target depends on context:
 
 In the examples below, `<integration-branch>` is a placeholder for the actual target branch.
 
-## Merge Process
+## Detached Reviewer Context
+
+In `manual_merge` publication mode, reviewers work from a **detached snapshot** of the task branch — you are NOT on the integration branch and cannot check it out inside this workspace.
+
+**Use the supported merge helper.** Do not improvise git merge commands in the detached snapshot:
+
+```bash
+bash .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh
+```
+
+The helper reads the dispatch environment variables (`KSPEC_DISPATCH_CANONICAL_BRANCH`, `KSPEC_DISPATCH_MERGE_TARGET`, `KSPEC_DISPATCH_CANONICAL_HEAD`) and performs the merge into the integration target's occupied worktree automatically.
+
+### Helper Outcomes
+
+| Outcome | What happens | What to do next |
+| --- | --- | --- |
+| **Success** | Integration target ref advances, occupied worktree refreshed | `kspec task complete @ref`, `kspec review close @review-ref` |
+| **No-op** | Canonical branch already integrated at target tip | Report no-op, complete the task |
+| **Dirty target** | Integration target worktree has uncommitted changes | Follow the recovery guidance the helper prints, then retry |
+| **Conflict** | Merge conflicts detected, merge aborted, target ref unchanged | Move task to `needs_work` with conflict details — do not attempt manual resolution in the snapshot |
+
+### What NOT to Do in a Detached Snapshot
+
+- Do **not** run `git checkout <integration-branch>` — the integration branch is checked out in a different worktree
+- Do **not** run `git merge` manually — the helper handles merge mechanics, occupied-worktree refresh, and conflict cleanup
+- Do **not** attempt to resolve merge conflicts inside the detached snapshot — send the task back to the worker via `needs_work`
+
+## Merge Process (Non-Dispatch)
+
+The following steps apply when merging **outside** dispatch mode (e.g., manual human-directed merges). In dispatch mode, use the detached reviewer merge helper above instead.
 
 ### 1. Verify Branch State
 

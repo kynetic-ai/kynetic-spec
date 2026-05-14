@@ -6,15 +6,17 @@
 		ListTodo,
 		FileText,
 		Inbox,
-		MoreHorizontal
+		BookOpen
 	} from 'lucide-svelte';
 
 	// Primary mobile nav items — most-used routes
+	// AC: @docs-reachability ac-1 — Docs entry in primary navigation
 	const primaryItems = [
 		{ path: '/', label: 'Home', icon: LayoutDashboard },
 		{ path: '/tasks', label: 'Tasks', icon: ListTodo },
 		{ path: '/specs', label: 'Specs', icon: FileText },
-		{ path: '/inbox', label: 'Inbox', icon: Inbox }
+		{ path: '/inbox', label: 'Inbox', icon: Inbox },
+		{ path: '/docs', label: 'Docs', icon: BookOpen }
 	];
 
 	function isActive(itemPath: string): boolean {

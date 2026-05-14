@@ -3193,7 +3193,8 @@ describe("Dispatch role workflow entrypoints", () => {
   });
 
   // AC: @dispatch-role-workflow-entry-contract ac-3
-  it("renders manual merge reviewer guidance with explicit conflict escalation", async () => {
+  // AC: @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance
+  it("renders manual merge reviewer guidance directing to supported merge helper", async () => {
     const agent = makeTestAgent({
       id: "reviewer",
       adapter: "claude-agent-acp",
@@ -3266,8 +3267,13 @@ describe("Dispatch role workflow entrypoints", () => {
       expect(invocation.prompt).toContain("Workflow entrypoint: `/pr-review`");
       expect(invocation.prompt).not.toContain("{skill:pr-review}");
       expect(invocation.prompt).toContain("Publication mode: `manual_merge`");
-      expect(invocation.prompt).toContain("git merge --abort");
+      // AC: @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance
+      // Reviewer is directed to the supported merge helper, not manual git merge
+      expect(invocation.prompt).toContain("detached-reviewer-merge.sh");
       expect(invocation.prompt).toContain("needs_work");
+      // Must NOT instruct reviewer to checkout integration branch manually
+      expect(invocation.prompt).not.toContain("git checkout");
+      expect(invocation.prompt).toContain("detached snapshot");
       expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("manual_merge");
     } finally {
       await engine.stop();
@@ -4511,6 +4517,126 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     await engine.stop();
   });
 
+  // AC: @dispatch-workspace-registry ac-task-state-drives-recovery-after-untrusted-artifact-cleanup
+  // AC: @dispatch-workspace-cleanup-policy ac-corrupt-metadata-cleanup-eligible
+  // Regression: after artifact cleanup removes a dispatcher-managed worktree
+  // because its on-disk metadata was untrusted and no trusted protection state
+  // classified it as protected, recovery for a non-terminal task must be
+  // driven from trusted task state — not from the removed corrupt artifact.
+  // The dispatcher must requeue the task and reprovision a fresh workspace
+  // rather than silently discarding the queue entry because its artifact was
+  // cleaned.
+  it("reprovisions a fresh workspace after corrupt-metadata cleanup removes the prior artifact", async () => {
+    const worker = makeTestAgent({
+      id: "task-worker",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [worker]);
+
+    const taskId = testUlid("TASK", 35);
+    const taskRef = `@${taskId}`;
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
+
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: testDir,
+      taskRef,
+      task: {
+        title: "Corrupt Artifact Recovery",
+        slugs: ["task-corrupt-artifact-recovery"],
+      },
+    });
+    const canonicalBranch = workspace.metadata.canonicalBranch;
+    expect(fsSync.existsSync(workspace.cwd)).toBe(true);
+
+    // Corrupt the artifact metadata so it cannot be parsed, AND clear the
+    // registry so no record protects the workspace. With no activeTaskRefs
+    // passed in, reconcileDispatchWorkspaceArtifacts must classify the
+    // artifact as cleanup-eligible and remove both the worker worktree and
+    // its canonical dispatch branch.
+    await fs.writeFile(
+      path.join(workspace.cwd, ".kspec-dispatch-workspace.json"),
+      "{ corrupt-json-payload",
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(testDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
+
+    await workspaceModule.reconcileDispatchWorkspaceArtifacts(testDir);
+
+    // Sanity: the prior artifact (worker worktree + canonical branch) is gone
+    // before the dispatch engine starts. This is the precondition that proves
+    // recovery is driven from trusted task state, not from corrupt metadata.
+    expect(fsSync.existsSync(workspace.cwd)).toBe(false);
+    expect(git(testDir, `branch --list ${canonicalBranch}`)).toBe("");
+
+    // Restore any module-level spies left over from earlier tests in this
+    // describe block (which does not auto-restoreAllMocks in afterEach) so
+    // our fresh spy below sees a clean call history.
+    vi.restoreAllMocks();
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => ({
+      session: {} as any,
+      outcome: "success" as const,
+      durationMs: 1,
+    }));
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+
+    await engine.start();
+    await waitForMockCall(runSpy);
+
+    // The non-terminal pending task drove recovery from trusted task state
+    // alone: provisioning created a fresh workspace for the same task ref,
+    // and the worker agent was invoked. The task was not silently discarded
+    // because its corrupt artifact was cleaned, satisfying
+    // ac-task-state-drives-recovery-after-untrusted-artifact-cleanup.
+    expect(runSpy).toHaveBeenCalledTimes(1);
+    const firstCallArg = runSpy.mock.calls[0]?.[0] as {
+      taskRef: string;
+      agent: { id: string };
+      cwd: string;
+    };
+    expect(firstCallArg.taskRef).toBe(taskRef);
+    expect(firstCallArg.agent.id).toBe("task-worker");
+
+    // A fresh worker worktree was provisioned under the configured dispatch
+    // root. Its basename ends with the deterministic short-id derived from
+    // the task ref, confirming the workspace belongs to this task — the
+    // engine reprovisioned it from trusted task state without depending on
+    // the removed corrupt artifact path.
+    const shortId = taskId.slice(0, 8).toLowerCase();
+    const worktreeRoot = path.join(testDir, ".kspec-worktrees");
+    expect(firstCallArg.cwd.startsWith(worktreeRoot + path.sep)).toBe(true);
+    expect(path.basename(firstCallArg.cwd).endsWith(`-${shortId}`)).toBe(true);
+    expect(fsSync.existsSync(firstCallArg.cwd)).toBe(true);
+
+    // A canonical dispatch branch was created for this task ref. The
+    // registry record was rewritten with the freshly provisioned workspace.
+    const registry = YAML.parse(
+      await readTestOutput(path.join(testDir, "project.dispatch-workspaces.yaml")),
+    ) as { workspaces?: Array<{ task_ref: string; canonical_branch: string }> };
+    const reprovisionedRecord = registry.workspaces?.find((r) => r.task_ref === taskRef);
+    expect(reprovisionedRecord).toBeDefined();
+    expect(reprovisionedRecord?.canonical_branch).toMatch(
+      new RegExp(`^dispatch/task/.+/${shortId}$`),
+    );
+    expect(git(testDir, `branch --list ${reprovisionedRecord!.canonical_branch}`)).toContain(
+      reprovisionedRecord!.canonical_branch,
+    );
+
+    await engine.stop();
+  });
+
   // AC: @dispatch-workspace-cleanup-policy ac-6
   // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1, ac-2
   // Discovery now recovers from reviewer metadata when worker worktree is gone.
@@ -4962,7 +5088,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
 
 // ─── Priority filter threshold semantics ──────────────────────────────────────
 
-// AC: @ui-agent-dispatch ac-8
+// AC: @agent-dispatch-engine ac-6
 describe("Priority filter uses threshold semantics (<=)", () => {
   let testDir: string;
 
@@ -7416,3 +7542,500 @@ describe("AC-28: async internal bookkeeping", () => {
     await engine.stop();
   });
 });
+
+// ─── AC: in-flight spawn refs protect cleanup inputs ─────────────────────────
+
+describe("In-flight spawn refs are included in cleanup protection inputs", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-inflight-cleanup-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+    vi.restoreAllMocks();
+  });
+
+  type EngineInternal = {
+    inFlightTaskKeys: Set<string>;
+    activeInvocationDetails: Map<string, ActiveInvocationRecord>;
+    _activeTaskRefs: () => Set<string>;
+    _hasActiveInvocationForTask: (taskRef: string) => boolean;
+  };
+
+  type ActiveInvocationRecord = {
+    invocationId: string;
+    sessionId: string;
+    agentId: string;
+    agentName: string;
+    taskRef: string | undefined;
+    role: "worker" | "reviewer";
+    startedAtMs: number;
+  };
+
+  function makeActiveRecord(overrides: Partial<ActiveInvocationRecord>): ActiveInvocationRecord {
+    return {
+      invocationId: testUlid("INVK"),
+      sessionId: testUlid("SESS"),
+      agentId: "test-worker",
+      agentName: "Test Worker",
+      taskRef: undefined,
+      role: "worker",
+      startedAtMs: Date.now(),
+      ...overrides,
+    };
+  }
+
+  // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+  it("_activeTaskRefs() includes a task ref from inFlightTaskKeys when no active invocation is registered yet", async () => {
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+    const internal = engine as unknown as EngineInternal;
+
+    const taskRef = `@${testUlid("TASK")}`;
+    internal.inFlightTaskKeys.add(`test-worker:${taskRef}`);
+
+    const refs = internal._activeTaskRefs();
+    expect(refs.has(taskRef)).toBe(true);
+    expect(refs.size).toBe(1);
+  });
+
+  // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+  it("_activeTaskRefs() merges in-flight and active invocation refs with deduplication", async () => {
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+    const internal = engine as unknown as EngineInternal;
+
+    const [sharedId, inflightOnlyId, activeOnlyId] = testUlids("TASK", 3);
+    const sharedTaskRef = `@${sharedId}`;
+    const inflightOnlyRef = `@${inflightOnlyId}`;
+    const activeOnlyRef = `@${activeOnlyId}`;
+
+    internal.inFlightTaskKeys.add(`test-worker:${sharedTaskRef}`);
+    internal.inFlightTaskKeys.add(`test-worker:${inflightOnlyRef}`);
+    internal.activeInvocationDetails.set(
+      "invocation-shared",
+      makeActiveRecord({ taskRef: sharedTaskRef }),
+    );
+    internal.activeInvocationDetails.set(
+      "invocation-active-only",
+      makeActiveRecord({ taskRef: activeOnlyRef }),
+    );
+
+    const refs = internal._activeTaskRefs();
+    expect(refs.has(sharedTaskRef)).toBe(true);
+    expect(refs.has(inflightOnlyRef)).toBe(true);
+    expect(refs.has(activeOnlyRef)).toBe(true);
+    expect(refs.size).toBe(3);
+  });
+
+  // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+  it("parsing splits on the first ':' so task refs containing ':' remain intact", async () => {
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+    const internal = engine as unknown as EngineInternal;
+
+    const taskRefWithColon = `@task:with:colons`;
+    internal.inFlightTaskKeys.add(`test-worker:${taskRefWithColon}`);
+
+    const refs = internal._activeTaskRefs();
+    expect(refs.has(taskRefWithColon)).toBe(true);
+    expect(internal._hasActiveInvocationForTask(taskRefWithColon)).toBe(true);
+  });
+
+  // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+  it("malformed in-flight keys without ':' are ignored", async () => {
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+    const internal = engine as unknown as EngineInternal;
+
+    internal.inFlightTaskKeys.add(`no-separator-here`);
+
+    const refs = internal._activeTaskRefs();
+    expect(refs.size).toBe(0);
+  });
+
+  // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+  it("reconciliation passes the in-flight task ref to reconcileDispatchWorkspaceArtifacts", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry").mockResolvedValue();
+    const reconcileArtifactsSpy = vi
+      .spyOn(workspaceModule, "reconcileDispatchWorkspaceArtifacts")
+      .mockResolvedValue(undefined as any);
+    vi.spyOn(configModule, "resolveDispatchRemoteSync").mockReturnValue(false);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+      reconcileIntervalMs: 0,
+    });
+    const internal = engine as unknown as EngineInternal & {
+      _reconcile: () => Promise<void>;
+    };
+
+    const inFlightTaskRef = `@${testUlid("TASK")}`;
+    internal.inFlightTaskKeys.add(`${agent.id}:${inFlightTaskRef}`);
+
+    await engine.start();
+
+    const callsAfterStart = reconcileArtifactsSpy.mock.calls.length;
+    expect(callsAfterStart).toBeGreaterThan(0);
+    const startCallArg = reconcileArtifactsSpy.mock.calls[callsAfterStart - 1]?.[1];
+    const startActiveRefs = new Set(startCallArg?.activeTaskRefs ?? []);
+    expect(startActiveRefs.has(inFlightTaskRef)).toBe(true);
+
+    reconcileArtifactsSpy.mockClear();
+    await internal._reconcile();
+
+    expect(reconcileArtifactsSpy.mock.calls.length).toBeGreaterThan(0);
+    const reconcileCallArg = reconcileArtifactsSpy.mock.calls[0]?.[1];
+    const reconcileActiveRefs = new Set(reconcileCallArg?.activeTaskRefs ?? []);
+    expect(reconcileActiveRefs.has(inFlightTaskRef)).toBe(true);
+
+    await engine.stop();
+  });
+});
+
+// ─── AC: dispatch-level in-flight bootstrap race regression ──────────────────
+
+describe(
+  "In-flight bootstrap race: reconciliation must not delete the worker workspace",
+  { timeout: 60_000 },
+  () => {
+    let testDir: string;
+
+    beforeEach(async () => {
+      testDir = await createTempDir("kspec-dispatch-inflight-bootstrap-race-");
+    });
+
+    afterEach(async () => {
+      vi.restoreAllMocks();
+      await cleanupTempDir(testDir);
+    });
+
+    // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+    // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+    it("preserves the worker workspace and bootstrap-created files while a spawn is blocked at the bootstrap barrier", async () => {
+      const agent = makeTestAgent({
+        id: "task-worker",
+        dispatch: [{ on: "task.ready" }],
+        concurrency: { max_concurrent: 1 },
+      });
+      await setupProjectWithAgents(testDir, [agent]);
+
+      const SENTINEL_BASENAME = "bootstrap-sentinel.txt";
+      const SENTINEL_CONTENT = "bootstrap-in-progress";
+
+      let workspaceCwd: string | null = null;
+      let resolveBootstrapEntered!: () => void;
+      const bootstrapEntered = new Promise<void>((resolve) => {
+        resolveBootstrapEntered = resolve;
+      });
+      let resolveBootstrapBarrier!: () => void;
+      const bootstrapBarrier = new Promise<void>((resolve) => {
+        resolveBootstrapBarrier = resolve;
+      });
+      const bootstrapErrors: Error[] = [];
+
+      // ensureWorkspaceBootstrap is the deterministic barrier: it writes a
+      // sentinel file representing bootstrap-created files (e.g. node_modules
+      // contents from npm install), then waits on a Promise the test releases.
+      // The spawn remains in-flight (inFlightTaskKeys set, no active invocation
+      // registered) for the entire duration of the barrier.
+      const bootstrapSpy = vi
+        .spyOn(bootstrapModule, "ensureWorkspaceBootstrap")
+        .mockImplementation(async (opts) => {
+          workspaceCwd = opts.workspaceDir;
+          try {
+            await fs.writeFile(
+              path.join(opts.workspaceDir, SENTINEL_BASENAME),
+              SENTINEL_CONTENT,
+              "utf-8",
+            );
+          } catch (err) {
+            bootstrapErrors.push(err as Error);
+            throw err;
+          }
+          resolveBootstrapEntered();
+          await bootstrapBarrier;
+          // Re-read the sentinel after the barrier: if reconciliation reaped
+          // the workspace mid-bootstrap, this read surfaces as ENOENT here
+          // — the canonical TAR/ENOENT/spawn failure mode this regression
+          // protects against.
+          try {
+            const survived = await readTestOutput(path.join(opts.workspaceDir, SENTINEL_BASENAME));
+            if (survived !== SENTINEL_CONTENT) {
+              throw new Error(`bootstrap sentinel corrupted: ${survived}`);
+            }
+          } catch (err) {
+            bootstrapErrors.push(err as Error);
+            throw err;
+          }
+          return { metadata: opts.metadata, reused: false, ranSteps: true };
+        });
+
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as never,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      // Spy on the real artifact reconciliation (call-through). We use it to
+      // assert that the in-flight task ref flowed into activeTaskRefs as the
+      // protection input — and we let it run for real so the workspace dir is
+      // exercised by the cleanup logic, not just inspected.
+      const reconcileArtifactsSpy = vi.spyOn(
+        workspaceModule,
+        "reconcileDispatchWorkspaceArtifacts",
+      );
+      // Stub the registry reconciliation so it cannot revert the forced
+      // cleanup-eligible state mutation below. The registry reconciliation
+      // recomputes lifecycle_state from task state on each cycle; without
+      // this stub it would race with the test's mutation.
+      vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry").mockResolvedValue();
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+        // Disable periodic reconcile — the test drives _reconcile() explicitly
+        // so the regression check is deterministic.
+        reconcileIntervalMs: 0,
+      });
+
+      await engine.start();
+
+      const taskId = testUlid("TASK");
+      const taskRef = `@${taskId}`;
+
+      // handleStateChange awaits the full drain → _spawnInvocation chain, and
+      // our mocked bootstrap blocks indefinitely. Run it without awaiting so
+      // the test thread can proceed once the bootstrap barrier is reached.
+      const handleStateChangePromise = engine.handleStateChange({
+        taskId,
+        taskRef,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: {
+          _ulid: taskId,
+          title: "Bootstrap In-Flight Race",
+          slugs: ["bootstrap-in-flight-race"],
+          status: "pending",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as never,
+      });
+
+      // Deterministic synchronization: spawn has dequeued, inFlightTaskKeys is
+      // populated, provisionDispatchWorkspace has created the real worktree,
+      // and ensureWorkspaceBootstrap is awaiting the barrier. No active
+      // invocation is registered for this task yet — this is precisely the
+      // pre-active spawn window the AC protects.
+      await bootstrapEntered;
+      expect(workspaceCwd).not.toBeNull();
+
+      const engineInternal = engine as unknown as {
+        inFlightTaskKeys: Set<string>;
+        activeInvocationDetails: Map<string, { taskRef: string | undefined }>;
+        _reconcile: () => Promise<void>;
+        _activeTaskRefs: () => Set<string>;
+      };
+
+      // Pre-active window invariants — the very state the regression test exists
+      // to protect: in-flight has it, active does not.
+      expect(
+        Array.from(engineInternal.inFlightTaskKeys).some((key) => key.endsWith(`:${taskRef}`)),
+      ).toBe(true);
+      expect(
+        Array.from(engineInternal.activeInvocationDetails.values()).some(
+          (record) => record.taskRef === taskRef,
+        ),
+      ).toBe(false);
+      // The engine's protection input set must include the in-flight task ref.
+      expect(engineInternal._activeTaskRefs().has(taskRef)).toBe(true);
+
+      // Force the registry record + per-worker metadata into a cleanup-eligible
+      // closing state with resolved integration. Without this mutation the
+      // workspace would be preserved by lifecycle protection alone (ready /
+      // provisioning are in DISPATCH_PROTECTED_LIFECYCLE_STATES), and the test
+      // would not actually exercise the in-flight cleanup-protection branch.
+      // With this mutation, the ONLY thing standing between reap and
+      // workspace deletion is the in-flight task ref being passed into
+      // activeTaskRefs — which is exactly what the AC requires.
+      const registryPath = path.join(testDir, "project.dispatch-workspaces.yaml");
+      const registryRaw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+        kynetic_dispatch_workspaces?: string;
+        workspaces?: Array<Record<string, any>>;
+      };
+      const workspaceRecord = registryRaw.workspaces?.find((record) => record.task_ref === taskRef);
+      if (!workspaceRecord) {
+        throw new Error(`workspace registry record missing for ${taskRef}`);
+      }
+      const originalLifecycleState = workspaceRecord.lifecycle_state;
+      const originalCleanup = workspaceRecord.cleanup ? { ...workspaceRecord.cleanup } : undefined;
+      const originalIntegration = workspaceRecord.integration
+        ? { ...workspaceRecord.integration }
+        : undefined;
+      workspaceRecord.lifecycle_state = "closing";
+      workspaceRecord.cleanup = {
+        ...workspaceRecord.cleanup,
+        eligible: true,
+        status: "scheduled",
+        reason: "forced-cleanup-eligible-for-test",
+        detail:
+          "Forced cleanup-eligible state to exercise in-flight bootstrap protection composition",
+        scheduled_at: new Date().toISOString(),
+        completed_at: null,
+      };
+      workspaceRecord.integration = {
+        ...workspaceRecord.integration,
+        status: "merged",
+        outcome: "merged",
+      };
+      await fs.writeFile(
+        registryPath,
+        YAML.stringify({
+          kynetic_dispatch_workspaces: registryRaw.kynetic_dispatch_workspaces ?? "1.0",
+          workspaces: registryRaw.workspaces ?? [],
+        }),
+        "utf-8",
+      );
+
+      const metadataFilePath = path.join(workspaceCwd!, ".kspec-dispatch-workspace.json");
+      const metadataRaw = JSON.parse(await fs.readFile(metadataFilePath, "utf-8")) as Record<
+        string,
+        any
+      >;
+      const originalMetadataCleanupEligible = metadataRaw.cleanupEligible;
+      const originalMetadataLifecycleState = metadataRaw.lifecycleState;
+      const originalMetadataCleanupState = metadataRaw.cleanupState
+        ? { ...metadataRaw.cleanupState }
+        : undefined;
+      metadataRaw.cleanupEligible = true;
+      metadataRaw.cleanupReason = "forced-cleanup-eligible-for-test";
+      metadataRaw.lifecycleState = "closing";
+      metadataRaw.cleanupState = {
+        ...metadataRaw.cleanupState,
+        status: "scheduled",
+        eligible: true,
+        reason: "forced-cleanup-eligible-for-test",
+      };
+      await fs.writeFile(metadataFilePath, `${JSON.stringify(metadataRaw, null, 2)}\n`, "utf-8");
+
+      // Pre-reconcile sanity: workspace directory and bootstrap sentinel exist.
+      await expect(fs.stat(workspaceCwd!)).resolves.toBeDefined();
+      await expect(readTestOutput(path.join(workspaceCwd!, SENTINEL_BASENAME))).resolves.toBe(
+        SENTINEL_CONTENT,
+      );
+
+      reconcileArtifactsSpy.mockClear();
+
+      // Trigger reconciliation while the spawn remains in-flight at bootstrap.
+      // The fix under regression: _reconcile() builds activeTaskRefs via
+      // _activeTaskRefs(), which includes inFlightTaskKeys entries, and passes
+      // the merged set to reconcileDispatchWorkspaceArtifacts. The cleanup
+      // surface then routes the task ref through the shared protection state
+      // and preserves the worker workspace despite the cleanup-eligible record.
+      await engineInternal._reconcile();
+
+      // Composition assertion: the in-flight task ref is part of the cleanup
+      // protection input.
+      expect(reconcileArtifactsSpy).toHaveBeenCalled();
+      const reconcileArgs = reconcileArtifactsSpy.mock.calls[0]?.[1];
+      const reconcileActiveRefs = new Set(reconcileArgs?.activeTaskRefs ?? []);
+      expect(reconcileActiveRefs.has(taskRef)).toBe(true);
+
+      // Behavioral assertion: workspace directory and bootstrap-created
+      // sentinel both survive the cleanup pass.
+      await expect(fs.stat(workspaceCwd!)).resolves.toBeDefined();
+      await expect(readTestOutput(path.join(workspaceCwd!, SENTINEL_BASENAME))).resolves.toBe(
+        SENTINEL_CONTENT,
+      );
+
+      // Restore the registry + metadata to a non-cleanup-eligible state so the
+      // post-bootstrap validation gate sees a healthy workspace and the spawn
+      // can reach its controlled success path.
+      workspaceRecord.lifecycle_state = originalLifecycleState ?? "active";
+      workspaceRecord.cleanup = originalCleanup ?? {
+        eligible: false,
+        status: "not_scheduled",
+        reason: null,
+        detail: null,
+        scheduled_at: null,
+        completed_at: null,
+      };
+      workspaceRecord.integration = originalIntegration ?? {
+        status: "pending",
+        outcome: "pending",
+      };
+      await fs.writeFile(
+        registryPath,
+        YAML.stringify({
+          kynetic_dispatch_workspaces: registryRaw.kynetic_dispatch_workspaces ?? "1.0",
+          workspaces: registryRaw.workspaces ?? [],
+        }),
+        "utf-8",
+      );
+      metadataRaw.cleanupEligible = originalMetadataCleanupEligible ?? false;
+      metadataRaw.cleanupReason = null;
+      metadataRaw.lifecycleState = originalMetadataLifecycleState ?? "active";
+      metadataRaw.cleanupState = originalMetadataCleanupState ?? {
+        status: "not_scheduled",
+        eligible: false,
+        reason: null,
+        detail: null,
+        updated_at: new Date().toISOString(),
+      };
+      await fs.writeFile(metadataFilePath, `${JSON.stringify(metadataRaw, null, 2)}\n`, "utf-8");
+
+      // Release the bootstrap barrier — the spawn must reach the controlled
+      // success path without cleanup-induced ENOENT / TAR / spawn errors.
+      // The bootstrap mock's post-barrier re-read of the sentinel will throw
+      // if the workspace was reaped under it, capturing those error modes
+      // in `bootstrapErrors`.
+      resolveBootstrapBarrier();
+
+      await waitForMockCall(runSpy, "runInvocation should be called once bootstrap is released");
+      expect(runSpy).toHaveBeenCalledTimes(1);
+      expect(bootstrapSpy).toHaveBeenCalled();
+      expect(bootstrapErrors).toEqual([]);
+
+      // Ensure the original dispatch chain has fully unwound before stopping
+      // the engine to avoid stop() racing with an in-flight drain.
+      await handleStateChangePromise;
+      await engine.stop();
+    });
+  },
+);

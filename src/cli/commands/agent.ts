@@ -23,7 +23,7 @@ import { resolveAdapter } from "../../agents/adapters.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success, warn, isJsonMode } from "../output.js";
 import { parseIntOption, validateEnumOption } from "../validators.js";
-import { PidFileManager } from "../pid-utils.js";
+import { getRunningDaemonClient } from "../daemon-client.js";
 import { errors } from "../../strings/errors.js";
 import type { LoadedAgent } from "../../parser/meta.js";
 import { requestEndLoop } from "../../sessions/index.js";
@@ -42,22 +42,6 @@ export function _setWebSocketCtor(ctor: typeof WebSocket | null): void {
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
-
-/**
- * Get the daemon URL from the PID file manager.
- * Returns null if the daemon is not running.
- * AC: @cli-agent-commands ac-10
- */
-function getDaemonUrl(): { url: string; port: number } | null {
-  const pidManager = new PidFileManager();
-  if (!pidManager.isDaemonRunning()) return null;
-  try {
-    const port = pidManager.readPort();
-    return { url: `http://localhost:${port}`, port };
-  } catch {
-    return null;
-  }
-}
 
 /**
  * Format dispatch rules summary for display.
@@ -526,10 +510,10 @@ export function registerAgentCommands(program: Command): void {
     .option("--json", "Output as JSON")
     .action(async (_opts) => {
       try {
-        const daemonConn = getDaemonUrl();
+        const daemon = getRunningDaemonClient();
 
         // AC: @trait-error-guidance ac-1, ac-2
-        if (!daemonConn) {
+        if (!daemon) {
           error("Daemon is not running. Cannot retrieve agent status.", {
             suggestion: "Start the daemon with: kspec serve",
           });
@@ -543,7 +527,7 @@ export function registerAgentCommands(program: Command): void {
           headers["X-Kspec-Dir"] = ctx.projectRoot;
         }
 
-        const response = await fetch(`${daemonConn.url}/api/agent/dispatch/status`, { headers });
+        const response = await fetch(`${daemon.apiUrl}/api/agent/dispatch/status`, { headers });
         if (!response.ok) {
           error(`Daemon returned error: ${response.status} ${response.statusText}`);
           process.exit(EXIT_CODES.ERROR);
@@ -623,10 +607,10 @@ export function registerAgentCommands(program: Command): void {
     .option("--json", "Output as JSON")
     .action(async (_opts) => {
       try {
-        const daemonConn = getDaemonUrl();
+        const daemon = getRunningDaemonClient();
 
         // AC: @cli-agent-commands ac-10 - error when daemon not running
-        if (!daemonConn) {
+        if (!daemon) {
           error("Daemon is not running. The dispatch engine requires the daemon.", {
             suggestion: "Start the daemon first with: kspec serve",
           });
@@ -645,7 +629,7 @@ export function registerAgentCommands(program: Command): void {
           }
         }
 
-        const response = await fetch(`${daemonConn.url}/api/agent/dispatch/start`, {
+        const response = await fetch(`${daemon.apiUrl}/api/agent/dispatch/start`, {
           method: "POST",
           headers,
         });
@@ -682,9 +666,9 @@ export function registerAgentCommands(program: Command): void {
     .option("--json", "Output as JSON")
     .action(async (_opts) => {
       try {
-        const daemonConn = getDaemonUrl();
+        const daemon = getRunningDaemonClient();
 
-        if (!daemonConn) {
+        if (!daemon) {
           error("Daemon is not running.", { suggestion: "Start the daemon with: kspec serve" });
           process.exit(EXIT_CODES.ERROR);
         }
@@ -698,7 +682,7 @@ export function registerAgentCommands(program: Command): void {
           headers["X-Kspec-Dir"] = ctx.projectRoot;
         }
 
-        const response = await fetch(`${daemonConn.url}/api/agent/dispatch/stop`, {
+        const response = await fetch(`${daemon.apiUrl}/api/agent/dispatch/stop`, {
           method: "POST",
           headers,
         });
@@ -731,9 +715,9 @@ export function registerAgentCommands(program: Command): void {
     .option("--json", "Output as JSON")
     .action(async (_opts) => {
       try {
-        const daemonConn = getDaemonUrl();
+        const daemon = getRunningDaemonClient();
 
-        if (!daemonConn) {
+        if (!daemon) {
           // Daemon not running — show as disabled
           output({ running: false, activeInvocations: 0, queuedInvocations: 0, agents: [] }, () => {
             console.log(chalk.bold("Dispatch Status"));
@@ -752,7 +736,7 @@ export function registerAgentCommands(program: Command): void {
         }
 
         // Get dispatch status
-        const statusResponse = await fetch(`${daemonConn.url}/api/agent/dispatch/status`, {
+        const statusResponse = await fetch(`${daemon.apiUrl}/api/agent/dispatch/status`, {
           headers,
         });
         if (!statusResponse.ok) {
@@ -838,16 +822,6 @@ export function registerAgentCommands(program: Command): void {
       const RETRY_BASE_MS = 1000;
       const MAX_RETRY_MS = 30_000;
 
-      // AC: @cli-agent-commands ac-15 — error when daemon not running
-      const daemonConn = getDaemonUrl();
-      if (!daemonConn) {
-        error("Daemon is not running. The watch command requires the daemon.");
-        info("Suggestion: Start the daemon with: kspec serve");
-        // AC: @cli-agent-commands ac-15 — exit code 3
-        process.exit(EXIT_CODES.NOT_FOUND);
-        return;
-      }
-
       const parsedRetries = parseIntOption(opts.retries, {
         min: 0,
         max: Number.MAX_SAFE_INTEGER,
@@ -861,6 +835,18 @@ export function registerAgentCommands(program: Command): void {
         return;
       }
       const retryLimit = parsedRetries.value;
+
+      // AC: @cli-agent-commands ac-15 — error when daemon is not running.
+      // Validate local numeric options first so invalid CLI input returns the
+      // validation exit code even on machines where the daemon is unavailable.
+      const daemon = getRunningDaemonClient();
+      if (!daemon) {
+        error("Daemon is not running. The watch command requires the daemon.");
+        info("Suggestion: Start the daemon with: kspec serve");
+        // AC: @cli-agent-commands ac-15 — exit code 3
+        process.exit(EXIT_CODES.NOT_FOUND);
+        return;
+      }
       const agentFilter: string | undefined = opts.agent;
       const sessionFilter: string | undefined = opts.session;
       const verbose: boolean = opts.verbose === true;
@@ -968,7 +954,8 @@ export function registerAgentCommands(program: Command): void {
       let shouldReconnect = true;
 
       function connect(): void {
-        const wsUrl = new URL(`ws://localhost:${daemonConn!.port}/ws`);
+        // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+        const wsUrl = new URL(daemon!.wsUrl);
         if (projectDir) {
           wsUrl.searchParams.set("project", projectDir);
         }

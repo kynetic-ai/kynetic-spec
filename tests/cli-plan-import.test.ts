@@ -617,7 +617,7 @@ Just prose, no specs or tasks.
   });
 });
 
-// AC: @plan-import-format-guidance — Plan import format error guidance tests
+// AC: @plan-import-format-guidance ac-missing-title-fails-import — Plan import format error guidance tests
 describe("Integration: plan import format guidance", () => {
   let tempDir: string;
 

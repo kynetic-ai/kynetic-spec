@@ -5,6 +5,10 @@
  *
  * Validates that // AC: @slug ac-N comments reference real spec items/traits
  * and that ac-N exists on the referenced item.
+ *
+ * EXCLUDED from coverage scanning (kspec.config.yaml exclude_patterns) because
+ * this file contains fixture AC annotation strings inside test file content
+ * that would be misinterpreted as real coverage annotations by the scanner.
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
@@ -141,7 +145,6 @@ it('should also work', () => {});
       expect(refs).toContain("@spec-b ac-2");
     });
 
-    // AC: @test-annotation-sweep ac-annotation-format
     it("should parse named ac ids on sweep annotations", async () => {
       const testsDir = path.join(tempDir, "tests");
       await fs.mkdir(testsDir, { recursive: true });
@@ -180,6 +183,7 @@ it('should also work', () => {});
 
   // Unresolved references should emit invalid_ac_annotation warnings.
   describe("validateACAnnotations - unresolved references", () => {
+    // AC: @ac-annotation-integrity-reporting ac-unresolved-target-reported
     it("should warn when @slug does not resolve to any item", async () => {
       const ctx = await setupProject({
         specItems: [
@@ -203,6 +207,7 @@ it('should also work', () => {});
         (w) => w.type === "invalid_ac_annotation",
       );
       expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].subtype).toBe("unresolved_target");
       expect(invalidAnnotations[0].message).toContain("@nonexistent-spec");
       expect(invalidAnnotations[0].message).toContain("cannot be resolved");
     });
@@ -240,7 +245,7 @@ it('should also work', () => {});
       expect(invalidAnnotations).toHaveLength(0);
     });
 
-    // AC: @test-annotation-sweep ac-explicit-mapping
+    // AC: @ac-annotation-integrity-reporting ac-valid-annotation-covers-target
     it("credits completeness coverage only when explicit ac ids are provided", async () => {
       const ctx = await setupProject({
         specItems: [
@@ -285,6 +290,7 @@ it('should also work', () => {});
 
   // Non-existent AC ids should emit invalid_ac_annotation warnings.
   describe("validateACAnnotations - non-existent AC ids", () => {
+    // AC: @ac-annotation-integrity-reporting ac-missing-ac-id-reported
     it("should warn when ac-N does not exist on the resolved item", async () => {
       const ctx = await setupProject({
         specItems: [
@@ -316,6 +322,7 @@ it('should also work', () => {});
         (w) => w.type === "invalid_ac_annotation",
       );
       expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].subtype).toBe("missing_ac_id");
       expect(invalidAnnotations[0].message).toContain("@my-spec ac-5");
       expect(invalidAnnotations[0].message).toContain("no acceptance criterion 'ac-5'");
     });
@@ -441,7 +448,7 @@ it('invalid trait AC ref', () => {});
   });
 
   describe("validateACAnnotations - edge cases", () => {
-    // AC: @test-annotation-sweep ac-no-blanket-credit
+    // AC: @ac-annotation-integrity-reporting ac-blanket-ref-does-not-cover
     it("warns and withholds coverage when annotations omit ac ids for items with ACs", async () => {
       const ctx = await setupProject({
         specItems: [
@@ -478,6 +485,7 @@ it('invalid trait AC ref', () => {});
       );
 
       expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].subtype).toBe("blanket_ref");
       expect(invalidAnnotations[0].message).toContain("without explicit ac-* ids");
       expect(missingCoverage).toHaveLength(1);
       expect(missingCoverage[0].details).toContain("ac-1");
@@ -506,6 +514,7 @@ it('invalid trait AC ref', () => {});
         (w) => w.type === "invalid_ac_annotation",
       );
       expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].subtype).toBe("missing_ac_id");
       expect(invalidAnnotations[0].message).toContain("no acceptance criterion 'ac-1'");
     });
 
@@ -536,6 +545,7 @@ it('invalid trait AC ref', () => {});
       expect(invalidAnnotations[0].details).toContain(":1");
     });
 
+    // AC: @ac-annotation-integrity-reporting ac-non-spec-target-reported
     it("should warn when AC annotation references a task instead of a spec item", async () => {
       const ctx = await setupProject({
         specItems: [
@@ -568,6 +578,7 @@ it('invalid trait AC ref', () => {});
         (w) => w.type === "invalid_ac_annotation",
       );
       expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].subtype).toBe("non_spec_target");
       expect(invalidAnnotations[0].message).toContain("@task-example");
       expect(invalidAnnotations[0].message).toContain("not a spec item or trait");
     });
@@ -595,17 +606,20 @@ it('invalid trait AC ref', () => {});
         (w) => w.type === "invalid_ac_annotation",
       );
       expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].subtype).toBe("non_spec_target");
       expect(invalidAnnotations[0].message).toContain("@task-example");
       expect(invalidAnnotations[0].message).toContain("not a spec item or trait");
     });
   });
 
   describe("validateACAnnotations unit tests", () => {
+    // AC: @ac-annotation-integrity-reporting ac-unresolved-target-reported
     it("should detect unresolved references without full kspec project", () => {
       const annotations = [
         {
           specRef: "@nonexistent",
           acIds: ["ac-1"],
+          malformedTokens: [],
           file: "/tmp/test.test.ts",
           line: 5,
         },
@@ -617,9 +631,13 @@ it('invalid trait AC ref', () => {});
 
       expect(warnings).toHaveLength(1);
       expect(warnings[0].type).toBe("invalid_ac_annotation");
+      expect(warnings[0].subtype).toBe("unresolved_target");
       expect(warnings[0].message).toContain("cannot be resolved");
+      expect(warnings[0].itemRef).toBe("@nonexistent");
+      expect(warnings[0].details).toContain("/tmp/test.test.ts:5");
     });
 
+    // AC: @ac-annotation-integrity-reporting ac-missing-ac-id-reported
     it("should detect non-existent AC on resolved item", () => {
       const items = [
         {
@@ -639,6 +657,7 @@ it('invalid trait AC ref', () => {});
         {
           specRef: "@my-spec",
           acIds: ["ac-1", "ac-3"],
+          malformedTokens: [],
           file: "/tmp/test.test.ts",
           line: 10,
         },
@@ -648,9 +667,13 @@ it('invalid trait AC ref', () => {});
 
       // ac-1 exists, ac-3 does not
       expect(warnings).toHaveLength(1);
+      expect(warnings[0].subtype).toBe("missing_ac_id");
       expect(warnings[0].message).toContain("ac-3");
+      expect(warnings[0].itemRef).toBe("@my-spec");
+      expect(warnings[0].details).toContain("/tmp/test.test.ts:10");
     });
 
+    // AC: @ac-annotation-integrity-reporting ac-non-spec-target-reported
     it("should warn when ref resolves to a task (not a spec item or trait)", () => {
       // Task is in the reference index but NOT in the spec items list
       const tasks = [
@@ -670,6 +693,7 @@ it('invalid trait AC ref', () => {});
         {
           specRef: "@task-example",
           acIds: ["ac-1"],
+          malformedTokens: [],
           file: "/tmp/test.test.ts",
           line: 5,
         },
@@ -679,8 +703,10 @@ it('invalid trait AC ref', () => {});
 
       expect(warnings).toHaveLength(1);
       expect(warnings[0].type).toBe("invalid_ac_annotation");
+      expect(warnings[0].subtype).toBe("non_spec_target");
       expect(warnings[0].message).toContain("@task-example");
       expect(warnings[0].message).toContain("not a spec item or trait");
+      expect(warnings[0].details).toContain("/tmp/test.test.ts:5");
     });
 
     it("should warn when ref resolves to a task even without specific AC ids", () => {
@@ -700,6 +726,7 @@ it('invalid trait AC ref', () => {});
         {
           specRef: "@task-example",
           acIds: [],
+          malformedTokens: [],
           file: "/tmp/test.test.ts",
           line: 5,
         },
@@ -709,12 +736,12 @@ it('invalid trait AC ref', () => {});
 
       expect(warnings).toHaveLength(1);
       expect(warnings[0].type).toBe("invalid_ac_annotation");
+      expect(warnings[0].subtype).toBe("non_spec_target");
       expect(warnings[0].message).toContain("not a spec item or trait");
     });
   });
 
   describe("computeACCoverage", () => {
-    // AC: @test-annotation-sweep ac-annotation-format
     it("uses the declared AC ids when computing coverage status", () => {
       const coverage = computeACCoverage(
         {
@@ -738,27 +765,29 @@ it('invalid trait AC ref', () => {});
   describe("parseACAnnotationLine - multi-group annotations", () => {
     it("should parse a single @ref with single AC", () => {
       const groups = parseACAnnotationLine("// AC: @spec-a ac-1");
-      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1"] }]);
+      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1"], malformedTokens: [] }]);
     });
 
     it("should parse a single @ref with multiple comma-separated ACs", () => {
       const groups = parseACAnnotationLine("// AC: @spec-a ac-1, ac-2, ac-3");
-      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1", "ac-2", "ac-3"] }]);
+      expect(groups).toEqual([
+        { specRef: "@spec-a", acIds: ["ac-1", "ac-2", "ac-3"], malformedTokens: [] },
+      ]);
     });
 
     it("should parse multiple @ref groups on the same line", () => {
       const groups = parseACAnnotationLine("// AC: @spec-a ac-1, @spec-b ac-2");
       expect(groups).toEqual([
-        { specRef: "@spec-a", acIds: ["ac-1"] },
-        { specRef: "@spec-b", acIds: ["ac-2"] },
+        { specRef: "@spec-a", acIds: ["ac-1"], malformedTokens: [] },
+        { specRef: "@spec-b", acIds: ["ac-2"], malformedTokens: [] },
       ]);
     });
 
     it("should parse multiple @ref groups with multiple ACs each", () => {
       const groups = parseACAnnotationLine("// AC: @spec-a ac-1, ac-2, @spec-b ac-3, ac-4");
       expect(groups).toEqual([
-        { specRef: "@spec-a", acIds: ["ac-1", "ac-2"] },
-        { specRef: "@spec-b", acIds: ["ac-3", "ac-4"] },
+        { specRef: "@spec-a", acIds: ["ac-1", "ac-2"], malformedTokens: [] },
+        { specRef: "@spec-b", acIds: ["ac-3", "ac-4"], malformedTokens: [] },
       ]);
     });
 
@@ -767,30 +796,66 @@ it('invalid trait AC ref', () => {});
         "// AC: @agent-instruction-gen ac-5, @agents-cli ac-3, @agents-cli ac-4",
       );
       expect(groups).toEqual([
-        { specRef: "@agent-instruction-gen", acIds: ["ac-5"] },
-        { specRef: "@agents-cli", acIds: ["ac-3"] },
-        { specRef: "@agents-cli", acIds: ["ac-4"] },
+        { specRef: "@agent-instruction-gen", acIds: ["ac-5"], malformedTokens: [] },
+        { specRef: "@agents-cli", acIds: ["ac-3"], malformedTokens: [] },
+        { specRef: "@agents-cli", acIds: ["ac-4"], malformedTokens: [] },
       ]);
     });
 
     it("should parse @ref without AC ids", () => {
       const groups = parseACAnnotationLine("// AC: @some-spec");
-      expect(groups).toEqual([{ specRef: "@some-spec", acIds: [] }]);
+      expect(groups).toEqual([{ specRef: "@some-spec", acIds: [], malformedTokens: [] }]);
     });
 
     it("should strip N/A suffix", () => {
       const groups = parseACAnnotationLine("// AC: @spec-a ac-1 — N/A: reason why");
-      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1"] }]);
+      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1"], malformedTokens: [] }]);
     });
 
     it("should strip parenthetical comments", () => {
       const groups = parseACAnnotationLine("// AC: @cli-exit-codes (exit 4 for validation errors)");
-      expect(groups).toEqual([{ specRef: "@cli-exit-codes", acIds: [] }]);
+      expect(groups).toEqual([{ specRef: "@cli-exit-codes", acIds: [], malformedTokens: [] }]);
     });
 
     it("should return empty array for non-AC lines", () => {
       expect(parseACAnnotationLine("// just a comment")).toEqual([]);
       expect(parseACAnnotationLine("const x = 1;")).toEqual([]);
+    });
+
+    it("should ignore non-ac-prefixed tokens after a @ref", () => {
+      // A bare word like "validate" after @ref is NOT an AC id
+      const groups = parseACAnnotationLine("// AC: @my-spec validate");
+      expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: [] }]);
+    });
+
+    it("should ignore numeric-only tokens without ac- prefix", () => {
+      // "1" or "2" are not ac-prefixed, so they should be ignored
+      const groups = parseACAnnotationLine("// AC: @my-spec 1");
+      expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: [] }]);
+    });
+
+    it("should parse ac-prefixed named ids as explicit AC references", () => {
+      const groups = parseACAnnotationLine("// AC: @my-spec ac-validate-input, ac-reject-invalid");
+      expect(groups).toEqual([
+        {
+          specRef: "@my-spec",
+          acIds: ["ac-validate-input", "ac-reject-invalid"],
+          malformedTokens: [],
+        },
+      ]);
+    });
+
+    it("should parse ac-prefixed numeric ids as explicit AC references", () => {
+      const groups = parseACAnnotationLine("// AC: @my-spec ac-1, ac-2");
+      expect(groups).toEqual([
+        { specRef: "@my-spec", acIds: ["ac-1", "ac-2"], malformedTokens: [] },
+      ]);
+    });
+
+    it("should treat mixed tokens correctly: only ac-prefixed tokens become AC ids", () => {
+      // "some-word" is not ac-prefixed, so only ac-1 should be captured
+      const groups = parseACAnnotationLine("// AC: @my-spec ac-1 some-word");
+      expect(groups).toEqual([{ specRef: "@my-spec", acIds: ["ac-1"], malformedTokens: [] }]);
     });
   });
 
@@ -901,6 +966,199 @@ it('test', () => {});
       expect(invalidAnnotations).toHaveLength(1);
       expect(invalidAnnotations[0].message).toContain("@nonexistent");
       expect(invalidAnnotations[0].message).toContain("cannot be resolved");
+    });
+  });
+
+  describe("ac-prefixed named ids provide coverage credit", () => {
+    it("should credit coverage when annotation uses ac-prefixed named id", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["my-feature"],
+            title: "My Feature",
+            type: "requirement",
+            description: "A feature with named ACs",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [
+              {
+                id: "ac-validate-input",
+                given: "user provides input",
+                when: "validation runs",
+                then: "input is validated",
+              },
+              {
+                id: "ac-reject-invalid",
+                given: "user provides invalid input",
+                when: "validation runs",
+                then: "input is rejected",
+              },
+            ],
+          },
+        ],
+        testFiles: {
+          "feature.test.ts":
+            '// AC: @my-feature ac-validate-input\nit("validates input", () => {});\n' +
+            '// AC: @my-feature ac-reject-invalid\nit("rejects invalid", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      // No invalid annotations
+      const invalidAnnotations = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation",
+      );
+      expect(invalidAnnotations).toHaveLength(0);
+
+      // No missing coverage for this spec
+      const missingCoverage = result.completenessWarnings.filter(
+        (w) =>
+          w.type === "missing_test_coverage" &&
+          w.subtype === "own_ac" &&
+          w.itemRef === "@my-feature",
+      );
+      expect(missingCoverage).toHaveLength(0);
+    });
+
+    it("should credit coverage when annotation uses ac-prefixed numeric id", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["numbered-spec"],
+            title: "Numbered Spec",
+            type: "requirement",
+            description: "A spec with numeric ACs",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [
+              { id: "ac-1", given: "g", when: "w", then: "t" },
+              { id: "ac-2", given: "g2", when: "w2", then: "t2" },
+            ],
+          },
+        ],
+        testFiles: {
+          "numbered.test.ts": '// AC: @numbered-spec ac-1, ac-2\nit("covers both", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      const invalidAnnotations = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation",
+      );
+      const missingCoverage = result.completenessWarnings.filter(
+        (w) =>
+          w.type === "missing_test_coverage" &&
+          w.subtype === "own_ac" &&
+          w.itemRef === "@numbered-spec",
+      );
+
+      expect(invalidAnnotations).toHaveLength(0);
+      expect(missingCoverage).toHaveLength(0);
+    });
+  });
+
+  describe("non-prefixed tokens after @ref provide no AC coverage", () => {
+    it("should not credit coverage when annotation has non-prefixed word after @ref", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["my-spec"],
+            title: "My Spec",
+            type: "requirement",
+            description: "A spec with ACs",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
+          },
+        ],
+        testFiles: {
+          // "validate" is not ac-prefixed, so this should be treated as a blanket ref
+          "bad-token.test.ts": '// AC: @my-spec validate\nit("test", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      // Should warn about blanket ref (non-prefixed token is ignored by parser)
+      const blanketWarnings = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation" && w.subtype === "blanket_ref",
+      );
+      expect(blanketWarnings).toHaveLength(1);
+      expect(blanketWarnings[0].message).toContain("without explicit ac-* ids");
+
+      // ac-1 should remain uncovered
+      const missingCoverage = result.completenessWarnings.filter(
+        (w) =>
+          w.type === "missing_test_coverage" && w.subtype === "own_ac" && w.itemRef === "@my-spec",
+      );
+      expect(missingCoverage).toHaveLength(1);
+      expect(missingCoverage[0].details).toContain("ac-1");
+    });
+
+    it("should not credit coverage when annotation has numeric-only token without ac- prefix", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["my-spec"],
+            title: "My Spec",
+            type: "requirement",
+            description: "A spec with ACs",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
+          },
+        ],
+        testFiles: {
+          // "1" is not ac-prefixed, parser ignores it → blanket ref behavior
+          "numeric-token.test.ts": '// AC: @my-spec 1\nit("test", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      const blanketWarnings = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation" && w.subtype === "blanket_ref",
+      );
+      expect(blanketWarnings).toHaveLength(1);
+
+      const missingCoverage = result.completenessWarnings.filter(
+        (w) =>
+          w.type === "missing_test_coverage" && w.subtype === "own_ac" && w.itemRef === "@my-spec",
+      );
+      expect(missingCoverage).toHaveLength(1);
+    });
+  });
+
+  describe("annotation format with ac-prefixed tokens", () => {
+    it("should parse annotation with mixed numeric and named ac-prefixed ids", async () => {
+      const testsDir = path.join(tempDir, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+
+      await fs.writeFile(
+        path.join(testsDir, "mixed-ids.test.ts"),
+        "// AC: @my-spec ac-1, ac-validate-input\nit('test', () => {});",
+      );
+
+      const annotations = await scanACAnnotations(tempDir, ["tests/"]);
+      expect(annotations).toHaveLength(1);
+      expect(annotations[0].specRef).toBe("@my-spec");
+      expect(annotations[0].acIds).toEqual(["ac-1", "ac-validate-input"]);
+    });
+
+    it("should accept ac-prefixed kebab-case ids of varying length", async () => {
+      const testsDir = path.join(tempDir, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+
+      await fs.writeFile(
+        path.join(testsDir, "kebab-ids.test.ts"),
+        "// AC: @my-spec ac-a, ac-very-long-descriptive-name\nit('test', () => {});",
+      );
+
+      const annotations = await scanACAnnotations(tempDir, ["tests/"]);
+      expect(annotations).toHaveLength(1);
+      expect(annotations[0].acIds).toEqual(["ac-a", "ac-very-long-descriptive-name"]);
     });
   });
 });

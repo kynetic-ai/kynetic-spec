@@ -97,7 +97,7 @@ describe("Plan/Inbox Mutation Serialization", () => {
   });
 
   it("preserves concurrent inbox tag updates during inbox set --content", async () => {
-    // AC: @inbox-set ac-1 - content updates must not clobber concurrent tag changes.
+    // AC: @cmd-inbox-set ac-1 - content updates must not clobber concurrent tag changes.
     tempDir = await setupTempFixtures();
     kspec('inbox add "Concurrent inbox item"', tempDir);
 

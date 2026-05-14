@@ -22,6 +22,7 @@ import {
   readTestOutput,
   kspec,
 } from "./helpers/cli.js";
+import { acquireFileLock, getLockDirPath } from "../src/parser/file-lock.js";
 
 // ── Pure function tests (parseManagedBlock / updateManagedBlock) ──
 
@@ -417,9 +418,10 @@ describe("kspec init gitignore integration", () => {
 
     const content2 = readTestOutputSync(path.join(testDir, ".gitignore"));
 
-    // Count occurrences of each entry — should be exactly 1
+    // Count occurrences of each entry — should be exactly 1 line per entry
+    const lines = content2.split("\n");
     for (const entry of KSPEC_GITIGNORE_ENTRIES) {
-      const count = content2.split(entry).length - 1;
+      const count = lines.filter((line) => line.trim() === entry).length;
       expect(count).toBe(1);
     }
   });
@@ -450,6 +452,12 @@ describe("kspec init gitignore integration", () => {
     writeFileSync(path.join(testDir, "plans", "draft.md"), "# Plan draft");
     writeFileSync(path.join(testDir, ".kspec-dispatch-workspace.json"), "{}");
     writeFileSync(path.join(testDir, ".kspec-dispatch-shadow-mutation"), "");
+    // Simulate the .lock/ directory that acquireFileLock creates while held
+    mkdirSync(path.join(testDir, ".kspec-dispatch-shadow-mutation.lock"), { recursive: true });
+    writeFileSync(
+      path.join(testDir, ".kspec-dispatch-shadow-mutation.lock", "pid"),
+      `${process.pid}\n${Date.now()}\ntest-uuid`,
+    );
 
     // Check git status — none of the kspec-created transient content should be untracked
     const statusOutput = execSync("git status --porcelain", {
@@ -587,11 +595,115 @@ describe("buildKspecGitignoreEntries custom overrides", () => {
     expect(entries).toContain("plans/");
     expect(entries).toContain(".kspec-dispatch-workspace.json");
     expect(entries).toContain(".kspec-dispatch-shadow-mutation");
+    expect(entries).toContain(".kspec-dispatch-shadow-mutation.lock/");
   });
 
   it("includes worktree root entry when it is a relative path", () => {
     const entries = buildKspecGitignoreEntries(undefined, "custom-worktrees");
     expect(entries).toContain("custom-worktrees/");
+  });
+});
+
+// ── Regression: file-lock directory gitignore coverage ──
+
+describe("file-lock directory gitignore coverage", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-gitignore-lock-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @complete-auto-gitignore ac-no-untracked-after-common-commands
+  it("holding the dispatch shadow mutation lock does not produce untracked content", async () => {
+    initGitRepo(testDir);
+    await fs.writeFile(path.join(testDir, "README.md"), "# Test\n");
+    execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: "pipe" });
+
+    // Create a gitignore with the managed block
+    const result = await ensureKspecGitignore(testDir);
+    expect(result.changed).toBe(true);
+
+    // Commit the gitignore so it doesn't show as untracked
+    execSync('git add .gitignore && git commit -m "gitignore"', { cwd: testDir, stdio: "pipe" });
+
+    // Acquire the dispatch shadow mutation lock (creates .kspec-dispatch-shadow-mutation.lock/ dir)
+    const lockBasePath = path.join(testDir, ".kspec-dispatch-shadow-mutation");
+    const release = await acquireFileLock(lockBasePath);
+    try {
+      // Verify the lock directory exists
+      const lockDirPath = getLockDirPath(lockBasePath);
+      const stat = await fs.stat(lockDirPath);
+      expect(stat.isDirectory()).toBe(true);
+
+      // Check git status — the lock directory should NOT appear as untracked
+      const statusOutput = execSync("git status --porcelain", {
+        cwd: testDir,
+        encoding: "utf-8",
+      });
+
+      const untrackedLockEntries = statusOutput
+        .split("\n")
+        .filter((line) => line.startsWith("?? "))
+        .map((line) => line.slice(3))
+        .filter((entry) => entry.includes(".lock"));
+
+      expect(untrackedLockEntries).toEqual([]);
+    } finally {
+      await release();
+    }
+  });
+
+  // AC: @complete-auto-gitignore ac-no-untracked-after-common-commands
+  it("ensureKspecGitignore self-heals a managed block missing the lock-directory entry", async () => {
+    // Create initial gitignore with managed block
+    await ensureKspecGitignore(testDir);
+
+    // Strip the lock-directory entry from the managed block
+    const gitignorePath = path.join(testDir, ".gitignore");
+    let content = await readTestOutput(gitignorePath);
+    const lockDirEntry = `${getLockDirPath(".kspec-dispatch-shadow-mutation")}/`;
+    expect(content).toContain(lockDirEntry);
+
+    content = content.replace(lockDirEntry + "\n", "");
+    await fs.writeFile(gitignorePath, content, "utf-8");
+
+    // Verify it's gone
+    const stripped = await readTestOutput(gitignorePath);
+    expect(stripped).not.toContain(lockDirEntry);
+
+    // Re-run ensureKspecGitignore — should self-heal
+    const healResult = await ensureKspecGitignore(testDir);
+    expect(healResult.changed).toBe(true);
+    expect(healResult.entriesAdded).toContain(lockDirEntry);
+
+    // Verify the entry is restored
+    const healed = await readTestOutput(gitignorePath);
+    expect(healed).toContain(lockDirEntry);
+  });
+});
+
+describe("getLockDirPath", () => {
+  it("appends .lock suffix to base path", () => {
+    expect(getLockDirPath("/tmp/my-lock")).toBe("/tmp/my-lock.lock");
+  });
+
+  it("matches the directory acquireFileLock creates", async () => {
+    const testDir = await createTempDir("kspec-lock-path-");
+    const basePath = path.join(testDir, "test-lock");
+    const expectedLockDir = getLockDirPath(basePath);
+
+    const release = await acquireFileLock(basePath);
+    try {
+      const stat = await fs.stat(expectedLockDir);
+      expect(stat.isDirectory()).toBe(true);
+    } finally {
+      await release();
+    }
+    await cleanupTempDir(testDir);
   });
 });
 

@@ -15,17 +15,19 @@
  * - @daemon-server ac-15: Plugin pattern middleware (CORS verified via response headers)
  * - @daemon-server ac-17: Non-API routes bypass project context middleware (SPA fallback regression)
  * - @api-contract ac-1: CORS headers allow localhost origins (dev server)
- * - @trait-localhost-security ac-1: Daemon binds to localhost only (implicit)
- * - @trait-localhost-security ac-2: Non-localhost connections rejected with 403 Forbidden
+ * - @trait-localhost-security ac-loopback-rejects-nonlocal: Production middleware accepts loopback Host and rejects non-localhost Host with 403 Forbidden
  */
 
 // AC: @trait-api-endpoint ac-2 — N/A: health endpoint does not mutate state
 // AC: @trait-api-endpoint ac-3 — N/A: health endpoint has no validation schema
+// AC: @trait-localhost-security ac-loopback-default — N/A: this file constructs an Elysia app from production middleware but does not invoke app.listen(); default loopback bind semantics are exercised in tests/cli-serve.test.ts (daemon child startup writes 127.0.0.1 endpoint to daemon.connection.json).
+// AC: @trait-localhost-security ac-external-host-explicit — N/A: explicit non-loopback bind is exercised in tests/cli-serve.test.ts where daemon.host is configured and the daemon child binds to the configured address.
+// AC: @trait-localhost-security ac-external-warning — N/A: external-bind warning surfaces from the CLI lifecycle path (serve start --detach, serve status) and is exercised in tests/cli-serve.test.ts.
 
 import { cors } from "@elysiajs/cors";
 import { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { localhostOnly } from "../../dist/daemon/server.js";
+import { buildAllowedOrigins, isAllowedOrigin, localhostOnly } from "../../dist/daemon/server.js";
 import { projectContextMiddleware } from "../../dist/daemon/middleware/project-context.js";
 import { cleanupTempDir, createTempDir, initGitRepo, setupFixtures } from "./helpers.js";
 
@@ -48,12 +50,20 @@ function createServerTestApp(projectDir: string) {
     startupProject: projectDir,
   });
 
+  // Production CORS allow-list, derived from a default loopback endpoint
+  // exactly as createServer() does. Hardcoded copies would drift from
+  // the shipped derivation rules.
+  const allowedOrigins = buildAllowedOrigins({
+    apiUrl: "http://127.0.0.1:3456",
+    connectHost: "127.0.0.1",
+  });
+
   return (
     new Elysia()
       // Production CORS configuration (same as createServer)
       .use(
         cors({
-          origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+          origin: Array.from(allowedOrigins),
           credentials: true,
           methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         }),
@@ -226,7 +236,7 @@ describe("CORS Headers", () => {
 });
 
 describe("Localhost Security", () => {
-  // AC: @trait-localhost-security ac-1, @daemon-server ac-2
+  // AC: @trait-localhost-security ac-loopback-rejects-nonlocal, @daemon-server ac-2
   it("is accessible from localhost", async () => {
     const response = await makeReqWithHost("/api/health", "localhost");
     expect(response.status).toBe(200);
@@ -242,7 +252,7 @@ describe("Localhost Security", () => {
     expect(response.status).toBe(200);
   });
 
-  // AC: @trait-localhost-security ac-2, @daemon-server ac-3
+  // AC: @trait-localhost-security ac-loopback-rejects-nonlocal, @daemon-server ac-3
   it("rejects non-localhost Host with 403", async () => {
     const response = await makeReqWithHost("/api/health", "evil.example.com");
     expect(response.status).toBe(403);
@@ -251,12 +261,174 @@ describe("Localhost Security", () => {
     expect(body.message).toContain("localhost");
   });
 
-  // AC: @trait-localhost-security ac-2, @daemon-server ac-3
+  // AC: @trait-localhost-security ac-loopback-rejects-nonlocal, @daemon-server ac-3
   it("rejects external IP Host with 403", async () => {
     const response = await makeReqWithHost("/api/health", "192.168.1.100");
     expect(response.status).toBe(403);
     const body = (await response.json()) as { error: string };
     expect(body.error).toBe("Forbidden");
+  });
+});
+
+describe("buildAllowedOrigins (CORS + WebSocket origin derivation)", () => {
+  // AC: @api-contract ac-1
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  it("includes the same-origin daemon URL so the production web UI can call the daemon it's served from", () => {
+    const origins = buildAllowedOrigins({
+      apiUrl: "http://127.0.0.1:3456",
+      connectHost: "127.0.0.1",
+    });
+    expect(origins).toContain("http://127.0.0.1:3456");
+  });
+
+  // AC: @api-contract ac-1
+  it("includes loopback dev-server origins on the default port", () => {
+    const origins = buildAllowedOrigins({
+      apiUrl: "http://127.0.0.1:3456",
+      connectHost: "127.0.0.1",
+    });
+    expect(origins).toContain("http://localhost:5173");
+    expect(origins).toContain("http://127.0.0.1:5173");
+  });
+
+  // AC: @api-contract ac-1
+  it("respects an overridden dev-server port", () => {
+    const origins = buildAllowedOrigins({
+      apiUrl: "http://127.0.0.1:3456",
+      connectHost: "127.0.0.1",
+      devPort: 4173,
+    });
+    expect(origins).toContain("http://localhost:4173");
+    expect(origins).toContain("http://127.0.0.1:4173");
+    expect(origins).not.toContain("http://localhost:5173");
+  });
+
+  // AC: @api-contract ac-1
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+  it("brackets IPv6 connect hosts in the derived dev origin", () => {
+    const origins = buildAllowedOrigins({
+      apiUrl: "http://[::1]:4321",
+      connectHost: "::1",
+    });
+    expect(origins).toContain("http://[::1]:5173");
+  });
+
+  // AC: @api-contract ac-1
+  it("includes the configured non-loopback connect host as a dev origin without wildcarding", () => {
+    const origins = buildAllowedOrigins({
+      apiUrl: "http://192.0.2.10:3456",
+      connectHost: "192.0.2.10",
+    });
+    expect(origins).toContain("http://192.0.2.10:5173");
+    // Wildcard CORS would expose the unauthenticated mutation API to
+    // any cross-origin caller — never produced, even for external bind.
+    expect(origins).not.toContain("*");
+  });
+
+  // Regression: when a user opens the production daemon UI through a
+  // loopback alias (http://localhost:DAEMON_PORT), the same-origin
+  // request must succeed. The localhostOnly middleware accepts Host:
+  // localhost / 127.0.0.1 / ::1 regardless of bind host, so the origin
+  // allow-list must mirror those aliases on the daemon port — otherwise
+  // production same-origin breaks for any user who types `localhost` or
+  // any IPv6 user when the daemon is bound to IPv4 (or vice versa).
+  // AC: @api-contract ac-websocket-origin
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+  it("includes loopback aliases of the daemon URL for production same-origin", () => {
+    const origins = buildAllowedOrigins({
+      apiUrl: "http://127.0.0.1:3456",
+      connectHost: "127.0.0.1",
+    });
+    expect(origins).toContain("http://localhost:3456");
+    expect(origins).toContain("http://127.0.0.1:3456");
+    expect(origins).toContain("http://[::1]:3456");
+  });
+
+  // AC: @api-contract ac-websocket-origin
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+  it("includes loopback aliases on the daemon port when bound to IPv6", () => {
+    const origins = buildAllowedOrigins({
+      apiUrl: "http://[::1]:4321",
+      connectHost: "::1",
+    });
+    // Same-origin via IPv6 literal.
+    expect(origins).toContain("http://[::1]:4321");
+    // Same-origin via developer-typed `localhost` (which may resolve to
+    // ::1 via /etc/hosts) and via the IPv4 loopback alias.
+    expect(origins).toContain("http://localhost:4321");
+    expect(origins).toContain("http://127.0.0.1:4321");
+  });
+
+  // AC: @api-contract ac-websocket-origin
+  it("propagates the configured daemon port into loopback aliases", () => {
+    const origins = buildAllowedOrigins({
+      apiUrl: "http://127.0.0.1:7777",
+      connectHost: "127.0.0.1",
+    });
+    expect(origins).toContain("http://localhost:7777");
+    expect(origins).toContain("http://127.0.0.1:7777");
+    expect(origins).toContain("http://[::1]:7777");
+    // The default daemon port must not leak in when a non-default port
+    // is configured.
+    expect(origins).not.toContain("http://localhost:3456");
+  });
+});
+
+describe("isAllowedOrigin (origin gate predicate)", () => {
+  const allowed = buildAllowedOrigins({
+    apiUrl: "http://127.0.0.1:3456",
+    connectHost: "127.0.0.1",
+  });
+
+  // AC: @api-contract ac-websocket-origin
+  it("accepts origins in the allow-list", () => {
+    expect(isAllowedOrigin("http://127.0.0.1:5173", allowed)).toBe(true);
+    expect(isAllowedOrigin("http://localhost:5173", allowed)).toBe(true);
+    expect(isAllowedOrigin("http://127.0.0.1:3456", allowed)).toBe(true);
+  });
+
+  // Regression for the production same-origin failure when the daemon
+  // UI is opened through `localhost`: the daemon binds to 127.0.0.1 and
+  // accepts Host: localhost (via localhostOnly), so the browser sends
+  // Origin: http://localhost:DAEMON_PORT and the WebSocket upgrade must
+  // not be rejected.
+  // AC: @api-contract ac-websocket-origin
+  it("accepts loopback-alias origins on the daemon port for production same-origin", () => {
+    expect(isAllowedOrigin("http://localhost:3456", allowed)).toBe(true);
+    expect(isAllowedOrigin("http://[::1]:3456", allowed)).toBe(true);
+  });
+
+  // AC: @api-contract ac-websocket-origin
+  it("rejects unknown origins", () => {
+    expect(isAllowedOrigin("http://evil.example.com", allowed)).toBe(false);
+    expect(isAllowedOrigin("http://localhost:9999", allowed)).toBe(false);
+    expect(isAllowedOrigin("http://127.0.0.1:9999", allowed)).toBe(false);
+  });
+
+  // AC: @api-contract ac-websocket-origin
+  it("treats absent or empty Origin headers as allowed (non-browser clients)", () => {
+    expect(isAllowedOrigin(null, allowed)).toBe(true);
+    expect(isAllowedOrigin(undefined, allowed)).toBe(true);
+    expect(isAllowedOrigin("", allowed)).toBe(true);
+  });
+});
+
+describe("CORS rejects unknown dev-server origins", () => {
+  // AC: @api-contract ac-1
+  it("does not echo back a non-allowed Origin", async () => {
+    const response = await app.handle(
+      new Request("http://localhost/api/health", {
+        method: "GET",
+        headers: {
+          Host: "localhost",
+          Origin: "http://evil.example.com",
+        },
+      }),
+    );
+    // Allow-Origin should not be the unauthorized origin (Elysia/CORS
+    // either omits it or echoes the configured allow-list value).
+    const allowOrigin = response.headers.get("access-control-allow-origin");
+    expect(allowOrigin).not.toBe("http://evil.example.com");
   });
 });
 

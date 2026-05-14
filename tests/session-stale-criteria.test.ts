@@ -292,7 +292,7 @@ describe("stale session criteria", () => {
     expect(updatedB?.ended_at).toBe(nowIso);
   });
 
-  // AC: @session-remove-shadow-commits ac-stale-cleanup
+  // Coverage: session-remove-shadow-commits (no spec AC exists yet) ac-stale-cleanup
   it("does not commit to kspec-meta when abandoning stale sessions", async () => {
     const sessionA = "01KJHSTAL3CR1T3R1A000000B";
     const sessionB = "01KJHSTAL3CR1T3R1A000000C";

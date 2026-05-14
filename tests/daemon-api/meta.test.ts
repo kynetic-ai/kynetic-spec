@@ -1,5 +1,5 @@
-// AC: @spec-daemon-meta ac-1 — N/A: meta endpoint is read-only, no write path tested here
-// AC: @spec-daemon-meta ac-2 — N/A: authentication not applicable to local daemon
+// Coverage: @api-contract (daemon meta) ac-1 — N/A: meta endpoint is read-only, no write path tested here
+// Coverage: @api-contract (daemon meta) ac-2 — N/A: authentication not applicable to local daemon
 import type { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {

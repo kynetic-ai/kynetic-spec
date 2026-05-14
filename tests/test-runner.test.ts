@@ -592,10 +592,10 @@ describe("test runner environment checks", () => {
     });
   });
 
-  // AC: @task-test-runner-progress-output ac-1
-  // AC: @task-test-runner-progress-output ac-3
-  // AC: @task-test-runner-progress-output ac-5
-  // AC: @task-test-runner-progress-output ac-6
+  // Coverage: test-runner-progress-output (no spec AC exists yet) ac-1
+  // Coverage: test-runner-progress-output (no spec AC exists yet) ac-3
+  // Coverage: test-runner-progress-output (no spec AC exists yet) ac-5
+  // Coverage: test-runner-progress-output (no spec AC exists yet) ac-6
   describe("per-file progress output", () => {
     it("non-verbose mode prints one PASS line per completed test file with count and duration", () => {
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-progress.test.ts");
@@ -646,7 +646,7 @@ it('beta', () => { expect(2).toBe(2); });
       }
     });
 
-    // AC: @task-test-runner-progress-output ac-1
+    // Coverage: test-runner-progress-output (no spec AC exists yet) ac-1
     it("shows FAIL marker and failed count for failing test files", () => {
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-fail-progress.test.ts");
       fs.rmSync(tempTestFile, { force: true });
@@ -691,7 +691,7 @@ it('fails', () => { expect(1).toBe(2); });
       }
     });
 
-    // AC: @task-test-runner-progress-output ac-2
+    // Coverage: test-runner-progress-output (no spec AC exists yet) ac-2
     it("progress lines are suppressed in verbose mode", () => {
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-verbose-progress.test.ts");
       fs.rmSync(tempTestFile, { force: true });
@@ -732,7 +732,7 @@ it('fails', () => { expect(1).toBe(2); });
       }
     });
 
-    // AC: @task-test-runner-progress-output ac-4
+    // Coverage: test-runner-progress-output (no spec AC exists yet) ac-4
     it("output volume is proportional to file count, not test count", () => {
       // Create a file with many tests — progress output should still be 1 line
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-volume.test.ts");
@@ -771,7 +771,7 @@ it('fails', () => { expect(1).toBe(2); });
       }
     });
 
-    // AC: @task-test-runner-progress-output ac-5
+    // Coverage: test-runner-progress-output (no spec AC exists yet) ac-5
     it("final summary and exit code are unchanged with progress enabled", () => {
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-summary-unchanged.test.ts");
       fs.rmSync(tempTestFile, { force: true });
@@ -811,7 +811,7 @@ it('fails', () => { expect(1).toBe(2); });
       }
     });
 
-    // AC: @task-test-runner-progress-output ac-5
+    // Coverage: test-runner-progress-output (no spec AC exists yet) ac-5
     it("progress lines are not written to the log file", () => {
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-log-clean.test.ts");
       fs.rmSync(tempTestFile, { force: true });
@@ -859,7 +859,7 @@ it('fails', () => { expect(1).toBe(2); });
       }
     });
 
-    // AC: @task-test-runner-progress-output ac-3
+    // Coverage: test-runner-progress-output (no spec AC exists yet) ac-3
     it("progress output uses PASS/FAIL markers matching condensed output conventions", () => {
       const tempTestFile = path.join(projectRoot, "tests", "_trivial-markers.test.ts");
       fs.rmSync(tempTestFile, { force: true });

@@ -108,7 +108,10 @@ describe("PID File Management", () => {
     const pidManager = new PidFileManager(tempConfigDir);
 
     pidManager.writePid();
-    expect(pidManager.isDaemonRunning()).toBe(true);
+    // ignoreNoDaemon: true because tests/setup.ts forces KSPEC_NO_DAEMON=1 to
+    // suppress incidental CLI daemon talk; the daemon-side check must still
+    // see its own PID file regardless.
+    expect(pidManager.isDaemonRunning({ ignoreNoDaemon: true })).toBe(true);
   });
 
   // AC: @multi-directory-daemon ac-10

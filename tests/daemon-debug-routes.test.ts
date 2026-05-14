@@ -329,7 +329,10 @@ describe("Debug API routes", () => {
 
   // AC: @trait-shadow-commit ac-1 through ac-8 — N/A: This endpoint is read-only; it does not modify shadow worktree state.
 
-  // AC: @trait-localhost-security ac-1, ac-2, ac-3 — Inherited from server-level localhost binding (tested in daemon server tests).
+  // AC: @trait-localhost-security ac-loopback-default — N/A: debug route handler tests do not invoke app.listen(); default loopback bind is exercised in tests/cli-serve.test.ts (daemon child startup).
+  // AC: @trait-localhost-security ac-loopback-rejects-nonlocal — N/A: localhostOnly middleware is a server-level concern, exercised in tests/daemon-api/server.test.ts and tests/daemon-server.test.ts.
+  // AC: @trait-localhost-security ac-external-host-explicit — N/A: explicit non-loopback bind is exercised in tests/cli-serve.test.ts where daemon.host is configured.
+  // AC: @trait-localhost-security ac-external-warning — N/A: external-bind warning is surfaced from the CLI lifecycle path and exercised in tests/cli-serve.test.ts.
 
   // AC: @trait-websocket-protocol ac-1 through ac-8 — N/A: This is an HTTP GET endpoint, not a WebSocket endpoint.
 });

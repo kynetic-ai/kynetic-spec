@@ -962,7 +962,7 @@ describe("Integration: observation-task resolution loop", () => {
   });
 });
 
-// AC: @trait-multi-ref-batch - Batch support for meta resolve
+// AC: @trait-multi-ref-batch ac-1 - Batch support for meta resolve
 describe("Integration: meta resolve batch mode", () => {
   let tempDir: string;
 
@@ -1427,7 +1427,7 @@ describe("Integration: meta mutation commands", () => {
       expect(agent._ulid).toMatch(/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/);
     });
 
-    // AC: @meta-add-cmd ac-1
+    // Coverage: @meta-commands (meta add) ac-1
     it("should create workflow with --steps containing valid JSON array", () => {
       const steps = JSON.stringify([
         { type: "check", content: "Verify prerequisites" },
@@ -1454,7 +1454,7 @@ describe("Integration: meta mutation commands", () => {
       expect(workflow.steps[2].options).toEqual(["Yes", "No"]);
     });
 
-    // AC: @meta-add-cmd ac-1
+    // Coverage: @meta-commands (meta add) ac-1
     it("should create workflow with --steps including optional fields", () => {
       const steps = JSON.stringify([
         { type: "check", content: "Verify tests pass", on_fail: "Fix failing tests" },
@@ -1471,7 +1471,7 @@ describe("Integration: meta mutation commands", () => {
       expect(workflow.steps[1].entry_criteria).toEqual(["All checks passed"]);
     });
 
-    // AC: @meta-add-cmd ac-1
+    // Coverage: @meta-commands (meta add) ac-1
     it("should create workflow with empty steps array", () => {
       const workflow = kspecJson<any>(
         "meta add workflow --id empty-steps --trigger \"manual\" --steps '[]'",
@@ -1481,7 +1481,7 @@ describe("Integration: meta mutation commands", () => {
       expect(workflow.steps).toEqual([]);
     });
 
-    // AC: @meta-add-cmd ac-2
+    // Coverage: @meta-commands (meta add) ac-2
     it("should error on malformed JSON in --steps", () => {
       try {
         kspec(
@@ -1494,7 +1494,7 @@ describe("Integration: meta mutation commands", () => {
       }
     });
 
-    // AC: @meta-add-cmd ac-3
+    // Coverage: @meta-commands (meta add) ac-3
     it("should error when --steps is not an array", () => {
       try {
         kspec(
@@ -1507,7 +1507,7 @@ describe("Integration: meta mutation commands", () => {
       }
     });
 
-    // AC: @meta-add-cmd ac-4
+    // Coverage: @meta-commands (meta add) ac-4
     it("should error on invalid step type", () => {
       try {
         kspec(
@@ -1521,7 +1521,7 @@ describe("Integration: meta mutation commands", () => {
       }
     });
 
-    // AC: @meta-add-cmd ac-4
+    // Coverage: @meta-commands (meta add) ac-4
     it("should error when content field is missing", () => {
       try {
         kspec(
@@ -2452,33 +2452,33 @@ describe("Integration: meta focus", () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: @meta-focus-cmd ac-focus-1
+  // Coverage: @session-context (meta focus) ac-focus-1
   it("should show no focus when none is set", () => {
     const output = kspec("meta focus", tempDir);
     expect(output).toContain("No focus set");
   });
 
-  // AC: @meta-focus-cmd ac-focus-2
+  // Coverage: @session-context (meta focus) ac-focus-2
   it("should set focus to a reference", () => {
     const output = kspec("meta focus test-feature", tempDir);
     expect(output).toMatch(/Set focus to: @test-feature/);
   });
 
-  // AC: @meta-focus-cmd ac-focus-1
+  // Coverage: @session-context (meta focus) ac-focus-1
   it("should show current focus", () => {
     kspec("meta focus test-feature", tempDir);
     const output = kspec("meta focus", tempDir);
     expect(output).toContain("Current focus: @test-feature");
   });
 
-  // AC: @meta-focus-cmd ac-focus-2
+  // Coverage: @session-context (meta focus) ac-focus-2
   it("should auto-prepend @ to references", () => {
     kspec("meta focus test-item", tempDir);
     const focusData = kspecJson<{ focus: string }>("meta focus", tempDir);
     expect(focusData.focus).toBe("@test-item");
   });
 
-  // AC: @meta-focus-cmd ac-focus-3
+  // Coverage: @session-context (meta focus) ac-focus-3
   it("should clear focus", () => {
     kspec("meta focus test-feature", tempDir);
     const output = kspec("meta focus --clear", tempDir);
@@ -2488,7 +2488,7 @@ describe("Integration: meta focus", () => {
     expect(focusData.focus).toBeNull();
   });
 
-  // AC: @meta-focus-cmd ac-focus-1, ac-focus-2, ac-focus-3
+  // Coverage: @session-context (meta focus) ac-focus-1, ac-focus-2, ac-focus-3
   it("should support JSON output (focus)", () => {
     // No focus set
     const noFocus = kspecJson<{ focus: null }>("meta focus", tempDir);
@@ -2536,19 +2536,19 @@ describe("Integration: meta thread", () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: @meta-thread-cmd - list action
+  // AC: @meta-thread-cmd ac-2 - list action
   it("should show no threads when none exist", () => {
     const output = kspec("meta thread list", tempDir);
     expect(output).toContain("No active threads");
   });
 
-  // AC: @meta-thread-cmd - add action
+  // AC: @meta-thread-cmd ac-1 - add action
   it("should add a thread", () => {
     const output = kspec('meta thread add "Implement feature X"', tempDir);
     expect(output).toContain("Added thread: Implement feature X");
   });
 
-  // AC: @meta-thread-cmd - list action
+  // AC: @meta-thread-cmd ac-2 - list action
   it("should list all threads", () => {
     kspec('meta thread add "Thread 1"', tempDir);
     kspec('meta thread add "Thread 2"', tempDir);
@@ -2561,7 +2561,7 @@ describe("Integration: meta thread", () => {
     expect(output).toContain("3. Thread 3");
   });
 
-  // AC: @meta-thread-cmd - remove action
+  // AC: @meta-thread-cmd ac-1 - remove action
   it("should remove a thread by index", () => {
     kspec('meta thread add "Thread 1"', tempDir);
     kspec('meta thread add "Thread 2"', tempDir);
@@ -2576,7 +2576,7 @@ describe("Integration: meta thread", () => {
     expect(listOutput).toContain("Thread 3");
   });
 
-  // AC: @meta-thread-cmd - clear action
+  // AC: @meta-thread-cmd ac-2 - clear action
   it("should clear all threads", () => {
     kspec('meta thread add "Thread 1"', tempDir);
     kspec('meta thread add "Thread 2"', tempDir);
@@ -2588,7 +2588,7 @@ describe("Integration: meta thread", () => {
     expect(listOutput).toContain("No active threads");
   });
 
-  // AC: @meta-thread-cmd - JSON output
+  // AC: @meta-thread-cmd ac-2 - JSON output for list
   it("should support JSON output for list (thread)", () => {
     kspec('meta thread add "Thread 1"', tempDir);
     kspec('meta thread add "Thread 2"', tempDir);
@@ -2597,7 +2597,7 @@ describe("Integration: meta thread", () => {
     expect(data.threads).toEqual(["Thread 1", "Thread 2"]);
   });
 
-  // AC: @meta-thread-cmd - JSON output
+  // AC: @meta-thread-cmd ac-1 - JSON output for add
   it("should support JSON output for add (thread)", () => {
     const data = kspecJson<{ threads: string[]; added: string }>(
       'meta thread add "New thread"',
@@ -2607,7 +2607,7 @@ describe("Integration: meta thread", () => {
     expect(data.threads).toContain("New thread");
   });
 
-  // AC: @meta-thread-cmd - JSON output
+  // AC: @meta-thread-cmd ac-1 - JSON output for remove
   it("should support JSON output for remove (thread)", () => {
     kspec('meta thread add "Thread 1"', tempDir);
     kspec('meta thread add "Thread 2"', tempDir);
@@ -2617,7 +2617,7 @@ describe("Integration: meta thread", () => {
     expect(data.threads).toEqual(["Thread 2"]);
   });
 
-  // AC: @meta-thread-cmd - JSON output
+  // AC: @meta-thread-cmd ac-2 - JSON output for clear
   it("should support JSON output for clear (thread)", () => {
     kspec('meta thread add "Thread 1"', tempDir);
 
@@ -2688,19 +2688,19 @@ describe("Integration: meta question", () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: @meta-question-cmd - list action
+  // Coverage: @session-context (meta question) - list action
   it("should show no questions when none exist", () => {
     const output = kspec("meta question list", tempDir);
     expect(output).toContain("No open questions");
   });
 
-  // AC: @meta-question-cmd - add action
+  // Coverage: @session-context (meta question) - add action
   it("should add a question", () => {
     const output = kspec('meta question add "Why does X happen?"', tempDir);
     expect(output).toContain("Added question: Why does X happen?");
   });
 
-  // AC: @meta-question-cmd - list action
+  // Coverage: @session-context (meta question) - list action
   it("should list all questions", () => {
     kspec('meta question add "Question 1"', tempDir);
     kspec('meta question add "Question 2"', tempDir);
@@ -2713,7 +2713,7 @@ describe("Integration: meta question", () => {
     expect(output).toContain("3. Question 3");
   });
 
-  // AC: @meta-question-cmd - remove action
+  // Coverage: @session-context (meta question) - remove action
   it("should remove a question by index", () => {
     kspec('meta question add "Question 1"', tempDir);
     kspec('meta question add "Question 2"', tempDir);
@@ -2728,7 +2728,7 @@ describe("Integration: meta question", () => {
     expect(listOutput).toContain("Question 3");
   });
 
-  // AC: @meta-question-cmd - clear action
+  // Coverage: @session-context (meta question) - clear action
   it("should clear all questions", () => {
     kspec('meta question add "Question 1"', tempDir);
     kspec('meta question add "Question 2"', tempDir);
@@ -2740,7 +2740,7 @@ describe("Integration: meta question", () => {
     expect(listOutput).toContain("No open questions");
   });
 
-  // AC: @meta-question-cmd - JSON output
+  // Coverage: @session-context (meta question) - JSON output
   it("should support JSON output for list (question)", () => {
     kspec('meta question add "Question 1"', tempDir);
     kspec('meta question add "Question 2"', tempDir);
@@ -2749,7 +2749,7 @@ describe("Integration: meta question", () => {
     expect(data.questions).toEqual(["Question 1", "Question 2"]);
   });
 
-  // AC: @meta-question-cmd - JSON output
+  // Coverage: @session-context (meta question) - JSON output
   it("should support JSON output for add (question)", () => {
     const data = kspecJson<{ questions: string[]; added: string }>(
       'meta question add "New question"',
@@ -2759,7 +2759,7 @@ describe("Integration: meta question", () => {
     expect(data.questions).toContain("New question");
   });
 
-  // AC: @meta-question-cmd - JSON output
+  // Coverage: @session-context (meta question) - JSON output
   it("should support JSON output for remove (question)", () => {
     kspec('meta question add "Question 1"', tempDir);
     kspec('meta question add "Question 2"', tempDir);
@@ -2772,7 +2772,7 @@ describe("Integration: meta question", () => {
     expect(data.questions).toEqual(["Question 2"]);
   });
 
-  // AC: @meta-question-cmd - JSON output
+  // Coverage: @session-context (meta question) - JSON output
   it("should support JSON output for clear (question)", () => {
     kspec('meta question add "Question 1"', tempDir);
 
@@ -2843,7 +2843,7 @@ describe("Integration: meta context", () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: @meta-context-cmd - show full session context
+  // AC: @meta-context-cmd ac-1 - show full session context
   it("should display full session context with all fields", () => {
     // Set up some context
     kspec("meta focus @task-test", tempDir);
@@ -2867,7 +2867,7 @@ describe("Integration: meta context", () => {
     expect(output).toContain("Question 1");
   });
 
-  // AC: @meta-context-cmd - show empty context gracefully
+  // AC: @meta-context-cmd ac-1 - show empty context gracefully
   it("should show (none) for empty context fields", () => {
     const output = kspec("meta context", tempDir);
 
@@ -2878,7 +2878,7 @@ describe("Integration: meta context", () => {
     expect(output).toContain("Open Questions:");
   });
 
-  // AC: @meta-context-cmd - JSON output
+  // AC: @meta-context-cmd ac-1 - JSON output
   it("should output JSON with all context fields", () => {
     // Set up some context
     kspec("meta focus @task-test", tempDir);
@@ -2900,7 +2900,7 @@ describe("Integration: meta context", () => {
     expect(data.updated_at).toMatch(/^\d{4}-\d{2}-\d{2}T/);
   });
 
-  // AC: @meta-context-cmd - --clear option
+  // AC: @meta-context-cmd ac-2 - --clear option
   it("should clear all session context with --clear flag", () => {
     // Set up some context
     kspec("meta focus @task-test", tempDir);
@@ -2925,7 +2925,7 @@ describe("Integration: meta context", () => {
     expect(data.open_questions).toEqual([]);
   });
 
-  // AC: @meta-context-cmd - --clear with JSON output
+  // AC: @meta-context-cmd ac-2 - --clear with JSON output
   it("should output cleared context in JSON mode", () => {
     // Set up some context
     kspec("meta focus @task-test", tempDir);
@@ -2946,7 +2946,7 @@ describe("Integration: meta context", () => {
     expect(data.updated_at).toMatch(/^\d{4}-\d{2}-\d{2}T/);
   });
 
-  // AC: @meta-context-cmd - display with numbered lists
+  // AC: @meta-context-cmd ac-1 - display with numbered lists
   it("should display threads and questions with numbered lists", () => {
     kspec('meta thread add "First thread"', tempDir);
     kspec('meta thread add "Second thread"', tempDir);

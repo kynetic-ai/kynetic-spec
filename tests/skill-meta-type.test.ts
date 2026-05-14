@@ -608,7 +608,7 @@ Some usage instructions.
   });
 
   describe("isSkill type guard", () => {
-    // AC: @skill-type-guard ac-1 - isSkill returns true for skill items
+    // AC: @skill-meta-type ac-7 - isSkill returns true for skill items
     it("should return true for items with _type: skill", () => {
       const skill = {
         _ulid: testUlid("SKGARD"),
@@ -622,7 +622,7 @@ Some usage instructions.
       expect(isSkill(skill)).toBe(true);
     });
 
-    // AC: @skill-type-guard ac-2 - isSkill returns false for non-skill items
+    // AC: @skill-meta-type ac-7 - isSkill returns false for non-skill items
     it("should return false for items without _type: skill", () => {
       const agent = {
         _ulid: testUlid("AGSKIP"),
@@ -661,7 +661,7 @@ Some usage instructions.
       expect(isSkill(observation)).toBe(false);
     });
 
-    // AC: @skill-type-guard ac-3 - isSkill handles edge cases safely
+    // AC: @skill-meta-type ac-7 - isSkill handles edge cases safely
     it("should handle edge cases safely", () => {
       expect(isSkill(null)).toBe(false);
       expect(isSkill(undefined)).toBe(false);
@@ -672,7 +672,7 @@ Some usage instructions.
       expect(isSkill({ _type: "observation" })).toBe(false);
     });
 
-    // AC: @skill-type-guard ac-4 - isSkill works with parsed schema data
+    // AC: @skill-meta-type ac-7 - isSkill works with parsed schema data
     it("should work with SkillSchema.parse() output", () => {
       const skillData = {
         _ulid: testUlid("SKSHEM"),
@@ -686,7 +686,7 @@ Some usage instructions.
       expect(parsed._type).toBe("skill");
     });
 
-    // AC: @skill-type-guard ac-5 - backward compatibility with origin field
+    // AC: @skill-meta-type ac-7 - backward compatibility with origin field
     it("should correctly identify skill items that have origin but were parsed through schema", () => {
       // Items without _type but with origin need to be parsed through schema to get _type
       const rawSkillData = {

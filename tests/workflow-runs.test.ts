@@ -760,7 +760,7 @@ describe("workflow next - notes capture", () => {
   });
 });
 
-// AC: @trait-json-output (inherited)
+// AC: @trait-json-output ac-1 (inherited)
 describe("workflow next - JSON output trait", () => {
   let runId: string;
 
@@ -770,6 +770,7 @@ describe("workflow next - JSON output trait", () => {
     runId = output.run_id;
   });
 
+  // AC: @trait-json-output ac-1
   it("should output valid JSON with no ANSI codes", async () => {
     const result = kspec(`workflow next @${runId} --json`, tempDir);
 
@@ -779,6 +780,7 @@ describe("workflow next - JSON output trait", () => {
     expect(result.stdout).not.toMatch(/\x1b\[/); // No ANSI codes
   });
 
+  // AC: @trait-json-output ac-2
   it("should include all data in JSON output", async () => {
     const result = kspec(`workflow next @${runId} --json`, tempDir);
 
@@ -789,6 +791,7 @@ describe("workflow next - JSON output trait", () => {
     expect(output.next_step).toBeDefined();
   });
 
+  // AC: @trait-json-output ac-3
   it("should return errors as JSON", async () => {
     const result = kspec(`workflow next @nonexistent --json`, tempDir, { expectFail: true });
 
@@ -797,6 +800,7 @@ describe("workflow next - JSON output trait", () => {
     expect(result.stderr).toContain("Workflow run not found");
   });
 
+  // AC: @trait-json-output ac-4
   it("should use @ prefix for references", async () => {
     const result = kspec(`workflow next @${runId} --json`, tempDir);
 
@@ -804,6 +808,7 @@ describe("workflow next - JSON output trait", () => {
     expect(output.run_id).toMatch(/^[A-Z0-9]{26}$/); // ULID without @
   });
 
+  // AC: @trait-json-output ac-5
   it("should use ISO 8601 timestamps in completion summary", async () => {
     // Advance to last step
     kspec(`workflow next @${runId}`, tempDir);
@@ -816,8 +821,9 @@ describe("workflow next - JSON output trait", () => {
   });
 });
 
-// AC: @trait-error-guidance (inherited)
+// AC: @trait-error-guidance ac-1 (inherited)
 describe("workflow next - error guidance trait", () => {
+  // AC: @trait-error-guidance ac-1, @trait-error-guidance ac-2
   it("should provide guidance for no active runs", async () => {
     const result = kspec("workflow next", tempDir, { expectFail: true });
 
@@ -826,6 +832,7 @@ describe("workflow next - error guidance trait", () => {
     expect(result.stderr).toContain("kspec workflow start"); // Suggested action
   });
 
+  // AC: @trait-error-guidance ac-1, @trait-error-guidance ac-2
   it("should provide guidance for multiple active runs", async () => {
     kspec("workflow start @test-workflow --json", tempDir);
     kspec("workflow start @another-workflow --json", tempDir);
@@ -837,6 +844,7 @@ describe("workflow next - error guidance trait", () => {
     expect(result.stderr).toContain("kspec workflow next @"); // Shows how to specify
   });
 
+  // AC: @trait-error-guidance ac-1, @trait-error-guidance ac-3
   it("should indicate run not found", async () => {
     const result = kspec("workflow next @nonexistent", tempDir, { expectFail: true });
 
@@ -845,6 +853,7 @@ describe("workflow next - error guidance trait", () => {
     expect(result.stderr).toContain("nonexistent");
   });
 
+  // AC: @trait-error-guidance ac-1, @trait-error-guidance ac-4
   it("should indicate invalid state transition", async () => {
     const startResult = kspec("workflow start @test-workflow --json", tempDir);
     const { run_id } = JSON.parse(startResult.stdout);

@@ -115,7 +115,7 @@ For each scenario, the agent should identify the correct action AND reasoning.
 - Reviewer creates kspec review record, investigates, submits verdict
 - Review gates: disposition = approved, required checks passing, no unresolved blocker threads
 - If changes requested: read review threads via `kspec review for-task`, fix, resubmit
-- After approval: merge locally to integration branch (see `/kspec:merge`)
+- After approval: merge to integration branch via the supported merge helper (see `/kspec:merge`)
 - Complete: `kspec task complete @ref --reason "..."`
 
 **Tests knowledge of:** Review-driven workflow, kspec review records, merge gates
@@ -329,7 +329,7 @@ These are used AFTER the agent has explored 30-50k tokens of real codebase conte
 2. Submit: `kspec task submit @ref` (transitions to pending_review)
 3. Reviewer creates kspec review, investigates, submits verdict
 4. Review gates: disposition = approved, checks passing, blocker threads resolved
-5. After approval: merge locally via `/kspec:merge`
+5. After approval: merge via the supported merge helper (see `/kspec:merge`)
 6. Complete: `kspec task complete @ref --reason "Merged. Summary..."`
 
 **Tests rule:** Review-driven workflow (review + merge skills), task completion after merge

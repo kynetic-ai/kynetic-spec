@@ -123,6 +123,6 @@ If running as an automated dispatch agent (`KSPEC_SESSION_ID` is set):
 - Use `kspec task branch @ref` before editing files
 - Submit with `kspec task submit @ref` when done, then stop responding
 - Priority: `needs_work` > `in_progress` > `pending` — always inherit existing work first
-- Don't create GitHub PRs — dispatch uses kspec review records and local merge
+- Don't create GitHub PRs — dispatch uses kspec review records and the supported merge helper
 
 # ─── END PRIME OUTPUT ───

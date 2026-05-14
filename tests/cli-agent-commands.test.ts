@@ -2097,6 +2097,8 @@ function emitSessionTextEvent(ws: FakeWsInstance, chunk: DispatchWatchTextChunk)
  * Poll for a condition to become true, up to maxWaitMs.
  * Used to handle async initContext() completing before WebSocket is created.
  */
+const DISPATCH_WATCH_READY_TIMEOUT_MS = 10_000;
+
 async function waitFor(
   condition: () => boolean,
   maxWaitMs = 2000,
@@ -2204,7 +2206,7 @@ describe("AC-18: dispatch watch — subscribe handshake failure", () => {
         /* mocked process.exit throws */
       });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -2268,7 +2270,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
     // Poll until WebSocket is created (initContext() needs several async ticks)
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
 
     const ws = getLastInstance();
     expect(ws).not.toBeNull();
@@ -2319,7 +2321,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -2367,7 +2369,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -2412,7 +2414,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -2465,7 +2467,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -2523,7 +2525,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -2576,7 +2578,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -2636,7 +2638,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -2679,7 +2681,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -2742,7 +2744,7 @@ describe("AC-13: dispatch watch — transcript fixture regressions", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -2805,7 +2807,7 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
       { from: "user" },
     );
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -2859,7 +2861,7 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
       { from: "user" },
     );
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -2938,7 +2940,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     await vi.runAllTimersAsync();
     await waitFor(
       () => instances.length >= 1,
-      2000,
+      DISPATCH_WATCH_READY_TIMEOUT_MS,
       "WebSocket instance created for reconnect test",
     );
 
@@ -3004,7 +3006,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
 
     await waitFor(
       () => instances.length >= 1,
-      2000,
+      DISPATCH_WATCH_READY_TIMEOUT_MS,
       "WebSocket instance created for output flush test",
     );
     instances[0].onopen?.({});
@@ -3086,7 +3088,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
 
     await waitFor(
       () => instances.length >= 1,
-      2000,
+      DISPATCH_WATCH_READY_TIMEOUT_MS,
       "WebSocket instance created for reconnect boundary test",
     );
     instances[0].onopen?.({});
@@ -3152,7 +3154,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     // Wait for WebSocket to be created
     await waitFor(
       () => instances.length >= 1,
-      2000,
+      DISPATCH_WATCH_READY_TIMEOUT_MS,
       "WebSocket instance created for retries-exhausted test",
     );
 
@@ -3228,6 +3230,42 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       expect(wsCtor).not.toHaveBeenCalled();
     },
   );
+
+  it("should validate invalid --retries before checking daemon availability", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    const isDaemonRunningSpy = vi
+      .spyOn(PidFileManager.prototype, "isDaemonRunning")
+      .mockReturnValue(false);
+    const readPortSpy = vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const consoleErrors: string[] = [];
+    const origError = console.error;
+    console.error = (...args) => {
+      consoleErrors.push(args.join(" "));
+    };
+
+    let exitCode: number | undefined;
+    vi.spyOn(process, "exit").mockImplementation((code?: number) => {
+      exitCode = code as number;
+      throw new Error(`process.exit(${code})`);
+    });
+
+    const program = createTestProgram();
+    try {
+      await program.parseAsync(["agent", "dispatch", "watch", "--retries", "foo"], {
+        from: "user",
+      });
+    } catch {
+      // expected: mocked process.exit throws
+    } finally {
+      console.error = origError;
+    }
+
+    expect(exitCode).toBe(4);
+    expect(consoleErrors.join(" ")).toContain("Invalid --retries value");
+    expect(isDaemonRunningSpy).not.toHaveBeenCalled();
+    expect(readPortSpy).not.toHaveBeenCalled();
+  });
 });
 
 // AC: @ws-session-event-streaming ac-cli-watch-parity
@@ -3263,7 +3301,7 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -3315,7 +3353,7 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -3361,7 +3399,7 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -3407,7 +3445,7 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -3453,7 +3491,7 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -3509,7 +3547,7 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
       from: "user",
     });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -3551,7 +3589,7 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -3626,7 +3664,7 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     const program = createTestProgram();
     const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
 
-    await waitFor(() => getLastInstance() !== null);
+    await waitFor(() => getLastInstance() !== null, DISPATCH_WATCH_READY_TIMEOUT_MS);
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
@@ -3733,6 +3771,33 @@ describe("AC-3: waitFor timeout floor and diagnostic messages", () => {
     // Should respect the override (100ms), not the default
     expect(elapsed).toBeLessThan(2000);
     expect(elapsed).toBeGreaterThanOrEqual(100);
+  });
+
+  it("should not hang past timeout when probe never settles", async () => {
+    // Regression: an unbounded probe (e.g. a fetch with no AbortSignal) used
+    // to block inside `await probe()` forever, so the loop budget never
+    // re-evaluated. The only break was the outer test timeout. Each probe
+    // call must be raced against the remaining wait budget.
+    const start = Date.now();
+    const err = await waitForStartup(
+      "never-settling-probe",
+      // The probe promise resolves after 60s — far past the wait budget.
+      () =>
+        new Promise<{ ok: boolean; details: string }>((resolveProbe) => {
+          setTimeout(() => resolveProbe({ ok: true, details: "would never run" }), 60_000);
+        }),
+      { timeoutMs: 200, intervalMs: 10 },
+    ).catch((e: Error) => e);
+    const elapsed = Date.now() - start;
+
+    expect(err).toBeInstanceOf(Error);
+    expect((err as Error).message).toMatch(/timed out/i);
+    expect((err as Error).message).toContain("never-settling-probe");
+    expect((err as Error).message).toContain("did not settle");
+    // Generous upper bound to absorb scheduling jitter on shared CI runners
+    // while still proving the wait did not actually block on the 60s probe.
+    expect(elapsed).toBeLessThan(5_000);
+    expect(elapsed).toBeGreaterThanOrEqual(200);
   });
 });
 

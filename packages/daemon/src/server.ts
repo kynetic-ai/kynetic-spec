@@ -9,9 +9,9 @@ import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { staticPlugin } from "@elysiajs/static";
 import { ulid } from "ulidx";
-import { existsSync, readFileSync } from "fs";
+import { existsSync } from "fs";
 import { fileURLToPath } from "url";
-import { dirname, extname, join, resolve } from "path";
+import { dirname, join } from "path";
 import { PubSubManager } from "./websocket/pubsub.js";
 import { HeartbeatManager } from "./websocket/heartbeat.js";
 import { WebSocketHandler } from "./websocket/handler.js";
@@ -21,6 +21,14 @@ import { getWebSocketContextId } from "./websocket/context-id.js";
 import { resolveWebSocketProject } from "./websocket/project-resolution.js";
 import type { ConnectionData, ConnectedEvent } from "./websocket/types.js";
 import { PidFileManager } from "./pid.js";
+import {
+  DEFAULT_BIND_HOST,
+  formatHostForUrl,
+  isIpv6Literal,
+  resolveDaemonEndpoint,
+  selectStartupBindHost,
+  type DaemonConnectionMetadata,
+} from "./endpoint.js";
 import { projectContextMiddleware } from "./middleware/project-context.js";
 import { createTasksRoutes } from "./routes/tasks.js";
 import { createItemsRoutes } from "./routes/items.js";
@@ -43,9 +51,15 @@ import { createAggregationRoutes } from "./routes/aggregation.js";
 import { createRefsRoutes } from "./routes/refs.js";
 import { createDiffRoutes } from "./routes/diff.js";
 import { createReviewsRoutes } from "./routes/reviews.js";
-import { ShadowSyncScheduler } from "./shadow-sync.js";
 import { SessionSyncScheduler } from "./session-sync.js";
 import { WatcherHealthMonitor } from "./watcher-health-monitor.js";
+import {
+  startShadowSyncForProject,
+  stopShadowSyncForProject,
+  stopAllShadowSync,
+} from "./shadow-sync-manager.js";
+import { registerWebUiEntryRoutes } from "./web-ui-entry.js";
+import { registerWebUiNodeStaticRoutes } from "./web-ui-static.js";
 
 export type DaemonRuntime = "bun" | "node";
 
@@ -55,16 +69,114 @@ export interface ServerOptions {
   runtime: DaemonRuntime;
   kspecDir?: string; // Path to .kspec directory (default: .kspec in cwd)
   webUiDir?: string; // Path to web UI build directory (default: auto-detect)
-}
-
-interface ShadowPullReloadableCache {
-  refreshMetaShadowInfo(): Promise<void>;
+  /**
+   * Host the daemon binds to. Defaults to 127.0.0.1 (numeric IPv4
+   * loopback) so startup does not depend on OS hostname resolution.
+   *
+   * AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+   * AC: @daemon-network-endpoint-contract ac-configured-bind-host
+   */
+  bindHost?: string;
+  /**
+   * True when `bindHost` came from an explicit env/config value rather
+   * than the built-in default. Disables IPv6 fallback when set —
+   * explicit configuration is honored verbatim.
+   *
+   * AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+   */
+  bindHostExplicitlyConfigured?: boolean;
+  /**
+   * Host the daemon advertises to local clients. When omitted, derived
+   * from `bindHost` (loopback when bind is wildcard).
+   *
+   * AC: @daemon-network-endpoint-contract ac-wildcard-connect-host
+   * AC: @config-daemon ac-connect-host-config
+   */
+  connectHost?: string | null;
+  /**
+   * Override directory for daemon lifecycle files (PID, port, metadata).
+   * Tests use this to avoid writing to the real ~/.config/kspec.
+   */
+  configDir?: string;
 }
 
 type ManagedServer = {
   stop?: () => unknown;
   close?: (callback: (error?: Error | null) => void) => void;
 };
+
+/**
+ * Captured shape of the server handle exposed by the listen() callback.
+ *
+ * `@elysiajs/node` builds a serverInfo object that wraps the underlying
+ * srvx NodeServer (`raw`) and the raw `node:http` Server (`raw.node.server`).
+ * We narrow it to the fields we actually use so awaitListenSuccess works
+ * without leaning on adapter internals.
+ */
+interface ListenServerInfo {
+  raw?: {
+    ready?: () => Promise<unknown>;
+    node?: {
+      server?: {
+        listening?: boolean;
+        once: (event: string, listener: (...args: unknown[]) => void) => unknown;
+        off?: (event: string, listener: (...args: unknown[]) => void) => unknown;
+      };
+    };
+  };
+}
+
+/**
+ * Wait for the underlying server to confirm it is actually listening.
+ *
+ * `app.listen()` returns synchronously on Node — the real `http.Server`
+ * `listen()` is invoked on the next tick by srvx's NodeServer, and bind
+ * errors (EADDRINUSE, EADDRNOTAVAIL, EACCES) surface on its `'error'`
+ * event after `app.listen()` has already returned. Treating the absence
+ * of a synchronous throw as "the daemon is up" is therefore unsafe —
+ * the daemon would write connection metadata advertising a URL that no
+ * process actually owns.
+ *
+ * On Bun, `Bun.serve` throws synchronously on bind errors, so the
+ * absence of an exception already proves the daemon is bound; this
+ * helper short-circuits.
+ *
+ * AC: @daemon-network-endpoint-contract ac-connection-metadata
+ */
+async function awaitListenSuccess(
+  serverInfo: ListenServerInfo | null,
+  runtime: DaemonRuntime,
+): Promise<void> {
+  if (runtime === "bun") return;
+  if (!serverInfo) return;
+  const raw = serverInfo.raw;
+  if (raw && typeof raw.ready === "function") {
+    await raw.ready();
+    return;
+  }
+  // Fallback for adapter shapes without `.ready()`: attach listeners
+  // directly to the underlying http.Server. If the server is already
+  // listening we resolve immediately.
+  const httpServer = raw?.node?.server;
+  if (!httpServer) return;
+  if (httpServer.listening === true) return;
+  await new Promise<void>((resolve, reject) => {
+    const cleanup = (): void => {
+      httpServer.off?.("listening", onListening);
+      httpServer.off?.("error", onError);
+    };
+    const onListening = (): void => {
+      cleanup();
+      resolve();
+    };
+    const onError = (err: unknown): void => {
+      cleanup();
+      reject(err instanceof Error ? err : new Error(String(err)));
+    };
+    httpServer.once("listening", onListening as (...args: unknown[]) => void);
+    httpServer.once("error", onError as (...args: unknown[]) => void);
+  });
+}
 
 export async function createServerApp(runtime: DaemonRuntime): Promise<Elysia> {
   if (runtime === "node") {
@@ -117,49 +229,6 @@ function hasWebUiIndex(dir: string | undefined): dir is string {
   return Boolean(dir && existsSync(join(dir, "index.html")));
 }
 
-const STATIC_ASSET_CONTENT_TYPES: Record<string, string> = {
-  ".css": "text/css; charset=utf-8",
-  ".html": "text/html; charset=utf-8",
-  ".ico": "image/x-icon",
-  ".js": "text/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".map": "application/json; charset=utf-8",
-  ".png": "image/png",
-  ".svg": "image/svg+xml",
-  ".txt": "text/plain; charset=utf-8",
-  ".woff": "font/woff",
-  ".woff2": "font/woff2",
-};
-
-function getStaticAssetContentType(assetPath: string): string {
-  return STATIC_ASSET_CONTENT_TYPES[extname(assetPath).toLowerCase()] ?? "application/octet-stream";
-}
-
-function serveWebUiStaticAsset(webUiPath: string, requestPath: string): Response {
-  const webUiRoot = resolve(webUiPath);
-  const relativePath = requestPath.startsWith("/") ? requestPath.slice(1) : requestPath;
-  const assetPath = resolve(webUiRoot, relativePath);
-  if (assetPath !== webUiRoot && !assetPath.startsWith(`${webUiRoot}/`)) {
-    return new Response("Not found", { status: 404 });
-  }
-
-  if (!existsSync(assetPath)) {
-    return new Response("Not found", { status: 404 });
-  }
-
-  return new Response(readFileSync(assetPath), {
-    headers: {
-      "Cache-Control": "public, max-age=86400",
-      "Content-Type": getStaticAssetContentType(assetPath),
-    },
-  });
-}
-
-function isRootWebUiAssetPath(requestPath: string): boolean {
-  const normalizedPath = requestPath.startsWith("/") ? requestPath.slice(1) : requestPath;
-  return normalizedPath.length > 0 && !normalizedPath.includes("/") && normalizedPath.includes(".");
-}
-
 /**
  * Resolves the path to the web UI build directory.
  * Tries multiple locations in order:
@@ -194,25 +263,11 @@ export function resolveWebUiPath(webUiDir?: string): string | null {
   return null;
 }
 
-export function createShadowSyncOnPullHandler(
-  startupProjectPath: string | undefined,
-  getEntityCache: (projectPath: string) => ShadowPullReloadableCache | undefined,
-): () => Promise<void> {
-  return async () => {
-    if (!startupProjectPath) return;
-    const cache = getEntityCache(startupProjectPath);
-    if (!cache) return;
-    console.log("[daemon] Shadow sync pulled data — refreshing shadow status");
-    await cache.refreshMetaShadowInfo();
-  };
-}
-
 // WebSocket pub/sub and heartbeat managers
 let pubsubManager: PubSubManager;
 let heartbeatManager: HeartbeatManager;
 let wsHandler: WebSocketHandler;
 let _projectManager: import("./project-context.js").ProjectContextManager | undefined;
-let shadowSyncScheduler: ShadowSyncScheduler | undefined;
 let watcherHealthMonitor: WatcherHealthMonitor | undefined;
 const sessionSyncSchedulers: Map<string, SessionSyncScheduler> = new Map();
 
@@ -277,10 +332,140 @@ function stopSessionSyncForProject(projectPath: string): void {
 }
 
 /**
- * Middleware to enforce localhost-only connections.
- * AC-3: Reject non-localhost connections with 403 Forbidden
+ * Options for the localhost-enforcement middleware.
+ *
+ * `additionalAllowedHosts` adds extra Host header values that the
+ * middleware accepts beyond the default localhost set. The daemon passes
+ * its resolved bind/connect hosts here so that requests addressed to
+ * the advertised endpoint are accepted when external binding is
+ * explicitly configured. Wildcard addresses are filtered out — they are
+ * not real hosts to address, only bind targets.
  */
-export function localhostOnly() {
+export interface LocalhostOnlyOptions {
+  additionalAllowedHosts?: ReadonlyArray<string>;
+}
+
+const WILDCARD_HOSTS = new Set(["0.0.0.0", "::"]);
+
+/** Default Vite dev-server port for the web UI. */
+const DEFAULT_WEB_UI_DEV_PORT = 5173;
+
+function readWebUiDevPort(): number {
+  const raw = process.env.KSPEC_WEB_UI_DEV_PORT;
+  if (raw === undefined) return DEFAULT_WEB_UI_DEV_PORT;
+  const trimmed = raw.trim();
+  if (trimmed.length === 0) return DEFAULT_WEB_UI_DEV_PORT;
+  const parsed = Number.parseInt(trimmed, 10);
+  if (!Number.isInteger(parsed) || parsed < 1 || parsed > 65535) {
+    return DEFAULT_WEB_UI_DEV_PORT;
+  }
+  return parsed;
+}
+
+/**
+ * Build the set of CORS / WebSocket origins the daemon should accept,
+ * derived from the resolved daemon endpoint instead of being hardcoded.
+ *
+ * Always includes:
+ *  - The same-origin daemon URL (api_url) so the bundled production web
+ *    UI can call the daemon it's served from.
+ *  - Loopback aliases of the daemon URL (http://localhost:PORT,
+ *    http://127.0.0.1:PORT, http://[::1]:PORT). The localhostOnly
+ *    middleware always accepts Host: localhost, 127.0.0.1, and ::1
+ *    regardless of bind host, so a user opening the production daemon
+ *    UI through any loopback alias gets a same-origin browser context
+ *    whose requests must be allowed. Mirroring those aliases here
+ *    preserves production same-origin across IPv4/IPv6 fallback and
+ *    developer-typed `localhost` URLs.
+ *  - The local Vite dev server origin at the resolved connect host
+ *    (with IPv6 bracketing) on KSPEC_WEB_UI_DEV_PORT (default 5173).
+ *  - Loopback dev origins (http://localhost:DEV_PORT and
+ *    http://127.0.0.1:DEV_PORT) so a developer running the dev server
+ *    on either localhost alias can reach a loopback-bound daemon.
+ *
+ * Wildcard bind addresses are not added as concrete origins. When the
+ * daemon binds to a non-loopback address the resolved connect host is
+ * still added (a loopback or explicitly configured connect host), but
+ * the allow-list is never widened to `*` — that would expose the
+ * unauthenticated mutation API to any cross-origin caller.
+ *
+ * AC: @api-contract ac-1
+ * AC: @api-contract ac-websocket-origin
+ * AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+ */
+export function buildAllowedOrigins(args: {
+  apiUrl: string;
+  connectHost: string;
+  devPort?: number;
+}): ReadonlyArray<string> {
+  const devPort = args.devPort ?? DEFAULT_WEB_UI_DEV_PORT;
+  const origins = new Set<string>();
+
+  // Same-origin daemon URL (production: web UI is served from the daemon).
+  origins.add(args.apiUrl);
+
+  // Same-origin daemon-port loopback aliases. Empty string when the
+  // daemon listens on the protocol's default port — browsers strip the
+  // default port from the Origin header, so we must not append `:80` to
+  // the alias.
+  const apiUrlPort = new URL(args.apiUrl).port;
+  const daemonPortSuffix = apiUrlPort.length > 0 ? `:${apiUrlPort}` : "";
+  origins.add(`http://localhost${daemonPortSuffix}`);
+  origins.add(`http://127.0.0.1${daemonPortSuffix}`);
+  origins.add(`http://[::1]${daemonPortSuffix}`);
+
+  // Local dev server origin at the resolved connect host. IPv6 is bracketed.
+  const formattedConnect = formatHostForUrl(args.connectHost);
+  origins.add(`http://${formattedConnect}:${devPort}`);
+
+  // Loopback dev origins so a dev server on either localhost alias works
+  // against a loopback-bound daemon.
+  origins.add(`http://localhost:${devPort}`);
+  origins.add(`http://127.0.0.1:${devPort}`);
+
+  return Array.from(origins);
+}
+
+/**
+ * True when the request's `Origin` header is in the allow-list. Returns
+ * true when the header is absent so non-browser clients (curl, the CLI,
+ * native test runners) are not gratuitously rejected — origin checks
+ * are a CSRF mitigation against the browser-controlled `Origin` header,
+ * not a host-level authorization gate (which `localhostOnly` covers).
+ *
+ * AC: @api-contract ac-websocket-origin
+ */
+export function isAllowedOrigin(
+  origin: string | null | undefined,
+  allowed: ReadonlyArray<string>,
+): boolean {
+  if (origin === null || origin === undefined || origin.length === 0) return true;
+  return allowed.includes(origin);
+}
+
+/**
+ * Middleware to enforce localhost-only connections.
+ *
+ * Default allowed hosts: localhost, 127.0.0.1, ::1. Callers may extend
+ * the allow-list via `additionalAllowedHosts` to accept the daemon's
+ * resolved/advertised connect host when external binding is configured.
+ *
+ * AC: @daemon-server ac-3 — Reject non-localhost connections with 403 Forbidden
+ * AC: @trait-localhost-security ac-loopback-rejects-nonlocal
+ */
+export function localhostOnly(options: LocalhostOnlyOptions = {}) {
+  const allowed = new Set(["localhost", "127.0.0.1", "::1"]);
+  for (const host of options.additionalAllowedHosts ?? []) {
+    if (typeof host !== "string") continue;
+    const trimmed = host.trim();
+    if (trimmed.length === 0) continue;
+    // Accept bracketed IPv6 input from callers that pass URL-formatted hosts.
+    const stripped =
+      trimmed.startsWith("[") && trimmed.endsWith("]") ? trimmed.slice(1, -1) : trimmed;
+    if (WILDCARD_HOSTS.has(stripped)) continue;
+    allowed.add(stripped);
+  }
+
   return (context: { request: Request }) => {
     const host = context.request.headers.get("host");
     if (!host) {
@@ -307,10 +492,7 @@ export function localhostOnly() {
       hostname = host.split(":")[0];
     }
 
-    // Allow localhost, 127.0.0.1, and ::1
-    const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
-
-    if (!isLocalhost) {
+    if (!allowed.has(hostname)) {
       return new Response(
         JSON.stringify({
           error: "Forbidden",
@@ -335,7 +517,17 @@ export function localhostOnly() {
  * - ac-15: Uses plugin pattern for middleware
  */
 export async function createServer(options: ServerOptions) {
-  const { port, isDaemon, runtime, kspecDir = join(process.cwd(), ".kspec"), webUiDir } = options;
+  const {
+    port,
+    isDaemon,
+    runtime,
+    kspecDir = join(process.cwd(), ".kspec"),
+    webUiDir,
+    bindHost,
+    bindHostExplicitlyConfigured,
+    connectHost,
+    configDir,
+  } = options;
 
   // Determine startup project path (project root, not .kspec/)
   // AC: @multi-directory-daemon ac-2 - daemon uses startup directory as default project
@@ -355,10 +547,46 @@ export async function createServer(options: ServerOptions) {
     console.log("[daemon] Build the web UI with: cd packages/web-ui && npm run build");
   }
 
-  // Initialize PID file manager (uses global ~/.config/kspec/)
-  const pidManager = new PidFileManager();
+  // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+  // AC: @daemon-network-endpoint-contract ac-configured-bind-host
+  // AC: @daemon-network-endpoint-contract ac-wildcard-connect-host
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+  // AC: @config-daemon ac-host-default
+  // Resolve the bind host once via the shared module. When the user
+  // didn't explicitly configure a host AND the default IPv4 loopback
+  // can't be bound (e.g. IPv4 disabled on the system), fall back to ::1
+  // so daemon startup still succeeds and metadata advertises bracketed
+  // IPv6 URLs. The explicit-config flag is forwarded by the CLI from
+  // the parsed config (env / kspec.config.yaml) so explicit settings
+  // are never silently rewritten.
+  const requestedBindHost = bindHost ?? DEFAULT_BIND_HOST;
+  const bindSelection = await selectStartupBindHost({
+    resolvedBindHost: requestedBindHost,
+    port,
+    hostExplicitlyConfigured: bindHostExplicitlyConfigured === true,
+  });
+  if (bindSelection.fellBackToIpv6) {
+    console.warn(
+      `[daemon] IPv4 loopback (${DEFAULT_BIND_HOST}) is unavailable for binding; falling back to IPv6 loopback (::1).`,
+    );
+  }
+  const endpoint = resolveDaemonEndpoint({
+    port,
+    bindHost: bindSelection.bindHost,
+    connectHost: connectHost ?? null,
+  });
 
-  // AC: @multi-directory-daemon ac-9 - Write PID and port files in daemon mode
+  // Initialize PID file manager. configDir override lets tests redirect
+  // metadata writes away from the real ~/.config/kspec.
+  const pidManager = configDir ? new PidFileManager(configDir) : new PidFileManager();
+
+  // AC: @multi-directory-daemon ac-9 - Write PID and port files in daemon mode.
+  // PID is written before listen() because it serves as the coordination
+  // primitive for stale-daemon detection (atomic O_CREAT|O_EXCL); the legacy
+  // port file is written alongside it for back-compat consumers. Connection
+  // metadata is written *after* listen() succeeds (see below) so a failed
+  // bind never advertises a daemon URL clients would honor.
+  // AC: @daemon-server ac-9 — detach writes lifecycle and connection metadata
   if (isDaemon) {
     pidManager.writePid();
     pidManager.writePort(port);
@@ -379,19 +607,42 @@ export async function createServer(options: ServerOptions) {
 
   const app = await createServerApp(runtime);
 
+  // AC: @api-contract ac-1
+  // AC: @api-contract ac-websocket-origin
+  // Derive the CORS allow-list from the resolved daemon endpoint
+  // (same-origin daemon URL + dev server origins at the resolved
+  // connect host) instead of hardcoding localhost:5173. Explicitly
+  // never expand to wildcard CORS — even when the daemon binds
+  // externally — because the API is unauthenticated.
+  const allowedOrigins = buildAllowedOrigins({
+    apiUrl: endpoint.apiUrl,
+    connectHost: endpoint.connectHost,
+    devPort: readWebUiDevPort(),
+  });
+
   app
     // AC-15: Plugin pattern for middleware
-    // AC: @api-contract ac-1 - Allow CORS from dev server on localhost:5173
     .use(
       cors({
-        origin: ["http://localhost:5173", "http://127.0.0.1:5173"], // Dev server origins
+        origin: Array.from(allowedOrigins),
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       }),
     )
 
     // AC-3: Enforce localhost-only connections
-    .onRequest(localhostOnly());
+    // AC: @daemon-network-endpoint-contract ac-clients-use-metadata
+    // AC: @config-daemon ac-connect-host-config
+    // When external binding is explicitly configured (wildcard bind or a
+    // specific non-loopback address), the resolved connect host is the
+    // value clients call. Extend the localhost allow-list with the
+    // resolved bind/connect hosts so requests addressed to the daemon's
+    // advertised endpoint are not rejected as non-localhost.
+    .onRequest(
+      localhostOnly({
+        additionalAllowedHosts: [endpoint.bindHost, endpoint.connectHost],
+      }),
+    );
 
   // AC: @daemon-entity-cache ac-load-on-register — lazy import entity cache module
   // The daemon build compiles packages/daemon/src plus src/daemon/entity-cache.ts
@@ -399,8 +650,10 @@ export async function createServer(options: ServerOptions) {
   const entityCacheModule = await import("./entity-cache.js");
 
   // Shared callback for all registration paths (middleware, projects API, WebSocket)
+  // AC: @config-shadow ac-14 — shadow sync starts for projects registered after startup
   const onProjectRegistered = async (projectPath: string) => {
     await startSessionSyncForProject(projectPath, pubsubManager);
+    await startShadowSyncForProject(projectPath, pubsubManager, entityCacheModule.getEntityCache);
     // AC: @daemon-entity-cache ac-load-on-register — create cache and start progressive loading
     // AC: @daemon-entity-cache ac-domain-ready-event — wire domain-ready transitions to WebSocket broadcast
     const entityCache = entityCacheModule.registerEntityCache(
@@ -575,6 +828,18 @@ export async function createServer(options: ServerOptions) {
         // the WebSocket upgrade and sends the value as an HTTP 200 response.
         // Use a WeakMap keyed by Request object to pass data to open().
         try {
+          // AC: @api-contract ac-websocket-origin
+          // Reject the upgrade when the browser-supplied Origin header
+          // is not in the daemon's CORS allow-list. Origin headers are
+          // attached by browsers, not by curl/CLI clients — when absent
+          // we let `localhostOnly` enforce host-level access instead.
+          const origin = request.headers.get("origin");
+          if (!isAllowedOrigin(origin, allowedOrigins)) {
+            throw new Error(
+              `WebSocket origin '${origin ?? ""}' is not in the daemon's allowed origin list`,
+            );
+          }
+
           const manager = (store as Record<string, unknown>).projectManager as
             | import("./project-context.js").ProjectContextManager
             | undefined;
@@ -653,79 +918,125 @@ export async function createServer(options: ServerOptions) {
   // AC: @daemon-server ac-17 - Serve web UI static assets
   // Added after API routes so API routes take precedence
   if (resolvedWebUiPath) {
-    const indexHtmlPath = join(resolvedWebUiPath, "index.html");
-    const indexHtml = readFileSync(indexHtmlPath);
+    // SPA fallback routes for client-side routing.
+    // Registered BEFORE the static plugin so the entry helper owns the root
+    // and application routes — the Bun static plugin pre-registers '/' from
+    // index.html, which would otherwise serve a stale, browser-cacheable
+    // bundle after a web UI rebuild.
+    // AC: @daemon-server ac-root-route-current-entry, ac-app-route-current-entry
+    // AC: @daemon-web-ui-bundle ac-entry-unavailable-during-replacement,
+    // ac-entry-recovers-after-replacement, ac-reload-uses-current-entry
+    registerWebUiEntryRoutes(app, resolvedWebUiPath);
 
     if (runtime === "node") {
-      app.get("/_app/*", ({ request }) =>
-        serveWebUiStaticAsset(resolvedWebUiPath, new URL(request.url).pathname),
-      );
-      app.get("/:asset", ({ request }) => {
-        const requestPath = new URL(request.url).pathname;
-        if (!isRootWebUiAssetPath(requestPath)) {
-          return new Response("Not found", { status: 404 });
-        }
-
-        return serveWebUiStaticAsset(resolvedWebUiPath, requestPath);
-      });
+      registerWebUiNodeStaticRoutes(app, resolvedWebUiPath);
     } else {
-      // Bun's static plugin serves the bundle with correct MIME metadata.
+      // Bun's static plugin serves bundle assets with correct MIME metadata.
+      // indexHTML: false stops the plugin from claiming '/' (and other
+      // directory paths) for index.html — the entry helper owns those routes
+      // so bundle changes are reflected on the next request.
       app.use(
         await staticPlugin({
           assets: resolvedWebUiPath,
           prefix: "/",
+          indexHTML: false,
           noCache: process.env.NODE_ENV === "development", // Disable cache in dev
         }),
-      );
-    }
-
-    // SPA fallback routes for client-side routing
-    // These catch paths like /tasks, /items, /inbox that don't have static files
-    const spaRoutes = [
-      "/",
-      "/tasks",
-      "/tasks/*",
-      "/items",
-      "/items/*",
-      "/inbox",
-      "/observations",
-      "/triage",
-      "/validate",
-      "/sessions",
-      "/sessions/*",
-      "/agents",
-      "/specs",
-      "/workflows",
-      "/plans",
-      "/reviews",
-      "/reviews/*",
-      "/settings",
-      "/automation",
-    ];
-    for (const route of spaRoutes) {
-      app.get(
-        route,
-        () =>
-          new Response(indexHtml, {
-            headers: {
-              "Content-Type": "text/html; charset=utf-8",
-            },
-          }),
       );
     }
 
     console.log("[daemon] Web UI static file serving enabled");
   }
 
-  // AC-1, AC-2: Start server on localhost only
-  // Using 'localhost' hostname allows Bun/OS to bind to both 127.0.0.1 and ::1
-  app.listen({
-    port,
-    hostname: "localhost", // Resolves to both IPv4 and IPv6 loopback
-  });
+  // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+  // AC: @daemon-network-endpoint-contract ac-configured-bind-host
+  // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+  // AC: @daemon-server ac-1, ac-2
+  // Bind to the resolved bind host (numeric IPv4 loopback by default —
+  // never 'localhost', so binding does not depend on /etc/hosts or DNS).
+  // The bind host has already been adjusted via selectStartupBindHost to
+  // prefer ::1 when IPv4 loopback is unavailable on this host.
+  //
+  // The IPv6 path needs a localized URL polyfill: @elysiajs/node
+  // constructs `new URL("http://::1:port")` synchronously inside its
+  // listen() implementation, which throws because IPv6 hosts must be
+  // bracketed inside URL strings. We patch globalThis.URL to bracket
+  // bare IPv6 host segments only for the duration of the listen call,
+  // then restore the original. The underlying http.Server bind itself
+  // accepts the bare ::1 hostname (and rejects the bracketed form), so
+  // we cannot change what we pass to Elysia — only what Elysia builds
+  // internally. Bug context: https://github.com/elysiajs/elysia/issues
+  let listenServerInfo: ListenServerInfo | null = null;
+  const captureServerInfo = (info: unknown): void => {
+    listenServerInfo = info as ListenServerInfo;
+  };
+  if (isIpv6Literal(endpoint.bindHost)) {
+    const OriginalURL = globalThis.URL;
+    function PatchedURL(
+      input: ConstructorParameters<typeof URL>[0],
+      base?: ConstructorParameters<typeof URL>[1],
+    ): URL {
+      const fixed =
+        typeof input === "string"
+          ? input.replace(/^(https?:\/\/)([0-9a-fA-F]*:[0-9a-fA-F:]+)(:\d+)/, "$1[$2]$3")
+          : input;
+      return new OriginalURL(fixed, base);
+    }
+    PatchedURL.prototype = OriginalURL.prototype;
+    (globalThis as { URL: typeof URL }).URL = PatchedURL as unknown as typeof URL;
+    try {
+      app.listen({ port, hostname: endpoint.bindHost }, captureServerInfo);
+    } finally {
+      (globalThis as { URL: typeof URL }).URL = OriginalURL;
+    }
+  } else {
+    app.listen({ port, hostname: endpoint.bindHost }, captureServerInfo);
+  }
 
-  console.log(`[daemon] Server listening on http://localhost:${port} (IPv4: 127.0.0.1, IPv6: ::1)`);
-  console.log(`[daemon] WebSocket available at ws://localhost:${port}/ws`);
+  // Block until the underlying http.Server actually emits 'listening'
+  // (or rejects with the bind error). On Node, app.listen() above only
+  // schedules the bind — bind errors fire asynchronously on the http
+  // server's 'error' event. Awaiting here ensures we never write
+  // connection metadata advertising a daemon that failed to bind. On
+  // Bun, app.listen() throws synchronously on bind errors so this is a
+  // no-op once the call returned.
+  //
+  // AC: @daemon-network-endpoint-contract ac-connection-metadata
+  // AC: @daemon-server ac-9
+  await awaitListenSuccess(listenServerInfo, runtime);
+
+  console.log(`[daemon] Server listening on ${endpoint.apiUrl} (bind: ${endpoint.bindHost})`);
+  console.log(`[daemon] WebSocket available at ${endpoint.wsUrl}`);
+
+  // AC: @daemon-network-endpoint-contract ac-connection-metadata
+  // AC: @daemon-server ac-9
+  // Write connection metadata only after the server has confirmed it is
+  // listening on the resolved bind host (see awaitListenSuccess above).
+  // Bind errors (EADDRINUSE, EADDRNOTAVAIL) surface as a rejection from
+  // that helper before this point — main() catches and exits, leaving
+  // no daemon.connection.json behind.
+  if (isDaemon) {
+    const metadata: DaemonConnectionMetadata = {
+      pid: process.pid,
+      port: endpoint.port,
+      bind_host: endpoint.bindHost,
+      connect_host: endpoint.connectHost,
+      api_url: endpoint.apiUrl,
+      ws_url: endpoint.wsUrl,
+      runtime,
+    };
+    pidManager.writeConnectionMetadata(metadata);
+    console.log(`[daemon] Connection metadata written: ${endpoint.apiUrl}`);
+  }
+
+  // AC: @daemon-network-endpoint-contract ac-external-binding-warning
+  // AC: @daemon-server ac-external-bind-warning
+  // AC: @trait-localhost-security ac-external-warning
+  if (endpoint.externallyReachable) {
+    console.warn(
+      `[daemon] WARNING: bind host ${endpoint.bindHost} exposes unauthenticated kspec project data and mutation APIs on a non-loopback interface. Restrict access at the network/firewall level.`,
+    );
+  }
   logHeartbeatDegradationWarning(runtime);
 
   // AC: @agent-dispatch-engine ac-5 - Wire file change callback to dispatch engine
@@ -744,19 +1055,23 @@ export async function createServer(options: ServerOptions) {
   // Both .kspec/ and .kspec-sessions/ changes flow through handleFileChange;
   // fileToDomain() maps YAML files to their domains and ULID-prefixed session
   // paths to the sessions domain.
-  projectContextManager.setCacheInvalidationCallback((projectPath, kspecDir, file, content) => {
-    const cache = entityCacheModule.getEntityCache(projectPath);
-    if (!cache) return;
+  projectContextManager.setCacheInvalidationCallback(
+    (projectPath, projectKspecDir, file, content) => {
+      const cache = entityCacheModule.getEntityCache(projectPath);
+      if (!cache) return;
 
-    cache.handleFileChange(kspecDir, file, content).catch((err: unknown) => {
-      console.error(`[entity-cache] Error handling file change for ${projectPath}:`, err);
-    });
-  });
+      cache.handleFileChange(projectKspecDir, file, content).catch((err: unknown) => {
+        console.error(`[entity-cache] Error handling file change for ${projectPath}:`, err);
+      });
+    },
+  );
 
   // AC: @daemon-entity-cache ac-unregister-cleanup — dispose cache on any unregister path
   // (including watcher permanent failure, not just API-driven unregister)
+  // AC: @config-shadow ac-15 — stop shadow sync when project is removed
   projectContextManager.setUnregisterCallback((projectPath) => {
     stopSessionSyncForProject(projectPath);
+    stopShadowSyncForProject(projectPath);
     entityCacheModule.unregisterEntityCache(projectPath);
   });
 
@@ -788,33 +1103,15 @@ export async function createServer(options: ServerOptions) {
   });
   watcherHealthMonitor.start();
 
-  // AC: @config-shadow ac-12 - Start periodic shadow sync if remote tracking configured
+  // AC: @config-shadow ac-12, ac-13 - Start periodic shadow sync if remote tracking configured
+  // Shadow sync now uses the same per-project helper as onProjectRegistered
   if (startupProjectPath) {
     try {
-      const { loadProjectConfig } = await import("../parser/config.js");
-      const { config } = await loadProjectConfig(startupProjectPath);
-      const syncInterval = config.shadow.sync_interval;
-      const worktreeDir = join(startupProjectPath, config.shadow.directory);
-
-      if (syncInterval > 0) {
-        shadowSyncScheduler = new ShadowSyncScheduler({
-          worktreeDir,
-          intervalSeconds: syncInterval,
-          shadowOptions: {
-            branchName: config.shadow.branch,
-            directory: config.shadow.directory,
-            remote: config.shadow.remote?.value,
-            remoteType: config.shadow.remote?.type,
-          },
-          pubsub: pubsubManager,
-          // AC: @daemon-meta-subdomain ac-shadow-on-schedule — refresh shadow status only; file content changes are handled by the watcher independently
-          onPull: createShadowSyncOnPullHandler(
-            startupProjectPath,
-            entityCacheModule.getEntityCache,
-          ),
-        });
-        shadowSyncScheduler.start();
-      }
+      await startShadowSyncForProject(
+        startupProjectPath,
+        pubsubManager,
+        entityCacheModule.getEntityCache,
+      );
     } catch (error) {
       console.error("[daemon] Failed to initialize shadow sync scheduler:", error);
     }
@@ -845,8 +1142,11 @@ export async function createServer(options: ServerOptions) {
       // Stop heartbeat monitoring
       heartbeatManager.stop();
 
-      // AC: @config-shadow ac-12 - Stop shadow sync scheduler
-      shadowSyncScheduler?.stop();
+      // AC: @config-shadow ac-17 - Stop all shadow sync schedulers
+      // Uses stopAllShadowSync() instead of iterating the map directly so that
+      // in-flight starts (suspended in loadProjectConfig) are also cancelled.
+      stopAllShadowSync();
+
       watcherHealthMonitor?.stop();
 
       // AC: @session-branch-worktree ac-sync - Stop all session sync schedulers
@@ -871,10 +1171,13 @@ export async function createServer(options: ServerOptions) {
       // Stop the server
       await stopManagedServer(app.server as ManagedServer | undefined);
 
-      // AC: @daemon-server ac-10 - Remove PID file on shutdown
+      // AC: @daemon-server ac-10 — Remove PID, port, and connection metadata
+      // files on graceful shutdown. PidFileManager.remove() unlinks the full
+      // global lifecycle set so a stopped daemon never leaves an api_url
+      // advertising itself as available.
       if (isDaemon) {
         pidManager.remove();
-        console.log("[daemon] PID file removed");
+        console.log("[daemon] Lifecycle files removed (pid, port, connection metadata)");
       }
 
       console.log("[daemon] Server stopped successfully");

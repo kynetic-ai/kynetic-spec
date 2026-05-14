@@ -311,8 +311,11 @@ function buildPublicationInstructions(
   if (metadata.publicationMode === "manual_merge") {
     if (role === "reviewer") {
       lines.push(
-        `If review is clean, merge \`${metadata.canonicalBranch}\` back into \`${metadata.mergeTargetBranch}\` manually against the recorded base branch.`,
-        `If conflicts appear, stop, run \`git merge --abort\`, and move the task to \`needs_work\` or \`blocked\` with a note describing the conflict. Do not guess at conflict resolution.`,
+        `You are reviewing from a detached snapshot — you are NOT on the integration branch.`,
+        `If review is clean, run the supported merge helper to integrate: \`bash {supporting:scripts/detached-reviewer-merge.sh}\``,
+        `Do NOT check out \`${metadata.mergeTargetBranch}\` or run manual git merge commands inside this snapshot.`,
+        `The helper handles no-op detection, dirty-target refusal, conflict abort, and occupied-worktree refresh automatically.`,
+        `If the helper reports a conflict, move the task to \`needs_work\` with a note describing the conflict. Do not attempt manual conflict resolution in the detached snapshot.`,
       );
     } else {
       lines.push(
@@ -1580,11 +1583,39 @@ export class DispatchEngine {
     return roles;
   }
 
+  /**
+   * Parse the task ref portion of an in-flight key.
+   * In-flight keys are formatted as `${agentId}:${taskRef}`. Splitting on the
+   * first `:` preserves any `:` characters that may appear within a task ref.
+   * Returns null for malformed keys that lack a separator.
+   */
+  private _parseInFlightTaskRef(key: string): string | null {
+    const colonIdx = key.indexOf(":");
+    if (colonIdx < 0) return null;
+    const taskRef = key.slice(colonIdx + 1);
+    return taskRef.length > 0 ? taskRef : null;
+  }
+
+  /**
+   * Task refs currently protected from workspace artifact cleanup.
+   * Includes both registered active invocations (activeInvocationDetails) and
+   * tasks that have been dequeued for spawn but not yet registered as active
+   * (inFlightTaskKeys), so cleanup sees the same protection set the scheduler
+   * uses for deduplication.
+   *
+   * AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+   */
   private _activeTaskRefs(): Set<string> {
     const refs = new Set<string>();
     for (const record of this.activeInvocationDetails.values()) {
       if (record.taskRef) {
         refs.add(record.taskRef);
+      }
+    }
+    for (const key of this.inFlightTaskKeys) {
+      const taskRef = this._parseInFlightTaskRef(key);
+      if (taskRef) {
+        refs.add(taskRef);
       }
     }
     return refs;
@@ -1606,7 +1637,7 @@ export class DispatchEngine {
     }
     // Check in-flight keys (format: "agentId:taskRef") across all agents
     for (const key of this.inFlightTaskKeys) {
-      if (key.endsWith(`:${taskRef}`)) {
+      if (this._parseInFlightTaskRef(key) === taskRef) {
         return true;
       }
     }

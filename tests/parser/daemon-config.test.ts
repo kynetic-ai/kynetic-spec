@@ -8,7 +8,7 @@
  * - @config-daemon ac-4: deprecation warning for manifest daemon block
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, onTestFinished } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import {
@@ -40,6 +40,7 @@ describe("Daemon Config", () => {
     // Clean env vars that might affect tests
     delete process.env.KSPEC_DAEMON_PORT;
     delete process.env.KSPEC_DAEMON_HOST;
+    delete process.env.KSPEC_DAEMON_CONNECT_HOST;
   });
 
   afterEach(async () => {
@@ -71,6 +72,7 @@ daemon:
     });
 
     // AC: @config-daemon ac-2 — env var overrides config (simulates CLI precedence)
+    // AC: @config-daemon ac-port-env-precedence — KSPEC_DAEMON_PORT wins over file config
     it("env var KSPEC_DAEMON_PORT overrides config", async () => {
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
@@ -146,6 +148,7 @@ daemon:
 
   describe("daemon.runtime configuration", () => {
     // AC: @daemon-runtime-adapter ac-default-node
+    // AC: @config-daemon ac-runtime-default
     it("defaults runtime to node when no config", async () => {
       const result = await loadProjectConfig(tempDir);
 
@@ -153,6 +156,7 @@ daemon:
     });
 
     // AC: @daemon-runtime-adapter ac-runtime-selection
+    // AC: @config-daemon ac-runtime-config
     it("loads runtime: node from config", async () => {
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
@@ -168,6 +172,7 @@ daemon:
     });
 
     // AC: @daemon-runtime-adapter ac-default-node
+    // AC: @config-daemon ac-runtime-default
     it("defaults runtime to node when daemon config omits runtime", async () => {
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
@@ -183,6 +188,22 @@ daemon:
       expect(result.config.daemon.runtime).toBe("node");
       expect(result.config.daemon.port).toBe(4500);
       expect(result.config.daemon.auto_start).toBe(false);
+    });
+
+    // AC: @daemon-runtime-adapter ac-runtime-selection
+    // AC: @config-daemon ac-runtime-config — bun runtime is selected from config
+    it("loads runtime: bun from config", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+daemon:
+  runtime: bun
+`,
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.daemon.runtime).toBe("bun");
     });
   });
 
@@ -252,35 +273,148 @@ daemon:
   });
 
   describe("resolveConfig daemon defaults", () => {
-    it("applies all daemon defaults for empty config", () => {
+    // AC: @config-daemon ac-host-default
+    // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+    it("applies all daemon defaults for empty config (host defaults to 127.0.0.1)", () => {
       const config = resolveConfig({});
 
       expect(config.daemon.port).toBe(3456);
-      expect(config.daemon.host).toBe("localhost");
+      expect(config.daemon.host).toBe("127.0.0.1");
+      expect(config.daemon.host_explicitly_configured).toBe(false);
+      expect(config.daemon.connect_host).toBeNull();
       expect(config.daemon.runtime).toBe("node");
       expect(config.daemon.auto_start).toBe(true);
     });
 
+    // AC: @config-daemon ac-host-default
     it("merges partial daemon config with defaults", () => {
       const config = resolveConfig({
         daemon: { auto_start: false },
       });
 
       expect(config.daemon.port).toBe(3456); // default
-      expect(config.daemon.host).toBe("localhost"); // default
+      expect(config.daemon.host).toBe("127.0.0.1"); // default loopback
+      expect(config.daemon.host_explicitly_configured).toBe(false); // not in file
+      expect(config.daemon.connect_host).toBeNull(); // default
       expect(config.daemon.runtime).toBe("node"); // default
       expect(config.daemon.auto_start).toBe(false); // from config
     });
   });
 
+  describe("daemon.host_explicitly_configured", () => {
+    // AC: @daemon-network-endpoint-contract ac-default-ipv6-fallback
+    // The IPv6 fallback only triggers when no host was explicitly
+    // configured. Daemon startup gates the fallback on this flag, so
+    // resolveConfig must report it accurately.
+
+    it("is false when neither config nor env var sets the host", () => {
+      const config = resolveConfig({});
+      expect(config.daemon.host_explicitly_configured).toBe(false);
+    });
+
+    it("is true when the config file sets daemon.host (even to the default value)", () => {
+      // Setting host to 127.0.0.1 explicitly counts as configured —
+      // explicit config is honored verbatim, no fallback is applied.
+      const config = resolveConfig({ daemon: { host: "127.0.0.1" } });
+      expect(config.daemon.host_explicitly_configured).toBe(true);
+    });
+
+    it("is true when the config file sets a non-default host", () => {
+      const config = resolveConfig({ daemon: { host: "0.0.0.0" } });
+      expect(config.daemon.host_explicitly_configured).toBe(true);
+      expect(config.daemon.host).toBe("0.0.0.0");
+    });
+
+    it("is true when KSPEC_DAEMON_HOST env var is set", () => {
+      const original = process.env.KSPEC_DAEMON_HOST;
+      process.env.KSPEC_DAEMON_HOST = "192.0.2.5";
+      try {
+        const config = resolveConfig({});
+        expect(config.daemon.host_explicitly_configured).toBe(true);
+        expect(config.daemon.host).toBe("192.0.2.5");
+      } finally {
+        if (original === undefined) {
+          delete process.env.KSPEC_DAEMON_HOST;
+        } else {
+          process.env.KSPEC_DAEMON_HOST = original;
+        }
+      }
+    });
+  });
+
   describe("getDefaultConfig daemon", () => {
-    it("returns correct daemon defaults", () => {
+    // AC: @config-daemon ac-host-default
+    // AC: @daemon-network-endpoint-contract ac-default-loopback-v4
+    it("returns correct daemon defaults (numeric IPv4 loopback)", () => {
       const defaults = getDefaultConfig();
 
       expect(defaults.daemon.port).toBe(3456);
-      expect(defaults.daemon.host).toBe("localhost");
+      expect(defaults.daemon.host).toBe("127.0.0.1");
+      expect(defaults.daemon.connect_host).toBeNull();
       expect(defaults.daemon.runtime).toBe("node");
       expect(defaults.daemon.auto_start).toBe(true);
+    });
+  });
+
+  describe("daemon.connect_host configuration", () => {
+    // AC: @config-daemon ac-connect-host-config
+    it("loads connect_host from config file", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+daemon:
+  host: "0.0.0.0"
+  connect_host: "10.0.0.5"
+`,
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.daemon.host).toBe("0.0.0.0");
+      expect(result.config.daemon.connect_host).toBe("10.0.0.5");
+    });
+
+    // AC: @config-daemon ac-connect-host-config
+    it("KSPEC_DAEMON_CONNECT_HOST overrides config", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+daemon:
+  host: "0.0.0.0"
+  connect_host: "10.0.0.5"
+`,
+      );
+
+      process.env.KSPEC_DAEMON_CONNECT_HOST = "192.168.1.20";
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.daemon.connect_host).toBe("192.168.1.20");
+    });
+
+    // AC: @config-daemon ac-connect-host-config
+    it("connect_host is null when not configured", async () => {
+      const result = await loadProjectConfig(tempDir);
+      expect(result.config.daemon.connect_host).toBeNull();
+    });
+  });
+
+  describe("daemon.host env precedence", () => {
+    // AC: @config-daemon ac-host-env-precedence
+    it("KSPEC_DAEMON_HOST overrides config daemon.host", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+daemon:
+  host: "0.0.0.0"
+`,
+      );
+
+      process.env.KSPEC_DAEMON_HOST = "127.0.0.1";
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.daemon.host).toBe("127.0.0.1");
     });
   });
 
@@ -444,6 +578,26 @@ daemon:
 
       // The PID file should still contain only our original PID — no new daemon was spawned
       const pidContent = await readTestOutput(isolatedHome.daemonPidFilePath);
+      // Defensive scoped cleanup before the next assertion: if the
+      // auto-start guard ever regresses and a real daemon IS spawned,
+      // the pid file's contents would be the daemon's pid (not this
+      // process's). Capture the recorded pid up-front so an assertion
+      // failure cannot leave a leaked daemon running. The test is
+      // exercising the auto-start path of the CLI; the cleanup is the
+      // safe boundary the daemon-test-guardrail-precision rule
+      // requires after an implicit auto-start ownership observation.
+      // (@daemon-test-guardrail-precision
+      // ac-implicit-autostart-cleanup-before-observation)
+      const observedPid = parseInt(pidContent.trim(), 10);
+      onTestFinished(() => {
+        if (Number.isFinite(observedPid) && observedPid > 0 && observedPid !== process.pid) {
+          try {
+            process.kill(observedPid, "SIGTERM");
+          } catch {
+            // Already gone — fine.
+          }
+        }
+      });
       expect(pidContent.trim()).toBe(String(process.pid));
     });
   });

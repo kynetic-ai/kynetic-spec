@@ -7,6 +7,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import {
+  acIdPattern,
   AgentSchema,
   ConventionSchema,
   HookSchema,
@@ -55,6 +56,8 @@ import {
   loadSpecFile,
   readYamlFile,
 } from "./yaml.js";
+import { resolveTaskDataManager, TaskDataManagerError } from "./task-data-manager.js";
+import { listTaskDirs, getTaskFilePath } from "./split-backend.js";
 
 // ============================================================
 // TYPES
@@ -107,9 +110,16 @@ export interface TraitCycleError {
 /**
  * Completeness warning
  */
+export type InvalidAnnotationSubtype =
+  | "unresolved_target"
+  | "non_spec_target"
+  | "missing_ac_id"
+  | "blanket_ref"
+  | "malformed_ac_token";
+
 export interface CompletenessWarning {
   type: CompletenessWarningType;
-  subtype?: "own_ac" | "trait_ac";
+  subtype?: "own_ac" | "trait_ac" | InvalidAnnotationSubtype;
   itemRef: string;
   itemTitle: string;
   message: string;
@@ -258,6 +268,115 @@ async function validateTasksFile(filePath: string): Promise<SchemaValidationErro
   }
 
   return errors;
+}
+
+/**
+ * Validate per-task directory files for schema conformance.
+ *
+ * Iterates ULID directories under specDir/tasks/ and validates each task.yaml
+ * against TaskSchema, assembling the full record (task.yaml + notes.yaml) the
+ * same way the split backend does.  Reports schema errors for malformed task
+ * records instead of silently omitting them.
+ *
+ * AC: @validation-task-data-source ac-task-load-errors-reported
+ */
+async function validatePerTaskFiles(
+  ctx: KspecContext,
+  loadedTaskUlids: Set<string>,
+): Promise<{
+  errors: SchemaValidationError[];
+  filesChecked: number;
+  partialTasks: LoadedTask[];
+}> {
+  const errors: SchemaValidationError[] = [];
+  const partialTasks: LoadedTask[] = [];
+  let filesChecked = 0;
+
+  let ulids: string[];
+  try {
+    ulids = await listTaskDirs(ctx);
+  } catch {
+    return { errors, filesChecked, partialTasks };
+  }
+
+  for (const ulid of ulids) {
+    const taskFilePath = getTaskFilePath(ctx, ulid);
+    filesChecked++;
+
+    try {
+      const rawCore = await readYamlFile<unknown>(taskFilePath);
+
+      if (!rawCore || typeof rawCore !== "object") {
+        errors.push({
+          file: taskFilePath,
+          path: ulid,
+          message: "Invalid task file: expected a YAML object",
+        });
+        continue;
+      }
+
+      const rawCoreObj = rawCore as Record<string, unknown>;
+      // Remove history before schema validation (same as split backend)
+      const { history: _h, ...coreWithoutHistory } = rawCoreObj;
+
+      // Read notes file (may not exist)
+      let notes: unknown[] = [];
+      try {
+        const notesFilePath = path.join(path.dirname(taskFilePath), "notes.yaml");
+        const rawNotes = await readYamlFile<unknown>(notesFilePath);
+        if (rawNotes && typeof rawNotes === "object" && "notes" in rawNotes) {
+          const notesWrapper = rawNotes as Record<string, unknown>;
+          notes = Array.isArray(notesWrapper.notes) ? notesWrapper.notes : [];
+        } else if (Array.isArray(rawNotes)) {
+          notes = rawNotes;
+        }
+      } catch {
+        // Notes file doesn't exist — zero notes
+      }
+
+      // Assemble and validate (mirrors split backend's loadTaskFromDirWithHistory)
+      const assembled = { ...coreWithoutHistory, notes };
+      const parsed = TaskSchema.safeParse(assembled);
+
+      if (!parsed.success) {
+        for (const issue of parsed.error.issues) {
+          errors.push({
+            file: taskFilePath,
+            path: `${ulid}.${issue.path.join(".")}`,
+            message: issue.message,
+            details: issue,
+          });
+        }
+
+        // AC: @validation-task-data-source ac-task-references-checked
+        // AC: @validation-task-data-source ac-task-load-errors-reported
+        // For tasks that failed schema validation but were NOT loaded by the canonical
+        // path, extract a partial task so their reference fields still participate in
+        // ref validation. Without this, a malformed task with spec_ref: "@missing-spec"
+        // would silently disappear from both schema AND ref checks when loadAllTasks()
+        // skips it.
+        if (!loadedTaskUlids.has(ulid)) {
+          const raw = assembled as Record<string, unknown>;
+          const partial = {
+            ...assembled,
+            _ulid: ulid,
+            _sourceFile: taskFilePath,
+            // Ensure slugs is iterable for ReferenceIndex — malformed tasks
+            // may be missing it entirely.
+            slugs: Array.isArray(raw.slugs) ? raw.slugs : [],
+          } as LoadedTask;
+          partialTasks.push(partial);
+        }
+      }
+    } catch (err) {
+      errors.push({
+        file: taskFilePath,
+        message: `Failed to parse task YAML: ${err instanceof Error ? err.message : String(err)}`,
+      });
+    }
+  }
+
+  return { errors, filesChecked, partialTasks };
 }
 
 /**
@@ -541,9 +660,38 @@ function validateSpecItemRecursive(
 ): void {
   if (!raw || typeof raw !== "object") return;
 
+  // Fields that may contain nested spec items (objects with _ulid) instead of refs (strings)
+  const nestedFields = [
+    "modules",
+    "features",
+    "requirements",
+    "constraints",
+    "decisions",
+    "traits",
+    "items",
+  ];
+
   // Check if this is a spec item (has _ulid)
   if ("_ulid" in raw) {
-    const result = SpecItemSchema.safeParse(raw);
+    // Strip nested item arrays before validation since they're processed
+    // recursively and SpecItemSchema expects refs (strings), not nested objects
+    const cleanedForValidation: Record<string, unknown> = {
+      ...(raw as Record<string, unknown>),
+    };
+    for (const field of nestedFields) {
+      if (field in cleanedForValidation && Array.isArray(cleanedForValidation[field])) {
+        const arr = cleanedForValidation[field] as unknown[];
+        const hasNestedItems = arr.some(
+          (item) =>
+            item && typeof item === "object" && "_ulid" in (item as Record<string, unknown>),
+        );
+        if (hasNestedItems) {
+          delete cleanedForValidation[field];
+        }
+      }
+    }
+
+    const result = SpecItemSchema.safeParse(cleanedForValidation);
     if (!result.success) {
       for (const issue of result.error.issues) {
         errors.push({
@@ -555,9 +703,6 @@ function validateSpecItemRecursive(
       }
     }
   }
-
-  // Recurse into nested structures
-  const nestedFields = ["modules", "features", "requirements", "constraints", "decisions", "items"];
   const obj = raw as Record<string, unknown>;
 
   for (const field of nestedFields) {
@@ -874,18 +1019,36 @@ export function getACLinePrefix(ext: string): RegExp | null {
 const AC_LINE_PREFIX = /\/\/\s*AC:\s*/;
 
 /**
+ * Parsed result from a single @ref group in an AC annotation line.
+ */
+export interface ParsedACGroup {
+  specRef: string;
+  acIds: string[];
+  malformedTokens: string[];
+}
+
+/**
  * Parse all @ref groups from an AC annotation line.
  * Handles single and multiple @ref groups separated by commas or spaces.
+ *
+ * Only tokens matching the `ac-` prefix are recognized as explicit AC ids.
+ * Non-prefixed words after a @ref are ignored and do NOT create AC coverage.
+ * Malformed ac-prefixed tokens (e.g. ac-good.extra, ac-good/path) are detected
+ * and returned in malformedTokens instead of being silently truncated.
+ *
  * Examples:
- *   "// AC: @spec-a ac-1"                        → [{specRef:"@spec-a", acIds:["ac-1"]}]
- *   "// AC: @spec-a ac-create, ac-update"        → [{specRef:"@spec-a", acIds:["ac-create","ac-update"]}]
- *   "// AC: @spec-a ac-1, @spec-b ac-2"          → [{specRef:"@spec-a", acIds:["ac-1"]}, {specRef:"@spec-b", acIds:["ac-2"]}]
- *   "// AC: @spec-a ac-1 — N/A: reason"          → [{specRef:"@spec-a", acIds:["ac-1"]}]
+ *   "// AC: @spec-a ac-1"                        → [{specRef:"@spec-a", acIds:["ac-1"], malformedTokens:[]}]
+ *   "// AC: @spec-a ac-create, ac-update"        → [{specRef:"@spec-a", acIds:["ac-create","ac-update"], malformedTokens:[]}]
+ *   "// AC: @spec-a ac-1, @spec-b ac-2"          → [{specRef:"@spec-a", acIds:["ac-1"], ...}, {specRef:"@spec-b", acIds:["ac-2"], ...}]
+ *   "// AC: @spec-a ac-1 — N/A: reason"          → [{specRef:"@spec-a", acIds:["ac-1"], malformedTokens:[]}]
+ *   "// AC: @spec-a"                             → [{specRef:"@spec-a", acIds:[], malformedTokens:[]}]  (blanket ref, no AC credit)
+ *   "// AC: @spec-a validate"                    → [{specRef:"@spec-a", acIds:[], malformedTokens:[]}]  (non-prefixed token ignored)
+ *   "// AC: @spec-a ac-good.extra"               → [{specRef:"@spec-a", acIds:[], malformedTokens:["ac-good.extra"]}]
  */
 export function parseACAnnotationLine(
   lineText: string,
   prefix: RegExp = AC_LINE_PREFIX,
-): { specRef: string; acIds: string[] }[] {
+): ParsedACGroup[] {
   const prefixMatch = prefix.exec(lineText);
   if (!prefixMatch) return [];
 
@@ -898,27 +1061,28 @@ export function parseACAnnotationLine(
   // Strip parenthetical comments: " (some comment)"
   remainder = remainder.replace(/\s*\(.*$/, "");
 
-  const groups: { specRef: string; acIds: string[] }[] = [];
+  // Tokenize by whitespace and commas — these are the only valid delimiters.
+  // This preserves the full raw token text so we can detect malformed tokens
+  // like "ac-good.extra" instead of silently truncating to "ac-good".
+  const tokens = remainder.split(/[\s,]+/).filter((t) => t.length > 0);
 
-  // Match each @ref followed by its optional ac-N ids
-  // This regex captures @ref and then all ac-N tokens until the next @ref or end
-  const refGroupPattern = /(@[\w-]+)((?:\s*,?\s*ac-[\w-]+)*)/g;
-  let match;
+  const groups: ParsedACGroup[] = [];
+  let currentGroup: ParsedACGroup | null = null;
 
-  while ((match = refGroupPattern.exec(remainder)) !== null) {
-    const specRef = match[1];
-    const acPart = match[2].trim();
-    const acIds: string[] = [];
-
-    if (acPart) {
-      // Extract individual ac-N tokens
-      const acMatches = acPart.match(/ac-[\w-]+/g);
-      if (acMatches) {
-        acIds.push(...acMatches);
+  for (const token of tokens) {
+    if (token.startsWith("@")) {
+      // New @ref group
+      currentGroup = { specRef: token, acIds: [], malformedTokens: [] };
+      groups.push(currentGroup);
+    } else if (currentGroup && token.startsWith("ac-")) {
+      // ac-prefixed token — validate against strict pattern
+      if (acIdPattern.test(token)) {
+        currentGroup.acIds.push(token);
+      } else {
+        currentGroup.malformedTokens.push(token);
       }
     }
-
-    groups.push({ specRef, acIds });
+    // Non-ac-prefixed, non-@ref tokens are silently ignored (e.g. bare words)
   }
 
   return groups;
@@ -1018,6 +1182,8 @@ export interface ACAnnotation {
   specRef: string;
   /** Specific AC ids like "ac-1", "ac-2", or empty if just the ref */
   acIds: string[];
+  /** Malformed ac-prefixed tokens that failed strict validation */
+  malformedTokens: string[];
   /** Source file where annotation was found */
   file: string;
   /** Line number in the source file (1-based) */
@@ -1064,10 +1230,11 @@ async function scanDirForACAnnotationsStructured(
       if (!prefix.test(lineText)) continue;
 
       const groups = parseACAnnotationLine(lineText, prefix);
-      for (const { specRef, acIds } of groups) {
+      for (const { specRef, acIds, malformedTokens } of groups) {
         annotations.push({
           specRef,
           acIds,
+          malformedTokens,
           file: filePath,
           line: i + 1,
         });
@@ -1130,50 +1297,72 @@ export function validateACAnnotations(
   const warnings: CompletenessWarning[] = [];
 
   for (const annotation of annotations) {
-    const { specRef, acIds, file, line } = annotation;
+    const { specRef, acIds, malformedTokens, file, line } = annotation;
     const relFile = path.basename(file);
 
+    // AC: @ac-annotation-integrity-reporting ac-malformed-ac-token-reported
+    // Report malformed ac-prefixed tokens before other validation
+    if (malformedTokens && malformedTokens.length > 0) {
+      for (const token of malformedTokens) {
+        warnings.push({
+          type: "invalid_ac_annotation",
+          subtype: "malformed_ac_token",
+          itemRef: specRef,
+          itemTitle: `${relFile}:${line}`,
+          message: `Malformed AC token: '${token}' in annotation targeting '${specRef}' is not a valid ac-prefixed identifier`,
+          details: `${file}:${line}`,
+        });
+      }
+    }
+
+    // AC: @ac-annotation-integrity-reporting ac-unresolved-target-reported
     // Check if the reference resolves
     const result = index.resolve(specRef);
     if (!result.ok) {
       warnings.push({
         type: "invalid_ac_annotation",
+        subtype: "unresolved_target",
         itemRef: specRef,
         itemTitle: `${relFile}:${line}`,
-        message: `AC annotation references '${specRef}' which cannot be resolved`,
+        message: `Unresolved target: '${specRef}' cannot be resolved`,
         details: `${file}:${line}`,
       });
       continue;
     }
 
+    // AC: @ac-annotation-integrity-reporting ac-non-spec-target-reported
     // Find the resolved item in our loaded spec items
     const item = items.find((i) => i._ulid === result.ulid);
     if (!item) {
       // Resolved to a non-spec item (task, plan, meta) — AC annotations must target spec items or traits
       warnings.push({
         type: "invalid_ac_annotation",
+        subtype: "non_spec_target",
         itemRef: specRef,
         itemTitle: `${relFile}:${line}`,
-        message: `AC annotation references '${specRef}' which resolves but is not a spec item or trait`,
+        message: `Invalid coverage target: '${specRef}' resolves but is not a spec item or trait`,
         details: `${file}:${line}`,
       });
       continue;
     }
 
+    // AC: @ac-annotation-integrity-reporting ac-blanket-ref-does-not-cover
     if (acIds.length === 0) {
       const hasAcceptanceCriteria = (item.acceptance_criteria?.length ?? 0) > 0;
       if (hasAcceptanceCriteria) {
         warnings.push({
           type: "invalid_ac_annotation",
+          subtype: "blanket_ref",
           itemRef: specRef,
           itemTitle: `${relFile}:${line}`,
-          message: `AC annotation references '${specRef}' without explicit ac-* ids; blanket refs do not count for completeness coverage`,
+          message: `Blanket ref: '${specRef}' without explicit ac-* ids does not count for coverage`,
           details: `${file}:${line}`,
         });
       }
       continue;
     }
 
+    // AC: @ac-annotation-integrity-reporting ac-missing-ac-id-reported
     const existingACs = new Set((item.acceptance_criteria || []).map((ac) => ac.id));
 
     for (const acId of acIds) {
@@ -1181,9 +1370,10 @@ export function validateACAnnotations(
         const itemRef = item.slugs?.[0] ? `@${item.slugs[0]}` : `@${index.shortUlid(item._ulid)}`;
         warnings.push({
           type: "invalid_ac_annotation",
+          subtype: "missing_ac_id",
           itemRef,
           itemTitle: `${relFile}:${line}`,
-          message: `AC annotation references '${specRef} ${acId}' but ${itemRef} has no acceptance criterion '${acId}'`,
+          message: `Missing AC: '${specRef} ${acId}' — ${itemRef} has no acceptance criterion '${acId}'`,
           details: `${file}:${line}`,
         });
       }
@@ -2212,41 +2402,102 @@ export async function validate(
     result.stats.itemsChecked += manifestItems.length;
   }
 
-  // Find and validate task files
-  // Exclude test fixtures which have their own self-contained references
-  const taskFiles = await findTaskFiles(ctx.rootDir);
-  const specTaskFiles = await findTaskFiles(path.join(ctx.rootDir, "spec"));
-  const allTaskFiles = [...new Set([...taskFiles, ...specTaskFiles])].filter(
-    (f) => !f.includes("/fixtures/"),
-  );
+  // Load tasks via canonical TaskDataManager read path when split storage is available.
+  // AC: @validation-task-data-source ac-all-persisted-tasks-included
+  // This ensures validation sees the same tasks that CLI, API, and dispatch consumers see.
+  //
+  // Legacy detection: check the manifest condition directly rather than catching
+  // resolveTaskDataManager() errors. Only kynetic <1.1 projects without split storage
+  // should use the legacy findTaskFiles() fallback. All other errors — including
+  // TaskDataManager resolver or backend failures — must be surfaced as validation
+  // findings so validation never silently diverges from the canonical task data source.
+  const kyneticVersion = ctx.manifest?.kynetic;
+  const storageFormat = ctx.manifest?.task_storage?.format;
+  const isLegacyProject =
+    kyneticVersion !== undefined && storageFormat !== "split" && parseFloat(kyneticVersion) < 1.1;
 
-  for (const taskFile of allTaskFiles) {
-    if (runSchema) {
-      const taskErrors = await validateTasksFile(taskFile);
-      result.schemaErrors.push(...taskErrors);
-    }
-    result.stats.filesChecked++;
+  let usedCanonicalPath = false;
 
-    // Load tasks for ref validation
+  if (!isLegacyProject) {
     try {
-      const raw = await readYamlFile<unknown>(taskFile);
-      let taskList: unknown[] = [];
-
-      if (Array.isArray(raw)) {
-        taskList = raw;
-      } else if (raw && typeof raw === "object" && "tasks" in raw) {
-        taskList = (raw as { tasks: unknown[] }).tasks || [];
+      const tdm = resolveTaskDataManager(ctx);
+      const loadedTasks = await tdm.loadAllTasks(ctx);
+      for (const task of loadedTasks) {
+        allTasks.push(task);
+        result.stats.tasksChecked++;
       }
+      usedCanonicalPath = true;
+    } catch (err) {
+      // AC: @validation-task-data-source ac-task-load-errors-reported
+      // Surface resolver AND load errors as validation findings — do NOT
+      // fall back to legacy path, which would silently diverge from the
+      // canonical task data source.
+      usedCanonicalPath = true;
+      const message =
+        err instanceof TaskDataManagerError
+          ? err.message
+          : `Task data manager failed to load tasks: ${err instanceof Error ? err.message : String(err)}`;
+      result.schemaErrors.push({
+        file: path.join(ctx.specDir, "project.tasks.yaml"),
+        message,
+      });
+    }
+  }
 
-      for (const t of taskList) {
-        const parsed = TaskSchema.safeParse(t);
-        if (parsed.success) {
-          allTasks.push({ ...parsed.data, _sourceFile: taskFile });
-          result.stats.tasksChecked++;
+  if (usedCanonicalPath) {
+    // Validate per-task directory files and report malformed records unconditionally.
+    // AC: @validation-task-data-source ac-task-load-errors-reported
+    // AC: @validation-task-data-source ac-task-references-checked
+    // This must run regardless of runSchema because:
+    // 1. loadAllTasks() silently skips malformed per-task records
+    // 2. Without this, malformed tasks are invisible to ALL validation checks
+    //    (schema, refs, orphans) — not just schema validation
+    const loadedTaskUlids = new Set(allTasks.map((t) => t._ulid));
+    const perTaskResult = await validatePerTaskFiles(ctx, loadedTaskUlids);
+    result.schemaErrors.push(...perTaskResult.errors);
+    result.stats.filesChecked += perTaskResult.filesChecked;
+    // Add partial tasks (malformed records skipped by loadAllTasks) so their
+    // reference fields still participate in ref validation.
+    for (const partial of perTaskResult.partialTasks) {
+      allTasks.push(partial);
+      result.stats.tasksChecked++;
+    }
+  } else {
+    // Legacy fallback: find *.tasks.yaml files the traditional way.
+    // Used for kynetic <1.1 projects that don't have split task storage.
+    const taskFiles = await findTaskFiles(ctx.rootDir);
+    const specTaskFiles = await findTaskFiles(path.join(ctx.rootDir, "spec"));
+    const allTaskFiles = [...new Set([...taskFiles, ...specTaskFiles])].filter(
+      (f) => !f.includes("/fixtures/"),
+    );
+
+    for (const taskFile of allTaskFiles) {
+      if (runSchema) {
+        const taskErrors = await validateTasksFile(taskFile);
+        result.schemaErrors.push(...taskErrors);
+      }
+      result.stats.filesChecked++;
+
+      try {
+        const raw = await readYamlFile<unknown>(taskFile);
+        let taskList: unknown[] = [];
+
+        if (Array.isArray(raw)) {
+          taskList = raw;
+        } else if (raw && typeof raw === "object" && "tasks" in raw) {
+          taskList = (raw as { tasks: unknown[] }).tasks || [];
         }
+
+        for (const t of taskList) {
+          const parsed = TaskSchema.safeParse(t);
+          if (parsed.success) {
+            allTasks.push({ ...parsed.data, _sourceFile: taskFile });
+            result.stats.tasksChecked++;
+          }
+        }
+      } catch {
+        // Already reported in schema validation
       }
-    } catch {
-      // Already reported in schema validation
     }
   }
 

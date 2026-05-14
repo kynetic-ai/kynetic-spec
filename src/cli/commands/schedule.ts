@@ -23,28 +23,13 @@ import { ACTION_TYPES } from "../../schema/action.js";
 import { markMutating } from "../command-annotations.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, isStructuredMode, output, success } from "../output.js";
-import { PidFileManager } from "../pid-utils.js";
+import { getRunningDaemonClient } from "../daemon-client.js";
 import { errors } from "../../strings/errors.js";
 import { validateEnumOption } from "../validators.js";
 
 const SCHEDULE_STATUS_OPTIONS = ["enabled", "disabled"] as const;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
-
-/**
- * Get the daemon URL from the PID file manager.
- * Returns null if the daemon is not running.
- */
-function getDaemonUrl(): { url: string; port: number } | null {
-  const pidManager = new PidFileManager();
-  if (!pidManager.isDaemonRunning()) return null;
-  try {
-    const port = pidManager.readPort();
-    return { url: `http://localhost:${port}`, port };
-  } catch {
-    return null;
-  }
-}
 
 /**
  * Build an action object from CLI options.
@@ -204,14 +189,14 @@ export function registerScheduleCommands(program: Command): void {
         }));
 
         // Try to enrich with runtime data from daemon
-        const daemonConn = getDaemonUrl();
-        if (daemonConn) {
+        const daemon = getRunningDaemonClient();
+        if (daemon) {
           try {
             const headers: Record<string, string> = {};
             if (ctx.projectRoot) {
               headers["X-Kspec-Dir"] = ctx.projectRoot;
             }
-            const response = await fetch(`${daemonConn.url}/api/schedules`, { headers });
+            const response = await fetch(`${daemon.apiUrl}/api/schedules`, { headers });
             if (response.ok) {
               const data = (await response.json()) as {
                 items: ScheduleListItem[];
@@ -640,8 +625,8 @@ export function registerScheduleCommands(program: Command): void {
           process.exit(EXIT_CODES.NOT_FOUND);
         }
 
-        const daemonConn = getDaemonUrl();
-        if (!daemonConn) {
+        const daemon = getRunningDaemonClient();
+        if (!daemon) {
           // AC: @trait-error-guidance ac-1, ac-2
           error("Daemon is not running. The trigger command requires the daemon.", {
             suggestion: "Start the daemon with: kspec serve",
@@ -659,7 +644,7 @@ export function registerScheduleCommands(program: Command): void {
         }
 
         const response = await fetch(
-          `${daemonConn.url}/api/schedules/${encodeURIComponent(found.id)}/trigger`,
+          `${daemon.apiUrl}/api/schedules/${encodeURIComponent(found.id)}/trigger`,
           { method: "POST", headers },
         );
 

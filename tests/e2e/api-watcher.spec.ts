@@ -41,9 +41,10 @@
 // AC: @trait-shadow-commit ac-6 — N/A: file watcher does not create shadow commits
 // AC: @trait-shadow-commit ac-7 — N/A: file watcher does not create shadow commits
 // AC: @trait-shadow-commit ac-8 — N/A: file watcher does not create shadow commits
-// AC: @trait-localhost-security ac-1 — N/A: localhost security tested in api-server.spec.ts
-// AC: @trait-localhost-security ac-2 — N/A: non-localhost rejection tested in api-server.spec.ts
-// AC: @trait-localhost-security ac-3 — N/A: daemon does not support external binding configuration
+// AC: @trait-localhost-security ac-loopback-default — N/A: this watcher-focused E2E does not assert on bind host; default loopback bind is exercised in tests/cli-serve.test.ts (daemon child startup).
+// AC: @trait-localhost-security ac-loopback-rejects-nonlocal — N/A: localhostOnly middleware is a server-level concern, exercised in tests/daemon-api/server.test.ts and tests/daemon-server.test.ts.
+// AC: @trait-localhost-security ac-external-host-explicit — N/A: explicit non-loopback bind is exercised in tests/cli-serve.test.ts where daemon.host is configured.
+// AC: @trait-localhost-security ac-external-warning — N/A: external-bind warning is surfaced from the CLI lifecycle path and exercised in tests/cli-serve.test.ts.
 // AC: @trait-websocket-protocol ac-1 — N/A: server connection lifecycle tested in daemon-api/websocket-protocol.test.ts
 // AC: @trait-websocket-protocol ac-2 — N/A: subscribe ack tested in daemon-api/websocket-protocol.test.ts
 // AC: @trait-websocket-protocol ac-3 — N/A: broadcast format tested in daemon-api/websocket-protocol.test.ts

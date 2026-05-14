@@ -22,7 +22,7 @@ const baseManifest = {
 };
 
 describe("Session Storage Config in ManifestSchema", () => {
-  // AC: @session-storage-modes ac-config
+  // Coverage: session-storage-modes (no spec AC exists yet) ac-config
   it('accepts sessions.storage set to "local"', () => {
     const result = ManifestSchema.safeParse({
       ...baseManifest,
@@ -35,7 +35,7 @@ describe("Session Storage Config in ManifestSchema", () => {
     }
   });
 
-  // AC: @session-storage-modes ac-config
+  // Coverage: session-storage-modes (no spec AC exists yet) ac-config
   it('accepts sessions.storage set to "branch"', () => {
     const result = ManifestSchema.safeParse({
       ...baseManifest,
@@ -48,7 +48,7 @@ describe("Session Storage Config in ManifestSchema", () => {
     }
   });
 
-  // AC: @session-storage-modes ac-config-default
+  // Coverage: session-storage-modes (no spec AC exists yet) ac-config-default
   it("defaults storage to 'local' when sessions block is present without storage", () => {
     const result = ManifestSchema.safeParse({
       ...baseManifest,
@@ -61,7 +61,7 @@ describe("Session Storage Config in ManifestSchema", () => {
     }
   });
 
-  // AC: @session-storage-modes ac-config-default
+  // Coverage: session-storage-modes (no spec AC exists yet) ac-config-default
   it("defaults sessions.storage to 'local' when sessions block is omitted", () => {
     const result = ManifestSchema.safeParse(baseManifest);
 
@@ -71,7 +71,7 @@ describe("Session Storage Config in ManifestSchema", () => {
     }
   });
 
-  // AC: @session-storage-modes ac-config-invalid
+  // Coverage: session-storage-modes (no spec AC exists yet) ac-config-invalid
   it("rejects unsupported sessions.storage value", () => {
     const result = ManifestSchema.safeParse({
       ...baseManifest,
@@ -88,7 +88,7 @@ describe("Session Storage Config in ManifestSchema", () => {
     }
   });
 
-  // AC: @session-storage-modes ac-config-invalid
+  // Coverage: session-storage-modes (no spec AC exists yet) ac-config-invalid
   it("rejects invalid type for sessions.storage", () => {
     const result = ManifestSchema.safeParse({
       ...baseManifest,
@@ -98,7 +98,7 @@ describe("Session Storage Config in ManifestSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  // AC: @session-storage-modes ac-branch-name
+  // Coverage: session-storage-modes (no spec AC exists yet) ac-branch-name
   it("accepts sessions.branch as a string", () => {
     const result = ManifestSchema.safeParse({
       ...baseManifest,
@@ -111,7 +111,7 @@ describe("Session Storage Config in ManifestSchema", () => {
     }
   });
 
-  // AC: @session-storage-modes ac-branch-name-default
+  // Coverage: session-storage-modes (no spec AC exists yet) ac-branch-name-default
   it("allows sessions.branch to be omitted", () => {
     const result = ManifestSchema.safeParse({
       ...baseManifest,

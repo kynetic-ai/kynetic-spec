@@ -41,7 +41,7 @@ import type {
   CachedShadowInfo,
   CachedProjectConfig,
 } from "../dist/daemon/entity-cache.js";
-import { createShadowSyncOnPullHandler } from "../dist/daemon/server.js";
+import { createShadowSyncOnPullHandler } from "../dist/daemon/shadow-sync-manager.js";
 import type { MetaContext } from "../dist/parser/meta.js";
 import type { LoadedInboxItem, LoadedSpecItem, LoadedTask } from "../dist/parser/yaml.js";
 import { ShadowSyncScheduler } from "../src/parser/shadow-sync-scheduler.js";

@@ -1,4 +1,4 @@
-// AC: @convention-definitions ac-3, ac-4
+// AC: @convention-definitions ac-conv-3, ac-conv-4
 import { describe, it, expect } from "vitest";
 import { validateConvention, validateConventions } from "../src/parser/convention-validation.js";
 import type { Convention } from "../src/schema/meta.js";
@@ -190,7 +190,7 @@ describe("validateConvention", () => {
   });
 
   describe("prose validation", () => {
-    // AC: @convention-definitions ac-4
+    // AC: @convention-definitions ac-conv-4
     it("should skip prose conventions (advisory only)", () => {
       const convention: Convention = {
         _ulid: "01TEST0000000000000000000",
@@ -318,7 +318,7 @@ describe("validateConventions", () => {
     expect(result.skipped).toContain("test1");
   });
 
-  // AC: @convention-definitions ac-4
+  // AC: @convention-definitions ac-conv-4
   it("should skip prose conventions", () => {
     const conventions: Convention[] = [
       {

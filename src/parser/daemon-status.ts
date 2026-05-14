@@ -8,6 +8,7 @@
  */
 
 import { PidFileManager } from "../cli/pid-utils.js";
+import { getRunningDaemonClient } from "../cli/daemon-client.js";
 
 /**
  * Daemon status information
@@ -54,22 +55,22 @@ export async function getDaemonStatus(): Promise<DaemonStatus> {
     return status;
   }
 
-  // Read port from file
-  try {
-    status.port = pidManager.readPort();
-  } catch {
-    // Port file might not exist or be invalid
-    status.port = null;
+  // AC: @daemon-network-endpoint-contract ac-clients-use-metadata,
+  //     ac-legacy-port-fallback — shared helper handles both metadata
+  //     and legacy daemon.port fallback in one call.
+  const endpoint = getRunningDaemonClient();
+  if (endpoint) {
+    status.port = endpoint.port;
   }
 
-  // Probe health endpoint if we have a port
+  // Probe health endpoint if we have an endpoint
   // AC: @doctor-command ac-daemon-unreachable
-  if (status.port) {
+  if (endpoint) {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 2000);
 
-      const response = await fetch(`http://localhost:${status.port}/api/health`, {
+      const response = await fetch(`${endpoint.apiUrl}/api/health`, {
         signal: controller.signal,
       });
 

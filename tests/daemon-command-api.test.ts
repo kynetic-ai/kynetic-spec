@@ -1275,14 +1275,10 @@ describe("Daemon Command API", () => {
   // AC: @trait-api-endpoint ac-5 — N/A: shadow commits are made by the CLI
   // commands themselves, not by the command route.
 
-  // AC: @trait-localhost-security ac-1 — N/A: localhost binding is configured
-  // at the server level in server.ts, not per-route.
-
-  // AC: @trait-localhost-security ac-2 — N/A: localhostOnly middleware is a
-  // server-level concern tested in daemon-server tests, not per-route.
-
-  // AC: @trait-localhost-security ac-3 — N/A: server configuration warning
-  // is handled at daemon startup in server.ts, not per-route.
+  // AC: @trait-localhost-security ac-loopback-default — N/A: command API route handler tests do not invoke app.listen(); default loopback bind is exercised in tests/cli-serve.test.ts (daemon child startup).
+  // AC: @trait-localhost-security ac-loopback-rejects-nonlocal — N/A: localhostOnly middleware is a server-level concern, exercised in tests/daemon-api/server.test.ts and tests/daemon-server.test.ts.
+  // AC: @trait-localhost-security ac-external-host-explicit — N/A: explicit non-loopback bind is exercised in tests/cli-serve.test.ts where daemon.host is configured.
+  // AC: @trait-localhost-security ac-external-warning — N/A: external-bind warning is surfaced from the CLI lifecycle path and exercised in tests/cli-serve.test.ts.
 
   // AC: @daemon-command-api ac-response-parity
   it("does not leak --yaml output mode between sequential requests", async () => {

@@ -697,6 +697,39 @@ export class ProjectEntityCache {
   }
 
   /**
+   * Apply a task mutation to the cache immediately — updates both the
+   * index entry (summary) and the detail tier atomically so that subsequent
+   * reads see the new task state without waiting for a full domain reload.
+   *
+   * Called by TaskDataManager.mutateTask() after the write buffer flushes,
+   * ensuring post-mutation reads are immediately consistent even before the
+   * post-command writeThrough or file-watcher debounce fires.
+   */
+  applyTaskMutation(ulid: string, task: LoadedTask | CachedTaskDetail): void {
+    if (this.tasks.state !== "ready" || !this.tasks.index) return;
+
+    const summary = rawToSummary(task);
+    if (!summary) return;
+
+    // Update index tier: replace existing entry or append new one
+    const existingIndex = this.tasks.index.findIndex((t) => t._ulid === ulid);
+    if (existingIndex >= 0) {
+      this.tasks.index[existingIndex] = summary;
+    } else {
+      this.tasks.index.push(summary);
+    }
+
+    // Update detail tier
+    this.tasks.details.set(ulid, task);
+
+    // Invalidate history tier so subsequent reads fall through to disk
+    // and pick up the freshly-written history entry from the mutation.
+    // Without this, getTaskHistory() / loadTaskWithHistory() would return
+    // stale cached history that predates the mutation.
+    this.tasks.historyDetails.delete(ulid);
+  }
+
+  /**
    * Get spec item summaries from index tier.
    * AC: @daemon-entity-cache ac-serve-from-memory
    */

@@ -74,7 +74,7 @@ includes:
   }
 
   // AC: @alignment-system ac-2
-  // AC: @alignment-warnings ac-1
+  // Coverage: @alignment-system (alignment warnings) ac-1
   it("emits orphaned_spec for no-task spec with not_started status", async () => {
     await writeProject("not_started", false);
     const result = kspecWithStatus("validate --alignment", tmpDir);
@@ -93,7 +93,7 @@ includes:
     expect(output).not.toContain("Status mismatches");
   });
 
-  // AC: @alignment-warnings ac-3
+  // Coverage: @alignment-system (alignment warnings) ac-3
   it("emits no alignment warning for no-task spec with implemented status (baseline trust)", async () => {
     await writeProject("implemented", false);
     const result = kspecWithStatus("validate --alignment", tmpDir);
@@ -105,7 +105,7 @@ includes:
     expect(hasAlignmentWarnings).toBe(false);
   });
 
-  // AC: @alignment-warnings ac-3
+  // Coverage: @alignment-system (alignment warnings) ac-3
   it("emits no alignment warning for no-task spec with verified status (baseline trust)", async () => {
     await writeProject("verified", false);
     const result = kspecWithStatus("validate --alignment", tmpDir);
@@ -116,7 +116,7 @@ includes:
     expect(hasAlignmentWarnings).toBe(false);
   });
 
-  // AC: @alignment-warnings ac-2
+  // Coverage: @alignment-system (alignment warnings) ac-2
   it("emits status_mismatch when tasks exist but progress disagrees with spec status", async () => {
     // spec says implemented, but task is still pending → expected not_started → mismatch
     await writeProject("implemented", true, "pending");
@@ -127,7 +127,7 @@ includes:
     expect(output).not.toContain("Orphaned specs");
   });
 
-  // AC: @alignment-warnings ac-2
+  // Coverage: @alignment-system (alignment warnings) ac-2
   it("treats needs_work task as active work (expects in_progress spec)", async () => {
     await writeProject("in_progress", true, "needs_work");
     const result = kspecWithStatus("validate --alignment", tmpDir);
@@ -135,7 +135,7 @@ includes:
     expect(output).not.toContain("Status mismatches");
   });
 
-  // AC: @alignment-warnings ac-2
+  // Coverage: @alignment-system (alignment warnings) ac-2
   it("treats pending_review task as active work (expects in_progress spec)", async () => {
     await writeProject("in_progress", true, "pending_review");
     const result = kspecWithStatus("validate --alignment", tmpDir);

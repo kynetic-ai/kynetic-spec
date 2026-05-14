@@ -22,6 +22,8 @@ import {
   isWorkspaceRecordDirty,
   markDispatchWorkspaceActive,
   provisionDispatchWorkspace,
+  reconcileDispatchWorkspaceArtifacts,
+  reconcileDispatchWorkspaceLifecycle,
   reconcileDispatchWorkspaceRegistry,
   type DispatchWorkspaceMetadata,
 } from "../src/agent-runtime/workspace.js";
@@ -1003,6 +1005,81 @@ describe("dispatch workspace registry", () => {
 
     const raw = await readTestOutput(registryPath);
     expect(raw).toContain("task_ref: not-a-ref");
+  });
+
+  // AC: @dispatch-workspace-registry ac-partial-provisioning-classified-before-cleanup
+  it("classifies a provisioning-state workspace as preserved before artifact cleanup evaluates it", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 50)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Partial Provisioning Classification",
+        slugs: ["task-partial-provisioning-classification"],
+      },
+    });
+
+    // Force the registry record back to provisioning so artifact cleanup sees
+    // it as not-yet-classified for cleanup eligibility.
+    const ctx = await initContext(tempDir);
+    const records = await loadDispatchWorkspaceRegistry(ctx);
+    const existing = records.find((record) => record.task_ref === taskRef)!;
+    const now = new Date().toISOString();
+    await saveDispatchWorkspaceRecord(ctx, {
+      ...existing,
+      lifecycle_state: "provisioning",
+      timestamps: { ...existing.timestamps, updated_at: now },
+    });
+
+    // Artifact cleanup must NOT reap or prune the provisioning workspace.
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    await fs.access(workspace.metadata.workerWorktreeDir);
+    expect(
+      git(tempDir, "branch --list dispatch/task/task-partial-provisioning-classification/01task00"),
+    ).toContain("dispatch/task/task-partial-provisioning-classification/01task00");
+
+    const refreshed = await readWorkspaceRecord(workspace.metadataPath, taskRef);
+    expect(refreshed.lifecycle_state).toBe("provisioning");
+  });
+
+  // AC: @dispatch-workspace-registry ac-partial-provisioning-classified-before-cleanup
+  it("allows a closing workspace with resolved integration and no active ownership to be reaped through scheduled cleanup", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 51)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Closing Reap Eligible Classification",
+        slugs: ["task-closing-reap-eligible-classification"],
+      },
+    });
+
+    await reconcileDispatchWorkspaceLifecycle({
+      projectDir: tempDir,
+      taskRef,
+      cleanupState: { integrationState: "merged", taskStatus: "completed" },
+      task: {
+        title: "Closing Reap Eligible Classification",
+        slugs: ["task-closing-reap-eligible-classification"],
+      },
+    });
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    // Closing + resolved integration + no active ownership ⇒ reap proceeds and
+    // the registry record advances to `closed`.
+    await expect(fs.access(workspace.metadata.workerWorktreeDir)).rejects.toThrow();
+    const records = await loadDispatchWorkspaceRegistry(await initContext(tempDir));
+    const refreshed = records.find((record) => record.task_ref === taskRef);
+    expect(refreshed?.lifecycle_state).toBe("closed");
+    expect(refreshed?.cleanup.status).toBe("completed");
   });
 });
 

@@ -23,24 +23,7 @@ import {
 } from "../../schema/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output } from "../output.js";
-import { PidFileManager } from "../pid-utils.js";
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-/**
- * Get the daemon URL from the PID file manager.
- * Returns null if the daemon is not running.
- */
-function getDaemonUrl(): { url: string; port: number } | null {
-  const pidManager = new PidFileManager();
-  if (!pidManager.isDaemonRunning()) return null;
-  try {
-    const port = pidManager.readPort();
-    return { url: `http://localhost:${port}`, port };
-  } catch {
-    return null;
-  }
-}
+import { getRunningDaemonClient } from "../daemon-client.js";
 
 // ─── Formatting ─────────────────────────────────────────────────────────────
 
@@ -287,9 +270,9 @@ export function registerEventCommands(program: Command): void {
           }
         }
 
-        const daemonConn = getDaemonUrl();
+        const daemon = getRunningDaemonClient();
 
-        if (!daemonConn) {
+        if (!daemon) {
           // AC: @trait-error-guidance ac-1, ac-2
           error(
             "Daemon is not running. " +
@@ -305,7 +288,7 @@ export function registerEventCommands(program: Command): void {
         if (options.offset) params.set("offset", options.offset);
 
         const queryString = params.toString();
-        const url = `${daemonConn.url}/api/events/recent${queryString ? `?${queryString}` : ""}`;
+        const url = `${daemon.apiUrl}/api/events/recent${queryString ? `?${queryString}` : ""}`;
 
         const response = await fetch(url);
 
@@ -404,15 +387,15 @@ export function registerEventCommands(program: Command): void {
           }
         }
 
-        const daemonConn = getDaemonUrl();
+        const daemon = getRunningDaemonClient();
 
-        if (!daemonConn) {
+        if (!daemon) {
           // AC: @trait-error-guidance ac-1, ac-2
           error("Daemon is not running. Start the daemon with 'kspec serve start' to emit events.");
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const response = await fetch(`${daemonConn.url}/api/events/emit`, {
+        const response = await fetch(`${daemon.apiUrl}/api/events/emit`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

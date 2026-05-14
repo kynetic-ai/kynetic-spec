@@ -580,7 +580,7 @@ test.describe("Task Board (Kanban)", () => {
     await expect(outputEl).toHaveAttribute("aria-live", "polite");
   });
 
-  // AC: @ui-task-board ac-7
+  // AC: @ui-task-board ac-3
   // AC: @ui-url-panel-state ac-1 — opens modal via click, URL updated with goto()
   // AC: @ui-url-panel-state ac-2 — dismiss removes ?ref= via goto(), modal stays closed
   test("closing detail modal removes ?ref= query param from URL", async ({
@@ -612,7 +612,7 @@ test.describe("Task Board (Kanban)", () => {
     await expect(modal).not.toBeVisible();
   });
 
-  // AC: @ui-task-board ac-7
+  // AC: @ui-task-board ac-3
   // AC: @ui-url-panel-state ac-2 — dismiss removes ?ref= via goto(), stays closed
   // AC: @ui-url-panel-state ac-3 — deep-link via ?ref=, dismiss works on first attempt
   test("closing detail modal opened via URL param removes ?ref= and stays closed", async ({
@@ -645,7 +645,7 @@ test.describe("Task Board (Kanban)", () => {
     await expect(modal).not.toBeVisible();
   });
 
-  // AC: @ui-task-board ac-7
+  // AC: @ui-task-board ac-3
   // AC: @ui-url-panel-state ac-3 — deep-link via ?ref=, dismiss works and panel stays closed
   test("can reopen same task after closing modal opened via URL param", async ({
     page,

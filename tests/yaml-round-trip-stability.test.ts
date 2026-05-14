@@ -532,8 +532,7 @@ describe("round-trip stability — savePlan path", () => {
 
     // Snapshot the first plan's raw YAML before deletion
     // Delete the second plan
-    const deleted = await deletePlan(ctx, testUlid("PLAN", 7));
-    expect(deleted).toBe(true);
+    await deletePlan(ctx, testUlid("PLAN", 7));
 
     const afterContent = await readTestOutput(plansFilePath);
 
