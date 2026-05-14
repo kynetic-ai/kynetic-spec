@@ -161,20 +161,6 @@ features:
         then: the server binds to that address and emits the external binding warning required by
           @trait-localhost-security
         when: the daemon starts
-      - given: a project has a degraded cache domain with a recorded load error
-        id: ac-cache-diagnostics-degraded-reason
-        then: the diagnostics identify the degraded domain's current error reason
-        when: cache diagnostics are requested
-      - given: a project has a degraded cache domain with recovery guidance available
-        id: ac-cache-diagnostics-recovery-guidance
-        then: the diagnostics include the recovery guidance
-        when: cache diagnostics are requested
-      - given: |-
-          a project has a degraded cache domain that depends on project-state changes
-          for recovery
-        id: ac-cache-diagnostics-recovery-readiness
-        then: the diagnostics identify that recovery requires project-state changes
-        when: cache diagnostics are requested
     tags:
       - server
       - websocket
@@ -461,38 +447,6 @@ features:
             id: ac-task-storage-incompatibility-degraded-state
             then: the tasks cache domain is reported as degraded
             when: the tasks cache domain state is observed
-          - given: |-
-              the tasks cache domain is degraded for a deterministic task-storage
-              compatibility or migration problem
-            id: ac-task-storage-incompatibility-stable-reporting
-            then: the daemon does not emit repeated failure reports for the unchanged problem
-            when: task cache activity occurs before relevant task-storage project state changes
-          - given: |-
-              the tasks cache domain is degraded for a deterministic task-storage
-              compatibility or migration problem
-            id: ac-task-storage-incompatibility-rechecked-after-storage-change
-            then: the tasks cache domain is re-evaluated against the current task-storage state
-            when: relevant task-storage project state changes
-          - given: |-
-              the tasks cache domain is degraded for a task-storage compatibility or
-              migration problem
-            id: ac-task-storage-incompatibility-recovers-after-migration
-            then: |-
-              the tasks cache domain returns to an available state without restarting the
-              daemon
-            when: the project is migrated to a task-storage state the daemon can read
-          - given: |-
-              the tasks cache domain is degraded for a task-storage compatibility or
-              migration problem
-            id: ac-task-storage-incompatibility-persists-when-unresolved
-            then: the tasks cache domain remains degraded
-            when: task-storage project state changes but the compatibility problem remains
-          - given: the project manifest contains task-storage compatibility settings
-            id: ac-manifest-task-storage-settings-affect-tasks-domain
-            then: |-
-              the tasks cache domain evaluates compatibility against the updated manifest
-              state
-            when: those task-storage compatibility settings change
         tags: []
         requirements:
           - _ulid: 01KMMB3S7MJZ9ZJKZT31QPM572
@@ -1694,50 +1648,6 @@ features:
         then: the origin is accepted only if it matches the same-origin daemon web UI or configured local
           development origins; otherwise the connection is rejected
         when: a WebSocket connection request includes an Origin header
-      - given: |-
-          a daemon API endpoint needs task data from a project whose task storage
-          state is incompatible with the running daemon or requires migration
-        id: ac-task-storage-incompatibility-conflict-status
-        then: the response uses HTTP 409 Conflict
-        when: the request cannot be served because of that task-storage state
-      - given: |-
-          a daemon API request fails because of task-storage compatibility or
-          migration state
-        id: ac-task-storage-incompatibility-error-code
-        then: the error code is "task_storage_incompatible"
-        when: the error response is serialized
-      - given: |-
-          a daemon API request fails because of task-storage compatibility or
-          migration state
-        id: ac-task-storage-incompatibility-guidance
-        then: |-
-          the error response includes recovery guidance for resolving the storage
-          state
-        when: the error response is serialized
-      - given: |-
-          a daemon API endpoint resolves a task reference from a project whose task
-          storage state is incompatible with the running daemon or requires migration
-        id: ac-task-storage-incompatibility-not-not-found
-        then: the response is not a task-reference not_found response
-        when: task data cannot be loaded because of the task-storage state
-      - given: |-
-          a daemon API request fails because of task-storage compatibility or
-          migration state
-        id: ac-task-storage-incompatibility-field-context
-        then: the error response identifies the affected field
-        when: the failing condition identifies an affected configuration or storage field
-      - given: |-
-          a daemon API request fails because of task-storage compatibility or
-          migration state
-        id: ac-task-storage-incompatibility-cache-domain-context
-        then: the error response identifies the affected cache domain
-        when: the failure is associated with a cache-backed domain
-      - given: |-
-          a daemon API request fails because of task-storage compatibility or
-          migration state
-        id: ac-task-storage-incompatibility-cache-state-context
-        then: the error response identifies the affected cache domain state
-        when: the affected cache domain has a current domain state
     tags:
       - api
       - rest
