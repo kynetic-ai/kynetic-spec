@@ -1,0 +1,87 @@
+_ulid: 01KRMEKNFMYDM6QBS5WD8S7DCE
+slugs:
+  - investigate-daemon-dispatch-oom
+title: Investigate daemon OOM under dispatch project workload
+type: spike
+description: >-
+  What:
+
+  Investigate and fix the recent kspec daemon out-of-memory failure that appears when the daemon is
+  serving the migrated dispatch project at /home/chapel/Projects/kynetic-spec-dispatch. Reproduce
+  the failure under a constrained heap, isolate the retaining/regression path, and produce targeted
+  hardening/tests before implementation.
+
+
+  Why:
+
+  A daemon/dispatch deployment that previously ran for over a week now reaches V8 heap OOM quickly.
+  The loud legacy task-storage error seen in the same logs may be from a different registered
+  project; the dispatch project itself is migrated and should not be treated as legacy. The daemon
+  must not crash or log-amplify itself under dispatch workloads.
+
+
+  How:
+
+  - Document every reproduction attempt and finding as task notes.
+
+  - Prefer safe constrained-heap repros (for example NODE_OPTIONS=--max-old-space-size=512) so the
+  investigation does not consume the full host heap.
+
+  - Verify the affected project state with project-aware CLI/API calls before attributing failures.
+
+  - Reproduce with the dispatch project served through the daemon and dispatch engine active.
+
+  - Track process memory, connection count, project cache state, watcher-health messages, and
+  dispatch reconciliation/log behavior over time.
+
+  - Inspect recent changes from the last week around daemon endpoint centralization, dispatch
+  artifact cleanup/reconciliation, watcher health, and agent-dispatch routes.
+
+  - Specifically test whether periodic dispatch reconciles overlap or accumulate when
+  cleanup/reconcile work is slow.
+
+  - Specifically test whether cleanup-preservation diagnostics/logging repeats without bounds for
+  stable artifact sets.
+
+  - Keep legacy task-storage 409/degraded-state work separate unless the same project reproduces the
+  OOM through that path.
+
+
+  Testing / verification:
+
+  - Provide an automated or scripted reproduction of the memory growth/OOM trigger, preferably under
+  a small heap.
+
+  - Add focused regression coverage for the confirmed retaining path.
+
+  - Run the smallest relevant npm test slices with `npm test -- --run ...`; run typecheck if source
+  changes are made.
+
+
+  Out of scope:
+
+  - Do not merge or dispatch broad implementation tasks without explicit human approval.
+
+  - Do not treat unrelated legacy task-storage errors from other registered projects as the OOM root
+  cause without project-specific evidence.
+
+
+  Covers: investigation-only task created from production incident report; formal spec links should
+  be added if the confirmed fix changes daemon/dispatch behavior contracts.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - daemon
+  - dispatch
+  - oom
+  - investigation
+vcs_refs: []
+created_at: 2026-05-14T23:54:33.844Z
+todos: []
+automation: manual_only
