@@ -9,3 +9,14 @@ notes:
     supersedes: null
     author: Hermes
     created_at: 2026-05-14T23:54:40.627Z
+  - _ulid: 01KRMES6Y92V6B18C3NKS4BD5N
+    content: "Live daemon observation: PID 3032984 was serving both the main project and
+      /home/chapel/Projects/kynetic-spec-dispatch with RSS around 307 MB. A project-aware GET
+      /api/agent/status for the dispatch project reset the connection, and immediately afterward
+      /api/health refused connections and kspec serve status reported running=false for PID 3032984.
+      This reproduced a daemon crash/exit while interacting with the dispatch project, but no daemon
+      log file has been located yet to confirm whether the exit was the V8 OOM signature or another
+      fatal path."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-05-14T23:57:35.561Z
