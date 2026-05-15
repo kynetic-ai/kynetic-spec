@@ -43,3 +43,19 @@ notes:
     supersedes: null
     author: Hermes
     created_at: 2026-05-15T00:00:06.775Z
+  - _ulid: 01KRMGRHHF33ADEF1GC17N189B
+    content: "Daemon dispatch OOM segmented probe update: with bootstrap intentionally skipped,
+      constrained daemon still OOMs before task load. At dispatch start request, project middleware
+      auto-registers the dispatch project and starts watcher/onProjectRegistered asynchronously. By
+      the time DispatchEngine.start() begins, daemon baseline is already rss≈680MB heap≈249/527MB.
+      _initTargetSync alone raises retained heap to ≈360/459MB; process then OOMs before
+      initContext/loadAllTasks. This points to overlapping
+      project-registration/entity-cache/session-shadow startup plus dispatch target sync, not just
+      bootstrap/reconcile. The start route currently creates/starts a dispatch engine while
+      registration-triggered entityCache.loadAll() and watcher work may still be running for the
+      same project. Targeted fixes should serialize or defer heavy project registration loads during
+      dispatch start, add non-overlap guards to dispatch reconciles, and keep legacy task-storage
+      cache failures degraded/log-suppressed."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-05-15T00:32:10.799Z
