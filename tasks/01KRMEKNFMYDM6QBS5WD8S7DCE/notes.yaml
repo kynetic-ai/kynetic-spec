@@ -31,3 +31,15 @@ notes:
     supersedes: null
     author: Hermes
     created_at: 2026-05-14T23:59:00.302Z
+  - _ulid: 01KRMEXTKQGHVK987AP24QYZ6G
+    content: "Constrained repro achieved. Command: `node --max-old-space-size=512 --trace-gc --expose-gc
+      dist/daemon/index.js --port 45678 --kspec-dir /home/chapel/Projects/kynetic-spec/.kspec --host
+      127.0.0.1` with logs at /tmp/kspec-dispatch-oom-repro.log. Startup was healthy, then POST
+      /api/agent/dispatch with `X-Kspec-Dir` and `X-Kspec-Cwd` set to
+      /home/chapel/Projects/kynetic-spec-dispatch caused the daemon to disconnect and exit 134 in
+      ~24s with V8 heap OOM. The only application log before the GC death spiral was `[dispatch]
+      Target sync enabled for dev, main via origin (interval: 60s)`, so the next investigation
+      target is dispatch start/bootstrap target sync, before periodic reconcile has time to matter."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-05-15T00:00:06.775Z
