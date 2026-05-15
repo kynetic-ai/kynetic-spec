@@ -29266,8 +29266,11 @@
   title: Suppress repeated task cache reloads for deterministic storage incompatibilities
   type: task
   spec_ref: "@daemon-entity-cache"
-  status: pending
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - 'Agent task-worker failed 25 consecutive times: Internal error: Failed to authenticate. API
+      Error: 401 {"type":"error","error":{"type":"authentication_error","message":"Invalid
+      authentication credentials"},"request_id":"req_011Cb3WqciJC8s9uvNvVGX95"}'
   depends_on: []
   priority: 1
   tags:

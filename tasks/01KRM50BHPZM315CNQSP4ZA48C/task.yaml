@@ -93,8 +93,11 @@ description: >-
 spec_ref: "@daemon-entity-cache"
 meta_ref: null
 plan_ref: null
-status: pending
-blocked_by: []
+status: blocked
+blocked_by:
+  - 'Agent task-worker failed 25 consecutive times: Internal error: Failed to authenticate. API
+    Error: 401 {"type":"error","error":{"type":"authentication_error","message":"Invalid
+    authentication credentials"},"request_id":"req_011Cb3WqciJC8s9uvNvVGX95"}'
 depends_on: []
 context: []
 priority: 1
@@ -111,6 +114,23 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-14T22:03:53.485Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: pending
+      blocked_by:
+        new:
+          - 'Agent task-worker failed 25 consecutive times: Internal error: Failed to authenticate.
+            API Error: 401 {"type":"error","error":{"type":"authentication_error","message":"Invalid
+            authentication credentials"},"request_id":"req_011Cb3WqciJC8s9uvNvVGX95"}'
+        previous: []
+      prior_status:
+        new: pending
+        previous: null
+    command: task-block
+    timestamp: 2026-05-15T01:50:09.186Z
+prior_status: pending
 created_at: 2026-05-14T21:06:43.893Z
 todos: []
 automation: eligible
