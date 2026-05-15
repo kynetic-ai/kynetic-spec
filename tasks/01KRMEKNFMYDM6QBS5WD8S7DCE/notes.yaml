@@ -59,3 +59,24 @@ notes:
     supersedes: null
     author: Hermes
     created_at: 2026-05-15T00:32:10.799Z
+  - _ulid: 01KRMJSXVMGMXSJGEX6KKPX6GB
+    content: "Investigation update: confirmed three bounded hardening points from the dispatch/daemon
+      retaining-path trace. (1) src/agent-runtime/dispatch.ts periodic reconcile previously allowed
+      setInterval ticks to start another _reconcile while an earlier pass was still pending,
+      retaining each pass promise/closure in inFlightReconciles until completion; added a
+      non-overlap guard and a fake-timer regression test. (2) src/agent-runtime/workspace.ts cleanup
+      preservation diagnostics can repeat for stable protected artifacts on every reconciliation;
+      made [dispatch-cleanup] preservation logging opt-in via KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS=1
+      while preserving explicit diagnostic tests. (3) src/agent-runtime/invocation.ts spawned
+      agent/failure-capture kspec calls now inherit KSPEC_NO_DAEMON=1 so daemon-owned dispatch work
+      does not recursively proxy CLI calls back into the same daemon. Route-engine lifecycle maps
+      were checked: stop paths delete schedule/hook/join/engine entries; project registration
+      remains a plausible startup heap-pressure amplifier because middleware fires watcher +
+      onProjectRegistered/loadAll asynchronously while dispatch start can begin target sync for the
+      same newly registered project. Verification run passed: KSPEC_NO_DAEMON=1 node
+      scripts/test.cjs --fresh tests/agent-dispatch-engine.test.ts
+      tests/dispatch-workspace-registry.test.ts tests/dispatch-workspace-cleanup.test.ts
+      tests/invocation-daemon-isolation.test.ts (196/196 tests)."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-05-15T01:07:53.332Z
