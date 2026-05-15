@@ -29787,12 +29787,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-15T00:37:46.704Z
+      updated_at: 2026-05-15T00:37:53.043Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-15T00:37:46.704Z
+      updated_at: 2026-05-15T00:37:53.043Z
     integration:
       status: pending
       detail: null
@@ -29800,7 +29800,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 883715f436862d81a9dfe86bd0c0b5a8cff21064
-      updated_at: 2026-05-15T00:37:46.704Z
+      updated_at: 2026-05-15T00:37:53.043Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KRM50BHPZM315CNQSP4ZA48C"
@@ -29808,9 +29808,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-15T00:37:38.982Z
-      last_reconciled_at: 2026-05-15T00:37:46.704Z
+      last_reconciled_at: 2026-05-15T00:37:53.043Z
       created_at: 2026-05-15T00:01:36.507Z
-      updated_at: 2026-05-15T00:37:46.704Z
+      updated_at: 2026-05-15T00:37:53.043Z
     workspace_id: dispatch-workspace-01KRM50BHPZM315CNQSP4ZA48C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -29819,5 +29819,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-cache-task-storage-incompatibility-suppression/01krm50b
         head: 883715f436862d81a9dfe86bd0c0b5a8cff21064
-        last_seen_at: 2026-05-15T00:37:37.794Z
+        last_seen_at: 2026-05-15T00:37:53.043Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-cache-task-storage-incompatibility-suppression-01krm50b
