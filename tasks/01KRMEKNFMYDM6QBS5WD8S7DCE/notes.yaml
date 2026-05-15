@@ -80,3 +80,18 @@ notes:
     supersedes: null
     author: Hermes
     created_at: 2026-05-15T01:07:53.332Z
+  - _ulid: 01KRMKPHH1SCFAVE051VSA3YD8
+    content: "Constrained verification after investigation tweaks: targeted regression slice passes
+      under NODE_OPTIONS=--max-old-space-size=512 (196/196 tests). However, the full daemon
+      constrained smoke still reproduces the OOM: started `node --max-old-space-size=512 --expose-gc
+      dist/daemon/index.js --port 45679 --kspec-dir /home/chapel/Projects/kynetic-spec/.kspec --host
+      127.0.0.1`, health was OK, then POST /api/agent/dispatch with
+      X-Kspec-Dir/X-Kspec-Cwd=/home/chapel/Projects/kynetic-spec-dispatch and body {action:start}
+      returned empty reply and the daemon exited with V8 `Reached heap limit` OOM shortly after
+      `[dispatch] Target sync enabled for dev, main via origin`. This means the
+      no-overlap/log-gating/direct-mode tweaks are valid hardening but not sufficient for the
+      constrained startup OOM; remaining focus should be dispatch target sync plus concurrent
+      project auto-registration/entity-cache/shadow/session startup for the dispatch project."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-05-15T01:23:30.977Z
