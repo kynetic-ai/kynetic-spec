@@ -29810,7 +29810,7 @@ workspaces:
       last_active_at: 2026-05-15T00:33:45.694Z
       last_reconciled_at: 2026-05-15T00:34:00.687Z
       created_at: 2026-05-15T00:01:36.507Z
-      updated_at: 2026-05-15T00:34:00.687Z
+      updated_at: 2026-05-15T00:34:01.094Z
     workspace_id: dispatch-workspace-01KRM50BHPZM315CNQSP4ZA48C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
