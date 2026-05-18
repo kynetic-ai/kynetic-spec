@@ -57,6 +57,9 @@ function createMockCache(
     detailCount: 0,
     lastError: null,
     lastInvalidatedAt: null,
+    errorReason: null,
+    recoveryGuidance: null,
+    recoveryWaitingOnProjectState: false,
   };
 
   const domains: Record<string, DomainDiagnostic> = {
@@ -155,6 +158,9 @@ describe("Debug API routes", () => {
       detailCount: 3,
       lastError: null,
       lastInvalidatedAt: null,
+      errorReason: null,
+      recoveryGuidance: null,
+      recoveryWaitingOnProjectState: false,
     });
     expect(project.domains.items.indexCount).toBe(10);
     expect(project.domains.meta.indexCount).toBe(1);
@@ -313,6 +319,77 @@ describe("Debug API routes", () => {
     expect(domains.tasks.state).toBe("loading");
     expect(domains.items.state).toBe("loading");
     expect(domains.meta.state).toBe("unloaded");
+  });
+
+  // AC: @daemon-server ac-cache-diagnostics-degraded-reason
+  // AC: @daemon-server ac-cache-diagnostics-recovery-guidance
+  // AC: @daemon-server ac-cache-diagnostics-recovery-readiness
+  it("GET /api/debug/cache-status surfaces deterministic task-storage incompatibility diagnostics", async () => {
+    tempDir = await createTempDir("kspec-debug-task-storage-");
+    await initGitRepo(tempDir);
+    setupProjectFixture(tempDir);
+
+    const { manager: projectManager, middleware } = projectContextMiddleware({
+      startupProject: tempDir,
+    });
+
+    const mockCache = createMockCache(tempDir, {
+      tasks: {
+        state: "degraded",
+        indexCount: 0,
+        detailCount: 0,
+        lastError:
+          'This project uses kynetic version "1.0" without split task storage. The monolithic task storage format has been removed.',
+        lastInvalidatedAt: "2026-05-01T12:00:00.000Z",
+        errorReason: "legacy_task_storage_removed",
+        recoveryGuidance:
+          'Run "kspec task migrate" to convert to per-task directory storage, then tasks will work normally.',
+        recoveryWaitingOnProjectState: true,
+      },
+    });
+    const getEntityCache: EntityCacheAccessor = (p: string) => (p === tempDir ? mockCache : null);
+
+    app = new Elysia().use(middleware).use(createDebugRoutes({ projectManager, getEntityCache }));
+
+    const res = await makeRequest("/api/debug/cache-status");
+    expect(res.status).toBe(200);
+
+    const body = await res.json();
+    const tasksDomain = body.projects[0].domains.tasks;
+    expect(tasksDomain.state).toBe("degraded");
+    expect(tasksDomain.errorReason).toBe("legacy_task_storage_removed");
+    expect(tasksDomain.recoveryGuidance).toContain("kspec task migrate");
+    expect(tasksDomain.recoveryWaitingOnProjectState).toBe(true);
+    expect(tasksDomain.lastError).toContain("monolithic task storage format has been removed");
+  });
+
+  it("GET /api/debug/cache-status reports recoveryWaitingOnProjectState=false for healthy domains", async () => {
+    tempDir = await createTempDir("kspec-debug-healthy-");
+    await initGitRepo(tempDir);
+    setupProjectFixture(tempDir);
+
+    const { manager: projectManager, middleware } = projectContextMiddleware({
+      startupProject: tempDir,
+    });
+
+    const mockCache = createMockCache(tempDir);
+    const getEntityCache: EntityCacheAccessor = (p: string) => (p === tempDir ? mockCache : null);
+
+    app = new Elysia().use(middleware).use(createDebugRoutes({ projectManager, getEntityCache }));
+
+    const res = await makeRequest("/api/debug/cache-status");
+    const body = await res.json();
+
+    // Every healthy domain should report null error fields and false recovery flag.
+    for (const domain of Object.values<{
+      errorReason: string | null;
+      recoveryGuidance: string | null;
+      recoveryWaitingOnProjectState: boolean;
+    }>(body.projects[0].domains)) {
+      expect(domain.errorReason).toBeNull();
+      expect(domain.recoveryGuidance).toBeNull();
+      expect(domain.recoveryWaitingOnProjectState).toBe(false);
+    }
   });
 
   // AC: @trait-json-output ac-1 — N/A: This is a debug endpoint; it does not support --json CLI flag.
