@@ -34,6 +34,7 @@ import { getRelatedSessionsForItem } from "./session-related.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import type { ItemSummary } from "../../daemon/entity-cache.js";
 import { wrapResponse } from "./response-envelope.js";
+import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 
 interface ItemsRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -354,9 +355,21 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             (batchCache && batchItemsDomainState === "ready" ? batchCache.getItemIndex() : null) ??
             (await loadAllItems(await getBatchCtx()));
           const batchTasksDomainState = batchCache?.getDomainState("tasks");
-          const tasks =
-            (batchCache && batchTasksDomainState === "ready" ? batchCache.getTaskIndex() : null) ??
-            (await resolveTaskDataManager(await getBatchCtx()).loadAllTasks(await getBatchCtx()));
+          // AC: @api-contract ac-task-storage-incompatibility-* — surface 409 with
+          // structured guidance instead of a 500 when batch resolution needs tasks
+          // from a legacy/unmigrated project.
+          let tasks;
+          try {
+            tasks =
+              (batchCache && batchTasksDomainState === "ready"
+                ? batchCache.getTaskIndex()
+                : null) ??
+              (await resolveTaskDataManager(await getBatchCtx()).loadAllTasks(await getBatchCtx()));
+          } catch (err) {
+            const conflict = taskStorageIncompatibilityResponse(err, { cache: batchCache });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
+            throw err;
+          }
 
           const resolvedItems = [];
           const unresolved: string[] = [];
@@ -426,9 +439,19 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             // Try to resolve via cached item index (avoid loading all items from disk)
             const cachedItems = cache!.getItemIndex();
             const tasksDomainReady = cache!.getDomainState("tasks") === "ready";
-            const tasks = tasksDomainReady
-              ? (cache!.getTaskIndex() as unknown as LoadedTask[])
-              : await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
+            // AC: @api-contract ac-task-storage-incompatibility-* — return 409 with
+            // recovery guidance instead of an unhandled error when the cache is
+            // not yet warm and the disk read hits a legacy/unmigrated project.
+            let tasks: LoadedTask[];
+            try {
+              tasks = tasksDomainReady
+                ? (cache!.getTaskIndex() as unknown as LoadedTask[])
+                : await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
+            } catch (err) {
+              const conflict = taskStorageIncompatibilityResponse(err, { cache });
+              if (conflict) return errorResponse(conflict.status, conflict.body);
+              throw err;
+            }
             if (cachedItems) {
               const index = new ReferenceIndex(
                 tasks ?? [],
@@ -490,9 +513,18 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
           // Detail not in cache — load from disk
           const items = await loadAllItems(await getCtx());
           // AC: @daemon-entity-cache ac-serve-from-memory — use cached tasks when available
-          const tasks =
-            (cache && cache.getDomainState("tasks") === "ready" ? cache.getTaskIndex() : null) ??
-            (await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx()));
+          // AC: @api-contract ac-task-storage-incompatibility-* — translate task-storage
+          // failures into a structured 409 instead of a 500.
+          let tasks;
+          try {
+            tasks =
+              (cache && cache.getDomainState("tasks") === "ready" ? cache.getTaskIndex() : null) ??
+              (await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx()));
+          } catch (err) {
+            const conflict = taskStorageIncompatibilityResponse(err, { cache });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
+            throw err;
+          }
           const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
           // Compute parent relationships from path structure
@@ -596,7 +628,14 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
             const ctx = await initContext(projectContext.path, { syncMode: "skip" });
             items = await loadAllItems(ctx);
-            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            // AC: @api-contract ac-task-storage-incompatibility-* — surface a structured 409
+            try {
+              tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            } catch (err) {
+              const conflict = taskStorageIncompatibilityResponse(err, { cache });
+              if (conflict) return errorResponse(conflict.status, conflict.body);
+              throw err;
+            }
           }
 
           const refIndex = new ReferenceIndex(tasks, items);
@@ -678,7 +717,14 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
             const ctx = await initContext(projectContext.path, { syncMode: "skip" });
             items = await loadAllItems(ctx);
-            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            // AC: @api-contract ac-task-storage-incompatibility-* — surface a structured 409
+            try {
+              tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            } catch (err) {
+              const conflict = taskStorageIncompatibilityResponse(err, { cache });
+              if (conflict) return errorResponse(conflict.status, conflict.body);
+              throw err;
+            }
             sessionsDir = ctx.sessionsDir;
           }
 

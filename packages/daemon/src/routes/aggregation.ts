@@ -32,6 +32,7 @@ import type {
 } from "@kynetic-ai/shared";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
+import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 
 interface AggregationRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -44,7 +45,7 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
     new Elysia({ prefix: "/api/aggregation" })
       // AC: @ui-api-aggregation ac-1 - Task status summary with dependency-aware distinctions
       // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — serve from cached task index
-      .get("/tasks/summary", async ({ projectContext }) => {
+      .get("/tasks/summary", async ({ error: errorResponse, projectContext }) => {
         const cache = getEntityCache?.(projectContext.path);
         const tasksDomainState = cache?.getDomainState("tasks");
 
@@ -56,19 +57,27 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
           );
         }
 
+        // AC: @api-contract ac-task-storage-incompatibility-* — translate the
+        // deterministic storage error into a 409 instead of bubbling as a 500.
         let tasks: LoadedTask[];
-        if (cache && tasksDomainState === "ready") {
-          const cachedTasks = cache.getTaskIndex();
-          if (cachedTasks) {
-            // AC: @daemon-read-path ac-index-from-cache — build from cached data
-            tasks = cachedTasks as unknown as LoadedTask[];
+        try {
+          if (cache && tasksDomainState === "ready") {
+            const cachedTasks = cache.getTaskIndex();
+            if (cachedTasks) {
+              // AC: @daemon-read-path ac-index-from-cache — build from cached data
+              tasks = cachedTasks as unknown as LoadedTask[];
+            } else {
+              const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+              tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            }
           } else {
             const ctx = await initContext(projectContext.path, { syncMode: "skip" });
             tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
           }
-        } else {
-          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
-          tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+        } catch (err) {
+          const conflict = taskStorageIncompatibilityResponse(err, { cache });
+          if (conflict) return errorResponse(conflict.status, conflict.body);
+          throw err;
         }
 
         // Count tasks by status
@@ -106,7 +115,7 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
       // AC: @daemon-read-path ac-index-from-cache — build alignment/reference indexes from cached entity data
       // Note: validate() requires full context for deep schema/ref validation,
       // but index building uses cached entity data when available.
-      .get("/validation", async ({ projectContext }) => {
+      .get("/validation", async ({ error: errorResponse, projectContext }) => {
         const cache = getEntityCache?.(projectContext.path);
         const tasksDomainState = cache?.getDomainState("tasks");
         const itemsDomainState = cache?.getDomainState("items");
@@ -130,12 +139,20 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
 
         // Resolve tasks and items from cache when available
         // AC: @daemon-read-path ac-index-from-cache — indexes built from cached data
+        // AC: @api-contract ac-task-storage-incompatibility-* — return 409 with
+        // recovery guidance when storage incompatibility blocks the validation read.
         let tasks: LoadedTask[];
-        if (cache && tasksDomainState === "ready") {
-          tasks = (cache.getTaskIndex() ?? []) as unknown as LoadedTask[];
-        } else {
-          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
-          tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+        try {
+          if (cache && tasksDomainState === "ready") {
+            tasks = (cache.getTaskIndex() ?? []) as unknown as LoadedTask[];
+          } else {
+            const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          }
+        } catch (err) {
+          const conflict = taskStorageIncompatibilityResponse(err, { cache });
+          if (conflict) return errorResponse(conflict.status, conflict.body);
+          throw err;
         }
 
         let items: LoadedSpecItem[];

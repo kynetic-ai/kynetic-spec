@@ -46,6 +46,7 @@ import { resolveRefTitle, resolveRefEntries } from "./ref-resolution.js";
 
 import type { EntityCacheAccessor, WriteThroughHint } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
+import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 
 interface TasksRouteOptions {
   pubsub: PubSubManager;
@@ -80,7 +81,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
       // AC: @daemon-entity-cache ac-warming-availability — return loading indicator if warming
       .get(
         "/",
-        async ({ query, projectContext }) => {
+        async ({ query, error: errorResponse, projectContext }) => {
           // AC: @daemon-entity-cache ac-serve-from-memory, ac-warming-availability
           // AC: @shadow-lazy-read-sync ac-daemon-bypass — cache-first path bypasses per-request drift-check
           const cache = getEntityCache?.(projectContext.path);
@@ -109,20 +110,35 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
           // AC: @daemon-entity-cache ac-serve-from-memory — use cached index when ready
           // AC: @daemon-entity-cache ac-graceful-degradation — fall back to disk if degraded
+          // AC: @api-contract ac-task-storage-incompatibility-* — direct disk reads that
+          // hit a deterministic task-storage incompatibility surface as 409.
           let summaries;
-          if (cache && tasksDomainState === "ready") {
-            const cachedTasks = cache.getTaskIndex();
-            if (cachedTasks) {
-              // Apply status and automation filters (matching listTasks contract)
-              summaries = cachedTasks;
-              if (query.status) {
-                const statusFilters = Array.isArray(query.status) ? query.status : [query.status];
-                summaries = summaries.filter((t) => statusFilters.includes(t.status));
-              }
-              if (query.automation) {
-                summaries = summaries.filter((t) => t.automation === query.automation);
+          try {
+            if (cache && tasksDomainState === "ready") {
+              const cachedTasks = cache.getTaskIndex();
+              if (cachedTasks) {
+                // Apply status and automation filters (matching listTasks contract)
+                summaries = cachedTasks;
+                if (query.status) {
+                  const statusFilters = Array.isArray(query.status) ? query.status : [query.status];
+                  summaries = summaries.filter((t) => statusFilters.includes(t.status));
+                }
+                if (query.automation) {
+                  summaries = summaries.filter((t) => t.automation === query.automation);
+                }
+              } else {
+                const ctx = await getCtx();
+                summaries = await resolveTaskDataManager(ctx).listTasks(ctx, {
+                  status: query.status
+                    ? Array.isArray(query.status)
+                      ? query.status
+                      : [query.status]
+                    : undefined,
+                  automation: query.automation || undefined,
+                });
               }
             } else {
+              // AC: @task-data-manager ac-2 — list uses index-only summaries
               const ctx = await getCtx();
               summaries = await resolveTaskDataManager(ctx).listTasks(ctx, {
                 status: query.status
@@ -133,17 +149,10 @@ export function createTasksRoutes(options: TasksRouteOptions) {
                 automation: query.automation || undefined,
               });
             }
-          } else {
-            // AC: @task-data-manager ac-2 — list uses index-only summaries
-            const ctx = await getCtx();
-            summaries = await resolveTaskDataManager(ctx).listTasks(ctx, {
-              status: query.status
-                ? Array.isArray(query.status)
-                  ? query.status
-                  : [query.status]
-                : undefined,
-              automation: query.automation || undefined,
-            });
+          } catch (err) {
+            const conflict = taskStorageIncompatibilityResponse(err, { cache });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
+            throw err;
           }
 
           // Apply filters not supported by TaskListFilters
@@ -324,6 +333,11 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             try {
               task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
             } catch (err) {
+              // AC: @api-contract ac-task-storage-incompatibility-not-not-found —
+              // deterministic task-storage incompatibility must surface as 409,
+              // not be collapsed into a task-ref not_found.
+              const conflict = taskStorageIncompatibilityResponse(err, { cache });
+              if (conflict) return errorResponse(conflict.status, conflict.body);
               if (err instanceof TaskDataManagerError) {
                 return errorResponse(404, {
                   error: "not_found",
@@ -447,7 +461,16 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             // AC: @shadow-lazy-read-sync ac-daemon-bypass — daemon fallback reads skip
             // per-request drift-check; freshness is handled by background sync scheduler
             const ctx = await initContext(projectContext.path, { syncMode: "skip" });
-            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            // AC: @api-contract ac-task-storage-incompatibility-* — surface a
+            // structured 409 for legacy/unmigrated projects instead of letting
+            // the storage error escape as an unhandled 500.
+            try {
+              tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            } catch (err) {
+              const conflict = taskStorageIncompatibilityResponse(err, { cache });
+              if (conflict) return errorResponse(conflict.status, conflict.body);
+              throw err;
+            }
             items = await loadAllItems(ctx);
             sessionsDir = ctx.sessionsDir;
           }
@@ -485,12 +508,16 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         async ({ params, error: errorResponse, projectContext }) => {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
+          const startEntityCache = getEntityCache?.(projectContext.path);
 
           // AC: @task-data-manager ac-3 — resolve task via manager
           let task: LoadedTask;
           try {
             task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
           } catch (err) {
+            // AC: @api-contract ac-task-storage-incompatibility-not-not-found
+            const conflict = taskStorageIncompatibilityResponse(err, { cache: startEntityCache });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
             if (err instanceof TaskDataManagerError) {
               return errorResponse(404, {
                 error: "not_found",
@@ -583,6 +610,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         async ({ params, body, error: errorResponse, projectContext }) => {
           // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
           const ctx = await initContext(projectContext.path);
+          const noteEntityCache = getEntityCache?.(projectContext.path);
 
           // AC: @trait-api-endpoint ac-3 - Validate body
           if (!body.content || typeof body.content !== "string") {
@@ -610,6 +638,9 @@ export function createTasksRoutes(options: TasksRouteOptions) {
               { operation: "task", ref: params.ref, detail: "add note" },
             );
           } catch (err) {
+            // AC: @api-contract ac-task-storage-incompatibility-not-not-found
+            const conflict = taskStorageIncompatibilityResponse(err, { cache: noteEntityCache });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
             if (err instanceof TaskDataManagerError) {
               return errorResponse(404, {
                 error: "not_found",
@@ -665,12 +696,16 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         "/:ref/submit",
         async ({ params, error: errorResponse, projectContext }) => {
           const ctx = await initContext(projectContext.path);
+          const submitEntityCache = getEntityCache?.(projectContext.path);
 
           // AC: @task-data-manager ac-3 — resolve task via manager
           let task: LoadedTask;
           try {
             task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
           } catch (err) {
+            // AC: @api-contract ac-task-storage-incompatibility-not-not-found
+            const conflict = taskStorageIncompatibilityResponse(err, { cache: submitEntityCache });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
             if (err instanceof TaskDataManagerError) {
               return errorResponse(404, {
                 error: "not_found",
@@ -749,12 +784,18 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         "/:ref/complete",
         async ({ params, body, error: errorResponse, projectContext }) => {
           const ctx = await initContext(projectContext.path);
+          const completeEntityCache = getEntityCache?.(projectContext.path);
 
           // AC: @task-data-manager ac-3 — resolve task via manager
           let task: LoadedTask;
           try {
             task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
           } catch (err) {
+            // AC: @api-contract ac-task-storage-incompatibility-not-not-found
+            const conflict = taskStorageIncompatibilityResponse(err, {
+              cache: completeEntityCache,
+            });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
             if (err instanceof TaskDataManagerError) {
               return errorResponse(404, {
                 error: "not_found",
@@ -832,12 +873,16 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         "/:ref/block",
         async ({ params, body, error: errorResponse, projectContext }) => {
           const ctx = await initContext(projectContext.path);
+          const blockEntityCache = getEntityCache?.(projectContext.path);
 
           // AC: @task-data-manager ac-3 — resolve task via manager
           let task: LoadedTask;
           try {
             task = await resolveTaskDataManager(ctx).getTask(ctx, params.ref);
           } catch (err) {
+            // AC: @api-contract ac-task-storage-incompatibility-not-not-found
+            const conflict = taskStorageIncompatibilityResponse(err, { cache: blockEntityCache });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
             if (err instanceof TaskDataManagerError) {
               return errorResponse(404, {
                 error: "not_found",

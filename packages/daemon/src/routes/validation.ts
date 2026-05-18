@@ -28,6 +28,7 @@ import { grepItem } from "../../utils/grep.js";
 import { enumUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
+import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 
 interface ValidationRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -42,7 +43,7 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
       // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — serve from cached entity data
       .get(
         "/search",
-        async ({ query, projectContext }) => {
+        async ({ query, error: errorResponse, projectContext }) => {
           const cache = getEntityCache?.(projectContext.path);
           const tasksDomainState = cache?.getDomainState("tasks");
           const itemsDomainState = cache?.getDomainState("items");
@@ -75,12 +76,20 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
           // Search needs full entities (description, notes, AC content) — summaries
           // strip those fields, breaking grepItem matches. Use detail tier which is
           // populated alongside the index during domain load.
+          // AC: @api-contract ac-task-storage-incompatibility-* — translate the
+          // storage error into a structured 409 instead of a 500.
           let tasks: LoadedTask[];
-          if (cache && tasksDomainState === "ready") {
-            tasks = cache.getAllTaskDetails() ?? [];
-          } else {
-            const ctx = await getCtx();
-            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          try {
+            if (cache && tasksDomainState === "ready") {
+              tasks = cache.getAllTaskDetails() ?? [];
+            } else {
+              const ctx = await getCtx();
+              tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            }
+          } catch (err) {
+            const conflict = taskStorageIncompatibilityResponse(err, { cache });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
+            throw err;
           }
 
           let items: LoadedSpecItem[];
@@ -274,7 +283,7 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
 
       // AC: @api-contract ac-21 - Get alignment stats and warnings
       // AC: @daemon-read-path ac-index-from-cache — build alignment/reference indexes from cached entity data
-      .get("/alignment", async ({ projectContext }) => {
+      .get("/alignment", async ({ error: errorResponse, projectContext }) => {
         // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
         const cache = getEntityCache?.(projectContext.path);
         const tasksDomainState = cache?.getDomainState("tasks");
@@ -293,12 +302,20 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
 
         // Resolve tasks and items from cache when available
         // AC: @daemon-read-path ac-index-from-cache — indexes built from cached data
+        // AC: @api-contract ac-task-storage-incompatibility-* — return 409 with
+        // recovery guidance when storage incompatibility blocks the alignment read.
         let tasks: LoadedTask[];
-        if (cache && tasksDomainState === "ready") {
-          tasks = (cache.getTaskIndex() ?? []) as unknown as LoadedTask[];
-        } else {
-          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
-          tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+        try {
+          if (cache && tasksDomainState === "ready") {
+            tasks = (cache.getTaskIndex() ?? []) as unknown as LoadedTask[];
+          } else {
+            const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          }
+        } catch (err) {
+          const conflict = taskStorageIncompatibilityResponse(err, { cache });
+          if (conflict) return errorResponse(conflict.status, conflict.body);
+          throw err;
         }
 
         let items: LoadedSpecItem[];

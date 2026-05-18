@@ -22,6 +22,7 @@ import {
 } from "../../parser/index.js";
 import { loadReviewRecords, findReviewByRef } from "../../parser/reviews.js";
 import { parseUnifiedDiff } from "../../utils/git-diff-parser.js";
+import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 
 // ─── Git Helpers ───
 
@@ -384,7 +385,19 @@ export function createDiffRoutes() {
           // Spec content
           if (subject.type === "spec") {
             const items = await loadAllItems(ctx);
-            const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            // AC: @api-contract ac-task-storage-incompatibility-* — translate the
+            // storage error into a structured 409 instead of a 500.
+            let tasks;
+            try {
+              tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            } catch (err) {
+              const conflict = taskStorageIncompatibilityResponse(err);
+              if (conflict) {
+                set.status = conflict.status;
+                return conflict.body;
+              }
+              throw err;
+            }
             const index = new ReferenceIndex(tasks, items);
             const resolved = index.resolve(subject.ref);
 
@@ -488,7 +501,19 @@ export function createDiffRoutes() {
 
           // Task subject — return task details
           if (subject.type === "task") {
-            const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            // AC: @api-contract ac-task-storage-incompatibility-not-not-found —
+            // do not collapse the storage error into a task-ref not_found here.
+            let tasks;
+            try {
+              tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            } catch (err) {
+              const conflict = taskStorageIncompatibilityResponse(err);
+              if (conflict) {
+                set.status = conflict.status;
+                return conflict.body;
+              }
+              throw err;
+            }
             const items = await loadAllItems(ctx);
             const index = new ReferenceIndex(tasks, items);
             const resolved = index.resolve(subject.ref);
