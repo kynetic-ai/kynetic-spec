@@ -29323,3 +29323,142 @@
   created_at: 2026-05-14T23:54:33.844Z
   started_at: 2026-05-14T23:54:37.112Z
   automation: manual_only
+- _ulid: 01KRYMPAFQZ7DGGC2EX51C187X
+  slugs:
+    - task-update-daemon-dispatch-hardening-specs
+  title: Update daemon and dispatch hardening specs
+  type: task
+  spec_ref: "@daemon-entity-cache"
+  plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+    - daemon
+    - dispatch
+    - stability
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-18T22:53:16.663Z
+- _ulid: 01KRYMPAYBKH8J2HKZPZYGQDA3
+  slugs:
+    - task-bound-event-bus-lineage-and-source-ordering-lifetime
+  title: Bound event bus lineage and source-ordering lifetime
+  type: task
+  spec_ref: "@dispatch-event-envelope"
+  plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-daemon-dispatch-hardening-specs"
+  priority: 1
+  tags:
+    - dispatch
+    - event-bus
+    - memory
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-18T22:53:17.131Z
+- _ulid: 01KRYMPBC8YM4X3KZC6SPBV6R2
+  slugs:
+    - task-prevent-overlapping-dispatch-reconciliation
+  title: Prevent overlapping periodic dispatch reconciliation
+  type: task
+  spec_ref: "@agent-dispatch-engine"
+  plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-daemon-dispatch-hardening-specs"
+  priority: 1
+  tags:
+    - dispatch
+    - daemon
+    - stability
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-18T22:53:17.576Z
+- _ulid: 01KRYMPBSQV0EWVW3EBCXBPQKC
+  slugs:
+    - task-suppress-recursive-daemon-command-proxying
+  title: Suppress recursive daemon command proxying
+  type: task
+  spec_ref: "@daemon-command-api"
+  plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-daemon-dispatch-hardening-specs"
+  priority: 1
+  tags:
+    - daemon
+    - cli
+    - api
+    - recursion
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-18T22:53:18.007Z
+- _ulid: 01KRYMPC71752C2ZY8WE6PG42R
+  slugs:
+    - task-disable-daemon-proxying-inside-agent-invocations
+  title: Disable daemon proxying inside agent invocations
+  type: task
+  spec_ref: "@agent-invocation-lifecycle"
+  plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-daemon-dispatch-hardening-specs"
+  priority: 1
+  tags:
+    - agent-runtime
+    - dispatch
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-18T22:53:18.433Z
+- _ulid: 01KRYMPCMF46KFWVKKWRDYSJX7
+  slugs:
+    - task-gate-cleanup-preservation-diagnostics
+  title: Gate cleanup preservation diagnostics behind explicit opt-in
+  type: task
+  spec_ref: "@dispatch-workspace-cleanup-policy"
+  plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-daemon-dispatch-hardening-specs"
+  priority: 1
+  tags:
+    - dispatch
+    - cleanup
+    - logging
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-18T22:53:18.863Z
+- _ulid: 01KRYMPD1NE0G47F2QVQF62TYM
+  slugs:
+    - task-validate-daemon-dispatch-oom-hardening-slice
+  title: Validate daemon dispatch OOM hardening slice
+  type: task
+  spec_ref: "@daemon-entity-cache"
+  plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-bound-event-bus-lineage-and-source-ordering-lifetime"
+    - "@task-prevent-overlapping-dispatch-reconciliation"
+    - "@task-suppress-recursive-daemon-command-proxying"
+    - "@task-disable-daemon-proxying-inside-agent-invocations"
+    - "@task-gate-cleanup-preservation-diagnostics"
+    - "@task-daemon-api-task-storage-incompatibility-errors"
+  priority: 2
+  tags:
+    - validation
+    - daemon
+    - dispatch
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-18T22:53:19.285Z

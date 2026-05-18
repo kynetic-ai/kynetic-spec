@@ -1,0 +1,137 @@
+_ulid: 01KRYMPAFQZ7DGGC2EX51C187X
+slugs:
+  - task-update-daemon-dispatch-hardening-specs
+title: Update daemon and dispatch hardening specs
+type: task
+description: |
+  Add the behavioral acceptance criteria needed to cover the daemon and
+  dispatch hardening work from this plan.
+
+  Why: The current specs already cover graceful task-cache degradation for
+  deterministic task-storage incompatibility, and @api-contract already owns
+  the task-storage incompatibility API response contract through existing ACs.
+  This plan covers the adjacent stability contracts exposed by the same
+  incident: bounded event lineage/source-ordering lifetime, non-overlapping
+  periodic dispatch reconciliation, command API recursion suppression, agent
+  invocation daemon isolation, and cleanup diagnostic log gating.
+
+  What: Add the following ACs exactly, unless the same behavioral contract
+  already exists under an equivalent AC id.
+
+  1. Add to @dispatch-event-envelope:
+
+     ac-retained-event-lineage-is-bounded:
+       given: The event bus has accepted more related events than its retained
+         recent-event history can hold
+       when: Earlier related events age out of the retained recent-event
+         history
+       then: Event-lineage state for aged-out events no longer accumulates
+         beyond the retained recent-event lifetime
+
+     ac-completed-source-ordering-is-released:
+       given: Events from a source have completed delivery to matching
+         subscribers
+       when: No later event delivery for that source depends on the completed
+         delivery
+       then: Source-ordering state for the completed delivery no longer
+         accumulates over daemon lifetime
+
+  2. Add to @agent-dispatch-engine:
+
+     ac-reconcile-non-overlap:
+       given: Periodic reconciliation is enabled and a reconciliation pass is
+         still running
+       when: Another reconciliation interval elapses
+       then: The dispatch engine does not start a second reconciliation pass
+         before the running pass completes
+
+     ac-stop-awaits-reconciliation:
+       given: The dispatch engine is stopping while one or more reconciliation
+         passes are in flight
+       when: Stop completes
+       then: No in-flight reconciliation pass continues mutating dispatch
+         state after stop has returned
+
+  3. Add to @daemon-command-api:
+
+     ac-no-recursive-command-proxy:
+       given: The daemon command API is executing a CLI command inside the
+         daemon process
+       when: That command evaluates whether it should proxy through the daemon
+       then: The command is executed directly in the current daemon request
+         instead of posting back to the command API
+
+  4. Add to @cli-daemon-proxy:
+
+     ac-daemon-internal-proxy-suppression-is-scoped:
+       given: Daemon proxying is suppressed for a command running inside a
+         daemon command API request
+       when: Other CLI commands evaluate proxy mode outside that request
+       then: They continue to follow the normal daemon detection, force-direct,
+         and force-proxy rules
+
+  5. Add to @agent-invocation-lifecycle:
+
+     ac-invocation-commands-do-not-proxy-to-supervising-daemon:
+       given: An agent subprocess is spawned by dispatch or one-shot agent
+         invocation
+       when: The subprocess invokes kspec commands
+       then: Those commands run without proxying through the supervising daemon
+
+     ac-invocation-lifecycle-helper-commands-do-not-proxy:
+       given: Invocation timeout, failure, or retry-exhaustion handling writes
+         lifecycle notes or task blocks through kspec helper commands
+       when: Those helper commands run
+       then: They run without daemon proxying
+
+  6. Add to @dispatch-workspace-cleanup-policy:
+
+     ac-preservation-diagnostics-quiet-by-default:
+       given: Cleanup repeatedly preserves protected dispatch artifacts during
+         normal daemon reconciliation
+       when: detailed cleanup diagnostics have not been explicitly enabled
+       then: Preservation diagnostics are not emitted for each preserved
+         artifact
+
+     ac-preservation-diagnostics-opt-in:
+       given: Detailed cleanup diagnostics have been explicitly enabled
+       when: Cleanup preserves a protected dispatch artifact
+       then: A preservation diagnostic identifies the cleanup surface, artifact,
+         and preservation reason
+
+  How: Apply the AC additions with one `kspec batch` mutation that contains the
+  required `kspec item ac add` commands, then verify each owning spec with
+  `kspec item get`. If an AC already exists with the same behavior but a
+  different id, prefer updating the task Covers lines to the existing id over
+  creating a duplicate.
+
+  Testing: Run `kspec validate --refs --warnings-ok` and inspect any existing
+  non-blocking warnings separately from these spec additions.
+
+  Covers: @dispatch-event-envelope ac-retained-event-lineage-is-bounded,
+  ac-completed-source-ordering-is-released; @agent-dispatch-engine
+  ac-reconcile-non-overlap, ac-stop-awaits-reconciliation;
+  @daemon-command-api ac-no-recursive-command-proxy; @cli-daemon-proxy
+  ac-daemon-internal-proxy-suppression-is-scoped;
+  @agent-invocation-lifecycle
+  ac-invocation-commands-do-not-proxy-to-supervising-daemon,
+  ac-invocation-lifecycle-helper-commands-do-not-proxy;
+  @dispatch-workspace-cleanup-policy
+  ac-preservation-diagnostics-quiet-by-default,
+  ac-preservation-diagnostics-opt-in.
+spec_ref: "@daemon-entity-cache"
+plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - daemon
+  - dispatch
+  - stability
+vcs_refs: []
+created_at: 2026-05-18T22:53:16.663Z
+todos: []

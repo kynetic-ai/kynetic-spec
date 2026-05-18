@@ -1,0 +1,130 @@
+_ulid: 01KRYMPD1NE0G47F2QVQF62TYM
+slugs:
+  - task-validate-daemon-dispatch-oom-hardening-slice
+title: Validate daemon dispatch OOM hardening slice
+type: task
+description: >
+  Run the integrated validation slice for the daemon/dispatch OOM hardening
+
+  work and verify the implementation, spec annotations, and build are stable.
+
+
+  Why: The incident involved multiple daemon subsystems interacting under
+
+  long-running load. Individual task tests are necessary but not sufficient;
+
+  the final validation must exercise the affected daemon, dispatch, event-bus,
+
+  invocation, cleanup, and task-storage API surfaces together. The
+
+  task-storage API response work is owned by the existing
+
+  @task-daemon-api-task-storage-incompatibility-errors task, so this validation
+
+  task depends on that task instead of duplicating its implementation scope.
+
+
+  What:
+
+  - Ensure every new regression test has accurate `// AC:` annotations for
+    the exact AC ids added or referenced by this plan.
+  - Confirm @task-daemon-api-task-storage-incompatibility-errors is complete
+    before claiming @api-contract task-storage incompatibility API coverage in
+    this validation task.
+  - Run the focused test slice:
+    `npm test -- --run tests/invocation-daemon-isolation.test.ts tests/event-bus.test.ts tests/agent-dispatch-engine.test.ts tests/dispatch-workspace-cleanup.test.ts tests/dispatch-workspace-registry.test.ts tests/daemon-command-api.test.ts tests/cli-daemon-proxy.test.ts tests/daemon-entity-cache.test.ts`
+  - Run the daemon API task-storage incompatibility route tests from
+    @task-daemon-api-task-storage-incompatibility-errors.
+  - Run `npm run build`.
+
+  - Run `git diff --check`.
+
+  - Run `kspec validate --refs --warnings-ok` and inspect whether any warnings
+    are pre-existing or caused by this plan's AC/task changes.
+  - Confirm no scratch investigation files are included in the final changes.
+
+
+  How: Treat a focused test pass as evidence for the hardening slice, not as a
+
+  substitute for fixing AC annotation or spec/status drift. If validation finds
+
+  a failure tied to one implementation task, send the task back to needs_work
+
+  instead of weakening the spec.
+
+
+  Testing: This task is the validation task; record exact command outputs or
+
+  failure summaries in the task notes.
+
+
+  Covers: @daemon-entity-cache
+
+  ac-task-storage-incompatibility-degraded-state,
+
+  ac-task-storage-incompatibility-stable-reporting,
+
+  ac-task-storage-incompatibility-rechecked-after-storage-change,
+
+  ac-task-storage-incompatibility-recovers-after-migration,
+
+  ac-task-storage-incompatibility-persists-when-unresolved,
+
+  ac-manifest-task-storage-settings-affect-tasks-domain;
+
+  @api-contract ac-task-storage-incompatibility-conflict-status,
+
+  ac-task-storage-incompatibility-error-code,
+
+  ac-task-storage-incompatibility-guidance,
+
+  ac-task-storage-incompatibility-not-not-found,
+
+  ac-task-storage-incompatibility-field-context,
+
+  ac-task-storage-incompatibility-cache-domain-context,
+
+  ac-task-storage-incompatibility-cache-state-context;
+
+  @dispatch-event-envelope ac-retained-event-lineage-is-bounded,
+
+  ac-completed-source-ordering-is-released; @agent-dispatch-engine
+
+  ac-reconcile-non-overlap, ac-stop-awaits-reconciliation;
+
+  @daemon-command-api ac-no-recursive-command-proxy; @cli-daemon-proxy
+
+  ac-daemon-internal-proxy-suppression-is-scoped;
+
+  @agent-invocation-lifecycle
+
+  ac-invocation-commands-do-not-proxy-to-supervising-daemon,
+
+  ac-invocation-lifecycle-helper-commands-do-not-proxy;
+
+  @dispatch-workspace-cleanup-policy
+
+  ac-preservation-diagnostics-quiet-by-default,
+
+  ac-preservation-diagnostics-opt-in.
+spec_ref: "@daemon-entity-cache"
+plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-bound-event-bus-lineage-and-source-ordering-lifetime"
+  - "@task-prevent-overlapping-dispatch-reconciliation"
+  - "@task-suppress-recursive-daemon-command-proxying"
+  - "@task-disable-daemon-proxying-inside-agent-invocations"
+  - "@task-gate-cleanup-preservation-diagnostics"
+  - "@task-daemon-api-task-storage-incompatibility-errors"
+context: []
+priority: 2
+tags:
+  - validation
+  - daemon
+  - dispatch
+vcs_refs: []
+created_at: 2026-05-18T22:53:19.285Z
+todos: []

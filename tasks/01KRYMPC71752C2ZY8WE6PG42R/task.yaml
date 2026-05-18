@@ -1,0 +1,54 @@
+_ulid: 01KRYMPC71752C2ZY8WE6PG42R
+slugs:
+  - task-disable-daemon-proxying-inside-agent-invocations
+title: Disable daemon proxying inside agent invocations
+type: task
+description: |
+  Ensure dispatched agents and invocation lifecycle helper commands do not
+  route their own kspec calls back through the supervising daemon.
+
+  Why: Dispatch controls workspace provisioning and shadow-branch mutation
+  serialization. Agent subprocesses and failure/timeout note helpers must use
+  the invocation's controlled environment rather than discovering the daemon
+  and re-entering command proxy mode.
+
+  What:
+  - In `src/agent-runtime/invocation.ts`, build a shared invocation
+    environment that sets `KSPEC_NO_DAEMON=1`, preserves caller-provided env
+    overrides, and preserves `KSPEC_SHADOW_MUTATION_LOCK_FILE` when present.
+  - Use that shared environment when spawning the ACP agent subprocess.
+  - Use the same daemon-disabled environment for timeout notes, failure notes,
+    and retry-exhaustion task-blocking helper commands.
+  - Add regression coverage in `tests/invocation-daemon-isolation.test.ts`
+    proving both spawned agents and failure-note helper commands receive
+    `KSPEC_NO_DAEMON=1` while preserving mutation-lock env and custom env.
+  - Ensure `tests/mocks/kspec-capture-mock.cjs` captures requested env values
+    for the helper-command assertions.
+
+  How: Do not remove `KSPEC_SESSION_ID` injection for spawned agents and do
+  not weaken the shadow mutation lock behavior. Daemon-proxy isolation is
+  additive to the existing invocation environment; mutation-lock preservation
+  remains an implementation invariant rather than a new AC in this plan.
+
+  Testing: Run
+  `npm test -- --run tests/invocation-daemon-isolation.test.ts`.
+
+  Covers: @agent-invocation-lifecycle
+  ac-invocation-commands-do-not-proxy-to-supervising-daemon,
+  ac-invocation-lifecycle-helper-commands-do-not-proxy.
+spec_ref: "@agent-invocation-lifecycle"
+plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-daemon-dispatch-hardening-specs"
+context: []
+priority: 1
+tags:
+  - agent-runtime
+  - dispatch
+  - daemon
+vcs_refs: []
+created_at: 2026-05-18T22:53:18.433Z
+todos: []

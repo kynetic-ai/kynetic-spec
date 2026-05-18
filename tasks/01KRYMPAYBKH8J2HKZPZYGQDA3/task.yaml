@@ -1,0 +1,54 @@
+_ulid: 01KRYMPAYBKH8J2HKZPZYGQDA3
+slugs:
+  - task-bound-event-bus-lineage-and-source-ordering-lifetime
+title: Bound event bus lineage and source-ordering lifetime
+type: task
+description: |
+  Bound EventBus lineage and source-ordering lifetime so long-running daemon
+  processes do not keep state after the corresponding observable events and
+  deliveries are no longer active.
+
+  Why: The event bus already retains only a bounded recent-event history, but
+  the daemon/dispatch OOM incident showed that adjacent ordering and lineage
+  state must follow the same lifetime. High-cardinality source ids and related
+  event chains should not accumulate indefinitely across daemon lifetime.
+
+  What:
+  - In `src/agent-runtime/event-bus.ts`, expose the recent-event capacity
+    without relying on private field access during clear.
+  - After each accepted event enters the recent-event history, release lineage
+    state whose related events no longer appear in retained recent events.
+  - After subscriber delivery settles for a source, release completed
+    source-ordering state when no newer delivery for that source depends on it.
+  - Preserve per-source sequential delivery while releasing only completed,
+    superseded ordering state.
+  - Add regression coverage in `tests/event-bus.test.ts` for completed
+    source-ordering release and bounded retained event-lineage state.
+
+  How: Use the EventBus retained recent events as the source of truth for which
+  event lineage remains observable. Only release completed source-ordering
+  state if no newer source delivery has replaced or depends on that completion.
+
+  Testing: Run
+  `npm test -- --run tests/event-bus.test.ts`, then include this test in the
+  full focused hardening slice with the other tasks.
+
+  Covers: @dispatch-event-envelope ac-6,
+  ac-retained-event-lineage-is-bounded,
+  ac-completed-source-ordering-is-released.
+spec_ref: "@dispatch-event-envelope"
+plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-daemon-dispatch-hardening-specs"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - event-bus
+  - memory
+vcs_refs: []
+created_at: 2026-05-18T22:53:17.131Z
+todos: []

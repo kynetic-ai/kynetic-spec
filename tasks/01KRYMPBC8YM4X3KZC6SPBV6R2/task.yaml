@@ -1,0 +1,52 @@
+_ulid: 01KRYMPBC8YM4X3KZC6SPBV6R2
+slugs:
+  - task-prevent-overlapping-dispatch-reconciliation
+title: Prevent overlapping periodic dispatch reconciliation
+type: task
+description: |
+  Ensure periodic dispatch reconciliation never overlaps with itself and that
+  shutdown does not return while reconciliation can still mutate dispatch
+  state.
+
+  Why: During deterministic project failures or slow filesystem/git paths,
+  periodic reconciliation should recover missed work but must not amplify load
+  by stacking overlapping scans. Overlap increases pending async work, repeated
+  logs, and filesystem mutation risk during daemon shutdown.
+
+  What:
+  - In `src/agent-runtime/dispatch.ts`, make the periodic reconciliation timer
+    skip a tick when the engine is stopped or a reconciliation pass is already
+    in flight.
+  - Keep tracking in-flight reconciliation promises and ensure `stop()` waits
+    for all currently running reconciliation passes before it returns.
+  - Add regression coverage in `tests/agent-dispatch-engine.test.ts` proving a
+    short reconciliation interval does not start a second pass while the first
+    pass is blocked.
+
+  How: Treat skipped interval ticks as coalesced recovery work. The next timer
+  tick after the current pass completes may start a new pass if the engine is
+  still running.
+
+  Testing: Run
+  `npm test -- --run tests/agent-dispatch-engine.test.ts` or the focused
+  hardening slice. Verify no test depends on overlapping reconciliation for
+  correctness.
+
+  Covers: @agent-dispatch-engine ac-19, ac-20,
+  ac-reconcile-non-overlap, ac-stop-awaits-reconciliation.
+spec_ref: "@agent-dispatch-engine"
+plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-daemon-dispatch-hardening-specs"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - daemon
+  - stability
+vcs_refs: []
+created_at: 2026-05-18T22:53:17.576Z
+todos: []

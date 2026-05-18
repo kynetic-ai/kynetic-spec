@@ -1,0 +1,56 @@
+_ulid: 01KRYMPBSQV0EWVW3EBCXBPQKC
+slugs:
+  - task-suppress-recursive-daemon-command-proxying
+title: Suppress recursive daemon command proxying
+type: task
+description: |
+  Prevent commands executed by the daemon command API from recursively routing
+  back into the same daemon command API.
+
+  Why: The command API runs CLI commands in-process. The CLI pre-action hook
+  can otherwise observe the running daemon and decide to proxy the command
+  back through `/api/command`, producing self-referential command execution
+  instead of direct daemon-internal execution.
+
+  What:
+  - In `src/cli/daemon-proxy.ts`, add a request-scoped suppression guard and
+    export a wrapper for daemon-internal command execution.
+  - Make `shouldProxyCommand()` return a direct-mode decision while the guard
+    is active, without changing normal proxy behavior outside that guarded
+    execution.
+  - In `packages/daemon/src/routes/command.ts`, wrap command execution for
+    `/api/command` with the suppression guard.
+  - Add regression coverage in `tests/daemon-command-api.test.ts` proving a
+    command executed through `/api/command` sees proxying disabled even when
+    daemon detection reports an available daemon.
+  - Add or adjust CLI proxy tests if needed to prove normal force-direct,
+    force-proxy, and auto-detect behavior remain unchanged outside the daemon
+    command API request.
+
+  How: The suppression must be scoped to the async execution chain of one
+  command API request. Do not use a process-wide mutable flag that can leak
+  across concurrent requests.
+
+  Testing: Run
+  `npm test -- --run tests/daemon-command-api.test.ts tests/cli-daemon-proxy.test.ts`.
+
+  Covers: @daemon-command-api ac-command-endpoint,
+  ac-no-recursive-command-proxy; @cli-daemon-proxy
+  ac-daemon-internal-proxy-suppression-is-scoped.
+spec_ref: "@daemon-command-api"
+plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-daemon-dispatch-hardening-specs"
+context: []
+priority: 1
+tags:
+  - daemon
+  - cli
+  - api
+  - recursion
+vcs_refs: []
+created_at: 2026-05-18T22:53:18.007Z
+todos: []
