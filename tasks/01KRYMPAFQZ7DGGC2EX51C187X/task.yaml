@@ -139,7 +139,7 @@ tags:
   - dispatch
   - stability
 vcs_refs: []
-review_url: https://github.com/lepahc/kynetic-spec/tree/kspec-meta
+review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-update-daemon-dispatch-hardening-specs/01krympa
 submission_linkage:
   review_url: https://github.com/lepahc/kynetic-spec/tree/kspec-meta
   branch: dispatch/task/task-update-daemon-dispatch-hardening-specs/01krympa
@@ -229,6 +229,13 @@ history:
           upstream_ref: refs/heads/dev
     command: task-set
     timestamp: 2026-05-18T23:23:10.889Z
+  - author: Jacob Chapel
+    changes:
+      review_url:
+        new: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-update-daemon-dispatch-hardening-specs/01krympa
+        previous: https://github.com/lepahc/kynetic-spec/tree/kspec-meta
+    command: task-set
+    timestamp: 2026-05-18T23:23:15.672Z
 prior_status: pending_review
 created_at: 2026-05-18T22:53:16.663Z
 started_at: 2026-05-18T23:09:06.670Z
