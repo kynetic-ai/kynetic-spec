@@ -1,1 +1,18 @@
-notes: []
+notes:
+  - _ulid: 01KRYNCP1W60PJ1D7M5PSFYNV7
+    content: "Root cause: failing test 'auto-starts the daemon with the configured node runtime even
+      when the CLI runs under bun' (tests/cli-no-daemon.test.ts:97) writes a kspec.config.yaml with
+      only 'daemon: runtime: node' and does not pin a port, so the auto-started daemon tries to bind
+      to the default 3456. When the dispatch host daemon (or any other process) already owns 3456,
+      the EADDRINUSE failure surfaces *after* the daemon writes its PID file
+      (packages/daemon/src/server.ts:590-595 writes PID before awaitListenSuccess at :1006). The PID
+      file persists pointing at an already-exited PID, the test reads it, and the subsequent
+      execSync('ps -p $pid -o command=') fails because the process is gone. Fix approach: mirror the
+      sibling test 'forwards host, host-explicit, and connect-host' by (a) allocating an ephemeral
+      port via net.createServer().listen(0), (b) writing that port into kspec.config.yaml, and (c)
+      waiting on daemon.connection.json (only written after listen succeeds) before reading the PID
+      and running ps. Keeps the same AC coverage (@daemon-runtime-adapter ac-auto-start-runtime) but
+      no longer depends on global port 3456 being free."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-18T23:05:29.404Z
