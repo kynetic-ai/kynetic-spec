@@ -37,7 +37,7 @@ description: |
 spec_ref: "@agent-dispatch-engine"
 plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-update-daemon-dispatch-hardening-specs"
@@ -48,6 +48,15 @@ tags:
   - daemon
   - stability
 vcs_refs: []
+review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-prevent-overlapping-dispatch-reconciliation/01krympb
+submission_linkage:
+  review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-prevent-overlapping-dispatch-reconciliation/01krympb
+  branch: dispatch/task/task-prevent-overlapping-dispatch-reconciliation/01krympb
+  captured_at: 2026-05-18T22:58:37.685Z
+  commit: 4f01591318442f0b0a2d5ed0d5c154fbbd292934
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-prevent-overlapping-dispatch-reconciliation/01krympb
 history:
   - author: Jacob Chapel
     changes:
@@ -59,6 +68,30 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-18T22:58:33.986Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      review_url:
+        new: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-prevent-overlapping-dispatch-reconciliation/01krympb
+        previous: null
+      submission_linkage:
+        new:
+          review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-prevent-overlapping-dispatch-reconciliation/01krympb
+          branch: dispatch/task/task-prevent-overlapping-dispatch-reconciliation/01krympb
+          captured_at: 2026-05-18T22:58:37.685Z
+          commit: 4f01591318442f0b0a2d5ed0d5c154fbbd292934
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-prevent-overlapping-dispatch-reconciliation/01krympb
+        previous: null
+      submitted_at:
+        new: 2026-05-18T22:58:37.693Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-18T22:58:37.693Z
 created_at: 2026-05-18T22:53:17.576Z
 started_at: 2026-05-18T22:58:33.985Z
+submitted_at: 2026-05-18T22:58:37.693Z
 todos: []
