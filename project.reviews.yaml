@@ -215457,6 +215457,13 @@ reviews:
           kind: question
           thread_ulid: 01KRYJ9SJWDMTXE409ED0RNABA
         timestamp: 2026-05-18T22:11:30.931Z
+      - _ulid: 01KRYJA84TWKC34T44WSJSRQPA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KRYJA66X1KF42A8MNRVTJCVR
+        timestamp: 2026-05-18T22:11:43.898Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -215535,7 +215542,22 @@ reviews:
               metadata structures."
             created_at: 2026-05-18T22:11:28.988Z
         kind: question
+      - _ulid: 01KRYJA66X1KF42A8MNRVTJCVR
+        anchor:
+          type: structured
+          field: ac-invocation-lifecycle-helper-commands-do-not-proxy
+          ref: "@agent-invocation-lifecycle"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KRYJA66Y4SDBWDZTV1JSVFNT
+            author: Jacob Chapel
+            body: "This AC is compound: it asserts both daemon-proxy suppression and preservation of
+              mutation-safety environment. Split those into separate ACs, or keep the
+              mutation-safety/env preservation detail in the implementation task if existing
+              invocation ACs already own that behavior."
+            created_at: 2026-05-18T22:11:41.918Z
+        kind: question
     verdicts: []
     created_at: 2026-05-18T22:10:14.299Z
-    updated_at: 2026-05-18T22:11:28.988Z
+    updated_at: 2026-05-18T22:11:41.918Z
     notes: []
