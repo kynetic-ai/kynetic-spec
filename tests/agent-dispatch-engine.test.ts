@@ -6078,6 +6078,60 @@ describe("Post-invocation re-evaluation", () => {
   });
 });
 
+// ─── Periodic Dispatch Reconciliation ─────────────────────────────────────────
+
+describe("Periodic dispatch reconciliation", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    vi.useFakeTimers();
+    testDir = await createTempDir("kspec-dispatch-reconcile-");
+  });
+
+  afterEach(async () => {
+    vi.useRealTimers();
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @agent-dispatch-engine ac-19, ac-20
+  it("does not start overlapping reconcile passes when a previous pass is still running", async () => {
+    await setupProjectWithAgents(testDir, []);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 10,
+      coalesceWindowMs: 0,
+    });
+
+    let releaseReconcile!: () => void;
+    const reconcileGate = new Promise<void>((resolve) => {
+      releaseReconcile = resolve;
+    });
+    let runningReconciles = 0;
+    let maxConcurrentReconciles = 0;
+    const reconcileSpy = vi
+      .spyOn(engine as unknown as { _reconcile: () => Promise<void> }, "_reconcile")
+      .mockImplementation(async () => {
+        runningReconciles += 1;
+        maxConcurrentReconciles = Math.max(maxConcurrentReconciles, runningReconciles);
+        await reconcileGate;
+        runningReconciles -= 1;
+      });
+
+    await engine.start();
+
+    await vi.advanceTimersByTimeAsync(35);
+
+    expect(reconcileSpy).toHaveBeenCalledTimes(1);
+    expect(maxConcurrentReconciles).toBe(1);
+
+    releaseReconcile();
+    await engine.stop();
+  });
+});
+
 // ─── Per-Task Dispatch Drain Coalescing ────────────────────────────────────────
 
 describe("Per-task dispatch drain coalescing", () => {
