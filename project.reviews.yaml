@@ -215429,6 +215429,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-18T22:10:35.091Z
+      - _ulid: 01KRYJ8KG8BH0BYHGG5DAHVEA0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRYJ8HJ1ZC3812S5MAQDBDGG
+        timestamp: 2026-05-18T22:10:49.992Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -215438,8 +215445,28 @@ reviews:
       content_hash: ""
       ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRYJ8HJ1ZC3812S5MAQDBDGG
+        anchor:
+          type: structured
+          ref: "@task-standardize-task-storage-incompatibility-api"
+          section: tasks
+        entries:
+          - _ulid: 01KRYJ8HJ203335AGK9SX1FFAC
+            author: Jacob Chapel
+            body: The task-storage API response work is duplicated and attached to the wrong owner.
+              @api-contract already owns this behavior through
+              ac-task-storage-incompatibility-conflict-status,
+              ac-task-storage-incompatibility-error-code, ac-task-storage-incompatibility-guidance,
+              ac-task-storage-incompatibility-not-not-found, and context ACs;
+              @task-daemon-api-task-storage-incompatibility-errors is already in_progress for that
+              scope. Do not add ac-task-storage-incompatibility-conflict-response to
+              @daemon-command-api or create a parallel implementation task. Retarget this plan to
+              reference the existing @api-contract ACs/task, or explicitly depend on/validate that
+              existing task.
+            created_at: 2026-05-18T22:10:48.002Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-18T22:10:14.299Z
-    updated_at: 2026-05-18T22:10:33.096Z
+    updated_at: 2026-05-18T22:10:48.002Z
     notes: []
