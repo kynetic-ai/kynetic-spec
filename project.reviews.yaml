@@ -216262,6 +216262,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-18T23:43:58.723Z
+      - _ulid: 01KRYQM6HNW33M00EKZP5820QK
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRYQM47YSK0BH2H612MEWMXD
+        timestamp: 2026-05-18T23:44:32.821Z
     examined_commit: 8de21db24228985d828834bc081bcb37fcd47c25
     external_links: []
     lifecycle_state: open
@@ -216271,8 +216278,27 @@ reviews:
       content_hash: ""
       ref: "@01KRYMPAYBKH8J2HKZPZYGQDA3"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRYQM47YSK0BH2H612MEWMXD
+        anchor:
+          type: code
+          commit: 8de21db24228985d828834bc081bcb37fcd47c25
+          line_end: 383
+          line_start: 383
+          path: src/agent-runtime/event-bus.ts
+          side: head
+        entries:
+          - _ulid: 01KRYQM47ZK2HAWFB0WBESJKP8
+            author: Jacob Chapel
+            body: "MUST-FIX: lineage pruning returns early whenever chainDepths.size <= ringBuffer.size, so
+              stale lineage can remain after its events have aged out. Evidence: with capacity 5,
+              emitting one correlated event and then five uncorrelated events leaves recent events
+              with no correlation IDs while getChainDepth('correlation-stale') still returns 1. That
+              violates the task/spec requirement to release lineage whose related events no longer
+              appear in retained recent events."
+            created_at: 2026-05-18T23:44:30.463Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-18T23:43:27.569Z
-    updated_at: 2026-05-18T23:43:57.286Z
+    updated_at: 2026-05-18T23:44:30.463Z
     notes: []
