@@ -215865,6 +215865,20 @@ reviews:
         runner: npm test
         created_at: 2026-05-18T23:01:19.279Z
         completed_at: 2026-05-18T23:01:19.279Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full npm test was run. It reported one failure in tests/cli-no-daemon.test.ts ('ps -p
+          <pid> -o command=' after daemon auto-start) and then hung; I terminated the test process
+          group. The failing file reproduces on this snapshot with --fresh and also on dev with the
+          same error. This branch did not change that test or CLI daemon startup paths. Filed
+          follow-up @01KRYN42 and treated as pre-existing per review-gates.
+        name: full npm test triage
+        required: false
+        runner: npm test
+        created_at: 2026-05-18T23:01:33.205Z
+        completed_at: 2026-05-18T23:01:33.205Z
     events:
       - _ulid: 01KRYMDAT9ERG78SRJAFMN8FGN
         actor: Jacob Chapel
@@ -215900,6 +215914,13 @@ reviews:
           status: pass
           name: targeted daemon API task-storage tests
         timestamp: 2026-05-18T23:01:20.757Z
+      - _ulid: 01KRYN5GSMA6PXBK6J4HK39MKJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: full npm test triage
+        timestamp: 2026-05-18T23:01:34.645Z
     examined_commit: 6dd38eec3f221a642d9c06febaf0aaa106f40ff3
     external_links: []
     lifecycle_state: open
@@ -215912,5 +215933,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-18T22:48:22.089Z
-    updated_at: 2026-05-18T23:01:19.279Z
+    updated_at: 2026-05-18T23:01:33.205Z
     notes: []
