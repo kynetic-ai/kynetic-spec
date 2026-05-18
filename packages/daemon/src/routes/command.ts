@@ -31,6 +31,7 @@ import {
   runWithWorkingDirectory,
 } from "../../parser/yaml.js";
 import { runWithOutputState } from "../../cli/output.js";
+import { runWithDaemonProxySuppressed } from "../../cli/daemon-proxy.js";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -264,12 +265,14 @@ async function executeCommand(
 
   try {
     const parseCommand = () =>
-      runWithOutputState(
-        () =>
-          runWithoutSpecDirOverride(() =>
-            runWithWorkingDirectory(() => program.parseAsync(argv, { from: "user" }), projectPath),
-          ),
-        { outputFormat: "text", verboseMode: false },
+      runWithDaemonProxySuppressed(() =>
+        runWithOutputState(
+          () =>
+            runWithoutSpecDirOverride(() =>
+              runWithWorkingDirectory(() => program.parseAsync(argv, { from: "user" }), projectPath),
+            ),
+          { outputFormat: "text", verboseMode: false },
+        ),
       );
 
     await commandExecutionStorage.run(capture, async () => {
