@@ -6,3 +6,46 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-15T01:50:05.630Z
+  - _ulid: 01KRYF5QCP0R193A3GQPCV7X52
+    content: >-
+      Approach:
+
+      1. Add 'code' field to TaskDataManagerError plus stable code constants
+      (legacy_task_storage_removed, split_task_storage_unmigrated).
+
+      2. Set code in resolveTaskDataManager() (legacy 1.0) and split-backend ensureMigrated()
+      (unmigrated split).
+
+      3. Add helper isDeterministicTaskStorageIncompatibility(err).
+
+      4. In entity-cache.ts, track TaskStorageIncompatibilityState + needsTaskStorageRecheck flag on
+      the tasks store.
+
+      5. Suppress loadNonMetaDomain for tasks when marker is set and no recheck needed (covers
+      initial/progressive load, explicit loadDomain, writeThrough fallback).
+
+      6. Suppress processDomainChanges for tasks when marker set + no recheck (covers
+      watcher-triggered/writeThrough incremental).
+
+      7. Catch deterministic error in tryIncrementalTaskUpdate so split-incompatibility on
+      incremental writeThrough also feeds into the marker.
+
+      8. invalidateDomain('tasks') sets needsTaskStorageRecheck=true synchronously so watcher events
+      lift suppression.
+
+      9. Add kynetic.yaml -> tasks to fileToDomain so manifest changes trigger tasks re-evaluation.
+
+      10. On successful load, clear marker so domain returns to ready without restart.
+
+      11. Extend DomainDiagnostic with errorReason, recoveryGuidance, recoveryWaitingOnProjectState;
+      debug route already passes diagnostics through.
+
+
+      Edge cases: same code on recheck -> suppress console.error duplicate; different code -> log
+      new error; non-deterministic error -> normal degrade path (do not suppress).
+
+
+      Test plan covers all 9 covered ACs via behavioral tests (no source scanning).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-18T21:16:49.942Z
