@@ -16645,11 +16645,11 @@ workspaces:
     canonical_branch: dispatch/task/task-daemon-api-task-storage-incompatibility-errors/01krm50c
     canonical_branch_head: 6dd38eec3f221a642d9c06febaf0aaa106f40ff3
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-18T23:02:48.162Z
+      updated_at: 2026-05-18T23:06:53.272Z
     health:
       status: healthy
       issues: []
@@ -16663,16 +16663,16 @@ workspaces:
       target_branch: dev
       target_commit: 71dba4f3db7432403336e5edb0fc6fff97be5977
       updated_at: 2026-05-18T23:02:48.162Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KRM50CKNEPS7EKBZ8DP5W639"
     task_slug: task-daemon-api-task-storage-incompatibility-errors
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-18T23:06:53.272Z
       last_active_at: 2026-05-18T22:47:36.553Z
       last_reconciled_at: 2026-05-18T23:06:07.016Z
       created_at: 2026-05-18T22:01:08.706Z
-      updated_at: 2026-05-18T23:06:07.016Z
+      updated_at: 2026-05-18T23:06:53.272Z
     workspace_id: dispatch-workspace-01KRM50CKNEPS7EKBZ8DP5W639
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
