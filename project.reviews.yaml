@@ -216146,6 +216146,24 @@ reviews:
         runner: kspec
         created_at: 2026-05-18T23:40:50.215Z
         completed_at: 2026-05-18T23:40:50.215Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files/areas read: kspec-agents.md, task @01KRYMPAFQZ7DGGC2EX51C187X, specs
+          @dispatch-event-envelope, @agent-dispatch-engine, @daemon-command-api, @cli-daemon-proxy,
+          @agent-invocation-lifecycle, @dispatch-workspace-cleanup-policy,
+          tests/cli-no-daemon.test.ts. Commands run: git status/branch/rev-parse/diff/log, kspec
+          task get, kspec review for-task/add/open, kspec item get for all affected specs, kspec
+          validate --refs --warnings-ok, kspec validate, npm test, focused npm test -- --fresh
+          tests/cli-no-daemon.test.ts, kspec search. Verified claim: all 10 requested AC IDs/text
+          exist on the requested owning specs. Categories searched: spec alignment,
+          duplicate/misplaced ACs, validation, test regression triage, merge ancestry."
+        name: review evidence
+        required: true
+        runner: reviewer
+        created_at: 2026-05-18T23:40:54.453Z
+        completed_at: 2026-05-18T23:40:54.453Z
     events:
       - _ulid: 01KRYPHC8YREY5YF1ZDWH5CSRP
         actor: Jacob Chapel
@@ -216181,6 +216199,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-05-18T23:40:51.772Z
+      - _ulid: 01KRYQDJSD31CQH5RSQ2M7PEQJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-05-18T23:40:55.981Z
     examined_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
     external_links: []
     lifecycle_state: open
@@ -216193,5 +216218,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-18T23:25:31.806Z
-    updated_at: 2026-05-18T23:40:50.215Z
+    updated_at: 2026-05-18T23:40:54.453Z
     notes: []
