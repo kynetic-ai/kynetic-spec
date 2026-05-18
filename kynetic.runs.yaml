@@ -50039,7 +50039,7 @@ runs:
     completed_at: 2026-05-13T18:51:42.807Z
   - _ulid: 01KRYHPPQFW6MW8XPADPGG16FD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50052,7 +50052,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-18T22:02:42.892Z
-        completed_at: 2026-05-18T22:02:42.892Z
+        completed_at: 2026-05-18T22:03:09.772Z
+        notes: "Identified candidates: detached-reviewer helper success, diff-first review plus targeted
+          tests/full fresh gate success, workflow show run-ref mismatch, and reflection
+          baseline-list verbosity. Duplicate coverage found: detached merge helper already tracked
+          by @detached-reviewer-merge-helper and observations @01KQ1273/@01KQ9AMHH; review-gate/test
+          strategy overlaps existing observations including @01KPA80N and @01KNJ2K5N; workflow show
+          mismatch is already in inbox @01KQ0RH7 and @01KR293G plus consolidated @01KGGPJ6;
+          unbounded reflection baseline discovery is already in inbox @01KQ8TTN. No unique
+          high-confidence capture candidates remain."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-18T22:03:09.772Z
+        completed_at: 2026-05-18T22:03:09.772Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-18T22:01:03.471Z
