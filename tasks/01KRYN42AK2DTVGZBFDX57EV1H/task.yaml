@@ -13,7 +13,7 @@ description: "During review of @01KRM50CKNEPS7EKBZ8DP5W639, full npm test failed
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -22,6 +22,14 @@ tags:
   - test
   - cli
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-stabilize-cli-no-daemon-runtime-pid-assertion/01kryn42
+  captured_at: 2026-05-18T23:19:18.780Z
+  commit: 9a922788091d30468d33c6ae25c62e0cdfc76ad6
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KRYN5C7C329W7GH5QFZ9AMHX
 history:
   - author: "@claude"
@@ -37,7 +45,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-18T23:02:02.715Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-stabilize-cli-no-daemon-runtime-pid-assertion/01kryn42
+          captured_at: 2026-05-18T23:19:18.780Z
+          commit: 9a922788091d30468d33c6ae25c62e0cdfc76ad6
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-18T23:19:18.782Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-18T23:19:18.782Z
 created_at: 2026-05-18T23:00:47.059Z
 started_at: 2026-05-18T23:02:02.715Z
+submitted_at: 2026-05-18T23:19:18.782Z
 todos: []
 automation: eligible
