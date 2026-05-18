@@ -215986,3 +215986,29 @@ reviews:
     created_at: 2026-05-18T22:48:22.089Z
     updated_at: 2026-05-18T23:01:59.519Z
     notes: []
+  - _ulid: 01KRYPBVTF4HA3H5EDANBFTYTT
+    slugs: []
+    title: Review stabilize cli-no-daemon runtime PID assertion
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRYPBVT91TSXNMN4J509RZ6Z
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-18T23:22:31.114Z
+    examined_commit: 9a922788091d30468d33c6ae25c62e0cdfc76ad6
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRYN42AK2DTVGZBFDX57EV1H"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-18T23:22:31.119Z
+    updated_at: null
+    notes: []
