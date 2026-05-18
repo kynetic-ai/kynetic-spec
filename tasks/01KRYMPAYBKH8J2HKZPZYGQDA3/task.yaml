@@ -39,7 +39,7 @@ description: |
 spec_ref: "@dispatch-event-envelope"
 plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-update-daemon-dispatch-hardening-specs"
@@ -50,6 +50,15 @@ tags:
   - event-bus
   - memory
 vcs_refs: []
+review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-bound-event-bus-lineage-and-source-ordering-lifetime/01krympa
+submission_linkage:
+  review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-bound-event-bus-lineage-and-source-ordering-lifetime/01krympa
+  branch: dispatch/task/task-bound-event-bus-lineage-and-source-ordering-lifetime/01krympa
+  captured_at: 2026-05-18T22:56:43.960Z
+  commit: 4f6e6c1108ac2a3f8c422ca21245f90fc579a2bd
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-bound-event-bus-lineage-and-source-ordering-lifetime/01krympa
 history:
   - author: Jacob Chapel
     changes:
@@ -61,6 +70,30 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-18T22:56:29.850Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      review_url:
+        new: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-bound-event-bus-lineage-and-source-ordering-lifetime/01krympa
+        previous: null
+      submission_linkage:
+        new:
+          review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-bound-event-bus-lineage-and-source-ordering-lifetime/01krympa
+          branch: dispatch/task/task-bound-event-bus-lineage-and-source-ordering-lifetime/01krympa
+          captured_at: 2026-05-18T22:56:43.960Z
+          commit: 4f6e6c1108ac2a3f8c422ca21245f90fc579a2bd
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-bound-event-bus-lineage-and-source-ordering-lifetime/01krympa
+        previous: null
+      submitted_at:
+        new: 2026-05-18T22:56:43.967Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-18T22:56:43.967Z
 created_at: 2026-05-18T22:53:17.131Z
 started_at: 2026-05-18T22:56:29.849Z
+submitted_at: 2026-05-18T22:56:43.967Z
 todos: []
