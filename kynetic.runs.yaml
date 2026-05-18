@@ -50133,9 +50133,24 @@ runs:
     completed_at: 2026-05-18T23:05:48.135Z
   - _ulid: 01KRYQ94TCCEHG5JF5XDTRS5BK
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-18T23:38:30.604Z
+        completed_at: 2026-05-18T23:39:28.692Z
+        notes: "What worked well: The review record workflow gave a clean audit trail: created a fresh task
+          review, recorded npm test and validation as required checks, added an evidence log, then
+          approved. The detached reviewer merge helper worked as intended for manual_merge,
+          advancing dev and refreshing the occupied worktree without checking out dev inside the
+          detached snapshot. The worker note was unusually useful: it named the suspected port
+          collision, the PID-before-listen ordering, and the safer metadata readiness signal, and
+          those claims were independently verifiable in server.ts and the changed test."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-18T23:39:28.692Z
+        completed_at: 2026-05-18T23:39:28.692Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-18T23:38:30.604Z
