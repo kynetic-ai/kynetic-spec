@@ -216108,7 +216108,18 @@ reviews:
     slugs: []
     title: Review task-update-daemon-dispatch-hardening-specs
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Passed. Schema and references OK; 6 existing deprecated-reference warnings reported and
+          tolerated by --warnings-ok.
+        name: kspec validate --refs --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-05-18T23:40:41.498Z
+        completed_at: 2026-05-18T23:40:41.498Z
     events:
       - _ulid: 01KRYPHC8YREY5YF1ZDWH5CSRP
         actor: Jacob Chapel
@@ -216123,6 +216134,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-18T23:25:54.753Z
+      - _ulid: 01KRYQD62VJTS7HN1WTA2B1NCB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --refs --warnings-ok
+        timestamp: 2026-05-18T23:40:42.972Z
     examined_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
     external_links: []
     lifecycle_state: open
@@ -216135,5 +216153,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-18T23:25:31.806Z
-    updated_at: 2026-05-18T23:25:52.914Z
+    updated_at: 2026-05-18T23:40:41.498Z
     notes: []
