@@ -215436,6 +215436,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRYJ8HJ1ZC3812S5MAQDBDGG
         timestamp: 2026-05-18T22:10:49.992Z
+      - _ulid: 01KRYJ9171HAC921GQCV11JBWE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRYJ8ZAFTW37KFDWAEVF195P
+        timestamp: 2026-05-18T22:11:04.033Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -215466,7 +215473,23 @@ reviews:
               existing task.
             created_at: 2026-05-18T22:10:48.002Z
         kind: blocker
+      - _ulid: 01KRYJ8ZAFTW37KFDWAEVF195P
+        anchor:
+          type: structured
+          field: ac-task-storage-incompatibility-conflict-response
+          ref: "@daemon-command-api"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KRYJ8ZAFJHXC8Y4C652XD5DG
+            author: Jacob Chapel
+            body: "The proposed AC is compound and mis-scoped: it combines HTTP status, error code, and recovery
+              guidance, and @daemon-command-api owns /api/command parity rather than task route
+              responses. The existing @api-contract already splits these into atomic ACs. Remove
+              this AC addition and use the existing @api-contract task-storage incompatibility AC
+              ids in Covers/validation."
+            created_at: 2026-05-18T22:11:02.095Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-18T22:10:14.299Z
-    updated_at: 2026-05-18T22:10:48.002Z
+    updated_at: 2026-05-18T22:11:02.095Z
     notes: []
