@@ -3521,3 +3521,15 @@ inbox:
       - daemon
     added_by: Jacob Chapel
     created_at: 2026-05-13T10:06:25.894Z
+  - _ulid: 01KRYQJJ83RQGT0M1AWGTQWAR8
+    text: "Reflection follow-up: add a reviewer helper to verify task Covers AC references against
+      owning specs. During spec-only reviews, reviewers currently repeat kspec item get for each
+      owner and manually compare AC IDs. A helper should parse the task Covers list, verify each
+      referenced AC exists on the owning spec, and report missing, misplaced, or duplicate
+      behavioral coverage for review evidence."
+    tags:
+      - reflection
+      - review
+      - specs
+    added_by: Jacob Chapel
+    created_at: 2026-05-18T23:43:39.267Z
