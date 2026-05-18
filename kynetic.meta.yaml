@@ -18922,6 +18922,21 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-13T18:51:32.963Z
+  - _ulid: 01KRYGMBW0TN2FC90TSSB3MJ1P
+    type: friction
+    content: "tests/cli-no-daemon.test.ts \"auto-starts the daemon with the configured node runtime even
+      when the CLI runs under bun\" reproducibly fails on the current dev branch: the bun-spawned
+      CLI auto-starts the node daemon, writes its PID file, but the daemon process becomes <defunct>
+      by the time the test calls 'ps -p $pid -o command='. Reproduces without unrelated changes
+      (verified by stashing diff and re-running). Confounds full-suite signal in dispatch tasks
+      because the failure looks like a regression but isn't. Likely root cause: parent bun process
+      exits before the orphaned daemon can detach cleanly, leaving a zombie until reaped. Worth
+      either (a) adding a 'wait for daemon to be ps-observable' poll alongside the existing PID-file
+      wait, or (b) marking the test as a known bun-runtime quirk."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-18T21:42:18.240Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
