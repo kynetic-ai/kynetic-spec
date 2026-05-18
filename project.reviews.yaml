@@ -216247,7 +216247,19 @@ reviews:
     slugs: []
     title: Review bound event bus lineage and source-ordering lifetime
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran kspec validate. Schema/references passed, but command exited 6 with warnings;
+          task-specific completeness warning: @dispatch-event-envelope uncovered
+          ac-retained-event-lineage-is-bounded and ac-completed-source-ordering-is-released."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-18T23:45:35.516Z
+        completed_at: 2026-05-18T23:45:35.516Z
     events:
       - _ulid: 01KRYQJ6TGQE7RJZ4C0P69NHXW
         actor: Jacob Chapel
@@ -216283,6 +216295,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRYQMHVA0J5QHEVKFR9TMDAX
         timestamp: 2026-05-18T23:44:46.896Z
+      - _ulid: 01KRYQP61WFXAXGG0S7BTJQBBY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-18T23:45:37.852Z
     examined_commit: 8de21db24228985d828834bc081bcb37fcd47c25
     external_links: []
     lifecycle_state: open
@@ -216349,5 +216368,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-18T23:43:27.569Z
-    updated_at: 2026-05-18T23:44:44.394Z
+    updated_at: 2026-05-18T23:45:35.516Z
     notes: []
