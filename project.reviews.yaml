@@ -216134,6 +216134,18 @@ reviews:
         runner: npm
         created_at: 2026-05-18T23:40:45.930Z
         completed_at: 2026-05-18T23:40:45.930Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Strict validation exits 6 due existing project warnings: deprecated refs,
+          alignment/status drift from active tasks, missing historical AC coverage, and malformed
+          historical annotations. No schema/reference errors."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-18T23:40:50.215Z
+        completed_at: 2026-05-18T23:40:50.215Z
     events:
       - _ulid: 01KRYPHC8YREY5YF1ZDWH5CSRP
         actor: Jacob Chapel
@@ -216162,6 +216174,13 @@ reviews:
           status: skipped
           name: npm test
         timestamp: 2026-05-18T23:40:47.477Z
+      - _ulid: 01KRYQDENW0TR5AA3M7XQPVA7G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-05-18T23:40:51.772Z
     examined_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
     external_links: []
     lifecycle_state: open
@@ -216174,5 +216193,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-18T23:25:31.806Z
-    updated_at: 2026-05-18T23:40:45.930Z
+    updated_at: 2026-05-18T23:40:50.215Z
     notes: []
