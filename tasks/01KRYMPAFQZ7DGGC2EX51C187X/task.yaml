@@ -122,7 +122,7 @@ description: |
 spec_ref: "@daemon-entity-cache"
 plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -133,6 +133,15 @@ tags:
   - dispatch
   - stability
 vcs_refs: []
+review_url: https://github.com/lepahc/kynetic-spec/tree/kspec-meta
+submission_linkage:
+  review_url: https://github.com/lepahc/kynetic-spec/tree/kspec-meta
+  branch: dev
+  captured_at: 2026-05-18T23:10:33.549Z
+  commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dev
 history:
   - author: Jacob Chapel
     changes:
@@ -151,7 +160,31 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-18T23:09:06.671Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      review_url:
+        new: https://github.com/lepahc/kynetic-spec/tree/kspec-meta
+        previous: null
+      submission_linkage:
+        new:
+          review_url: https://github.com/lepahc/kynetic-spec/tree/kspec-meta
+          branch: dev
+          captured_at: 2026-05-18T23:10:33.549Z
+          commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-05-18T23:10:33.554Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-18T23:10:33.554Z
 created_at: 2026-05-18T22:53:16.663Z
 started_at: 2026-05-18T23:09:06.670Z
+submitted_at: 2026-05-18T23:10:33.554Z
 todos: []
 automation: eligible
