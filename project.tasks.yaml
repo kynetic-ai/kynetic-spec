@@ -29476,7 +29476,7 @@
     - task-stabilize-cli-no-daemon-runtime-pid-assertion
   title: Stabilize cli-no-daemon runtime PID assertion
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -29486,4 +29486,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-18T23:00:47.059Z
+  started_at: 2026-05-18T23:02:02.715Z
   automation: eligible
