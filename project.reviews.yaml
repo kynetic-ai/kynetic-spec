@@ -215436,6 +215436,17 @@ reviews:
         runner: kspec
         created_at: 2026-05-18T22:12:12.936Z
         completed_at: 2026-05-18T22:12:12.936Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "@api-contract already owns task-storage incompatibility API response ACs;
+          @task-daemon-api-task-storage-incompatibility-errors is in_progress. Draft duplicates this
+          under @daemon-command-api/@daemon-entity-cache."
+        name: Existing spec ownership
+        required: true
+        created_at: 2026-05-18T22:12:32.909Z
+        completed_at: 2026-05-18T22:12:32.909Z
     events:
       - _ulid: 01KRYJ7GMVTZ5CQV8B6YTAAT65
         actor: Jacob Chapel
@@ -215506,6 +215517,13 @@ reviews:
           status: pass
           name: kspec validate --refs --warnings-ok
         timestamp: 2026-05-18T22:12:18.058Z
+      - _ulid: 01KRYJBT0FWKTWH3H2DYWDX40D
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Existing spec ownership
+        timestamp: 2026-05-18T22:12:34.959Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -215615,5 +215633,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-18T22:10:14.299Z
-    updated_at: 2026-05-18T22:12:12.936Z
+    updated_at: 2026-05-18T22:12:32.909Z
     notes: []
