@@ -216019,3 +216019,29 @@ reviews:
     created_at: 2026-05-18T23:22:31.119Z
     updated_at: 2026-05-18T23:22:53.364Z
     notes: []
+  - _ulid: 01KRYPHC8YCFC7T2BBN3JMZ5TB
+    slugs: []
+    title: Review task-update-daemon-dispatch-hardening-specs
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRYPHC8YREY5YF1ZDWH5CSRP
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-18T23:25:31.806Z
+    examined_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRYMPAFQZ7DGGC2EX51C187X"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-18T23:25:31.806Z
+    updated_at: null
+    notes: []
