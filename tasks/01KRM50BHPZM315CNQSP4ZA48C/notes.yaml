@@ -49,3 +49,55 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-18T21:16:49.942Z
+  - _ulid: 01KRYGGY4PB4ATAZFR9ZJKSR7S
+    content: >-
+      Implementation complete.
+
+
+      Changes:
+
+      - src/parser/task-data-manager.ts: Added TASK_STORAGE_LEGACY_REMOVED_CODE /
+      TASK_STORAGE_SPLIT_UNMIGRATED_CODE, isDeterministicTaskStorageIncompatibility helper, and code
+      field on TaskDataManagerError. resolveTaskDataManager now stamps the legacy code on its
+      version-gated throw.
+
+      - src/parser/split-backend.ts: ensureMigrated() throws with
+      TASK_STORAGE_SPLIT_UNMIGRATED_CODE.
+
+      - src/daemon/entity-cache.ts: TaskDomainStore tracks storageIncompatibility +
+      needsTaskStorageRecheck. loadNonMetaDomain suppresses reload when marker active.
+      processDomainChanges short-circuits writeThrough/incremental paths. tryIncrementalTaskUpdate
+      catches deterministic errors so writeThrough fallback also feeds the marker.
+      invalidateDomain('tasks') sets needsTaskStorageRecheck=true synchronously so any watcher event
+      (kynetic.yaml, project.tasks.yaml, tasks/<ULID>/*) lifts suppression. fileToDomain now maps
+      kynetic.yaml -> tasks so manifest changes trigger re-evaluation. Successful reload clears the
+      marker; same-code recheck keeps state degraded without duplicating the log; different-code
+      recheck logs the new error. dispose() clears the marker.
+
+      - DomainDiagnostic extended with errorReason / recoveryGuidance /
+      recoveryWaitingOnProjectState; getCacheDiagnostics() populates them for tasks. The debug route
+      already passes diagnostics through, so GET /api/debug/cache-status now exposes the new fields.
+
+      - Tests: 8 new behavioral tests in tests/daemon-entity-cache.test.ts covering all 6 covered
+      ACs (degraded state, stable reporting, recheck after storage change, recovery after migration,
+      persists when unresolved, manifest task-storage settings). 2 new tests in
+      tests/daemon-debug-routes.test.ts covering
+      ac-cache-diagnostics-{degraded-reason,recovery-guidance,recovery-readiness}. Updated two
+      pre-existing tests for the new kynetic.yaml -> tasks mapping.
+
+
+      Validation:
+
+      - Full test suite: 9258 passing. Single failure is in tests/cli-no-daemon.test.ts (auto-starts
+      the daemon with bun runtime), which reproduces on origin/dev without my changes — pre-existing
+      flake unrelated to the entity cache work.
+
+      - npm test -- --run tests/daemon-entity-cache.test.ts: 149/149 pass
+
+      - npm test -- --run tests/daemon-debug-routes.test.ts: 8/8 pass
+
+
+      Submitting for review.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-18T21:40:25.878Z
