@@ -39,7 +39,7 @@ description: |
 spec_ref: "@agent-invocation-lifecycle"
 plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-update-daemon-dispatch-hardening-specs"
@@ -50,5 +50,17 @@ tags:
   - dispatch
   - daemon
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      started_at:
+        new: 2026-05-18T23:01:12.451Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-18T23:01:12.451Z
 created_at: 2026-05-18T22:53:18.433Z
+started_at: 2026-05-18T23:01:12.451Z
 todos: []
