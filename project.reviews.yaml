@@ -216269,6 +216269,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRYQM47YSK0BH2H612MEWMXD
         timestamp: 2026-05-18T23:44:32.821Z
+      - _ulid: 01KRYQMDET334TTJFRCFPNY9FA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRYQMB2NNSE6BG976PTZKSER
+        timestamp: 2026-05-18T23:44:39.898Z
     examined_commit: 8de21db24228985d828834bc081bcb37fcd47c25
     external_links: []
     lifecycle_state: open
@@ -216298,7 +216305,25 @@ reviews:
               appear in retained recent events."
             created_at: 2026-05-18T23:44:30.463Z
         kind: blocker
+      - _ulid: 01KRYQMB2NNSE6BG976PTZKSER
+        anchor:
+          type: code
+          commit: 8de21db24228985d828834bc081bcb37fcd47c25
+          line_end: 448
+          line_start: 427
+          path: tests/event-bus.test.ts
+          side: head
+        entries:
+          - _ulid: 01KRYQMB2N4H81TJNWAQ5D4T0S
+            author: Jacob Chapel
+            body: "MUST-FIX: this regression test is intended to cover completed source-ordering release, but it
+              is not annotated with the new AC id. The only @dispatch-event-envelope annotations in
+              tests/event-bus.test.ts are ac-1 through ac-6, so
+              ac-completed-source-ordering-is-released remains uncovered for review/validation
+              purposes."
+            created_at: 2026-05-18T23:44:37.461Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-18T23:43:27.569Z
-    updated_at: 2026-05-18T23:44:30.463Z
+    updated_at: 2026-05-18T23:44:37.461Z
     notes: []
