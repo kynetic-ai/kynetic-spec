@@ -215879,6 +215879,27 @@ reviews:
         runner: npm test
         created_at: 2026-05-18T23:01:33.205Z
         completed_at: 2026-05-18T23:01:33.205Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read:
+          packages/daemon/src/routes/{task-storage-error,tasks,items,sessions,aggregation,validatio\
+          n,refs,plans,reviews,diff,triage,agent-dispatch}.ts; packages/shared/src/api.ts;
+          tests/daemon-api/task-storage-incompatibility-{helper,routes}.test.ts;
+          src/parser/task-data-manager.ts; src/parser/validate.ts. Commands run: kspec task get,
+          kspec item get @api-contract, kspec validate, rg AC annotations/direct task reads,
+          targeted npm test, npm run typecheck, full npm test with failure triage, dev reproduction
+          of cli-no-daemon failure. Claims verified: stable codes recognized only for deterministic
+          storage incompatibility; task list/detail/mutation and representative non-task routes
+          return 409 structured guidance; generic TaskDataManagerError remains non-matching.
+          Categories searched: correctness, route coverage, error handling, cache context, AC/test
+          quality, integration regressions."
+        name: review evidence log
+        required: false
+        runner: manual review
+        created_at: 2026-05-18T23:01:46.818Z
+        completed_at: 2026-05-18T23:01:46.818Z
     events:
       - _ulid: 01KRYMDAT9ERG78SRJAFMN8FGN
         actor: Jacob Chapel
@@ -215921,6 +215942,13 @@ reviews:
           status: skipped
           name: full npm test triage
         timestamp: 2026-05-18T23:01:34.645Z
+      - _ulid: 01KRYN5Y5ATNACWT6R4HFK0G3T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-18T23:01:48.330Z
     examined_commit: 6dd38eec3f221a642d9c06febaf0aaa106f40ff3
     external_links: []
     lifecycle_state: open
@@ -215933,5 +215961,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-18T22:48:22.089Z
-    updated_at: 2026-05-18T23:01:33.205Z
+    updated_at: 2026-05-18T23:01:46.818Z
     notes: []
