@@ -16143,7 +16143,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-18T22:00:52.077Z
+      updated_at: 2026-05-18T22:03:48.156Z
     integration:
       status: merged
       detail: integration:merged
@@ -16159,18 +16159,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-18T21:43:20.876Z
-      last_reconciled_at: 2026-05-18T22:03:46.693Z
+      last_reconciled_at: 2026-05-18T22:03:48.156Z
       created_at: 2026-05-15T00:01:36.507Z
-      updated_at: 2026-05-18T22:03:46.693Z
+      updated_at: 2026-05-18T22:03:48.156Z
     workspace_id: dispatch-workspace-01KRM50BHPZM315CNQSP4ZA48C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 80bff662a46154574f9af2ab346cbc7b2eb21bd3
-        last_seen_at: 2026-05-18T21:42:54.628Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-cache-task-storage-incompatibility-suppression-01krm50b-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-cache-task-storage-incompatibility-suppression/01krm50b
