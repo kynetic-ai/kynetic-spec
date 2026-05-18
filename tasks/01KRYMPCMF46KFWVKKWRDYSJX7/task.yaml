@@ -51,7 +51,7 @@ description: >
 spec_ref: "@dispatch-workspace-cleanup-policy"
 plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-update-daemon-dispatch-hardening-specs"
@@ -62,6 +62,15 @@ tags:
   - cleanup
   - logging
 vcs_refs: []
+review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+submission_linkage:
+  review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+  branch: dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+  captured_at: 2026-05-18T23:03:10.281Z
+  commit: edbedfa78a41c550244f3cdcc0d53fb9548c1cb3
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
 history:
   - author: Jacob Chapel
     changes:
@@ -73,6 +82,30 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-18T23:03:02.956Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      review_url:
+        new: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+        previous: null
+      submission_linkage:
+        new:
+          review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+          branch: dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+          captured_at: 2026-05-18T23:03:10.281Z
+          commit: edbedfa78a41c550244f3cdcc0d53fb9548c1cb3
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+        previous: null
+      submitted_at:
+        new: 2026-05-18T23:03:10.285Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-18T23:03:10.285Z
 created_at: 2026-05-18T22:53:18.863Z
 started_at: 2026-05-18T23:03:02.956Z
+submitted_at: 2026-05-18T23:03:10.285Z
 todos: []
