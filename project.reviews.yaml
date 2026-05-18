@@ -216243,3 +216243,29 @@ reviews:
     created_at: 2026-05-18T23:25:31.806Z
     updated_at: 2026-05-18T23:41:08.120Z
     notes: []
+  - _ulid: 01KRYQJ6THDQ212RH9273N2BRP
+    slugs: []
+    title: Review bound event bus lineage and source-ordering lifetime
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRYQJ6TGQE7RJZ4C0P69NHXW
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-18T23:43:27.568Z
+    examined_commit: 8de21db24228985d828834bc081bcb37fcd47c25
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRYMPAYBKH8J2HKZPZYGQDA3"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-18T23:43:27.569Z
+    updated_at: null
+    notes: []
