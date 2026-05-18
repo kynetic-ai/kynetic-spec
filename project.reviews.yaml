@@ -216120,6 +216120,20 @@ reviews:
         runner: kspec
         created_at: 2026-05-18T23:40:41.498Z
         completed_at: 2026-05-18T23:40:41.498Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full run: 9277 passed, 5 skipped, 1 failed in tests/cli-no-daemon.test.ts. Focused rerun
+          reproduced the same ps -p PID assertion failure. Classified not introduced by this
+          spec-only task: reviewed snapshot f688b032 is an ancestor of current origin/dev 202bd38,
+          which already includes completed @task-stabilize-cli-no-daemon-runtime-pid-assertion for
+          this failure."
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-05-18T23:40:45.930Z
+        completed_at: 2026-05-18T23:40:45.930Z
     events:
       - _ulid: 01KRYPHC8YREY5YF1ZDWH5CSRP
         actor: Jacob Chapel
@@ -216141,6 +216155,13 @@ reviews:
           status: pass
           name: kspec validate --refs --warnings-ok
         timestamp: 2026-05-18T23:40:42.972Z
+      - _ulid: 01KRYQDAFN367WX6QFGT0S71ER
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: npm test
+        timestamp: 2026-05-18T23:40:47.477Z
     examined_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
     external_links: []
     lifecycle_state: open
@@ -216153,5 +216174,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-18T23:25:31.806Z
-    updated_at: 2026-05-18T23:40:41.498Z
+    updated_at: 2026-05-18T23:40:45.930Z
     notes: []
