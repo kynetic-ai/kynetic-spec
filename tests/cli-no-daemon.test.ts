@@ -100,10 +100,29 @@ describe("KSPEC_NO_DAEMON", () => {
       return;
     }
 
+    // Allocate an ephemeral port so the auto-started daemon never collides
+    // with the default 3456 (host dispatch daemon, other concurrent tests).
+    // A bind failure surfaces only after PidFileManager.writePid() runs in
+    // packages/daemon/src/server.ts, leaving a stale PID file that points at
+    // an already-exited process and makes the later `ps -p …` non-deterministic.
+    const port = await new Promise<number>((resolve, reject) => {
+      const probe = createServer();
+      probe.once("error", reject);
+      probe.listen(0, "127.0.0.1", () => {
+        const address = probe.address();
+        if (!address || typeof address === "string") {
+          probe.close(() => reject(new Error("Failed to allocate ephemeral port")));
+          return;
+        }
+        const allocatedPort = address.port;
+        probe.close((err) => (err ? reject(err) : resolve(allocatedPort)));
+      });
+    });
+
     const isolatedHome = await createIsolatedKspecHome(tempDir);
     writeFileSync(
       join(tempDir, "kspec.config.yaml"),
-      ["daemon:", "  runtime: node", ""].join("\n"),
+      ["daemon:", "  runtime: node", `  port: ${port}`, ""].join("\n"),
       "utf-8",
     );
     const {
@@ -157,6 +176,29 @@ describe("KSPEC_NO_DAEMON", () => {
         // Already gone — fine.
       }
     });
+
+    // The PID file is written before listen() succeeds. Wait for
+    // daemon.connection.json (written only after awaitListenSuccess in
+    // packages/daemon/src/server.ts) before inspecting the process — that
+    // is the on-disk proof that the daemon survived bind and is still alive.
+    const metadataPath = join(isolatedHome.configDir, "daemon.connection.json");
+    await waitForStartup(
+      "auto-started daemon connection metadata",
+      async () => {
+        try {
+          const raw = readTestOutputSync(metadataPath);
+          const parsed = JSON.parse(raw) as { connect_host?: string };
+          return {
+            ok: typeof parsed.connect_host === "string",
+            details: `metadata=${raw.slice(0, 200)}`,
+          };
+        } catch (err) {
+          const message = err instanceof Error ? err.message : String(err);
+          return { ok: false, details: message };
+        }
+      },
+      { timeoutMs: 10_000 },
+    );
 
     const processCommand = execSync(`ps -p ${pid} -o command=`, { encoding: "utf-8" }).trim();
 
