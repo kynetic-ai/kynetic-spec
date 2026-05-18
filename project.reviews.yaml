@@ -216320,6 +216320,13 @@ reviews:
           status: pass
           name: event-bus focused tests
         timestamp: 2026-05-18T23:45:44.438Z
+      - _ulid: 01KRYQPJZY0SFGB7KSRXK3NS7H
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRYQPGNCTDC6F22Q3296MKSQ
+        timestamp: 2026-05-18T23:45:51.102Z
     examined_commit: 8de21db24228985d828834bc081bcb37fcd47c25
     external_links: []
     lifecycle_state: open
@@ -216384,7 +216391,22 @@ reviews:
               proves aged-out lineage is released, not only that total entries are <= capacity."
             created_at: 2026-05-18T23:44:44.394Z
         kind: blocker
+      - _ulid: 01KRYQPGNCTDC6F22Q3296MKSQ
+        entries:
+          - _ulid: 01KRYQPGNCFR0X5KN1WH4WMZ4D
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/agent-runtime/event-bus.ts, tests/event-bus.test.ts,
+              kspec-agents.md, task/spec context for @dispatch-event-envelope. Commands run: kspec
+              task get @01KRYMPAYBKH8J2HKZPZYGQDA3; kspec item get @dispatch-event-envelope; git
+              diff f688b032..8de21db; rg AC annotations; kspec validate; kspec validate
+              --completeness -v; npm test -- --run tests/event-bus.test.ts; npm test; direct
+              EventBus runtime probe for aged-out correlated lineage. Claims verified: focused tests
+              pass; new AC annotations are missing; stale chainDepth entry remains after correlated
+              event ages out. Categories searched: correctness, edge cases, error handling, test
+              quality, AC coverage, integration."
+            created_at: 2026-05-18T23:45:48.716Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-18T23:43:27.569Z
-    updated_at: 2026-05-18T23:45:42.108Z
+    updated_at: 2026-05-18T23:45:48.716Z
     notes: []
