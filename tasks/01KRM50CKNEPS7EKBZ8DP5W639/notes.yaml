@@ -1,1 +1,56 @@
-notes: []
+notes:
+  - _ulid: 01KRYKXR8G2MQX1012D6CBAPG2
+    content: >-
+      Implementation complete. Summary:
+
+
+      - Extended packages/shared/src/api.ts ErrorResponse with optional code, field, cache_domain,
+      cache_domain_state fields. CacheStatusSchema unchanged (ready|loading).
+
+      - Added packages/daemon/src/routes/task-storage-error.ts helper that recognizes the stable
+      TaskDataManagerError codes (legacy_task_storage_removed, split_task_storage_unmigrated) and
+      returns {status: 409, body: ErrorResponse} with error="task_storage_incompatible". Generic
+      TaskDataManagerError returns null so existing 404/400 handling is preserved.
+
+      - Applied helper to: tasks.ts (GET list, GET :ref, GET :ref/sessions, POST
+      start/note/submit/complete/block), items.ts (POST /batch, GET /:ref, GET /:ref/tasks, GET
+      /:ref/sessions), sessions.ts (filterSessionSummaries.ensureAlignmentContext + /api/sessions
+      task_title enrichment), aggregation.ts (/tasks/summary, /validation), refs.ts (/),
+      validation.ts (/search, /alignment), plans.ts (/, /:ref), triage.ts (POST /:ref/act
+      executeTriageAction), diff.ts (review content for spec + task subjects), reviews.ts (GET /,
+      POST /:id/verdicts).
+
+      - agent-dispatch.ts /status endpoint intentionally unchanged: it already silently degrades on
+      any task data load error (returns empty agent_definitions), which is acceptable informational
+      behavior under storage incompatibility. The other dispatch endpoints (POST /dispatch etc.) do
+      not directly call resolveTaskDataManager.
+
+      - triage.ts list/get-by-ref evidence_refs enrichment already uses silent try/catch
+      (non-critical enrichment, route still returns 200). Helper not applied there to preserve
+      existing degraded behavior; the 409 path is only meaningful when storage incompat would
+      otherwise reach an unhandled/404 path.
+
+
+      Tests:
+
+      - tests/daemon-api/task-storage-incompatibility-helper.test.ts: 8 unit tests covering both
+      stable codes, generic TaskDataManagerError, non-Error values, default cache_domain="tasks",
+      explicit/derived cache_domain_state.
+
+      - tests/daemon-api/task-storage-incompatibility-routes.test.ts: 11 integration tests asserting
+      409 with full body shape (error, message, suggestion, code, field, cache_domain) on GET
+      /api/tasks, GET /api/tasks/:ref (asserts NOT 404), POST /api/tasks/:ref/start, POST
+      /api/tasks/:ref/note, and non-tasks.ts routes: /api/aggregation/tasks/summary,
+      /api/aggregation/validation, /api/plans, /api/alignment, /api/items/:ref/tasks.
+
+
+      Verification:
+
+      - npm test (full suite): 2447 passed of 2447.
+
+      - npm run typecheck: clean.
+
+      - kspec validate: pre-existing warnings only; no new AC annotation errors.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-18T22:39:51.568Z
