@@ -40,7 +40,7 @@ description: |
 spec_ref: "@daemon-command-api"
 plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-update-daemon-dispatch-hardening-specs"
@@ -52,5 +52,17 @@ tags:
   - api
   - recursion
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      started_at:
+        new: 2026-05-18T22:59:44.620Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-18T22:59:44.622Z
 created_at: 2026-05-18T22:53:18.007Z
+started_at: 2026-05-18T22:59:44.620Z
 todos: []
