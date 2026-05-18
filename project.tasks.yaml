@@ -29331,7 +29331,7 @@
   type: task
   spec_ref: "@daemon-entity-cache"
   plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 1
@@ -29346,6 +29346,7 @@
   created_at: 2026-05-18T22:53:16.663Z
   started_at: 2026-05-18T23:09:06.670Z
   submitted_at: 2026-05-18T23:10:33.554Z
+  completed_at: 2026-05-18T23:41:24.798Z
   automation: eligible
 - _ulid: 01KRYMPAYBKH8J2HKZPZYGQDA3
   slugs:
