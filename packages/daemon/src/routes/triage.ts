@@ -49,6 +49,7 @@ import type { PubSubManager } from "../websocket/pubsub.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
+import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 
 interface TriageRouteOptions {
   pubsub: PubSubManager;
@@ -540,7 +541,18 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           }
 
           // AC: @triage-daemon-api ac-5 - Execute the action
-          const result = await executeTriageAction(record, ctx);
+          // AC: @api-contract ac-task-storage-incompatibility-* — promote actions
+          // call resolveTaskDataManager(ctx).createTask(); surface the deterministic
+          // storage error as a structured 409 instead of a 500.
+          let result: Awaited<ReturnType<typeof executeTriageAction>>;
+          try {
+            result = await executeTriageAction(record, ctx);
+          } catch (err) {
+            const actCacheForError = getEntityCache?.(projectContext.path);
+            const conflict = taskStorageIncompatibilityResponse(err, { cache: actCacheForError });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
+            throw err;
+          }
 
           // Transition to acted_on
           record.status = "acted_on";

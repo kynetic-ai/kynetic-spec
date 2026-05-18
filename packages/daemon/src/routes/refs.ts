@@ -25,6 +25,7 @@ import {
 import { buildRefIndex } from "./ref-resolution.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
+import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 
 interface RefsRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -40,7 +41,7 @@ export function createRefsRoutes(options: RefsRouteOptions = {}) {
       // AC: @trait-api-endpoint ac-1 - Returns 2xx with JSON body
       // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       // AC: @daemon-entity-cache ac-warming-availability — return loading indicator during warmup
-      .get("/", async ({ projectContext }) => {
+      .get("/", async ({ error: errorResponse, projectContext }) => {
         // AC: @daemon-entity-cache ac-serve-from-memory — try cache for tasks, items, and plans
         const cache = getEntityCache?.(projectContext.path);
         const tasksDomainState = cache?.getDomainState("tasks");
@@ -68,17 +69,27 @@ export function createRefsRoutes(options: RefsRouteOptions = {}) {
           return _ctx;
         };
 
-        const [tasks, items, plans] = await Promise.all([
-          cache && tasksDomainState === "ready" && cache.getTaskIndex()
-            ? Promise.resolve(cache.getTaskIndex()!)
-            : getCtx().then((ctx) => resolveTaskDataManager(ctx).loadAllTasks(ctx)),
-          cache && itemsDomainState === "ready" && cache.getItemIndex()
-            ? Promise.resolve(cache.getItemIndex()!)
-            : getCtx().then((ctx) => loadAllItems(ctx)),
-          cache && plansDomainState === "ready" && cache.getPlansIndex()
-            ? Promise.resolve(cache.getPlansIndex()!)
-            : getCtx().then((ctx) => loadPlans(ctx)),
-        ]);
+        // AC: @api-contract ac-task-storage-incompatibility-* — translate the
+        // deterministic task-storage error into a 409 so ref resolution does
+        // not surface as an opaque 500 on legacy/unmigrated projects.
+        let tasks, items, plans;
+        try {
+          [tasks, items, plans] = await Promise.all([
+            cache && tasksDomainState === "ready" && cache.getTaskIndex()
+              ? Promise.resolve(cache.getTaskIndex()!)
+              : getCtx().then((ctx) => resolveTaskDataManager(ctx).loadAllTasks(ctx)),
+            cache && itemsDomainState === "ready" && cache.getItemIndex()
+              ? Promise.resolve(cache.getItemIndex()!)
+              : getCtx().then((ctx) => loadAllItems(ctx)),
+            cache && plansDomainState === "ready" && cache.getPlansIndex()
+              ? Promise.resolve(cache.getPlansIndex()!)
+              : getCtx().then((ctx) => loadPlans(ctx)),
+          ]);
+        } catch (err) {
+          const conflict = taskStorageIncompatibilityResponse(err, { cache });
+          if (conflict) return errorResponse(conflict.status, conflict.body);
+          throw err;
+        }
         // TaskSummary and ItemSummary are structurally compatible with ReferenceIndex's
         // needs (indexItem uses _ulid + slugs; buildRefIndex uses title, type, status)
         const index = new ReferenceIndex(

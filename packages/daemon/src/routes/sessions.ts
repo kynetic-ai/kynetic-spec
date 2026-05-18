@@ -49,6 +49,7 @@ import { enumArrayUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
 import { listSessionSummariesFromDisk } from "./session-summary-utils.js";
+import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 
 interface SessionRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -111,6 +112,10 @@ async function filterSessionSummaries(
           message?: string;
           suggestion?: string;
           details?: Array<{ field: string; message: string }>;
+          code?: string;
+          field?: string;
+          cache_domain?: string;
+          cache_domain_state?: string;
         };
       };
     }
@@ -189,7 +194,10 @@ async function filterSessionSummaries(
   let tasks: LoadedTask[] | null = null;
   let items: Awaited<ReturnType<typeof loadAllItems>> | null = null;
   // AC: @daemon-entity-cache ac-serve-from-memory — use cached task/item indexes for alignment filtering
-  const ensureAlignmentContext = async () => {
+  type EnsureAlignmentResult =
+    | { tasks: LoadedTask[]; items: LoadedSpecItem[] }
+    | { conflict: ReturnType<typeof taskStorageIncompatibilityResponse> };
+  const ensureAlignmentContext = async (): Promise<EnsureAlignmentResult> => {
     if (!tasks) {
       const tasksDomainReady = entityCache && entityCache.getDomainState("tasks") === "ready";
       if (tasksDomainReady) {
@@ -197,7 +205,15 @@ async function filterSessionSummaries(
         tasks = (entityCache!.getTaskIndex() ?? []) as unknown as LoadedTask[];
       } else {
         const ctx = await resolveCtx();
-        tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+        try {
+          tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+        } catch (err) {
+          // AC: @api-contract ac-task-storage-incompatibility-* — propagate the
+          // structured 409 envelope back to the caller instead of throwing.
+          const conflict = taskStorageIncompatibilityResponse(err, { cache: entityCache });
+          if (conflict) return { conflict };
+          throw err;
+        }
       }
     }
     if (!items) {
@@ -210,11 +226,16 @@ async function filterSessionSummaries(
         items = await loadAllItems(ctx);
       }
     }
-    return { tasks, items };
+    return { tasks: tasks!, items: items! };
   };
 
   if (query.task_id) {
-    const { tasks: loadedTasks, items: loadedItems } = await ensureAlignmentContext();
+    const alignment = await ensureAlignmentContext();
+    if ("conflict" in alignment) {
+      const conflict = alignment.conflict!;
+      return { error: { status: conflict.status, body: conflict.body } };
+    }
+    const { tasks: loadedTasks, items: loadedItems } = alignment;
     const refIndex = new ReferenceIndex(loadedTasks, loadedItems);
     const resolved = refIndex.resolve(
       query.task_id.startsWith("@") ? query.task_id.slice(1) : query.task_id,
@@ -241,7 +262,12 @@ async function filterSessionSummaries(
   }
 
   if (query.spec_ref) {
-    const { tasks: loadedTasks, items: loadedItems } = await ensureAlignmentContext();
+    const alignment = await ensureAlignmentContext();
+    if ("conflict" in alignment) {
+      const conflict = alignment.conflict!;
+      return { error: { status: conflict.status, body: conflict.body } };
+    }
+    const { tasks: loadedTasks, items: loadedItems } = alignment;
     const refIndex = new ReferenceIndex(loadedTasks, loadedItems);
     const alignmentIndex = new AlignmentIndex(loadedTasks, loadedItems);
     alignmentIndex.buildLinks(refIndex);
@@ -367,6 +393,9 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
 
           // AC: @ui-api-ref-resolution ac-1 — Resolve task_title for session summaries
           // AC: @daemon-entity-cache ac-serve-from-memory — use cached tasks/items when available
+          // AC: @api-contract ac-task-storage-incompatibility-* — bubble up a structured 409
+          // when this enrichment hits the legacy/unmigrated storage state; the existing
+          // generic catch downgrade still applies to other non-critical failures.
           let refIndex: ReferenceIndex | null = null;
           const taskIdsPresent = paginated.some((s) => s.task_id);
           if (taskIdsPresent) {
@@ -374,9 +403,16 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
               const cache = getEntityCache?.(projectContext.path);
               const tasksDomainReady = cache && cache.getDomainState("tasks") === "ready";
               const itemsDomainReady = cache && cache.getDomainState("items") === "ready";
-              const tasks = tasksDomainReady
-                ? (cache!.getTaskIndex() as unknown as LoadedTask[])
-                : await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
+              let tasks: LoadedTask[] | undefined;
+              try {
+                tasks = tasksDomainReady
+                  ? (cache!.getTaskIndex() as unknown as LoadedTask[])
+                  : await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
+              } catch (storageErr) {
+                const conflict = taskStorageIncompatibilityResponse(storageErr, { cache });
+                if (conflict) return errorResponse(conflict.status, conflict.body);
+                throw storageErr;
+              }
               const items = itemsDomainReady
                 ? (cache!.getItemIndex() as unknown as LoadedSpecItem[])
                 : await loadAllItems(await getCtx());
