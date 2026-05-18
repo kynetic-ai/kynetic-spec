@@ -16172,7 +16172,7 @@ workspaces:
         head: 80bff662a46154574f9af2ab346cbc7b2eb21bd3
         last_seen_at: 2026-05-18T21:42:54.628Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-cache-task-storage-incompatibility-suppression-01krm50b
-  - active_role: worker
+  - active_role: null
     base_branch_point: 71dba4f3db7432403336e5edb0fc6fff97be5977
     bootstrap:
       status: succeeded
@@ -16503,12 +16503,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-18T22:39:47.072Z
+      updated_at: 2026-05-18T22:46:59.800Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-18T22:39:47.072Z
+      updated_at: 2026-05-18T22:46:59.800Z
     integration:
       status: pending
       detail: null
@@ -16516,17 +16516,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 71dba4f3db7432403336e5edb0fc6fff97be5977
-      updated_at: 2026-05-18T22:39:47.072Z
-    lifecycle_state: active
+      updated_at: 2026-05-18T22:46:59.800Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KRM50CKNEPS7EKBZ8DP5W639"
     task_slug: task-daemon-api-task-storage-incompatibility-errors
     timestamps:
       closed_at: null
       last_active_at: 2026-05-18T22:01:34.382Z
-      last_reconciled_at: 2026-05-18T22:39:47.072Z
+      last_reconciled_at: 2026-05-18T22:46:59.800Z
       created_at: 2026-05-18T22:01:08.706Z
-      updated_at: 2026-05-18T22:39:47.072Z
+      updated_at: 2026-05-18T22:46:59.800Z
     workspace_id: dispatch-workspace-01KRM50CKNEPS7EKBZ8DP5W639
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
