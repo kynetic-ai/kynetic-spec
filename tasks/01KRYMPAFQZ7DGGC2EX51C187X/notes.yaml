@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KRYP20Q9QDF62Z1KD3B9FNVC
+    content: "[DISPATCH-WORKSPACE] Cannot adopt branch \"dev\" for task @01KRYMPAFQZ7DGGC2EX51C187X: it
+      is currently checked out in the main repository working tree
+      (/home/chapel/Projects/kynetic-spec-dispatch). This usually means submission linkage was
+      captured from the wrong checkout. Suggested action: Repair the task's submission linkage to
+      reference the correct task branch: kspec task set @01KRYMPAFQZ7DGGC2EX51C187X
+      --submission-linkage"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-05-18T23:17:08.457Z
