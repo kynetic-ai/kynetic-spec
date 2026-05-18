@@ -215541,9 +215541,25 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-05-18T22:12:47.373Z
+      - _ulid: 01KRYJCK5FWM7JN8J2W3NS5G7P
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-18T22:13:00.719Z
+      - _ulid: 01KRYJCK5FXP3PHQEG2K8JTS4C
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-18T22:13:00.720Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -215648,7 +215664,14 @@ reviews:
               item get.
             created_at: 2026-05-18T22:11:53.829Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-18T22:13:00.719Z
     created_at: 2026-05-18T22:10:14.299Z
-    updated_at: 2026-05-18T22:12:45.384Z
+    updated_at: 2026-05-18T22:13:00.719Z
     notes: []
