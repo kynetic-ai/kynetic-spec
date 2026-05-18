@@ -423,6 +423,29 @@ describe("ac-4: per-source sequential delivery ordering", () => {
     const bStart = log.indexOf("handler1:start:test.b");
     expect(aEnd).toBeLessThan(bStart);
   });
+
+  it("should release settled per-source delivery chains after subscriber delivery", async () => {
+    const bus = new EventBus();
+    const retainedChains = () =>
+      (bus as unknown as { sourceDeliveryChains: Map<string, Promise<void>> }).sourceDeliveryChains
+        .size;
+
+    bus.subscribe("test.*", async () => {
+      await Promise.resolve();
+    });
+
+    for (let i = 0; i < 25; i++) {
+      bus.emit({
+        event_type: "test.high-cardinality-source",
+        source_type: "manual",
+        source_id: `unique-source-${i}`,
+      });
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
+    expect(retainedChains()).toBe(0);
+  });
 });
 
 // ─── AC-5: Chain Depth Limit ────────────────────────────────────────────────
@@ -605,6 +628,26 @@ describe("ac-5: chain depth limit", () => {
     expect(afterReset.accepted).toBe(true);
 
     vi.restoreAllMocks();
+  });
+
+  it("should bound retained chain-depth entries to recent correlated events", () => {
+    const bus = new EventBus({ ringBufferCapacity: 5, maxChainDepth: 20 });
+    const retainedDepths = () =>
+      (bus as unknown as { chainDepths: Map<string, number> }).chainDepths.size;
+
+    for (let i = 0; i < 25; i++) {
+      const correlationId = `correlation-${i}`;
+      const result = bus.emit({
+        event_type: "test.correlated",
+        source_type: "manual",
+        source_id: `source-${i}`,
+        causation_id: `cause-${i}`,
+        correlation_id: correlationId,
+      });
+      expect(result.accepted).toBe(true);
+    }
+
+    expect(retainedDepths()).toBeLessThanOrEqual(5);
   });
 });
 

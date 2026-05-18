@@ -160,6 +160,10 @@ class RingBuffer<T> {
   get size(): number {
     return this.count;
   }
+
+  get maxSize(): number {
+    return this.capacity;
+  }
 }
 
 // ─── EventBus ─────────────────────────────────────────────────────────────────
@@ -291,6 +295,7 @@ export class EventBus {
 
     // AC: @dispatch-event-envelope ac-6 - Store in ring buffer
     this.ringBuffer.push(envelope);
+    this._pruneChainDepthsToRecentEvents();
 
     // AC: @dispatch-event-envelope ac-4 - Per-source sequential delivery
     this._deliverToSubscribers(envelope);
@@ -360,13 +365,35 @@ export class EventBus {
    */
   clear(): void {
     this.subscriptions = [];
-    this.ringBuffer = new RingBuffer(this.ringBuffer["capacity"]);
+    this.ringBuffer = new RingBuffer(this.ringBuffer.maxSize);
     this.taskDedupMap.clear();
     this.chainDepths.clear();
     this.sourceDeliveryChains.clear();
   }
 
   // ─── Private ────────────────────────────────────────────────────────────────
+
+  /**
+   * Keep chain-depth retention aligned with the recent-event ring buffer.
+   * Correlation IDs that no longer appear in retained events cannot be resolved
+   * through the bus's causation history anymore, so keeping their depth counters
+   * only grows memory across long-running daemons.
+   */
+  private _pruneChainDepthsToRecentEvents(): void {
+    if (this.chainDepths.size <= this.ringBuffer.size) return;
+
+    const retainedCorrelationIds = new Set(
+      this.getRecentEvents()
+        .map((event) => event.correlation_id)
+        .filter((id): id is string => typeof id === "string" && id.length > 0),
+    );
+
+    for (const correlationId of Array.from(this.chainDepths.keys())) {
+      if (!retainedCorrelationIds.has(correlationId)) {
+        this.chainDepths.delete(correlationId);
+      }
+    }
+  }
 
   /**
    * Deliver an event to all matching subscribers, sequentially per source.
@@ -379,7 +406,7 @@ export class EventBus {
     if (matching.length === 0) return;
 
     // Chain delivery onto the per-source promise chain to ensure
-    // events from the same source are processed sequentially
+    // events from the same source are processed sequentially.
     const sourceId = event.source_id;
     const previousChain = this.sourceDeliveryChains.get(sourceId) ?? Promise.resolve();
 
@@ -394,6 +421,15 @@ export class EventBus {
     });
 
     this.sourceDeliveryChains.set(sourceId, deliveryChain);
+    deliveryChain.finally(() => {
+      // Only clear the map entry if no newer event from the same source has
+      // chained onto this one. This preserves per-source ordering while
+      // avoiding permanent retention of settled promises for high-cardinality
+      // source IDs such as action/session/run identifiers.
+      if (this.sourceDeliveryChains.get(sourceId) === deliveryChain) {
+        this.sourceDeliveryChains.delete(sourceId);
+      }
+    });
   }
 
   /**
