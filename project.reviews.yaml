@@ -215840,6 +215840,18 @@ reviews:
         runner: tsc
         created_at: 2026-05-18T23:01:10.898Z
         completed_at: 2026-05-18T23:01:10.898Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --warnings-ok: schema OK, references OK, skills OK; warnings match
+          existing repo-wide warning classes and no new task-storage AC annotation issues were
+          observed."
+        name: kspec validate
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-18T23:01:15.056Z
+        completed_at: 2026-05-18T23:01:15.056Z
     events:
       - _ulid: 01KRYMDAT9ERG78SRJAFMN8FGN
         actor: Jacob Chapel
@@ -215861,6 +215873,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-05-18T23:01:12.344Z
+      - _ulid: 01KRYN4Z3XHBVVT5GJBCJC59E9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-18T23:01:16.541Z
     examined_commit: 6dd38eec3f221a642d9c06febaf0aaa106f40ff3
     external_links: []
     lifecycle_state: open
@@ -215873,5 +215892,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-18T22:48:22.089Z
-    updated_at: 2026-05-18T23:01:10.898Z
+    updated_at: 2026-05-18T23:01:15.056Z
     notes: []
