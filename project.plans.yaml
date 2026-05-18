@@ -50061,8 +50061,8 @@ plans:
         @api-contract already owns the ACs, and
         @task-daemon-api-task-storage-incompatibility-errors owns the implementation
         work for structured HTTP 409 task_storage_incompatible responses.
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-05-18T22:52:46.441Z
     derived_specs: []
     derived_tasks: []
     module_ref: null
