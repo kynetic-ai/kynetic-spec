@@ -216276,6 +216276,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRYQMB2NNSE6BG976PTZKSER
         timestamp: 2026-05-18T23:44:39.898Z
+      - _ulid: 01KRYQMM9GV565N473P8ZB6KJN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRYQMHVA0J5QHEVKFR9TMDAX
+        timestamp: 2026-05-18T23:44:46.896Z
     examined_commit: 8de21db24228985d828834bc081bcb37fcd47c25
     external_links: []
     lifecycle_state: open
@@ -216323,7 +216330,24 @@ reviews:
               purposes."
             created_at: 2026-05-18T23:44:37.461Z
         kind: blocker
+      - _ulid: 01KRYQMHVA0J5QHEVKFR9TMDAX
+        anchor:
+          type: code
+          commit: 8de21db24228985d828834bc081bcb37fcd47c25
+          line_end: 650
+          line_start: 633
+          path: tests/event-bus.test.ts
+          side: head
+        entries:
+          - _ulid: 01KRYQMHVAHQSHE8A2RTMDNHWP
+            author: Jacob Chapel
+            body: "MUST-FIX: this regression test is intended to cover retained event-lineage bounds, but it is
+              not annotated with the new AC id. Add a standalone AC annotation for
+              @dispatch-event-envelope ac-retained-event-lineage-is-bounded and make sure the test
+              proves aged-out lineage is released, not only that total entries are <= capacity."
+            created_at: 2026-05-18T23:44:44.394Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-18T23:43:27.569Z
-    updated_at: 2026-05-18T23:44:37.461Z
+    updated_at: 2026-05-18T23:44:44.394Z
     notes: []
