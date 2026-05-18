@@ -49611,3 +49611,504 @@ plans:
           closure."
         author: Jacob Chapel
         created_at: 2026-05-13T20:07:07.102Z
+  - _ulid: 01KRYJ0Z45EPT45QA6V88VFVPR
+    slugs:
+      - plan-daemon-dispatch-oom-hardening-spec-alignment
+    title: Daemon Dispatch OOM Hardening Spec Alignment
+    content: >
+      # Daemon Dispatch OOM Hardening Spec Alignment
+
+
+      This draft plan records the spec alignment and implementation tasks for the daemon/dispatch
+      hardening work prompted by a legacy task-storage project repeatedly failing inside
+      daemon/dispatch until the Node.js process reached OOM.
+
+
+      The work is intentionally scoped to behavioral contracts that prevent deterministic project
+      incompatibility or daemon-internal command execution from amplifying into crash loops,
+      recursive command routing, unbounded in-memory retention, or repeated diagnostic noise.
+
+
+      ## Specs
+
+
+      ```yaml
+
+      []
+
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: false
+
+
+      ```yaml
+
+      - title: Update daemon and dispatch hardening specs
+        slug: task-update-daemon-dispatch-hardening-specs
+        priority: 1
+        tags: [spec-update, daemon, dispatch, stability]
+        spec_ref: "@daemon-entity-cache"
+        description: |
+          Add the behavioral acceptance criteria needed to cover the daemon and
+          dispatch hardening work from this plan.
+
+          Why: The current specs already cover graceful task-cache degradation for
+          deterministic task-storage incompatibility, but the incident also exposed
+          adjacent stability contracts that were either implicit or only partially
+          described: event-bus metadata retention, non-overlapping periodic dispatch
+          reconciliation, command API recursion suppression, agent invocation daemon
+          isolation, cleanup diagnostic log gating, and HTTP/API classification for
+          incompatible task storage. These contracts must be spec-owned before the
+          implementation tasks are considered complete.
+
+          What: Add the following ACs exactly, unless the same behavioral contract
+          already exists under an equivalent AC id.
+
+          1. Add to @dispatch-event-envelope:
+
+             ac-bounded-correlation-metadata:
+               given: The event bus has processed correlated events beyond its recent
+                 event retention window
+               when: Older correlated events have aged out of the retained recent
+                 event window
+               then: Correlation-depth metadata for the aged-out events is not
+                 retained in memory
+
+             ac-settled-source-delivery-release:
+               given: Events from a source have finished delivery to matching
+                 subscribers
+               when: No newer event from that source is waiting on the same delivery
+                 chain
+               then: Delivery bookkeeping for that source is released from memory
+
+          2. Add to @agent-dispatch-engine:
+
+             ac-reconcile-non-overlap:
+               given: Periodic reconciliation is enabled and a reconciliation pass is
+                 still running
+               when: Another reconciliation interval elapses
+               then: The dispatch engine does not start a second reconciliation pass
+                 before the running pass completes
+
+             ac-stop-awaits-reconciliation:
+               given: The dispatch engine is stopping while one or more reconciliation
+                 passes are in flight
+               when: Stop completes
+               then: No in-flight reconciliation pass continues mutating dispatch
+                 state after stop has returned
+
+          3. Add to @daemon-command-api:
+
+             ac-no-recursive-command-proxy:
+               given: The daemon command API is executing a CLI command inside the
+                 daemon process
+               when: That command evaluates whether it should proxy through the daemon
+               then: The command is executed directly in the current daemon request
+                 instead of posting back to the command API
+
+          4. Add to @cli-daemon-proxy:
+
+             ac-daemon-internal-proxy-suppression-is-scoped:
+               given: Daemon proxying is suppressed for a command running inside a
+                 daemon command API request
+               when: Other CLI commands evaluate proxy mode outside that request
+               then: They continue to follow the normal daemon detection, force-direct,
+                 and force-proxy rules
+
+          5. Add to @agent-invocation-lifecycle:
+
+             ac-invocation-commands-do-not-proxy-to-supervising-daemon:
+               given: An agent subprocess is spawned by dispatch or one-shot agent
+                 invocation
+               when: The subprocess invokes kspec commands
+               then: Those commands run without proxying through the supervising daemon
+
+             ac-invocation-lifecycle-helper-commands-do-not-proxy:
+               given: Invocation timeout, failure, or retry-exhaustion handling writes
+                 lifecycle notes or task blocks through kspec helper commands
+               when: Those helper commands run
+               then: They run without daemon proxying while preserving invocation
+                 mutation-safety environment
+
+          6. Add to @dispatch-workspace-cleanup-policy:
+
+             ac-preservation-diagnostics-quiet-by-default:
+               given: Cleanup repeatedly preserves protected dispatch artifacts during
+                 normal daemon reconciliation
+               when: detailed cleanup diagnostics have not been explicitly enabled
+               then: Preservation diagnostics are not emitted for each preserved
+                 artifact
+
+             ac-preservation-diagnostics-opt-in:
+               given: Detailed cleanup diagnostics have been explicitly enabled
+               when: Cleanup preserves a protected dispatch artifact
+               then: A preservation diagnostic identifies the cleanup surface, artifact,
+                 and preservation reason
+
+          7. Add to @daemon-command-api or the existing API error contract that owns
+             task route responses:
+
+             ac-task-storage-incompatibility-conflict-response:
+               given: A project uses task storage that requires migration or is
+                 incompatible with the running daemon
+               when: A task API request cannot be served because of that compatibility
+                 state
+               then: The response uses HTTP 409 with error code
+                 task_storage_incompatible and recovery guidance for migration
+
+          How: Apply the AC additions with `kspec item ac add` commands, then verify
+          each owning spec with `kspec item get`. If an AC already exists with the same
+          behavior but a different id, prefer updating the task Covers lines to the
+          existing id over creating a duplicate.
+
+          Testing: Run `kspec validate --refs --warnings-ok` and inspect any existing
+          non-blocking warnings separately from these spec additions.
+
+          Covers: @dispatch-event-envelope ac-bounded-correlation-metadata,
+          ac-settled-source-delivery-release; @agent-dispatch-engine
+          ac-reconcile-non-overlap, ac-stop-awaits-reconciliation;
+          @daemon-command-api ac-no-recursive-command-proxy,
+          ac-task-storage-incompatibility-conflict-response; @cli-daemon-proxy
+          ac-daemon-internal-proxy-suppression-is-scoped;
+          @agent-invocation-lifecycle
+          ac-invocation-commands-do-not-proxy-to-supervising-daemon,
+          ac-invocation-lifecycle-helper-commands-do-not-proxy;
+          @dispatch-workspace-cleanup-policy
+          ac-preservation-diagnostics-quiet-by-default,
+          ac-preservation-diagnostics-opt-in.
+
+      - title: Bound event bus metadata retention
+        slug: task-bound-event-bus-metadata-retention
+        priority: 1
+        tags: [dispatch, event-bus, memory]
+        spec_ref: "@dispatch-event-envelope"
+        depends_on:
+          - "@task-update-daemon-dispatch-hardening-specs"
+        description: |
+          Bound EventBus metadata retention so long-running daemon processes do not
+          retain per-correlation or per-source bookkeeping after the corresponding
+          observable events/deliveries are no longer active.
+
+          Why: The event bus already retains only a bounded recent-event ring buffer,
+          but the daemon/dispatch OOM incident showed that adjacent bookkeeping must
+          follow the same lifetime. High-cardinality source ids and correlation ids
+          should not accumulate indefinitely across daemon lifetime.
+
+          What:
+          - In `src/agent-runtime/event-bus.ts`, expose the ring buffer capacity
+            through a public accessor instead of reading private fields during clear.
+          - After each accepted event enters the recent-event buffer, prune
+            chain-depth/correlation metadata whose correlation ids no longer appear in
+            retained recent events.
+          - After subscriber delivery settles for a source, remove the per-source
+            delivery-chain entry if no newer delivery for that source has replaced it.
+          - Preserve per-source sequential delivery while releasing only settled,
+            superseded bookkeeping.
+          - Add regression coverage in `tests/event-bus.test.ts` for settled
+            source-chain release and bounded retained chain-depth entries.
+
+          How: Keep the behavior independent of the concrete RingBuffer
+          implementation. Use the recent events exposed by the bus as the source of
+          truth for retained correlation ids, and only clear a settled source chain if
+          the map still points at that exact chain.
+
+          Testing: Run
+          `npm test -- --run tests/event-bus.test.ts`, then include this test in the
+          full focused hardening slice with the other tasks.
+
+          Covers: @dispatch-event-envelope ac-6,
+          ac-bounded-correlation-metadata, ac-settled-source-delivery-release.
+
+      - title: Prevent overlapping periodic dispatch reconciliation
+        slug: task-prevent-overlapping-dispatch-reconciliation
+        priority: 1
+        tags: [dispatch, daemon, stability]
+        spec_ref: "@agent-dispatch-engine"
+        depends_on:
+          - "@task-update-daemon-dispatch-hardening-specs"
+        description: |
+          Ensure periodic dispatch reconciliation never overlaps with itself and that
+          shutdown does not return while reconciliation can still mutate dispatch
+          state.
+
+          Why: During deterministic project failures or slow filesystem/git paths,
+          periodic reconciliation should recover missed work but must not amplify load
+          by stacking overlapping scans. Overlap increases pending async work, repeated
+          logs, and filesystem mutation risk during daemon shutdown.
+
+          What:
+          - In `src/agent-runtime/dispatch.ts`, make the periodic reconciliation timer
+            skip a tick when the engine is stopped or a reconciliation pass is already
+            in flight.
+          - Keep tracking in-flight reconciliation promises and ensure `stop()` waits
+            for all currently running reconciliation passes before it returns.
+          - Add regression coverage in `tests/agent-dispatch-engine.test.ts` proving a
+            short reconciliation interval does not start a second pass while the first
+            pass is blocked.
+
+          How: Treat skipped interval ticks as coalesced recovery work. The next timer
+          tick after the current pass completes may start a new pass if the engine is
+          still running.
+
+          Testing: Run
+          `npm test -- --run tests/agent-dispatch-engine.test.ts` or the focused
+          hardening slice. Verify no test depends on overlapping reconciliation for
+          correctness.
+
+          Covers: @agent-dispatch-engine ac-19, ac-20,
+          ac-reconcile-non-overlap, ac-stop-awaits-reconciliation.
+
+      - title: Suppress recursive daemon command proxying
+        slug: task-suppress-recursive-daemon-command-proxying
+        priority: 1
+        tags: [daemon, cli, api, recursion]
+        spec_ref: "@daemon-command-api"
+        depends_on:
+          - "@task-update-daemon-dispatch-hardening-specs"
+        description: |
+          Prevent commands executed by the daemon command API from recursively routing
+          back into the same daemon command API.
+
+          Why: The command API runs CLI commands in-process. The CLI pre-action hook
+          can otherwise observe the running daemon and decide to proxy the command
+          back through `/api/command`, producing self-referential command execution
+          instead of direct daemon-internal execution.
+
+          What:
+          - In `src/cli/daemon-proxy.ts`, add a request-scoped suppression guard and
+            export a wrapper for daemon-internal command execution.
+          - Make `shouldProxyCommand()` return a direct-mode decision while the guard
+            is active, without changing normal proxy behavior outside that guarded
+            execution.
+          - In `packages/daemon/src/routes/command.ts`, wrap command execution for
+            `/api/command` with the suppression guard.
+          - Add regression coverage in `tests/daemon-command-api.test.ts` proving a
+            command executed through `/api/command` sees proxying disabled even when
+            daemon detection reports an available daemon.
+          - Add or adjust CLI proxy tests if needed to prove normal force-direct,
+            force-proxy, and auto-detect behavior remain unchanged outside the daemon
+            command API request.
+
+          How: The suppression must be scoped to the async execution chain of one
+          command API request. Do not use a process-wide mutable flag that can leak
+          across concurrent requests.
+
+          Testing: Run
+          `npm test -- --run tests/daemon-command-api.test.ts tests/cli-daemon-proxy.test.ts`.
+
+          Covers: @daemon-command-api ac-command-endpoint,
+          ac-no-recursive-command-proxy; @cli-daemon-proxy
+          ac-daemon-internal-proxy-suppression-is-scoped.
+
+      - title: Disable daemon proxying inside agent invocations
+        slug: task-disable-daemon-proxying-inside-agent-invocations
+        priority: 1
+        tags: [agent-runtime, dispatch, daemon]
+        spec_ref: "@agent-invocation-lifecycle"
+        depends_on:
+          - "@task-update-daemon-dispatch-hardening-specs"
+        description: |
+          Ensure dispatched agents and invocation lifecycle helper commands do not
+          route their own kspec calls back through the supervising daemon.
+
+          Why: Dispatch controls workspace provisioning and shadow-branch mutation
+          serialization. Agent subprocesses and failure/timeout note helpers must use
+          the invocation's controlled environment rather than discovering the daemon
+          and re-entering command proxy mode.
+
+          What:
+          - In `src/agent-runtime/invocation.ts`, build a shared invocation
+            environment that sets `KSPEC_NO_DAEMON=1`, preserves caller-provided env
+            overrides, and preserves `KSPEC_SHADOW_MUTATION_LOCK_FILE` when present.
+          - Use that shared environment when spawning the ACP agent subprocess.
+          - Use the same daemon-disabled environment for timeout notes, failure notes,
+            and retry-exhaustion task-blocking helper commands.
+          - Add regression coverage in `tests/invocation-daemon-isolation.test.ts`
+            proving both spawned agents and failure-note helper commands receive
+            `KSPEC_NO_DAEMON=1` while preserving mutation-lock env and custom env.
+          - Ensure `tests/mocks/kspec-capture-mock.cjs` captures requested env values
+            for the helper-command assertions.
+
+          How: Do not remove `KSPEC_SESSION_ID` injection for spawned agents and do
+          not weaken the shadow mutation lock behavior. The daemon-proxy isolation is
+          additive to the existing invocation environment.
+
+          Testing: Run
+          `npm test -- --run tests/invocation-daemon-isolation.test.ts`.
+
+          Covers: @agent-invocation-lifecycle
+          ac-invocation-commands-do-not-proxy-to-supervising-daemon,
+          ac-invocation-lifecycle-helper-commands-do-not-proxy.
+
+      - title: Gate cleanup preservation diagnostics behind explicit opt-in
+        slug: task-gate-cleanup-preservation-diagnostics
+        priority: 1
+        tags: [dispatch, cleanup, logging]
+        spec_ref: "@dispatch-workspace-cleanup-policy"
+        depends_on:
+          - "@task-update-daemon-dispatch-hardening-specs"
+        description: |
+          Keep dispatch cleanup preservation diagnostics available for debugging while
+          preventing normal reconciliation from emitting repeated preservation logs for
+          every protected artifact.
+
+          Why: Cleanup preservation decisions can repeat on startup, periodic
+          reconciliation, and post-event reconciliation. Those diagnostics are useful
+          when investigating cleanup safety, but in normal daemon operation they can
+          amplify deterministic blockers into high-volume logs.
+
+          What:
+          - In `src/agent-runtime/workspace.ts`, make preservation diagnostics quiet
+            by default.
+          - Emit the existing surface-labeled preservation diagnostic only when
+            detailed cleanup diagnostics are explicitly enabled.
+          - Update diagnostic tests in `tests/dispatch-workspace-cleanup.test.ts` so
+            tests that assert diagnostic content enable the opt-in before capturing
+            `console.debug`, and restore the prior environment afterward.
+          - Preserve existing cleanup safety behavior. This task changes diagnostic
+            visibility only, not whether artifacts are preserved or removed.
+
+          How: Do not weaken any destructive-cleanup protection AC. The opt-in gate
+          must wrap only the diagnostic emission path.
+
+          Testing: Run
+          `npm test -- --run tests/dispatch-workspace-cleanup.test.ts tests/dispatch-workspace-registry.test.ts`.
+
+          Covers: @dispatch-workspace-cleanup-policy
+          ac-preservation-diagnostics-quiet-by-default,
+          ac-preservation-diagnostics-opt-in.
+
+      - title: Standardize incompatible task-storage API responses
+        slug: task-standardize-task-storage-incompatibility-api
+        priority: 2
+        tags: [daemon, api, task-storage, migration]
+        spec_ref: "@daemon-entity-cache"
+        depends_on:
+          - "@task-update-daemon-dispatch-hardening-specs"
+        description: |
+          Standardize task API behavior when a registered project uses task storage
+          that requires migration or is incompatible with the running daemon.
+
+          Why: The original incident was triggered by a deterministic
+          TaskDataManagerError for a project using legacy monolithic task storage.
+          Existing entity-cache specs already require the tasks domain to become
+          degraded, suppress repeated unchanged failure reports, recheck after
+          relevant task-storage changes, and recover after migration. The remaining
+          API-facing contract is that task routes should not misclassify the condition
+          as not_found or repeatedly reload/log the same deterministic failure.
+
+          What:
+          - Audit task-serving API routes and command/daemon helpers that catch
+            `TaskDataManagerError` or fall back from cache to disk reads.
+          - For deterministic task-storage compatibility or migration-required
+            failures, return HTTP 409 with `error: "task_storage_incompatible"` and
+            migration guidance instead of generic 404/not_found or uncaught errors.
+          - Ensure the tasks cache domain remains degraded for unchanged incompatible
+            state and re-evaluates only when relevant task-storage project state
+            changes.
+          - Add regression tests for at least one list/summary task API path and one
+            detail/mutation-adjacent task path that currently risks falling through to
+            disk loading or not_found classification.
+          - Verify other project domains remain available while the tasks domain is
+            degraded.
+
+          How: Reuse the existing `TaskDataManagerError` classification rather than
+          matching arbitrary error messages broadly. Keep fallback-to-disk behavior for
+          transient cache errors; only deterministic storage incompatibility should map
+          to the standardized 409 response.
+
+          Testing: Run focused daemon entity-cache/API tests that cover task storage
+          incompatibility, then run the focused hardening slice:
+          `npm test -- --run tests/daemon-entity-cache.test.ts tests/daemon-command-api.test.ts`.
+          Also run `kspec validate --refs --warnings-ok` after adding AC annotations.
+
+          Covers: @daemon-entity-cache
+          ac-task-storage-incompatibility-degraded-state,
+          ac-task-storage-incompatibility-stable-reporting,
+          ac-task-storage-incompatibility-rechecked-after-storage-change,
+          ac-task-storage-incompatibility-recovers-after-migration,
+          ac-task-storage-incompatibility-persists-when-unresolved,
+          ac-manifest-task-storage-settings-affect-tasks-domain;
+          @daemon-command-api ac-task-storage-incompatibility-conflict-response.
+
+      - title: Validate daemon dispatch OOM hardening slice
+        slug: task-validate-daemon-dispatch-oom-hardening-slice
+        priority: 2
+        tags: [validation, daemon, dispatch]
+        spec_ref: "@daemon-entity-cache"
+        depends_on:
+          - "@task-bound-event-bus-metadata-retention"
+          - "@task-prevent-overlapping-dispatch-reconciliation"
+          - "@task-suppress-recursive-daemon-command-proxying"
+          - "@task-disable-daemon-proxying-inside-agent-invocations"
+          - "@task-gate-cleanup-preservation-diagnostics"
+          - "@task-standardize-task-storage-incompatibility-api"
+        description: |
+          Run the integrated validation slice for the daemon/dispatch OOM hardening
+          work and verify the implementation, spec annotations, and build are stable.
+
+          Why: The incident involved multiple daemon subsystems interacting under
+          long-running load. Individual task tests are necessary but not sufficient;
+          the final validation must exercise the affected daemon, dispatch, event-bus,
+          invocation, cleanup, and task-storage surfaces together.
+
+          What:
+          - Ensure every new regression test has accurate `// AC:` annotations for
+            the exact AC ids added by this plan.
+          - Run the focused test slice:
+            `npm test -- --run tests/invocation-daemon-isolation.test.ts tests/event-bus.test.ts tests/agent-dispatch-engine.test.ts tests/dispatch-workspace-cleanup.test.ts tests/dispatch-workspace-registry.test.ts tests/daemon-command-api.test.ts tests/cli-daemon-proxy.test.ts tests/daemon-entity-cache.test.ts`
+          - Run `npm run build`.
+          - Run `git diff --check`.
+          - Run `kspec validate --refs --warnings-ok` and inspect whether any warnings
+            are pre-existing or caused by this plan's AC/task changes.
+          - Confirm no scratch investigation files are included in the final changes.
+
+          How: Treat a focused test pass as evidence for the hardening slice, not as a
+          substitute for fixing AC annotation or spec/status drift. If validation finds
+          a failure tied to one implementation task, send the task back to needs_work
+          instead of weakening the spec.
+
+          Testing: This task is the validation task; record exact command outputs or
+          failure summaries in the task notes.
+
+          Covers: @daemon-entity-cache task-storage incompatibility ACs;
+          @dispatch-event-envelope ac-bounded-correlation-metadata,
+          ac-settled-source-delivery-release; @agent-dispatch-engine
+          ac-reconcile-non-overlap, ac-stop-awaits-reconciliation;
+          @daemon-command-api ac-no-recursive-command-proxy,
+          ac-task-storage-incompatibility-conflict-response; @cli-daemon-proxy
+          ac-daemon-internal-proxy-suppression-is-scoped;
+          @agent-invocation-lifecycle daemon-proxy isolation ACs;
+          @dispatch-workspace-cleanup-policy preservation diagnostic ACs.
+      ```
+
+
+      ## Implementation Notes
+
+
+      - This is an existing-spec update plan. It intentionally has no structured new
+        spec items in `## Specs`; all behavioral changes are AC additions to existing
+        specs through the first task.
+      - The implementation tasks correspond to the current uncommitted hardening diff
+        in `src/agent-runtime/event-bus.ts`, `src/agent-runtime/dispatch.ts`,
+        `src/agent-runtime/invocation.ts`, `src/agent-runtime/workspace.ts`,
+        `src/cli/daemon-proxy.ts`, `packages/daemon/src/routes/command.ts`, and their
+        related tests.
+      - The task-storage incompatibility API task is listed separately because the
+        original incident began with legacy task storage. It closes the API-facing
+        contract after the cache-level degraded/stable-reporting ACs that already
+        exist on @daemon-entity-cache.
+    status: draft
+    approved_at: null
+    branch: null
+    derived_specs: []
+    derived_tasks: []
+    module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/daemon-dispatch-oom-hardening-spec-alignment.md
+    created_at: 2026-05-18T22:06:39.749Z
+    completed_at: null
+    notes: []
