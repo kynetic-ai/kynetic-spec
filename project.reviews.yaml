@@ -216410,3 +216410,29 @@ reviews:
     created_at: 2026-05-18T23:43:27.569Z
     updated_at: 2026-05-18T23:45:48.716Z
     notes: []
+  - _ulid: 01KRYQPMKK8CYKVR3R4GCHKP0F
+    slugs: []
+    title: Review prevent overlapping periodic dispatch reconciliation
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRYQPMKJS56PPFW0T8PE0WWC
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-18T23:45:52.755Z
+    examined_commit: 7c8750e4177de585f398dc7d2b00e9a4e1aa657b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRYMPBC8YM4X3KZC6SPBV6R2"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-18T23:45:52.755Z
+    updated_at: null
+    notes: []
