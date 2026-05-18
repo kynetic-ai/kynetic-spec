@@ -215414,7 +215414,18 @@ reviews:
     slugs: []
     title: "Plan review: Daemon Dispatch OOM Hardening Spec Alignment"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation task Covers line uses shorthand/non-existent refs instead of exact AC ids; API
+          task points at @daemon-command-api ac-task-storage-incompatibility-conflict-response,
+          which should not be added.
+        name: Coverage mapping
+        required: true
+        created_at: 2026-05-18T22:12:12.818Z
+        completed_at: 2026-05-18T22:12:12.818Z
     events:
       - _ulid: 01KRYJ7GMVTZ5CQV8B6YTAAT65
         actor: Jacob Chapel
@@ -215471,6 +215482,13 @@ reviews:
           kind: nit
           thread_ulid: 01KRYJAHV4SHZBKWA09W5YZSAQ
         timestamp: 2026-05-18T22:11:55.889Z
+      - _ulid: 01KRYJB6ANQT1JQ33VCGKJ7796
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Coverage mapping
+        timestamp: 2026-05-18T22:12:14.805Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -215580,5 +215598,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-18T22:10:14.299Z
-    updated_at: 2026-05-18T22:11:53.829Z
+    updated_at: 2026-05-18T22:12:12.818Z
     notes: []
