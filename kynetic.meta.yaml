@@ -18950,6 +18950,31 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-18T21:42:29.067Z
+  - _ulid: 01KRYMAAHTC723BHJWGC49NBSE
+    type: success
+    content: "Two-task split for task-storage incompatibility worked cleanly: prior
+      @task-daemon-cache-task-storage-incompatibility-suppression contributed stable
+      TaskDataManagerError codes plus the isDeterministicTaskStorageIncompatibility type guard; this
+      task wrapped them into a reusable daemon route helper. The shared type-guard contract
+      prevented divergent classification of legacy/unmigrated storage errors across the two
+      consumers (cache suppression and API 409 mapping)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-18T22:46:43.515Z
+  - _ulid: 01KRYMAAV8X1SXVW1T2TDYAFNH
+    type: friction
+    content: "Daemon route files mix three error-return idioms within and across handlers: Elysia
+      errorResponse(status, body), set.status = N; return body, and bare throw. Applying a shared
+      error-mapping helper across 10 route files required threading the helper through all three
+      idioms (diff.ts uses set.status, most use errorResponse). This same inconsistency is the root
+      cause of inbox @01KMZNBA (plans route returns 500 instead of 404). A single canonical route
+      error-return pattern would simplify both future cross-route helpers and per-route handler
+      readability."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-18T22:46:43.816Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
