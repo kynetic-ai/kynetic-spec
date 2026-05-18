@@ -109,6 +109,8 @@ function captureDispatchCleanupDiagnostics(): {
   capture: () => string[];
   restore: () => void;
 } {
+  const previousDiagnostics = process.env.KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS;
+  process.env.KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS = "1";
   const spy = vi.spyOn(console, "debug").mockImplementation(() => undefined);
   return {
     capture: () =>
@@ -116,6 +118,11 @@ function captureDispatchCleanupDiagnostics(): {
         .map((args) => String(args[0] ?? ""))
         .filter((line) => line.includes("[dispatch-cleanup]")),
     restore: () => {
+      if (previousDiagnostics === undefined) {
+        delete process.env.KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS;
+      } else {
+        process.env.KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS = previousDiagnostics;
+      }
       spy.mockRestore();
     },
   };
@@ -546,13 +553,13 @@ describe("dispatch workspace cleanup", () => {
       "utf-8",
     );
 
-    const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => undefined);
+    const diag = captureDispatchCleanupDiagnostics();
     let capturedCalls: string[] = [];
     try {
       await reconcileDispatchWorkspaceArtifacts(tempDir);
-      capturedCalls = debugSpy.mock.calls.map((args) => String(args[0] ?? ""));
+      capturedCalls = diag.capture();
     } finally {
-      debugSpy.mockRestore();
+      diag.restore();
     }
 
     // Every dispatcher-managed artifact under the worktree root must survive.
@@ -618,15 +625,15 @@ describe("dispatch workspace cleanup", () => {
       "utf-8",
     );
 
-    const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => undefined);
+    const diag = captureDispatchCleanupDiagnostics();
     let capturedCalls: string[] = [];
     try {
       await reconcileDispatchWorkspaceArtifacts(tempDir, {
         activeTaskRefs: [taskRef],
       });
-      capturedCalls = debugSpy.mock.calls.map((args) => String(args[0] ?? ""));
+      capturedCalls = diag.capture();
     } finally {
-      debugSpy.mockRestore();
+      diag.restore();
     }
 
     const diagnosticMessages = capturedCalls.filter((line) => line.includes("[dispatch-cleanup]"));
@@ -680,15 +687,15 @@ describe("dispatch workspace cleanup", () => {
       },
     });
 
-    const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => undefined);
+    const diag = captureDispatchCleanupDiagnostics();
     let capturedCalls: string[] = [];
     try {
       await reconcileDispatchWorkspaceArtifacts(tempDir, {
         activeTaskRefs: [taskRef],
       });
-      capturedCalls = debugSpy.mock.calls.map((args) => String(args[0] ?? ""));
+      capturedCalls = diag.capture();
     } finally {
-      debugSpy.mockRestore();
+      diag.restore();
     }
 
     // Reap is skipped, so the worktree and canonical branch must survive.

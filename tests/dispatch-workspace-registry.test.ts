@@ -1034,9 +1034,12 @@ describe("dispatch workspace registry", () => {
       timestamps: { ...existing.timestamps, updated_at: now },
     });
 
+    const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
+
     // Artifact cleanup must NOT reap or prune the provisioning workspace.
     await reconcileDispatchWorkspaceArtifacts(tempDir);
 
+    expect(debugSpy).not.toHaveBeenCalledWith(expect.stringContaining("[dispatch-cleanup]"));
     await fs.access(workspace.metadata.workerWorktreeDir);
     expect(
       git(tempDir, "branch --list dispatch/task/task-partial-provisioning-classification/01task00"),

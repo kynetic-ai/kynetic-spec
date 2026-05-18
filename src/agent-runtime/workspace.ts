@@ -3706,6 +3706,12 @@ function logArtifactPreservation(
   identifier: string,
   reason: string | null,
 ): void {
+  // Preservation diagnostics can occur on every reconciliation pass for every
+  // protected artifact. Keep them opt-in so normal daemon operation does not
+  // amplify deterministic cleanup blockers into unbounded log volume.
+  if (process.env.KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS !== "1") {
+    return;
+  }
   const reasonText = reason ?? "protection-source unspecified";
   console.debug(`[dispatch-cleanup] preserved ${surface} "${identifier}": ${reasonText}`);
 }
