@@ -215852,6 +215852,19 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-18T23:01:15.056Z
         completed_at: 2026-05-18T23:01:15.056Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/daemon-api/task-storage-incompatibility-helper.test.ts
+          tests/daemon-api/task-storage-incompatibility-routes.test.ts: 19 passed across
+          helper/routes; verifies 409 task_storage_incompatible guidance for task
+          list/detail/mutation and representative non-task routes."
+        name: targeted daemon API task-storage tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-18T23:01:19.279Z
+        completed_at: 2026-05-18T23:01:19.279Z
     events:
       - _ulid: 01KRYMDAT9ERG78SRJAFMN8FGN
         actor: Jacob Chapel
@@ -215880,6 +215893,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-18T23:01:16.541Z
+      - _ulid: 01KRYN537NZ6VCBVS80NXAG1ZD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted daemon API task-storage tests
+        timestamp: 2026-05-18T23:01:20.757Z
     examined_commit: 6dd38eec3f221a642d9c06febaf0aaa106f40ff3
     external_links: []
     lifecycle_state: open
@@ -215892,5 +215912,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-18T22:48:22.089Z
-    updated_at: 2026-05-18T23:01:15.056Z
+    updated_at: 2026-05-18T23:01:19.279Z
     notes: []
