@@ -8058,6 +8058,15 @@ features:
           agent starts cleanly without inheriting the parent's session context
         when: The parent process environment contains variables that would interfere with agent startup
           (e.g. CLAUDECODE=1 causing nested-session detection)
+      - given: An agent subprocess is spawned by dispatch or one-shot agent invocation
+        id: ac-invocation-commands-do-not-proxy-to-supervising-daemon
+        then: Those commands run without proxying through the supervising daemon
+        when: The subprocess invokes kspec commands
+      - given: Invocation timeout, failure, or retry-exhaustion handling writes lifecycle notes or task
+          blocks through kspec helper commands
+        id: ac-invocation-lifecycle-helper-commands-do-not-proxy
+        then: They run without daemon proxying
+        when: Those helper commands run
     tags: []
     features:
       - _ulid: 01KKER1SDTFB94KPQA4D16C1B6
@@ -8499,6 +8508,15 @@ features:
         then: The task reference is included in the cleanup protection input so the pre-active spawn window
           receives the same artifact protection as a registered active invocation.
         when: Startup, periodic, or post-event reconciliation invokes workspace artifact cleanup.
+      - given: Periodic reconciliation is enabled and a reconciliation pass is still running
+        id: ac-reconcile-non-overlap
+        then: The dispatch engine does not start a second reconciliation pass before the running pass
+          completes
+        when: Another reconciliation interval elapses
+      - given: The dispatch engine is stopping while one or more reconciliation passes are in flight
+        id: ac-stop-awaits-reconciliation
+        then: No in-flight reconciliation pass continues mutating dispatch state after stop has returned
+        when: Stop completes
     tags: []
     features:
       - _ulid: 01KKFY93PW5HZ7V21GGJMMZENW
@@ -8869,6 +8887,14 @@ features:
                       as user/operator data.
                     when: The entry is not equal to, contained by, or otherwise associated with a protected active,
                       in-flight, provisioning, or non-closed workspace artifact.
+                  - given: Cleanup repeatedly preserves protected dispatch artifacts during normal daemon reconciliation
+                    id: ac-preservation-diagnostics-quiet-by-default
+                    then: Preservation diagnostics are not emitted for each preserved artifact
+                    when: detailed cleanup diagnostics have not been explicitly enabled
+                  - given: Detailed cleanup diagnostics have been explicitly enabled
+                    id: ac-preservation-diagnostics-opt-in
+                    then: A preservation diagnostic identifies the cleanup surface, artifact, and preservation reason
+                    when: Cleanup preserves a protected dispatch artifact
                 tags: []
                 requirements:
                   - _ulid: 01KKK7R64BHWCKAV51ESXQ0NAZ
@@ -10839,6 +10865,10 @@ features:
         then: The command follows daemon lifecycle semantics rather than forcing direct shadow mode
         when: The user runs an explicit daemon management command such as kspec serve start, stop, status,
           or restart
+      - given: Daemon proxying is suppressed for a command running inside a daemon command API request
+        id: ac-daemon-internal-proxy-suppression-is-scoped
+        then: They continue to follow the normal daemon detection, force-direct, and force-proxy rules
+        when: Other CLI commands evaluate proxy mode outside that request
     tags: []
     requirements:
       - _ulid: 01KMMB3SK47YTSFKAPPQ0899BM
@@ -10917,6 +10947,11 @@ features:
             id: ac-no-cache-outside-daemon
             then: Data is loaded from disk and no cache lookup is attempted
             when: Data loading functions are called
+          - given: The daemon command API is executing a CLI command inside the daemon process
+            id: ac-no-recursive-command-proxy
+            then: The command is executed directly in the current daemon request instead of posting back to the
+              command API
+            when: That command evaluates whether it should proxy through the daemon
         tags: []
         created: 2026-03-26T05:50:40.740Z
         notes: []

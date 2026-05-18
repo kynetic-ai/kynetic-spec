@@ -2700,6 +2700,16 @@ modules:
               events in memory for inspection; older events are dropped
             when: |
               A consumer queries recent events (API or UI)
+          - given: The event bus has accepted more related events than its retained recent-event history can
+              hold
+            id: ac-retained-event-lineage-is-bounded
+            then: Event-lineage state for aged-out events no longer accumulates beyond the retained recent-event
+              lifetime
+            when: Earlier related events age out of the retained recent-event history
+          - given: Events from a source have completed delivery to matching subscribers
+            id: ac-completed-source-ordering-is-released
+            then: Source-ordering state for the completed delivery no longer accumulates over daemon lifetime
+            when: No later event delivery for that source depends on the completed delivery
         tags: []
         created: 2026-03-18T05:31:44.276Z
         notes: []
