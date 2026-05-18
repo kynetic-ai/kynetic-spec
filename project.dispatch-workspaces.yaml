@@ -17521,11 +17521,11 @@ workspaces:
     canonical_branch: dispatch/task/task-update-daemon-dispatch-hardening-specs/01krympa
     canonical_branch_head: f688b032ae42aaaac1941fb340c8d5edfe5765e0
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-18T23:41:47.826Z
+      updated_at: 2026-05-18T23:45:07.049Z
     health:
       status: healthy
       issues: []
@@ -17539,16 +17539,16 @@ workspaces:
       target_branch: dev
       target_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
       updated_at: 2026-05-18T23:41:47.826Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KRYMPAFQZ7DGGC2EX51C187X"
     task_slug: task-update-daemon-dispatch-hardening-specs
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-18T23:45:07.049Z
       last_active_at: 2026-05-18T23:24:58.289Z
       last_reconciled_at: 2026-05-18T23:44:01.737Z
       created_at: 2026-05-18T23:24:22.832Z
-      updated_at: 2026-05-18T23:44:01.737Z
+      updated_at: 2026-05-18T23:45:07.049Z
     workspace_id: dispatch-workspace-01KRYMPAFQZ7DGGC2EX51C187X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
