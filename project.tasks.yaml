@@ -29331,8 +29331,14 @@
   type: task
   spec_ref: "@daemon-entity-cache"
   plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Dispatch workspace provisioning failed: Cannot adopt branch \"dev\" for task
+      @01KRYMPAFQZ7DGGC2EX51C187X: it is currently checked out in the main repository working tree
+      (/home/chapel/Projects/kynetic-spec-dispatch). This usually means submission linkage was
+      captured from the wrong checkout.. Suggested action: Repair the task's submission linkage to
+      reference the correct task branch: kspec task set @01KRYMPAFQZ7DGGC2EX51C187X
+      --submission-linkage"
   depends_on: []
   priority: 1
   tags:
