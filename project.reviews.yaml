@@ -215675,3 +215675,29 @@ reviews:
     created_at: 2026-05-18T22:10:14.299Z
     updated_at: 2026-05-18T22:13:00.719Z
     notes: []
+  - _ulid: 01KRYJNHZ3S90HYPZ9SEEGJ8J8
+    slugs: []
+    title: "Plan re-review: Daemon Dispatch OOM Hardening Spec Alignment (cycle 2)"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRYJNHZ3H4VZFQE657DJ8HNN
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-18T22:17:54.403Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-18T22:17:54.403Z
+    updated_at: null
+    notes: []
