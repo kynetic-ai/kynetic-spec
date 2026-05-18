@@ -91,8 +91,12 @@ description: >-
 spec_ref: "@api-contract"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer helper. Review @01KRYMDA approved structured
+  task-storage incompatibility responses for daemon API routes, with targeted route/helper tests,
+  typecheck, and validate passing. Full npm test exposed pre-existing cli-no-daemon failure tracked
+  separately as @01KRYN42.
 depends_on:
   - "@task-daemon-cache-task-storage-incompatibility-suppression"
 context: []
@@ -160,8 +164,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-18T22:48:26.295Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer helper. Review @01KRYMDA approved structured task-storage
+          incompatibility responses for daemon API routes, with targeted route/helper tests,
+          typecheck, and validate passing. Full npm test exposed pre-existing cli-no-daemon failure
+          tracked separately as @01KRYN42.
+        previous: null
+      completed_at:
+        new: 2026-05-18T23:02:25.931Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-18T23:02:25.939Z
 created_at: 2026-05-14T21:06:44.981Z
 started_at: 2026-05-18T22:02:02.852Z
 submitted_at: 2026-05-18T22:39:59.719Z
+completed_at: 2026-05-18T23:02:25.931Z
 todos: []
 automation: eligible
