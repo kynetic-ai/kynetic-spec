@@ -234,8 +234,43 @@ export interface TaskListFilters {
 }
 
 /**
+ * Stable code for the legacy (kynetic < 1.1) monolithic task-storage failure.
+ *
+ * Identifies projects pinned to the pre-1.1 manifest version without
+ * task_storage.format: "split". The condition is deterministic: it can only
+ * be cleared by running `kspec task migrate` or upgrading the manifest.
+ */
+export const TASK_STORAGE_LEGACY_REMOVED_CODE = "legacy_task_storage_removed";
+
+/**
+ * Stable code for the split-but-unmigrated task-storage failure.
+ *
+ * Identifies projects whose manifest configures the split task-storage format
+ * while project.tasks.yaml still contains unmigrated monolithic entries. The
+ * condition is deterministic: it can only be cleared by running
+ * `kspec task migrate` or restoring a compatible task-storage state.
+ */
+export const TASK_STORAGE_SPLIT_UNMIGRATED_CODE = "split_task_storage_unmigrated";
+
+/**
+ * Codes that indicate a deterministic task-storage compatibility/migration
+ * problem. These conditions will not resolve by retrying — they require a
+ * project-state change (migration, manifest update). Callers that observe
+ * an error with one of these codes can suspend retry loops until project
+ * state changes.
+ */
+export const DETERMINISTIC_TASK_STORAGE_INCOMPATIBILITY_CODES: ReadonlySet<string> = new Set([
+  TASK_STORAGE_LEGACY_REMOVED_CODE,
+  TASK_STORAGE_SPLIT_UNMIGRATED_CODE,
+]);
+
+/**
  * Error thrown by TaskDataManager operations.
  * Includes descriptive messages and suggested actions per @trait-error-guidance.
+ *
+ * Stable error codes (see `code`) identify deterministic compatibility or
+ * migration states so callers can drive bounded degraded-state behavior
+ * without confusing them with transient mutation errors.
  */
 // AC: @trait-error-guidance ac-1, ac-2
 export class TaskDataManagerError extends Error {
@@ -243,13 +278,34 @@ export class TaskDataManagerError extends Error {
   readonly suggestion?: string;
   /** The field or value that failed, if applicable */
   readonly field?: string;
+  /** Stable error code identifying a deterministic failure class. */
+  readonly code?: string;
 
-  constructor(message: string, options?: { suggestion?: string; field?: string }) {
+  constructor(message: string, options?: { suggestion?: string; field?: string; code?: string }) {
     super(message);
     this.name = "TaskDataManagerError";
     this.suggestion = options?.suggestion;
     this.field = options?.field;
+    this.code = options?.code;
   }
+}
+
+/**
+ * Type guard for TaskDataManagerError instances carrying a deterministic
+ * task-storage incompatibility code (legacy removed, split unmigrated).
+ *
+ * Generic TaskDataManagerError cases — task-not-found, validation, mutation —
+ * return false because they may resolve on retry and should not feed into
+ * bounded degraded-state behavior.
+ */
+export function isDeterministicTaskStorageIncompatibility(
+  err: unknown,
+): err is TaskDataManagerError & { code: string } {
+  return (
+    err instanceof TaskDataManagerError &&
+    typeof err.code === "string" &&
+    DETERMINISTIC_TASK_STORAGE_INCOMPATIBILITY_CODES.has(err.code)
+  );
 }
 
 /**
@@ -1043,6 +1099,7 @@ export function resolveTaskDataManager(ctx: KspecContext): TaskDataManager {
         suggestion:
           'Run "kspec task migrate" to convert to per-task directory storage, then tasks will work normally.',
         field: "task_storage.format",
+        code: TASK_STORAGE_LEGACY_REMOVED_CODE,
       },
     );
   }
