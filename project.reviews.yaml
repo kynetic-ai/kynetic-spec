@@ -215443,6 +215443,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRYJ8ZAFTW37KFDWAEVF195P
         timestamp: 2026-05-18T22:11:04.033Z
+      - _ulid: 01KRYJ9DWWW2YTRN57GT0NPJC1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRYJ9BYPYYCNF1ZF91ATA6HS
+        timestamp: 2026-05-18T22:11:17.020Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -215489,7 +215496,24 @@ reviews:
               ids in Covers/validation."
             created_at: 2026-05-18T22:11:02.095Z
         kind: blocker
+      - _ulid: 01KRYJ9BYPYYCNF1ZF91ATA6HS
+        anchor:
+          type: structured
+          ref: "@task-validate-daemon-dispatch-oom-hardening-slice"
+          section: tasks
+        entries:
+          - _ulid: 01KRYJ9BYQPEP7FYDD4VCG4DHV
+            author: Jacob Chapel
+            body: "The Covers line is not machine-checkable and includes non-existent or shorthand references:
+              '@daemon-entity-cache task-storage incompatibility ACs', '@agent-invocation-lifecycle
+              daemon-proxy isolation ACs', '@dispatch-workspace-cleanup-policy preservation
+              diagnostic ACs', and @daemon-command-api
+              ac-task-storage-incompatibility-conflict-response. Covers lines must name exact AC ids
+              that exist. Replace the shorthand with the exact AC ids and use @api-contract for
+              task-storage API response ACs."
+            created_at: 2026-05-18T22:11:15.031Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-18T22:10:14.299Z
-    updated_at: 2026-05-18T22:11:02.095Z
+    updated_at: 2026-05-18T22:11:15.031Z
     notes: []
