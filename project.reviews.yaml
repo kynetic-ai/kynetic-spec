@@ -215825,3 +215825,29 @@ reviews:
     created_at: 2026-05-18T22:17:54.403Z
     updated_at: 2026-05-18T22:18:58.254Z
     notes: []
+  - _ulid: 01KRYMDAT9QBCB646H1TEBKKSA
+    slugs: []
+    title: Review task-daemon-api-task-storage-incompatibility-errors
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRYMDAT9ERG78SRJAFMN8FGN
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-18T22:48:22.089Z
+    examined_commit: 6dd38eec3f221a642d9c06febaf0aaa106f40ff3
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRM50CKNEPS7EKBZ8DP5W639"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-18T22:48:22.089Z
+    updated_at: null
+    notes: []
