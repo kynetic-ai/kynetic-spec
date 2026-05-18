@@ -50197,7 +50197,7 @@ runs:
     completed_at: 2026-05-18T23:40:22.077Z
   - _ulid: 01KRYQFG92C18Z49PEDTSX95PR
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50212,7 +50212,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-18T23:42:17.138Z
-        completed_at: 2026-05-18T23:42:17.138Z
+        completed_at: 2026-05-18T23:42:29.617Z
+        notes: "Friction points: 1) Spec-only review across several owning specs required repeated manual
+          kspec item get checks and manual comparison against the task Covers list; a concise
+          covers-verification helper would reduce reviewer busywork. 2) Full npm test ran against an
+          older detached snapshot and reproduced a failure already fixed on current dev, requiring
+          manual ancestry and search triage before approval; the review flow could surface when a
+          snapshot is an ancestor of target and target already contains a stabilization/fix. 3)
+          Strict kspec validate produced broad historical warning noise, while the task-specific
+          required command passed; reviewers need to record that distinction carefully to avoid
+          blocking unrelated work."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-18T23:42:29.617Z
+        completed_at: 2026-05-18T23:42:29.617Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-18T23:41:58.946Z
