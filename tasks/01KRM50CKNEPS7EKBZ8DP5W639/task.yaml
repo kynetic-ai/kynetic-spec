@@ -91,7 +91,7 @@ description: >-
 spec_ref: "@api-contract"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-daemon-cache-task-storage-incompatibility-suppression"
@@ -102,6 +102,14 @@ tags:
   - api
   - migration
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-daemon-api-task-storage-incompatibility-errors/01krm50c
+  captured_at: 2026-05-18T22:39:59.714Z
+  commit: 6dd38eec3f221a642d9c06febaf0aaa106f40ff3
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KRYHQME0WM007ZD7J7XV9XT2
 history:
   - author: Jacob Chapel
@@ -124,7 +132,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-18T22:02:02.852Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-daemon-api-task-storage-incompatibility-errors/01krm50c
+          captured_at: 2026-05-18T22:39:59.714Z
+          commit: 6dd38eec3f221a642d9c06febaf0aaa106f40ff3
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-18T22:39:59.719Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-18T22:39:59.719Z
 created_at: 2026-05-14T21:06:44.981Z
 started_at: 2026-05-18T22:02:02.852Z
+submitted_at: 2026-05-18T22:39:59.719Z
 todos: []
 automation: eligible
