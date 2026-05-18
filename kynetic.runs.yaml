@@ -50083,7 +50083,7 @@ runs:
     completed_at: 2026-05-18T22:03:28.965Z
   - _ulid: 01KRYNBAVDHYWJQ88H2EG2RTGS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50097,7 +50097,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-18T23:05:05.855Z
-        completed_at: 2026-05-18T23:05:05.855Z
+        completed_at: 2026-05-18T23:05:27.974Z
+        notes: "High-confidence success: the detached reviewer merge helper completed the manual_merge path
+          cleanly after review approval and refreshed the occupied dev worktree. This is already
+          covered by existing detached-reviewer merge-helper success observations and the
+          implemented @detached-reviewer-merge-helper feature. High-confidence success: the
+          review-gates pre-existing failure triage worked as intended: targeted tests and typecheck
+          passed, full npm test exposed a cli-no-daemon failure, the same focused test failed on
+          dev, and follow-up @01KRYN42 was created instead of blocking unrelated work.
+          High-confidence friction: full npm test did not exit promptly after the cli-no-daemon
+          failure and required manual process-group termination; related daemon/test flakiness is
+          already tracked by observations including @01KNMHCM and @01KRYGMB, and the concrete
+          failing assertion is tracked by @01KRYN42."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-18T23:05:27.974Z
+        completed_at: 2026-05-18T23:05:27.974Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-18T23:04:45.165Z
