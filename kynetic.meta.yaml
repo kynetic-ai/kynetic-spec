@@ -18975,6 +18975,40 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-18T22:46:43.816Z
+  - _ulid: 01KRYP8MQHFF0N30XKDCGM5JCE
+    type: friction
+    content: Auto-started daemon PID file is written before listen() succeeds
+      (packages/daemon/src/server.ts:590 vs awaitListenSuccess at :1006). Any test that reads the
+      PID file and then inspects the process (ps -p, signal probe, etc.) races with bind-failure
+      exits — the file persists after the daemon has already exited. Surfaced via
+      @task-stabilize-cli-no-daemon-runtime-pid-assertion; daemon.connection.json is the only
+      on-disk write gated on listen success.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-18T23:20:45.553Z
+  - _ulid: 01KRYP8N0Q74EG59M5W7E10D6Q
+    type: friction
+    content: "Test-written kspec.config.yaml files that omit daemon.port silently use default 3456,
+      which collides with the dispatch host daemon when tests run under a daemon-hosted session.
+      Caused @task-stabilize-cli-no-daemon-runtime-pid-assertion. Pattern: any test that writes a
+      kspec.config.yaml and exercises auto-start must allocate an ephemeral port
+      (net.createServer().listen(0)) and pin it, mirroring the sibling test in
+      tests/cli-no-daemon.test.ts that already does this."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-18T23:20:45.847Z
+  - _ulid: 01KRYP8N885BQSNPMZD37BF93Z
+    type: success
+    content: For flaky-test triage, comparing the failing test against passing sibling tests in the same
+      file surfaces the missing pattern fast. tests/cli-no-daemon.test.ts already had a working
+      ephemeral-port + connection-metadata wait pattern in one test; lifting it into the failing
+      test was a near-mechanical fix once the diff was clear.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-18T23:20:46.089Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
