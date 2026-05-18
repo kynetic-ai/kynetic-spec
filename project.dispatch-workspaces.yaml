@@ -17008,18 +17008,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-stabilize-cli-no-daemon-runtime-pid-assertion/01kryn42
-    canonical_branch_head: 71dba4f3db7432403336e5edb0fc6fff97be5977
+    canonical_branch_head: 9a922788091d30468d33c6ae25c62e0cdfc76ad6
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-18T23:01:01.083Z
+      updated_at: 2026-05-18T23:19:47.574Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-18T23:01:30.388Z
+      updated_at: 2026-05-18T23:19:47.574Z
     integration:
       status: pending
       detail: null
@@ -17027,7 +17027,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 71dba4f3db7432403336e5edb0fc6fff97be5977
-      updated_at: 2026-05-18T23:01:01.083Z
+      updated_at: 2026-05-18T23:19:47.574Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KRYN42AK2DTVGZBFDX57EV1H"
@@ -17035,9 +17035,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-18T23:01:30.388Z
-      last_reconciled_at: 2026-05-18T23:01:30.388Z
+      last_reconciled_at: 2026-05-18T23:19:47.574Z
       created_at: 2026-05-18T23:01:01.083Z
-      updated_at: 2026-05-18T23:01:30.388Z
+      updated_at: 2026-05-18T23:19:47.574Z
     workspace_id: dispatch-workspace-01KRYN42AK2DTVGZBFDX57EV1H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
