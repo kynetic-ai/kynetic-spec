@@ -1,0 +1,27 @@
+_ulid: 01KRYN42AK2DTVGZBFDX57EV1H
+slugs:
+  - task-stabilize-cli-no-daemon-runtime-pid-assertion
+title: Stabilize cli-no-daemon runtime PID assertion
+type: bug
+description: "During review of @01KRM50CKNEPS7EKBZ8DP5W639, full npm test failed in
+  tests/cli-no-daemon.test.ts: 'KSPEC_NO_DAEMON auto-starts the daemon with the configured node
+  runtime even when the CLI runs under bun'. The failure reproduces on the task snapshot and on dev
+  with the same error: Command failed: ps -p <pid> -o command=. The reviewed branch does not touch
+  tests/cli-no-daemon.test.ts or CLI daemon startup code, so this appears pre-existing/flaky.
+  Investigate why the auto-started daemon process exits before the test can inspect its command
+  line, then update the test or daemon startup behavior so npm test is deterministic."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - cli
+vcs_refs: []
+created_at: 2026-05-18T23:00:47.059Z
+todos: []
+automation: eligible
