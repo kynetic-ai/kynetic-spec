@@ -29384,6 +29384,7 @@
   created_at: 2026-05-18T22:53:18.863Z
   started_at: 2026-05-18T23:03:02.956Z
   submitted_at: 2026-05-18T23:03:10.285Z
+  automation: eligible
 - _ulid: 01KRYMPD1NE0G47F2QVQF62TYM
   slugs:
     - task-validate-daemon-dispatch-oom-hardening-slice
