@@ -215464,6 +215464,13 @@ reviews:
           kind: question
           thread_ulid: 01KRYJA66X1KF42A8MNRVTJCVR
         timestamp: 2026-05-18T22:11:43.898Z
+      - _ulid: 01KRYJAKVH8YCK8E0QJR8GPHH8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRYJAHV4SHZBKWA09W5YZSAQ
+        timestamp: 2026-05-18T22:11:55.889Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -215557,7 +215564,21 @@ reviews:
               invocation ACs already own that behavior."
             created_at: 2026-05-18T22:11:41.918Z
         kind: question
+      - _ulid: 01KRYJAHV4SHZBKWA09W5YZSAQ
+        anchor:
+          type: structured
+          ref: "@task-update-daemon-dispatch-hardening-specs"
+          section: tasks
+        entries:
+          - _ulid: 01KRYJAHV5NGSGPSX0PD127C6K
+            author: Jacob Chapel
+            body: The spec-update task lists many sequential 'kspec item ac add' mutations. Project convention
+              requires batch mutations for 2+ sequential kspec writes, so make the How section say
+              to use kspec batch with the AC additions, then inspect each owning spec with kspec
+              item get.
+            created_at: 2026-05-18T22:11:53.829Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-18T22:10:14.299Z
-    updated_at: 2026-05-18T22:11:41.918Z
+    updated_at: 2026-05-18T22:11:53.829Z
     notes: []
