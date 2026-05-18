@@ -49626,7 +49626,7 @@ plans:
 
       The work is intentionally scoped to behavioral contracts that prevent deterministic project
       incompatibility or daemon-internal command execution from amplifying into crash loops,
-      recursive command routing, unbounded in-memory retention, or repeated diagnostic noise.
+      recursive command routing, unbounded long-running memory growth, or repeated diagnostic noise.
 
 
       ## Specs
@@ -49657,33 +49657,33 @@ plans:
           dispatch hardening work from this plan.
 
           Why: The current specs already cover graceful task-cache degradation for
-          deterministic task-storage incompatibility, but the incident also exposed
-          adjacent stability contracts that were either implicit or only partially
-          described: event-bus metadata retention, non-overlapping periodic dispatch
-          reconciliation, command API recursion suppression, agent invocation daemon
-          isolation, cleanup diagnostic log gating, and HTTP/API classification for
-          incompatible task storage. These contracts must be spec-owned before the
-          implementation tasks are considered complete.
+          deterministic task-storage incompatibility, and @api-contract already owns
+          the task-storage incompatibility API response contract through existing ACs.
+          This plan covers the adjacent stability contracts exposed by the same
+          incident: bounded event lineage/source-ordering lifetime, non-overlapping
+          periodic dispatch reconciliation, command API recursion suppression, agent
+          invocation daemon isolation, and cleanup diagnostic log gating.
 
           What: Add the following ACs exactly, unless the same behavioral contract
           already exists under an equivalent AC id.
 
           1. Add to @dispatch-event-envelope:
 
-             ac-bounded-correlation-metadata:
-               given: The event bus has processed correlated events beyond its recent
-                 event retention window
-               when: Older correlated events have aged out of the retained recent
-                 event window
-               then: Correlation-depth metadata for the aged-out events is not
-                 retained in memory
+             ac-retained-event-lineage-is-bounded:
+               given: The event bus has accepted more related events than its retained
+                 recent-event history can hold
+               when: Earlier related events age out of the retained recent-event
+                 history
+               then: Event-lineage state for aged-out events no longer accumulates
+                 beyond the retained recent-event lifetime
 
-             ac-settled-source-delivery-release:
-               given: Events from a source have finished delivery to matching
+             ac-completed-source-ordering-is-released:
+               given: Events from a source have completed delivery to matching
                  subscribers
-               when: No newer event from that source is waiting on the same delivery
-                 chain
-               then: Delivery bookkeeping for that source is released from memory
+               when: No later event delivery for that source depends on the completed
+                 delivery
+               then: Source-ordering state for the completed delivery no longer
+                 accumulates over daemon lifetime
 
           2. Add to @agent-dispatch-engine:
 
@@ -49731,8 +49731,7 @@ plans:
                given: Invocation timeout, failure, or retry-exhaustion handling writes
                  lifecycle notes or task blocks through kspec helper commands
                when: Those helper commands run
-               then: They run without daemon proxying while preserving invocation
-                 mutation-safety environment
+               then: They run without daemon proxying
 
           6. Add to @dispatch-workspace-cleanup-policy:
 
@@ -49749,30 +49748,19 @@ plans:
                then: A preservation diagnostic identifies the cleanup surface, artifact,
                  and preservation reason
 
-          7. Add to @daemon-command-api or the existing API error contract that owns
-             task route responses:
-
-             ac-task-storage-incompatibility-conflict-response:
-               given: A project uses task storage that requires migration or is
-                 incompatible with the running daemon
-               when: A task API request cannot be served because of that compatibility
-                 state
-               then: The response uses HTTP 409 with error code
-                 task_storage_incompatible and recovery guidance for migration
-
-          How: Apply the AC additions with `kspec item ac add` commands, then verify
-          each owning spec with `kspec item get`. If an AC already exists with the same
-          behavior but a different id, prefer updating the task Covers lines to the
-          existing id over creating a duplicate.
+          How: Apply the AC additions with one `kspec batch` mutation that contains the
+          required `kspec item ac add` commands, then verify each owning spec with
+          `kspec item get`. If an AC already exists with the same behavior but a
+          different id, prefer updating the task Covers lines to the existing id over
+          creating a duplicate.
 
           Testing: Run `kspec validate --refs --warnings-ok` and inspect any existing
           non-blocking warnings separately from these spec additions.
 
-          Covers: @dispatch-event-envelope ac-bounded-correlation-metadata,
-          ac-settled-source-delivery-release; @agent-dispatch-engine
+          Covers: @dispatch-event-envelope ac-retained-event-lineage-is-bounded,
+          ac-completed-source-ordering-is-released; @agent-dispatch-engine
           ac-reconcile-non-overlap, ac-stop-awaits-reconciliation;
-          @daemon-command-api ac-no-recursive-command-proxy,
-          ac-task-storage-incompatibility-conflict-response; @cli-daemon-proxy
+          @daemon-command-api ac-no-recursive-command-proxy; @cli-daemon-proxy
           ac-daemon-internal-proxy-suppression-is-scoped;
           @agent-invocation-lifecycle
           ac-invocation-commands-do-not-proxy-to-supervising-daemon,
@@ -49781,47 +49769,46 @@ plans:
           ac-preservation-diagnostics-quiet-by-default,
           ac-preservation-diagnostics-opt-in.
 
-      - title: Bound event bus metadata retention
-        slug: task-bound-event-bus-metadata-retention
+      - title: Bound event bus lineage and source-ordering lifetime
+        slug: task-bound-event-bus-lineage-and-source-ordering-lifetime
         priority: 1
         tags: [dispatch, event-bus, memory]
         spec_ref: "@dispatch-event-envelope"
         depends_on:
           - "@task-update-daemon-dispatch-hardening-specs"
         description: |
-          Bound EventBus metadata retention so long-running daemon processes do not
-          retain per-correlation or per-source bookkeeping after the corresponding
-          observable events/deliveries are no longer active.
+          Bound EventBus lineage and source-ordering lifetime so long-running daemon
+          processes do not keep state after the corresponding observable events and
+          deliveries are no longer active.
 
-          Why: The event bus already retains only a bounded recent-event ring buffer,
-          but the daemon/dispatch OOM incident showed that adjacent bookkeeping must
-          follow the same lifetime. High-cardinality source ids and correlation ids
-          should not accumulate indefinitely across daemon lifetime.
+          Why: The event bus already retains only a bounded recent-event history, but
+          the daemon/dispatch OOM incident showed that adjacent ordering and lineage
+          state must follow the same lifetime. High-cardinality source ids and related
+          event chains should not accumulate indefinitely across daemon lifetime.
 
           What:
-          - In `src/agent-runtime/event-bus.ts`, expose the ring buffer capacity
-            through a public accessor instead of reading private fields during clear.
-          - After each accepted event enters the recent-event buffer, prune
-            chain-depth/correlation metadata whose correlation ids no longer appear in
-            retained recent events.
-          - After subscriber delivery settles for a source, remove the per-source
-            delivery-chain entry if no newer delivery for that source has replaced it.
-          - Preserve per-source sequential delivery while releasing only settled,
-            superseded bookkeeping.
-          - Add regression coverage in `tests/event-bus.test.ts` for settled
-            source-chain release and bounded retained chain-depth entries.
+          - In `src/agent-runtime/event-bus.ts`, expose the recent-event capacity
+            without relying on private field access during clear.
+          - After each accepted event enters the recent-event history, release lineage
+            state whose related events no longer appear in retained recent events.
+          - After subscriber delivery settles for a source, release completed
+            source-ordering state when no newer delivery for that source depends on it.
+          - Preserve per-source sequential delivery while releasing only completed,
+            superseded ordering state.
+          - Add regression coverage in `tests/event-bus.test.ts` for completed
+            source-ordering release and bounded retained event-lineage state.
 
-          How: Keep the behavior independent of the concrete RingBuffer
-          implementation. Use the recent events exposed by the bus as the source of
-          truth for retained correlation ids, and only clear a settled source chain if
-          the map still points at that exact chain.
+          How: Use the EventBus retained recent events as the source of truth for which
+          event lineage remains observable. Only release completed source-ordering
+          state if no newer source delivery has replaced or depends on that completion.
 
           Testing: Run
           `npm test -- --run tests/event-bus.test.ts`, then include this test in the
           full focused hardening slice with the other tasks.
 
           Covers: @dispatch-event-envelope ac-6,
-          ac-bounded-correlation-metadata, ac-settled-source-delivery-release.
+          ac-retained-event-lineage-is-bounded,
+          ac-completed-source-ordering-is-released.
 
       - title: Prevent overlapping periodic dispatch reconciliation
         slug: task-prevent-overlapping-dispatch-reconciliation
@@ -49934,8 +49921,9 @@ plans:
             for the helper-command assertions.
 
           How: Do not remove `KSPEC_SESSION_ID` injection for spawned agents and do
-          not weaken the shadow mutation lock behavior. The daemon-proxy isolation is
-          additive to the existing invocation environment.
+          not weaken the shadow mutation lock behavior. Daemon-proxy isolation is
+          additive to the existing invocation environment; mutation-lock preservation
+          remains an implementation invariant rather than a new AC in this plan.
 
           Testing: Run
           `npm test -- --run tests/invocation-daemon-isolation.test.ts`.
@@ -49982,71 +49970,18 @@ plans:
           ac-preservation-diagnostics-quiet-by-default,
           ac-preservation-diagnostics-opt-in.
 
-      - title: Standardize incompatible task-storage API responses
-        slug: task-standardize-task-storage-incompatibility-api
-        priority: 2
-        tags: [daemon, api, task-storage, migration]
-        spec_ref: "@daemon-entity-cache"
-        depends_on:
-          - "@task-update-daemon-dispatch-hardening-specs"
-        description: |
-          Standardize task API behavior when a registered project uses task storage
-          that requires migration or is incompatible with the running daemon.
-
-          Why: The original incident was triggered by a deterministic
-          TaskDataManagerError for a project using legacy monolithic task storage.
-          Existing entity-cache specs already require the tasks domain to become
-          degraded, suppress repeated unchanged failure reports, recheck after
-          relevant task-storage changes, and recover after migration. The remaining
-          API-facing contract is that task routes should not misclassify the condition
-          as not_found or repeatedly reload/log the same deterministic failure.
-
-          What:
-          - Audit task-serving API routes and command/daemon helpers that catch
-            `TaskDataManagerError` or fall back from cache to disk reads.
-          - For deterministic task-storage compatibility or migration-required
-            failures, return HTTP 409 with `error: "task_storage_incompatible"` and
-            migration guidance instead of generic 404/not_found or uncaught errors.
-          - Ensure the tasks cache domain remains degraded for unchanged incompatible
-            state and re-evaluates only when relevant task-storage project state
-            changes.
-          - Add regression tests for at least one list/summary task API path and one
-            detail/mutation-adjacent task path that currently risks falling through to
-            disk loading or not_found classification.
-          - Verify other project domains remain available while the tasks domain is
-            degraded.
-
-          How: Reuse the existing `TaskDataManagerError` classification rather than
-          matching arbitrary error messages broadly. Keep fallback-to-disk behavior for
-          transient cache errors; only deterministic storage incompatibility should map
-          to the standardized 409 response.
-
-          Testing: Run focused daemon entity-cache/API tests that cover task storage
-          incompatibility, then run the focused hardening slice:
-          `npm test -- --run tests/daemon-entity-cache.test.ts tests/daemon-command-api.test.ts`.
-          Also run `kspec validate --refs --warnings-ok` after adding AC annotations.
-
-          Covers: @daemon-entity-cache
-          ac-task-storage-incompatibility-degraded-state,
-          ac-task-storage-incompatibility-stable-reporting,
-          ac-task-storage-incompatibility-rechecked-after-storage-change,
-          ac-task-storage-incompatibility-recovers-after-migration,
-          ac-task-storage-incompatibility-persists-when-unresolved,
-          ac-manifest-task-storage-settings-affect-tasks-domain;
-          @daemon-command-api ac-task-storage-incompatibility-conflict-response.
-
       - title: Validate daemon dispatch OOM hardening slice
         slug: task-validate-daemon-dispatch-oom-hardening-slice
         priority: 2
         tags: [validation, daemon, dispatch]
         spec_ref: "@daemon-entity-cache"
         depends_on:
-          - "@task-bound-event-bus-metadata-retention"
+          - "@task-bound-event-bus-lineage-and-source-ordering-lifetime"
           - "@task-prevent-overlapping-dispatch-reconciliation"
           - "@task-suppress-recursive-daemon-command-proxying"
           - "@task-disable-daemon-proxying-inside-agent-invocations"
           - "@task-gate-cleanup-preservation-diagnostics"
-          - "@task-standardize-task-storage-incompatibility-api"
+          - "@task-daemon-api-task-storage-incompatibility-errors"
         description: |
           Run the integrated validation slice for the daemon/dispatch OOM hardening
           work and verify the implementation, spec annotations, and build are stable.
@@ -50054,13 +49989,21 @@ plans:
           Why: The incident involved multiple daemon subsystems interacting under
           long-running load. Individual task tests are necessary but not sufficient;
           the final validation must exercise the affected daemon, dispatch, event-bus,
-          invocation, cleanup, and task-storage surfaces together.
+          invocation, cleanup, and task-storage API surfaces together. The
+          task-storage API response work is owned by the existing
+          @task-daemon-api-task-storage-incompatibility-errors task, so this validation
+          task depends on that task instead of duplicating its implementation scope.
 
           What:
           - Ensure every new regression test has accurate `// AC:` annotations for
-            the exact AC ids added by this plan.
+            the exact AC ids added or referenced by this plan.
+          - Confirm @task-daemon-api-task-storage-incompatibility-errors is complete
+            before claiming @api-contract task-storage incompatibility API coverage in
+            this validation task.
           - Run the focused test slice:
             `npm test -- --run tests/invocation-daemon-isolation.test.ts tests/event-bus.test.ts tests/agent-dispatch-engine.test.ts tests/dispatch-workspace-cleanup.test.ts tests/dispatch-workspace-registry.test.ts tests/daemon-command-api.test.ts tests/cli-daemon-proxy.test.ts tests/daemon-entity-cache.test.ts`
+          - Run the daemon API task-storage incompatibility route tests from
+            @task-daemon-api-task-storage-incompatibility-errors.
           - Run `npm run build`.
           - Run `git diff --check`.
           - Run `kspec validate --refs --warnings-ok` and inspect whether any warnings
@@ -50075,15 +50018,31 @@ plans:
           Testing: This task is the validation task; record exact command outputs or
           failure summaries in the task notes.
 
-          Covers: @daemon-entity-cache task-storage incompatibility ACs;
-          @dispatch-event-envelope ac-bounded-correlation-metadata,
-          ac-settled-source-delivery-release; @agent-dispatch-engine
+          Covers: @daemon-entity-cache
+          ac-task-storage-incompatibility-degraded-state,
+          ac-task-storage-incompatibility-stable-reporting,
+          ac-task-storage-incompatibility-rechecked-after-storage-change,
+          ac-task-storage-incompatibility-recovers-after-migration,
+          ac-task-storage-incompatibility-persists-when-unresolved,
+          ac-manifest-task-storage-settings-affect-tasks-domain;
+          @api-contract ac-task-storage-incompatibility-conflict-status,
+          ac-task-storage-incompatibility-error-code,
+          ac-task-storage-incompatibility-guidance,
+          ac-task-storage-incompatibility-not-not-found,
+          ac-task-storage-incompatibility-field-context,
+          ac-task-storage-incompatibility-cache-domain-context,
+          ac-task-storage-incompatibility-cache-state-context;
+          @dispatch-event-envelope ac-retained-event-lineage-is-bounded,
+          ac-completed-source-ordering-is-released; @agent-dispatch-engine
           ac-reconcile-non-overlap, ac-stop-awaits-reconciliation;
-          @daemon-command-api ac-no-recursive-command-proxy,
-          ac-task-storage-incompatibility-conflict-response; @cli-daemon-proxy
+          @daemon-command-api ac-no-recursive-command-proxy; @cli-daemon-proxy
           ac-daemon-internal-proxy-suppression-is-scoped;
-          @agent-invocation-lifecycle daemon-proxy isolation ACs;
-          @dispatch-workspace-cleanup-policy preservation diagnostic ACs.
+          @agent-invocation-lifecycle
+          ac-invocation-commands-do-not-proxy-to-supervising-daemon,
+          ac-invocation-lifecycle-helper-commands-do-not-proxy;
+          @dispatch-workspace-cleanup-policy
+          ac-preservation-diagnostics-quiet-by-default,
+          ac-preservation-diagnostics-opt-in.
       ```
 
 
@@ -50091,24 +50050,27 @@ plans:
 
 
       - This is an existing-spec update plan. It intentionally has no structured new
-        spec items in `## Specs`; all behavioral changes are AC additions to existing
-        specs through the first task.
+        spec items in `## Specs`; all new behavioral changes are AC additions to
+        existing specs through the first task.
       - The implementation tasks correspond to the current uncommitted hardening diff
         in `src/agent-runtime/event-bus.ts`, `src/agent-runtime/dispatch.ts`,
         `src/agent-runtime/invocation.ts`, `src/agent-runtime/workspace.ts`,
         `src/cli/daemon-proxy.ts`, `packages/daemon/src/routes/command.ts`, and their
         related tests.
-      - The task-storage incompatibility API task is listed separately because the
-        original incident began with legacy task storage. It closes the API-facing
-        contract after the cache-level degraded/stable-reporting ACs that already
-        exist on @daemon-entity-cache.
+      - The task-storage incompatibility API response contract is not duplicated here:
+        @api-contract already owns the ACs, and
+        @task-daemon-api-task-storage-incompatibility-errors owns the implementation
+        work for structured HTTP 409 task_storage_incompatible responses.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/daemon-dispatch-oom-hardening-spec-alignment.md
     created_at: 2026-05-18T22:06:39.749Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KRYJHDRSGZSE8PHCVKXAMQFB
+        content: Address review feedback on spec ownership and AC coverage
+        author: Jacob Chapel
+        created_at: 2026-05-18T22:15:39.033Z
