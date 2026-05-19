@@ -19061,18 +19061,18 @@ workspaces:
       remote_ref: origin/dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
       source: task-submission-linkage
     canonical_branch: dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
-    canonical_branch_head: dc86ab933f181d26fbb8b48408d04f582a4e497d
+    canonical_branch_head: a36473c61857f196be491cd824557fabb0634de6
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-19T01:26:13.234Z
+      updated_at: 2026-05-19T01:27:56.810Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-19T01:26:36.635Z
+      updated_at: 2026-05-19T01:27:56.810Z
     integration:
       status: pending
       detail: null
@@ -19080,7 +19080,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
-      updated_at: 2026-05-19T01:26:13.234Z
+      updated_at: 2026-05-19T01:27:56.810Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KRYMPBSQV0EWVW3EBCXBPQKC"
@@ -19088,9 +19088,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-19T01:26:36.635Z
-      last_reconciled_at: 2026-05-19T01:26:36.635Z
+      last_reconciled_at: 2026-05-19T01:27:56.810Z
       created_at: 2026-05-19T00:04:52.247Z
-      updated_at: 2026-05-19T01:26:36.635Z
+      updated_at: 2026-05-19T01:27:56.810Z
     workspace_id: dispatch-workspace-01KRYMPBSQV0EWVW3EBCXBPQKC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
