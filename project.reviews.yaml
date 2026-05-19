@@ -216657,6 +216657,18 @@ reviews:
         runner: rg
         created_at: 2026-05-19T00:25:32.148Z
         completed_at: 2026-05-19T00:25:32.148Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exited 6: schema/references OK; validation produced existing project
+          warnings (reference, alignment, completeness, invalid annotation debt). No new schema
+          error was observed in the changed files."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-19T00:25:37.068Z
+        completed_at: 2026-05-19T00:25:37.068Z
     events:
       - _ulid: 01KRYRVZSM7KBHMYDPWZ7DS1W4
         actor: Jacob Chapel
@@ -216692,6 +216704,13 @@ reviews:
           status: fail
           name: AC coverage grep
         timestamp: 2026-05-19T00:25:33.878Z
+      - _ulid: 01KRYSZET4XEBH6FFVYDKSA3KQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-19T00:25:38.884Z
     examined_commit: dc86ab933f181d26fbb8b48408d04f582a4e497d
     external_links: []
     lifecycle_state: open
@@ -216726,7 +216745,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-19T00:06:16.628Z
-    updated_at: 2026-05-19T00:25:32.148Z
+    updated_at: 2026-05-19T00:25:37.068Z
     notes: []
   - _ulid: 01KRYS799YXFTPKF29K2Q7P7FM
     slugs: []
