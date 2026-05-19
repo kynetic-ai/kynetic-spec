@@ -748,8 +748,16 @@ describe("dispatch workspace cleanup", () => {
     const previousDiagnostics = process.env.KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS;
     delete process.env.KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS;
     const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => undefined);
+    let diagnosticCalls: string[] = [];
     try {
       await reconcileDispatchWorkspaceArtifacts(tempDir, { activeTaskRefs: [taskRef] });
+      // Snapshot the spy's call history BEFORE mockRestore(): mockRestore
+      // clears the recorded calls, so reading them after restore would
+      // always observe an empty array and silently pass even if a
+      // diagnostic line had been emitted.
+      diagnosticCalls = debugSpy.mock.calls
+        .map((args) => String(args[0] ?? ""))
+        .filter((line) => line.includes("[dispatch-cleanup]"));
     } finally {
       debugSpy.mockRestore();
       if (previousDiagnostics === undefined) {
@@ -766,9 +774,6 @@ describe("dispatch workspace cleanup", () => {
     ).toContain("dispatch/task/task-quiet-preservation-diagnostics/01task00");
 
     // No `[dispatch-cleanup]` diagnostic was emitted on the quiet path.
-    const diagnosticCalls = debugSpy.mock.calls.filter((args) =>
-      String(args[0] ?? "").includes("[dispatch-cleanup]"),
-    );
     expect(diagnosticCalls).toEqual([]);
   });
 
