@@ -50829,7 +50829,7 @@ runs:
     completed_at: 2026-05-19T01:56:45.693Z
   - _ulid: 01KRZ0CQ92RWE6A34E9ZACJJNR
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50852,7 +50852,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-19T02:20:24.852Z
-        completed_at: 2026-05-19T02:20:24.852Z
+        completed_at: 2026-05-19T02:20:35.943Z
+        notes: "Decision: skip all potential captures. Duplicate coverage found: @01KQ8TTN covers unbounded
+          reflection baseline discovery; @01KR293G/@01KRYTG7 cover workflow show/next docs needing
+          run refs; detached merge helper success and reviewer patterns are already covered by
+          @detached-reviewer-merge-helper and prior observations. No unique high-confidence friction
+          or success should be added."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-19T02:20:35.943Z
+        completed_at: 2026-05-19T02:20:35.943Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-19T02:17:44.994Z
