@@ -216365,9 +216365,25 @@ reviews:
           status: fail
           name: cli-no-daemon flaky reruns
         timestamp: 2026-05-19T00:01:02.804Z
+      - _ulid: 01KRYRJHVVTW6B3DFFDR107F6X
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-19T00:01:07.452Z
+      - _ulid: 01KRYRJHVWRB580295YG310MH2
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-19T00:01:07.452Z
     examined_commit: 8de21db24228985d828834bc081bcb37fcd47c25
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -216444,9 +216460,16 @@ reviews:
               quality, AC coverage, integration."
             created_at: 2026-05-18T23:45:48.716Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-19T00:01:07.451Z
     created_at: 2026-05-18T23:43:27.569Z
-    updated_at: 2026-05-19T00:01:01.137Z
+    updated_at: 2026-05-19T00:01:07.452Z
     notes: []
   - _ulid: 01KRYQPMKK8CYKVR3R4GCHKP0F
     slugs: []
