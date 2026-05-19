@@ -3546,3 +3546,15 @@ inbox:
       - daemon
     added_by: Jacob Chapel
     created_at: 2026-05-19T00:08:33.766Z
+  - _ulid: 01KRYTG7W6MK7CTSBCF5SMDSV1
+    text: "Reflection: align workflow show docs with CLI run-ref requirement. During session reflection,
+      the skill examples said to run kspec workflow show without a run ref, but the CLI returned
+      missing required argument run-ref. Triage whether to update the reflection skill command
+      examples to include the run ref, or make workflow show default to the sole active workflow
+      run."
+    tags:
+      - reflection
+      - workflow
+      - docs
+    added_by: Jacob Chapel
+    created_at: 2026-05-19T00:34:48.838Z
