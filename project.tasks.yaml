@@ -29505,3 +29505,19 @@
   submitted_at: 2026-05-18T23:19:18.782Z
   completed_at: 2026-05-18T23:37:47.059Z
   automation: eligible
+- _ulid: 01KRYRHXMHAFN98Q6J3J3VS9W3
+  slugs: []
+  title: Stabilize cli-no-daemon runtime assertion
+  type: task
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - flake
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-19T00:00:46.737Z
+  automation: eligible

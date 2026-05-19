@@ -1,0 +1,26 @@
+_ulid: 01KRYRHXMHAFN98Q6J3J3VS9W3
+slugs: []
+title: Stabilize cli-no-daemon runtime assertion
+type: task
+description: The review run for @01KRYMPAYBKH8J2HKZPZYGQDA3 exposed flakiness in
+  tests/cli-no-daemon.test.ts. Full npm test failed at tests/cli-no-daemon.test.ts:163 with expected
+  '[MainThread] <defunct>' to contain 'node'. An isolated rerun with --fresh failed differently
+  because ps -p <pid> returned an error, and a second isolated --fresh rerun passed. Investigate why
+  the daemon process exits or becomes defunct before the test inspects its command, then make the
+  test deterministic without weakening the runtime assertion.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - flake
+  - cli
+vcs_refs: []
+created_at: 2026-05-19T00:00:46.737Z
+todos: []
+automation: eligible
