@@ -217388,6 +217388,17 @@ reviews:
         runner: npm test
         created_at: 2026-05-19T00:58:27.439Z
         completed_at: 2026-05-19T00:58:27.439Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: 2447 suites passed; 9278 passed, 5 skipped of 9283 tests; duration
+          2651.2s."
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-19T00:58:31.587Z
+        completed_at: 2026-05-19T00:58:31.587Z
     events:
       - _ulid: 01KRYTZCNGC5WFKRYS41C70WW8
         actor: Jacob Chapel
@@ -217416,6 +217427,13 @@ reviews:
           status: pass
           name: focused cli-no-daemon
         timestamp: 2026-05-19T00:58:28.886Z
+      - _ulid: 01KRYVVPS12G4J0P8NAMG9C940
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-05-19T00:58:33.121Z
     examined_commit: 08b871623839214ec344077cbd154be5036bad2d
     external_links: []
     lifecycle_state: open
@@ -217428,5 +217446,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-19T00:43:05.265Z
-    updated_at: 2026-05-19T00:58:27.439Z
+    updated_at: 2026-05-19T00:58:31.587Z
     notes: []
