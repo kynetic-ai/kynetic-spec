@@ -19574,18 +19574,18 @@ workspaces:
       remote_ref: origin/dispatch/task/task-disable-daemon-proxying-inside-agent-invocations/01krympc
       source: task-submission-linkage
     canonical_branch: dispatch/task/task-disable-daemon-proxying-inside-agent-invocations/01krympc
-    canonical_branch_head: 0457aac94737603f4e8afda676a83099cb4f54ec
+    canonical_branch_head: 84bf6b2083332cc11bf3e106358cc938b701016f
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-19T01:57:05.464Z
+      updated_at: 2026-05-19T01:59:57.657Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-19T01:57:29.023Z
+      updated_at: 2026-05-19T01:59:57.657Z
     integration:
       status: pending
       detail: null
@@ -19593,7 +19593,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
-      updated_at: 2026-05-19T01:57:05.464Z
+      updated_at: 2026-05-19T01:59:57.657Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KRYMPC71752C2ZY8WE6PG42R"
@@ -19601,9 +19601,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-19T01:57:29.023Z
-      last_reconciled_at: 2026-05-19T01:57:29.023Z
+      last_reconciled_at: 2026-05-19T01:59:57.657Z
       created_at: 2026-05-19T00:10:17.470Z
-      updated_at: 2026-05-19T01:57:29.023Z
+      updated_at: 2026-05-19T01:59:57.657Z
     workspace_id: dispatch-workspace-01KRYMPC71752C2ZY8WE6PG42R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
