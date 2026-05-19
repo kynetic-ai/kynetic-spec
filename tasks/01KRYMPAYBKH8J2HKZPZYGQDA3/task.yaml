@@ -51,7 +51,7 @@ tags:
   - memory
 vcs_refs: []
 review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-bound-event-bus-lineage-and-source-ordering-lifetime/01krympa
-review_ref: "@01KRYQJ6THDQ212RH9273N2BRP"
+review_ref: "@01KRYW6BZNBGMH3BJR5VZ903V0"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-bound-event-bus-lineage-and-source-ordering-lifetime/01krympa
@@ -159,6 +159,13 @@ history:
         previous: 2026-05-18T22:56:43.967Z
     command: task-submit
     timestamp: 2026-05-19T01:00:23.810Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KRYW6BZNBGMH3BJR5VZ903V0"
+        previous: "@01KRYQJ6THDQ212RH9273N2BRP"
+    command: review-link
+    timestamp: 2026-05-19T01:04:26.271Z
 created_at: 2026-05-18T22:53:17.131Z
 started_at: 2026-05-19T01:00:20.295Z
 submitted_at: 2026-05-19T01:00:23.810Z
