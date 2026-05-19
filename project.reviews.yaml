@@ -216643,6 +216643,20 @@ reviews:
         runner: npm-test
         created_at: 2026-05-19T00:25:27.175Z
         completed_at: 2026-05-19T00:25:27.175Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: rg found zero standalone test annotations for @daemon-command-api
+          ac-no-recursive-command-proxy and @cli-daemon-proxy
+          ac-daemon-internal-proxy-suppression-is-scoped; new regression test at
+          tests/daemon-command-api.test.ts:507 is annotated only as @daemon-command-api
+          ac-command-endpoint.
+        name: AC coverage grep
+        required: true
+        runner: rg
+        created_at: 2026-05-19T00:25:32.148Z
+        completed_at: 2026-05-19T00:25:32.148Z
     events:
       - _ulid: 01KRYRVZSM7KBHMYDPWZ7DS1W4
         actor: Jacob Chapel
@@ -216671,6 +216685,13 @@ reviews:
           status: pass
           name: targeted tests
         timestamp: 2026-05-19T00:25:28.917Z
+      - _ulid: 01KRYSZ9XP0KV5TBB2Y66D5GPE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: AC coverage grep
+        timestamp: 2026-05-19T00:25:33.878Z
     examined_commit: dc86ab933f181d26fbb8b48408d04f582a4e497d
     external_links: []
     lifecycle_state: open
@@ -216705,7 +216726,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-19T00:06:16.628Z
-    updated_at: 2026-05-19T00:25:27.175Z
+    updated_at: 2026-05-19T00:25:32.148Z
     notes: []
   - _ulid: 01KRYS799YXFTPKF29K2Q7P7FM
     slugs: []
