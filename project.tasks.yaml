@@ -29379,7 +29379,7 @@
   type: task
   spec_ref: "@agent-dispatch-engine"
   plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-update-daemon-dispatch-hardening-specs"
@@ -29393,7 +29393,7 @@
   todos_count: 0
   created_at: 2026-05-18T22:53:17.576Z
   started_at: 2026-05-19T01:22:26.555Z
-  submitted_at: 2026-05-18T22:58:37.693Z
+  submitted_at: 2026-05-19T01:22:30.134Z
   automation: eligible
 - _ulid: 01KRYMPBSQV0EWVW3EBCXBPQKC
   slugs:
