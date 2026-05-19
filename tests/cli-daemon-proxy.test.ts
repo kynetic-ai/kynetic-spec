@@ -11,6 +11,7 @@
  * - @cli-daemon-proxy ac-read-from-cache: reads served from daemon cache
  * - @cli-daemon-proxy ac-timeout-fallback: read-only timeout falls back to direct
  * - @cli-daemon-proxy ac-timeout-mutation-error: mutation timeout returns error
+ * - @cli-daemon-proxy ac-daemon-internal-proxy-suppression-is-scoped: suppression is scoped to the request that activated it
  * - @daemon-proxy-detection ac-legacy-port-file-fallback: reads legacy daemon.port file and health-checks 127.0.0.1:port
  * - @daemon-proxy-detection ac-fast-detection: fast fail on missing port/refused
  * - @daemon-proxy-detection ac-project-registered: registers project before routing
@@ -53,6 +54,7 @@ import {
   shouldProxyCommand,
   proxyCommand,
   extractCommandPayload,
+  runWithDaemonProxySuppressed,
   _resetDetectionCacheForTesting,
   _setDetectionCacheForTesting,
 } from "../src/cli/daemon-proxy.js";
@@ -388,6 +390,113 @@ describe("shouldProxyCommand", () => {
 
     const result = await shouldProxyCommand({ forceDaemon: false });
     expect(result.proxy).toBe(false);
+  });
+
+  // AC: @cli-daemon-proxy ac-daemon-internal-proxy-suppression-is-scoped
+  it("returns proxy:false with daemon-internal reason inside runWithDaemonProxySuppressed", async () => {
+    delete process.env.KSPEC_NO_DAEMON;
+    _setDetectionCacheForTesting({ available: true, port: 3456 });
+
+    const result = await runWithDaemonProxySuppressed(() =>
+      shouldProxyCommand({ forceDaemon: false }),
+    );
+
+    expect(result.proxy).toBe(false);
+    if (!result.proxy) {
+      expect(result.reason).toBe("daemon command API execution");
+    }
+  });
+
+  // AC: @cli-daemon-proxy ac-daemon-internal-proxy-suppression-is-scoped
+  it("suppression even overrides --daemon force-proxy inside the guarded scope", async () => {
+    delete process.env.KSPEC_NO_DAEMON;
+    _setDetectionCacheForTesting({ available: true, port: 3456 });
+
+    const result = await runWithDaemonProxySuppressed(() =>
+      shouldProxyCommand({ forceDaemon: true }),
+    );
+
+    expect(result.proxy).toBe(false);
+  });
+
+  // AC: @cli-daemon-proxy ac-daemon-internal-proxy-suppression-is-scoped
+  it("normal auto-detect routing resumes outside the guarded scope", async () => {
+    delete process.env.KSPEC_NO_DAEMON;
+    _setDetectionCacheForTesting({ available: true, port: 4567 });
+
+    const insideResult = await runWithDaemonProxySuppressed(() =>
+      shouldProxyCommand({ forceDaemon: false }),
+    );
+    expect(insideResult.proxy).toBe(false);
+
+    const outsideResult = await shouldProxyCommand({ forceDaemon: false });
+    expect(outsideResult.proxy).toBe(true);
+    if (outsideResult.proxy) {
+      expect(outsideResult.port).toBe(4567);
+    }
+  });
+
+  // AC: @cli-daemon-proxy ac-daemon-internal-proxy-suppression-is-scoped
+  it("force-direct (KSPEC_NO_DAEMON) still wins outside the guarded scope", async () => {
+    _setDetectionCacheForTesting({ available: true, port: 3456 });
+
+    // Activate then exit the guard so subsequent evaluations are unguarded.
+    await runWithDaemonProxySuppressed(() => shouldProxyCommand({ forceDaemon: false }));
+
+    process.env.KSPEC_NO_DAEMON = "1";
+    const outsideResult = await shouldProxyCommand({ forceDaemon: false });
+    expect(outsideResult.proxy).toBe(false);
+    if (!outsideResult.proxy) {
+      expect(outsideResult.reason).toBe("KSPEC_NO_DAEMON is set");
+    }
+  });
+
+  // AC: @cli-daemon-proxy ac-daemon-internal-proxy-suppression-is-scoped
+  it("force-proxy (--daemon) error path is preserved outside the guarded scope", async () => {
+    delete process.env.KSPEC_NO_DAEMON;
+    _setDetectionCacheForTesting({ available: false, reason: "no port file" });
+
+    // Suppression guard runs to completion in isolation.
+    await runWithDaemonProxySuppressed(() => shouldProxyCommand({ forceDaemon: false }));
+
+    const outsideResult = await shouldProxyCommand({ forceDaemon: true });
+    expect(outsideResult.proxy).toBe(false);
+    if (!outsideResult.proxy) {
+      expect(outsideResult.reason).toContain("daemon required but unavailable");
+    }
+  });
+
+  // AC: @cli-daemon-proxy ac-daemon-internal-proxy-suppression-is-scoped
+  it("suppression does not leak into a concurrent async chain", async () => {
+    delete process.env.KSPEC_NO_DAEMON;
+    _setDetectionCacheForTesting({ available: true, port: 3456 });
+
+    // Block the suppressed chain until the unguarded chain has been observed.
+    let releaseSuppressed: () => void = () => {};
+    const suppressedGate = new Promise<void>((resolve) => {
+      releaseSuppressed = resolve;
+    });
+    let releaseUnguarded: () => void = () => {};
+    const unguardedGate = new Promise<void>((resolve) => {
+      releaseUnguarded = resolve;
+    });
+
+    const suppressedRun = runWithDaemonProxySuppressed(async () => {
+      releaseUnguarded();
+      await suppressedGate;
+      return shouldProxyCommand({ forceDaemon: false });
+    });
+
+    await unguardedGate;
+    const unguardedResult = await shouldProxyCommand({ forceDaemon: false });
+    releaseSuppressed();
+    const suppressedResult = await suppressedRun;
+
+    expect(unguardedResult.proxy).toBe(true);
+    expect(suppressedResult.proxy).toBe(false);
+    if (!suppressedResult.proxy) {
+      expect(suppressedResult.reason).toBe("daemon command API execution");
+    }
   });
 });
 
