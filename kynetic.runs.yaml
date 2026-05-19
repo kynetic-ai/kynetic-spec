@@ -51039,7 +51039,7 @@ runs:
     completed_at: 2026-05-19T03:00:55.530Z
   - _ulid: 01KRZ4660ESE4G55RY8EKNVD61
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51055,7 +51055,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-19T03:25:13.317Z
-        completed_at: 2026-05-19T03:25:13.317Z
+        completed_at: 2026-05-19T03:25:24.352Z
+        notes: "Friction points: full npm test is required for review approval and took 2334.8s in this
+          session, which makes clean reviews spend most wall time waiting even after targeted suites
+          pass; kspec validate exits 6 for repo-wide warnings, so each review has to manually
+          classify warnings as pre-existing/optional before approval; the workflow step itself does
+          not automatically surface current step details unless the run ref is provided to kspec
+          workflow show, which caused one harmless retry."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-19T03:25:24.352Z
+        completed_at: 2026-05-19T03:25:24.352Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T03:24:05.006Z
