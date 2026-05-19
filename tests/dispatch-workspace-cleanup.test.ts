@@ -717,6 +717,112 @@ describe("dispatch workspace cleanup", () => {
     ).toBe(true);
   });
 
+  // AC: @dispatch-workspace-cleanup-policy ac-preservation-diagnostics-quiet-by-default
+  it("does not emit preservation diagnostics when detailed cleanup diagnostics are not opted in", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 27)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Quiet Preservation Diagnostics",
+        slugs: ["task-quiet-preservation-diagnostics"],
+      },
+    });
+
+    // Force a preservation scenario: metadata removed and registry cleared,
+    // but the task is active. The protection helper must preserve the
+    // metadata-less worktree and its canonical dispatch branch — exactly the
+    // path that would otherwise emit a `[dispatch-cleanup]` diagnostic.
+    await fs.rm(workspaceMetadataPath(workspace.cwd), { force: true });
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
+
+    // Explicitly clear the opt-in so an inherited env var cannot leak into
+    // the assertion. The diagnostic gate must default to quiet.
+    const previousDiagnostics = process.env.KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS;
+    delete process.env.KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS;
+    const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => undefined);
+    try {
+      await reconcileDispatchWorkspaceArtifacts(tempDir, { activeTaskRefs: [taskRef] });
+    } finally {
+      debugSpy.mockRestore();
+      if (previousDiagnostics === undefined) {
+        delete process.env.KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS;
+      } else {
+        process.env.KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS = previousDiagnostics;
+      }
+    }
+
+    // Preservation must still have occurred — workspace and branch survive.
+    await fs.access(workspace.cwd);
+    expect(
+      git(tempDir, "branch --list dispatch/task/task-quiet-preservation-diagnostics/01task00"),
+    ).toContain("dispatch/task/task-quiet-preservation-diagnostics/01task00");
+
+    // No `[dispatch-cleanup]` diagnostic was emitted on the quiet path.
+    const diagnosticCalls = debugSpy.mock.calls.filter((args) =>
+      String(args[0] ?? "").includes("[dispatch-cleanup]"),
+    );
+    expect(diagnosticCalls).toEqual([]);
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-preservation-diagnostics-opt-in
+  it("emits a preservation diagnostic identifying surface, artifact, and reason when the opt-in is enabled", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 28)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Opt In Preservation Diagnostics",
+        slugs: ["task-opt-in-preservation-diagnostics"],
+      },
+    });
+
+    // Same preservation scenario as the quiet-by-default test so the only
+    // observable difference is the opt-in env var.
+    await fs.rm(workspaceMetadataPath(workspace.cwd), { force: true });
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+      "utf-8",
+    );
+
+    const diag = captureDispatchCleanupDiagnostics();
+    let capturedCalls: string[] = [];
+    try {
+      await reconcileDispatchWorkspaceArtifacts(tempDir, { activeTaskRefs: [taskRef] });
+      capturedCalls = diag.capture();
+    } finally {
+      diag.restore();
+    }
+
+    // Preservation occurred — workspace and branch survive.
+    await fs.access(workspace.cwd);
+    expect(
+      git(tempDir, "branch --list dispatch/task/task-opt-in-preservation-diagnostics/01task00"),
+    ).toContain("dispatch/task/task-opt-in-preservation-diagnostics/01task00");
+
+    // At least one diagnostic identifies surface, artifact, and reason.
+    const diagnosticMessages = capturedCalls.filter((line) => line.includes("[dispatch-cleanup]"));
+    expect(diagnosticMessages.length).toBeGreaterThan(0);
+    const surfaceLabeled = diagnosticMessages.find(
+      (line) =>
+        line.includes("metadata-less-worktree") &&
+        line.includes(workspace.cwd) &&
+        /active or in-flight/.test(line),
+    );
+    expect(surfaceLabeled).toBeDefined();
+  });
+
   // AC: @dispatch-workspace-cleanup-policy ac-6
   // AC: @dispatch-workspace-cleanup-policy ac-7
   it("reconstructs a missing registry record and normalizes legacy branch layouts from metadata-backed worktrees", async () => {
