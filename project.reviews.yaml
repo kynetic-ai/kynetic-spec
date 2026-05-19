@@ -218362,7 +218362,19 @@ reviews:
     slugs: []
     title: Review gate cleanup preservation diagnostics (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/dispatch-workspace-cleanup.test.ts
+          tests/dispatch-workspace-registry.test.ts: 62/62 tests passed across 7 suites; includes
+          the new diagnostic tests, though manual review found the quiet-path assertion invalid."
+        name: targeted cleanup and registry tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-19T02:39:04.230Z
+        completed_at: 2026-05-19T02:39:04.230Z
     events:
       - _ulid: 01KRZ0PNMPMFGBR0G8XVC2STYV
         actor: Jacob Chapel
@@ -218384,6 +218396,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRZ1KCNDT99EHFVXHRT2H67Y
         timestamp: 2026-05-19T02:38:53.491Z
+      - _ulid: 01KRZ1KSZDNHP0W70AJPC4MGMX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted cleanup and registry tests
+        timestamp: 2026-05-19T02:39:05.709Z
     examined_commit: 8289299e4c1076357728d40c77ab33092adbf8a8
     external_links: []
     lifecycle_state: open
@@ -218417,5 +218436,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-19T02:23:10.998Z
-    updated_at: 2026-05-19T02:38:52.077Z
+    updated_at: 2026-05-19T02:39:04.230Z
     notes: []
