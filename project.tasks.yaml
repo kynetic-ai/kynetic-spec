@@ -29536,3 +29536,20 @@
   submitted_at: 2026-05-19T02:38:19.072Z
   completed_at: 2026-05-19T02:57:57.260Z
   automation: eligible
+- _ulid: 01KS090WJR79MQXR6B052BN6DQ
+  slugs:
+    - task-stabilize-cli-no-daemon-auto-start-process-assertion
+  title: Stabilize cli-no-daemon auto-start process assertion
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - cli
+    - daemon
+    - test
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-19T14:07:48.821Z
+  automation: eligible
