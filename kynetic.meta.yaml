@@ -19059,6 +19059,19 @@ observations:
     resolved: false
     workflow_ref: "@01KRZ466"
     created_at: 2026-05-19T03:26:46.018Z
+  - _ulid: 01KS0D6N81JV08GRSKX520G03E
+    type: friction
+    content: During review of a stale task snapshot, a follow-up task can be created for a test failure
+      that is already fixed on current dev. In @01KS090W, the parent review saw the old
+      cli-no-daemon ps-based runtime assertion failure on an older branch, but dev already contained
+      08b8716238 replacing it with daemon.connection.json metadata assertions. Before filing
+      follow-up tasks for pre-existing review failures, reviewers should check current
+      integration-target history/tasks for an existing fix; this may deserve a review-gates
+      checklist or automation after triage.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-19T15:20:52.225Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
