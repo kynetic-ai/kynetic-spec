@@ -17924,7 +17924,7 @@ workspaces:
         head: 7c8750e4177de585f398dc7d2b00e9a4e1aa657b
         last_seen_at: 2026-05-18T23:44:13.640Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-prevent-overlapping-dispatch-reconciliation-01krympb
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 202bd38d550faa8b70b5290655937f132af62fd5
     bootstrap:
       status: succeeded
@@ -18406,7 +18406,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-19T00:42:07.504Z
+      updated_at: 2026-05-19T00:42:36.541Z
     integration:
       status: pending
       detail: null
@@ -18421,10 +18421,10 @@ workspaces:
     task_slug: stabilize-cli-no-daemon-runtime-assertion
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-19T00:01:41.565Z
-      last_reconciled_at: 2026-05-19T00:42:07.504Z
+      last_active_at: 2026-05-19T00:42:36.541Z
+      last_reconciled_at: 2026-05-19T00:42:36.541Z
       created_at: 2026-05-19T00:01:01.471Z
-      updated_at: 2026-05-19T00:42:32.302Z
+      updated_at: 2026-05-19T00:42:36.541Z
     workspace_id: dispatch-workspace-01KRYRHXMHAFN98Q6J3J3VS9W3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
