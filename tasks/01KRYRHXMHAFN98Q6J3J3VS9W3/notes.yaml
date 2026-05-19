@@ -1,1 +1,31 @@
-notes: []
+notes:
+  - _ulid: 01KRYTP94DQCE74M6S8QTWTK8F
+    content: >-
+      Replaced ps -p runtime assertion with metadata.runtime read.
+
+
+      Root cause: the trailing ps -p <pid> -o command= raced with the auto-started daemon's process
+      lifecycle. After awaitListenSuccess and metadata write, the daemon continues setup (project
+      context registration, watcher start, shadow/session sync init). If anything in that tail
+      caused the daemon to exit, ps would return either [MainThread] <defunct> (parent had not
+      reaped the zombie) or fail entirely (PID gone). Both failure modes were observed in the parent
+      task's review run.
+
+
+      Fix: read the runtime field from daemon.connection.json (already waited for) instead of
+      shelling out to ps. The metadata is written by the daemon process itself after
+      awaitListenSuccess, so: metadata.runtime reflects the daemon's self-detected runtime via
+      typeof process.versions.bun (a bun-spawned daemon would write runtime=bun, the assertion would
+      still fail); the file persists across daemon exit, removing the race; metadata.pid binds the
+      runtime claim to the captured pid.
+
+
+      The wait predicate also now requires the runtime field to be a string before resolving, so a
+      partial metadata write does not cause flake.
+
+
+      Verified: tests/cli-no-daemon.test.ts (7/7 pass) over 5 fresh reruns; full suite 9278/9278
+      pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-19T00:38:06.733Z
