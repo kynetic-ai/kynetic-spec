@@ -218597,7 +218597,18 @@ reviews:
     slugs: []
     title: Review stabilize Bun daemon auto-start runtime test
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2448/2448 suites, 9290 passed, 5 skipped of 9295 tests. Duration
+          2379.3s. Log: /tmp/kspec-test-cache/01KRZ1PSCZAG77QH3YMEKCKR5X/0a330a24e1f6dba7.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-19T02:56:37.811Z
+        completed_at: 2026-05-19T02:56:37.811Z
     events:
       - _ulid: 01KRZ1QWZBENPP9JSMYJ086K03
         actor: Jacob Chapel
@@ -218612,6 +218623,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-19T02:41:45.984Z
+      - _ulid: 01KRZ2KYW9AY80VT17H0NY8VE7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-19T02:56:39.305Z
     examined_commit: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
     external_links: []
     lifecycle_state: open
@@ -218624,5 +218642,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-19T02:41:19.852Z
-    updated_at: 2026-05-19T02:41:44.443Z
+    updated_at: 2026-05-19T02:56:37.811Z
     notes: []
