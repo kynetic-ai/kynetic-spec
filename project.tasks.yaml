@@ -29428,7 +29428,7 @@
   type: task
   spec_ref: "@agent-invocation-lifecycle"
   plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-update-daemon-dispatch-hardening-specs"
@@ -29443,6 +29443,7 @@
   created_at: 2026-05-18T22:53:18.433Z
   started_at: 2026-05-19T01:59:15.191Z
   submitted_at: 2026-05-19T01:59:18.547Z
+  completed_at: 2026-05-19T02:20:37.957Z
   automation: eligible
 - _ulid: 01KRYMPCMF46KFWVKKWRDYSJX7
   slugs:

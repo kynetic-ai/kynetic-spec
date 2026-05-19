@@ -39,8 +39,15 @@ description: |
 spec_ref: "@agent-invocation-lifecycle"
 plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Reviewed and merged to dev via detached reviewer helper. Changes disable daemon
+  proxying for spawned agent invocations and lifecycle helper kspec commands by setting
+  KSPEC_NO_DAEMON=1 in the shared invocation environment while preserving mutation-lock and caller
+  env values. Regression coverage added for spawned agent env and failure-note helper command env.
+  Review approved in @01KRYZK4; merge advanced dev to b6602c96d1e72c4442f1d1c7c0b58c147d56cc73. Full
+  npm test had a pre-existing Bun daemon auto-start failure reproduced on base; follow-up task
+  @01KRZ0EW created.
 depends_on:
   - "@task-update-daemon-dispatch-hardening-specs"
 context: []
@@ -166,8 +173,28 @@ history:
         previous: "@01KRYS799YXFTPKF29K2Q7P7FM"
     command: review-link
     timestamp: 2026-05-19T02:03:51.900Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Reviewed and merged to dev via detached reviewer helper. Changes disable daemon proxying for
+          spawned agent invocations and lifecycle helper kspec commands by setting KSPEC_NO_DAEMON=1
+          in the shared invocation environment while preserving mutation-lock and caller env values.
+          Regression coverage added for spawned agent env and failure-note helper command env.
+          Review approved in @01KRYZK4; merge advanced dev to
+          b6602c96d1e72c4442f1d1c7c0b58c147d56cc73. Full npm test had a pre-existing Bun daemon
+          auto-start failure reproduced on base; follow-up task @01KRZ0EW created.
+        previous: null
+      completed_at:
+        new: 2026-05-19T02:20:37.957Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-19T02:20:37.965Z
 created_at: 2026-05-18T22:53:18.433Z
 started_at: 2026-05-19T01:59:15.191Z
 submitted_at: 2026-05-19T01:59:18.547Z
+completed_at: 2026-05-19T02:20:37.957Z
 todos: []
 automation: eligible
