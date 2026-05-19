@@ -18037,18 +18037,18 @@ workspaces:
       remote_ref: origin/dispatch/task/task-prevent-overlapping-dispatch-reconciliation/01krympb
       source: task-submission-linkage
     canonical_branch: dispatch/task/task-prevent-overlapping-dispatch-reconciliation/01krympb
-    canonical_branch_head: 7c8750e4177de585f398dc7d2b00e9a4e1aa657b
+    canonical_branch_head: 2e646d04c7219cfcddadfdce2d0af5f19f76a1b7
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-19T01:02:46.694Z
+      updated_at: 2026-05-19T01:04:59.910Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-19T01:03:10.396Z
+      updated_at: 2026-05-19T01:04:59.910Z
     integration:
       status: pending
       detail: null
@@ -18056,7 +18056,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
-      updated_at: 2026-05-19T01:02:46.694Z
+      updated_at: 2026-05-19T01:04:59.910Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KRYMPBC8YM4X3KZC6SPBV6R2"
@@ -18064,9 +18064,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-19T01:03:10.396Z
-      last_reconciled_at: 2026-05-19T01:03:10.396Z
+      last_reconciled_at: 2026-05-19T01:04:59.910Z
       created_at: 2026-05-18T23:44:13.640Z
-      updated_at: 2026-05-19T01:03:10.396Z
+      updated_at: 2026-05-19T01:04:59.910Z
     workspace_id: dispatch-workspace-01KRYMPBC8YM4X3KZC6SPBV6R2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
