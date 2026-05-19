@@ -216689,3 +216689,29 @@ reviews:
     created_at: 2026-05-19T00:06:16.628Z
     updated_at: 2026-05-19T00:08:24.927Z
     notes: []
+  - _ulid: 01KRYS799YXFTPKF29K2Q7P7FM
+    slugs: []
+    title: Review disable daemon proxying inside agent invocations
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRYS799YMV6RQ56SS69VF60A
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-19T00:12:26.814Z
+    examined_commit: 0457aac94737603f4e8afda676a83099cb4f54ec
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRYMPC71752C2ZY8WE6PG42R"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-19T00:12:26.814Z
+    updated_at: null
+    notes: []
