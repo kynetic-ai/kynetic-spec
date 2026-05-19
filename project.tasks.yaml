@@ -29355,7 +29355,7 @@
   type: task
   spec_ref: "@dispatch-event-envelope"
   plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-update-daemon-dispatch-hardening-specs"
@@ -29370,6 +29370,7 @@
   created_at: 2026-05-18T22:53:17.131Z
   started_at: 2026-05-19T01:00:20.295Z
   submitted_at: 2026-05-19T01:00:23.810Z
+  completed_at: 2026-05-19T01:20:22.354Z
   automation: eligible
 - _ulid: 01KRYMPBC8YM4X3KZC6SPBV6R2
   slugs:
