@@ -555,6 +555,12 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     acpSessionId: null,
   };
 
+  const invocationEnv: Record<string, string> = {
+    ...env,
+    KSPEC_NO_DAEMON: "1",
+    ...(mutationLockFile ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile } : {}),
+  };
+
   // ─── Prompt queue for multi-turn ─────────────────────────────────────────
   // AC: @multi-turn-session-lifecycle ac-8, ac-9, ac-17
   const promptQueue = new PromptQueue(maxPromptQueueDepth);
@@ -656,9 +662,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     state.agent = await spawnAndInitialize(adapter, {
       cwd,
       env: {
-        ...env,
+        ...invocationEnv,
         KSPEC_SESSION_ID: sessionId,
-        ...(mutationLockFile ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile } : {}),
       },
       extraArgs,
       clientOptions: {
@@ -1057,7 +1062,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           `[AGENT-TIMEOUT] Invocation timed out after ${timeoutMinutes} minutes`,
           cwd,
           kspecCliPath,
-          mutationLockFile ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile } : undefined,
+          invocationEnv,
           Boolean(mutationLockFile),
         );
       }
@@ -1207,7 +1212,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         `[AGENT-FAIL] Invocation failed: ${errorMessage}`,
         cwd,
         kspecCliPath,
-        mutationLockFile ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile } : undefined,
+        invocationEnv,
         Boolean(mutationLockFile),
       );
 
@@ -1222,7 +1227,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           `Agent ${agent.id} failed ${consecutiveFailures} consecutive times: ${errorMessage}`,
           cwd,
           kspecCliPath,
-          mutationLockFile ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile } : undefined,
+          invocationEnv,
           Boolean(mutationLockFile),
         );
       }

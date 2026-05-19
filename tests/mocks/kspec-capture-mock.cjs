@@ -18,6 +18,10 @@ const fs = require("node:fs");
 
 const captureFile = process.env.KSPEC_CAPTURE_FILE;
 const args = process.argv.slice(2);
+const captureEnvVars = (process.env.KSPEC_CAPTURE_ENV_VARS || "")
+  .split(",")
+  .map((name) => name.trim())
+  .filter(Boolean);
 
 if (captureFile) {
   let calls = [];
@@ -26,7 +30,11 @@ if (captureFile) {
   } catch {
     // File doesn't exist yet
   }
-  calls.push({ args, timestamp: Date.now() });
+  const env = {};
+  for (const name of captureEnvVars) {
+    env[name] = process.env[name] || null;
+  }
+  calls.push({ args, env, timestamp: Date.now() });
   fs.writeFileSync(captureFile, JSON.stringify(calls, null, 2));
 }
 
