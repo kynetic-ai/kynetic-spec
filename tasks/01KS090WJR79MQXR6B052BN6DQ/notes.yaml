@@ -1,1 +1,55 @@
-notes: []
+notes:
+  - _ulid: 01KS0AHCD6JMQCKQ9QK0QE5GZA
+    content: |-
+      Investigation found the failure described in this task was already addressed.
+
+      Root cause analysis:
+      - Failure: tests/cli-no-daemon.test.ts:145 "auto-starts ... runtime ... bun" — the
+        trailing `ps -p <pid> -o command=` raced with the auto-started daemon's process
+        lifecycle. After awaitListenSuccess and metadata write, the daemon continues
+        setup (project context registration, watcher start, shadow/session sync) and
+        could exit before `ps` ran, returning either `[MainThread] <defunct>` or
+        failing entirely.
+      - Fix: commit 08b8716238 (from prior task @01KRYRHX, completed 2026-05-19T00:59:20Z)
+        replaced the ps -p runtime assertion with a metadata.runtime read from
+        daemon.connection.json. The metadata file persists across daemon exit and
+        the daemon writes it after awaitListenSuccess, so a bun-spawned daemon would
+        write runtime=bun (regression still caught) without depending on a live
+        process for inspection.
+
+      Why this task was created anyway:
+      - The parent task's review (@task-stabilize-bun-websocket-runtime-parity-startup-hook)
+        examined commit 2c98d77b49 from 2026-05-11, which predates the 2026-05-18 fix.
+        The reviewer ran `npm test -- --fresh` against the parent's stale branch and
+        observed the old `ps -p` failure mode. They correctly flagged the failure as
+        unrelated and filed this follow-up — but did not know the fix already lived
+        on dev.
+
+      Verification:
+      - 10/10 isolated `npm test -- --fresh tests/cli-no-daemon.test.ts` runs passed.
+      - Combined-load run with tests/cli-no-daemon.test.ts + cli-serve + daemon-server
+        + daemon-endpoint (137 tests) all passed in 55.8s.
+      - Current canonical head fa838313de already includes 08b8716238.
+
+      Sibling test observation (out of scope, documented for follow-up):
+      - tests/cli-no-daemon.test.ts:353 ("forwards host, host-explicit, and connect-host
+        to the auto-started daemon") still has a `ps -p` call to verify `--host`,
+        `--host-explicit`, and `--connect-host` flag forwarding. The metadata layer
+        already covers `bind_host` and `connect_host` (host stripping is detected via
+        metadata.bind_host != configured value; connect-host stripping likewise via
+        metadata.connect_host). The `--host-explicit` flag's behavior is not visible
+        in the test's wildcard bind_host=0.0.0.0 config (host-explicit only affects
+        the IPv4->IPv6 fallback path, which doesn't apply to wildcards). Removing the
+        ps check there would lose only the flag-forwarding regression check for
+        `--host-explicit`, not behavioral coverage. If that sibling test starts to
+        flake, a clean follow-up would extend DaemonConnectionMetadata with a
+        `bind_host_explicit: boolean` field (spec AC change at
+        @daemon-network-endpoint-contract ac-connection-metadata) so the daemon
+        records its own host_explicit signal and the test can assert it from disk.
+        Not addressing here per scope discipline — the failure named in this task is
+        the runtime test (line 97-228), which is already stabilized.
+
+      No code change required for this task.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-19T14:34:17.894Z
