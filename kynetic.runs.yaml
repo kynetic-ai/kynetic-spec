@@ -50496,7 +50496,7 @@ runs:
     started_at: 2026-05-19T00:32:17.302Z
     completed_at: 2026-05-19T00:34:59.177Z
   - _ulid: 01KRYV9V620TY1MNCT6XB3PHAN
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -50549,7 +50549,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-19T00:50:31.774Z
-        completed_at: 2026-05-19T00:50:31.774Z
+        completed_at: 2026-05-19T00:50:48.518Z
+        notes: Captured inbox item @01KRYVD7 for focused task/spec AC coverage reporting. Did not capture
+          cli-no-daemon because existing task @01KRYRHX and related observations already cover the
+          failure pattern. Did not capture a success observation; the effective review pattern is
+          already encoded in the review workflow and evidence log.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:48:47.810Z
+    completed_at: 2026-05-19T00:50:48.518Z
