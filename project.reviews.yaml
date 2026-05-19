@@ -218767,6 +218767,18 @@ reviews:
         runner: rg
         created_at: 2026-05-19T03:22:27.092Z
         completed_at: 2026-05-19T03:22:27.092Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with warnings only. Schema and references OK; warnings are
+          repo-wide pre-existing completeness/alignment/reference warnings, not introduced by this
+          scoped diff.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-19T03:22:31.374Z
+        completed_at: 2026-05-19T03:22:31.374Z
     events:
       - _ulid: 01KRZ36D6RNJJEA7BNDX76X913
         actor: Jacob Chapel
@@ -218802,6 +218814,13 @@ reviews:
           status: pass
           name: AC annotation scan
         timestamp: 2026-05-19T03:22:28.689Z
+      - _ulid: 01KRZ43BZH63QKW2NVSFMDKF46
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-19T03:22:32.817Z
     examined_commit: 96f8f371db212c31adf360a8123732fa95eef16f
     external_links: []
     lifecycle_state: open
@@ -218814,5 +218833,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-19T03:06:43.800Z
-    updated_at: 2026-05-19T03:22:27.092Z
+    updated_at: 2026-05-19T03:22:31.374Z
     notes: []
