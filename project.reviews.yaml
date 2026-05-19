@@ -218386,6 +218386,18 @@ reviews:
         runner: npm test
         created_at: 2026-05-19T02:39:15.718Z
         completed_at: 2026-05-19T02:39:15.718Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with warnings only. Schema and references were OK; warnings are
+          existing project-wide reference/alignment/completeness/annotation warnings, not new errors
+          in this task.
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-19T02:39:26.325Z
+        completed_at: 2026-05-19T02:39:26.325Z
     events:
       - _ulid: 01KRZ0PNMPMFGBR0G8XVC2STYV
         actor: Jacob Chapel
@@ -218421,6 +218433,13 @@ reviews:
           status: pass
           name: full npm test
         timestamp: 2026-05-19T02:39:17.314Z
+      - _ulid: 01KRZ1MFHW04VCSBPQ5FNJSV4N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-19T02:39:27.805Z
     examined_commit: 8289299e4c1076357728d40c77ab33092adbf8a8
     external_links: []
     lifecycle_state: open
@@ -218454,5 +218473,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-19T02:23:10.998Z
-    updated_at: 2026-05-19T02:39:15.718Z
+    updated_at: 2026-05-19T02:39:26.325Z
     notes: []
