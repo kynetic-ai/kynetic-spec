@@ -216646,6 +216646,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-19T00:06:36.705Z
+      - _ulid: 01KRYRZZ8FNQKDEBV47KT052KK
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRYRZX2ZT0E9A7BZDW69TV39
+        timestamp: 2026-05-19T00:08:27.151Z
     examined_commit: dc86ab933f181d26fbb8b48408d04f582a4e497d
     external_links: []
     lifecycle_state: open
@@ -216655,8 +216662,30 @@ reviews:
       content_hash: ""
       ref: "@01KRYMPBSQV0EWVW3EBCXBPQKC"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRYRZX2ZT0E9A7BZDW69TV39
+        anchor:
+          type: code
+          commit: dc86ab933f181d26fbb8b48408d04f582a4e497d
+          line_end: 554
+          line_start: 507
+          path: tests/daemon-command-api.test.ts
+          side: head
+        entries:
+          - _ulid: 01KRYRZX2ZX98D7Y1ZKSTWZH7R
+            author: Jacob Chapel
+            body: "MUST-FIX: the new regression test is annotated only as @daemon-command-api
+              ac-command-endpoint, but the task's primary coverage targets are @daemon-command-api
+              ac-no-recursive-command-proxy and @cli-daemon-proxy
+              ac-daemon-internal-proxy-suppression-is-scoped. I verified with rg that there are zero
+              standalone annotations for either AC in tests. The test body covers the daemon request
+              suppression behavior, but without the correct AC annotation it will not satisfy the
+              coverage gate for ac-no-recursive-command-proxy; there is also no CLI daemon-proxy
+              test that exercises suppression scope outside the daemon request. Add behavioral
+              tests/annotations for both ACs (no source scanning)."
+            created_at: 2026-05-19T00:08:24.927Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-19T00:06:16.628Z
-    updated_at: 2026-05-19T00:06:35.163Z
+    updated_at: 2026-05-19T00:08:24.927Z
     notes: []
