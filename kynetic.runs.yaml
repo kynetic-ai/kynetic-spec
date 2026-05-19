@@ -50828,7 +50828,7 @@ runs:
     started_at: 2026-05-19T01:55:04.544Z
     completed_at: 2026-05-19T01:56:45.693Z
   - _ulid: 01KRZ0CQ92RWE6A34E9ZACJJNR
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -50858,10 +50858,13 @@ runs:
           run refs; detached merge helper success and reviewer patterns are already covered by
           @detached-reviewer-merge-helper and prior observations. No unique high-confidence friction
           or success should be added."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-05-19T02:20:35.943Z
-        completed_at: 2026-05-19T02:20:35.943Z
+        completed_at: 2026-05-19T02:20:44.809Z
+        notes: "No capture performed: every concrete candidate was already tracked, and the loop workflow
+          requires skipping duplicates rather than adding noise."
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-19T02:17:44.994Z
+    completed_at: 2026-05-19T02:20:44.809Z
