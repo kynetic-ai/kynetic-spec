@@ -51225,7 +51225,7 @@ runs:
     started_at: 2026-05-19T14:37:09.390Z
     completed_at: 2026-05-19T14:59:26.486Z
   - _ulid: 01KS0D2S3V5X3WZXPS7SWQ3XAG
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -51283,7 +51283,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-19T15:20:41.398Z
-        completed_at: 2026-05-19T15:20:41.398Z
+        completed_at: 2026-05-19T15:21:01.338Z
+        notes: "Captured one friction observation: @01KS0D6N. No task/spec created because implementation
+          scope should be decided through observation triage. Did not duplicate success observations
+          because existing review-verification observations already cover the positive pattern."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T15:18:45.115Z
+    completed_at: 2026-05-19T15:21:01.338Z
