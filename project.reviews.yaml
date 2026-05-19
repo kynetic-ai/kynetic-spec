@@ -216944,9 +216944,25 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-05-19T00:31:18.921Z
+      - _ulid: 01KRYTA85KK84DCEKT3JKCQ55X
+        actor: reviewer@codex.local
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-19T00:31:32.531Z
+      - _ulid: 01KRYTA85KZW4SCCHYX3K31BES
+        actor: reviewer@codex.local
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-19T00:31:32.531Z
     examined_commit: 0457aac94737603f4e8afda676a83099cb4f54ec
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -217124,9 +217140,16 @@ reviews:
               machine-mapped to the spec."
             created_at: 2026-05-19T00:30:28.637Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: reviewer@codex.local
+        role: reviewer
+        created_at: 2026-05-19T00:31:32.531Z
     created_at: 2026-05-19T00:12:26.814Z
-    updated_at: 2026-05-19T00:31:17.364Z
+    updated_at: 2026-05-19T00:31:32.531Z
     notes: []
   - _ulid: 01KRYT821PKEK2F5NQPVF4AJ4T
     slugs: []
