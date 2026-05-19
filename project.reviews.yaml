@@ -216852,6 +216852,17 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-19T00:30:56.184Z
         completed_at: 2026-05-19T00:30:56.184Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exact rg search for the two new @agent-invocation-lifecycle AC annotation strings across
+          tests/src/packages returned no matches.
+        name: AC annotation search
+        required: true
+        runner: rg
+        created_at: 2026-05-19T00:31:00.471Z
+        completed_at: 2026-05-19T00:31:00.471Z
     events:
       - _ulid: 01KRYS799YMV6RQ56SS69VF60A
         actor: Jacob Chapel
@@ -216900,6 +216911,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-19T00:30:57.748Z
+      - _ulid: 01KRYT9AAV6XKRC14HR4KRRXJK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: AC annotation search
+        timestamp: 2026-05-19T00:31:01.979Z
     examined_commit: 0457aac94737603f4e8afda676a83099cb4f54ec
     external_links: []
     lifecycle_state: open
@@ -217082,7 +217100,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-19T00:12:26.814Z
-    updated_at: 2026-05-19T00:30:56.184Z
+    updated_at: 2026-05-19T00:31:00.471Z
     notes: []
   - _ulid: 01KRYT821PKEK2F5NQPVF4AJ4T
     slugs: []
