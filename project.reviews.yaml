@@ -218621,6 +218621,17 @@ reviews:
         runner: kspec
         created_at: 2026-05-19T02:56:42.085Z
         completed_at: 2026-05-19T02:56:42.085Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/cli-no-daemon.test.ts --fresh passed: 7/7 tests, 3/3 suites,
+          2.5s. Log: /tmp/kspec-test-cache/01KRZ1PSCZAG77QH3YMEKCKR5X/046b31588b6245a4.log"
+        name: focused cli-no-daemon
+        required: true
+        runner: npm
+        created_at: 2026-05-19T02:56:50.930Z
+        completed_at: 2026-05-19T02:56:50.930Z
     events:
       - _ulid: 01KRZ1QWZBENPP9JSMYJ086K03
         actor: Jacob Chapel
@@ -218656,6 +218667,13 @@ reviews:
           kind: nit
           thread_ulid: 01KRZ2M608ZMRAZEEPCNJQ3KA8
         timestamp: 2026-05-19T02:56:48.138Z
+      - _ulid: 01KRZ2MBR6JZMXZG36SQFS5YFK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused cli-no-daemon
+        timestamp: 2026-05-19T02:56:52.487Z
     examined_commit: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
     external_links: []
     lifecycle_state: open
@@ -218685,5 +218703,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-19T02:41:19.852Z
-    updated_at: 2026-05-19T02:56:46.600Z
+    updated_at: 2026-05-19T02:56:50.930Z
     notes: []
