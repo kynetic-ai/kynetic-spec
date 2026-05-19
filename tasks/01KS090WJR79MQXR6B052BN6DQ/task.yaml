@@ -16,7 +16,7 @@ description: "During review of @task-stabilize-bun-websocket-runtime-parity-star
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -26,6 +26,22 @@ tags:
   - daemon
   - test
 vcs_refs: []
+session_id: 01KS0932981T3FGR3MBZTF36K6
+history:
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KS0932981T3FGR3MBZTF36K6
+        previous: null
+      started_at:
+        new: 2026-05-19T14:09:42.872Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-19T14:09:42.872Z
 created_at: 2026-05-19T14:07:48.821Z
+started_at: 2026-05-19T14:09:42.872Z
 todos: []
 automation: eligible
