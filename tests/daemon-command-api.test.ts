@@ -8,6 +8,7 @@
  * - @daemon-command-api ac-concurrent-mutations: serialized mutation execution
  * - @daemon-command-api ac-response-parity: stdout/stderr/exitCode match direct CLI
  * - @daemon-command-api ac-cache-context-propagation: command execution receives entity cache async context
+ * - @daemon-command-api ac-no-recursive-command-proxy: daemon-internal command execution sees proxying suppressed
  * - @trait-api-endpoint ac-1: returns 2xx with JSON body
  * - @trait-api-endpoint ac-3: returns 400 on invalid body
  * - @trait-api-endpoint ac-6: includes X-Request-Id header
@@ -504,7 +505,7 @@ describe("Daemon Command API", () => {
     expect(body.stdout).toBeTruthy();
   });
 
-  // AC: @daemon-command-api ac-command-endpoint
+  // AC: @daemon-command-api ac-no-recursive-command-proxy
   it("executes daemon-internal commands without proxying back to /api/command", async () => {
     await withInjectedCommand(
       (program) => {
