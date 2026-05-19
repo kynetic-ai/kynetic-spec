@@ -50621,9 +50621,21 @@ runs:
     completed_at: 2026-05-19T01:02:18.833Z
   - _ulid: 01KRYX4WBV85D9Q0MGQV2JFA6S
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-19T01:21:02.331Z
+        completed_at: 2026-05-19T01:22:53.796Z
+        notes: "What worked well: The detached reviewer merge helper was effective in manual_merge detached
+          snapshot mode. Review gates were clear: create a fresh review, record checks/evidence,
+          approve, run helper, then complete the task. Focused event-bus tests plus full npm test
+          gave concrete confidence before merge."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-19T01:22:53.796Z
+        completed_at: 2026-05-19T01:22:53.796Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T01:21:02.331Z
