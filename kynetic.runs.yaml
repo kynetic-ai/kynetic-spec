@@ -50621,7 +50621,7 @@ runs:
     completed_at: 2026-05-19T01:02:18.833Z
   - _ulid: 01KRYX4WBV85D9Q0MGQV2JFA6S
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50635,7 +50635,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-19T01:22:53.796Z
-        completed_at: 2026-05-19T01:22:53.796Z
+        completed_at: 2026-05-19T01:22:57.137Z
+        notes: "Friction points: Scoped AC coverage verification still requires filtering broad kspec
+          validate output because repo-wide validation warnings obscure whether the reviewed spec is
+          clean. Evidence logs are currently recorded as nit threads, which leaves an unresolved
+          non-blocking thread on otherwise clean approved reviews."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-19T01:22:57.137Z
+        completed_at: 2026-05-19T01:22:57.137Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T01:21:02.331Z
