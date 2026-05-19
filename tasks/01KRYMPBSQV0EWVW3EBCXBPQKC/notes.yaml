@@ -4,3 +4,25 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-19T00:26:18.764Z
+  - _ulid: 01KRYYRZQ1SRT6A5GMF878QTKD
+    content: >-
+      Fix cycle 1: addressed reviewer blocker on AC annotations.
+
+
+      1. Re-annotated tests/daemon-command-api.test.ts:507 from '@daemon-command-api
+      ac-command-endpoint' to '@daemon-command-api ac-no-recursive-command-proxy' (matches the AC
+      the test actually exercises).
+
+
+      2. Added behavioral tests in tests/cli-daemon-proxy.test.ts annotated as '@cli-daemon-proxy
+      ac-daemon-internal-proxy-suppression-is-scoped': inside-scope returns daemon-internal reason;
+      suppression overrides --daemon inside; auto-detect, KSPEC_NO_DAEMON, and --daemon failure path
+      all behave normally outside; AsyncLocalStorage guard does not leak across a concurrent async
+      chain (verified via promise-gated interleaving).
+
+
+      All tests are behavioral (no source scanning). Targeted suite passes (82 tests); full npm test
+      passes (2447 suites, 9288 tests). Rebased onto origin/dev before committing.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-19T01:49:29.697Z
