@@ -1,1 +1,58 @@
-notes: []
+notes:
+  - _ulid: 01KRZ1GW01Q3J0CEP5BSVQH7C6
+    content: >-
+      Verified the reported flake is already resolved on the dev integration target.
+
+
+      Investigation:
+
+      - The failure mode reported (execSync("ps -p <pid> -o command=") exits non-zero because the
+      auto-started daemon PID is already gone by observation time) was the exact same flake
+      addressed by sibling task @01KRYRHXMHAFN98Q6J3J3VS9W3.
+
+      - That task's fix was merged into dev at b6eaf192c9 (commit
+      08b871623839214ec344077cbd154be5036bad2d, 2026-05-18 17:59:13 -0700 / 2026-05-19T00:59:13Z
+      UTC).
+
+      - Task @01KRYMPC71752C2ZY8WE6PG42R (the review run where this flake re-surfaced) examined
+      snapshot 84bf6b2083 which branched off integration base f688b032ae before the fix landed. The
+      merge-base of the examined snapshot and the metadata fix is exactly f688b032ae — confirming
+      the snapshot pre-dated the fix.
+
+      - This task @01KRZ0EW was filed 2026-05-19T02:18:55Z (≈1h20m after the fix merged to dev), but
+      the failure reproduction in the task description was on the parent task's pre-fix snapshot,
+      not on current dev.
+
+
+      Current dev state (canonical head 1174d5b7295a includes 08b8716238):
+
+      - tests/cli-no-daemon.test.ts:97-228 already reads metadata.runtime from
+      daemon.connection.json instead of execSync("ps -p"). The metadata is written by the daemon
+      itself after awaitListenSuccess, so the assertion is observation-window independent.
+
+      - The wait predicate for daemon.connection.json requires the runtime field to be a string
+      before resolving, so partial writes do not cause flake.
+
+      - onTestFinished SIGTERM cleanup is registered immediately after PID capture, before any later
+      assertion that could throw.
+
+
+      Verification:
+
+      - npm test -- --run tests/cli-no-daemon.test.ts --fresh: 5/5 fresh reruns all pass (7/7 tests
+      each).
+
+      - npm test (full suite): 9290/9295 passed, 5 skipped, 0 failed (2540.7s).
+
+
+      AC coverage: ac-auto-start-runtime is covered by the test at tests/cli-no-daemon.test.ts:97
+      (annotated "AC: @daemon-runtime-adapter ac-auto-start-runtime"). The metadata-based assertion
+      preserves the runtime claim (bun-spawned daemon would still write runtime=bun) and binds it to
+      the captured PID via metadata.pid === pid.
+
+
+      Conclusion: no code change required. Closing as already-resolved by the sibling task's merged
+      fix.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-19T02:37:29.473Z
