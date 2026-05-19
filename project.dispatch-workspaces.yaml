@@ -18659,3 +18659,84 @@ workspaces:
         head: 202bd38d550faa8b70b5290655937f132af62fd5
         last_seen_at: 2026-05-19T00:01:01.471Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-cli-no-daemon-runtime-assertion-01kryrhx
+  - active_role: null
+    base_branch_point: f688b032ae42aaaac1941fb340c8d5edfe5765e0
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: 2026-05-19T00:04:52.209Z
+      adopted_from: dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
+      ownership: adopted
+      rehydrated: true
+      remote_ref: origin/dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
+      source: task-submission-linkage
+    canonical_branch: dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
+    canonical_branch_head: dc86ab933f181d26fbb8b48408d04f582a4e497d
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-19T00:04:52.247Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-19T00:04:52.247Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
+      updated_at: 2026-05-19T00:04:52.247Z
+    lifecycle_state: integrating
+    resolved_base_branch: dev
+    task_ref: "@01KRYMPBSQV0EWVW3EBCXBPQKC"
+    task_slug: task-suppress-recursive-daemon-command-proxying
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-19T00:04:52.247Z
+      created_at: 2026-05-19T00:04:52.247Z
+      updated_at: 2026-05-19T00:04:52.247Z
+    workspace_id: dispatch-workspace-01KRYMPBSQV0EWVW3EBCXBPQKC
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: dc86ab933f181d26fbb8b48408d04f582a4e497d
+        last_seen_at: 2026-05-19T00:04:52.247Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-suppress-recursive-daemon-command-proxying-01krympb-review
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
+        head: dc86ab933f181d26fbb8b48408d04f582a4e497d
+        last_seen_at: 2026-05-19T00:04:52.247Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-suppress-recursive-daemon-command-proxying-01krympb
