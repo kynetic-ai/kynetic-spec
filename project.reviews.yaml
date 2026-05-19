@@ -218489,6 +218489,12 @@ reviews:
         payload:
           thread_ulid: 01KRZ1KCNDT99EHFVXHRT2H67Y
         timestamp: 2026-05-19T02:50:37.551Z
+      - _ulid: 01KRZ298CQY7KX8FZZZNF5ER5E
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRZ1KCNDT99EHFVXHRT2H67Y
+        timestamp: 2026-05-19T02:50:48.599Z
     examined_commit: 8289299e4c1076357728d40c77ab33092adbf8a8
     external_links: []
     lifecycle_state: closed
@@ -218530,6 +218536,8 @@ reviews:
               passed. The environment-restore-after still runs in the finally block."
             created_at: 2026-05-19T02:50:35.784Z
         kind: blocker
+        resolved_at: 2026-05-19T02:50:46.798Z
+        resolved_by: "@claude"
       - _ulid: 01KRZ1NBEMQTD9YRXSG7XZAKDR
         entries:
           - _ulid: 01KRZ1NBEMJ3F7CA1ZFCGG9S5J
@@ -218564,7 +218572,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-19T02:40:11.826Z
     created_at: 2026-05-19T02:23:10.998Z
-    updated_at: 2026-05-19T02:50:35.784Z
+    updated_at: 2026-05-19T02:50:46.798Z
     notes: []
   - _ulid: 01KRZ1QWZCN4B8YYJAYHDQ278Y
     slugs: []
