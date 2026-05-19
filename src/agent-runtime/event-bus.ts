@@ -378,9 +378,13 @@ export class EventBus {
    * Correlation IDs that no longer appear in retained events cannot be resolved
    * through the bus's causation history anymore, so keeping their depth counters
    * only grows memory across long-running daemons.
+   *
+   * Note: we cannot skip pruning based on `chainDepths.size <= ringBuffer.size`
+   * — a single correlated event followed by N uncorrelated events leaves a
+   * stale chainDepths entry even though the size invariant holds.
    */
   private _pruneChainDepthsToRecentEvents(): void {
-    if (this.chainDepths.size <= this.ringBuffer.size) return;
+    if (this.chainDepths.size === 0) return;
 
     const retainedCorrelationIds = new Set(
       this.getRecentEvents()
