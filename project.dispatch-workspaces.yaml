@@ -19097,7 +19097,7 @@ workspaces:
         head: 84bf6b2083332cc11bf3e106358cc938b701016f
         last_seen_at: 2026-05-19T02:02:25.602Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-disable-daemon-proxying-inside-agent-invocations-01krympc
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: f688b032ae42aaaac1941fb340c8d5edfe5765e0
     bootstrap:
       status: succeeded
@@ -19598,9 +19598,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-19T03:06:12.427Z
-      last_reconciled_at: 2026-05-19T03:24:08.065Z
+      last_reconciled_at: 2026-05-19T03:27:20.816Z
       created_at: 2026-05-19T00:29:24.781Z
-      updated_at: 2026-05-19T03:24:08.065Z
+      updated_at: 2026-05-19T03:27:20.816Z
     workspace_id: dispatch-workspace-01KRYMPCMF46KFWVKKWRDYSJX7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
