@@ -17561,7 +17561,7 @@ workspaces:
         head: df446d63387e7a49faa10619d7041444b3d313d9
         last_seen_at: 2026-05-19T01:03:13.529Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-bound-event-bus-lineage-and-source-ordering-lifetime-01krympa
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: f688b032ae42aaaac1941fb340c8d5edfe5765e0
     bootstrap:
       status: succeeded
@@ -18040,12 +18040,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-19T01:44:12.161Z
+      updated_at: 2026-05-19T01:44:55.994Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-19T01:44:12.161Z
+      updated_at: 2026-05-19T01:44:55.994Z
     integration:
       status: merged
       detail: integration:merged
@@ -18053,7 +18053,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
-      updated_at: 2026-05-19T01:44:12.161Z
+      updated_at: 2026-05-19T01:44:55.994Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KRYMPBC8YM4X3KZC6SPBV6R2"
@@ -18061,9 +18061,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-19T01:27:05.622Z
-      last_reconciled_at: 2026-05-19T01:44:12.161Z
+      last_reconciled_at: 2026-05-19T01:44:55.994Z
       created_at: 2026-05-18T23:44:13.640Z
-      updated_at: 2026-05-19T01:44:12.161Z
+      updated_at: 2026-05-19T01:44:55.994Z
     workspace_id: dispatch-workspace-01KRYMPBC8YM4X3KZC6SPBV6R2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
