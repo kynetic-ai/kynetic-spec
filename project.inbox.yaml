@@ -3592,3 +3592,16 @@ inbox:
       - testing
     added_by: Jacob Chapel
     created_at: 2026-05-19T03:26:45.924Z
+  - _ulid: 01KS0997AF85B60610NWMR50PS
+    text: "Reviewer workflow gap: when required full-suite testing fails on an unrelated/pre-existing
+      test, reviewers currently hand-assemble the triage evidence. A helper or workflow step could
+      accept the failed npm test log plus reviewed base/head, rerun or record the focused failing
+      suite, check whether related paths changed in the reviewed diff, create/reference a follow-up
+      task, and emit suggested review checks/evidence text that separates the raw full-suite result
+      from the branch regression classification."
+    tags:
+      - reflection
+      - review
+      - test-triage
+    added_by: Jacob Chapel
+    created_at: 2026-05-19T14:12:21.967Z
