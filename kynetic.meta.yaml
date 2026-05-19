@@ -19018,6 +19018,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-19T00:08:33.195Z
+  - _ulid: 01KRYTV8352WQTNXR14E92N9SH
+    type: friction
+    content: "When a test verifies runtime properties of an auto-started detached daemon, prefer reading
+      on-disk metadata the daemon wrote post-bind (daemon.connection.json) over shelling out to ps
+      -p <pid>. Reason: between metadata write and the assertion, the daemon can crash or exit
+      during tail-of-startup work (project registration, watcher start, sync init). ps -p then
+      returns either '[MainThread] <defunct>' (zombie, parent has not reaped) or fails entirely
+      (process gone). Both modes are non-deterministic under full-suite load and have been observed
+      twice in cli-no-daemon.test.ts. The metadata file persists across daemon exit and reflects the
+      daemon's own self-detection, so the assertion is both stronger and deterministic. The
+      metadata.pid field can bind the claim to the captured pid (proves the same process wrote both
+      files)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-19T00:40:49.509Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
