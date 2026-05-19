@@ -6093,7 +6093,7 @@ describe("Periodic dispatch reconciliation", () => {
     await cleanupTempDir(testDir);
   });
 
-  // AC: @agent-dispatch-engine ac-19, ac-20
+  // AC: @agent-dispatch-engine ac-19, ac-20, ac-reconcile-non-overlap
   it("does not start overlapping reconcile passes when a previous pass is still running", async () => {
     await setupProjectWithAgents(testDir, []);
 
@@ -6129,6 +6129,70 @@ describe("Periodic dispatch reconciliation", () => {
 
     releaseReconcile();
     await engine.stop();
+  });
+
+  // AC: @agent-dispatch-engine ac-stop-awaits-reconciliation
+  it("stop() does not resolve until an in-flight reconciliation pass completes", async () => {
+    await setupProjectWithAgents(testDir, []);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 10,
+      coalesceWindowMs: 0,
+    });
+
+    let releaseReconcile!: () => void;
+    const reconcileGate = new Promise<void>((resolve) => {
+      releaseReconcile = resolve;
+    });
+    let reconcileStarted = false;
+    let reconcileFinished = false;
+    vi.spyOn(engine as unknown as { _reconcile: () => Promise<void> }, "_reconcile").mockImplementation(
+      async () => {
+        reconcileStarted = true;
+        await reconcileGate;
+        reconcileFinished = true;
+      },
+    );
+
+    await engine.start();
+
+    // Trigger one reconciliation pass; the gate keeps it pending.
+    await vi.advanceTimersByTimeAsync(15);
+    expect(reconcileStarted).toBe(true);
+    expect(reconcileFinished).toBe(false);
+
+    // Call stop() while reconcile is still blocked. It must NOT resolve.
+    let stopResolved = false;
+    const stopPromise = engine.stop().then(() => {
+      stopResolved = true;
+    });
+
+    // Flush microtasks and advance any timers so any non-blocking work in
+    // stop() completes. stop() should still be parked on Promise.allSettled
+    // because the reconcile gate is still held.
+    for (let i = 0; i < 20; i++) {
+      // eslint-disable-next-line no-await-in-loop
+      await Promise.resolve();
+    }
+    await vi.advanceTimersByTimeAsync(100);
+    for (let i = 0; i < 20; i++) {
+      // eslint-disable-next-line no-await-in-loop
+      await Promise.resolve();
+    }
+
+    expect(reconcileFinished).toBe(false);
+    expect(stopResolved).toBe(false);
+
+    // Release the reconcile pass. Now stop() must resolve, and the
+    // reconciliation must finish before stop() returns.
+    releaseReconcile();
+    await stopPromise;
+
+    expect(reconcileFinished).toBe(true);
+    expect(stopResolved).toBe(true);
   });
 });
 
