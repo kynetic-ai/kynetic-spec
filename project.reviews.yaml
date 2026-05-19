@@ -216561,9 +216561,25 @@ reviews:
         payload:
           thread_ulid: 01KRYRR2SWGPX1BYM8JHP2DQSJ
         timestamp: 2026-05-19T00:04:54.141Z
+      - _ulid: 01KRYRSVZZX1YTYP16H9MH5TTK
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-19T00:05:07.199Z
+      - _ulid: 01KRYRSVZZZDQNBM3V890CAJW3
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-19T00:05:07.199Z
     examined_commit: 7c8750e4177de585f398dc7d2b00e9a4e1aa657b
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -216600,7 +216616,14 @@ reviews:
               reconciliation promise is still unresolved."
             created_at: 2026-05-19T00:04:52.581Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-19T00:05:07.199Z
     created_at: 2026-05-18T23:45:52.755Z
-    updated_at: 2026-05-19T00:04:52.581Z
+    updated_at: 2026-05-19T00:05:07.199Z
     notes: []
