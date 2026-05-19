@@ -51110,7 +51110,7 @@ runs:
     completed_at: 2026-05-19T03:26:56.460Z
   - _ulid: 01KS095HEJM9KKWY5YENQMZPK4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51126,7 +51126,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-19T14:11:08.283Z
-        completed_at: 2026-05-19T14:11:08.283Z
+        completed_at: 2026-05-19T14:11:22.509Z
+        notes: "Friction points: Full npm test failed late on an unrelated deterministic cli-no-daemon case,
+          requiring manual triage: inspect full log, rerun the failed suite, prove no branch diff in
+          related paths, create separate task, and encode the distinction in review checks. This is
+          valid reviewer work, but the process has several hand-assembled steps and no single
+          command to classify/report unrelated full-suite failures into a review evidence bundle.
+          Existing direct failure is now tracked as @01KS090W; the broader review-evidence workflow
+          gap did not appear in search results for raw full npm test optional check, pre-existing
+          test failure review, or review check optional fail."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-19T14:11:22.509Z
+        completed_at: 2026-05-19T14:11:22.509Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T14:10:21.266Z
