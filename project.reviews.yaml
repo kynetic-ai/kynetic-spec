@@ -218228,6 +218228,18 @@ reviews:
         runner: npm test
         created_at: 2026-05-19T02:19:27.029Z
         completed_at: 2026-05-19T02:19:27.029Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate: schema/references OK; exit 6 from existing repository warnings
+          (deprecated refs, orphaned specs, existing invalid AC annotations). No validation error in
+          changed files; new daemon-isolation annotations resolve prior blocker."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-19T02:19:31.381Z
+        completed_at: 2026-05-19T02:19:31.381Z
     events:
       - _ulid: 01KRYZK4WTP8VKM622SVMY0VMQ
         actor: Jacob Chapel
@@ -218256,6 +218268,13 @@ reviews:
           status: pass
           name: full npm test regression triage
         timestamp: 2026-05-19T02:19:28.560Z
+      - _ulid: 01KRZ0G0SQQ16N405NY12XPXAE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-19T02:19:33.047Z
     examined_commit: 84bf6b2083332cc11bf3e106358cc938b701016f
     external_links: []
     lifecycle_state: open
@@ -218268,5 +218287,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-19T02:03:46.971Z
-    updated_at: 2026-05-19T02:19:27.029Z
+    updated_at: 2026-05-19T02:19:31.381Z
     notes: []
