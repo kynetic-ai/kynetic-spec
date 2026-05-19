@@ -3558,3 +3558,13 @@ inbox:
       - docs
     added_by: Jacob Chapel
     created_at: 2026-05-19T00:34:48.838Z
+  - _ulid: 01KRYVD7QMJJMY29MAPMX37W7R
+    text: Add focused task/spec AC coverage reporting for reviewers. Given a task ref, resolve its
+      spec_ref, list own and inherited ACs, and report which AC IDs have annotations plus which are
+      missing, so review does not require manual rg scans against project-wide validation noise.
+    tags:
+      - reflection
+      - review
+      - coverage
+    added_by: Jacob Chapel
+    created_at: 2026-05-19T00:50:38.964Z
