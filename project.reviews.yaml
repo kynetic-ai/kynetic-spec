@@ -218377,6 +218377,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-19T02:23:26.446Z
+      - _ulid: 01KRZ1KE1K7157RCSM5FSW7FK1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRZ1KCNDT99EHFVXHRT2H67Y
+        timestamp: 2026-05-19T02:38:53.491Z
     examined_commit: 8289299e4c1076357728d40c77ab33092adbf8a8
     external_links: []
     lifecycle_state: open
@@ -218386,8 +218393,29 @@ reviews:
       content_hash: ""
       ref: "@01KRYMPCMF46KFWVKKWRDYSJX7"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRZ1KCNDT99EHFVXHRT2H67Y
+        anchor:
+          type: code
+          commit: 8289299e4c1076357728d40c77ab33092adbf8a8
+          line_end: 770
+          line_start: 755
+          path: tests/dispatch-workspace-cleanup.test.ts
+          side: head
+        entries:
+          - _ulid: 01KRZ1KCNDB6G4HMH6EPRE1C62
+            author: Jacob Chapel
+            body: "MUST-FIX: The quiet-by-default AC test still does not actually prove diagnostics stay quiet.
+              The test restores the spy in the finally block before reading debugSpy.mock.calls, and
+              Vitest clears a spy's call history on mockRestore() (verified with a direct vi.spyOn
+              probe returning calls=0 after restore). That means this assertion would pass even if
+              reconcileDispatchWorkspaceArtifacts emitted a [dispatch-cleanup] line, so
+              @dispatch-workspace-cleanup-policy ac-preservation-diagnostics-quiet-by-default still
+              lacks valid behavioral coverage. Capture the diagnostic calls before mockRestore(), or
+              assert before restoring, while still restoring the environment afterward."
+            created_at: 2026-05-19T02:38:52.077Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-19T02:23:10.998Z
-    updated_at: 2026-05-19T02:23:24.988Z
+    updated_at: 2026-05-19T02:38:52.077Z
     notes: []
