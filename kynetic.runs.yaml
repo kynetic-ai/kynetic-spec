@@ -50728,7 +50728,7 @@ runs:
     completed_at: 2026-05-19T01:25:52.846Z
   - _ulid: 01KRYYGVQ3JKZ1BHAGX8JNECSK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50743,7 +50743,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-19T01:45:52.955Z
-        completed_at: 2026-05-19T01:45:52.955Z
+        completed_at: 2026-05-19T01:46:05.805Z
+        notes: "Friction points: plain kspec validate exits 6 on project-wide warnings even when the current
+          task is clean, so review checks need nuance or a second kspec validate --warnings-ok run.
+          Review evidence logs still live as a nit thread rather than a first-class review field.
+          The full npm test gate is long-running, but this is expected for review ownership and
+          already mitigated by focused test runs plus the cached runner."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-19T01:46:05.805Z
+        completed_at: 2026-05-19T01:46:05.805Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T01:45:03.459Z
