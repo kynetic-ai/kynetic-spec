@@ -50559,7 +50559,7 @@ runs:
     started_at: 2026-05-19T00:48:47.810Z
     completed_at: 2026-05-19T00:50:48.518Z
   - _ulid: 01KRYVYADEYZCBJSXWW45VB3DQ
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -50609,10 +50609,13 @@ runs:
         completed_at: 2026-05-19T01:02:09.849Z
         notes: No user discussion needed because there are no new proposed captures. Existing tracked items
           remain the right follow-up locations.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-19T01:02:09.849Z
-        completed_at: 2026-05-19T01:02:09.849Z
+        completed_at: 2026-05-19T01:02:18.833Z
+        notes: No new items captured. Friction points were already tracked, and the success pattern was
+          session-specific enough not to warrant a new observation.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:59:58.766Z
+    completed_at: 2026-05-19T01:02:18.833Z
