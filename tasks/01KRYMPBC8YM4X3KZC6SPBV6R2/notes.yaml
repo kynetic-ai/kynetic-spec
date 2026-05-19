@@ -4,3 +4,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-19T00:05:09.778Z
+  - _ulid: 01KRYX737CMRZKW0JRAF01KS6P
+    content: "[FIX_CYCLE: 2] Addressed review blocker on @01KRYQPMKK8CYKVR3R4GCHKP0F. The non-overlap
+      test now carries ac-reconcile-non-overlap as well as ac-19/ac-20. Added a new behavioral test
+      annotated ac-stop-awaits-reconciliation that calls engine.stop() while the reconcile promise
+      is gated, drains microtasks and fake timers, asserts stop has not resolved, then releases the
+      gate and asserts both that stop resolves and that the reconcile body finished before stop
+      returned (i.e. stop actually awaits in-flight reconciliation). Rebased onto dev, which pulled
+      in the unrelated cli-no-daemon stabilization. Focused suite 135/135 pass; full suite 9280/9280
+      pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-19T01:22:14.892Z
