@@ -50560,7 +50560,7 @@ runs:
     completed_at: 2026-05-19T00:50:48.518Z
   - _ulid: 01KRYVYADEYZCBJSXWW45VB3DQ
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50587,7 +50587,19 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-19T01:00:33.909Z
-        completed_at: 2026-05-19T01:00:33.909Z
+        completed_at: 2026-05-19T01:01:43.181Z
+        notes: "Coverage check: Automation-eligible tasks without spec_ref are already tracked by
+          @task-triage-automation-eligible-missing-spec-ref, currently needs_work, and
+          @task-automation-eligibility ac-21/ac-23 explicitly define validate warnings for
+          non-terminal eligible tasks without spec_ref. The specific warning seen during review was
+          consistent with that policy and disappeared from relevance once the task completed. Review
+          evidence-log friction is already tracked by unresolved friction observation @01KR2JD1,
+          which calls out the lack of a first-class place for clean review evidence. No duplicate
+          capture needed for either point."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-19T01:01:43.181Z
+        completed_at: 2026-05-19T01:01:43.181Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:59:58.766Z
