@@ -78,7 +78,8 @@ describe("agent invocation daemon isolation", () => {
       args: [MOCK_ACP],
       env: {
         MOCK_ACP_VERIFY_ENV_FILE: verifyEnvFile,
-        MOCK_ACP_VERIFY_ENV_VARS: "KSPEC_NO_DAEMON,KSPEC_SHADOW_MUTATION_LOCK_FILE,CUSTOM_AGENT_ENV",
+        MOCK_ACP_VERIFY_ENV_VARS:
+          "KSPEC_NO_DAEMON,KSPEC_SHADOW_MUTATION_LOCK_FILE,CUSTOM_AGENT_ENV",
       },
       description: "Mock ACP that captures environment for daemon isolation tests",
     });

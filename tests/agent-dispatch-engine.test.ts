@@ -6149,13 +6149,14 @@ describe("Periodic dispatch reconciliation", () => {
     });
     let reconcileStarted = false;
     let reconcileFinished = false;
-    vi.spyOn(engine as unknown as { _reconcile: () => Promise<void> }, "_reconcile").mockImplementation(
-      async () => {
-        reconcileStarted = true;
-        await reconcileGate;
-        reconcileFinished = true;
-      },
-    );
+    vi.spyOn(
+      engine as unknown as { _reconcile: () => Promise<void> },
+      "_reconcile",
+    ).mockImplementation(async () => {
+      reconcileStarted = true;
+      await reconcileGate;
+      reconcileFinished = true;
+    });
 
     await engine.start();
 

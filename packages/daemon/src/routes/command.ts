@@ -269,7 +269,10 @@ async function executeCommand(
         runWithOutputState(
           () =>
             runWithoutSpecDirOverride(() =>
-              runWithWorkingDirectory(() => program.parseAsync(argv, { from: "user" }), projectPath),
+              runWithWorkingDirectory(
+                () => program.parseAsync(argv, { from: "user" }),
+                projectPath,
+              ),
             ),
           { outputFormat: "text", verboseMode: false },
         ),

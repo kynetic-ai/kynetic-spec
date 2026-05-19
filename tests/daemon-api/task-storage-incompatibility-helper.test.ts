@@ -87,7 +87,9 @@ describe("taskStorageIncompatibilityResponse", () => {
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- minimal cache stub for helper
-    const result = taskStorageIncompatibilityResponse(legacyRemovedError(), { cache: cache as any });
+    const result = taskStorageIncompatibilityResponse(legacyRemovedError(), {
+      cache: cache as any,
+    });
 
     expect(result).not.toBeNull();
     expect(result!.body.cache_domain).toBe("tasks");

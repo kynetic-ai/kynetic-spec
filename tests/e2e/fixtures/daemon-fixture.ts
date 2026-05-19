@@ -19,6 +19,7 @@ import { cpSync, existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import {
+  acquireTestDaemonPortStartLock as defaultAcquireTestDaemonPortStartLock,
   allocateTestDaemonPort as defaultAllocateTestDaemonPort,
   attachCleanupFailure,
   createTestDaemonProject as defaultCreateTestDaemonProject,
@@ -29,6 +30,7 @@ import {
 } from "../../helpers/daemon.js";
 
 export type StartTestDaemonImpl = typeof defaultStartTestDaemon;
+export type AcquireTestDaemonPortStartLockImpl = typeof defaultAcquireTestDaemonPortStartLock;
 
 export interface StartPlaywrightFixtureDaemonOptions {
   project: TestDaemonProject;
@@ -42,6 +44,8 @@ export interface StartPlaywrightFixtureDaemonOptions {
    * cleanup on both success and startup-failure paths.
    */
   registerCleanup: (stop: () => Promise<void>) => void;
+  /** Release a setup-held dynamic-port lock after startup succeeds or fails. */
+  releasePortStartLock?: () => void;
   /**
    * Test seam for unit-level coverage of the cleanup-registration contract.
    * Production callers (`test-base.ts`) leave this undefined and the helper
@@ -68,17 +72,40 @@ export async function startPlaywrightFixtureDaemon(
   opts: StartPlaywrightFixtureDaemonOptions,
 ): Promise<StartedTestDaemon> {
   const start = opts.startTestDaemonImpl ?? defaultStartTestDaemon;
-  return await start(opts.project, {
-    runtime: opts.runtime,
-    port: opts.port,
-    extraEnv: {
-      // KSPEC_TEST=1 enables the daemon's test-only cache-delay primitive
-      // (src/daemon/entity-cache.ts). Preserved from the prior fixture.
-      KSPEC_TEST: "1",
-      KSPEC_TEST_RUNTIME: opts.runtime,
-    },
-    registerCleanup: opts.registerCleanup,
-  });
+  const releasePortStartLock = opts.releasePortStartLock;
+  let releaseAttempted = false;
+  try {
+    const started = await start(opts.project, {
+      runtime: opts.runtime,
+      port: opts.port,
+      extraEnv: {
+        // KSPEC_TEST=1 enables the daemon's test-only cache-delay primitive
+        // (src/daemon/entity-cache.ts). Preserved from the prior fixture.
+        KSPEC_TEST: "1",
+        KSPEC_TEST_RUNTIME: opts.runtime,
+      },
+      registerCleanup: opts.registerCleanup,
+    });
+    if (releasePortStartLock) {
+      releaseAttempted = true;
+      releasePortStartLock();
+    }
+    return started;
+  } catch (primary) {
+    if (releasePortStartLock && !releaseAttempted) {
+      try {
+        releaseAttempted = true;
+        releasePortStartLock();
+      } catch (cleanupError) {
+        const err = primary instanceof Error ? primary : new Error(String(primary));
+        const secondary =
+          cleanupError instanceof Error ? cleanupError : new Error(String(cleanupError));
+        attachCleanupFailure(err, secondary);
+        throw err;
+      }
+    }
+    throw primary;
+  }
 }
 
 /**
@@ -115,6 +142,8 @@ export interface AcquirePlaywrightFixtureResourcesOptions {
   __testCreateProjectImpl?: CreateTestDaemonProjectImpl;
   /** Test seam: override `allocateTestDaemonPort` for setup-failure injection. */
   __testAllocatePortImpl?: AllocateTestDaemonPortImpl;
+  /** Test seam: override the dynamic-port startup lock for ordering/cleanup tests. */
+  __testAcquirePortStartLockImpl?: AcquireTestDaemonPortStartLockImpl;
 }
 
 export interface PlaywrightFixtureResources {
@@ -122,6 +151,8 @@ export interface PlaywrightFixtureResources {
   project: TestDaemonProject;
   /** Pre-allocated dynamic port the daemon should bind on. */
   port: number;
+  /** Releases the dynamic-port startup lock after the daemon finishes startup. */
+  releasePortStartLock: () => void;
 }
 
 /**
@@ -149,12 +180,15 @@ export async function acquirePlaywrightFixtureResources(
 ): Promise<PlaywrightFixtureResources> {
   const createProject = opts.__testCreateProjectImpl ?? defaultCreateTestDaemonProject;
   const allocatePort = opts.__testAllocatePortImpl ?? defaultAllocateTestDaemonPort;
+  const acquirePortStartLock =
+    opts.__testAcquirePortStartLockImpl ?? defaultAcquireTestDaemonPortStartLock;
 
   const project = await createProject({
     fixturesSource: opts.fixturesSource,
     webUiDir: opts.webUiDir,
   });
 
+  let releasePortStartLock: (() => void) | null = null;
   try {
     opts.__testStageHook?.("after-create-project");
 
@@ -181,11 +215,32 @@ export async function acquirePlaywrightFixtureResources(
     // cycles re-bind to the same endpoint that the browser already loaded —
     // losing the port across a restart would force every test that exercises
     // reconnection behavior to reload.
+    releasePortStartLock = await acquirePortStartLock();
     const port = await allocatePort();
     opts.__testStageHook?.("after-allocate-port");
 
-    return { project, port };
+    return { project, port, releasePortStartLock };
   } catch (primary) {
+    if (releasePortStartLock) {
+      try {
+        releasePortStartLock();
+      } catch (cleanupError) {
+        const err = primary instanceof Error ? primary : new Error(String(primary));
+        const secondary =
+          cleanupError instanceof Error ? cleanupError : new Error(String(cleanupError));
+        attachCleanupFailure(err, secondary);
+        try {
+          await project.cleanup();
+        } catch (projectCleanupError) {
+          const projectSecondary =
+            projectCleanupError instanceof Error
+              ? projectCleanupError
+              : new Error(String(projectCleanupError));
+          attachCleanupFailure(err, projectSecondary);
+        }
+        throw err;
+      }
+    }
     // Release the owned project handle so a later-step failure does not
     // leak the temp project + isolated HOME. project.cleanup is
     // idempotent, so a later teardown that also calls cleanup is safe.
