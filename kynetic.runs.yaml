@@ -51110,7 +51110,7 @@ runs:
     completed_at: 2026-05-19T03:26:56.460Z
   - _ulid: 01KS095HEJM9KKWY5YENQMZPK4
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51138,7 +51138,19 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-19T14:11:22.509Z
-        completed_at: 2026-05-19T14:11:22.509Z
+        completed_at: 2026-05-19T14:11:33.547Z
+        notes: 'Coverage check: kspec search "cli-no-daemon auto-start" returns @01KS090W, so the concrete
+          failing test is already tracked and should not be duplicated. kspec search "detached
+          reviewer merge helper" returns existing implemented feature/tasks and observations, so
+          merge-helper success is already represented. kspec search "raw full npm test optional
+          check", "pre-existing test failure review", and "review check optional fail" found no
+          matches, so the broader reviewer workflow gap appears untracked: when full-suite tests
+          fail outside the reviewed diff, reviewers manually assemble evidence and decide how to
+          encode required/optional checks.'
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-19T14:11:33.547Z
+        completed_at: 2026-05-19T14:11:33.547Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T14:10:21.266Z
