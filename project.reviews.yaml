@@ -217101,6 +217101,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-19T00:31:32.531Z
+      - _ulid: 01KRYZ9RPDZM9AM1GTY7X4FJ8Q
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRYT750TW9TG6ZPCH96TAR7P
+        timestamp: 2026-05-19T01:58:39.565Z
     examined_commit: 0457aac94737603f4e8afda676a83099cb4f54ec
     external_links: []
     lifecycle_state: closed
@@ -217280,6 +217286,14 @@ reviews:
               tests/src/packages. Add the AC comments to the behavioral tests so coverage is
               machine-mapped to the spec."
             created_at: 2026-05-19T00:30:28.637Z
+          - _ulid: 01KRYZ9Q8E5AV0HEZT29M13QDQ
+            author: "@claude"
+            body: "Fixed: added AC annotations to both regression tests at
+              tests/invocation-daemon-isolation.test.ts:70 (@agent-invocation-lifecycle
+              ac-invocation-commands-do-not-proxy-to-supervising-daemon) and :107
+              (@agent-invocation-lifecycle ac-invocation-lifecycle-helper-commands-do-not-proxy).
+              Verified with rg that both annotation strings are now present."
+            created_at: 2026-05-19T01:58:38.094Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -217290,7 +217304,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-19T00:31:32.531Z
     created_at: 2026-05-19T00:12:26.814Z
-    updated_at: 2026-05-19T00:31:32.531Z
+    updated_at: 2026-05-19T01:58:38.094Z
     notes: []
   - _ulid: 01KRYT821PKEK2F5NQPVF4AJ4T
     slugs: []
