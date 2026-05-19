@@ -50620,7 +50620,7 @@ runs:
     started_at: 2026-05-19T00:59:58.766Z
     completed_at: 2026-05-19T01:02:18.833Z
   - _ulid: 01KRYX4WBV85D9Q0MGQV2JFA6S
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -50662,10 +50662,13 @@ runs:
         completed_at: 2026-05-19T01:23:07.536Z
         notes: "Discussion skipped: no untracked improvement proposals remain after coverage search, so
           there is nothing new to ask the user to approve."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-19T01:23:07.536Z
-        completed_at: 2026-05-19T01:23:07.536Z
+        completed_at: 2026-05-19T01:23:10.733Z
+        notes: "Capture skipped: no new inbox items or observations created to avoid duplicates. Existing
+          coverage: @01KPA69P, @01KR2JD1, @01KQ1273, @01KQ9AMHH."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T01:21:02.331Z
+    completed_at: 2026-05-19T01:23:10.733Z
