@@ -24,6 +24,7 @@ tags:
   - websocket
   - bun
 vcs_refs: []
+review_ref: "@01KS0849DB0BP7PDD9BTKZ3EGF"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-stabilize-bun-websocket-runtime-parity-startup-hook/01krc2r0
@@ -134,6 +135,13 @@ history:
         previous: pending_review
     command: task-unblock
     timestamp: 2026-05-19T13:48:10.180Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KS0849DB0BP7PDD9BTKZ3EGF"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-19T13:52:16.250Z
 prior_status: null
 created_at: 2026-05-11T17:53:18.255Z
 started_at: 2026-05-11T17:54:56.764Z

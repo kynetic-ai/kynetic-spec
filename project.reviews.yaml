@@ -218901,3 +218901,29 @@ reviews:
     created_at: 2026-05-19T03:06:43.800Z
     updated_at: 2026-05-19T03:22:58.615Z
     notes: []
+  - _ulid: 01KS0849DB0BP7PDD9BTKZ3EGF
+    slugs: []
+    title: Review stabilize Bun websocket runtime parity startup hook
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KS0849D7NTB6G4HDVY3MPQ7A
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-19T13:52:11.687Z
+    examined_commit: 2c98d77b49c9a9ae0c827afe040b447fd97f2349
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRC2R0XFZ9558AF3EN6DS6DK"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-19T13:52:11.691Z
+    updated_at: null
+    notes: []
