@@ -218483,6 +218483,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-19T02:40:11.830Z
+      - _ulid: 01KRZ28XKFJJS771QKAWENXMYH
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRZ1KCNDT99EHFVXHRT2H67Y
+        timestamp: 2026-05-19T02:50:37.551Z
     examined_commit: 8289299e4c1076357728d40c77ab33092adbf8a8
     external_links: []
     lifecycle_state: closed
@@ -218513,6 +218519,16 @@ reviews:
               lacks valid behavioral coverage. Capture the diagnostic calls before mockRestore(), or
               assert before restoring, while still restoring the environment afterward."
             created_at: 2026-05-19T02:38:52.077Z
+          - _ulid: 01KRZ28VW8M6DNHXTHF2VGY8C4
+            author: "@claude"
+            body: "Fixed: refactored the quiet-by-default test to snapshot debugSpy.mock.calls into a local
+              before calling debugSpy.mockRestore(), then assert against the local. mockRestore()
+              does clear the spy's call history, so reading after restore was always observing an
+              empty array. Mutation-verified the fix's sensitivity: temporarily replacing the
+              env-var early return in logArtifactPreservation with a no-op fall-through now fails
+              this test (1 captured [dispatch-cleanup] diagnostic), where previously it silently
+              passed. The environment-restore-after still runs in the finally block."
+            created_at: 2026-05-19T02:50:35.784Z
         kind: blocker
       - _ulid: 01KRZ1NBEMQTD9YRXSG7XZAKDR
         entries:
@@ -218548,7 +218564,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-19T02:40:11.826Z
     created_at: 2026-05-19T02:23:10.998Z
-    updated_at: 2026-05-19T02:40:11.830Z
+    updated_at: 2026-05-19T02:50:35.784Z
     notes: []
   - _ulid: 01KRZ1QWZCN4B8YYJAYHDQ278Y
     slugs: []
