@@ -50266,7 +50266,7 @@ runs:
     started_at: 2026-05-18T23:41:58.946Z
     completed_at: 2026-05-18T23:43:38.590Z
   - _ulid: 01KRYRM87X991AD08WY5909CCM
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -50318,10 +50318,14 @@ runs:
         completed_at: 2026-05-19T00:04:12.012Z
         notes: "Skipped discussion: no new untracked improvements to ask about; all high-confidence items
           were already covered or already captured."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-19T00:04:12.012Z
-        completed_at: 2026-05-19T00:04:12.012Z
+        completed_at: 2026-05-19T00:04:20.291Z
+        notes: No capture needed. Follow-up task @01KRYRHX already exists for the flaky test; existing
+          observations/inbox cover review evidence logs, reviewer AC helper friction, and
+          direct-probe review pattern. Avoided duplicate inbox/observation noise.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:02:03.133Z
+    completed_at: 2026-05-19T00:04:20.291Z
