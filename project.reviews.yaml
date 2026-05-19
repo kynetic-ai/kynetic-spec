@@ -216475,7 +216475,18 @@ reviews:
     slugs: []
     title: Review prevent overlapping periodic dispatch reconciliation
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/agent-dispatch-engine.test.ts passed: 134 tests passed in
+          tests/agent-dispatch-engine.test.ts; runner summary 40 suites passed of 40."
+        name: focused dispatch tests
+        required: true
+        runner: npm
+        created_at: 2026-05-19T00:03:59.808Z
+        completed_at: 2026-05-19T00:03:59.808Z
     events:
       - _ulid: 01KRYQPMKJS56PPFW0T8PE0WWC
         actor: Jacob Chapel
@@ -216490,6 +216501,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-18T23:46:20.975Z
+      - _ulid: 01KRYRQVP2YTBF9Q0AJPCRRC5R
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused dispatch tests
+        timestamp: 2026-05-19T00:04:01.346Z
     examined_commit: 7c8750e4177de585f398dc7d2b00e9a4e1aa657b
     external_links: []
     lifecycle_state: open
@@ -216502,5 +216520,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-18T23:45:52.755Z
-    updated_at: 2026-05-18T23:46:18.697Z
+    updated_at: 2026-05-19T00:03:59.808Z
     notes: []
