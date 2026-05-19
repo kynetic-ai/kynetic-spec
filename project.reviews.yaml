@@ -218240,6 +218240,19 @@ reviews:
         runner: kspec
         created_at: 2026-05-19T02:19:31.381Z
         completed_at: 2026-05-19T02:19:31.381Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: rg found AC annotations for @agent-invocation-lifecycle
+          ac-invocation-commands-do-not-proxy-to-supervising-daemon at
+          tests/invocation-daemon-isolation.test.ts:70 and
+          ac-invocation-lifecycle-helper-commands-do-not-proxy at line 107.
+        name: AC annotation search
+        required: true
+        runner: rg
+        created_at: 2026-05-19T02:19:35.800Z
+        completed_at: 2026-05-19T02:19:35.800Z
     events:
       - _ulid: 01KRYZK4WTP8VKM622SVMY0VMQ
         actor: Jacob Chapel
@@ -218275,6 +218288,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-19T02:19:33.047Z
+      - _ulid: 01KRZ0G4VWS9W797XG86WGJTNF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation search
+        timestamp: 2026-05-19T02:19:37.213Z
     examined_commit: 84bf6b2083332cc11bf3e106358cc938b701016f
     external_links: []
     lifecycle_state: open
@@ -218287,5 +218307,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-19T02:03:46.971Z
-    updated_at: 2026-05-19T02:19:31.381Z
+    updated_at: 2026-05-19T02:19:35.800Z
     notes: []
