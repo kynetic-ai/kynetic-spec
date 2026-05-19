@@ -17590,12 +17590,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-19T14:59:46.872Z
+      updated_at: 2026-05-19T15:00:18.927Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-19T14:59:46.872Z
+      updated_at: 2026-05-19T15:00:18.927Z
     integration:
       status: pending
       detail: null
@@ -17603,17 +17603,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: fa838313de769a1cf6b680319c8399c24a94fa21
-      updated_at: 2026-05-19T14:59:46.872Z
-    lifecycle_state: ready
+      updated_at: 2026-05-19T15:00:18.927Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KS090WJR79MQXR6B052BN6DQ"
     task_slug: task-stabilize-cli-no-daemon-auto-start-process-assertion
     timestamps:
       closed_at: null
       last_active_at: 2026-05-19T14:09:00.327Z
-      last_reconciled_at: 2026-05-19T14:59:46.872Z
+      last_reconciled_at: 2026-05-19T15:00:18.927Z
       created_at: 2026-05-19T14:08:28.931Z
-      updated_at: 2026-05-19T14:59:46.872Z
+      updated_at: 2026-05-19T15:00:18.927Z
     workspace_id: dispatch-workspace-01KS090WJR79MQXR6B052BN6DQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
