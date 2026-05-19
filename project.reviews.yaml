@@ -216498,6 +216498,21 @@ reviews:
         runner: kspec
         created_at: 2026-05-19T00:04:04.193Z
         completed_at: 2026-05-19T00:04:04.193Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test failed after full run: tests/cli-no-daemon.test.ts has 1 failing test,
+          'KSPEC_NO_DAEMON auto-starts the daemon with the configured node runtime even when the CLI
+          runs under bun', failing at tests/cli-no-daemon.test.ts:161 because ps -p <pid> -o
+          command= exits 1. Fresh focused rerun reproduced the same failure. This file is outside
+          the task diff; changed files are src/agent-runtime/dispatch.ts and
+          tests/agent-dispatch-engine.test.ts."
+        name: full npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-19T00:04:14.506Z
+        completed_at: 2026-05-19T00:04:14.506Z
     events:
       - _ulid: 01KRYQPMKJS56PPFW0T8PE0WWC
         actor: Jacob Chapel
@@ -216533,6 +216548,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KRYRR2SWGPX1BYM8JHP2DQSJ
         timestamp: 2026-05-19T00:04:10.231Z
+      - _ulid: 01KRYRRA1YK5NWH90ADWRG42DA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: full npm test
+        timestamp: 2026-05-19T00:04:16.062Z
     examined_commit: 7c8750e4177de585f398dc7d2b00e9a4e1aa657b
     external_links: []
     lifecycle_state: open
@@ -216567,5 +216589,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-18T23:45:52.755Z
-    updated_at: 2026-05-19T00:04:08.636Z
+    updated_at: 2026-05-19T00:04:14.506Z
     notes: []
