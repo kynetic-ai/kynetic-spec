@@ -51110,9 +51110,23 @@ runs:
     completed_at: 2026-05-19T03:26:56.460Z
   - _ulid: 01KS095HEJM9KKWY5YENQMZPK4
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-19T14:10:21.266Z
+        completed_at: 2026-05-19T14:11:08.283Z
+        notes: "Worked well: The detached reviewer merge helper was the right publication path for the
+          detached snapshot and merged cleanly into dev without manual checkout/merge. The review
+          record checks separated required evidence from optional raw full-suite output, which let
+          the task advance while still preserving the unrelated cli-no-daemon failure details.
+          Focused and full-run verification both confirmed
+          tests/daemon-api/websocket-protocol.test.ts passed under Bun-available conditions."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-19T14:11:08.283Z
+        completed_at: 2026-05-19T14:11:08.283Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T14:10:21.266Z
