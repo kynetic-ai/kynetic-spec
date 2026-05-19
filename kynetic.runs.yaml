@@ -50439,7 +50439,7 @@ runs:
     started_at: 2026-05-19T00:27:29.721Z
     completed_at: 2026-05-19T00:28:53.943Z
   - _ulid: 01KRYTBKWP4BXFA4328ZMRHH0J
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -50487,7 +50487,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-19T00:34:40.248Z
-        completed_at: 2026-05-19T00:34:40.248Z
+        completed_at: 2026-05-19T00:34:59.177Z
+        notes: Captured inbox @01KRYTG7 for the workflow show docs or CLI consistency issue. Did not capture
+          shell quoting friction because existing observations and inbox coverage already track it.
+          Did not capture cli-no-daemon flake because task @01KRYRHX already tracks it.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:32:17.302Z
+    completed_at: 2026-05-19T00:34:59.177Z
