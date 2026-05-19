@@ -1,0 +1,30 @@
+_ulid: 01KRZ0EWBBYQECH4FR1PWTC1ZN
+slugs: []
+title: Stabilize Bun daemon auto-start runtime test
+type: bug
+description: 'During review of @01KRYMPC71752C2ZY8WE6PG42R, full npm test failed in
+  tests/cli-no-daemon.test.ts: auto-starts the daemon with the configured node runtime even when the
+  CLI runs under bun. Failure: execSync("ps -p <pid> -o command=") exits non-zero because the PID
+  written by the auto-started daemon is already gone by observation time. Reproduced twice on the
+  task snapshot (full npm test and targeted npm test -- --run tests/cli-no-daemon.test.ts) and
+  reproduced on integration-base commit f688b032ae42 with the same targeted command, so this is
+  pre-existing/flaky rather than introduced by the reviewed branch. Investigate why the Bun-launched
+  CLI writes a daemon PID that exits before ps observation, then update the test or daemon startup
+  behavior so the runtime assertion is deterministic without relying on a process that may have
+  already exited.'
+spec_ref: "@daemon-runtime-adapter"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - daemon
+  - bun
+vcs_refs: []
+created_at: 2026-05-19T02:18:55.723Z
+todos: []
+automation: eligible
