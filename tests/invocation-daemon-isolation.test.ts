@@ -67,6 +67,7 @@ describe("agent invocation daemon isolation", () => {
     return dir;
   }
 
+  // AC: @agent-invocation-lifecycle ac-invocation-commands-do-not-proxy-to-supervising-daemon
   it("spawns dispatched agents with daemon proxying disabled", async () => {
     const testDir = await tempDir("kspec-invocation-daemon-env-");
     const verifyEnvFile = path.join(testDir, "agent-env.json");
@@ -103,6 +104,7 @@ describe("agent invocation daemon isolation", () => {
     });
   });
 
+  // AC: @agent-invocation-lifecycle ac-invocation-lifecycle-helper-commands-do-not-proxy
   it("writes invocation failure notes with daemon proxying disabled", async () => {
     const testDir = await tempDir("kspec-invocation-note-env-");
     const captureFile = path.join(testDir, "kspec-calls.json");
