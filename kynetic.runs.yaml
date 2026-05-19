@@ -50560,7 +50560,7 @@ runs:
     completed_at: 2026-05-19T00:50:48.518Z
   - _ulid: 01KRYVYADEYZCBJSXWW45VB3DQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50575,7 +50575,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-19T01:00:18.877Z
-        completed_at: 2026-05-19T01:00:18.877Z
+        completed_at: 2026-05-19T01:00:33.909Z
+        notes: "Friction points: (1) The task was automation-eligible but had no spec_ref, so review had no
+          direct spec/AC source for the task itself and kspec validate reported this alongside many
+          broad existing warnings. I had to infer review coverage from the changed test's existing
+          AC annotations and related specs. (2) Review evidence capture required several separate
+          kspec review check commands for focused tests, full tests, validate output, and manual
+          evidence. That is workable but repetitive for every clean automated review. (3) Full npm
+          test -- --fresh is intentionally required but long-running; no proposed change yet because
+          this is a quality gate rather than avoidable friction."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-19T01:00:33.909Z
+        completed_at: 2026-05-19T01:00:33.909Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:59:58.766Z
