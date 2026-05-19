@@ -19389,3 +19389,84 @@ workspaces:
         head: 0457aac94737603f4e8afda676a83099cb4f54ec
         last_seen_at: 2026-05-19T00:10:17.470Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-disable-daemon-proxying-inside-agent-invocations-01krympc
+  - active_role: null
+    base_branch_point: f688b032ae42aaaac1941fb340c8d5edfe5765e0
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: 2026-05-19T00:29:24.751Z
+      adopted_from: dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+      ownership: adopted
+      rehydrated: true
+      remote_ref: origin/dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+      source: task-submission-linkage
+    canonical_branch: dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+    canonical_branch_head: b789b6449d833f4161631aeef8ed4a4c1ccc3d2a
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-19T00:29:24.781Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-19T00:29:24.781Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
+      updated_at: 2026-05-19T00:29:24.781Z
+    lifecycle_state: integrating
+    resolved_base_branch: dev
+    task_ref: "@01KRYMPCMF46KFWVKKWRDYSJX7"
+    task_slug: task-gate-cleanup-preservation-diagnostics
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-19T00:29:24.781Z
+      created_at: 2026-05-19T00:29:24.781Z
+      updated_at: 2026-05-19T00:29:24.781Z
+    workspace_id: dispatch-workspace-01KRYMPCMF46KFWVKKWRDYSJX7
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: b789b6449d833f4161631aeef8ed4a4c1ccc3d2a
+        last_seen_at: 2026-05-19T00:29:24.781Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-gate-cleanup-preservation-diagnostics-01krympc-review
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+        head: b789b6449d833f4161631aeef8ed4a4c1ccc3d2a
+        last_seen_at: 2026-05-19T00:29:24.781Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-gate-cleanup-preservation-diagnostics-01krympc
