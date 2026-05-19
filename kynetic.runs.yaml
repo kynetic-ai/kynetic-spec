@@ -50331,7 +50331,7 @@ runs:
     completed_at: 2026-05-19T00:04:20.291Z
   - _ulid: 01KRYRVEXVGM322FCFWX1TQ1ZN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50346,7 +50346,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-19T00:06:42.708Z
-        completed_at: 2026-05-19T00:06:42.708Z
+        completed_at: 2026-05-19T00:06:51.553Z
+        notes: "Friction points: review comments with code-like evidence are fragile through shell quoting;
+          my first comment body contained backticks and command-like text, which the shell
+          interpreted before kspec received it, forcing a corrective reply. Full npm test also
+          surfaced a deterministic failure in an unrelated no-daemon test, which added triage time
+          to a narrow dispatch review. kspec validate currently exits with project-wide warnings, so
+          required review checks can be marked failing even when the task-specific diff is
+          unrelated."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-19T00:06:51.553Z
+        completed_at: 2026-05-19T00:06:51.553Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:05:59.356Z
