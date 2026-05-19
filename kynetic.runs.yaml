@@ -50674,7 +50674,7 @@ runs:
     completed_at: 2026-05-19T01:23:10.733Z
   - _ulid: 01KRYX8WGFE5QQY0CRNAV59QD6
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -50694,7 +50694,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-19T01:24:37.603Z
-        completed_at: 2026-05-19T01:24:37.603Z
+        completed_at: 2026-05-19T01:25:35.085Z
+        notes: "High-confidence systemic items from session: 1) Test pattern friction — the original test
+          released the reconcile gate before awaiting stop, making it pass regardless of whether
+          stop actually waited. This is a real testing failure mode for any 'X awaits Y on shutdown'
+          assertion. 2) AC id drift after spec evolution — when spec ACs are renamed/added between
+          task creation and submission, the original ac-19/ac-20 annotation no longer satisfies the
+          newer ac-reconcile-non-overlap and ac-stop-awaits-reconciliation ids. Both observed once
+          this session — not yet confirmed as repeating patterns."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-19T01:25:35.085Z
+        completed_at: 2026-05-19T01:25:35.085Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-19T01:23:13.551Z
