@@ -218253,6 +218253,25 @@ reviews:
         runner: rg
         created_at: 2026-05-19T02:19:35.800Z
         completed_at: 2026-05-19T02:19:35.800Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, src/agent-runtime/invocation.ts, src/agents/spawner.ts,
+          tests/invocation-daemon-isolation.test.ts, tests/mocks/kspec-capture-mock.cjs,
+          tests/mocks/acp-mock.js, tests/cli-no-daemon.test.ts. Commands run: kspec task get, kspec
+          item get, kspec review get prior cycle, git diff/stat/log/show, rg AC
+          annotations/source-scan terms, kspec validate, targeted npm tests, full npm test,
+          base-commit targeted test in detached temp worktree. Claims verified: KSPEC_NO_DAEMON=1
+          reaches spawned ACP env and helper command env; mutation lock/custom env are preserved;
+          prior blocker annotations are present. Categories searched: correctness, edge cases/env
+          precedence, error handling/helper command failure paths, test quality/source scanning,
+          integration/regression."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-19T02:19:49.066Z
+        completed_at: 2026-05-19T02:19:49.066Z
     events:
       - _ulid: 01KRYZK4WTP8VKM622SVMY0VMQ
         actor: Jacob Chapel
@@ -218295,6 +218314,13 @@ reviews:
           status: pass
           name: AC annotation search
         timestamp: 2026-05-19T02:19:37.213Z
+      - _ulid: 01KRZ0GHZ91WY3NM46B62Q9PGM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-19T02:19:50.633Z
     examined_commit: 84bf6b2083332cc11bf3e106358cc938b701016f
     external_links: []
     lifecycle_state: open
@@ -218307,5 +218333,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-19T02:03:46.971Z
-    updated_at: 2026-05-19T02:19:35.800Z
+    updated_at: 2026-05-19T02:19:49.066Z
     notes: []
