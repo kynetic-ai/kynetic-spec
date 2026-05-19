@@ -217960,3 +217960,29 @@ reviews:
     created_at: 2026-05-19T01:28:12.689Z
     updated_at: 2026-05-19T01:43:38.450Z
     notes: []
+  - _ulid: 01KRYZ9SRDTQ1PPS53N37JMGWR
+    slugs: []
+    title: Review suppress recursive daemon command proxying
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRYZ9SRC7KJ6EKN77RBKCEHK
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-19T01:58:40.652Z
+    examined_commit: 308fb19e14e1afb6a28a5d10ac2bf94aec3ba887
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRYMPBSQV0EWVW3EBCXBPQKC"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-19T01:58:40.653Z
+    updated_at: null
+    notes: []
