@@ -3533,3 +3533,16 @@ inbox:
       - specs
     added_by: Jacob Chapel
     created_at: 2026-05-18T23:43:39.267Z
+  - _ulid: 01KRYS05Q6EMTX6D9TT2JCP2AC
+    text: "Investigate deterministic tests/cli-no-daemon.test.ts failure: 'KSPEC_NO_DAEMON auto-starts
+      the daemon with the configured node runtime even when the CLI runs under bun' fails because ps
+      -p <pid> -o command= exits 1 after the auto-started daemon PID has already disappeared. Seen
+      during review @01KRYQPM; reproduced with npm test -- --fresh --run
+      tests/cli-no-daemon.test.ts. Triage whether this is an environment-sensitive test race, daemon
+      lifecycle regression, or pre-existing failure before promoting to a task."
+    tags:
+      - reflection
+      - test-stability
+      - daemon
+    added_by: Jacob Chapel
+    created_at: 2026-05-19T00:08:33.766Z
