@@ -26,6 +26,7 @@ tags:
   - daemon
   - test
 vcs_refs: []
+review_ref: "@01KS0C5B4KH9T2FAK0A3ZM5AJ2"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-stabilize-cli-no-daemon-auto-start-process-assertion/01ks090w
@@ -69,6 +70,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-05-19T14:35:23.087Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KS0C5B4KH9T2FAK0A3ZM5AJ2"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-19T15:02:44.781Z
 created_at: 2026-05-19T14:07:48.821Z
 started_at: 2026-05-19T14:09:42.872Z
 submitted_at: 2026-05-19T14:35:23.086Z

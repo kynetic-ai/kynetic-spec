@@ -219066,3 +219066,29 @@ reviews:
     created_at: 2026-05-19T13:52:11.691Z
     updated_at: 2026-05-19T14:09:03.630Z
     notes: []
+  - _ulid: 01KS0C5B4KH9T2FAK0A3ZM5AJ2
+    slugs: []
+    title: Review stabilize cli-no-daemon auto-start process assertion
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KS0C5B4CJ5W11VAWVBRXSDFP
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-19T15:02:40.524Z
+    examined_commit: d4202f5fd5b5f3e85d75c2cbbaf0f781d45b45f6
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KS090WJR79MQXR6B052BN6DQ"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-19T15:02:40.531Z
+    updated_at: null
+    notes: []
