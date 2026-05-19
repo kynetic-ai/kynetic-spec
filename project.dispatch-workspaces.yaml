@@ -18036,11 +18036,11 @@ workspaces:
     canonical_branch: dispatch/task/task-prevent-overlapping-dispatch-reconciliation/01krympb
     canonical_branch_head: b83adf6c8cb6b7217238f3fc11157be38e34afb1
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-19T01:44:55.994Z
+      updated_at: 2026-05-19T01:47:59.675Z
     health:
       status: healthy
       issues: []
@@ -18054,16 +18054,16 @@ workspaces:
       target_branch: dev
       target_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
       updated_at: 2026-05-19T01:44:55.994Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KRYMPBC8YM4X3KZC6SPBV6R2"
     task_slug: task-prevent-overlapping-dispatch-reconciliation
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-19T01:47:59.675Z
       last_active_at: 2026-05-19T01:27:05.622Z
       last_reconciled_at: 2026-05-19T01:47:30.648Z
       created_at: 2026-05-18T23:44:13.640Z
-      updated_at: 2026-05-19T01:47:30.648Z
+      updated_at: 2026-05-19T01:47:59.675Z
     workspace_id: dispatch-workspace-01KRYMPBC8YM4X3KZC6SPBV6R2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
