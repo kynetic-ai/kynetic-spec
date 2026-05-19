@@ -19611,7 +19611,7 @@ workspaces:
         head: 8289299e4c1076357728d40c77ab33092adbf8a8
         last_seen_at: 2026-05-19T02:44:35.134Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-gate-cleanup-preservation-diagnostics-01krympc
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
     bootstrap:
       status: succeeded
@@ -20088,12 +20088,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-19T02:58:01.306Z
+      updated_at: 2026-05-19T02:58:04.949Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-19T02:58:01.306Z
+      updated_at: 2026-05-19T02:58:04.949Z
     integration:
       status: merged
       detail: integration:merged
@@ -20101,7 +20101,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
-      updated_at: 2026-05-19T02:58:01.306Z
+      updated_at: 2026-05-19T02:58:04.949Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KRZ0EWBBYQECH4FR1PWTC1ZN"
@@ -20109,9 +20109,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-19T02:40:44.191Z
-      last_reconciled_at: 2026-05-19T02:58:01.306Z
+      last_reconciled_at: 2026-05-19T02:58:04.949Z
       created_at: 2026-05-19T02:19:08.716Z
-      updated_at: 2026-05-19T02:58:01.306Z
+      updated_at: 2026-05-19T02:58:04.949Z
     workspace_id: dispatch-workspace-01KRZ0EWBBYQECH4FR1PWTC1ZN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
