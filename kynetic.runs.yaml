@@ -50977,7 +50977,7 @@ runs:
     completed_at: 2026-05-19T02:43:47.679Z
   - _ulid: 01KRZ2QYA9A9DS59MN1P3NDPAR
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50992,7 +50992,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-19T03:00:09.057Z
-        completed_at: 2026-05-19T03:00:09.057Z
+        completed_at: 2026-05-19T03:00:18.043Z
+        notes: "Friction points: Review evidence still had to be recorded as an unresolved nit thread
+          because there is no dedicated evidence-log field in review records. kspec validate emitted
+          broad pre-existing repository warnings while the reviewed slice was clean, which required
+          manual classification in the review check evidence. I also initially passed --fresh to npm
+          rather than through npm's -- separator; this was corrected for the focused run and is
+          covered by existing test-runner guidance."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-19T03:00:18.043Z
+        completed_at: 2026-05-19T03:00:18.043Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T02:58:49.801Z
