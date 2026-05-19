@@ -63,7 +63,7 @@ tags:
   - logging
 vcs_refs: []
 review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
-review_ref: "@01KRYT821PKEK2F5NQPVF4AJ4T"
+review_ref: "@01KRZ0PNMPHFSV0P82H8WRCV4R"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
@@ -171,6 +171,13 @@ history:
         previous: 2026-05-18T23:03:10.285Z
     command: task-submit
     timestamp: 2026-05-19T02:09:44.453Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KRZ0PNMPHFSV0P82H8WRCV4R"
+        previous: "@01KRYT821PKEK2F5NQPVF4AJ4T"
+    command: review-link
+    timestamp: 2026-05-19T02:23:14.660Z
 created_at: 2026-05-18T22:53:18.863Z
 started_at: 2026-05-19T02:09:42.595Z
 submitted_at: 2026-05-19T02:09:44.453Z
