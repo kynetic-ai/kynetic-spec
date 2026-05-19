@@ -216526,6 +216526,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-19T00:04:05.793Z
+      - _ulid: 01KRYRR4BQ85H53K6BVD3EV40H
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KRYRR2SWGPX1BYM8JHP2DQSJ
+        timestamp: 2026-05-19T00:04:10.231Z
     examined_commit: 7c8750e4177de585f398dc7d2b00e9a4e1aa657b
     external_links: []
     lifecycle_state: open
@@ -216535,8 +216542,30 @@ reviews:
       content_hash: ""
       ref: "@01KRYMPBC8YM4X3KZC6SPBV6R2"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRYRR2SWGPX1BYM8JHP2DQSJ
+        anchor:
+          type: code
+          commit: 7c8750e4177de585f398dc7d2b00e9a4e1aa657b
+          line_end: 6131
+          line_start: 6096
+          path: tests/agent-dispatch-engine.test.ts
+          side: head
+        entries:
+          - _ulid: 01KRYRR2SW72NH0G77RX4GJK8X
+            author: Jacob Chapel
+            body: "MUST-FIX: the submitted ACs are not covered by machine-linked behavioral tests. The spec now
+              includes @agent-dispatch-engine ac-reconcile-non-overlap and
+              ac-stop-awaits-reconciliation, but  finds no test annotations for either ID. The only
+              new test here is annotated as ac-19/ac-20, and it covers non-overlap indirectly while
+              never exercising the stop guarantee: it calls  before , so stop is not proven to wait
+              while reconciliation is still blocked. Add/retag behavioral tests for
+              ac-reconcile-non-overlap and ac-stop-awaits-reconciliation; the stop test should call
+              stop while the reconcile promise is still unresolved and assert stop does not resolve
+              until the pass is released."
+            created_at: 2026-05-19T00:04:08.636Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-18T23:45:52.755Z
-    updated_at: 2026-05-19T00:04:04.193Z
+    updated_at: 2026-05-19T00:04:08.636Z
     notes: []
