@@ -3605,3 +3605,19 @@ inbox:
       - test-triage
     added_by: Jacob Chapel
     created_at: 2026-05-19T14:12:21.967Z
+  - _ulid: 01KS0RCR68Q7A68CK2B59E6F3V
+    text: "Investigate daemon read-model/source-of-truth split-brain for task status. During manual
+      validation completion for @task-validate-daemon-dispatch-oom-hardening-slice, direct metadata
+      via KSPEC_NO_DAEMON=1 kspec task get showed status completed while daemon API
+      /api/tasks/task-validate-daemon-dispatch-oom-hardening-slice?projectPath=/home/chapel/Project\
+      s/kynetic-spec still returned status in_progress. Preserve this as an investigation item:
+      reproduce without restarting/changing daemon state, identify whether
+      watcher/entity-cache/shadow sync missed the completion update, and propose a safe cache
+      invalidation or read-model refresh fix."
+    tags:
+      - daemon
+      - cache
+      - split-brain
+      - follow-up
+    added_by: Jacob Chapel
+    created_at: 2026-05-19T18:36:26.185Z
