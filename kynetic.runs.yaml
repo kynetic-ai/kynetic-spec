@@ -51182,7 +51182,7 @@ runs:
     completed_at: 2026-05-19T14:12:33.304Z
   - _ulid: 01KS0APKWERGB9BE47EHYND800
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -51209,7 +51209,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-19T14:59:11.007Z
-        completed_at: 2026-05-19T14:59:11.007Z
+        completed_at: 2026-05-19T14:59:18.902Z
+        notes: "No new captures. All identified patterns are already tracked by unresolved observations:
+          @01KPA0Q5 (duplicate task for already-fixed work) and @01KN3Z36B (review anchored to stale
+          examined commit). Loop-mode discipline: prefer no capture over noise when existing
+          tracking covers the pattern."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-19T14:59:18.902Z
+        completed_at: 2026-05-19T14:59:18.902Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-19T14:37:09.390Z
