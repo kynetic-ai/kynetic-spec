@@ -103,8 +103,9 @@ describe("KSPEC_NO_DAEMON", () => {
     // Allocate an ephemeral port so the auto-started daemon never collides
     // with the default 3456 (host dispatch daemon, other concurrent tests).
     // A bind failure surfaces only after PidFileManager.writePid() runs in
-    // packages/daemon/src/server.ts, leaving a stale PID file that points at
-    // an already-exited process and makes the later `ps -p …` non-deterministic.
+    // packages/daemon/src/server.ts; without an ephemeral port, a port
+    // collision would write the PID file, fail bind, never write
+    // daemon.connection.json, and force the metadata wait below to time out.
     const port = await new Promise<number>((resolve, reject) => {
       const probe = createServer();
       probe.once("error", reject);
@@ -162,7 +163,7 @@ describe("KSPEC_NO_DAEMON", () => {
 
     // The bun CLI subprocess implicitly auto-started the daemon. Capture
     // its pid and register SIGTERM cleanup BEFORE any later observation
-    // (`execSync("ps -p …")`, `expect(processCommand)…`) — otherwise an
+    // (metadata read, `expect(metadata.runtime)…`) — otherwise an
     // assertion failure between pid capture and the trailing
     // `kspec serve stop` leaves the auto-started daemon running. Matches
     // the safe boundary documented for
@@ -179,17 +180,18 @@ describe("KSPEC_NO_DAEMON", () => {
 
     // The PID file is written before listen() succeeds. Wait for
     // daemon.connection.json (written only after awaitListenSuccess in
-    // packages/daemon/src/server.ts) before inspecting the process — that
-    // is the on-disk proof that the daemon survived bind and is still alive.
+    // packages/daemon/src/server.ts) before asserting on runtime — that
+    // is the on-disk proof that the daemon survived bind and recorded
+    // its self-detected runtime.
     const metadataPath = join(isolatedHome.configDir, "daemon.connection.json");
     await waitForStartup(
       "auto-started daemon connection metadata",
       async () => {
         try {
           const raw = readTestOutputSync(metadataPath);
-          const parsed = JSON.parse(raw) as { connect_host?: string };
+          const parsed = JSON.parse(raw) as { connect_host?: string; runtime?: string };
           return {
-            ok: typeof parsed.connect_host === "string",
+            ok: typeof parsed.connect_host === "string" && typeof parsed.runtime === "string",
             details: `metadata=${raw.slice(0, 200)}`,
           };
         } catch (err) {
@@ -200,10 +202,25 @@ describe("KSPEC_NO_DAEMON", () => {
       { timeoutMs: 10_000 },
     );
 
-    const processCommand = execSync(`ps -p ${pid} -o command=`, { encoding: "utf-8" }).trim();
-
-    expect(processCommand).toContain("node");
-    expect(processCommand).toContain("dist/daemon/index.js");
+    // Assert runtime via the persisted connection metadata, not `ps -p`.
+    // The metadata is written by the daemon process itself after
+    // awaitListenSuccess, so:
+    //   - the `runtime` field reflects what the daemon detected via
+    //     `typeof process.versions.bun` (a bun-spawned daemon would
+    //     write runtime=bun, not node), and
+    //   - the file persists across daemon exit, eliminating the race
+    //     where `ps -p <pid>` would return `<defunct>` or fail entirely
+    //     if the daemon process exited between metadata write and the
+    //     trailing assertion (observed flakiness under full-suite load).
+    // The metadata.pid field also confirms the same process wrote both
+    // daemon.pid and daemon.connection.json, so the runtime claim is
+    // bound to the captured pid rather than read from an unrelated file.
+    const metadata = JSON.parse(readTestOutputSync(metadataPath)) as {
+      pid: number;
+      runtime: string;
+    };
+    expect(metadata.runtime).toBe("node");
+    expect(metadata.pid).toBe(pid);
 
     kspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
       env: isolatedHome.env,
