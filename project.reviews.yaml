@@ -216669,6 +216669,19 @@ reviews:
         runner: kspec
         created_at: 2026-05-19T00:25:37.068Z
         completed_at: 2026-05-19T00:25:37.068Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test ran 2447 suites: 2445 passed, 2 failed entries from tests/cli-no-daemon.test.ts
+          with one failed assertion: expected '[MainThread] <defunct>' to contain 'node'. Isolated
+          rerun of tests/cli-no-daemon.test.ts passed; same flake is already tracked by in-progress
+          task @01KRYRHX."
+        name: full npm test
+        required: false
+        runner: npm-test
+        created_at: 2026-05-19T00:25:42.134Z
+        completed_at: 2026-05-19T00:25:42.134Z
     events:
       - _ulid: 01KRYRVZSM7KBHMYDPWZ7DS1W4
         actor: Jacob Chapel
@@ -216711,6 +216724,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-19T00:25:38.884Z
+      - _ulid: 01KRYSZKQ2EQE8C0WZ4FDDR5AT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: full npm test
+        timestamp: 2026-05-19T00:25:43.906Z
     examined_commit: dc86ab933f181d26fbb8b48408d04f582a4e497d
     external_links: []
     lifecycle_state: open
@@ -216745,7 +216765,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-19T00:06:16.628Z
-    updated_at: 2026-05-19T00:25:37.068Z
+    updated_at: 2026-05-19T00:25:42.134Z
     notes: []
   - _ulid: 01KRYS799YXFTPKF29K2Q7P7FM
     slugs: []
