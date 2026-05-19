@@ -216818,7 +216818,17 @@ reviews:
     slugs: []
     title: Review disable daemon proxying inside agent invocations
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/invocation-daemon-isolation.test.ts passed: 2 tests passed."
+        name: targeted invocation daemon isolation
+        required: true
+        runner: npm test
+        created_at: 2026-05-19T00:30:47.786Z
+        completed_at: 2026-05-19T00:30:47.786Z
     events:
       - _ulid: 01KRYS799YMV6RQ56SS69VF60A
         actor: Jacob Chapel
@@ -216846,6 +216856,13 @@ reviews:
         payload:
           thread_ulid: 01KRYT750TW9TG6ZPCH96TAR7P
         timestamp: 2026-05-19T00:30:30.175Z
+      - _ulid: 01KRYT8XXHQ7TTXM4FE5KQM3EQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted invocation daemon isolation
+        timestamp: 2026-05-19T00:30:49.265Z
     examined_commit: 0457aac94737603f4e8afda676a83099cb4f54ec
     external_links: []
     lifecycle_state: open
@@ -217028,7 +217045,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-19T00:12:26.814Z
-    updated_at: 2026-05-19T00:30:28.637Z
+    updated_at: 2026-05-19T00:30:47.786Z
     notes: []
   - _ulid: 01KRYT821PKEK2F5NQPVF4AJ4T
     slugs: []
