@@ -218732,7 +218732,18 @@ reviews:
     slugs: []
     title: Review gate cleanup preservation diagnostics (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/dispatch-workspace-cleanup.test.ts
+          tests/dispatch-workspace-registry.test.ts: 7 suites passed, 62 tests passed."
+        name: targeted cleanup and registry tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-19T03:22:18.573Z
+        completed_at: 2026-05-19T03:22:18.573Z
     events:
       - _ulid: 01KRZ36D6RNJJEA7BNDX76X913
         actor: Jacob Chapel
@@ -218747,6 +218758,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-19T03:07:04.601Z
+      - _ulid: 01KRZ42ZH82NTVTB0N2EP8TAKD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted cleanup and registry tests
+        timestamp: 2026-05-19T03:22:20.073Z
     examined_commit: 96f8f371db212c31adf360a8123732fa95eef16f
     external_links: []
     lifecycle_state: open
@@ -218759,5 +218777,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-19T03:06:43.800Z
-    updated_at: 2026-05-19T03:07:03.017Z
+    updated_at: 2026-05-19T03:22:18.573Z
     notes: []
