@@ -51,7 +51,7 @@ description: >
 spec_ref: "@dispatch-workspace-cleanup-policy"
 plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
 origin: derived
-status: needs_work
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-update-daemon-dispatch-hardening-specs"
@@ -65,13 +65,14 @@ vcs_refs: []
 review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
 review_ref: "@01KRYT821PKEK2F5NQPVF4AJ4T"
 submission_linkage:
-  review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+  review_url: null
   branch: dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
-  captured_at: 2026-05-18T23:03:10.281Z
-  commit: edbedfa78a41c550244f3cdcc0d53fb9548c1cb3
+  captured_at: 2026-05-19T02:09:44.451Z
+  commit: 8289299e4c1076357728d40c77ab33092adbf8a8
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+session_id: 01KRYZGHAG41ZF13R7WKQANQG7
 history:
   - author: Jacob Chapel
     changes:
@@ -130,8 +131,48 @@ history:
         previous: null
     command: review-verdict-needs-work
     timestamp: 2026-05-19T00:47:57.213Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KRYZGHAG41ZF13R7WKQANQG7
+        previous: null
+      started_at:
+        new: 2026-05-19T02:09:42.595Z
+        previous: 2026-05-18T23:03:02.956Z
+    command: task-start
+    timestamp: 2026-05-19T02:09:42.595Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+          captured_at: 2026-05-19T02:09:44.451Z
+          commit: 8289299e4c1076357728d40c77ab33092adbf8a8
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+        previous:
+          review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+          branch: dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+          captured_at: 2026-05-18T23:03:10.281Z
+          commit: edbedfa78a41c550244f3cdcc0d53fb9548c1cb3
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc
+      submitted_at:
+        new: 2026-05-19T02:09:44.453Z
+        previous: 2026-05-18T23:03:10.285Z
+    command: task-submit
+    timestamp: 2026-05-19T02:09:44.453Z
 created_at: 2026-05-18T22:53:18.863Z
-started_at: 2026-05-18T23:03:02.956Z
-submitted_at: 2026-05-18T23:03:10.285Z
+started_at: 2026-05-19T02:09:42.595Z
+submitted_at: 2026-05-19T02:09:44.453Z
 todos: []
 automation: eligible

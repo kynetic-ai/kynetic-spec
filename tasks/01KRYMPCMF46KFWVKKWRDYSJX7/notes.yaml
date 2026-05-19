@@ -4,3 +4,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-19T00:47:57.212Z
+  - _ulid: 01KRYZY16WKWD6YV1GRABKTXB1
+    content: "Fix cycle 1: addressed both blocker threads on review @01KRYT821PKEK2F5NQPVF4AJ4T. Added a
+      dedicated annotated test pair in tests/dispatch-workspace-cleanup.test.ts — one for
+      ac-preservation-diagnostics-quiet-by-default (clears KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS,
+      asserts preservation occurs AND no [dispatch-cleanup] diagnostic is emitted) and one for
+      ac-preservation-diagnostics-opt-in (sets the env var, asserts the emitted line identifies
+      surface, artifact, and reason). Also rebased onto origin/dev so the diff vs dev is now scoped
+      to the gate change plus its tests. Targeted suites pass: 62/62 across cleanup and registry."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-19T02:09:43.645Z
