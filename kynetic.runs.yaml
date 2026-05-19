@@ -51226,7 +51226,7 @@ runs:
     completed_at: 2026-05-19T14:59:26.486Z
   - _ulid: 01KS0D2S3V5X3WZXPS7SWQ3XAG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51242,7 +51242,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-19T15:19:02.798Z
-        completed_at: 2026-05-19T15:19:02.798Z
+        completed_at: 2026-05-19T15:19:14.432Z
+        notes: "Friction points: (1) The task existed because a prior review ran against a stale branch that
+          predated a dev fix, so the follow-up was already resolved before it started. Review still
+          required reconstructing git history and running expensive verification. (2) Full fresh npm
+          test took about 41 minutes; this is appropriate for merge confidence, but it makes
+          no-op/redundant task reviews expensive. Candidate capture needs search first because both
+          may already be known process/test-runtime issues."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-19T15:19:14.432Z
+        completed_at: 2026-05-19T15:19:14.432Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T15:18:45.115Z
