@@ -217107,6 +217107,12 @@ reviews:
         payload:
           thread_ulid: 01KRYT750TW9TG6ZPCH96TAR7P
         timestamp: 2026-05-19T01:58:39.565Z
+      - _ulid: 01KRYZA2T8M3SSMK9XDCYTHBH7
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRYT750TW9TG6ZPCH96TAR7P
+        timestamp: 2026-05-19T01:58:49.928Z
     examined_commit: 0457aac94737603f4e8afda676a83099cb4f54ec
     external_links: []
     lifecycle_state: closed
@@ -217295,6 +217301,8 @@ reviews:
               Verified with rg that both annotation strings are now present."
             created_at: 2026-05-19T01:58:38.094Z
         kind: blocker
+        resolved_at: 2026-05-19T01:58:48.445Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -217304,7 +217312,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-19T00:31:32.531Z
     created_at: 2026-05-19T00:12:26.814Z
-    updated_at: 2026-05-19T01:58:38.094Z
+    updated_at: 2026-05-19T01:58:48.445Z
     notes: []
   - _ulid: 01KRYT821PKEK2F5NQPVF4AJ4T
     slugs: []
