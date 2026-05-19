@@ -18038,12 +18038,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-19T01:26:07.313Z
+      updated_at: 2026-05-19T01:26:39.759Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-19T01:26:07.313Z
+      updated_at: 2026-05-19T01:26:39.759Z
     integration:
       status: pending
       detail: null
@@ -18051,26 +18051,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
-      updated_at: 2026-05-19T01:26:07.313Z
-    lifecycle_state: ready
+      updated_at: 2026-05-19T01:26:39.759Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRYMPBC8YM4X3KZC6SPBV6R2"
     task_slug: task-prevent-overlapping-dispatch-reconciliation
     timestamps:
       closed_at: null
       last_active_at: 2026-05-19T01:03:10.396Z
-      last_reconciled_at: 2026-05-19T01:26:07.313Z
+      last_reconciled_at: 2026-05-19T01:26:39.759Z
       created_at: 2026-05-18T23:44:13.640Z
-      updated_at: 2026-05-19T01:26:07.313Z
+      updated_at: 2026-05-19T01:26:39.759Z
     workspace_id: dispatch-workspace-01KRYMPBC8YM4X3KZC6SPBV6R2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: b83adf6c8cb6b7217238f3fc11157be38e34afb1
+        last_seen_at: 2026-05-19T01:26:39.759Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-prevent-overlapping-dispatch-reconciliation-01krympb-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-prevent-overlapping-dispatch-reconciliation/01krympb
-        head: 7c8750e4177de585f398dc7d2b00e9a4e1aa657b
-        last_seen_at: 2026-05-19T01:02:46.694Z
+        head: b83adf6c8cb6b7217238f3fc11157be38e34afb1
+        last_seen_at: 2026-05-19T01:26:39.759Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-prevent-overlapping-dispatch-reconciliation-01krympb
   - active_role: null
     base_branch_point: 202bd38d550faa8b70b5290655937f132af62fd5
