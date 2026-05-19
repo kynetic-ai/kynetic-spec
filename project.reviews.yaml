@@ -218821,6 +218821,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-19T03:22:32.817Z
+      - _ulid: 01KRZ43VDHR65MTTQ8XWM70H5F
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRZ43SYW8GBQSAEMGZ45C8GR
+        timestamp: 2026-05-19T03:22:48.625Z
     examined_commit: 96f8f371db212c31adf360a8123732fa95eef16f
     external_links: []
     lifecycle_state: open
@@ -218830,8 +218837,44 @@ reviews:
       content_hash: ""
       ref: "@01KRYMPCMF46KFWVKKWRDYSJX7"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRZ43SYW8GBQSAEMGZ45C8GR
+        entries:
+          - _ulid: 01KRZ43SYX3Z1874XFFN5ZMM8W
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: kspec-agents.md; src/agent-runtime/workspace.ts;
+              tests/dispatch-workspace-cleanup.test.ts; tests/dispatch-workspace-registry.test.ts;
+              prior reviews @01KRYT82 and @01KRZ0PN; task/spec context for
+              @dispatch-workspace-cleanup-policy.
+
+
+              Commands run: git fetch origin dev
+              dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc; git diff
+              --name-status origin/dev...HEAD; git diff --unified=80 origin/dev...HEAD --
+              src/agent-runtime/workspace.ts tests/dispatch-workspace-cleanup.test.ts
+              tests/dispatch-workspace-registry.test.ts; rg AC annotation scans; kspec validate; npm
+              test -- --run tests/dispatch-workspace-cleanup.test.ts
+              tests/dispatch-workspace-registry.test.ts; KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS=1 npm
+              test -- --run tests/dispatch-workspace-registry.test.ts; npm test.
+
+
+              Claims verified: quiet-by-default is enforced by the env-var early return in
+              logArtifactPreservation; opt-in diagnostics still include cleanup surface, artifact,
+              and reason; previous mockRestore issue is fixed by snapshotting debugSpy.mock.calls
+              before restoring; preservation behavior still asserted by workspace/branch survival in
+              both new tests.
+
+
+              Categories searched: correctness, edge cases around inherited opt-in environment,
+              error/diagnostic behavior, test quality including source-scanning checks, AC coverage,
+              and integration with existing cleanup surfaces. No blockers found.
+            created_at: 2026-05-19T03:22:47.133Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-19T03:06:43.800Z
-    updated_at: 2026-05-19T03:22:31.374Z
+    updated_at: 2026-05-19T03:22:47.133Z
     notes: []
