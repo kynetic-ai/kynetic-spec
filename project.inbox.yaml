@@ -3581,3 +3581,14 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-05-19T03:05:24.170Z
+  - _ulid: 01KRZ4B354B8V09P72KDMPGRXB
+    text: "Review workflow friction: full npm test is required before approval, but in this clean
+      detached-review cycle it took 2334.8s after the targeted cleanup/registry suites had already
+      passed. Investigate whether review workflows can better use test-runner cache, sharding, or
+      prior verification summaries while preserving the full-suite gate."
+    tags:
+      - reflection
+      - review
+      - testing
+    added_by: Jacob Chapel
+    created_at: 2026-05-19T03:26:45.924Z
