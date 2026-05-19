@@ -1,1 +1,42 @@
-notes: []
+notes:
+  - _ulid: 01KS0QNPQ5TD5WQJ5DC705PZ4T
+    content: >-
+      Validation completed manually on integrated `dev` at d4202f5fd5 after all dependent
+      implementation branches were merged.
+
+
+      Evidence:
+
+      - Confirmed all dependent task branches are ancestors of `dev`.
+
+      - Confirmed `@task-daemon-api-task-storage-incompatibility-errors` is completed.
+
+      - AC annotation/search coverage: all plan AC ids found in tests; no missing AC references.
+
+      - `git diff --check`: passed.
+
+      - `kspec validate --refs --warnings-ok`: passed. Remaining 6 warnings are existing
+      deprecated-ref warnings (`@session-summary-cache`, `@task-activity-git-query`) and not
+      introduced by this plan.
+
+      - `npm run build`: passed.
+
+      - Focused hardening slice passed with `--fresh`: 105 suites, 488/488 tests passed. Included
+      event bus, dispatch engine, invocation daemon isolation, workspace cleanup/registry, command
+      API, CLI daemon proxy, daemon entity cache, and daemon API task-storage incompatibility tests.
+
+      - Full suite validation: direct unsharded full-suite attempts produced no failures but
+      exceeded the interactive command timeout before final summary. The documented shard gates
+      completed successfully:
+        - `npm run test:shard1`: 768 suites, 1 skipped, 2658/2659 passed.
+        - `npm run test:shard2`: 887 suites, 4 skipped, 3728/3732 passed.
+        - `npm run test:shard3`: 795 suites, 2908/2908 passed.
+      - Root and shadow worktrees were clean before completion; only ignored/generated build
+      artifacts and standard ignored caches exist.
+
+
+      Verdict: validation passes for the daemon/dispatch OOM hardening slice. No implementation task
+      needs to be sent back to `needs_work` from this validation pass.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-05-19T18:23:51.013Z
