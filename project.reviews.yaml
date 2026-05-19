@@ -218022,7 +218022,29 @@ reviews:
     slugs: []
     title: Review suppress recursive daemon command proxying
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/daemon-command-api.test.ts tests/cli-daemon-proxy.test.ts
+          tests/event-bus.test.ts tests/cli-no-daemon.test.ts: 21 suites, 128 tests passed"
+        name: targeted changed-area tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-19T02:14:19.217Z
+        completed_at: 2026-05-19T02:14:19.217Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test: 2447 suites passed; 9288 tests passed; 5 skipped; duration 2392.1s; log
+          /tmp/kspec-test-cache/01KRYZ8FKGRN2SS09QG102SG18/e913205994c3a560.log"
+        name: full npm test
+        required: true
+        runner: npm test
+        created_at: 2026-05-19T02:14:28.420Z
+        completed_at: 2026-05-19T02:14:28.420Z
     events:
       - _ulid: 01KRYZ9SRC7KJ6EKN77RBKCEHK
         actor: Jacob Chapel
@@ -218037,6 +218059,20 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-19T01:59:03.559Z
+      - _ulid: 01KRZ06FQG6B1GYR0TRMSDQWFD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted changed-area tests
+        timestamp: 2026-05-19T02:14:20.656Z
+      - _ulid: 01KRZ06RSM283RY5MG6YW05BR6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full npm test
+        timestamp: 2026-05-19T02:14:29.940Z
     examined_commit: 308fb19e14e1afb6a28a5d10ac2bf94aec3ba887
     external_links: []
     lifecycle_state: open
@@ -218049,7 +218085,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-19T01:58:40.653Z
-    updated_at: 2026-05-19T01:59:01.942Z
+    updated_at: 2026-05-19T02:14:28.420Z
     notes: []
   - _ulid: 01KRYZK4WV9PVRQNHQ54EEHJDM
     slugs: []
