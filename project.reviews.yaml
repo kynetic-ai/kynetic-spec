@@ -218214,6 +218214,20 @@ reviews:
         runner: npm test
         created_at: 2026-05-19T02:19:22.586Z
         completed_at: 2026-05-19T02:19:22.586Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full npm test on task snapshot: 9279 passed, 5 skipped, 1 failed in
+          tests/cli-no-daemon.test.ts. Targeted rerun reproduced. Same targeted failure reproduced
+          on integration-base f688b032ae42, so not introduced by this branch. Follow-up task
+          created: @01KRZ0EW. Branch-relevant tests passed, including
+          tests/invocation-daemon-isolation.test.ts."
+        name: full npm test regression triage
+        required: true
+        runner: npm test
+        created_at: 2026-05-19T02:19:27.029Z
+        completed_at: 2026-05-19T02:19:27.029Z
     events:
       - _ulid: 01KRYZK4WTP8VKM622SVMY0VMQ
         actor: Jacob Chapel
@@ -218235,6 +218249,13 @@ reviews:
           status: pass
           name: targeted invocation daemon isolation
         timestamp: 2026-05-19T02:19:24.267Z
+      - _ulid: 01KRZ0FWDGPSSSRGP81H1JA6Q0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full npm test regression triage
+        timestamp: 2026-05-19T02:19:28.560Z
     examined_commit: 84bf6b2083332cc11bf3e106358cc938b701016f
     external_links: []
     lifecycle_state: open
@@ -218247,5 +218268,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-19T02:03:46.971Z
-    updated_at: 2026-05-19T02:19:22.586Z
+    updated_at: 2026-05-19T02:19:27.029Z
     notes: []
