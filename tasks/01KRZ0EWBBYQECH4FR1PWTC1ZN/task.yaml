@@ -15,8 +15,14 @@ description: 'During review of @01KRYMPC71752C2ZY8WE6PG42R, full npm test failed
 spec_ref: "@daemon-runtime-adapter"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Reviewed and approved in @01KRZ1QW. No merge commit needed: detached reviewer merge
+  helper reported canonical branch
+  dispatch/task/stabilize-bun-daemon-auto-start-runtime-test/01krz0ew at
+  1174d5b7295a03e960e4082fe40d6deb5b4ce507 is already integrated at dev
+  b6602c96d1e72c4442f1d1c7c0b58c147d56cc73. Verified focused cli-no-daemon test and full npm test
+  pass."
 depends_on: []
 context: []
 priority: 2
@@ -76,8 +82,27 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-19T02:41:23.722Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Reviewed and approved in @01KRZ1QW. No merge commit needed: detached reviewer merge helper
+          reported canonical branch
+          dispatch/task/stabilize-bun-daemon-auto-start-runtime-test/01krz0ew at
+          1174d5b7295a03e960e4082fe40d6deb5b4ce507 is already integrated at dev
+          b6602c96d1e72c4442f1d1c7c0b58c147d56cc73. Verified focused cli-no-daemon test and full npm
+          test pass."
+        previous: null
+      completed_at:
+        new: 2026-05-19T02:57:57.260Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-19T02:57:57.267Z
 created_at: 2026-05-19T02:18:55.723Z
 started_at: 2026-05-19T02:20:00.315Z
 submitted_at: 2026-05-19T02:38:19.072Z
+completed_at: 2026-05-19T02:57:57.260Z
 todos: []
 automation: eligible
