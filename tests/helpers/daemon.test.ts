@@ -17,6 +17,8 @@ import {
   buildDaemonChildEnv,
   createTestDaemonProject,
   DaemonReadinessError,
+  allocateTestDaemonPort,
+  reserveTestDaemonPort,
   startTestDaemon,
   type CreateTestDaemonProjectStage,
 } from "./daemon.js";
@@ -218,6 +220,22 @@ describe("createTestDaemonProject", () => {
     expect(existsSync(project.tempDir)).toBe(false);
     // Idempotent.
     await project.cleanup();
+  });
+});
+
+describe("test daemon port reservation", () => {
+  it("holds a preallocated port until the reservation is released", async () => {
+    const port = await allocateTestDaemonPort();
+    const release = await reserveTestDaemonPort(port);
+    onTestFinished(async () => {
+      await release();
+    });
+
+    await expect(reserveTestDaemonPort(port)).rejects.toMatchObject({ code: "EADDRINUSE" });
+
+    await release();
+    const releaseAgain = await reserveTestDaemonPort(port);
+    await releaseAgain();
   });
 });
 

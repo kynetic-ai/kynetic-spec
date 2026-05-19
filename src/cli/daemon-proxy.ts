@@ -16,6 +16,8 @@
  *     ac-legacy-port-fallback
  */
 
+import { AsyncLocalStorage } from "node:async_hooks";
+
 import {
   isNoDaemonModeEnabled,
   resolveDaemonClientEndpoint,
@@ -63,6 +65,21 @@ const REGISTRATION_TIMEOUT_MS = 5_000;
  * AC: @cli-daemon-proxy — detection result cached for CLI process lifetime
  */
 let cachedDetection: DaemonDetectionResult | null = null;
+
+/**
+ * Request-scoped guard used while the daemon's /api/command route executes
+ * CLI commands in-process. Without this, the global CLI pre-action hook can
+ * detect the same daemon and recursively POST back to /api/command.
+ */
+const daemonProxySuppressionStorage = new AsyncLocalStorage<boolean>();
+
+export function runWithDaemonProxySuppressed<T>(fn: () => T): T {
+  return daemonProxySuppressionStorage.run(true, fn);
+}
+
+function isDaemonProxySuppressed(): boolean {
+  return daemonProxySuppressionStorage.getStore() === true;
+}
 
 // ── Detection ──────────────────────────────────────────────────────
 
@@ -136,6 +153,10 @@ export async function shouldProxyCommand(opts: {
 }): Promise<
   { proxy: true; port: number; endpoint: DaemonClientEndpoint } | { proxy: false; reason?: string }
 > {
+  if (isDaemonProxySuppressed()) {
+    return { proxy: false, reason: "daemon command API execution" };
+  }
+
   // AC: @cli-daemon-proxy ac-force-direct
   if (isNoDaemonModeEnabled()) {
     return { proxy: false, reason: "KSPEC_NO_DAEMON is set" };

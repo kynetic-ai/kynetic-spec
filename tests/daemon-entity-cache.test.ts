@@ -169,10 +169,13 @@ describe("ProjectEntityCache", () => {
       expect(fileToDomain("project.triage.yaml")).toEqual(["triage"]);
     });
 
-    it("should map manifest to both meta and items domains", () => {
+    it("should map manifest to meta, items, and tasks domains", () => {
+      // kynetic.yaml carries the project manifest (meta), is the root of the
+      // item include tree (items), and holds task_storage compatibility
+      // settings (tasks) — see ac-manifest-task-storage-settings-affect-tasks-domain.
       const domains = fileToDomain("kynetic.yaml");
-      expect(domains).toEqual(expect.arrayContaining(["meta", "items"]));
-      expect(domains).toHaveLength(2);
+      expect(domains).toEqual(expect.arrayContaining(["meta", "items", "tasks"]));
+      expect(domains).toHaveLength(3);
     });
 
     it("should map session context file to meta domain", () => {
@@ -1406,11 +1409,15 @@ describe("ProjectEntityCache", () => {
 
         const initContextSpy = vi.spyOn(yamlModule, "initContext");
         const kspecDir = join(projectA, ".kspec");
-        const manifestPath = join(kspecDir, "kynetic.yaml");
+        // Use a generic .yaml change for the first window so it touches only
+        // items+meta (catch-all mapping). kynetic.yaml now also invalidates
+        // the tasks domain (task-storage compatibility re-evaluation), so it
+        // would overlap with the second window's tasks invalidation.
+        const genericYamlPath = join(kspecDir, "settings.yaml");
 
         setTestDelay(projectA);
 
-        const firstWindowReload = cache.handleFileChange(kspecDir, manifestPath);
+        const firstWindowReload = cache.handleFileChange(kspecDir, genericYamlPath);
         await vi.waitFor(() => {
           expect((cache as any).inFlightReloads.has("meta")).toBe(true);
           expect((cache as any).inFlightReloads.has("items")).toBe(true);
@@ -3835,6 +3842,342 @@ describe("ProjectEntityCache", () => {
 
       // Clean up — unregister so other tests aren't affected
       unregisterEntityCache(projectA);
+    });
+  });
+
+  // ─── Task-storage compatibility / migration suppression ─────────────────
+  describe("task-storage incompatibility suppression", () => {
+    /**
+     * Build a legacy (kynetic 1.0 without split task_storage) project on
+     * top of an existing multi-dir fixture by overwriting kynetic.yaml.
+     * Returns the project path to be used.
+     */
+    async function makeLegacyProject(): Promise<string> {
+      const legacyDir = await createTempDir("kspec-legacy-");
+      await fs.mkdir(join(legacyDir, ".kspec"), { recursive: true });
+      await setupShadowDetection(legacyDir);
+      await fs.writeFile(
+        join(legacyDir, ".kspec", "kynetic.yaml"),
+        yamlStringify({
+          kynetic: "1.0",
+          project: { name: "Legacy", version: "0.1.0", status: "draft" },
+        }),
+        "utf-8",
+      );
+      // Legacy projects had project.tasks.yaml with full task entries; the
+      // file's presence isn't required for the version gate to fire, but
+      // include a representative file so watcher tests have something to
+      // change.
+      await fs.writeFile(
+        join(legacyDir, ".kspec", "project.tasks.yaml"),
+        yamlStringify([
+          {
+            _ulid: "01LEGACY00000000000000000A",
+            slugs: ["task-legacy"],
+            title: "Legacy task",
+            type: "task",
+            status: "pending",
+            priority: 3,
+            depends_on: [],
+            created_at: "2026-01-01T00:00:00.000Z",
+            notes: [],
+            todos: [],
+          },
+        ]),
+        "utf-8",
+      );
+      return legacyDir;
+    }
+
+    /**
+     * Build a split-configured project that has an unmigrated entry — the
+     * index has a task without notes_count and no matching per-task dir,
+     * which is exactly what the split backend's ensureMigrated() guards
+     * against.
+     */
+    async function makeUnmigratedSplitProject(): Promise<string> {
+      const dir = await createTempDir("kspec-unmigrated-");
+      await fs.mkdir(join(dir, ".kspec"), { recursive: true });
+      await setupShadowDetection(dir);
+      await fs.writeFile(
+        join(dir, ".kspec", "kynetic.yaml"),
+        yamlStringify({
+          kynetic: "1.1",
+          project: { name: "Unmigrated", version: "0.1.0", status: "draft" },
+          task_storage: { format: "split" },
+        }),
+        "utf-8",
+      );
+      // Unmigrated entry: lacks notes_count scalar and has no per-task dir.
+      await fs.writeFile(
+        join(dir, ".kspec", "project.tasks.yaml"),
+        yamlStringify([
+          {
+            _ulid: "01UNMIG0000000000000000000",
+            slugs: ["task-unmig"],
+            title: "Unmigrated entry",
+            type: "task",
+            status: "pending",
+            priority: 3,
+            depends_on: [],
+            created_at: "2026-01-01T00:00:00.000Z",
+            notes: [],
+            todos: [],
+          },
+        ]),
+        "utf-8",
+      );
+      return dir;
+    }
+
+    /** Patch a project so its manifest declares split task storage at kynetic 1.1. */
+    async function migrateToSplit(projectDir: string): Promise<void> {
+      await fs.writeFile(
+        join(projectDir, ".kspec", "kynetic.yaml"),
+        yamlStringify({
+          kynetic: "1.1",
+          project: { name: "Migrated", version: "0.1.0", status: "draft" },
+          task_storage: { format: "split" },
+        }),
+        "utf-8",
+      );
+      // Clear the legacy tasks file so split mode finds no tasks (empty
+      // project is valid for split per ensureMigrated()).
+      await fs.writeFile(join(projectDir, ".kspec", "project.tasks.yaml"), "[]\n", "utf-8");
+    }
+
+    // AC: @daemon-entity-cache ac-task-storage-incompatibility-degraded-state
+    it("degrades tasks domain when legacy kynetic 1.0 monolithic storage is detected", async () => {
+      const legacyDir = await makeLegacyProject();
+      try {
+        const cache = new ProjectEntityCache(legacyDir);
+        await cache.loadDomain("tasks");
+
+        expect(cache.getDomainState("tasks")).toBe("degraded");
+        const diagnostics = cache.getCacheDiagnostics();
+        expect(diagnostics.domains.tasks.state).toBe("degraded");
+        expect(diagnostics.domains.tasks.errorReason).toBe("legacy_task_storage_removed");
+        expect(diagnostics.domains.tasks.recoveryGuidance).toContain("kspec task migrate");
+        expect(diagnostics.domains.tasks.recoveryWaitingOnProjectState).toBe(true);
+        expect(diagnostics.domains.tasks.lastError).toBeTruthy();
+      } finally {
+        await fs.rm(legacyDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-task-storage-incompatibility-degraded-state
+    it("classifies split-configured-but-unmigrated tasks as deterministic migration error", async () => {
+      const dir = await makeUnmigratedSplitProject();
+      try {
+        const cache = new ProjectEntityCache(dir);
+        await cache.loadDomain("tasks");
+
+        expect(cache.getDomainState("tasks")).toBe("degraded");
+        const diagnostics = cache.getCacheDiagnostics();
+        expect(diagnostics.domains.tasks.errorReason).toBe("split_task_storage_unmigrated");
+        expect(diagnostics.domains.tasks.recoveryGuidance).toContain("kspec task migrate");
+        expect(diagnostics.domains.tasks.recoveryWaitingOnProjectState).toBe(true);
+      } finally {
+        await fs.rm(dir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-task-storage-incompatibility-stable-reporting
+    it("suppresses repeated failure reports for the same unchanged condition", async () => {
+      const legacyDir = await makeLegacyProject();
+      const consoleErrSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      try {
+        const cache = new ProjectEntityCache(legacyDir);
+        await cache.loadDomain("tasks");
+
+        const firstReportCount = consoleErrSpy.mock.calls.filter((c) =>
+          String(c[0]).includes('domain "tasks"'),
+        ).length;
+        expect(firstReportCount).toBe(1);
+
+        // Repeated explicit loads: each goes through the lower-level reload
+        // path, so suppression must kick in and prevent another report.
+        await cache.loadDomain("tasks");
+        await cache.loadDomain("tasks");
+        await cache.loadDomain("tasks");
+
+        const totalReports = consoleErrSpy.mock.calls.filter((c) =>
+          String(c[0]).includes('domain "tasks"'),
+        ).length;
+        expect(totalReports).toBe(firstReportCount);
+
+        // State is still degraded and surfaces the deterministic reason.
+        const diag = cache.getCacheDiagnostics();
+        expect(diag.domains.tasks.state).toBe("degraded");
+        expect(diag.domains.tasks.errorReason).toBe("legacy_task_storage_removed");
+        expect(diag.domains.tasks.recoveryWaitingOnProjectState).toBe(true);
+      } finally {
+        consoleErrSpy.mockRestore();
+        await fs.rm(legacyDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-task-storage-incompatibility-stable-reporting
+    it("does not bypass suppression for concurrent/queued reloads or writeThrough fallback", async () => {
+      const legacyDir = await makeLegacyProject();
+      const consoleErrSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      try {
+        const cache = new ProjectEntityCache(legacyDir);
+        await cache.loadDomain("tasks");
+
+        const baselineReports = consoleErrSpy.mock.calls.filter((c) =>
+          String(c[0]).includes('domain "tasks"'),
+        ).length;
+
+        // Concurrent reload paths must not each emit their own failure
+        // report. writeThrough without a hint falls through to the
+        // non-meta reload path; queued reloads go through the in-flight
+        // dedup so any waiting work also sees suppression after the first
+        // observation.
+        await Promise.all([
+          cache.loadDomain("tasks"),
+          cache.loadDomain("tasks"),
+          cache.writeThrough("tasks"),
+          cache.writeThrough("tasks"),
+        ]);
+
+        const totalReports = consoleErrSpy.mock.calls.filter((c) =>
+          String(c[0]).includes('domain "tasks"'),
+        ).length;
+        expect(totalReports).toBe(baselineReports);
+        expect(cache.getDomainState("tasks")).toBe("degraded");
+      } finally {
+        consoleErrSpy.mockRestore();
+        await fs.rm(legacyDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-task-storage-incompatibility-rechecked-after-storage-change
+    // AC: @daemon-entity-cache ac-manifest-task-storage-settings-affect-tasks-domain
+    it("re-evaluates tasks domain when kynetic.yaml task-storage settings change", async () => {
+      const legacyDir = await makeLegacyProject();
+      const consoleErrSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      try {
+        const cache = new ProjectEntityCache(legacyDir);
+        await cache.loadDomain("tasks");
+        expect(cache.getDomainState("tasks")).toBe("degraded");
+
+        // Migrate the project: update kynetic.yaml to declare split storage
+        // and empty out the legacy tasks file. The watcher will emit a
+        // change for kynetic.yaml, which lifts suppression and triggers a
+        // recheck.
+        await migrateToSplit(legacyDir);
+
+        const kspecDir = join(legacyDir, ".kspec");
+        await cache.handleFileChange(kspecDir, join(kspecDir, "kynetic.yaml"));
+
+        // Recheck should restore the domain to ready without daemon restart.
+        expect(cache.getDomainState("tasks")).toBe("ready");
+        const diag = cache.getCacheDiagnostics();
+        expect(diag.domains.tasks.errorReason).toBeNull();
+        expect(diag.domains.tasks.recoveryWaitingOnProjectState).toBe(false);
+        expect(diag.domains.tasks.lastError).toBeNull();
+      } finally {
+        consoleErrSpy.mockRestore();
+        await fs.rm(legacyDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-task-storage-incompatibility-rechecked-after-storage-change
+    it("re-evaluates tasks domain when task-storage files change", async () => {
+      const legacyDir = await makeLegacyProject();
+      const consoleErrSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      try {
+        const cache = new ProjectEntityCache(legacyDir);
+        await cache.loadDomain("tasks");
+
+        const kspecDir = join(legacyDir, ".kspec");
+        // Simulate a watcher event for the legacy tasks file. The domain
+        // re-evaluates against current state, and since the legacy gate
+        // still fails, stays degraded — but the recheck path must run.
+        await cache.handleFileChange(kspecDir, join(kspecDir, "project.tasks.yaml"));
+        expect(cache.getDomainState("tasks")).toBe("degraded");
+
+        // Now migrate and emit a task-file watcher event to confirm
+        // recovery via the task-file change signal alone.
+        await migrateToSplit(legacyDir);
+        await cache.handleFileChange(kspecDir, join(kspecDir, "project.tasks.yaml"));
+        expect(cache.getDomainState("tasks")).toBe("ready");
+      } finally {
+        consoleErrSpy.mockRestore();
+        await fs.rm(legacyDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-task-storage-incompatibility-recovers-after-migration
+    it("returns tasks domain to available state after successful migration without restart", async () => {
+      const legacyDir = await makeLegacyProject();
+      try {
+        const cache = new ProjectEntityCache(legacyDir);
+        await cache.loadDomain("tasks");
+        expect(cache.getDomainState("tasks")).toBe("degraded");
+
+        await migrateToSplit(legacyDir);
+        const kspecDir = join(legacyDir, ".kspec");
+        await cache.handleFileChange(kspecDir, join(kspecDir, "kynetic.yaml"));
+
+        expect(cache.getDomainState("tasks")).toBe("ready");
+        // Re-runs of loadDomain on the now-healthy project must continue to
+        // work normally (suppression cleared).
+        await cache.loadDomain("tasks");
+        expect(cache.getDomainState("tasks")).toBe("ready");
+      } finally {
+        await fs.rm(legacyDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-task-storage-incompatibility-persists-when-unresolved
+    it("keeps tasks domain degraded when a recheck finds the same incompatibility", async () => {
+      const legacyDir = await makeLegacyProject();
+      const consoleErrSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      try {
+        const cache = new ProjectEntityCache(legacyDir);
+        await cache.loadDomain("tasks");
+        const firstObservedAt = cache.getCacheDiagnostics().domains.tasks;
+        expect(firstObservedAt.errorReason).toBe("legacy_task_storage_removed");
+
+        // Edit the legacy tasks file (e.g., the user touched it but did NOT
+        // migrate). The watcher event lifts suppression and triggers a
+        // recheck — but the underlying gate still fires.
+        const kspecDir = join(legacyDir, ".kspec");
+        await fs.writeFile(
+          join(kspecDir, "project.tasks.yaml"),
+          yamlStringify([
+            {
+              _ulid: "01LEGACY00000000000000000A",
+              slugs: ["task-legacy"],
+              title: "Legacy task edited",
+              type: "task",
+              status: "pending",
+              priority: 3,
+              depends_on: [],
+              created_at: "2026-01-01T00:00:00.000Z",
+              notes: [],
+              todos: [],
+            },
+          ]),
+          "utf-8",
+        );
+        await cache.handleFileChange(kspecDir, join(kspecDir, "project.tasks.yaml"));
+
+        expect(cache.getDomainState("tasks")).toBe("degraded");
+        const diag = cache.getCacheDiagnostics().domains.tasks;
+        expect(diag.errorReason).toBe("legacy_task_storage_removed");
+        expect(diag.recoveryWaitingOnProjectState).toBe(true);
+        // Suppression for the same code must not duplicate the failure log.
+        const reportCount = consoleErrSpy.mock.calls.filter((c) =>
+          String(c[0]).includes('domain "tasks"'),
+        ).length;
+        expect(reportCount).toBe(1);
+      } finally {
+        consoleErrSpy.mockRestore();
+        await fs.rm(legacyDir, { recursive: true, force: true });
+      }
     });
   });
 });

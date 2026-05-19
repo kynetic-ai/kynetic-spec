@@ -77,6 +77,7 @@ import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import type { ReviewIndexSummary } from "../../daemon/entity-cache.js";
 import { wrapResponse } from "./response-envelope.js";
+import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 
 interface ReviewsRouteOptions {
   pubsub: PubSubManager;
@@ -186,7 +187,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
       // AC: @review-records-web-ui ac-7 - Task filter for task detail page integration
       .get(
         "/",
-        async ({ query, projectContext }) => {
+        async ({ query, error: errorResponse, projectContext }) => {
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
           const cache = getEntityCache?.(projectContext.path);
 
@@ -224,11 +225,20 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           }
 
           // Try cache for tasks and items (for ref resolution)
+          // AC: @api-contract ac-task-storage-incompatibility-* — translate the storage
+          // error into a 409 so the reviews list does not surface as a 500.
           const tasksDomainState = cache?.getDomainState("tasks");
           const itemsDomainState = cache?.getDomainState("items");
-          const tasks =
-            (cache && tasksDomainState === "ready" ? cache.getTaskIndex() : null) ??
-            (await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx()));
+          let tasks;
+          try {
+            tasks =
+              (cache && tasksDomainState === "ready" ? cache.getTaskIndex() : null) ??
+              (await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx()));
+          } catch (err) {
+            const conflict = taskStorageIncompatibilityResponse(err, { cache });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
+            throw err;
+          }
           const specItems =
             (cache && itemsDomainState === "ready" ? cache.getItemIndex() : null) ??
             (await loadAllItems(await getCtx()));
@@ -1055,8 +1065,25 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
 
           // AC: @review-task-lifecycle-integration ac-4
           // Auto-transition tasks to needs_work on changes_requested verdict
+          // AC: @api-contract ac-task-storage-incompatibility-* — surface storage
+          // incompatibility as a structured 409 instead of a 500. The verdict has
+          // already been committed; the response signals the post-verdict task
+          // transition could not run because of the project's storage state.
           if (decision === "request_changes") {
-            const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            let allTasks;
+            try {
+              allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            } catch (err) {
+              const verdictCache = getEntityCache?.(projectContext.path);
+              const conflict = taskStorageIncompatibilityResponse(err, { cache: verdictCache });
+              if (conflict) {
+                if (verdictCache) {
+                  await verdictCache.writeThrough("reviews");
+                }
+                return errorResponse(conflict.status, conflict.body);
+              }
+              throw err;
+            }
             const transitioned = await handleVerdictTaskTransition(
               ctx,
               updated,

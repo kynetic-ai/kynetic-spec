@@ -30,6 +30,7 @@ import type { PlanIndexSummary } from "../../daemon/entity-cache.js";
 import { enumArrayUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
+import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 
 interface PlansRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -68,7 +69,7 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
       // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get(
         "/",
-        async ({ query, projectContext }) => {
+        async ({ query, error: errorResponse, projectContext }) => {
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
           const cache = getEntityCache?.(projectContext.path);
 
@@ -96,6 +97,8 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           }
 
           // Try cache for tasks (needed for progress computation)
+          // AC: @api-contract ac-task-storage-incompatibility-* — translate the
+          // storage error into a structured 409 instead of a 500.
           const tasksDomainState = cache?.getDomainState("tasks");
           let tasks;
           if (cache && tasksDomainState === "ready") {
@@ -103,7 +106,13 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           }
           if (!tasks) {
             const ctx = await getCtx();
-            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            try {
+              tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            } catch (err) {
+              const conflict = taskStorageIncompatibilityResponse(err, { cache });
+              if (conflict) return errorResponse(conflict.status, conflict.body);
+              throw err;
+            }
           }
 
           // Apply status filter
@@ -184,13 +193,21 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
         }
 
         // Try cache for tasks (needed for progress computation)
+        // AC: @api-contract ac-task-storage-incompatibility-* — translate the
+        // storage error into a structured 409 instead of a 500.
         const tasksDomainState = cache?.getDomainState("tasks");
         let tasks;
         if (cache && tasksDomainState === "ready") {
           tasks = cache.getTaskIndex();
         }
         if (!tasks) {
-          tasks = await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
+          try {
+            tasks = await resolveTaskDataManager(await getCtx()).loadAllTasks(await getCtx());
+          } catch (err) {
+            const conflict = taskStorageIncompatibilityResponse(err, { cache });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
+            throw err;
+          }
         }
 
         const detail: PlanDetail = {

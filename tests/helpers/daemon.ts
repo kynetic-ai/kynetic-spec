@@ -20,9 +20,10 @@
  *     never kills by port number or by reading the ambient pid file.
  */
 import { execSync, spawn, type ChildProcess } from "node:child_process";
-import { existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, rmSync } from "node:fs";
 import { cp as fsCp } from "node:fs/promises";
 import { createServer as createNetServer } from "node:net";
+import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -57,6 +58,8 @@ const WEB_UI_BUILD_CANDIDATES = [
   join(PROJECT_ROOT, "dist", "web-ui"),
   join(PROJECT_ROOT, "packages", "web-ui", "build"),
 ];
+const PORT_START_LOCK_DIR = join(tmpdir(), "kspec-test-daemon-port-start.lock");
+const PORT_START_LOCK_MIN_TIMEOUT_MS = 120_000;
 
 // ── Public types ──────────────────────────────────────────────────────
 
@@ -335,6 +338,63 @@ export async function allocateTestDaemonPort(host = DEFAULT_BIND_HOST): Promise<
       }
       const { port } = address;
       server.close((err) => (err ? rejectErr(err) : resolveOk(port)));
+    });
+  });
+}
+
+function computePortStartLockTimeout(opts: StartTestDaemonOptions): number {
+  const readiness = opts.readiness ?? { mode: "health-and-cache" };
+  const readinessStages = readiness.mode === "health-and-cache" ? 2 : 1;
+  const readinessBudgetMs = (opts.timeoutMs ?? DEFAULT_TIMEOUT_MS) * readinessStages;
+  return Math.max(PORT_START_LOCK_MIN_TIMEOUT_MS, readinessBudgetMs + 15_000);
+}
+
+export async function acquireTestDaemonPortStartLock(
+  timeoutMs = PORT_START_LOCK_MIN_TIMEOUT_MS,
+): Promise<() => void> {
+  const deadline = Date.now() + timeoutMs;
+
+  while (true) {
+    try {
+      mkdirSync(PORT_START_LOCK_DIR);
+      let released = false;
+      return () => {
+        if (released) return;
+        rmSync(PORT_START_LOCK_DIR, { recursive: true, force: true });
+        released = true;
+      };
+    } catch (error) {
+      const code = (error as { code?: string }).code;
+      if (code !== "EEXIST") throw error;
+
+      if (Date.now() >= deadline) {
+        throw new Error(
+          `Timed out waiting ${timeoutMs}ms for daemon port startup lock at ${PORT_START_LOCK_DIR}`,
+        );
+      }
+
+      await new Promise<void>((resolveSleep) => setTimeout(resolveSleep, 25));
+    }
+  }
+}
+
+export async function reserveTestDaemonPort(
+  port: number,
+  host = DEFAULT_BIND_HOST,
+): Promise<() => Promise<void>> {
+  return await new Promise<() => Promise<void>>((resolveOk, rejectErr) => {
+    const server = createNetServer();
+    server.once("error", rejectErr);
+    server.listen(port, host, () => {
+      server.removeListener("error", rejectErr);
+      let released = false;
+      resolveOk(async () => {
+        if (released) return;
+        released = true;
+        await new Promise<void>((resolveClose, rejectClose) => {
+          server.close((err) => (err ? rejectClose(err) : resolveClose()));
+        });
+      });
     });
   });
 }
@@ -786,6 +846,47 @@ function formatDiagnostics(d: DaemonReadinessDiagnostics): string {
  * readiness wait.
  */
 export async function startTestDaemon(
+  project: TestDaemonProject,
+  opts: StartTestDaemonOptions = {},
+): Promise<StartedTestDaemon> {
+  const releasePortStartLock =
+    opts.port === undefined
+      ? await acquireTestDaemonPortStartLock(computePortStartLockTimeout(opts))
+      : null;
+  let started: StartedTestDaemon;
+  try {
+    started = await startTestDaemonUnlocked(project, opts);
+  } catch (primary) {
+    if (releasePortStartLock) {
+      try {
+        releasePortStartLock();
+      } catch (cleanupError) {
+        const err = toError(primary);
+        attachCleanupFailure(err, toError(cleanupError));
+        throw err;
+      }
+    }
+    throw primary;
+  }
+
+  if (releasePortStartLock) {
+    try {
+      releasePortStartLock();
+    } catch (cleanupError) {
+      const err = toError(cleanupError);
+      try {
+        await started.stop();
+      } catch (stopError) {
+        attachCleanupFailure(err, toError(stopError));
+      }
+      throw err;
+    }
+  }
+
+  return started;
+}
+
+async function startTestDaemonUnlocked(
   project: TestDaemonProject,
   opts: StartTestDaemonOptions = {},
 ): Promise<StartedTestDaemon> {

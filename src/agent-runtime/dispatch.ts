@@ -1005,16 +1005,17 @@ export class DispatchEngine {
     // AC: @agent-dispatch-engine ac-19, ac-20 - Start periodic reconciliation
     if (this.reconcileIntervalMs > 0) {
       this.reconcileTimer = setInterval(() => {
-        if (this.running) {
-          const p = this._reconcile()
-            .catch((err) => {
-              console.error("[dispatch] Reconciliation error:", err);
-            })
-            .finally(() => {
-              this.inFlightReconciles.delete(p);
-            });
-          this.inFlightReconciles.add(p);
+        if (!this.running || this.inFlightReconciles.size > 0) {
+          return;
         }
+        const p = this._reconcile()
+          .catch((err) => {
+            console.error("[dispatch] Reconciliation error:", err);
+          })
+          .finally(() => {
+            this.inFlightReconciles.delete(p);
+          });
+        this.inFlightReconciles.add(p);
       }, this.reconcileIntervalMs);
       this.reconcileTimer.unref();
     }

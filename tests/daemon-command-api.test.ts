@@ -8,6 +8,7 @@
  * - @daemon-command-api ac-concurrent-mutations: serialized mutation execution
  * - @daemon-command-api ac-response-parity: stdout/stderr/exitCode match direct CLI
  * - @daemon-command-api ac-cache-context-propagation: command execution receives entity cache async context
+ * - @daemon-command-api ac-no-recursive-command-proxy: daemon-internal command execution sees proxying suppressed
  * - @trait-api-endpoint ac-1: returns 2xx with JSON body
  * - @trait-api-endpoint ac-3: returns 400 on invalid body
  * - @trait-api-endpoint ac-6: includes X-Request-Id header
@@ -502,6 +503,55 @@ describe("Daemon Command API", () => {
     expect(body.exitCode).toBe(0);
     // stdout should contain task data since we have a task in fixtures
     expect(body.stdout).toBeTruthy();
+  });
+
+  // AC: @daemon-command-api ac-no-recursive-command-proxy
+  it("executes daemon-internal commands without proxying back to /api/command", async () => {
+    await withInjectedCommand(
+      (program) => {
+        program.command("debug-proxy-decision").action(async () => {
+          const {
+            shouldProxyCommand,
+            _resetDetectionCacheForTesting,
+            _setDetectionCacheForTesting,
+          } = await import("../dist/cli/daemon-proxy.js");
+
+          const originalNoDaemon = process.env.KSPEC_NO_DAEMON;
+          _resetDetectionCacheForTesting();
+          _setDetectionCacheForTesting({ available: true, port: 3456 });
+          delete process.env.KSPEC_NO_DAEMON;
+          try {
+            const result = await shouldProxyCommand({ forceDaemon: false });
+            console.log(JSON.stringify(result));
+          } finally {
+            if (originalNoDaemon === undefined) {
+              delete process.env.KSPEC_NO_DAEMON;
+            } else {
+              process.env.KSPEC_NO_DAEMON = originalNoDaemon;
+            }
+            _resetDetectionCacheForTesting();
+          }
+        });
+      },
+      async () => {
+        const response = await makeRequest("/api/command", {
+          method: "POST",
+          body: JSON.stringify({
+            command: "debug-proxy-decision",
+            args: {},
+          }),
+        });
+
+        expect(response.status).toBe(200);
+        const body = await response.json();
+        expect(body.exitCode).toBe(0);
+        const decision = JSON.parse(body.stdout);
+        expect(decision).toMatchObject({
+          proxy: false,
+          reason: "daemon command API execution",
+        });
+      },
+    );
   });
 
   // AC: @daemon-command-api ac-command-endpoint

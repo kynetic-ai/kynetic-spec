@@ -6,7 +6,9 @@ import { fileURLToPath } from "url";
 import { parse as parseYaml } from "yaml";
 
 import {
+  acquireTestDaemonPortStartLock,
   isDaemonRuntimeAvailable,
+  reserveTestDaemonPort,
   type DaemonTestRuntime,
   type StartedTestDaemon,
 } from "../../helpers/daemon.js";
@@ -167,12 +169,14 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
       // so the setup-failure cleanup contract can be exercised at the unit level
       // (tests/e2e-fixture-daemon-cleanup.test.ts) against the same code path the
       // wrapper executes.
-      const { project, port } = await acquirePlaywrightFixtureResources({
+      const { project, port, releasePortStartLock } = await acquirePlaywrightFixtureResources({
         fixturesSource: E2E_FIXTURES,
         webUiDir: WEB_UI_BUILD,
       });
 
       let started: StartedTestDaemon | null = null;
+      let releasePendingPortStartLock: (() => void) | null = releasePortStartLock;
+      let releaseStoppedPortReservation: (() => Promise<void>) | null = null;
       // Stop hook captured via our own `registerCleanup` callback passed
       // through to the shared core. Owning the captured reference here
       // (rather than reading it back from the helper's return value) lets
@@ -187,6 +191,22 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
         if (started && started.child.exitCode === null && started.child.signalCode === null) {
           return;
         }
+
+        if (releaseStoppedPortReservation) {
+          const releaseRestartLock = await acquireTestDaemonPortStartLock();
+          try {
+            await releaseStoppedPortReservation();
+            releaseStoppedPortReservation = null;
+            releasePendingPortStartLock = releaseRestartLock;
+          } catch (error) {
+            releaseRestartLock();
+            throw error;
+          }
+        }
+
+        const releasePortStartLockForThisStart = releasePendingPortStartLock ?? undefined;
+        releasePendingPortStartLock = null;
+
         // AC: @e2e-test-daemon-isolation ac-uses-shared-fixture
         // AC: @daemon-backed-test-fixture-contract ac-real-daemon-tests-use-shared-fixture
         // AC: @daemon-backed-test-fixture-contract ac-bounded-readiness
@@ -198,6 +218,7 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
           project,
           runtime,
           port,
+          releasePortStartLock: releasePortStartLockForThisStart,
           registerCleanup: (stop) => {
             earlyStop = stop;
           },
@@ -211,7 +232,15 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
         earlyStop ??= started.stop;
       }
 
-      async function stopDaemon(): Promise<void> {
+      async function stopDaemon(opts: { reservePort?: boolean } = {}): Promise<void> {
+        const reservePort = opts.reservePort ?? true;
+        if (releaseStoppedPortReservation) {
+          if (!reservePort) {
+            await releaseStoppedPortReservation();
+            releaseStoppedPortReservation = null;
+          }
+          return;
+        }
         if (!earlyStop) return;
         // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
         // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
@@ -220,7 +249,18 @@ export const test = base.extend<{ daemon: DaemonFixture }>({
         // The captured stop is idempotent (see startTestDaemon's `stopped`
         // guard) so calling it again from the finally block below after
         // the test invoked daemon.stop() is safe.
-        await earlyStop();
+        if (!reservePort) {
+          await earlyStop();
+          return;
+        }
+
+        const releaseStopLock = await acquireTestDaemonPortStartLock();
+        try {
+          await earlyStop();
+          releaseStoppedPortReservation = await reserveTestDaemonPort(port);
+        } finally {
+          releaseStopLock();
+        }
       }
 
       // Helper to create a valid second project for multi-project tests
@@ -325,7 +365,7 @@ tasks: []
           // AC: @e2e-test-daemon-isolation ac-e2e-scoped-cleanup
           // AC: @daemon-backed-test-fixture-contract ac-scoped-cleanup
           // AC: @daemon-test-startup-failure-hygiene ac-owned-child-stopped-after-startup-failure
-          await stopDaemon();
+          await stopDaemon({ reservePort: false });
           try {
             rmSync(`${project.tempDir}-second`, { recursive: true, force: true });
           } catch {

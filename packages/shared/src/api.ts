@@ -82,6 +82,11 @@ export interface PaginatedResponse<T> {
 /**
  * Standard error response
  * AC: @api-contract ac-22, ac-23, ac-24
+ * AC: @api-contract ac-task-storage-incompatibility-error-code
+ * AC: @api-contract ac-task-storage-incompatibility-guidance
+ * AC: @api-contract ac-task-storage-incompatibility-field-context
+ * AC: @api-contract ac-task-storage-incompatibility-cache-domain-context
+ * AC: @api-contract ac-task-storage-incompatibility-cache-state-context
  */
 export interface ErrorResponse {
   error: string;
@@ -90,6 +95,33 @@ export interface ErrorResponse {
   details?: Array<{ field: string; message: string }>;
   current?: string;
   valid_transitions?: string[];
+  /**
+   * Inner stable error code identifying the specific failure class. Used by
+   * task-storage incompatibility responses to preserve the underlying
+   * TaskDataManagerError code (e.g. "legacy_task_storage_removed",
+   * "split_task_storage_unmigrated") even when the top-level `error`
+   * collapses them into a single API discriminator.
+   */
+  code?: string;
+  /**
+   * Affected configuration or storage field when the failure identifies one
+   * (e.g. "task_storage.format" for task-storage incompatibility errors).
+   * Distinct from `details[].field`, which is reserved for per-field
+   * validation diagnostics on 400/422 responses.
+   */
+  field?: string;
+  /**
+   * Identifies the cache domain associated with the failure when the error
+   * is tied to a cache-backed domain (e.g. "tasks").
+   */
+  cache_domain?: string;
+  /**
+   * Current state of the affected cache domain when the daemon can report
+   * one. Mirrors the daemon's internal DomainState enum
+   * ("unloaded" | "loading" | "ready" | "degraded"). Distinct from the
+   * envelope `meta.cache_status`, which only exposes "ready" | "loading".
+   */
+  cache_domain_state?: string;
 }
 
 /**

@@ -37,6 +37,7 @@ import {
   runDaemonFixtureLifecycle,
   runPlaywrightFixtureBody,
   startPlaywrightFixtureDaemon,
+  type AcquireTestDaemonPortStartLockImpl,
   type AllocateTestDaemonPortImpl,
   type CreateTestDaemonProjectImpl,
   type PlaywrightFixtureSetupStage,
@@ -75,6 +76,7 @@ function makeFakeStartedDaemon(stop: () => Promise<void>): StartedTestDaemon {
       port: 1234,
       bindHost: "127.0.0.1",
       connectHost: "127.0.0.1",
+      externallyReachable: false,
     },
     runtime: "node",
     // The wrapper only reads `child.exitCode` / `child.signalCode` from this
@@ -214,6 +216,30 @@ describe("startPlaywrightFixtureDaemon — cleanup registration contract", () =>
     expect(stopCalls).toEqual(["stop-invoked"]);
   });
 
+  it("preserves startup failure when releasing the startup lock also fails", async () => {
+    const startupFailure = new Error("simulated readiness failure");
+    const lockFailure = new Error("simulated startup lock release failure");
+    const fakeStart: StartTestDaemonImpl = (async () => {
+      throw startupFailure;
+    }) as StartTestDaemonImpl;
+
+    await expect(
+      startPlaywrightFixtureDaemon({
+        project: FAKE_PROJECT,
+        runtime: "node",
+        port: 1234,
+        registerCleanup: () => {},
+        releasePortStartLock: () => {
+          throw lockFailure;
+        },
+        startTestDaemonImpl: fakeStart,
+      }),
+    ).rejects.toMatchObject({
+      message: expect.stringContaining("simulated readiness failure"),
+      cause: lockFailure,
+    });
+  });
+
   it("forwards the runtime, port, and KSPEC_TEST env contract to the shared core", async () => {
     // Light coverage that the wrapper still passes the test-only env vars
     // and the pre-allocated port through to the shared core. The
@@ -223,6 +249,7 @@ describe("startPlaywrightFixtureDaemon — cleanup registration contract", () =>
     let receivedRuntime: string | undefined;
     let receivedPort: number | undefined;
     let receivedExtraEnv: Record<string, string> | undefined;
+    let lockReleased = false;
 
     const fakeStart: StartTestDaemonImpl = (async (_project, opts) => {
       receivedRuntime = opts.runtime;
@@ -237,11 +264,15 @@ describe("startPlaywrightFixtureDaemon — cleanup registration contract", () =>
       runtime: "node",
       port: 1234,
       registerCleanup: () => {},
+      releasePortStartLock: () => {
+        lockReleased = true;
+      },
       startTestDaemonImpl: fakeStart,
     });
 
     expect(receivedRuntime).toBe("node");
     expect(receivedPort).toBe(1234);
+    expect(lockReleased).toBe(true);
     expect(receivedExtraEnv).toEqual({
       KSPEC_TEST: "1",
       KSPEC_TEST_RUNTIME: "node",
@@ -370,6 +401,10 @@ describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", 
         project) as CreateTestDaemonProjectImpl;
       const fakeAllocate: AllocateTestDaemonPortImpl = (async () =>
         4321) as AllocateTestDaemonPortImpl;
+      let lockReleased = false;
+      const fakeAcquireLock: AcquireTestDaemonPortStartLockImpl = (async () => () => {
+        lockReleased = true;
+      }) as AcquireTestDaemonPortStartLockImpl;
 
       const stages: PlaywrightFixtureSetupStage[] = [];
       const resources = await acquirePlaywrightFixtureResources({
@@ -381,6 +416,7 @@ describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", 
         webUiDir: "/tmp/fake-web-ui",
         __testCreateProjectImpl: fakeCreate,
         __testAllocatePortImpl: fakeAllocate,
+        __testAcquirePortStartLockImpl: fakeAcquireLock,
         __testStageHook: (stage) => {
           stages.push(stage);
         },
@@ -388,6 +424,9 @@ describe("acquirePlaywrightFixtureResources — wrapper setup-failure cleanup", 
 
       expect(resources.project).toBe(project);
       expect(resources.port).toBe(4321);
+      expect(lockReleased).toBe(false);
+      resources.releasePortStartLock();
+      expect(lockReleased).toBe(true);
       expect(stages).toEqual([
         "after-create-project",
         "after-copy-project-tests",

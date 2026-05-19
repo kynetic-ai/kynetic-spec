@@ -32,7 +32,11 @@ import type { MutationMetadata, TaskStorageBackend, TaskSummary } from "./task-d
 // Re-export history types from their canonical home in task-data-manager
 export type { HistoryEntry, HistoryFieldChange } from "./task-data-manager.js";
 import type { HistoryEntry, HistoryFieldChange } from "./task-data-manager.js";
-import { TaskDataManagerError, registerBackend } from "./task-data-manager.js";
+import {
+  TaskDataManagerError,
+  TASK_STORAGE_SPLIT_UNMIGRATED_CODE,
+  registerBackend,
+} from "./task-data-manager.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
 import {
   findTaskByRef,
@@ -502,6 +506,7 @@ class SplitBackend implements TaskStorageBackend {
             suggestion:
               'Run "kspec task migrate" to convert unmigrated entries to per-task directories.',
             field: "task_storage.format",
+            code: TASK_STORAGE_SPLIT_UNMIGRATED_CODE,
           },
         );
       }

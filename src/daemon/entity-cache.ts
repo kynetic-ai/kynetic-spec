@@ -46,7 +46,11 @@ import {
   type TaskSummary,
 } from "../parser/index.js";
 import type { MetaContext } from "../parser/meta.js";
-import type { HistoryEntry } from "../parser/task-data-manager.js";
+import {
+  isDeterministicTaskStorageIncompatibility,
+  type HistoryEntry,
+  type TaskDataManagerError,
+} from "../parser/task-data-manager.js";
 import { loadInboxItems, type LoadedInboxItem } from "../parser/yaml.js";
 import { loadTriageRecords, type LoadedTriageRecord } from "../parser/yaml.js";
 import { loadReviewRecords, type LoadedReviewRecord } from "../parser/reviews.js";
@@ -302,6 +306,27 @@ export interface CachedSessionContext {
   updated_at: string;
 }
 
+/**
+ * Tracked state for a deterministic task-storage compatibility/migration
+ * failure on the tasks cache domain. Preserved across repeat reload paths
+ * so the daemon can avoid amplifying the same unchanged condition.
+ *
+ * AC: @daemon-entity-cache ac-task-storage-incompatibility-degraded-state
+ * AC: @daemon-entity-cache ac-task-storage-incompatibility-stable-reporting
+ */
+export interface TaskStorageIncompatibilityState {
+  /** Stable error code from TaskDataManagerError (e.g. "legacy_task_storage_removed"). */
+  code: string;
+  /** Human-readable message captured from the original error. */
+  message: string;
+  /** Recovery guidance (suggestion) carried over from the original error. */
+  suggestion: string | null;
+  /** Field that drove the error, when one was reported. */
+  field: string | null;
+  /** ISO 8601 timestamp the current incompatibility was first observed. */
+  observedAt: string;
+}
+
 /** Per-domain diagnostic snapshot returned by getCacheDiagnostics(). */
 export interface DomainDiagnostic {
   state: DomainState;
@@ -309,6 +334,31 @@ export interface DomainDiagnostic {
   detailCount: number;
   lastError: string | null;
   lastInvalidatedAt: string | null;
+  /**
+   * Stable code identifying the current error class when available
+   * (e.g. "legacy_task_storage_removed"). Null when the domain is healthy
+   * or the error has no stable code.
+   *
+   * AC: @daemon-server ac-cache-diagnostics-degraded-reason
+   */
+  errorReason: string | null;
+  /**
+   * User-actionable guidance describing how to recover from the current
+   * error, when the underlying error supplied one.
+   *
+   * AC: @daemon-server ac-cache-diagnostics-recovery-guidance
+   */
+  recoveryGuidance: string | null;
+  /**
+   * True when the only path to recovery is a relevant project-state change
+   * (e.g. running a migration or updating the manifest). Surfaces the
+   * suppressed/waiting state from bounded degraded-state behavior so
+   * diagnostic clients can distinguish "stuck on user action" from
+   * "transient failure".
+   *
+   * AC: @daemon-server ac-cache-diagnostics-recovery-readiness
+   */
+  recoveryWaitingOnProjectState: boolean;
 }
 
 /** Full cache diagnostic snapshot for a single project. */
@@ -398,6 +448,25 @@ interface DomainStore<TIndex, TDetail = unknown> {
 
 interface TaskDomainStore extends DomainStore<TaskSummary[], CachedTaskDetail> {
   historyDetails: Map<string, HistoryEntry[]>;
+  /**
+   * Active deterministic task-storage incompatibility, when the tasks domain
+   * cannot load because of a legacy/unmigrated storage state. Persists across
+   * reload paths so the daemon does not amplify the unchanged condition.
+   *
+   * AC: @daemon-entity-cache ac-task-storage-incompatibility-stable-reporting
+   */
+  storageIncompatibility: TaskStorageIncompatibilityState | null;
+  /**
+   * Whether a relevant task-storage project-state change has been observed
+   * since the last evaluation. While false (and storageIncompatibility is
+   * set), the next tasks reload is suppressed entirely. Set to true when
+   * the watcher reports a change to kynetic.yaml, project.tasks.yaml, or
+   * tasks/<ULID>/ — the signals that can resolve a deterministic
+   * incompatibility.
+   *
+   * AC: @daemon-entity-cache ac-task-storage-incompatibility-rechecked-after-storage-change
+   */
+  needsTaskStorageRecheck: boolean;
 }
 
 // ─── File → Domain Mapping ───────────────────────────────────────────────────
@@ -431,6 +500,13 @@ export function fileToDomain(
     domains.push("tasks");
   }
   if (relativePath.startsWith("tasks/")) {
+    domains.push("tasks");
+  }
+  // kynetic.yaml carries the task_storage configuration; manifest changes
+  // are a relevant signal for re-evaluating task-storage compatibility.
+  // AC: @daemon-entity-cache ac-manifest-task-storage-settings-affect-tasks-domain
+  // AC: @daemon-entity-cache ac-task-storage-incompatibility-rechecked-after-storage-change
+  if (relativePath === "kynetic.yaml") {
     domains.push("tasks");
   }
 
@@ -524,6 +600,8 @@ export class ProjectEntityCache {
     index: null,
     details: new Map(),
     historyDetails: new Map(),
+    storageIncompatibility: null,
+    needsTaskStorageRecheck: true,
   };
   private items: DomainStore<ItemSummary[], LoadedSpecItem> = {
     state: "unloaded",
@@ -942,12 +1020,31 @@ export class ProjectEntityCache {
       const store = this.getStore(domain);
       const indexCount =
         store.index == null ? 0 : Array.isArray(store.index) ? store.index.length : 1; // meta index is a single object
+
+      // AC: @daemon-server ac-cache-diagnostics-degraded-reason
+      // AC: @daemon-server ac-cache-diagnostics-recovery-guidance
+      // AC: @daemon-server ac-cache-diagnostics-recovery-readiness
+      // Tasks domain surfaces deterministic task-storage incompatibility
+      // diagnostics so clients can distinguish "stuck on user action" from
+      // "transient failure". Other domains report nulls/false.
+      let errorReason: string | null = null;
+      let recoveryGuidance: string | null = null;
+      let recoveryWaitingOnProjectState = false;
+      if (domain === "tasks" && this.tasks.storageIncompatibility) {
+        errorReason = this.tasks.storageIncompatibility.code;
+        recoveryGuidance = this.tasks.storageIncompatibility.suggestion;
+        recoveryWaitingOnProjectState = !this.tasks.needsTaskStorageRecheck;
+      }
+
       domains[domain] = {
         state: store.state,
         indexCount,
         detailCount: store.details.size,
         lastError: store.lastError?.message ?? null,
         lastInvalidatedAt: store.lastInvalidatedAt ?? null,
+        errorReason,
+        recoveryGuidance,
+        recoveryWaitingOnProjectState,
       };
     }
     return { projectPath: this.projectPath, domains };
@@ -1235,6 +1332,17 @@ export class ProjectEntityCache {
   async invalidateDomain(domain: CacheDomain): Promise<void> {
     if (this.disposed) return;
 
+    // AC: @daemon-entity-cache ac-task-storage-incompatibility-rechecked-after-storage-change
+    // Watcher-driven invalidation of the tasks domain is the canonical
+    // signal of a relevant project-state change: project.tasks.yaml,
+    // tasks/<ULID>/*, and kynetic.yaml all map to "tasks" via fileToDomain.
+    // Flip the recheck flag synchronously so the upcoming reload re-evaluates
+    // current task-storage state — suppression lifts before the debounced
+    // reload actually runs.
+    if (domain === "tasks") {
+      this.tasks.needsTaskStorageRecheck = true;
+    }
+
     // AC: @daemon-entity-cache ac-write-through — skip if write-through just updated this domain
     if (this.writeThroughSkip.has(domain)) {
       this.writeThroughSkip.delete(domain);
@@ -1371,6 +1479,8 @@ export class ProjectEntityCache {
       store.details.clear();
       if (domain === "tasks") {
         this.tasks.historyDetails.clear();
+        this.tasks.storageIncompatibility = null;
+        this.tasks.needsTaskStorageRecheck = true;
       }
       store.state = "unloaded";
       store.lastError = undefined;
@@ -1519,6 +1629,19 @@ export class ProjectEntityCache {
     domain: Exclude<CacheDomain, "meta">,
     cycle?: ReloadCycle,
   ): Promise<void> {
+    // AC: @daemon-entity-cache ac-task-storage-incompatibility-stable-reporting
+    // AC: @daemon-entity-cache ac-task-storage-incompatibility-persists-when-unresolved
+    // Bounded degraded-state behavior for the tasks domain: when a previous
+    // load surfaced a deterministic task-storage incompatibility and no
+    // relevant project-state change has been observed since, skip the reload
+    // entirely. The store keeps its degraded state and lastError diagnostics;
+    // no new failure report is emitted. Initial loads, explicit loadDomain
+    // calls, writeThrough fallback reloads, and queued reloads all observe
+    // the same suppression because they all funnel through this method.
+    if (domain === "tasks" && this.isTaskStorageSuppressionActive()) {
+      return;
+    }
+
     const store = this.getStore(domain);
 
     // AC: @daemon-entity-cache ac-domain-ready-event — capture state before
@@ -1540,6 +1663,14 @@ export class ProjectEntityCache {
         store.state = "ready";
         store.lastError = undefined;
 
+        // AC: @daemon-entity-cache ac-task-storage-incompatibility-recovers-after-migration
+        // A successful load clears any prior deterministic task-storage
+        // incompatibility — the project state is now compatible.
+        if (domain === "tasks") {
+          this.tasks.storageIncompatibility = null;
+          this.tasks.needsTaskStorageRecheck = false;
+        }
+
         // AC: @daemon-entity-cache ac-domain-ready-event — only fire when
         // transitioning FROM a non-ready state. Reloads of already-ready
         // domains (ac-stale-during-reload) do not trigger the event.
@@ -1548,12 +1679,77 @@ export class ProjectEntityCache {
         }
       }
     } catch (err) {
-      if (!this.disposed) {
-        // AC: @daemon-entity-cache ac-graceful-degradation
-        store.state = "degraded";
-        store.lastError = err instanceof Error ? err : new Error(String(err));
-        console.error(`[entity-cache] Failed to load domain "${domain}":`, err);
+      if (this.disposed) {
+        return;
       }
+
+      // AC: @daemon-entity-cache ac-task-storage-incompatibility-degraded-state
+      // AC: @daemon-entity-cache ac-task-storage-incompatibility-stable-reporting
+      // Deterministic task-storage incompatibility: track the stable code so
+      // subsequent reload attempts are suppressed until a project-state
+      // change clears it. Generic TaskDataManagerError cases (validation,
+      // not-found, mutation) fall through to the normal degrade-on-error
+      // path because they may resolve on retry.
+      if (domain === "tasks" && isDeterministicTaskStorageIncompatibility(err)) {
+        this.noteTaskStorageIncompatibility(err);
+        return;
+      }
+
+      // AC: @daemon-entity-cache ac-graceful-degradation
+      // Non-deterministic failure: clear any prior storage-incompatibility
+      // marker so this generic error is not silently held under suppression
+      // intended for deterministic cases.
+      if (domain === "tasks") {
+        this.tasks.storageIncompatibility = null;
+        this.tasks.needsTaskStorageRecheck = false;
+      }
+      store.state = "degraded";
+      store.lastError = err instanceof Error ? err : new Error(String(err));
+      console.error(`[entity-cache] Failed to load domain "${domain}":`, err);
+    }
+  }
+
+  /**
+   * True when the tasks domain has an active deterministic task-storage
+   * incompatibility and no relevant project-state change has been observed
+   * since the last evaluation. Callers should bypass any reload work.
+   *
+   * AC: @daemon-entity-cache ac-task-storage-incompatibility-stable-reporting
+   * AC: @daemon-entity-cache ac-task-storage-incompatibility-persists-when-unresolved
+   */
+  private isTaskStorageSuppressionActive(): boolean {
+    return this.tasks.storageIncompatibility !== null && !this.tasks.needsTaskStorageRecheck;
+  }
+
+  /**
+   * Record a deterministic task-storage incompatibility surfaced by a load
+   * attempt. The marker keeps the tasks domain degraded with stable
+   * diagnostics; repeat observations of the same code suppress the duplicate
+   * failure log so logs do not amplify the unchanged condition.
+   *
+   * AC: @daemon-entity-cache ac-task-storage-incompatibility-degraded-state
+   * AC: @daemon-entity-cache ac-task-storage-incompatibility-stable-reporting
+   * AC: @daemon-entity-cache ac-task-storage-incompatibility-persists-when-unresolved
+   */
+  private noteTaskStorageIncompatibility(err: TaskDataManagerError & { code: string }): void {
+    const previous = this.tasks.storageIncompatibility;
+    const sameCondition = previous !== null && previous.code === err.code;
+
+    this.tasks.storageIncompatibility = {
+      code: err.code,
+      message: err.message,
+      suggestion: err.suggestion ?? null,
+      field: err.field ?? null,
+      // Preserve the original observation timestamp when the same code
+      // persists across rechecks — the condition itself has not changed.
+      observedAt: sameCondition ? previous!.observedAt : new Date().toISOString(),
+    };
+    this.tasks.needsTaskStorageRecheck = false;
+    this.tasks.state = "degraded";
+    this.tasks.lastError = err;
+
+    if (!sameCondition) {
+      console.error(`[entity-cache] Failed to load domain "tasks":`, err);
     }
   }
 
@@ -1630,6 +1826,14 @@ export class ProjectEntityCache {
     changes: PendingDomainChange[],
     cycle?: ReloadCycle,
   ): Promise<void> {
+    // AC: @daemon-entity-cache ac-task-storage-incompatibility-stable-reporting
+    // Suppression applies before any incremental path so writeThrough fallback
+    // reloads and watcher-driven incremental refreshes both honor the
+    // bounded degraded behavior when no state change has been observed.
+    if (domain === "tasks" && this.isTaskStorageSuppressionActive()) {
+      return;
+    }
+
     if (domain === "meta" && (await this.tryIncrementalMetaUpdate(changes, cycle))) {
       return;
     }
@@ -1734,7 +1938,22 @@ export class ProjectEntityCache {
       return false;
     }
 
-    const tdm = resolveTaskDataManager(ctx);
+    // AC: @daemon-entity-cache ac-task-storage-incompatibility-degraded-state
+    // resolveTaskDataManager throws a deterministic incompatibility error
+    // when the manifest is legacy/unmigrated. Funnel that into the same
+    // bounded degraded-state behavior the full-reload path uses so the
+    // incremental write-through path does not bypass suppression. Other
+    // throws propagate unchanged.
+    let tdm: ReturnType<typeof resolveTaskDataManager>;
+    try {
+      tdm = resolveTaskDataManager(ctx);
+    } catch (err) {
+      if (isDeterministicTaskStorageIncompatibility(err)) {
+        this.noteTaskStorageIncompatibility(err);
+        return true;
+      }
+      throw err;
+    }
     const nextIndex = [...this.tasks.index];
     const nextDetails = new Map(this.tasks.details);
     const nextHistoryDetails = new Map(this.tasks.historyDetails);

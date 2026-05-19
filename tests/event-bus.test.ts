@@ -423,6 +423,30 @@ describe("ac-4: per-source sequential delivery ordering", () => {
     const bStart = log.indexOf("handler1:start:test.b");
     expect(aEnd).toBeLessThan(bStart);
   });
+
+  // AC: @dispatch-event-envelope ac-completed-source-ordering-is-released
+  it("should release settled per-source delivery chains after subscriber delivery", async () => {
+    const bus = new EventBus();
+    const retainedChains = () =>
+      (bus as unknown as { sourceDeliveryChains: Map<string, Promise<void>> }).sourceDeliveryChains
+        .size;
+
+    bus.subscribe("test.*", async () => {
+      await Promise.resolve();
+    });
+
+    for (let i = 0; i < 25; i++) {
+      bus.emit({
+        event_type: "test.high-cardinality-source",
+        source_type: "manual",
+        source_id: `unique-source-${i}`,
+      });
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
+    expect(retainedChains()).toBe(0);
+  });
 });
 
 // ─── AC-5: Chain Depth Limit ────────────────────────────────────────────────
@@ -605,6 +629,72 @@ describe("ac-5: chain depth limit", () => {
     expect(afterReset.accepted).toBe(true);
 
     vi.restoreAllMocks();
+  });
+
+  // AC: @dispatch-event-envelope ac-retained-event-lineage-is-bounded
+  it("should release chain-depth entries for correlations whose events have aged out", () => {
+    const bus = new EventBus({ ringBufferCapacity: 5, maxChainDepth: 20 });
+    const chainDepths = (bus as unknown as { chainDepths: Map<string, number> }).chainDepths;
+
+    for (let i = 0; i < 25; i++) {
+      const correlationId = `correlation-${i}`;
+      const result = bus.emit({
+        event_type: "test.correlated",
+        source_type: "manual",
+        source_id: `source-${i}`,
+        causation_id: `cause-${i}`,
+        correlation_id: correlationId,
+      });
+      expect(result.accepted).toBe(true);
+    }
+
+    // Aged-out correlations must be released — not merely bounded by capacity.
+    const retainedCorrelationIds = new Set(
+      bus
+        .getRecentEvents()
+        .map((event) => event.correlation_id)
+        .filter((id): id is string => typeof id === "string"),
+    );
+    for (let i = 0; i < 20; i++) {
+      expect(chainDepths.has(`correlation-${i}`)).toBe(false);
+      expect(bus.getChainDepth(`correlation-${i}`)).toBe(0);
+    }
+    for (const correlationId of chainDepths.keys()) {
+      expect(retainedCorrelationIds.has(correlationId)).toBe(true);
+    }
+    expect(chainDepths.size).toBeLessThanOrEqual(5);
+  });
+
+  // AC: @dispatch-event-envelope ac-retained-event-lineage-is-bounded
+  it("should release a correlated event's chain depth after later uncorrelated events age it out", () => {
+    const bus = new EventBus({ ringBufferCapacity: 5, maxChainDepth: 20 });
+
+    bus.emit({
+      event_type: "test.correlated",
+      source_type: "manual",
+      source_id: "source-correlated",
+      causation_id: "cause-stale",
+      correlation_id: "correlation-stale",
+    });
+
+    expect(bus.getChainDepth("correlation-stale")).toBe(1);
+
+    for (let i = 0; i < 5; i++) {
+      bus.emit({
+        event_type: "test.uncorrelated",
+        source_type: "manual",
+        source_id: `source-${i}`,
+      });
+    }
+
+    // The correlated event has aged out of the ring buffer; its chain-depth
+    // entry must be released so daemon memory does not grow with stale lineage.
+    const retained = bus.getRecentEvents();
+    expect(retained.every((event) => event.correlation_id === null)).toBe(true);
+    expect(bus.getChainDepth("correlation-stale")).toBe(0);
+    expect(
+      (bus as unknown as { chainDepths: Map<string, number> }).chainDepths.has("correlation-stale"),
+    ).toBe(false);
   });
 });
 
