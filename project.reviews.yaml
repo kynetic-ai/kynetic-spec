@@ -216283,6 +216283,18 @@ reviews:
         runner: npm
         created_at: 2026-05-19T00:00:21.624Z
         completed_at: 2026-05-19T00:00:21.624Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran npm test -- --run tests/cli-no-daemon.test.ts --fresh twice after full-suite failure.
+          First isolated rerun failed differently (ps -p returned error), second isolated rerun
+          passed. Classified as flaky/outside task diff and created follow-up task @01KRYRHX.
+        name: cli-no-daemon flaky reruns
+        required: false
+        runner: npm
+        created_at: 2026-05-19T00:01:01.137Z
+        completed_at: 2026-05-19T00:01:01.137Z
     events:
       - _ulid: 01KRYQJ6TGQE7RJZ4C0P69NHXW
         actor: Jacob Chapel
@@ -216346,6 +216358,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-05-19T00:00:23.213Z
+      - _ulid: 01KRYRJDAMNGK20948VM30SRE9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: cli-no-daemon flaky reruns
+        timestamp: 2026-05-19T00:01:02.804Z
     examined_commit: 8de21db24228985d828834bc081bcb37fcd47c25
     external_links: []
     lifecycle_state: open
@@ -216427,7 +216446,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-18T23:43:27.569Z
-    updated_at: 2026-05-19T00:00:21.624Z
+    updated_at: 2026-05-19T00:01:01.137Z
     notes: []
   - _ulid: 01KRYQPMKK8CYKVR3R4GCHKP0F
     slugs: []
