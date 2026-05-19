@@ -50440,7 +50440,7 @@ runs:
     completed_at: 2026-05-19T00:28:53.943Z
   - _ulid: 01KRYTBKWP4BXFA4328ZMRHH0J
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50454,7 +50454,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-19T00:33:46.695Z
-        completed_at: 2026-05-19T00:33:46.695Z
+        completed_at: 2026-05-19T00:33:59.495Z
+        notes: "Friction: posting a review comment body through shell quoting caused command substitution in
+          the body text and polluted the first thread entry; existing observations already cover
+          this. The reflection skill text says kspec workflow show can be run without a run ref, but
+          the CLI required a run ref, causing a small avoidable retry."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-19T00:33:59.495Z
+        completed_at: 2026-05-19T00:33:59.495Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:32:17.302Z
