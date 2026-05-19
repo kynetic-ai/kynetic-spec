@@ -20084,11 +20084,11 @@ workspaces:
     canonical_branch: dispatch/task/stabilize-bun-daemon-auto-start-runtime-test/01krz0ew
     canonical_branch_head: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-19T02:58:04.949Z
+      updated_at: 2026-05-19T03:02:11.575Z
     health:
       status: healthy
       issues: []
@@ -20102,16 +20102,16 @@ workspaces:
       target_branch: dev
       target_commit: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
       updated_at: 2026-05-19T02:58:04.949Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KRZ0EWBBYQECH4FR1PWTC1ZN"
     task_slug: stabilize-bun-daemon-auto-start-runtime-test
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-19T03:02:11.575Z
       last_active_at: 2026-05-19T02:40:44.191Z
       last_reconciled_at: 2026-05-19T03:01:20.837Z
       created_at: 2026-05-19T02:19:08.716Z
-      updated_at: 2026-05-19T03:01:20.837Z
+      updated_at: 2026-05-19T03:02:11.575Z
     workspace_id: dispatch-workspace-01KRZ0EWBBYQECH4FR1PWTC1ZN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
