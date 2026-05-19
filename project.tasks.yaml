@@ -29542,7 +29542,7 @@
     - task-stabilize-cli-no-daemon-auto-start-process-assertion
   title: Stabilize cli-no-daemon auto-start process assertion
   type: bug
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 3
@@ -29554,4 +29554,5 @@
   todos_count: 0
   created_at: 2026-05-19T14:07:48.821Z
   started_at: 2026-05-19T14:09:42.872Z
+  submitted_at: 2026-05-19T14:35:23.086Z
   automation: eligible
