@@ -219001,6 +219001,13 @@ reviews:
           status: pass
           name: focused websocket protocol
         timestamp: 2026-05-19T14:08:27.548Z
+      - _ulid: 01KS092PFQXT80VFV0W6A6FD7C
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KS092MSZMW6JJZGXFGG3922R
+        timestamp: 2026-05-19T14:08:48.119Z
     examined_commit: 2c98d77b49c9a9ae0c827afe040b447fd97f2349
     external_links: []
     lifecycle_state: open
@@ -219010,8 +219017,29 @@ reviews:
       content_hash: ""
       ref: "@01KRC2R0XFZ9558AF3EN6DS6DK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KS092MSZMW6JJZGXFGG3922R
+        entries:
+          - _ulid: 01KS092MSZKXNTQ97CA37KKHYE
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; .agents/skills/kspec-review/SKILL.md;
+              .agents/skills/review-gates/SKILL.md; .agents/skills/kspec-merge/SKILL.md;
+              tests/daemon-api/websocket-protocol.test.ts; tests/helpers/daemon.ts;
+              tests/cli-no-daemon.test.ts; full npm test failure log. Commands run: kspec task get
+              @01KRC2R0XFZ9558AF3EN6DS6DK; kspec review for-task; git diff/stat/name-only against
+              e108bce..2c98d77; kspec item get for daemon runtime/fixture specs; rg AC annotations;
+              kspec validate --refs --warnings-ok; kspec validate --completeness --warnings-ok; npm
+              test tests/daemon-api/websocket-protocol.test.ts -- --fresh; npm test -- --fresh; npm
+              test tests/cli-no-daemon.test.ts -- --fresh; git diff --quiet on unrelated failure
+              paths; kspec task add follow-up @01KS090W. Claims verified: timeoutMs is per readiness
+              stage in startTestDaemon; launch errors race readiness; parity suite exercises Node
+              and Bun when available; WebSocket protocol passed both focused and inside full suite.
+              Categories searched: correctness, edge cases, error handling/diagnostics, test
+              quality/source-scanning, integration, regression triage. No blocking findings for this
+              task."
+            created_at: 2026-05-19T14:08:46.399Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-19T13:52:11.691Z
-    updated_at: 2026-05-19T14:08:25.868Z
+    updated_at: 2026-05-19T14:08:46.399Z
     notes: []
