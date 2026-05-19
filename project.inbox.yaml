@@ -3568,3 +3568,16 @@ inbox:
       - coverage
     added_by: Jacob Chapel
     created_at: 2026-05-19T00:50:38.964Z
+  - _ulid: 01KRZ33ZEAZM6E639B8XYPTS20
+    text: "Promote unresolved friction @01KRFQ3T (vi.spyOn mockRestore clears mock.calls) into a testing
+      convention rule. Recurrence: a second incident occurred during fix cycle 1 of
+      @task-gate-cleanup-preservation-diagnostics (2026-05-19) — a worker added a behavioral-looking
+      test that read debugSpy.mock.calls after mockRestore, which silently passed regardless of
+      production behavior; reviewer caught it. Two strikes is enough; codify under the testing
+      convention: snapshot mock.calls into a local before mockRestore, then restore in finally.
+      Existing observation already has the verified remedy."
+    tags:
+      - testing
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-05-19T03:05:24.170Z

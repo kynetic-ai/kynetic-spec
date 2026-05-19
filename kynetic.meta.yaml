@@ -19034,6 +19034,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-19T00:40:49.509Z
+  - _ulid: 01KRZ33ZH8CDRNWJ8KSRHZPTMM
+    type: success
+    content: "Mutation testing as spy-test sensitivity check: when fixing a test that asserts on spy
+      behavior (e.g. vi.spyOn(console, debug).mock.calls), temporarily break the production gate the
+      test claims to cover, run only that test, confirm it now fails, then revert. This proves the
+      test has behavioral sensitivity rather than just passing trivially. Used during fix cycle 2 of
+      @task-gate-cleanup-preservation-diagnostics to confirm the quiet-by-default test failed when
+      KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS env-var early return was removed — previously the test had
+      silently passed because mock.calls were read after mockRestore. Quick to run (single-test
+      focus) and gives high confidence the assertion is real."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-19T03:05:24.264Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
