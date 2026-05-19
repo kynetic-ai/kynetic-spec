@@ -17525,12 +17525,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-19T01:02:38.300Z
+      updated_at: 2026-05-19T01:02:56.028Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-19T01:02:38.300Z
+      updated_at: 2026-05-19T01:02:56.028Z
     integration:
       status: pending
       detail: null
@@ -17538,17 +17538,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
-      updated_at: 2026-05-19T01:02:38.300Z
-    lifecycle_state: ready
+      updated_at: 2026-05-19T01:02:56.028Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KRYMPAYBKH8J2HKZPZYGQDA3"
     task_slug: task-bound-event-bus-lineage-and-source-ordering-lifetime
     timestamps:
       closed_at: null
       last_active_at: 2026-05-19T00:42:03.372Z
-      last_reconciled_at: 2026-05-19T01:02:38.300Z
+      last_reconciled_at: 2026-05-19T01:02:56.028Z
       created_at: 2026-05-18T23:41:56.876Z
-      updated_at: 2026-05-19T01:02:38.300Z
+      updated_at: 2026-05-19T01:02:56.028Z
     workspace_id: dispatch-workspace-01KRYMPAYBKH8J2HKZPZYGQDA3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
