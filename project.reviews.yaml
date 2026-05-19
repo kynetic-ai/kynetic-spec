@@ -216863,6 +216863,25 @@ reviews:
         runner: rg
         created_at: 2026-05-19T00:31:00.471Z
         completed_at: 2026-05-19T00:31:00.471Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, src/agent-runtime/invocation.ts, src/agents/spawner.ts,
+          src/agents/adapters.ts, tests/invocation-daemon-isolation.test.ts,
+          tests/mocks/acp-mock.js, tests/mocks/kspec-capture-mock.cjs,
+          tests/agent-invocation-lifecycle.test.ts, tests/cli-no-daemon.test.ts. Commands run: kspec
+          task get, kspec item get, kspec review for-task, git diff/stat/name-status/show, rg AC
+          searches, kspec validate, npm test -- --run tests/invocation-daemon-isolation.test.ts, npm
+          test, npm test -- --run tests/cli-no-daemon.test.ts. Claims verified: spawned agent env
+          and helper command env use shared daemon-disabled invocation env; mutation lock and custom
+          env are preserved. Categories searched: correctness, edge cases around env precedence,
+          error/helper paths, test quality, integration with spawner and CLI helper commands."
+        name: review evidence log
+        required: false
+        runner: manual review
+        created_at: 2026-05-19T00:31:17.364Z
+        completed_at: 2026-05-19T00:31:17.364Z
     events:
       - _ulid: 01KRYS799YMV6RQ56SS69VF60A
         actor: Jacob Chapel
@@ -216918,6 +216937,13 @@ reviews:
           status: fail
           name: AC annotation search
         timestamp: 2026-05-19T00:31:01.979Z
+      - _ulid: 01KRYT9TW82VDS20PT1Z40P9ZG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-19T00:31:18.921Z
     examined_commit: 0457aac94737603f4e8afda676a83099cb4f54ec
     external_links: []
     lifecycle_state: open
@@ -217100,7 +217126,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-19T00:12:26.814Z
-    updated_at: 2026-05-19T00:31:00.471Z
+    updated_at: 2026-05-19T00:31:17.364Z
     notes: []
   - _ulid: 01KRYT821PKEK2F5NQPVF4AJ4T
     slugs: []
