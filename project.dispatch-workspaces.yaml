@@ -17780,7 +17780,7 @@ workspaces:
         head: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
         last_seen_at: 2026-05-19T02:40:12.531Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-bun-daemon-auto-start-runtime-test-01krz0ew
-  - active_role: null
+  - active_role: worker
     base_branch_point: fa838313de769a1cf6b680319c8399c24a94fa21
     bootstrap:
       status: succeeded
@@ -18116,7 +18116,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-19T14:08:28.931Z
+      updated_at: 2026-05-19T14:09:00.327Z
     integration:
       status: pending
       detail: null
@@ -18125,16 +18125,16 @@ workspaces:
       target_branch: dev
       target_commit: fa838313de769a1cf6b680319c8399c24a94fa21
       updated_at: 2026-05-19T14:08:28.931Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KS090WJR79MQXR6B052BN6DQ"
     task_slug: task-stabilize-cli-no-daemon-auto-start-process-assertion
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-19T14:08:28.931Z
+      last_active_at: 2026-05-19T14:09:00.327Z
+      last_reconciled_at: 2026-05-19T14:09:00.327Z
       created_at: 2026-05-19T14:08:28.931Z
-      updated_at: 2026-05-19T14:08:59.446Z
+      updated_at: 2026-05-19T14:09:00.327Z
     workspace_id: dispatch-workspace-01KS090WJR79MQXR6B052BN6DQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
