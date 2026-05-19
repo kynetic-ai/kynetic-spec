@@ -216487,6 +216487,17 @@ reviews:
         runner: npm
         created_at: 2026-05-19T00:03:59.808Z
         completed_at: 2026-05-19T00:03:59.808Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate: schema and references OK, but command exited 6 because project-wide
+          warnings remain (reference, alignment, completeness, invalid AC annotation warnings)."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-19T00:04:04.193Z
+        completed_at: 2026-05-19T00:04:04.193Z
     events:
       - _ulid: 01KRYQPMKJS56PPFW0T8PE0WWC
         actor: Jacob Chapel
@@ -216508,6 +216519,13 @@ reviews:
           status: pass
           name: focused dispatch tests
         timestamp: 2026-05-19T00:04:01.346Z
+      - _ulid: 01KRYRR011VH81042PKHSCXFKE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-19T00:04:05.793Z
     examined_commit: 7c8750e4177de585f398dc7d2b00e9a4e1aa657b
     external_links: []
     lifecycle_state: open
@@ -216520,5 +216538,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-18T23:45:52.755Z
-    updated_at: 2026-05-19T00:03:59.808Z
+    updated_at: 2026-05-19T00:04:04.193Z
     notes: []
