@@ -218905,7 +218905,20 @@ reviews:
     slugs: []
     title: Review stabilize Bun websocket runtime parity startup hook
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --refs --warnings-ok and kspec validate --completeness --warnings-ok both
+          exited 0. Remaining warnings are pre-existing project-wide warnings, including deprecated
+          refs, missing own AC coverage elsewhere, malformed AC annotations elsewhere, and this bug
+          task lacking spec_ref.
+        name: kspec validation
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-19T14:08:12.082Z
+        completed_at: 2026-05-19T14:08:12.082Z
     events:
       - _ulid: 01KS0849D7NTB6G4HDVY3MPQ7A
         actor: Jacob Chapel
@@ -218920,6 +218933,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-19T13:52:37.916Z
+      - _ulid: 01KS091MVK0NXW0ZF899TBZATF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validation
+        timestamp: 2026-05-19T14:08:13.683Z
     examined_commit: 2c98d77b49c9a9ae0c827afe040b447fd97f2349
     external_links: []
     lifecycle_state: open
@@ -218932,5 +218952,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-19T13:52:11.691Z
-    updated_at: 2026-05-19T13:52:36.170Z
+    updated_at: 2026-05-19T14:08:12.082Z
     notes: []
