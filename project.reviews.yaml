@@ -216846,6 +216846,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-19T00:26:15.800Z
+      - _ulid: 01KRYYPXSXHDTY0B5RZ6RVPMAC
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRYRZX2ZT0E9A7BZDW69TV39
+        timestamp: 2026-05-19T01:48:22.205Z
     examined_commit: dc86ab933f181d26fbb8b48408d04f582a4e497d
     external_links: []
     lifecycle_state: closed
@@ -216877,6 +216883,21 @@ reviews:
               test that exercises suppression scope outside the daemon request. Add behavioral
               tests/annotations for both ACs (no source scanning)."
             created_at: 2026-05-19T00:08:24.927Z
+          - _ulid: 01KRYYPWE0HD9EXN6NM3VG2KS1
+            author: "@claude"
+            body: "Fixed: re-annotated the daemon-internal regression test at tests/daemon-command-api.test.ts
+              as '@daemon-command-api ac-no-recursive-command-proxy' (it was previously
+              ac-command-endpoint). Added five behavioral tests in tests/cli-daemon-proxy.test.ts
+              annotated as '@cli-daemon-proxy ac-daemon-internal-proxy-suppression-is-scoped' that
+              exercise: (1) shouldProxyCommand inside runWithDaemonProxySuppressed returns
+              {proxy:false, reason:'daemon command API execution'}; (2) suppression overrides
+              --daemon force-proxy inside the guarded scope; (3) normal auto-detect routing resumes
+              outside the scope; (4) force-direct (KSPEC_NO_DAEMON) wins outside the scope; (5)
+              force-proxy (--daemon) failure path is preserved outside the scope; and (6)
+              suppression does not leak into a concurrent async chain (uses promise-gated
+              interleaving). Tests are purely behavioral — they call shouldProxyCommand and assert
+              on returned values, not source content. npm test passed (2447 suites, 9288 tests)."
+            created_at: 2026-05-19T01:48:20.800Z
         kind: blocker
       - _ulid: 01KRYT05M9CAYRMA358HP2004D
         entries:
@@ -216904,7 +216925,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-19T00:26:15.799Z
     created_at: 2026-05-19T00:06:16.628Z
-    updated_at: 2026-05-19T00:26:15.800Z
+    updated_at: 2026-05-19T01:48:20.800Z
     notes: []
   - _ulid: 01KRYS799YXFTPKF29K2Q7P7FM
     slugs: []
