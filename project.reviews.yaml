@@ -218133,6 +218133,13 @@ reviews:
           status: pass
           name: diff hygiene
         timestamp: 2026-05-19T02:15:01.739Z
+      - _ulid: 01KRZ0880F7BS3SW89BJP0459J
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRZ086F2VH44AJNCEQVFAJPJ
+        timestamp: 2026-05-19T02:15:18.287Z
     examined_commit: 308fb19e14e1afb6a28a5d10ac2bf94aec3ba887
     external_links: []
     lifecycle_state: open
@@ -218142,10 +218149,30 @@ reviews:
       content_hash: ""
       ref: "@01KRYMPBSQV0EWVW3EBCXBPQKC"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRZ086F2VH44AJNCEQVFAJPJ
+        entries:
+          - _ulid: 01KRZ086F2PEVVKEGC1S51J13F
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/cli/daemon-proxy.ts, packages/daemon/src/routes/command.ts,
+              src/cli/index.ts, src/agent-runtime/event-bus.ts, tests/cli-daemon-proxy.test.ts,
+              tests/daemon-command-api.test.ts, tests/cli-no-daemon.test.ts,
+              tests/event-bus.test.ts. Commands run: kspec task get @01KRYMPBSQV0EWVW3EBCXBPQKC;
+              kspec item get @daemon-command-api; kspec item get @cli-daemon-proxy; kspec item get
+              @dispatch-event-envelope; kspec review get @01KRYRVZSM6B1KVGHZE1SRF3SF; git
+              diff/stat/log/show; rg AC/source-scan checks; git diff --check; kspec validate;
+              targeted npm test; full npm test. Claims verified: daemon command API wraps
+              program.parseAsync in runWithDaemonProxySuppressed; shouldProxyCommand returns direct
+              mode inside the AsyncLocalStorage guard; tests prove inside-scope suppression,
+              outside-scope force-direct/force-proxy/auto-detect behavior, and concurrent async
+              isolation. Categories searched: correctness, async scoping/concurrency, error/force
+              flags, test integrity, AC annotations, carried event-bus dependency changes,
+              integration/full regression."
+            created_at: 2026-05-19T02:15:16.706Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-19T01:58:40.653Z
-    updated_at: 2026-05-19T02:15:00.297Z
+    updated_at: 2026-05-19T02:15:16.706Z
     notes: []
   - _ulid: 01KRYZK4WV9PVRQNHQ54EEHJDM
     slugs: []
