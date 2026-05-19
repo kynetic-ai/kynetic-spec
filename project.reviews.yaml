@@ -216271,6 +216271,18 @@ reviews:
         runner: npm
         created_at: 2026-05-18T23:45:42.108Z
         completed_at: 2026-05-18T23:45:42.108Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Ran npm test. Result: 9279 passed, 5 skipped, 1 failed of 9285 tests; failure in
+          tests/cli-no-daemon.test.ts at line 163: expected '[MainThread] <defunct>' to contain
+          'node'. File is outside this task diff; rerunning to classify flake/pre-existing status."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-19T00:00:21.624Z
+        completed_at: 2026-05-19T00:00:21.624Z
     events:
       - _ulid: 01KRYQJ6TGQE7RJZ4C0P69NHXW
         actor: Jacob Chapel
@@ -216327,6 +216339,13 @@ reviews:
           kind: nit
           thread_ulid: 01KRYQPGNCTDC6F22Q3296MKSQ
         timestamp: 2026-05-18T23:45:51.102Z
+      - _ulid: 01KRYRH6NC4T39PC4DB76FRF7C
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-05-19T00:00:23.213Z
     examined_commit: 8de21db24228985d828834bc081bcb37fcd47c25
     external_links: []
     lifecycle_state: open
@@ -216408,7 +216427,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-18T23:43:27.569Z
-    updated_at: 2026-05-18T23:45:48.716Z
+    updated_at: 2026-05-19T00:00:21.624Z
     notes: []
   - _ulid: 01KRYQPMKK8CYKVR3R4GCHKP0F
     slugs: []
