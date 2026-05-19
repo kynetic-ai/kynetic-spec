@@ -40,7 +40,7 @@ description: |
 spec_ref: "@daemon-command-api"
 plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-update-daemon-dispatch-hardening-specs"
@@ -62,6 +62,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
+session_id: 01KRYXF2PAN8GY49JPGHNBMRES
 history:
   - author: Jacob Chapel
     changes:
@@ -120,8 +121,21 @@ history:
         previous: null
     command: review-verdict-needs-work
     timestamp: 2026-05-19T00:26:18.765Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KRYXF2PAN8GY49JPGHNBMRES
+        previous: null
+      started_at:
+        new: 2026-05-19T01:49:41.409Z
+        previous: 2026-05-18T22:59:44.620Z
+    command: task-start
+    timestamp: 2026-05-19T01:49:41.409Z
 created_at: 2026-05-18T22:53:18.007Z
-started_at: 2026-05-18T22:59:44.620Z
+started_at: 2026-05-19T01:49:41.409Z
 submitted_at: 2026-05-18T22:59:48.181Z
 todos: []
 automation: eligible
