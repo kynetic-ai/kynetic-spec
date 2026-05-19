@@ -50267,9 +50267,24 @@ runs:
     completed_at: 2026-05-18T23:43:38.590Z
   - _ulid: 01KRYRM87X991AD08WY5909CCM
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-19T00:02:03.133Z
+        completed_at: 2026-05-19T00:02:36.421Z
+        notes: "What worked well: The review flow gave a durable record with anchored blocker threads,
+          required checks, and a verdict that automatically moved the task to needs_work. Reading
+          the diff before worker claims helped catch a behavior gap that the submitted test missed.
+          A direct EventBus runtime probe was effective for validating the lineage lifetime edge
+          case beyond the happy-path count assertion. The unrelated full-suite flake was handled
+          separately by creating follow-up task @01KRYRHX instead of conflating it with this
+          event-bus review."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-19T00:02:36.421Z
+        completed_at: 2026-05-19T00:02:36.421Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:02:03.133Z
