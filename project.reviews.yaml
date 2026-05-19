@@ -217830,6 +217830,13 @@ reviews:
           status: pass
           name: diff hygiene
         timestamp: 2026-05-19T01:42:57.223Z
+      - _ulid: 01KRYYDQVGX2S086R8BJ8TGDSN
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRYYDPF9CT7SGT1477E1KFJF
+        timestamp: 2026-05-19T01:43:21.200Z
     examined_commit: b83adf6c8cb6b7217238f3fc11157be38e34afb1
     external_links: []
     lifecycle_state: open
@@ -217839,8 +217846,31 @@ reviews:
       content_hash: ""
       ref: "@01KRYMPBC8YM4X3KZC6SPBV6R2"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRYYDPF9CT7SGT1477E1KFJF
+        entries:
+          - _ulid: 01KRYYDPF98PHGKZ024MP1ACWZ
+            author: codex
+            body: >-
+              Evidence log (reviewer note, no findings):
+
+              Files read: src/agent-runtime/dispatch.ts, tests/agent-dispatch-engine.test.ts,
+              tests/cli-no-daemon.test.ts, kspec-agents.md, task/spec/review records.
+
+              Commands run: kspec task get, kspec item get @agent-dispatch-engine, kspec review
+              for-task/get, kspec validate, kspec validate --warnings-ok, rg AC annotations, git
+              diff/stat/log/show/diff --check, npm test -- --run
+              tests/agent-dispatch-engine.test.ts, npm test.
+
+              Claims verified: prior blocker is fixed by a behavioral stop() test at
+              tests/agent-dispatch-engine.test.ts:6134; non-overlap is covered at
+              tests/agent-dispatch-engine.test.ts:6096.
+
+              Categories searched: correctness, stop/shutdown race behavior, timer overlap edge
+              case, test quality/source-scanning, validation, full-suite regression, diff hygiene.
+            created_at: 2026-05-19T01:43:19.785Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-19T01:28:12.689Z
-    updated_at: 2026-05-19T01:42:55.731Z
+    updated_at: 2026-05-19T01:43:19.785Z
     notes: []
