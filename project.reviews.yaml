@@ -217567,7 +217567,18 @@ reviews:
     slugs: []
     title: Review bound event bus lineage and source-ordering lifetime (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate: schema/references OK; exited 6 for pre-existing repo-wide warnings, no
+          dispatch-event-envelope completeness warning"
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-19T01:19:18.162Z
+        completed_at: 2026-05-19T01:19:18.162Z
     events:
       - _ulid: 01KRYW6BZMHK5DAQ82RVHGK2ZN
         actor: Jacob Chapel
@@ -217582,6 +217593,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-19T01:04:54.645Z
+      - _ulid: 01KRYX1R11HGZTFGRSAFMBQMQ2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-19T01:19:19.585Z
     examined_commit: df446d63387e7a49faa10619d7041444b3d313d9
     external_links: []
     lifecycle_state: open
@@ -217594,5 +217612,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-19T01:04:22.517Z
-    updated_at: 2026-05-19T01:04:53.109Z
+    updated_at: 2026-05-19T01:19:18.162Z
     notes: []
