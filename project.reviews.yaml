@@ -217651,6 +217651,13 @@ reviews:
           status: pass
           name: lint
         timestamp: 2026-05-19T01:19:38.282Z
+      - _ulid: 01KRYX2GCR2Q0C2H68WV1XQESV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KRYX2EYPASCJMZH42AKKQD3H
+        timestamp: 2026-05-19T01:19:44.536Z
     examined_commit: df446d63387e7a49faa10619d7041444b3d313d9
     external_links: []
     lifecycle_state: open
@@ -217660,8 +217667,26 @@ reviews:
       content_hash: ""
       ref: "@01KRYMPAYBKH8J2HKZPZYGQDA3"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KRYX2EYPASCJMZH42AKKQD3H
+        entries:
+          - _ulid: 01KRYX2EYPJ2M6NPWSG5A1N193
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; src/agent-runtime/event-bus.ts;
+              tests/event-bus.test.ts; tests/cli-no-daemon.test.ts; package.json; prior review
+              @01KRYQJ6. Commands run: kspec task get; kspec item get @dispatch-event-envelope;
+              kspec review get/for-task/open; git diff/stat/log/diff-check; rg AC/source-scan/state
+              references; kspec validate; kspec validate --completeness filtered for
+              dispatch-event-envelope; npm test -- --run tests/event-bus.test.ts; npm test; npm run
+              lint. Claims verified: prior stale-lineage pruning blocker fixed by removing size
+              early-return and adding uncorrelated-aging regression; missing AC annotations added;
+              source-ordering cleanup preserves same-source chaining by only deleting if the settled
+              promise is still the current map entry. Categories searched: correctness, edge cases,
+              error handling, test quality, integration, and regression risk. Findings: none
+              blocking."
+            created_at: 2026-05-19T01:19:43.062Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-19T01:04:22.517Z
-    updated_at: 2026-05-19T01:19:36.791Z
+    updated_at: 2026-05-19T01:19:43.062Z
     notes: []
