@@ -50497,7 +50497,7 @@ runs:
     completed_at: 2026-05-19T00:34:59.177Z
   - _ulid: 01KRYV9V620TY1MNCT6XB3PHAN
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50532,7 +50532,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-19T00:50:02.726Z
-        completed_at: 2026-05-19T00:50:02.726Z
+        completed_at: 2026-05-19T00:50:12.221Z
+        notes: "Proposed improvement: add a focused task/spec AC coverage report or validator path. Given a
+          task ref, resolve its spec_ref, list own and inherited ACs, and report which AC IDs are
+          covered by annotations in tests/src plus which are missing. This would help reviewers
+          catch task-added AC coverage gaps without manually combining kspec item get and rg scans
+          or parsing project-wide validate noise. Rough scope: medium; mostly CLI/reporting on top
+          of existing coverage scanner."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-19T00:50:12.221Z
+        completed_at: 2026-05-19T00:50:12.221Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:48:47.810Z
