@@ -18100,18 +18100,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-stabilize-cli-no-daemon-auto-start-process-assertion/01ks090w
-    canonical_branch_head: fa838313de769a1cf6b680319c8399c24a94fa21
+    canonical_branch_head: d4202f5fd5b5f3e85d75c2cbbaf0f781d45b45f6
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-19T14:08:28.931Z
+      updated_at: 2026-05-19T14:35:13.114Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-19T14:09:00.327Z
+      updated_at: 2026-05-19T14:35:13.114Z
     integration:
       status: pending
       detail: null
@@ -18119,7 +18119,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: fa838313de769a1cf6b680319c8399c24a94fa21
-      updated_at: 2026-05-19T14:08:28.931Z
+      updated_at: 2026-05-19T14:35:13.114Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KS090WJR79MQXR6B052BN6DQ"
@@ -18127,9 +18127,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-19T14:09:00.327Z
-      last_reconciled_at: 2026-05-19T14:09:00.327Z
+      last_reconciled_at: 2026-05-19T14:35:13.114Z
       created_at: 2026-05-19T14:08:28.931Z
-      updated_at: 2026-05-19T14:09:00.327Z
+      updated_at: 2026-05-19T14:35:13.114Z
     workspace_id: dispatch-workspace-01KS090WJR79MQXR6B052BN6DQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
