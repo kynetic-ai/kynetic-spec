@@ -17732,11 +17732,11 @@ workspaces:
     canonical_branch: dispatch/task/task-stabilize-cli-no-daemon-auto-start-process-assertion/01ks090w
     canonical_branch_head: d4202f5fd5b5f3e85d75c2cbbaf0f781d45b45f6
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-19T15:18:10.977Z
+      updated_at: 2026-05-19T15:22:15.699Z
     health:
       status: healthy
       issues: []
@@ -17750,16 +17750,16 @@ workspaces:
       target_branch: dev
       target_commit: fa838313de769a1cf6b680319c8399c24a94fa21
       updated_at: 2026-05-19T15:18:10.977Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KS090WJR79MQXR6B052BN6DQ"
     task_slug: task-stabilize-cli-no-daemon-auto-start-process-assertion
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-19T15:22:15.699Z
       last_active_at: 2026-05-19T15:00:55.611Z
       last_reconciled_at: 2026-05-19T15:21:37.089Z
       created_at: 2026-05-19T14:08:28.931Z
-      updated_at: 2026-05-19T15:21:37.089Z
+      updated_at: 2026-05-19T15:22:15.699Z
     workspace_id: dispatch-workspace-01KS090WJR79MQXR6B052BN6DQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
