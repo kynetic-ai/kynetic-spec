@@ -40,7 +40,7 @@ description: |
 spec_ref: "@daemon-command-api"
 plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-update-daemon-dispatch-hardening-specs"
@@ -55,10 +55,10 @@ vcs_refs: []
 review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
 review_ref: "@01KRYRVZSM6B1KVGHZE1SRF3SF"
 submission_linkage:
-  review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
+  review_url: null
   branch: dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
-  captured_at: 2026-05-18T22:59:48.176Z
-  commit: 0772e8fc18f8abbce3c527799cb94bde5d77fd55
+  captured_at: 2026-05-19T01:49:44.869Z
+  commit: 308fb19e14e1afb6a28a5d10ac2bf94aec3ba887
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
@@ -134,8 +134,35 @@ history:
         previous: 2026-05-18T22:59:44.620Z
     command: task-start
     timestamp: 2026-05-19T01:49:41.409Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
+          captured_at: 2026-05-19T01:49:44.869Z
+          commit: 308fb19e14e1afb6a28a5d10ac2bf94aec3ba887
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
+        previous:
+          review_url: https://github.com/lepahc/kynetic-spec/tree/dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
+          branch: dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
+          captured_at: 2026-05-18T22:59:48.176Z
+          commit: 0772e8fc18f8abbce3c527799cb94bde5d77fd55
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-suppress-recursive-daemon-command-proxying/01krympb
+      submitted_at:
+        new: 2026-05-19T01:49:44.873Z
+        previous: 2026-05-18T22:59:48.181Z
+    command: task-submit
+    timestamp: 2026-05-19T01:49:44.873Z
 created_at: 2026-05-18T22:53:18.007Z
 started_at: 2026-05-19T01:49:41.409Z
-submitted_at: 2026-05-18T22:59:48.181Z
+submitted_at: 2026-05-19T01:49:44.873Z
 todos: []
 automation: eligible
