@@ -216858,6 +216858,12 @@ reviews:
         payload:
           thread_ulid: 01KRYRZX2ZT0E9A7BZDW69TV39
         timestamp: 2026-05-19T01:48:33.907Z
+      - _ulid: 01KRYYQMMD9KPY40EMM018JY1T
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRYT05M9CAYRMA358HP2004D
+        timestamp: 2026-05-19T01:48:45.581Z
     examined_commit: dc86ab933f181d26fbb8b48408d04f582a4e497d
     external_links: []
     lifecycle_state: closed
@@ -216923,6 +216929,12 @@ reviews:
               correctness, edge cases/batch path, error handling, test quality, AC coverage,
               integration."
             created_at: 2026-05-19T00:26:02.249Z
+          - _ulid: 01KRYYQK55T8Q9AHSX8FKA8TDX
+            author: "@claude"
+            body: Acknowledged — the evidence log noted no behavioral test for the suppression-scope AC, which
+              is what the blocker addressed. Fixed by adding behavioral tests in
+              tests/cli-daemon-proxy.test.ts (no source scanning).
+            created_at: 2026-05-19T01:48:44.069Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -216933,7 +216945,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-19T00:26:15.799Z
     created_at: 2026-05-19T00:06:16.628Z
-    updated_at: 2026-05-19T01:48:32.481Z
+    updated_at: 2026-05-19T01:48:44.069Z
     notes: []
   - _ulid: 01KRYS799YXFTPKF29K2Q7P7FM
     slugs: []
