@@ -218754,6 +218754,19 @@ reviews:
         runner: npm test
         created_at: 2026-05-19T03:22:22.652Z
         completed_at: 2026-05-19T03:22:22.652Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Found annotations for @dispatch-workspace-cleanup-policy
+          ac-preservation-diagnostics-quiet-by-default and ac-preservation-diagnostics-opt-in in
+          tests/dispatch-workspace-cleanup.test.ts; trait-error-guidance N/A annotations present for
+          cleanup and registry internal runtime surfaces.
+        name: AC annotation scan
+        required: true
+        runner: rg
+        created_at: 2026-05-19T03:22:27.092Z
+        completed_at: 2026-05-19T03:22:27.092Z
     events:
       - _ulid: 01KRZ36D6RNJJEA7BNDX76X913
         actor: Jacob Chapel
@@ -218782,6 +218795,13 @@ reviews:
           status: pass
           name: full npm test
         timestamp: 2026-05-19T03:22:24.311Z
+      - _ulid: 01KRZ437YHPE67NDHR0AKESGX0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation scan
+        timestamp: 2026-05-19T03:22:28.689Z
     examined_commit: 96f8f371db212c31adf360a8123732fa95eef16f
     external_links: []
     lifecycle_state: open
@@ -218794,5 +218814,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-19T03:06:43.800Z
-    updated_at: 2026-05-19T03:22:22.652Z
+    updated_at: 2026-05-19T03:22:27.092Z
     notes: []
