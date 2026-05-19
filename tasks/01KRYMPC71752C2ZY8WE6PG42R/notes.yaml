@@ -4,3 +4,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-19T00:31:34.813Z
+  - _ulid: 01KRYZAHT7PMJ4W8DN9X1XAAJE
+    content: "Fix cycle 1: addressed the single review blocker by adding AC annotations to both
+      regression tests at tests/invocation-daemon-isolation.test.ts:70
+      (ac-invocation-commands-do-not-proxy-to-supervising-daemon) and :107
+      (ac-invocation-lifecycle-helper-commands-do-not-proxy). Verified with rg that the annotation
+      strings are present and re-ran the targeted test — both pass. No behavior changes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-19T01:59:05.287Z
