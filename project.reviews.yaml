@@ -216840,6 +216840,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KRYT750TW9TG6ZPCH96TAR7P
         timestamp: 2026-05-19T00:29:52.497Z
+      - _ulid: 01KRYT8B8Y914XG3W1W24AYWTP
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRYT750TW9TG6ZPCH96TAR7P
+        timestamp: 2026-05-19T00:30:30.175Z
     examined_commit: 0457aac94737603f4e8afda676a83099cb4f54ec
     external_links: []
     lifecycle_state: open
@@ -217007,10 +217013,22 @@ reviews:
                   When: --json is active
                   Then: guidance included in structured error object shows  and ; an exact  for those  annotations across tests/src/packages returned no matches. Without these annotations, the submitted tests do not satisfy the project requirement that every own AC has mapped test coverage.
             created_at: 2026-05-19T00:29:51.002Z
+          - _ulid: 01KRYT89RX9XH5JJEKZQWX70X9
+            author: Jacob Chapel
+            body: "Correction/clean finding text: MUST-FIX. The new regression tests at
+              tests/invocation-daemon-isolation.test.ts:70 and :106 exercise the daemon-isolation
+              behavior, but neither test has a standalone AC annotation for the two new own ACs:
+              @agent-invocation-lifecycle ac-invocation-commands-do-not-proxy-to-supervising-daemon
+              and @agent-invocation-lifecycle ac-invocation-lifecycle-helper-commands-do-not-proxy.
+              I verified the spec with kspec item get @agent-invocation-lifecycle and verified
+              absence with an exact rg search for those AC annotation strings across
+              tests/src/packages. Add the AC comments to the behavioral tests so coverage is
+              machine-mapped to the spec."
+            created_at: 2026-05-19T00:30:28.637Z
         kind: blocker
     verdicts: []
     created_at: 2026-05-19T00:12:26.814Z
-    updated_at: 2026-05-19T00:29:51.002Z
+    updated_at: 2026-05-19T00:30:28.637Z
     notes: []
   - _ulid: 01KRYT821PKEK2F5NQPVF4AJ4T
     slugs: []
