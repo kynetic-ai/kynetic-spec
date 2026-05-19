@@ -218550,3 +218550,29 @@ reviews:
     created_at: 2026-05-19T02:23:10.998Z
     updated_at: 2026-05-19T02:40:11.830Z
     notes: []
+  - _ulid: 01KRZ1QWZCN4B8YYJAYHDQ278Y
+    slugs: []
+    title: Review stabilize Bun daemon auto-start runtime test
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRZ1QWZBENPP9JSMYJ086K03
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-19T02:41:19.852Z
+    examined_commit: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRZ0EWBBYQECH4FR1PWTC1ZN"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-19T02:41:19.852Z
+    updated_at: null
+    notes: []
