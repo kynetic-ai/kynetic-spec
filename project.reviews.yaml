@@ -218398,6 +218398,19 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-19T02:39:26.325Z
         completed_at: 2026-05-19T02:39:26.325Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: rg found annotations for ac-preservation-diagnostics-quiet-by-default and
+          ac-preservation-diagnostics-opt-in in tests/dispatch-workspace-cleanup.test.ts. Manual
+          validation found the quiet-by-default test invalid because it reads debugSpy.mock.calls
+          after mockRestore(), which clears call history.
+        name: AC coverage review
+        required: true
+        runner: manual + rg
+        created_at: 2026-05-19T02:39:39.824Z
+        completed_at: 2026-05-19T02:39:39.824Z
     events:
       - _ulid: 01KRZ0PNMPMFGBR0G8XVC2STYV
         actor: Jacob Chapel
@@ -218440,6 +218453,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-19T02:39:27.805Z
+      - _ulid: 01KRZ1MWQZ8WK3C45HFYHDSJ01
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: AC coverage review
+        timestamp: 2026-05-19T02:39:41.311Z
     examined_commit: 8289299e4c1076357728d40c77ab33092adbf8a8
     external_links: []
     lifecycle_state: open
@@ -218473,5 +218493,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-19T02:23:10.998Z
-    updated_at: 2026-05-19T02:39:26.325Z
+    updated_at: 2026-05-19T02:39:39.824Z
     notes: []
