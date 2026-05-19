@@ -50440,7 +50440,7 @@ runs:
     completed_at: 2026-05-19T00:28:53.943Z
   - _ulid: 01KRYTBKWP4BXFA4328ZMRHH0J
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50462,7 +50462,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-19T00:33:59.495Z
-        completed_at: 2026-05-19T00:33:59.495Z
+        completed_at: 2026-05-19T00:34:09.339Z
+        notes: Coverage checked with kspec search. Shell quoting and file-based payload friction is already
+          tracked by observations including @01KMR88Z, @01KN818C, @01KR6THZ9, @01KR7AQE, and inbox
+          @01KJKKCB. The cli-no-daemon flake is tracked by task @01KRYRHX. Searches for workflow
+          show missing required argument, session-reflect workflow show, and workflow show current
+          run returned no matches, so the workflow-show docs mismatch appears untracked.
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-19T00:34:09.339Z
+        completed_at: 2026-05-19T00:34:09.339Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:32:17.302Z
