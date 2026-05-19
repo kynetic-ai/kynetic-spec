@@ -39,7 +39,7 @@ description: |
 spec_ref: "@dispatch-event-envelope"
 plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-update-daemon-dispatch-hardening-specs"
@@ -60,6 +60,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-bound-event-bus-lineage-and-source-ordering-lifetime/01krympa
+session_id: 01KRYTXG2G105BJ874ZN0EPRPG
 history:
   - author: Jacob Chapel
     changes:
@@ -118,8 +119,21 @@ history:
         previous: null
     command: review-verdict-needs-work
     timestamp: 2026-05-19T00:01:09.952Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KRYTXG2G105BJ874ZN0EPRPG
+        previous: null
+      started_at:
+        new: 2026-05-19T01:00:20.295Z
+        previous: 2026-05-18T22:56:29.849Z
+    command: task-start
+    timestamp: 2026-05-19T01:00:20.296Z
 created_at: 2026-05-18T22:53:17.131Z
-started_at: 2026-05-18T22:56:29.849Z
+started_at: 2026-05-19T01:00:20.295Z
 submitted_at: 2026-05-18T22:56:43.967Z
 todos: []
 automation: eligible
