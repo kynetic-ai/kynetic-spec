@@ -50497,7 +50497,7 @@ runs:
     completed_at: 2026-05-19T00:34:59.177Z
   - _ulid: 01KRYV9V620TY1MNCT6XB3PHAN
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50522,7 +50522,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-19T00:49:29.495Z
-        completed_at: 2026-05-19T00:49:29.495Z
+        completed_at: 2026-05-19T00:50:02.726Z
+        notes: "Coverage check results: @test-annotation-sweep already covers explicit AC annotation
+          semantics, and @task-coverage-annotation-scope-boundaries covers scan boundaries. Searches
+          for 'task scoped AC coverage' and 'spec scoped coverage validation' returned no matches,
+          so focused per-task/per-spec coverage reporting appears untracked. The cli-no-daemon
+          failure is already covered by @01KRYRHX plus related inbox/observations, so no duplicate
+          capture is needed."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-19T00:50:02.726Z
+        completed_at: 2026-05-19T00:50:02.726Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:48:47.810Z
