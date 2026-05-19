@@ -218059,6 +218059,18 @@ reviews:
         runner: rg
         created_at: 2026-05-19T02:14:39.668Z
         completed_at: 2026-05-19T02:14:39.668Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate: schema/references OK; exited 6 for existing repository-wide warnings
+          (deprecated refs, orphaned specs, missing historical AC coverage, invalid historical
+          annotations), not introduced by this change"
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-19T02:14:49.612Z
+        completed_at: 2026-05-19T02:14:49.612Z
     events:
       - _ulid: 01KRYZ9SRC7KJ6EKN77RBKCEHK
         actor: Jacob Chapel
@@ -218094,6 +218106,13 @@ reviews:
           status: pass
           name: AC coverage annotations
         timestamp: 2026-05-19T02:14:41.136Z
+      - _ulid: 01KRZ07DEA32JGW6C4DG4A9ZJ9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-19T02:14:51.082Z
     examined_commit: 308fb19e14e1afb6a28a5d10ac2bf94aec3ba887
     external_links: []
     lifecycle_state: open
@@ -218106,7 +218125,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-19T01:58:40.653Z
-    updated_at: 2026-05-19T02:14:39.668Z
+    updated_at: 2026-05-19T02:14:49.612Z
     notes: []
   - _ulid: 01KRYZK4WV9PVRQNHQ54EEHJDM
     slugs: []
