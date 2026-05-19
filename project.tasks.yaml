@@ -29459,7 +29459,7 @@
   type: task
   spec_ref: "@daemon-entity-cache"
   plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-bound-event-bus-lineage-and-source-ordering-lifetime"
@@ -29476,6 +29476,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-18T22:53:19.285Z
+  started_at: 2026-05-19T17:45:14.209Z
 - _ulid: 01KRYN42AK2DTVGZBFDX57EV1H
   slugs:
     - task-stabilize-cli-no-daemon-runtime-pid-assertion

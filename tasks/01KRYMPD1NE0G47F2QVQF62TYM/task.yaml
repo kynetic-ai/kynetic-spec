@@ -110,7 +110,7 @@ description: >
 spec_ref: "@daemon-entity-cache"
 plan_ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-bound-event-bus-lineage-and-source-ordering-lifetime"
@@ -126,5 +126,17 @@ tags:
   - daemon
   - dispatch
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      started_at:
+        new: 2026-05-19T17:45:14.209Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-19T17:45:14.211Z
 created_at: 2026-05-18T22:53:19.285Z
+started_at: 2026-05-19T17:45:14.209Z
 todos: []
