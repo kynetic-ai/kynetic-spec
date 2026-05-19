@@ -217012,3 +217012,29 @@ reviews:
     created_at: 2026-05-19T00:12:26.814Z
     updated_at: 2026-05-19T00:29:51.002Z
     notes: []
+  - _ulid: 01KRYT821PKEK2F5NQPVF4AJ4T
+    slugs: []
+    title: Review gate cleanup preservation diagnostics
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KRYT821PCRE1C0PCCHGJK1MB
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-19T00:30:20.726Z
+    examined_commit: b789b6449d833f4161631aeef8ed4a4c1ccc3d2a
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KRYMPCMF46KFWVKKWRDYSJX7"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-19T00:30:20.726Z
+    updated_at: null
+    notes: []
