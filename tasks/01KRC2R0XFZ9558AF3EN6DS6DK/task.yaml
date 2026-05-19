@@ -13,8 +13,14 @@ description: "During review of @task-fix-register-cleanup-failure-leak on 2026-0
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev via detached reviewer merge helper. Reviewed one-file test-only change
+  in tests/daemon-api/websocket-protocol.test.ts: parity beforeEach hook budget is now 90s and
+  startTestDaemon readiness budget is explicitly 25s per probe, preserving bounded readiness while
+  allowing DaemonReadinessError diagnostics to surface. Focused websocket protocol suite passed
+  fresh, and the same suite passed inside the full npm test run. Full run exposed unrelated
+  deterministic cli-no-daemon failure tracked separately as @01KS090W."
 depends_on: []
 context: []
 priority: 3
@@ -142,9 +148,28 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-19T13:52:16.250Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev via detached reviewer merge helper. Reviewed one-file test-only change in
+          tests/daemon-api/websocket-protocol.test.ts: parity beforeEach hook budget is now 90s and
+          startTestDaemon readiness budget is explicitly 25s per probe, preserving bounded readiness
+          while allowing DaemonReadinessError diagnostics to surface. Focused websocket protocol
+          suite passed fresh, and the same suite passed inside the full npm test run. Full run
+          exposed unrelated deterministic cli-no-daemon failure tracked separately as @01KS090W."
+        previous: null
+      completed_at:
+        new: 2026-05-19T14:09:32.084Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-19T14:09:32.094Z
 prior_status: null
 created_at: 2026-05-11T17:53:18.255Z
 started_at: 2026-05-11T17:54:56.764Z
 submitted_at: 2026-05-11T18:15:50.768Z
+completed_at: 2026-05-19T14:09:32.084Z
 todos: []
 automation: eligible
