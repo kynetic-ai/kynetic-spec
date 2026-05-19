@@ -20,3 +20,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-19T02:40:14.200Z
+  - _ulid: 01KRZ2B2SEGJAS5T3H5BYSCB99
+    content: "Fix cycle 2: addressed blocker thread on review @01KRZ0PNMPHFSV0P82H8WRCV4R. Refactored
+      the quiet-by-default test in tests/dispatch-workspace-cleanup.test.ts to snapshot
+      debugSpy.mock.calls into a local BEFORE calling debugSpy.mockRestore(), then assert against
+      the local. mockRestore() clears spy call history in vitest, so the previous arrangement (read
+      after restore) always observed an empty array and gave no behavioral sensitivity to the gate.
+      Environment-restore-after still runs in the finally block. Mutation-verified the fix is
+      sensitive: temporarily replacing the env-var early return in logArtifactPreservation with a
+      fall-through caused the quiet-by-default test to fail (1 captured [dispatch-cleanup]
+      diagnostic) where it had silently passed before; reverted the mutation cleanly. Targeted
+      suites pass: 62/62 across cleanup and registry."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-19T02:51:48.398Z
