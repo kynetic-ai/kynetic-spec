@@ -20129,7 +20129,7 @@ workspaces:
         head: 8289299e4c1076357728d40c77ab33092adbf8a8
         last_seen_at: 2026-05-19T02:21:15.958Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-gate-cleanup-preservation-diagnostics-01krympc
-  - active_role: worker
+  - active_role: null
     base_branch_point: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
     bootstrap:
       status: succeeded
@@ -20460,12 +20460,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-19T02:19:08.716Z
+      updated_at: 2026-05-19T02:40:02.833Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-19T02:19:40.446Z
+      updated_at: 2026-05-19T02:40:02.833Z
     integration:
       status: pending
       detail: null
@@ -20473,17 +20473,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
-      updated_at: 2026-05-19T02:19:08.716Z
-    lifecycle_state: active
+      updated_at: 2026-05-19T02:40:02.833Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KRZ0EWBBYQECH4FR1PWTC1ZN"
     task_slug: stabilize-bun-daemon-auto-start-runtime-test
     timestamps:
       closed_at: null
       last_active_at: 2026-05-19T02:19:40.446Z
-      last_reconciled_at: 2026-05-19T02:19:40.446Z
+      last_reconciled_at: 2026-05-19T02:40:02.833Z
       created_at: 2026-05-19T02:19:08.716Z
-      updated_at: 2026-05-19T02:19:40.446Z
+      updated_at: 2026-05-19T02:40:02.833Z
     workspace_id: dispatch-workspace-01KRZ0EWBBYQECH4FR1PWTC1ZN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
