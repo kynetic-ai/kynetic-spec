@@ -50440,7 +50440,7 @@ runs:
     completed_at: 2026-05-19T00:28:53.943Z
   - _ulid: 01KRYTBKWP4BXFA4328ZMRHH0J
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50471,7 +50471,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-19T00:34:09.339Z
-        completed_at: 2026-05-19T00:34:09.339Z
+        completed_at: 2026-05-19T00:34:20.111Z
+        notes: "Proposal: capture one small docs or CLI consistency improvement for workflow show. Either
+          update the reflection skill workflow command examples to include the run ref, or make
+          kspec workflow show default to the active workflow run when exactly one is active. This
+          would remove a small retry during guided workflow use. No new capture proposed for shell
+          quoting or cli-no-daemon because both are already tracked."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-19T00:34:20.111Z
+        completed_at: 2026-05-19T00:34:20.111Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:32:17.302Z
