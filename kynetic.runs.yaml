@@ -50497,7 +50497,7 @@ runs:
     completed_at: 2026-05-19T00:34:59.177Z
   - _ulid: 01KRYV9V620TY1MNCT6XB3PHAN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50512,7 +50512,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-19T00:49:18.130Z
-        completed_at: 2026-05-19T00:49:18.130Z
+        completed_at: 2026-05-19T00:49:29.495Z
+        notes: "Friction points: AC coverage validation is noisy at project scale, so the missing task-added
+          AC annotations required a manual focused rg scan rather than a task/spec-scoped gate. Full
+          npm test also surfaced the unrelated cli-no-daemon runtime assertion failure;
+          classification required extra reruns and checking dev, though an existing stabilization
+          task already tracks it. No code changes were made during review, only kspec review
+          metadata."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-19T00:49:29.495Z
+        completed_at: 2026-05-19T00:49:29.495Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:48:47.810Z
