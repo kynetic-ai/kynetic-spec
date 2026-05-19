@@ -20132,3 +20132,79 @@ workspaces:
         head: b789b6449d833f4161631aeef8ed4a4c1ccc3d2a
         last_seen_at: 2026-05-19T02:01:52.883Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-gate-cleanup-preservation-diagnostics-01krympc
+  - active_role: null
+    base_branch_point: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/stabilize-bun-daemon-auto-start-runtime-test/01krz0ew
+    canonical_branch_head: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-19T02:19:08.716Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-19T02:19:08.716Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
+      updated_at: 2026-05-19T02:19:08.716Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KRZ0EWBBYQECH4FR1PWTC1ZN"
+    task_slug: stabilize-bun-daemon-auto-start-runtime-test
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-19T02:19:08.716Z
+      created_at: 2026-05-19T02:19:08.716Z
+      updated_at: 2026-05-19T02:19:08.716Z
+    workspace_id: dispatch-workspace-01KRZ0EWBBYQECH4FR1PWTC1ZN
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/stabilize-bun-daemon-auto-start-runtime-test/01krz0ew
+        head: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
+        last_seen_at: 2026-05-19T02:19:08.716Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-bun-daemon-auto-start-runtime-test-01krz0ew
