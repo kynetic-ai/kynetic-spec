@@ -50267,7 +50267,7 @@ runs:
     completed_at: 2026-05-18T23:43:38.590Z
   - _ulid: 01KRYRM87X991AD08WY5909CCM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -50284,7 +50284,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-19T00:02:36.421Z
-        completed_at: 2026-05-19T00:02:36.421Z
+        completed_at: 2026-05-19T00:02:49.513Z
+        notes: "Friction points: First, task-specific AC coverage checks required broad validation output
+          plus manual rg inspection to identify that only ac-1 through ac-6 were annotated, while
+          the newly added named ACs were uncovered. Second, the full npm test run took roughly 52
+          minutes before surfacing an unrelated flaky test, which delayed the review even though the
+          task diff was narrow. Third, review evidence logs are still stored as a nit thread, which
+          works but is not a first-class review artifact; search shows this is already tracked by
+          observation @01KR2JD1."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-19T00:02:49.513Z
+        completed_at: 2026-05-19T00:02:49.513Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-19T00:02:03.133Z
