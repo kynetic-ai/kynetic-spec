@@ -216381,6 +216381,42 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-19T00:01:07.452Z
+      - _ulid: 01KRYVXZCKDKDAYN2A07K516FH
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRYQM47YSK0BH2H612MEWMXD
+        timestamp: 2026-05-19T00:59:47.475Z
+      - _ulid: 01KRYVY30DQNBZ06HS924Z14Z4
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRYQM47YSK0BH2H612MEWMXD
+        timestamp: 2026-05-19T00:59:51.182Z
+      - _ulid: 01KRYVY6N9X33HC73HWT80AZ1T
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRYQMB2NNSE6BG976PTZKSER
+        timestamp: 2026-05-19T00:59:54.921Z
+      - _ulid: 01KRYVYA9BGA64930ZVD1TPBRV
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRYQMB2NNSE6BG976PTZKSER
+        timestamp: 2026-05-19T00:59:58.635Z
+      - _ulid: 01KRYVYDZ8ACHQMQ34CX44SDRC
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRYQMHVA0J5QHEVKFR9TMDAX
+        timestamp: 2026-05-19T01:00:02.408Z
+      - _ulid: 01KRYVYHKRY6A1JF9AY3RVKK4H
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KRYQMHVA0J5QHEVKFR9TMDAX
+        timestamp: 2026-05-19T01:00:06.136Z
     examined_commit: 8de21db24228985d828834bc081bcb37fcd47c25
     external_links: []
     lifecycle_state: closed
@@ -216409,7 +216445,18 @@ reviews:
               violates the task/spec requirement to release lineage whose related events no longer
               appear in retained recent events."
             created_at: 2026-05-18T23:44:30.463Z
+          - _ulid: 01KRYVXY036H686RW6V0DMKD2T
+            author: "@claude"
+            body: Fixed in df446d6338. The early-return guard `chainDepths.size <= ringBuffer.size` was masking
+              stale correlations because a single correlated emit followed by N uncorrelated emits
+              keeps that invariant true forever. Replaced with `chainDepths.size === 0` so any
+              correlation whose events have aged out of the ring buffer is released on the next
+              emit. Added a focused regression covering the exact 1-correlated-+-5-uncorrelated
+              case.
+            created_at: 2026-05-19T00:59:46.051Z
         kind: blocker
+        resolved_at: 2026-05-19T00:59:49.715Z
+        resolved_by: "@claude"
       - _ulid: 01KRYQMB2NNSE6BG976PTZKSER
         anchor:
           type: code
@@ -216427,7 +216474,15 @@ reviews:
               ac-completed-source-ordering-is-released remains uncovered for review/validation
               purposes."
             created_at: 2026-05-18T23:44:37.461Z
+          - _ulid: 01KRYVY57ZFHPPQHQH6YRT3YKS
+            author: "@claude"
+            body: "Fixed in df446d6338. Added `// AC: @dispatch-event-envelope
+              ac-completed-source-ordering-is-released` above the test. `kspec validate
+              --completeness` no longer reports @dispatch-event-envelope as uncovered."
+            created_at: 2026-05-19T00:59:53.471Z
         kind: blocker
+        resolved_at: 2026-05-19T00:59:57.191Z
+        resolved_by: "@claude"
       - _ulid: 01KRYQMHVA0J5QHEVKFR9TMDAX
         anchor:
           type: code
@@ -216444,7 +216499,19 @@ reviews:
               @dispatch-event-envelope ac-retained-event-lineage-is-bounded and make sure the test
               proves aged-out lineage is released, not only that total entries are <= capacity."
             created_at: 2026-05-18T23:44:44.394Z
+          - _ulid: 01KRYVYCH0K59BK2BKVA9XS749
+            author: "@claude"
+            body: "Fixed in df446d6338. Added `// AC: @dispatch-event-envelope
+              ac-retained-event-lineage-is-bounded` to the bounded-chain test, strengthened its
+              assertion to verify aged-out correlations are actually released (every remaining
+              chainDepths key must appear as a correlation_id in the ring buffer, and correlations
+              0-19 are explicitly absent), and added a second annotated regression that emits one
+              correlated event followed by uncorrelated ones and asserts the stale correlation's
+              chain depth is 0 after it ages out."
+            created_at: 2026-05-19T01:00:00.928Z
         kind: blocker
+        resolved_at: 2026-05-19T01:00:04.750Z
+        resolved_by: "@claude"
       - _ulid: 01KRYQPGNCTDC6F22Q3296MKSQ
         entries:
           - _ulid: 01KRYQPGNCFR0X5KN1WH4WMZ4D
@@ -216469,7 +216536,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-19T00:01:07.451Z
     created_at: 2026-05-18T23:43:27.569Z
-    updated_at: 2026-05-19T00:01:07.452Z
+    updated_at: 2026-05-19T01:00:04.750Z
     notes: []
   - _ulid: 01KRYQPMKK8CYKVR3R4GCHKP0F
     slugs: []

@@ -4,3 +4,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-19T00:01:09.952Z
+  - _ulid: 01KRYVYJYEAMPESZ872CW023RZ
+    content: "Fix cycle 1: addressed all three blocker threads. (1) Removed the buggy `chainDepths.size
+      <= ringBuffer.size` early return in `_pruneChainDepthsToRecentEvents` so correlated events
+      that age out release their chain-depth state even when uncorrelated events fill the buffer.
+      (2) Annotated the per-source delivery test with `ac-completed-source-ordering-is-released`.
+      (3) Annotated the retained-lineage test with `ac-retained-event-lineage-is-bounded`,
+      strengthened it to prove aged-out correlations are released (not just size-bounded), and added
+      a second focused regression for the reviewer's exact 1-correlated-plus-N-uncorrelated
+      scenario. Re-verified ACs 1-6 plus the two new ACs against current implementation; focused
+      tests pass (40 tests), `kspec validate --completeness` no longer flags
+      @dispatch-event-envelope, full suite passes (9281 passed, 5 skipped, 0 failed) after rebase
+      onto dev including the cli-no-daemon stabilization fix."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-19T01:00:07.502Z
