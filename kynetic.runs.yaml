@@ -50674,9 +50674,27 @@ runs:
     completed_at: 2026-05-19T01:23:10.733Z
   - _ulid: 01KRYX8WGFE5QQY0CRNAV59QD6
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-19T01:23:13.551Z
+        completed_at: 2026-05-19T01:24:37.603Z
+        notes: "Session: fix cycle for @01KRYMPBC8YM4X3KZC6SPBV6R2 (Prevent overlapping periodic dispatch
+          reconciliation). Reviewer blocker: spec ACs ac-reconcile-non-overlap and
+          ac-stop-awaits-reconciliation had no machine-linked tests, and existing non-overlap test
+          released the reconcile gate BEFORE awaiting stop, so the stop guarantee was never actually
+          exercised. Worked well: (a) reading the review thread literally and splitting into two
+          tests rather than retrofitting one ambiguous test; (b) using a microtask + fake-timer
+          drain to assert 'stop has not resolved' before releasing the gate, which directly
+          exercises the wait semantics; (c) rebasing on dev pulled in the unrelated cli-no-daemon
+          fix automatically. Minor friction: kspec task note takes positional message vs kspec
+          review reply --body — small CLI inconsistency, low impact."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-19T01:24:37.603Z
+        completed_at: 2026-05-19T01:24:37.603Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-19T01:23:13.551Z
