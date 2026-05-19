@@ -216555,6 +216555,12 @@ reviews:
           status: fail
           name: full npm test
         timestamp: 2026-05-19T00:04:16.062Z
+      - _ulid: 01KRYRSF7XB59JFN15XY0NP6HN
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KRYRR2SWGPX1BYM8JHP2DQSJ
+        timestamp: 2026-05-19T00:04:54.141Z
     examined_commit: 7c8750e4177de585f398dc7d2b00e9a4e1aa657b
     external_links: []
     lifecycle_state: open
@@ -216586,8 +216592,15 @@ reviews:
               stop while the reconcile promise is still unresolved and assert stop does not resolve
               until the pass is released."
             created_at: 2026-05-19T00:04:08.636Z
+          - _ulid: 01KRYRSDQ5NC5KDKKQCH8EXXP7
+            author: Jacob Chapel
+            body: "Correction to the evidence text: git grep for ac-reconcile-non-overlap and
+              ac-stop-awaits-reconciliation returns no matches in tests or src. The new test calls
+              releaseReconcile before await engine.stop, so it does not prove stop waits while a
+              reconciliation promise is still unresolved."
+            created_at: 2026-05-19T00:04:52.581Z
         kind: blocker
     verdicts: []
     created_at: 2026-05-18T23:45:52.755Z
-    updated_at: 2026-05-19T00:04:14.506Z
+    updated_at: 2026-05-19T00:04:52.581Z
     notes: []
