@@ -18,6 +18,78 @@ release workflow before tagging.
 
 - None.
 
+## v0.14.0
+
+Stability release focused on daemon endpoint coherence, dispatch workspace
+cleanup safety, task-storage compatibility responses, docs/search/release-notes
+rendering, AC annotation validation, and CI/publish reliability.
+
+### New or changed configuration
+
+- `daemon.host` now defaults to numeric IPv4 loopback `127.0.0.1` instead of
+  `localhost` to avoid `/etc/hosts` and DNS resolution drift.
+- `daemon.connect_host` — optional host advertised to local clients when the
+  daemon binds a wildcard address such as `0.0.0.0` or `::`. It can also be set
+  with `KSPEC_DAEMON_CONNECT_HOST`.
+
+### Breaking changes
+
+- None.
+
+### Features & Additions
+
+- **Daemon endpoint resolution** — shared endpoint metadata and resolution now
+  flow through daemon startup, CLI lifecycle metadata, auto-start, clients, and
+  web UI daemon access. Endpoint validation rejects unreachable bind/connect
+  combinations while preserving loopback aliases and wildcard-bind use cases.
+- **Docs and release-note surfaces** — added Pagefind-backed docs search,
+  docs navigation integration, release-notes rendering in the web UI, and
+  canonical `RELEASE_NOTES.md` wiring tests.
+- **Task-storage compatibility API responses** — daemon routes now return
+  structured `task_storage_incompatible` responses for legacy task-storage
+  projects, with shared route helpers and coverage across affected surfaces.
+- **Detached reviewer merge helper** — merge/reviewer skills gained detached
+  review helper support plus portable supporting-file references.
+- **AC annotation validation** — acceptance-criteria annotations now enforce
+  the `ac-*` identifier format, normalize catalog IDs, and report malformed
+  annotation and stale-mapping cases more precisely.
+
+### Bug Fixes
+
+- Recursive daemon command proxying is suppressed, including inside agent
+  invocations, so daemon-handled commands do not call back into the same proxy
+  path.
+- Dispatch cleanup preserves active/in-flight task workspaces across branches,
+  reviewer snapshots, corrupt metadata, unknown worktree roots, and bootstrap
+  race windows while surfacing labeled diagnostics for skipped artifacts.
+- Dispatch reconciliation no longer overlaps active cycles; event-bus lineage
+  and source-ordering state is bounded so aged correlated chains are released.
+- Entity-cache diagnostics suppress repeated known task-storage incompatibility
+  reports while preserving degraded-cache behavior.
+- Daemon/web UI startup asset resolution, runtime readiness, configured host
+  validation, and CLI serve lifecycle metadata were hardened.
+- Publish workflow now installs Bun before running the full suite, and package
+  repository/discussion URLs now point at `lepahc/kynetic-spec`, unblocking npm
+  provenance publication.
+
+### Documentation
+
+- README was trimmed into a concise landing page with docs cross-links.
+- Added and refreshed Getting Started, Concepts, Guides, and Troubleshooting
+  pages, including corrected CLI guidance and recovery procedures.
+- Updated merge/reviewer guidance, dispatch-compatible branch guidance, and
+  rendered skill outputs.
+
+### Other Changes
+
+- Expanded the daemon-cleanup lint rule and test fixtures to catch unscoped
+  daemon ownership, alias/wrapper edge cases, lifecycle hooks, and startup
+  failure cleanup leaks.
+- Serialized dynamic test-daemon port startup with filesystem locks and held
+  Playwright fixture locks across restart windows to remove parallel bind races.
+- Applied final `oxfmt`, lint, typecheck, and full-test stability sweeps across
+  the dev merge delta.
+
 ## v0.13.0
 
 Significant release focused on a daemon entity cache, multi-turn session
