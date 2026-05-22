@@ -220548,9 +220548,25 @@ reviews:
           status: fail
           name: Command/API specificity
         timestamp: 2026-05-22T21:05:28.078Z
+      - _ulid: 01KS8R42RMFJAC25P9F57QT5Y5
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-22T21:05:37.556Z
+      - _ulid: 01KS8R42RMXTF0K2JG8E8KFE8V
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-22T21:05:37.556Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -220669,7 +220685,14 @@ reviews:
               plan command where intended."
             created_at: 2026-05-22T21:04:19.571Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-22T21:05:37.556Z
     created_at: 2026-05-22T21:02:47.033Z
-    updated_at: 2026-05-22T21:05:26.597Z
+    updated_at: 2026-05-22T21:05:37.556Z
     notes: []
