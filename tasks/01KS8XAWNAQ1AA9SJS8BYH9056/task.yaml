@@ -1,6 +1,7 @@
 _ulid: 01KS8XAWNAQ1AA9SJS8BYH9056
 slugs:
   - task-entity-storage-version-compatibility-gates-1
+  - task-entity-storage-version-compatibility-gates
 title: Implement entity storage version and incompatibility gates
 type: task
 description: >
@@ -88,5 +89,16 @@ tags:
   - daemon
   - cli
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      slugs:
+        new:
+          - task-entity-storage-version-compatibility-gates-1
+          - task-entity-storage-version-compatibility-gates
+        previous:
+          - task-entity-storage-version-compatibility-gates-1
+    command: task-set
+    timestamp: 2026-05-22T22:46:25.092Z
 created_at: 2026-05-22T22:36:43.562Z
 todos: []

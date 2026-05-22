@@ -29615,6 +29615,7 @@
 - _ulid: 01KS8XAWNAQ1AA9SJS8BYH9056
   slugs:
     - task-entity-storage-version-compatibility-gates-1
+    - task-entity-storage-version-compatibility-gates
   title: Implement entity storage version and incompatibility gates
   type: task
   spec_ref: "@entity-folder-migration-and-compatibility-1"
