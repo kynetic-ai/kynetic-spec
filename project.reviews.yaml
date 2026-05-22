@@ -220884,6 +220884,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-22T21:54:26.854Z
+      - _ulid: 01KS8TXYDKBZNCHJDX5MPQ5MN7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8TXWXYAM548NXE3EZ9YX5V
+        timestamp: 2026-05-22T21:54:42.227Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -220893,8 +220900,28 @@ reviews:
       content_hash: ""
       ref: "@plan-folder-backed-plans-reviews-and-local-resources"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KS8TXWXYAM548NXE3EZ9YX5V
+        anchor:
+          type: structured
+          field: description
+          ref: "@task-update-plan-review-storage-specs"
+          section: tasks
+        entries:
+          - _ulid: 01KS8TXWXY1FFASGHPAP373KDH
+            author: Jacob Chapel
+            body: Task edits existing specs but does not specify final implementation status for any touched
+              spec. The review requirement asks for exact spec refs, AC IDs, final wording/status,
+              and verification. The task names @plan-crud ac-1/ac-2,
+              @review-record-storage-and-identity ac-3, and @daemon-entity-cache
+              ac-folder-backed-entity-directory-invalidation with wording and verification, but it
+              never says whether @plan-crud remains implemented, @review-record-storage-and-identity
+              remains implemented, and @daemon-entity-cache remains in_progress or changes to
+              another status after the edit. Add explicit final status instructions for each touched
+              existing spec.
+            created_at: 2026-05-22T21:54:40.703Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:54:03.960Z
-    updated_at: 2026-05-22T21:54:25.297Z
+    updated_at: 2026-05-22T21:54:40.703Z
     notes: []
