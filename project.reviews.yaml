@@ -220411,6 +220411,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KS8R03ECEWQGFSW4P03RTQEY
         timestamp: 2026-05-22T21:03:28.831Z
+      - _ulid: 01KS8R0HXM91B93QP95ZBV3C7V
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8R0GAM3R6YSYBNZ172FP3N
+        timestamp: 2026-05-22T21:03:42.004Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -220459,7 +220466,26 @@ reviews:
               non-interactive remove without --force and interactive prompt decline."
             created_at: 2026-05-22T21:03:27.181Z
         kind: blocker
+      - _ulid: 01KS8R0GAM3R6YSYBNZ172FP3N
+        anchor:
+          type: structured
+          ref: "@task-plan-resource-api-ui-static"
+          section: tasks
+        entries:
+          - _ulid: 01KS8R0GANE9PEMMV99E8088EX
+            author: Jacob Chapel
+            body: "The plan resource multipart upload shape still leaves `replace` undefined at the wire level.
+              The task says POST accepts multipart/form-data with text fields plus optional boolean
+              `replace`, but multipart fields are transmitted as strings and the plan does not say
+              whether replacement is requested by field presence, `true`, `1`, or another value, nor
+              what error/status/code applies to an invalid value. Impact: API, web UI, and tests can
+              implement incompatible replacement behavior while following the same route contract.
+              Exact fix: define the accepted multipart `replace` representation and the
+              invalid-value response shape/status, or make replacement a separate route/flag with an
+              exact contract."
+            created_at: 2026-05-22T21:03:40.373Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:02:47.033Z
-    updated_at: 2026-05-22T21:03:27.181Z
+    updated_at: 2026-05-22T21:03:40.373Z
     notes: []
