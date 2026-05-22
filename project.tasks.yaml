@@ -29697,6 +29697,7 @@
 - _ulid: 01KS8XAZBR1ZS1KKEHZ2PSZ4S5
   slugs:
     - task-folder-backed-plan-review-cache-invalidation-1
+    - task-folder-backed-plan-review-cache-invalidation
   title: Update daemon cache invalidation for folder-backed plan and review directories
   type: task
   spec_ref: "@daemon-entity-cache"
