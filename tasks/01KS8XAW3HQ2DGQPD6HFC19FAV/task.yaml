@@ -66,7 +66,7 @@ description: >
   missing-resource guidance, and static-export path generation.
 
 
-  Covers: @trait-entity-scoped-local-resources ac-resource-reference-resolves-within-owner,
+  Covers: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner,
   ac-resource-metadata-exposes-safe-preview-fields, ac-path-escape-rejected,
   ac-binary-resources-are-not-inlined-into-yaml, ac-versioning-uses-git-backed-identity,
   ac-static-export-copies-resource-assets
@@ -95,5 +95,149 @@ history:
           - task-entity-local-resource-model-1
     command: task-set
     timestamp: 2026-05-22T22:46:12.947Z
+  - author: Jacob Chapel
+    changes:
+      description:
+        new: >
+          What:
+
+          - Add shared schema/types for `resources.yaml`: `resources` array entries with stable
+          `id`, `label`, `path` relative to the entity `resources/` directory, `content_type`,
+          `bytes`, `sha256`, optional `git_commit`, optional repository-relative `git_path`, and
+          optional `description`.
+
+          - Define the exact shared `ResourceMetadata` shape as `{ "id": string, "label":
+          string|null, "path": string, "content_type": string, "bytes": number, "sha256": string,
+          "git_commit": string|null, "git_path": string|null, "description": string|null }`.
+
+          - Define `content_type` population exactly: when a CLI `--content-type` value or API
+          `content_type` multipart field is supplied, validate it is a non-empty MIME-ish token of
+          the form `type/subtype` with no whitespace and store it exactly; when omitted, infer from
+          the final resource path extension using the existing project MIME lookup if one exists,
+          otherwise Node's standard MIME lookup, and if inference fails store
+          `application/octet-stream`. The field is never null in `ResourceMetadata`.
+
+          - Validate resource identifiers with exact pattern `[a-z0-9][a-z0-9._-]{0,127}`.
+
+          - Resource paths use POSIX-style relative paths under the owner `resources/` directory;
+          reject paths that start with `/`, contain `..`, contain `\`, are undeclared, or resolve
+          through symlinks outside the resource root.
+
+          - Add path normalization and validation helpers that accept only
+          `./resources/<relative-path>` authoring references, reject absolute paths, reject `..`,
+          reject undeclared resource paths, reject symlink escapes, and keep all resolution inside
+          the owning entity resource tree.
+
+          - Add resolver helpers that load metadata, resolve a resource path for an entity, and
+          produce bounded previews without loading binary bytes into YAML records.
+
+          - Add static-export helpers that copy resource files to
+          `assets/resources/<entity-type>/<entity-ulid>/<relative-path>` and return that exported
+          path in metadata.
+
+
+          Why:
+
+          - Plans and reviews need the same local-resource behavior. Building this once avoids
+          incompatible attachment models.
+
+
+          How:
+
+          - Use the session blob pointer pattern for hashes/previews and the skill supporting-file
+          directory pattern for safe relative sidecar directories.
+
+          - Do not expose arbitrary filesystem reads; all resolution starts from the owning entity
+          directory and declared manifest entries.
+
+          - Keep list/index projections bounded.
+
+
+          Testing:
+
+          - Unit-test valid references, absolute path rejection, parent traversal rejection,
+          undeclared path rejection, symlink escape rejection, metadata hash computation, explicit
+          `content_type` storage, inferred `content_type` by extension, `application/octet-stream`
+          fallback for unknown extensions, invalid content-type rejection, git version metadata
+          capture, binary-resource metadata, missing-resource guidance, and static-export path
+          generation.
+
+
+          Covers: @trait-entity-scoped-local-resources-1
+          ac-resource-reference-resolves-within-owner,
+          ac-resource-metadata-exposes-safe-preview-fields, ac-path-escape-rejected,
+          ac-binary-resources-are-not-inlined-into-yaml, ac-versioning-uses-git-backed-identity,
+          ac-static-export-copies-resource-assets
+        previous: >
+          What:
+
+          - Add shared schema/types for `resources.yaml`: `resources` array entries with stable
+          `id`, `label`, `path` relative to the entity `resources/` directory, `content_type`,
+          `bytes`, `sha256`, optional `git_commit`, optional repository-relative `git_path`, and
+          optional `description`.
+
+          - Define the exact shared `ResourceMetadata` shape as `{ "id": string, "label":
+          string|null, "path": string, "content_type": string, "bytes": number, "sha256": string,
+          "git_commit": string|null, "git_path": string|null, "description": string|null }`.
+
+          - Define `content_type` population exactly: when a CLI `--content-type` value or API
+          `content_type` multipart field is supplied, validate it is a non-empty MIME-ish token of
+          the form `type/subtype` with no whitespace and store it exactly; when omitted, infer from
+          the final resource path extension using the existing project MIME lookup if one exists,
+          otherwise Node's standard MIME lookup, and if inference fails store
+          `application/octet-stream`. The field is never null in `ResourceMetadata`.
+
+          - Validate resource identifiers with exact pattern `[a-z0-9][a-z0-9._-]{0,127}`.
+
+          - Resource paths use POSIX-style relative paths under the owner `resources/` directory;
+          reject paths that start with `/`, contain `..`, contain `\`, are undeclared, or resolve
+          through symlinks outside the resource root.
+
+          - Add path normalization and validation helpers that accept only
+          `./resources/<relative-path>` authoring references, reject absolute paths, reject `..`,
+          reject undeclared resource paths, reject symlink escapes, and keep all resolution inside
+          the owning entity resource tree.
+
+          - Add resolver helpers that load metadata, resolve a resource path for an entity, and
+          produce bounded previews without loading binary bytes into YAML records.
+
+          - Add static-export helpers that copy resource files to
+          `assets/resources/<entity-type>/<entity-ulid>/<relative-path>` and return that exported
+          path in metadata.
+
+
+          Why:
+
+          - Plans and reviews need the same local-resource behavior. Building this once avoids
+          incompatible attachment models.
+
+
+          How:
+
+          - Use the session blob pointer pattern for hashes/previews and the skill supporting-file
+          directory pattern for safe relative sidecar directories.
+
+          - Do not expose arbitrary filesystem reads; all resolution starts from the owning entity
+          directory and declared manifest entries.
+
+          - Keep list/index projections bounded.
+
+
+          Testing:
+
+          - Unit-test valid references, absolute path rejection, parent traversal rejection,
+          undeclared path rejection, symlink escape rejection, metadata hash computation, explicit
+          `content_type` storage, inferred `content_type` by extension, `application/octet-stream`
+          fallback for unknown extensions, invalid content-type rejection, git version metadata
+          capture, binary-resource metadata, missing-resource guidance, and static-export path
+          generation.
+
+
+          Covers: @trait-entity-scoped-local-resources ac-resource-reference-resolves-within-owner,
+          ac-resource-metadata-exposes-safe-preview-fields, ac-path-escape-rejected,
+          ac-binary-resources-are-not-inlined-into-yaml, ac-versioning-uses-git-backed-identity,
+          ac-static-export-copies-resource-assets
+    command: task-set
+    timestamp: 2026-05-22T22:50:02.914Z
 created_at: 2026-05-22T22:36:42.993Z
 todos: []
