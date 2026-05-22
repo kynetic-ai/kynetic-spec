@@ -29723,6 +29723,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-22T22:36:46.328Z
+  automation: eligible
 - _ulid: 01KS8XAZQ5478RV2AVKG8MNB0S
   slugs:
     - task-plan-resource-import-and-derive-1
