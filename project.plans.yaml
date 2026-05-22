@@ -50522,12 +50522,26 @@ plans:
         spec_ref: "@entity-folder-migration-and-compatibility"
         description: |
           What:
-          - Update existing spec language that hard-codes monolithic files before implementing folder-backed storage.
-          - In @plan-crud ac-1, replace "stored in project.plans.yaml" with format-neutral wording that says the plan is persisted with stable ULID identity and auto-committed to the shadow branch.
-          - In @plan-crud ac-2, replace "stored as plan content" with format-neutral wording that says file content becomes the plan's retrievable markdown content.
-          - In @review-record-storage-and-identity ac-3, replace the "single dedicated file per project" contract with a first-party review storage contract that permits folder-backed review records while preserving stable dedicated review storage.
-          - Add the new trait specs @trait-folder-backed-entity and @trait-entity-scoped-local-resources, then apply @trait-entity-scoped-local-resources to the plan/review storage specs in this plan. Do not duplicate inherited trait ACs inside plan/review specs.
-          - Add or update ACs so entity cache invalidation includes folder-backed `plans/` and `reviews/` paths, not only `project.plans.yaml` and `project.reviews.yaml`.
+          - Update existing spec language that hard-codes monolithic files before implementing folder-backed storage. This task is only for catalog/spec maintenance; it must not implement storage code.
+          - Update @plan-crud ac-1 exactly as follows:
+            - Given: `A user wants to create a plan`
+            - When: `kspec plan add --title "Title" --content "Markdown content" is run`
+            - Then: `A plan is created with ULID-backed identity, retrievable markdown content, lifecycle metadata, and an auto-commit to the shadow branch`
+          - Update @plan-crud ac-2 exactly as follows:
+            - Given: `A markdown file exists at a path`
+            - When: `kspec plan add --title "Title" --content-file ./plan.md is run`
+            - Then: `File content is read and becomes the plan's retrievable markdown content`
+          - Update @review-record-storage-and-identity ac-3 exactly as follows:
+            - Given: `Review records are stored in the shadow branch`
+            - When: `A review mutation is committed`
+            - Then: `The review data is persisted in dedicated first-party review storage rather than embedded inside plans, tasks, module files, or other unrelated entity files`
+          - Add one new AC to @daemon-entity-cache with id `ac-folder-backed-entity-directory-invalidation` and exact wording:
+            - Given: `A file watcher detects a change inside a registered project's folder-backed entity directory`
+            - When: `The changed path is under .kspec/plans/<plan-ulid>/ or .kspec/reviews/<review-ulid>/`
+            - Then: `The cache invalidates and reloads the plans domain for plan-directory changes or the reviews domain for review-directory changes`
+          - Keep @daemon-entity-cache ac-watcher-invalidation and ac-granular-reload unchanged; the new AC narrows those existing cache promises for folder-backed plan/review directories.
+          - Do not add or edit any inbox, triage, or meta storage specs in this task. This plan intentionally converts plans first and reviews second only; inbox remains single-file, triage continues to reference resources owned elsewhere, and meta is not broadly converted.
+          - The new plan-local specs @trait-folder-backed-entity, @trait-entity-scoped-local-resources, @folder-backed-plan-storage, @plan-resource-derivation-semantics, @folder-backed-review-storage, @entity-folder-migration-and-compatibility, and @folder-backed-resource-documentation are materialized by plan derivation; this task only edits the existing specs named above.
 
           Why:
           - The current specs explicitly require single-file plan/review storage, so implementation would otherwise contradict the source of truth.
@@ -50538,6 +50552,8 @@ plans:
           - Preserve task-storage split as the style reference: format-neutral consumer contract plus separate storage-layout specs.
 
           Testing:
+          - Before editing, run `kspec item get @plan-crud`, `kspec item get @review-record-storage-and-identity`, and `kspec item get @daemon-entity-cache` to confirm the current AC ids still exist.
+          - After editing, run the same three `kspec item get` commands and verify the exact Given/When/Then text above appears on @plan-crud ac-1, @plan-crud ac-2, @review-record-storage-and-identity ac-3, and @daemon-entity-cache ac-folder-backed-entity-directory-invalidation.
           - Run `kspec validate --warnings-ok`.
           - Run focused parser/schema tests that exercise plan/review specs if changed.
 
@@ -50553,6 +50569,7 @@ plans:
         description: |
           What:
           - Extract the common folder-backed entity behavior from task split storage into shared helpers/types that future entity stores can adopt.
+          - Centralize the exact shared behavior promised by @trait-folder-backed-entity: each entity has a full-ULID directory under its type root; list/cache/dashboard indexes contain bounded identity/lifecycle/summary/relationship fields only; unknown files/directories in entity folders are ignored by semantics and preserved across writes; indexes can be regenerated from entity folders and sidecar metadata.
           - Centralize full-ULID directory naming, storage-root path helpers, bounded index projection conventions, unknown-file preservation, rebuild-index mechanics, and cache invalidation hooks.
           - Keep the abstraction small: it defines folder ownership/index behavior, not plan-specific markdown semantics, review-specific schemas, or resource-manifest semantics.
 
@@ -50578,6 +50595,9 @@ plans:
         description: |
           What:
           - Add shared schema/types for `resources.yaml`: `resources` array entries with stable `id`, `label`, `path` relative to the entity `resources/` directory, `content_type`, `bytes`, `sha256`, optional `git_commit`, optional repository-relative `git_path`, and optional `description`.
+          - Define the exact shared `ResourceMetadata` shape as `{ "id": string, "label": string|null, "path": string, "content_type": string, "bytes": number, "sha256": string, "git_commit": string|null, "git_path": string|null, "description": string|null }`.
+          - Validate resource identifiers with exact pattern `[a-z0-9][a-z0-9._-]{0,127}`.
+          - Resource paths use POSIX-style relative paths under the owner `resources/` directory; reject paths that start with `/`, contain `..`, contain `\`, are undeclared, or resolve through symlinks outside the resource root.
           - Add path normalization and validation helpers that accept only `./resources/<relative-path>` authoring references, reject absolute paths, reject `..`, reject undeclared resource paths, reject symlink escapes, and keep all resolution inside the owning entity resource tree.
           - Add resolver helpers that load metadata, resolve a resource path for an entity, and produce bounded previews without loading binary bytes into YAML records.
           - Add static-export helpers that copy resource files to `assets/resources/<entity-type>/<entity-ulid>/<relative-path>` and return that exported path in metadata.
@@ -50604,7 +50624,7 @@ plans:
           - "@task-entity-local-resource-model"
         description: |
           What:
-          - Define manifest version `kynetic: "1.2"` for folder-backed plans/reviews/resources.
+          - Define manifest version `kynetic: "1.2"` for folder-backed plans/reviews/resources. This version gate applies only to plan storage, review storage, and entity-scoped local resources; do not convert inbox, triage, sessions, or broad meta storage in this task.
           - Extend manifest parsing and initialization so new projects write `task_storage.format: split`, `plan_storage.format: folder`, `review_storage.format: folder`, and `resource_storage.format: entity_scoped`.
           - Add deterministic storage incompatibility errors for plan/review/resource domains with top-level code `entity_storage_incompatible` and domain-specific codes: `legacy_plan_storage_removed`, `legacy_review_storage_removed`, `missing_plan_folder_storage`, `missing_review_folder_storage`, and `partial_entity_storage_layout`.
           - Permit `kspec upgrade`, `kspec doctor`, and read-only compatibility diagnostics to run on old layouts; block commands/routes that need folder-backed plan, review, or resource behavior until upgrade succeeds.
@@ -50697,8 +50717,10 @@ plans:
         description: |
           What:
           - Add dry-run and executing migration steps to `kspec upgrade` for the 1.2 folder-backed plan/review/resource format.
-          - For plans, move inline `content` into `.kspec/plans/<plan-ulid>/plan.md`, move bounded metadata into `plan.yaml`, move notes into `notes.yaml` when present, create empty `resources.yaml` when no resources exist, and write the lean plan index.
-          - For reviews, move each full review record into `.kspec/reviews/<review-ulid>/review.yaml`, create empty `resources.yaml` when no resources exist, and write the lean review index.
+          - For plans, move inline `content` into `.kspec/plans/<plan-ulid>/plan.md`, move bounded metadata into `plan.yaml`, move notes into `notes.yaml` when present, create empty `resources.yaml` when no resources exist, and write the lean `.kspec/project.plans.yaml` index with ULID, slugs, title, status, source path, module, branch, derived refs, timestamps, and bounded resource summaries only.
+          - For reviews, move each full review record into `.kspec/reviews/<review-ulid>/review.yaml`, create empty `resources.yaml` when no resources exist, and write the lean `.kspec/project.reviews.yaml` index with ULID, lifecycle, subject summary, related refs, disposition, timestamps, and bounded resource summaries only.
+          - Preserve these exact folder layouts: plan folders contain `plan.md`, `plan.yaml`, optional `notes.yaml`, `resources.yaml`, and `resources/`; review folders contain cohesive `review.yaml`, `resources.yaml`, and `resources/`.
+          - Do not create inbox, triage, session, or broad meta folder migrations. Inbox is intentionally capped by triage, triage keeps using references to resources owned elsewhere unless its scope changes, sessions are only a blob-pointer precedent, and skills already have a supporting-file folder model.
           - Update the manifest to `kynetic: "1.2"`, `task_storage.format: split`, `plan_storage.format: folder`, `review_storage.format: folder`, and `resource_storage.format: entity_scoped` only after successful migration.
           - Detect already migrated and partially migrated layouts with clear reporting.
           - Report the previous shadow commit as rollback guidance instead of creating parallel backup files.
@@ -50730,6 +50752,7 @@ plans:
           - Extend `kspec plan set @plan --content-file <plan-md>` so `./resources/<relative-path>` markdown links must resolve against the existing plan `resources.yaml`; users attach resources before setting content that references them.
           - Extend the plan document manual task schema so each additional task may include `resource_refs: ["./resources/<relative-path>"]`; reject refs that do not resolve against the source plan's `resources.yaml` at derive time.
           - Add exact plan-resource CLI commands: `kspec plan resource add <plan-ref> <source-file> --id <resource-id> --path <relative-path> [--label <label>] [--description <text>] [--content-type <mime>] [--replace] [--json]`; `kspec plan resource list <plan-ref> [--json]`; `kspec plan resource get <plan-ref> <resource-id> [--json]`; `kspec plan resource remove <plan-ref> <resource-id> [--force] [--json]`.
+          - Use the shared resource contract from @task-entity-local-resource-model: resource ids match `[a-z0-9][a-z0-9._-]{0,127}`; authoring references are `./resources/<relative-path>`; internal refs record owner type, owner ref, resource id, relative path, `sha256`, optional `git_commit`, and optional `git_path`; forbidden paths include absolute paths, parent traversal, backslashes, undeclared paths, and symlink escapes.
           - `plan resource add` requires explicit `--id` and `--path`; id or path collisions fail with `resource_conflict` unless `--replace` is supplied. Replacement updates one existing resource id, replaces the file bytes and metadata, removes the old file if the path changes, and refuses to overwrite a different resource id's path. `remove` deletes the manifest entry and owned file; without `--force` it prompts in interactive mode and fails in non-interactive mode.
           - Define plan resource CLI `--json` success output exactly: `add` returns `{ "resource": <ResourceMetadata>, "replaced": boolean }`; `list` returns `{ "resources": <ResourceMetadata[]> }`; `get` returns `{ "resource": <ResourceMetadata> }`; `remove` returns `{ "removed": { "id": string, "path": string } }`. CLI JSON failures use `{ "error": string, "code": "invalid_resource_id"|"invalid_resource_path"|"source_file_missing"|"source_file_unreadable"|"resource_conflict"|"resource_not_found"|"plan_not_found"|"confirmation_required"|"operation_cancelled"|"entity_storage_incompatible", "message": string, "resource_id": string|null, "path": string|null, "source_file": string|null }`. Missing plan refs return `plan_not_found`; missing `<source-file>` returns `source_file_missing`; unreadable or non-regular `<source-file>` returns `source_file_unreadable`; non-interactive `remove` without `--force` returns `confirmation_required`; interactive remove answered no returns `operation_cancelled`. Exit codes follow @trait-semantic-exit-codes exactly: success exits 0; invalid id/path, source file failures, missing plan/resource, and conflicts exit 1; user cancellation exits 2; storage incompatibility or unexpected IO after validation exits 3.
           - Plan resource API routes and upload body shapes are owned by @task-plan-resource-api-ui-static, not this task.
@@ -50763,6 +50786,7 @@ plans:
           - Update daemon entity-cache file-to-domain mapping so `.kspec/plans/` directory changes invalidate the plans domain.
           - Keep `/api/plans` list fast by using index/resource summaries only.
           - Keep `/api/plans/:ref` returning `PlanDetail.content` while adding resource summary data and safe resource fetch URLs.
+          - Use this exact `ResourceMetadata` shape in every plan resource API response: `{ "id": string, "label": string|null, "path": string, "content_type": string, "bytes": number, "sha256": string, "git_commit": string|null, "git_path": string|null, "description": string|null }`.
           - Add exact authenticated/project-scoped plan resource endpoints using the shared resolver: `GET /api/plans/:ref/resources` returns HTTP 200 `{ "resources": <ResourceMetadata[]> }`; `GET /api/plans/:ref/resources/:resourceId` returns HTTP 200 `{ "resource": <ResourceMetadata> }`; `GET /api/plans/:ref/resources/:resourceId/bytes` returns HTTP 200 raw bytes with `Content-Type` and `X-Kspec-Resource-Sha256`; `POST /api/plans/:ref/resources` accepts `multipart/form-data` with file field `file` and text fields `id`, `path`, optional `label`, optional `description`, optional `content_type`, optional `replace`; `replace` is false when omitted, true only when the field value is exactly `true` or `1`, false when exactly `false` or `0`, and any other value fails with 400 `invalid_replace_value`; `DELETE /api/plans/:ref/resources/:resourceId` deletes the manifest entry and owned file.
           - Define plan resource API status/error mapping: POST create returns 201 `{ "resource": <ResourceMetadata>, "replaced": false }`; POST replace returns 200 `{ "resource": <ResourceMetadata>, "replaced": true }`; DELETE returns 200 `{ "removed": { "id": string, "path": string } }`; invalid id/path or missing fields return 400 with `invalid_resource_id`/`invalid_resource_path`; missing multipart `file` returns 400 `missing_resource_file`; invalid multipart `replace` returns 400 `invalid_replace_value`; missing plan or resource returns 404 with `plan_not_found`/`resource_not_found`; id/path collisions return 409 `resource_conflict`; incompatible storage returns HTTP 409 using the shared `entity_storage_incompatible` envelope from @task-entity-storage-version-compatibility-gates, including top-level error, domain-specific code, migration suggestion, and cache-domain context. Non-compatibility resource error bodies use `{ "error": string, "code": string, "message": string, "resource_id": string|null, "path": string|null }`.
           - Update web UI plan rendering so `./resources/<relative-path>` image/resource links are rewritten to safe plan-scoped resource URLs.
@@ -50792,6 +50816,7 @@ plans:
           - "@task-plan-review-folder-storage-migration"
         description: |
           What:
+          - Use the shared resource contract from @task-entity-local-resource-model: resource ids match `[a-z0-9][a-z0-9._-]{0,127}`; resource paths are POSIX-style paths below the review-owned `resources/` directory; forbidden paths include absolute paths, parent traversal, backslashes, undeclared paths, and symlink escapes; `ResourceMetadata` is `{ "id": string, "label": string|null, "path": string, "content_type": string, "bytes": number, "sha256": string, "git_commit": string|null, "git_path": string|null, "description": string|null }`.
           - Add exact review-resource CLI commands matching the plan resource shape: `kspec review resource add <review-ref> <source-file> --id <resource-id> --path <relative-path> [--label <label>] [--description <text>] [--content-type <mime>] [--replace] [--json]`; `kspec review resource list <review-ref> [--json]`; `kspec review resource get <review-ref> <resource-id> [--json]`; `kspec review resource remove <review-ref> <resource-id> [--force] [--json]`.
           - `review resource add` requires explicit `--id` and `--path`; id or path collisions fail with `resource_conflict` unless `--replace` is supplied. Replacement updates one existing resource id, replaces file bytes and metadata, removes the old file if the path changes, and refuses to overwrite a different resource id's path. `remove` deletes the manifest entry and owned file; without `--force` it prompts in interactive mode and fails in non-interactive mode.
           - Define review resource CLI `--json` success output exactly: `add` returns `{ "resource": <ResourceMetadata>, "replaced": boolean }`; `list` returns `{ "resources": <ResourceMetadata[]> }`; `get` returns `{ "resource": <ResourceMetadata> }`; `remove` returns `{ "removed": { "id": string, "path": string } }`. CLI JSON failures use `{ "error": string, "code": "invalid_resource_id"|"invalid_resource_path"|"source_file_missing"|"source_file_unreadable"|"resource_conflict"|"resource_not_found"|"review_not_found"|"confirmation_required"|"operation_cancelled"|"entity_storage_incompatible", "message": string, "resource_id": string|null, "path": string|null, "source_file": string|null }`. Missing review refs return `review_not_found`; missing `<source-file>` returns `source_file_missing`; unreadable or non-regular `<source-file>` returns `source_file_unreadable`; non-interactive `remove` without `--force` returns `confirmation_required`; interactive remove answered no returns `operation_cancelled`. Exit codes follow @trait-semantic-exit-codes exactly: success exits 0; invalid id/path, source file failures, missing review/resource, and conflicts exit 1; user cancellation exits 2; storage incompatibility or unexpected IO after validation exits 3.
@@ -50825,9 +50850,10 @@ plans:
           - "@task-review-screenshot-resource-ui"
         description: |
           What:
-          - Document the exact folder layouts for plans and reviews.
-          - Document `resources.yaml` fields, `./resources/<relative-path>` authoring references, plan-task `resource_refs`, normalized internal resource references, static export paths, and daemon/API resource URLs.
-          - Document when to keep a derived task linked to a plan resource versus explicitly materialize/copy a resource into task-owned storage.
+          - Document the exact folder layouts for plans and reviews: `.kspec/project.plans.yaml` and `.kspec/project.reviews.yaml` remain lean indexes; `.kspec/plans/<plan-ulid>/` contains `plan.md`, `plan.yaml`, optional `notes.yaml`, `resources.yaml`, and `resources/`; `.kspec/reviews/<review-ulid>/` contains cohesive `review.yaml`, `resources.yaml`, and `resources/`.
+          - Document the exact `resources.yaml` / `ResourceMetadata` fields: `id`, `label`, `path`, `content_type`, `bytes`, `sha256`, `git_commit`, `git_path`, and `description`; document resource id pattern `[a-z0-9][a-z0-9._-]{0,127}` and path restrictions.
+          - Document `./resources/<relative-path>` authoring references, plan-task `resource_refs`, normalized internal resource references, static export paths, and daemon/API resource URLs.
+          - Document the copy-vs-reference rule: derived tasks keep versioned references to plan-owned resources by default, including content hash and git identity; `kspec plan derive ... --materialize-resources` is the only mode that copies bytes into `.kspec/tasks/<task-ulid>/resources/plan/<plan-ulid>/<relative-path>` using ids `plan-<resource-id>`.
           - Update release notes and upgrade docs for the `kynetic: "1.2"` storage-format change.
           - Add troubleshooting guidance for stale indexes, missing resources, drifted resource hashes, `entity_storage_incompatible`, and partial folder layouts.
 
@@ -51107,3 +51133,8 @@ plans:
           JSON errors and multipart replace wire contract"
         author: Jacob Chapel
         created_at: 2026-05-22T21:08:05.076Z
+      - _ulid: 01KS8TPZCJQPTT5XXJ0M7AJTH2
+        content: "Address Jacob explicitness feedback: exact existing-spec AC edits and embed plan decisions
+          into task bodies"
+        author: Jacob Chapel
+        created_at: 2026-05-22T21:50:53.842Z
