@@ -51179,6 +51179,7 @@ plans:
       UI can load images/PDFs offline.
     status: draft
     approved_at: null
+    branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     derived_specs: []
     derived_tasks: []
     module_ref: null
