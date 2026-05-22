@@ -29593,6 +29593,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-22T22:36:42.647Z
+  automation: eligible
 - _ulid: 01KS8XAW3HQ2DGQPD6HFC19FAV
   slugs:
     - task-entity-local-resource-model-1
