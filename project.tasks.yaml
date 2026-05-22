@@ -29614,6 +29614,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-22T22:36:42.993Z
+  automation: eligible
 - _ulid: 01KS8XAWNAQ1AA9SJS8BYH9056
   slugs:
     - task-entity-storage-version-compatibility-gates-1

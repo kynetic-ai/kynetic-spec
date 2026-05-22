@@ -239,5 +239,13 @@ history:
           ac-static-export-copies-resource-assets
     command: task-set
     timestamp: 2026-05-22T22:50:02.914Z
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-05-22T22:52:37.756Z
 created_at: 2026-05-22T22:36:42.993Z
 todos: []
+automation: eligible
