@@ -68,6 +68,7 @@ traits:
   - _ulid: 01KS8XAV0DHA0V3WD5T98D4RMA
     slugs:
       - trait-entity-scoped-local-resources-1
+      - trait-entity-scoped-local-resources
     title: Entity-Scoped Local Resources Trait
     type: trait
     description: |
