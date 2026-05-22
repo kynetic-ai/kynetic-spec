@@ -1,6 +1,7 @@
 _ulid: 01KS8XAW3HQ2DGQPD6HFC19FAV
 slugs:
   - task-entity-local-resource-model-1
+  - task-entity-local-resource-model
 title: Implement a shared entity-local resource trait and resolver
 type: task
 description: >
@@ -83,5 +84,16 @@ tags:
   - schema
   - parser
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      slugs:
+        new:
+          - task-entity-local-resource-model-1
+          - task-entity-local-resource-model
+        previous:
+          - task-entity-local-resource-model-1
+    command: task-set
+    timestamp: 2026-05-22T22:46:12.947Z
 created_at: 2026-05-22T22:36:42.993Z
 todos: []

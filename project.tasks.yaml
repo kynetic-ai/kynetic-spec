@@ -29595,6 +29595,7 @@
 - _ulid: 01KS8XAW3HQ2DGQPD6HFC19FAV
   slugs:
     - task-entity-local-resource-model-1
+    - task-entity-local-resource-model
   title: Implement a shared entity-local resource trait and resolver
   type: task
   spec_ref: "@trait-entity-scoped-local-resources-1"
