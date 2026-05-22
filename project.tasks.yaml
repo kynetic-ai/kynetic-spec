@@ -29636,6 +29636,7 @@
 - _ulid: 01KS8XAY52P099Y1PQ8PFJ6G0P
   slugs:
     - task-folder-backed-plan-storage-manager-1
+    - task-folder-backed-plan-storage-manager
   title: Convert plan persistence to a folder-backed storage manager
   type: task
   spec_ref: "@folder-backed-plan-storage-1"
