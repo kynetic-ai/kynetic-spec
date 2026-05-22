@@ -318,5 +318,13 @@ history:
           ac-unmigrated-projects-are-blocked-with-guidance, ac-partial-folder-layouts-are-blocked
     command: task-set
     timestamp: 2026-05-22T22:50:47.285Z
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-05-22T22:52:41.276Z
 created_at: 2026-05-22T22:36:45.946Z
 todos: []
+automation: eligible
