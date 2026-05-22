@@ -1890,6 +1890,7 @@ features:
           - _ulid: 01KS8XAV969C11Z8GMSVKXMQ7X
             slugs:
               - folder-backed-review-storage-1
+              - folder-backed-review-storage
             title: Folder-Backed Review Storage
             type: requirement
             description: |
