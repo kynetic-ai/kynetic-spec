@@ -1,0 +1,49 @@
+_ulid: 01KS8X92NJV9VR13WH0T7WRQ8Q
+slugs:
+  - task-plan-resource-import-and-derive
+title: Add plan import, resource attachment, and derivation semantics
+type: task
+description: |
+  What:
+  - Extend `kspec plan import <plan-md>` so any `./resources/<relative-path>` markdown link requires a sibling `resources.yaml` beside the imported markdown file; the manifest must declare each linked path with an explicit id, and import copies declared files from the sibling `resources/` directory into `.kspec/plans/<plan-ulid>/resources/`.
+  - Extend `kspec plan set @plan --content-file <plan-md>` so `./resources/<relative-path>` markdown links must resolve against the existing plan `resources.yaml`; users attach resources before setting content that references them.
+  - Extend the plan document manual task schema so each additional task may include `resource_refs: ["./resources/<relative-path>"]`; reject refs that do not resolve against the source plan's `resources.yaml` at derive time.
+  - Add exact plan-resource CLI commands: `kspec plan resource add <plan-ref> <source-file> --id <resource-id> --path <relative-path> [--label <label>] [--description <text>] [--content-type <mime>] [--replace] [--json]`; `kspec plan resource list <plan-ref> [--json]`; `kspec plan resource get <plan-ref> <resource-id> [--json]`; `kspec plan resource remove <plan-ref> <resource-id> [--force] [--json]`.
+  - Use the shared resource contract from @task-entity-local-resource-model: resource ids match `[a-z0-9][a-z0-9._-]{0,127}`; authoring references are `./resources/<relative-path>`; internal refs record owner type, owner ref, resource id, relative path, `sha256`, optional `git_commit`, and optional `git_path`; forbidden paths include absolute paths, parent traversal, backslashes, undeclared paths, and symlink escapes.
+  - For plan resource add/import/set paths, apply the shared `content_type` rule: explicit values must be non-empty `type/subtype` tokens with no whitespace; omitted values are inferred from final resource path extension; unknown extensions store `application/octet-stream`.
+  - `plan resource add` requires explicit `--id` and `--path`; id or path collisions fail with `resource_conflict` unless `--replace` is supplied. Replacement updates one existing resource id, replaces the file bytes and metadata, removes the old file if the path changes, and refuses to overwrite a different resource id's path. `remove` deletes the manifest entry and owned file; without `--force` it prompts in interactive mode and fails in non-interactive mode.
+  - Define plan resource CLI `--json` success output exactly: `add` returns `{ "resource": <ResourceMetadata>, "replaced": boolean }`; `list` returns `{ "resources": <ResourceMetadata[]> }`; `get` returns `{ "resource": <ResourceMetadata> }`; `remove` returns `{ "removed": { "id": string, "path": string } }`. CLI JSON failures use `{ "error": string, "code": "invalid_resource_id"|"invalid_resource_path"|"source_file_missing"|"source_file_unreadable"|"resource_conflict"|"resource_not_found"|"plan_not_found"|"confirmation_required"|"operation_cancelled"|"entity_storage_incompatible", "message": string, "resource_id": string|null, "path": string|null, "source_file": string|null }`. Missing plan refs return `plan_not_found`; missing `<source-file>` returns `source_file_missing`; unreadable or non-regular `<source-file>` returns `source_file_unreadable`; non-interactive `remove` without `--force` returns `confirmation_required`; interactive remove answered no returns `operation_cancelled`. Exit codes follow @trait-semantic-exit-codes exactly: success exits 0; invalid id/path, source file failures, missing plan/resource, and conflicts exit 1; user cancellation exits 2; storage incompatibility or unexpected IO after validation exits 3.
+  - Plan resource API routes and upload body shapes are owned by @task-plan-resource-api-ui-static, not this task.
+  - During `kspec plan derive`, preserve plan resource references on derived tasks by default and record owner type, owner ref, resource id, relative path, content hash, and available git commit/path identity.
+  - Add exact derivation flag `kspec plan derive ... --materialize-resources`; when present, copy each referenced resource into `.kspec/tasks/<task-ulid>/resources/plan/<plan-ulid>/<relative-path>`, add task resource manifest ids as `plan-<resource-id>`, and point the task reference at the task-owned copy. Without this flag, no resource bytes are copied.
+
+  Why:
+  - A UX plan may include screenshots or research PDFs that task workers need to consult. Default copying creates drift and duplicate bytes; unversioned links hide changes.
+
+  How:
+  - Keep plan resources plan-owned by default. Derived tasks get refs/pointers plus hash/git metadata, not copied files.
+  - Ensure task detail/agent context can resolve plan-owned resources even when task storage remains task-owned.
+  - Surface drift if the current plan resource hash no longer matches the hash recorded on the task.
+
+  Testing:
+  - CLI tests for `kspec plan resource add/list/get/remove`, required `--id`/`--path`, missing plan refs, missing/unreadable source files, `--replace` collisions, non-interactive remove without `--force`, interactive remove cancellation, invalid paths, `--json`, JSON error envelopes, and exact exit codes.
+  - Parser/import/set tests for valid `resource_refs`, unresolved `resource_refs`, valid markdown links with sibling import manifest, unresolved markdown links during import, and unresolved markdown links during `plan set`.
+  - Derive tests for default resource refs, hash/git version metadata, drift reporting, and exact `--materialize-resources` copy mode/path/id behavior.
+
+  Covers: @plan-resource-derivation-semantics ac-plan-task-resource-refs-are-structured, ac-derived-task-keeps-plan-resource-reference, ac-derived-task-records-resource-version, ac-resource-drift-is-visible, ac-explicit-copy-mode-creates-task-owned-resource
+spec_ref: "@plan-resource-derivation-semantics"
+plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-plan-review-folder-storage-migration"
+context: []
+priority: 5
+tags:
+  - plans
+  - resources
+  - cli
+vcs_refs: []
+created_at: 2026-05-22T22:35:44.178Z
+todos: []

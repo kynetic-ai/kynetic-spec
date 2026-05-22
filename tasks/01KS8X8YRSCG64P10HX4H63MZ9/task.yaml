@@ -1,0 +1,62 @@
+_ulid: 01KS8X8YRSCG64P10HX4H63MZ9
+slugs:
+  - task-folder-backed-entity-trait-foundation
+title: Implement a shared folder-backed entity trait foundation
+type: task
+description: >
+  What:
+
+  - Extract the common folder-backed entity behavior from task split storage into shared
+  helpers/types that future entity stores can adopt.
+
+  - Centralize the exact shared behavior promised by @trait-folder-backed-entity: each entity has a
+  full-ULID directory under its type root; list/cache/dashboard indexes contain bounded
+  identity/lifecycle/summary/relationship fields only; unknown files/directories in entity folders
+  are ignored by semantics and preserved across writes; indexes can be regenerated from entity
+  folders and sidecar metadata.
+
+  - Centralize full-ULID directory naming, storage-root path helpers, bounded index projection
+  conventions, unknown-file preservation, rebuild-index mechanics, and cache invalidation hooks.
+
+  - Keep the abstraction small: it defines folder ownership/index behavior, not plan-specific
+  markdown semantics, review-specific schemas, or resource-manifest semantics.
+
+
+  Why:
+
+  - Plans, reviews, tasks, and future long-lived entities should not each grow bespoke
+  folder-storage implementations with different safety and rebuild behavior.
+
+
+  How:
+
+  - Use the current task split implementation as the reference extraction target.
+
+  - Keep entity-specific managers responsible for their own detail schema while sharing folder/index
+  plumbing.
+
+
+  Testing:
+
+  - Unit-test shared path helpers, full-ULID directory validation, unknown-file preservation
+  behavior, bounded index projection hooks, and rebuild-index behavior through a fixture entity.
+
+
+  Covers: @trait-folder-backed-entity ac-entity-has-ulid-directory,
+  ac-index-excludes-heavy-detail-bytes, ac-unknown-files-preserved, ac-index-rebuilds-from-folders
+spec_ref: "@trait-folder-backed-entity"
+plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-plan-review-storage-specs"
+context: []
+priority: 1
+tags:
+  - storage
+  - schema
+  - parser
+vcs_refs: []
+created_at: 2026-05-22T22:35:40.185Z
+todos: []

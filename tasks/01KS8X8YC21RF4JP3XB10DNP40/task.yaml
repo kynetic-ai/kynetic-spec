@@ -1,0 +1,97 @@
+_ulid: 01KS8X8YC21RF4JP3XB10DNP40
+slugs:
+  - task-update-plan-review-storage-specs
+title: Update existing plan and review storage specs for folder-backed layouts
+type: task
+description: >
+  What:
+
+  - Update existing spec language that hard-codes monolithic files before implementing folder-backed
+  storage. This task is only for catalog/spec maintenance; it must not implement storage code.
+
+  - Update @plan-crud ac-1 exactly as follows:
+    - Given: `A user wants to create a plan`
+    - When: `kspec plan add --title "Title" --content "Markdown content" is run`
+    - Then: `A plan is created with ULID-backed identity, retrievable markdown content, lifecycle metadata, and an auto-commit to the shadow branch`
+  - Update @plan-crud ac-2 exactly as follows:
+    - Given: `A markdown file exists at a path`
+    - When: `kspec plan add --title "Title" --content-file ./plan.md is run`
+    - Then: `File content is read and becomes the plan's retrievable markdown content`
+  - Update @review-record-storage-and-identity ac-3 exactly as follows:
+    - Given: `Review records are stored in the shadow branch`
+    - When: `A review mutation is committed`
+    - Then: `The review data is persisted in dedicated first-party review storage rather than embedded inside plans, tasks, module files, or other unrelated entity files`
+  - Add one new AC to @daemon-entity-cache with id `ac-folder-backed-entity-directory-invalidation`
+  and exact wording:
+    - Given: `A file watcher detects a change inside a registered project's folder-backed entity directory`
+    - When: `The changed path is under .kspec/plans/<plan-ulid>/ or .kspec/reviews/<review-ulid>/`
+    - Then: `The cache invalidates and reloads the plans domain for plan-directory changes or the reviews domain for review-directory changes`
+  - Keep @daemon-entity-cache ac-watcher-invalidation and ac-granular-reload unchanged; the new AC
+  narrows those existing cache promises for folder-backed plan/review directories.
+
+  - Set or preserve final implementation statuses exactly as follows after the AC edits: @plan-crud
+  remains `implemented`; @review-record-storage-and-identity remains `implemented`;
+  @daemon-entity-cache remains `in_progress`. Do not mark any of these specs back to `draft` or
+  forward to another status as part of this catalog update.
+
+  - Do not add or edit any inbox, triage, or meta storage specs in this task. This plan
+  intentionally converts plans first and reviews second only; inbox remains single-file, triage
+  continues to reference resources owned elsewhere, and meta is not broadly converted.
+
+  - The new plan-local specs @trait-folder-backed-entity, @trait-entity-scoped-local-resources,
+  @folder-backed-plan-storage, @plan-resource-derivation-semantics, @folder-backed-review-storage,
+  @entity-folder-migration-and-compatibility, and @folder-backed-resource-documentation are
+  materialized by plan derivation; this task only edits the existing specs named above.
+
+
+  Why:
+
+  - The current specs explicitly require single-file plan/review storage, so implementation would
+  otherwise contradict the source of truth.
+
+
+  How:
+
+  - Use kspec CLI spec/item commands rather than manual .kspec YAML edits.
+
+  - Keep existing user-visible CLI semantics intact; only remove physical storage assumptions from
+  existing ACs.
+
+  - Preserve task-storage split as the style reference: format-neutral consumer contract plus
+  separate storage-layout specs.
+
+
+  Testing:
+
+  - Before editing, run `kspec item get @plan-crud`, `kspec item get
+  @review-record-storage-and-identity`, and `kspec item get @daemon-entity-cache` to confirm the
+  current AC ids still exist.
+
+  - After editing, run the same three `kspec item get` commands and verify the exact Given/When/Then
+  text above appears on @plan-crud ac-1, @plan-crud ac-2, @review-record-storage-and-identity ac-3,
+  and @daemon-entity-cache ac-folder-backed-entity-directory-invalidation.
+
+  - Verify final implementation statuses exactly: @plan-crud `implemented`,
+  @review-record-storage-and-identity `implemented`, and @daemon-entity-cache `in_progress`.
+
+  - Run `kspec validate --warnings-ok`.
+
+  - Run focused parser/schema tests that exercise plan/review specs if changed.
+
+
+  Covers: spec-maintenance prerequisite only; no migration/runtime AC is claimed by this task.
+spec_ref: "@entity-folder-migration-and-compatibility"
+plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - specs
+  - plans
+  - reviews
+vcs_refs: []
+created_at: 2026-05-22T22:35:39.778Z
+todos: []

@@ -1,0 +1,90 @@
+_ulid: 01KS8X92A4RHC4J0RS8SWVKNXQ
+slugs:
+  - task-folder-backed-plan-review-cache-invalidation
+title: Update daemon cache invalidation for folder-backed plan and review directories
+type: task
+description: >
+  What:
+
+  - Implement the existing-spec AC added by @task-update-plan-review-storage-specs:
+  @daemon-entity-cache ac-folder-backed-entity-directory-invalidation.
+
+  - Update daemon watcher/file-to-domain mapping so changes under `.kspec/plans/<plan-ulid>/`
+  invalidate and reload the `plans` cache domain.
+
+  - Update daemon watcher/file-to-domain mapping so changes under `.kspec/reviews/<review-ulid>/`
+  invalidate and reload the `reviews` cache domain.
+
+  - Keep existing `.kspec/project.plans.yaml` and `.kspec/project.reviews.yaml` parent-index
+  invalidation behavior intact.
+
+  - Treat `plan.md`, `plan.yaml`, `notes.yaml`, `resources.yaml`, and files under plan `resources/`
+  as plan-domain changes.
+
+  - Treat `review.yaml`, `resources.yaml`, and files under review `resources/` as review-domain
+  changes.
+
+  - Preserve @daemon-entity-cache ac-granular-reload: plan-folder changes reload only the plans
+  domain, review-folder changes reload only the reviews domain, and unrelated domains are not
+  reloaded.
+
+  - Preserve @daemon-entity-cache ac-reload-dedup: multiple file events from one multi-file entity
+  mutation coalesce to one reload per affected domain.
+
+
+  Why:
+
+  - Folder-backed plans and reviews move authoritative detail and resources out of the parent index
+  files. Without directory-aware invalidation, the daemon can serve stale plan/review detail or
+  resource summaries after a sidecar change.
+
+
+  How:
+
+  - Extend the existing file-to-domain/path classifier instead of adding ad hoc route-level
+  invalidation.
+
+  - Normalize changed paths relative to `.kspec/` before classification.
+
+  - Match only full folder-backed roots (`plans/<ulid>/...` and `reviews/<ulid>/...`), not arbitrary
+  filenames containing `plans` or `reviews`.
+
+  - Reuse the existing domain-level debounce/reload flow; do not create a separate watcher for
+  resources.
+
+
+  Testing:
+
+  - Add focused daemon entity-cache tests for changed paths `.kspec/plans/<ulid>/plan.md`,
+  `.kspec/plans/<ulid>/resources.yaml`, `.kspec/plans/<ulid>/resources/ux.png`,
+  `.kspec/reviews/<ulid>/review.yaml`, `.kspec/reviews/<ulid>/resources.yaml`, and
+  `.kspec/reviews/<ulid>/resources/screenshot.png`.
+
+  - Assert plan paths affect only the plans domain and review paths affect only the reviews domain.
+
+  - Assert parent index files `.kspec/project.plans.yaml` and `.kspec/project.reviews.yaml` still
+  invalidate their existing domains.
+
+  - Run `npm test -- --run tests/daemon-entity-cache.test.ts` and `kspec validate --warnings-ok`.
+
+
+  Covers: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation,
+  ac-watcher-invalidation, ac-granular-reload, ac-reload-dedup
+spec_ref: "@daemon-entity-cache"
+plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-folder-backed-plan-storage-manager"
+  - "@task-folder-backed-review-storage-manager"
+context: []
+priority: 5
+tags:
+  - daemon
+  - cache
+  - plans
+  - reviews
+vcs_refs: []
+created_at: 2026-05-22T22:35:43.812Z
+todos: []

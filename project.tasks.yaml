@@ -29560,3 +29560,177 @@
   submitted_at: 2026-05-19T14:35:23.086Z
   completed_at: 2026-05-19T15:18:02.547Z
   automation: eligible
+- _ulid: 01KS8X8YC21RF4JP3XB10DNP40
+  slugs:
+    - task-update-plan-review-storage-specs
+  title: Update existing plan and review storage specs for folder-backed layouts
+  type: task
+  spec_ref: "@entity-folder-migration-and-compatibility"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - specs
+    - plans
+    - reviews
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:35:39.778Z
+- _ulid: 01KS8X8YRSCG64P10HX4H63MZ9
+  slugs:
+    - task-folder-backed-entity-trait-foundation
+  title: Implement a shared folder-backed entity trait foundation
+  type: task
+  spec_ref: "@trait-folder-backed-entity"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-plan-review-storage-specs"
+  priority: 1
+  tags:
+    - storage
+    - schema
+    - parser
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:35:40.185Z
+- _ulid: 01KS8X8Z3VKV0JH9M7HJGPVXJ2
+  slugs:
+    - task-entity-local-resource-model
+  title: Implement a shared entity-local resource trait and resolver
+  type: task
+  spec_ref: "@trait-entity-scoped-local-resources"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-folder-backed-entity-trait-foundation"
+  priority: 1
+  tags:
+    - resources
+    - schema
+    - parser
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:35:40.539Z
+- _ulid: 01KS8X8ZQCEJXBSS4RJ3Q2NNC1
+  slugs:
+    - task-entity-storage-version-compatibility-gates
+  title: Implement entity storage version and incompatibility gates
+  type: task
+  spec_ref: "@entity-folder-migration-and-compatibility"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-entity-local-resource-model"
+  priority: 2
+  tags:
+    - migration
+    - manifest
+    - daemon
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:35:41.164Z
+- _ulid: 01KS8X911K8SQ774YY48DA1GDW
+  slugs:
+    - task-folder-backed-plan-storage-manager
+  title: Convert plan persistence to a folder-backed storage manager
+  type: task
+  spec_ref: "@folder-backed-plan-storage"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-entity-storage-version-compatibility-gates"
+  priority: 3
+  tags:
+    - plans
+    - parser
+    - migration
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:35:42.515Z
+- _ulid: 01KS8X91K98DACE97GSGVE5GNH
+  slugs:
+    - task-folder-backed-review-storage-manager
+  title: Convert review persistence to folder-backed storage with resource support
+  type: task
+  spec_ref: "@folder-backed-review-storage"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-entity-storage-version-compatibility-gates"
+  priority: 3
+  tags:
+    - reviews
+    - parser
+    - migration
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:35:43.081Z
+- _ulid: 01KS8X91Z0F1MZRXG79HX7ENPB
+  slugs:
+    - task-plan-review-folder-storage-migration
+  title: Implement plan and review storage migration plus upgrade integration
+  type: task
+  spec_ref: "@entity-folder-migration-and-compatibility"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-folder-backed-plan-storage-manager"
+    - "@task-folder-backed-review-storage-manager"
+  priority: 4
+  tags:
+    - migration
+    - upgrade
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:35:43.456Z
+- _ulid: 01KS8X92A4RHC4J0RS8SWVKNXQ
+  slugs:
+    - task-folder-backed-plan-review-cache-invalidation
+  title: Update daemon cache invalidation for folder-backed plan and review directories
+  type: task
+  spec_ref: "@daemon-entity-cache"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-folder-backed-plan-storage-manager"
+    - "@task-folder-backed-review-storage-manager"
+  priority: 5
+  tags:
+    - daemon
+    - cache
+    - plans
+    - reviews
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:35:43.812Z
+- _ulid: 01KS8X92NJV9VR13WH0T7WRQ8Q
+  slugs:
+    - task-plan-resource-import-and-derive
+  title: Add plan import, resource attachment, and derivation semantics
+  type: task
+  spec_ref: "@plan-resource-derivation-semantics"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-plan-review-folder-storage-migration"
+  priority: 5
+  tags:
+    - plans
+    - resources
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:35:44.178Z

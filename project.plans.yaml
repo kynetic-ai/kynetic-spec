@@ -50829,7 +50829,7 @@ plans:
 
       - title: Update plan daemon API, cache, web UI, and static export for resources
         slug: task-plan-resource-api-ui-static
-        priority: 6
+        priority: 5
         tags: [plans, daemon, web-ui]
         spec_ref: "@folder-backed-plan-storage"
         depends_on:
@@ -50864,7 +50864,7 @@ plans:
 
       - title: Add review screenshot/evidence API and UI support
         slug: task-review-screenshot-resource-ui
-        priority: 6
+        priority: 5
         tags: [reviews, daemon, web-ui]
         spec_ref: "@folder-backed-review-storage"
         depends_on:
@@ -50899,7 +50899,7 @@ plans:
 
       - title: Document resource references and folder-backed entity maintenance
         slug: task-folder-backed-resources-docs
-        priority: 7
+        priority: 5
         tags: [docs, resources]
         spec_ref: "@folder-backed-resource-documentation"
         depends_on:
@@ -51228,3 +51228,7 @@ plans:
         content: Add live-project migration safety guardrails
         author: Jacob Chapel
         created_at: 2026-05-22T22:24:53.428Z
+      - _ulid: 01KS8XAEAE4E18RX1HYAJ6HHB4
+        content: Normalize derived task priorities to supported 1-5 range after derive schema check
+        author: Jacob Chapel
+        created_at: 2026-05-22T22:36:28.878Z
