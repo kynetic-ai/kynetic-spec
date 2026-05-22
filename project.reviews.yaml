@@ -220438,6 +220438,18 @@ reviews:
         required: true
         created_at: 2026-05-22T21:05:14.911Z
         completed_at: 2026-05-22T21:05:14.911Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Resource commands and routes are named, but CLI JSON failures still omit exit-code
+          behavior and source-file failure handling; multipart API uploads still define replace only
+          as an optional boolean text field without a wire-level representation or invalid-value
+          response.
+        name: Command/API specificity
+        required: true
+        created_at: 2026-05-22T21:05:26.597Z
+        completed_at: 2026-05-22T21:05:26.597Z
     events:
       - _ulid: 01KS8QYW7N9MM9BF0JZ8WNKA5Q
         actor: Jacob Chapel
@@ -220529,6 +220541,13 @@ reviews:
           status: pass
           name: Coverage and references
         timestamp: 2026-05-22T21:05:16.412Z
+      - _ulid: 01KS8R3SGE9Y28776R7HARM7AW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Command/API specificity
+        timestamp: 2026-05-22T21:05:28.078Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -220652,5 +220671,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:02:47.033Z
-    updated_at: 2026-05-22T21:05:14.911Z
+    updated_at: 2026-05-22T21:05:26.597Z
     notes: []
