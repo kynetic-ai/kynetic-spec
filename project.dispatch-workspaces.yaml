@@ -8075,7 +8075,7 @@ workspaces:
         head: d4202f5fd5b5f3e85d75c2cbbaf0f781d45b45f6
         last_seen_at: 2026-05-19T15:00:26.607Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-cli-no-daemon-auto-start-process-assertion-01ks090w
-  - active_role: worker
+  - active_role: null
     base_branch_point: a5ce476850bb299e809c7880cb9c6c8f731c802e
     bootstrap:
       status: succeeded
@@ -8400,12 +8400,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-22T22:55:17.058Z
+      updated_at: 2026-05-22T22:55:33.959Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-22T22:55:18.501Z
+      updated_at: 2026-05-22T22:55:33.959Z
     integration:
       status: pending
       detail: null
@@ -8413,17 +8413,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: a5ce476850bb299e809c7880cb9c6c8f731c802e
-      updated_at: 2026-05-22T22:55:17.058Z
-    lifecycle_state: active
+      updated_at: 2026-05-22T22:55:33.959Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XAVCKZE09Y0F4WMENFY47"
     task_slug: task-update-plan-review-storage-specs-1
     timestamps:
       closed_at: null
       last_active_at: 2026-05-22T22:55:18.501Z
-      last_reconciled_at: 2026-05-22T22:55:18.501Z
+      last_reconciled_at: 2026-05-22T22:55:33.959Z
       created_at: 2026-05-22T22:53:59.571Z
-      updated_at: 2026-05-22T22:55:18.501Z
+      updated_at: 2026-05-22T22:55:33.959Z
     workspace_id: dispatch-workspace-01KS8XAVCKZE09Y0F4WMENFY47
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
