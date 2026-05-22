@@ -29556,6 +29556,7 @@
 - _ulid: 01KS8XAVCKZE09Y0F4WMENFY47
   slugs:
     - task-update-plan-review-storage-specs-1
+    - task-update-plan-review-storage-specs
   title: Update existing plan and review storage specs for folder-backed layouts
   type: task
   spec_ref: "@entity-folder-migration-and-compatibility-1"
