@@ -5735,6 +5735,7 @@ features:
           - _ulid: 01KS8XAV1D4A57ZHVASWVJC70P
             slugs:
               - folder-backed-plan-storage-1
+              - folder-backed-plan-storage
             title: Folder-Backed Plan Storage
             type: requirement
             description: |
