@@ -50540,6 +50540,7 @@ plans:
             - When: `The changed path is under .kspec/plans/<plan-ulid>/ or .kspec/reviews/<review-ulid>/`
             - Then: `The cache invalidates and reloads the plans domain for plan-directory changes or the reviews domain for review-directory changes`
           - Keep @daemon-entity-cache ac-watcher-invalidation and ac-granular-reload unchanged; the new AC narrows those existing cache promises for folder-backed plan/review directories.
+          - Set or preserve final implementation statuses exactly as follows after the AC edits: @plan-crud remains `implemented`; @review-record-storage-and-identity remains `implemented`; @daemon-entity-cache remains `in_progress`. Do not mark any of these specs back to `draft` or forward to another status as part of this catalog update.
           - Do not add or edit any inbox, triage, or meta storage specs in this task. This plan intentionally converts plans first and reviews second only; inbox remains single-file, triage continues to reference resources owned elsewhere, and meta is not broadly converted.
           - The new plan-local specs @trait-folder-backed-entity, @trait-entity-scoped-local-resources, @folder-backed-plan-storage, @plan-resource-derivation-semantics, @folder-backed-review-storage, @entity-folder-migration-and-compatibility, and @folder-backed-resource-documentation are materialized by plan derivation; this task only edits the existing specs named above.
 
@@ -50554,6 +50555,7 @@ plans:
           Testing:
           - Before editing, run `kspec item get @plan-crud`, `kspec item get @review-record-storage-and-identity`, and `kspec item get @daemon-entity-cache` to confirm the current AC ids still exist.
           - After editing, run the same three `kspec item get` commands and verify the exact Given/When/Then text above appears on @plan-crud ac-1, @plan-crud ac-2, @review-record-storage-and-identity ac-3, and @daemon-entity-cache ac-folder-backed-entity-directory-invalidation.
+          - Verify final implementation statuses exactly: @plan-crud `implemented`, @review-record-storage-and-identity `implemented`, and @daemon-entity-cache `in_progress`.
           - Run `kspec validate --warnings-ok`.
           - Run focused parser/schema tests that exercise plan/review specs if changed.
 
@@ -50596,6 +50598,7 @@ plans:
           What:
           - Add shared schema/types for `resources.yaml`: `resources` array entries with stable `id`, `label`, `path` relative to the entity `resources/` directory, `content_type`, `bytes`, `sha256`, optional `git_commit`, optional repository-relative `git_path`, and optional `description`.
           - Define the exact shared `ResourceMetadata` shape as `{ "id": string, "label": string|null, "path": string, "content_type": string, "bytes": number, "sha256": string, "git_commit": string|null, "git_path": string|null, "description": string|null }`.
+          - Define `content_type` population exactly: when a CLI `--content-type` value or API `content_type` multipart field is supplied, validate it is a non-empty MIME-ish token of the form `type/subtype` with no whitespace and store it exactly; when omitted, infer from the final resource path extension using the existing project MIME lookup if one exists, otherwise Node's standard MIME lookup, and if inference fails store `application/octet-stream`. The field is never null in `ResourceMetadata`.
           - Validate resource identifiers with exact pattern `[a-z0-9][a-z0-9._-]{0,127}`.
           - Resource paths use POSIX-style relative paths under the owner `resources/` directory; reject paths that start with `/`, contain `..`, contain `\`, are undeclared, or resolve through symlinks outside the resource root.
           - Add path normalization and validation helpers that accept only `./resources/<relative-path>` authoring references, reject absolute paths, reject `..`, reject undeclared resource paths, reject symlink escapes, and keep all resolution inside the owning entity resource tree.
@@ -50611,7 +50614,7 @@ plans:
           - Keep list/index projections bounded.
 
           Testing:
-          - Unit-test valid references, absolute path rejection, parent traversal rejection, undeclared path rejection, symlink escape rejection, metadata hash computation, git version metadata capture, binary-resource metadata, missing-resource guidance, and static-export path generation.
+          - Unit-test valid references, absolute path rejection, parent traversal rejection, undeclared path rejection, symlink escape rejection, metadata hash computation, explicit `content_type` storage, inferred `content_type` by extension, `application/octet-stream` fallback for unknown extensions, invalid content-type rejection, git version metadata capture, binary-resource metadata, missing-resource guidance, and static-export path generation.
 
           Covers: @trait-entity-scoped-local-resources ac-resource-reference-resolves-within-owner, ac-resource-metadata-exposes-safe-preview-fields, ac-path-escape-rejected, ac-binary-resources-are-not-inlined-into-yaml, ac-versioning-uses-git-backed-identity, ac-static-export-copies-resource-assets
 
@@ -50739,6 +50742,42 @@ plans:
 
           Covers: @entity-folder-migration-and-compatibility ac-upgrade-dry-run-previews-layout, ac-upgrade-executes-folder-migration, ac-migration-preserves-record-identity-and-unknown-fields, ac-unmigrated-projects-are-blocked-with-guidance, ac-partial-folder-layouts-are-blocked
 
+      - title: Update daemon cache invalidation for folder-backed plan and review directories
+        slug: task-folder-backed-plan-review-cache-invalidation
+        priority: 5
+        tags: [daemon, cache, plans, reviews]
+        spec_ref: "@daemon-entity-cache"
+        depends_on:
+          - "@task-folder-backed-plan-storage-manager"
+          - "@task-folder-backed-review-storage-manager"
+        description: |
+          What:
+          - Implement the existing-spec AC added by @task-update-plan-review-storage-specs: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation.
+          - Update daemon watcher/file-to-domain mapping so changes under `.kspec/plans/<plan-ulid>/` invalidate and reload the `plans` cache domain.
+          - Update daemon watcher/file-to-domain mapping so changes under `.kspec/reviews/<review-ulid>/` invalidate and reload the `reviews` cache domain.
+          - Keep existing `.kspec/project.plans.yaml` and `.kspec/project.reviews.yaml` parent-index invalidation behavior intact.
+          - Treat `plan.md`, `plan.yaml`, `notes.yaml`, `resources.yaml`, and files under plan `resources/` as plan-domain changes.
+          - Treat `review.yaml`, `resources.yaml`, and files under review `resources/` as review-domain changes.
+          - Preserve @daemon-entity-cache ac-granular-reload: plan-folder changes reload only the plans domain, review-folder changes reload only the reviews domain, and unrelated domains are not reloaded.
+          - Preserve @daemon-entity-cache ac-reload-dedup: multiple file events from one multi-file entity mutation coalesce to one reload per affected domain.
+
+          Why:
+          - Folder-backed plans and reviews move authoritative detail and resources out of the parent index files. Without directory-aware invalidation, the daemon can serve stale plan/review detail or resource summaries after a sidecar change.
+
+          How:
+          - Extend the existing file-to-domain/path classifier instead of adding ad hoc route-level invalidation.
+          - Normalize changed paths relative to `.kspec/` before classification.
+          - Match only full folder-backed roots (`plans/<ulid>/...` and `reviews/<ulid>/...`), not arbitrary filenames containing `plans` or `reviews`.
+          - Reuse the existing domain-level debounce/reload flow; do not create a separate watcher for resources.
+
+          Testing:
+          - Add focused daemon entity-cache tests for changed paths `.kspec/plans/<ulid>/plan.md`, `.kspec/plans/<ulid>/resources.yaml`, `.kspec/plans/<ulid>/resources/ux.png`, `.kspec/reviews/<ulid>/review.yaml`, `.kspec/reviews/<ulid>/resources.yaml`, and `.kspec/reviews/<ulid>/resources/screenshot.png`.
+          - Assert plan paths affect only the plans domain and review paths affect only the reviews domain.
+          - Assert parent index files `.kspec/project.plans.yaml` and `.kspec/project.reviews.yaml` still invalidate their existing domains.
+          - Run `npm test -- --run tests/daemon-entity-cache.test.ts` and `kspec validate --warnings-ok`.
+
+          Covers: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation, ac-watcher-invalidation, ac-granular-reload, ac-reload-dedup
+
       - title: Add plan import, resource attachment, and derivation semantics
         slug: task-plan-resource-import-and-derive
         priority: 5
@@ -50753,6 +50792,7 @@ plans:
           - Extend the plan document manual task schema so each additional task may include `resource_refs: ["./resources/<relative-path>"]`; reject refs that do not resolve against the source plan's `resources.yaml` at derive time.
           - Add exact plan-resource CLI commands: `kspec plan resource add <plan-ref> <source-file> --id <resource-id> --path <relative-path> [--label <label>] [--description <text>] [--content-type <mime>] [--replace] [--json]`; `kspec plan resource list <plan-ref> [--json]`; `kspec plan resource get <plan-ref> <resource-id> [--json]`; `kspec plan resource remove <plan-ref> <resource-id> [--force] [--json]`.
           - Use the shared resource contract from @task-entity-local-resource-model: resource ids match `[a-z0-9][a-z0-9._-]{0,127}`; authoring references are `./resources/<relative-path>`; internal refs record owner type, owner ref, resource id, relative path, `sha256`, optional `git_commit`, and optional `git_path`; forbidden paths include absolute paths, parent traversal, backslashes, undeclared paths, and symlink escapes.
+          - For plan resource add/import/set paths, apply the shared `content_type` rule: explicit values must be non-empty `type/subtype` tokens with no whitespace; omitted values are inferred from final resource path extension; unknown extensions store `application/octet-stream`.
           - `plan resource add` requires explicit `--id` and `--path`; id or path collisions fail with `resource_conflict` unless `--replace` is supplied. Replacement updates one existing resource id, replaces the file bytes and metadata, removes the old file if the path changes, and refuses to overwrite a different resource id's path. `remove` deletes the manifest entry and owned file; without `--force` it prompts in interactive mode and fails in non-interactive mode.
           - Define plan resource CLI `--json` success output exactly: `add` returns `{ "resource": <ResourceMetadata>, "replaced": boolean }`; `list` returns `{ "resources": <ResourceMetadata[]> }`; `get` returns `{ "resource": <ResourceMetadata> }`; `remove` returns `{ "removed": { "id": string, "path": string } }`. CLI JSON failures use `{ "error": string, "code": "invalid_resource_id"|"invalid_resource_path"|"source_file_missing"|"source_file_unreadable"|"resource_conflict"|"resource_not_found"|"plan_not_found"|"confirmation_required"|"operation_cancelled"|"entity_storage_incompatible", "message": string, "resource_id": string|null, "path": string|null, "source_file": string|null }`. Missing plan refs return `plan_not_found`; missing `<source-file>` returns `source_file_missing`; unreadable or non-regular `<source-file>` returns `source_file_unreadable`; non-interactive `remove` without `--force` returns `confirmation_required`; interactive remove answered no returns `operation_cancelled`. Exit codes follow @trait-semantic-exit-codes exactly: success exits 0; invalid id/path, source file failures, missing plan/resource, and conflicts exit 1; user cancellation exits 2; storage incompatibility or unexpected IO after validation exits 3.
           - Plan resource API routes and upload body shapes are owned by @task-plan-resource-api-ui-static, not this task.
@@ -50781,12 +50821,14 @@ plans:
         spec_ref: "@folder-backed-plan-storage"
         depends_on:
           - "@task-plan-resource-import-and-derive"
+          - "@task-folder-backed-plan-review-cache-invalidation"
         description: |
           What:
-          - Update daemon entity-cache file-to-domain mapping so `.kspec/plans/` directory changes invalidate the plans domain.
+          - Verify the daemon resource routes use the cache invalidation behavior implemented by @task-folder-backed-plan-review-cache-invalidation; do not add a second route-specific watcher.
           - Keep `/api/plans` list fast by using index/resource summaries only.
           - Keep `/api/plans/:ref` returning `PlanDetail.content` while adding resource summary data and safe resource fetch URLs.
           - Use this exact `ResourceMetadata` shape in every plan resource API response: `{ "id": string, "label": string|null, "path": string, "content_type": string, "bytes": number, "sha256": string, "git_commit": string|null, "git_path": string|null, "description": string|null }`.
+          - For API uploads, apply the shared `content_type` rule: explicit multipart `content_type` values must be non-empty `type/subtype` tokens with no whitespace; omitted values are inferred from final resource path extension; unknown extensions store `application/octet-stream`.
           - Add exact authenticated/project-scoped plan resource endpoints using the shared resolver: `GET /api/plans/:ref/resources` returns HTTP 200 `{ "resources": <ResourceMetadata[]> }`; `GET /api/plans/:ref/resources/:resourceId` returns HTTP 200 `{ "resource": <ResourceMetadata> }`; `GET /api/plans/:ref/resources/:resourceId/bytes` returns HTTP 200 raw bytes with `Content-Type` and `X-Kspec-Resource-Sha256`; `POST /api/plans/:ref/resources` accepts `multipart/form-data` with file field `file` and text fields `id`, `path`, optional `label`, optional `description`, optional `content_type`, optional `replace`; `replace` is false when omitted, true only when the field value is exactly `true` or `1`, false when exactly `false` or `0`, and any other value fails with 400 `invalid_replace_value`; `DELETE /api/plans/:ref/resources/:resourceId` deletes the manifest entry and owned file.
           - Define plan resource API status/error mapping: POST create returns 201 `{ "resource": <ResourceMetadata>, "replaced": false }`; POST replace returns 200 `{ "resource": <ResourceMetadata>, "replaced": true }`; DELETE returns 200 `{ "removed": { "id": string, "path": string } }`; invalid id/path or missing fields return 400 with `invalid_resource_id`/`invalid_resource_path`; missing multipart `file` returns 400 `missing_resource_file`; invalid multipart `replace` returns 400 `invalid_replace_value`; missing plan or resource returns 404 with `plan_not_found`/`resource_not_found`; id/path collisions return 409 `resource_conflict`; incompatible storage returns HTTP 409 using the shared `entity_storage_incompatible` envelope from @task-entity-storage-version-compatibility-gates, including top-level error, domain-specific code, migration suggestion, and cache-domain context. Non-compatibility resource error bodies use `{ "error": string, "code": string, "message": string, "resource_id": string|null, "path": string|null }`.
           - Update web UI plan rendering so `./resources/<relative-path>` image/resource links are rewritten to safe plan-scoped resource URLs.
@@ -50814,9 +50856,11 @@ plans:
         spec_ref: "@folder-backed-review-storage"
         depends_on:
           - "@task-plan-review-folder-storage-migration"
+          - "@task-folder-backed-plan-review-cache-invalidation"
         description: |
           What:
           - Use the shared resource contract from @task-entity-local-resource-model: resource ids match `[a-z0-9][a-z0-9._-]{0,127}`; resource paths are POSIX-style paths below the review-owned `resources/` directory; forbidden paths include absolute paths, parent traversal, backslashes, undeclared paths, and symlink escapes; `ResourceMetadata` is `{ "id": string, "label": string|null, "path": string, "content_type": string, "bytes": number, "sha256": string, "git_commit": string|null, "git_path": string|null, "description": string|null }`.
+          - For review resource CLI/API upload paths, apply the shared `content_type` rule: explicit values must be non-empty `type/subtype` tokens with no whitespace; omitted values are inferred from final resource path extension; unknown extensions store `application/octet-stream`.
           - Add exact review-resource CLI commands matching the plan resource shape: `kspec review resource add <review-ref> <source-file> --id <resource-id> --path <relative-path> [--label <label>] [--description <text>] [--content-type <mime>] [--replace] [--json]`; `kspec review resource list <review-ref> [--json]`; `kspec review resource get <review-ref> <resource-id> [--json]`; `kspec review resource remove <review-ref> <resource-id> [--force] [--json]`.
           - `review resource add` requires explicit `--id` and `--path`; id or path collisions fail with `resource_conflict` unless `--replace` is supplied. Replacement updates one existing resource id, replaces file bytes and metadata, removes the old file if the path changes, and refuses to overwrite a different resource id's path. `remove` deletes the manifest entry and owned file; without `--force` it prompts in interactive mode and fails in non-interactive mode.
           - Define review resource CLI `--json` success output exactly: `add` returns `{ "resource": <ResourceMetadata>, "replaced": boolean }`; `list` returns `{ "resources": <ResourceMetadata[]> }`; `get` returns `{ "resource": <ResourceMetadata> }`; `remove` returns `{ "removed": { "id": string, "path": string } }`. CLI JSON failures use `{ "error": string, "code": "invalid_resource_id"|"invalid_resource_path"|"source_file_missing"|"source_file_unreadable"|"resource_conflict"|"resource_not_found"|"review_not_found"|"confirmation_required"|"operation_cancelled"|"entity_storage_incompatible", "message": string, "resource_id": string|null, "path": string|null, "source_file": string|null }`. Missing review refs return `review_not_found`; missing `<source-file>` returns `source_file_missing`; unreadable or non-regular `<source-file>` returns `source_file_unreadable`; non-interactive `remove` without `--force` returns `confirmation_required`; interactive remove answered no returns `operation_cancelled`. Exit codes follow @trait-semantic-exit-codes exactly: success exits 0; invalid id/path, source file failures, missing review/resource, and conflicts exit 1; user cancellation exits 2; storage incompatibility or unexpected IO after validation exits 3.
@@ -50824,7 +50868,7 @@ plans:
           - Define review resource API status/error mapping: POST create returns 201 `{ "resource": <ResourceMetadata>, "replaced": false }`; POST replace returns 200 `{ "resource": <ResourceMetadata>, "replaced": true }`; DELETE returns 200 `{ "removed": { "id": string, "path": string } }`; invalid id/path or missing fields return 400 with `invalid_resource_id`/`invalid_resource_path`; missing multipart `file` returns 400 `missing_resource_file`; invalid multipart `replace` returns 400 `invalid_replace_value`; missing review or resource returns 404 with `review_not_found`/`resource_not_found`; id/path collisions return 409 `resource_conflict`; incompatible storage returns HTTP 409 using the shared `entity_storage_incompatible` envelope from @task-entity-storage-version-compatibility-gates, including top-level error, domain-specific code, migration suggestion, and cache-domain context. Non-compatibility resource error bodies use `{ "error": string, "code": string, "message": string, "resource_id": string|null, "path": string|null }`.
           - Update review detail UI so screenshot/evidence resources can be previewed or opened from the review page.
           - Update static export so review resources are copied under `assets/resources/review/<review-ulid>/<relative-path>` and review metadata points at those exported paths.
-          - Update cache/WebSocket invalidation so `.kspec/reviews/` directory changes invalidate review list/detail data.
+          - Verify review resource routes and WebSocket broadcasts use the cache invalidation behavior implemented by @task-folder-backed-plan-review-cache-invalidation; do not add a second route-specific watcher.
 
           Why:
           - Review screenshots should be local to the review so UI and agents can load the same evidence without relying on external links.
@@ -51054,6 +51098,10 @@ plans:
       "content_type": string, "bytes": number, "sha256": string, "git_commit": string|null,
       "git_path": string|null, "description": string|null }`.
 
+      - `content_type` is always populated: explicit CLI/API values must be non-empty `type/subtype`
+      tokens with no whitespace; omitted values are inferred from the final resource path extension;
+      unknown extensions use `application/octet-stream`.
+
       - CLI and API resource errors share codes where their transports overlap:
       `invalid_resource_id`, `invalid_resource_path`, `resource_conflict`, `resource_not_found`,
       `plan_not_found`, `review_not_found`, and `entity_storage_incompatible`. CLI-only add/remove
@@ -51138,3 +51186,8 @@ plans:
           into task bodies"
         author: Jacob Chapel
         created_at: 2026-05-22T21:50:53.842Z
+      - _ulid: 01KS8VA282BS9NFJV3A3SXDFAS
+        content: "Address strict review 01KS8TWS blockers: final spec statuses, cache AC owner task,
+          content_type fallback"
+        author: Jacob Chapel
+        created_at: 2026-05-22T22:01:19.362Z
