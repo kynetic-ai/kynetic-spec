@@ -29656,6 +29656,7 @@
 - _ulid: 01KS8XAYMQSFXPMHEG9FZZ3C36
   slugs:
     - task-folder-backed-review-storage-manager-1
+    - task-folder-backed-review-storage-manager
   title: Convert review persistence to folder-backed storage with resource support
   type: task
   spec_ref: "@folder-backed-review-storage-1"
