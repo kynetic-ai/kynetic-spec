@@ -220425,6 +220425,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KS8R0W7WAFRBXDE9BBXYAK9V
         timestamp: 2026-05-22T21:03:54.215Z
+      - _ulid: 01KS8R1CSZHD0RV40B1QRXEA2F
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8R1B6SJDKQKCTPHMKDMMGN
+        timestamp: 2026-05-22T21:04:09.536Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -220509,7 +220516,26 @@ reviews:
               plan resource API contract where intended."
             created_at: 2026-05-22T21:03:52.573Z
         kind: blocker
+      - _ulid: 01KS8R1B6SJDKQKCTPHMKDMMGN
+        anchor:
+          type: structured
+          ref: "@task-plan-resource-import-and-derive"
+          section: tasks
+        entries:
+          - _ulid: 01KS8R1B6S3X5M25EPFNT2ZR6J
+            author: Jacob Chapel
+            body: "The plan resource add command still has an undefined JSON failure for the required
+              `<source-file>` input. The task defines errors for resource id/path, collisions,
+              missing plan/resource, confirmation, cancellation, and incompatible storage, but not
+              for a source file that is missing, unreadable, a directory, or otherwise cannot be
+              copied. Impact: agents can implement incompatible `kspec plan resource add ... --json`
+              failures for a required input path. Exact fix: define the JSON code, envelope fields,
+              message guidance, and exit behavior for source-file read/copy failures, or explicitly
+              map these cases to an existing code without conflating the source path with the
+              destination resource path."
+            created_at: 2026-05-22T21:04:07.897Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:02:47.033Z
-    updated_at: 2026-05-22T21:03:52.573Z
+    updated_at: 2026-05-22T21:04:07.897Z
     notes: []
