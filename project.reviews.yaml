@@ -220880,6 +220880,16 @@ reviews:
         required: true
         created_at: 2026-05-22T21:55:32.108Z
         completed_at: 2026-05-22T21:55:32.108Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec validate --warnings-ok; schema/references/skills passed. Existing repository
+          warnings remain but validation exited 0 with --warnings-ok.
+        name: Project validation baseline
+        required: true
+        created_at: 2026-05-22T21:55:41.903Z
+        completed_at: 2026-05-22T21:55:41.903Z
     events:
       - _ulid: 01KS8TWS1PFDJWD1GSPTKEZ4CX
         actor: Jacob Chapel
@@ -220922,6 +220932,13 @@ reviews:
           status: pass
           name: Plan import dry-run
         timestamp: 2026-05-22T21:55:33.616Z
+      - _ulid: 01KS8TZT6JXNC2RT4B7HDQRE2X
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Project validation baseline
+        timestamp: 2026-05-22T21:55:43.442Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -220993,5 +221010,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:54:03.960Z
-    updated_at: 2026-05-22T21:55:32.108Z
+    updated_at: 2026-05-22T21:55:41.903Z
     notes: []
