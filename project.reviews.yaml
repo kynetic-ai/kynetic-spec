@@ -220378,3 +220378,29 @@ reviews:
     created_at: 2026-05-22T20:44:34.617Z
     updated_at: 2026-05-22T20:46:42.543Z
     notes: []
+  - _ulid: 01KS8QYW7SQFY2DKWN6E894BN8
+    slugs: []
+    title: "Plan review: Folder-Backed Plans, Reviews, and Local Resources (cycle 5)"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KS8QYW7N9MM9BF0JZ8WNKA5Q
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-22T21:02:47.029Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-22T21:02:47.033Z
+    updated_at: null
+    notes: []
