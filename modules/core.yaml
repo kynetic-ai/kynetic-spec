@@ -3070,6 +3070,7 @@ modules:
       - _ulid: 01KS8XAVBDYNS408T9BQ5HXX6Y
         slugs:
           - folder-backed-resource-documentation-1
+          - folder-backed-resource-documentation
         title: Folder-Backed Resource Documentation
         type: requirement
         description: |
