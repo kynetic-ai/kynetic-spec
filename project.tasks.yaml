@@ -29575,6 +29575,7 @@
 - _ulid: 01KS8XAVRQCA2ATTCEE98CXKW6
   slugs:
     - task-folder-backed-entity-trait-foundation-1
+    - task-folder-backed-entity-trait-foundation
   title: Implement a shared folder-backed entity trait foundation
   type: task
   spec_ref: "@trait-folder-backed-entity-1"

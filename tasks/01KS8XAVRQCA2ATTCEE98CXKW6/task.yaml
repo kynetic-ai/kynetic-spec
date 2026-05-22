@@ -1,6 +1,7 @@
 _ulid: 01KS8XAVRQCA2ATTCEE98CXKW6
 slugs:
   - task-folder-backed-entity-trait-foundation-1
+  - task-folder-backed-entity-trait-foundation
 title: Implement a shared folder-backed entity trait foundation
 type: task
 description: >
@@ -58,5 +59,16 @@ tags:
   - schema
   - parser
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      slugs:
+        new:
+          - task-folder-backed-entity-trait-foundation-1
+          - task-folder-backed-entity-trait-foundation
+        previous:
+          - task-folder-backed-entity-trait-foundation-1
+    command: task-set
+    timestamp: 2026-05-22T22:46:02.617Z
 created_at: 2026-05-22T22:36:42.647Z
 todos: []
