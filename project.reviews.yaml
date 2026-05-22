@@ -219530,7 +219530,73 @@ reviews:
     slugs: []
     title: "Plan review: Folder-Backed Plans, Reviews, and Local Resources (cycle 2)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "`kspec plan import plans/folder-backed-plans-reviews-and-resources.md --dry-run`
+          succeeded and reported no state changes."
+        name: Plan import dry-run
+        required: true
+        runner: kspec plan import --dry-run
+        created_at: 2026-05-22T20:22:03.204Z
+        completed_at: 2026-05-22T20:22:03.204Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation passed with existing warnings only: reference, alignment, and completeness
+          warnings were reported, exit 0 due to --warnings-ok."
+        name: Project validation baseline
+        required: true
+        runner: kspec validate --warnings-ok
+        created_at: 2026-05-22T20:22:07.534Z
+        completed_at: 2026-05-22T20:22:07.534Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Verified @plan-crud still hard-codes project.plans.yaml,
+          @review-record-storage-and-identity ac-3 still hard-codes single project file, and source
+          function names are `mutatePlanAtomically` / `mutateReviewAtomically`; the plan now names
+          those current contracts and schedules spec updates first.
+        name: Existing spec/source fidelity
+        required: true
+        created_at: 2026-05-22T20:22:11.973Z
+        completed_at: 2026-05-22T20:22:11.973Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Spec-update, shared folder trait, resource model, and compatibility gates precede
+          plan/review storage managers; migration precedes API/UI/docs; API/UI/docs wait on storage
+          and migration prerequisites.
+        name: Dependency ordering
+        required: true
+        created_at: 2026-05-22T20:22:16.339Z
+        completed_at: 2026-05-22T20:22:16.339Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Found overclaims in @task-update-plan-review-storage-specs and
+          @task-folder-backed-resources-docs, plus missing concrete owner coverage for
+          @trait-entity-scoped-local-resources ac-resource-delete-follows-owner-delete.
+        name: AC coverage and task overclaim review
+        required: true
+        created_at: 2026-05-22T20:22:20.767Z
+        completed_at: 2026-05-22T20:22:20.767Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan leaves resource command/API surfaces, materialize/copy flag naming, id/collision
+          behavior, and rebuild-index command shape unresolved.
+        name: Command/API specificity
+        required: true
+        created_at: 2026-05-22T20:22:25.288Z
+        completed_at: 2026-05-22T20:22:25.288Z
     events:
       - _ulid: 01KS8NGVR5MQ5V9GZJ0AJW4VS0
         actor: Jacob Chapel
@@ -219538,17 +219604,237 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-05-22T20:20:10.630Z
+      - _ulid: 01KS8NKCYCHKFTAMKFETXXE42X
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-05-22T20:21:33.772Z
+      - _ulid: 01KS8NKH7RWH3K3RNDPTNAHD20
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8NKFJAHKAXZN6WJQF2FF5V
+        timestamp: 2026-05-22T20:21:38.168Z
+      - _ulid: 01KS8NKND30W6ZY66ZA7MVM8A7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8NKKRCR4TSNVAQHM5DVWQ3
+        timestamp: 2026-05-22T20:21:42.435Z
+      - _ulid: 01KS8NKSMKMQ5RZH322W8ACKWV
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8NKR180JV45ZYCDNN7V74V
+        timestamp: 2026-05-22T20:21:46.771Z
+      - _ulid: 01KS8NKXZV4AG35ZH8D310TVGD
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8NKWB9WMQTPKFFWB7ZQZXJ
+        timestamp: 2026-05-22T20:21:51.227Z
+      - _ulid: 01KS8NM2B01QG9SR2Y13HHS08S
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8NM0JWQW65VF9D40K06T55
+        timestamp: 2026-05-22T20:21:55.680Z
+      - _ulid: 01KS8NM6ZAG2D5FRFCMR79ST56
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8NM560S2V20MXTM45XDJ7K
+        timestamp: 2026-05-22T20:22:00.426Z
+      - _ulid: 01KS8NMBC948B4XFXQTSXMP0ZP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import dry-run
+        timestamp: 2026-05-22T20:22:04.937Z
+      - _ulid: 01KS8NMFKKBMXXF9XDEX69ZNGP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Project validation baseline
+        timestamp: 2026-05-22T20:22:09.268Z
+      - _ulid: 01KS8NMKW6KF7MT83PJ179Q0YV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec/source fidelity
+        timestamp: 2026-05-22T20:22:13.638Z
+      - _ulid: 01KS8NMR76R5CCT4NGBJ7DSR0E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-05-22T20:22:18.086Z
+      - _ulid: 01KS8NMWH2QKW9FZ4AXGC4NBDD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: AC coverage and task overclaim review
+        timestamp: 2026-05-22T20:22:22.498Z
+      - _ulid: 01KS8NN0WY17NPVTE4JT2ES6GE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Command/API specificity
+        timestamp: 2026-05-22T20:22:26.974Z
+      - _ulid: 01KS8NN570T1WAQZVMDGN1JY6Q
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-22T20:22:31.392Z
+      - _ulid: 01KS8NN570PTY4JQVVHB76QZQE
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-22T20:22:31.392Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@plan-folder-backed-plans-reviews-and-local-resources"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KS8NKFJAHKAXZN6WJQF2FF5V
+        anchor:
+          type: structured
+          ref: "@task-plan-resource-import-and-derive"
+          section: tasks
+        entries:
+          - _ulid: 01KS8NKFJA1TKND2FG6MF3K8Z7
+            author: Jacob Chapel
+            body: "The plan still leaves the plan resource command and API surface to the worker. This task says
+              to add CLI/API affordances and an explicit materialize/copy flag, but it does not
+              choose exact command names, flags, route shapes, collision behavior, or resource id
+              assignment. Impact: automation agents can make incompatible attach/list/inspect/remove
+              and derive-copy interfaces. Exact fix: specify the exact plan resource commands/API
+              routes and the exact derive flag name and semantics, including id generation or
+              required --id behavior, overwrite/collision handling, JSON/error behavior, and whether
+              markdown link validation runs on import, set, or both."
+            created_at: 2026-05-22T20:21:36.458Z
+        kind: blocker
+      - _ulid: 01KS8NKKRCR4TSNVAQHM5DVWQ3
+        anchor:
+          type: structured
+          ref: "@task-review-screenshot-resource-ui"
+          section: tasks
+        entries:
+          - _ulid: 01KS8NKKRCT0ERJM9T2TT3QCM9
+            author: Jacob Chapel
+            body: "Review resource support has the same unresolved command/API contract. The task says to add
+              CLI/API affordances for review resources, but does not define the exact review
+              commands, route paths, identifiers, overwrite/removal behavior, or structured error
+              behavior. Impact: review screenshots/evidence could land with a different interface
+              from plan resources or from docs. Exact fix: choose the exact `kspec review resource
+              ...` command set or other final CLI shape, matching API routes, id/path rules, JSON
+              output, and deletion semantics before derivation."
+            created_at: 2026-05-22T20:21:40.748Z
+        kind: blocker
+      - _ulid: 01KS8NKR180JV45ZYCDNN7V74V
+        anchor:
+          type: structured
+          ref: "@task-folder-backed-plan-storage-manager"
+          section: tasks
+        entries:
+          - _ulid: 01KS8NKR18T0PPAS2D2SE2QDG2
+            author: Jacob Chapel
+            body: "The rebuild-index interface is not a final design. This task allows `kspec plan rebuild-index
+              --dry-run/--repair/--force` or an equivalent shared rebuild command, and the review
+              storage task has the same escape hatch. Impact: workers can choose different command
+              surfaces and tests will encode their local choice. Exact fix: pick one command
+              contract now for both plan and review rebuilds, including command names, flags,
+              dry-run output, repair behavior, force behavior, and incompatibility behavior for
+              stale or partial layouts."
+            created_at: 2026-05-22T20:21:45.128Z
+        kind: blocker
+      - _ulid: 01KS8NKWB9WMQTPKFFWB7ZQZXJ
+        anchor:
+          type: structured
+          ref: "@task-update-plan-review-storage-specs"
+          section: tasks
+        entries:
+          - _ulid: 01KS8NKWB9FYT9PRMJKNYTV1CB
+            author: Jacob Chapel
+            body: "This prerequisite spec-update task overclaims `@entity-folder-migration-and-compatibility
+              ac-migration-preserves-record-identity-and-unknown-fields`. The task only updates
+              existing spec language and adds traits; it does not migrate any plan/review records or
+              preserve unknown record fields. Impact: coverage accounting says the migration
+              preservation AC is partially implemented before any migration code exists. Exact fix:
+              remove this Covers claim or replace it with a spec-maintenance-specific AC; leave the
+              migration preservation AC covered by `@task-plan-review-folder-storage-migration`."
+            created_at: 2026-05-22T20:21:49.545Z
+        kind: blocker
+      - _ulid: 01KS8NM0JWQW65VF9D40K06T55
+        anchor:
+          type: structured
+          ref: "@task-folder-backed-resources-docs"
+          section: tasks
+        entries:
+          - _ulid: 01KS8NM0JXWE00DYC0YBDEMNEW
+            author: Jacob Chapel
+            body: "The docs task overclaims implementation ACs: resource resolution/static export, plan-resource
+              reference behavior, new manifest defaults, and stale-layout blocking. Documentation
+              can describe these behaviors, but it does not implement them. Impact: derivation could
+              mark behavioral ACs covered by a docs-only task and obscure missing implementation
+              coverage. Exact fix: remove implementation ACs from this task Covers line, or add a
+              documentation-specific spec/AC and have this task cover only that docs contract."
+            created_at: 2026-05-22T20:21:53.885Z
+        kind: blocker
+      - _ulid: 01KS8NM560S2V20MXTM45XDJ7K
+        anchor:
+          type: structured
+          field: ac-resource-delete-follows-owner-delete
+          ref: "@trait-entity-scoped-local-resources"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KS8NM560T59PYXAN1ME2RDGE
+            author: Jacob Chapel
+            body: "This trait AC is not concretely covered for the plan and review owners that implement the
+              trait. The shared resource-model task can provide deletion helpers, but owner deletion
+              is completed in the plan/review storage managers, and their Covers lines do not claim
+              this inherited resource-delete behavior. Impact: a worker could implement resource
+              manifests and owner folder deletion without testing that declared local resources are
+              deleted as part of concrete plan/review deletes. Exact fix: add
+              `@trait-entity-scoped-local-resources ac-resource-delete-follows-owner-delete` to the
+              plan and review storage-manager Covers/Testing sections, or split the AC so the shared
+              model covers only reusable helper behavior and concrete owner specs cover
+              integration."
+            created_at: 2026-05-22T20:21:58.592Z
+        kind: blocker
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-22T20:22:31.392Z
     created_at: 2026-05-22T20:20:10.635Z
-    updated_at: null
+    updated_at: 2026-05-22T20:22:31.392Z
     notes: []
