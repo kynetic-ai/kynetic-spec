@@ -220394,6 +220394,17 @@ reviews:
         runner: kspec plan import --dry-run
         created_at: 2026-05-22T21:04:31.103Z
         completed_at: 2026-05-22T21:04:31.103Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --warnings-ok exited 0; schema and references are OK with existing warnings
+          only.
+        name: Project validation baseline
+        required: true
+        runner: kspec validate --warnings-ok
+        created_at: 2026-05-22T21:04:42.964Z
+        completed_at: 2026-05-22T21:04:42.964Z
     events:
       - _ulid: 01KS8QYW7N9MM9BF0JZ8WNKA5Q
         actor: Jacob Chapel
@@ -220457,6 +220468,13 @@ reviews:
           status: pass
           name: Plan import dry-run
         timestamp: 2026-05-22T21:04:32.695Z
+      - _ulid: 01KS8R2F00EDEFKYEMJ6R7T74W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Project validation baseline
+        timestamp: 2026-05-22T21:04:44.544Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -220580,5 +220598,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:02:47.033Z
-    updated_at: 2026-05-22T21:04:31.103Z
+    updated_at: 2026-05-22T21:04:42.964Z
     notes: []
