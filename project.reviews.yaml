@@ -220898,6 +220898,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KS8TY88GJ3DBSH9JY53TH9SW
         timestamp: 2026-05-22T21:54:53.830Z
+      - _ulid: 01KS8TYN92J1ZD4DABV49Y8BKN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8TYKS4WDB21MNWCBVAGDFN
+        timestamp: 2026-05-22T21:55:05.634Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -220947,7 +220954,27 @@ reviews:
               the relevant task(s), or create a dedicated cache task.
             created_at: 2026-05-22T21:54:52.304Z
         kind: blocker
+      - _ulid: 01KS8TYKS4WDB21MNWCBVAGDFN
+        anchor:
+          type: structured
+          field: description
+          ref: "@task-entity-local-resource-model"
+          section: tasks
+        entries:
+          - _ulid: 01KS8TYKS4AS4JNXQQ5H8XRWV4
+            author: Jacob Chapel
+            body: Resource content type derivation is still ambiguous. The shared model requires
+              ResourceMetadata.content_type to be a string, while plan/review CLI and API tasks make
+              --content-type/content_type optional. No task states what value is stored when callers
+              omit it during CLI add, multipart POST, plan import from a sibling resources.yaml, or
+              explicit materialize copy. Implementation agents could choose filename sniffing,
+              multipart MIME, application/octet-stream, text/plain, or null, producing incompatible
+              manifests and API payloads. Define the exact precedence/default rule in the shared
+              resource task and require the plan/review CLI/API/import tests to cover omitted
+              content type.
+            created_at: 2026-05-22T21:55:04.100Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:54:03.960Z
-    updated_at: 2026-05-22T21:54:52.304Z
+    updated_at: 2026-05-22T21:55:04.100Z
     notes: []
