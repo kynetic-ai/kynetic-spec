@@ -50130,3 +50130,785 @@ plans:
           hardening completion.
         author: Jacob Chapel
         created_at: 2026-05-19T18:55:32.379Z
+  - _ulid: 01KS8MMWMBN7KNB4BN1A4FFYN6
+    slugs:
+      - plan-folder-backed-plans-reviews-and-local-resources
+    title: Folder-Backed Plans, Reviews, and Local Resources
+    content: >
+      # Folder-Backed Plans, Reviews, and Local Resources
+
+
+      ## Research Findings
+
+
+      Current implementation facts this draft is based on:
+
+
+      - Tasks already provide the closest in-project pattern: `.kspec/tasks/<ulid>/` stores
+      `task.yaml` and `notes.yaml`, while `project.tasks.yaml` is a lean index. The implementation
+      centralizes layout helpers, preserves unknown files in the task directory, and supports
+      migration/rebuild-index commands.
+
+      - Plans are still monolithic: `src/parser/plans.ts` stores every plan in
+      `.kspec/project.plans.yaml`; `PlanSchema.content` stores the entire markdown document inline;
+      `plan import` reads a markdown file and stores its contents; `plan derive` parses
+      `foundPlan.content`.
+
+      - Reviews are still monolithic: `src/parser/reviews.ts` stores every review record in
+      `.kspec/project.reviews.yaml`. Review records already contain growth-prone threads, checks,
+      verdicts, events, notes, and external links, but the stronger near-term reason to folder-back
+      reviews is first-party local evidence such as screenshots/logs, not splitting every nested
+      review field into its own file.
+
+      - Entity cache and web invalidation currently map only `project.plans.yaml` to the plans
+      domain and `project.reviews.yaml` to the reviews domain. Folder layouts need watcher/cache
+      invalidation for `plans/` and `reviews/` paths.
+
+      - All kspec state is git-backed already. Resource versioning should lean on git object/commit
+      identity and content hashes where useful; kspec should not reproduce git-like history tracking
+      inside resource manifests.
+
+      - Sessions and skills are useful precedents for local resources: sessions externalize large
+      event fields to `blobs/` with pointer metadata; skills store `SKILL.md` plus supporting
+      `references/`, `scripts/`, `assets/`, and `docs/` directories.
+
+      - Inbox should probably remain single-file because it is intentionally low-friction text
+      capture and triage is the natural pressure valve. Triage itself is compact and can continue
+      using `evidence_refs` instead of owning resource directories unless its scope changes.
+
+
+      ## Specs
+
+
+      ```yaml
+
+      - title: Folder-Backed Entity Trait
+        slug: trait-folder-backed-entity
+        type: trait
+        parent: "@core"
+        description: |
+          An entity that adopts folder-backed storage owns a stable per-entity
+          directory, keeps list/index projections bounded, preserves unknown files,
+          and can rebuild its index from authoritative folder contents. This trait is
+          storage-shape behavior shared by tasks, plans, reviews, and any future
+          folder-backed entity rather than a plan- or review-specific contract.
+        acceptance_criteria:
+          - id: ac-entity-has-ulid-directory
+            given: |
+              A folder-backed entity exists in the system
+            when: |
+              The entity is persisted
+            then: |
+              The entity has its own directory named by its full ULID under that entity type's storage root
+          - id: ac-index-excludes-heavy-detail-bytes
+            given: |
+              Folder-backed entities exist in a project
+            when: |
+              The entity index is read for listing, filtering, cache warm-up, or dashboard summary surfaces
+            then: |
+              The index contains bounded identity, lifecycle, summary, and relationship fields without embedding full documents, unbounded detail logs, or resource file bytes
+          - id: ac-unknown-files-preserved
+            given: |
+              A folder-backed entity directory contains unknown files or directories
+            when: |
+              The entity is read or updated
+            then: |
+              Unknown entries are ignored by entity semantics and preserved across writes
+          - id: ac-index-rebuilds-from-folders
+            given: |
+              A folder-backed entity index has drifted from entity directories
+            when: |
+              An index rebuild is requested
+            then: |
+              The index can be regenerated from entity folders and sidecar metadata
+
+      - title: Entity-Scoped Local Resources Trait
+        slug: trait-entity-scoped-local-resources
+        type: trait
+        parent: "@core"
+        traits:
+          - "@trait-folder-backed-entity"
+        description: |
+          A folder-backed entity that owns rich context can include local resource
+          files beside its structured data. A resource is referenced by a stable,
+          entity-scoped identifier and remains portable with the entity across shadow
+          branch sync, daemon API reads, static export, and agent consumption.
+        acceptance_criteria:
+          - id: ac-resource-reference-resolves-within-owner
+            given: |
+              A folder-backed entity contains a declared local resource
+            when: |
+              A user, UI route, API route, static export, or agent resolves that resource reference
+            then: |
+              The reference resolves only to a file inside the owning entity's resource tree
+          - id: ac-resource-metadata-exposes-safe-preview-fields
+            given: |
+              A folder-backed entity has one or more local resources
+            when: |
+              The entity is read through list, detail, API, or static export surfaces
+            then: |
+              Consumers can discover resource labels, relative paths, content type, byte size, and content hash without embedding large file contents in index records
+          - id: ac-path-escape-rejected
+            given: |
+              A resource reference contains an absolute path, parent traversal, or a symlink escape
+            when: |
+              The resource is imported, attached, served, or resolved
+            then: |
+              The operation is rejected with actionable guidance and no file outside the owning entity resource tree is read or written
+          - id: ac-binary-resources-are-not-inlined-into-yaml
+            given: |
+              A local resource is binary or large text
+            when: |
+              The entity is persisted
+            then: |
+              The resource remains as a sidecar file and structured records store only bounded metadata or pointers
+          - id: ac-resource-delete-follows-owner-delete
+            given: |
+              A folder-backed entity with local resources is deleted
+            when: |
+              The deletion is persisted
+            then: |
+              The entity's owned resource files are removed in the same logical mutation as the entity record
+          - id: ac-versioning-uses-git-backed-identity
+            given: |
+              A resource version is recorded for later resolution or drift detection
+            when: |
+              The project is stored in git
+            then: |
+              The version metadata can use content hash and git revision/path identity without maintaining a separate resource history log inside kspec
+
+      - title: Folder-Backed Plan Storage
+        slug: folder-backed-plan-storage
+        type: requirement
+        parent: "@plan-crud"
+        traits:
+          - "@trait-folder-backed-entity"
+          - "@trait-entity-scoped-local-resources"
+        description: |
+          Plans are stored as folder-backed entities so the markdown plan document and
+          local supporting resources can live together without bloating the plan index.
+          List and detail consumers continue to see the same plan identity, status,
+          lifecycle, content, and derived-ref semantics.
+        acceptance_criteria:
+          - id: ac-plan-has-ulid-directory
+            given: |
+              A plan exists in the system
+            when: |
+              The plan is persisted in the folder-backed format
+            then: |
+              The plan has its own directory named by its full ULID
+          - id: ac-plan-document-sidecar-is-authoritative
+            given: |
+              A folder-backed plan is loaded for detail or derivation
+            when: |
+              The plan document is needed
+            then: |
+              The markdown sidecar document in the plan directory is the authoritative source of plan content
+          - id: ac-plan-index-excludes-document-and-resource-bytes
+            given: |
+              Folder-backed plans exist in a project
+            when: |
+              The plan index is read for listing, filtering, or cache warm-up
+            then: |
+              The index contains identity, status, source, module, branch, derived refs, timestamps, and resource summaries, but not full markdown content or resource file bytes
+          - id: ac-plan-unknown-files-preserved
+            given: |
+              A folder-backed plan directory contains unknown files or directories
+            when: |
+              The plan is read or updated
+            then: |
+              Unknown entries are ignored by plan semantics and preserved across writes
+          - id: ac-plan-index-rebuilds-from-folders
+            given: |
+              The plan index has drifted from plan directories
+            when: |
+              A plan index rebuild is requested
+            then: |
+              The index can be regenerated from plan folders and sidecar metadata
+
+      - title: Plan Resource Derivation Semantics
+        slug: plan-resource-derivation-semantics
+        type: requirement
+        parent: "@plan-derive-enhanced"
+        description: |
+          Derived tasks can reference resources attached to their source plan without
+          duplicating resource bytes by default. Derivation preserves a stable link to
+          the reviewed plan resource and enough metadata for consumers to detect drift
+          if the source resource changes later.
+        acceptance_criteria:
+          - id: ac-derived-task-keeps-plan-resource-reference
+            given: |
+              A plan task definition references a plan-owned local resource
+            when: |
+              The plan is derived into tasks
+            then: |
+              The derived task retains a resolvable reference to the plan resource instead of copying the resource bytes into the task directory by default
+          - id: ac-derived-task-records-resource-version
+            given: |
+              A derived task retains a reference to a plan-owned local resource
+            when: |
+              The task is created
+            then: |
+              The reference records the resource content hash and, when available, the git revision/path identity that was current at derivation time
+          - id: ac-resource-drift-is-visible
+            given: |
+              A task references a plan resource whose current content no longer matches the version recorded at derivation time
+            when: |
+              The task detail, agent context, or API resource resolver presents the resource
+            then: |
+              The consumer is told the resource has changed rather than silently receiving an unversioned replacement
+          - id: ac-explicit-copy-mode-creates-task-owned-resource
+            given: |
+              A derivation path explicitly requests a task-owned copy of a plan resource
+            when: |
+              The plan is derived
+            then: |
+              The copied resource is stored under the derived task and the task reference points at the task-owned copy
+
+      - title: Folder-Backed Review Storage
+        slug: folder-backed-review-storage
+        type: requirement
+        parent: "@review-record-storage-and-identity"
+        traits:
+          - "@trait-folder-backed-entity"
+          - "@trait-entity-scoped-local-resources"
+        description: |
+          Reviews are stored as folder-backed entities so review records can own
+          local evidence such as screenshots, logs, and supporting files without
+          rewriting or bloating one project-wide YAML file. The first slice keeps the
+          review's structured discussion/check/verdict/note data together in the
+          review detail file unless a later scaling need justifies additional
+          sidecars.
+        acceptance_criteria:
+          - id: ac-review-has-ulid-directory
+            given: |
+              A review exists in the system
+            when: |
+              The review is persisted in the folder-backed format
+            then: |
+              The review has its own directory named by its full ULID
+          - id: ac-review-index-excludes-heavy-detail
+            given: |
+              Folder-backed reviews exist in a project
+            when: |
+              The review index is read for list, filter, cache warm-up, or dashboard summary surfaces
+            then: |
+              The index contains review identity, lifecycle, subject summary, related refs, disposition, timestamps, and resource summaries, but not full review detail or resource bytes
+          - id: ac-review-detail-stays-cohesive
+            given: |
+              A folder-backed review is loaded for detail
+            when: |
+              Consumers request the review record
+            then: |
+              The returned review detail is loaded from a cohesive review detail file plus bounded resource metadata rather than requiring separate thread, check, verdict, note, and event sidecars
+          - id: ac-review-screenshot-resource-loads-in-ui
+            given: |
+              A review has an attached screenshot resource
+            when: |
+              The review is opened in the web UI or exported to the static UI snapshot
+            then: |
+              The screenshot can be discovered and loaded from a stable review-scoped resource URL or exported path
+          - id: ac-review-index-rebuilds-from-folders
+            given: |
+              The review index has drifted from review directories
+            when: |
+              A review index rebuild is requested
+            then: |
+              The index can be regenerated from review folders and sidecar metadata
+
+      - title: Entity Folder Migration and Compatibility
+        slug: entity-folder-migration-and-compatibility
+        type: requirement
+        parent: "@core"
+        description: |
+          Projects using monolithic plan or review files can migrate to folder-backed
+          storage with dry-run previews, reversible guidance, compatibility errors,
+          and upgrade integration modeled on task storage migration.
+        acceptance_criteria:
+          - id: ac-migration-dry-run-previews-layout
+            given: |
+              A project has monolithic plan or review records
+            when: |
+              The user runs the entity storage migration in dry-run mode
+            then: |
+              The command reports the directories, sidecar files, index changes, resource moves, warnings, and manifest changes it would make without writing them
+          - id: ac-migration-preserves-record-identity-and-unknown-fields
+            given: |
+              A monolithic plan or review record contains existing fields or unknown fields
+            when: |
+              It is migrated to folder-backed storage
+            then: |
+              The migrated entity preserves its ULID, slugs, refs, timestamps, lifecycle state, and unknown record fields
+          - id: ac-incompatible-layout-errors-guide-to-migration
+            given: |
+              A command or daemon route needs folder-backed plan or review behavior but finds an unmigrated or partially migrated layout
+            when: |
+              The operation cannot safely continue
+            then: |
+              It fails with a structured error code and migration guidance rather than partially reading or rewriting ambiguous data
+          - id: ac-upgrade-includes-entity-storage-migration
+            given: |
+              A project version requires folder-backed plan or review storage
+            when: |
+              The user runs kspec upgrade
+            then: |
+              The upgrade pipeline previews or executes the required storage migrations as part of the version upgrade
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: false
+
+
+      ```yaml
+
+      - title: Update existing plan and review storage specs for folder-backed layouts
+        slug: task-update-plan-review-storage-specs
+        priority: 1
+        tags: [specs, plans, reviews]
+        spec_ref: "@entity-folder-migration-and-compatibility"
+        description: |
+          What:
+          - Update existing spec language that hard-codes monolithic files before implementing folder-backed storage.
+          - In @plan-crud, change ac-1 from "stored in project.plans.yaml" to format-neutral wording: "persisted with stable ULID identity and visible through the plan list/detail surfaces".
+          - In @plan-crud, change ac-24 from "Plan record added to project.plans.yaml" to format-neutral wording: "Plan record is persisted with status, source path, and derived spec/task refs".
+          - In @review-record-storage-and-identity, replace ac-3's "Single dedicated file per project" contract with a storage-location contract that permits folder-backed review records while preserving first-party dedicated review storage.
+          - Add reusable trait specs for folder-backed entities and entity-scoped resources, then apply those traits to plans/reviews instead of duplicating the same ACs per entity type.
+          - Add or update ACs so entity cache invalidation includes folder-backed `plans/` and `reviews/` paths, not only `project.plans.yaml` and `project.reviews.yaml`.
+
+          Why:
+          - The current specs explicitly require single-file plan/review storage, so implementation would otherwise contradict the source of truth.
+
+          How:
+          - Use kspec CLI spec/item commands rather than manual .kspec YAML edits.
+          - Keep existing user-visible CLI semantics intact; only remove physical storage assumptions from existing ACs.
+          - Preserve task-storage split as the style reference: format-neutral consumer contract plus separate storage-layout specs.
+
+          Testing:
+          - Run `kspec validate --warnings-ok`.
+          - Run focused parser/schema tests that exercise plan/review specs if changed.
+
+          Covers: @entity-folder-migration-and-compatibility ac-migration-preserves-record-identity-and-unknown-fields
+
+      - title: Implement a shared folder-backed entity trait foundation
+        slug: task-folder-backed-entity-trait-foundation
+        priority: 1
+        tags: [storage, schema, parser]
+        spec_ref: "@trait-folder-backed-entity"
+        depends_on:
+          - "@task-update-plan-review-storage-specs"
+        description: |
+          What:
+          - Extract the common folder-backed entity behavior from task split storage into shared helpers/types that future entity stores can adopt.
+          - Centralize full-ULID directory naming, storage-root path helpers, bounded index projection conventions, unknown-file preservation, rebuild-index mechanics, and cache invalidation hooks.
+          - Keep the abstraction small: it should define folder ownership/index behavior, not plan-specific markdown semantics or review-specific schemas.
+
+          Why:
+          - Plans, reviews, tasks, and future long-lived entities should not each grow bespoke folder-storage implementations with different safety and rebuild behavior.
+
+          How:
+          - Use the current task split implementation as the reference extraction target.
+          - Keep entity-specific managers responsible for their own detail schema while sharing folder/index/resource plumbing.
+
+          Testing:
+          - Unit-test shared path helpers, full-ULID directory validation, unknown-file preservation behavior, bounded index projection hooks, and rebuild-index behavior through a fixture entity.
+
+          Covers: @trait-folder-backed-entity ac-entity-has-ulid-directory, ac-index-excludes-heavy-detail-bytes, ac-unknown-files-preserved, ac-index-rebuilds-from-folders
+
+      - title: Implement a shared entity-local resource trait and resolver
+        slug: task-entity-local-resource-model
+        priority: 1
+        tags: [resources, schema, parser]
+        spec_ref: "@trait-entity-scoped-local-resources"
+        depends_on:
+          - "@task-folder-backed-entity-trait-foundation"
+        description: |
+          What:
+          - Add shared schema/types for entity-scoped local resources: stable resource id or label, entity owner ref/type, normalized relative path, content type, byte size, sha256/content hash, optional git revision/path identity, created/updated metadata, and optional description.
+          - Add path normalization and validation helpers that reject absolute paths, `..`, symlink escapes, and paths outside the owning entity resource tree.
+          - Add resolver helpers that can load metadata, resolve a resource path for an entity, and produce bounded previews without loading binary bytes into YAML records.
+          - Define a common resource tree convention for folder-backed entities, for example `resources/` plus a metadata sidecar. Keep exact file names centralized in helpers.
+
+          Why:
+          - Plans and reviews need the same local-resource behavior. Building this once avoids two incompatible attachment models.
+
+          How:
+          - Use the session blob pointer pattern for hashes/previews and the skill supporting-file directory pattern for safe relative sidecar directories.
+          - Do not expose arbitrary filesystem reads; all resolution starts from the owning entity directory.
+          - Keep list/index projections bounded.
+
+          Testing:
+          - Unit-test valid references, absolute path rejection, parent traversal rejection, symlink escape rejection, metadata hash computation, binary-resource metadata, and missing-resource guidance.
+
+          Covers: @trait-entity-scoped-local-resources ac-resource-reference-resolves-within-owner, ac-resource-metadata-exposes-safe-preview-fields, ac-path-escape-rejected, ac-binary-resources-are-not-inlined-into-yaml, ac-resource-delete-follows-owner-delete, ac-versioning-uses-git-backed-identity
+
+      - title: Convert plan persistence to a folder-backed storage manager
+        slug: task-folder-backed-plan-storage-manager
+        priority: 2
+        tags: [plans, parser, migration]
+        spec_ref: "@folder-backed-plan-storage"
+        depends_on:
+          - "@task-folder-backed-entity-trait-foundation"
+          - "@task-entity-local-resource-model"
+        description: |
+          What:
+          - Introduce a plan storage manager/backing layout modeled on task split storage.
+          - Store each plan under a full-ULID directory with a markdown document sidecar, core metadata sidecar, optional notes/resource sidecars, and a lean `project.plans.yaml` index.
+          - Keep `loadPlans`, `findPlanByRef`, `savePlan`, `mutatePlanAtomically`, and `deletePlan` consumer semantics stable while moving physical reads/writes behind the manager.
+          - Preserve unknown files in plan directories and delete owned directories/resources when deleting a plan.
+          - Add `kspec plan rebuild-index --dry-run/--repair/--force` or an equivalent shared rebuild command.
+
+          Why:
+          - Plan markdown and supporting research artifacts will grow; storing all plan content and future resources inline in one YAML file makes list/cache operations heavier and makes resource ownership unclear.
+
+          How:
+          - Reuse the task split patterns: centralized path helpers, lean index projection, authoritative detail files, raw-shape migration helpers, buffer-aware writes, and single shadow commits for multi-file mutations.
+          - Keep API/shared `PlanDetail.content` available by loading the markdown sidecar during detail reads.
+          - Treat the markdown sidecar as authoritative when index/core metadata and document content disagree.
+
+          Testing:
+          - Add plan storage unit tests for create/list/detail/update/delete, unknown file preservation, content sidecar authority, index projection, and rebuild drift repair.
+          - Run existing plan parser/import/derive tests to prove consumer semantics did not change.
+
+          Covers: @folder-backed-plan-storage ac-plan-has-ulid-directory, ac-plan-document-sidecar-is-authoritative, ac-plan-index-excludes-document-and-resource-bytes, ac-plan-unknown-files-preserved, ac-plan-index-rebuilds-from-folders
+
+      - title: Add plan import, resource attachment, and derivation semantics
+        slug: task-plan-resource-import-and-derive
+        priority: 3
+        tags: [plans, resources, cli]
+        spec_ref: "@plan-resource-derivation-semantics"
+        depends_on:
+          - "@task-folder-backed-plan-storage-manager"
+        description: |
+          What:
+          - Extend `kspec plan import` and `kspec plan set`/related commands so plan markdown can reference declared plan-local resources without embedding them inline.
+          - Add CLI/API affordances to attach, list, inspect, and remove plan resources.
+          - Update plan document parsing or a companion resource parser so markdown/image/resource links can be validated against the plan's resource manifest.
+          - During `kspec plan derive`, preserve plan resource references on derived tasks by default and record the resource content hash plus available git revision/path identity observed at derivation time.
+          - Add an explicit copy/materialize mode only when a task-owned copy is required.
+
+          Why:
+          - A UX plan may include screenshots or research PDFs that task workers need to consult. Default copying creates drift and duplicate bytes; unversioned links hide changes.
+
+          How:
+          - Keep plan resources plan-owned by default. Derived tasks get refs/pointers plus hash/git metadata, not copied files.
+          - Ensure task detail/agent context can resolve `plan_ref` resources even when task storage remains task-owned.
+          - Surface drift if the current plan resource hash no longer matches the hash recorded on the task.
+
+          Testing:
+          - CLI tests for attach/list/remove/invalid path.
+          - Derive tests for resource refs, hash/git version metadata, drift reporting, and explicit copy mode.
+          - Parser tests for markdown links that resolve and links that fail with guidance.
+
+          Covers: @plan-resource-derivation-semantics ac-derived-task-keeps-plan-resource-reference, ac-derived-task-records-resource-version, ac-resource-drift-is-visible, ac-explicit-copy-mode-creates-task-owned-resource
+
+      - title: Update plan daemon API, cache, web UI, and static export for resources
+        slug: task-plan-resource-api-ui-static
+        priority: 4
+        tags: [plans, daemon, web-ui]
+        spec_ref: "@folder-backed-plan-storage"
+        depends_on:
+          - "@task-plan-resource-import-and-derive"
+        description: |
+          What:
+          - Update daemon entity-cache file-to-domain mapping so `plans/` directory changes invalidate the plans domain.
+          - Keep `/api/plans` list fast by using index/resource summaries only.
+          - Keep `/api/plans/:ref` returning `PlanDetail.content` while adding resource summary data and safe resource fetch URLs.
+          - Add authenticated/project-scoped resource endpoints for plan resource metadata and bytes.
+          - Update web UI plan expansion/rendering so local images/resources are discoverable and loadable.
+          - Update static JSON export/static UI to include resource metadata and copied/exported resource files or stable exported paths.
+
+          Why:
+          - Moving content/resources out of the monolithic file must not regress the current plan UI, daemon route, cache, WebSocket invalidation, or static export behavior.
+
+          How:
+          - Do not load resource bytes for list routes or cache warm-up.
+          - Serve only resolved entity-local resources through the shared resolver.
+          - Keep markdown rendering fallback behavior for unresolved resources with visible guidance.
+
+          Testing:
+          - Daemon route tests for list/detail/resource metadata/resource bytes and invalid path rejection.
+          - Web UI tests for plan markdown with a local image/resource link.
+          - Static export tests for resource metadata and offline resource loading.
+
+          Covers: @folder-backed-plan-storage ac-plan-document-sidecar-is-authoritative, @trait-entity-scoped-local-resources ac-resource-reference-resolves-within-owner, ac-resource-metadata-exposes-safe-preview-fields, ac-path-escape-rejected
+
+      - title: Convert review persistence to folder-backed storage with resource support
+        slug: task-folder-backed-review-storage-manager
+        priority: 5
+        tags: [reviews, parser, migration]
+        spec_ref: "@folder-backed-review-storage"
+        depends_on:
+          - "@task-folder-backed-entity-trait-foundation"
+          - "@task-entity-local-resource-model"
+        description: |
+          What:
+          - Introduce a review storage manager/backing layout modeled on the shared folder-backed entity trait.
+          - Store each review under a full-ULID directory with one cohesive review detail file, a bounded resource manifest, and a review-local `resources/` tree for screenshots and evidence files.
+          - Keep `loadReviewRecords`, `findReviewByRef`, `saveReviewRecord`, `mutateReviewRecordAtomically`, and delete semantics stable for existing callers.
+          - Keep a lean `project.reviews.yaml` index for list/cache surfaces.
+          - Add `kspec review rebuild-index --dry-run/--repair/--force` or a shared equivalent.
+
+          Why:
+          - Reviews are the best non-plan candidate for folder storage: they already have unbounded threads/events/checks/verdicts/notes and they are the natural home for screenshots or local evidence.
+
+          How:
+          - Use the shared folder-backed entity trait for index/detail separation and the shared resource trait for evidence files.
+          - Do not split threads/checks/verdicts/notes/events into separate files in the first slice; keep the review record cohesive unless a later measured need justifies sidecars.
+          - Delete owned resources with the review directory.
+
+          Testing:
+          - Review storage unit tests for create/list/detail/mutations against the cohesive review detail file, screenshot resource metadata, delete cleanup, unknown file preservation, and index rebuild.
+          - Existing review CLI/API tests should pass unchanged except where they assert monolithic storage internals.
+
+          Covers: @folder-backed-review-storage ac-review-has-ulid-directory, ac-review-index-excludes-heavy-detail, ac-review-detail-stays-cohesive, ac-review-index-rebuilds-from-folders, @trait-entity-scoped-local-resources ac-resource-delete-follows-owner-delete
+
+      - title: Add review screenshot/evidence API and UI support
+        slug: task-review-screenshot-resource-ui
+        priority: 6
+        tags: [reviews, daemon, web-ui]
+        spec_ref: "@folder-backed-review-storage"
+        depends_on:
+          - "@task-folder-backed-review-storage-manager"
+        description: |
+          What:
+          - Add CLI/API affordances to attach/list/remove review resources, especially screenshots.
+          - Add daemon routes for review resource metadata and bytes using the shared resolver.
+          - Update review detail UI so screenshot/evidence resources can be previewed or opened from the review page.
+          - Update static export for review resources.
+          - Update cache/WebSocket invalidation so `reviews/` directory changes invalidate review list/detail data.
+
+          Why:
+          - Review screenshots should be local to the review so UI and agents can load the same evidence without relying on external links.
+
+          How:
+          - Keep `external_links` for non-authoritative remote links; use first-party review resources for local evidence that should travel with the review.
+          - Do not inline screenshots into review YAML or API list payloads.
+
+          Testing:
+          - API tests for attach/list/detail/resource bytes/path rejection.
+          - Web UI tests for rendering review resource summaries and previewing screenshot resources.
+          - Static export test that review screenshots are available in exported output.
+
+          Covers: @folder-backed-review-storage ac-review-screenshot-resource-loads-in-ui, @trait-entity-scoped-local-resources ac-resource-reference-resolves-within-owner, ac-binary-resources-are-not-inlined-into-yaml
+
+      - title: Implement plan and review storage migration plus upgrade integration
+        slug: task-plan-review-folder-storage-migration
+        priority: 7
+        tags: [migration, upgrade, cli]
+        spec_ref: "@entity-folder-migration-and-compatibility"
+        depends_on:
+          - "@task-plan-resource-api-ui-static"
+          - "@task-review-screenshot-resource-ui"
+        description: |
+          What:
+          - Add dry-run and executing migration commands for monolithic plan and review storage.
+          - Backfill folder directories from `project.plans.yaml` and `project.reviews.yaml`, preserving ULIDs, slugs, refs, timestamps, lifecycle/status, unknown fields, markdown content, full review detail records, and external links.
+          - Write lean indexes and update manifest/version markers as needed.
+          - Detect already migrated and partially migrated layouts with clear reporting.
+          - Integrate the migrations into `kspec upgrade` when the project version requires folder-backed plan/review storage.
+          - Add structured incompatibility errors for routes/commands that cannot safely operate on a stale or partial layout.
+
+          Why:
+          - Existing projects must have a safe path from monolithic files to folder-backed storage, and daemon/API consumers need deterministic behavior during compatibility windows.
+
+          How:
+          - Follow `kspec task migrate` and `task rebuild-index` conventions: dry-run previews, best-effort preservation with warnings, one logical buffered mutation, shadow commit, rebuild/repair command, and upgrade pipeline integration.
+          - Prefer non-destructive migration: keep enough backup or migration guidance for rollback during the first implementation slice.
+
+          Testing:
+          - Migration tests for empty files, valid records, invalid-but-preserved raw records, missing ULIDs, already migrated layouts, partial layouts, dry-run no writes, executing migration writes expected dirs/files/indexes, and upgrade integration.
+          - Daemon compatibility tests for structured stale-layout errors.
+
+          Covers: @entity-folder-migration-and-compatibility ac-migration-dry-run-previews-layout, ac-migration-preserves-record-identity-and-unknown-fields, ac-incompatible-layout-errors-guide-to-migration, ac-upgrade-includes-entity-storage-migration
+
+      - title: Document resource references and folder-backed entity maintenance
+        slug: task-folder-backed-resources-docs
+        priority: 8
+        tags: [docs, resources]
+        spec_ref: "@trait-entity-scoped-local-resources"
+        depends_on:
+          - "@task-plan-review-folder-storage-migration"
+        description: |
+          What:
+          - Document how plan and review resources are attached, referenced from markdown, resolved by agents, served in UI/API, included in static export, and migrated.
+          - Document when to keep a derived task linked to a plan resource versus explicitly copy a resource into task-owned storage.
+          - Update release notes and upgrade docs for the storage-format change.
+          - Add troubleshooting guidance for stale indexes, missing resources, and drifted resource hashes.
+
+          Why:
+          - Resource references are a new cross-cutting concept. Users and agents need a stable convention, not ad hoc local file paths.
+
+          How:
+          - Use examples: plan research PDF, plan UX screenshot, review screenshot, review log/evidence file.
+          - Keep docs format-neutral where possible; avoid telling users to edit `.kspec` internals manually.
+
+          Testing:
+          - Run docs checks if applicable.
+          - Run focused CLI help/documentation tests if command help output changes.
+
+          Covers: @trait-entity-scoped-local-resources ac-resource-reference-resolves-within-owner, @plan-resource-derivation-semantics ac-derived-task-keeps-plan-resource-reference, @entity-folder-migration-and-compatibility ac-upgrade-includes-entity-storage-migration
+      ```
+
+
+      ## Implementation Notes
+
+
+      ### Recommended conversion scope
+
+
+      - Convert plans first. Plan documents are already markdown, already long-lived, already
+      reviewed, and naturally own design/research/supporting artifacts.
+
+      - Convert reviews second, but keep the first folder-backed review layout simple. The main gain
+      is review-local screenshots/evidence; split review threads/events/checks/verdicts/notes only
+      if a later measured need justifies that complexity.
+
+      - Do not convert inbox in this plan. Inbox is intentionally small text capture and should be
+      cleared by triage.
+
+      - Do not convert triage unless triage becomes an evidence-owning artifact. For now it can
+      reference resources owned by plans/reviews/tasks/specs.
+
+      - Do not broadly convert meta. Skills already have the right folder/resource model. Other meta
+      types are small enough for manifest/include storage until proven otherwise.
+
+      - Sessions are not a conversion target; they are a precedent for event logs and blob pointers.
+
+
+      ### Shared traits
+
+
+      This plan should add reusable traits instead of making folder/resource behavior plan- or
+      review-specific:
+
+
+      - `@trait-folder-backed-entity` owns per-ULID directories, bounded index projections,
+      unknown-file preservation, and index rebuild behavior.
+
+      - `@trait-entity-scoped-local-resources` builds on that folder trait and owns resource
+      manifests, safe path resolution, metadata projection, delete behavior, and git/content-version
+      metadata.
+
+
+      Tasks already satisfy much of the folder-backed trait in practice; implementation should
+      extract or formalize that behavior rather than fork it for plans and reviews.
+
+
+      ### Git-backed resource versioning
+
+
+      Because kspec state is stored in git, resource manifests do not need their own history model.
+      They should record enough identity to resolve or compare a resource at a point in time, such
+      as content hash plus a git commit/tree-ish and path when available. Drift detection can
+      compare the recorded identity to the current working/shadow state instead of maintaining a
+      parallel per-resource revision log.
+
+
+      ### Proposed folder shapes for discussion
+
+
+      These are implementation notes, not spec requirements:
+
+
+      ```text
+
+      .kspec/
+        project.plans.yaml              # lean plan index
+        plans/
+          <plan-ulid>/
+            plan.md                     # authoritative markdown content
+            plan.yaml                   # core metadata not in markdown
+            notes.yaml                  # optional plan notes/work log
+            resources.yaml              # resource manifest, bounded metadata
+            resources/
+              research.pdf
+              ux/empty-state.png
+
+        project.reviews.yaml            # lean review index
+        reviews/
+          <review-ulid>/
+            review.yaml                 # full cohesive review detail record
+            resources.yaml              # bounded metadata
+            resources/
+              screenshots/failure.png
+              logs/test-output.txt
+      ```
+
+
+      ### Resource reference syntax options
+
+
+      Decision still needed, but the plan should avoid raw filesystem paths in user-facing content.
+      Candidate forms:
+
+
+      - Markdown-relative: `![empty state](./resources/ux/empty-state.png)` inside `plan.md`,
+      resolved relative to the plan directory.
+
+      - Entity URI: `kspec://plan/@plan-slug/resources/ux/empty-state.png` for API/UI/agent
+      surfaces.
+
+      - Ref shorthand: `@plan-slug#resources/ux/empty-state.png` for CLI and task descriptions.
+
+
+      The recommended direction is to support markdown-relative links in plan/review documents for
+      authoring ergonomics, then normalize them internally to an entity-scoped resource reference
+      with owner ref + relative path + content hash and, when available, git revision/path identity.
+
+
+      ### Derivation copy-vs-reference recommendation
+
+
+      Default to keeping a versioned reference to the plan resource, not copying bytes into the
+      task. Reasons:
+
+
+      - The plan is the reviewed context bundle and should remain the canonical owner of research/UX
+      references.
+
+      - Copying every referenced image/PDF into every derived task creates duplicate bytes and
+      drift.
+
+      - A task can still be standalone if the task body includes explicit resource refs and the
+      agent resolver knows how to fetch them.
+
+      - Hash/git-version metadata lets the UI/agent report drift if someone changes the plan
+      resource after derivation.
+
+
+      Explicit copy mode is still useful for rare cases where a task needs to own a snapshot that
+      may outlive or intentionally diverge from the plan.
+
+
+      ### Main implementation risks
+
+
+      - Existing specs hard-code `project.plans.yaml` and `project.reviews.yaml`; those must be
+      updated first.
+
+      - `PlanSchema.content` is inline today, and many consumers expect `PlanDetail.content`; the
+      manager/API should preserve that logical detail field while changing physical storage.
+
+      - `plan derive` currently parses `foundPlan.content`; storage manager detail loading must
+      provide the current markdown before derivation.
+
+      - Entity cache and web invalidation only watch monolithic file paths today.
+
+      - Migration must preserve unknown fields and raw shape well enough to avoid losing data from
+      older files.
+
+      - Static export needs an explicit resource-copy/path strategy, otherwise the static UI can
+      render resource metadata but not load images/PDFs offline.
+    status: draft
+    approved_at: null
+    branch: null
+    derived_specs: []
+    derived_tasks: []
+    module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/folder-backed-plans-reviews-and-resources.md
+    created_at: 2026-05-22T20:04:54.027Z
+    completed_at: null
+    notes: []
