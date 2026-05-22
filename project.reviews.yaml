@@ -219206,7 +219206,63 @@ reviews:
     slugs: []
     title: "Plan review: Folder-Backed Plans, Reviews, and Local Resources"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran `kspec plan import plans/folder-backed-plans-reviews-and-resources.md --dry-run
+          --json`; parser accepted the document and made no state changes.
+        name: Plan import dry-run
+        required: true
+        runner: kspec plan import
+        created_at: 2026-05-22T20:10:30.256Z
+        completed_at: 2026-05-22T20:10:30.256Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "`kspec item get @plan-crud` has no ac-24; `rg mutateReviewRecordAtomically` finds no
+          implementation, while `mutateReviewAtomically` exists in src/parser/reviews.ts and
+          callers."
+        name: Existing spec and source fidelity
+        required: true
+        runner: kspec item get / rg
+        created_at: 2026-05-22T20:10:34.295Z
+        completed_at: 2026-05-22T20:10:34.295Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The plan lacks exact version/manifest fields and places migration/compatibility after
+          storage/API/UI tasks that depend on the new layout.
+        name: Migration and compatibility readiness
+        required: true
+        runner: manual plan review
+        created_at: 2026-05-22T20:10:38.291Z
+        completed_at: 2026-05-22T20:10:38.291Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Every explicit AC in the draft is claimed by at least one task Covers line, although trait
+          duplication findings must be resolved before approval.
+        name: AC coverage mapping
+        required: true
+        runner: manual plan review
+        created_at: 2026-05-22T20:10:42.354Z
+        completed_at: 2026-05-22T20:10:42.354Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "`kspec validate --warnings-ok` exited 0 with existing project warnings unrelated to this
+          draft."
+        name: Project validation baseline
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-22T20:10:46.366Z
+        completed_at: 2026-05-22T20:10:46.366Z
     events:
       - _ulid: 01KS8MV53ZQ3CMS09SR25X0XDM
         actor: Jacob Chapel
@@ -219214,17 +219270,259 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-05-22T20:08:19.327Z
+      - _ulid: 01KS8MY6ZG1DXDN15NK120ZV5E
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-05-22T20:09:59.537Z
+      - _ulid: 01KS8MYAWK4YKN5VD2NR8CYAHP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8MY9DQD5SFD91526C12ZC8
+        timestamp: 2026-05-22T20:10:03.539Z
+      - _ulid: 01KS8MYEXQF5568XY8DYB8RC58
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8MYDBJP41Z8WQVXNSGYVAH
+        timestamp: 2026-05-22T20:10:07.671Z
+      - _ulid: 01KS8MYJWEQ20Q8RXQD384SKCZ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8MYHAMJTY7W01R193CTYRQ
+        timestamp: 2026-05-22T20:10:11.726Z
+      - _ulid: 01KS8MYPQ4RZJ7B241B1DC3YK6
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8MYN7A18CRW9DHWDQY1E70
+        timestamp: 2026-05-22T20:10:15.652Z
+      - _ulid: 01KS8MYTKVA7FAB465DHBB5V03
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8MYS3DNJMES7MYPRQ5C769
+        timestamp: 2026-05-22T20:10:19.643Z
+      - _ulid: 01KS8MYYGBN142W4WV68C1EM10
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8MYWY6RXY0BJ7TCQVFCA6B
+        timestamp: 2026-05-22T20:10:23.627Z
+      - _ulid: 01KS8MZ2GFRCDWM5MCBM1ZC6PQ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8MZ1081P4QF195T7WY6VP3
+        timestamp: 2026-05-22T20:10:27.727Z
+      - _ulid: 01KS8MZ6HCHP7P6T89HJTK8V01
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import dry-run
+        timestamp: 2026-05-22T20:10:31.853Z
+      - _ulid: 01KS8MZAEB461MNCPE3V08RWKK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Existing spec and source fidelity
+        timestamp: 2026-05-22T20:10:35.851Z
+      - _ulid: 01KS8MZED53D43SQ3FDVRWZTFV
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Migration and compatibility readiness
+        timestamp: 2026-05-22T20:10:39.909Z
+      - _ulid: 01KS8MZJA9R3SKG9V6TZ9MSBRN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage mapping
+        timestamp: 2026-05-22T20:10:43.913Z
+      - _ulid: 01KS8MZPA0MV2Y9PKQ3DE6YDQ0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Project validation baseline
+        timestamp: 2026-05-22T20:10:48.000Z
+      - _ulid: 01KS8MZT954CFPFSAZDXE14R19
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-22T20:10:52.069Z
+      - _ulid: 01KS8MZT9520H4EVVJ8JH723MK
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-22T20:10:52.069Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@plan-folder-backed-plans-reviews-and-local-resources"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KS8MY9DQD5SFD91526C12ZC8
+        anchor:
+          type: structured
+          ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+          section: implementation_notes
+        entries:
+          - _ulid: 01KS8MY9DQ4931SBG4NQ654CA3
+            author: Jacob Chapel
+            body: The plan still contains pre-decision options where it needs final design decisions. "Proposed
+              folder shapes for discussion" says the layout is not a spec requirement, and "Resource
+              reference syntax options" says a decision is still needed. Implementation tasks then
+              ask workers to build folder layouts, resource manifests, CLI/API affordances, copy
+              mode, and static export behavior without a binding storage shape or reference syntax.
+              Before approval, promote the chosen folder file names, resource manifest shape,
+              accepted authoring syntax, normalized internal reference form, explicit copy-mode
+              trigger, and static-export path strategy into the Specs/Tasks sections and remove the
+              candidate/discussion wording.
+            created_at: 2026-05-22T20:10:02.039Z
+        kind: blocker
+      - _ulid: 01KS8MYDBJP41Z8WQVXNSGYVAH
+        anchor:
+          type: structured
+          field: ac-upgrade-includes-entity-storage-migration
+          ref: "@entity-folder-migration-and-compatibility"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KS8MYDBJQWSNQTEFE0JP0AF6
+            author: Jacob Chapel
+            body: Migration/version compatibility is underspecified. The AC says "A project version requires
+              folder-backed plan or review storage" but the plan never decides the manifest fields
+              or values that express that requirement, the new internal kspec version, the
+              plan/review storage format markers, or the exact behavior for old/unmigrated projects
+              under a newer kspec. The task repeats this as "update manifest/version markers as
+              needed," leaving the worker to choose the compatibility contract. Add explicit version
+              and manifest decisions, upgrade step behavior for dry-run and execution, stale-layout
+              structured error codes, and user guidance that either runs upgrade or tells the user
+              to use an older compatible kspec version.
+            created_at: 2026-05-22T20:10:06.066Z
+        kind: blocker
+      - _ulid: 01KS8MYHAMJTY7W01R193CTYRQ
+        anchor:
+          type: structured
+          ref: "@task-plan-review-folder-storage-migration"
+          section: dependencies
+        entries:
+          - _ulid: 01KS8MYHAM5W8R6B6ETVCGSSG7
+            author: Jacob Chapel
+            body: The migration/compatibility task is priority 7 and depends on the plan API/UI task and the
+              review API/UI task, even though earlier storage-manager tasks introduce folder-backed
+              persistence. That ordering leaves workers to decide whether managers dual-read
+              monolithic data, hard-fail stale layouts, or silently rewrite data before the
+              migration exists. Reorder the migration/compatibility foundation before any task that
+              requires folder-backed plan/review behavior, or explicitly state in the earlier
+              storage-manager tasks how unmigrated projects are read, blocked, or upgraded until the
+              final migration task lands.
+            created_at: 2026-05-22T20:10:10.132Z
+        kind: blocker
+      - _ulid: 01KS8MYN7A18CRW9DHWDQY1E70
+        anchor:
+          type: structured
+          ref: "@folder-backed-plan-storage"
+          section: traits
+        entries:
+          - _ulid: 01KS8MYN7A9ZGVB82NW6FV134R
+            author: Jacob Chapel
+            body: Trait usage is not clean enough for derivation. @folder-backed-plan-storage and
+              @folder-backed-review-storage apply both @trait-folder-backed-entity and
+              @trait-entity-scoped-local-resources, while the resource trait itself also lists
+              @trait-folder-backed-entity. The plan/review specs then duplicate the folder trait ACs
+              as their own ACs (ULID directory, bounded index, unknown-file preservation, rebuild).
+              This creates double-inheritance/coverage ambiguity and violates the trait guidance to
+              avoid copying trait ACs. Decide the trait dependency order once, apply only the needed
+              trait(s), and keep entity-specific ACs only for behavior that is genuinely
+              plan/review-specific.
+            created_at: 2026-05-22T20:10:14.122Z
+        kind: blocker
+      - _ulid: 01KS8MYS3DNJMES7MYPRQ5C769
+        anchor:
+          type: structured
+          field: description
+          ref: "@task-update-plan-review-storage-specs"
+          section: tasks
+        entries:
+          - _ulid: 01KS8MYS3DYX7HCN46WVWRK53P
+            author: Jacob Chapel
+            body: The task references @plan-crud ac-24, but the current @plan-crud spec has no ac-24. Live
+              lookup shows monolithic storage language in ac-1, while the visible AC set jumps from
+              ac-9 to ac-30 and later deletion ACs. A worker following this task cannot perform the
+              exact requested spec edit. Replace the stale ac-24 instruction with the actual current
+              AC(s) or source comments that must change, verified against `kspec item get
+              @plan-crud`.
+            created_at: 2026-05-22T20:10:18.093Z
+        kind: blocker
+      - _ulid: 01KS8MYWY6RXY0BJ7TCQVFCA6B
+        anchor:
+          type: structured
+          field: description
+          ref: "@task-folder-backed-review-storage-manager"
+          section: tasks
+        entries:
+          - _ulid: 01KS8MYWY61V00M0257A5NEY4N
+            author: Jacob Chapel
+            body: The task names `mutateReviewRecordAtomically` as an existing caller contract, but the current
+              code exports and uses `mutateReviewAtomically` (`src/parser/reviews.ts`,
+              `src/cli/commands/review.ts`, and review storage tests). This is an
+              implementation-fidelity error in a task that is supposed to preserve existing function
+              semantics. Correct the function name and re-check all named files/functions before
+              approval.
+            created_at: 2026-05-22T20:10:22.022Z
+        kind: blocker
+      - _ulid: 01KS8MZ1081P4QF195T7WY6VP3
+        anchor:
+          type: structured
+          field: ac-derived-task-keeps-plan-resource-reference
+          ref: "@plan-resource-derivation-semantics"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KS8MZ1080W7WA9JJR9KJ0FBV
+            author: Jacob Chapel
+            body: The derivation ACs depend on "a plan task definition references a plan-owned local resource,"
+              but the plan does not define where that reference lives or how it is parsed. It could
+              be a markdown link, a structured field in the Tasks YAML, a task description
+              convention, or a separate manifest reference; each choice changes parser, schema, CLI,
+              API, and agent-context behavior. Decide the resource reference syntax and storage
+              location before approval, and update this spec plus
+              @task-plan-resource-import-and-derive with exact parser/schema changes and tests.
+            created_at: 2026-05-22T20:10:26.184Z
+        kind: blocker
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-22T20:10:52.069Z
     created_at: 2026-05-22T20:08:19.331Z
-    updated_at: null
+    updated_at: 2026-05-22T20:10:52.069Z
     notes: []
